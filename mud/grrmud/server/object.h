@@ -297,7 +297,6 @@ public:
    int isAmmo() const { return ( isArrow() || isDart() ); }
          
    int isBoat() const { return OBJ_FLAGS.get(62); }
-   int isContainer() const { return obj_flags.get(54); }
    int needsResetting() const { return obj_flags.get(70); }
 
    void setComplete();
