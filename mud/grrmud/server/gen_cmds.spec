@@ -171,6 +171,8 @@ battlecry socials ~
 battlecry(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 bite socials ~
 bite(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+blink socials ~
+blink(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 blush socials ~
 blush(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 bonk socials ~

@@ -1,5 +1,5 @@
-// $Id: social2.h,v 1.4 2001/11/13 04:37:09 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 2001/11/13 04:37:09 $
+// $Id: social2.h,v 1.5 2002/01/02 22:28:12 eroper Exp $
+// $Revision: 1.5 $  $Author: eroper $ $Date: 2002/01/02 22:28:12 $
 
 //
 //ScryMUD Server Code
@@ -91,5 +91,6 @@ void climb(int i_th, const String* vict, critter& pc, room& rm);
 void shock(int i_th, const String* vict, critter& pc, room& rm);
 void wiggletoes(int i_th, const String* vict, critter& pc, room& rm);
 void stare(int i_th, const String* vict, critter& pc, room& rm);
+void blink(int i_th, const String* vict, critter& pc, room& rm);
 
 #endif

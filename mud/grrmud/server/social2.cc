@@ -1,5 +1,5 @@
-// $Id: social2.cc,v 1.8 2001/11/13 04:37:09 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 2001/11/13 04:37:09 $
+// $Id: social2.cc,v 1.9 2002/01/02 22:28:12 eroper Exp $
+// $Revision: 1.9 $  $Author: eroper $ $Date: 2002/01/02 22:28:12 $
 
 //
 //ScryMUD Server Code
@@ -2739,3 +2739,53 @@ void stare(int i_th, const String* vict, critter& pc, room& rm) {
       emote(buf , pc, rm, TRUE);
    }//else
 }//stare
+
+/* by khaavren */
+void blink(int i_th, const String* vict, critter& pc, room& rm) {
+   String buf(100);
+   Cell<critter*> cll(rm.getCrits());
+   critter* ptr;
+
+   if (pc.POS == POS_SLEEP) {
+      Sprintf(buf,"You're too tired to blink.\n");
+      pc.show(buf);
+      return;
+   }
+
+   if (vict->Strlen()) {
+      critter* crit_ptr = 
+           rm.haveCritNamed(i_th, vict, pc);
+
+      if (!crit_ptr) 
+         show("You don't see that person.\n", pc);
+      else if (crit_ptr == &pc) {
+         show("You blink.\n",
+                 pc);
+         Sprintf(buf, "blinks.\n");
+         emote(buf, pc, rm, TRUE);
+      }//if targ and agg is same
+      else {
+         Sprintf(buf, "You blink at %S in disbelief.\n",
+                 name_of_crit(*crit_ptr, pc.SEE_BIT));
+         show(buf, pc);
+         Sprintf(buf, "%S blinks at you in disbelief.\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         buf.Cap();
+         show(buf, *crit_ptr);
+         
+         while ((ptr = cll.next())) {
+            if ((ptr != &pc) && (ptr != crit_ptr)) {
+               Sprintf(buf, "%S blinks at %S in disbelief.\n",
+                 name_of_crit(pc, ptr->SEE_BIT), 
+                 name_of_crit(*crit_ptr, ptr->SEE_BIT));
+               buf.Cap();
+               show(buf, *ptr);
+            }//if
+         }//while
+      }//else
+   }//if a victim
+   else {      //change these next two lines
+      show("You blink in disbelief.\n", pc);
+      emote("blinks in disbelief.\n", pc, rm, TRUE);
+   }//else
+}//blink
