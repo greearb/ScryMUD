@@ -5,13 +5,13 @@
                                                        `$$
                pyppy$$$ pyppy$$$ pyppy$$$ pyp  $$$      $$
                $$$'`$$$ $$$'`$$$ $$$'`$$$ $$$  $$$      $$
-    |   ,$$$$$ $$$  `\"' $$$  $$$ $$$  $$$ $$$  $$$ $$$$ $$             $$$$
-  \\  ,$$$$$$$$ $$$      $$$  `\"' $$$  $$$ $$$  $$$ $$$$ $$ $$$ $$$ $$$ $$$'
+    |   ,$$$$$ $$$  `"' $$$  $$$ $$$  $$$ $$$  $$$ $$$$ $$             $$$$
+  \\  ,$$$$$$$ $$$      $$$  `"' $$$  $$$ $$$  $$$ $$$$ $$ $$$ $$$ $$$ $$$'
 --  $$$$$$'    $$$py$$$ $$$      $$$py$$' $$$py$$$   `$ $$ $$$ $$$ $$$ $$$
-  /  `$$$$$$$$ `\"'  $$$ $$$  $$$ $$$'`$$y `\"'  $$$ $$$$ $$ $$$ $$$ $$$ $$$.
+  /  `$$$$$$$$ `"'  $$$ $$$  $$$ $$$'`$$y `"'  $$$ $$$$ $$ $$$ $$$ $$$ $$$.
     |   `$$$$$ pyp  $$$ $$$  $$$ $$$  $$$ $$$  $$$ $$$$ $$             $$$$
                $$$py$$$ $$$py$$$ $$$  $$$ $$$py$$$      $$
-               `\"'      `\"'      `\"'      `\"'           $$
+               `"'      `"'      `"'      `"'           $$
                                                        ,$$
                           ScryMUD                      $$$
 
@@ -19,13 +19,14 @@
 
         Written with DikuMUD and its derivatives in mind.
 
-                Code:  Ben Greear AKA Grock
+          Head Coder:  Ben Greear AKA Grock
         Head Builder:  Shamu
+
+              Coders:  Justin Piper, Andrew Gibson, Ed Roper
+            Builders:  MiniShamu, Andrew Gibson
+
             Web Page:  http://scry.WANfear.com
                Email:  greear@cyberhighway.net
 
        Thanks to the kind folks at WANfear for hosting the ScryMUD site.
-       WANfear offers:
-          Virtual-Domain Web Site Hosting: (http://www.your-company.com/),
-          CVS repositories, and other hosting and consulting services.
-          Check them out at: http://www.WANfear.com
+
