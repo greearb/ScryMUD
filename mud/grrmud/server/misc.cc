@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.50 2002/02/07 09:14:05 eroper Exp $
-// $Revision: 1.50 $  $Author: eroper $ $Date: 2002/02/07 09:14:05 $
+// $Id: misc.cc,v 1.51 2002/02/09 21:50:50 eroper Exp $
+// $Revision: 1.51 $  $Author: eroper $ $Date: 2002/02/09 21:50:50 $
 
 //
 //ScryMUD Server Code
@@ -469,8 +469,6 @@ void do_regeneration_pcs() {
 
          posn_mod = (2.0 + (float)(crit_ptr->POS)) / 4.0;
       }
-
-      stat_spell_cell *spell_effect_ptr;
 
       
       // if we are affected by remove hope we get no hp
@@ -1191,6 +1189,12 @@ void decrease_timed_affecting_pcs() {  //will decrease all
             crit_ptr->THIRST--;  //drink
          if (crit_ptr->DRUGGED > 0)
             crit_ptr->DRUGGED--;  //drugged
+         if (crit_ptr->isViolent()) { // violence timer
+            crit_ptr->pc->violence_timer--;
+            if (!crit_ptr->isViolent()) {
+               crit_ptr->show("You are now free to quit.\n", HL_DEF);
+            }
+         }
 
          if (crit_ptr->MODE == MODE_NORMAL) {
             if (crit_ptr->HUNGER == 0)

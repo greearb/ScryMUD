@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.69 2002/01/26 20:40:59 eroper Exp $
-// $Revision: 1.69 $  $Author: eroper $ $Date: 2002/01/26 20:40:59 $
+// $Id: critter.cc,v 1.70 2002/02/09 21:50:49 eroper Exp $
+// $Revision: 1.70 $  $Author: eroper $ $Date: 2002/02/09 21:50:49 $
 
 //
 //ScryMUD Server Code
@@ -1372,7 +1372,7 @@ void pc_data::Clear() {
    last_input.Clear();
    host.Clear();
    mode = MODE_NORMAL;
-   descriptor = age = index = hunger = thirst = drugged = 0;
+   descriptor = age = index = hunger = thirst = drugged = violence_timer = 0;
    birth_year = birth_day = rent_day = rent_year = pk_count = 
       died_count = quest_points = idle_ticks = 0;
    link_condition = CON_LOGGING_IN;

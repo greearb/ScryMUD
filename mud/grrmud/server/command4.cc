@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.47 2002/01/11 19:29:15 eroper Exp $
-// $Revision: 1.47 $  $Author: eroper $ $Date: 2002/01/11 19:29:15 $
+// $Id: command4.cc,v 1.48 2002/02/09 21:50:49 eroper Exp $
+// $Revision: 1.48 $  $Author: eroper $ $Date: 2002/02/09 21:50:49 $
 
 //
 //ScryMUD Server Code
@@ -532,9 +532,18 @@ int log_out(critter& pc) {
       return -1;
 
    if (!IsEmpty(pc.IS_FIGHTING)) {
-      show("You must stop fighting first.\n", pc);
+      pc.show("You must stop fighting first.\n", HL_DEF);
       return -1;
    }//if
+
+   // if there's a violence timer...
+   if (config.useViolenceTimer) {
+      if (pc.isViolent()) {
+         pc.show("You must wait for your violence timer to expire.\n", HL_DEF);
+         return -1;
+      }
+   }
+
    pc.save();
    pc.setMode(MODE_QUIT_ME_PLEASE);
 

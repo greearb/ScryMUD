@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.58 2002/01/26 20:40:59 eroper Exp $
-// $Revision: 1.58 $  $Author: eroper $ $Date: 2002/01/26 20:40:59 $
+// $Id: critter.h,v 1.59 2002/02/09 21:50:50 eroper Exp $
+// $Revision: 1.59 $  $Author: eroper $ $Date: 2002/02/09 21:50:50 $
 
 //
 //ScryMUD Server Code
@@ -583,6 +583,7 @@ public:
    short hunger;
    short thirst;
    short drugged;
+   short violence_timer;
    String prompt;
    String poofin;
    String poofout;
@@ -921,6 +922,7 @@ public:
    void setNoClient();
    void setHasSacrificed(int i) { if (pc) PC_FLAGS.set(31, i); }
    void setIsRemort(int i) { if (pc) PC_FLAGS.set(30, i); }
+   void setViolenceTimer() { pc->violence_timer = 8; }
 
    int isRemort() { return pc && PC_FLAGS.get(30); }
    int hasSacrificed() { return pc && PC_FLAGS.get(31); }   
@@ -952,6 +954,7 @@ public:
    int isRolePlaying() { return pc && PC_FLAGS.get(32); }
    int isAFK() { return pc && PC_FLAGS.get(33); }
    int isGoldOnly() { return pc && PC_FLAGS.get(34); }
+   int isViolent() { return (pc->violence_timer > 0); }
    
    int isMob() const { return (CRITTER_TYPE == 2); }
    int isNPC() const { return (isMob() || isSmob()); }

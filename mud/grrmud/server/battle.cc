@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.40 2002/02/07 08:32:58 eroper Exp $
-// $Revision: 1.40 $  $Author: eroper $ $Date: 2002/02/07 08:32:58 $
+// $Id: battle.cc,v 1.41 2002/02/09 21:50:49 eroper Exp $
+// $Revision: 1.41 $  $Author: eroper $ $Date: 2002/02/09 21:50:49 $
 
 //
 //ScryMUD Server Code
@@ -315,6 +315,12 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
              << *(name_of_crit(agg, ~0)) << "  vict addr:  " << &vict
              << "  vict name:  " << *(name_of_crit(vict, ~0))
              << "  posn of weapon:  " << posn_of_weapon << endl;
+   }
+
+   // Set violence timer for pc vs. pc combat
+   if (config.useViolenceTimer && agg.isPc() && vict.isPc()) {
+      agg.setViolenceTimer();
+      vict.setViolenceTimer();
    }
 
    if (agg.isParalyzed()) {

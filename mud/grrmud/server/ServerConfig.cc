@@ -64,6 +64,7 @@ ServerConfig::ServerConfig() {
    newSummon=true;
    maxRedundantDonates=5;
    convertWorldFromDev=false;
+   useViolenceTimer=false;
 
    useMySQL=false;
    mySQLuser="gmud";
@@ -263,6 +264,16 @@ void ServerConfig::read(char* filename) {
          }
          else if (strcasecmp(key, "mySQLport") == 0) {
             mySQLport = (int)strtol(val, NULL, 0);
+         }
+         else if (strcasecmp(key, "useViolenceTimer") == 0) {
+            cout << "Found useViolenceTimer.\n";
+            if (strcasecmp(val, "true") == 0) {
+               useViolenceTimer=true;
+               cout << "Using useViolenceTimer.\n";
+            } else if (strcasecmp(val, "false") == 0) {
+               useViolenceTimer=false;
+               cout << "NOT Using useViolenceTimer.\n";
+            }
          }
       }
    }

@@ -89,6 +89,7 @@ class ServerConfig {
       int newSummon;
       int maxRedundantDonates;
       int convertWorldFromDev;
+      int useViolenceTimer;
 
       // Database
       int useMySQL;
