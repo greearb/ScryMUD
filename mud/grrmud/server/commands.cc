@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.52 2002/03/10 21:45:12 justin Exp $
-// $Revision: 1.52 $  $Author: justin $ $Date: 2002/03/10 21:45:12 $
+// $Id: commands.cc,v 1.53 2002/08/15 20:29:46 eroper Exp $
+// $Revision: 1.53 $  $Author: eroper $ $Date: 2002/08/15 20:29:46 $
 
 //
 //ScryMUD Server Code
@@ -526,6 +526,14 @@ int wear(int i_th, const String* obj, int j, const String* posn,
          return -1;
       }//if
       else { //i and maybe t are good
+
+         // If it's two handed the player must have hold+wield empty.
+         if (obj_ptr->isTwoHanded() && (pc.EQ[9] || pc.EQ[10]) ) {
+            pc.show(CS_NEEDS_TWO_HANDS);
+            mudlog.log(DBG, "Wear failed, needs two-hands.\n");
+            return -1;
+         }
+
          if (pc.EQ[i] || (j == 2)) { //gotta go in posn t if anywhere
             
             if (t == 11 /* light */) {
