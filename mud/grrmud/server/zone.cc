@@ -1,5 +1,5 @@
-// $Id: zone.cc,v 1.6 2001/03/29 03:02:36 eroper Exp $
-// $Revision: 1.6 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
+// $Id: zone.cc,v 1.7 2002/08/20 03:06:25 eroper Exp $
+// $Revision: 1.7 $  $Author: eroper $ $Date: 2002/08/20 03:06:25 $
 
 //
 //ScryMUD Server Code
@@ -605,7 +605,7 @@ void zone::stat(critter& pc) {
    Cell<String*> cll;
    String* ptr;
 
-   Sprintf(buf, "[%i]  %S  %P35 Begin#  %i, End#  %i, Ticks in Regen:  %i\n",
+   Sprintf(buf, "^B[^b%i^B]  ^Y%S^0  %P35 Begin#  %i, End#  %i, Ticks in Regen:  %i\n",
            zone_num, &(zone_name), begin_room_num, end_room_num,
            ticks_in_regen_cycle);
    show(buf, pc);
