@@ -1,5 +1,5 @@
-// $Id: spells.h,v 1.9 2002/01/31 15:01:04 gingon Exp $
-// $Revision: 1.9 $  $Author: gingon $ $Date: 2002/01/31 15:01:04 $
+// $Id: spells.h,v 1.10 2002/02/22 18:06:11 gingon Exp $
+// $Revision: 1.10 $  $Author: gingon $ $Date: 2002/02/22 18:06:11 $
 
 //
 //ScryMUD Server Code
@@ -104,25 +104,7 @@ int get_mana_cost(int spell_num, critter& pc);
 int get_number_of_scroll(int spell_num); //returns -1 if !exist
  
 //////////////////////////////////////////////////////
-/* more or less, this is how it works:
- * 1) select the xSpell class you want, or use the base Spell class if needed
- * 2) define the functions your spell will need, generally, this will be doCastEffects, doFailureNoTarget for 
- *        direct imediate effect spells; 
- *    doCastEffects, doFailureNoTarget, doWearOffEffects for buff type spells;
- *    doCastEffects, doFailureNoTarget, doWearOffEffects, doMovementEffects for door and/or persistant room spells
- *    for spells that can target things outside of the current room, such as gate and portal, you will need a custom 
- *        getSpellTarget, and method for getting the actual target
- * 3) setup the spell with spell_name.setupSpell(args...) with the proper info
- * 4) things that used to call do_cast_x directly need to manually set spell.victim or spell.target before calling spell.onCast
- * 5) that's it, the spell should be ready to go
- */
 
-/* most recent modifications:
- * get_target_[type]() moved to functions in misc2.cc since there's alot of stuff that could make use of it
- * fixed a problem in onCast, some spells need check_for_diversions()
- * fixed a problem with spell_mana (spell_cost is not constant per mob)
- * currently compiles cleanly, though haven't tested it with any spells yet
- */ 
 
 
 void config_spells();
@@ -131,17 +113,17 @@ void config_spells();
 class Spell
 {
 	private:
-	//virtual int count; //this isn't used for anything atm
+//	virtual int count; //this isn't used for anything atm
 	public:
-        critter* agg; // caster
-        int clvl; //casting lvl
-
+   critter* agg; // caster
+   int clvl; //casting lvl
+   int duration; //short ticks or long ticks is defined by what list is in
 	int spell_num; //slist number
 	int spell_mana; // mana cost
 	int pause; // pause from casting
 	char* name; //duh
-        char* msg_lost_con;// lost concentration message
-       // char* msg_lost_con = "obviously forgot part of the spell!";
+   char* msg_lost_con;// lost concentration message
+   
 	char* msg_no_target; //no target message
 	char* actions;// string passed to ok_to_do_action
 	char* diversions;// string passed to check_for_diversions
@@ -149,23 +131,24 @@ class Spell
 
 //	virtual void onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
 //                  int lvl = 0); // checks to see if the spell can be cast, if the target is correct, and if the casting fails
-	virtual int doCastEffects();// imediate effects, fireball, buff etc...
-	virtual void doSpellEffects(); // not used by any spells, may remove it later
+	virtual int doCastEffects();
+	virtual void doSpellEffects(); 
 	virtual void doWearOffEffects();// what to do when it wears off
 	virtual void doMovementEffects(); // mainly for spells like distortion wall
-	virtual void doPerTickEffects(); // spells that operate over time, no current spells use this
+	virtual void doPerTickEffects(); // spells that operate over time, no current spells do this
 	
 	void doFailureLostCon(); // lost concentration failure stuff
 	void doFailureCanned();// canned failure, not used by any spell currently
 	void doFailureNoTarget(); // no target failure
 	
-	virtual int getSpellTarget(int i_th, const String* target, critter& pc);	
+	//virtual int getSpellTarget(int i_th, const String* target, critter& pc);	
  
-	Spell(){} // supresss warning about default constructer, should be optimized out by g++	
+	Spell() {}// gets rid of an error message in g++
 	
-	virtual void setupSpell(int spelln, int spellp, char* act, char* divers, char* spell_name,
-			char* no_target,
-			char lost_con[] = "obviously forgot part of the spell.\n");
+	virtual void setupSpell(int spelln, int spellp, char* act, char* divers,
+                           char* spell_name,
+			                  char* no_target,
+			                  char lost_con[] = "obviously forgot part of the spell.\n");
 
 	
 	//okToCast(int i_th, const String* dr, critter& pccritter* vict, const char* flags, critter& pc, 
@@ -182,7 +165,7 @@ class MobSpell : public Spell {
     public:
     critter* victim;
 	
-    int getSpellTarget(int i_th, const String* vict, critter& pc);
+    //int getSpellTarget(int i_th, const String* vict, critter& pc);
     void onCast(critter& vict, critter& pc, int is_canned = FALSE,
                        int lvl = 0);
    void onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 

@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.24 2002/02/05 05:03:33 gingon Exp $
-// $Revision: 1.24 $  $Author: gingon $ $Date: 2002/02/05 05:03:33 $
+// $Id: spells.cc,v 1.25 2002/02/22 18:06:11 gingon Exp $
+// $Revision: 1.25 $  $Author: gingon $ $Date: 2002/02/22 18:06:11 $
 
 //
 //ScryMUD Server Code
@@ -113,10 +113,10 @@ int Spell::doCastEffects(){
 }
 
 
-int Spell::getSpellTarget(int i_th, const String* target, critter& pc){
-    mudlog << "Error: default Spell::getSpellTarget called\n";
-    return FALSE;
-}
+//int Spell::getSpellTarget(int i_th, const String* target, critter& pc){
+//    mudlog << "Error: default Spell::getSpellTarget called\n";
+//    return FALSE;
+//}
 /*
 int Spell::onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
                   int lvl = 0){
@@ -209,12 +209,12 @@ void Spell::setupSpell(int spelln, int spellp, char* act, char* spell_name, char
 
 /// end of Spell functions, on to the target specific classes
 
-int MobSpell::getSpellTarget(int i_th, const String* vict, critter& pc){
+/*int MobSpell::getSpellTarget(int i_th, const String* vict, critter& pc){
     victim = NULL;
     victim = get_target_mob(i_th, vict, pc, diversions);
     if (!victim) return FALSE;
     return TRUE;
-}
+}*/
 
 void MobSpell::onCast(critter& vict, critter& pc, int is_canned = FALSE, int lvl = 0) {
 
@@ -238,13 +238,19 @@ void MobSpell::onCast(critter& vict, critter& pc, int is_canned = FALSE, int lvl
 void MobSpell::onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
                   int lvl = 0){
    
-   if(is_canned){
+   if(is_canned) {
       canned = TRUE;
       clvl = lvl;
    }
 
 
-	if (!getSpellTarget(i_th, vict, pc)){
+//	if (!getSpellTarget(i_th, vict, pc)){
+//      doFailureNoTarget();
+//      return;
+//   }
+
+
+   if (!(victim = get_target_mob(i_th, vict, pc, diversions))) {
       doFailureNoTarget();
       return;
    }
@@ -255,7 +261,6 @@ void MobSpell::onCast(int i_th, const String* vict, critter& pc, int is_canned =
    }//if
       
    if (doCastEffects()){
-         
       doSpellEffects();
    }
 }
