@@ -1,0 +1,15 @@
+<help communications describe>
+
+Allows you to modify your description.  This is the possibly
+long description that someone sees when they look at you.
+You may enter up to 10 lines, each line must be no longer than
+80 characters, or it will be automatically wrapped.  You may
+change your description as often as you like.
+
+Syntax:  describe
+
+Example:  describe
+
+<color=red>
+See Also:  title
+</color></help>

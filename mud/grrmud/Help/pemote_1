@@ -1,0 +1,14 @@
+<help communications pemote>
+
+Does an action specified by the user.  This has no other affect
+than what other players make of it, but is useful when trying to
+express one's feelings.  This command is different from emote in
+that it is a possessive emote.  See the example below. 
+
+Syntax:  pemote [message]
+
+Example:  pemote fists shake with palsy!!   	And your name is Grock,
+	Shows everyone in your room:  Grock's fists shake with palsy!!
+<color=red>
+See Also:  socials, say, gecho, emote, describe, title
+</color></help>
