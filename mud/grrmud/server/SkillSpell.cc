@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.21 2002/01/31 11:45:54 gingon Exp $
-// $Revision: 1.21 $  $Author: gingon $ $Date: 2002/01/31 11:45:54 $
+// $Id: SkillSpell.cc,v 1.22 2003/05/08 23:22:07 eroper Exp $
+// $Revision: 1.22 $  $Author: eroper $ $Date: 2003/05/08 23:22:07 $
 
 //
 //ScryMUD Server Code
@@ -23,6 +23,7 @@
 //                                     greearb@agcs.com
 //
 
+#include "const.h"
 #include "SkillSpell.h"
 
 #include "object.h"
@@ -147,7 +148,7 @@ String SkillSpell::toString() {
 
 void SkillSpell::Read(ifstream& da_file) {
    char buf[100];
-   int tmp;
+   int tmp, i;
    String bf(100);
 
    Clear();
@@ -187,11 +188,24 @@ void SkillSpell::Read(ifstream& da_file) {
       da_file >> tmp;
    }//while
    da_file.getline(buf, 80);
+
+   da_file >> tmp;
+   if (tmp != -1) { // if we have okay'd classes, deny all
+      for(i=0;i<NUMBER_OF_CLASSES;restrictions[i++]=1);
+   }
+   while (tmp != -1) {
+      if ( tmp < NUMBER_OF_CLASSES ) {
+         restrictions[tmp] = 0;
+      }
+      da_file >> tmp;
+   }
+   da_file.getline(buf, 80);
    da_file.getline(buf, 80);
 }//read
 
 void SkillSpell::Write(ofstream& da_file) {
    int tmp;
+   int restricted = 0;
 
    da_file << ss_num << "SPELL/SKILL NUMBER\n";
    da_file << name << endl;
@@ -209,6 +223,21 @@ void SkillSpell::Write(ofstream& da_file) {
       da_file << tmp << " ";
    }//while
    da_file << -1 << "\tenables\n";
+
+   for(tmp=0;tmp<NUMBER_OF_CLASSES;tmp++) {
+      if ( restrictions[tmp] ) {
+         restricted = 1;
+      }
+   }
+   if ( restricted ) {
+      for(tmp=0;tmp<NUMBER_OF_CLASSES;tmp++) {
+         if (! restrictions[tmp]) {
+            da_file << tmp << " ";
+         }
+      }
+   }
+   da_file << -1 << "\tclass_restrictions\n";
+
    da_file << endl;
 }//write
 
@@ -221,6 +250,8 @@ int SkillSpell::getScrollNum() {
 }
 
 void SkillSpell::Clear() {
+   int i;
+
    min_level = 0;
    name.Clear();
    ss_num = 0;
@@ -231,6 +262,9 @@ void SkillSpell::Clear() {
    enables.clear();
    prereqs.clear();
    objs_casting_spell.clear();
+
+   for(i=0;i<NUMBER_OF_CLASSES;restrictions[i++]=0);
+
 }//clear
 
  

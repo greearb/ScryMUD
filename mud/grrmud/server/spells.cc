@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.28 2003/05/08 00:25:17 eroper Exp $
-// $Revision: 1.28 $  $Author: eroper $ $Date: 2003/05/08 00:25:17 $
+// $Id: spells.cc,v 1.29 2003/05/08 23:22:07 eroper Exp $
+// $Revision: 1.29 $  $Author: eroper $ $Date: 2003/05/08 23:22:07 $
 
 //
 //ScryMUD Server Code
@@ -1636,7 +1636,9 @@ void update_skill(int last_learned, critter& pc) {
    Cell<int> cll(SSCollection::instance().getSS(last_learned).enables);
    int tmp;
    while ((tmp = cll.next())) {
-      if (has_all_prereqs(tmp, pc) && (get_percent_lrnd(tmp, pc) == -1)) {
+      if (has_all_prereqs(tmp, pc) && (get_percent_lrnd(tmp, pc) == -1)
+            && ( ! SSCollection::instance().getSS(tmp).restrictions[pc.CLASS])
+            ) {
          pc.SKILLS_KNOWN.Insert(tmp, 1);
 
          if (tmp == CLIMBING_SKILL_NUM) {

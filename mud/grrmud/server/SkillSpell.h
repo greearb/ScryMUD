@@ -1,5 +1,5 @@
-// $Id: SkillSpell.h,v 1.11 2001/03/29 03:02:28 eroper Exp $
-// $Revision: 1.11 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
+// $Id: SkillSpell.h,v 1.12 2003/05/08 23:22:07 eroper Exp $
+// $Revision: 1.12 $  $Author: eroper $ $Date: 2003/05/08 23:22:07 $
 
 //
 //ScryMUD Server Code
@@ -55,6 +55,8 @@ class SkillSpell {
 
    List<int> prereqs;  //spell/skill numbers of pre-requisites
    List<int> enables;  //spell/skill numbers it enables you to take
+
+   int restrictions[NUMBER_OF_CLASSES];
 
    SkillSpell();
    SkillSpell(const SkillSpell& source);

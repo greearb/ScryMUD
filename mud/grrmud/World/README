@@ -14,6 +14,10 @@ illuminate               # Skill/Spell name
 0 55 10 295              # MIN_LVL, Difficulty, mana, scroll_num.  See NOTE 1 below.  
 212 -1  pre-reqs         # Pre-requisite skills/spells (gotta learn these first.) -1 terminates.
 218 -1  enables          # Skills/Spells this skill/spell enables, -1 terminates.
+7 -1    restrictions     # In this case only class 7(cleric) may gain this
+                           skill/spell. If this field is blank (just -1) then
+                           there are no restrictions. You may space seperate
+                           as many classes as needed.
 
 
 NOTE 1:

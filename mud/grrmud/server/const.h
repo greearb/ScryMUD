@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.39 2003/05/06 00:54:37 eroper Exp $
-// $Revision: 1.39 $  $Author: eroper $ $Date: 2003/05/06 00:54:37 $
+// $Id: const.h,v 1.40 2003/05/08 23:22:07 eroper Exp $
+// $Revision: 1.40 $  $Author: eroper $ $Date: 2003/05/08 23:22:07 $
 
 //
 //ScryMUD Server Code
@@ -1553,6 +1553,7 @@ extern const char* HUH_MSG;
 #define AVIAN                   18
 
 // PLAYER CLASSES
+#define NUMBER_OF_CLASSES       10
 
 #define OTHER_CLASS             0
 #define WARRIOR                 1
