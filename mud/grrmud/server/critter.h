@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.45 1999/08/29 01:17:16 greear Exp $
-// $Revision: 1.45 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
+// $Id: critter.h,v 1.46 1999/09/01 06:00:03 greear Exp $
+// $Revision: 1.46 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
 
 //
 //ScryMUD Server Code
@@ -732,9 +732,13 @@ public:
    virtual void setLongDesc(CSentryE desc);
 
    virtual void appendShortDesc(CSentryE whichun);
+   virtual void appendShortDesc(String& msg);
    virtual void appendInRoomDesc(CSentryE whichun);
 
+   virtual void prependShortDesc(String& buf);
+
    virtual String* getShortDesc(critter* observer);
+   virtual String* getShortDesc(int c_bit = ~0);
    virtual String* getInRoomDesc(critter* observer);
 
    virtual LStringCollection* getInRoomDescColl() { return &in_room_desc; }
@@ -817,7 +821,7 @@ public:
    int getSex() const { return SEX; }
    const char* getSexName(critter* viewer) const;
    int getAlign() const { return ALIGN; }
-   int getHomeTown();
+   int getHomeTown() { return getZoneNum(); }
    int getPractices() const { return PRACS; }
    int getDamRcvMod() const { return DAM_REC_MOD; }
    int getDamGivMod() const { return DAM_GIV_MOD; }
@@ -1048,6 +1052,8 @@ public:
    void drunkifyMsg(String& msg);
    void checkForBattle(room& rm);
    static int getInstanceCount() { return _cnt; }
+   virtual LEtypeE getEntityType() { return LE_CRITTER; }
+
 };//class critter
  
 

@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.31 1999/08/27 03:10:04 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
+// $Id: grrmud.cc,v 1.32 1999/09/01 06:00:03 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
 
 //
 //ScryMUD Server Code
@@ -96,6 +96,10 @@ int     EXP_DIVISOR = 100; //read it it later out of the grrmud.ini file
 int __node_cnt = 0;
 int __list_cnt = 0; 
 int __cell_cnt = 0;
+
+int __s_node_cnt = 0;
+int __s_list_cnt = 0; 
+int __s_cell_cnt = 0;
 
 
 

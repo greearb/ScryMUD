@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.29 1999/08/29 01:17:16 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
+// $Id: object.cc,v 1.30 1999/09/01 06:00:03 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
 
 //
 //ScryMUD Server Code
@@ -491,6 +491,12 @@ void object::clear() {
 }//Clear
 
 
+/** ptr will be consumed by this call, ie takes charge of memory. */
+void object::addStatAffect(StatBonus* ptr) {
+   stat_affects.prepend(ptr);
+}
+
+
 int object::getCurRoomNum() {
    if (getContainer()) {
       return getContainer()->getCurRoomNum();
@@ -535,7 +541,8 @@ int object::write(ostream& ofile) {
    object* ob_ptr;
 
    //TODO
-   ofile << "<META> ENTITY=OBJ VERSION=3.0 </META>\n";
+   MetaTags mt(*this);
+   mt.write(ofile);
 
    Entity::write(ofile);
    Scriptable::write(ofile);
@@ -602,6 +609,18 @@ int object::write(ostream& ofile) {
    return 0;
 }//Write...obj
 
+
+int object::read(istream& da_file, int read_all) {
+   String buf(100);
+   da_file >> buf;
+   if (strcasecmp(buf, "<META") == 0) {
+      MetaTags mt(buf, da_file);
+      return read_v3(da_file, read_all);
+   }
+   else {
+      return read_v2(da_file, buf, read_all);
+   }
+}//read
 
 int object::read_v2(istream& ofile, String& first_name, short read_all) {
    int i, test = TRUE;
@@ -1341,3 +1360,77 @@ object* object::haveObjNumbered(int i_th, int num, int see_bit, room& rm) {
 
 
 
+/** These default to english, makes a copy of incoming data. */
+void object::addShortDesc(String& new_val) {
+   short_desc.addString(English, new_val);
+}
+
+void object::addShortDesc(LanguageE l, String& buf) {
+   short_desc.addString(l, buf);
+}
+
+void object::addInRoomDesc(String& new_val) {
+   in_room_desc.addString(English, new_val);
+}
+
+void object::addInRoomDesc(LanguageE l, String& new_val) {
+   in_room_desc.addString(l, new_val);
+}
+
+void object::appendShortDesc(CSentryE msg) {
+   for (int i = 0; i<LS_PER_ENTRY; i++) {
+      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
+      short_desc.appendString(nm);
+   }
+}
+
+void object::appendShortDesc(String& msg) {
+   short_desc.appendString(English, msg);
+}
+
+void object::prependShortDesc(String& str) {
+   short_desc.prependString(English, str);
+}
+
+void object::appendInRoomDesc(CSentryE msg) {
+   for (int i = 0; i<LS_PER_ENTRY; i++) {
+      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
+      in_room_desc.appendString(nm);
+   }
+}
+
+   /** Makes a copy of incoming data. */
+void object::addShortDesc(LString& new_val) {
+   short_desc.addLstring(new_val);
+}
+
+void object::addInRoomDesc(LString& new_val) {
+   in_room_desc.addLstring(new_val);
+}
+
+String* object::getShortDesc(critter* observer) {
+   if (detect(observer->getSeeBit(), vis_bit)) {
+      return short_desc.getString(observer->getLanguage());
+   }
+   else {
+      return &UNKNOWN;
+   }
+}
+
+String* object::getShortDesc(int see_bit) {
+   if (detect(see_bit, vis_bit)) {
+      return short_desc.getString(English);
+   }
+   else {
+      return &UNKNOWN;
+   }
+} 
+
+String* object::getInRoomDesc(critter* observer) {
+   if (detect(observer->getSeeBit(), vis_bit)) {
+      return in_room_desc.getString(observer->getLanguage());
+   }
+   else {
+      return &UNKNOWN;
+   }
+}

@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.12 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: spells2.cc,v 1.13 1999/09/01 06:00:04 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/09/01 06:00:04 $
 
 //
 //ScryMUD Server Code
@@ -343,7 +343,7 @@ void do_cast_bind_wound(critter& vict, critter& agg, int is_canned,
    SpellDuration* ptr;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
-     ptr = is_affected_by(spell_num, vict);
+     ptr = vict.isAffectedBy(spell_num);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -422,7 +422,7 @@ void do_cast_shadows_blessing(critter& vict, critter& agg, int is_canned,
    SpellDuration* ptr;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
-     ptr = is_affected_by(spell_num, vict);
+     ptr = vict.isAffectedBy(spell_num);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -657,7 +657,7 @@ void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl) {
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -745,7 +745,7 @@ void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -816,7 +816,7 @@ void do_cast_remove_curse(critter& vict, critter& agg, int is_canned,
    if (!is_canned)
      lvl = agg.LEVEL;
 
-   SpellDuration* ptr = is_affected_by(CURSE_SKILL_NUM, vict);  
+   SpellDuration* ptr = vict.isAffectedBy(CURSE_SKILL_NUM);
    if (!ptr) {
      Sprintf(buf, "%S isn't cursed.\n", name_of_crit(vict, agg.SEE_BIT));
      show(buf, agg);
@@ -874,7 +874,7 @@ void do_cast_remove_curse(object& vict, critter& agg, int is_canned,
    if (!is_canned)
      lvl = agg.LEVEL;
 
-   SpellDuration* ptr = is_affected_by(CURSE_SKILL_NUM, vict);  
+   SpellDuration* ptr = vict.isAffectedBy(CURSE_SKILL_NUM);
    if (!ptr) {
      Sprintf(buf, "%S isn't cursed.\n", name_of_obj(vict, agg.SEE_BIT));
      show(buf, agg);
@@ -1003,7 +1003,7 @@ void do_cast_curse(critter& vict, critter& agg, int is_canned, int lvl) {
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1069,7 +1069,7 @@ void do_cast_curse(object& vict, critter& agg, int is_canned, int lvl) {
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1118,7 +1118,7 @@ void do_cast_blindness(critter& vict, critter& agg, int is_canned, int lvl) {
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1206,7 +1206,7 @@ void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl) {
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1290,7 +1290,7 @@ void do_cast_fly(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1363,7 +1363,7 @@ void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1542,7 +1542,7 @@ void do_cast_fireproof(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1617,7 +1617,7 @@ void do_cast_magic_shield(critter& vict, critter& agg, int is_canned,
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1690,7 +1690,7 @@ void do_cast_sanctuary(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1767,7 +1767,7 @@ void do_cast_prismatic_globe(critter& vict, critter& agg, int is_canned,
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1842,7 +1842,7 @@ void do_cast_stone_skin(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1919,7 +1919,7 @@ void do_cast_armor(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1928,8 +1928,7 @@ void do_cast_armor(critter& vict, critter& agg, int is_canned, int lvl) {
        ptr->duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
-     else if ((ptr = is_affected_by(DIVINE_PROTECTION_SKILL_NUM,
-                                    vict))) {
+     else if ((ptr = vict.isAffectedBy(DIVINE_PROTECTION_SKILL_NUM))) {
        show("You are already protected by divine protection.\n",
             agg); //can't be affected by both at once
      }//if divine_protection already
@@ -2002,7 +2001,7 @@ void do_cast_absorb_blows(critter& vict, critter& agg, int is_canned,
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -2072,7 +2071,7 @@ void do_cast_divine_protection(critter& vict, critter& agg, int is_canned,
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = vict.isAffectedBy(spell_num);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -2081,7 +2080,7 @@ void do_cast_divine_protection(critter& vict, critter& agg, int is_canned,
        ptr->duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
-     else if ((ptr = is_affected_by(ARMOR_SKILL_NUM, vict))) {
+     else if ((ptr = vict.isAffectedBy(ARMOR_SKILL_NUM))) {
        show("Ok.\n", agg); //can't be affected by both at once
      }//if armored already
      else {

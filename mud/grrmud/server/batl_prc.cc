@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.11 1999/08/25 06:35:11 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
+// $Id: batl_prc.cc,v 1.12 1999/09/01 06:00:02 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/09/01 06:00:02 $
 
 //
 //ScryMUD Server Code
@@ -241,7 +241,7 @@ void do_battle_proc(critter& pc) {
       else {//is more DEFENSIVE
 	if (violence > 8) { //lets kill the weaklings/clerics!
 	  if (chance > 8) {
-	    if (!is_affected_by(SANCTUARY_SKILL_NUM, pc)) {
+	    if (!pc.isAffectedBy(SANCTUARY_SKILL_NUM)) {
 	      do_cast_sanctuary(pc, pc, FALSE, 0);
 	    }//if
 	    else {
@@ -429,7 +429,7 @@ void do_battle_proc(critter& pc) {
       else {//is more DEFENSIVE
 	if (violence > 8) { //lets kill the weaklings/clerics!
 	  if (chance > 8) {
-	    if (!is_affected_by(ARMOR_SKILL_NUM, pc)) {
+	    if (!pc.isAffectedBy(ARMOR_SKILL_NUM)) {
 	      do_cast_armor(pc, pc, FALSE, 0);
 	    }//if
 	    else {
@@ -442,7 +442,7 @@ void do_battle_proc(critter& pc) {
 	    do_cast_blindness(*primary_targ, pc, FALSE, 0);
 	  }//else
 	  else if (chance > 3) {
-	    if (!is_affected_by(STONE_SKIN_SKILL_NUM, pc))
+	    if (!pc.isAffectedBy(STONE_SKIN_SKILL_NUM))
 	      do_cast_stone_skin(pc, pc, FALSE, 0);
 	  }//if
 	  else if (chance > 2) {
@@ -567,9 +567,9 @@ void do_battle_proc(critter& pc) {
 	}//if not so violent
       }//if more offensive
       else {//is more DEFENSIVE
-	if (violence > 8) { //lets kill the weaklings/clerics!
+	if (violence > 8) {
 	  if (chance > 8) {
-	    if (!is_affected_by(BLESS_SKILL_NUM, pc)) {
+             if (!pc.isAffectedBy(BLESS_SKILL_NUM)) {
 	      do_cast_bless(pc, pc, FALSE, 0);
 	    }//if
 	    else {

@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.20 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: door.h,v 1.21 1999/09/01 06:00:03 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
 
 //
 //ScryMUD Server Code
@@ -119,7 +119,6 @@ public:
    int getTicksTillDisolve() const { return ticks_till_disolve; }
    int decrementTicksTillDisolve() { return --ticks_till_disolve; }
 
-   int isOwnedBy(critter& pc);
    int getVisBit() const { if (dr_data) return dr_data->getVisBit(); return 0; }
    int isInUse() const { return (dr_data && dr_data->isInUse()); }
    int isOpen() const { return (dr_data && dr_data->isOpen()); }

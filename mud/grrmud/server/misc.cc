@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.32 1999/08/29 01:17:16 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
+// $Id: misc.cc,v 1.33 1999/09/01 06:00:03 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
 
 //
 //ScryMUD Server Code
@@ -44,6 +44,44 @@
 #include "skills.h"
 #include <time.h>
 #include "Filters.h"
+
+
+
+/** These are the magic glue that allows the ContainedObject and SafeLists
+ * to work.  Templates just seemed better than a strange and deep inheritance
+ * here...so now we pay the price!!  Note that this code should only be
+ * called from the SafeList class, not in normal user code.
+ */
+
+/** as seen in lib/containers/SafeList.h:
+template <class T> int addedToList(SafeList<T>* lst, T& data);
+template <class T> int removedFromList(SafeList<T>* lst, T& data);
+*/
+/* cut-n-paste-replace template
+int addedToList(SafeList<_CLASS_*>* lst, _CLASS_*& data) {
+   data->privAddToContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int removedFromList(SafeList<_CLASS_*>* lst, _CLASS_*& data) {
+   data->privRemoveFromContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+*/
+
+int addedToList(SafeList<object*>* lst, object*& data) {
+   data->privAddToContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int removedFromList(SafeList<object*>* lst, object*& data) {
+   data->privRemoveFromContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int addedToList(SafeList<ContainedObject*>* lst, ContainedObject*& data) {
+   data->privAddToContainer(lst); return 0;
+}
+
+int removedFromList(SafeList<ContainedObject*>* lst, ContainedObject*& data) {
+   data->privRemoveFromContainer(lst); return 0;
+}
 
 
 
@@ -1101,36 +1139,7 @@ void decrease_timed_affecting_rooms() {  //will decrease all
 
 
 void show(const char* message, critter& pc) {
-   //log(message);
-
-   if (mudlog.ofLevel(XMT)) {
-      mudlog << "OUTPUT from -:" << *(pc.getName());
-         mudlog << ":-  -:" << message << ":-\n" << endl;
-   }
-
-   if (pc.possessed_by) {
-      pc.possessed_by->show("[POSSESSED]: ");
-      pc.possessed_by->show(message);
-   }
-
-   if (pc.pc) {
-
-      critter* snooper;
-      if ((snooper = pc.SNOOPED_BY)) {
-         mudlog.log(TRC, "Within snoop if\n");
-         String buf2(100);
-         Sprintf(buf2, "SNOOP_OUT:  -:%s:-\n", message);
-         snooper->show(buf2);
-      }//if snoop
-
-      pc.setDoPrompt(TRUE);
-      if (!message)
-         return;
-
-      if (pc.pc->output.Strlen() < OUTPUT_MAX_LEN) {
-	 pc.pc->output.Append(message);
-      }//if
-   }//if
+   pc.show(message);
 }//show 
 
 
@@ -1472,9 +1481,24 @@ void do_out_obj_list(SafeList<object*>& lst, critter& pc,
 critter* have_crit_named(SafeList<critter*>& lst, const int i_th,
                          const String* name, const int see_bit,
                          const room& rm, int do_exact = FALSE) {
-   int foo;
+   int foo = 0;
    return have_crit_named(lst, i_th, name, see_bit, foo, rm, do_exact);
 }
+
+/** If viewer is NULL, it will be as if the viewer can see everyting.
+ */
+critter* have_crit_named(SafeList<critter*>& lst, const int i_th, 
+                         const String* name, critter* viewer,
+                         int do_exact) {
+   int foo = 0;
+   room* rm = &(room_list[0]); //dflt
+   if (viewer) {
+      rm = viewer->getCurRoom();
+   }
+   return have_crit_named(lst, i_th, name, viewer->getSeeBit(), foo,
+                          *(rm), do_exact);
+}
+
 
 critter* have_crit_named(SafeList<critter*>& lst, const int i_th,
                          const String* name, const int see_bit,

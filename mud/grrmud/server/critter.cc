@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.50 1999/08/27 03:10:03 greear Exp $
-// $Revision: 1.50 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
+// $Id: critter.cc,v 1.51 1999/09/01 06:00:03 greear Exp $
+// $Revision: 1.51 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
 
 //
 //ScryMUD Server Code
@@ -2126,7 +2126,7 @@ int critter::read_v3(istream& ofile, int read_all = TRUE) {
    ofile.getline(tmp, 80);      
    //mudlog.log(DBG, "Done w/read crit.\n");
 
-   if (!is_affected_by(BLINDNESS_SKILL_NUM, *this))
+   if (!isAffectedBy(BLINDNESS_SKILL_NUM))
       SEE_BIT |= 1024; //another bletcherous kludge
 
    return 0;
@@ -2324,7 +2324,7 @@ void critter::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
 
 void critter::breakEarthMeld() {
    SpellDuration* sp;
-   if ((sp = is_affected_by(EARTHMELD_SKILL_NUM, *this))) {
+   if ((sp = isAffectedBy(EARTHMELD_SKILL_NUM))) {
       show("Your meld with the earth has been severed.\n");
       affected_by.loseData(sp);
       delete sp;
@@ -2397,12 +2397,46 @@ void critter::setMov(int i) {
    MOV = i;
 }
 
-void critter::show(const char* msg) {
-   ::show(msg, *this);
-}
+void critter::show(const char* message) {
+   if (mudlog.ofLevel(XMT)) {
+      mudlog << "OUTPUT from -:" << *(getName());
+         mudlog << ":-  -:" << message << ":-\n" << endl;
+   }
+
+   if (possessed_by) {
+      possessed_by->show("[POSSESSED]: ");
+      possessed_by->show(message);
+   }
+
+   if (isPc()) {
+      critter* snooper;
+      if ((snooper = SNOOPED_BY)) {
+         mudlog.log(TRC, "Within snoop if\n");
+         String buf2(100);
+         Sprintf(buf2, "SNOOP_OUT:  -:%s:-\n", message);
+         snooper->show(buf2);
+      }//if snoop
+
+      setDoPrompt(TRUE);
+      if (!message)
+         return;
+
+      if (pc->output.Strlen() < OUTPUT_MAX_LEN) {
+	 pc->output.append(message);
+      }//if
+   }//if
+}//show
 
 void critter::show(CSentryE which_string) {
    show(CSHandler::getString(which_string, getLanguageChoice()));
+}
+
+void critter::show(const String* buf) {
+   show(*buf);
+}
+
+void critter::show(String& buf) {
+   show((const char*)(buf));
 }
 
 LanguageE critter::getLanguageChoice() const {
@@ -2877,7 +2911,7 @@ int critter::doesOwnCritter(critter& mobile) {
 }
 
 int critter::doesOwnDoor(door& dr) {
-   return (dr.isOwnedBy(*this));
+   return ZoneCollection::instance().elementAt(dr.getZoneNum()).isOwnedBy(*this);
 }
 
 int critter::doesOwnDoor(door_data& dd) {
@@ -3009,7 +3043,7 @@ object* critter::findObjInEq(int i_th, const String& name,
    for (int i = 1; i<MAX_EQ; i++) {
       if (EQ[i] && 
           detect(see_bit, rm.getVisBit() | EQ[i]->OBJ_VIS_BIT) &&
-         obj_is_named(*(EQ[i]), name)) {
+         EQ[i]->isNamed(name)) {
          count++;
          count_sofar++;
          if (count == i_th) {
@@ -3613,3 +3647,79 @@ const char* critter::getClassName(critter* viewer) {
       return get_class_name(CLASS);
    }
 }//class_of_crit
+
+
+/** These default to english, makes a copy of incoming data. */
+void critter::addShortDesc(String& new_val) {
+   short_desc.addString(English, new_val);
+}
+
+void critter::addShortDesc(LanguageE l, String& buf) {
+   short_desc.addString(l, buf);
+}
+
+void critter::addInRoomDesc(String& new_val) {
+   in_room_desc.addString(English, new_val);
+}
+
+void critter::addInRoomDesc(LanguageE l, String& new_val) {
+   in_room_desc.addString(l, new_val);
+}
+
+void critter::appendShortDesc(CSentryE msg) {
+   for (int i = 0; i<LS_PER_ENTRY; i++) {
+      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
+      short_desc.appendString(nm);
+   }
+}
+
+void critter::appendShortDesc(String& msg) {
+   short_desc.appendString(English, msg);
+}
+
+void critter::prependShortDesc(String& str) {
+   short_desc.prependString(English, str);
+}
+
+void critter::appendInRoomDesc(CSentryE msg) {
+   for (int i = 0; i<LS_PER_ENTRY; i++) {
+      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
+      in_room_desc.appendString(nm);
+   }
+}
+
+   /** Makes a copy of incoming data. */
+void critter::addShortDesc(LString& new_val) {
+   short_desc.addLstring(new_val);
+}
+
+void critter::addInRoomDesc(LString& new_val) {
+   in_room_desc.addLstring(new_val);
+}
+
+String* critter::getShortDesc(critter* observer) {
+   if (detect(observer->getSeeBit(), vis_bit)) {
+      return short_desc.getString(observer->getLanguage());
+   }
+   else {
+      return &UNKNOWN;
+   }
+}
+
+String* critter::getShortDesc(int see_bit) {
+   if (detect(see_bit, vis_bit)) {
+      return short_desc.getString(English);
+   }
+   else {
+      return &UNKNOWN;
+   }
+} 
+
+String* critter::getInRoomDesc(critter* observer) {
+   if (detect(observer->getSeeBit(), vis_bit)) {
+      return in_room_desc.getString(observer->getLanguage());
+   }
+   else {
+      return &UNKNOWN;
+   }
+}

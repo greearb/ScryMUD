@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.33 1999/08/30 06:30:40 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
+// $Id: command5.cc,v 1.34 1999/09/01 06:00:03 greear Exp $
+// $Revision: 1.34 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
 
 //
 //ScryMUD Server Code
@@ -353,6 +353,7 @@ int pause(int rounds, critter& pc) {
 
 
 int list_mob_scripts(int mob_num, critter& pc) {
+   String buf(100);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
@@ -369,12 +370,20 @@ int list_mob_scripts(int mob_num, critter& pc) {
    pc.show("These scripts are defined for this mob,  the actual scripts
 may be seen by using the stat_script [mob_num] [script_index] command.\n\n");
 
-   return do_list_scripts(mob_list[mob_num], pc);
+   if (pc.isUsingClient()) {
+      Sprintf(buf, "<CRITTER %i>", mob_num);
+      pc.show(buf);
+   }
+   mob_list[mob_num].listScripts(&pc);
+   if (pc.isUsingClient()) {
+      pc.show("</CRITTER>\n");
+   }
+   return 0;
 }
 
 
 int list_room_scripts(int rm_num, critter& pc) {
-
+   String buf(100);
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
@@ -392,13 +401,20 @@ int list_room_scripts(int rm_num, critter& pc) {
       return -1;
    }
 
-   room_list[rm_num].listScripts(LE_ROOM, &pc);
+   if (pc.isUsingClient()) {
+      Sprintf(buf, "<ROOM %i>", rm_num);
+      pc.show(buf);
+   }
+   room_list[rm_num].listScripts(&pc);
+   if (pc.isUsingClient()) {
+      pc.show("</ROOM>\n");
+   }
    return 0;
 }//list_room_scripts
 
 
 int list_obj_scripts(int obj_num, critter& pc) {
-
+   String buf(100);
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
@@ -411,14 +427,20 @@ int list_obj_scripts(int obj_num, critter& pc) {
       return -1;
    }
 
-   obj_list[obj_num].listScripts(LE_OBJECT, &pc);
+   if (pc.isUsingClient()) {
+      Sprintf(buf, "<OBJECT %i>", obj_num);
+      pc.show(buf);
+   }
+   obj_list[obj_num].listScripts(&pc);
+   if (pc.isUsingClient()) {
+      pc.show("</OBJECT>\n");
+   }
    return 0;
 }//list_obj_scripts
 
 
-
 int stat_mob_script(int mob_num, int script_idx, critter& pc) {
-
+   String buf(100);
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In stat_script:  mob_num:  " << mob_num << " script_idx:  "
              << script_idx << endl;
@@ -436,12 +458,20 @@ int stat_mob_script(int mob_num, int script_idx, critter& pc) {
       return -1;
    }
 
-   mob_list[mob_num].listScripts(LE_CRITTER, &pc);
+   if (pc.isUsingClient()) {
+      Sprintf(buf, "<CRITTER %i>", mob_num);
+      pc.show(buf);
+   }
+   mob_list[mob_num].statScript(script_idx, &pc);
+   if (pc.isUsingClient()) {
+      pc.show("</CRITTER>\n");
+   }
    return -1;
 }//stat_mob_script
 
 
 int stat_room_script(int rm_num, int script_idx, critter& pc) {
+   String buf(100);
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In stat_room_script:  rm_num:  " << rm_num << " script_idx:  "
@@ -459,13 +489,21 @@ int stat_room_script(int rm_num, int script_idx, critter& pc) {
       show("That room does not exist.", pc);
       return -1;
    }
-
-   room_list[rm_num].listScripts(LE_ROOM, &pc);
+   
+   if (pc.isUsingClient()) {
+      Sprintf(buf, "<ROOM %i>", rm_num);
+      pc.show(buf);
+   }
+   room_list[rm_num].statScript(script_idx, &pc);
+   if (pc.isUsingClient()) {
+      pc.show("</ROOM>\n");
+   }
    return -1;
 }//stat_room_script
 
 
 int stat_obj_script(int obj_num, int script_idx, critter& pc) {
+   String buf(100);
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In stat_obj_script:  obj_num:  " << obj_num << " script_idx:  "
@@ -484,7 +522,14 @@ int stat_obj_script(int obj_num, int script_idx, critter& pc) {
       return -1;
    }
 
-   obj_list[obj_num].listScripts(LE_OBJECT, &pc);
+   if (pc.isUsingClient()) {
+      Sprintf(buf, "<OBJECT %i>", obj_num);
+      pc.show(buf);
+   }
+   obj_list[obj_num].statScript(script_idx, &pc);
+   if (pc.isUsingClient()) {
+      pc.show("</OBJECT>\n");
+   }
    return -1;
 }//stat_obj_script
 
@@ -2839,7 +2884,7 @@ int did_shot_hit(critter& targ, critter& pc, int throwing = FALSE) {
    }//else
 
    targ_roll = (4 * targ.DEX + 100); //the 100 offsets pc's percent lrnd
-   if (targ.EQ[18] || is_affected_by(MAGIC_SHIELD_SKILL_NUM, targ))
+   if (targ.EQ[18] || targ.isAffectedBy(MAGIC_SHIELD_SKILL_NUM))
       targ_roll *= 2;
    targ_roll = d(1, (int)(targ_roll));
    

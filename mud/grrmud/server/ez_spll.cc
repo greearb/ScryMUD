@@ -1,5 +1,5 @@
-// $Id: ez_spll.cc,v 1.15 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: ez_spll.cc,v 1.16 1999/09/01 06:00:03 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
 
 //
 //ScryMUD Server Code
@@ -221,7 +221,7 @@ void do_cast_detect_invisibility(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     if ((sp = is_affected_by(spell_num, vict))) {
+     if ((sp = vict.isAffectedBy(spell_num))) {
        show("Ok.\n", agg);
      }//if
      else {
@@ -311,7 +311,7 @@ void do_cast_infravision(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     if ((sp = is_affected_by(spell_num, vict))) {
+     if ((sp = vict.isAffectedBy(spell_num))) {
         agg.show(CS_OK);
      }//if
      else {
@@ -399,7 +399,7 @@ void do_cast_detect_hidden(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     if ((sp = is_affected_by(spell_num, vict))) {
+     if ((sp = vict.isAffectedBy(spell_num))) {
        show("Ok.\n", agg);
      }//if
      else {
@@ -488,7 +488,7 @@ void do_cast_bless(critter& vict, critter& agg, int is_canned,
       if (!is_canned)
          agg.MANA -= spell_mana;
 
-      if ((sp = is_affected_by(spell_num, vict))) {
+      if ((sp = vict.isAffectedBy(spell_num))) {
          show("Ok.\n", agg);
       }//if
       else {
@@ -573,13 +573,13 @@ void do_cast_pfg(critter& vict, critter& agg, int is_canned,
      return;
    }//if
 
-   if ((sp = is_affected_by(PFE_SKILL_NUM, vict))) {
+   if ((sp = vict.isAffectedBy(PFE_SKILL_NUM))) {
      if (&vict == &agg) {
        show("You are already protected by a benelovent deity!\n", agg);
      }//if
      else {
        Sprintf(buf, "%S is already protected by a benelovent deity.\n",
-	       name_of_crit(vict, agg.SEE_BIT));
+	       vict.getName(&agg));
        show(buf, agg);
      }//else
      return;
@@ -591,7 +591,7 @@ void do_cast_pfg(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     if ((sp = is_affected_by(spell_num, vict))) {
+     if ((sp = vict.isAffectedBy(spell_num))) {
         show("Ok.\n", agg);
      }//if
      else {
@@ -678,13 +678,13 @@ void do_cast_pfe(critter& vict, critter& agg, int is_canned,
      return;
    }//if
 
-   if ((sp = is_affected_by(PFG_SKILL_NUM, vict))) {
+   if ((sp = vict.isAffectedBy(PFG_SKILL_NUM))) {
      if (&vict == &agg) {
        show("You are already protected by a malevolent deity!\n", agg);
      }//if
      else {
        Sprintf(buf, "%S is already protected by a malevolent deity.\n",
-	       name_of_crit(vict, agg.SEE_BIT));
+	       vict.getName(&agg));
        show(buf, agg);
      }//else
      return;
@@ -696,7 +696,7 @@ void do_cast_pfe(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     if ((sp = is_affected_by(spell_num, vict))) {
+     if ((sp = vict.isAffectedBy(spell_num))) {
        show("Ok.\n", agg);
      }//if
      else {
@@ -791,7 +791,7 @@ void do_cast_detect_magic(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     if ((sp = is_affected_by(spell_num, vict))) {
+     if ((sp = vict.isAffectedBy(spell_num))) {
         show("Ok, extending protection.\n", agg);
      }//if
      else {
@@ -1179,7 +1179,7 @@ void do_cast_fire_blade(object& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     if ((sp = is_affected_by(spell_num, vict))) {
+     if ((sp = vict.isAffectedBy(spell_num))) {
        show("Ok\n", agg);
      }//if
      else {
@@ -1204,12 +1204,12 @@ void do_cast_fire_blade(object& vict, critter& agg, int is_canned,
    agg.PAUSE++;
 
    if (do_effects) {
-     if ((sp = is_affected_by(FROST_BLADE_SKILL_NUM, vict))) {
+     if ((sp = vict.isAffectedBy(FROST_BLADE_SKILL_NUM))) {
        vict.getAffectedBy().loseData(sp);
        delete sp;
      }//if
 
-     sp = is_affected_by(spell_num, vict);
+     sp = vict.isAffectedBy(spell_num);
      if (sp)
        sp->duration += lvl/3;
      else {
@@ -1264,7 +1264,7 @@ void do_cast_frost_blade(object& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     if ((sp = is_affected_by(spell_num, vict))) {
+     if ((sp = vict.isAffectedBy(spell_num))) {
        show("Ok\n", agg);
      }//if
      else {
@@ -1289,10 +1289,10 @@ void do_cast_frost_blade(object& vict, critter& agg, int is_canned,
    agg.PAUSE++;
 
    if (do_effects) {
-      if ((sp = is_affected_by(FIRE_BLADE_SKILL_NUM, vict))) {
+      if ((sp = vict.isAffectedBy(FIRE_BLADE_SKILL_NUM))) {
          vict.getAffectedBy().loseData(sp);
          delete sp;
-         sp = is_affected_by(FROST_BLADE_SKILL_NUM, vict);
+         sp = vict.isAffectedBy(FROST_BLADE_SKILL_NUM);
       }//if
       
       if (sp)
@@ -1355,7 +1355,7 @@ void do_cast_rune_edge(object& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     if ((sp = is_affected_by(spell_num, vict))) {
+     if ((sp = vict.isAffectedBy(spell_num))) {
        show("Ok\n", agg);
      }//if
      else {
@@ -1448,7 +1448,7 @@ void do_cast_invisibility(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     if ((sp = is_affected_by(spell_num, vict))) {
+     if ((sp = vict.isAffectedBy(spell_num))) {
        show("Ok\n", agg);
      }//if
      else {
@@ -1516,7 +1516,7 @@ void do_cast_invisibility(object& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     if ((sp = is_affected_by(spell_num, vict))) {
+     if ((sp = vict.isAffectedBy(spell_num))) {
        show("Ok\n", agg);
      }//if
      else {

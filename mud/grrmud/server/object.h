@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.32 1999/08/29 01:17:16 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
+// $Id: object.h,v 1.33 1999/09/01 06:00:04 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 1999/09/01 06:00:04 $
 
 //
 //ScryMUD Server Code
@@ -220,6 +220,7 @@ public:
    
    /** ptr will be consumed by this call, ie takes charge of memory. */
    void addStatAffect(StatBonus* ptr);
+
    void setEmptyWeight(int wt) { extras[5] = wt; }
    
    void lock();
@@ -331,6 +332,8 @@ public:
    int obj_pause(int ticks);
 
    virtual int processInput(String& input, room& rm); /* for object scripts */
+
+   virtual LEtypeE getEntityType() { return LE_OBJECT; }
 
 }; // class object
 

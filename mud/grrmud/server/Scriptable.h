@@ -1,5 +1,5 @@
-// $Id: Scriptable.h,v 1.8 1999/08/30 06:30:40 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
+// $Id: Scriptable.h,v 1.9 1999/09/01 06:00:02 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/09/01 06:00:02 $
 
 //
 //ScryMUD Server Code
@@ -33,7 +33,7 @@
 /**  This will distill all the methods needed to be able to script.  Objects,
  * rooms, mobs and others may inherit it.
  */
-class Scriptable : public Serialized {
+class Scriptable : virtual public Serialized {
 private:
    int _cnt;
 
@@ -49,29 +49,27 @@ public:
 
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
-   virtual int read_v2(istream& dafile); //read in a version 2 script.
-   virtual int clear();
+   virtual void clear();
 
    /** Give as much info as possible, used by immortals.  Include client
     * tags if viewer has them enabled.
     */
    virtual void toStringStat(critter* viewer, String& rslt);
-
-   virtual void show(critter* pc);
-   virtual void showClient(critter* pc);
+   virtual int statScript(int idx, critter* viewer);
+   virtual void listScripts(critter* pc);
 
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_SCRIPT_COLL; }
 
-   /**  Run a command after it has been parsed by processInput.  Also called
-    * from the script_jump method.
+   /** Adds/replaces a script matching script_data, and sets the text of
+    * that script to txt.
     */
-   virtual int executeCommand(String* cooked_strs, int* cooked_ints,
-                              int sanity, critter* c_script_owner,
-                              room* r_script_owner, int do_sub, int was_ordered);
    virtual void addProcScript(const String& txt, GenScript* script_data);
-   /** Does not make a copy of the incoming pointer, it now owns that memory. */
+   /** Does not make a copy of the incoming pointer, it now owns that memory,
+    * replaces a script if there is one that matches it already.
+    */
    virtual void addProcScript(GenScript* ptr);
+
    virtual int removeScript(String& trigger, int i_th, critter& pc);
    virtual void finishedScript();
    virtual int isRunningScript() const { return (cur_script && (cur_script->isInProgress())); }
@@ -93,8 +91,6 @@ public:
 
    virtual void checkForProc(String& cmd, String& arg1, critter* actor,
                              int targ, room* rm, object* obj_actor);
-
-   virtual void listScripts(LEtypeE type, critter* pc);
 };//Scriptable
 
 

@@ -1,5 +1,5 @@
-// $Id: Scriptable.cc,v 1.5 1999/08/30 06:30:40 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
+// $Id: Scriptable.cc,v 1.6 1999/09/01 06:00:02 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/09/01 06:00:02 $
 
 //
 //ScryMUD Server Code
@@ -45,13 +45,16 @@ void Scriptable::finishedScript() {
 }//finishedRoomProc
 
 
+/** Adds/replaces a script matching script_data, and sets the text of
+ * that script to txt.
+ */
 void Scriptable::addProcScript(const String& txt, GenScript* script_data) {
    //similar to reading it in...
    //first, see if we are over-writing one...
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In object::addProcScript, txt:  \n" << txt
              << "\nscript data:  "
-             << script_data->toStringBrief(0, 0, LE_ROOM, 0) << endl;
+             << script_data->toStringBrief(0, 0) << endl;
    }
 
    Cell<GenScript*> cll;
@@ -83,8 +86,72 @@ void Scriptable::addProcScript(const String& txt, GenScript* script_data) {
 }//addProcScript
 
 
-void Scriptable::listScripts(LEtypeE type, critter* pc) {
+/** Does not make a copy of the incoming pointer, it now owns that memory,
+ * replaces a script if there is one that matches it already.
+ */
+void Scriptable::addProcScript(GenScript* script_data) {
+   Cell<GenScript*> cll;
+   GenScript* ptr;
+   scripts.head(cll);
+
+   while ((ptr = cll.next())) {
+      if (ptr->matches(*script_data)) {
+         //got a match.
+         mudlog.log("object::addProcScript, they match.");
+         *ptr = *script_data;
+         delete script_data;
+         return;
+      }//if
+   }//while
+   
+   scripts.append(script_data);
+}//addProcScript
+
+
+void Scriptable::listScripts(critter* pc) {
+   String buf(300);
+   toStringStat(pc, buf);
+   pc->show(buf);
+}//listScripts
+
+
+int Scriptable::statScript(int script_index, critter* pc) {
    String buf(500);
+ 
+   GenScript* ptr = scripts.elementAt(script_index);
+   if (ptr) {
+      buf.append(ptr->toStringBrief(pc->isUsingClient(), script_index));
+      if (pc->isUsingClient())
+         buf.append("\n<SCRIPT_DATA>");
+      else
+         buf.append("\n");
+      buf.append(ptr->getScript());
+      
+      if (pc->isUsingClient())
+         buf.append("</SCRIPT_DATA>\nCompiled Script:\n");
+      else
+         buf.append("\nCompiled Script:\n");
+      
+      buf.append(ptr->getCompiledScript());
+      
+      pc->show(buf);
+      return 0;
+   }//if
+
+   Entity* e_this = (Entity*)(this);
+   Sprintf(buf, "%S[%i] does not have a script of index: %i",
+           e_this->getName(), e_this->getIdNum(), script_index);
+   pc->show(buf);
+   return -1;
+}//statScript
+
+/** Give as much info as possible, used by immortals.  Include client
+ * tags if viewer has them enabled.
+ */
+void Scriptable::toStringStat(critter* viewer, String& rslt) {
+   String buf(500);
+
+   rslt.clear();
 
    String tmp(100);
    int found_one = FALSE;
@@ -93,17 +160,18 @@ void Scriptable::listScripts(LEtypeE type, critter* pc) {
    int idx = 0;
    while ((ptr = cll.next())) {
       found_one = TRUE;
-      tmp = ptr->toStringBrief(FALSE, 0, type, idx);
+      tmp = ptr->toStringBrief(FALSE, idx);
       Sprintf(buf, "[%i] %S\n", idx, &(tmp));
-      pc->show(buf);
+      rslt.append(buf);
       idx++;
    }
 
    if (!found_one) {
       buf.Append("No scripts defined for this object.\n");
-      pc->show(buf);
+      rslt.append(buf);
    }
-}//listScripts
+}//toStringStat
+
 
 int Scriptable::removeScript(String& trigger, int i_th, critter& pc) {
    int sofar = 1;
@@ -223,6 +291,11 @@ int Scriptable::write(ostream& ofile) {
    return 0;
 }//write
 
+void Scriptable::clear() {
+   scripts.clearAndDestroy();
+   pending_scripts.clearAndDestroy();
+}
+
 
 // NOTE:  The script owner is *this.  It is likely, but not necessary
 // that targ is also *this
@@ -246,7 +319,7 @@ void Scriptable::checkForProc(String& cmd, String& arg1, critter* actor,
 
    while ((ptr = cll.next())) {
       mudlog.log("In while.");
-      mudlog.log(ptr->toStringBrief(0, 0, getEntityType(), 0));
+      mudlog.log(ptr->toStringBrief(0, 0));
       if (ptr->matches(cmd, arg1, *actor, targ, obj_actor_num)) {
          mudlog.log("Matches..");
          if (pending_scripts.size() >= 10) { //only queue 10 scripts
@@ -326,7 +399,7 @@ int Scriptable::attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
    while ((rptr = rcll.next())) {
       if (mudlog.ofLevel(DBG)) {
          mudlog << "attemptExecuteUnknownScript, found script: " 
-                << rptr->toStringBrief(0, e_this->getIdNum(), LE_ROOM, idx) << endl;
+                << rptr->toStringBrief(0, idx) << endl;
       }
       if (rptr->matches(cmd, arg1, *actor, targ)) {
          mudlog.log("Script matches..\n");
@@ -376,5 +449,3 @@ int Scriptable::attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
    }//while
    return -1; //didn't find anything that matched
 }//attemptExecuteUnknownScript
-
-

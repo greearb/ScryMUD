@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.27 1999/08/30 06:30:40 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
+// $Id: classes.h,v 1.28 1999/09/01 06:00:03 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
 
 //
 //ScryMUD Server Code
@@ -199,6 +199,9 @@ public:
 
    virtual void appendString(LanguageE lang, String& buf);
    virtual void appendString(LString& ls);
+
+   virtual void prependString(LanguageE lang, String& buf);
+   virtual void prependString(LString& ls);
 
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_LS_COLLECTION; }

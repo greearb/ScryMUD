@@ -1,5 +1,5 @@
-// $Id: script.h,v 1.16 1999/08/27 03:10:04 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
+// $Id: script.h,v 1.17 1999/09/01 06:00:04 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/09/01 06:00:04 $
 
 //
 //ScryMUD Server Code
@@ -192,8 +192,7 @@ public:
    virtual void compile(); //compile into script assembly...
    virtual void setScript(const String& txt);
    virtual const String* getTrigger() { return &trigger_cmd; }
-   virtual String toStringBrief(int client_format, int mob_num,
-                                LEtypeE entity, int idx);
+   virtual String toStringBrief(int client_format, int idx);
 
    /** Source code. */
    virtual String getScript();

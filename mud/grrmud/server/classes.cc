@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.15 1999/08/30 06:30:40 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
+// $Id: classes.cc,v 1.16 1999/09/01 06:00:02 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/09/01 06:00:02 $
 
 //
 //ScryMUD Server Code
@@ -309,6 +309,18 @@ void LStringCollection::appendString(LanguageE lang, String& buf) {
    }
 }//appendString
 
+
+void LStringCollection::prependString(LanguageE lang, String& buf) {
+   LString* ptr = getString(lang);
+   if (ptr != &(LString::NULL_STRING) && ptr->getLanguage() == lang) {
+      ptr->prepend(buf);
+   }
+   else {
+      //add it
+      addString(lang, buf);
+   }
+}//prependString
+
 void LStringCollection::appendString(LString& ls) {
    LString* ptr = getString(ls.getLanguage());
    if (ptr != &(LString::NULL_STRING) && ptr->getLanguage() == ls.getLanguage()) {
@@ -319,6 +331,18 @@ void LStringCollection::appendString(LString& ls) {
       addLstring(ls);
    }
 }//appendString
+
+
+void LStringCollection::prependString(LString& ls) {
+   LString* ptr = getString(ls.getLanguage());
+   if (ptr != &(LString::NULL_STRING) && ptr->getLanguage() == ls.getLanguage()) {
+      ptr->prepend((String)(ls));
+   }
+   else {
+      //add it
+      addLstring(ls);
+   }
+}//prependString
 
 
 void LStringCollection::addString(LanguageE lang, String& buf) {

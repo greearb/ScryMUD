@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.27 1999/08/20 06:20:04 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
+// $Id: battle.cc,v 1.28 1999/09/01 06:00:02 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/09/01 06:00:02 $
 
 //
 //ScryMUD Server Code
@@ -487,12 +487,10 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       }//if
    }//if
 
-   if (is_wielding && is_affected_by(FROST_BLADE_SKILL_NUM, 
-				     *(agg.EQ[posn_of_weapon]))) {
+   if (is_wielding && agg.EQ[posn_of_weapon]->isAffectedBy(FROST_BLADE_SKILL_NUM)) {
       damage = (float)(exact_raw_damage((int)damage, ICE, vict, agg));
    }//if
-   else if (is_wielding && is_affected_by(FIRE_BLADE_SKILL_NUM, 
-				     *(agg.EQ[posn_of_weapon]))) {
+   else if (is_wielding && agg.EQ[posn_of_weapon]->isAffectedBy(FIRE_BLADE_SKILL_NUM)) {
       damage = (float)(exact_raw_damage((int)damage, FIRE, vict, agg));
    }//if
    else {
@@ -765,7 +763,7 @@ int exact_raw_damage(int damage, int damage_type, critter& vict,
         dam = 0;
    }//if
    
-   if (is_affected_by(ABSORB_BLOWS_SKILL_NUM, vict)) {
+   if (vict.isAffectedBy(ABSORB_BLOWS_SKILL_NUM)) {
       vict.MANA -= (short)dam;
       if (vict.MANA < 0) {
          dam *= 2;
@@ -776,7 +774,7 @@ int exact_raw_damage(int damage, int damage_type, critter& vict,
       }//else
    }//if
 
-   if (is_affected_by(EARTHMELD_SKILL_NUM, vict)) {
+   if (vict.isAffectedBy(EARTHMELD_SKILL_NUM)) {
       if ((pl = get_percent_lrnd(EARTHMELD_SKILL_NUM, agg)) > d(1,115)) {
          dam *= (100.0 - ((float)(pl))/7.0) / 100.0;
       }//if

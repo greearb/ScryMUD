@@ -1,5 +1,5 @@
-// $Id: script.cc,v 1.20 1999/08/30 06:30:41 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
+// $Id: script.cc,v 1.21 1999/09/01 06:00:04 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/09/01 06:00:04 $
 
 //
 //ScryMUD Server Code
@@ -610,8 +610,7 @@ int GenScript::validTrigger(const char* trig) {
 }//validTrigger
 
 
-String GenScript::toStringBrief(int client_format, int mob_num,
-                                LEtypeE entity, int idx) {
+String GenScript::toStringBrief(int client_format, int idx) {
    String buf(100);
    if (client_format) {
       String tmp_d;
@@ -622,18 +621,8 @@ String GenScript::toStringBrief(int client_format, int mob_num,
 
       String tmp(100);
 
-      if (entity == LE_CRITTER) {
-         Sprintf(buf, "<MOB_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
-                 mob_num, actor, target, precedence, idx);
-      }
-      else if ((entity == LE_ROOM) || (entity == LE_VEHICLE)) {
-         Sprintf(buf, "<ROOM_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
-                 mob_num, actor, target, precedence, idx);
-      }
-      else if (entity == LE_OBJECT) {
-         Sprintf(buf, "<OBJ_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
-                 mob_num, actor, target, precedence, idx);
-      }
+      Sprintf(buf, "<SCRIPT %S %i %i %i %i>", &trigger_cmd,
+              actor, target, precedence, idx);
 
       Sprintf(tmp, "<DISCRIM %S>", &tmp_d);
       buf.Append(tmp);
@@ -724,7 +713,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
              <<  *(name_of_crit(act, ~0))
              << "  targ:  " << targ << " obj_actor_num: "
              << obj_actor_num << endl;
-      mudlog << "this:  " << toStringBrief(0, 0, LE_ROOM, 0) << endl;
+      mudlog << "this:  " << toStringBrief(0, 0) << endl;
    }
 
    if (strcasecmp(cmd, trigger_cmd) == 0) {

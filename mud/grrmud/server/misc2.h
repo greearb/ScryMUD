@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.22 1999/08/29 01:17:16 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
+// $Id: misc2.h,v 1.23 1999/09/01 06:00:03 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
 
 //
 //ScryMUD Server Code
@@ -56,9 +56,6 @@ critter* check_for_diversions(critter& pc, char* tests, critter& agg);
 int ok_to_do_action(critter* vict, const char* flags, int spell_num,
                     critter& pc, room* aux_rm = NULL, critter* aux_crit = NULL,
                     int do_msg = TRUE);
-
-SpellDuration* is_affected_by(int spell_num, critter& pc);
-SpellDuration* is_affected_by(int spell_num, object& obj);
 
 StatBonus* has_stat_affect(int affect_num, object& obj);
 
