@@ -717,9 +717,12 @@ int BugCollection::reAssign(int bug, const String& new_name, int imm_level,
    BugEntry* be = getBugEntry(bug);
    if (be) {
       int retval = be->reAssign(new_name, imm_level, name);
-      if (retval >= 0)
-        notifyModified();
+      if (retval >= 0) {
+         changeState(bug, "assigned", imm_level, name);
+         notifyModified();
+      }
       return retval;
+
    }
    return -EINVAL;
 }
