@@ -87,6 +87,7 @@ void freeze(int i_th, const String* targ, critter& pc);
 void ungag(int i_th, const String* targ, critter& pc);
 void thaw(int i_th, const String* targ, critter& pc);
 void com_emote(const String* msg, critter& pc);
+void com_pemote(const String* msg, critter& pc);
 void com_gecho(const String* msg, critter& pc);
 void com_recho(const String* msg, critter& pc);
 void com_pecho(int i_th, const String* targ, const String* msg, critter& pc);
@@ -106,16 +107,26 @@ void zenable(int znum, const String* char_name, critter& pc);
 void zdisable(int znum, const String* char_name, critter& pc);
 void ch_zname(int znum, const String* zone_name, critter& pc);
 
+// Allows a player to set his/her own description.
+void describe(critter& pc);
+
 void see_all(critter& pc);
 void wizinvis(critter& pc);
 void visible(critter& pc);
 
-void sneak(critter& pc, int smob_too = FALSE);
-void hide(critter& pc, int smob_too = FALSE);
-
 void consider(int i_th, const String* vict, critter& pc);
 
 short did_shot_hit(critter& targ, critter& pc, int throwing = FALSE);
+
+//  These next 5 relate to player-run shops
+void value_set(int i_th, const String* targ, int val_idx,
+               int sell_val, int buy_val, critter& pc);
+
+void value_list(int i_th, const String* targ, critter& pc);
+void value_add(int i_th, const String* targ, int j_th,
+               const String* obj, critter& pc);
+void value_rem(int i_th, const String* targ, int val_idx, critter& pc);
+void adjust_register(int i_th, const String* targ, int new_balance, critter& pc);
 
 #endif
 

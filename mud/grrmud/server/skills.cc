@@ -1469,6 +1469,109 @@ short skill_did_hit(critter& agg, int spell_num, critter& vict) {
 }//skill_did_hit
 
 
+void sneak(critter& pc, int smob_too = FALSE) {
+   String buf(100);
+   
+   if (pc.isMob())
+      return; //no MOB's allowed!!
+   
+   if (!smob_too && !pc.pc) {
+      return;
+   }//if 
+   
+   
+   if (pc.isFrozen()) {
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+   
+   if (pc.CRIT_FLAGS.get(17)) {
+      pc.CRIT_FLAGS.turn_off(17);
+      show("You stop sneaking around.\n", pc);
+   }//if
+   else {
+      if (get_percent_lrnd(SNEAK_SKILL_NUM, pc) > 0) {
+         pc.CRIT_FLAGS.turn_on(17);
+         show("You start sneaking.\n", pc);
+      }//if
+      else {
+         show("You couldn't sneak up on a sleeping Ogrue!!\n", pc);
+      }//else
+   }//else, not sneaking right now
+}//sneak
+
+
+void hide(critter& pc, int smob_too = FALSE) {
+   String buf(100);
+
+   if (pc.isMob())
+      return; //no MOB's allowed!!
+   
+   if (!smob_too && !pc.pc) {
+      return;
+   }//if 
+   
+   if (pc.isFrozen()) {
+      show("You are too frozen to hide.\n", pc);
+      return;
+   }//if
+   
+   if (pc.CRIT_FLAGS.get(22)) {
+      pc.CRIT_FLAGS.turn_off(22);
+      show("You stop hiding.\n", pc);
+   }//if
+   else {
+      if (get_percent_lrnd(HIDE_SKILL_NUM, pc) > 0) {
+         pc.CRIT_FLAGS.turn_on(22);
+         show("You start hiding.\n", pc);
+      }//if
+      else {
+         show("You are not skilled in this stealthy art!!\n", pc);
+      }//else
+   }//else, not hiding right now
+}//hide
+
+/*  Basically, just hide for rangers. */
+void blend(critter& pc, int smob_too = FALSE) {
+   String buf(100);
+
+   if (pc.isMob())
+      return; //no MOB's allowed!!
+   
+   if (!smob_too && !pc.pc) {
+      return;
+   }//if 
+   
+   if (pc.isFrozen()) {
+      show("You are too frozen to hide.\n", pc);
+      return;
+   }//if
+   
+   if (pc.CRIT_FLAGS.get(22)) {
+      pc.CRIT_FLAGS.turn_off(22);
+      show("You step out of hiding.\n", pc);
+   }//if
+   else {
+      if (get_percent_lrnd(BLEND_SKILL_NUM, pc) > 0) {
+         pc.CRIT_FLAGS.turn_on(22);
+         show("You blend into the background.\n", pc);
+      }//if
+      else {
+         show("You are not skilled in this stealthy art!!\n", pc);
+      }//else
+   }//else, not hiding right now
+}//blend
+	  
+
+void scan(critter& pc) {
+
+   if (!ok_to_cast_spell(NULL, "KSNPF", SCAN_SKILL_NUM, pc)) {
+      return;
+   }//if
+
+   ROOM.doScan(pc);
+}//scan
+
 
 
 

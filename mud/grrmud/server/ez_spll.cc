@@ -1394,7 +1394,7 @@ void do_cast_invisibility(critter& vict, critter& agg, int is_canned,
 		 name_of_crit(agg, vict.SEE_BIT));
 	 buf.Cap();
 	 show(buf, vict);
-	 Sprintf(buf, "causes %S to dissappear from sight.\n", 
+	 Sprintf(buf, "causes %S to disappear from sight.\n", 
 		 name_of_crit(vict, ~0));
 	 emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE, &vict);
        }//else

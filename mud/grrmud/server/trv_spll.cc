@@ -154,7 +154,9 @@ void do_cast_flame_strike(critter& agg, int is_canned, int lvl) {
          }//if
        
          if (ptr->isMob()) {
-            ptr = mob_to_smob(*ptr, agg.getCurRoomNum());
+            mudlog << "ERROR:  was MOB in do_cast_flame_strike, mob: "
+                   << ptr->getName() << " agg: " << agg.getName() << endl;
+            continue;
          }//if
 
          if (TRUE) { 
@@ -244,7 +246,9 @@ void do_cast_meteorstorm(critter& agg, int is_canned, int lvl) {
        }//if
        
        if (ptr->isMob()) {
-          ptr = mob_to_smob(*ptr, agg.getCurRoomNum());
+          mudlog << "ERROR:  was MOB in do_cast_meteor_storm, mob: "
+                 << ptr->getName() << " agg: " << agg.getName() << endl;
+          continue;
        }//if
 
        if (TRUE) { 
@@ -333,8 +337,11 @@ void do_cast_icestorm(critter& agg, int is_canned, int lvl) {
         }//if
        
         if (ptr->isMob()) {
-           ptr = mob_to_smob(*ptr, agg.getCurRoomNum());
+           mudlog << "ERROR:  was MOB in do_cast_meteor_storm, mob: "
+                  << ptr->getName() << " agg: " << agg.getName() << endl;
+           continue;
         }//if
+
         if (TRUE) { 
            exact_raw_damage(d(4, lvl), NORMAL, *ptr, agg);
            if (ptr->HP < 0) {
@@ -422,8 +429,11 @@ void do_cast_firestorm(critter& agg, int is_canned, int lvl) {
        }//if
        
        if (ptr->isMob()) {
-          ptr = mob_to_smob(*ptr, agg.getCurRoomNum());
+          mudlog << "ERROR:  was MOB in do_cast_fire_storm, mob: "
+                 << ptr->getName() << " agg: " << agg.getName() << endl;
+          continue;
        }//if
+
        if (TRUE) { 
           exact_raw_damage(d(4, lvl), FIRE, *ptr, agg);
           if (ptr->HP < 0) {
@@ -496,8 +506,11 @@ void do_cast_lightning_storm(critter& agg, int is_canned, int lvl) {
        }//if
        
        if (ptr->isMob()) {
-          ptr = mob_to_smob(*ptr, agg.getCurRoomNum());
+          mudlog << "ERROR:  was MOB in do_cast_lightning_storm, mob: "
+                 << ptr->getName() << " agg: " << agg.getName() << endl;
+          continue;
        }//if
+
        if (TRUE) { 
           emote("is toasted by a blinding bolt of lightning!", *ptr, 
                 room_list[agg.getCurRoomNum()], TRUE);
@@ -579,7 +592,9 @@ void do_cast_quake(critter& agg, int is_canned, int lvl) {
          }//if
 
          if (ptr->isMob()) {
-            ptr = mob_to_smob(*ptr, agg.getCurRoomNum());
+            mudlog << "ERROR:  was MOB in do_cast_lightning_storm, mob: "
+                   << ptr->getName() << " agg: " << agg.getName() << endl;
+            continue;
          }//if
          
          if (!ptr->CRIT_FLAGS.get(3)) { //if not flying
@@ -699,7 +714,9 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
                   break; //do nothing
                }//if
                if (ptr->isMob()) {
-                  ptr = mob_to_smob(*ptr, agg.getCurRoomNum());
+                  mudlog << "ERROR:  was MOB in do_cast_typhoon, mob: "
+                         << ptr->getName() << " agg: " << agg.getName() << endl;
+                  break;
                }//if
                
                emote("is hurled into the sky out of sight!", *ptr, 
@@ -834,8 +851,11 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
                   break; //do nothing
                }//if
                if (ptr->isMob()) {
-                  ptr = mob_to_smob(*ptr, agg.getCurRoomNum());
+                  mudlog << "ERROR:  was MOB in do_cast_lightning_storm, mob: "
+                         << ptr->getName() << " agg: " << agg.getName() << endl;
+                  break;
                }//if
+
                emote("is hurled into the sky out of sight!", *ptr, 
                      room_list[agg.getCurRoomNum()], TRUE);
 

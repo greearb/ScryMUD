@@ -1666,6 +1666,17 @@ void say(const char* message, critter& pc, room& rm) {
 
 void emote(const char* message, critter& pc, room& rm, short show_non_detects,
 	   critter* crit = NULL) {
+   do_emote(message, pc, rm, show_non_detects, EMOTE_POSSESSIVE, crit);
+}
+
+void pemote(const char* message, critter& pc, room& rm, short show_non_detects,
+            critter* crit = NULL) {
+   do_emote(message, pc, rm, show_non_detects, EMOTE_NON_POSSESSIVE, crit);
+}
+
+
+void do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
+              int possessive, critter* crit = NULL) {
    List<critter*> tmp_lst(rm.getCrits());
    Cell<critter*> cell(tmp_lst);
    critter* crit_ptr;
@@ -1673,7 +1684,7 @@ void emote(const char* message, critter& pc, room& rm, short show_non_detects,
    String msg;
 
    if (mudlog.ofLevel(DBG)) {
-      mudlog << "In emote msg -:" << message << ":- pc: "
+      mudlog << "In do_emote msg -:" << message << ":- pc: "
              << *(pc.getName()) << " pc_num: " << pc.getIdNum()
              << " pc_addr: " << &pc 
              << " room#: " << rm.getIdNum() << "  crit: " << crit
@@ -1685,8 +1696,8 @@ void emote(const char* message, critter& pc, room& rm, short show_non_detects,
       return; //beautification hack
    }// if
 
-   if (!msg) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to emote().\n");
+   if (!message) {
+      mudlog.log(ERR, "ERROR:  NULL(s) sent to do_emote().\n");
       return;
    }//if
    else {
@@ -1699,14 +1710,26 @@ void emote(const char* message, critter& pc, room& rm, short show_non_detects,
    while ((optr = ocll.next())) {
       if (optr->ob->obj_proc && (crit_ptr = optr->ob->obj_proc->w_eye_owner)) {
          if (detect(crit_ptr->SEE_BIT, (pc.VIS_BIT | rm.getVisBit()))) {
-            Sprintf(buf, "#####%S %S\n", 
-                    name_of_crit(pc, crit_ptr->SEE_BIT), &msg);
-            buf.setCharAt(4, toupper(buf[4]));
+            if (possessive == EMOTE_POSSESSIVE) {
+               Sprintf(buf, "#####%S's %S\n", 
+                       name_of_crit(pc, crit_ptr->SEE_BIT), &msg);
+               buf.setCharAt(4, toupper(buf[4]));
+            }//if possessive
+            else {
+               Sprintf(buf, "#####%S %S\n", 
+                       name_of_crit(pc, crit_ptr->SEE_BIT), &msg);
+               buf.setCharAt(4, toupper(buf[4]));
+            }
             show(buf, *crit_ptr);
          }//if
          else {
             if (show_non_detects) {
-               Sprintf(buf, "#####Someone %S\n", &msg);
+               if (possessive == EMOTE_POSSESSIVE) {
+                  Sprintf(buf, "#####Someone's %S\n", &msg);
+               }
+               else {
+                  Sprintf(buf, "#####Someone %S\n", &msg);
+               }
                show(buf, *crit_ptr);
             }//if
          }//else
@@ -1721,20 +1744,31 @@ void emote(const char* message, critter& pc, room& rm, short show_non_detects,
 
       if ((crit_ptr != &pc) && (crit_ptr != crit)) { 
          if (detect(crit_ptr->SEE_BIT, (pc.VIS_BIT | rm.getVisBit()))) {
-            Sprintf(buf, "%S %S\n", 
-                    pc.getName(crit_ptr->SEE_BIT), &msg);
+            if (possessive == EMOTE_POSSESSIVE) {
+               Sprintf(buf, "%S's %S\n", 
+                       pc.getName(crit_ptr->SEE_BIT), &msg);
+            }
+            else {
+               Sprintf(buf, "%S %S\n", 
+                       pc.getName(crit_ptr->SEE_BIT), &msg);
+            }
             buf.Cap();
             crit_ptr->show(buf);
          }//if
          else {
             if (show_non_detects) {
-               Sprintf(buf, "Someone %S\n", &msg);
+               if (possessive == EMOTE_POSSESSIVE) {
+                  Sprintf(buf, "Someone's %S\n", &msg);
+               }
+               else {
+                  Sprintf(buf, "Someone %S\n", &msg);
+               }
                show(buf, *crit_ptr);
             }//if
          }//else
       }//if
    }//while               
-}//emote
+}//do_emote
 
 
 void yell(const char* message, critter& pc) {

@@ -135,7 +135,7 @@ public:
 
    int  Read(const int desc, const int max_to_read); //reads from a desc
    void Termed_Read(ifstream& da_file);
-   short Contains(const char ch) const;
+   int Contains(const char ch) const;
    void  Refigure_strlen();			//bletcherous hack!
    void parse_show(short posn);  //specific to ScryMUD program
    void InsertAfter(char a, int posn);

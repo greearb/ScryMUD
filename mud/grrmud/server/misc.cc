@@ -38,6 +38,7 @@
 #include "vehicle.h"
 #include "load_wld.h"
 #include "command3.h"
+#include "skills.h"
 
 
 int bound(int low, int high, int val) {
@@ -291,6 +292,22 @@ void do_mini_tick() { // decrement pause count ect
    /*DEBUG*/ do_vehicle_moves();  //in misc2.cc
 
    while ((crit_ptr = cll.next())) {
+
+      /* Take care of round-by-round affects on other spells/skills. */
+      if ((sc_ptr = is_affected_by(EARTHMELD_SKILL_NUM, *crit_ptr))) {
+         if (crit_ptr->isFighting()) {
+            crit_ptr->MANA -= EARTHMELD_BATTLE_MANA_COST;
+         }
+         else {
+            crit_ptr->MANA -= EARTHMELD_NON_BATTLE_MANA_COST;
+         }
+
+         if (crit_ptr->MANA <= 0) {
+            crit_ptr->breakEarthMeld();
+         }//if
+      }//if
+
+      // Take care of other things...
       if (crit_ptr->PAUSE > 0) {
 	 crit_ptr->PAUSE--;
       }//
@@ -680,7 +697,15 @@ void update_zone(int zone_num, short read_all) {
                       << tmp_cc << " ingame_cc: " << ingame_cc << endl;
             }
 
-            room_list[k].gainCritter(&(mob_list[crit_ptr->getIdNum()]));
+            if (crit_ptr->isPlayerShopKeeper()) {
+               critter* shop_keeper = load_player_shop_owner(crit_ptr->getIdNum());
+               if (shop_keeper) {
+                  room_list[k].gainCritter(shop_keeper);
+               }//if
+            }//if
+            else {
+               room_list[k].gainCritter(&(mob_list[crit_ptr->getIdNum()]));
+            }
 
             // Only does objects now.
 	    recursive_init_loads(mob_list[crit_ptr->getIdNum()]);
@@ -1288,9 +1313,10 @@ void out_crit(const List<critter*>& lst, critter& pc) {  //outs the names
       }
       if (detect(pc.SEE_BIT, crit_ptr->VIS_BIT) &&
           (crit_ptr != &pc)) { //can see it, not looker
-         if ((crit_ptr->CRIT_FLAGS.get(22)) && //if is hiding
+         if ((crit_ptr->isHiding()) && //if is hiding
              (d(1, pc.LEVEL + 30) < 
-              d(1, get_percent_lrnd(HIDE_SKILL_NUM, *crit_ptr) * 5))) {
+              d(1, max(get_percent_lrnd(HIDE_SKILL_NUM, *crit_ptr) * 6,
+                       get_percent_lrnd(BLEND_SKILL_NUM, *crit_ptr) * 6)))) {
             continue; //successful hide
          }//if
 

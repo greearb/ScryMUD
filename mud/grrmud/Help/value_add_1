@@ -1,0 +1,17 @@
+<help general value_add>
+
+This allows the manager of a shopkeeper to add an entry
+for a given object.  The player must have this object in
+his/her inventory for this command to work.  After adding
+a new entry, you will most likely want to set new values.
+Use value_list to figure out it's index, and value_set
+(or the Hegemon GUI) to set the new values.
+
+Syntax:  value_add <<i_th> [shopkeeper_name] <<j_th> [object_name]
+         
+Example:  value_add shopkeeper sword    
+Example:      # Adds default entry for the sword.
+
+<color = red>
+See Also:  value_list, value_set, value_rem, adjust_register
+</color></help>

@@ -2057,6 +2057,10 @@ void do_olc(critter& pc) {
             break;
          }//if
 	 if (!isnum(string)) {
+	    if (string == quitter) {
+	       quit_olc(pc);  //removes bit, outputs txt
+	       break;
+	    }//if
             show("INPUT:  <distance> <direction>\n", pc);
 	    break;
 	 }//if
@@ -2075,10 +2079,6 @@ void do_olc(critter& pc) {
 	    break;
 	 }//if
 	 else {
-	    if (string == quitter) {
-	       quit_olc(pc);  //removes bit, outputs txt
-	       break;
-	    }//if
 
             OLC_ROOM->lock(); // make it locked
             OLC_ROOM->setTotalLoaded(TRUE); //make it totally_loaded

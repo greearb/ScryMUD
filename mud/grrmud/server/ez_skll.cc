@@ -407,6 +407,42 @@ void do_picklock(object& obj, critter& pc) { //for objects
 }//do_picklock, for objects
 
 
+void earthmeld(critter& pc) {
+   int spell_num = EARTHMELD_SKILL_NUM;
+
+   if (!ok_to_cast_spell(NULL, "KSNPF", spell_num, pc)) {
+      return;
+   }//if
+
+   do_earthmeld(pc);
+}//earthmeld
+
+
+void do_earthmeld(critter& pc) {
+   stat_spell_cell* sp = NULL;
+   int spell_num = EARTHMELD_SKILL_NUM; 
+
+   // Check for a forrest room. 
+   if (ROOM.canCamp()) {
+      if ((sp = is_affected_by(spell_num, pc))) {
+         pc.breakEarthMeld();
+         return;
+      }//if
+      else {
+	 pc.show("You entwine yourself in the powers of nature, binding
+ yourself to the earth's embrace.\n");
+      }//else
+      
+      /* it lasts untill mana runs out, or the player moves */
+      pc.affected_by.pushFront(new stat_spell_cell(spell_num, -1));
+
+   }//if
+   else {
+      pc.show("You cannot reach the earth's embrace here.\n");
+   }//else
+}//do_earthmeld
+
+
 
 
 

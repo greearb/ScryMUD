@@ -22,13 +22,18 @@
 
 ///************************  Skills.h  *****************************///
 
-#ifndef SkillsInclude
-#define SkillsInclude
+#ifndef SkillsInclude_h
+#define SkillsInclude_h
 
 #include "const.h"
 #include <string2.h>
 #include "classes.h"
 #include "spells.h"
+
+
+#define EARTHMELD_BATTLE_MANA_COST 5
+#define EARTHMELD_NON_BATTLE_MANA_COST 1
+
 
 void bash(int i_th, const String* vict, critter& pc);
 void do_bash(critter& vict, critter& pc);
@@ -56,6 +61,13 @@ void concoct(critter& pc, short do_mob = FALSE);
 
 void scribe(const String* spell, critter& pc, short do_mob = FALSE);
 void track(int i_th, const String* vict, critter& pc);
+
+void sneak(critter& pc, int smob_too = FALSE);
+void hide(critter& pc, int smob_too = FALSE);
+void blend(critter& pc, int smob_too = FALSE);
+
+void scan(critter& pc);
+
 
 ///*****************  auxillary functions  ***************************///
 

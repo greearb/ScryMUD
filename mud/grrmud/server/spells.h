@@ -84,7 +84,10 @@ int get_skill_difficulty(int skill_num);
 
 
 int get_min_skill_level(int skill_num);
-void gain_skills(int last_gained, critter& pc); //used in practice
+
+void update_skill(int last_gained, critter& pc); //used in practice
+void update_skills(critter& pc);
+
 short lost_concentration(critter& agg, int spell_num);
 
 int get_mana_cost(int spell_num);

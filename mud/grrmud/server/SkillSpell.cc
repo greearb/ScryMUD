@@ -446,6 +446,8 @@ void SSCollection::read() {
             BIND_WOUND_SKILL_NUM = i;
          else if (strcasecmp("blacksmithing", getSS(i).getName()) == 0)
             BLACKSMITHING_SKILL_NUM = i;
+         else if (strcasecmp("blend", getSS(i).getName()) == 0)
+            BLEND_SKILL_NUM = i;
          else if (strcasecmp("bless", getSS(i).getName()) == 0)
             BLESS_SKILL_NUM = i;
          else if (strcasecmp("blindness", getSS(i).getName()) == 0)
@@ -469,7 +471,7 @@ void SSCollection::read() {
          else if (strcasecmp("calm", getSS(i).getName()) == 0)
             CALM_SKILL_NUM = i;
          else if (strcasecmp("camouflage", getSS(i).getName()) == 0)
-           CAMOUFLAGE_SKILL_NUM = i;
+            CAMOUFLAGE_SKILL_NUM = i;
          else if (strcasecmp("camping", getSS(i).getName()) == 0)
             CAMPING_SKILL_NUM = i;
          else if (strcasecmp("cause critical", getSS(i).getName()) == 0)
@@ -554,6 +556,8 @@ void SSCollection::read() {
             DOOR_BASH_SKILL_NUM = i;
          else if (strcasecmp("dual wield", getSS(i).getName()) == 0)
             DUAL_WIELD_SKILL_NUM = i;
+         else if (strcasecmp("earthmeld", getSS(i).getName()) == 0)
+            EARTHMELD_SKILL_NUM = i;
          else if (strcasecmp("elementalism", getSS(i).getName()) == 0)
             ELEMENTALISM_SKILL_NUM = i;
          else if (strcasecmp("enchant armor", getSS(i).getName()) == 0)
@@ -714,6 +718,8 @@ void SSCollection::read() {
             SANCTUARY_SKILL_NUM = i;
          else if (strcasecmp("second attack", getSS(i).getName()) == 0)
             SECOND_ATTACK_SKILL_NUM = i;
+         else if (strcasecmp("scan", getSS(i).getName()) == 0)
+            SCAN_SKILL_NUM = i;
          else if (strcasecmp("scribe", getSS(i).getName()) == 0)
             SCRIBE_SKILL_NUM = i;
          else if (strcasecmp("scrolls", getSS(i).getName()) == 0)

@@ -630,6 +630,8 @@ void  quit_do_login_old(critter& pc) {
       pc.show(*(pc.getDefaultColor()));
    }
 
+   update_skills(pc); //sync them up, does not necessarly add new ones
+
    show("Welcome back!!\n\n", pc);
    look(1, &NULL_STRING, pc); //autolook
 

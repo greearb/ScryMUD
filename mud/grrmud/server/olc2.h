@@ -112,5 +112,6 @@ void rm_discuss_proc(int mnum, critter& pc);
 void rm_curse_proc(int mnum, critter& pc);
 void rm_bow_proc(int mnum, critter& pc);
 
+void make_pso(int i_th, const String* shop_keeper, critter& pc);
 
 #endif 

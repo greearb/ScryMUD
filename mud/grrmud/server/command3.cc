@@ -993,7 +993,16 @@ void mload(int i_th, const String* item, critter& pc) {
    }//if
                  /* do it then */
 
-   ROOM.gainCritter(&(mob_list[crit_ptr->MOB_NUM]));
+   if (crit_ptr->isPlayerShopKeeper()) {
+      critter* shop_keeper = load_player_shop_owner(crit_ptr->getIdNum());
+      if (shop_keeper) {
+         ROOM.gainCritter(shop_keeper);
+      }//if
+   }//if
+   else {
+      ROOM.gainCritter(&(mob_list[crit_ptr->getIdNum()]));
+   }
+
    recursive_init_loads(*crit_ptr);
    show("Okay, critter LOADED in this room.\n", pc);
 }//mload

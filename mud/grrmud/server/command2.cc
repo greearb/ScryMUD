@@ -255,9 +255,9 @@ void critter::doUngroup(int i_th, const String* vict) {
 
    if (vict->Strlen() == 0) { //ungroup all
       if (!GROUPEES.isEmpty() && (!FOLLOWER_OF)) { //is a leader
-         GROUPEES.head(cll);
+         GROUPEES.head(cll); /* run through all groupees. */
          while ((ptr1 = cll.next())) {
-            FOLLOWERS.loseData(ptr1);
+            FOLLOWERS.loseData(ptr1); /* Remove them from the followers. */
             if (ptr1 != this) {
                ptr1->FOLLOWER_OF = NULL; //follow self
                ptr1->show("The leader of the band is gone.\n");
@@ -1500,24 +1500,9 @@ void buy(int i_th, const String* item, int j_th, const String* keeper,
       return;
    }//if
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to buy.\n");
+   // Check for:  Standing, !battle, Paralyzed, Frozen
+   if (!ok_to_cast_spell(NULL, "SBPF", 1, pc)) {
       return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (pc.POS > POS_STAND) {
-     show("You are too relaxed.\n", pc);
-     return;
    }//if
 
    if (keeper->Strlen() == 0) {
@@ -1552,7 +1537,7 @@ void buy(int i_th, const String* item, int j_th, const String* keeper,
    if (!crit_ptr) {
       show("You do not see that person.\n", pc);
    }//if
-   else if (!crit_ptr->mob) { //dealing w/a pc...
+   else if (!crit_ptr->isNpc()) { //dealing w/a pc...
       Sprintf(buf, "%S won't be traded with so easily!\n", 
               name_of_crit(*crit_ptr, pc.SEE_BIT));
       buf.Cap();
@@ -1585,23 +1570,8 @@ void sell(int i_th, const String* item, int j_th, const String* keeper,
       return;
    }//if
 
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (pc.POS > POS_STAND) {
-     show("You are too relaxed.\n", pc);
-     return;
-   }//if
-
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to sell.\n");
+   // Check for:  Standing, !battle, Paralyzed, Frozen,
+   if (!ok_to_cast_spell(NULL, "SBPF", 1, pc)) {
       return;
    }//if
 
@@ -1723,7 +1693,9 @@ void practice(const String* spell, int j_th, const String* master,
       else {  		/* need to figure NUMBER of skill or spell */
          s_num = SSCollection::instance().getNumForName(*spell); 
          if (s_num == -1) {
-            show("That has not been researched yet.\n", pc);
+            Sprintf(buf, "-:%S:- has not been researched yet.\n",
+                    spell);
+            pc.show(buf);
          }//if
          else {             /* ok, got a valid skill or spell */
 	   if (SSCollection::instance().getSS(s_num).getMinLevel() > pc.LEVEL) {
@@ -1742,7 +1714,7 @@ void practice(const String* spell, int j_th, const String* master,
 	       show("You feel a bit wiser.\n", pc);
 	       pc.PRACS--; //decrement the number of practices
 	       if ((p_learned < 50) && (get_percent_lrnd(s_num, pc) >= 50)) {
-		 gain_skills(s_num, pc);
+                  update_skill(s_num, pc);
 	       }//if
 	     }//if
 	     else {
@@ -2171,7 +2143,7 @@ MOB FLAGS Definitions:
       }//while
 
       if (!pc.USING_CLIENT || crit_ptr->pc) {
-         Sprintf(buf, "\nNames (Keywords): %S", buf2);
+         Sprintf(buf, "\nNames (Keywords): %S\n", &buf2);
          pc.show(buf);
       }//if
       else { //then show tags...
@@ -2538,7 +2510,7 @@ void do_ostat(object& obj, critter& pc) {
      59 canteen, 60 liquid, 61 food, 62 boat, 63 has_spec_proc_data,
      64 toolbox, 65 cauldron, 66 pen, 67 construct_component
      68 concoct_component, 69 parchment, 70 needs_resetting
-     71 vid_screen, 72 speaker, 73 vend_machine, 74 bulitin_board
+     71 vid_screen, 72 herb, 73 vend_machine, 74 bulitin_board
      75 is_butcherable
 
 Bag Flag Definitions:
@@ -2582,7 +2554,7 @@ Bag Flag Definitions:
       }//while
 
       if (!pc.USING_CLIENT) {
-         Sprintf(buf, "\nNames (Keywords): %S", buf2);
+         Sprintf(buf, "\nNames (Keywords): %S", &buf2);
          pc.show(buf);
       }//if
       else { //then show tags...

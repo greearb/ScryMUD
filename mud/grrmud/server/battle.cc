@@ -685,6 +685,12 @@ int exact_raw_damage(int damage, int damage_type, critter& vict,
          dam = -(dam/1.5);
       }//else
    }//if
+
+   if (is_affected_by(EARTHMELD_SKILL_NUM, vict)) {
+      if ((pl = get_percent_lrnd(EARTHMELD_SKILL_NUM, agg)) > d(1,115)) {
+         dam *= (100.0 - ((float)(pl))/7.0) / 100.0;
+      }//if
+   }//if
    
    // Gonna make low level mobs a little weaker across the board to
    // help out the newbies!
@@ -881,8 +887,21 @@ void dead_crit_to_corpse(critter& vict) {
       }//if
    }//if
 
+   // If we are a Player-run Shop keeper, then have some special fun.
+   if (vict.isPlayerShopKeeper()) {
+
+      // we gotta first update all the player-manipulated
+      // data, no use making them enter that again and again.
+      vict.transferShopDataTo(mob_list[vict.getIdNum()]);
+
+      // Now save it to disk.
+      save_player_shop_owner(mob_list[vict.getIdNum()]);
+   }//if
+
    /*  all links have been cut, I hope */
    /*  Now we will transfer all eq and gold and stuff to a corpse */
+
+   // create corpse object.
    corpse = obj_to_sobj(obj_list[CORPSE_OBJECT], 
                         &(room_list[vict.getCurRoomNum()].inv));
 

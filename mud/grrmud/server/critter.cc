@@ -141,6 +141,36 @@ void teacher_data::Write(ofstream& da_file) const {
    teach_data_flags.Write(da_file);
 }//Write
 
+//****************************************************************//
+///*********************  Player Shop Data  *********************///
+
+int PlayerShopData::_cnt = 0; // Instance Count
+
+int PlayerShopData::read(ifstream& da_file) {
+   int sentinel;
+   char tmp[81];
+
+   da_file >> sentinel;
+   if (sentinel == -1) {
+      da_file.getline(tmp, 80);
+      return 0;
+   }
+   else {
+      da_file >> object_num;
+      da_file >> sell_price;
+      da_file >> buy_price;
+      da_file.getline(tmp, 80);
+      return object_num;
+   }//else
+}//read
+      
+void PlayerShopData::write(ofstream& da_file) const {
+   da_file << 1 << " " << object_num << " "
+           << sell_price << " " << buy_price << " PlayerShopData \n";
+}//write
+
+
+
 
 //**********************************************************//
 ///*********************  shop data  ***********************///
@@ -160,7 +190,7 @@ shop_data::shop_data(const shop_data& source) {
 shop_data::~shop_data() {
    _cnt--;
    Clear();
-} //no need at this time
+}
 
 
 shop_data& shop_data::operator=(const shop_data& source) {
@@ -182,7 +212,14 @@ shop_data& shop_data::operator=(const shop_data& source) {
          perm_inv.append(ptr);
       }//if
    }//while
-   
+
+   // Deep copy here...
+   Cell<PlayerShopData*> pcll(source.ps_data_list);
+   PlayerShopData* pptr;
+   while ((pptr = pcll.next())) {
+      ps_data_list.pushBack(new PlayerShopData(*pptr));
+   }
+  
    perm_inv = source.perm_inv;
    shop_data_flags = source.shop_data_flags;
 
@@ -193,6 +230,7 @@ void shop_data::Clear() {
    markup = buy_percentage = close_time = open_time = 0;
    clear_obj_list(perm_inv);
    shop_data_flags.Clear();
+   clear_ptr_list(ps_data_list);
 }//Clear
 
 void shop_data::Read(ifstream& da_file, short read_all) {
@@ -242,8 +280,27 @@ void shop_data::Read(ifstream& da_file, short read_all) {
       }//else
       da_file >> i;
    }//while
-   da_file.getline(tmp, 80);   
+   da_file.getline(tmp, 80);
+
+   if (isPlayerRun()) {
+      PlayerShopData* ps_data = new PlayerShopData();
+      while (ps_data->read(da_file)) {
+         ps_data_list.pushBack(ps_data);
+         ps_data = new PlayerShopData();
+      }//while
+
+      // Delete the last one, was not added to the list.
+      delete ps_data;
+      ps_data = NULL;
+
+      da_file >> manager;
+      da_file.getline(tmp, 80);
+
+   }//if is a Player Run Shopkeeper
+
+
 }//Read
+
 
 void shop_data::Write(ofstream& da_file) const {
    Cell<object*> ob_cell(perm_inv);
@@ -270,8 +327,130 @@ void shop_data::Write(ofstream& da_file) const {
          }//if it exists
       }//else
    }//while
-   da_file << -1 << "\tperm_inv\n";
+   da_file << "-1  End of perm_inv\n";
+
+   if (isPlayerRun()) {
+      Cell<PlayerShopData*> pcll(ps_data_list);
+      PlayerShopData* pptr;
+      while ((pptr = pcll.next())) {
+         pptr->write(da_file);
+      }
+      da_file << "-1  End of PlayerShopData list\n";
+
+      da_file << manager << "  Manager\n";
+   }//if
+
 }//Write
+
+
+void shop_data::valueRem(int idx, critter& manager) {
+   PlayerShopData* psd = ps_data_list.elementAt(idx);
+   if (psd) {
+      ps_data_list.loseData(psd);
+      delete psd;
+      
+      manager.show("Ok, removed it.\n");
+   }//if
+   else {
+      manager.show("That index does not exist.\n");
+   }//else
+}//valueRem
+
+void shop_data::valueAdd(object& obj, critter& manager) {
+   if (getPsdFor(obj)) {
+      manager.show("That object has already been added.\n");
+   }
+   else {
+      ps_data_list.pushBack(new PlayerShopData(obj.getIdNum(),
+                                               obj.getDefaultPrice() * 3 / 2,
+                                               obj.getDefaultPrice() * 2 / 3));
+      manager.show("Value added, you will probably want to set it next.\n");
+   }//else
+}//valueAdd
+
+int shop_data::findItemSalePrice(object& obj) {
+   PlayerShopData* ptr = getPsdFor(obj);
+
+   if (ptr) {
+      return ptr->getSellPrice();
+   }
+
+   return -1;
+}//findItemSalePrice
+
+int shop_data::findItemBuyPrice(object& obj) {
+   PlayerShopData* ptr = getPsdFor(obj);
+
+   if (ptr) {
+      return ptr->getBuyPrice();
+   }
+
+   return -1;
+}//findItemBuyPrice
+
+
+PlayerShopData* shop_data::getPsdFor(object& obj) {
+   Cell<PlayerShopData*> cll(ps_data_list);
+   PlayerShopData* ptr;
+   
+   while ((ptr = cll.next())) {
+      if (ptr->getObjNum() == obj.getIdNum()) {
+         return ptr;
+      }//if
+   }//while
+
+   return NULL;
+}//getPsdFor
+
+
+void shop_data::valueList(int i_th, const String* targ, critter& manager) {
+   String normal(500);
+   String client(500);
+   String buf(100);
+   int idx = 0;
+
+   Cell<PlayerShopData*> cll(ps_data_list);
+   PlayerShopData* ptr;
+
+   Sprintf(client, "<VALUD_LIST %i %S> ", i_th, targ);
+   while ((ptr = cll.next())) {
+      if (manager.isUsingClient()) {
+         Sprintf(buf, "<VALUE_ITEM %i %S %i %i> ", idx,
+                 obj_list[ptr->getObjNum()].getName(),
+                 ptr->getSellPrice(),
+                 ptr->getBuyPrice());
+         client.Append(buf);
+      }//if
+      
+      Sprintf(buf, "    [%i] %S %P25 %i %P35 %i\n", idx,
+              obj_list[ptr->getObjNum()].getName(),
+              ptr->getSellPrice(),
+              ptr->getBuyPrice());
+      normal.Append(buf);
+      idx++;
+   }//while
+
+   if (manager.isUsingClient()) {
+      manager.show(client);
+   }
+
+   manager.show(normal);
+}//valueList
+
+
+void shop_data::valueSet(int val_idx, int sell_val, int buy_val,
+                         critter& manager) {
+   PlayerShopData* psd = ps_data_list.elementAt(val_idx);
+   if (psd) {
+      psd->setSellPrice(sell_val);
+      psd->setBuyPrice(buy_val);
+
+      manager.show("Ok, new values set.\n");
+   }//if
+   else {
+      manager.show("That index is not valid.\n");
+   }//else
+}//valueSet
 
 
 ///***************************************************************///
@@ -1500,6 +1679,9 @@ critter::~critter() {
    }//if
 
    if (! do_shutdown) {
+
+      /* Eventually, could take these checks out. --BEN */
+
       if (affected_mobs.haveData(this)) {
          mudlog << "ERROR:  deleting critter, but it's in affected_mobs: "
                 << this << "  mob num:  " << *(names.peekFront()) << endl;
@@ -1642,6 +1824,7 @@ critter& critter::operator=(critter& source) { //automagically makes SMOB
 
 void critter::Clear() {
    int i;
+   critter* ptr;
 
    //mudlog.log(DBG, "In crit Clear().\n");
    clear_ptr_list(names);
@@ -1679,7 +1862,19 @@ void critter::Clear() {
 	/* just get rid of ptrs, clean up SMOBs before clear is called */
    pets.clear();
    groupees.clear();
-   followers.clear();
+
+   /* This should always be empty, I would think. */
+   while (!followers.isEmpty()) {
+      ptr = followers.popFront();
+
+      if (mudlog.ofLevel(ERR)) {
+         mudlog << "ERROR:  followers not empty in Clear, for mob: "
+                << getName() << " follower: " << ptr->getName() << endl;
+      }//if
+
+      ptr->FOLLOWER_OF = NULL;
+   }//while
+
    is_fighting.clear();
    mirrors = 0;
 
@@ -2234,6 +2429,9 @@ void critter::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
 
    leave_room_effects(room_list[cur_room], *this);
 
+   // If we are in earth-meld, break it.
+   breakEarthMeld();
+
    room_list[cur_room].removeCritter(this);
    room_list[dest_room].gainCritter(this);
 
@@ -2245,6 +2443,16 @@ void critter::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
       look(1, &NULL_STRING, *this);
    }
 }
+
+
+void critter::breakEarthMeld() {
+   stat_spell_cell* sp;
+   if ((sp = is_affected_by(EARTHMELD_SKILL_NUM, *this))) {
+      show("Your meld with the earth has been severed.\n");
+      affected_by.loseData(sp);
+      delete sp;
+   }//if
+}//breakEarthMeld
 
 
 int critter::isNamed(const String& name) const {
@@ -2482,10 +2690,13 @@ int critter::compareTo(critter& b) {  //is a weaker than b
    str_b += b.HP * 3 + b.MANA + b.DAM * 15 + b.HIT * 5 + b.LEVEL * 4 + b.STR;
 
    if (pc)
-      str_a += 50;
+      str_a += 20;
    if (b.pc)
-      str_b += 50;
+      str_b += 20;
    
+   str_a *= ATTACKS;
+   str_b *= b.ATTACKS;
+
    return (str_a - str_b);
 }//compareTo
 
@@ -2736,6 +2947,10 @@ int critter::isNoHassle() {
 
 int critter::isSneaking() {
    return crit_flags.get(17);
+}
+
+int critter::isHiding() {
+   return crit_flags.get(22);
 }
 
 int critter::hasAI() {
@@ -3054,3 +3269,136 @@ void critter::doHuntProc(int num_steps, int& is_dead) {
    }//else go get em
 }//do_hunt_proc
 
+
+int critter::isPlayerShopKeeper() {
+   return (mob && mob->proc_data && mob->proc_data->sh_data
+           && mob->proc_data->sh_data->shop_data_flags.get(3));
+}//isPlayerShopKeeper
+
+
+// Price this keeper will sell the object for.
+int critter::findItemSalePrice(object& item, critter& pc) {
+   int price = 0;
+
+   if (!mob || !mob->proc_data || !mob->proc_data->sh_data) {
+      return 0;
+   }
+
+   if (isPlayerShopKeeper()) {
+      price = mob->proc_data->sh_data->findItemSalePrice(item);
+   }//if
+   else { // automagically figure it out
+      price = (int)((float)(item.PRICE) * 
+                    ((float)(MARKUP) / 100.0));
+      
+      if (pc.getHomeTown() != (getHomeTown())) {
+         price = (int)((float)(price) * OUT_OF_TOWN_MODIFIER);
+      }//if
+      
+
+      if (pc.pc && (d(1, 100) <
+                    get_percent_lrnd(COMMERCE_SKILL_NUM, pc))) {
+         price = (int)((float)price * COMMERCE_SKILL_EFFECT_BUY);
+      }//if
+   }//else
+
+   return price;
+}//findItemSalePrice
+
+// Price this keeper will buy the object for.
+int critter::findItemBuyPrice(object& item, critter& pc) {
+   int price = 0;
+
+   if (!mob || !mob->proc_data || !mob->proc_data->sh_data) {
+      return 0;
+   }
+
+   if (isPlayerShopKeeper()) {
+      price = mob->proc_data->sh_data->findItemBuyPrice(item);
+   }//if
+   else { // automagically figure it out
+      price = (int)((float)(item.PRICE) * 
+                    ((float)(BUY_PERCENTAGE) / 100.0));
+
+      if (pc.getHomeTown() != getHomeTown()) 
+         price = (int)(((float)(price))  * (1.0 / OUT_OF_TOWN_MODIFIER));
+
+      if (pc.pc && (d(1, 100) <
+                    get_percent_lrnd(COMMERCE_SKILL_NUM, pc))) {
+         price = (int)((float)price * COMMERCE_SKILL_EFFECT_SELL);
+      }//if
+   }//else
+
+   return price;
+}//findItemBuyPrice
+
+
+void critter::transferShopDataTo(critter& sink) {
+   if (!mob || !mob->proc_data || !mob->proc_data->sh_data) {
+      mudlog << "ERROR: transferShopDataTo, this does not have sh_data"
+             << endl;
+      return;
+   }
+
+   if (!sink.mob || !sink.mob->proc_data || !sink.mob->proc_data->sh_data) {
+      mudlog << "ERROR: transferShopDataTo, sink does not have sh_data"
+             << endl;
+      return;
+   }
+
+   clear_ptr_list(sink.mob->proc_data->sh_data->ps_data_list);
+
+   Cell<PlayerShopData*> cll(mob->proc_data->sh_data->ps_data_list);
+   PlayerShopData* ptr;
+
+   while ((ptr = cll.next())) {
+      sink.mob->proc_data->sh_data->ps_data_list.pushBack(new PlayerShopData(*ptr));
+   }//while
+
+}//transferShopDataTo
+
+void critter::valueRem(int idx, critter& manager) {
+   if (!mob || !mob->proc_data || !mob->proc_data->sh_data) {
+      mudlog << "ERROR: valueRem, this does not have sh_data"
+             << endl;
+      return;
+   }
+
+   mob->proc_data->sh_data->valueRem(idx, manager);
+}//valueRem
+
+void critter::valueAdd(object& obj, critter& manager) {
+   if (!mob || !mob->proc_data || !mob->proc_data->sh_data) {
+      mudlog << "ERROR: valueAdd, this does not have sh_data"
+             << endl;
+      return;
+   }
+
+   mob->proc_data->sh_data->valueAdd(obj, manager);
+}//valueAdd
+
+void critter::valueList(int i_th, const String* targ, critter& manager) {
+   if (!mob || !mob->proc_data || !mob->proc_data->sh_data) {
+      mudlog << "ERROR: valueList, this does not have sh_data"
+             << endl;
+      return;
+   }
+
+   mob->proc_data->sh_data->valueList(i_th, targ, manager);
+}//valueList
+
+void critter::valueSet(int val_idx, int sell_val, int buy_val,
+                       critter& manager) {
+   if (!mob || !mob->proc_data || !mob->proc_data->sh_data) {
+      mudlog << "ERROR: valueSet, this does not have sh_data"
+             << endl;
+      return;
+   }
+
+   mob->proc_data->sh_data->valueSet(val_idx, sell_val, buy_val, manager);
+}//valueSet
+
+int critter::isManagedBy(critter& pc) {
+   return (isPlayerShopKeeper() &&
+           (strcasecmp(mob->proc_data->sh_data->manager, *(pc.getName())) == 0));
+}//isManagedBy

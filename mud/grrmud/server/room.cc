@@ -533,9 +533,17 @@ void room::Read(ifstream& ofile, short read_all) {
          }
          return;
       }
-      
+
       if (mob_list[i].isInUse()) {
-         gainCritter(&(mob_list[i])); //this will increment cur_in_game
+         if (mob_list[i].isPlayerShopKeeper()) {
+            critter* shop_owner = load_player_shop_owner(i);
+            if (shop_owner) {
+               gainCritter(shop_owner);
+            }//if
+         }//if
+         else { //regular case
+            gainCritter(&(mob_list[i])); //this will increment cur_in_game
+         }
       }//if
       else {
          Sprintf(tmp_str, 
@@ -1039,6 +1047,9 @@ void room::doScan(critter& pc) {
    Cell<door*> dcll(doors);
    Cell<critter*> cll;
    critter* ptr;
+   int a, b;
+
+   int pl = get_percent_lrnd(SCAN_SKILL_NUM, pc);
 
    door* dptr;
    while ((dptr = dcll.next())) {
@@ -1048,9 +1059,15 @@ void room::doScan(critter& pc) {
             while ((ptr = cll.next())) {
                if (detect(pc.SEE_BIT,
                           ptr->VIS_BIT | dptr->getDestRoom()->getVisBit())) {
-                  // add a little chance to the mix
-                  if (d(1, max(((pc.LEVEL - pc.POS) * 10), 10)) >
-                      d(1, max(((ptr->LEVEL - ptr->POS) * 5), 10))) {
+                  a = max((pc.LEVEL - pc.POS), 10) + pl;
+                  b = max((ptr->LEVEL - ptr->POS), 10) + 100;
+
+                  if (ptr->isHiding()) {
+                     b *= max(1, max(get_percent_lrnd(HIDE_SKILL_NUM, *ptr),
+                                     get_percent_lrnd(BLEND_SKILL_NUM, *ptr)) / 10);
+                  }
+
+                  if (d(1, a) > d(1, b)) {                     
                      Sprintf(buf, "     %S%P25 %S.\n", dptr->getDirection(),
                              ptr->getName());
                      pc.show(buf);

@@ -125,4 +125,10 @@ const char* get_him_her(critter& pc);
 const char* get_dude_chic(critter& pc);
 const char* get_fellow_lady(critter& pc);
 
+// Attempt to load the player-run shop owner of that number.
+// Returns a newly allocated SMOB, or NULL if a problem is
+// encountered.
+critter* load_player_shop_owner(int mob_num);
+int save_player_shop_owner(critter& mob_to_save);
+
 #endif 

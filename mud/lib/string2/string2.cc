@@ -537,6 +537,17 @@ void String::Refigure_strlen() {
    }//if
 }//Refigure_strlen
 
+int String::Contains(const char ch) const {
+   int retval = 0;
+   for (int i = 0; i<cur_len; i++) {
+      if (string[i] == ch) {
+         retval++;
+      }
+   }//for
+
+   return retval;
+}
+
 
 void String::Termed_Read(ifstream& da_file) { //reads lines untill it finds
 					      // a line containing only "~"

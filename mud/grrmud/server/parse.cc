@@ -303,6 +303,13 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
       com_emote(&buf, *this);
       return 1;
    }//if
+
+   if (strcasecmp(raw_strings[0], "pemote") == 0) {
+      buf = input.Get_Rest();
+      parse_communication(buf);
+      com_pemote(&buf, *this);
+      return 1;
+   }//if
    
    if (strcasecmp(raw_strings[0], "gecho") == 0) {
       buf = input.Get_Rest();
@@ -524,6 +531,7 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
    /********************************************************/
    /***********  HERE START DEFINITIONS OF COMMANDS ********/
    /********************************************************/
+   int is_dead = FALSE;
 
    if ((len1 = cooked_strs[0].Strlen()) == 0) {
       show(PARSE_ERR_MSG);
@@ -547,6 +555,9 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	 }//if
 	 else if (strncasecmp(str1, "add_kname", len1) == 0) { 
 	    add_kname(i, &str2, *this);
+	 }//if
+	 else if (strncasecmp(str1, "adjust_register", len1) == 0) { 
+	    adjust_register(i, &str2, j, *this);
 	 }//if
 	 else if (strncasecmp(str1, "add_keyword", len1) == 0) { 
 	    add_keyword(*this);
@@ -641,6 +652,9 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	 }//if
 	 else if (strncasecmp(str1, "blush", len1) == 0) { 
 	    blush(i, &str2, (*this), (*(getCurRoom())));
+	 }//if
+	 else if (strncasecmp(str1, "blend", len1) == 0) { 
+	    blend(*this);
 	 }//if
 	 else if (strncasecmp(str1, "bonk", len1) == 0) { 
 	    bonk(i, &str2, (*this), (*(getCurRoom())));
@@ -780,6 +794,9 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	 else if (strncasecmp(str1, "dance", len1) == 0) { 
 	    dance(i, &str2, (*this), (*(getCurRoom())));
 	 }//if
+	 else if (strncasecmp(str1, "describe", len1) == 0) { 
+            describe(*this);
+	 }//if
 	 else if (strncasecmp(str1, "delete", len1) == 0) { 
             suicide(&str2, (*this));
 	 }//if
@@ -840,6 +857,9 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	 else if (strcasecmp(str1, "eat") == 0) {
 	    eat(i, &str2, (*this));
 	 }//if
+	 else if (strcasecmp(str1, "earthmeld") == 0) {
+	    earthmeld(*this);
+	 }//if
 	 else if (strncasecmp(str1, "equipment", len1) == 0) {
 	    show_eq((*this));
 	 }//if
@@ -848,6 +868,10 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	 }//if
 	 else if (strncasecmp(str1, "enslave", len1) == 0) {
 	    enslave(i, &str2, (*this));
+	 }//if
+	 else if (strncasecmp(str1, "enter", len1) == 0) {
+            is_dead = FALSE;
+	    go(i, &str2, (*this), is_dead);
 	 }//if
 	 else if (strncasecmp(str1, "exits", len1) == 0) {
 	    exit((*this));
@@ -862,7 +886,7 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	    follow(i, &str2, (*this));
 	 }//if
 	 else if (strncasecmp(str1, "flee", len1) == 0) {
-            int is_dead = FALSE;
+            is_dead = FALSE;
 	    flee(*this, is_dead);
 	 }//if
 	 else if (strncasecmp(str1, "flex", len1) == 0) {
@@ -1043,6 +1067,9 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
       case 'M':
 	 if (strncasecmp(str1, "make_builder", len1) == 0) { 
 	    make_builder(i, &str2, (*this));
+	 }//if
+	 else if (strncasecmp(str1, "make_pso", len1) == 0) { 
+	    make_pso(i, &str2, (*this));
 	 }//if
 	 else if (strncasecmp(str1, "meditate", len1) == 0) { 
 	    meditate((*this));
@@ -1579,6 +1606,18 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	 else if (strncasecmp(str1, "using_client", len1) == 0) { 
 	    using_client((*this)); 
 	 }//if
+	 else if (strncasecmp(str1, "value_add", len1) == 0) { 
+	    value_add(i, &str1, j, &str2, (*this));
+	 }//if
+	 else if (strncasecmp(str1, "value_list", len1) == 0) { 
+	    value_list(i, &str1, (*this));
+	 }//if
+	 else if (strncasecmp(str1, "value_set", len1) == 0) { 
+	    value_set(i, &str1, j, k, l, *this);
+	 }//if
+	 else if (strncasecmp(str1, "value_rem", len1) == 0) { 
+	    value_rem(i, &str1, j, *this);
+	 }//if
 	 else if (strncasecmp(str1, "visible", len1) == 0) { 
 	    visible((*this));
 	 }//if
@@ -1694,6 +1733,9 @@ const char* parse_hlp_command(const String& str1) {
       case 'A':
 	 if (strncasecmp(str1, "abilities", len1) == 0) { 
 	    return "abilities";
+	 }//if
+	 else if (strncasecmp(str1, "adjust_register", len1) == 0) { 
+	    return "adjust_register";
 	 }//if
 	 else if (strncasecmp(str1, "add_oname", len1) == 0) { 
 	    return "add_oname";
@@ -1899,6 +1941,9 @@ const char* parse_hlp_command(const String& str1) {
 	 }//if
 	 else if (strncasecmp(str1, "darklings", len1) == 0) { 
 	    return "darkling";
+	 }//if
+	 else if (strncasecmp(str1, "describe", len1) == 0) { 
+	    return "describe";
 	 }//if
 	 else if (strncasecmp(str1, "delete", len1) == 0) { 
 	    return "suicide";
@@ -2133,6 +2178,9 @@ const char* parse_hlp_command(const String& str1) {
 	 else if (strncasecmp(str1, "make_builder", len1) == 0) { 
 	    return "make_builder";
 	 }//if
+	 else if (strncasecmp(str1, "make_pso", len1) == 0) { 
+	    return "make_pso";
+	 }//if
 	 else if (strncasecmp(str1, "mclone", len1) == 0) { 
 	    return "mclone";
 	 }//if
@@ -2235,6 +2283,9 @@ const char* parse_hlp_command(const String& str1) {
 	 }//if
 	 else if (strncasecmp(str1, "pecho", len1) == 0) { 
 	    return "pecho";
+	 }//if
+	 else if (strncasecmp(str1, "pemote", len1) == 0) {
+            return "pemote";
 	 }//if
 	 else if (strncasecmp(str1, "possess", len1) == 0) { 
 	    return "possess";
@@ -2575,6 +2626,18 @@ const char* parse_hlp_command(const String& str1) {
 	 }//if
 	 else if (strncasecmp(str1, "use", len1) == 0) { 
 	    return "use"; 
+	 }//if
+	 else if (strncasecmp(str1, "value_add", len1) == 0) { 
+	    return "value_add";
+	 }//if
+	 else if (strncasecmp(str1, "value_list", len1) == 0) { 
+	    return "value_list";
+	 }//if
+	 else if (strncasecmp(str1, "value_rem", len1) == 0) { 
+	    return "value_rem";
+	 }//if
+	 else if (strncasecmp(str1, "value_set", len1) == 0) { 
+	    return "value_set";
 	 }//if
 	 else if (strncasecmp(str1, "visible", len1) == 0) { 
 	    return "visible";

@@ -81,9 +81,16 @@ void wake(critter& pc);
 void sit(critter& pc);
 void examine(int i_th, const String* obj, critter& pc);
 
-//don't show msg to this last one if specified
+//don't show msg to this last one if specified, wraps do_emote
 void emote(const char* msg, critter& pc, room& rm, short show_non_detects,
 	   critter* noshow = NULL);
+// Possessive emote, wraps do_emote
+void pemote(const char* msg, critter& pc, room& rm, short show_non_detects,
+            critter* noshow = NULL);
+// Worker method.
+void do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
+              int possessive, critter* crit = NULL);
+
 
 ///************************  login functions  ************************///
 

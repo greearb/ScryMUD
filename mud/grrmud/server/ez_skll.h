@@ -41,6 +41,8 @@ void do_shield(critter& vict, critter& pc);
 void rescue(int i_th, const String* vict, critter& pc);
 void do_rescue(critter& vict, critter& pc);
 
+void earthmeld(critter& pc);
+void do_earthmeld(critter& pc);
 
 ///*****************  auxillary functions  ***************************///
 

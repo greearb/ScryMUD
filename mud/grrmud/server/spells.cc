@@ -815,7 +815,7 @@ void do_cast_teleport(critter& vict, critter& pc, int is_canned, int lvl) {
 
    if (do_affects) {
       show("The world shimmers!\n", vict);
-      emote("grows opaque and dissapears.", vict,
+      emote("grows opaque and disapears.", vict,
             room_list[vict.getCurRoomNum()], TRUE); 
 
       int sanity = 0;
@@ -825,7 +825,7 @@ void do_cast_teleport(critter& vict, critter& pc, int is_canned, int lvl) {
                mudlog << "WARNING:  Sanity check failed in do_cast_teleport."
                       << "  vict:  " << *(name_of_crit(vict, ~0)) << endl;
             }
-            emote("dissappears briefly and then shimmers back into existence.",
+            emote("disappears briefly and then shimmers back into existence.",
                   vict, room_list[vict.getCurRoomNum()], TRUE);
 
             break;
@@ -1089,12 +1089,26 @@ int has_all_prereqs(int skill_num, critter& pc) {
    return TRUE;
 }//has_all_prereqs
 
+void update_skills(critter& pc) {
+   int key;
+   if (pc.SKILLS_KNOWN.Min(key)) {
+      update_skill(key, pc);
+      while (pc.SKILLS_KNOWN.Next(key)) {
+         update_skill(key, pc);
+      }//while
+   }//if
+}//update_skills
 
-void gain_skills(int last_learned, critter& pc) {
+
+void update_skill(int last_learned, critter& pc) {
    
    if (!pc.pc) {
       return;
    }//if
+
+   if (get_percent_lrnd(last_learned, pc) < 50) {
+      return;
+   }
 
    if (!check_l_range(last_learned, 0, NUMBER_OF_SKILL_SPELLS, pc, FALSE)) {
       mudlog.log(ERR,
@@ -1105,7 +1119,7 @@ void gain_skills(int last_learned, critter& pc) {
    Cell<int> cll(SSCollection::instance().getSS(last_learned).enables);
    int tmp;
    while ((tmp = cll.next())) {
-     if (has_all_prereqs(tmp, pc)) {
+     if (has_all_prereqs(tmp, pc) && (get_percent_lrnd(tmp, pc) == -1)) {
         pc.SKILLS_KNOWN.Insert(tmp, 1);
 	if (tmp == WEAPON_MASTERY_SKILL_NUM)
 	   pc.DAM++;

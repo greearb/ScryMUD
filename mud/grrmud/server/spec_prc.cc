@@ -93,7 +93,8 @@ void do_just_killed_procs(critter& agg) {
 
 
 
-/* assumes both are either SMOB's or PC's */
+/* assumes both are either SMOB's or PC's, triggered by
+ * give.  This is old style procs, should be deprecated. */
 void do_domob_give_proc(critter& targ, critter& pc, object& obj) {
    if (!targ.isSmob())
       return;
@@ -151,8 +152,9 @@ void do_domob_give_proc(critter& targ, critter& pc, object& obj) {
 
       
  
-/* assumes both are either SMOB's or PC's */
-/* this is triggered by 'discuss', not 'say' */
+/* assumes both are either SMOB's or PC's
+ * this is triggered by 'discuss', not 'say'
+ * This is old style procs, should be deprecated. */
 void do_domob_say_proc(critter& targ, critter& pc, const String& msg) {  
   say_proc_cell* ptr;
 
@@ -199,7 +201,9 @@ void do_domob_say_proc(critter& targ, critter& pc, const String& msg) {
 }//do_domob_say_proc
 
 
-/* assumes both are either SMOB's or PC's */
+/* assumes both are either SMOB's or PC's
+ *  Triggered by bow.
+ * This is old style procs, should be deprecated. */
 void do_domob_bow_proc(critter& targ, critter& pc) {
   if (!targ.isSmob())
     return;
@@ -240,7 +244,9 @@ void do_domob_bow_proc(critter& targ, critter& pc) {
 }//do_domob_bow_proc
 
 
-/* assumes both are either SMOB's or PC's */
+/* assumes both are either SMOB's or PC's
+ * Triggered by curse.
+ * This is old style procs, should be deprecated. */
 void do_domob_curse_proc(critter& targ, critter& pc) {
   if (!targ.isSmob())
     return;
@@ -283,30 +289,30 @@ void do_domob_curse_proc(critter& targ, critter& pc) {
 
 /* assumes existance of targ.FLAG1, what a stupid fn name **doh**  */
 short pass_domob_checks(critter& targ, critter& pc) {
-  if (targ.FLAG1.get(9) && (targ.RACE != pc.RACE)) {
-    show(targ.WRONG_RACE_MSG, pc);
-    return FALSE;
-  }//if
-  else if (targ.FLAG1.get(10)) { //align check
-    if ((targ.ALIGN < -350) && (pc.ALIGN >= -350)) {
-      show(targ.WRONG_ALIGN_MSG, pc);
+   if (targ.FLAG1.get(9) && (targ.RACE != pc.RACE)) {
+      show(targ.WRONG_RACE_MSG, pc);
       return FALSE;
-    }//if
-    else if ((targ.ALIGN >= -350) && (targ.ALIGN <= 350) && 
-	     ((pc.ALIGN < -350) || (pc.ALIGN > 350))) {
-      show(targ.WRONG_ALIGN_MSG, pc);
+   }//if
+   else if (targ.FLAG1.get(10)) { //align check
+      if ((targ.ALIGN < -350) && (pc.ALIGN >= -350)) {
+         show(targ.WRONG_ALIGN_MSG, pc);
+         return FALSE;
+      }//if
+      else if ((targ.ALIGN >= -350) && (targ.ALIGN <= 350) && 
+               ((pc.ALIGN < -350) || (pc.ALIGN > 350))) {
+         show(targ.WRONG_ALIGN_MSG, pc);
+         return FALSE;
+      }//if
+      else if ((targ.ALIGN > 350) && (pc.ALIGN <= 350)){
+         show(targ.WRONG_ALIGN_MSG, pc);
+         return FALSE;
+      }//if
+   }//if align check
+   else if (targ.FLAG1.get(11) && (targ.CLASS != pc.CLASS)) {
+      show(targ.WRONG_CLASS_MSG, pc);
       return FALSE;
-    }//if
-    else if ((targ.ALIGN > 350) && (pc.ALIGN <= 350)){
-      show(targ.WRONG_ALIGN_MSG, pc);
-      return FALSE;
-    }//if
-  }//if align check
-  else if (targ.FLAG1.get(11) && (targ.CLASS != pc.CLASS)) {
-    show(targ.WRONG_CLASS_MSG, pc);
-    return FALSE;
-  }//if
-  return TRUE;
+   }//if
+   return TRUE;
 }//pass_domob_checks
 
 
@@ -1049,6 +1055,8 @@ void do_buy_proc(int prc_num, critter& keeper, int i_th,
    }//if
 
    int cur_time;
+
+   // Only support one buy proc at this time, and probably forever!
    if (prc_num == 0) { //buy proc_0
       //log("Doing buy proc_0.\n");
       cur_time = get_game_time();
@@ -1085,29 +1093,20 @@ void do_buy_proc(int prc_num, critter& keeper, int i_th,
          do_tell(keeper, "I don't have that in stock right now...", pc,
                  FALSE, pc.getCurRoomNum()); 
       }//if
-//              /* have the object now...check for city aliances... */
-//                  //if outlaw
-//       else if (((pc.MISC % 10) == 4) && ((keeper.MISC % 10) != 4)) { 
-//          do_tell(keeper, "I don't deal with outlaws!!", pc,
-//                  FALSE, pc.getCurRoomNum());
-//       }//if
       else {
+         // This will do messages if needed.
          if (!obj_get_by(*obj_ptr, pc, TRUE)) {
             return;
          }//if
 
-         price = (int)((float)(obj_ptr->PRICE) * 
-                       ((float)(keeper.MARKUP) / 100.0));
-         if (pc.getHomeTown() != (keeper.getHomeTown())) {
-            price = (int)((float)(price) * OUT_OF_TOWN_MODIFIER);
+         price = keeper.findItemSalePrice(*obj_ptr, pc);
+         
+         if (price < 0) {
+            do_tell(keeper, "I can't sell that to you now, inventory problem.\n",
+                    pc, FALSE, pc.getCurRoomNum());
+            return;
          }//if
 
-	 if (pc.pc && (d(1, 100) <
-                       get_percent_lrnd(COMMERCE_SKILL_NUM, pc))) {
-	    price = (int)((float)price * COMMERCE_SKILL_EFFECT_BUY);
-          }//if
-
-         //log("Found price.\n");
          if (price > pc.GOLD) {
             do_tell(keeper, "I don't run a charity here!!", pc, FALSE, 
 		    pc.getCurRoomNum()); 
@@ -1115,9 +1114,14 @@ void do_buy_proc(int prc_num, critter& keeper, int i_th,
             return;
          }//if
 
-         //log("Good to go!\n");
-         	/* good to go I believe! */
+         // Deal with gold.
          pc.GOLD -= price;
+
+         // Only put the gold back in circulation for Player-run keepers.
+         if (keeper.isPlayerShopKeeper()) {
+            keeper.GOLD += price;
+         }//if
+
          if (!is_perm) {
             keeper.loseInv(obj_ptr);
          }//if
@@ -1128,12 +1132,18 @@ void do_buy_proc(int prc_num, critter& keeper, int i_th,
          Sprintf(buf, "That'll be %i gold coins, here's your %S.", price,
                  name_of_obj(*obj_ptr, pc.SEE_BIT));
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());
+
+         if (keeper.isPlayerShopKeeper()) {
+            save_player_shop_owner(keeper);
+         }
+
       }//else
    }//if buy proc_0
    else {
-      Sprintf(buf, "ERROR:  bad proc num sent to do_buy_proc: %i.\n", 
-              prc_num);
-      mudlog.log(ERR, buf);
+      if (mudlog.ofLevel(ERR)) {
+         mudlog << "ERROR:  bad proc num sent to do_buy_proc: "
+                << prc_num << endl;
+      }//if
    }//else        
 }//do_buy_proc
 
@@ -1187,7 +1197,7 @@ void do_vend_buy(object& vendor, int i_th, const String* item, critter& pc) {
 
 
 void do_offer_proc(int prc_num, critter& keeper, int i_th, 
-                 const String* item, critter& pc) {
+                   const String* item, critter& pc) {
    object* obj_ptr;
    int price;
    short will_buy = FALSE;
@@ -1247,11 +1257,6 @@ void do_offer_proc(int prc_num, critter& keeper, int i_th,
 	 show(buf, pc);
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());
       }//if
-//              /* have the object now...check for city aliances... */
-//                  //if outlaw
-//       else if (((pc.MISC % 10) == 4) && ((keeper.MISC % 10) != 4)) { 
-//          do_tell(keeper, "I don't deal with outlaws!", pc, FALSE, pc.getCurRoomNum());
-//       }//if
       else {
          for(int q = 50; q < 63; q++) {
             if (keeper.SHOP_DATA_FLAGS.get(q) && obj_ptr->OBJ_FLAGS.get(q)) {
@@ -1266,15 +1271,12 @@ void do_offer_proc(int prc_num, critter& keeper, int i_th,
             return;
          }//if
 
-         price = (int)((float)(obj_ptr->PRICE) * 
-                       ((float)(keeper.BUY_PERCENTAGE) / 100.0));
+         price = keeper.findItemBuyPrice(*obj_ptr, pc);
 
-         if (pc.getHomeTown() != keeper.getHomeTown()) 
-            price = (int)(((float)(price))  * (1.0 / OUT_OF_TOWN_MODIFIER));
-
-         if (pc.pc && (d(1, 100) <
-                       get_percent_lrnd(COMMERCE_SKILL_NUM, pc))) {
-            price = (int)((float)price * COMMERCE_SKILL_EFFECT_SELL);
+         if (price < 0) {
+            do_tell(keeper, "I don't buy that type of stuff.", pc,
+                    FALSE, pc.getCurRoomNum());
+            return;
          }//if
 
          //log("Found price.\n");
@@ -1358,11 +1360,6 @@ void do_sell_proc(int prc_num, critter& keeper, int i_th,
          Sprintf(buf, "You don't have the %S.", item);
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());
       }//if
-//              /* have the object now...check for city aliances... */
-//                  //if outlaw
-//       else if (((pc.MISC % 10) == 4) && ((keeper.MISC % 10) != 4)) {
-//          do_tell(keeper, "I don't deal with outlaws!", pc, FALSE, pc.getCurRoomNum()); 
-//       }//if
       else {
          for(int q = 50; q < 63; q++) {
             if (keeper.SHOP_DATA_FLAGS.get(q) && obj_ptr->OBJ_FLAGS.get(q)) {
@@ -1377,17 +1374,13 @@ void do_sell_proc(int prc_num, critter& keeper, int i_th,
             return;
          }//if
 
-         price = (int)((float)(obj_ptr->PRICE) * 
-                       ((float)(keeper.BUY_PERCENTAGE) / 100.0));
-
-         if (pc.getHomeTown() != keeper.getHomeTown()) 
-            price = (int)(((float)(price))  * (1.0 / OUT_OF_TOWN_MODIFIER));
-
-         if (pc.pc && (d(1, 100) <
-                       get_percent_lrnd(COMMERCE_SKILL_NUM, pc))) {
-            price = (int)((float)price * COMMERCE_SKILL_EFFECT_SELL);
+         price = keeper.findItemBuyPrice(*obj_ptr, pc);
+         
+         if (price < 0) {
+            do_tell(keeper, "I don't buy that type of stuff.", pc, FALSE, 
+		    pc.getCurRoomNum());
+            return;
          }//if
-
 
          //log("Found price.\n");
          if (price > keeper.GOLD) {
@@ -1396,8 +1389,6 @@ void do_sell_proc(int prc_num, critter& keeper, int i_th,
             return;
          }//if
 
-         //log("Good to go!\n");
-         	/* good to go I believe! */
          pc.loseInv(obj_ptr);
          keeper.gainInv(obj_ptr);
 
@@ -1406,7 +1397,13 @@ void do_sell_proc(int prc_num, critter& keeper, int i_th,
          show(buf, keeper);
          Sprintf(buf, "Here's %i coins.\n", price);
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());
+
          pc.GOLD += price;
+         keeper.GOLD -= price;
+
+         if (keeper.isPlayerShopKeeper()) {
+            save_player_shop_owner(keeper);
+         }
       }//else
    }//if sell proc_1
    else {

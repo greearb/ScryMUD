@@ -44,6 +44,84 @@
 #include "SkillSpell.h"
 
 
+// Attempt to load the player-run shop owner of that number.
+// Returns a newly allocated SMOB, or NULL if a problem is
+// encountered.
+critter* load_player_shop_owner(int mob_num) {
+   String buf(100);
+
+   if (mob_list[mob_num].isInUse()) {
+      // Find the file name of our shopkeeper.
+      Sprintf(buf, "./PlayerShops/%S_%i", mob_list[mob_num].getName(),
+              mob_num);
+
+      ifstream dafile(buf);
+      
+      if (dafile) {
+         critter* sk = new critter();
+         sk->Read(dafile, TRUE); //read all inventory.
+
+         // Make sure it's labeled as a SMOB
+         sk->short_cur_stats[26] = 1; /* make it a SMOB */
+         return sk;
+      }//if
+      else {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  Could not open Player Shop Keeper -:"
+                   << buf << ":- for reading." << endl;
+         }//if
+         return NULL;
+      }//else
+   }//if
+   else {
+      if (mudlog.ofLevel(ERR)) {
+         mudlog << "ERROR:  load_player_shop_owner, mob_num: "
+                << mob_num << " is not in use." << endl;
+      }//if
+      return NULL;
+   }//else
+}//load_player_shop_owner
+
+
+int save_player_shop_owner(critter& pc) {
+   String buf(100);
+
+   if (!pc.isPlayerShopKeeper()) {
+      mudlog << "ERROR:  save_player_shop_owner, mob: " 
+             << pc.getName() << " id_num: " << pc.getIdNum()
+             << " is not a shop keeper." << endl;
+      return FALSE;
+   }
+
+   if (mob_list[pc.getIdNum()].isInUse()) {
+      // Find the file name of our shopkeeper.
+      Sprintf(buf, "./PlayerShops/%S_%i", mob_list[pc.getIdNum()].getName(),
+              pc.getIdNum());
+
+      ofstream dafile(buf);
+      
+      if (dafile) {
+         pc.Write(dafile);
+         return TRUE;
+      }//if
+      else {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  Could not open Player Shop Keeper -:"
+                   << buf << ":- for writing." << endl;
+         }//if
+         return FALSE;
+      }//else
+   }//if
+   else {
+      if (mudlog.ofLevel(ERR)) {
+         mudlog << "ERROR:  save_player_shop_owner, mob_num: "
+                << pc.getIdNum() << " is not in use." << endl;
+      }//if
+      return FALSE;
+   }//else
+}//save_player_shop_owner
+
+
 int core_dump(const char* msg) {
    cerr << "In my_assert, msg:  " << msg << endl;
    mudlog << "ERROR:  Dumping core on purpose..." << endl
@@ -501,6 +579,8 @@ void leave_room_effects(room& rm, critter& pc) {
          ptr->crit_blocking = NULL;
       }//if
    }//while
+
+   pc.PC_FLAGS.turn_off(22); //no longer hiding or melding
 
    if (pc.pc) {
       pc.PC_FLAGS.turn_off(17);

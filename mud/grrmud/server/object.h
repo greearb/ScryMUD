@@ -168,7 +168,7 @@ public:
 	   // 59 canteen, 60 liquid, 61 food, 62 boat, 63 has_spec_proc_data,
            // 64 toolbox, 65 cauldron, 66 pen, 67 construct_component
            // 68 concoct_component, 69 parchment, 70 needs_resetting
-           // 71 !complete, 72 NULL, 73 vend_machine, 74 bulletin_board
+           // 71 !complete, 72 herb, 73 vend_machine, 74 bulletin_board
            // 75 is_butcherable
    /* modify OLC when assigning 72 again --BEN */
    
@@ -253,6 +253,7 @@ public:
    const String* getLongName(int c_bit) { return long_name_of_obj(*this,
                                                                   c_bit); }
    int getLevel() const { if (ob) return ob->getLevel(); return 0; }
+   int getDefaultPrice() { return ob->cur_stats[1]; }
 
    void makeComponent(int targ, int comp1, int comp2, int comp3, int comp4,
                       int comp5, ComponentEnum con_type);

@@ -141,10 +141,63 @@ public:
 }; //teacher_data
 
 
+class PlayerShopData {
+private:
+   static int _cnt;
+
+protected:
+   int object_num;
+   int sell_price; /* -1 is display only */
+   int buy_price;  /* -1 is do not buy */
+
+public:
+   PlayerShopData() : object_num(0), sell_price(0), buy_price(0) {
+      _cnt++;
+   }
+
+   PlayerShopData(int o, int s, int b) : object_num(o), sell_price(s), buy_price(b) {
+      _cnt++;
+   }
+
+   PlayerShopData(const PlayerShopData& src) 
+         : object_num(src.object_num), sell_price(src.sell_price),
+           buy_price(src.buy_price) {
+      _cnt++;
+   }
+
+   // No need to do an operator-equal now.
+
+   ~PlayerShopData() { _cnt--; }
+
+   int getObjNum() const { return object_num; }
+   void setObjNum(int i) {
+      if ((i >= 0) && (i < NUMBER_OF_ITEMS)) {
+         object_num = i;
+      }//if
+   }//setObjNum
+
+   int getSellPrice() const { return sell_price; }
+   void setSellPrice(int i) { sell_price = i; }
+
+   int getBuyPrice() const { return buy_price; }
+   void setBuyPrice(int i) { buy_price = i; }
+
+   static int getInstanceCount() { return _cnt; }
+
+   void clear() { object_num = buy_price = sell_price = 0; }
+
+   // Returns false when there are no more, object_num otherwise.
+   int read(ifstream& da_file);
+      
+   void write(ofstream& da_file) const ;
+
+}; // PlayerShopData
+
+
 ///*********************  shop_data  ***********************///
 
 class shop_data {
-protected:
+private:
    static int _cnt;
 
 public:
@@ -153,20 +206,42 @@ public:
    short open_time;
    short close_time;
    bitfield shop_data_flags; //0 buy_0, 1 sell_0, 2 offer_0
+   // 3 Player-run shopkeeper
    // 40-62 type to trade flags, same as obj_flags
    //
-   //
    List<object*> perm_inv; //holds perm inventory
-   
+
+   // Holds extra info for player run shops.
+   List<PlayerShopData*> ps_data_list;
+   String manager;
+
+
    shop_data();
    shop_data(const shop_data& source);  //copy constructor
    ~shop_data();
+
+   int isPlayerRun() const { return shop_data_flags.get(3); }
 
    void Clear();
    void Read(ifstream& da_file, short read_all);
    void Write(ofstream& da_file) const ;
    shop_data& operator=(const shop_data& src);
+
    static int getInstanceCount() { return _cnt; }
+
+   void valueRem(int idx, critter& manager);
+   void valueAdd(object& obj, critter& manager);
+   void valueList(int i_th, const String* targ, critter& manager);
+   void valueSet(int val_idx, int sell_val, int buy_val, critter& manager);
+
+   int isPlayerShopKeeper() { return shop_data_flags.get(3); }
+
+   int findItemSalePrice(object& obj);
+   int findItemBuyPrice(object& obj);
+
+   void makePSO() { shop_data_flags.turn_on(3); }
+
+   PlayerShopData* getPsdFor(object& obj);
 }; //shop_data
 
 
@@ -454,7 +529,7 @@ public:
    String user1_str;
    String user2_str;
    String user3_str;
-   
+
    pc_data();
    pc_data(const pc_data& source);  //copy constructor
    ~pc_data();
@@ -704,6 +779,7 @@ public:
    int shouldDoPoofout();
    int isNoHassle();
    int isSneaking();
+   int isHiding();
 
    int isMob() const { return (CRITTER_TYPE == 2); }
    int isNPC() const { return (isMob() || isSmob()); }
@@ -772,6 +848,9 @@ public:
    int isCharmed() { return master != NULL; }
    int isWanderer() { return mob && MOB_FLAGS.get(2); }
 
+   int isPlayerShopKeeper();
+   int isManagedBy(critter& pc);
+
    // return current value of cur_in_game after operation
    int getCurInGame();
    int setCurInGame(int i);
@@ -807,6 +886,18 @@ public:
    void doGoToRoom(int dest_room, const char* from_dir, door* by_door,
                    int& is_dead, int cur_room);
    void doScriptJump(int abs_index);
+
+   void breakEarthMeld();
+
+   // Assumes this is a shop-keeper.
+   int findItemSalePrice(object& item, critter& pc);
+   int findItemBuyPrice(object& item, critter& pc);
+
+   void transferShopDataTo(critter& sink);
+   void valueRem(int idx, critter& manager);
+   void valueAdd(object& obj, critter& manager);
+   void valueList(int i_th, const String* targ, critter& manager);
+   void valueSet(int val_idx, int sell_val, int buy_val, critter& manager);
 
    /** Assume we are removing this object at this posn. */
    void checkLight(object* obj = NULL, int posn = -1);

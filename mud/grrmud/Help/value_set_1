@@ -1,0 +1,19 @@
+<help general value_set>
+
+This allows the manager of a shopkeeper to set the buy and
+sell price that a shopkeeper uses for a piece of it's
+inventory.  To see a listing of the current values, try
+value_list, and if you need to add a new one, try value_add.
+
+NOTE: that you need to enter both buy and sell values at once.
+
+Syntax:  value_set <<i_th> [shopkeeper_name] [value_index]
+Syntax: (cont)     [sell_value] [buy_value]
+         
+Example:  value_set 2.shopkeeper 0 25 12   
+Example:        # Set's the sell value to 25, and the buy
+Example:        # value to 12, for index 0.
+
+<color = red>
+See Also:  value_add, value_list, value_rem, adjust_register
+</color></help>

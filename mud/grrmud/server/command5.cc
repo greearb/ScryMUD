@@ -322,38 +322,6 @@ See 'help color' for more information.\n";
    }
 }//color
 
-void sneak(critter& pc, int smob_too = FALSE) {
-  String buf(100);
-
-  if (pc.isMob())
-    return; //no MOB's allowed!!
-
-  if (!smob_too && !pc.pc) {
-    return;
-  }//if 
-
-
-  if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-    show("You are too frozen to do anything.\n", pc);
-    return;
-  }//if
-  
-  if (pc.CRIT_FLAGS.get(17)) {
-    pc.CRIT_FLAGS.turn_off(17);
-    show("You stop sneaking around.\n", pc);
-  }//if
-  else {
-    if (get_percent_lrnd(SNEAK_SKILL_NUM, pc) > 0) {
-      pc.CRIT_FLAGS.turn_on(17);
-      show("You start sneaking.\n", pc);
-    }//if
-    else {
-      show("You couldn't sneak up on a sleeping Ogrue!!\n", pc);
-    }//else
-  }//else, not sneaking right now
-}//sneak
-
-
 
 void pause(int rounds, critter& pc) {
   if (pc.isMob())
@@ -373,37 +341,6 @@ void pause(int rounds, critter& pc) {
 }//pause
 
 	  
-void hide(critter& pc, int smob_too = FALSE) {
-  String buf(100);
-
-  if (pc.isMob())
-    return; //no MOB's allowed!!
-
-  if (!smob_too && !pc.pc) {
-    return;
-  }//if 
-
-  if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-    show("You are too frozen to hide.\n", pc);
-    return;
-  }//if
-  
-  if (pc.CRIT_FLAGS.get(17)) {
-    pc.CRIT_FLAGS.turn_off(17);
-    show("You stop hiding.\n", pc);
-  }//if
-  else {
-    if (get_percent_lrnd(HIDE_SKILL_NUM, pc) > 0) {
-      pc.CRIT_FLAGS.turn_on(17);
-      show("You start hiding.\n", pc);
-    }//if
-    else {
-      show("You are not skilled in this stealthy art!!\n", pc);
-    }//else
-  }//else, not hiding right now
-}//hide
-	  
-
 void list_scripts(int mob_num, critter& pc) {
 
    if (!pc.pc || !pc.pc->imm_data) {// || pc.IMM_LEVEL < 2) {
@@ -606,14 +543,14 @@ void teach(int i_th, const String* name, int prcnt, const String* skill,
 
    if (get_percent_lrnd(skill_num, pc) < 0) { //then add it
       ptr->SKILLS_KNOWN.Insert(skill_num, prcnt);
-      gain_skills(skill_num, pc);
+      update_skill(skill_num, pc);
       show("Ok, your teachings were heard!.\n", pc);
       show("You learn of a new skill.\n", *ptr);
    }//if
    else {
       show("They evidently already know that skill.\n", pc);
       ptr->SKILLS_KNOWN.Insert(skill_num, prcnt); //make sure its at 100
-      gain_skills(skill_num, pc);
+      update_skill(skill_num, pc);
    }//else
 }//teach
 
@@ -1686,6 +1623,211 @@ void thaw(int i_th, const String* targ, critter& pc) {
    crit->PC_FLAGS.turn_off(0);
 }//thaw
 
+void value_set(int i_th, const String* targ, int val_idx,
+               int sell_val, int buy_val, critter& pc) {
+   String buf(100);
+
+   if (pc.isMob()) { 
+      return;
+   }//if
+
+   if (pc.isFrozen()) {
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+
+   critter* crit = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
+
+   if (!crit) {
+      pc.show("Set value for which shopkeeper??\n");
+      return;
+   }//if
+
+   if (crit->isPlayerShopKeeper()) {
+      if (crit->isManagedBy(pc)) {
+         crit->valueSet(val_idx, sell_val, buy_val, pc); //will do msgs
+      }//if
+      else {
+         pc.show("You are not the manager of this shopkeeper.\n");
+      }
+   }//if
+   else {
+      pc.show("That is not a player-run shopkeeper.\n");
+   }//else
+}//value_set
+
+void value_list(int i_th, const String* targ, critter& pc) {
+   String buf(100);
+
+   if (pc.isMob()) { 
+      return;
+   }//if
+
+   if (pc.isFrozen()) {
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+
+   critter* crit = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
+
+   if (!crit) {
+      pc.show("List values for which shopkeeper??\n");
+      return;
+   }//if
+
+   if (crit->isPlayerShopKeeper()) {
+      crit->valueList(i_th, targ, pc);
+   }//if
+   else {
+      pc.show("That is not a player-run shopkeeper.\n");
+   }//else
+}//value_list
+
+
+void value_add(int i_th, const String* targ, int j_th,
+               const String* obj, critter& pc) {
+   String buf(100);
+   object* obj_ptr;
+
+   if (pc.isMob()) { 
+      return;
+   }//if
+
+   if (pc.isFrozen()) {
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+
+   critter* crit = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
+
+   if (!crit) {
+      pc.show("Add value for which shopkeeper??\n");
+      return;
+   }//if
+
+   obj_ptr = have_obj_named(pc.inv, j_th, obj, pc.SEE_BIT, ROOM);
+
+   if (!obj_ptr) {
+      pc.show("You don't have that object.\n");
+      return;
+   }//if
+
+   if (crit->isPlayerShopKeeper()) {
+      if (crit->isManagedBy(pc)) {
+         crit->valueAdd(*obj_ptr, pc); //will do msgs
+      }//if
+      else {
+         pc.show("You are not the manager of this shopkeeper.\n");
+      }
+   }//if
+   else {
+      pc.show("That is not a player-run shopkeeper.\n");
+   }//else
+}//value_add
+
+
+void adjust_register(int i_th, const String* targ, int new_balance,
+                     critter& pc) {
+   String buf(100);
+
+   if (pc.isMob()) { 
+      return;
+   }//if
+
+   if (pc.isFrozen()) {
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+
+   if (new_balance < 0) {
+      pc.show("That balance is a little too low!\n");
+      return;
+   }//if
+
+   critter* crit = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
+
+   if (!crit) {
+      pc.show("Balance the register for which shopkeeper??\n");
+      return;
+   }//if
+
+   if (crit->isPlayerShopKeeper()) {
+      if (crit->isManagedBy(pc)) {
+         
+         if (new_balance == 1) {
+            // just checking balance
+            Sprintf(buf, "The shopkeeper holds %i coins.\n",
+                    crit->GOLD);
+            pc.show(buf);
+         }//if
+         else {
+            if (crit->GOLD > new_balance) {
+               //gonna give some to the manager (pc)
+               pc.GOLD += (crit->GOLD - new_balance);
+               
+               Sprintf(buf, "You take %i coins from the shopkeeper.",
+                       (crit->GOLD - new_balance));
+               // and take some from the shopkeeper
+               crit->GOLD = new_balance;
+               pc.show(buf);
+            }//if
+            else {
+               // gonna give some to the shopkeeper
+               if ((new_balance - crit->GOLD) > pc.GOLD) {
+                  pc.show("Nice try, but you don't have that much gold to give!\n");
+               }
+               else {
+                  pc.GOLD -= (new_balance - crit->GOLD);
+                  Sprintf(buf, "Transferred %i coins to the shopkeeper.",
+                          (new_balance - crit->GOLD));
+                  crit->GOLD = new_balance;
+                  pc.show(buf);
+               }//else
+            }//else
+         }//else
+      }//if
+      else {
+         pc.show("You are not the manager of this shopkeeper.\n");
+      }
+   }//if
+   else {
+      pc.show("That is not a player-run shopkeeper.\n");
+   }//else
+}//adjust_register
+
+
+void value_rem(int i_th, const String* targ, int val_idx, critter& pc) {
+   String buf(100);
+
+   if (pc.isMob()) { 
+      return;
+   }//if
+
+   if (pc.isFrozen()) {
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+
+   critter* crit = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
+
+   if (!crit) {
+      pc.show("Add value for which shopkeeper??\n");
+      return;
+   }//if
+
+   if (crit->isPlayerShopKeeper()) {
+      if (crit->isManagedBy(pc)) {
+         crit->valueRem(val_idx, pc); //will do msgs
+      }//if
+      else {
+         pc.show("You are not the manager of this shopkeeper.\n");
+      }
+   }//if
+   else {
+      pc.show("That is not a player-run shopkeeper.\n");
+   }//else
+}//value_rem
+
 
 void consider(int i_th, const String* targ, critter& pc) {
    String buf(100);
@@ -1707,6 +1849,12 @@ void consider(int i_th, const String* targ, critter& pc) {
    }//if
 
    int comp_val = pc.compareTo(*crit);
+
+   if (pc.isImmort()) {
+      Sprintf(buf, "Raw compare value: %i (high means target is wimp)",
+              comp_val);
+      pc.show(buf);
+   }//if
    
    if (comp_val > 100) {
       Sprintf(buf, "This %s looks like a joke!", get_dude_chic(*crit));
@@ -1869,7 +2017,12 @@ void com_emote(const String* msg, critter& pc) {
       return;
    }//if
 
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
+   if (pc.isGagged()) {
+      pc.show("You have been gagged already!\n");
+      return;
+   }//if
+
+   if (pc.isFrozen()) {
       show("You are too frozen to do anything.\n", pc);
       return;
    }//if
@@ -1884,6 +2037,43 @@ void com_emote(const String* msg, critter& pc) {
    buf.Cap();
    show(buf, pc);
 }//com_emote
+
+
+/* Possessive Emote
+ * this is the command called by the player, it parses and calls pemote()
+ */
+void com_pemote(const String* msg, critter& pc) {
+   String buf(100);
+
+   if (pc.isMob()) {
+      return;
+   }//if
+
+   if (pc.POS >= POS_SLEEP) {
+      show("You are to relaxed to do anything.\n", pc);
+      return;
+   }//if
+
+   if (pc.isFrozen()) {
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+
+   if (pc.isGagged()) {
+      pc.show("You have been gagged already!\n");
+      return;
+   }//if
+
+   if (msg->Strlen() == 0) {
+      show("What do you wish to emote?\n", pc);
+      return;
+   }//if
+
+   pemote(*msg, pc, ROOM, TRUE);  //do it then 
+   Sprintf(buf, "%S's %S\n", name_of_crit(pc, ~0), msg);
+   buf.Cap();
+   show(buf, pc);
+}//com_pemote
 
 
 /* command called by pc as gecho() */
@@ -2321,19 +2511,10 @@ void _throw(int i_th, const String* dir, int j_th, const String* mob,
       return;
    }//if
 
-   if (pc.POS != POS_STAND) {
-      show("You are in no position to throw anything!\n", pc);
+   if (!ok_to_cast_spell(NULL, "SPF", 0, pc)) {
       return;
    }//if
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
+
 			/* check for exit */
 
    dptr = door::findDoor(ROOM.DOORS, i_th, dir, pc.SEE_BIT, ROOM);
@@ -2342,7 +2523,7 @@ void _throw(int i_th, const String* dir, int j_th, const String* mob,
       return;
    }//if
 
-   if (dptr->dr_data->door_data_flags.get(2)) {
+   if (dptr->isClosed()) {
       show("That direction is closed.\n", pc);
       return;
    }//if
@@ -2380,16 +2561,16 @@ void do_throw(critter& targ, critter& pc) {
    }//if
 
    if (pc.EQ[10])
-     posn = 10;
+      posn = 10;
    else if (pc.EQ[9])
-     posn = 9;
+      posn = 9;
    else {
-     show("You must be holding or wielding something to throw it!\n", pc);
-     return;
+      show("You must be holding or wielding something to throw it!\n", pc);
+      return;
    }//else
-
+   
    if (!obj_drop_by(*(pc.EQ[posn]), pc)) {//should messages too
-     return;
+      return;
    }//if can't get rid of it
 
    if (pc.EQ[posn]->OBJ_FLAGS.get(57)) { //if its a weapon
@@ -2400,12 +2581,13 @@ void do_throw(critter& targ, critter& pc) {
          
          if (!did_shot_hit(targ, pc, TRUE)) {
             Sprintf(buf, "Your %S just misses %S!\n", 
-                    long_name_of_obj(*(pc.EQ[posn]), pc.SEE_BIT), 
+                    pc.EQ[posn]->getName(pc.SEE_BIT), 
                     name_of_crit(targ, pc.SEE_BIT));
             show(buf, pc);
             emote("throws but misses.", pc, ROOM, TRUE);
-            Sprintf(buf, "A %S comes whistling by your head!\n", 
-                    name_of_obj(*(pc.EQ[posn]), ~0));
+            Sprintf(buf, "%S comes whistling by your head!\n", 
+                    long_name_of_obj(*(pc.EQ[posn]), ~0));
+            buf.Cap();
             show_all(buf, room_list[targ.getCurRoomNum()]);
             room_list[targ.getCurRoomNum()].gainInv(pc.EQ[posn]);
             
@@ -2478,10 +2660,10 @@ void do_throw(critter& targ, critter& pc) {
               long_name_of_obj(*(pc.EQ[posn]), pc.SEE_BIT),
               name_of_crit(targ, pc.SEE_BIT));
       show(buf, pc);
-      Sprintf(buf, "\b's %S drops at %S's feet.\n",
+      Sprintf(buf, "%S drops at %S's feet.\n",
               name_of_obj(*(pc.EQ[posn]), ~0), 
               name_of_crit(targ, ~0));
-      emote(buf, pc, room_list[targ.getCurRoomNum()], TRUE, &targ);
+      pemote(buf, pc, room_list[targ.getCurRoomNum()], TRUE, &targ);
       Sprintf(buf, "%S throws %s %S at your feet.\n",
               name_of_crit(pc, targ.SEE_BIT), get_his_her(pc),
               name_of_obj(*(pc.EQ[posn]), targ.SEE_BIT));
@@ -2512,7 +2694,7 @@ short did_shot_hit(critter& targ, critter& pc, int throwing = FALSE) {
    }//if
    else {
      pc_roll = d(1, (int)(pc_roll) + 
-		 get_percent_lrnd(ARCHERY_SKILL_NUM, pc));
+                 get_percent_lrnd(ARCHERY_SKILL_NUM, pc));
    }//else
 
    targ_roll = (4 * targ.DEX + 100); //the 100 offsets pc's percent lrnd
@@ -2703,6 +2885,21 @@ void visible(critter& pc) {
 }//visible
 
 
+void describe(critter& pc) {
+
+   if (pc.isNpc()) {
+      show("Eh??\n", pc);
+      return;
+   }//if
+  
+   show("Enter a new description for yourself.\n", pc);
+   show("Use a solitary '~' on a line by itself to end.\n", pc);
+   show("You may now paste descs up to 2k, ';' acts as a newline btw.\n",
+	pc);
+
+   pc.long_desc.Clear();
+   pc.setMode(MODE_CH_DESC);
+}//describe
 
 
 

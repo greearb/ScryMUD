@@ -39,6 +39,11 @@ bind wound
 This skill allows one to bind his or her wounds to help them to heal
 faster.  Any fighter worth her salt will know this vital skill!
 ~
+blend
+This skill is much like hide, except that rangers may do this only
+in forests.  Depending on how well you know the spell, you may be
+un-noticed by others.
+~
 bless
 Some players may gain their god's favor and be able to bless a person.
 This causes good luck to fall to them and may help them in combat
@@ -239,6 +244,13 @@ dual wield
 This skill allows skillful fighters to wield a weapon in each hand.
 The weapons able to be held relate to their heaviness and the
 strength of the wielder.
+~
+earthmeld
+This skill allows the experienced ranger to bind him or herself to the
+earth in such a way that the earth absorbs some of the damage meant
+to go to the ranger.  It costs considerable mana to keep this 
+connection alive.  If you move out of your immediate surroundings,
+the meld is broken.
 ~
 enchant armor
 This spell allows an experienced mage to cast a spell of protection
@@ -502,6 +514,10 @@ wear off with time.
 sanctuary
 This old favorite gives great protection to whoever it is cast
 upon.  It protects against almost all attacks.
+~
+scan
+This skill lets rangers peer into the surrounding rooms and often
+detect the creatures therein.
 ~
 second attack
 This skill allows the agile warrior to add a second attack to his

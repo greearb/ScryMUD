@@ -31,14 +31,16 @@ const char* DARK_MSG = "It is too dark to see.\n";
 const char* SLEEP_MSG = "Dream on, my friend.\n";
 const char* BLIND_MSG = "You are blind as a bat, and your ears are small.\n";
 const char* NO_CAN_SEE_MSG = "You do not see that here.\n";
-const char* NOT_IN_HAVEN_MSG = "This is much to nice a room to fill with\
-gore!!\n";
-const char* NOT_IN_NOMAG_RM_MSG = "This room is somehow insulated from 
-magical energies!\n";
-const char* SPELL_MUST_BE_STANDING_MSG = "You must be standing to cast this\
-spell.\n";
-const char* NO_PK_HERE_MSG = "If you want to MURDER someone, go somewhere\
-else!!\n";
+const char* NOT_IN_HAVEN_MSG =
+            "This is much to nice a room to fill with gore!!\n";
+const char* NOT_IN_NOMAG_RM_MSG = 
+            "This room is somehow insulated from magical energies!\n";
+const char* SPELL_MUST_BE_STANDING_MSG = 
+            "You must be standing to cast this spell.\n";
+
+const char* NO_PK_HERE_MSG = 
+            "If you want to MURDER someone, go somewhere else!!\n";
+
 const char* NO_MANA_MSG = "You feel too tired to cast this spell.\n";
 const char* PARSE_ERR_MSG = "Do what??\n";
 const char* NO_KNOW_SPELL_MSG = "You don't know where to begin!\n";
@@ -139,7 +141,8 @@ char* critter_positions[10] = {
    "is sleeping here.",
    "is meditating here.",
    "is lying here barely breathing.",
-   "is lying here utterly dead!."
+   "is lying here utterly dead!.",
+   "is lying here prone."
 };// critter_positions
 
 char* critter_conditions[11] = {
@@ -187,10 +190,10 @@ char* login_prompts[] = {
    Your choice is:  ",
 					/* for non-new players */
 
-   //"\nEnter your password:\377\374\001  ",
-   "\nEnter your password:  ",
+   "\n\x1B\x31\x32\x68\nEnter your password:  ",
+   //"\nEnter your password:  ",
    
-   "\nChoose your Race, or you can choose help on the races.
+   "\n\x1B\x31\x32\x6C\nChoose your Race, or you can choose help on the races.
 
 		        Race		Help on Race
 	Human		(1)			(101)

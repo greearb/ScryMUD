@@ -1474,6 +1474,46 @@ void save_obj(int i_th, String* obj_name, critter& pc) {
 
 }//obj_save
 
+void make_pso(int i_th, const String* shop_keeper, critter& pc) {
+   if (!pc.isImmort()) {
+     show("Eh??\n", pc);
+     return;
+   }//if
+  
+   critter* crit_ptr = ROOM.haveCritNamed(i_th, shop_keeper, pc.SEE_BIT);
+
+   if (!crit_ptr) {
+      pc.show("Which NPC shall I make into a player-run shop owner??\n");
+      return;
+   }//if
+
+   if (!pc.doesOwnCritter(*crit_ptr)) {
+      show("You don't own this critter.\n", pc);
+      return;
+   }//if
+
+   // See if we got a shopkeeper...   
+   if (!crit_ptr->mob || !crit_ptr->mob->proc_data ||
+       !crit_ptr->mob->proc_data->sh_data) {
+      pc.show("This is not a shopkeeper, can't make it a player-run shop owner.\n");
+      return;
+   }//if
+
+   if (crit_ptr->isPlayerShopKeeper()) {
+      pc.show("Already a Player-run Shop keeper!\n");
+      return;
+   }
+
+   // Ok, do the work...
+   
+   crit_ptr->mob->proc_data->sh_data->makePSO();
+
+   save_player_shop_owner(*crit_ptr);
+
+   pc.show("Ok, done, don't forget to amsave!!\n");
+
+}//make_pso
+
 
 void ch_mdesc(int which_un, critter& pc) {
    if (!pc.pc || !pc.pc->imm_data) {
@@ -1548,21 +1588,37 @@ void ch_ddesc(int which_un, critter& pc) {
 
 void do_ch_desc(critter& pc) {
    String buf = pc.pc->input.Get_Rest();
+   String* edit_str;
+   int is_pc_desc = FALSE;
+
+   if (pc.isImmort() && pc.pc->imm_data->edit_string) {
+      edit_str = pc.pc->imm_data->edit_string;
+   }
+   else {
+      is_pc_desc = TRUE;
+      edit_str = &(pc.long_desc);
+   }
 
    while (TRUE) {
       if (buf.Strlen() == 0) {
          return;
       }//if
 
-      if (buf == "~") {
+      if ((buf == "~") || (is_pc_desc && (edit_str->Contains('\n') > 10))) {
          show("Description changed.\n", pc);
          pc.setMode(MODE_NORMAL);
-         parse_for_max_80(*(pc.pc->imm_data->edit_string));
-	 pc.pc->imm_data->edit_string = NULL;
+         parse_for_max_80(*(edit_str));
+
+         if (pc.isImmort() && pc.pc->imm_data->edit_string) {
+            pc.pc->imm_data->edit_string = NULL;
+         }
+
          return;
       }//if
-      *(pc.pc->imm_data->edit_string) += buf;  //append the line to desc
-      *(pc.pc->imm_data->edit_string) += "\n";
+
+      *(edit_str) += buf;  //append the line to desc
+      *(edit_str) += "\n";
+
       buf = pc.pc->input.Get_Rest();
    }//while
 }//do_ch_desc

@@ -9,5 +9,5 @@ Syntax:  emote [message]
 Example:  emote runs away!!   	And your name is Grock,
 	Shows everyone in your room:  Grock runs away!!
 <color=red>
-See Also:  socials, say, gecho
+See Also:  socials, say, gecho, pemote
 </color></help>

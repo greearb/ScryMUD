@@ -706,7 +706,7 @@ void _goto(int i_th, const String* name, critter& pc) {
       ROOM.doPoofOut(pc);
    }
    else {
-      emote("dissapears with popping sound!\n", pc, ROOM, FALSE);
+      emote("dissapears with a popping sound!\n", pc, ROOM, FALSE);
    }
 
    //mudlog << "WARNING: about to doGoToRoom: " << i_th << endl;
@@ -849,24 +849,6 @@ void uptime(critter& pc) {
 }//uptime
 
 
-void scan(critter& pc) {
-   Cell<critter*> cll;
-   String buf(100);
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (!pc.isStanding()) {
-      pc.show("You need to be standing scan efficiently.\n");
-      return;
-   }
-
-   ROOM.doScan(pc);
-}//scan
-
-
 void zgoto(int i_th, critter& pc) {
    int rm_num;
 
@@ -910,7 +892,7 @@ void zgoto(int i_th, critter& pc) {
       ROOM.doPoofOut(pc);
    }
    else {
-      emote("dissapears with popping sound!\n", pc, ROOM, FALSE);
+      emote("dissapears with a popping sound!\n", pc, ROOM, FALSE);
    }
 
    int is_dead;
@@ -1952,6 +1934,7 @@ void mset(int i_th, const String* vict, const String* targ, int new_val,
       show("bad_assedness (-10, 10)     skill_violence (-10, 10)\n", pc);
       show("defensiveness (-10, 10)     social_awareness (-10, 10)\n", pc);
       show("benevolence (-10, 10)       pause (0, 50)\n", pc);
+      show("manager\n", pc);
       return;
    }//if
 
@@ -2047,6 +2030,25 @@ void mset(int i_th, const String* vict, const String* targ, int new_val,
 	  ptr->mob->setBenevolence(new_val);
           flag = TRUE;
 	}//if
+      }//if
+      else if (strncasecmp(*targ, "manager", len1) == 0) {
+         if (pc.getImmLevel() >= 9) {
+            if (ptr->isPlayerShopKeeper()) {
+               ptr->mob->proc_data->sh_data->manager = *new_val_string;
+               
+               if (ptr->isSmob()) {
+                  pc.show("Saving shop owner now.\n");
+                  save_player_shop_owner(*ptr);
+               }//if
+
+            }//if
+            else {
+               pc.show("Not a shopkeeper.\n");
+            }//else
+         }//if
+         else {
+            pc.show("You must be level 9 immort or higher.\n");
+         }
       }//if
    }//if
 

@@ -37,7 +37,6 @@
 
 void roll(int i, int j, critter& pc);
 void uptime(critter& pc);
-void scan(critter& pc);
 void passwd(const String* old, const String* new1, const String* new2,
             critter& pc);
 void unsiteban(const String* site, critter& pc);
