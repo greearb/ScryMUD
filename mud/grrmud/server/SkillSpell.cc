@@ -313,7 +313,7 @@ String SSCollection::generateGifDotScript() {
    String retval(5000);
    String buf(200);
 
-   retval = "digraph ss_graph {\n\tpage=\"40,80\";\n\tsize=\"40,80\";\n";
+   retval = "digraph ss_graph {\n\tpage=\"80,80\";\n\tsize=\"80,80\";\n";
    retval += "\t//orientation=landscape;\n";
 
    for (int i = 0; i<NUMBER_OF_SKILL_SPELLS; i++) {
