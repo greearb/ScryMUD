@@ -1,0 +1,20 @@
+<help olc add_casts_spell>
+
+This function allows you to add a single 'casts spell' to an object.
+You will need to do an 'aosave' in the zone to which the object
+belongs in order to make the changes permanent.
+
+CASTS SPELL  Relates to staffs, scrolls, and potions, currently.
+
+See slist for spell numbers available.
+
+usage:  add_casts_spell [mob_num] [spell_level] [spell_num]
+
+Example:
+        add_casts_spell 65 30 7  // add a level 30 spell numbered 7
+				 // to object 65.
+
+
+<color=red>
+See Also:  add_stat_affect, ostat add_casts_spell slist
+</color></help>

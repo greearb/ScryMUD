@@ -1,0 +1,35 @@
+<help general topics>
+
+Here is a list of all mortal help topics.
+
+abilities        anitre           assist           backstab         
+beep             berserk          bodyslam         brief            
+butcher          buy              cast             channels         
+claw             close            color            commands         
+consider         construct        credits          curse            
+date             disarm           discuss          donate           
+drink            drop             dwarf            east             
+elf              emote            empty            eq               
+exit             exits            fill             flee             
+get              give             go               group            
+help             hit              hold             human            
+idea             inventory        ironclad         junk             
+lock             look             meditate         move             
+north            northeast        northwest        offer            
+open             order            page_break       passwd           
+picklock         post             practice         prompt           
+put              quaf             quit             races            
+recite           regeneration     remove           reply            
+roll             save             say              scan             
+scribe           sell             shield           shoot            
+sit              skin             sleep            sneak            
+sombre           south            southeast        southwest        
+suicide          tail             tell             theme            
+time             title            toggle           topics           
+ungroup          unlock           up               use              
+wear             west             where            who              
+wimpy            wizlist          
+
+<color=red>
+See Also:  commands, wizhelp
+</color></help>

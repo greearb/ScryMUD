@@ -1,0 +1,14 @@
+Category:  OLC  Topic:  list_scripts
+
+
+
+List every script that a mob has.  It only shows headers, so you have to
+do a stat_script command to get a verbose description of each.
+
+usage:  list_scripts [mob_num] 
+
+Example:  list_scripts 69              // List scripts for mob 69
+
+
+
+See Also:  stat_script add_mob_script rm_script

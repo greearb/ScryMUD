@@ -1,0 +1,10 @@
+Category:  General  Topic:  quaf
+
+
+
+Used to consume potion-type objects.
+
+syntax:  quaf	 	 	 Assumes you are holding the potion.
+	 quaf <potion_name>     Assume potion_name is in your inventory.
+
+See Also:  recite, use, concoct

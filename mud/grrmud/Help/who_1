@@ -1,0 +1,13 @@
+<help general who>  
+
+Lists all players currently playing.  If you wouldn't have the ability
+to see them, in their current room, then they will just show up as 
+Someone.  
+
+Syntax:  who
+
+<color = red>
+See Also:  ldwho, sockets
+</color>
+
+</help>

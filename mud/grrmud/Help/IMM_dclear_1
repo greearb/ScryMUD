@@ -1,0 +1,15 @@
+<help olc dclear>
+
+This is similar to mclear, it delets a door_data (the thing you build with
+OLC) from the database.  Use adsave AND asave to make the changes permanent.
+
+Syntax:  dclear [door_num]
+
+Example:  dclear 17
+<color=red>
+See Also:  delete_door, adsave, asave, dstat, dlist
+</color>
+NOTE:  You must own this door (have built it) to destroy it.
+
+NOTE:  door_num refers to its index, ie the number by it in 'dlist'
+</help>

@@ -1,0 +1,20 @@
+<help olc amsave>
+
+This saves all mobss belonging to the zone you designate, or the default,
+which is the one you are in when you give the command.  It is destructive in
+that the old mob database on disk is destroyed, written over.  This 
+command is useful for fine tuning your mobs for your zone.  This is also
+a way you can permanently (almost) delete an object from the database if
+you no longer want it.  In case of accidents, there is a duplicate copy
+saved in your OLC_DIR, but there is no online way to mess with it.
+
+Syntax:  amsave <<zone_num>         //attempt to save mobs in [zone_num] 
+         amsave			   //attempt to save mobss in current zone
+
+Example:  amsave 15
+	  amsave
+<color=red>
+See Also:  asave, aosave, mset, mclear
+</color>
+Note:  You can only use this command on zones you are an owner of.
+</help>

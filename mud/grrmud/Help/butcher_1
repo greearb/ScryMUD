@@ -1,0 +1,11 @@
+<help skills butcher>
+
+This is a way to get food from a corpse.
+
+Syntax: butcher <<i_th> [object]
+
+Example:  butcher 2.corpse
+
+<color=red>
+See Also:  eat, drink
+</color></help>

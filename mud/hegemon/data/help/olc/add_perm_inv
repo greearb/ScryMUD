@@ -1,0 +1,11 @@
+Category:  OLC  Topic:  add_perm_inv
+
+
+
+This is used to add permanent inventory to Shopkeepers.
+
+Syntax:  add_perm_inv <i_th> [shopkeeper] [object_number]
+
+Example:  add_perm_inv 2.baker 5	He now sells object number 5.
+
+See Also:  olc, mstat, olist, aolist, buy, list, rem_perm_inv

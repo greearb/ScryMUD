@@ -1,0 +1,19 @@
+<help immortal snoop>
+
+This command lets you (silently) observe every command a player
+enters.  This is a considerable invasion of privacy, so do not
+do this just for kicks.  All such activity is logged and will
+be reviewed.
+
+You are restricted to snooping PC's only, and you must be at
+least level 8 immortal.  You may not snoop those of a higher
+immort level than yourself.  You do not have to be in the same
+room as your victim.
+
+syntax:  snoop <<i_th> [mob_name]
+
+example:  snoop luser
+
+<color=red>
+See Also:  order, force, unpossess, unsnoop
+</color></help>

@@ -1,0 +1,13 @@
+Category:  General  Topic:  empty
+
+
+
+Attempt to empty your container onto the ground.  This is sometimes
+necessary before you fill it up, because you cannot mix liquids in
+your canteens.  At least not with this command! (see Concoct).
+
+Syntax:  empty <i_th> [container]
+
+Example:  empty canteen
+
+See Also:  fill, drink, examine, open, concoct

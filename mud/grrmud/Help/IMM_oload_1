@@ -1,0 +1,11 @@
+<help olc oload>
+
+Loads an object into your inventory.
+
+Syntax:  oload [obj_num]
+
+Example:  oload 33		load object number 3, if it exists
+
+<color=red>
+See Also:  aolist, olist, oclone, mload
+</color></help>

@@ -1,0 +1,13 @@
+Category:  General  Topic:  unlock
+
+
+
+Attempt to lock either an object in your inventory or the rooms 
+inventory, or a door in the current room.
+
+Syntax:  unlock <i_th> [object]
+
+Example:  unlock northwest
+	  unlock 2.cabinet
+
+See Also:  lock, open, close

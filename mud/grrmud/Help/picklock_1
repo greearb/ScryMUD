@@ -1,0 +1,12 @@
+<help skills picklock>
+
+This skill allows some gifted individuals to open locks without
+keys.  This may work on containers or doors, but some can also be
+immune to such attacks. 
+
+Syntax:  picklock <<i_th> [target]
+
+Example: picklock 2.cabinet
+<color=red>
+See Also:  lock, unlock
+</color></help>

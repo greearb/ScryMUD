@@ -1,0 +1,6 @@
+<help general northeast>
+
+Attempt to go northeast.  Can be abbreviated ne.
+<color=red>
+See Also:  go, move
+</color></help>

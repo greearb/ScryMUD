@@ -1,0 +1,10 @@
+Category:  General  Topic:  list
+
+
+
+This command lists all that is for sale by a certain shopkeeper.
+
+Syntax:  list <i_th> [shopkeeper]>
+
+
+See Also:  offer, buy, sell

@@ -1,0 +1,6 @@
+<help general northwest>
+
+Attempt to go northwest.  Can be abbreviated nw.
+<color=red>
+See Also:  go, move
+</color></help>

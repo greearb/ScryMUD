@@ -1,0 +1,12 @@
+<help immortal siteban>
+
+Removes a siteban.  The argument must exactly match.  It deletes
+only the first instance of the site, if there are multiple.
+
+Syntax:  unsiteban [site_to_unban]
+
+Example:  unsiteban 207.68.178.        #UnBan an entire subnet or two.
+
+<color=red>
+See Also:  ungag, siteban, freeze, thaw, gag, list_site_bans
+</color></help>

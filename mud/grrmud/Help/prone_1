@@ -1,0 +1,9 @@
+<help general prone>
+
+This state allows you to better dodge incomming missiles, but you are
+more open to attack, and you are of course immobile.
+
+Syntax:  prone
+<color = red>
+See Also:  sleep, wake, rest, sit, meditate, stand
+</color></help>

@@ -1,0 +1,19 @@
+<help immortal shutdown>
+
+Takes the system down peacefully.  Pc's are all saved, but zones
+are not, which shouldn't be a problem.  Before bringing it down,
+make sure anyone doing OLC has saved their changes if necessary. 
+If you add the complete argument, then the game will not come
+back up automatically!! 
+
+Syntax:  shutdown <<complete>
+
+Example:  shutdown         // reboot the game, back in 1-3 minutes
+          shutdonw complete// down untill someone logs into the
+                           // server's account and starts
+                           //   it with the 'startup' command.
+          shutdown NEW_DB  // Cause a new world to be loaded
+
+<color=red>
+See Also:  quit, save, write_zone, update_cig
+</color></help>

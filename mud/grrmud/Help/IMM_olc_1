@@ -1,0 +1,36 @@
+<help olc olc>
+		        On Line Coding!
+
+Olc allows you to expand the mud while playing it.  
+To enter olc type:  olc
+
+     From there it should be pretty self explanatory.  Some
+restrictions are built in, but you still have a lot of leeway.
+Please build with game balance in mind.
+	When you create a room, door, object, or critter it is
+automatically placed in your OLC directory on the server's hard
+drive.
+
+NOTE:  You can temporarily exit out any time with quit_olc.  If you
+re-enter OLC with the 'olc' command, you will be back where you
+started.
+
+NOTE:  You can 'escape' olc to gossip, tell, and say (only) with
+the ':' command.  For example, you are in olc and want to ask a
+question.  The following command might be useful:
+
+: gossip What does a complete sentance look like?
+
+
+Some other commands that might be useful for building are:
+<color=red>
+     RESET_OLC, zlock, zunlock, flip_door, delete_door, write_zone,
+     door_to, mgoto, rclear, olist, objlist, rlist, roomlist, mlist,
+     moblist, tog_rflag, tog_oflag, tog_mflag, replace_door, see_all.
+</color>
+NOTE:  If you wish to build/alter rooms you MUST first LOCK the zone. 
+       YOU MUST BE THE OWNER OF THE ZONE TO WRITE IT OUT TO DISK!
+NOTE:  If you can run Java, try out the Java Client, with a GUI
+       interface
+       to OLC!!
+</help>

@@ -1,0 +1,11 @@
+Category:  OLC  Topic:  arlist
+
+
+
+This function lists all rooms defined in a given zone.
+
+Syntax:  arlist [zone_num] [how_many]
+
+Example:  arlist 2 50 		Shows first 50 rooms defined in zone 2.
+
+See Also:  amlist, aolist, rlist, olc, goto

@@ -1,0 +1,15 @@
+<help olc tog_zflag>
+
+Used to toggle a room flag in every room in your CURRENT zone.
+
+syntax:  tog_zflag <<flag_num>
+
+example:  tog_zflag 3 		Toggles flag # 3 in current zone.
+
+Bugs:  Some flags are (and should be) restricted from toggling.  As
+       an Imp adds/deletes/changes flags, he/she should check this
+       and similar functions for possible tweaking.
+
+<color=red>
+See also:  olc, tog_oflag, tog_rflag, tog_mflag, rclone, write_zone
+</color></help>

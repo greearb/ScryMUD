@@ -1,0 +1,13 @@
+Category:  General  Topic:  close
+
+
+
+Attempt to close a door or container.  If it is a container, it does not
+have to be in your inventory, it can also be found in your current room.
+
+Syntax:  close <i_th> [target]
+
+Example:  close 2.bag
+
+
+See Also:  open, lock, examine

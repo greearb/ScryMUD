@@ -1,0 +1,15 @@
+Category:  OLC  Topic:  delete_door
+
+
+
+This command deletes a door from a room.  This does not destroy the door
+in memory, it only deletes the pointed to it from the current room.  Also,
+it in NO WAY affects the other virtual side of the door.  In other words,
+you have to delete a door one side at a time.
+
+syntax:  delete_door <n_th> [name of door]
+
+example:  delete_door east	Deletes first door of name east.
+          delete_door 2.wooden  Deletes the second door named wooden.
+
+See also:  olc, flip_door, replace_door, door_to

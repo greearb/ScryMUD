@@ -1,0 +1,11 @@
+<help general remove>
+
+Attempt to quit using a piece of your equipment.
+
+Syntax:  remove [target]
+
+Example:  remove gloves
+	  remove all
+<color=red>
+See Also:  eq, wear, inventory
+</color></help>

@@ -1,0 +1,21 @@
+<help general look>
+
+This command shows you all in your immediate room, all that you
+can detect easily that is.  You can also look at specific
+objects, people, and doors for more detailed descriptions of
+each.  Note that some things exist in a room, but may be
+impossible to see if you don't know exactly what to look for (ie
+it's name). 
+
+Also, you can look at the sky to see if you are indoors or not.
+
+If you are trying to look into a bag or a buletin board, try
+using the examine command.
+
+Syntax:  look <<i_th> [object]
+
+Example:  look		shows current room
+	  look guard	shows you the guard
+<color=red>
+See Also:  examine, brief, read
+</color></help>

@@ -1,0 +1,10 @@
+<help immortal sockets>
+
+This command is a more detailed who.  It shows both link-dead and
+playing players.  It also shows some extra detail, such as the
+player's host. 
+
+Syntax:  sockets
+<color=red>
+See Also:  who, ldwho
+</color></help>

@@ -1,0 +1,12 @@
+<help olc adsave>
+
+Writes all doors in your zone out to permanent storage.  Usefull after
+modifying a door in some way, or deleting one using 'dclear'.
+
+Syntax:  adsave <<zone_num>
+
+Example:  adsave	//default zone_num is your current zone
+	  adsave 0      //save doors for zone zero
+<color=red>
+See Also:  dclear, asave, dstat, dlist
+</color></help>

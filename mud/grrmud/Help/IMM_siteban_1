@@ -1,0 +1,28 @@
+<help immortal siteban>
+
+This command can be used to ban a given IP address, or an entire
+subset of IP addresses.  It may also work on hostnames, but that is
+dependent on how the code is written in grrmud.cc.  For now, it only
+works on IP.  I'll illustrate by example.  If you wanted to ban
+the IP address 127.0.0.1, you would simply:  siteban '127.0.0.1'
+
+If instead you wanted to ban everyone from that site, you might do
+something like:  siteban '127.0.0.'   (notice the trailing period.)
+
+If you want to only ban newbies from a certain site, prepend N to the
+first of the ip address, like:  siteban 'N166.66.66.'
+
+Only level 8 and above immorts can use this command.  Please see
+the 'See Also' section, as it has some other, less powerful methods
+to dicipline ppl. 
+
+NOTE:  You have to put the single quotes around the IP.
+
+Syntax:  siteban '<<N>[site_to_ban]'
+
+Example:  siteban '207.68.178.'        #Ban an entire subnet or two.
+Example:  siteban 'N207.68.178.'       #Ban all newbies from that subnet.
+
+<color=red>
+See Also:  ungag, freeze, gag, list_site_bans, unsiteban
+</color></help>

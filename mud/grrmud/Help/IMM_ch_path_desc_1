@@ -1,0 +1,13 @@
+<help olc ch_path_desc>
+
+Changes the description of a certain path cell in a vehicle.
+You will be prompted for input after entering this command.
+
+Syntax:  ch_path_desc [vehicle_num] [path_cell_num]
+
+Example:  ch_path_desc 25 2         Change the desc of the 2nd cell in vehicle #25
+
+<color=red>
+See Also:  rstat, stat_path, ch_path_desc, set_path_dir, rem_path, add_path,
+See Also:  tog_veh_stop, list_paths
+</color></help>

@@ -1,0 +1,14 @@
+<help olc save_mob>
+
+This command is strange and powerful.  It will allow you to change a
+SMOB (a modified Mobile) back into a MOB (unmodified).  It isn't always
+perfect, but it's a good way to give an already built mob another
+piece of EQ for example.  You must do an asave to make it permanent.
+
+Syntax:  save_mob <<i_th> [mob_name]
+
+Example:  save_mob 2.guard
+
+<color=red>
+See Also:  mset, give, mstat, amsave
+</color></help>

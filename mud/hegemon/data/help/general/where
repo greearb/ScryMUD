@@ -1,0 +1,11 @@
+Category:  General  Topic:  where
+
+
+
+This command can sometimes give you hints to the location of
+a player.  It does not currently help you with NPC's for
+performance reasons.
+
+Syntax:  where <i_th> [player_name]
+
+See Also:  track

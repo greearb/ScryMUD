@@ -1,0 +1,9 @@
+<help general stand>
+
+This is your most mobile state.  Many commands only work when you are
+standing.  
+
+Syntax:  stand
+<color = red>
+See Also:  sleep, wake, rest, sit, meditate
+</color></help>

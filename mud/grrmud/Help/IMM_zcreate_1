@@ -1,0 +1,16 @@
+<help immortal zcreate>
+
+This command creates a new zone in the mud, providing there are
+enough undelegated rooms left in the database.  Only a select few
+can use this command. 
+
+syntax:  zcreate [num_of_rooms] [ticks_between_reset] ['zone  name']
+
+Example:  zcreate 100 20 'Dar Thane'	100 rooms, 20 ticks between
+					resets.
+	  zcreate 100 20 Dar_Thane	Only the names differ.
+
+<color=red>
+See Also:  zenable, zdisable, zlist, ch_zname
+</color></help>
+

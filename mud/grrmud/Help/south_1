@@ -1,0 +1,6 @@
+<help general south>
+
+Attempt to exit to the south.
+<color=red>
+See Also:  go, move
+</color></help>

@@ -1,0 +1,12 @@
+<help olc rem_path>
+
+Removes the specified path cell from the specified vehicle.  
+
+Syntax:  rem_path [vehicle_num] [path_cell_num]
+
+Example:  rem_path 25 2         Remove the second path.
+
+<color=red>
+See Also:  rstat, stat_path, ch_path_desc, set_path_dir, rem_path, add_path,
+See Also:  tog_veh_stop, list_paths, set_path_pointer
+</color></help>

@@ -1,0 +1,14 @@
+<help olc list_paths>
+
+This will list the path cells for a given room.  If you don't specify a
+room (vehicle) number, then your current room will be used.
+
+Syntax:  list_paths <vehicle_num>
+
+Example:  list_paths 25         List paths for vehicle number 25
+          list_paths            List paths for your current location.
+
+<color=red>
+See Also:  rstat, ch_path_desc, set_path_dir, rem_path, add_path,
+See Also:  tog_veh_stop, list_paths
+</color></help>

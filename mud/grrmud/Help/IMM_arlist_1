@@ -1,0 +1,12 @@
+<help olc arlist>
+
+This function lists rooms defined in a given zone.
+
+Syntax:  arlist [zone_num] [how_many]
+
+Example:  arlist 2 50       Shows first 50 rooms defined in zone 2.
+Example:  arlist            Shows first 100 of current zone.
+
+<color=red>
+See Also:  amlist, aolist, rlist, olc, goto
+</color></help>

@@ -1,0 +1,10 @@
+<help immortal make_builder>
+
+Advance a pc to builder status.
+
+Syntax:  make_builder <<i_th> [target_name]
+
+Example:  make_builder whirlwind
+<color=red>
+See Also:  zcreate, olc, zenable, zdisable
+</color></help>

@@ -1,0 +1,10 @@
+<help general time>
+
+Returns the current game time.  This may have little to do with the
+time in your current zone, as time flows a little differently here...
+
+syntax:  time
+
+<color = red>
+See Also:  date
+</color></help>

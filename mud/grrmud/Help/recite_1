@@ -1,0 +1,12 @@
+<help general recite>
+
+Used to trigger scrolls.
+
+syntax:  recite <<scroll_name> [target_name]
+
+examples:  recite recall		Assumes an implicit target.
+	   recite parchment ogre	Unleash your spell on the 
+					parchment onto the ogre.
+<color=red>
+See Also:  quaf, use, scribe
+</color></help>

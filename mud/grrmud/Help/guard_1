@@ -1,0 +1,12 @@
+<help skills guard>
+
+Guard allows one to protect someone from danger.  It is not
+foolproof, but the better you are practiced in it, the better
+chance you will have. 
+
+Syntax:  guard <<i_th> [person]
+
+Example:  guard grock
+<color=red>
+See Also:  shield
+</color></help>

@@ -1,0 +1,25 @@
+Admin ~	names 127.0.0.1
+ the newbie
+~
+
+~
+You see someone who is quite normal.
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+3000 1 0 	long_data
+0 17 17 16 12 17 16 0 0 65 1 0 2 3 1 34 108 108 0 
+40 0 0 5 34 108 108 0 100 100 115 106 105 87 0 0 2 3 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1024 1 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+bgio24h/ZwWLw	passwd
+16 11 2 -1  -:| bitfield |:-
+71 15 15 71 903307120 100		bday, byr, ryr, rday, llt, tto
+18 24 24 -2 0 0 0 age hgr thr drg pk died qp
+118 25 134 25 -1	ss_known
+%N<%hH %mM %vV >
+10	Imm level
+*** end of pc data ***
+	end_of_crit

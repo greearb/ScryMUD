@@ -1,0 +1,48 @@
+#  -*-Makefile-*-
+
+
+#  A common place IN YOUR PATH where tools can be put
+TOOL_BIN_DIR=${HOME}/bin
+
+#  This should be the directory that you unzip the distribution
+#  in.
+MUD_HOME=${HOME}/mud
+#MUD_HOME=${HOME}/mud_dev
+
+#  This is the version of the make utility you wish to use.
+#  On some systems (BSD?) you might want this to be gmake.
+#MAKE=gmake
+MAKE=make
+
+
+###################################################
+#  Normally won't have to configure under here...
+###################################################
+
+
+CUR_DATE=`date '+%y.%m.%d'`
+
+#  For distribution purposes
+SCRY_VERSION=1.8.3
+HEGEMON_VERSION=1.8.2
+
+LDFLAGS =  -L$(MUD_HOME)/lib #linker flaggs
+
+# These are for egcs
+
+ #compiler flags
+#CCFLAGS = -g -D_GNU_SOURCE -fguiding-decls\
+#          -Wall -I$(MUD_HOME)/include
+#LDLIBS =  -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
+
+
+# This is for gcc (g++)
+CCFLAGS = -g -Wall -I$(MUD_HOME)/include #compiler flags-fguiding-decl
+LDLIBS =  -lm -lstring2 -lbitfield #-lnsl # -lsocket
+
+
+
+#  Other compilers may work, but I haven't tested with them.
+#  I don't suppose it could hurt to try though!
+CC = g++       # this is generally the c compiler, unused AFAIK
+CCC = g++      # this is generally the c++ compiler

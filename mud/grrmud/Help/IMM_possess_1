@@ -1,0 +1,19 @@
+<help immortal possess>
+
+This is similar to charm.  Basically, every input you enter
+acts as input that the MOB you are possessing entered.  You will
+be limited to the normal restrictions placed on that MOB.
+
+The only way to give commands to your own character is to unpossess
+your current victim, or to proceed each command with 'self'.
+
+You are restricted to possessing NPC's only, and you must be at
+least level 5 immortal.
+
+syntax:  possess <<i_th> [mob_name]
+
+example:  possess 2.guard
+
+<color=red>
+See Also:  order, force, unpossess, snoop
+</color></help>

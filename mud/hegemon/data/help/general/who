@@ -1,0 +1,12 @@
+Category:  General  Topic:  who
+
+  
+
+Gives a list of all the players visible to the caller of the command.
+
+syntax:  who
+
+See Also:  tell, sockets, ldwho
+
+
+Notes:  Extra commands to narrow down the list may be added later.

@@ -1,0 +1,16 @@
+<help olc stat_script>
+
+This function allows you to list a single script in it's entirety.  The
+client will be able to recognize this and have a menu specially designed to
+help you edit the script.
+
+usage:  stat_script [mob_num] [script_index]
+
+Example:
+	stat_script 0        // view script[0] (The first one.)
+	stat_script 5        // view script[5]
+
+
+<color=red>
+See Also:  list_scripts add_mob_script rm_script
+</color></help>

@@ -1,0 +1,13 @@
+<help olc stat_path>
+
+This function returns a great deal of information about the
+i_th path in the vehicle numbered <<veh_num>.
+
+Syntax:  stat_path [veh_num] [path_cell_num]
+
+Example:  stat_path 25 2                Stat the second cell in vehicle #25
+
+<color=red>
+See Also:  rstat, ch_path_desc, set_path_dir, rem_path, add_path,
+See Also:  tog_veh_stop, list_paths
+</color></help>

@@ -1,0 +1,9 @@
+<help general list>
+
+This command lists all that is for sale by a certain shopkeeper.
+
+Syntax:  list <<<<i_th> [shopkeeper]>
+
+<color=red>
+See Also:  offer, buy, sell
+</color></help>

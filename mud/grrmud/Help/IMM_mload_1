@@ -1,0 +1,11 @@
+<help olc mload>
+
+Loads a mob into your current room.
+
+Syntax:  mload [mob_num]
+
+Example:  mload 3		load mob number 3, if it exists
+
+<color=red>
+See Also:  amlist, mlist, mclone, oload
+</color></help>

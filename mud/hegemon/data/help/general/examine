@@ -1,0 +1,12 @@
+Category:  General  Topic:  examine
+
+
+
+This is the command that allows you to peek into a container.  It will show
+all of the items an open container holds.  Of course, if you haven't
+the ability to view a object, like its invisible and you can't detect
+invisibility, you will not see it.
+
+Syntax:  examine <i_th> [target]
+
+See Also:  open, look, put, get, read, post

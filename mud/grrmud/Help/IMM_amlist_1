@@ -1,0 +1,10 @@
+<help olc amlist>
+
+This command lists all mobs belonging to a certain zone.
+
+Syntax:  amlist [zone_num] [how_many]
+
+Example:  amlist 1 15		Shows first 15 mobs for zone 1
+<color=red>
+See Also:  mlist, arlist, aolist, olc
+</color></help>

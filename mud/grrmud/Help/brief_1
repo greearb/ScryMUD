@@ -1,0 +1,13 @@
+<help general brief>
+
+This command toggles brief off and on.  When brief is ON, you do not see
+full room descriptions.  
+
+synopsis:  brief
+
+example:   brief
+
+<color=red>
+See also:  toggle
+</color></help>
+

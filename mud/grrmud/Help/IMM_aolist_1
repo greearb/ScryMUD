@@ -1,0 +1,10 @@
+<help olc aolist>
+
+This command lists all objects belonging to a certain zone.
+
+Syntax:  aolist [zone_num] [how_many]
+
+Example:  aolist 1 15		Shows first 15 objects for zone 1
+<color=red>
+See Also:  olist, arlist, amlist, olc
+</color></help>

@@ -1,0 +1,14 @@
+<help general order>
+
+This command allows you to control your pets.  It is quite powerful,
+but you must remember that you can't force a pet beyond its own
+limitations, whatever they may be.
+
+syntax:  order [i_th] <<pet> <<command string>    Order one pet.
+         order followers <<command string>  	Order all pets.
+
+example:  order fol get sword		All will attempt to get a sword.
+          order fol fol			All will follow themselves now.
+<color=red>
+See Also:  group, ungroup, follow, possess, enslave
+</color></help>

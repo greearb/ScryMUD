@@ -1,0 +1,14 @@
+<help skills sneak>
+
+Sneak allows one to enter and exit rooms silently.  Some sharp
+eyed people will catch you every now and then, but for the most
+part they have to look hard to notice you. 
+
+Example:  sneak
+<color=red>
+See Also:  scan, follow
+</color>
+
+NOTE:  to un-sneak, just type sneak again.  Also, entering into battle
+	and other active things makes you stop sneaking of course!!
+</help>

@@ -1,0 +1,11 @@
+<help olc ch_rdesc>
+
+This function should allow you to change the description of your
+current room.  You then must write the zone out to make the changes
+stick.
+
+usage:  ch_rdesc
+
+<color=red>
+See Also:  olc, write_zone, rset, rstat
+</color></help>

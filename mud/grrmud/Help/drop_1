@@ -1,0 +1,12 @@
+<help general drop>
+
+Attempts to drop something you have in inventory onto the ground.
+
+Syntax:  drop <<i_th> [object]
+
+Examples:  drop sword
+	   drop 2.bread
+	   drop all.bread		Drops all bread in inventory.
+<color=red>
+See Also:  get, put, donate, junk, opurge
+</color></help>

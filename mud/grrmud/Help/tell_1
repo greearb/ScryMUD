@@ -1,0 +1,13 @@
+<help communications tell>
+
+Attempts to tell a message to some other person.  The person can be
+anywhere, as long as they are visible to you.  You cannot 'tell' NPC's
+anything at this time.
+
+syntax:  tell <<target_person> <<message text>
+
+example:  tell gideon I have your bible!
+<color = red>
+See Also:  say, channels, discuss, emote, reply
+</color></help>
+

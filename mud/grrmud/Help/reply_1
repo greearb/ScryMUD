@@ -1,0 +1,15 @@
+<help communications reply>
+
+This command attempts to send a 'tell' to the last person who 'told' you
+something.  This can be a handy shortcut, but it could also be
+embarrassing, as you could end up telling the wrong person something
+important.
+
+syntax:  reply [message text]
+
+example:  reply Why don't you come... rescue me from this boring man!
+
+<color = red>
+See Also:  say, channels, discuss, tell
+</color></help>
+

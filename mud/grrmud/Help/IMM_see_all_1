@@ -1,0 +1,10 @@
+<help immortal see_all>
+
+This command allows immortals to see all but the highest gods.  This
+includes any mortal and link-dead players.
+
+syntax:  see_all
+<color=red>
+See Also: visible, wizinvis
+</color></help>
+

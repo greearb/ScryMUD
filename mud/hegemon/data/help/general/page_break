@@ -1,0 +1,23 @@
+Category:  General  Topic:  page_break
+
+  
+
+Will cause the output to pause after a given number of lines,
+untill you hit [enter].  This can be useful for those who do
+not have scroll-back buffers.  Note that the output buffer is
+only so big, though, so if you leave it paused for too long,
+output from the MUD may be lost.  (The buffer holds around
+25000 characters, so this should be a rare problem.)
+
+You will also want to toggle whether or not you want to use
+page breaks.  For this use the toggle command (toggle 'page breaks').
+Type 'toggle' to see your options and current settings.
+
+Syntax:  page_break [number_of_lines_per_page]
+
+Example:  page_break 25
+
+
+See Also:  toggle
+
+

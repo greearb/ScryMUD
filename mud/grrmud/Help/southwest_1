@@ -1,0 +1,6 @@
+<help general southwest>
+
+Attempt to go southwest.  Can be abbreviated sw.
+<color=red>
+See Also:  go, move
+</color></help>

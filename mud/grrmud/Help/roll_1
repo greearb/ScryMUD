@@ -1,0 +1,18 @@
+<help general roll>  
+
+Does a random dice roll, given a number of dice and the number of
+sides per dice.  This was suggested to aid rollplaying, and so is open
+to both mortals and immortals.  There is also a social by this name,
+so you have to enter numbers for this dice functionality.
+
+Syntax:  roll [dice_count] [dice_sides]
+
+Example: roll 4 5                #  This simulates the sum of 4 dice,
+                                 #  of 5 sides each, being rolled (randomly).
+                                 #  Some of you may think of this as:  4d5
+
+<color = red>
+See Also:  emote
+</color>
+
+</help>

@@ -1,0 +1,12 @@
+<help general suicide>
+
+This is the manner in which you permanently kill (delete) your character.
+For added safety you must type the entire command (no abbreviation) and
+your password.
+
+Syntax:  suicide [password]
+
+Example:  suicide goober
+<color = red>
+See Also:  quit
+</color></help>

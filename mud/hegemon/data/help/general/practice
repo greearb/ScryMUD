@@ -1,0 +1,14 @@
+Category:  General  Topic:  practice
+
+
+
+This is how you gain the ability to do skills and spells.  A guildmaster
+of your class must be presesnt to teach you.  If given no arguments, practice
+will show you what you already know.
+
+Syntax:  practice [spell/skill] <<i_th> [teacher]>
+
+Example:  practice illumminate		Teaches you illuminate
+	  practice			Same as 'abilities'.
+
+See Also:  abilities, score

@@ -1,0 +1,15 @@
+<help olc ch_rname>
+
+Change the name (the short description you see when in brief mode)
+of the current room you are in.
+
+Syntax:  ch_rname [new_string]
+
+Example:  ch_rname 'The plains of Darkon Mae'
+
+BAD EXAMPLE:  ch_rname The plains of pain
+This last example will not work as planned, you need the single quotes.
+
+<color=red>
+See Also: ch_rdesc, rclone
+</color></help>

@@ -1,0 +1,8 @@
+<help general fill>
+
+Attempt to fill some container with liquid from another container.
+
+Syntax:  fill <<i_th> [container] <<j_th> [source_container]
+<color=red>
+See Also:  drink, eat, empty
+</color></help>

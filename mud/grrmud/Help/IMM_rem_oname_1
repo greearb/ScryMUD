@@ -1,0 +1,11 @@
+<help olc rem_oname>
+
+There are several commands that let you add or delete names from
+a mobile or object.  The syntax for rem_oname is:
+
+Syntax:  rem_oname [obj num] [name to be removed]
+
+Example:  rem_oname 55 sword
+<color=red>
+See Also:  ch_rname, ch_odesc, add_oname, add_mname, rem_mname
+</color></help>

@@ -1,0 +1,14 @@
+Category:  Communications  Topic:  discuss
+
+
+
+This command may allow you to gain valuable information from a computer
+or sentient controlled player.  (Who says aliens haven't hacked the net
+yet!!)
+
+Syntax:  discuss [topic] <i_th> [target]
+
+Example:  discuss 'love potion' esmerelda
+	  discuss quest knight
+
+See Also:  give

@@ -1,0 +1,11 @@
+Category:  Communications  Topic:  say
+
+
+
+Broadcasts a message to everyone awake in your current room.
+
+Syntax:  say <your message>
+
+Example:  say What's the air-speed velocity of an unladen swallow??
+
+See Also:  channels, whisper, tell, emote

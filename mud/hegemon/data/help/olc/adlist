@@ -1,0 +1,12 @@
+Category:  OLC  Topic:  adlist
+
+
+
+This command lists all the doors created for your current zone.
+
+Syntax:  adlist
+
+Example:  sdlist
+
+
+See Also:  olist, mlist, dstat, dlist, dclear

@@ -1,0 +1,14 @@
+<help immortal freeze>
+
+Similar to gag, but it renders a person helpless to affect the MUD,
+including him/her self.  This is a severe punishment and should be
+treated accordingly.
+
+Syntax:  freeze [target]
+
+Example:  freeze HoseYerMom
+<color=red>
+See Also:  gag, thaw
+</color>
+Note:  You cannot abbreviate this command
+</help>

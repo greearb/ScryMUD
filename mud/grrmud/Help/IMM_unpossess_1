@@ -1,0 +1,11 @@
+<help immortal unpossess>
+
+Makes you stop possessing whoever you are possessing.
+
+syntax:  unpossess
+
+example:  unpossess
+
+<color=red>
+See Also:  order, force, possess
+</color></help>

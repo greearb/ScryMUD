@@ -1,0 +1,9 @@
+<help communications read>
+
+This command allows you to read a post on a bulletin board. 
+
+Syntax:  read <<message_num>
+	 read <<i_th> <message>
+<color=red>
+See also:  post, examine, look
+</color></help>

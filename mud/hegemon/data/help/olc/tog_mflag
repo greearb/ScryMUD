@@ -1,0 +1,16 @@
+Category:  OLC  Topic:  tog_mflag
+
+
+
+Used to toggle critter flags, including mob flags.
+
+syntax:  tog_mflag [flag_num] [Crit_flag/Mob_flag] <n_th> [crit name]
+
+example:  tog_mflag 3 mob_flag 2.guard 	Toggles mob_flags # 3
+          tog_mflag 5 crit_f 3.citizen 	Toggles 5_th critter flag
+
+Bugs:  Some flags are (and should be) restricted from toggling.  As
+       an Imp adds/deletes/changes flags, he/she should check this
+       and similar functions for possible tweaking.
+
+See also:  olc, tog_oflag, tog_rflag, mclone, mstat

@@ -1,0 +1,22 @@
+Category:  Communications  Topic:  channels
+
+
+
+These are the various methods of communication.
+
+gossip   is for general, often non-mud related conversations
+say      is for room-wide communications
+yell     is for emergencies..should be MUD based or very important
+auction  is for the selling of mud items
+tell     is for specific communication with another person
+shout    is like a zone wide yell
+reply    is to reply a tell to the person who told you last
+emote    is room wide
+
+gecho    is for immorts, echos something to everyone logged on
+zecho    is for immorts, echos something zone wide
+recho    is for immorts, echos something to everyone in the room
+wizchat  is like gossip for immortals only
+
+
+See Also:  gossip, say, yell, auction, tell, emote, gecho, shout, reply

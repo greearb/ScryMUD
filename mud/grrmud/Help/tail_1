@@ -1,0 +1,11 @@
+<help skills tail>
+
+This command allows you to silently start following a person.  If
+you wish to remain un-detected, you should also start sneaking. 
+
+Syntax:  tail <<i_th> [person]
+
+Example:  tail 3.daughter
+<color = red>
+See Also:  sneak
+</color></help>

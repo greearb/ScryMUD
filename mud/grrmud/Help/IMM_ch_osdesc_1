@@ -1,0 +1,12 @@
+<help olc ch_osdesc>
+
+This allows you to change the short description of the object
+in question.  You enter it all at once.  NOTE:  the description must
+be in single quotes.  A short description might be:
+
+a short sword
+
+Syntax:  ch_osdesc [object_number] ['new short description']
+<color=red>
+See Also:  olist, aolist, ostat
+</color></help>

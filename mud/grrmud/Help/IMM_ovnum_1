@@ -1,0 +1,8 @@
+<help olc ovnum>
+
+List all objects with a given name.
+
+Syntax:   ovnum <<starting_number> [name]
+<color=red>
+See Also:  olist, dvnum, mvnum, olist, aolist
+</color></help>

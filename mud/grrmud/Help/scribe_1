@@ -1,0 +1,14 @@
+<help skills scribe>
+
+This skill, learned by some magic users, allows them to
+concentrate some of their power in a scroll that can later be
+called forth.  Often it is less powerful than their original
+spell, but then again, it takes little effort to use it. 
+
+Syntax:  scribe [spell]
+<color=red>
+See Also:  concoct, construct
+</color>
+Notes:  You must have a writing utensil and blank scroll of
+	appropriate quality in order to scribe a spell.
+</help>

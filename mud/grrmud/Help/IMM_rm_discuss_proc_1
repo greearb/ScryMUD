@@ -1,0 +1,10 @@
+<help olc rm_discuss_proc>
+
+This function removes ALL discuss procs from a mob.
+
+Syntax:  rm_discuss_proc [mob_num]
+<color=red>
+See Also:  rm_give_proc, add_proc
+</color>
+NOTE:  Must asave to make changes permanent.
+</help>

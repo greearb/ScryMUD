@@ -1,0 +1,11 @@
+<help olc rlist>
+
+This function lists a range of rooms.
+
+Syntax:  arlist [start_num] [end_num]
+
+Example:  rlist 2 50       Shows rooms 2 through 50.
+
+<color=red>
+See Also:  amlist, aolist, arlist, olc, goto
+</color></help>

@@ -1,0 +1,11 @@
+Category:  General  Topic:  put
+
+
+
+This command attemps to place something in a container.
+
+Syntax:  put <i_th> [object] <j_th> [container]
+
+Example:  put 2.bread jar
+
+See Also:  get, examine, open, fill, empty

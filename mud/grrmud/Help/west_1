@@ -1,0 +1,6 @@
+<help general west>
+
+Attempt to travel west.  
+<color = red>
+See Also:  move, go, look
+</color></help>

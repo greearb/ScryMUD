@@ -1,0 +1,607 @@
+absorb blows
+This magical spell allows you to absorb some spells, and convert
+their hostile power into helpful energy.  However, it can also
+backfire and open one up to more than ordinary damage, or even death!
+~
+acrobatics
+This skill allows one to move better and is the foundation to a
+healty life of battle and wanderlust.  It is a must for anyone
+aspiring to the more graceful and sneaky mode of adventure.
+~
+archery
+This skill greatly improves your ability to hit things with a
+projectile weapon.  It requires some knowledge of balistics.
+~
+armor
+This spell helps protect one from the ravages of battle.  It can
+reduce the harm done by most mundane attacks.
+~
+backstab
+This is a thief's primary weapon.  If you are skillful, and
+lucky, you may sneak up behind your victim and cause major
+damage before they are aware of your ill intentions.  More skilled
+adventurers may learn a similar trick known as circling for use
+in pitched battle.
+~
+bash
+There is nothing subtle about bash.  This skill is used to bludgeon
+an opponent into a stupor.  It can render the opponent unable to
+perform special attacks or spells, but it also takes alot out of
+the one who bashes, and may also affect their near-term ability to
+fight effectively.
+~
+berserk
+This state of mind allows some advanced warriors to simultaneously
+attack everything in range.  However, it takes a great deal of
+stanima, and greatly offends anyone else in the room!
+~
+bind wound
+This skill allows one to bind his or her wounds to help them to heal
+faster.  Any fighter worth her salt will know this vital skill!
+~
+bless
+Some players may gain their god's favor and be able to bless a person.
+This causes good luck to fall to them and may help them in combat
+or other activities.
+~
+blindness
+This spell/skill allows one to blind an opponent for a certain
+ammount of time.  This greatly hinder's their ability to fight,
+among other things.
+~
+block
+Skilled fighters will be able to completely block an opponent's
+mundane attack.  Because of the defensive nature of this skill, it
+requires that the user give up some of their offensive energy.
+~
+bodyslam
+This skill is great for hand to hand combat.  One who uses this
+skill attempts to pick up an opponent and slam them too the ground.
+Of course, if they are too heavy, or the user is too weak, it simply
+won't work!
+~
+bow
+Being skilled in the bow allows for much better odds in ranged
+combat.  Some players also learn how to use the bow much as one
+would use a quarter-staff, which gives some advantage in close
+combat.
+~
+brew
+This skill allows knowledgeable clerics and wizards to create their
+own potions from choice ingredients.  In order to brew something,
+one must have some type of cauldron, and of course the correct
+ingredients.
+~
+burning hands
+This spell allows one to channel extreme energies through their hands
+and then apply that to the opponent, burning them badly, and also
+making them very angry!
+~
+butcher
+Many of the explorers of the far reaches of the realms will enjoy the
+butcher skill, which allows one to successfully convert a hacked up
+corpse to a decent meal.  Because of the state of most corpses we've
+found in this realm, it is only possible to get one serving of food
+per corpse.
+~
+calm
+This spell allows the user to bring the combatants in a room into a
+calmer state where matters may be worked out in a more congenial manner.
+Of course, some people just can't be rid of the bloodlust in their veins!
+~
+camping
+This skill allows the knowledgeable adverturer to create a camp in
+which to rest which gives him or her superior restorative powers
+as opposed to the normal adverturer's makeshift camp.  Of course,
+you can't just camp anywhere, but most woodland areas are suitable.
+~
+cause critical
+This spell allows one to call forth powers to make an opponent quite
+sick, and may even cause death to frail beings.
+~
+cause sickness
+This spell causes it's victim to feel quite ill, though it rarely
+kills its victim.
+~
+charm
+Charm allows the user to cause other beings to fall under a spell of
+friendship.  The more charismatic the user, and the more gullable the
+victim, the better this works.
+~
+circle
+This advanced skill allows nimble players with agile weapons to
+maneuver behind someone fightning another being and strike a
+major blow.  This is difficult, and only the most experienced
+and dextrous denizens have much success.
+~
+claw
+This skill allows the user to fashion a bare hand into a deadly
+weapon.  This is often practiced by the monks and mystics of the
+realm whom eschew armed combat, but still need to kick a little
+butt at times!
+~
+climbing
+This skill allows the nimble adventurer to scale obstacles and find
+paths in places where others would be unable to venture.
+~
+commerce
+This skill allows one to gain advantage when trading goods and
+services in the markets of the realm.
+~
+construct
+This skill allows the knowledgeable artisan to create new items from
+constituent parts.  Similar to the alchemists' brew, the artisan
+will need a toolbox containing the correct items in order to construct
+the resulting object.
+~
+conjure horde
+This allows the necromancers and wizards to summon forth a collection
+of denizens of hell to do their bidding.  However, should the hellspawn
+not be properly confined by the power of the summoner, they will turn on
+their would be master and inflict much damage!
+~
+conjure minion
+This allows those versed in such magics to summon forth a single denizen
+of the nether regions.  Woe be to thee who fails to control the beastie
+so called forth!
+~
+create golem
+This strange spell allows the user to fashion a being out of one
+of the four elements:  earth, water, fire and air.  These beings
+are quite stupid, but in other ways may be as powerful as their 
+creator.
+~
+create light
+This is a favorite parlor trick for budding magicians, and can be
+a real life saver if you are lost deep in some dark place.
+~
+create food
+Clerics and mages so versed will be able to call forth nourishment
+from thin air.
+~
+create water
+This allows the skilled cleric to cause a container to be filled
+with water from some divine source.
+~
+cure blindness
+Healers can use this spell to cure those afflicted with blindness.
+~
+cure critical
+This spell allows clerics to heal critical wounds and sicknesses.
+While not as powerful as a heal or full restore, this spell often
+means the difference between life and death for you and your
+companions.
+~
+cure serious
+This spell allows one to cure serious, but not critical wounds and
+sicknesses.
+~
+curse
+This dark spell allows the user to curse and object or player,
+making both less useful, and in some cases, hard to get rid of!
+~
+dagger
+This skill gives a person wielding a dagger a better chance of
+doing damage.
+~
+detect alignment
+This spell allows one to divine the true nature of the beast!
+~
+detect hidden
+This spell allows one to detect otherwise hidden creatures.
+~
+detect invisibility
+Allows one to detect otherwise-invisible objects and creatures.
+~
+detect magic
+This spell allows one to become in tune with magical forces around
+them.
+~
+detect poison
+Allows one to detect poison before ingesting a substance.
+~
+disarm
+Allows a skillful fighter to knock the weapon out of an
+opponent's grasp.
+~
+distortion wall
+This spell can be cast on doors and exits.  It causes any
+creature passing through it to be randomly teleported to
+some other place within the local area.
+~
+dispel magic
+This spell attempts to counteract spells already on a creature
+or object.  It's cost is proportional to the magical powers it
+is undoing!
+~
+dispel good
+Allows an evil person to bring the wrath of his or her chosen diety
+down upon one of good nature.
+~
+dispel evil
+Allows a benelovent person to bring the wrath of his or her chosen diety
+down upon one of evil nature.
+~
+divine protection
+This spell gives good protection against mundane, and some supernatural
+attacks.
+~
+dodge
+This skill lets a nimble fighter automatically dodge an opponent's
+attack at times.
+~
+dart of darkness
+This allows a budding mage to draw on a piece of the dark powers
+in the realm and focus them into a dart of pure energy to be hurled
+against a nemesis.
+~
+dual wield
+This skill allows skillful fighters to wield a weapon in each hand.
+The weapons able to be held relate to their heaviness and the
+strength of the wielder.
+~
+enchant armor
+This spell allows an experienced mage to cast a spell of protection
+onto a piece of previously un-enchanted armor.  It should increase
+the protection of the armor.
+~
+enchant weapon
+This mighty spell allows a mage to increase the worthiness of a
+previously un-enchanted weapon.  The effects depend on the quality
+of the weapon.
+~
+enhanced damage
+This general skill allows fighters to increase the damage they
+are able to wreak in battle.
+~
+entangle
+This spell allows the skillful mage to coat an opponent with
+magical bonds that slow them and make them easier to hit.
+~
+faerie fire
+This skill outlines an opponent and makes it easier for one
+to score better attack against them.
+~
+fencing
+This skill is paramount to becoming efficient at swordplay.
+~
+fire blade
+This skill allows a powerful mage to enchant a sword such that
+it becomes flaming hot when it touches an advesary.  Obviously,
+when fighting a fire-breathing dragon, this may do little good!
+~
+fireball
+This staple of a mage's magical reportoir hurls a flaming ball
+of violent magic at an opponent.
+~
+fireproof
+This specialized spell helps protect one from damage from heat.
+~
+firestorm
+This powerful spell calls down hellfire and brimestone from the
+heavens, potentially attacking everyone in the room!
+~
+firewall
+This spell may be cast on a door or exit, causing anyone who
+passes through it to temporarily catch on fire!  Great for
+setting ambushes and setting protections while resting.
+~
+flame strike
+This spell calls down powerful pillars of flame from the
+skies, toasting anything in the mage's current vicinity.
+~
+fly
+This spell allows a person to fly a short distance above
+the ground.
+~
+forestry
+This skill is the foundation for all who wish to be a woodsman
+or ranger.
+~
+frost blade
+This specialized spell makes a sword ice cold, which may cause
+extra damage to those who favor hot environments!
+~
+gate
+This spell allows one to create a two-way portal between
+oneself and another player.
+~
+group heal
+Call forth your god's healing powers unto your entire group.
+~
+guard
+This skill allows a warrior to protect someone from most
+attacks by instead directing them at herself.
+~
+harm
+This spell allows one in good standing with their god to call
+forth damaging powers against an advesary.
+~
+haste
+This spell speeds one's reflexes enough to give them an extra
+attack in each round of battle.  Such power is like a strong
+drug though:  It may have long term side effects!
+~
+heal
+This spell allows one to bring forth his diety's healing powers
+on those who need it.
+~
+herbalism
+This is a basic skill needed by any who wish to be alchemists or
+healers.
+~
+heros feast
+This spell allows one to create an entire feast out of thin air!
+~
+hide
+Hide lets sneaky creatures remain out of sight of all but the
+most observant.
+~
+honor code
+This is a valuable skill for any who would be leaders of men or
+beast.
+~
+holy word
+This spell allows the high priests to directly tap into the power
+of their diety to the great dismay of the unfortunate victim.
+~
+hurl
+This skill allows very strong warriors to hurl an opponent clear
+out of the room.  Of course, if there are few or no exits, it is
+likely that the victim will instead slam into the wall!
+~
+icestorm
+This allows wizards and mages to twist the forces of nature to their
+own ends, creating a violent ice storm that may injure all within
+reach!
+~
+identify
+This spell gives one the ability to acertain certain qualities of
+objects that the casual looker will never grasp.
+~
+illuminate
+Allows one to temporarily light an entire room with ambient
+light.
+~
+illusion
+This crafty spell allows one to split himself into one or more
+illusions that look almost identical to the original, though
+they will be crushed at the first blow.
+~
+invisibility
+This spell allows one to make an object or creature invisible to
+the mundane senses.
+~
+kick
+This skill gives fighters the ability to do serious damage to
+an opponent with a well-placed kick.
+~
+leadership
+This skill allows one to better lead and organize a group.
+~
+lightning bolt
+This spell allows one in touch with the elemental forces to call
+forth bolts of lightning from clear skies onto the unlucky heads
+of others.
+~
+lightning storm
+This powerful spell allows wizards to create entire electrical
+storms and direct the lightning's wrath onto the heads of the
+enemy.
+~
+literacy
+This is a basic skill for any who would learn the finer arts.
+~
+locate
+This allows lucky magicians to obtain information about where a
+particular object might be.
+~
+logic
+This is a basic skill that must be accomplished by anyone who
+wants to succeed at more advanced topics of study.
+~
+mace
+Allows one to better utilize blunt objects.
+~
+magic shield
+This allows mages to magically shield themselves or others
+from all kinds of threats.
+~
+martial arts
+This is the basic training that allows one to better fight
+without obvious weapons.
+~
+mass charm
+Allows one to potentially charm an entire crowd into doing
+ones bidding.
+~
+meditation
+This calming skill allows one to regain magical and physical
+energies at a faster pace.
+~
+meteorstorm
+This spell causes large chunks of molten rocks to fall from
+the skies onto everyone in the area.
+~
+mirror image
+This spell allows one to appear as several mirror images.  This
+confuses attackers, and they may hit your image (breaking it)
+instead of hitting you.
+~
+parry
+This skill allows you to turn the attack of an opponent.
+~
+passdoor
+This spell allows you to teleport yourself through non-magically
+locked doors.
+~
+protection from evil
+This skill protects you from many aggressive attacks by evil creatures.
+~
+protection from good
+This skill protects you from many aggressive attacks by goodly creatures.
+~
+philosophy
+This basic skill allows one to gain a more complete understanding
+of the universe and the myriad of powers that flow within it.
+~
+picklock
+This skill allows skillful thieves to pick the locks on many normal
+containers and doors.
+~
+poison
+This skill allows you to cause a person or food to become
+poisoned.  The damage is rarely fatal, but can linger for
+some time.
+~
+portal
+This spell allows one to open a one-way portal to another player.
+~
+prismatic globe
+This is a powerful spell of protection, completely wrapping the
+beneficiary in a globe of pulsing magic.
+~
+quake
+This spell allows one to cause the earth to shake violently,
+injuring everyone around you.
+~
+quickfoot
+This skill allows the nimble to become even more hard to hit.
+~
+rainbow
+This spell allows the skillful mage to focus a rainbow colored
+beam of violent energy towards a victim.
+~
+raise undead
+This dark spell allows a wizard to animate a corpse which will follow
+them for a period of time and do their bidding.
+~
+recall
+This spell will take one back to the temple.
+~
+recharge
+This skill allows a powerful mage to re-charge a wand a certain
+number of times.
+~
+remove curse
+This spell allows one to remove the curse from an object or player.
+~
+rescue
+This valuable skill allows a warrior to rescue a person from
+battle, putting herself in harm's way instead.
+~
+restore
+This is the most powerful healing spell known.  It almost always
+restores a creature to full health.
+~
+rune edge
+This spell allows the skillful mage to magically etch runes into
+a blade making it stronger and more powerful.  The runes may
+wear off with time.
+~
+sanctuary
+This old favorite gives great protection to whoever it is cast
+upon.  It protects against almost all attacks.
+~
+second attack
+This skill allows the agile warrior to add a second attack to his
+reportoir.  Using other skills often reduces one's ability to
+carry out second attacks for a few minutes.
+~
+shadows blessing
+This little gem of a spell helps shroud a person in perpetual shadows,
+making it harder to hit them.
+~
+shield
+This skill allows a powerful warrior to intercept many attacks that
+are destined for another creature.  Its a good way to protect those
+who are helpful, and yet vulnerable to attacks.
+~
+shocking grasp
+This spell allows one to create charge differential across one's
+hands.  When they grasp the victim, it is shocked quite badly!
+~
+skin
+This fun skill allows you to skin many corpses and get a souvenir,
+and in some cases, a very valuable skin.
+~
+sleep
+This spell causes it's victim to fall into an almost un-interruptable
+sleep.
+~
+sneak
+This skill allows nimble creatures to come and go without being
+noticed by many beings.
+~
+steal
+This skill allows one to attempt to relieve a creature of it's
+possessions.  Of course, this can greatly upset them!
+~
+strength
+This spell helps increase a person's strength temporarily.
+~
+stone skin
+This spell makes one's skin almost stone hard, giving excellent
+protection from attacks.
+~
+summon
+This spell allows one to summon a player to their current position
+from almost anywhere else in the realm.
+~
+sword
+This skill helps one to use a sword with more acuracy and deadliness.
+~
+swordbond
+This skill allows one to bond with their weapon in such a way that it
+is almost impossible to disarm them.
+~
+tail
+This skill allows sneaky people to follow a creature without them
+realizing it.  It should be used in conjunction with sleep.
+~
+teleport
+This spell allows one to randomly relocate within the local area.
+~
+throwing
+This allows one to throw any weapon or object at a player in
+an adjoining room.
+~
+tornado
+This spell allows a powerful wizard to cause a tornado to touch down
+and potentially carry off everyone in the room.  It is more likely
+that those lying prone will not be carried away!
+~
+track
+This skill allows you to determine a path to some other creature
+in your area.
+~
+trip
+This skill allows one to knock an opponent on his arse, making them more
+succeptable to attacks.
+~
+typhoon
+This spell can be used on water to cause a water spout to come and
+take everyone away!
+~
+weaken
+This spell makes an opponent weaker, at least for a time.
+~
+weapon mastery
+This skill allows one to master many different kinds of weapons, which
+helps one's fighting ability.
+~
+web
+This spell causes a sticky web to fall over a creature, making it
+more difficult for them to maneuver.
+~
+whip
+This skill allows one to better use a whip as a weapon of mass
+destruction!
+~
+wizard eye
+The most powerful wizards may enchant an object in such a way that
+it reports what is happening in whatever room it is in.
+~
+wrestling
+This general skill allows one to fight better with no weapons at all.
+~

@@ -1,0 +1,12 @@
+<help immortal gag>
+
+This command makes one unable to communicate.  Good for bothersome
+twerps.
+
+Syntax:  gag <<i_th> [target]	
+
+Example:  gag devilchild	If devilchild is logged on or
+				linkdead it will be gagged.
+<color=red>
+See Also:  ungag, siteban, freeze
+</color></help>

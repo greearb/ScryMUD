@@ -1,0 +1,14 @@
+<help general passwd>
+
+This is the command used to change your player's password.  Note that
+these passwords are not entirely secure, so don't use the same password
+here that you use for other accounts.  Note that you have to type
+the new one twice to cut down on careless mistakes.
+
+Syntax:  passwd [old_password] [new_password] [new_password]
+
+Example:  passwd cheese cheesier cheesier
+
+<color=red>
+See Also:  
+</color></help>

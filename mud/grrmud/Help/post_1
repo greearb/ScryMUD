@@ -1,0 +1,10 @@
+<help communications post>
+
+Post a message to a board.  You must be in the same room as the board.
+
+Syntax:  post ['message title']
+
+Example:  post 'This is a message on posting.'
+<color=red>
+See Also:  read, examine, unpost
+</color></help>

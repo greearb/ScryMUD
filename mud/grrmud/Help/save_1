@@ -1,0 +1,12 @@
+<help general save>
+
+Save your current character to disk.  A good thing to do in case
+of a crash!!  This command is a slight load on the system, so
+please don't auto-save after every kill.  If this becomes a
+problem, it will be remedied, to the detriment of all. 
+
+Syntax:  save
+<color=red>
+See also:  score, inventory, eq, quit
+</color></help>
+

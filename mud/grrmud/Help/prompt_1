@@ -1,0 +1,26 @@
+<help general prompt>
+
+This command is used to customize your prompt to your liking.  Soon
+Java Client users should have better options...
+
+syntax:  prompt <<'prompt_string'>  where prompt string is as 
+   described below:
+
+     The prompt_string is any list of characters terminated by a
+<return>.  You can make the game insert certain things into the
+prompt with special letter combinations as follows: 
+
+%h	current hit points	%H	maximum hit points
+%v	current mov points	%V	maximum mov points
+%m	current mana points	%M	maximum mov points
+%%      a '%' symbol
+
+If you imput NORMAL as your prompt string you are set to the
+default, which is something similar to:  <<%hH %mM %vV >
+
+Example:  prompt '<<%H/%hH %M/%mM %V/%vV >'
+	  prompt NORMAL
+<color=red>
+See also:  toggle, brief       </color>
+NOTE:  You MUST include the prompt string in single quotes.
+</help>

@@ -1,0 +1,22 @@
+<help olc zlock>
+
+This function locks the specified zone.  No mobiles can move except for
+those with builder status.  Also, nothing should automatically load in
+the zone.  It should, in short, remain static.  You can only manipulate
+zones you have permission to edit.
+
+syntax:  zlock <<zone_number>
+
+Example:  zlock                    // lock current zone
+	  zlock 10                 // lock zone 10
+
+NOTE:  You MUST lock a zone before you can write it, and before any of
+        this you should do a <total_rezone> to read ALL objects into the
+        zone.  Otherwise you would lose any object that didn't load if
+        you use <write_zone> to write your zone to disk.
+
+NOTE: Due to my parse system, you must be in zone number 1 in order to
+       	zlock it.  The rest should work from anywhere.
+<color=red>
+See also:  zunlock, total_rezone, write_zone, olc
+</color></help>

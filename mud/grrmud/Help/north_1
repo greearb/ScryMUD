@@ -1,0 +1,6 @@
+<help general north>
+
+Attempt to go north.
+<color=red>
+See Also: go, move
+</color></help>

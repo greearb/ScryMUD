@@ -1,0 +1,18 @@
+<help olc rclear>
+
+This function clears a room, virtually deletes it from the game.  It
+will not be permanent unless you also 'write_zone' sometime after you
+delete it.  This is a very powerful and destructive command, so IMPS
+may choose to greatly restrict the use of it.
+
+synopsis:  rclear [room_number]
+
+example:   rclear		This clears the current room, all pc's
+                                   are transported away first.
+           rclear 50		This would clear room # 50.
+
+Bugs:  'rclear 1' will not work unless the caller is in room # 1. 
+       This should be the only exception.
+<color=red>
+See also:  olc, rlist, rstat, rclone
+</color></help>

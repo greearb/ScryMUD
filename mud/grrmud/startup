@@ -1,0 +1,143 @@
+#!/bin/bash
+
+########################################################################
+
+if [ ! -d ./log ]; then
+    mkdir ./log
+fi
+
+if [ ! -f ./grrmud/World/critters_0 ]; then
+    echo "Could not find grrmud/World/critters_0, attempting to"
+    echo "extract the distribution world files."
+
+    cd ./grrmud/World
+    gunzip ./scry_dist_world*.tar.gz
+    tar -xvf ./scry_dist_world*.tar
+    cd ../..
+fi
+
+while ( : ) do
+
+    #  Don't let us use more than 20 MEG, if we do, it's probably a
+    #  memory leak.  If the database ever gets huge, this will need to
+    #  be raised.
+    ulimit -d 20000
+
+    echo "Starting ScryMUD at: `date`"
+
+    ./gmud >& gmud.log
+    RETVAL=$?
+
+    echo "ScryMUD stopped at: `date`"
+
+
+    date >> ./gmud.log
+    echo "************END OF CRASH FILE**************" >> ./gmud.log
+    cat ./gmud.log >> ./GMUD.LOG
+
+    tail -50 ./log/logfile.txt >> ./log/CRASH
+    date >> ./log/CRASH
+    echo "************END OF CRASH FILE**************" >> ./log/CRASH
+    echo "" >> ./log/CRASH
+
+    grep WARN ./log/logfile.txt >> ./log/WARN.lg
+    date >> ./log/WARN.lg
+    echo "*************END OF LOG************" >> ./log/WARN.lg
+    echo "" >> ./log/WARN.lg
+
+    grep ERROR ./log/logfile.txt >> ./log/ERROR.lg
+    date >> ./log/ERROR.lg
+    echo "*************END OF LOG************" >> ./log/ERROR.lg
+    echo "" >> ./log/ERROR.lg
+
+
+    cat ./log/idea_log >> ./log/IDEAS
+    cat ./log/bug_log >> ./log/BUGS
+
+    if [ -f ./log/logfile.txt4 ]; then
+	mv -f ./log/logfile.txt4 ./log/logfile.txt5
+    fi
+
+    if [ -f ./log/logfile.txt3 ]; then
+	mv -f ./log/logfile.txt3 ./log/logfile.txt4
+    fi
+
+    if [ -f ./log/logfile.txt2 ]; then
+	mv -f ./log/logfile.txt2 ./log/logfile.txt3
+    fi
+
+    if [ -f ./log/logfile.txt1 ]; then
+	mv -f ./log/logfile.txt1 ./log/logfile.txt2
+    fi
+
+    if [ -f ./log/logfile.txt ]; then
+	mv -f ./log/logfile.txt ./log/logfile.txt1
+    fi
+
+
+    # Keep a history of the log files that might have been created.
+
+    if [ -f ./core4 ]; then
+	mv -f ./core4 ./core5
+    fi
+
+    if [ -f ./core3 ]; then
+	mv -f ./core3 ./core4
+    fi
+
+    if [ -f ./core2 ]; then
+	mv -f ./core2 ./core3
+    fi
+
+    if [ -f ./core1 ]; then
+	mv -f ./core1 ./core2
+    fi
+
+    # Depending on the shell..one of these may exist.
+
+    if [ -f ./core ]; then
+	mv -f ./core ./core1
+    fi
+
+    if [ -f ./gmud.core ]; then
+	mv -f ./gmud.core ./core1
+    fi
+
+    echo "Checking RETVAL:  ${RETVAL}"
+    if [ $RETVAL = 2 ]; then
+	echo "Checking for new world"
+	if [ -f ./World/wrld.new.tar.gz ]; then
+	    echo "Copying over new world database."
+	    cd ./World
+	    #zcat wrld.new.tar.gz | tar -xvf -
+	    # Some platforms have screwed up zcat's it seems. --BEN
+	    rm -f ./wrld.new.tar
+	    gunzip ./wrld.new.tar.gz
+	    tar -xf ./wrld.new.tar
+	    cd ..
+	fi
+
+	echo "Checking for new binary."
+	if [ -f ./gmud.new ]; then
+	    echo "Copying over new server (gmud) binary."
+	    mv ./gmud.new ./gmud
+	fi
+    fi
+
+#    echo "Checking for fastboot."
+
+#    if [ ! -r .fastboot ]; then
+#	sleep 60
+#    else
+#	rm .fastboot
+#	sleep 5
+#    fi
+
+    # Might want to change this to send email to another address.
+    if [ ! -r ./.reboot ]; then	#reboot is explicit only
+	mail ${USER}@localhost < shutdown_msg
+	exit
+    fi
+
+done
+

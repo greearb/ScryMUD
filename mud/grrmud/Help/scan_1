@@ -1,0 +1,12 @@
+<help general scan>
+
+This command lets you peer into surrounding rooms and possibly
+detect the creatures there.
+
+Syntax:  scan
+
+Example:  scan
+
+<color=red>
+See Also:  examine, brief, read, look
+</color></help>

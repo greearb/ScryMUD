@@ -1,0 +1,12 @@
+<help olc ch_ondesc>
+
+This allows you to change the in room description of the object
+in question.  You enter it all at once.  NOTE:  the description must
+be in single quotes.  An in-room description might be:
+
+A small sword lies in the dust.
+
+Syntax:  ch_ondesc [object_number] ['new in room description']
+<color=red>
+See Also:  olist, aolist, ostat
+</color></help>

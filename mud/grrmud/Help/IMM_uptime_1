@@ -1,0 +1,14 @@
+<help immortal uptime>
+
+Lists the number of seconds since the last reboot.  It also attempts
+to break that number down into something more easily read by humans!
+
+Syntax:  uptime
+
+Example:  uptime
+
+
+NOTE:  Some of these are restricted from you, but not from me!!
+<color=red>
+See Also:  who, sockets, ldwho
+</color></help>

@@ -1,0 +1,18 @@
+<help communications idea>
+
+These methods log comments to files that I try to check
+fairly often.  Please put any ideas or bugs or typos into
+these commands, or email the implementor
+(greear@cyberhighway.net).
+
+syntax:  idea  [message_text]
+syntax:  bug   [message_text]
+
+example:  idea You should create a spell to teleport objects.
+example:  bug I tried the 'idea' command, and it crashed us!
+
+<color=red>
+See Also:  olc
+</color></help>
+
+

@@ -1,0 +1,10 @@
+<help general junk>
+
+This command 'junks' items, virtually deleting them from the game.  A
+small reward is offered to you for keeping the MUD clean and conserving
+memory in some cases.
+
+syntax:  junk <<i_th> [object_name]
+<color=red>
+See Also:  drop, donate, opurge
+</color></help>

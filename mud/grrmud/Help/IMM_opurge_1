@@ -1,0 +1,10 @@
+<help olc opurge>
+
+Deletes an object from a room.  It does not affect the object in any
+permanent way, but if you save the room somehow (asave) then the room
+will no longer have the object in it, and it will not 'repop'.
+
+Syntax:  opurge <<ith> [object]
+<color=red>
+See Also:  junk, donate, asave
+</color></help>

@@ -1,0 +1,15 @@
+<help battle hit>
+
+If there is nothing hindering you, you can start a fight in this way.
+There are many other ways to find yourself in battle, including many
+of the more offensive skills and spells.
+
+Syntax:  hit <<i_th> [target]
+Syntax:  kill <<i_th> [target]
+
+Example:  hit priest	Attempts to start a fight with the priest.
+Example:  kill priest   Does the same.
+
+<color = blue>
+See Also:  abilities, assist
+</color></help>

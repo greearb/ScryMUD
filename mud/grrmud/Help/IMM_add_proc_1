@@ -1,0 +1,18 @@
+<Help olc add_proc>
+
+THIS HAS BEEN DEPRECATED BY THE ADD_MOB_SCRIPT AND RELATED COMMANDS.
+Please do not use this command.
+
+This command can allow you to add special procedures to already-written
+mobs.  Just follow the prompts and remember to do an aosave when completed.
+
+Note that if you do a 'reset_olc', you will have effectively done a
+'mclear' on it.  This could be messy, but hopefully not fatal.  Please
+avoid this.
+
+Syntax:  add_proc [mob_number]
+
+Example:  add_proc 50		//add some proc to mob 50
+<color=red>
+See Also:  rm_give_proc, rm_bow_proc, rm_curse_proc, rm_say_proc
+</color></help>

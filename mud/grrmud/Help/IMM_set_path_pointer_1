@@ -1,0 +1,20 @@
+<help olc set_path_pointer>
+
+Vehicles (non-player-guided ones at least) have an array of PathCells that
+the vehicle goes through in order to know where to go next.  This command
+lets you explicitly set the current PathCell to a given index number.
+
+I would imagine this will only prove useful while you are building or
+modifying the route for some vehicle.  This could be pretty tricky,
+so be sure to ask your IMP if you have troubles.  Please read the
+related help pages first though.
+
+Syntax:  set_path_pointer [vehicle_num] [new_index]
+
+Example:  set_path_pointer 25 2     The vehicle is now at the path cell
+                                    at index 2.
+
+<color=red>
+See Also:  rstat, stat_path, ch_path_desc, set_path_dir, rem_path, add_path,
+See Also:  tog_veh_stop, list_paths, set_path_pointer
+</color></help>

@@ -1,0 +1,21 @@
+<help immortal update_CIG>
+
+This command, update_cur_in_game is used to calculate the
+current ammount of mobs, and objects in the game.  This is
+important for re-pops and object limits.  Because this is
+very hard to keep accurate through out the game, I give this
+method to force it to re-calculate.  This could take a while,
+so it is not recommended that it be used too often.  Also, I
+might set it up to run periodically, if it looks like we need
+it.
+
+Only level 9 and 10 immortals may use this command.
+
+Syntax:  update_cur_in_game
+
+Example:  update_cur_in_game
+
+
+<color=red>
+See Also:  mstat, ostat, rezone, mreload, oreload
+</color></help>

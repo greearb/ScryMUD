@@ -1,0 +1,14 @@
+<help general exit>
+
+The 'exit' command shows all of the exits that you can
+observe.  If you want to see exits automatically every
+time you enter a room, you will need to use the toggle
+command:  toggle autoexits
+
+syntax:  exit
+
+example:  exit
+
+<color=red>
+See Also:  toggle
+</color></help>

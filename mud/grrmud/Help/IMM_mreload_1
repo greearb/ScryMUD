@@ -1,0 +1,11 @@
+<help olc mreload>
+
+This function reloads all the MOBs for a particular zone.  Any random
+read in values (ie inventory in a bag) may be updated.
+It affects the CURRENT zone of the player only.
+
+Syntax:  mreload
+<color=red>
+See Also:  oreload, rezone
+</color></help>
+

@@ -1,0 +1,9 @@
+<help olc oreload>
+
+Reloads all the objects in your zone.  Changes random things like
+inventory in bags.  
+
+Syntax:  oreload
+<color=red>
+See Also:  mreload, rezone, total_rezone
+</color></help>

@@ -1,0 +1,135 @@
+//
+//ScryMUD Server Code
+//Copyright (C) 1998  Ben Greear
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+//
+// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
+//                                     greearb@agcs.com
+//
+
+///************************  Spells2.h  *****************************///
+
+/* These spells are of a kindly nature, no battle will be started. */
+
+#ifndef Spells2Include
+#define Spells2Include
+
+#include "const.h"
+#include <string2.h>
+#include "classes.h"
+
+#define BIND_WOUND_EFFECT         5  /* +5 to hp regen */
+#define CURSE_STR_EFFECT          -2
+#define CURSE_MA_REGEN_EFFECT     -10
+#define DIVINE_PROTECTION_EFFECT  -35 /* to AC */
+#define STONE_SKIN_EFFECT_DRM     -20 /* to dam_rec_mod */
+#define STONE_SKIN_EFFECT_DEX     -3
+#define SANCTUARY_EFFECT_DRM      -40 /* to dam_rec_mod */
+#define PRISMATIC_GLOBE_EFFECT_AC -100
+#define PRISMATIC_GLOBE_EFFECT_MOV -50
+
+
+
+void cast_blindness(int i_th, const String* dr, critter& agg);
+void do_cast_blindness(critter& targ, critter& pc, int is_canned, int lvl);
+
+void cast_cure_blind(int i_th, const String* dr, critter& agg);
+void do_cast_cure_blind(critter& targ, critter& pc, int is_canned, int lvl);
+
+void cast_remove_poison(int i_th, const String* dr, critter& agg);
+void do_cast_remove_poison(critter& targ, critter& pc, int is_canned, int lvl);
+
+void do_locate_object(object &obj, const String* targ, critter& pc,
+		      int rm_num, int sanity, int spell_level);
+void do_locate_object(critter& crit, const String* targ, critter& pc,
+		      int rm_num, int sanity, int spell_level);
+
+void cast_wizard_eye(int i_th, const String* vict, critter& pc);
+void do_cast_wizard_eye(object& obj, critter& pc, int is_canned, int lvl);
+
+void cast_locate(const String* vict, critter& agg);
+void do_cast_locate(const String* targ, critter& pc, int is_canned, int lvl);
+
+void cast_armor(int i_th, const String* vict, critter& agg);
+void do_cast_armor(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_magic_shield(int i_th, const String* vict, critter& agg);
+void do_cast_magic_shield(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_absorb_blows(critter& agg);
+void do_cast_absorb_blows(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_prismatic_globe(int i_th, const String* vict, critter& agg);
+void do_cast_prismatic_globe(critter& vict, critter& agg, int is_canned,
+			     int lvl);
+
+void cast_sanctuary(int i_th, const String* vict, critter& agg);
+void do_cast_sanctuary(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_divine_protection(int i_th, const String* vict, critter& agg);
+void do_cast_divine_protection(critter& vict, critter& agg, int is_canned,
+			       int lvl);
+
+void cast_identify(int i_th, const String* vict, critter& agg);
+void do_cast_identify(object& vict, critter& agg, int is_canned, int lvl);
+
+void cast_shadows_blessing(int i_th, const String* vict, critter& agg);
+void do_cast_shadows_blessing(critter& vict, critter& agg, int is_canned, 
+			      int lvl);
+void cast_bind_wound(int i_th, const String* vict, critter& agg);
+void do_cast_bind_wound(critter& vict, critter& agg, int is_canned, 
+			      int lvl);
+
+void cast_weaken(int i_th, const String* vict, critter& agg);
+void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_remove_curse(int i_th, const String* vict, critter& agg);
+void do_cast_remove_curse(critter& vict, critter& agg, int is_canned, int lvl);
+void do_cast_remove_curse(critter& vict, object& agg, int is_canned, int lvl);
+
+void cast_curse(int i_th, const String* vict, critter& agg);
+void do_cast_curse(object& vict, critter& agg, int is_canned, int lvl);
+void do_cast_curse(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_strength(int i_th, const String* vict, critter& agg);
+void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_sleep(int i_th, const String* vict, critter& agg);
+void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_fly(int i_th, const String* vict, critter& agg);
+void do_cast_fly(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_recharge(int i_th, const String* vict, critter& agg);
+void do_cast_recharge(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_fireproof(int i_th, const String* vict, critter& agg);
+void do_cast_fireproof(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_haste(int i_th, const String* vict, critter& agg);
+void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_dispell_magic(int i_th, const String* vict, critter& agg);
+void do_cast_dispell_magic(critter& vict, critter& agg, int is_canned,
+			   int lvl);
+
+void cast_stone_skin(int i_th, const String* vict, critter& agg);
+void do_cast_stone_skin(critter& vict, critter& agg, int is_canned, int lvl);
+
+
+///**************   auxillary functions   *************///
+
+#endif 

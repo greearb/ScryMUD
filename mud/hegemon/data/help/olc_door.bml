@@ -1,0 +1,48 @@
+<color blue>
+                           Help for OLC door creation.
+<color=red>
+Names:</color>
+	Door names have a tricky syntax, which must be followed.
+The syntax is:  
+<<dir> <<name1 name2 .. name_n> # <<name_n .. name2 name1> <<opposite dir>
+For Example:
+	east train silver # silver train west
+would be a valid set of door names.  They should be symetric
+around the '#'.
+<color=red>
+Door Description:</color>
+	This is the description that one sees when they 'look' at a door.
+For Example:  
+	You see strong wooden door re-inforced with thick iron bands.
+The iron hinges are well oiled, but the huge lock makes opening it
+questionable!
+<color=red>
+Door Flags:</color>
+	These determine the current (default) state of the door and restrict
+or enable certain actions upon the door.  They should be fairly self
+explanatory...
+<color=red>
+Visibility Bits:</color>
+	Add up these numbers to arrive at the visibility of the
+door:  {0 NULL, 1 dark, 2 invis, 4 hidden, 8 god_invis1, 16 god_invis2}
+<color=red>
+Token Number:</color>
+	This is the number of the token which the player must have in
+order to go through the door.  Tokens are different than keys in that
+they are taken from the player as he/she/it passes through the door.
+If no token is wanted, enter zero here.
+<color=red>
+Key Number:</color>
+	This is the object number of the key that is needed to unlock
+the door.  Enter zero if no key is needed or exists.
+<color=red>
+Submit:</color>
+	Sends the data to the MUD server.  If the data is acceptable, then
+the door will be created, otherwise you may be prompted by a pop-up box.
+Check the output from the MUD, on the main console screen, for verication.
+<color=red>
+Cancel:</color>
+	Do not send the data.  If it has already been sent once, canceling
+WILL NOT AFFECT THE MUD IN ANY WAY.  Usually one presses cancel after
+submitting, unless they wish to create another door..
+</color>

@@ -1,0 +1,18 @@
+<help immortal force>
+
+This is similar to 'order', but it is unconditional if your level 
+is high enough with respect to your target.  It will be as if your
+target typed in whatever you force them to do.  Use this with
+some restraint or it will be more closely monitored.  Also, it
+shows the target what they have been forced to do, and by whom.
+
+Syntax:  force [target] [action]
+
+Example:  force levander gecho I will write a GUI client for this MUD!!
+          force grock gecho Rock on brother Levander!
+          force newbie gossip What's a GUI?
+<color=red>
+See Also:  force_all, order, enslave
+</color>
+NOTE:  PC's do NOT have to be in the same room as yourself.
+</help>

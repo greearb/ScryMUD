@@ -1,0 +1,36 @@
+#!/bin/sh
+
+LOG_FILE=$1
+
+if [ $# = "0" ]
+then
+   echo "Usage:  %0 <file_name>"
+   exit 2
+fi
+
+if [ -f ${LOG_FILE} ]
+then
+
+   echo "" >> log/ERROR.lg
+   echo "" >> log/WARN.lg
+   echo "************************************************" >> log/ERROR.lg
+   echo "************************************************" >> log/WARN.lg
+
+   date >> log/ERROR.lg
+   date >> log/WARN.lg
+
+   grep ERROR ${LOG_FILE} >> log/ERROR.lg
+   grep WARN ${LOG_FILE} >> log/WARN.lg
+
+   tail -1000 ${LOG_FILE} > /tmp/logfile.tmp
+
+   mv /tmp/logfile.tmp ${LOG_FILE}
+
+   exit 0
+
+else
+
+   echo "Usage:  $0 <file_name>"
+
+   exit 1
+fi

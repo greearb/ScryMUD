@@ -1,0 +1,9 @@
+<help general sit>
+
+Attempt to sit down and rest a little.  You recuperate faster this
+way, but you are at a disadvantage if someone attacks you.
+
+Syntax:  sit
+<color=red>
+See Also:  rest, sleep, stand, wake, meditate
+</color></help>

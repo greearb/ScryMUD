@@ -1,0 +1,16 @@
+<help olc rinit>
+
+This function clones rooms.  It does not copy pc's or doors, but every
+thing else should transfer over with ease.  This is a very productive method
+of building zones when combined with ch_rdesc, tog_rflags, mstat and other
+methods of modifying rooms.
+
+syntax:  rinit <<src_room_num> [dest_room_num]
+         
+example:  rinit 5 545  #make 545 like room 5 (you must own 545)
+	  rinit 545    #make 545 like current room
+
+<color=red>
+See Also: rclone, rclear, door_to
+</color>
+</help>

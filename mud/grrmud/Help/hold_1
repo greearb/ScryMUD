@@ -1,0 +1,9 @@
+<help general hold> 
+
+Attempts to make you hold an object in your off-hand.
+
+example:  hold bow
+          hold 2.dagger
+<color=red>
+See Also:  wear, remove, inventory, eq, wield
+</color></help>

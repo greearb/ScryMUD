@@ -1,0 +1,15 @@
+<help olc mclone>
+
+This function clones mobiles.  Excelent when combined with mset,
+tog_mflag, ch_mdesc and other commands for expanding a zone.
+
+syntax:  mclone [mob_num]  	Clones mob numbered [mob_num]
+         mclone <<i_th> [name]   Clones mob in current room
+
+example:  mclone 25	
+          mclone 2.guard
+<color=red>
+See Also: oclone, rclone, olc, mset, tog_mflag, ch_mdesc, mstat
+</color>
+Note:  mobiles appear in your current room.
+</help>

@@ -1,0 +1,13 @@
+<help general follow>
+
+When you follow someone, you will attempt to follow them where
+ever they go.  Whoever you follow can group you if they wish. 
+
+syntax:  follow		Makes you follow yourself.
+	 follow Grock	You now follow Grock.
+<color=red>
+See Also:  group, ungroup, order
+</color>
+Note:  If you stop following a leader of a group, then you are 
+	automatically removed from the group.
+</help>

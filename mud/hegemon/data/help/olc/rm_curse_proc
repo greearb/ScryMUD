@@ -1,0 +1,9 @@
+Category:  OLC  Topic:  rm_curse_proc
+
+
+
+Removes a curse proc from a mob.
+
+Syntax:  rm_curse_proc [mob_num]
+
+See Also:  rm_give_proc, add_proc

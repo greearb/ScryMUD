@@ -1,0 +1,26 @@
+Category:  OLC  Topic:  olc
+
+
+		        On Line Coding!
+
+Olc allows you to expand the mud while playing it.  
+To enter olc type:  olc
+
+     From there it should be pretty self explanatory.  Some
+restrictions are built in, but you still have a lot of leeway.
+Please build with game balance in mind.
+	When you create a room, door, object, or critter it is
+automatically placed in your OLC directory on the server's hard
+drive.
+
+Some other commands that might be useful for building are:
+
+     RESET_OLC, zlock, zunlock, flip_door, delete_door, write_zone,
+     door_to, mgoto, rclear, olist, objlist, rlist, roomlist, mlist,
+     moblist, tog_rflag, tog_oflag, tog_mflag, replace_door, see_all.
+
+NOTE:  If you wish to build/alter rooms you MUST first LOCK the zone. 
+       YOU MUST BE THE OWNER OF THE ZONE TO WRITE IT OUT TO DISK!
+NOTE:  If you can run Java, try out the Java Client, with a GUI
+       interface
+       to OLC!!

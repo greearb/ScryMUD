@@ -1,0 +1,13 @@
+<help general donate>
+
+This command is used to magically transfer a piece of
+un-wanted equipment to a room dedicated to those who
+are needy.  Please do not donate obvious junk!
+
+syntax:  donate <<i_th> [object]
+
+Example:  donate sword
+
+<color=red>
+See Also:  junk
+</color></help>

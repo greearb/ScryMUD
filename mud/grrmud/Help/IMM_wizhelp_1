@@ -1,0 +1,37 @@
+<help immortal wizhelp>
+
+Here is a list of all immortal/builder help topics.
+
+active_zones     add_casts_spell  add_keyword      add_kname        
+add_mob_script   add_oname        add_path         add_perm_inv     
+add_rem_names    add_stat_affect  adlist           adsave           
+amsave           aolist           aosave           arlist           
+ch_kdesc         ch_mdesc         ch_mndesc        ch_msdesc        
+ch_ondesc        ch_osdesc        ch_path_desc     ch_rdesc         
+ch_zname         classes          clear_keyword    create_conct     
+dclear           delete_door      dlist            door_to          
+dstat            dsys             dvnum            enslave          
+force            force_all        freeze           gag              
+goto             itrans           keyword          ldwho            
+list_scripts     list_site_bans   log_level        make_builder     
+mclone           mlist            mload            mreload          
+mstat            mvnum            oclear           oclone           
+olist            oload            opurge           oreload          
+ostat            ovnum            poofin           possess          
+rclone           rem_mname        rem_oname        rem_path         
+replace_door     reset_olc        rezone           rinit            
+rm_bow_proc      rm_casts_spell   rm_curse_proc    rm_discuss_proc  
+rm_keyword       rm_script        rm_stat_affect   rset             
+save_mob         save_obj         see_all          set_path_dir     
+set_veh_stop     shutdown         siteban          slay             
+smob             snoop            sockets          stat_keyword     
+stat_script      teach            thaw             tog_mflag        
+tog_rflag        tog_veh_stop     tog_zflag        total_rezone     
+unpossess        unpost           unsiteban        unsnoop          
+update_cig       uptime           visible          wizhelp          
+write_world      write_zone       zcreate          zdisable         
+zgoto            zlist            zlock            zunlock          
+
+<color=red>
+See Also:  commands, topics
+</color></help>

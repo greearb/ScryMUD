@@ -1,0 +1,17 @@
+Category:  OLC  Topic:  rm_stat_affect
+
+
+
+This function allows you to delete a single stat affect from an object.
+You will need to do an 'aosave' in the zone to which the object
+belongs in order to make the changes permanent.  The stat_to_remove
+is the first number of the pair, which can be seen through ostat.
+
+usage:  rm_stat_affect [mob_num] [stat_to_remove]
+
+Example:
+        rm_stat_affect 65 7     // remove stat affecting stat 7 from mob 65
+
+
+
+See Also:  add_stat_affect, ostat

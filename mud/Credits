@@ -1,0 +1,28 @@
+Hegemon (the java Client Application/Applet) was written by Ben Greear
+(greear@cyberhighway.net, greearb@agcs.com).  It is based on an earlier
+attempt by Charlie Ponder (cponder@tripod.net), but has been completely hacked
+apart, so Charlie can't be held responsible!  It was developed on a PC with
+a Cyrix 200+ running Slackware Linux 3.3.  I used JDK version 1.1.3, ported
+by the good folks at BlackDown organization.  It took roughly 6 months of off
+and on programming to get to it's current state.
+
+ScryMUD (the c++ MUD server) was written from scratch by Ben Greear.
+It was developed on the same platform, and it's predecessor (p60, Slackware
+'96).  I used g++ to compile of course.  I have been working on Scry for over
+three years.  It was written from scratch, but the UI was heavily influenced
+by DikuMUDs, especially JediMUD, which I played for a number of years (was
+known as Grock if it rings a bell..)
+
+You can find ScryMUD (currently) at mud.primenet.com 4444
+You can find information on Hegemon and ScryMUD at:
+
+http://www.primenet.com/~greear/ScryMUD/scry.html
+
+This software is released under the GPL in the hope that others will find
+it useful and possibly contribute code to make it better.
+
+
+If you have any questions, write me at:  greear@cyberhighway.net
+
+Sincerely,
+Ben Greear

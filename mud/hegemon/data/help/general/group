@@ -1,0 +1,12 @@
+Category:  General  Topic:  group
+
+
+
+Group either displays your present group, or adds one to your group if
+you are the leader and they are following you and in your room.
+
+syntax:  group		Displays your group.
+	 group all	Add everyone following you to your group.
+	 group garath   Attempts to add Garath to your group.
+
+See also:  ungroup, follow, gs, assist

@@ -1,0 +1,8 @@
+<help general eq>
+
+Eq gives a list of what you are currently wearing.
+
+Syntax:  eq
+<color=red>
+See Also:  wear, remove, wield, hold
+</color></help>

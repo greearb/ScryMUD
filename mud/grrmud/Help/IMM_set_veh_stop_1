@@ -1,0 +1,13 @@
+<help olc set_path_stop>
+
+Sets the specified path cell to a stop or not.  Only two cases are valid:
+'yes' and 'no'.  A vehicle will take on, and let off passengers at stops.
+
+Syntax:  set_path_stop [vehicle_num] [path_cell_num] ['yes' or 'no']
+
+Example:  set_path_stop 25 2 yes     //Make that path cell a vehicle stop.
+
+<color=red>
+See Also:  rstat, stat_path, ch_path_desc, set_path_dir, rem_path, add_path,
+See Also:  tog_veh_stop, list_paths, set_path_pointer
+</color></help>

@@ -1,0 +1,12 @@
+Category:  Battle  Topic:  hit
+
+
+
+If there is nothing hindering you you can start a fight in this way.
+
+Syntax:  hit <i_th> [target]
+
+Example:  hit priest		Attempts to start a fight with the priest.
+
+
+See Also:  kill, skills, spells

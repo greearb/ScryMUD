@@ -1,0 +1,12 @@
+<help olc rem_perm_inv>
+
+This is used to remove permanent inventory to Shopkeepers.
+
+Syntax:  rem_perm_inv <<i_th> [object] <<j_th> [shopkeeper]
+
+Example:  rem_perm_inv bread 2.baker
+	  rem_perm_inv 3.sword blacksmith
+
+<color=red>
+See Also:  olc, mstat, olist, aolist, buy, list, add_perm_inv
+</color></help>

@@ -1,0 +1,18 @@
+<help general bug>
+
+This is for reporting any bugs, typos or other technical problems with
+the MUD.  It is extremely helpful to the Builders and Coders.  The
+command automatically logs the room you are in and your name,
+to save us all some time!
+
+syntax:  bug [message_txt]
+syntax:  typo [message_txt]
+
+example:  bug Are you supposed to spell chameleon with a K??
+
+<color=red>
+See Also:  idea
+</color>
+Note:  This command, as well as <idea>, notes who you are and what room
+       you are in.  This should help make your message concise.
+</help>

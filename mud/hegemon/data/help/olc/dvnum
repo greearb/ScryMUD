@@ -1,0 +1,12 @@
+Category:  OLC  Topic:  dvnum
+
+
+
+List all doors with a given name.
+
+Syntax:  dvnum <starting_number> [name]
+
+Example:  dvnum east		list all exits to the east (and many west)
+	  dvnum 20 east		list all exits from vnum 20 on
+
+See Also ovnum, mvnum, dstat, dlist

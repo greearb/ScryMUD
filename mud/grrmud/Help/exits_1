@@ -1,0 +1,8 @@
+<help general exits>
+
+Displays all exits _visible_ to you from your current room.
+
+Syntax:  exits
+<color=red>
+See Also:  look, go, move
+</color></help>

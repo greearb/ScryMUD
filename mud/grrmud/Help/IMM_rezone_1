@@ -1,0 +1,10 @@
+<help olc rezone>
+
+Loads your current zone just as an automatic zone reset would.  Good for
+bug checking and other things.  Beware that not all may load every time,
+based on load probabilities.
+
+Syntax:  rezone
+<color=red>
+See Also:  total_rezone, zlock, write_zone, olc, mreload, oreload
+</color></help>

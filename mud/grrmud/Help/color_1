@@ -1,0 +1,35 @@
+<help general color>
+
+This command allows you to view and change your color settings.  It
+does not enable/disable the use of ANSI color however:  That is
+done through the toggle command. (toggle 'ansi color')
+
+The valid COLORs are as follows:
+
+Fore Ground                Back Ground
+FG_BLACK                    BG_BLACK
+FG_RED                      BG_RED
+FG_GREEN                    BG_GREEN
+FG_YELLOW                   BG_YELLOW
+FG_BLUE                     BG_BLUE
+FG_MAGENTA                  BG_MAGENTA
+FG_CYAN                     BG_CYAN
+FG_WHITE                    BG_WHITE
+
+The different text types that you can color are as follows:
+
+Say, Gossip, Yell, Tell, Desc, Object List, Critter List,
+Default, Background, Battle
+
+Two defaults are offered:  NORMAL and SUGGESTED
+Normal is white back ground, rest is black.  Suggested is some colors
+I picked out that I kinda like (Though I mostly use Hegemon.)
+
+Syntax:  color                  Show current settings.
+	 color [text_type] [color]   Set color for text type.
+	 color NORMAL           Make everything normal again
+	 color SUGGESTED        My personal favorites.
+
+<color=red>
+See Also:  score, title, toggle
+</color></help>

@@ -1,0 +1,14 @@
+Category:  OLC  Topic:  clear_keyword
+
+
+
+This command allows you to clear a keyword of a given index in your
+current room.  You can then use the ch_kdesc
+and add_kname commands to make it how you want it.  Hegemon has a GUI
+to do all this.
+
+usage:  clear_keyword [keyword_index]
+
+
+See Also:  rstat, rm_keyword, stat_keyword, add_keyword, ch_kdesc,
+           add_kname

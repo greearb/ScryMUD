@@ -1,0 +1,17 @@
+<help general keyword>
+
+	A keyword is a way for you to put a description into a
+room for the sole purpose of displaying information to the player.
+For example, you might want a sign that reads 'Keep Out'.  You
+could create a sign object, and place it in the room, but then
+other players might be able to move the sign around.  Keywords
+can only be accessed by mortals through the 'look' command.  If,
+for instance, you mention a sign in your room desc, the player
+might decide to 'look sign'.  If you added such a keyword to this
+room, then the player could see your text.  If, on the other hand,
+the player types 'get sign', it will be as though the sign does
+not exist in the game.
+
+</help>
+
+

@@ -1,0 +1,20 @@
+<help general commands>
+
+*** You can abreviate most commands, but be careful that you
+    aren't too vague, or you may get a command you do not intend.
+
+MOVEMENT:  East, West, South, North, NW, NE, SE, SW, Up, Down.
+           northwest, southwest, go, exits.
+
+BATTLE:    hit, kill.  See also 'skills', 'spells'.
+                 
+COMMUNICATION:  gossip, yell, say, tell, auction, emote
+
+MISC:      get, put, drop, drink, eat, open, close, sit,
+           stand, sleep, wake, toggle, brief, give, prompt,
+
+SOCIALS:   These commands do no harm, unless someone takes
+           offense!!   Type 'help socials' for more info.
+
+For an list of all commands and help topics, type 'help topics'.
+</help>

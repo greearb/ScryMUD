@@ -1,0 +1,14 @@
+<help olc zlist>
+
+This lists the zones specified.  If the zone has not been created
+yet then it is shown as being empty.  This function is similar to
+olist for objects but it also stats the zone. 
+
+Syntax:  zlist <<begin> <<end>
+
+Examples:  zlist		shows those from zone 1 to zone 21
+	   zlist 5		shows those from zone 5 to zone 25
+	   zlist 0 5		shows those from zone 0 to zone 5
+<color=red>
+See Also:  olist, rlist, olc, goto
+</color></help>

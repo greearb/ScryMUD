@@ -1,0 +1,11 @@
+<help skills brew>
+
+This skill given to certain classes allows one to create potions
+from component parts.  You must have a cauldron in which to mix
+your ingredients.  You must place the correct components into the
+cauldron before you execute this command. 
+
+Syntax:  brew
+<color=red>
+See Also:  construct, put, examine
+</color></help>

@@ -1,0 +1,24 @@
+<help olc rclone>
+
+This function clones rooms.  It does not copy pc's or doors, but
+every thing else should transfer over with ease.  This is a very
+productive method of building zones when combined with ch_rdesc,
+tog_rflags, mstat and other methods of modifying rooms. 
+
+syntax:  rclone [direction_of_exit_to_new_room]  Clones current room
+         rclone <<number_of_room_to_clone> [dir_of_exit]
+
+example:  rclone north		Clones current room to the north
+          rclone 85.north Clones room# 85 to the north. 
+<color=red> 
+Directions are:  north, south, west, east, up, down,
+                 northwest, southwest, southeast, northeast.
+        You man NOT abbreviate directions in this case.
+
+
+See Also: oclone, mclone, olc, door_to
+</color>
+Bugs:  cannot clone room# 1 unless you use first method while in it.
+       Also, the new room will have few exits, so you may have to add
+       them with 'door_to'.
+</help>

@@ -1,0 +1,11 @@
+<help olc adlist>
+
+This command lists all the doors created for your current zone.
+
+Syntax:  adlist
+
+Example:  adlist
+
+<color=red>
+See Also:  olist, mlist, dstat, dlist, dclear
+</color></help>

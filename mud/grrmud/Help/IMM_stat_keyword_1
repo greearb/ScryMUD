@@ -1,0 +1,17 @@
+<help olc stat_keyword>
+
+This command allows you to view a keyword with a certain index
+in your current room.
+
+NOTE:  You can get the keyword index from rstat.
+
+usage:  stat_keyword [keyword_index]
+
+Example:
+	stat_keyword 2  //Stat the keyword with index 2
+
+
+<color=red>
+See Also:  rstat, rm_keyword, add_keyword, clear_keyword, add_kname,
+See Also:  ch_kdesc, stat_keyword, keyword
+</color></help>

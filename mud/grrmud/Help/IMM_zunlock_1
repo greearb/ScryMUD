@@ -1,0 +1,15 @@
+<help olc zunlock>
+
+This function unlocks the current zone.  No non-builders can move and no
+automatic object or mob loads will happen untill it is unlocked.
+
+syntax:  zunlock <<zone_number>
+
+Example:  zunlock 9               //unlock zone 9
+          zunlock                 //unlock current zone
+<color=red>
+See also:  zlock, total_rezone, write_zone, olc
+</color>
+NOTE:  You must be IN zone 1 in order to zunlock it due to parser 
+	peculiarities.  The rest should work normally.
+</help>

@@ -1,0 +1,12 @@
+<help battle throw>
+
+Attempt to throw a person out of the room in some direction.  This is
+not considered a friendly act by most people!
+
+Syntax:  throw <<i_th> [direction] <<j_th> [critter]
+
+Example:  throw west 2.geek
+
+<color = blue>
+See Also:  hit, abilities, bodyslam, shoot
+</color></help>

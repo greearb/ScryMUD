@@ -1,0 +1,17 @@
+<help olc rm_keyword>
+
+This command allows you to remove a keyword with a certain index
+from your current room.  You should do an asave to make the change
+permanent.
+
+NOTE:  You can get the keyword index from rstat.
+
+usage:  rm_keyword [keyword_index]
+
+Example:
+	rm_keyword 2  //Remove the keyword with index 2
+
+
+<color=red>
+See Also:  rstat, add_keyword, stat_keyword
+</color></help>

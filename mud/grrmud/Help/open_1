@@ -1,0 +1,8 @@
+<help general open>
+
+Used to open a door or a container.
+
+Syntax:  open <<i_th> [object/door]
+<color=red>
+See Also:  close, lock, move
+</color></help>

@@ -1,0 +1,14 @@
+Category:  Communications  Topic:  emote
+
+
+
+Does an action specified by the user.  This has no other affect than
+what other players make of it, but is useful when trying to express one's
+feelings.
+
+Syntax:  emote [message]
+
+Example:  emote runs away!!   	And your name is Grock,
+	Shows everyone in your room:  Grock runs away!!
+
+See Also:  socials, say, gecho

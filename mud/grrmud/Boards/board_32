@@ -1,0 +1,476 @@
+21		Message number
+20 message ~	names
+Message_20 from Grock:  foo
+~
+A message from Grock lies here.
+~
+Try 400
+
+~
+7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+0 0 21 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+2		Message number
+19 message ~	names
+Message_19 from Grock:  test2
+~
+A message from Grock lies here.
+~
+a second test...
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 2 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+1		Message number
+18 message ~	names
+Message_18 from Grock:  test
+~
+A message from Grock lies here.
+~
+A test....
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 1 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+9		Message number
+17 message ~	names
+Message_17 from Dagath New Builders/wanna-be-builders reat this
+~
+A message from Dagath lies here.
+~
+To all:
+   Ok hello all I am Dagath..Head Builder...all builders pretty much will 
+start out using the test area to learn the OLC..after you think you have
+learned enough to start an area then you e-mail me and we will work on getting
+you setup and on the area you are making...my e-mail is Necrosse@aol.com in the
+header/title of the
+e-mail please put Builder..this way i know what its about and i just dont
+delete u:)
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 9 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+26		Message number
+16 message ~	names
+Message_16 from Grock:  new help commands
+~
+A message from Grock lies here.
+~
+Help is much more complete now.  I have an entry for every command available.
+(I think.)
+ 
+To see a list of imm/builder commands, check out help wizhelp
+To see mortal commands and other help entries, try help topics
+ 
+Also, you should be able to paste through ch_rdesc now.  Some flags have
+been added, namely agg_evil, agg_neut, agg_good.  
+Note that few or no mob procs are actually enabled right now.  This should
+change
+soon.
+ 
+Enjoy, Grock
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 26 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+30		Message number
+15 message ~	names
+Message_15 from Grock:  semicolons
+~
+A message from Grock lies here.
+~
+If you want to use a semicolon as a semicolon, and not as a newline, you
+must escape it with a backslash.  In otherwords, type backslash-semicolon.
+kinda like this:
+\;
+If this doesn't work, try escaping it with another semicolon.  example:
+;;
+
+If you have any problems with this let me know.
+Grock
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 30 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+33		Message number
+14 message ~	names
+Message_14 from Grock:  SPEC_PROCS
+~
+A message from Grock lies here.
+~
+Try interacting with the shaman, using bow, discuss, and give.  This is but
+a contrived example of what may be built with these simple procs.  Imagine
+a quest which could take a person all over the known (and unknown!) world.
+	
+Grock
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 33 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+34		Message number
+13 message ~	names
+Message_13 from Dagath:  NUMS
+~
+A message from Dagath lies here.
+~
+Ok Id like to remind all that please do not use any onums or mobnums that
+belong to others...so for Test area use onums 42-61 and mobnums 32-52
+all other numbers i assign to builders for their areas:)
+I have been going through current areas reaqlly carefully..a few typos..no big
+deal...the biggest probs I have found are some room descriptions are too
+short...and the areas arent completed yet:P...
+Some builders havnt even come to me for an area yet...so if I do not here from
+some of you during this week I am tempted to remove you from roster..
+Id like to have a fully operational building staff of about 5-10 builders..
+So i will remove the ppl i dont here from to make room for new builders:P
+Brad-Dagath...e-mail: Necrosse@aol.com
+Id like an area done by all current builders bu end of january..meaning totally
+debugged,no mistakes..or very few mistakes etc...ill connect the completed ones
+by a road until the areas in between are created:)
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 34 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+37		Message number
+12 message ~	names
+Message_12 from Grock:  TYPO fixing for areas
+~
+A message from Grock lies here.
+~
+When you get your zone done to the extent that all that remains is typo's or
+changes in room descs, contact me and I can mail you your zone file in
+plain-text form.  You can then edit it with any common editor (make sure you
+export
+it as plain text though).  You can mail it back to me and I'll add it into
+the MUD in it's new form.  I can do the same for mobs, objects and doors even.
+	
+Grock
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 37 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+39		Message number
+11 message ~	names
+Message_11 from Dagath:  Test
+~
+A message from Dagath lies here.
+~
+Ok hello all:)
+Zlist..under Test area zone#10. I modified it so now it has all know builders
+and IMMs listed there. If you are not there and you are or want to be a
+builder/IMM tell me so I can put you back:)..But as far as I know that is the
+complete staff we have here:)
+Brad-Dagath
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 39 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+40		Message number
+10 message ~	names
+Message_10 from Grock:  Link to  your WWW page
+~
+A message from Grock lies here.
+~
+If you would like a mention or link to your www page, from the mud's
+page, please mail me your email and www address.  Many of you are
+already there, but some of the newer ones are not.
+	
+Keep up the good work....
+	
+Grock
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 40 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+41		Message number
+9 message ~	names
+Message_9 from Grock:  socials update
+~
+A message from Grock lies here.
+~
+SOme new socials are in....  'help socials'. Also, if you wish to create
+your own, check out the web page.  I put an example on it and you can
+modify it quite easily to be your own social.  If you would like any
+special mob-proc to be linked with it, ie spit on a mob flagged to
+respond, and they start kicking yer arse..... just make me a note and I'll
+try to set it up as such when I get time. Grock
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 41 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+42		Message number
+8 message ~	names
+Message_8 from Grock:  NEW COMMANDS for OLC
+~
+A message from Grock lies here.
+~
+Check out help wizhelp for the 5 new OLC commands dealing with PROC addition
+and subtraction.  They are completely untested..as I have no time, so do tell
+if they crash or perform strangely.
+Grock
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 42 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+46		Message number
+7 message ~	names
+Message_7 from Grock:  TRY NEW SPELLS
+~
+A message from Grock lies here.
+~
+I added spells to every character who had logged on in the last 2 weeks or so.
+Please test these out.  I have many more to add...keep a watch out...
+If your character doesn't have spells, email me, or post a message, and I'll
+fix you up.
+Grock
+PS: To see which spells you have, type 'pr' for practice
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 46 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+47		Message number
+6 message ~	names
+Message_6 from Grock:  spell/skill list is now on the web page
+~
+A message from Grock lies here.
+~
+Check out the skill/spell list on the web page.  Suggestions/modifications
+would be welcome.  For all you html guru's out there, this document could
+be marked up in a way to better display its tree-like structure.  Feel free
+to download the source and do it for me :)  If I get a chance I'll write
+a script to do it, but it may be a while...
+Grock
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 47 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+50		Message number
+5 message ~	names
+Message_5 from Grock:  new option in toggle_prompt command
+~
+A message from Grock lies here.
+~
+Immorts can now get some extra info, namely the commings and goings of
+lesser peoples!  Also, picklock skill should be in.
+	
+Grock
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 50 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+56		Message number
+4 message ~	names
+Message_4 from Grock:  FIX FOR STAIRSTEP EFFECT
+~
+A message from Grock lies here.
+~
+I think I fixed the stairstep effect, ie the cursor nevers goes back to the
+beginning of the line, it only drops DOWN one line.  If you are having this
+problem, type:  toggle carriage
+then if that doesn't work, try:  toggle cr
+If neither of these work, let me know.  For those of you with no problems
+currently, I don't think these things will hurt you, but they probably won't
+help
+either.
+Grock
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 56 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+58		Message number
+3 message ~	names
+Message_3 from Genesis:  total_rezone
+~
+A message from Genesis lies here.
+~
+When I use total_rezone, the mud tends to crash... Just to let you know.
+-Genesis
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 58 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+62		Message number
+2 message ~	names
+Message_2 from Crazy:  
+~
+A message from Crazy lies here.
+~
+If you have an idea for a social please e-mail Crazy at
+mattc@andyc.carenet.org.  Tell your nick so i give credit to you.  Also tell
+name and different texts
+!
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 62 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+64		Message number
+1 message ~	names
+Message_1 from Grock:  total rezone [re]
+~
+A message from Grock lies here.
+~
+See if it still chrashes.  If so, please tell me which zone.
+Grock
+
+~
+10 7 -1  -:| bitfield |:-
+0 0 0 0 0 0 0 0 0 	extras
+1024 0 64 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+-1		EOF.

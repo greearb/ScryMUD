@@ -1,0 +1,8 @@
+<help communications nogossip>
+
+Simply toggles the gossip channel off and on.
+
+Syntax:  nogossip
+<color=red>
+See Also:  toggle, channels
+</color></help>

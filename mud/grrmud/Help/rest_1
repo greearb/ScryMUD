@@ -1,0 +1,9 @@
+<help general rest>
+
+Sit down and rest.  You recuperate faster this way, but are at a greater
+disadvantage if you get attacked.
+
+Syntax:  rest
+<color=red>
+See Also:  sleep, sit, wake, stand, meditate
+</color></help>

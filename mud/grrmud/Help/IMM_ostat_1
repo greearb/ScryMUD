@@ -1,0 +1,11 @@
+<help olc ostat>
+
+This function returns a great deal of information about a given object.
+
+Syntax:  ostat <<i_th> [object]
+
+Example:  ostat 2.sword		Stat second sword in inventory.
+	  ostat 32		Stat object# 32
+<color=red>
+See Also:  rstat, mstat, olc
+</color></help>

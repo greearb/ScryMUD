@@ -1,0 +1,11 @@
+Category:  Spells  Topic:  cast
+
+
+
+This command allows magical types to use their magic.  
+
+Syntax:  cast [spell] <i_th> [target]>
+
+Example:  cast fireball 2.ogre
+
+See Also:  use, scribe, recite, quaf

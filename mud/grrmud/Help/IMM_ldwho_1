@@ -1,0 +1,8 @@
+<help immortal ldwho>
+
+Displays a list of all the characters on the linkdead_list.
+
+syntax:  ldwho
+<color=red>
+See Also:  who, sockets
+</color></help>

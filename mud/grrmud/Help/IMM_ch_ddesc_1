@@ -1,0 +1,10 @@
+<help olc ch_ddesc>
+
+This allows you to change the description of the door
+in question.  It is interactive, so you can enter it one
+line at a time.
+
+Syntax:  ch_ddesc [door_number]
+<color=red>
+See Also:  dlist, adlist, dstat
+</color></help>

@@ -1,0 +1,14 @@
+<help olc add_path>
+
+Adds a blank path at the given cell number.  If this cell number is within
+the cells already added, then it will be inserted.  You may then modify the
+blank path cell with the commands listed below.
+
+Syntax:  add_path [vehicle_num] [path_cell_num]
+
+Example:  add_path 25 2         Add a blank path cell in the second position.
+
+<color=red>
+See Also:  rstat, stat_path, ch_path_desc, set_path_dir, rem_path, add_path,
+See Also:  tog_veh_stop, list_paths, set_path_pointer
+</color></help>

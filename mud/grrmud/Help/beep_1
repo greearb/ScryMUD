@@ -1,0 +1,12 @@
+<help communications beep>
+
+This command can be used to cause a beep to be echoed on the target's
+computer.  This is a good way to get someone's attention.  If abused,
+restrictions will be put into place.
+
+Syntax:  beep <<i_th> [target]
+
+Example:  beep grock
+<color=red>
+See Also:  gag, tell, channels
+</color></help>

@@ -1,0 +1,38 @@
+Category:  Immortal  Topic:  wizhelp
+
+
+
+Here is a list of all immortal/builder help topics.
+
+add_casts_spell  add_keyword      add_kname        add_mname        
+add_oname        add_path         add_perm_inv     add_proc         
+add_stat_affect  adlist           adsave           amlist           
+aolist           aosave           arlist           ch_ddesc         
+ch_mdesc         ch_mndesc        ch_msdesc        ch_odesc         
+ch_osdesc        ch_path_desc     ch_rdesc         ch_rname         
+classes          clear_keyword    create_conct     create_constrct  
+delete_door      dlist            door_to          dset             
+dvnum            enslave          flip_door        force            
+freeze           gag              gecho            goto             
+keyword          ldwho            list_paths       list_scripts     
+log_level        make_builder     mclear           mclone           
+mload            mreload          mset             mstat            
+oclear           oclone           olc              olist            
+opurge           oreload          oset             ostat            
+poofin           possess          races            rclear           
+rem_mname        rem_oname        rem_path         rem_perm_inv     
+reset_olc        rezone           rinit            rm_bow_proc      
+rm_curse_proc    rm_discuss_proc  rm_give_proc     rm_keyword       
+rm_stat_affect   rset             rstat            save_mob         
+see_all          set_path_dir     set_path_pointer set_veh_stop     
+siteban          slay             slist            smob             
+sockets          stat_keyword     stat_path        stat_script      
+thaw             tog_mflag        tog_oflag        tog_rflag        
+total_rezone     ungag            unpossess        unpost           
+unsnoop          update_CIG       uptime           visible          
+wizinvis         write_world      write_zone       zcreate          
+zenable          zgoto            zlist            zlock            
+
+
+
+See Also:  commands, topics

@@ -1,0 +1,10 @@
+<help skills berserk>
+
+This skill allows you to go wild and attack everything in the
+room.  It is quite exhausting, and can piss those you hit off, so
+better watch out!! 
+
+Example:  berserk
+<color=red>
+See Also: rest, move
+</color></help>

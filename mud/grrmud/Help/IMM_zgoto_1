@@ -1,0 +1,15 @@
+<help immortal zgoto>
+
+This command takes you to a zone, much as goto would take you to
+a room.  Zgoto attempts to place you in the first room that has
+actually been built, if none have been built, it takes you to the
+first room in the zone. 
+
+Syntax:  zgoto [zone_num]
+
+Example:  zgoto 5
+<color=red>
+See Also:  goto, zlist
+</color>
+Note:  Can't zgoto while fighting.
+</help>

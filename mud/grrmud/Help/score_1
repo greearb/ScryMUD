@@ -1,0 +1,9 @@
+<help general score>
+
+This command gives you an overview of your character.  
+
+Syntax:  score			Gives standard information
+	 score long		Gives more information that just score.
+<color=red>
+See Also:  title, mstat
+</color></help>

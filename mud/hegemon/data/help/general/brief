@@ -1,0 +1,13 @@
+Category:  General  Topic:  brief
+
+
+
+This command toggles brief off and on.  When brief is ON, you do not see
+full room descriptions.  
+
+synopsis:  brief
+
+example:   brief
+
+
+See also:  toggle

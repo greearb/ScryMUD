@@ -1,0 +1,8 @@
+<help general drink>
+
+Attempt to drink some liquid from some container.
+
+Syntax:  drink <<i_th> [container]
+<color=red>
+See Also:  empty, fill, examine, eat
+</color></help>

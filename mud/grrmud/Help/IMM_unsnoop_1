@@ -1,0 +1,11 @@
+<help immortal unsnoop>
+
+This command makes you stop snooping your victim.
+
+syntax:  unsnoop
+
+example:  unsnoop
+
+<color=red>
+See Also:  order, force, unpossess, snoop
+</color></help>

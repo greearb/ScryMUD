@@ -1,0 +1,16 @@
+<help olc add_oname>
+
+There are several commands that let you add or delete names from
+a mobile or object.  The syntax is the same for all of them:
+
+Syntax:  command [obj or mob num] [name to be added or removed]
+
+Example:  add_oname 55 guard
+	  rem_mname 45 cup
+
+The commands are:
+
+add_oname, add_mname, rem_oname, rem_mname
+<color=red>
+See Also:  ch_rname, ch_odesc
+</color></help>

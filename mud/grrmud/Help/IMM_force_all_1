@@ -1,0 +1,17 @@
+<help immortal force_all>
+
+Similar to force, except with this you specify no target.  Your force
+will go out to every PC that is not linkdead.  Of course, you will not
+be able to bother those of higher levels than yourself.  Once again,
+do not abuse this command..
+
+Syntax:  force_all [action]
+
+Example:  force_all gossip All hail Dagath!!
+          force_all gossip Aww hell, Grock!!
+<color=red>
+See Also:  force, enslave, order, freeze
+</color>
+NOTE:  you cannot abbreviate this command.
+</help>
+

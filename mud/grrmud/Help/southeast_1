@@ -1,0 +1,6 @@
+<help general southeast>
+
+Attempt to exit to the southeast.  Can be abbreviated se.
+<color=red>
+See Also:  go, move
+</color></help>

@@ -1,0 +1,9 @@
+<help general date>
+
+This command returns the day of the year, MUD time.
+
+syntax:  date
+
+<color=red>
+See Also:  time
+</color></help>

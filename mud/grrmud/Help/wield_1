@@ -1,0 +1,9 @@
+<help battle wield> 
+
+Attempts to wield a weapon.
+
+example:  wield bow
+          wield 2.sword
+<color = red>
+See Also:  hold, wear, remove, inventory, eq
+</color></help>

@@ -1,0 +1,8 @@
+<help general wake>
+
+Attempt to wake from sleep or meditation.
+
+Syntax:  wake
+<color=red>
+See Also:  sleep, rest, stand
+</color></help>

@@ -1,0 +1,14 @@
+Category:  General  Topic:  pay
+
+
+
+This transfers some of your money to the other person.  For buying from
+shopkeepers this is not necessary, as the buy command automatically pays
+them.
+
+Syntax:  pay [amount] <i_th> [target]
+
+Example:  pay 50 Divine
+          pay 25 2.john
+
+See Also:  give

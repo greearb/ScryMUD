@@ -1,0 +1,13 @@
+<help olc add_kname>
+
+This command allows you to add a name to a keyword entry
+in your current room.  For instance, if you had a rock
+keyword entry, then you might want to also add 'stone'
+as a keyword name for it.
+
+usage:  add_kname [keyword_index] [new_keyword_name]
+
+<color=red>
+See Also:  rstat, rm_keyword, stat_keyword, add_keyword, ch_kdesc,
+See Also:  clear_keyword
+</color></help>

@@ -1,0 +1,12 @@
+<help immortal list_site_bans>
+
+Lists the current banned sites.  See:  'help siteban' for more
+information on how to decode the information.
+
+Syntax:  list_site_bans
+
+Example:  list_site_bans
+
+<color=red>
+See Also:  ungag, siteban, freeze, gag, siteban
+</color></help>

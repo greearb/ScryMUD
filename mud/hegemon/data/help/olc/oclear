@@ -1,0 +1,14 @@
+Category:  OLC  Topic:  oclear
+
+
+
+This command deletes an object from the database.  You SHOULD do an aosave
+to make these changes permanent, but it is not forced by the code at this
+time.  The only problem would be if you cleared, then rebuilt it with olc
+without aosave-ing in between.  This might make things kinda funky!
+
+Syntax:  oclear [obj_num]
+
+Example:  oclear 66
+
+See Also:  rclear, mclear, aosave, olc, tog_oflag

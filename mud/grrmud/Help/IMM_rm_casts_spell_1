@@ -1,0 +1,18 @@
+<help olc rm_casts_spell>
+
+This function allows you to delete a single 'casts spell' from an object.
+You will need to do an 'aosave' in the zone to which the object
+belongs in order to make the changes permanent.  The spell_to_remove
+is the second number of the pair, which can be seen through ostat.
+
+CASTS SPELL  Relates to staffs, scrolls, and potions, currently.
+
+usage:  rm_casts_spell [mob_num] [spell_to_remove]
+
+Example:
+        rm_casts_spell 65 7     // remove casts spell 7 from mob 65
+
+
+<color=red>
+See Also:  add_stat_affect, ostat add_casts_spell
+</color></help>

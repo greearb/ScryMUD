@@ -1,0 +1,25 @@
+<help olc races>
+
+These are the races and their corresponding numbers:
+ OTHER_RACE		0
+ HUMAN			1
+ ANITRE			2
+ AVINTRE		3
+ DARKLING		4
+ DROW			5
+ DRAGON			6
+ DWARF			7
+ IRONCLAD		8
+ OGRUE			9
+ ROCKTROLL		10
+ ELF			11
+ FAERIE			12
+ ENTITY			13
+ SOMBRIAN               14
+ UNDEAD			15
+ ANIMAL			16
+ MONSTER		17
+
+<color=red>
+See Also:  classes
+</color></help>

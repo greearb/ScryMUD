@@ -1,0 +1,15 @@
+Category:  General  Topic:  wear
+
+
+
+Attempt to utilize a piece of your inventory.  You gain the benefits and or
+penalties of the piece of equipment.
+
+Syntax:  wear <i_th> [item] [position]
+
+Example:  wear gloves
+	  wear gloves hands
+	  wear 2.ring finger
+	  wear all
+
+See Also:  remove, wield, light, hold

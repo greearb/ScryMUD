@@ -1,0 +1,13 @@
+<help communications shout>
+
+Broadcasts a message to everyone awake in your current zone.
+Think of it as similar to a yell, ie don't go blathering off all the
+time and annoy ppl!
+
+Syntax:  shout [your message]
+
+Example:  shout I'm lost, please help me!
+
+<color=red>
+See Also:  channels, tell, say, emote
+</color></help>

@@ -1,0 +1,10 @@
+Category:  Battle  Topic:  wimpy
+
+
+This sets a minimum of hit points, below which you automatically try to flee.
+
+Syntax:  wimpy			Displays your current wimpy setting.
+	 wimpy [new_min]	Set new wimpy.
+
+
+See also:  toggle, flee

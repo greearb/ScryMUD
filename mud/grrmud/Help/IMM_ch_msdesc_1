@@ -1,0 +1,10 @@
+<help olc ch_msdesc>
+
+This allows you to change the short description of the mobile
+in question.  You enter it all at once.  NOTE:  the description must
+be in single quotes.
+
+Syntax:  ch_msdesc [object_number] ['new short description']
+<color=red>
+See Also:  mlist, amlist, mstat
+</color></help>

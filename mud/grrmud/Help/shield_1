@@ -1,0 +1,12 @@
+<help skills shield>
+
+Shield allows one to intercept many offenses aimed at a person. 
+You throw yourself in the path of whatever you intercept however,
+so be careful! 
+
+Syntax:  shield <<i_th> [person]
+
+Example:  shield Gandalf	// puny mages always need help!
+<color=red>
+See Also:  guard
+</color></help>

@@ -1,0 +1,136 @@
+<color blue>
+                      Help for OLC Object creation.
+<color=red>
+Object Number:</color>
+	This allows you to specify the object number you wish this object
+to be.  It must NOT BE USED in the server database yet.  (ostat <<obj_num>
+can tell you whether or not it's in use.)  If it is already used, or wrong
+for any other reason, it will chose the next available.  If you don't care what
+the object number is (the common case), then just leave it '1' and let the
+server assign one.
+<color=red>
+Names:</color>
+	Object names are handles by which a player may interact with the
+object.  It is best if at least one of the object names is somewhat general
+so that players aren't frusterated.  At the same time, you may wish to
+frusterate them at times...  The first name given is what the game uses
+when it needs an object name, but others are searched when a user tries
+to interact with in in some way.  The names should be single words seperated
+by spaces.
+<color=red>
+Short Description:</color>
+	This should be a sentence fragment with no period after it.  This
+description is used by the game as follows:  Scrubal wields <short_description>
+Do not capatalize it unless it should be capatalized within the body of a
+sentence.
+For Example:  
+	a silver sword
+<color=red>
+In Room Desc:</color>
+	The in_room description is what shows when an object is lying in
+a room.  It should be less than 80 characters long...
+<color=red>
+Long Description:</color>
+	This is what is shown when a player 'looks' at an object.  If the
+object can be 'read', then the long desc is shown then too.
+<color=red>
+Object Flags:</color>
+	These determine the (default) state of the object and restrict
+or enable certain actions upon the object.  Please read over the list
+well to acquaint yourself with them.  They should be fairly self
+explanatory.  Please make sure the flags agree with each other logically,
+as the MUD server does not check this too well.
+<color=red>
+Miscellaneous Data:</color>
+	Charges/Light count:  set for wands, light sources, and drink
+		containers, where it signifies drinks left in container.
+	Recharges:  How many times a wand can be recharged.
+	Load Percentage:  Likely hood of an object loading, 0-100 please.
+	Cur_in_game:  Please leave this one zero for now.
+	Max_in_game:  Max number of objects that can be in the game at once.
+	Weight:  The weight of the (empty) object.
+	Dice Sides:  the 5 in 4d5, used for weapons, keep this sane please
+	Dice Count:  the 4 in 4d5, used for weapons, keep this sane please
+	Level:  The level of this object, has various implications, so
+		please set it accordingly (1-30).
+
+<color=red>
+Bag Flags: </color>
+	These determine default states of the object if it is a container.
+Leave it alone if you don't want your object to be a container.  This data
+will be ignored, unless you toggle the Object Flag specifying the object as
+being a container.  Please do not toggle corpse unless you know what you're
+doing!
+<color=red>
+Bag Data:</color>
+	Key Number:  object number of key used to unlock the bag, if none
+		enter zero.
+	Max Weight:  The capacity of the bag.  NOTE:  the bag must carry
+		itself too, so Max Weight should always be more than the
+		weight of the container.
+	Percent Weight:  This allows for 'magic' bags.  If this is less than
+		100, then the objects become proportionally lighter as they
+		are placed into the bag.  If over 100, they become heavier.
+	Time Till Disolve:  This is for corpses.  -1 means never disolve.
+	Inventory:  This is a space-seperated list of object numbers to
+		be found in the bag by default (if they beat their load%).
+		Please get these right the first time, its hard to change
+		them later!  Also, these objects MUST BE CREATED ALREADY.
+	Stat Effects:  Enter these in <<stat_number> <<modifier> pairs.
+		REMINDER:  This is NOT A TWINK MUD, be reasonable.
+<color=black>
+1 str, 2 int, 3 con, 4 cha, 5 wis, 6 dex, 7 hit, 8 dam, 9 ac, 10 attacks,
+11 pause_count, 15 hp, 16 mana, 17 mov, 18 align, 19 level, 23 hp_max,
+24 mana_max, 25 mov_max, 27 damage_received_modifier, 28 damage_given_modifier,
+29 heat_resis, 30 cold_resis, 31 elect_resis, 32 spell_resis, 
+35 bare_hand_dice_count, 36 bare_hand_dice_sides, 37 hp_regen, 
+38 mana_regen, 39 mov_regen, 100 hunger, 101 thirst, 102 drugged.
+</color> <color=red>
+Visibility Bits:</color>
+	Add up these numbers to arrive at the visibility of the
+object:  {1 dark, 2 invis, 4 hidden, 8 god_invis1, 16 god_invis2}
+<color=red>
+Price:</color>
+	This is the base value of the object.  Buyers and Sellers use this
+number to calculate their prices.  Please set the value of the object in
+question to a reasonable value.
+<color=red>
+Spec Proc Flags:</color>
+	These specify a few special procs that can be added to an object.
+Be sure to toggle CONSTRUCT DATA if you wish the object to be part of a
+construction or concoction.  If you wish to give it a skin (perhaps it's a
+corpse?) toggle the skin button...
+<color=red>
+Construct/Concoct Data:</color>
+	Resulting Object:  This is the obj number of the object that will be
+		created from the concoction or construction of the target
+		objects.  One of the components should be the object number
+		of the object we are now creating.  Make sure these numbers
+		are not in use, and won't be used up during your building
+		time, because if you pick an already-used number, the game
+		will automatically pick you the next available one.
+	Components:  These are the object numbers of the components we must
+		have in order to construct the object.
+<color=red>
+Skin Number:</color>
+	This is the object number of the object which is to be the skin
+'on' this object.  Default (none) is zero.
+<color=red>
+Casts these Spells:</color>
+	These spells are triggered at different times, depending on what
+type of object it actuall is.  Weapons usually in battle, wands with the
+'use' command and scrolls with the 'recite' command.  Potions are triggered
+when 'quaf'ed.  Enter the spell numberes seperated by spaces.  To get the
+spell numbers, try the 'slist' command, or the web pages for the listing of
+spell numbers with their names. 
+<color=red>
+Submit:</color>
+	Sends the data to the MUD server.  If the data is acceptable, then
+the object will be created, otherwise you may be prompted by a pop-up box.
+Check the output from the MUD, on the main console screen, for verication.
+<color=red>
+Cancel:</color>
+	Do not send the data.  If it has already been sent once, canceling
+WILL NOT AFFECT THE MUD IN ANY WAY.  Usually one presses cancel after
+submitting, unless they wish to create another, similar, object..
+</color>

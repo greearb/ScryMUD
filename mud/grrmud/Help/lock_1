@@ -1,0 +1,12 @@
+<help general lock>
+
+Attempt to lock a door, or a container in either your inventory, or the 
+room's inventory.  You must have the correct key of course.
+
+Syntax:  lock <<i_th> [object]
+
+Example:  lock north
+	  lock 2.chest
+<color=red>
+See Also:  unlock, open, close, picklock
+</color></help>

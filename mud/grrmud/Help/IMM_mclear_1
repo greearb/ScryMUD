@@ -1,0 +1,12 @@
+<help olc mclear>
+
+Delete a mob from the online Data Base.  You SHOULD do an amsave after
+this command, but at the time it isn't forced by the code.  See help on
+oclear for a better explanation.
+
+Syntax:  mclear [mob_num]
+
+Example:  mclear 50
+<color=red>
+See Also:  amsave, oclear, rclear, mset, mstat
+</color></help>

@@ -1,0 +1,8 @@
+<help general inventory>
+
+Displays every item you can detect in your inventory.
+
+Syntax:  inventory
+<color=red>
+See Also:  score, eq
+</color></help>

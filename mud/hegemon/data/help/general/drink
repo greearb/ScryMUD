@@ -1,0 +1,9 @@
+Category:  General  Topic:  drink
+
+
+
+Attempt to drink some liquid from some container.
+
+Syntax:  drink <i_th> [container]
+
+See Also:  empty, fill, examine, eat

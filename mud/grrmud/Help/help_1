@@ -1,0 +1,27 @@
+<help general help>
+		Welcome to ScryMUD...confused yet?
+
+User Interface(UI):  The UI of ScryMUD is terse and concise.  You
+may abbreviate almost any command, if this abbreviated command
+matches more than one target, the first will be chosen.  If there
+are two objects of the same name, say sword, and you want the
+second, you can type 2.sword or 2 sword to refer to it.  In the
+help commands, you will see: 'i_th' often.  This is like the
+2 seen above.  The game is NOT case sensitive when it comes to
+names.  All pronouns and modifiers are to be left out.  If you
+single quote a string, it is taken as one word/identifier by the
+parser.  Otherwise, no quotes are needed. 
+
+You can find help on these topics:  To see a list of all mortal
+commands, see 'topics'.  For immortals, try 'wizhelp'. 
+
+<color=red>
+See Also:  commands, socials
+</color>
+To get help on a topic enter:  help <<term_you_want_help_with>
+
+NOTE:  For a friendlier environment check out Hegemon, our Java Client!
+
+http://www.primenet.com/~greear/ScryMUD/scry.html
+
+</help>

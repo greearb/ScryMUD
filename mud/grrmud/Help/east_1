@@ -1,0 +1,9 @@
+<help general east>
+
+Attempt to go east.  
+
+Syntax:  east
+
+<color = red>
+See Also:  go
+</color></help>

@@ -1,0 +1,16 @@
+<help olc tog_rflag>
+
+Used to toggle room flags.  Automatically called on caller's CURRENT ROOM.
+See also tog_zflag, which toggles room flags in the entire zone.
+
+syntax:  tog_rflag <<flag_num>
+
+example:  tog_rflag 3 		Toggles flag # 3 of CURRENT ROOM
+
+Bugs:  Some flags are (and should be) restricted from toggling.  As
+       an Imp adds/deletes/changes flags, he/she should check this
+       and similar functions for possible tweaking.
+<color=red>
+See also:  olc, tog_oflag, tog_zflag, tog_mflag, rclone, write_zone
+</color></help>
+

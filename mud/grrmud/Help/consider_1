@@ -1,0 +1,13 @@
+<help battle consider>
+
+This command allows you to get some idea of what a oponent
+might be able to do to you.  This is somewhat obvious to
+many players, and they may not take your probing lightly!
+
+Syntax:  consider <<i_th> [critter]
+
+Example:  consider priest
+
+<color = blue>
+See Also:  hit, flee, assist, abilities, assist
+</color></help>

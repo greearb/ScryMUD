@@ -1,0 +1,12 @@
+<help skills circle>
+
+Circle allows one with skill, oportunity, and the correct
+weapon to sneak around back of someone and strike a
+powerful blow.
+
+Syntax:  circle <<i_th> [critter_name]
+
+NOTE:  You must be fighting said target.
+<color=red>
+See Also:  abilities, backstab
+</color></help>

@@ -1,0 +1,12 @@
+<help general ungroup>
+
+This command has several forms, but all of them remove someone
+from a group.  It also causes them to quit following you, and in
+the case of pets, they would no longer be your pet. 
+
+Syntax:  ungroup		Disband your group (for leaders)
+	 ungroup [target]	Remove 'target' from your group.
+<color = red>
+See Also:  group, follow, channels
+</color></help>
+

@@ -1,0 +1,13 @@
+<help immortal thaw>
+
+This removes a 'freeze'.
+
+Syntax:  thaw [target]
+
+Example:  thaw Rehabilly
+<color=red>
+See Also:  gag, freeze, ungag
+</color>
+NOTE:  You cannot abbreviate this, and you don't have to be
+       in the same room as your target.
+</help>

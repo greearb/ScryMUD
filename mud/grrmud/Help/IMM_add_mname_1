@@ -1,0 +1,12 @@
+<help olc add_mname>
+
+There are several commands that let you add or delete names from
+a mobile or object.  The syntax for add_mname is:
+
+Syntax:  add_mname [mob_num] [name to be added]
+
+Example:  add_mname 55 guard
+	  
+<color=red>
+See Also:  ch_rname, ch_odesc, add_oname, rem_mname, rem_oname
+</color></help>

@@ -1,0 +1,10 @@
+<help general quaf>
+
+Used to consume potion-type objects.
+
+syntax:  quaf	 	 	 Assumes you are holding the potion.
+	 quaf <<potion_name>     Assume potion_name is in your inventory.
+<color=red>
+See Also:  recite, use, concoct
+</color></help>
+

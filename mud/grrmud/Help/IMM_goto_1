@@ -1,0 +1,15 @@
+<help immortal goto>
+
+This command is used to goto any mob detectable by the pc, or any room.
+Going to a mob in this fashion is CPU intensive so don't use it
+frivously.
+
+synopsis:  goto [room_number]       //very effecient
+           goto <<n_th> [mob_name]   //not so effecient
+                 
+
+examples:  goto 1	Takes you to room numbered 1, Garland Temple
+           goto 3.guard   Takes you to the 3rd mob named guard.
+
+Note:  For mobs, the rooms are searched from the first to last.
+</help>

@@ -1,0 +1,10 @@
+<help immortal dsys>
+
+Displays some low level information dealing with the actual server
+code.  Used for trouble-shooting code problems mostly.
+
+Syntax:  dsys
+
+<color=red>
+See Also:  who, sockets, ldwho, uptime
+</color></help>

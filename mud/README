@@ -1,0 +1,72 @@
+NOTE: I have compiled on Linux and BSD for the PC. Should work on any Unix-ish OS
+without much change, but NT and others I have no idea about... Installation
+directions are as follows: 
+
+NOTE: You will have to un-tar the file in the grrmud/World
+directory if this is your first installation. 
+
+  
+
+Make a MUD directory to hold stuff and copy the distribution there.
+
+mkdir mud
+cp scry*.tar.gz mud/
+cd mud
+
+tar -xvf *.gz
+
+You will find two .gz files.
+
+There will be another file in grrmud/World, which you will want to gunzip and
+untar if this is your first install.
+
+gunzip and untar each of them.  For later installations, you may want to only
+install certain files (like maybe just the ones in scry_dist_coreX.X.X.tar.gz.
+  For your own sake, make backups if you are updating an already-installed ScryMUD
+distribution. 
+
+If all this worked, there should be a License file in your current directory.
+Please read and abide by it.
+
+Now, lets compile it.
+
+Edit the top of the MakeInclude file, to define your make utility (make or gmake
+usually).   You may want to change the MUD_HOME variable, but it
+shouldn't be needed if you unzip'ed all this stuff in $HOME/mud
+
+
+Compile it:
+cd grrmud/server
+make clean
+make
+
+If this is a re-install, you must do a make clean!
+
+Watch for errors, if you can't figure them out, email me the errors and I'll see
+if I can.  There will be a few warnings about un-used variables.  These can
+be ignored.  egcs complains about unsigned v/s signed comparisons.  It should
+work fine anyway.
+
+Now move the grrmud executable to ../gmud:
+mv grrmud ../gmud
+
+Start the MUD:
+
+cd ..
+./startup&
+
+It starts on port 4000 by default, you can edit the grrmud.ini file to change that
+and other things.
+
+
+NOTE:  Make a copy of the grrmud/Pfiles/admin pfile as a personal back
+door into your game, in case you screw something up.
+
+Log onto the game:  telnet localhost 4000
+
+Log on as admin, with password admin.  You'll want to create other
+admins and change this guy's password I'm sure.
+
+
+
+

@@ -1,0 +1,18 @@
+Category:  OLC  Topic:  rstat
+
+
+
+This function returns a great deal of information about a given room.
+If you are using the Java Client, then this will capture some information
+for easy editing of the room.
+
+BUGS:  you can only use this method of editing a room if you are in that
+room.  Be careful not to rstat another room, then use the Java Client to
+make changes, as it will change your current room instead.
+
+Syntax:  rstat <i_th>
+
+Example:  rstat 30			Stat room# 30
+	  rstat				Stat current room.
+
+See Also:  ostat, mstat, olc, ch_rdesc, tog_rflag

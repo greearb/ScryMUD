@@ -1,0 +1,13 @@
+<help olc mlist>
+
+This command lists mobiles currently loaded into memory.  If someone
+has just created an mob, and not done an amsave, then it will not be
+in the database, but will show up with an 'mlist' command.  However,
+for the most part, what you see with mlist is what is in the database.
+
+Syntax:  mlist <<starting_number> <<ending_number>
+
+Example:  mlist 20 45		shows mobs from 20 to 45
+<color=red>
+See Also:  amlist, olc, mstat
+</color></help>

@@ -1,0 +1,16 @@
+<help imortal poofin>
+
+Change your poofin description.  It must be less than 79 characters long.
+It will be shown with you 'goto' a room.  Your poofout description will
+be shown when you poofout of a room.  Might extend it to other entries/exits
+as well.
+
+Syntax:  poofin <<your new poofin>
+Syntax:  poofout <<your new poofout>
+
+Example:  poofin Grock steps out of a pillar of flames.
+Example:  poofout Grock bursts into flames and is consumed!
+
+<color = red>
+See Also:  title
+</color></help>

@@ -1,0 +1,16 @@
+<help general buy>
+
+This is how you attempt to buy things from a shopkeeper.  There must be
+a shopkeeper present in your room in order for this to work.  You can
+also buy things from a vending machine like this.
+
+Syntax:  buy <<i_th> [item] <<<<j_th> [shopkeeper/machine]>
+
+Example:  buy waybread
+	  buy waybread baker
+	  buy 3.sword 2.blacksmith
+	  buy ticket machine
+<color=red>
+See Also:  list, offer, sell
+</color></help>
+

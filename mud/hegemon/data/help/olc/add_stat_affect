@@ -1,0 +1,40 @@
+Category:  OLC  Topic:  add_stat_affect
+
+
+
+This function allows you to add a stat affect to an object.
+You will need to do an 'aosave' in the zone to which the object
+belongs in order to make the changes permanent.  The stat numbers
+are (currently).  The game does a sanity check, so some of these 
+cannot be added, even though the command will look like it worked.
+
+    0 position   {0 stand, 1 sit, 2 rest, 3 sleep, 4 med,
+                  5 stun, 6 dead, 7 prone}
+    1 str, 2 int, 3 con, 4 cha, 5 wis,
+    6 dex, 7 hit, 8 dam, 9 ac, 10 attacks, 11 pause_count
+    12 sex {0 female, 1 male, 2 neuter}
+    13 class, {1 warrior, 2 sage, 3 wizard, 4 ranger, 5 thief,
+               6 alchemist, 7 cleric, 8 bard}
+    14 race, {1 human, 2 anitre, 4 darkling, 7 dwarf, 9 ogrue,
+              11 elf, 14 sombrian}
+    15 hp, 16 mana, 17 mov, 18 align,
+    19 level, 20 misc: hometowns
+                { 1 garland, 2 jakarta, 3 gamora, 4 exile}
+    21 wimpy
+    22 practices, 23 hp_max,
+    24 mana_max, 25 mov_max, 26 type_of_mob, { 0 pc, 1 smob 2 mob} 
+    27 dam_received_divisor, 28 dam_given_multiplier,
+    29 heat_resis, 30 cold_resis, 31 elect_resis, 
+    32 spell_resis 33 religion, 34 in_zone (origin zone for mobs), 
+    35 bare_hand_dice_count, 36 bare_hand_dice_sides,
+    37 hp_regen, 38 mana_regen, 39 mov_regen
+    40 guild, 41 NULL, 42 NULL
+
+usage:  add_stat_affect [mob_num] [stat_to_add] [stat_modifier]
+
+Example:
+	add_stat_affect 65 7 5     // remove stat affecting stat 7 from mob 65
+
+
+
+See Also:  add_stat_affect, ostat

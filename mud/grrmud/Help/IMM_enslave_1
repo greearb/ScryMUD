@@ -1,0 +1,10 @@
+<help immortal enslave>
+
+This is an unstoppable 'charm'.  The monster in question starts
+following you and is your pet.  Mostly used for bug testing groups
+and moving mobs in OLC.
+
+syntax:  enslave <<i_th> [mob_name]
+<color=red>
+See Also:  order, follow, force, possess
+</color></help>
