@@ -2582,6 +2582,7 @@ int who(critter& pc) {
    Cell<critter*> cll(pc_list);
    critter* ptr;
    String buf(100);
+   int visible_player_count = 0;
 
    mudlog.log(TRC, "In who..\n");
 
@@ -2601,6 +2602,9 @@ int who(critter& pc) {
       String lvl_str;
       String rp_str;
       String afk_str;
+
+      //only count visible players
+      ++visible_player_count;
 
       int can_detect = FALSE;
       if (ptr->isImmort()) {
@@ -2656,7 +2660,7 @@ int who(critter& pc) {
       show(buf, pc);
    }//while
    Sprintf(buf, "\nThere are currently %i people actively playing.\n",
-           pc_list.size());
+           visible_player_count);
    pc.show(buf);
    mudlog.log(TRC, "Done with who.\n");
    return 0;
