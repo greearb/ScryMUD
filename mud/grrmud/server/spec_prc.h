@@ -1,5 +1,5 @@
-// $Id: spec_prc.h,v 1.3 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: spec_prc.h,v 1.4 1999/06/25 04:02:55 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/25 04:02:55 $
 
 //
 //ScryMUD Server Code
@@ -31,7 +31,6 @@
 #include <string2.h>
 
 int do_was_calmed_procs(critter& calmed, critter& calmer);
-int do_battle_proc(critter& pc);
 int do_just_killed_procs(critter& pc);
 
 int do_this_obj_proc(int type_of_proc, int proc_num, critter& owner, 

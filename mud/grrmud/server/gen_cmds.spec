@@ -57,6 +57,10 @@
 #           that command.  Nice little short-hand...
 
 
+#  NOTE on HELP ONLY entries:  Please put them at the end so they won't
+#       interfere with other commands.
+
+
 # case A
 abilities ~
 return abilities(pc);
@@ -100,8 +104,11 @@ add_perm_inv ~
 return add_perm_inv(i, &(cooked_strs[1]), j, pc);
 assist ~
 return assist(i, &(cooked_strs[1]), pc);
-asave write_zone write_zone ~
-return write_zone(i, pc);
+
+# These are found in the 'w' section now. --BEN
+# asave write_zone write_zone ~
+# return write_zone(i, pc);
+
 alist zlist zlist ~
 return zlist(i, j, pc); 
 amlist ~
@@ -179,8 +186,6 @@ clap socials ~
 clap(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 claw ~
 return claw(i, &(cooked_strs[1]), pc);
-classes sage wizard ranger thief alchemist cleric bard *classes ~
-NOP
 clear_keryword ~
 return clear_keyword(i, pc);
 clear_mnames ~
@@ -905,6 +910,8 @@ wibble socials ~
 wibble(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 wimpy ~
 return wimpy(i, pc);
+asave write_zone write_zone ~
+return write_zone(i, pc);
 wizchat *channels ~
 NOP
 wizhelp *wizhelp ~
@@ -942,4 +949,12 @@ zunlock ~
 return zunlock(i, pc); 
 zecho gecho *zecho ~
 NOP
+
+
+# Help Only, these mess up the parser if they
+# are higher...
+classes sage wizard ranger thief alchemist cleric bard *classes ~
+NOP
+
+
 ~

@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.24 1999/06/23 04:16:06 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
+// $Id: commands.cc,v 1.25 1999/06/25 04:02:54 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
 
 //
 //ScryMUD Server Code
@@ -1293,8 +1293,9 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
 
             if (obj_get_by(*vict_ptr, pc, TRUE)) {
                pc.gainInv(vict_ptr);
-               gain_eq_effects(*vict_ptr, obj_list[0], pc, -1, TRUE); 
-                               //gold ect
+               int deleted_obj;
+               gain_eq_effects(*vict_ptr, obj_list[0], pc, -1, TRUE,
+                               deleted_obj);
                vict_ptr = ROOM.getInv()->lose(cell);
             }//if obj_get_by
             else {
@@ -1360,7 +1361,9 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
             if (obj_get_by(*vict_ptr, pc, TRUE)) {
                found_it = TRUE;
                pc.gainInv(vict_ptr);
-               gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE); 
+               int deleted_obj;
+               gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE,
+                               deleted_obj); 
                //gold ect
                vict_ptr = bag_ptr->inv.lose(cell);
             }//if obj_get_by
@@ -1386,7 +1389,9 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
             if (obj_get_by(*vict_ptr, pc, TRUE)) {
                found_it = TRUE;
                pc.gainInv(vict_ptr);
-               gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE); 
+               int deleted_obj;
+               gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE,
+                               deleted_obj); 
                //gold ect
                vict_ptr = ROOM.getInv()->lose(cell);
             }//if obj_get_by
@@ -1455,8 +1460,9 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
             if (vict_ptr != bag_ptr) {
                if (obj_get_by(*vict_ptr, pc, TRUE)) {
                   pc.gainInv(vict_ptr);
-                  
-                  gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE);
+                  int deleted_obj;
+                  gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE,
+                                  deleted_obj);
                   vict_ptr = bag_ptr->inv.lose(cell);
                }//if
                else
@@ -1484,7 +1490,9 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
          if (obj_get_by(*vict_ptr, pc, TRUE)) {
             pc.gainInv(vict_ptr);
             ROOM.loseInv(vict_ptr);
-            gain_eq_effects(*vict_ptr, obj_list[0], pc, -1, TRUE); //gold ect
+            int deleted_obj;
+            gain_eq_effects(*vict_ptr, obj_list[0], pc, -1, TRUE,
+                            deleted_obj);
          }//if obj_get_by
       }//if
       else if (do_msg) {
@@ -1551,7 +1559,9 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
             if (obj_get_by(*vict_ptr, pc, TRUE)) {
                pc.gainInv(vict_ptr);
                bag_ptr->loseInv(vict_ptr);
-               gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE); 
+               int deleted_obj;
+               gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE,
+                               deleted_obj); 
             }//if
          }//if
          else if (do_msg) {
@@ -3184,12 +3194,15 @@ int obj_drop_by(object& obj, critter& pc) {
 }//obj_drop_by
 
 
+// BEWARE:  This method can delete obj, if it's coins for instance.
 int gain_eq_effects(object& obj, object& bag, critter& pc,
-                    short bag_in_inv, short do_msg) { 
+                    short bag_in_inv, short do_msg, int& deleted_obj) { 
    String buf(100);
    List<critter*> tmp_lst(ROOM.getCrits());
    Cell<critter*>  cell(tmp_lst);
    critter* crit_ptr;
+
+   deleted_obj = FALSE;
 
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB in gain_eq_effects.\n");
@@ -3206,7 +3219,7 @@ int gain_eq_effects(object& obj, object& bag, critter& pc,
      
                 /* effects for getting gold coins */
 
-   if (obj.OBJ_FLAGS.get(55)) { //coins
+   if (obj.isCoins()) {
       pc.GOLD += obj.cur_stats[1];  //cost == # of coins
       if (do_msg) {
          Sprintf(buf, cstr(CS_THERE_WERE_COINS, pc), obj.cur_stats[1]);
@@ -3215,6 +3228,7 @@ int gain_eq_effects(object& obj, object& bag, critter& pc,
       pc.loseInv(&obj); 
       if (obj.IN_LIST) {
          delete &obj; 
+         deleted_obj = TRUE;
          return 0;
       }
    }//if

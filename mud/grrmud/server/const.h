@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.14 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: const.h,v 1.15 1999/06/25 04:02:54 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
 
 //
 //ScryMUD Server Code
@@ -58,6 +58,8 @@ enum BugTypeE {
    BT_IDEAS,
    BT_BUGS
 };
+
+#define GOLD_PER_LB 10000
 
 extern const BitfieldNames MOB_DATA_FLAGS_NAMES;
 extern const BitfieldNames MOB_PROC_DATA_FLAGS_NAMES;

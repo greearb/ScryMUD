@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.22 1999/06/23 04:16:06 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
+// $Id: critter.h,v 1.23 1999/06/25 04:02:55 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/25 04:02:55 $
 
 //
 //ScryMUD Server Code
@@ -632,7 +632,7 @@ public:
    String long_desc;
    
    bitfield crit_flags;
-   // 0 can_see_inv, 1 using_light_src, 3 is_flying,           
+   // 0 can_see_inv, 1 using_light_src, 2 NULL, 3 is_flying,           
    // 4 have_boat, 5 can_climb,
    // 6 gos, 7 yell, 8 gratz, 9 auc, 
    // 10 shout, 11 say, 12 tell, 13 wiznet, 14 is_paralyzed,

@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.15 1999/06/18 06:52:38 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
+// $Id: const.cc,v 1.16 1999/06/25 04:02:54 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
 
 //
 //ScryMUD Server Code
@@ -198,6 +198,7 @@ const BitfieldNames MOB_PROC_DATA_FLAGS_NAMES(sizeof(mp_names)/sizeof(const char
 const char* c_names[] = {
    "can_see_inv",
    "using_light_src",
+   "NULL",
    "is_flying",           
    "have_boat",
    "can_climb",
@@ -828,9 +829,10 @@ Example:
 "\nTime to set crit_flags.  The number of the flag will toggle it,
 a -1 terminates.
 
-3 is_flying, 5 can_climb, 6 gos, 7 yell, 8 gratz, 9 auc, 10 shout,
-11 say, 12 tell, 13 wiznet, 14 is_paralyzed, 15 is_perm_sleeped,
-16 is_dual_wielding, 17 is_sneak, 19 can_dive.\n",
+[2] is_flying, [4] can_climb, [5] gos, [6] yell, [7] gratz, [8] auc,
+[9] shout, [10] say, [11] tell, [12] wiznet, [16] is_sneak, 
+[18] can_dive, [21] is_hide
+",
 
 /* 21 */ // long data
 "\nEnter all these data at once please:

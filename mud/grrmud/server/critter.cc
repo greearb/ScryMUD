@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.28 1999/06/23 04:16:06 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
+// $Id: critter.cc,v 1.29 1999/06/25 04:02:54 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
 
 //
 //ScryMUD Server Code
@@ -2102,7 +2102,7 @@ int critter::getCurWeight() {// of inv...eq not taken into account here
       }//if
    }//for
 
-   retval += GOLD / 10000; //gold weighs a little..though not much
+   retval += GOLD / GOLD_PER_LB; //gold weighs a little..though not much
 
    return retval + getNakedWeight();
 } // cur_weight

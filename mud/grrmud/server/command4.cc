@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.21 1999/06/22 05:33:09 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/22 05:33:09 $
+// $Id: command4.cc,v 1.22 1999/06/25 04:02:54 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
 
 //
 //ScryMUD Server Code
@@ -1401,18 +1401,14 @@ int do_give(critter& targ, critter& pc, object& obj) {
       harmless. */
    pc.loseInv(&obj);
 
-   drop_eq_effects(obj, pc, FALSE); //don't do msgs
-   gain_eq_effects(obj, obj_list[0], targ, -1, FALSE); //don't do msgs
-
-
    Cell<critter*> cll(ROOM.getCrits());
    critter* crit_ptr;
    while ((crit_ptr = cll.next())) {
       if ((crit_ptr != &targ) && (crit_ptr != &pc)) {
-         Sprintf(buf, "%S gives %S to %S.\n", 
-              name_of_crit(pc, crit_ptr->SEE_BIT),
-              long_name_of_obj(obj, crit_ptr->SEE_BIT),
-              name_of_crit(targ, crit_ptr->SEE_BIT));
+         Sprintf(buf, "%S gives %S to %S.\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT),
+                 long_name_of_obj(obj, crit_ptr->SEE_BIT),
+                 name_of_crit(targ, crit_ptr->SEE_BIT));
 	 buf.Cap();
          show(buf, *crit_ptr);
       }//if
@@ -1427,12 +1423,20 @@ int do_give(critter& targ, critter& pc, object& obj) {
    buf.Cap();
    show(buf, targ);
 
-   do_domob_give_proc(targ, pc, obj); //this can recurse but twice I believe
+   int deleted_obj = FALSE;
 
-   String cmd = "give";
-   String obj_num;
-   obj_num = obj.OBJ_NUM;
-   ROOM.checkForProc(cmd, obj_num, pc, targ.MOB_NUM);
+   drop_eq_effects(obj, pc, FALSE); //don't do msgs
+   gain_eq_effects(obj, obj_list[0], targ, -1, FALSE, deleted_obj); //don't do msgs
+
+   if (!deleted_obj) {
+      do_domob_give_proc(targ, pc, obj); //this can recurse but twice I believe
+      
+      String cmd = "give";
+      String obj_num;
+      obj_num = obj.OBJ_NUM;
+      ROOM.checkForProc(cmd, obj_num, pc, targ.MOB_NUM);
+   }
+
    return 0;
 }//do_give()
 

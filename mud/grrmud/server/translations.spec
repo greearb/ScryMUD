@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.10 1999/06/23 04:16:07 greear Exp $
-# $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/23 04:16:07 $
+# $Id: translations.spec,v 1.11 1999/06/25 04:02:55 greear Exp $
+# $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/25 04:02:55 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -80,7 +80,6 @@ CS_KILLED_INFO
 CS_PERM_DEATH_INFO
 	eng "%S has permanently died for lack of constitution!\n"
 	~
-
 
 CS_YELL_SLEEP
 	eng "You roar in your sleep!\n"

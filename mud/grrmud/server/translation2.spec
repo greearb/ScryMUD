@@ -1,5 +1,5 @@
-# $Id: translation2.spec,v 1.6 1999/06/24 05:22:36 greear Exp $
-# $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/24 05:22:36 $
+# $Id: translation2.spec,v 1.7 1999/06/25 04:02:55 greear Exp $
+# $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/25 04:02:55 $
 
 # See translations.spec for more information.
 
@@ -215,7 +215,7 @@ CS_CANT_BE_LOCKED
 	~
 
 CS_ALREADY_LOCKED
-	eng "Its already locked.\n"
+	eng "It's already locked.\n"
 	~
 
 CS_YOU_LOCK
@@ -275,7 +275,7 @@ CS_YOU_OPEN
 	~
 
 CS_ALREADY_OPEN
-	eng "Its already open!!.\n"
+	eng "It's already open!!.\n"
 	~
 
 CS_NOTHING_TO_OPEN
@@ -291,7 +291,7 @@ CS_CANNOT_CLOSE
 	~
 
 CS_ALREADY_CLOSED
-	eng "Its already closed!!\n"
+	eng "It's already closed!!\n"
 	~
 
 CS_NOTHING_TO_CLOSE

@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.27 1999/06/24 05:55:51 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/06/24 05:55:51 $
+// $Id: command2.cc,v 1.28 1999/06/25 04:02:54 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
 
 //
 //ScryMUD Server Code
@@ -173,7 +173,7 @@ int score(const String* str2, critter& pc) {
            pc.AC, pc.HEAT_RESIS, pc.COLD_RESIS, pc.ELEC_RESIS, pc.SPEL_RESIS);
    show(buf2, pc);
 
-   Sprintf(buf2, cstr(CS_SC_EXP, pc), pc.getXpToNextLevel(), (pc.GOLD / 1000));
+   Sprintf(buf2, cstr(CS_SC_EXP, pc), pc.getXpToNextLevel(), (pc.GOLD / GOLD_PER_LB));
    pc.show(buf2);
 
    Sprintf(buf2, cstr(CS_SC_DAM, pc), pc.DAM_REC_MOD, pc.DAM_GIV_MOD);
@@ -2106,18 +2106,18 @@ int do_mstat(critter& targ, critter& pc) {
       show(buf2, pc);
 
       Sprintf(buf2,
-              "RELIGION: %i  BH_dice_count: %i  BH_DICE_SIDES: %i  HP_regen: %i\n",
+              "RELIGION: %i  BH_dice_count: %i  BH_DICE_SIDES: %i\n",
               crit_ptr->RELIGION, crit_ptr->BH_DICE_COUNT,
-              crit_ptr->BH_DICE_SIDES, crit_ptr->HP_REGEN);
+              crit_ptr->BH_DICE_SIDES);
       show(buf2, pc);
 
       Sprintf(buf2,
-              "CUR_WEIGHT: %i  max_weight: %i PAUSE: %i H_rgn: %i  M_rgn: %i\n",
+              "CUR_WEIGHT: %i  max_weight: %i PAUSE: %i HP_rgn: %i  MANA_rgn: %i\n",
               crit_ptr->CRIT_WT_CARRIED, crit_ptr->CRIT_MAX_WT_CARRY, 
               crit_ptr->PAUSE, crit_ptr->HP_REGEN,   crit_ptr->MA_REGEN);
       show(buf2, pc);
 
-      Sprintf(buf2, "V_rgn: %i  naked_weight: %i\n\n", crit_ptr->MV_REGEN,
+      Sprintf(buf2, "MOV_rgn: %i  naked_weight: %i\n\n", crit_ptr->MV_REGEN,
               crit_ptr->getNakedWeight());
       show(buf2, pc);
 

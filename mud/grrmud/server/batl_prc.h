@@ -1,5 +1,5 @@
-// $Id: batl_prc.h,v 1.3 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: batl_prc.h,v 1.4 1999/06/25 04:02:54 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
 
 //
 //ScryMUD Server Code
@@ -40,6 +40,8 @@
 
 short is_tank(critter& pc);
 critter* find_weakest(List<critter*>& lst);
+
+void do_battle_proc(critter& pc);
 
 void do_entered_room_procs(critter& pc, door* by_dr, const char* from_dir,
                            room& to_rm, int& is_dead);

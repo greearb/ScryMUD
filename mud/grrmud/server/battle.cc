@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.17 1999/06/23 04:16:06 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
+// $Id: battle.cc,v 1.18 1999/06/25 04:02:54 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
 
 //
 //ScryMUD Server Code
@@ -698,7 +698,7 @@ void agg_kills_vict(critter& agg, critter& vict, int& show_vict_tags) {
    else if (vict.pc) {
       doShowList(&vict, Selectors::instance().CC_gets_info_allow,
                  Selectors::instance().CC_none, pc_list,
-                 CS_PKILLED_INFO,
+                 CS_KILLED_INFO,
                  vict.getName(), agg.getName(), vict.getCurRoomNum());
 
       vict.pc->died_count++;

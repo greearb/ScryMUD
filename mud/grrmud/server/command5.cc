@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.20 1999/06/23 04:16:06 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
+// $Id: command5.cc,v 1.21 1999/06/25 04:02:54 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
 
 //
 //ScryMUD Server Code
@@ -2868,8 +2868,15 @@ int do_throw(critter& targ, critter& pc) {
             exact_raw_damage(damage, NORMAL, targ, pc);
             
             targ.gainInv(pc.EQ[posn]); //item is now (in) the target
-            gain_eq_effects(*(pc.EQ[posn]), obj_list[0], targ, FALSE, FALSE);
+            int deleted_obj;
+            gain_eq_effects(*(pc.EQ[posn]), obj_list[0], targ, FALSE, FALSE,
+                            deleted_obj);
             
+            if (deleted_obj) {
+               mudlog << "ERROR: deleted obj in do_throw." << endl;
+               return 0;
+            }
+
             if (targ.HP > 0) { //still alive
                Sprintf(buf, "You hit %S with your %S.",
                        name_of_crit(targ, pc.SEE_BIT), 

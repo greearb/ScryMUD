@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.11 1999/06/16 06:43:27 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+// $Id: object.h,v 1.12 1999/06/25 04:02:55 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/25 04:02:55 $
 
 //
 //ScryMUD Server Code
@@ -263,7 +263,8 @@ public:
    int isLightSource() const;
    int isLit() const;
    int isBulletinBoard() const;
-   int isScroll() const; 
+   int isScroll() const;
+   int isCoins() const { return OBJ_FLAGS.get(55); }
    int isHerb() const;
    int isPaused() const { return pause > 0; }
    int isModified() const { return (in_list && 1); } //ie is it a SOBJ
