@@ -1,5 +1,5 @@
 # $Id$
-# $Revision: 1.2 $  $Author$ $Date$
+# $Revision$  $Author$ $Date$
 
 # The syntax is as follows:
 # ENUM_NAME LANGUAGE "TEXT" LANGUAGE "TEXT" ... ~
@@ -27,4 +27,5 @@
 CS_NO_FIND_THAT_PERSON
 	eng "You can't find that person.\n"
 	ger "Diese Person ist nirgends zu finden.\n"
+        fre "Tu ne peut pas trouver cette personne.\n"
 	~

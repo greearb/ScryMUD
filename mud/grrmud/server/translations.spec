@@ -1,5 +1,5 @@
 # $Id$
-# $Revision: 1.20 $  $Author$ $Date$
+# $Revision$  $Author$ $Date$
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -39,6 +39,7 @@ CS_YOU_GAGGED
         Spanish "Esta no hace hablar." 
         Serbian "Ne mozes da govoris."
 	German  "Sie wurden geknebelt."
+        French "Tu ne peux pas parler."
         ~
 
 CS_SAY_SPRINTF
@@ -46,6 +47,7 @@ CS_SAY_SPRINTF
         spa "%S\\n%S dice, '%S'\\n%S"
         ser "%S\\n%S kaze, '%S'\\n%S"
         ger "%S\\n%S sagt: '%S'\\n%S"
+        fre "%S\\n%S dit, '%S'\\n%S"
         ~ 
 
 CS_OSAY_SPRINTF
@@ -53,6 +55,7 @@ CS_OSAY_SPRINTF
         spa "%S\\n[OOC] %S dice, '%S'\\n%S"
         ser "%S\\n[OOC] %S kaze, '%S'\\n%S"
         ger "%S\\n[OOC] %S sagt: '%S'\\n%S"
+        fre "%S\\n%S dit, '%S'\\n%S"
         ~ 
 
 # Shown when you try to communicate in your sleep.
@@ -374,24 +377,27 @@ CS_DONT_SEEM_TO_HAVE_THAT
         eng "You don't seem to have that.\n"
         spa "No pareces tener eso.\n"
         ser "Nemas taj predmed.\n"
+        fre "Tu n'y as pas.\n"
 	~
 
 CS_DONT_SEEM_TO_HAVE
         eng "You don't seem to have the %S.\n"
         spa "No pareces tener %S.\n"
         ser "Nemas %S.\n"
+        fre "Tu n'as pas le %S.\n"
 	  ~
 
 CS_AINT_GOT
         eng "You neither have nor see the %S.\n"
         spa "No tienes ni ves %S.\n"
         ser "Izgleda da nemas ili nevidis %S.\n"
-	~
+        ~
 
 CS_CANT_FIND
         eng "You can't find the %S.\n"
         spa "No puedes encontrar %S.\n"
         ser "Nemozes da nadjes %S.\n"
+        fre "Tu ne trouves pas le %S.\n"
 	  ~
 	
 
@@ -411,12 +417,14 @@ CS_YOU_CANT_FIND_THE
         eng "You can't find the %S.\n"
         spa "No puedes encontrar %S.\n"
         ser "Nemozes da nadjes %S.\n"
+        fre "Tu ne trouves pas le %S.\n"
 	~
 
 CS_ITS_CLOSED
         eng "It's closed!\n"
         spa "Esta cerrado!\n"
         ser "Zatvoreno!\n"
+        fre "C'est couvert!\n"
 	~
 
 CS_CONTAINS
@@ -435,6 +443,7 @@ CS_NOTHING_TO_WEAR
         eng "You have nothing to wear!\n"
         spa "No tienes nada que vestir!\n"
         ser "Nemas sta da obuces!\n"
+        fre "Tu n'as rien pour mettre!\n"
 	~
 
 CS_WEAR_IT_WHERE
@@ -489,6 +498,7 @@ CS_LOOK_CANT_SEE
         eng "\nYou should not be able to see at all!\n"
         spa "\nNo estas capacitado para ver en absoluto!\n"
         ser "\nNisi u stanju da vidis bilo sta!\n"
+        fre "Tu ne dois pas pouvoir pour voir rien!\n"
 	~
 
 CS_LOOK_GLOWS_BRIGHTLY
@@ -543,6 +553,7 @@ CS_ASSIST_ALREADY_TRYING
         eng "You're already giving it your all!\n"
         spa "Ya estas dandolo todo!\n"
         ser "Vec dajes sve od sebe!\n"
+        fre "Tu essaies deja bien!\n"
 	~
 
 CS_ASSIST_YOURSELF
@@ -645,7 +656,8 @@ CS_NOT_OPEN
         eng "You need to open it first.\n"
         spa "Necesitas abrirlo primero.\n"
         ser "Moras da otvoris prvo.\n"
-	~
+	fre "Il faut que tu y ouvres premiere.\n"
+        ~
 
 CS_TRY_EMPTY
         eng "Try empty instead!\n"
@@ -723,7 +735,7 @@ CS_REST_EMOTE
         eng "sits down to take a breather.\n"
         spa "se sienta para tomar un respiro.\n"
         ser "seda na zemlju da se malo odmori.\n"
-	~
+        ~
 
 CS_REST_FIGHTING
         eng "You can't rest now, you're fighting!!\n"
@@ -813,10 +825,11 @@ CS_DEAD
         eng "is lying here utterly dead!"
         spa "esta tirado aqui completamente muerto!"
         ser "lezi ovde potpuno mrtav!"
-	~
+        ~
+
 CS_PARALYZED
         eng "lies here frozen in stone."
-	  ser "lezi ovde zamrznut u kamenu."
+        ser "lezi ovde zamrznut u kamenu."
         ~
 
 CS_ALREADY_STANDING
@@ -847,19 +860,22 @@ CS_WAKE_FIRST
         eng "Maybe you should try to wake first.\n"
         spa "Quizas deberias primero tratar de depertar.\n"
         ser "Mozda bi trebalo da se probudis prvo?.\n"
+        fre "Peut etre tu dois essayer te reveiller premiere.\n"
 	~
 
 CS_SLEEPING_ALREADY
         eng "You're already sleeping.\n"
         spa "Ya estas durmiendo.\n"
         ser "Vec spavas.\n"
-	~
+	fre "Tu es deja dormi.\n"
+        ~
 
 CS_DO_SLEEP
         eng "You lay yourself down to sleep.\n"
         spa "Te tiras a dormir.\n"
         ser "Lezes da spavas.\n"
-	~
+	fre "Tu te couches.\n"
+        ~
 
 CS_EMOTE_SLEEP
         eng "goes to sleep.\n"
@@ -913,7 +929,8 @@ CS_MED_WAKE_FIRST
         eng "You must wake first.\n"
         spa "Primero debes despertar.\n"
         ser "Moras da se probudis prvo.\n"
-	~
+	fre "Il faut que tu te reveilles premiere.\n"
+        ~
 
 CS_AWAKE_ALREADY
         eng "You're already awake.\n"
@@ -973,7 +990,8 @@ CS_MOV_CLOSED
         eng "The %S is closed.\n"
         spa "%S es cerrada.\n"
         ser "%S su zatvorena.\n"
-	~
+	fre "%S est couvert.\n"
+        ~
 
 CS_MOV_BLOCKED
         eng "The %S is blocked by %S.\n"
@@ -1003,12 +1021,14 @@ CS_HAS_ARRIVED
         eng "has arrived.\n"
         spa "ha llegado.\n"
         ser "je dosao.\n"
+        fre "est arrive.\n"
 	~
 
 CS_YOU_FOLLOW
         eng "You attempt to follow %S %s.\n"
         spa "Intentas seguir a %S %s.\n"
         ser "Pokusavas da pratis %S %s.\n"
+        fre "Tu essaies suivre %S %s.\n"
 	~
 
 CS_NO_FIND_EXIT
@@ -1033,6 +1053,7 @@ CS_WOH
         eng "     Worn on head:"
         spa "     En la cabeza:"
         ser "     Nosis na glavi:"
+        fre "     Sur la tete:"
 	~
 
 CS_WON
@@ -1051,6 +1072,7 @@ CS_WOA
         eng "     Worn on arms:"
         spa "     En los brazos:"
         ser "     Nosis oko ruku:"
+        fre "     Sur les bras:"
 	~
 
 CS_WOW
@@ -1063,6 +1085,7 @@ CS_WO_HANDS
         eng "     Worn on hands:"
         spa "     En las manos:"
         ser "     Nosis na rukama:"
+        fre "     Sur les mains:"
 	~
 
 CS_WIELDED
@@ -1081,12 +1104,14 @@ CS_LIGHT
         eng "     Used as light:"
         spa "     Usando como luz:"
         ser "     Koristis za svetlost:"
+        fre "     Utilise comme lumiere:"
 	~
 
 CS_WOB
         eng "     Worn on body:"
         spa "     En el cuerpo:"
         ser "     Nosis na telu:"
+        fre "     Sur le corps:"
 	~
 
 
@@ -1106,12 +1131,14 @@ CS_WOF
         eng "     Worn on feet:"
         spa "     En los pies:"
         ser "     Nosis na nogama:"
+        fre "     Sur les pieds:"
 	~
 
 CS_WO_FINGER
         eng "     Worn on finger:"
         spa "     En el dedo:"
         ser "     Nosis na prstu:"
+        fre "     Sur le doigt:"
 	~
 
 CS_WO_SHIELD
@@ -1130,12 +1157,14 @@ CS_WO_RSLT_VNUM
         eng "%S%P30 [%i]%P37 %S.\n"
         spa "%S%P30 [%i]%P37 %S.\n"
         ser "%S%P30 [%i]%P37 %S.\n"
+        fre "%S%P30 [%i]%P37 %S.\n"
 	~
 
 CS_WO_RSLT
         eng "%S%P30 %S.\n"
         spa "%S%P30 %S.\n"
         ser "%S%P30 %S.\n"
+        fre "%S%P30 %S.\n"
 	~
 
 CS_NOT_EXPERIENCED
@@ -1256,6 +1285,7 @@ CS_NO_PC
         eng "%S is for mobs only!\n"
         spa "%S es solamente para mobs!\n"
         ser "%S je za mobove samo!\n"
+        fre "%S est seulement pour les mobs!\n"
 	~
 
 CS_TOO_MUCH_WT
@@ -1285,6 +1315,7 @@ CS_SGT_NO_MORTAL
         eng "%S is not for mortals!\n"
         spa "%S no es para mortales!\n"
         ser "%S nije za smrtnike!\n"
+        fre "%S n'est pas pour les mortales!\n"
 	~
 
 CS_SGT_NO_DEMI
@@ -1297,6 +1328,7 @@ CS_SGT_NO_GOD
         eng "%S is not for gods!\n"
         spa "%S no es para dioses!\n"
         ser "%S nije za bogove!\n"
+        fre "%S n'est pas pour les dieus!\n"
 	~
 
 CS_SGT_PC_ONLY
@@ -1369,24 +1401,28 @@ CS_LESS_THIRSTY
         eng "You feel less thirsty.\n"
         spa "Te sientes con menos sed.\n"
         ser "Osecas se manje zedan.\n"
+        fre "Tu n'as plus soif.\n"
 	~
 
 CS_MORE_THIRSTY
         eng "You feel even more thirsty.\n"
         spa "Te sientes aun con mas sed.\n"
         ser "Osecas se jos zedniji.\n"
+        fre "Tu as plus de soif.\n"
 	~
 
 CS_LESS_HUNGRY
         eng "You feel less hungry.\n"
         spa "Te sientes con menos hambre.\n"
         ser "Osecas se manje gladan.\n"
+        fre "Tu n'as plus faim.\n"
 	~
 
 CS_MORE_HUNGRY
         eng "You feel even hungrier.\n"
         spa "Te sientes aun con mas hambre.\n"
         ser "Jos si gladniji.\n"
+        fre "Tu as plus de faim.\n"
 	~
 
 CS_MORE_DRUGGED
@@ -1482,25 +1518,29 @@ CS_CANT_HOLD_WT
 CS_YOU_PUT
         eng "You put %S in %S.\n"
         spa "Pones %S en %S.\n"
-        ser "Stavljas %S u %S.\n"
+        ser "Stavljas %S u %S.\n"  
+        fre "Tu mettes %S dans %S.\n"
 	~
 
 CS_PUTS
         eng "%S puts %S in %S.\n"
         spa "%S pone %S en %S.\n"
         ser "%S stavlja %S u %S.\n"
+        fre "%S mette %S dans %S.\n"
 	~
 
 CS_PUTS_IN_OWN
         eng "%S puts %S in %s %S.\n"
         spa "%S pone %S en %s %S.\n"
         ser "%S stavlja %S u %s %S.\n"
+        fre "%S mette %S dans %s %S.\n"
 	~
 
 CS_LEAVES_SPRINTF
         eng "leaves %S.\n"
         spa "se marcha al %S.\n"
         ser "Ide na %S.\n"
+        fre "departe %S.\n"
 	~
 
 CS_LEAVES_NOT_NORMAL_SPRINTF
@@ -1513,12 +1553,12 @@ CS_ARRIVED_FROM_SPRINTF
         eng "has arrived from %S.\n"
         spa "ha llegado desde %S.\n"
         ser "je stigao sa %S.\n"
+        fre "est arrive du %S.\n"
 	~
 
 CS_ARRIVED_FROM_CUST_SP
         eng "has arrived from the %S.\n"
         spa "ha llegado desde el %S.\n"
         ser "je stigao sa %S.\n"
+        fre "est arrive du %S.\n"
 	~
-
-

@@ -1,5 +1,5 @@
 # $Id$
-# $Revision: 1.24 $  $Author$ $Date$
+# $Revision$  $Author$ $Date$
 
 # makefile template
 include ../../MakeInclude

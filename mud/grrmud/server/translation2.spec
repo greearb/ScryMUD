@@ -1,5 +1,5 @@
 # $Id$
-# $Revision: 1.15 $  $Author$ $Date$
+# $Revision$  $Author$ $Date$
 
 # See translations.spec for more information.
 
@@ -8,6 +8,7 @@
 CS_BUY_WHAT
 	eng "What do you wish to buy?\n"
 	ger "Was möchten Sie kaufen?\n"
+        fre "Quel chose est-ce que tu veux acheter?\n"
 	~
 
 CS_THEY_ARE_INDISPOSED
@@ -168,12 +169,14 @@ CS_YOU_HUNGRY
 	eng "You are hungry.\n"
 	ser "Gladan si.\n"
 	ger "Sie sind hungrig.\n"
+        fre "Tu as faim.\n"
 	~
 
 CS_YOU_THIRSTY
 	eng "You are thirsty.\n"
 	ser "Zedan si.\n"
 	ger "Sie sind durstig.\n"
+        fre "Tu as soif.\n"
 	~
 
 CS_YOU_DRUGGED
@@ -204,6 +207,7 @@ CS_YOU_SLEEPING
 	eng "You are sleeping.\n"
 	ser "Spavas.\n"
 	ger "Sie schlafen.\n"
+        fre "Tu es dormi.\n"
 	~
 
 CS_YOU_CAMPING
@@ -244,12 +248,14 @@ CS_YOU_FOLLOWING
 	eng "You are following %S.\n"
 	ser "Ti pratis %S.\n"
 	ger "Sie folgen %S.\n"
+        fre "Tu suivres %S.\n"
 	~
 
 CS_FOLLOWING_SELF
 	eng "You are following yourself.\n"
 	ser "Pratis samog sebe.\n"
 	ger "Sie folgen sich selbst.\n"
+        fre "Tu te suivres.\n"
 	~
 
 CS_MASTER_IS
@@ -280,6 +286,7 @@ CS_FOLLOW_SELF
 	eng "You now follow yourself.\n"
 	ser "Ti pratis sebe.\n"
 	ger "Sie folgen nun wieder sich selbst.\n"
+        fre "Tu te suivres maintenant.\n"
 	~
 
 CS_YOU_MUST_BE_LEADER_TO_UNGROUP
@@ -308,7 +315,8 @@ CS_QUITS_FOL_YOU
 	eng "%S quits following you.\n"
 	ser "%S prestaje da te prati.\n"
 	ger "%S folgt Ihnen nicht weiter.\n"
-	~
+	fre "%S arrete te suivre.\n"
+        ~
 
 CS_NOT_IN_GROUP
 	eng "That person is not in your group.\n"
@@ -368,6 +376,7 @@ CS_NO_KEY
 	eng "You don't seem to have the key.\n"
 	ser "Nemas taj kljuc.\n"
 	ger "Sie haben den passenden Schlüssel nicht.\n"
+        fre "Tu n'as pas le cle.\n"
 	~
 
 CS_MUST_CLOSE
@@ -416,7 +425,8 @@ CS_NOT_EVEN_CLOSED
 	eng "It's not even closed!\n"
 	ser "Nije ni zatvoreno!\n"
 	ger "Es ist nicht mal geschlossen!\n"
-	~
+	fre "Ce n'est pas meme couvert!\n"
+        ~
 
 CS_NOTHING_TO_UNLOCK
 	eng "You don't see anything like that you can unlock.\n"
@@ -440,30 +450,35 @@ CS_YOU_OPEN
 	eng "You open the %S.\n"
 	ser "Otvorio si %S.\n"
 	ger "Sie öffnen %S.\n"
+        fre "Tu ouvres le %S.\n"
 	~
 
 CS_ALREADY_OPEN
 	eng "It's already open!!\n"
 	ser "Vec je otvoreno!!\n"
 	ger "Ist schon offen!\n"
+        fre "C'est deja ouvert!\n"
 	~
 
 CS_NOTHING_TO_OPEN
 	eng "You don't see anything like that you can open.\n"
 	ser "Nevidis nista sto bi mogao da otvoris.\n"
 	ger "Es gibt hier nichts derartiges zu öffnen.\n"
+        fre "Tu ne vois rien comme ca que tu peux ouvrir.\n"
 	~
 
 CS_YOU_CLOSE
 	eng "You close the %S.\n"
 	ser "Zatvorio si %S.\n"
 	ger "Sie schließen %S.\n"
+        fre "Tu couvres le %S.\n"
 	~
 
 CS_CANNOT_CLOSE
 	eng "The %S cannot be closed.\n"
 	ser "%S nemoze da se zatvori.\n"
 	ger "Kann nicht geschlossen werden.\n"
+        fre "Ce n'est pas possible couvrir le %S.\n"
 	~
 
 CS_ALREADY_CLOSED
@@ -500,18 +515,21 @@ CS_CANT_EAT
 	eng "You can't eat the %S.\n"
 	ser "Ne mozes da jedes %S.\n"
 	ger "Sie können %S nicht essen.\n"
+        fre "Tu ne peux pas manger le %S.\n"
 	~
 
 CS_TOO_FULL
 	eng "You are too full to eat any more.\n"
 	ser "Previse si sit da bi jeo jos.\n"
 	ger "Sie sind pappsatt und können nicht mehr.\n"
+        fre "Tu ne peux plus manger.\n"
 	~
 
 CS_DRINK_FROM_WHAT
 	eng "Drink from what??\n"
 	ser "Iz cega da pijes??\n"
 	ger "Trinken wovon?\n"
+        fre "De quoi veux-tu boire?\n"
 	~
 
 CS_NO_LIQ_CONT
@@ -524,12 +542,14 @@ CS_TOO_FULL_TO_DRINK
 	eng "You are too full to drink any more.\n"
 	ser "Previse si pun da bi pio jos.\n"
 	ger "Sie können nicht noch mehr trinken.\n"
+        fre "Tu n'as plus soif.\n"
 	~
 
 CS_CONT_EMPTY
 	eng "You can't shake another drop out of %S.\n"
 	ser "Nemozes da iscedis ni jednu kap vise iz %S.\n"
 	ger "%S ist leer bis auf den letzten Tropfen.\n"
+        fre "Il n'y a plus dans le %s.\n"
 	~
 
 CS_NO_LIQ_IN_CONT
@@ -641,21 +661,23 @@ CS_TRADE_PC
 	~
 
 CS_NOTHING_TO_SELL
-	eng "I have nothing I wish to sell."
-	ser "Ja nemam nista da prodam."
-	ger "Ich habe nichts zu verkaufen."
+	eng "I have nothing I wish to sell.\n"
+	ser "Ja nemam nista da prodam.\n"
+	ger "Ich habe nichts zu verkaufen.\n"
+        fre "Je n'ai rien que je voudrais vendre.\n"
 	~
 
 CS_NOT_TRADER
-	eng "I don't trade for a living."
-	ser "Ja ne zivim od trgovine."
-	ger "Ich handle nicht."
+	eng "I don't trade for a living.\n"
+	ser "Ja ne zivim od trgovine.\n"
+	ger "Ich handle nicht.\n"
 	~
 
 CS_NO_WANT_BUY
-	eng "I don't want to buy anything from you!"
-	ser "Necu da kupin nista od tebe!"
-	ger "Ich will von Ihnen nichts kaufen!"
+	eng "I don't want to buy anything from you!\n"
+	ser "Necu da kupin nista od tebe!\n"
+	ger "Ich will von Ihnen nichts kaufen!\n"
+        fre "Je ne veux pas acheter quelque chose de toi!\n"
 	~
 
 CS_NO_PRAC_WIELDING
@@ -728,6 +750,7 @@ CS_KNOW_TOO_MUCH
 	eng "You know as much as can be taught of this topic.\n"
 	ser "Znas maximalno koliko je moguce za ovu temu.\n"
 	ger "Zu diesem Thema kann Ihnen niemand mehr etwas beibringen.\n"
+        fre "Tu as apprende tout de cet sujet.\n"
 	~
 
 CS_TOG_PROMPT
@@ -936,6 +959,7 @@ CS_HOURS_FROM
 	eng "Hours are from %s to %s.\n"
 	ser "Radno vreme od %s do %s.\n"
 	ger "Öffnungszeiten von %s bis %s.\n"
+        fre "Les heures sont de %s a %s.\n"
 	~
 
 CS_ITEMS_FOR_SALE
