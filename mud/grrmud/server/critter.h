@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.52 2001/03/29 10:19:50 eroper Exp $
-// $Revision: 1.52 $  $Author: eroper $ $Date: 2001/03/29 10:19:50 $
+// $Id: critter.h,v 1.53 2001/04/14 22:47:56 greear Exp $
+// $Revision: 1.53 $  $Author: greear $ $Date: 2001/04/14 22:47:56 $
 
 //
 //ScryMUD Server Code
@@ -918,14 +918,14 @@ public:
    void setComplete();
    void setNotComplete();
    void setNoClient();
-   void setHasSacrificed(int i) { PC_FLAGS.set(31, i); }
-   void setIsRemort(int i) { PC_FLAGS.set(30, i); }
+   void setHasSacrificed(int i) { if (pc) PC_FLAGS.set(31, i); }
+   void setIsRemort(int i) { if (pc) PC_FLAGS.set(30, i); }
 
-   int isRemort() { return PC_FLAGS.get(30); }
-   int hasSacrificed() { return PC_FLAGS.get(31); }   
+   int isRemort() { return pc && PC_FLAGS.get(30); }
+   int hasSacrificed() { return pc && PC_FLAGS.get(31); }   
    int hasAI();
-   int shouldDoPrompt() { return PC_FLAGS.get(10); }
-   int shouldDoTank() { return PC_FLAGS.get(4); }
+   int shouldDoPrompt() { return pc && PC_FLAGS.get(10); }
+   int shouldDoTank() { return pc && PC_FLAGS.get(4); }
    int canDetectMagic() { return (mob || (pc && PC_FLAGS.get(18))); }
    int canDetect(const critter& other) const;
    int canDive() const { return CRIT_FLAGS.get(19); }
@@ -946,9 +946,9 @@ public:
    int isHungry() { return (HUNGER == 0); }
    int isThirsty() { return (THIRST == 0); }
    int isDrugged() { return (DRUGGED > 0); }
-   int isRolePlaying() { return PC_FLAGS.get(32); }
-   int isAFK() { return PC_FLAGS.get(33); }
-   int isGoldOnly() { return PC_FLAGS.get(34); }
+   int isRolePlaying() { return pc && PC_FLAGS.get(32); }
+   int isAFK() { return pc && PC_FLAGS.get(33); }
+   int isGoldOnly() { return pc && PC_FLAGS.get(34); }
    
    int isMob() const { return (CRITTER_TYPE == 2); }
    int isNPC() const { return (isMob() || isSmob()); }

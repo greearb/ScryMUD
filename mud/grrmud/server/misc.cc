@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.37 2001/03/29 03:02:32 eroper Exp $
-// $Revision: 1.37 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
+// $Id: misc.cc,v 1.38 2001/04/14 22:47:56 greear Exp $
+// $Revision: 1.38 $  $Author: greear $ $Date: 2001/04/14 22:47:56 $
 
 //
 //ScryMUD Server Code
@@ -1489,8 +1489,9 @@ void decrease_timed_affecting_doors() {
                     name_of_door(*dr_ptr, ~0));
             buf.Cap();
             room_list[dr_ptr->in_room].showAllCept(buf);
-            delete dr_ptr;
+            door* dp_tmp = dr_ptr;
             dr_ptr = affected_doors.lose(cell);
+            delete dp_tmp;;
             continue;
          }//if
       }//if
@@ -1513,6 +1514,7 @@ void decrease_timed_affecting_doors() {
             sp_ptr = sp_cell.next();
          }
       }//while
+
       if (take_me_off)
          dr_ptr = affected_doors.lose(cell);
       else
@@ -1671,7 +1673,7 @@ void show(const char* message, critter& pc) {
 
    if (mudlog.ofLevel(XMT)) {
       mudlog << "OUTPUT from -:" << *(pc.getName());
-         mudlog << ":-  -:" << message << ":-\n" << endl;
+      mudlog << ":-  -:" << message << ":-\n" << endl;
    }
 
    if (pc.possessed_by) {
