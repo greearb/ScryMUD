@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.20 1999/08/10 07:06:18 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
+// $Id: const.cc,v 1.21 1999/08/16 00:37:06 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
 
 //
 //ScryMUD Server Code
@@ -41,6 +41,18 @@ const char* CensoredStrings[] = {
    "fuck",
    "pussy",
    NULL  /* don't forget this!! */
+};
+
+const char* regular_directions[] = {
+   "east",
+   "west",
+   "north",
+   "south",
+   "southeast",
+   "northeast",
+   "northwest",
+   "up",
+   "down"
 };
 
 const char* osd_names[] = {
@@ -322,9 +334,9 @@ const BitfieldNames VEHICLE_FLAGS_NAMES(sizeof(v_names)/sizeof(const char*),
                                         v_names, "Vehicle Flags:");
     
 const char* r_names[] = {
-   "no_rest",//0
-   "!imm",//1
-   "!god",//2
+   "No-Restrictions",//0
+   "Anti-Immort",//1
+   "Anti-God",//2
    "is_perm_dark",//3
    "weather",//4
    "!shout",//5
@@ -363,83 +375,83 @@ const BitfieldNames ROOM_FLAGS_NAMES(sizeof(r_names)/sizeof(const char*),
                                      r_names, "Room Flags:");
 
 const char* o_names[] = {
-   "no_rest",//0
-   "!evil", 
-   "!neutral",
-   "!good", 
-   "!donate",
-   "!drop",
-   "!remove",
-   "!mortal",
-   "!imm",
-   "!demi",
+   "No-Restrictions",//0
+   "Anti-Evil", 
+   "Anti-Neutral",
+   "Anti-Good", 
+   "Anti-Donate",
+   "Anti-Drop",
+   "Anti-Remove",
+   "Anti-Mortal",
+   "Anti-Immortal",
+   "Anti-Demi",
    "in_use",//10
-   "!warrior",
-   "!sage",
-   "!wizard",
-   "!ranger",
-   "!thief",
-   "!alchemist", 
-   "!cleric",
-   "!bard",
-   "!mob",
-   "!pc",//20
-   "not worn",
-   "head",
-   "neck",
-   "neck",
-   "around body",
-   "arms", 
-   "wrist1",
-   "wrist2", 
-   "hands",
-   "wielded",//30
-   "held",
-   "light",
-   "body",
-   "belt",
-   "legs",
-   "feet",
-   "finger1", 
-   "finger2",
-   "shield", //39
-   "not a weapon",//40
-   "slash",
-   "smash",
-   "pierce",
-   "whip", 
-   "needs_ammo",
-   "dart_thrower",
-   "bow", 
-   "dart",
-   "arrow",
-   "junk", //50
-   "wand",
-   "potion",
-   "scroll",
-   "container",
-   "coins",//55
-   "armor",
-   "weapon",
-   "light_source",
-   "canteen",
-   "liquid",//60
-   "food",
-   "boat",
+   "Anti-Warrior",
+   "Anti-Sage",
+   "Anti-Wizard",
+   "Anti-Ranger",
+   "Anti-Thief",
+   "Anti-Alchemist", 
+   "Anti-Cleric",
+   "Anti-Bard",
+   "Anti-NPC",
+   "Abti-PC",//20
+   "Not-worn",
+   "Worn-head",
+   "Worn-neck",
+   "Worn-neck",
+   "Worn-around-body",
+   "Worn-arms", 
+   "Worn-wrist1",
+   "Worn-wrist2", 
+   "Worn-hands",
+   "Wielded",//30
+   "Held",
+   "Worn-Light",
+   "Worn-body",
+   "Belt",
+   "Worn-legs",
+   "Worn-feet",
+   "Worn-finger1", 
+   "Worn-finger2",
+   "Shield", //39
+   "Not-weapon",//40
+   "Weapon-slash",
+   "Weapon-smash",
+   "Weapon-pierce",
+   "Weapon-whip", 
+   "Needs-ammo",
+   "Dart-thrower",
+   "Bow", 
+   "Dart",
+   "Arrow",
+   "Junk", //50
+   "Wand",
+   "Potion",
+   "Scroll",
+   "Container",
+   "Coins",//55
+   "Armor",
+   "Weapon",
+   "Light-source",
+   "Canteen",
+   "Liquid",//60
+   "Food",
+   "Boat",
    "has_spec_proc_data",
-   "toolbox",
-   "cauldron",
-   "pen", 
-   "construct_component",
-   "concoct_component",
-   "parchment", 
-   "needs_resetting",//70
-   "!complete", 
-   "herb", //72
-   "vend_machine",
-   "bulletin_board",
-   "is_butcherable",
-   "has_obj_script"//76
+   "Toolbox",
+   "Cauldron",
+   "Pen", 
+   "Construct_component",
+   "Concoct_component",
+   "Parchment", 
+   "Needs_resetting",//70
+   "Not-Complete", 
+   "Herb", //72
+   "Vend_machine",
+   "Bulletin_board",
+   "Is_butcherable",
+   "Has_obj_script"//76
 };
 
 const BitfieldNames OBJ_FLAGS_NAMES(sizeof(o_names)/sizeof(const char*),

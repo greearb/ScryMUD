@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.10 1999/08/09 06:00:39 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
+// $Id: classes.cc,v 1.11 1999/08/16 00:37:06 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
 
 //
 //ScryMUD Server Code
@@ -35,6 +35,7 @@
 #include <PtrArray.h>
 #include "command5.h"
 #include "command4.h"
+#include "SkillSpell.h"
 
 
 
@@ -75,3 +76,24 @@ String StatBonus::toString() const {
    Sprintf(retval, "stat: %i  bonus: %i", stat, bonus);
    return retval;
 }
+
+
+int Entity::affectedByToString(critter* viewer, String& rslt) {
+   String buf(100);
+   rslt.clear();
+   if (!affected_by.isEmpty()) {
+      rslt.append(cstr(CS_AFFECTED_BY, *viewer));
+      Cell<SpellDuration*> cll(affected_by);
+      SpellDuration* sd_ptr;
+      while ((sd_ptr = cll.next())) {
+         Sprintf(buf, "\t%s.\n", 
+                 (const char*)(SSCollection::instance().getNameForNum(sd_ptr->spell)));
+         rslt.append(buf);
+      }//while
+   }//if
+   else {
+      rslt.append(cstr(CS_NOT_AFFECTED_SPELLS, *viewer));
+   }//else
+   return 0;
+}//affectedByToString
+

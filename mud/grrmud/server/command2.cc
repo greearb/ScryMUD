@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.40 1999/08/10 07:06:17 greear Exp $
-// $Revision: 1.40 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
+// $Id: command2.cc,v 1.41 1999/08/16 00:37:06 greear Exp $
+// $Revision: 1.41 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
 
 //
 //ScryMUD Server Code
@@ -43,206 +43,20 @@
 #include "load_wld.h"
 #include "SkillSpell.h"
 
-int score_long(critter& pc) {
-   return do_score_long(pc, pc);
-}
-
-int do_score_long(critter& of_pc, critter& pc) {
-   String buf(100);
-   Cell<stat_spell_cell*> cll(of_pc.affected_by);
-   stat_spell_cell* ss_ptr;
-
-//   log("In score_long.\n");
-
-   if (!pc.isPc() || !of_pc.isPc()) {
-      return -1;
-   }
-
-   if (&of_pc != &pc) {
-      if (!pc.isImmort()) {
-         pc.show(CS_IMM_ONLY_ACCESS);
-         return -1;
-      }//if
-   }//if
-
-   if (of_pc.possessing) {
-      Sprintf(buf, cstr(CS_YOU_POSSESSING, pc),
-              of_pc.possessing->getName());
-      show(buf, pc);
-   }
-
-   if (of_pc.pc && of_pc.pc->imm_data) {
-      pc.show(CS_POOFIN);
-      pc.show(pc.pc->poofin);
-      pc.show(CS_POOFOUT);
-      pc.show(pc.pc->poofout);
-      pc.show("\n");
-   }
-
-   Sprintf(buf, cstr(CS_CLASS_RACE, pc), get_class_name(of_pc.CLASS),
-           get_race_name(of_pc.RACE));
-   show(buf, pc);
-
-   if (!IsEmpty(of_pc.affected_by)) {
-      pc.show(CS_AFFECTED_BY);
-      while ((ss_ptr = cll.next())) {
-         Sprintf(buf, "\t%s.\n", 
-                 (const char*)(SSCollection::instance().getNameForNum(ss_ptr->stat_spell)));
-         show(buf, pc);
-      }//while
-   }//if
-   else {
-      pc.show(CS_NOT_AFFECTED_SPELLS);
-   }//else
-
-   if (!IsEmpty(of_pc.pets)) {
-      pc.show(CS_HAVE_PETS);
-      out_crit(of_pc.pets, pc, TRUE); //show them all, detect or not.
-   }//if
-   show("\n", pc);
-
-   Sprintf(buf, cstr(CS_SLAIN_DIED, pc),
-	   of_pc.PK_COUNT, of_pc.DIED_COUNT);
-   show(buf, pc);
-   Sprintf(buf, cstr(CS_QP, pc), of_pc.QUEST_POINTS);
-   show(buf, pc);
-
-   if (of_pc.temp_crit) {
-      if (of_pc.GUARDED_BY) {
-         Sprintf(buf, cstr(CS_GUARDED_BY, pc),
-                 name_of_crit(*(of_pc.GUARDED_BY), of_pc.SEE_BIT));
-         show(buf, pc);
-      }//if
-      if (of_pc.GUARDING) {
-         Sprintf(buf, cstr(CS_GUARDING, pc),
-                 name_of_crit(*(of_pc.GUARDING), of_pc.SEE_BIT));
-         show(buf, pc);
-      }//if
-      if (of_pc.SHIELDED_BY) {
-         Sprintf(buf, cstr(CS_SHIELDED_BY, pc),
-                 name_of_crit(*(of_pc.SHIELDED_BY), of_pc.SEE_BIT));
-         show(buf, pc);
-      }//if
-      if (of_pc.SHIELDING) {
-         Sprintf(buf, cstr(CS_SHIELDING, pc),
-                 name_of_crit(*(of_pc.SHIELDING), of_pc.SEE_BIT));
-         show(buf, pc);
-      }//if
-   }//if has temp data
-   return 0;
-}//do_score_long
-
-
 int score(const String* str2, critter& pc) {
-   String buf2(100);
-
-   if (!pc.isPc()) 
-      return -1;
-
-   if (str2->Strlen() != 0) { //score long perhaps
-      score(&NULL_STRING, pc); //do regular score
-      score_long(pc); //do extras
-      return 0;
+   ToStringTypeE st = ST_NORMAL;
+   if (strncasecmp(*str2, "long", max(1, str2->Strlen())) == 0) {
+      st = (ToStringTypeE)(st | ST_LONG);
    }//if
 
-   Sprintf(buf2, "\n%S %S\n", pc.getName(),
-	   &(pc.short_desc));
-   show(buf2, pc);
-
-   if (pc.SEX == 0) 
-      buf2 = cstr(CS_FEMALE, pc);
-   else if (pc.SEX == 1) 
-      buf2 = cstr(CS_MALE, pc);
-   else if (pc.SEX == 2) 
-      buf2 = cstr(CS_NEUTER, pc);
-
-   buf2 += get_class_name(pc.CLASS);
-   buf2 += cstr(CS_OF_LEVEL, pc);
-   buf2.Append(pc.LEVEL);
-   buf2.Append(").\n");
-   show(buf2, pc);
-
-
-   Sprintf(buf2, cstr(CS_SC_GOLD, pc),
-           pc.GOLD, pc.EXP, pc.getAge());
-   show(buf2, pc);
-
-   Sprintf(buf2, cstr(CS_SC_HP, pc),
-           pc.HP, pc.HP_MAX, pc.MANA, pc.MA_MAX, pc.MOV, pc.MV_MAX);
-   show(buf2, pc);
-
-   Sprintf(buf2, cstr(CS_SC_HPR, pc),
-           pc.HP_REGEN, pc.MA_REGEN, pc.MV_REGEN);
-   show(buf2, pc);
-
-   Sprintf(buf2, cstr(CS_SC_ALIGN, pc),
-           pc.ALIGN, pc.PRACS, pc.CRIT_WT_CARRIED, pc.CRIT_MAX_WT_CARRY);
-   show(buf2, pc);
-
-   Sprintf(buf2, cstr(CS_SC_RES, pc),
-           pc.AC, pc.HEAT_RESIS, pc.COLD_RESIS, pc.ELEC_RESIS, pc.SPEL_RESIS);
-   show(buf2, pc);
-
-   Sprintf(buf2, cstr(CS_SC_EXP, pc), pc.getXpToNextLevel(), (pc.GOLD / GOLD_PER_LB));
-   pc.show(buf2);
-
-   Sprintf(buf2, cstr(CS_SC_DAM, pc), pc.DAM_REC_MOD, pc.DAM_GIV_MOD);
-   show(buf2, pc);
-
-   if (pc.HUNGER == 0) 
-      pc.show(CS_YOU_HUNGRY);
-   if (pc.THIRST == 0)
-      pc.show(CS_YOU_THIRSTY);
-   if (pc.DRUGGED > 0) 
-      pc.show(CS_YOU_DRUGGED);
-
-
-   if (pc.POS == POS_STAND) 
-      pc.show(CS_YOU_STANDING);
-   else if (pc.POS == POS_SIT) 
-      pc.show(CS_YOU_SITTING);
-   else if (pc.POS == POS_REST) 
-      pc.show(CS_YOU_RESTING);
-   else if (pc.POS == POS_SLEEP) 
-      pc.show(CS_YOU_SLEEPING);
-   else if (pc.POS == POS_MED) 
-      pc.show(CS_YOU_MED);
-   else if (pc.POS == POS_STUN) 
-      pc.show(CS_YOU_STUNNED);
-   else if (pc.POS == POS_DEAD) 
-      pc.show(CS_YOU_DEAD);
-   else if (pc.POS == POS_PRONE) 
-      pc.show(CS_YOU_PRONE);
-   else
-      pc.show(CS_POS_UNDEF);
-
-   if (pc.FOLLOWER_OF) {
-      Sprintf(buf2, cstr(CS_YOU_FOLLOWING, pc),
-              name_of_crit(*(pc.FOLLOWER_OF), pc.SEE_BIT));
-      show(buf2, pc);
-   }//if
-   else
-      pc.show(CS_FOLLOWING_SELF);
-
-   if (pc.MASTER) {
-      Sprintf(buf2, cstr(CS_MASTER_IS, pc),
-          name_of_crit(*(pc.MASTER), pc.SEE_BIT));
-      show(buf2, pc);
-   }//if
-   else {
-      pc.show(CS_OWN_MASTER);
-   }
-
-   if (!IsEmpty(pc.IS_FIGHTING)) {
-      Sprintf(buf2, cstr(CS_YOU_FIGHTING, pc),
-              name_of_crit(*(Top(pc.IS_FIGHTING)), pc.SEE_BIT));
-      show(buf2, pc);
-   }//if
+   String buf(1000);
+   pc.toStringStat(&pc, buf, st);
+   pc.show(buf);
    return 0;
 }//score
 
 int critter::doUngroup(int i_th, const String* vict) {
-   Cell<critter*> cll;
+   SCell<critter*> cll;
    critter* ptr1, *ptr2;
    String buf(81);
 
@@ -266,9 +80,10 @@ int critter::doUngroup(int i_th, const String* vict) {
          show(CS_HAVE_DISBANDED);
       }//if is a leader
       else if (FOLLOWER_OF) { //possibly in group, not leader
-         FOLLOWER_OF->FOLLOWERS.loseData(this);
-         if (FOLLOWER_OF->GROUPEES.haveData(this)) {
-            FOLLOWER_OF->GROUPEES.loseData(this);
+         critter* hack = this;
+         FOLLOWER_OF->FOLLOWERS.loseData(hack);
+         if (FOLLOWER_OF->GROUPEES.haveData(hack)) {
+            FOLLOWER_OF->GROUPEES.loseData(hack);
 
             FOLLOWER_OF->GROUPEES.head(cll);
             while ((ptr1 = cll.next())) {   
@@ -322,7 +137,7 @@ int critter::doUngroup(int i_th, const String* vict) {
 
 
 int exit(critter& pc) {
-   Cell<door*> cll(ROOM.DOORS);
+   SCell<door*> cll(ROOM.DOORS);
    door* dr_ptr;
    String buf(81);
    int dest;
@@ -339,16 +154,16 @@ int exit(critter& pc) {
       show("<DOOR_LIST>", pc);
 
    while ((dr_ptr = cll.next())) {
-      if (detect(pc.SEE_BIT, dr_ptr->dr_data->vis_bit)) {
+      if (detect(pc.SEE_BIT, dr_ptr->getVisBit())) {
          if (!((dr_ptr->isClosed() && dr_ptr->isSecret()) ||
                dr_ptr->isSecretWhenOpen())) {
-            if (dr_ptr->destination < 0) 
-               dest = (-(dr_ptr->destination));
+            if (dr_ptr->getDestination() < 0) 
+               dest = (-(dr_ptr->getDestination()));
             else
-               dest = dr_ptr->destination;
+               dest = dr_ptr->getDestination();
             if (pc.isImmort()) {
                Sprintf(buf, "%P07%S[%i]:%P27", direction_of_door(*dr_ptr),
-                       dr_ptr->dr_data->door_num);
+                       dr_ptr->getIdNum());
             }
             else {
                Sprintf(buf, "%P07%S:%P27", direction_of_door(*dr_ptr));
@@ -356,7 +171,7 @@ int exit(critter& pc) {
 
             buf.Cap();
             if (detect(pc.SEE_BIT, room_list[dest].getVisBit())) 
-               buf += room_list[dest].short_desc;
+               buf += *(room_list[dest].getLongName());
             else
                buf += cstr(CS_CANT_DISCERN, pc);
             if (pc.isImmort()) {
@@ -378,7 +193,7 @@ int exit(critter& pc) {
 
 
 int auto_exit(critter& pc) { //more brief than the previous
-   Cell<door*> cll(ROOM.DOORS);
+   SCell<door*> cll(ROOM.DOORS);
    door* dr_ptr;
    String buf(81);
    String reg_disp(100);
@@ -391,10 +206,10 @@ int auto_exit(critter& pc) { //more brief than the previous
    client_disp = "< EXITS ";
    reg_disp = cstr(CS_VIS_EXITS, pc);
    while ((dr_ptr = cll.next())) {
-      if (detect(pc.SEE_BIT, dr_ptr->dr_data->vis_bit)) {
+      if (detect(pc.SEE_BIT, dr_ptr->getVisBit())) {
          if (!((dr_ptr->isClosed() && dr_ptr->isSecret()) ||
                dr_ptr->isSecretWhenOpen())) {
-            dest = abs(dr_ptr->destination);
+            dest = abs(dr_ptr->getDestination());
             if (pc.isImmort()) { //if immortal, show extra info
                Sprintf(buf, "%s[%i] ", abbrev_dir_of_door(*dr_ptr),
                        dest);
@@ -430,7 +245,7 @@ int lock(int i_th, const String* name, critter& pc) {
 
    if (ok_to_do_action(NULL, "FSP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
    
-      dr_ptr = door::findDoor(ROOM.DOORS, i_th, name, pc.SEE_BIT, ROOM);
+      dr_ptr = ROOM.findDoor(i_th, name, pc);
       if (dr_ptr) {
          if (dr_ptr->isSecret()) {
             if (!name_is_secret(name, *dr_ptr)) {
@@ -448,10 +263,8 @@ int lock(int i_th, const String* name, critter& pc) {
                pc.show(CS_ALREADY_LOCKED);
             }//if
             else { //lock it
-               if (have_obj_numbered(pc.inv, 1, dr_ptr->getKeyNum(),
-                                     pc.SEE_BIT, ROOM)) {
-                  Sprintf(buf, cstr(CS_YOU_LOCK, pc), name_of_door(*(dr_ptr),
-                                                                   pc.SEE_BIT));
+               if (pc.haveObjNumbered(1, dr_ptr->getKeyNum())) {
+                  Sprintf(buf, cstr(CS_YOU_LOCK, pc), dr_ptr->getName(&pc));
                   show(buf, pc);
                   dr_ptr->lock();
 
@@ -461,7 +274,7 @@ int lock(int i_th, const String* name, critter& pc) {
                   
                   String cmd = "lock";
                   ROOM.checkForProc(cmd, NULL_STRING, pc,
-                                    dr_ptr->dr_data->door_num);
+                                    dr_ptr->getIdNum());
                   
                   return 0;
                }//if have key
@@ -475,20 +288,18 @@ int lock(int i_th, const String* name, critter& pc) {
          }//else
       }//
       else {   //check for items to be opened
-         ob_ptr = have_obj_named(pc.inv, i_th, name,
-                                 pc.SEE_BIT, ROOM);
+         ob_ptr = pc.haveObjNamed(i_th, name);
          if (ob_ptr) {
-            if (ob_ptr->bag && !ob_ptr->IN_LIST) {
-               ob_ptr = obj_to_sobj(*ob_ptr, &(pc.inv), TRUE,
-                                    i_th, name, pc.SEE_BIT, ROOM);
+            if (ob_ptr->bag && !ob_ptr->isModified()) {
+               ob_ptr = obj_to_sobj(*ob_ptr, &(pc), TRUE, i_th, name, pc);
             }
          }
          else {
-            ob_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
+            ob_ptr = ROOM.haveObjNamed(i_th, name, pc);
             
-            if (ob_ptr && ob_ptr->bag && !ob_ptr->IN_LIST) {
-               ob_ptr = obj_to_sobj(*ob_ptr, ROOM.getInv(), TRUE,
-                                    i_th, name, pc.SEE_BIT, ROOM);
+            if (ob_ptr && ob_ptr->bag && !ob_ptr->isModified()) {
+               ob_ptr = obj_to_sobj(*ob_ptr, pc.getCurRoom(), TRUE,
+                                    i_th, name, pc);
             }
          }//else
          
@@ -496,7 +307,7 @@ int lock(int i_th, const String* name, critter& pc) {
             if (!ob_ptr->bag) {
                pc.show(CS_NOT_CONTAINER);
             }//if
-            else if (ob_ptr->bag->key_num == 0) {
+            else if (ob_ptr->bag->getKey() == 0) {
                pc.show(CS_CANT_BE_LOCKED_CONT);
             }//if
             else if (ob_ptr->isClosed()) { //is closed
@@ -506,8 +317,7 @@ int lock(int i_th, const String* name, critter& pc) {
                else {
                   object* key = NULL;
                   int posn = -1;
-                  key = have_obj_numbered(pc.inv, 1, ob_ptr->getKeyNum(),
-                                          pc.SEE_BIT, ROOM);
+                  key = have_obj_numbered(pc.inv, 1, ob_ptr->getKeyNum(), pc);
                   if (!key) {
                      for (int i = 1; i<MAX_EQ; i++) {
                         if (pc.EQ[i] && 
@@ -564,7 +374,7 @@ int unlock(int i_th, const String* name, critter& pc) {
 
    if (ok_to_do_action(NULL, "SmFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
    
-      if ((dr_ptr = door::findDoor(ROOM.DOORS, i_th, name, pc.SEE_BIT, ROOM))) {
+      if ((dr_ptr = ROOM.findDoor(i_th, name, pc))) {
          if (dr_ptr->isSecret()) {
             if (!name_is_secret(name, *dr_ptr)) {
                pc.show(CS_NO_SEE_EXIT);
@@ -585,8 +395,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                //       << dr_ptr->getKeyNum() << endl;
                //mudlog << "Current room:  " << pc.getCurRoomNum() << endl;
                
-               key = have_obj_numbered(pc.inv, 1, dr_ptr->getKeyNum(),
-                                       pc.SEE_BIT, ROOM);
+               key = have_obj_numbered(pc.inv, 1, dr_ptr->getKeyNum(), pc);
                if (!key) {
                   for (int i = 1; i<MAX_EQ; i++) {
                      if (pc.EQ[i] && 
@@ -611,7 +420,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                         pc.inv.loseData(key);
                         drop_eq_effects(*key, pc, FALSE);
                      }
-                     if (key->IN_LIST) {
+                     if (key->isModified()) {
                         recursive_init_unload(*key, 0);
                         delete key;
                      }
@@ -636,7 +445,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                   
                   String cmd = "unlock";
                   ROOM.checkForProc(cmd, NULL_STRING, pc,
-                                    dr_ptr->dr_data->door_num);
+                                    dr_ptr->getIdNum());
                   
                   
                   return 0;
@@ -654,20 +463,19 @@ int unlock(int i_th, const String* name, critter& pc) {
          }//else
       }//
       else {   //check for items to be opened
-         ob_ptr = have_obj_named(pc.inv, i_th, name,
-                                 pc.SEE_BIT, ROOM);
+         ob_ptr = pc.haveObjNamed(i_th, name);
          if (ob_ptr) {
-            if (ob_ptr->bag && !ob_ptr->IN_LIST) {
-               ob_ptr = obj_to_sobj(*ob_ptr, &(pc.inv), TRUE,
-                                    i_th, name, pc.SEE_BIT, ROOM);
+            if (ob_ptr->bag && !ob_ptr->isModified()) {
+               ob_ptr = obj_to_sobj(*ob_ptr, &(pc), TRUE,
+                                    i_th, name, pc);
             }
          }
          else {
-            ob_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
+            ob_ptr = ROOM.haveObjNamed(i_th, name, pc);
             
-            if (ob_ptr && ob_ptr->bag && !ob_ptr->IN_LIST) {
-               ob_ptr = obj_to_sobj(*ob_ptr, ROOM.getInv(), TRUE,
-                                    i_th, name, pc.SEE_BIT, ROOM);
+            if (ob_ptr && ob_ptr->bag && !ob_ptr->isModified()) {
+               ob_ptr = obj_to_sobj(*ob_ptr, pc.getCurRoom(), TRUE,
+                                    i_th, name, pc);
             }
          }//else
          if (ob_ptr) {
@@ -680,7 +488,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                   int posn = -1;
                   
                   key = have_obj_numbered(pc.inv, 1, ob_ptr->getKeyNum(),
-                                          pc.SEE_BIT, ROOM);
+                                          pc);
                   if (!key) {
                      for (int i = 1; i<MAX_EQ; i++) {
                         if (pc.EQ[i] && 
@@ -695,8 +503,8 @@ int unlock(int i_th, const String* name, critter& pc) {
                   if (key) {
                      if (ob_ptr->consumesKey()) {
                         Sprintf(buf, cstr(CS_UNLOCK_CONSUME, pc),
-                                ob_ptr->getLongName(pc),
-                                key->getLongName());
+                                ob_ptr->getLongName(&pc),
+                                key->getLongName(&pc));
                         if (posn > 0) {
                            pc.EQ[posn] = NULL;
                            remove_eq_effects(*key, pc, FALSE, FALSE, posn);
@@ -705,7 +513,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                            pc.inv.loseData(key);
                            drop_eq_effects(*key, pc, FALSE);
                         }
-                        if (key->IN_LIST) {
+                        if (key->isModified()) {
                            recursive_init_unload(*key, 0);
                            delete key;
                         }
@@ -713,7 +521,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                      }//if
                      else {
                         Sprintf(buf, cstr(CS_YOU_UNLOCK, pc),
-                                ob_ptr->getLongName(pc));
+                                ob_ptr->getLongName(&pc));
                      }
                      show(buf, pc);
                      ob_ptr->unlock();
@@ -755,17 +563,17 @@ int open(int i_th, const String* name, critter& pc) {
    String buf(81);
    if (ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
    
-      if ((dr_ptr = door::findDoor(ROOM.DOORS, i_th, name, pc.SEE_BIT, ROOM))) {
+      if ((dr_ptr = ROOM.findDoor(i_th, name, pc))) {
          if (dr_ptr->isSecret()) {
             if (!name_is_secret(name, *dr_ptr)) {
                pc.show(CS_NO_SEE_EXIT);
                return -1;
             }//if
          }//if	    
-         if (dr_ptr->dr_data->isClosed()) {
+         if (dr_ptr->isClosed()) {
             if (!dr_ptr->canOpen()) {
                Sprintf(buf, cstr(CS_OPEN_AUTOMAGICALLY, pc),
-                       name_of_door(*(dr_ptr), pc.SEE_BIT));
+                       dr_ptr->getName(&pc));
                show(buf, pc);
             }//if
             else if ((dr_ptr->isLocked()) || 
@@ -791,7 +599,7 @@ int open(int i_th, const String* name, critter& pc) {
                
                String cmd = "open";
                ROOM.checkForProc(cmd, NULL_STRING, pc,
-                                 dr_ptr->dr_data->door_num);
+                                 dr_ptr->getIdNum());
                
                return 0;
             }//else
@@ -801,20 +609,19 @@ int open(int i_th, const String* name, critter& pc) {
          }//else
       }//
       else {   //check for items to be opened
-         ob_ptr = have_obj_named(pc.inv, i_th, name,
-                                 pc.SEE_BIT, ROOM);
+         ob_ptr = pc.haveObjNamed(i_th, name);
          if (ob_ptr) {
-            if (ob_ptr->bag && !ob_ptr->IN_LIST) {
-               ob_ptr = obj_to_sobj(*ob_ptr, &(pc.inv), TRUE,
-                                    i_th, name, pc.SEE_BIT, ROOM);
+            if (ob_ptr->bag && !ob_ptr->isModified()) {
+               ob_ptr = obj_to_sobj(*ob_ptr, &(pc), TRUE,
+                                    i_th, name, pc);
             }
          }
          else {
-            ob_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
+            ob_ptr = ROOM.haveObjNamed(i_th, name, pc);
             
-            if (ob_ptr && ob_ptr->bag && !ob_ptr->IN_LIST) {
-               ob_ptr = obj_to_sobj(*ob_ptr, ROOM.getInv(), TRUE,
-                                    i_th, name, pc.SEE_BIT, ROOM);
+            if (ob_ptr && ob_ptr->bag && !ob_ptr->isModified()) {
+               ob_ptr = obj_to_sobj(*ob_ptr, pc.getCurRoom(), TRUE,
+                                    i_th, name, pc);
             }
          }//else
          
@@ -826,14 +633,13 @@ int open(int i_th, const String* name, critter& pc) {
             else if (ob_ptr->isClosed()) { //is closed
                if ((ob_ptr->isLocked()) || (ob_ptr->isMagLocked())) {
                   //is locked, mag_locked
-                  Sprintf(buf, cstr(CS_IS_LOCKED, pc), ob_ptr->getLongName(pc));
+                  Sprintf(buf, cstr(CS_IS_LOCKED, pc), ob_ptr->getLongName(&pc));
                   buf.Cap();
                   show(buf, pc);
                }//if
                else {
                   ob_ptr->open();
-                  Sprintf(buf, cstr(CS_YOU_OPEN, pc), name_of_obj(*(ob_ptr),
-                                                                  pc.SEE_BIT));
+                  Sprintf(buf, cstr(CS_YOU_OPEN, pc), ob_ptr->getName(&pc));
                   show(buf, pc);
                   
                   String cmd = "open";
@@ -860,7 +666,7 @@ int close(int i_th, const String* name, critter& pc) {
    object* ob_ptr;
    String buf(81);
    if (ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
-      if ((dr_ptr = door::findDoor(ROOM.DOORS, i_th, name, pc.SEE_BIT, ROOM))) {
+      if ((dr_ptr = ROOM.findDoor(i_th, name, pc))) {
          if (dr_ptr->isSecret()) {
             if (!name_is_secret(name, *dr_ptr)) {
                pc.show(CS_NO_SEE_EXIT);
@@ -871,8 +677,7 @@ int close(int i_th, const String* name, critter& pc) {
             if (dr_ptr->canClose() &&
                 !dr_ptr->isVehicleExit()) { //is closeable
                dr_ptr->close();
-               Sprintf(buf, cstr(CS_YOU_CLOSE, pc), name_of_door(*(dr_ptr),
-                                                                 pc.SEE_BIT));
+               Sprintf(buf, cstr(CS_YOU_CLOSE, pc), dr_ptr->getName(&pc));
                show(buf, pc);
                
                //TODO:  Translation problem
@@ -882,7 +687,7 @@ int close(int i_th, const String* name, critter& pc) {
                
                String cmd = "close";
                ROOM.checkForProc(cmd, NULL_STRING, pc, 
-                                 dr_ptr->dr_data->door_num);
+                                 dr_ptr->getIdNum());
                
                return 0;
             }//if
@@ -897,36 +702,33 @@ int close(int i_th, const String* name, critter& pc) {
          }//else
       }//
       else {
-         ob_ptr = have_obj_named(pc.inv, i_th, name,
-                                 pc.SEE_BIT, ROOM);
+         ob_ptr = pc.haveObjNamed(i_th, name);
          if (ob_ptr) {
-            if (ob_ptr->bag && !ob_ptr->IN_LIST) {
-               ob_ptr = obj_to_sobj(*ob_ptr, &(pc.inv), TRUE,
-                                    i_th, name, pc.SEE_BIT, ROOM);
+            if (ob_ptr->bag && !ob_ptr->isModified()) {
+               ob_ptr = obj_to_sobj(*ob_ptr, &(pc), TRUE,
+                                    i_th, name, pc);
             }
          }
          else {
-            ob_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
+            ob_ptr = ROOM.haveObjNamed(i_th, name, pc);
             
-            if (ob_ptr && ob_ptr->bag && !ob_ptr->IN_LIST) {
-               ob_ptr = obj_to_sobj(*ob_ptr, ROOM.getInv(), TRUE,
-                                    i_th, name, pc.SEE_BIT, ROOM);
+            if (ob_ptr && ob_ptr->bag && !ob_ptr->isModified()) {
+               ob_ptr = obj_to_sobj(*ob_ptr, pc.getCurRoom(), TRUE,
+                                    i_th, name, pc);
             }
          }//else
          if (ob_ptr) {
             if (!ob_ptr->bag) {
                pc.show(CS_NOT_CONTAINER);
             }//if
-            else if (!ob_ptr->BAG_FLAGS.get(2)) { //is open
-               if (ob_ptr->BAG_FLAGS.get(9)) { //if non-closeable
-                  Sprintf(buf, cstr(CS_CANNOT_CLOSE, pc), name_of_obj(*(ob_ptr),
-                                                                      pc.SEE_BIT));
+            else if (!ob_ptr->getBag()->isOpen()) {
+               if (!ob_ptr->getBag()->canClose()) {
+                  Sprintf(buf, cstr(CS_CANNOT_CLOSE, pc), ob_ptr->getName(&pc));
                   show(buf, pc);
                }//if
                else { 
-                  ob_ptr->BAG_FLAGS.turn_on(2);
-                  Sprintf(buf, cstr(CS_YOU_CLOSE, pc), name_of_obj(*(ob_ptr),
-                                                                   pc.SEE_BIT));
+                  ob_ptr->getBag()->close();
+                  Sprintf(buf, cstr(CS_YOU_CLOSE, pc), ob_ptr->getName(&pc));
                   show(buf, pc);
                   
                   String cmd = "close";
@@ -1001,7 +803,7 @@ int eat(int i_th, const String* name, critter& pc) {
          pc.loseInv(obj_ptr); // rid inv of ptr
          
          recursive_init_unload(*obj_ptr, 0);
-         if (obj_ptr->IN_LIST)
+         if (obj_ptr->isModified())
             delete obj_ptr;
          return 0;
       }//else
@@ -1022,10 +824,10 @@ int drink(int i_th, const String* name, critter& pc) {
          return -1;
       }//if
 
-      obj_ptr = have_obj_named(pc.inv, i_th, name, pc.SEE_BIT, ROOM);
+      obj_ptr = pc.haveObjNamed(i_th, name);
       
       if (!obj_ptr) {
-         obj_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
+         obj_ptr = ROOM.haveObjNamed(i_th, name, pc);
          in_inv = FALSE;
       }//if
       if (!obj_ptr) {
@@ -1033,14 +835,14 @@ int drink(int i_th, const String* name, critter& pc) {
          show(buf, pc);
       }//if
       else {  //ok, got some kind of object...lets test it
-         if (IsEmpty(obj_ptr->inv)) {
+         if (obj_ptr->getInv().isEmpty()) {
             if (mudlog.ofLevel(INF)) {
                mudlog << "INFO:  container has no inventory, obj# "
                       << obj_ptr->getIdNum() << endl;
             }
          }
          
-         if (!(obj_ptr->OBJ_FLAGS.get(59))) { //canteen bit
+         if (!(obj_ptr->isCanteen())) {
             Sprintf(buf, cstr(CS_NO_LIQ_CONT, pc), name);
             show(buf, pc);
          }//if
@@ -1049,31 +851,31 @@ int drink(int i_th, const String* name, critter& pc) {
          }//if
          else if (obj_ptr->extras[0] == 0) { 
             Sprintf(buf, cstr(CS_CONT_EMPTY_SPRINTF, pc),
-                    obj_ptr->getShortName());
+                    obj_ptr->getShortName(&pc));
             show(buf, pc);
          }//if 
-         else if (IsEmpty(obj_ptr->inv)) {
+         else if (obj_ptr->getInv().isEmpty()) {
             Sprintf(buf, cstr(CS_NO_LIQ_IN_CONT, pc),
                     &(obj_ptr->short_desc));
             buf.Cap();
             show(buf, pc);
          }//if 
-         else if (!obj_ptr->IN_LIST) {
+         else if (!obj_ptr->isModified()) {
             if (in_inv) {
-               obj2 = obj_to_sobj(*obj_ptr, &(pc.inv), TRUE, i_th,
-                                  name, pc.SEE_BIT, ROOM);
+               obj2 = obj_to_sobj(*obj_ptr, &(pc), TRUE, i_th,
+                                  name, pc);
             }//if
             else {
-               obj2 = obj_to_sobj(*obj_ptr, ROOM.getInv(), TRUE, i_th,
-                                  name, pc.SEE_BIT, ROOM);
+               obj2 = obj_to_sobj(*obj_ptr, pc.getCurRoom(), TRUE, i_th,
+                                  name, pc);
             }//else
-            object* obj3 = Top(obj2->inv);
+            object* obj3 = obj2->getInv().peekFront();
             obj2->CHARGES--;
             consume_eq_effects(*obj3, pc, TRUE);
             return 0;
          }//if
          else {
-            obj2 = Top(obj_ptr->inv);
+            obj2 = obj_ptr->getInv().peekFront();
             obj_ptr->CHARGES--;
             consume_eq_effects(*obj2, pc, TRUE);
             return 0;
@@ -1103,12 +905,10 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
          return -1;
       }//if
 
-      targ_obj = have_obj_named(pc.inv, i_th, targ, pc.SEE_BIT, ROOM);
-   
-      source_obj = ROOM.haveObjNamed(j_th, source, pc.SEE_BIT);
+      targ_obj = pc.haveObjNamed(i_th, targ);
+      source_obj = ROOM.haveObjNamed(j_th, source, pc);
       if (!source_obj) {
-         source_obj = 
-            have_obj_named(pc.inv, i_th, source, pc.SEE_BIT, ROOM);
+         source_obj = pc.haveObjNamed(i_th, source);
          in_inv_source = TRUE;
       }//if
       else {
@@ -1138,22 +938,20 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
       }//if      
                   /* so both are containers */
 
-      else if ((Top(targ_obj->inv) != Top(source_obj->inv)) && 
+      else if ((targ_obj->getInv().peekFront() !=
+                source_obj->getInv().peekFront()) && 
                (targ_obj->extras[0] != 0)) {
-         Sprintf(buf, cstr(CS_MUST_EMPTY, pc),
-                 name_of_obj(*targ_obj, pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_MUST_EMPTY, pc), targ_obj->getName(&pc));
          show(buf, pc);
       }//if
                   /* ok, liquids are the same */
 
       else if (source_obj->extras[0] == 0) {
-         Sprintf(buf, cstr(CS_EMPTY_ALREADY, pc), name_of_obj(*source_obj,
-                                                              pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_EMPTY_ALREADY, pc), source_obj->getName(&pc));
          show(buf, pc);
       }//if
-      else if (targ_obj->extras[0] >= targ_obj->bag->max_weight) {
-         Sprintf(buf, cstr(CS_FULL_ALREADY, pc), name_of_obj(*targ_obj,
-                                                             pc.SEE_BIT));
+      else if (targ_obj->extras[0] >= targ_obj->bag->getMaxWeight()) {
+         Sprintf(buf, cstr(CS_FULL_ALREADY, pc), targ_obj->getName(&pc));
          show(buf, pc);
       }//if
       else if (targ_obj->extras[0] == -1) {
@@ -1163,9 +961,9 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
 
       else {		/* take care of Obj to Sobj if needed. */
          mudlog.log(TRC, "About to take care of obj to sobj.\n");
-         if (!targ_obj->in_list) {
-            targ_obj = obj_to_sobj(*targ_obj, &(pc.inv), TRUE, i_th,
-                                   targ, pc.SEE_BIT, ROOM);
+         if (!targ_obj->isModified()) {
+            targ_obj = obj_to_sobj(*targ_obj, &(pc), TRUE, i_th,
+                                   targ, pc);
          }//if
          
          if (mudlog.ofLevel(DBG)) {
@@ -1174,7 +972,7 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
                    << source_obj->getName() << endl;
          }
          
-         Cell<object*> cll(targ_obj->inv);
+         SCell<object*> cll(targ_obj->inv);
          object* ptr;
          while ((ptr = cll.next())) {
             recursive_init_unload(*ptr, 0);
@@ -1182,7 +980,7 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
          clear_obj_list(targ_obj->inv);
          
          //TODO, check for SOBJ:  Answer, allways use OBJ, not SOBJ
-         targ_obj->gainInv(&(obj_list[Top(source_obj->inv)->getIdNum()]));
+         targ_obj->gainInv(&(obj_list[source_obj->getInv().peekFront()->getIdNum()]));
          
          /* test for infinite source */
          if (source_obj->extras[0] <= -1) {
@@ -1196,31 +994,31 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
             else {
                mudlog.log(TRC, "Was an infinite source.\n");
             }
-            targ_obj->extras[0] = targ_obj->bag->max_weight;
+            targ_obj->extras[0] = targ_obj->bag->getMaxWeight();
          }//if
                      /* not an infinite source */
          else {
             mudlog.log(TRC, "Not an infinite source.\n");
-            if (!source_obj->in_list) {
+            if (!source_obj->isModified()) {
                if (in_inv_source) {
-                  source_obj = obj_to_sobj(*source_obj, &(pc.inv), TRUE, i_th,
-                                           source, pc.SEE_BIT, ROOM);
+                  source_obj = obj_to_sobj(*source_obj, &(pc), TRUE, i_th,
+                                           source, pc);
                }//if in inv
                else {
-                  source_obj = obj_to_sobj(*source_obj, ROOM.getInv(), TRUE, i_th,
-                                           source, pc.SEE_BIT, ROOM);
+                  source_obj = obj_to_sobj(*source_obj, pc.getCurRoom(), TRUE, i_th,
+                                           source, pc);
                }//else
             }//if
-            /* this next bit is badly innefficient. */
+            /* TODO: this next bit is badly innefficient. */
             while ((targ_obj->extras[0] != 
-                    targ_obj->bag->max_weight) &&
+                    targ_obj->bag->getMaxWeight()) &&
                    (source_obj->extras[0] > 0)) {
                targ_obj->extras[0]++;
                source_obj->extras[0]--;
             }//while
          }//else
-         Sprintf(buf, cstr(CS_YOU_FILL, pc), targ_obj->getShortName(),
-                 source_obj->getLongName());
+         Sprintf(buf, cstr(CS_YOU_FILL, pc), targ_obj->getShortName(&pc),
+                 source_obj->getLongName(&pc));
          show(buf, pc);
          
          String cmd = "fill";
@@ -1237,8 +1035,7 @@ int empty(int i_th, const String* canteen, critter& pc) {
    object* obj2;
    if (ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
 
-      object* obj_ptr = have_obj_named(pc.inv, i_th, canteen, pc.SEE_BIT, 
-                                       ROOM);
+      object* obj_ptr = pc.haveObjNamed(i_th, canteen);
 
       if (!obj_ptr) {
          Sprintf(buf, cstr(CS_DONT_SEEM_TO_HAVE, pc), canteen);
@@ -1246,27 +1043,27 @@ int empty(int i_th, const String* canteen, critter& pc) {
       }//if
       else if (!(obj_ptr->OBJ_FLAGS.get(59))) {
          Sprintf(buf, cstr(CS_NOT_LIQ_CONT_EMPTY, pc),
-                 Top(obj_ptr->names));
+                 obj_ptr->getShortName(&pc));
          show(buf, pc);
       }//if
                   /* got a valid canteen */
    
       else if (obj_ptr->extras[0] == 0) {
          Sprintf(buf, cstr(CS_CONT_EMPTY_SPRINTF, pc),
-                 Top(obj_ptr->names));
+                 obj_ptr->getShortName(&pc));
          show(buf, pc);
       }//if
       else if (obj_ptr->extras[0] == -1) {
          Sprintf(buf, cstr(CS_NEVER_EMPTY, pc),
-                 Top(obj_ptr->names));
+                 obj_ptr->getShortName(&pc));
          show(buf, pc);
       }//if
                    /* ok, procede w/emptying */
 
       else {
-         if (!obj_ptr->IN_LIST) {
-            obj2 = obj_to_sobj(*obj_ptr, &(pc.inv), TRUE, i_th,
-                               canteen, pc.SEE_BIT, ROOM);
+         if (!obj_ptr->isModified()) {
+            obj2 = obj_to_sobj(*obj_ptr, &(pc), TRUE, i_th,
+                               canteen, pc);
             obj_ptr = obj2;
          }//if
 
@@ -1274,15 +1071,13 @@ int empty(int i_th, const String* canteen, critter& pc) {
          while (!(obj_ptr->inv.isEmpty())) {
             ptr = obj_ptr->inv.popFront();
             recursive_init_unload(*ptr, 0);
-            if (ptr->IN_LIST) {
-               if (ptr->IN_LIST) {
-                  delete ptr;
-               }
+            if (ptr->isModified()) {
+               delete ptr;
             }//if
          }//while
 
          obj_ptr->extras[0] = 0; //no charges
-         Sprintf(buf, cstr(CS_YOU_EMPTY, pc), obj_ptr->getShortName());
+         Sprintf(buf, cstr(CS_YOU_EMPTY, pc), obj_ptr->getShortName(&pc));
          show(buf, pc);
          return 0;
       }//else
@@ -1403,13 +1198,8 @@ int buy(int i_th, const String* item, int j_th, const String* keeper,
 
    if (keeper->Strlen() == 0) {
       crit_ptr = ROOM.findFirstShopKeeper();
-      if (crit_ptr) {
-         if (crit_ptr->isMob()) {
-            crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum());
-         }//if
-      }//if
-      else {  //check for vending machine of some type
-         Cell<object*> cll(*(ROOM.getInv()));
+      if (!crit_ptr) { //check for vending machine of some type
+         SCell<object*> cll(*(ROOM.getInv()));
          object* ptr;
          while ((ptr = cll.prev())) {
             if (ptr->OBJ_FLAGS.get(73)) { //if its a vend machine
@@ -1421,14 +1211,8 @@ int buy(int i_th, const String* item, int j_th, const String* keeper,
    }//if
    else {
       crit_ptr = ROOM.haveCritNamed(j_th, keeper, pc.SEE_BIT);
-      if (crit_ptr) {
-         if (crit_ptr->isMob()) {
-            crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE, j_th, 
-                   keeper, pc.SEE_BIT);
-         }//if
-      }//if
-      else {  //check for vending machine of some type
-         object* ptr = ROOM.haveObjNamed(j_th, keeper, pc.SEE_BIT);
+      if (!crit_ptr) {  //check for vending machine of some type
+         object* ptr = ROOM.haveObjNamed(j_th, keeper, pc);
          if (ptr && ptr->OBJ_FLAGS.get(73)) { //if its a vend machine
             do_vend_buy(*ptr, i_th, item, pc);
             return 0;
@@ -1441,7 +1225,7 @@ int buy(int i_th, const String* item, int j_th, const String* keeper,
    }//if
    else if (!crit_ptr->isNpc()) { //dealing w/a pc...
       Sprintf(buf, cstr(CS_TRADE_PC, pc),
-              name_of_crit(*crit_ptr, pc.SEE_BIT));
+              crit_ptr->getName(&pc));
       buf.Cap();
       show(buf, pc);
    }//if
@@ -1475,21 +1259,10 @@ int sell(int i_th, const String* item, int j_th, const String* keeper,
 
    if (keeper->Strlen() == 0) {
       crit_ptr = ROOM.findFirstShopKeeper();
-      if (crit_ptr) {
-         if (crit_ptr->isMob()) {
-            crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum());
-         }//if
-      }//if
    }//if
    else {
       mudlog.log(TRC, "Searching room for Shopkeeper, in SELL.\n");
-      crit_ptr = ROOM.haveCritNamed(j_th, keeper, pc.SEE_BIT);
-      if (crit_ptr) {
-         if (crit_ptr->isMob()) {
-            crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(),
-                                   TRUE, j_th, keeper, pc.SEE_BIT);
-         }//if
-      }//if
+      crit_ptr = ROOM.haveCritNamed(j_th, keeper, pc);
    }//else
 
 
@@ -1726,22 +1499,22 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
          crit_ptr = ROOM.findFirstShopKeeper();
          if (!crit_ptr) {
             //check for vending machine of some type
-            Cell<object*> cll(*(ROOM.getInv()));
+            SCell<object*> cll(*(ROOM.getInv()));
             object* ptr;
             while ((ptr = cll.prev())) {
                if (ptr->OBJ_FLAGS.get(73)) { //if its a vend machine
-                  List<object*> dummy;
+                  SafeList<object*> dummy(NULL);
                   return do_list_merchandise(ptr->inv, dummy, NULL, ptr, pc);
                }//if
             }//while
          }
       }//else
       else {
-         crit_ptr = ROOM.haveCritNamed(i_th, keeper, pc.SEE_BIT);
+         crit_ptr = ROOM.haveCritNamed(i_th, keeper, pc);
          if (!crit_ptr) {
-            object* ptr = ROOM.haveObjNamed(i_th, keeper, pc.SEE_BIT);
+            object* ptr = ROOM.haveObjNamed(i_th, keeper, pc);
             if (ptr && ptr->OBJ_FLAGS.get(73)) { //if its a vend machine
-               List<object*> dummy;
+               SafeList<object*> dummy(NULL);
                return do_list_merchandise(ptr->inv, dummy, NULL,
                                           ptr, pc);
             }//if
@@ -1778,11 +1551,11 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
 }//list()
 
 
-int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
+int do_list_merchandise(SafeList<object*>& inv, SafeList<object*>& perm_inv,
                         critter* crit_owner, object* obj_owner, 
                         critter& pc) {
    object* obj_ptr = NULL;
-   Cell<object*> cell(inv);
+   SCell<object*> cell(inv);
    int price;
    String buf(100);
 
@@ -1809,7 +1582,7 @@ int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
             
       id_num = obj_ptr->getIdNum();
             
-      if (!obj_ptr->in_list &&
+      if (!obj_ptr->isModified() &&
           (item_counts[id_num] == -1)) { //already done it
          continue;
       }
@@ -1830,24 +1603,24 @@ int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
          }//if
          
          if (pc.shouldShowVnums()) {
-            if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
+            if (obj_ptr->isModified() || (item_counts[id_num] == 1)) {
                Sprintf(buf, " [%i]%P06 %S%P50%i", id_num,
-                       &(obj_ptr->short_desc), price);
+                       obj_ptr->getLongName(&pc), price);
             }
             else {
                Sprintf(buf, " [%i]%P06 [*%i]%P12 %S%P50%i", id_num,
-                       item_counts[id_num], &(obj_ptr->short_desc), price);
+                       item_counts[id_num], obj_ptr->getLongName(&pc), price);
             }
          }
          else {
             cnt++;
-            if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-               Sprintf(buf, "  [%i]%P12 %S%P50%i", cnt, &(obj_ptr->short_desc),
+            if (obj_ptr->isModified() || (item_counts[id_num] == 1)) {
+               Sprintf(buf, "  [%i]%P12 %S%P50%i", cnt, obj_ptr->getLongName(&pc),
                        price);
             }
             else {
                Sprintf(buf, "  [%i] [*%i]%P12 %S%P50%i", cnt, item_counts[id_num],
-                       &(obj_ptr->short_desc), price);
+                       obj_ptr->getLongName(&pc), price);
             }
          }
          
@@ -1870,7 +1643,7 @@ int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
             
       id_num = obj_ptr->getIdNum();
       
-      if (!obj_ptr->in_list &&
+      if (!obj_ptr->isModified() &&
           (item_counts[id_num] == -1)) { //already done it
          continue;
       }
@@ -1891,24 +1664,24 @@ int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
          }//if
          
          if (pc.shouldShowVnums()) {
-            if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
+            if (obj_ptr->isModified() || (item_counts[id_num] == 1)) {
                Sprintf(buf, " [%i]%P06 %S%P50%i", id_num,
-                       &(obj_ptr->short_desc), price);
+                       obj_ptr->getLongName(&pc), price);
             }
             else {
                Sprintf(buf, " [%i]%P06 [*%i]%P12 %S%P50%i", id_num,
-                       item_counts[id_num], &(obj_ptr->short_desc), price);
+                       item_counts[id_num], obj_ptr->getLongName(&pc), price);
             }
          }
          else {
             cnt++;
-            if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-               Sprintf(buf, "  [%i]%P12 %S%P50%i", cnt, &(obj_ptr->short_desc),
+            if (obj_ptr->isModified() || (item_counts[id_num] == 1)) {
+               Sprintf(buf, "  [%i]%P12 %S%P50%i", cnt, obj_ptr->getLongName(&pc),
                        price);
             }
             else {
                Sprintf(buf, "  [%i] [*%i]%P12 %S%P50%i", cnt, item_counts[id_num],
-                       &(obj_ptr->short_desc), price);
+                       obj_ptr->getLongName(&pc), price);
             }
          }
          
@@ -2015,8 +1788,8 @@ int wimpy(int i, critter& pc) {
       else if (i <= 0) {
          pc.WIMPY = 0;
       }//if
-      else if (i > pc.HP_MAX / 2) {
-         pc.WIMPY = pc.HP_MAX / 2;
+      else if (i > pc.getHpMax() / 2) {
+         pc.WIMPY = pc.getHpMax() / 2;
       }//if
       else {
          pc.WIMPY = i;
@@ -2084,279 +1857,14 @@ int mstat(int i_th, const String* name, critter& pc) {
          return -1;
       }//if
       else {
-         return do_mstat(*crit_ptr, pc);
+         String buf(1000);
+         crit_ptr->toStringStat(&pc, buf, (ToStringTypeE)(ST_LONG | ST_NORMAL));
+         pc.show(buf);
+         return 0;
       }//else
    }
    return -1;
 }//mstat
-
-
-
-//TODO:  Translate all these little strings!!
-int do_mstat(critter& targ, critter& pc) {
-   String buf2(200);
-   String buf(100);
-   critter* crit_ptr = &targ; //to reduce my typing :P
-   mudlog.log(TRC, "In do_mstat.\n");
-
-   if (!crit_ptr->isInUse()) {
-      show("This critter UNDEFINED.\n", pc);
-      return -1;
-   }//if
-   else {
-
-      if (!pc.isUsingClient() || crit_ptr->pc) {
-         show("\n", pc);
-         show((crit_ptr->short_desc), pc);
-         show("\n", pc);
-         show((crit_ptr->in_room_desc), pc);
-         show("\n", pc);
-         show((crit_ptr->long_desc), pc);
-         show("\n", pc);
-      }
-      else {
-         Sprintf(buf2, "<MSTAT %i>", crit_ptr->MOB_NUM);
-         show(buf2, pc);
-         show("\n<STAT_SD>", pc);
-         show((crit_ptr->short_desc), pc);
-         show("</STAT>\n<STAT_ND>", pc);
-         show((crit_ptr->in_room_desc), pc);
-         show("</STAT>\n<STAT_LD>", pc);
-         show((crit_ptr->long_desc), pc);
-         show("</STAT>\n", pc);
-      }//else
-
-      Cell<String*> cll(crit_ptr->names);
-      String* ptr;
-      buf2 = "";
-      while ((ptr = cll.next())) {
-         buf2 += *ptr;
-         buf2 += " ";
-      }//while
-
-      if (!pc.isUsingClient() || crit_ptr->pc) {
-         Sprintf(buf, "\nNames (Keywords): %S\n\n", &buf2);
-         pc.show(buf);
-      }//if
-      else { //then show tags...
-         Sprintf(buf, "<NAMES %S>\n", &buf2);
-         pc.show(buf); //output the client deals with
-         pc.show(buf2); //output that they can read
-         pc.show("\n\n");
-      }//else
-
-      out_field(crit_ptr->CRIT_FLAGS, pc, CRIT_FLAGS_NAMES);
-
-      Sprintf(buf2,
-	      "\nCLASS:  %s(%d)  race:  %s(%d)    Belongs to ZONE:  %i\n", 
-	      get_class_name(crit_ptr->CLASS), crit_ptr->CLASS,
-	      get_race_name(crit_ptr->RACE), crit_ptr->RACE,
-              crit_ptr->getNativeZoneNum());
-      show(buf2, pc);
-
-      Sprintf(buf2,
-	      "VIS_BIT:  %i, see_bit:  %i, GOLD:  %i, exp: %i XP_WORTH: %i\n",
-	      crit_ptr->VIS_BIT, crit_ptr->SEE_BIT, crit_ptr->GOLD,
-	      crit_ptr->EXP, crit_ptr->EXP / EXP_DIVISOR);
-      show(buf2, pc);
-
-      Sprintf(buf2,
-	      "POS: %i str: %i  int: %i  con: %i  cha: %i wis: %i  dex: %i\n",
-              crit_ptr->POS, crit_ptr->STR, crit_ptr->INT, crit_ptr->CON,
-              crit_ptr->CHA, crit_ptr->WIS, crit_ptr->DEX);
-      show(buf2, pc);
-  
-      Sprintf(buf2,
-	      "hit: %i  dam: %i  ac: %i  atks: %i pauz: %i  sex: %i\n",
-              crit_ptr->HIT, crit_ptr->DAM, crit_ptr->AC, crit_ptr->ATTACKS, 
-              crit_ptr->PAUSE, crit_ptr->SEX);
-      show(buf2, pc);
-
-      Sprintf(buf2, "H: %i  M: %i V: %i  align: %i\n",
-              crit_ptr->HP, crit_ptr->MANA, 
-              crit_ptr->MOV, crit_ptr->ALIGN);
-      show(buf2, pc);
-                     /* done through 18 */
-      Sprintf(buf2,
-              "lvl: %i  Home_Town: %i  wimpy: %i  Prac: %i Hmx: %i  Mmx: %i\n",
-              crit_ptr->LEVEL, crit_ptr->getHomeTown(), crit_ptr->WIMPY,
-              crit_ptr->PRACS, crit_ptr->HP_MAX, crit_ptr->MA_MAX);
-      show(buf2, pc);
-
-      Sprintf(buf2, "Vmx: %i  CRITTER_TYPE: %i  dam_rec_mod: %i  DAM_GIV_MOD: %i\n",
-              crit_ptr->MV_MAX, crit_ptr->CRITTER_TYPE,
-              crit_ptr->DAM_REC_MOD, crit_ptr->DAM_GIV_MOD);
-      show(buf2, pc);
-
-      Sprintf(buf2,
-              "heat_resis: %i  COLD_RESIS: %i  elect_resis: %i  SPELL_RESIS: %i\n",
-              crit_ptr->HEAT_RESIS, crit_ptr->COLD_RESIS,
-              crit_ptr->ELEC_RESIS, crit_ptr->SPEL_RESIS);
-      show(buf2, pc);
-
-      Sprintf(buf2,
-              "RELIGION: %i  BH_dice_count: %i  BH_DICE_SIDES: %i\n",
-              crit_ptr->RELIGION, crit_ptr->BH_DICE_COUNT,
-              crit_ptr->BH_DICE_SIDES);
-      show(buf2, pc);
-
-      Sprintf(buf2,
-              "CUR_WEIGHT: %i  max_weight: %i PAUSE: %i HP_rgn: %i  MANA_rgn: %i\n",
-              crit_ptr->CRIT_WT_CARRIED, crit_ptr->CRIT_MAX_WT_CARRY, 
-              crit_ptr->PAUSE, crit_ptr->HP_REGEN,   crit_ptr->MA_REGEN);
-      show(buf2, pc);
-
-      Sprintf(buf2, "MOV_rgn: %i  naked_weight: %i\n\n", crit_ptr->MV_REGEN,
-              crit_ptr->getNakedWeight());
-      show(buf2, pc);
-
-
-      if (crit_ptr->pc) {
-         out_field(crit_ptr->pc->pc_data_flags, pc, PC_DATA_FLAGS_NAMES);
-
-         Sprintf(buf2, "\n\tDescriptor:  %i,  Host:  %S.\n", 
-             crit_ptr->pc->descriptor, &crit_ptr->pc->host);
-         show(buf2, pc);
-         Sprintf(buf2, "\tLink cond:  %i,  Mode:  %i,  Index:  %i.\n",
-             crit_ptr->pc->link_condition, crit_ptr->pc->mode,
-             crit_ptr->pc->index);
-         show(buf2, pc);
-         Sprintf(buf2, "\tHunger:  %i,  Thirst:  %i,  Drugged:  %i.\n",
-             crit_ptr->pc->hunger, crit_ptr->pc->thirst,
-             crit_ptr->pc->drugged);
-         show(buf2, pc);
-	 Sprintf(buf2, "pk_count:  %i, died %i times, quest_points %i\n",
-	     crit_ptr->PK_COUNT, crit_ptr->DIED_COUNT, 
-	     crit_ptr->QUEST_POINTS);
-	 show(buf2, pc);
-	 if (crit_ptr->pc->imm_data) {
-	   Sprintf(buf2, "IMM_LEVEL:  %i\n", crit_ptr->IMM_LEVEL);
-	   show(buf2, pc);
-	 }//if
-
-         do_score_long(*crit_ptr, pc);
-      }//if
-
-      if (crit_ptr->mob) {
-         Sprintf(buf2, "\tThis is MOB#: %i.\n", crit_ptr->MOB_NUM);
-         show(buf2, pc);
-	 if (crit_ptr->isSmob()) {
-	    show("It is a SMOB, not a MOB.\n", pc);
-	 }
-	 else {
-	    show("It is a MOB, not a SMOB.\n", pc);
-	 }//else
-
-         Sprintf(buf2,
-                 "\tCur in game:  %i,  Max in game:  %i,  Home Room:  %i,  Is Sessile: %i.\n",
-                 crit_ptr->getCurInGame(), crit_ptr->getMaxInGame(),
-                 crit_ptr->mob->home_room, crit_ptr->isSessile());
-	 show(buf2, pc);
-
-         if (crit_ptr->isTracking()) {
-            Sprintf(buf2, "\tTracking target:  %S",
-                    crit_ptr->getTrackingTarget());
-            show(buf2, pc);
-         }
-         else {
-            pc.show("\tNot Tracking");
-         }
-
-         if (crit_ptr->shouldBeHoming()) {
-            Sprintf(buf2, "\t\tHoming to room:  %i\n",
-                    crit_ptr->getHomeRoom());
-            show(buf2, pc);
-         }
-         else {
-            pc.show("\t\tNot Homing\n");
-         }
-
-         out_field(crit_ptr->MOB_FLAGS, pc, MOB_DATA_FLAGS_NAMES);
-
-         if (crit_ptr->mob->proc_data) {
-            //show("\tIt has PROC_DATA.\n", pc);
-            show("\tProc Flags (flag1):  ", pc);
-            out_field(crit_ptr->FLAG1, pc, MOB_PROC_DATA_FLAGS_NAMES);
-            Sprintf(buf2, "\tDirection Guarding:  %i\n", crit_ptr->INT1);
-            show(buf2, pc);
-	    Sprintf(buf2, 
-		    "skill_violnc:  %i, benev:  %i, def:  %i, bad_ass %i, Soc_Aware: %i\n",
-		    crit_ptr->mob->getSkillViolence(),
-                    crit_ptr->mob->getBenevolence(),
-		    crit_ptr->mob->getDefensiveness(),
-                    crit_ptr->mob->getBadAssedness(),
-                    crit_ptr->mob->getSocialAwareness());
-	    show(buf2, pc);
-            if (crit_ptr->mob->proc_data->sh_data) {
-               show("Its a shopkeeper.\n", pc);
-               Sprintf(buf2, "markup  %i, buy_percentage  %i, open_time %i",
-                       crit_ptr->MARKUP, crit_ptr->BUY_PERCENTAGE, 
-                       crit_ptr->OPEN_TIME);
-               show(buf2, pc);
-               Sprintf(buf2, " close_time  %i\n", crit_ptr->CLOSE_TIME);
-               show(buf2, pc);
-               out_field(crit_ptr->SHOP_DATA_FLAGS, pc, SHOP_DATA_FLAGS_NAMES);
-               show("Permanent Inventory:\n", pc);
-               out_inv(crit_ptr->PERM_INV, pc, CRIT_INV);
-            }//if shopkeeper
-
-            if (crit_ptr->mob->proc_data->teach_data) {
-               show("Its a TEACHER.\n", pc);
-               out_field(crit_ptr->TEACH_DATA_FLAGS, pc, TEACH_DATA_FLAGS_NAMES);
-            }//if
-	    if (crit_ptr->mob->proc_data->give_proc) {
-	      show("It HAS a give proc.\n", pc);
-	    }//if
-	    if (crit_ptr->mob->proc_data->bow_proc) {
-	      show("It HAS a bow proc.\n", pc);
-	    }//if
-	    if (crit_ptr->mob->proc_data->curse_proc) {
-	      show("It HAS a curse proc.\n", pc);
-	    }//if
-	    Cell<say_proc_cell*> sp_cll(crit_ptr->mob->proc_data->topics);
-	    say_proc_cell* sp_ptr;
-	    while ((sp_ptr = sp_cll.next())) {
-	      Sprintf(buf2, "It has this discuss proc:  %S.\n",
-		      &(sp_ptr->topic));
-	      show(buf2, pc);
-	    }//while
-         }//if proc data
-	 Sprintf(buf2, "Skin num: %i\n\n", crit_ptr->mob->skin_num);
-	 show(buf2, pc);
-
-         if (crit_ptr->mob->hasMobScript()) {
-            pc.show("Mob scripts:\n");
-            do_list_scripts(*crit_ptr, pc);
-         }
-
-         if (crit_ptr->mob->isRunningScript()) {
-            pc.show("Running Scripts:\n");
-            Cell<MobScript*> ms_cll(crit_ptr->mob->pending_scripts);
-            MobScript* ms_ptr;
-            while ((ms_ptr = ms_cll.next())) {
-               pc.show(ms_ptr->getRunningScript());
-               pc.show("\n\n");
-            }
-         }
-
-      }//if a mob
-
-                 /* pc data */
-      if (!IsEmpty(crit_ptr->IS_FIGHTING)) {
-         Sprintf(buf2, "%S is fighting:\n", name_of_crit(*crit_ptr, ~0));
-         show(buf2, pc);
-         out_crit(crit_ptr->IS_FIGHTING, pc);
-         show("\n\n", pc);
-      }//if
-
-      if (crit_ptr->master) {
-         Sprintf(buf2, "Has a MASTER:  %S.\n", 
-            name_of_crit(*(crit_ptr->master), ~0));
-         show(buf2, pc);
-      }//if
-   }//else
-   return 0;
-}//do_mstat
 
 
 int ostat(int i_th, const String* name, critter& pc) {
@@ -2414,282 +1922,35 @@ int lore(int i_th, const String* name, critter& pc, int show_extra = FALSE) {
 
 //TODO:  Translate
 int do_lore(object& obj, critter& pc, int show_extra) {
-   String buf(100);
-
-   buf = obj.short_desc;
-   buf.Cap();
-   pc.show(buf);
-   pc.show("\n");
-   pc.show(obj.long_desc);
-   pc.show("\n");
-  
-   buf = NULL_STRING;
-
-   if (obj.OBJ_FLAGS.get(1))
-      buf += "Anti-Evil ";
-   if (obj.OBJ_FLAGS.get(2))
-      buf += "Anti-Neutral ";
-   if (obj.OBJ_FLAGS.get(3))
-      buf += "Anti-Good ";
-   if (obj.OBJ_FLAGS.get(4))
-      buf += "Anti-Donate ";
-   if (obj.OBJ_FLAGS.get(5))
-      buf += "Anti-Drop ";
-   if (obj.OBJ_FLAGS.get(6))
-      buf += "Anti-Remove ";
-   if (obj.OBJ_FLAGS.get(7))
-      buf += "Anti-Mortal ";
-   if (obj.OBJ_FLAGS.get(11))
-      buf += "Anti-Warrior ";
-   if (obj.OBJ_FLAGS.get(12))
-      buf += "Anti-Sage ";
-   if (obj.OBJ_FLAGS.get(13))
-      buf += "Anti-Wizard ";
-   if (obj.OBJ_FLAGS.get(14))
-      buf += "Anti-Ranger ";
-   if (obj.OBJ_FLAGS.get(15))
-      buf += "Anti-Thief ";
-   if (obj.OBJ_FLAGS.get(16))
-      buf += "Anti-Alchemist ";
-   if (obj.OBJ_FLAGS.get(17))
-      buf += "Anti-Cleric ";
-   if (obj.OBJ_FLAGS.get(18))
-      buf += "Anti-Bard ";
-   if (obj.OBJ_FLAGS.get(20))
-      buf += "Anti-PC ";
-   
-   if (buf.Strlen()) {
-      buf += "\n";
-      show("You believe this object is:  ", pc);
-      show(buf, pc);
-   }//if
-   
-   if (obj.OBJ_FLAGS.get(21))
-      show("It cannot be worn.\n", pc);
-   else {
-      show("\nIt can be worn in these positions: ", pc);
-      if (obj.OBJ_FLAGS.get(22))
-         show("Head ", pc);
-      if (obj.OBJ_FLAGS.get(23) || obj.OBJ_FLAGS.get(24))
-         show("Neck ", pc);
-      if (obj.OBJ_FLAGS.get(25))
-         show("Around Body ", pc);
-      if (obj.OBJ_FLAGS.get(26))
-         show("Arms ", pc);
-      if (obj.OBJ_FLAGS.get(27) || obj.OBJ_FLAGS.get(28))
-         show("Wrist ", pc);
-      if (obj.OBJ_FLAGS.get(29))
-         show("Hands ", pc);
-      if (obj.OBJ_FLAGS.get(30))
-         show("Wielded ", pc);
-      if (obj.OBJ_FLAGS.get(31))
-         show("Held ", pc);
-      if (obj.OBJ_FLAGS.get(32))
-         show("Light ", pc);
-      if (obj.OBJ_FLAGS.get(33))
-         show("Body ", pc);
-      if (obj.OBJ_FLAGS.get(34))
-         show("Belt ", pc);
-      if (obj.OBJ_FLAGS.get(35))
-         show("Legs ", pc);
-      if (obj.OBJ_FLAGS.get(36))
-         show("Feet ", pc);
-      if (obj.OBJ_FLAGS.get(37) || obj.OBJ_FLAGS.get(38))
-         show("Finger ", pc);
-      if (obj.OBJ_FLAGS.get(39))
-         show("Shield ", pc);
-      
-      if (obj.OBJ_FLAGS.get(40)) {
-         show("\nIt is not a weapon.\n", pc);
-      }
-      else {
-         if (show_extra) {
-            Sprintf(buf, "Weapon Damage: %id%i.\n",
-                    obj.getDiceCnt(), obj.getDiceSides());
-            pc.show(buf);
-         }
-         else {
-            show("\nIt is a weapon.\n", pc);
-         }
-      }
-   }//else
-
-   // Take care of stat affects.
+   String buf(1000);
+   ToStringTypeE st = ST_LORE;
    if (show_extra) {
-      Sprintf(buf, "This object is of level: %i\n", obj.getLevel());
-      pc.show(buf);
+      st = (ToStringTypeE)(st | ST_IDENTIFY);
+   }
 
-      if (!obj.affected_by.isEmpty()) {
-         show("It is affected by:\n", pc);
-         out_spell_list(obj.affected_by, pc);      
-      }
-
-      if (!obj.stat_affects.isEmpty()) {
-         show("Its stat affects are:\n", pc);
-         show_stat_affects(obj, pc);
-      }
-
-      if (obj.obj_proc && !obj.CASTS_THESE_SPELLS.isEmpty()) {
-         pc.show("Casts these spells:\n");
-         out_spell_list(obj.CASTS_THESE_SPELLS, pc);
-         pc.show("\n");
-      }//if
-   }//if
-
+   obj.toStringStat(&pc, buf, st);
+   pc.show(buf);
    return 0;
-}//do_lore
+}
 
 //TODO:  Translate
 int do_ostat(object& obj, critter& pc) {
-   String buf2(100);
-   String buf(100);
-   object* obj_ptr = &obj;  //to save me typing more!!
-
-   if (!obj.isInUse()) {
-      show("This object is NULL, not init'd by the game.\n", pc);
-      return -1;
-   }//if
-   else {
-      if (!pc.isUsingClient()) {
-         show("\n", pc);
-         show((obj_ptr->short_desc), pc);
-         show("\n", pc);
-         show((obj_ptr->in_room_desc), pc);
-         show("\n", pc);
-         show((obj_ptr->long_desc), pc);
-         show("\n", pc);
-      }
-      else {
-         Sprintf(buf2, "<OSTAT %i>", obj_ptr->OBJ_NUM);
-         show(buf2, pc);
-         show("\n<STAT_SD>", pc);
-         show((obj_ptr->short_desc), pc);
-         show("</STAT>\n<STAT_ND>", pc);
-         show((obj_ptr->in_room_desc), pc);
-         show("</STAT>\n<STAT_LD>", pc);
-         show((obj_ptr->long_desc), pc);
-         show("</STAT>\n", pc);
-      }
-
-      Cell<String*> cll(obj_ptr->names);
-      String* ptr;
-      buf2 = "";
-      while ((ptr = cll.next())) {
-         buf2 += *ptr;
-         buf2 += " ";
-      }//while
-
-      if (!pc.isUsingClient()) {
-         Sprintf(buf, "\nNames (Keywords): %S", &buf2);
-         pc.show(buf);
-      }//if
-      else { //then show tags...
-         Sprintf(buf, "<NAMES %S>\n", &buf2);
-         pc.show(buf); //output the client deals with
-         pc.show(buf2); //output that they can read
-      }//else
-
-      Sprintf(buf2, "\nBelongs to zone:  %i.\n", obj_ptr->OBJ_IN_ZONE);
-      show(buf2, pc);
-
-      out_field(obj_ptr->obj_flags, pc, OBJ_FLAGS_NAMES);
-
-      show("\n", pc);
-      Sprintf(buf2, "chrgs: %i  rechrg: %i  p_load: %i  cur_in_game: %i.\n", 
-              (int)(obj_ptr->extras[0]), (int)(obj_ptr->extras[1]), 
-              (int)(obj_ptr->extras[2]), (int)(obj_ptr->getCurInGame()));
-      show(buf2, pc);
-      Sprintf(buf2, "max_in_game: %i  wt: %i  dice_sides: %i  #dice: %i.\n", 
-              (int)(obj_ptr->extras[4]), (int)(obj_ptr->getCurWeight()), 
-              (int)(obj_ptr->extras[6]), (int)(obj_ptr->extras[7])); 
-      show(buf2, pc);
-      Sprintf(buf2, "lvl: %i  v_bit: %i  price: %i  item#: %i zone# %i.\n", 
-              (int)(obj_ptr->extras[8]), obj_ptr->cur_stats[0], 
-              obj_ptr->cur_stats[1], obj_ptr->cur_stats[2], 
-              obj_ptr->cur_stats[3]);
-      show(buf2, pc);
-
-      Sprintf(buf2, "cur_room_num: %i  pause: %i\n",
-              obj_ptr->getCurRoomNum(), obj_ptr->getPause());
-      pc.show(buf2);
-
-      if (obj_ptr->bag) {
-         show("\tIt's a bag, here is inventory:\n", pc);
-         Cell<object*> ob_cll(obj_ptr->inv);
-         object* ob_ptr;
-         while ((ob_ptr = ob_cll.next())) {
-	    // Display "??" for unreasonable object numbers
-            Sprintf(buf2, "\t\t[%d] %S\n",
-		    ob_ptr->getIdNum(),
-		    &(ob_ptr->short_desc));
-            show(buf2, pc);
-         }//while
-         Sprintf(buf2, "max weight:  %i,  percentage weight:  %i  ", 
-                 obj_ptr->bag->max_weight, 
-                 obj_ptr->bag->percentage_weight);
-         show(buf2, pc);
-         Sprintf(buf2, "time till disolve:  %i.\n",
-                 obj_ptr->bag->time_till_disolve);
-         show(buf2, pc);
-         show("Bag flags set:\n", pc);
-         out_field(obj_ptr->bag->bag_flags, pc, BAG_FLAGS_NAMES);
-         Sprintf(buf2, "Key number (zero is NO KEY): %i.\n", 
-                 obj_ptr->bag->key_num);
-         show(buf2, pc);
-      }//if
-
-      show("It is affected by:\n", pc);
-      out_spell_list(obj_ptr->affected_by, pc);      
-
-      if (obj_ptr->obj_proc) {
-         show("\tIt has SPEC PROCS.\n", pc);
-         out_field(obj_ptr->obj_proc->obj_spec_data_flags, pc,
-                   OBJ_SPEC_DATA_FLAGS_NAMES);
-         if (obj_ptr->obj_proc->construct_data) {
-            show("\tIt has construct data.\n", pc);
-            Sprintf(buf2, 
-       "\tTarget: %i, item1: %i, item2: %i, item3: %i, item4: %i, item5: %i\n",
-                    obj_ptr->obj_proc->construct_data->target_object,
-                    obj_ptr->obj_proc->construct_data->item1,
-                    obj_ptr->obj_proc->construct_data->item2,
-                    obj_ptr->obj_proc->construct_data->item3,
-                    obj_ptr->obj_proc->construct_data->item4,
-                    obj_ptr->obj_proc->construct_data->item5);
-            show(buf2, pc);
-         }//if construct data
-         
-         if (obj_ptr->CASTS_THESE_SPELLS.size() > 0) {
-            pc.show("\tCasts these spells:\n\t ");
-            out_spell_list(obj_ptr->CASTS_THESE_SPELLS, pc);
-            pc.show("\n");
-         }//if
-         else {
-            pc.show("Casts NO SPELLS.\n");
-         }
-      }//if obj proc
-
-      pc.show("Stat affects are:\n");
-      show_stat_affects(*obj_ptr, pc);
-
-      if (obj_ptr->in_list) 
-         show("It IS a SOBJ.\n", pc);
-      else 
-         show("Its NOT a SOBJ.\n", pc); 
-   }//else
+   String buf(1000);
+   obj.toStringStat(&pc, buf, ST_ALL);
+   pc.show(buf);
    return 0;
 }//do_ostat
 
 
 int rstat(int i_th, critter& pc) {
-   String buf(100);
+   String buf(500);
 
    if (ok_to_do_action(NULL, "IF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       if (i_th == 1) {
          i_th = pc.getCurRoomNum();
       }//if
       if (check_l_range(i_th, 0, NUMBER_OF_ROOMS, pc, TRUE)) {
-         Sprintf(buf, "Here is room #%i.\n", i_th);
-         room_list[i_th].stat(pc);
+         room_list[i_th].toStringStat(&pc, buf, ST_ALL);
          return 0;
       }//if
    }
@@ -2704,55 +1965,26 @@ int dstat(int i_th, const String* name, critter& pc) {
    if (ok_to_do_action(NULL, "IF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       if (name->Strlen() == 0) {
          if (check_l_range(i_th, 0, NUMBER_OF_DOORS, pc, TRUE)) {
-            Sprintf(buf, "Here is door #%i.\n", i_th);
-            do_dstat(door_list[i_th], pc);
+            door_list[i_th].toStringStat(&pc, buf, ST_ALL);
+            pc.show(buf);
             return 0;
          }//if
       }//if
       else {
-         dr_ptr = door::findDoor(ROOM.doors, i_th, name, pc.SEE_BIT, 
-                                 ROOM);
+         dr_ptr = ROOM.findDoor(i_th, name, pc);
          if (!dr_ptr) {
             show("You don't see that door.\n", pc);
             return -2;
          }//if
          else {
-            Sprintf(buf, "Dest:  %i Distance:  %i In_room:  %i  Ticks to disolve:  %i.\n",
-                    dr_ptr->destination, dr_ptr->distance, dr_ptr->in_room,
-                    dr_ptr->ticks_till_disolve);
-            show(buf, pc);
-            do_dstat(*(dr_ptr->dr_data), pc);
-            return 0;
-         }//else
+            String buf(1000);
+            dr_ptr->toStringStat(&pc, buf, ST_ALL);
+            pc.show(buf);
+         }
       }//else
    }
    return -1;
 }//dstat
-
-
-int do_dstat(door_data& dr, critter& pc) {
-   String buf2(100);
-
-   Cell<String*> cll(dr.names);
-   String* ptr;
-   pc.show("Names (keywords): ");
-   while ((ptr = cll.next())) {
-      pc.show(*ptr);
-      pc.show(" ");
-   }
-   pc.show("\n");
-
-   show(dr.long_desc, pc);
-
-   show("\nFlags set:", pc);
-   out_field(dr.door_data_flags, pc, DOOR_DATA_FLAGS_NAMES);
-
-   show("\n", pc);
-   Sprintf(buf2, "v_bit: %i  DOOR#: %i  key_num: %i  token_num: %i.\n", 
-           dr.vis_bit, dr.door_num, dr.key_num, dr.token_num);
-   show(buf2, pc);
-   return 0;
-}//do_dstat
 
 
 int shutdown(const String* cond, critter& pc) {

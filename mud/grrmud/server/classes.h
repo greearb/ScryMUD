@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.19 1999/08/13 06:32:54 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
+// $Id: classes.h,v 1.20 1999/08/16 00:37:06 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
 
 //
 //ScryMUD Server Code
@@ -41,6 +41,19 @@
 
 class critter;  //foward declaration
 class Scriptable;
+
+
+/** Used to determine the scope of the toStringStat methods. They will
+ * be used like flags and possible ORed together.
+ */
+enum ToStringTypeE {
+   ST_NORMAL = 1,
+   ST_LONG = 2,
+   ST_LORE = 4,
+   ST_IDENTIFY = 8,
+   ST_ALL = ~0 /* all bits set */
+};
+
 
 ///************************  StatBonus  ************************///
  
@@ -143,7 +156,11 @@ public:
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
 
-   void toStringClient(String& rslt);
+   /** Give as much info as possible, used by immortals.  Include client
+    * tags if viewer has them enabled.
+    */
+   virtual void toStringStat(const char* pre, const char* post, 
+                             critter* viewer, String& rslt);
 
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_LS_COLLECTION; }
@@ -224,7 +241,7 @@ protected:
    LStringCollection long_desc;
 
 public:
-   Entity() : container(NULL) { }
+   Entity() : container(NULL), vis_bit(0), id_num(0), zone_num(0) { }
    virtual ~Entity() { }
    virtual void clear();
 
@@ -237,10 +254,12 @@ public:
    virtual LStringCollection* getNamesCollection(LanguageE forLang);
 
    virtual const String* getName(int c_bit = ~0);
+   virtual const String* getFirstName(int c_bit = ~0);
    virtual const String* getShortName(int c_bit = ~0);
    virtual const String* getLongName(int c_bit = ~0);
    /**  These will take care of language translation and see-bits. */
    virtual const String* getName(critter* observer);
+   virtual const String* getFirstName(critter* observer);
    virtual const String* getShortName(critter* observer);
    virtual const String* getLongName(critter* observer);
    virtual const String* getLongDesc(critter* observer);
@@ -255,10 +274,12 @@ public:
    virtual void addAffectedBy(SpellDuration* new_affect);
    virtual SpellDuration* isAffectedBy(int spell_num);
    virtual int isAffected() { return !(affected_by.isEmpty()); }
+   virtual int affectedByToString(critter* viewer, String& rslt);
 
-   virtual void toStringClient(String& rslt, critter* pc);
-   virtual void showClient(critter* pc);
-   virtual void show(critter* pc);
+   /** Give as much info as possible, used by immortals.  Include client
+    * tags if viewer has them enabled.
+    */
+   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
    virtual int getVisBit() const { return vis_bit; }
    virtual int getIdNum() const { return id_num; }
@@ -341,6 +362,7 @@ public:
    int getToken() const { return token; }
    void setToken(int k) { token = k; }
 
+   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
    /** Stuff used to generate meta data. */

@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.20 1999/08/12 06:26:05 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
+// $Id: const.h,v 1.21 1999/08/16 00:37:06 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
 
 //
 //ScryMUD Server Code
@@ -601,16 +601,16 @@ extern class critter   mob_list[NUMBER_OF_MOBS + 1];
 extern class object    obj_list[NUMBER_OF_ITEMS + 1];
 extern class door_data door_list[NUMBER_OF_DOORS +1];
 
-extern List<class door*>	affected_doors; 
-extern List<critter*>   affected_mobs; /* list those affected*/ 
-extern List<struct object*>    affected_objects; /* ditto for objs */
+extern SafeList<class door*>	affected_doors; 
+extern SafeList<critter*>   affected_mobs; /* list those affected*/ 
+extern SafeList<struct object*>    affected_objects; /* ditto for objs */
 extern SafeList<critter*>   pc_list;      //head of pc list  
-extern List<critter*>   linkdead_list;  //holds link dead folks
+extern SafeList<critter*>   linkdead_list;  //holds link dead folks
 extern PtrArray<critter>   proc_action_mobs; //holds mob-proc'ing mobs
 
 
 extern const char* CensoredStrings[];
-
+extern const char* regular_directions[];
 
 extern const char* DARK_MSG;
 extern const char* SLEEP_MSG;
@@ -773,7 +773,6 @@ extern int EXP_DIVISOR;   // critter.exp/exp_divisor =>exp gained per kill
 #define IN_ROOM 	 cur_stats[2]
 #define WIMPY            short_cur_stats[21]
 #define PRACS   	 short_cur_stats[22]
-#define HP_MAX  	 getHP_MAX()
 #define MA_MAX  	 short_cur_stats[24]
 #define MV_MAX 		 short_cur_stats[25]
 #define CRITTER_TYPE   	 short_cur_stats[26] /* was SMOB */
@@ -783,8 +782,6 @@ extern int EXP_DIVISOR;   // critter.exp/exp_divisor =>exp gained per kill
 #define THIRST  	 pc->thirst
 #define MAX_IN_GAME  	 mob->max_in_game
 #define DRUGGED 	 pc->drugged
-#define CRIT_WT_CARRIED  	 getCurWeight()
-#define CRIT_MAX_WT_CARRY    	 getMaxWeight()
 #define PAUSE   	 short_cur_stats[11]
 #define HEAT_RESIS 	 short_cur_stats[29]
 #define COLD_RESIS 	 short_cur_stats[30]

@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.26 1999/08/13 06:32:54 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
+// $Id: room.h,v 1.27 1999/08/16 00:37:07 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
 
 //
 //ScryMUD Server Code
@@ -58,9 +58,14 @@ public:
    //void clear();
    //int write(ostream& dafile);
    //int read(istream& dafile, int read_all = TRUE);
-   void toStringClient(String& rslt, int idx, critter& pc);
-   void show(int idx, critter& pc);
-   void showClient(int idx, critter& pc);
+   
+   // Don't call this one...use the one below.
+   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
+      core_dump("KeywordPair::toStringStat (wrong one)");
+   }
+
+   virtual void toStringStat(critter* viewer, String& rslt, int idx,
+                             ToStringTypeE st);
 
    KeywordPair& operator=(const KeywordPair& rhs);
    
@@ -121,15 +126,19 @@ public:
 
    bitfield& getFlags() { return room_flags; }
 
-   KeywordPair* haveKeyword(int i_th, const String* str, critter* viewer);
+   KeywordPair* haveKeyword(int i_th, const String* str, critter* viewer, int& sofar);
 
    static int getInstanceCount() { return _cnt; }
+
+   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
    const SafeList<object*>* peekInv() { return &inv; }
    SafeList<object*>* getInv() { return &inv; }
 
    void listScripts(critter& pc);
 
+   SafePtrList<door>& getDoors() { return doors; }
+   SafePtrList<KeywordPair>& getKeywords() { return keywords; }
    int getVisBit() const { return cur_stats[0]; }
    int getMovCost() const { return cur_stats[1]; }
    int getRoomNum() const { return cur_stats[2]; }
@@ -177,7 +186,7 @@ public:
    void setFlag(int flg, int posn) { room_flags.set(flg, posn); }
    int getFlag(int flg) { return room_flags.get(flg); }
 
-   const SafeList<critter*>& getCrits() { return critters; }
+   SafeList<critter*>& getCrits() { return critters; }
 
    void resetProcMobs();
    void purgeCritter(int mob_num, critter& pc);
@@ -207,10 +216,6 @@ public:
    const String* getRandomExitDir(critter& for_this_pc);
    int getZoneNum();
 
-   void show(critter& pc);
-   void showClient(critter& pc);
-   void toStringClient(String& rslt, critter& pc);
-
    virtual void checkLight(int do_msgs = FALSE);
 
    virtual void normalize(); /* called after OLC to enforce as much state as
@@ -229,7 +234,9 @@ public:
    virtual critter* findFirstBanker();
    virtual critter* findFirstShopKeeper();
    virtual critter* findFirstTeacher();
-   virtual door* findDoor(int i_th, const String* victim, critter& viewer);
+   virtual door* findDoor(int i_th, const String* direction, critter& viewer, int& sofar);
+   virtual door* findDoor(int i_th, const String* direction, critter& viewer);
+   virtual door* findDoor(int i_th, const String* direction);
 
    virtual void gainCritter(critter* crit);
    virtual critter* removeCritter(critter* crit);
@@ -237,7 +244,7 @@ public:
    virtual void gainObject(object* obj) { gainInv(obj); }
    virtual object* removeObject(object* obj) { return loseInv(obj); }
 
-   virtual void getPetsFor(critter& owner, List<critter*>& rslts);
+   virtual void getPetsFor(critter& owner, SafeList<critter*>& rslts);
    virtual int getCritCount(critter& pc);
 
    virtual void showCritters(critter& pc);

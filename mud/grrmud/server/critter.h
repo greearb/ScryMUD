@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.37 1999/08/13 06:32:54 greear Exp $
-// $Revision: 1.37 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
+// $Id: critter.h,v 1.38 1999/08/16 00:37:06 greear Exp $
+// $Revision: 1.38 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
 
 //
 //ScryMUD Server Code
@@ -92,13 +92,14 @@ public:
    
    temp_crit_data();
    temp_crit_data(const temp_crit_data& source);
-   ~temp_crit_data();
+   virtual ~temp_crit_data();
 
    int doUnShield();
 
    static int getInstanceCount() { return _cnt; }
-
-   void Clear();
+   
+   virtual void toStringStat(critter* viewer, String& rslt);
+   void clear();
 };//temp_crit_data
 
 
@@ -159,6 +160,7 @@ public:
    int write(ostream& da_file);
    void clear() { teach_data_flags.clear(); }
    virtual LEtypeE getEntityType() { return LE_TEACHER_DATA; }
+   virtual void toStringStat(critter* viewer, String& rslt);
    static int getInstanceCount() { return _cnt; }
 }; //teacher_data
 
@@ -253,6 +255,7 @@ public:
    int write(ostream& da_file);
    virtual LEtypeE getEntityType() { return LE_SHOP_DATA; }
 
+   virtual void toStringStat(critter* viewer, String& rslt);
    static int getInstanceCount() { return _cnt; }
 
    void valueRem(int idx, critter& manager);
@@ -293,7 +296,7 @@ public:
    temp_proc_data(const temp_proc_data& source); //copy constructor
    ~temp_proc_data();
 
-   void Clear();
+   void clear();
    temp_proc_data& operator=(const temp_proc_data& source);
    static int getInstanceCount() { return _cnt; }
 };//temp_proc_data
@@ -336,6 +339,8 @@ public:
    int write(ostream& da_file);
    virtual LEtypeE getEntityType() { return LE_MOB_PROC_DATA; }
    spec_data& operator=(const spec_data& source);
+
+   virtual void toStringStat(critter* viewer, String& rslt);
 
    static int getInstanceCount() { return _cnt; }
    int getBenevolence() const { return benevolence; }
@@ -405,6 +410,8 @@ public:
    mob_data(mob_data& source);  //copy constructor
    virtual ~mob_data();
 
+   virtual void toStringStat(critter* viewer, String& rslt);
+
    int getCurInGame() { return cur_in_game; }
    int setCurInGame(int i) { cur_in_game = i; return cur_in_game; }
    int getMaxInGame() { return max_in_game; }
@@ -434,6 +441,10 @@ public:
    int hasProcData() const { return mob_data_flags.get(0); } 
    int hasMobScript() const { return mob_data_flags.get(17); } //TODO, take it out??
    int isNoHoming() const { return mob_data_flags.get(8); }
+   int isSessile() const { return mob_data_flags.get(7); }
+   int isTracking() const { return (proc_data && proc_data->temp_proc &&
+                                    proc_data->temp_proc->tracking.Strlen()); }
+   String* getTrackingTarget() { return &(proc_data->temp_proc->tracking); }
 
    void clear();
    mob_data& operator= (mob_data& source);
@@ -539,6 +550,8 @@ public:
    virtual ~pc_data();
    pc_data& operator= (pc_data& source);
 
+   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
+
    int canBeBeeped() const { return (!(pc_data_flags.get(29))); }
 
    void clear();
@@ -640,10 +653,11 @@ public:
    virtual int write(ostream& da_file);
    critter& operator=(critter& source);
    
+   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
+
    /** I think the compiler is screwing up, I shouldn't have to declare this here
     * --Ben */
    virtual const String* getName(int c_bit = ~0) { return Entity::getName(c_bit); }
-
    virtual const String* getName(critter* viewer); //overload Entity
    int getCurWeight();
    int getMaxWeight();
@@ -710,7 +724,15 @@ public:
    int isCloaked() { return (pc && PC_FLAGS.get(3)); }
    int isInBattle() { return !(is_fighting.isEmpty()); }
 
+   void addInRoomDesc(String& buf);
+   void addInRoomDesc(LString& buf);
+   void addShortDesc(String& buf);
+   void addShortDesc(LString& buf);
+
    int haveObjNumbered(int count, int obj_num);
+   /** Viewer may be self, but may not be as well. */
+   object* haveObjNamed(int i_th, const String* name, critter* viewer);
+   /** Viewer is self. */
    object* haveObjNamed(int i_th, const String* name);
 
    /** If return is > 0, self is more powerful, if less than 0,
@@ -755,14 +777,48 @@ public:
    int getCurRoomNum();
    int getCurZoneNum(); //what are we in right now
    String* getInput() { return &(pc->input); }
-   int getHP() const { return short_cur_stats[15]; }
-   int getHP_MAX() const { return short_cur_stats[23]; }
+   int getHp() const { return short_cur_stats[15]; }
+   int getHpMax() const { return short_cur_stats[23]; }
    int getMana() const { return short_cur_stats[16]; }
    int getManaMax() const { return short_cur_stats[24]; }
    int getMov() const { return short_cur_stats[17]; }
    int getMovMax() const { return short_cur_stats[25]; }
    int getAlignment() const { return short_cur_stats[18]; }
-
+   const char* getClassName(critter* viewer);
+   int getClass() const { return CLASS; }
+   const char* getRaceName(critter* viewer);
+   int getRace() const { return RACE; }
+   int getGold() const { return GOLD; }
+   int getExp() const { return EXP; }
+   int getStr() const { return STR; }
+   int getInt() const { return INT; }
+   int getCon() const { return CON; }
+   int getCha() const { return CHA; }
+   int getWis() const { return WIS; }
+   int getDex() const { return DEX; }
+   int getHit() const { return HIT; }
+   int getDam() const { return DAM; }
+   int getAC() const { return AC; }
+   int getAttacks() const { return ATTACKS; }
+   int getSex() const { return SEX; }
+   const char* getSexName(critter* viewer) const;
+   int getAlign() const { return ALIGN; }
+   int getHomeTown();
+   int getPractices() const { return PRACS; }
+   int getDamRcvMod() const { return DAM_REC_MOD; }
+   int getDamGivMod() const { return DAM_GIV_MOD; }
+   int getHeatResist() const { return HEAT_RESIS; }
+   int getColdResist() const { return COLD_RESIS; }
+   int getElectResist() const { return ELEC_RESIS; }
+   int getSpellResist() const { return SPEL_RESIS; }
+   int getBhDiceCount() const { return BH_DICE_COUNT; }
+   int getBhDiceSides() const { return BH_DICE_SIDES; }
+   int getHpRegen() const { return HP_REGEN; }
+   int getManaRegen() const { return MA_REGEN; }
+   int getMovRegen() const { return MV_REGEN; }
+   int getWimpy() const { return WIMPY; }
+   int getReligion() const { return RELIGION; }
+   
    LanguageE getLanguageChoice() const ;
    LanguageE getLanguage() const { return getLanguageChoice(); }
 
@@ -774,6 +830,12 @@ public:
    }//setPosn
 
    const char* getPosnStr(critter& for_this_pc);
+
+   SafeList<object*>& getInv() { return inv; }
+   SafeList<critter*>& getPets() { return pets; }
+   SafeList<critter*>& getFollowers() { return followers; }
+   SafeList<critter*>& getGroupees() { return groupees; }
+   SafeList<critter*>& getIsFighting() { return is_fighting; }
 
    critter* getFirstFighting();
    String& getPoofin();
@@ -804,6 +866,7 @@ public:
    void setComplete();
    void setNotComplete();
    void setNoClient();
+   void setModified(int val);
 
    int hasAI();
    int shouldDoPrompt() { return PC_FLAGS.get(10); }
@@ -829,9 +892,7 @@ public:
    int isSmob() const { return (CRITTER_TYPE == 1); }
    int isPc() const { return (CRITTER_TYPE == 0); }
    int isNpc() const { return !isPc(); }
-   int isTracking() const { return mob && mob->proc_data &&
-                               mob->proc_data->temp_proc &&
-                               mob->proc_data->temp_proc->tracking.Strlen(); }
+   int isTracking() const { return mob && mob->isTracking(); }
    
    int getBenevolence() const;
    int isSentinel() const;
@@ -911,7 +972,6 @@ public:
    void clearIGFlags(); //clear the Inc/Dec Cur In Game checks
 
    int getLevel() { return LEVEL; }
-   int getClass() const { return CLASS; }
 
    /**  Translates an asci string (like HP, MANA, MOV, ALIGN, etc)
     * and returns the integer value.  Returns 0 if it can't
@@ -933,6 +993,7 @@ public:
    void show(CSentryE); //Pick language of choice, if available.
    void show(LString& msg);
    void show(LStringCollection& msg, int show_all = FALSE);
+   void show(const String* msg);
 
    object* loseInv(object* obj); //returns the object removed. (or NULL)
    void loseObjectFromGame(object* obj);

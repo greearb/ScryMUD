@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.27 1999/07/18 21:37:48 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/07/18 21:37:48 $
+// $Id: grrmud.cc,v 1.28 1999/08/16 00:37:07 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
 
 //
 //ScryMUD Server Code
@@ -102,7 +102,7 @@ int __cell_cnt = 0;
 LogStream            mudlog("./log/logfile.txt", ERR | DIS | WRN | SEC | DB | DBG);
 LogStream            obj_ptr_log("./log/obj_ptr.log", ALL, LogStream::APPEND);
 
-List<String*>        banned_hosts;
+List<String*>        banned_hosts(NULL);
 class critter        mob_list[NUMBER_OF_MOBS + 1];
 class object         obj_list[NUMBER_OF_ITEMS + 1];
 class door_data      door_list[NUMBER_OF_DOORS + 1];
@@ -114,29 +114,26 @@ BugCollection bl_ideas("./World/BC_IDEAS", "Idea Listing",
 BugCollection bl_bugs("./World/BC_BUGS", "Bug Listing",
                       BugCollection::BUGS);
 
-List<critter*>        linkdead_list; 
-List<critter*>        pc_list;  
-List<critter*>        new_pc_list;  
-List<room*>           embattled_rooms; 
+SafeList<critter*>        linkdead_list(NULL);
+SafeList<critter*>        pc_list(NULL);
+SafeList<critter*>        new_pc_list(NULL);
+SafeList<room*>           embattled_rooms(NULL);
 
-List<door*>	      affected_doors;
-List<critter*>        affected_mobs; 
-List<room*>           affected_rooms; 
-List<object*>         affected_objects; 
+SafeList<door*>	          affected_doors(NULL);
+SafeList<critter*>        affected_mobs(NULL);
+SafeList<room*>           affected_rooms(NULL);
+SafeList<object*>         affected_objects(NULL);
 
 
    /* a list of mobs currently doing
       mob procs, will get a command 
       off of their queues untill queues are empty. */
-PtrArray<critter>        proc_action_mobs;
-PtrArray<room>           proc_action_rooms;
-PtrArray<object>         proc_action_objs;
+PtrArray<Scriptable>        scripting_entities;
 
 
-List<critter*>        pulsed_proc_mobs; 
-List<room*>           pulsed_proc_rooms; 
-List<object*>         pulsed_proc_objects; 
-List<object*>	       obj_to_be_disolved_list;
+SafeList<critter*>        pulsed_proc_mobs(NULL);
+SafeList<room*>           pulsed_proc_rooms(NULL);
+SafeList<object*>         pulsed_proc_objects(NULL);
 
 int Cur_Max_Obj_Num = 0; //these are useful for OLC and saving SOBJs 
 int Cur_Max_Crit_Num = 0;
@@ -660,7 +657,7 @@ void game_loop(int s)  {
    struct timeval time_since_pulse;
    struct timezone init;
    static struct timeval opt_time;
-   Cell<critter*> pc_cell;
+   SCell<critter*> pc_cell;
    critter* pc_ptr;
    critter* tmp_ptr;
    int i, pulse = 1;
@@ -696,11 +693,9 @@ void game_loop(int s)  {
    while (!do_shutdown) {
 
       /* add new pc's to game */
-      new_pc_list.head(pc_cell);
-      pc_ptr = pc_cell.next();
-      while (pc_ptr) {
-         pc_list.gainData(pc_ptr);
-         pc_ptr = new_pc_list.lose(pc_cell);
+      while (!new_pc_list.isEmpty()) {
+         pc_ptr = new_pc_list.popFront();
+         pc_list.appendUnique(pc_ptr);
       }//while
 
       FD_ZERO(&input_set);
@@ -1001,8 +996,8 @@ void game_loop(int s)  {
 		     if (tank) {
                         prompt = "\n";
 		        int num_of_stars = (int)(((float)
-                                                  (tank->getHP())/
-                                                  (float)(tank->getHP_MAX())) *
+                                                  (tank->getHp())/
+                                                  (float)(tank->getHpMax())) *
                                                  40.0);
 		        for (i = 0; i < num_of_stars; i++) {
 	                   prompt += "*";
@@ -1034,142 +1029,95 @@ void game_loop(int s)  {
       /*  Mob action procs.  */
       
       ScriptCmd* cmd_ptr;
-      for (int cnt = 0; cnt < proc_action_mobs.getCurLen(); cnt++) {
-         if (!(pc_ptr = proc_action_mobs.elementAt(cnt))) {
+      Scriptable* sptr;
+      for (int cnt = 0; cnt < scripting_entities.getCurLen(); cnt++) {
+         if (!(sptr = scripting_entities.elementAt(cnt))) {
             continue;
          }//if
          else {
-            if (pc_ptr->getPause() > 0) {
+            Entity* eptr = (Entity*)(sptr);
+            if (sptr->getPause() > 0) {
+               if (mudlog.ofLevel(SCRIPT)) {
+                  mudlog << "script execute: pause is > 0:  " << sptr->getPause()
+                         << "  for EntityType: " << eptr->getEntityType() 
+                         << " idNum: " << eptr->getIdNum() << endl;
+               }
                continue;
             }
 
             ScriptCmd* tmp_cmd_ptr;
+            int script_ret_val = 0;
             // Cast away const'ness, but still use it as if it's const.
-            if ((tmp_cmd_ptr = (ScriptCmd*)(pc_ptr->getNextScriptCmd()))) {
+            if ((tmp_cmd_ptr = (ScriptCmd*)(sptr->getNextScriptCmd()))) {
                cmd_ptr = new ScriptCmd(*tmp_cmd_ptr);
 
-               // pc_ptr is the script owner.
-               MobScript::parseScriptCommand(*cmd_ptr, *pc_ptr);
-               delete cmd_ptr;
-            }
-            else {
-               pc_ptr->finishedMobProc();
-
-               if (!pc_ptr->isInProcNow()) {
-                  proc_action_mobs.set((critter*)NULL, cnt);
-               }
-            }
-         }//else
-      }//for
-
-      /* Room action procs */
-      room* rm_ptr;
-      for (int cnt = 0; cnt < proc_action_rooms.getCurLen(); cnt++) {
-         if (!(rm_ptr = proc_action_rooms.elementAt(cnt))) {
-            continue;
-         }//if
-         else {
-            if (rm_ptr->getPause() > 0) {
-               if (mudlog.ofLevel(SCRIPT)) {
-                  mudlog << "room_script execute: pause is > 0:  " << rm_ptr->getPause()
-                         << "  for room: " << rm_ptr->getIdNum() << endl;
-               }
-               continue;
-            }
-            else {
-               if (mudlog.ofLevel(SCRIPT)) {
-                  mudlog << "room_script execute: attempting to get script cmd for room: "
-                         << rm_ptr->getIdNum() << endl;
-               }
-            }//else
-
-            ScriptCmd* tmp_cmd_ptr;
-            // Cast away const'ness, but still use it as if it's const.
-            if ((tmp_cmd_ptr = (ScriptCmd*)(rm_ptr->getNextScriptCmd()))) {
-
-               if (mudlog.ofLevel(SCRIPT)) {
-                  mudlog << "grrmud.cc:  got a room script command -:"
-                         << tmp_cmd_ptr->getCommand() << ":-" << endl;
-               }
-               cmd_ptr = new ScriptCmd(*tmp_cmd_ptr);
-
-               // rm_ptr is the script owner.
-               int script_ret_val;
-               if ((script_ret_val = RoomScript::parseScriptCommand(*cmd_ptr,
-                                                                    *rm_ptr)) < 0) {
-                  if (mudlog.ofLevel(WRN)) {
-                     mudlog << "RoomScript command: target -:" 
-                            << cmd_ptr->getTarget() << ":-  cmd -:"
-                            << cmd_ptr->getCommand() << " for room# "
-                            << rm_ptr->getIdNum() << " returned negative value: "
-                            << script_ret_val << endl;
+               // Now, this is kind of a hack.  We need to up-cast the Scriptable
+               // object into it's real type.
+               switch (eptr->getEntityType()) {
+                  case LE_ROOM:
+                  case LE_VEHICLE: {
+                     if ((script_ret_val = 
+                          RoomScript::parseScriptCommand(*cmd_ptr, *((room*)(sptr)))) < 0) {
+                        if (mudlog.ofLevel(WRN)) {
+                           mudlog << "RoomScript command: target -:" 
+                                  << cmd_ptr->getTarget() << ":-  cmd -:"
+                                  << cmd_ptr->getCommand() << " for room# "
+                                  << eptr->getIdNum() << " returned negative value: "
+                                  << script_ret_val << endl;
+                        }
+                     }
+                     break;
                   }
-               }
-               delete cmd_ptr;
-            }
-            else {
-               rm_ptr->finishedRoomProc();
-
-               // it may have started another one
-               if (!rm_ptr->isInProcNow()) {
-                  proc_action_rooms.set((room*)NULL, cnt);
-               }
-            }
-         }//else
-      }//for
-
-
-      /* Object action procs */
-      object* o_ptr;
-      for (int cnt = 0; cnt < proc_action_objs.getCurLen(); cnt++) {
-         //mudlog << "Searching for proc objs, cnt: " << cnt << endl;
-         if (!(o_ptr = proc_action_objs.elementAt(cnt))) {
-            //mudlog << "Was null.\n";
-            continue;
-         }//if
-         else {
-            //mudlog << "Found one: " << o_ptr->getIdNum() << endl;
-            if (o_ptr->getPause() > 0) {
-               continue;
-            }
-
-            ScriptCmd* tmp_cmd_ptr;
-            // Cast away const'ness, but still use it as if it's const.
-            if ((tmp_cmd_ptr = (ScriptCmd*)(o_ptr->getNextScriptCmd()))) {
-
-               if (mudlog.ofLevel(DBG)) {
-                  mudlog << "grrmud.cc:  got an object script command -:"
-                         << tmp_cmd_ptr->getCommand() << ":-" << endl;
-               }
-               cmd_ptr = new ScriptCmd(*tmp_cmd_ptr);
-
-               // rm_ptr is the script owner.
-               int script_ret_val;
-               if ((script_ret_val = ObjectScript::parseScriptCommand(*cmd_ptr,
-                                                                      *o_ptr)) < 0) {
-                  if (mudlog.ofLevel(WRN)) {
-                     mudlog << "WARNING:  ObjectScript command: target -:" 
-                            << cmd_ptr->getTarget() << ":-  cmd -:"
-                            << cmd_ptr->getCommand() << " for object# "
-                            << o_ptr->getIdNum() << " returned negative value: "
-                            << script_ret_val << endl;
+                  case LE_CRITTER: {
+                     if ((script_ret_val = 
+                          MobScript::parseScriptCommand(*cmd_ptr, *((critter*)(sptr)))) < 0) {
+                        if (mudlog.ofLevel(WRN)) {
+                           mudlog << "MobScript command: target -:" 
+                                  << cmd_ptr->getTarget() << ":-  cmd -:"
+                                  << cmd_ptr->getCommand() << " for room# "
+                                  << eptr->getIdNum() << " returned negative value: "
+                                  << script_ret_val << endl;
+                        }
+                     }
+                     break;
                   }
-               }
+                  case LE_OBJECT: {
+                     int script_ret_val;
+                     if ((script_ret_val = ObjectScript::parseScriptCommand(*cmd_ptr,
+                                                                            *((object*)(sptr)))) < 0) {
+                        if (mudlog.ofLevel(WRN)) {
+                           mudlog << "WARNING:  ObjectScript command: target -:" 
+                                  << cmd_ptr->getTarget() << ":-  cmd -:"
+                                  << cmd_ptr->getCommand() << " for object# "
+                                  << eptr->getIdNum() << " returned negative value: "
+                                  << script_ret_val << endl;
+                        }
+                     }
+                     break;
+                  }
+                  default: {
+                     if (mudlog.ofLevel(ERR)) {
+                        mudlog << "ERROR:  Default Case while trying to execute a script, entityType: "
+                               << eptr->getEntityType() << " command target -:" 
+                               << cmd_ptr->getTarget() << ":-  cmd -:"
+                               << cmd_ptr->getCommand() << " for object# "
+                               << eptr->getIdNum() << " returned negative value: "
+                               << script_ret_val << endl;
+                     }
+                  }//default case
+               }//switch
                delete cmd_ptr;
-            }
+               cmd_ptr = NULL;
+            }//if could get a next script command
             else {
-               mudlog << "Could not get another command, must be done."
-                      << endl;
-               o_ptr->finishedObjProc();
+               sptr->finishedScript();
 
-               // it may have started another one
-               if (!o_ptr->isInProcNow()) {
-                  proc_action_objs.set((object*)NULL, cnt);
+               if (!sptr->isRunningScript()) {
+                  scripting_entities.set((Scriptable*)NULL, cnt);
                }
-            }
-         }//else
+            }//else, done with script
+         }//else, found a scriptable entity
       }//for
-
 
       //log("At end of while loop.\n");
    }//while
@@ -1177,8 +1125,7 @@ void game_loop(int s)  {
 
 
 int get_new_maxdesc(int sss) {
-   Cell<critter*> cell;
-   pc_list.head(cell);
+   SCell<critter*> cell(pc_list);
    critter* crit_ptr;
    int retval = sss;
 
@@ -1283,7 +1230,7 @@ int     init_socket(int port)   {
 int new_connection(int s)  {
    struct sockaddr_in isa;
    //unsigned int  i;  //GLIBC
-   int i;
+   unsigned int i;
    int t;
  
    mudlog.log(TRC, "in new_connection\n");
@@ -1295,6 +1242,7 @@ int new_connection(int s)  {
       return (-1);
    }//if
 
+   i = sizeof(isa);
    if ((t = accept(s, (struct sockaddr *)(&isa), &i)) < 0) {
       mudlog << "ERROR:  accept:  " << strerror(errno) << endl;
       return(-1);
@@ -1309,7 +1257,7 @@ int critter::createWithDescriptor(int s) {
    int  desc;
    critter *newd = new critter;
    //unsigned int size;  //EGCS
-   int size;
+   unsigned int size;
    int i;
    struct sockaddr_in sock;
    struct hostent *from;
@@ -1329,7 +1277,7 @@ int critter::createWithDescriptor(int s) {
    
    if (sockets_connected > avail_descs) {
       char* str = "Sorry, ScryMUD is full, try again later!\n\r";
-      write(desc, str, strlen(str)); 
+      ::write(desc, str, strlen(str)); 
       mudlog.log(WRN, "WARNING:  the mud was full.\n");
       close(desc);
       delete newd;
@@ -1364,7 +1312,7 @@ int critter::createWithDescriptor(int s) {
 
    if (is_banned(newd->pc->host)) {
       char* str = "Your site has been banned!!\n";
-      write(desc, str, strlen(str)); 
+      ::write(desc, str, strlen(str)); 
       close(desc);
       Sprintf(buf2, "WARNING:  Connection attempt denied from [%S]", 
               &(newd->pc->host));
@@ -1487,8 +1435,7 @@ int critter::readInput()  {
 
 
 void close_sockets(int mother) {
-   Cell<critter*> cell;
-   pc_list.head(cell);
+   SCell<critter*> cell(pc_list);
    critter* crit_ptr;
 
    mudlog.log(DIS, "Closing all sockets now.\n");
@@ -1528,7 +1475,8 @@ int critter::doLogOffActive() {
 
    doLogOffInactive();
 
-   linkdead_list.loseData(this); //take em off the link dead list.
+   critter* hack = this;
+   linkdead_list.loseData(hack); //take em off the link dead list.
 
    return 1;
 }//doLogOffActive
@@ -1546,7 +1494,7 @@ int critter::doLogOffInactive() {
 
    doUngroup(1, &NULL_STRING); //take em out of their group, if in it.
 
-   Cell<critter*> pet_cll(PETS);
+   SCell<critter*> pet_cll(PETS);
    critter* pet_ptr;
    while ((pet_ptr = pet_cll.next())) {
       if (mudlog.ofLevel(DBG)) {
@@ -1555,9 +1503,7 @@ int critter::doLogOffInactive() {
       }
    }//while
 
-   List<critter*> tmp_list;
-   tmp_list = PETS; //shallow copy
-
+   SafeList<critter*> tmp_list(PETS); //shallow copy
    tmp_list.head(pet_cll);
    while ((pet_ptr = pet_cll.next())) {
       if (mudlog.ofLevel(DBG)) {
@@ -1682,8 +1628,9 @@ int critter::doGoLinkdead() {
       pc->descriptor = -1;
    }//if
 
-   VIS_BIT |= 32;     
-   linkdead_list.gainData(this);  //so one might re-login easily
+   VIS_BIT |= 32;
+   critter* hack = this;
+   linkdead_list.appendUnique(hack);  //so one might re-login easily
 
    return 1;
 }//doGoLinkDead

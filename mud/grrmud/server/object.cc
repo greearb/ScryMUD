@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.24 1999/08/12 06:26:05 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
+// $Id: object.cc,v 1.25 1999/08/16 00:37:07 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
 
 //
 //ScryMUD Server Code
@@ -31,6 +31,7 @@
 #include "misc2.h"
 #include "const.h"
 #include "batl_prc.h"
+#include "Markup.h"
 
 //*************************************************************//
 ///****************** obj construct data  ********************///
@@ -201,6 +202,35 @@ int obj_spec_data::read(istream& da_file, int read_all = TRUE) {
    return 0;
 }//read
 
+void obj_spec_data::toStringStat(critter* viewer, String& rslt) {
+   String buf(100);
+   rslt.clear();
+
+   if (viewer->isUsingClient()) {
+      rslt.append("<OBJ_SPEC>\n");
+   }
+   else {
+      rslt.append("Object Spec Proc Data:\n");
+   }
+
+   Markup::toString(NULL, obj_spec_data_flags, OBJ_SPEC_DATA_FLAGS_NAMES, viewer,
+                    NULL, buf);
+   rslt.append(buf);
+
+   if (construct_data) {
+      rslt.append("Construct Data:\n");
+
+      Sprintf(buf, 
+              "\tTarget: %i, item1: %i, item2: %i, item3: %i, item4: %i, item5: %i\n",
+              construct_data->target_object, construct_data->item1,
+              construct_data->item2, construct_data->item3,
+              construct_data->item4, construct_data->item5);
+      rslt.append(buf);
+   }//if
+         
+   // Casts spells taken care of elsewhere.
+}//toStringStat
+
 
 int obj_spec_data::write(ostream& da_file) {
    obj_spec_data_flags.write(da_file);
@@ -261,6 +291,35 @@ int bag_struct::write(ostream& ofile) {
          << time_till_disolve << " " << "\t bag_stuff\n";
    return 0;
 }//Write()
+
+
+void bag_struct::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
+   String buf(300);
+   rslt.clear();
+
+   if (viewer->isUsingClient()) {
+      rslt.append("<BAG>\n");
+   }
+   else {
+      rslt.append("Bag Information: \n");
+   }
+
+   Closable::toStringStat(viewer, buf, st);
+   rslt.append(buf);
+
+   Sprintf(buf, "max weight:  %i,  percentage weight:  %i  ", 
+           max_weight, percentage_weight);
+   rslt.append(buf);
+
+   if (viewer->isImmort()) {
+      Sprintf(buf, "time till disolve:  %i.\n", time_till_disolve);
+      rslt.append(buf);
+
+   }//if
+   if (viewer->isUsingClient()) {
+      rslt.append("</BAG>\n");
+   }
+}//toStrintStat
 
 
 int bag_struct::read(istream& ofile, int read_all = TRUE) {
@@ -1083,6 +1142,105 @@ void object::makeComponent(int targ, int comp1, int comp2, int comp3,
              << endl;
    }
 }//makeComponent
+
+
+void object::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
+   String buf(500);
+   rslt.clear();
+
+   if (!isInUse()) {
+      rslt.append("This object is NULL, not init'd by the game.\n");
+      return;
+   }//if
+
+   if (viewer->isUsingClient()) {
+      Sprintf(rslt, "<OBJECT %i>\n", getIdNum());
+   }
+   else {
+      Sprintf(rslt, "Object: %i\n", getIdNum());
+   }
+
+   Entity::toStringStat(viewer, buf, st);
+   rslt.append(buf);
+
+   Scriptable::toStringStat(viewer, buf);
+   rslt.append(buf);
+
+   short_desc.toStringStat("<SHORT_DESC>", "</SHORT_DESC>", viewer, buf);
+   rslt.append(buf);
+
+   in_room_desc.toStringStat("<NROOM_DESC>", "</NROM_DESC>", viewer, buf);
+   rslt.append(buf);
+
+   if (isWeapon()) {
+      if ((st | ST_IDENTIFY) || viewer->isImmort()) {
+         Sprintf(buf, "Weapon Damage: %id%i.\n",
+                 getDiceCnt(), getDiceSides());
+         rslt.append(buf);
+      }
+   }//else
+
+   if ((st | ST_IDENTIFY) || viewer->isImmort()) {
+
+      if (!stat_affects.isEmpty()) {
+         rslt.append("Stat affects:\n");
+         Markup::toString(&stat_affects, viewer, buf);
+         rslt.append(buf);
+      }
+
+      if (obj_proc && !CASTS_THESE_SPELLS.isEmpty()) {
+         rslt.append("Casts these spells:\n");
+         Markup::toString(&(CASTS_THESE_SPELLS), viewer, buf);
+         rslt.append(buf);
+      }//if
+
+      Markup::toString(NULL, obj_flags, OBJ_FLAGS_NAMES, viewer, NULL, buf);
+      rslt.append(buf);
+
+      if (!inv.isEmpty()) {
+         rslt.append("Inventory:\n");
+         Markup::toString(&inv, viewer, buf);
+         rslt.append(buf);
+      }
+
+      Sprintf(buf, "\nBelongs to zone:  %i.\n", getIdNum());
+      rslt.append(buf);
+
+      if (bag) {
+         bag->toStringStat(viewer, buf, st);
+         rslt.append(buf);
+      }
+   }//if immort or identify
+
+   if (viewer->isImmort()) {
+      Sprintf(buf, "\nchrgs: %i  rechrg: %i  p_load: %i  cur_in_game: %i.\n", 
+              (int)(extras[0]), (int)(extras[1]), (int)(extras[2]),
+              (int)(getCurInGame()));
+      rslt.append(buf);
+
+      Sprintf(buf, "max_in_game: %i  wt: %i  dice_sides: %i  #dice: %i.\n", 
+              (int)(extras[4]), (int)(getCurWeight()), (int)(extras[6]),
+              (int)(extras[7])); 
+      rslt.append(buf);
+
+      Sprintf(buf, "lvl: %i  price: %i  item#: %i zone# %i.\n", 
+              (int)(extras[8]), cur_stats[1], cur_stats[2], cur_stats[3]);
+      rslt.append(buf);
+
+      if (obj_proc) {
+         obj_proc->toStringStat(viewer, buf);
+      }//if obj proc
+
+      if (isModified()) 
+         rslt.append("IS_MODIFIED\n");
+      else 
+         rslt.append("NOT_MODIFIED\n");
+   }//if is immort
+
+   if (viewer->isUsingClient()) {
+      rslt.append("</OBJECT>\n");
+   }
+}//toStringStat
 
 
 int object::getObjCountByNumber(int onum, int sanity) {

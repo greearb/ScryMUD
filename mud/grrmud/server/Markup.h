@@ -1,5 +1,5 @@
-// $Id: Markup.h,v 1.1 1999/08/10 07:06:17 greear Exp $
-// $Revision: 1.1 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
+// $Id: Markup.h,v 1.2 1999/08/16 00:37:06 greear Exp $
+// $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
 
 //
 //ScryMUD Server Code
@@ -27,13 +27,30 @@
 #ifndef __CLIENT_MARKUP_H__
 #define __CLIENT_MARKUP_H__
 
+#include <bitfield.h>
 
+
+template <class T> class SafeList;
+template <class T> class PtrList;
+class critter;
+class object;
+class StatBonus;
+class SpellDuration;
 
 class Markup {
 public:
    static void toString(const char* pre, const bitfield& flags,
-                        const BitfieldNames& flag_names, critter& pc,
-                        const char* post);
+                        const BitfieldNames& flag_names, critter* pc,
+                        const char* post, String& rslt);
+
+   static void toString(SafeList<critter*>* lst, critter* viewer, String& rslt);
+
+   static void toString(SafeList<object*>* lst, critter* viewer, String& rslt);
+
+   static void toString(PtrList<StatBonus>* lst, critter* viewer, String& rslt);
+
+   static void toString(PtrList<SpellDuration>* lst, critter* viewer, String& rslt);
+
 };
 
 

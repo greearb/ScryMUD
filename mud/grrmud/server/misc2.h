@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.17 1999/08/10 07:06:20 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
+// $Id: misc2.h,v 1.18 1999/08/16 00:37:07 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
 
 //
 //ScryMUD Server Code
@@ -92,9 +92,8 @@ short zone_is_total_loaded(int znum);
 short zone_is_locked(int znum);
 
 
-object* have_obj_numbered(const List<object*>& lst, const int i_th,
-                          const int obj_num, const int see_bit,
-                          const room& rm);
+object* have_obj_numbered(const SafeList<object*>& lst, const int i_th,
+                          const int obj_num, critter& viewer);
 
 const String* next_mov_dir(room& car);
 short is_car_at_dest(room& car);

@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.26 1999/08/13 06:32:54 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
+// $Id: command3.cc,v 1.27 1999/08/16 00:37:06 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
 
 //
 //ScryMUD Server Code
@@ -107,7 +107,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
 
    if (wand->CHARGES <= 0) {
       Sprintf(buf, "Your %S seems quite devoid of energies.\n",
-              single_obj_name(*wand, pc.SEE_BIT));
+              wand->getShortName(&pc));
       show(buf, pc);
       return -1;
    }//if
@@ -124,7 +124,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
                 /* wand is ready, check for target */
 
    Sprintf(buf, "You clench %S and try to remember how to trigger it.\n",
-           long_name_of_obj(*wand, pc.SEE_BIT));
+           wand->getLongName(&pc));
    show(buf, pc);
 
    short found_proc = TRUE;
@@ -158,7 +158,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
               targ = pc.getFirstFighting();
            }//if
            else {
-              targ = ROOM.haveCritNamed(i_th, target, pc);
+              targ = ROOM.haveCritNamed(j_th, target, pc);
            }//else
            
            if (targ) {
@@ -183,7 +183,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
         case 21: case 181: case 6:
         {
            door* dr_ptr;
-           if ((dr_ptr = ROOM.findDoor(i_th, target, pc))) {
+           if ((dr_ptr = ROOM.findDoor(j_th, target, pc))) {
               if (dr_ptr->isSecret()) {
                  if (!name_is_secret(target, *dr_ptr)) {
                     show("You don't see that exit.\n", pc);
@@ -219,7 +219,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
 
         case 159:        //special case, gate spell (portal too?)
         {
-           targ = have_crit_named(pc_list, i_th, target, &pc);
+           targ = have_crit_named(pc_list, j_th, target, &pc);
            if (!targ) {
               show("That person isn't logged on.\n", pc);
            }//if
@@ -237,11 +237,11 @@ int use(int i_th, String* wand_name, int j_th, String* target,
         case 186: case 196: case 213:
         {
            object* ob_ptr;
-           ob_ptr = pc.haveObjNamed(i_th, target);
+           ob_ptr = pc.haveObjNamed(j_th, target, &pc);
            if (ob_ptr) {
               if (!ob_ptr->isModified()) {
                  ob_ptr = obj_to_sobj(*ob_ptr, &pc, TRUE,
-                                      i_th, target, pc);
+                                      j_th, target, pc);
               }
            }
            else {
@@ -249,7 +249,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
               
               if (ob_ptr && !ob_ptr->isModified()) {
                  ob_ptr = obj_to_sobj(*ob_ptr, &ROOM, TRUE,
-                                      i_th, target, pc);
+                                      j_th, target, pc);
               }
            }//else
            
@@ -315,7 +315,7 @@ int quaff(int i_th, const String* item, critter& pc) { //for wands
       }//for
    }//if
    else {
-      potion = pc.haveObjNamed(i_th, item);
+      potion = pc.haveObjNamed(i_th, item, &pc);
    }//if         
 
    if (!potion) {
@@ -437,7 +437,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
    }//while
 
    if (!scroll) {
-      scroll = have_obj_named(pc.inv, i_th, item, pc.SEE_BIT, ROOM);
+      scroll = pc.haveObjNamed(i_th, item);
    }//else
 
    if (!scroll) {
@@ -454,7 +454,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
    }
 
    Sprintf(buf, "You unroll %S and begin to read...\n",
-           long_name_of_obj(*scroll, pc.SEE_BIT));
+           scroll->getLongName(&pc));
    show(buf, pc);
 
    short found_proc = TRUE;
@@ -489,13 +489,6 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
               targ = ROOM.haveCritNamed(j_th, vict, pc);
            }//else
            
-           if (targ) {
-              if (targ->isMob()) { //if its a MOB
-                 targ = mob_to_smob(*targ, *(pc.getCurRoom()), TRUE, i_th,
-                                    vict, pc);
-              }//if
-           }//if
-
            if (!targ) {
               targ = &pc;
            }
@@ -510,7 +503,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         case 159:        //special case, gate spell (portal too?)
         {
            mudlog.dbg("gate/portal case.\n");
-           targ = have_crit_named(pc_list, i_th, vict, &pc);
+           targ = have_crit_named(pc_list, j_th, vict, &pc);
            if (!targ) {
               show("That person isn't logged on.\n", pc);
            }//if
@@ -527,7 +520,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         {
            mudlog.dbg("Doors case.\n");
            door* dr_ptr;
-           if ((dr_ptr = ROOM.findDoor(i_th, vict, pc))) {
+           if ((dr_ptr = ROOM.findDoor(j_th, vict, pc))) {
               if (dr_ptr->isSecret()) {
                  if (!name_is_secret(vict, *dr_ptr)) {
                     show("You don't see that exit.\n", pc);
@@ -572,19 +565,19 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         {
            mudlog.dbg("Object for target...\n");
            object* ob_ptr;
-           ob_ptr = pc.haveObjNamed(i_th, vict);
+           ob_ptr = pc.haveObjNamed(j_th, vict, &pc);
            if (ob_ptr) {
               if (!ob_ptr->isModified()) {
                  ob_ptr = obj_to_sobj(*ob_ptr, &pc, TRUE,
-                                      i_th, vict, pc);
+                                      j_th, vict, pc);
               }
            }
            else {
-              ob_ptr = ROOM.haveObjNamed(i_th, vict, pc);
+              ob_ptr = ROOM.haveObjNamed(j_th, vict, pc);
               
               if (ob_ptr && !ob_ptr->isModified()) {
                  ob_ptr = obj_to_sobj(*ob_ptr, &ROOM, TRUE,
-                                      i_th, vict, pc);
+                                      j_th, vict, pc);
               }
            }//else
 
@@ -958,7 +951,7 @@ int oclone(int i_th, const String* item, critter& pc) {
       obj_list[new_obj].addInRoomDesc(buf);
       obj_list[new_obj].addShortDesc(buf);
       obj_list[new_obj].setIdNum(new_obj);
-      obj_list[new_obj].setInZone(ROOM.getZoneNum());
+      obj_list[new_obj].setZoneNum(ROOM.getZoneNum());
       obj_list[new_obj].setModified(false);
       obj_list[new_obj].setContainer(NULL);
       pc.gainInv(&(obj_list[new_obj]));
@@ -1076,8 +1069,8 @@ int rclone(int src_room, const String* direction, int dist, critter& pc) {
    // We coppied over it when assigning it...
    new_rm->setRoomNum(new_room_num);
 
-   new_rm.getDoors().clearAndDestroy();
-   new_rm.getKeywords().clearAndDestroy();
+   new_rm->getDoors().clearAndDestroy();
+   new_rm->getKeywords().clearAndDestroy();
 
    if (mudlog.ofLevel(DBG))
       mudlog << "Rclone:  New room num, before door_to:  "
@@ -1136,7 +1129,7 @@ int rinit(int src_rm, int dest_rm, critter& pc) {
 
    room_list[dest_rm].setRoomNum(dest_rm); //just in case
 
-   clear_ptr_list(room_list[dest_rm].DOORS);//don't want to start w/any doors
+   room_list[dest_rm].getDoors().clearAndDestroy();
    return 0;
 }//rinit
 
@@ -1184,12 +1177,13 @@ int mclone(int i_th, const String* item, critter& pc) {
    }//if
    
    mob_list[new_num] = mob_list[crit_ptr->MOB_NUM]; //make a copy
-   Sprintf(buf, "CLONE OF:  %S.", Top(crit_ptr->names));
-   mob_list[new_num].in_room_desc = buf;
-   mob_list[new_num].short_desc = buf;
+   Sprintf(buf, "CLONE OF:  %S.", crit_ptr->getName());
+   mob_list[new_num].addInRoomDesc(buf);
+   mob_list[new_num].addShortDesc(buf);
    mob_list[new_num].setIdNum(new_num);
-   mob_list[new_num].setNativeZoneNum(ROOM.getZoneNum());
-   mob_list[new_num].CRITTER_TYPE = 2;
+   mob_list[new_num].setZoneNum(ROOM.getZoneNum());
+   mob_list[new_num].setModified(FALSE);
+   mob_list[new_num].setContainer(NULL);
    ROOM.gainCritter(&(mob_list[new_num]));
    show("Okay, critter CLONED, its now in your room.\n", pc);
    return 0;
@@ -1275,13 +1269,13 @@ int flee_to_safety(critter& pc, int& is_dead) {
       return -1;
    }
    
-   Cell<door*> cll(ROOM.DOORS);
+   SCell<door*> cll(ROOM.DOORS);
    door* ptr;
 
    while ((ptr = cll.next())) {
-      if (room_list[abs(ptr->destination)].isHaven() ||  //haven
-	  room_list[abs(ptr->destination)].isNoMagic() ||  //!magic
-	  room_list[abs(ptr->destination)].isSwamp()) { //swamp
+      if (room_list[abs(ptr->getDestination())].isHaven() ||  //haven
+	  room_list[abs(ptr->getDestination())].isNoMagic() ||  //!magic
+	  room_list[abs(ptr->getDestination())].isSwamp()) { //swamp
 	 if (move(pc, 1, *(direction_of_door(*ptr)), TRUE, ROOM, is_dead) >= 0) {
 	    return 0;
 	 }//if
@@ -1313,7 +1307,7 @@ int flee(critter& pc, int& is_dead) {
       show("You can't flee sitting on your butt!\n", pc);
    }//if
    else { //lets try it
-      if ((crit_ptr = Top(pc.IS_FIGHTING))) { //ie in battle
+      if ((crit_ptr = pc.getFirstFighting())) {
          if (crit_ptr->mob) { //if its a mob
             if (crit_ptr->MOB_FLAGS.get(1) && (d(1,100) > 12)) { //if !flee
                Sprintf(buf, "%S prevents you from fleeing.\n",
@@ -1331,7 +1325,7 @@ int flee(critter& pc, int& is_dead) {
 
          if (flee_chance > d(1,100)) { //will try at least
 
-            Cell<door*> dr_cll(ROOM.doors);
+            SCell<door*> dr_cll(ROOM.doors);
             while ((dr_ptr = dr_cll.next())) {
                if (!(dr_ptr->isClosed())) {
                   valid_dr_ptr = dr_ptr;
@@ -1347,10 +1341,11 @@ int flee(critter& pc, int& is_dead) {
 
 			/* now move pc outa room */
 				/* quit battle */
-            Cell<critter*> cll(pc.IS_FIGHTING);
+            SCell<critter*> cll(pc.IS_FIGHTING);
             critter* tmp_ptr;
+            critter* hack = &pc;
             while ((tmp_ptr = cll.next())) {
-               tmp_ptr->IS_FIGHTING.loseData(&pc);
+               tmp_ptr->IS_FIGHTING.loseData(hack);
             }//while
             pc.IS_FIGHTING.clear();
 
@@ -1362,8 +1357,7 @@ int flee(critter& pc, int& is_dead) {
                   break;
                }
                   
-               if ((dr_ptr = door::findDoor(ROOM.doors, 1,
-                      Top(door_list[d(1,10)].names), ~0, ROOM))) {
+               if ((dr_ptr = ROOM.findDoor(1, door_list[d(1,10)].getDirection()))) {
                   if (dr_ptr->isOpen()) {
                      break;  //weee hoooo, found a good one!
                   }//if
@@ -1397,9 +1391,9 @@ int flee(critter& pc, int& is_dead) {
          }//else
       }//if in battle
       else {
-         Cell<door*> dr_cll(ROOM.doors);
+         SCell<door*> dr_cll(ROOM.doors);
          while ((dr_ptr = dr_cll.next())) {
-            if (!(dr_ptr->dr_data->door_data_flags.get(2))) {
+            if (dr_ptr->isOpen()) {
                have_exit = TRUE;
                valid_dr_ptr = dr_ptr;
                break;
@@ -1417,9 +1411,8 @@ int flee(critter& pc, int& is_dead) {
                   break;
                }
 
-               if ((dr_ptr = door::findDoor(ROOM.doors, 1,
-                      Top(door_list[d(1,10)].names), ~0, ROOM))) {
-                  if (!(dr_ptr->dr_data->door_data_flags.get(2))) {
+               if ((dr_ptr = ROOM.findDoor(1, door_list[d(1,10)].getDirection()))) {
+                  if (dr_ptr->isOpen()) {
                      break;  //weee hoooo, found a good one!
                   }//if
                }//if
@@ -1429,7 +1422,7 @@ int flee(critter& pc, int& is_dead) {
             Sprintf(buf, "tries to flee %S!", 
                     direction_of_door(*dr_ptr));
             emote(buf, pc, ROOM, FALSE);
-            move(pc, 1, *(Top(dr_ptr->dr_data->names)), FALSE, ROOM, is_dead);
+            move(pc, 1, *(dr_ptr->getDirection()), FALSE, ROOM, is_dead);
             
             if (is_dead)
                return 0;
@@ -1452,27 +1445,26 @@ int slay(int i_th, const String* vict, critter& pc) {
       return -1;
    }
 
-   ptr = ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+   ptr = ROOM.haveCritNamed(i_th, vict, pc);
 
    if (!ptr) {
       show("You detect not that being.\n", pc);
       return -1;
    }//if
 
-   if (ptr->isMob()) {
-      ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, vict, pc.SEE_BIT);
+   if (!ptr->isModified()) {
+      ptr = mob_to_smob(*ptr, ROOM, TRUE, i_th, vict, pc);
    }//if
 
-   if (ptr->pc && ptr->pc->imm_data && 
-       (ptr->IMM_LEVEL > pc.IMM_LEVEL)) {
+   if (ptr->getImmLevel() > pc.getImmLevel()) {
      show("RESPECT THY ELDERS!!\n", pc);
      pc.setHP(1); //that'll teach em!!
      return -1;
    }//if
 
-   Sprintf(buf, "You slay %S.\n", name_of_crit(*ptr, pc.SEE_BIT));
+   Sprintf(buf, "You slay %S.\n", ptr->getName(&pc));
    show(buf, pc);
-   Sprintf(buf, "%S slays you!!\n", name_of_crit(pc, ptr->SEE_BIT));
+   Sprintf(buf, "%S slays you!!\n", pc.getName(ptr));
    show(buf, *ptr);
    Sprintf(buf, "%S slays %S!\n", name_of_crit(pc, ~0), 
            name_of_crit(*ptr, ~0));
@@ -1591,7 +1583,8 @@ int critter::doFollow(critter& vict, int do_msg = TRUE) {
       }//if
 
       FOLLOWER_OF = &vict;
-      vict.FOLLOWERS.gainData(this);
+      critter* hack = this;
+      vict.FOLLOWERS.appendUnique(hack);
       
       if (do_msg) {
          Sprintf(buf, "%S now follows you.\n", getName(vict.SEE_BIT));
@@ -1611,7 +1604,7 @@ int critter::doFollow(critter& vict, int do_msg = TRUE) {
 
 
 int group(int i_th, const String* vict, critter& pc) {
-   Cell<critter*> cll;
+   SCell<critter*> cll;
    critter* ptr;
    String buf(100);
 
@@ -1622,7 +1615,7 @@ int group(int i_th, const String* vict, critter& pc) {
 
    if (vict->Strlen() == 0) { //display group
 
-      if (IsEmpty(pc.GROUPEES) && !(pc.FOLLOWER_OF)) {
+      if (pc.getGroupees().isEmpty() && !(pc.getFollowerOf())) {
          show("You are a party of one!\n", pc);
          return -1;
       }//if
@@ -1639,11 +1632,12 @@ int group(int i_th, const String* vict, critter& pc) {
 
       while ((ptr = cll.next())) {
          Sprintf(buf, "%S%P30 %s(%i)%P45 %i/%i%P55%i/%i%P68%i/%i\n",
-             name_of_crit(*ptr, pc.SEE_BIT), class_of_crit(*ptr), 
-             ptr->LEVEL, ptr->HP, ptr->HP_MAX,
-             ptr->MANA, ptr->MA_MAX, ptr->MOV, ptr->MV_MAX);
+                 ptr->getName(&pc), ptr->getClassName(&pc),
+                 ptr->getLevel(), ptr->getHp(), ptr->getHpMax(),
+                 ptr->getMana(), ptr->getManaMax(), ptr->getMov(),
+                 ptr->getMovMax());
          buf.Cap();
-         show(buf, pc);
+         pc.show(buf);
       }//while
    }//if displaying group
 
@@ -1655,12 +1649,13 @@ int group(int i_th, const String* vict, critter& pc) {
               pc);
          return -1;
       }//if
-      if (IsEmpty(pc.FOLLOWERS)) {
+      if (pc.getFollowers().isEmpty()) {
          show("You need followers in order to form a group!\n", pc);
          return -1;
       }//if
 
-      pc.GROUPEES.gainData(&pc); //enroll self fer sure
+      critter* hack = &pc;
+      pc.GROUPEES.appendUnique(hack); //enroll self fer sure
 
       pc.FOLLOWERS.head(cll);
       while ((ptr = cll.next())) {
@@ -1671,10 +1666,9 @@ int group(int i_th, const String* vict, critter& pc) {
 	   continue; //fail silently
 	 }//if !hassle or tailing, can't be grouped
 
-         pc.GROUPEES.gainData(ptr);
+         pc.GROUPEES.appendUnique(ptr);
          show("You are now part of the group.\n", *ptr);
-         Sprintf(buf, "%S is now part of the group.\n", name_of_crit(*ptr,
-                 pc.SEE_BIT));
+         Sprintf(buf, "%S is now part of the group.\n", ptr->getName(&pc));
          buf.Cap();
          show(buf, pc);
       }//while
@@ -1696,11 +1690,12 @@ int group(int i_th, const String* vict, critter& pc) {
          return 0;
       }
 
-      pc.GROUPEES.gainData(&pc);  //make sure self is in
+      critter* hack = &pc;
+      pc.GROUPEES.appendUnique(hack);  //make sure self is in
 
-      pc.GROUPEES.gainData(ptr);
+      pc.GROUPEES.appendUnique(ptr);
       show("You are now part of the group.\n", *ptr);
-      Sprintf(buf, "%S joins your group.\n", ptr->getName());
+      Sprintf(buf, "%S joins your group.\n", ptr->getName(&pc));
       buf.Cap();
       pc.show(buf);
 
@@ -1714,7 +1709,7 @@ int group(int i_th, const String* vict, critter& pc) {
 
 /* some parsing is done by this function */
 int order(String* str, critter& pc) {
-   Cell<critter*> cll;
+   SCell<critter*> cll;
    critter* ptr;
    short eos = FALSE, term_by_period = FALSE;
    String str1, str2;
@@ -1746,12 +1741,12 @@ int order(String* str, critter& pc) {
       }//if
 
       if (i == -1) { //if order fol <cmd_string>
-         if (IsEmpty(pc.PETS)) {
+         if (pc.getPets().isEmpty()) {
             show("But, you have no pets!\n", pc);
             return -1;
          }//if
 
-	 List<critter*> tmp_lst;
+	 SafeList<critter*> tmp_lst(NULL);
          ROOM.getPetsFor(pc, tmp_lst);
 
          if (mudlog.ofLevel(DBG)) {
@@ -1778,7 +1773,7 @@ int order(String* str, critter& pc) {
       else {
          ptr = ROOM.haveCritNamed(i, &name, pc.SEE_BIT);
          if (ptr) {
-            if (HaveData(ptr, pc.PETS)) {
+            if (pc.getPets().haveData(ptr)) {
 
                String cmd = "order";
                ROOM.checkForProc(cmd, *str, pc, ptr->MOB_NUM);
@@ -1842,17 +1837,13 @@ int force(String* str, critter& pc) {
 
       ptr = have_crit_named(pc_list, i, &name, pc.SEE_BIT, ROOM);
       if (!ptr) {
-	ptr = have_crit_named(linkdead_list, i, &name,
-                              pc.SEE_BIT, ROOM);
+	ptr = have_crit_named(linkdead_list, i, &name, &pc);
       }//if
       if (!ptr) {
-         ptr = ROOM.haveCritNamed(i, &name, pc.SEE_BIT);
+         ptr = ROOM.haveCritNamed(i, &name, pc);
       }//if
 
       if (ptr) {
-        if (ptr->isMob()) {
-	  ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i, &name, pc.SEE_BIT);
-	}//if
         
         if ((pc.IMM_LEVEL < 5) && (!pc.doesOwnCritter(*ptr))) {
            show("You are not yet worthy of the force.\n", pc);
@@ -1910,7 +1901,7 @@ int force_all(String* str, critter& pc) {
       mudlog << "Passed tests in force_all, str:  " << *str << endl;
    }
 
-   Cell<critter*> cll(pc_list);
+   SCell<critter*> cll(pc_list);
    while ((ptr = cll.next())) {
       if (ptr->MODE == MODE_NORMAL) {
          if (!(ptr->pc->imm_data && (ptr->IMM_LEVEL >= pc.IMM_LEVEL))) {
@@ -1942,11 +1933,6 @@ int enslave(int i_th, const String* vict, critter& pc) {
 
    ///******************* have a valid ptr now ***********************///
 
-   if (ptr->isMob()) {
-      ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, vict,
-                      pc.SEE_BIT);
-   }//if
-
    if (ptr->pc && ptr->pc->imm_data) { //if vict is an IMM
      if (ptr->IMM_LEVEL >= pc.IMM_LEVEL) {
         show("You cannot enslave one so powerful, fool!!\n", pc);
@@ -1955,7 +1941,7 @@ int enslave(int i_th, const String* vict, critter& pc) {
      }//if
    }//if
 
-   Put(ptr, pc.PETS);
+   pc.getPets().append(ptr);
    ptr->MASTER = &pc;
    ptr->doFollow(pc);
    return 0;
@@ -2097,7 +2083,7 @@ int do_junk(int do_msg, int i_th, const String* str1,
              const String* str2, critter& pc) {
    String buf(100);
    String targ;
-   Cell<object*> cll(pc.inv);
+   SCell<object*> cll(pc.inv);
    object* obj_ptr;
    short did_msg = FALSE;
 
@@ -2275,7 +2261,7 @@ int tell(int i_th, const String* targ, const char* msg, critter& pc) {
 
 
 int who(critter& pc) {
-   Cell<critter*> cll(pc_list);
+   SCell<critter*> cll(pc_list);
    critter* ptr;
    String buf(100);
 
@@ -2341,7 +2327,7 @@ int who(critter& pc) {
 
 
 int sockets(critter& pc) {
-   Cell<critter*> cll(pc_list);
+   SCell<critter*> cll(pc_list);
    critter* ptr;
    String buf(100);
 
@@ -2363,7 +2349,7 @@ int sockets(critter& pc) {
 
 
 int ldwho(critter& pc) {
-   Cell<critter*> cll(linkdead_list);
+   SCell<critter*> cll(linkdead_list);
    critter* ptr;
    String buf(100);
 

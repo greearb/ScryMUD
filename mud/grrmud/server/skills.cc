@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.14 1999/08/13 06:32:54 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
+// $Id: skills.cc,v 1.15 1999/08/16 00:37:07 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
 
 //
 //ScryMUD Server Code
@@ -145,11 +145,6 @@ int trip(int i_th, const String* victim, critter& pc) {
 	return 0;
       }//if
 
-      if (crit_ptr->isMob()) {
-         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(),
-                                TRUE, i_th, victim, pc.SEE_BIT);
-      }//if
-
       if (!ok_to_do_action(crit_ptr, "SVPFA", -1, pc)) {
          return -1;
       }//if
@@ -240,11 +235,6 @@ int steal(int i_th, const String* obj, int j_th, const String* victim,
 	return 0;
       }//if
 
-      if (crit_ptr->isMob()) {
-         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE,
-                                i_th, victim, pc.SEE_BIT);
-      }//if
-
       if (!ok_to_do_action(crit_ptr, "mSVPF", -1, pc)) {
          return -1;
       }//if
@@ -253,8 +243,7 @@ int steal(int i_th, const String* obj, int j_th, const String* victim,
 	gold = TRUE;
       }//if
       else {
-	objptr = have_obj_named(crit_ptr->inv, i_th, obj, pc.SEE_BIT,
-				ROOM);      
+	objptr = crit_ptr->haveObjNamed(i_th, obj, &pc);      
       }//else
       return do_steal(objptr, *crit_ptr, pc, gold);
    }//if
@@ -357,11 +346,6 @@ int kick(int i_th, const String* victim, critter& pc) {
          Sprintf(buf, "kicks %s.", get_himself_herself(pc));
          emote(buf, pc, ROOM, TRUE);
          return 0;
-      }//if
-
-      if (crit_ptr->isMob()) {
-         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE,
-                                i_th, victim, pc.SEE_BIT);
       }//if
 
       if (!ok_to_do_action(crit_ptr, "SVPF", -1, pc)) {
@@ -470,11 +454,6 @@ int bash(int i_th, const String* victim, critter& pc) {
       if (crit_ptr == &pc) {
          show("You shouldn't be bashing yourself..\n", pc);
          return -1;
-      }//if
-
-      if (crit_ptr->isMob()) {
-         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE, i_th, victim,
-                                pc.SEE_BIT);
       }//if
 
       if (!ok_to_do_action(crit_ptr, "SVPFA", -1, pc)) {
@@ -751,11 +730,6 @@ int claw(int i_th, const String* victim, critter& pc) {
       if (crit_ptr == &pc) {
          show("You shouldn't be clawing yourself..\n", pc);
          return -1;
-      }//if
-
-      if (crit_ptr->isMob()) {
-         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(),
-                                TRUE, i_th, victim, pc.SEE_BIT);
       }//if
 
       if (!ok_to_do_action(crit_ptr, "SVPF", -1, pc)) {
@@ -1451,7 +1425,7 @@ short skill_did_hit(critter& agg, int spell_num, critter& vict) {
 
    else if ((spell_num == BODYSLAM_SKILL_NUM) ||
 	    (spell_num == HURL_SKILL_NUM))
-     return (d(1, vict.CRIT_WT_CARRIED) < d(1, percent_lrnd + agg.STR * 10));
+     return (d(1, vict.getCurWeight()) < d(1, percent_lrnd + agg.STR * 10));
    else if ((spell_num == BACKSTAB_SKILL_NUM) ||
 	    (spell_num == CIRCLE_SKILL_NUM)) {
       int rnd1 = d(1, (agg.HIT * 2 + agg.DEX * 5 + vict.AC - 80));

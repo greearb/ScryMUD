@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.45 1999/08/13 06:32:54 greear Exp $
-// $Revision: 1.45 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
+// $Id: critter.cc,v 1.46 1999/08/16 00:37:06 greear Exp $
+// $Revision: 1.46 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
 
 //
 //ScryMUD Server Code
@@ -40,6 +40,7 @@
 #include "batl_prc.h"
 #include "battle.h"
 #include <stdarg.h>
+#include "Markup.h"
 
 const char* PcPositionStrings[] = {"stand", "sit", "rest", "sleep", "meditate",
                                    "stun", "dead", "prone"};
@@ -146,6 +147,26 @@ int teacher_data::read(istream& da_file, int read_all = TRUE) {
 int teacher_data::write(ostream& da_file) {
    return teach_data_flags.write(da_file);
 }//Write
+
+
+void teacher_data::toStringStat(critter* viewer, String& rslt) {
+   String buf(100);
+   if (viewer->isUsingClient()) {
+      rslt = "<TEACHER_DATA>\n";
+   }
+   else {
+      rslt = "Teacher Data\n";
+   }
+
+   Markup::toString(NULL, teach_data_flags, TEACH_DATA_FLAGS_NAMES,
+                    viewer, NULL, buf);
+   rslt.append(buf);
+
+   if (viewer->isUsingClient()) {
+      rslt = "</TEACHER_DATA>\n";
+   }
+}
+
 
 //****************************************************************//
 ///*********************  Player Shop Data  *********************///
@@ -481,6 +502,32 @@ void shop_data::valueSet(int val_idx, int sell_val, int buy_val,
    }//else
 }//valueSet
 
+void shop_data::toStringStat(critter* viewer, String& rslt) {
+   String buf(100);
+   if (viewer->isUsingClient()) {
+      rslt = "<SHOP_DATA>\n";
+   }
+   else {
+      rslt = "Shop Data:\n";
+   }
+
+   Sprintf(buf, "markup  %i, buy_percentage  %i, open_time %i, close_time %i",
+           markup, buy_percentage, open_time, close_time);
+   rslt.append(buf);
+
+   Markup::toString(NULL, shop_data_flags, SHOP_DATA_FLAGS_NAMES, 
+                    viewer, NULL, buf);
+   rslt.append(buf);
+
+   rslt.append("Permanent Inventory:\n");
+   out_inv(perm_inv, *viewer, CRIT_INV);
+
+   if (viewer->isUsingClient()) {
+      rslt.append("</SHOP_DATA>\n");
+   }
+}//toStringStat
+
+
 
 ///***************************************************************///
 ///*************** temp proc data ***********************///
@@ -501,7 +548,7 @@ temp_proc_data::~temp_proc_data() {
    hunting.clearAndDestroy();
 }//destructor
 
-void temp_proc_data::Clear() {
+void temp_proc_data::clear() {
    hunting.clearAndDestroy();
    tracking.clear();
 }//clear
@@ -511,15 +558,7 @@ temp_proc_data& temp_proc_data::operator= (const temp_proc_data& source) {
    if (this == &source)
       return *this;
 
-   String* sp;
-   Cell<String*> cll(source.hunting);
-   String* ptr;
-
-   Clear();
-   while ((ptr = cll.next())) {
-      sp = new String(*ptr);
-      hunting.append(sp);
-   }//while
+   hunting.becomeDeepCopyOf(source.hunting);
    tracking = source.tracking;
    return *this;
 }//operator= overload
@@ -699,6 +738,44 @@ int spec_data::write(ostream& da_file){
 }//Write
 
 
+void spec_data::toStringStat(critter* viewer, String& rslt) {
+   String buf(100);
+
+   if (viewer->isUsingClient()) {
+      rslt = "<MOB_SPEC_DATA>\n";
+   }
+   else {
+      rslt = "Special Procedure Data:\n";
+   }
+
+   Markup::toString(NULL, flag1, MOB_PROC_DATA_FLAGS_NAMES, viewer, NULL, buf);
+   rslt.append(buf);
+
+   Sprintf(buf, "\tDirection Guarding:  %i\n", int1);
+   rslt.append(buf);
+
+   Sprintf(buf, "skill_violnc:  %i, benev:  %i, def:  %i, bad_ass %i, Soc_Aware: %i\n",
+           getSkillViolence(), getBenevolence(), getDefensiveness(),
+           getBadAssedness(), getSocialAwareness());
+   rslt.append(buf);
+
+   if (teach_data) {
+      teach_data->toStringStat(viewer, buf);
+      rslt.append(buf);
+   }
+
+   if (sh_data) {
+      sh_data->toStringStat(viewer, buf);
+      rslt.append(buf);
+   }//if
+
+   if (viewer->isUsingClient()) {
+      rslt.append("</MOB_SPEC_DATA>\n");
+   }
+
+}//toStringStat
+
+
 ///*********************************************************************///
 ////*********************** temp_crit_data  ****************************///
 ///*********************************************************************///
@@ -721,7 +798,7 @@ temp_crit_data::temp_crit_data(const temp_crit_data& source) {
 
 temp_crit_data::~temp_crit_data() {
    _cnt--;
-   Clear();
+   clear();
 }//destructor
 
 int temp_crit_data::doUnShield() {
@@ -737,7 +814,7 @@ int temp_crit_data::doUnShield() {
 }//doUnShield
 
 
-void temp_crit_data::Clear() {
+void temp_crit_data::clear() {
    if (guarded_by) {
       if (guarded_by->temp_crit && guarded_by->temp_crit->guarding) {
          guarded_by->temp_crit->guarding = NULL;
@@ -759,8 +836,34 @@ void temp_crit_data::Clear() {
    }//if
 
    doUnShield();
-}//Clear
+}//clear
 
+
+void temp_crit_data::toStringStat(critter* viewer, String& rslt) {
+   String buf(100);
+   rslt.clear();
+
+   if (guarded_by) {
+      Sprintf(buf, cstr(CS_GUARDED_BY, *viewer), guarded_by->getName(viewer));
+      rslt.append(buf);
+   }//if
+
+   if (guarding) {
+      Sprintf(buf, cstr(CS_GUARDING, *viewer), guarding->getName(viewer));
+      rslt.append(buf);
+   }//if
+
+   if (shielded_by) {
+      Sprintf(buf, cstr(CS_SHIELDED_BY, *viewer), shielded_by->getName(viewer));
+      rslt.append(buf);
+   }//if
+
+   if (shielding) {
+      Sprintf(buf, cstr(CS_SHIELDING, *viewer), shielding->getName(viewer));
+      rslt.append(buf);
+   }//if
+
+}//toStringStat
 
 
 
@@ -958,13 +1061,49 @@ void mob_data::setDefensiveness(int i) {
    proc_data->setDefensiveness(i);
 }
 
-
 void mob_data::addProcData() {
    if (!proc_data) {
       mob_data_flags.turn_on(0);
       proc_data = new spec_data;
    }//if
 }//addProcData
+
+
+void mob_data::toStringStat(critter* viewer, String& rslt) {
+   String buf(100);
+
+   if (viewer->isUsingClient()) {
+      rslt = "<MOB_DATA>\n";
+   }
+   else {
+      rslt = "NPC Data:\n";
+   }
+
+   Sprintf(buf, "\tCur in game: %i,  Max in game: %i, Home Room: %i, Sessile: %i.\n",
+           getCurInGame(), getMaxInGame(), home_room, isSessile());
+   rslt.append(rslt);
+
+   if (isTracking()) {
+      Sprintf(buf, "\tTracking target:  %S", getTrackingTarget());
+      rslt.append(buf);
+   }
+
+   Markup::toString(NULL, mob_data_flags, MOB_DATA_FLAGS_NAMES, viewer, NULL, buf);
+   rslt.append(buf);
+      
+   if (proc_data) {
+      proc_data->toStringStat(viewer, buf);
+      rslt.append(buf);
+   }
+
+   Sprintf(buf, "Skin num: %i\n\n", skin_num);
+   rslt.append(buf);
+
+
+   if (viewer->isUsingClient()) {
+      rslt = "</MOB_DATA>\n";
+   }
+}//toStringStat
 
 
 //*************************************************************//
@@ -1200,7 +1339,7 @@ int pc_data::write(ostream& ofile) {
 
    ofile << "*** end of pc data ***\n";
    return 0;
-}//Write()       
+}//write()       
 
 
 int pc_data::read(istream& ofile, int read_all = TRUE) {
@@ -1322,6 +1461,48 @@ int pc_data::read(istream& ofile, int read_all = TRUE) {
    return 0;
 }//Read()       
 
+
+void pc_data::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
+   String buf(100);
+
+   rslt.clear();
+
+   if (viewer->isUsingClient()) {
+      rslt = "<PC_DATA>\n";
+   }
+
+   Sprintf(buf, "\tHunger:  %i,  Thirst:  %i,  Drugged:  %i.\n",
+           hunger, thirst, drugged);
+   rslt.append(buf);
+   
+   if (viewer->isImmort() || (st | ST_LONG)) {
+      Sprintf(buf, "pk_count:  %i, died %i times, quest_points %i\n",
+              pk_count, died_count, quest_points);
+      rslt.append(buf);
+   }
+
+   if (viewer->isImmort()) {
+      Markup::toString(NULL, pc_data_flags, PC_DATA_FLAGS_NAMES, viewer, NULL, buf);
+      rslt.append(buf);
+      
+      Sprintf(buf, "\n\tDescriptor:  %i,  Host:  %S.\n", 
+              descriptor, &host);
+      rslt.append(buf);
+      
+      Sprintf(buf, "\tLink cond:  %i,  Mode:  %i,  Index:  %i.\n",
+              link_condition, mode, index);
+      rslt.append(buf);
+      
+      if (imm_data) {
+         Sprintf(buf, "IMM_LEVEL:  %i\n", imm_data->imm_level);
+         rslt.append(buf);
+      }//if
+      
+      if (viewer->isUsingClient()) {
+         rslt.append("</PC_DATA>\n");
+      }
+   }//if viewer is immortal
+}//toStringStat
 
 //*************************************************************//
 ///*********************  critter  ***************************///
@@ -2237,6 +2418,151 @@ void critter::setHP_MAX(int i) {
    short_cur_stats[23] = i; //MAX_HP of course...
 }
 
+void critter::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
+   String buf(1000);
+   mudlog.log(TRC, __FUNCTION__);
+   rslt.clear();
+
+   if (!isInUse()) {
+      rslt.append("This critter is UNDEFINED.\n");
+      return;
+   }//if
+
+   if (viewer->isUsingClient()) {
+      Sprintf(rslt, "<CRITTER %i>\n", getIdNum());
+   }
+   else {
+      if (viewer->isImmort()) {
+         Sprintf(rslt, "Critter:  %i\n", getIdNum());
+      }
+   }
+
+   Entity::toStringStat(viewer, buf, st);
+   rslt.append(buf);
+
+   Scriptable::toStringStat(viewer, buf);
+   rslt.append(buf);
+
+   short_desc.toStringStat("<SHORT_DESC>", "</SHORT_DESC>", viewer, buf);
+   rslt.append(buf);
+
+   in_room_desc.toStringStat("<NROOM_DESC>", "</NROOM_DESC>", viewer, buf);
+   rslt.append(buf);
+
+   if (viewer->isImmort()) {
+      Markup::toString(NULL, crit_flags, CRIT_FLAGS_NAMES, viewer, NULL, buf);
+      rslt.append(buf);
+
+      Sprintf(buf, "\nCLASS:  %s(%d)  race:  %s(%d)    Belongs to ZONE:  %i\n", 
+              getClassName(viewer), getClass(), getRaceName(viewer), getRace(),
+              getNativeZoneNum());
+      rslt.append(buf);
+      
+      Sprintf(buf, "VIS_BIT:  %i, see_bit:  %i, GOLD:  %i, exp: %i XP_WORTH: %i\n",
+              getVisBit(), getSeeBit(), getGold(), getExp(), getExp() / EXP_DIVISOR);
+      rslt.append(buf);
+      
+      Sprintf(buf, "POS: %i str: %i  int: %i  con: %i  cha: %i wis: %i  dex: %i\n",
+              getPosn(), getStr(), getInt(), getCon(), getCha(), getWis(), getDex());
+      rslt.append(buf);
+      
+      Sprintf(buf, "hit: %i  dam: %i  ac: %i  atks: %i  sex: %i\n",
+              getHit(), getDam(), getAC(), getAttacks(),
+              getSex() /* if only 'twere so easy!! :)*/);
+      rslt.append(buf);
+      
+      Sprintf(buf, "H: %i  M: %i V: %i  align: %i\n", getHp(), getMana(),
+              getMov(), getAlign());
+      rslt.append(buf);
+
+      /* done through 18 */
+      Sprintf(buf, "lvl: %i  Home_Town: %i  wimpy: %i  Prac: %i Hmx: %i  Mmx: %i\n",
+              getLevel(), getHomeTown(), getWimpy(), getPractices(),
+              getHpMax(), getManaMax());
+      rslt.append(buf);
+      
+      Sprintf(buf, "Vmx: %i  CRITTER_TYPE: %i  dam_rec_mod: %i  DAM_GIV_MOD: %i\n",
+              getMovMax(), CRITTER_TYPE, getDamRcvMod(), getDamGivMod());
+      rslt.append(buf);
+      
+      Sprintf(buf, "heat_resis: %i  COLD_RESIS: %i  elect_resis: %i  SPELL_RESIS: %i\n",
+              getHeatResist(), getColdResist(), getElectResist(), getSpellResist());
+      rslt.append(buf);
+      
+      Sprintf(buf, "RELIGION: %i  BH_dice_count: %i  BH_DICE_SIDES: %i\n",
+              getReligion(), getBhDiceCount(), getBhDiceSides());
+      rslt.append(buf);
+      
+      Sprintf(buf, "CUR_WEIGHT: %i  max_weight: %i PAUSE: %i HP_rgn: %i  MANA_rgn: %i\n",
+              getCurWeight(), getMaxWeight(), getPause(), getHpRegen(), getManaRegen());
+      rslt.append(buf);
+      
+      Sprintf(buf, "MOV_rgn: %i  naked_weight: %i\n\n", getMovRegen(),
+              getNakedWeight());
+      rslt.append(buf);
+   }//if isImmortal
+
+   if (temp_crit) {
+      temp_crit->toStringStat(viewer, buf);
+      rslt.append(buf);
+   }
+
+   if (pc) {
+      pc->toStringStat(viewer, buf, st);
+      rslt.append(buf);
+   }
+
+   if (mob) {
+      mob->toStringStat(viewer, buf);
+      rslt.append(buf);
+
+      if (shouldBeHoming()) {
+         Sprintf(buf, "\t\tHoming to room:  %i\n", getHomeRoom());
+         rslt.append(buf);
+      }
+   }
+
+   if (master) {
+      Sprintf(buf, "Master:  %S.\n", master->getName(viewer));
+      rslt.append(buf);
+   }//if
+
+   if (follower_of) {
+      Sprintf(buf, "Following:  %S.\n", follower_of->getName(viewer));
+      rslt.append(buf);
+   }//if
+
+   if (viewer->isImmort() || (st | ST_LONG)) {
+      if (isFighting()) {
+         rslt.append("Fighting:\n");
+         Markup::toString(&is_fighting, viewer, buf);
+         rslt.append(buf);
+      }//if
+      
+      if (!pets.isEmpty()) {
+         rslt.append("Pets:\n");
+         Markup::toString(&pets, viewer, buf);
+         rslt.append(buf);
+      }//if
+      
+      if (!followers.isEmpty()) {
+         rslt.append("Followers:\n");
+         Markup::toString(&followers, viewer, buf);
+         rslt.append(buf);
+      }//if
+      
+      if (!groupees.isEmpty()) {
+         rslt.append("Groupees:\n");
+         Markup::toString(&groupees, viewer, buf);
+         rslt.append(buf);
+      }//if
+   }
+
+   if (viewer->isUsingClient()) {
+      rslt.append("</CRITTER>\n");
+   }
+}//toStringStat
+
 // set in_room to zero
 void critter::doLeaveRoom() {
    room_list[IN_ROOM].removeCritter(this);
@@ -2307,7 +2633,7 @@ void critter::doPrompt() {
                targ.Append(HP);
                break;
              case 'H':     /* max hp */
-               targ.Append(HP_MAX);
+               targ.Append(getHpMax());
                break;
              case 'v':    /* cur mov */  
                targ.Append(MOV);
@@ -2342,7 +2668,7 @@ void critter::doPrompt() {
    if (isUsingClient()) {
       // HP, HP-MAX, MANA, MANA-MAX, MOV, MOV-MAX
       Sprintf(targ, "<PROMPT %i %i %i %i %i %i> ", // the trailing space is important.
-              getHP(), getHP_MAX(), getMana(), getManaMax(),
+              getHp(), getHpMax(), getMana(), getManaMax(),
               getMov(), getMovMax());
       show(targ);
    }
@@ -3096,7 +3422,7 @@ int critter::depositCoins(int count, critter& banker) { //do messages
  */
 int critter::getFieldValue(const char* field) const {
    if (strcasecmp(field, "HP") == 0) {
-      return getHP();
+      return getHp();
    }
    else if (strcasecmp(field, "MANA") == 0) {
       return getMana();
@@ -3111,6 +3437,17 @@ int critter::getFieldValue(const char* field) const {
       return 0;
    }
 }
+
+const char* critter::getSexName(critter* viewer) const {
+   if (SEX == 0)
+      return cstr(CS_FEMALE, *viewer);
+   else if (SEX == 1) 
+      return cstr(CS_MALE, *viewer);
+   else if (SEX == 2)
+      return cstr(CS_NEUTER, *viewer);
+   return "";
+}//getSexName
+
 
 /** Only valid for shop owners. */
 int critter::isOpen(int cmt, int do_msg, critter& pc) const {

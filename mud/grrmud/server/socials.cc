@@ -1,5 +1,5 @@
-// $Id: socials.cc,v 1.5 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: socials.cc,v 1.6 1999/08/16 00:37:07 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
 
 //
 //ScryMUD Server Code
@@ -41,7 +41,7 @@
 /* by shamu */
 void lag(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -89,7 +89,7 @@ void lag(int i_th, const String* vict, critter& pc, room& rm) {
 /* by shamu */
 void sigh(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -134,7 +134,7 @@ void sigh(int i_th, const String* vict, critter& pc, room& rm) {
 /* by Grock */
 void pout(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -178,7 +178,7 @@ void pout(int i_th, const String* vict, critter& pc, room& rm) {
 
 void rofl(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -225,7 +225,7 @@ void rofl(int i_th, const String* vict, critter& pc, room& rm) {
 /* shamu */
 void insane(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -277,7 +277,7 @@ void insane(int i_th, const String* vict, critter& pc, room& rm) {
 /* Social By Acrwyn */
 void flex(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -322,7 +322,7 @@ void flex(int i_th, const String* vict, critter& pc, room& rm) {
 /* Social by Acrwyn */
 void hug(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -366,7 +366,7 @@ void hug(int i_th, const String* vict, critter& pc, room& rm) {
 
 void poke(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -411,7 +411,7 @@ void poke(int i_th, const String* vict, critter& pc, room& rm) {
 
 void wink(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -455,7 +455,7 @@ void wink(int i_th, const String* vict, critter& pc, room& rm) {
 
 void hop(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -501,7 +501,7 @@ void hop(int i_th, const String* vict, critter& pc, room& rm) {
 /* Social By Acrwyn */
 void smile(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -546,7 +546,7 @@ void smile(int i_th, const String* vict, critter& pc, room& rm) {
 /* Social By Acrwyn */
 void growl(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -592,7 +592,7 @@ void growl(int i_th, const String* vict, critter& pc, room& rm) {
 /* Social By Acrwyn*/
 void dance(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -637,7 +637,7 @@ void dance(int i_th, const String* vict, critter& pc, room& rm) {
 /* Social By Acrwyn */
 void thank(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -683,7 +683,7 @@ void thank(int i_th, const String* vict, critter& pc, room& rm) {
 void curtsey(int i_th, const String* vict, critter& pc, room& rm)
 {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -729,7 +729,7 @@ void curtsey(int i_th, const String* vict, critter& pc, room& rm)
 /* ANOTHER Social by Acrwyn */
 void laugh(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -775,7 +775,7 @@ void laugh(int i_th, const String* vict, critter& pc, room& rm) {
 void chuckle(int i_th, const String* vict, critter& pc, room& rm)
 {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -820,7 +820,7 @@ void chuckle(int i_th, const String* vict, critter& pc, room& rm)
 /* Social By Acrwyn */
 void ack(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -865,7 +865,7 @@ void ack(int i_th, const String* vict, critter& pc, room& rm) {
 /* Social By Acrwyn */
 void bounce(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -910,7 +910,7 @@ void bounce(int i_th, const String* vict, critter& pc, room& rm) {
 /* Social By "The Love Monkey" */
 void burp(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -956,7 +956,7 @@ void burp(int i_th, const String* vict, critter& pc, room& rm) {
 void snicker(int i_th, const String* vict, critter& pc, room& rm)
 {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1001,7 +1001,7 @@ void snicker(int i_th, const String* vict, critter& pc, room& rm)
 /* Social By Acrwyn */
 void scream(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1047,7 +1047,7 @@ pc);
 /* Socials By Acrwyn */
 void panic(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1096,7 +1096,7 @@ rm, TRUE);
 /* Social By Acrwyn */
 void grunt(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1140,7 +1140,7 @@ void grunt(int i_th, const String* vict, critter& pc, room& rm) {
 /* Social By Acrwyn */
 void ponder(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1151,12 +1151,7 @@ void ponder(int i_th, const String* vict, critter& pc, room& rm) {
       else if (pc.POS > POS_SIT)
          show(NOT_IN_POSN, pc);
       else if (crit_ptr == &pc) {
-	 if (strcasecmp(*(Top(pc.names)), "levander") == 0) {
-	    show("You ARE a Ponder!!.\n", pc);
-	 }//if
-	 else {
-            show("You ponder your own existence.\n", pc);
-	 }//else
+         show("You ponder your own existence.\n", pc);
          Sprintf(buf, "ponders %s.\n", get_hisself_herself(pc));  
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
@@ -1191,7 +1186,7 @@ TRUE);
 void scratch(int i_th, const String* vict, critter& pc, room& rm)
 {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1236,7 +1231,7 @@ void scratch(int i_th, const String* vict, critter& pc, room& rm)
 /* Social By Acrwyn */
 void lick(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1281,7 +1276,7 @@ void lick(int i_th, const String* vict, critter& pc, room& rm) {
 /* Social By Acrwyn */
 void cackle(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1327,7 +1322,7 @@ void cackle(int i_th, const String* vict, critter& pc, room& rm) {
 /* by Acrwyn */
 void weep(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1373,7 +1368,7 @@ void weep(int i_th, const String* vict, critter& pc, room& rm) {
 /* by Acrwyn */
 void disco(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1418,7 +1413,7 @@ void disco(int i_th, const String* vict, critter& pc, room& rm) {
 
 void puke(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1464,7 +1459,7 @@ void puke(int i_th, const String* vict, critter& pc, room& rm) {
 
 void cheer(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1512,7 +1507,7 @@ void cheer(int i_th, const String* vict, critter& pc, room& rm) {
 
 void nod(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
    critter* targ = NULL;
 
@@ -1569,7 +1564,7 @@ void nod(int i_th, const String* vict, critter& pc, room& rm) {
 
 void nog(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
    critter* targ = NULL;
 
@@ -1625,7 +1620,7 @@ void nog(int i_th, const String* vict, critter& pc, room& rm) {
 
 void grin(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
    
    if (vict->Strlen()) {
@@ -1670,7 +1665,7 @@ void grin(int i_th, const String* vict, critter& pc, room& rm) {
 
 void wave(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1715,7 +1710,7 @@ void wave(int i_th, const String* vict, critter& pc, room& rm) {
 
 void bow(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1749,14 +1744,6 @@ void bow(int i_th, const String* vict, critter& pc, room& rm) {
                show(buf, *ptr);
             }//if
          }//while
-	 if (crit_ptr->mob && crit_ptr->mob->proc_data &&
-	     crit_ptr->mob->proc_data->bow_proc) {
-            ptr = crit_ptr;
-            if (crit_ptr->isMob()) {
-               ptr = mob_to_smob(*crit_ptr, rm.getRoomNum());
-            }//if
-            do_domob_bow_proc(*ptr, pc);
-	 }//if
       }//else
    }//if a victim
    else {      
@@ -1768,7 +1755,7 @@ void bow(int i_th, const String* vict, critter& pc, room& rm) {
 
 void curse(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
@@ -1803,14 +1790,6 @@ void curse(int i_th, const String* vict, critter& pc, room& rm) {
                show(buf, *ptr);
             }//if
          }//while
-	 if (crit_ptr->mob && crit_ptr->mob->proc_data &&
-	     crit_ptr->mob->proc_data->curse_proc) {
-           ptr = crit_ptr;
-	   if (crit_ptr->isMob()) {
-	     ptr = mob_to_smob(*crit_ptr, rm.getRoomNum());
-	   }//if
-	   do_domob_curse_proc(*ptr, pc);
-	 }//if
       }//else
    }//if a victim
    else {      
@@ -1824,7 +1803,7 @@ void curse(int i_th, const String* vict, critter& pc, room& rm) {
 
 void disdain(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {

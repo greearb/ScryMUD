@@ -1,5 +1,5 @@
-// $Id: Scriptable.h,v 1.2 1999/08/10 07:06:17 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
+// $Id: Scriptable.h,v 1.3 1999/08/16 00:37:06 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
 
 //
 //ScryMUD Server Code
@@ -50,7 +50,12 @@ public:
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
    virtual int clear();
-   virtual void toStringClient(String& rslt, critter* pc);
+
+   /** Give as much info as possible, used by immortals.  Include client
+    * tags if viewer has them enabled.
+    */
+   virtual void toStringStat(critter* viewer, String& rslt);
+
    virtual void show(critter* pc);
    virtual void showClient(critter* pc);
 

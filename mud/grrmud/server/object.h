@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.25 1999/08/13 06:32:54 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
+// $Id: object.h,v 1.26 1999/08/16 00:37:07 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
 
 //
 //ScryMUD Server Code
@@ -101,6 +101,7 @@ public:
    virtual int read(istream& da_file, int read_all = TRUE);
    virtual int write(ostream& da_file);
    virtual LEtypeE getEntityType() { return LE_OBJ_PROC; }
+   virtual void toStringStat(critter* viewer, String& rslt);
    
    static int getInstanceCount() { return _cnt; }
 };//obj_spec_data
@@ -132,6 +133,7 @@ public:
    virtual int read(istream& da_file, int read_all = TRUE);
    virtual int write(ostream& da_file);
    virtual LEtypeE getEntityType() { return LE_BAG_OBJ; }
+   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
    static int getInstanceCount() { return _cnt; }
 }; // bag_class
@@ -201,11 +203,13 @@ public:
    int read_v3(istream& da_file, int read_all);
    int read_v2(istream& da_file, String& name, short read_all);
 
+   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
    int isMagic();
 
    object* loseInv(object* obj);
    void gainInv(object* obj);
-
+   
+   bag_struct* getBag() { return bag; }
    int getIdNum();
    int getKeyNum();
    int getLevel() const { return extras[8]; }
@@ -240,6 +244,7 @@ public:
                       int comp5, ComponentEnum con_type);
 
    object* haveObjNumbered(int i_th, int num, int see_bit, room& rm);
+   object* haveObjNamed(int i_th, const String* name, critter* viewer);
 
    int isNamed(const String& name) const;
    int isLocked() const;
@@ -254,6 +259,7 @@ public:
    int isBulletinBoard() const;
    int isScroll() const;
    int isCoins() const { return OBJ_FLAGS.get(55); }
+   int isWeapon() const { return obj_flags.get(57); }
    int isHerb() const;
    int isPaused() const { return pause > 0; }
    int isModified() const { return is_modified; }

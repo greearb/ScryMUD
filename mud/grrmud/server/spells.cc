@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.14 1999/08/10 07:06:20 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
+// $Id: spells.cc,v 1.15 1999/08/16 00:37:07 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
 
 //
 //ScryMUD Server Code
@@ -495,7 +495,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
       }//else lost concentration
    }//else !canned
 
-   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
+   if (do_join_in_battle && agg.isFighting(vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -510,16 +510,12 @@ void cast_fireball(int i_th, const String* victim, critter& pc) {
    int spell_num = FIREBALL_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.IS_FIGHTING);
+      vict = pc.getFirstFighting();
    else 
       vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to barbeque??\n", pc);
       return;
-   }//if
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
    }//if
 
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
@@ -635,7 +631,7 @@ void do_cast_summon(critter& vict, critter& pc, int is_canned, int lvl) {
 
 void cast_passdoor(int i_th, const String* drr, critter& pc) {
    int spell_num = PASSDOOR_SKILL_NUM;
-   door* dr = door::findDoor(ROOM.DOORS, i_th, drr, pc.SEE_BIT, ROOM);
+   door* dr = ROOM.findDoor(i_th, drr, pc);
 
    if (!dr) {
       show("Which door do you wish to pass?\n", pc);
@@ -662,7 +658,7 @@ void cast_passdoor(int i_th, const String* drr, critter& pc) {
      return;
    }//if
 
-   if (!(mob_can_enter(pc, room_list[abs(dr->destination)], TRUE)))
+   if (!(mob_can_enter(pc, room_list[abs(dr->getDestination())], TRUE)))
      return;
 
    do_cast_passdoor(*dr, pc, FALSE, 0);  //does no error checking
@@ -707,7 +703,7 @@ void do_cast_passdoor(door& dr, critter& vict, int is_canned, int lvl) {
             room_list[vict.getCurRoomNum()], TRUE); 
       
       int is_dead;
-      vict.doGoToRoom(abs(dr.destination), NULL, NULL, is_dead,
+      vict.doGoToRoom(abs(dr.getDestination()), NULL, NULL, is_dead,
                       vict.getCurRoomNum(), 1);
       
       if (!is_dead) {
@@ -879,7 +875,7 @@ void cast_poison(int i_th, const String* victim, critter& pc) {
    int spell_num = POISON_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.IS_FIGHTING);
+      vict = pc.getFirstFighting();
    else 
       vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
@@ -887,11 +883,6 @@ void cast_poison(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-                          victim, pc.SEE_BIT);
-   }//if
- 
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
@@ -996,23 +987,20 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
    }//else !canned
 
    if (do_effects) {
-      stat_spell_cell* sp;
-
-      Cell<stat_spell_cell*> cll(vict.affected_by);
-      while ((sp = cll.next())) {
-         if (sp->stat_spell == spell_num) {
-            sp->bonus_duration += (int)((float)(lvl) / 3.0);
-            return;
-         }//if
-      }//while
-
-      Put(new stat_spell_cell(spell_num, lvl/3), vict.affected_by);
-      vict.HP_REGEN += POISON_HP_REGEN_AUGMENTATION;
-      vict.MV_REGEN += POISON_MV_REGEN_AUGMENTATION;
-      vict.MA_REGEN += POISON_MA_REGEN_AUGMENTATION;
+      SpellDuration* sd = vict.isAffectedBy(spell_num);
+      if (sd) {
+         sd->duration += (int)((float)(lvl) / 3.0);
+      }//if
+      else {
+         sd = new SpellDuration(spell_num, lvl/3);
+         vict.addAffectedBy(sd);
+         vict.HP_REGEN += POISON_HP_REGEN_AUGMENTATION;
+         vict.MV_REGEN += POISON_MV_REGEN_AUGMENTATION;
+         vict.MA_REGEN += POISON_MA_REGEN_AUGMENTATION;
+      }
    }//if
 
-   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
+   if (do_join_in_battle && agg.isFighting(vict)) {
       join_in_battle(agg, vict);
    }//if
 }//do_cast_poison
@@ -1067,22 +1055,20 @@ void do_cast_illuminate(room& rm, critter& agg, int is_canned,
 
    if (do_effects) {
       mudlog.log(DBG, "Doing illuminate effects.\n");
-      stat_spell_cell* sp;
 
-      Cell<stat_spell_cell*> cll(rm.affected_by);
-      while ((sp = cll.next())) {
-         if (sp->stat_spell == spell_num) {
-            sp->bonus_duration += (int)((float)(lvl) / 2.0);
-            return;
-         }//if
-      }//while
-
-      obj_ptr_log << "NOTE " << rm.getIdNum() << " " << &rm
-                  << "Adding to affected_rooms bcause of illuminate." << endl;
-
-      affected_rooms.gainData(&rm); //add to global affected list so
-                                     //spell can wear off eventually
-      Put(new stat_spell_cell(spell_num, lvl/2), rm.affected_by);
+      SpellDuration* sd = rm.isAffectedBy(spell_num);
+      if (sd) {
+         sd->duration += (int)((float)(lvl) / 2.0);
+      }//if
+      else {
+         obj_ptr_log << "NOTE " << rm.getIdNum() << " " << &rm
+                     << "Adding to affected_rooms bcause of illuminate." << endl;
+         room* hack = &rm;
+         affected_rooms.appendUnique(hack); //add to global affected list so
+                                            //spell can wear off eventually
+         sd = new SpellDuration(spell_num, lvl/2);
+         rm.addAffectedBy(sd);
+      }
       rm.setVisBit(rm.getVisBit() & ~1);  //make it light
    }//if
 }//do_cast_illuminate

@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.13 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: misc.h,v 1.14 1999/08/16 00:37:07 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
 
 //
 //ScryMUD Server Code
@@ -47,8 +47,6 @@ extern SafeList<object*> obj_to_be_disolved_list; //grrmud.cc
 extern SafeList<critter*> pulsed_proc_mobs;
 extern SafeList<room*> pulsed_proc_rooms;
 extern SafeList<object*> pulsed_proc_objects;
-extern PtrArray<room> proc_action_rooms;
-extern PtrArray<object> proc_action_objs;
 
 extern BugCollection bl_ideas;
 extern BugCollection bl_bugs;
@@ -104,9 +102,9 @@ void show_all_but_2(critter& A, critter& B, const char* message,
 void show_all(const char* msg, const room& rm);
 
 int vDoShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
-                List<critter*>& lst, CSentryE cs_entry, va_list argp);
+                SafeList<critter*>& lst, CSentryE cs_entry, va_list argp);
 int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
-               List<critter*>& lst, CSentryE cs_entry, ...);
+               SafeList<critter*>& lst, CSentryE cs_entry, ...);
 
 void out_str(const SafeList<String*>& lst, critter& pc); 
 void out_crit(const SafeList<critter*>& lst, critter& pc, int see_all = FALSE);

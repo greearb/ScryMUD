@@ -1,5 +1,5 @@
-// $Id: door.cc,v 1.5 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: door.cc,v 1.6 1999/08/16 00:37:07 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
 
 //
 //ScryMUD Server Code
@@ -133,6 +133,27 @@ int door_data::read(istream& da_file, int read_all = TRUE) {
    return 0;
 }//Read
 
+void door_data::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
+   String buf(500);
+
+   if (viewer->isUsingClient()) {
+      Sprintf(rslt, "<DOOR_DATA %i>\n", getIdNum());
+   }
+   else {
+      Sprintf(rslt, "Door Data: %i", getIdNum());
+   }
+
+   Entity::toStringStat(viewer, buf, st);
+   rslt.append(buf);
+
+   Closable::toStringStat(viewer, buf, st);
+   rslt.append(buf);
+
+   if (viewer->isUsingClient()) {
+      rslt.append("</DOOR_DATA>\n");
+   }
+}//toStringStat
+
 
 int door_data::write(ostream& da_file) {
    MetaTags mt(*this);
@@ -265,10 +286,43 @@ int door::read(istream& da_file, int read_all = TRUE) {
    }//else, _v3
    
    if (isAffected()) {
-      affected_doors.gainData(this);
+      door* hack = this;
+      affected_doors.appendUnique(hack);
    }
    return 0;
 }// read()
+
+
+void door::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
+   String buf(500);
+
+   if (viewer->isUsingClient()) {
+      rslt = "<DOOR>\n";
+   }
+   else {
+      rslt = "Door:\n";
+   }
+
+   if (viewer->isImmort()) {
+      Sprintf(buf, "Destination: %i  Distance: %i  Ticks-till-Disolve: %i\n",
+              destination, distance, ticks_till_disolve);
+      rslt.append(buf);
+
+      if (crit_blocking) {
+         Sprintf(buf, "Blocked by: %S\n", crit_blocking->getName(viewer));
+         rslt.append(buf);
+      }
+   }
+
+   if (dr_data) {
+      // This is where the interesting stuff is kept.
+      dr_data->toStringStat(viewer, buf, st);
+      rslt.append(buf);
+   }
+   if (viewer->isUsingClient()) {
+      rslt.append("</DOOR>\n");
+   }
+}//toStringStat
 
 
 int door::write(ostream& da_file) {

@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.15 1999/08/13 06:32:54 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
+// $Id: door.h,v 1.16 1999/08/16 00:37:07 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
 
 //
 //ScryMUD Server Code
@@ -54,6 +54,7 @@ public:
    static int getInstanceCount() { return _cnt; }
 
    String* getDirection();
+   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
    virtual LEtypeE getEntityType() { return LE_DOOR_DATA; }
 
@@ -97,6 +98,8 @@ public:
    void setCritBlocking(critter* pc) { crit_blocking = pc; }
    int getDestination() const { return destination; }
    void setDestination(int val) { destination = val; }
+   int getDistance() const { return distance; }
+   void setDistance(int val) { distance = val; }
 
    int isOwnedBy(critter& pc);
    int getVisBit() const { if (dr_data) return dr_data->getVisBit(); return 0; }
@@ -122,6 +125,8 @@ public:
    void setDestructable(int val) { dr_data->setDestructable(val); }
    void setLockable(int val) { dr_data->setLockable(val); }
    void setBlocked(int val) { dr_data->setBlocked(val); }
+
+   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
    int getKeyNum() const {
       if (dr_data) 

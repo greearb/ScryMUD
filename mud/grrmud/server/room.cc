@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.35 1999/08/12 06:26:05 greear Exp $
-// $Revision: 1.35 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
+// $Id: room.cc,v 1.36 1999/08/16 00:37:07 greear Exp $
+// $Revision: 1.36 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
 
 //
 //ScryMUD Server Code
@@ -40,30 +40,25 @@
 
 int KeywordPair::_cnt = 0;
 
-void KeywordPair::show(int idx, critter& pc) {
+void KeywordPair::toStringStat(critter* viewer, String& rslt, int idx,
+                               ToStringTypeE st) {
    String buf(100);
+   rslt.clear();
+   
+   if (viewer->isUsingClient()) {
+      Sprintf(rslt, "<KEYWORD %i>", idx);
+      Entity::toStringStat(viewer, rslt, st);
+      rslt.append(buf);
+      rslt.append("</KEYWORD>");
+   }
+   else {
+      Sprintf(buf, "Keyword [%i]\n", idx);
+      rslt.append(buf);
+      Entity::toStringStat(viewer, buf, st);
+      rslt.append(buf);
+   }
+}//toStringStat
 
-   Sprintf(buf, "Keyword [%i]\n", idx);
-
-   pc.show(buf);
-   Entity::show(&pc);
-}//show
-
-void KeywordPair::toStringClient(String& rslt, int idx, critter& pc) {
-   String buf(1000);
-
-   Sprintf(rslt, "<KEYWORD %i>", idx);
-   Entity::toStringClient(buf, &pc);
-   rslt.append(buf);
-   rslt.append("</KEYWORD>");
-}
-
-void KeywordPair::showClient(int idx, critter& pc) {
-   String buf(1000);
-   toStringClient(buf, idx, pc);
-   pc.show(buf);
-}//show
-      
 
 KeywordPair::~KeywordPair() {
    _cnt--;
@@ -916,73 +911,54 @@ int room::getZoneNum() {
    return ZoneCollection::instance().getZoneFor(*this).getIdNum();
 }
 
+void room::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
+   String buf(500);
 
-void room::show(critter& pc) {
-
-   String buf2(100);
-
-   Sprintf(buf2, "  Belongs to zone:  %i.\n", getZoneNum());
-   pc.show(buf2);
-
-   Entity::show(&pc);
-   Scriptable::show(&pc);
-
-   pc.show(short_desc, TRUE);
-
-   SCell<KeywordPair*> cll(keywords);
-   KeywordPair* ptr;
-   int cnt = 0;
-
-   while ((ptr = cll.next())) {
-      ptr->show(cnt, pc);
-      cnt++;
+   if (viewer->isUsingClient()) {
+      Sprintf(rslt, "<ROOM %i> ", getIdNum());
+   }
+   else {
+      Sprintf(rslt, "Room: %i", getIdNum());
    }
 
-   out_field(room_flags, pc, ROOM_FLAGS_NAMES);
-
-   pc.show("\n");
-   Sprintf(buf2, "v_bit: %i  mv$: %i  r_num: %i  pause: %i\n", 
-           getVisBit(), getMovCost(), getRoomNum(), getPause());
-   pc.show(buf2);
-
-   Sprintf(buf2, "Number of critters:  %i  Number of Scripts Pending: %i\n\n",
-           critters.size(), pending_scripts.size());
-   pc.show(buf2);
-
-}//stat
-
-
-void room::toStringClient(String& rslt, critter& pc) {
-
-   String buf(1000);
-
-   Sprintf(rslt, "<ROOM %i> ", getIdNum());
-
-   Entity::toStringClient(buf, &pc);
+   Entity::toStringStat(viewer, buf, st);
    rslt.append(buf);
 
-   Scriptable::toStringClient(buf, &pc);
+   short_desc.toStringStat("<SHORT_DESC>", "</SHORT_DESC>\n", viewer, buf);
    rslt.append(buf);
 
-   rslt.append("<SHORT_DESC>");
-   short_desc.toStringClient(buf);
-   rslt.append(buf);
-   rslt.append("</SHORT_DESC>");
-
-   SCell<KeywordPair*> cll(keywords);
-   KeywordPair* ptr;
-   int cnt = 0;
-
-   while ((ptr = cll.next())) {
-      ptr->toStringClient(buf, cnt, pc);
+   if (viewer->isImmort() || (st | ST_IDENTIFY)) {
+      Markup::toString(NULL, room_flags, ROOM_FLAGS_NAMES,
+                       viewer, NULL, buf);
       rslt.append(buf);
-      cnt++;
+      
+      Sprintf(buf, "Movement Cost: %i\n", getMovCost());
+      rslt.append(buf);
    }
 
-   Markup::toString("<ROOM_FLAGS>", room_flags, ROOM_FLAGS_NAMES,
-                    pc, "</ROOM_FLAGS>");
+   if (viewer->isImmort()) {
+      SCell<KeywordPair*> cll(keywords);
+      KeywordPair* ptr;
+      int cnt = 0;
 
-}//toStringClient
+      while ((ptr = cll.next())) {
+         ptr->toStringStat(viewer, buf, cnt, st);
+         rslt.append(buf);
+         cnt++;
+      }
+
+      Scriptable::toStringStat(viewer, buf);
+      rslt.append(buf);
+
+      Sprintf(buf, "Number of critters:  %i  Number of Scripts Pending: %i\n\n",
+              critters.size(), pending_scripts.size());
+      rslt.append(buf);
+   }//if immort
+
+   if (viewer->isUsingClient()) {
+      rslt.append("</ROOM>\n");
+   }
+}//toStringStat
 
 
 /* called after OLC to enforce as much state as possible. */
@@ -1367,7 +1343,7 @@ critter* room::removeCritter(critter* crit) {
 }//removeCritter
 
 
-void room::getPetsFor(critter& owner, List<critter*>& rslts) {
+void room::getPetsFor(critter& owner, SafeList<critter*>& rslts) {
    critter* ptr;
    SCell<critter*> cll(critters);
    while ((ptr = cll.next())) {

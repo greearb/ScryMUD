@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.30 1999/08/10 07:06:18 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
+// $Id: commands.cc,v 1.31 1999/08/16 00:37:06 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
 
 //
 //ScryMUD Server Code
@@ -72,7 +72,7 @@ int inventory(critter& pc) {
 int drop(int i_th, const String* pre_obj, const String* obj_all,
           critter& pc) {
    object *obj_ptr;
-   Cell<object*> cell(pc.inv);
+   SCell<object*> cell(pc.inv);
    String obj(25);
    short flag1;
 
@@ -167,7 +167,7 @@ int drop(int i_th, const String* pre_obj, const String* obj_all,
 int donate(int i_th, const String* pre_obj, const String* obj_all,
           critter& pc) {
    object *obj_ptr;
-   Cell<object*> cell(pc.inv);
+   SCell<object*> cell(pc.inv);
    String obj(25);
    short flag1;
 
@@ -309,7 +309,7 @@ int examine(int i_th, const String* obj, critter& pc) {
 
 int wear(int i_th, const String* obj, int j, const String* posn,
          critter &pc) {
-   Cell<object*> cell;
+   SCell<object*> cell;
    object *obj_ptr;
    int i = 0, t = 0;
 
@@ -328,7 +328,7 @@ int wear(int i_th, const String* obj, int j, const String* posn,
       pc.inv.head(cell);
       obj_ptr = cell.next();
     
-      if (IsEmpty(pc.inv)) {
+      if (pc.getInv().isEmpty()) {
          pc.show(CS_NOTHING_TO_WEAR);
       }//if
       else {
@@ -601,7 +601,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
          }
       }
 
-      show(rm.short_desc, pc);
+      pc.show(rm.getLongName(&pc));
       if (pc.USING_CLIENT) 
          show("</RM_SHORT_DESC>\n", pc);
       else
@@ -610,7 +610,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
       if (!pc.IS_BRIEF || ignore_brief) { //isn't brief
          if (pc.USING_CLIENT) 
             show("<RM_DESC>", pc);
-         show(rm.long_desc, pc);
+         pc.show(rm.getLongName(&pc));
          if (pc.USING_CLIENT) 
             show("</RM_DESC>\n", pc);
          else
@@ -629,9 +629,9 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
    else {                        /* look <thing> */
       if ((crit_ptr = rm.haveCritNamed(i_th, obj, pc, count_sofar))) {
          show("\n\n", pc);
-         show((crit_ptr->long_desc), pc);
+         pc.show(*(crit_ptr->getLongDesc(&pc)));
 
-         int cond = (int) (((float)crit_ptr->HP / (float)crit_ptr->HP_MAX) * 
+         int cond = (int) (((float)crit_ptr->getHp() / (float)crit_ptr->getHpMax()) * 
                           9.0);
          if (!check_l_range(cond, 0, 9, pc, FALSE)) {
             if (mudlog.ofLevel(ERR)) {
@@ -646,18 +646,13 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
             show(buf, pc);
          }//else
 
-	 int sanct_num = SANCTUARY_SKILL_NUM;
-
-         Cell<stat_spell_cell*> cll(crit_ptr->affected_by);
-         stat_spell_cell* sp;
-         while ((sp = cll.next())) {
-            if (sp->stat_spell == sanct_num) {
-               Sprintf(buf, cstr(CS_LOOK_GLOWS_BRIGHTLY, pc),
-                       get_he_she(*crit_ptr));
-	       buf.Cap();
-               show(buf, pc);
-            }//if
-         }//while
+         SpellDuration* sp = crit_ptr->isAffectedBy(SANCTUARY_SKILL_NUM);
+         if (sp) {
+            Sprintf(buf, cstr(CS_LOOK_GLOWS_BRIGHTLY, pc),
+                    get_he_she(*crit_ptr));
+            buf.Cap();
+            show(buf, pc);
+         }//if
 
          for (int q = 1; q < MAX_EQ; q++) {
             if (crit_ptr->EQ[q]) {
@@ -681,26 +676,26 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
       else if ((obj_ptr = rm.haveAccessibleObjNamed(i_th - count_sofar, obj, pc,
                                                     posn, count_sofar))) {
          show("\n\n", pc);
-         show((obj_ptr->long_desc), pc);
+         pc.show(*(obj_ptr->getLongDesc(&pc)));
          show("\n", pc);
          
          String cmd = "look";
          rm.checkForProc(cmd, NULL_STRING, pc, obj_ptr->OBJ_NUM);
       }
-      else if ((kwd_ptr = rm.haveKeyword(i_th - count_sofar, obj, count_sofar))) {
+      else if ((kwd_ptr = rm.haveKeyword(i_th - count_sofar, obj, &pc,
+                                         count_sofar))) {
          pc.show("\n\n");
-         pc.show(kwd_ptr->desc);
+         pc.show(kwd_ptr->getLongDesc(&pc));
          pc.show("\n");
       }
-      else if ((door_ptr = 
-           door::findDoor(rm.doors, i_th - count_sofar, obj, pc.SEE_BIT,
-                          rm, count_sofar))) {
+      else if ((door_ptr = ROOM.findDoor(i_th - count_sofar, obj, pc,
+                                         count_sofar))) {
          show("\n\n", pc);
-         show(door_ptr->dr_data->long_desc, pc);
+         pc.show(door_ptr->getLongDesc(&pc));
          show("\n", pc);
 
          String cmd = "look";
-         rm.checkForProc(cmd, NULL_STRING, pc, door_ptr->dr_data->door_num);
+         rm.checkForProc(cmd, NULL_STRING, pc, door_ptr->getIdNum());
       }//if
       else if (strncasecmp(*obj, "sky", obj->Strlen()) == 0) {
          if (ROOM.canSeeSky()) {
@@ -732,8 +727,9 @@ int hit(int i_th, const String* victim, critter &pc) {
    }//if
 
    if (crit_ptr->isMob()) {
-      crit_ptr = mob_to_smob(*crit_ptr,  pc.getCurRoomNum(), TRUE, i_th,
-                             victim, pc.SEE_BIT);
+      mudlog << "ERROR: found a non-modified MOB in hit.";
+      pc.show("ERROR: found a non-modified MOB in hit, tell an IMM");
+      return -1;
    }//if
       
    if (!ok_to_do_action(crit_ptr, "mSVPF", -1, pc)) {
@@ -1063,7 +1059,7 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
 int put(int i, const String* item, int j, const String* bag, 
          critter& pc) {      
    String buf(100);
-   Cell<object*> cell;
+   SCell<object*> cell;
    object* bag_ptr, *tmp;
    object* vict_ptr;
    short item_in_inv = TRUE, bag_in_inv = TRUE, found_it = FALSE;
@@ -1083,7 +1079,7 @@ int put(int i, const String* item, int j, const String* bag,
 
       if (!bag_ptr) {
          bag_in_inv = FALSE;
-         bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
+         bag_ptr = ROOM.haveObjNamed(j, bag, pc);
       }//if
       if (!bag_ptr) {
          pc.show(CS_NO_CONTAINER);
@@ -1097,14 +1093,12 @@ int put(int i, const String* item, int j, const String* bag,
          pc.show(CS_NOT_OPEN);
          return -1;
       }//if 
-      if (!bag_ptr->IN_LIST) { //its not a SOBJ
+      if (!bag_ptr->isModified()) { //its not a SOBJ
          if (bag_in_inv) { 
-            tmp = obj_to_sobj(*bag_ptr, &(pc.inv), TRUE, j,
-                   bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, &(pc), TRUE, j, bag, pc);
          }//if
          else {
-            tmp = obj_to_sobj(*bag_ptr, ROOM.getInv(), TRUE, j,
-                   bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, pc.getCurRoom(), TRUE, j, bag, pc);
          }//else
          bag_ptr = tmp;
       }//if
@@ -1160,14 +1154,13 @@ int put(int i, const String* item, int j, const String* bag,
          pc.show(CS_NOT_OPEN);
          return -1;
       }//if 
-      if (!bag_ptr->IN_LIST) { //its not a SOBJ
+      if (!bag_ptr->isModified()) { //its not a SOBJ
          if (bag_in_inv) { 
-            tmp = obj_to_sobj(*bag_ptr, &(pc.inv), TRUE, j,
-                              bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, &(pc), TRUE, j,
+                              bag, pc);
          }//if
          else {
-            tmp = obj_to_sobj(*bag_ptr, ROOM.getInv(), TRUE, j,
-                              bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, pc.getCurRoom(), TRUE, j, bag, pc);
          }//else
          bag_ptr = tmp;
       }//if
@@ -1222,19 +1215,17 @@ int put(int i, const String* item, int j, const String* bag,
          pc.show(CS_NOT_OPEN);
          return -1;
       }//if 
-      if (!bag_ptr->IN_LIST) { //its not a SOBJ
+      if (!bag_ptr->isModified()) { //its not a SOBJ
          if (bag_in_inv) { 
-            tmp = obj_to_sobj(*bag_ptr, &(pc.inv), TRUE, j,
-                              bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, &(pc), TRUE, j, bag, pc);
          }//if
          else {
-            tmp = obj_to_sobj(*bag_ptr, ROOM.getInv(), TRUE, j,
-                              bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, pc.getCurRoom(), TRUE, j, bag, pc);
          }//else
          bag_ptr = tmp;
       }//if
       if (!vict_ptr) {
-         vict_ptr = ROOM.haveObjNamed(i, item, pc.SEE_BIT);
+         vict_ptr = ROOM.haveObjNamed(i, item, pc);
          item_in_inv = FALSE;
       }//if
       if (!vict_ptr) {
@@ -1266,7 +1257,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
    object* vict_ptr = NULL;
    object* tmp = NULL;;
    short bag_in_inv = TRUE, found_it = FALSE;
-   Cell<object*>  cell;
+   SCell<object*>  cell;
    short tst = FALSE;
 
    //mudlog.log(DBG, "In get\n");
@@ -1290,10 +1281,6 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
          if (detect(pc.SEE_BIT, (vict_ptr->OBJ_VIS_BIT | 
                                  ROOM.getVisBit()))) {
             tst = TRUE; //Something is there....
-            if (mudlog.ofLevel(DBG)) {
-               mudlog << "detected object:  " << vict_ptr->short_desc
-                      << endl;
-            }
 
             if (obj_get_by(*vict_ptr, pc, TRUE)) {
                pc.gainInv(vict_ptr);
@@ -1324,7 +1311,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
       bag_in_inv = FALSE;
       if (!bag_ptr) {
          bag_in_inv = TRUE;
-         bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
+         bag_ptr = ROOM.haveObjNamed(j, bag, pc);
       }//if
       if (!bag_ptr) {
          if (do_msg)
@@ -1346,14 +1333,12 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
             pc.show(CS_NOT_OPEN);
          return -1;
       }//if 
-      if (!bag_ptr->IN_LIST) { //its not a SOBJ
+      if (!bag_ptr->isModified()) { //its not a SOBJ
          if (bag_in_inv) { 
-            tmp = obj_to_sobj(*bag_ptr, &(pc.inv), TRUE, j,
-                              bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, &(pc), TRUE, j, bag, pc);
          }//if
          else {
-            tmp = obj_to_sobj(*bag_ptr, ROOM.getInv(), TRUE, j,
-                              bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, pc.getCurRoom(), TRUE, j, bag, pc);
          }//else
          bag_ptr = tmp;
       }//if
@@ -1412,12 +1397,12 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
    }//if     
    else if (strncasecmp(*item, "all", item->Strlen()) == 0){ // "get all bag"
       mudlog.log(DBG, "get called like: get all bag\n");
-      bag_ptr = have_obj_named(pc.inv, j, bag, pc.SEE_BIT, ROOM);
+      bag_ptr = pc.haveObjNamed(j, bag, &pc);
       bag_in_inv = TRUE;
      
       if (!bag_ptr) {
          bag_in_inv = FALSE;
-         bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
+         bag_ptr = ROOM.haveObjNamed(j, bag, pc);
       }//if
       if (!bag_ptr) {
          if (do_msg)
@@ -1444,14 +1429,12 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
             pc.show(CS_NO_BULLETIN_BOARD);
          return -1;
       }
-      if (!bag_ptr->IN_LIST) { //its not a SOBJ
+      if (!bag_ptr->isModified()) { //its not a SOBJ
          if (bag_in_inv) { 
-            tmp = obj_to_sobj(*bag_ptr, &(pc.inv), TRUE, j,
-                              bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, &(pc), TRUE, j, bag, pc);
          }//if
          else {
-            tmp = obj_to_sobj(*bag_ptr, ROOM.getInv(), TRUE, j,
-                              bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, pc.getCurRoom(), TRUE, j, bag, pc);
          }//else
          bag_ptr = tmp;
       }//if
@@ -1513,10 +1496,10 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
 
       mudlog.log(DBG, "get called like: get 2.bag sack\n");
 
-      bag_ptr = have_obj_named(pc.inv, j, bag, pc.SEE_BIT, ROOM);
+      bag_ptr = pc.haveObjNamed(j, bag, &pc);
 
       if (!bag_ptr) {     
-         bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
+         bag_ptr = ROOM.haveObjNamed(j, bag, pc);
          bag_in_inv = FALSE;
       }//if
       if (!bag_ptr) {
@@ -1541,19 +1524,16 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
       }//if
 
 			/* have a valid bag_ptr here */
-      if (!bag_ptr->IN_LIST) { //its not a SOBJ
+      if (!bag_ptr->isModified()) { //its not a SOBJ
          if (bag_in_inv) { 
-            tmp = obj_to_sobj(*bag_ptr, &(pc.inv), TRUE, j,
-                              bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, &(pc), TRUE, j, bag, pc);
          }//if
          else {
-            tmp = obj_to_sobj(*bag_ptr, ROOM.getInv(), TRUE, j,
-                              bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, pc.getCurRoom(), TRUE, j, bag, pc);
          }//else
          bag_ptr = tmp;
       }//if
-      if (!(vict_ptr = have_obj_named(bag_ptr->inv, i, item, 
-                            pc.SEE_BIT, ROOM))) {
+      if (!(vict_ptr = bag_ptr->haveObjNamed(i, item, &pc))) {
          if (do_msg) {
             Sprintf(buf, cstr(CS_NO_CONTAIN_OBJ, pc), bag, item);
             show(buf, pc);
@@ -1582,8 +1562,8 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
 
 
 int say(const char* message, critter& pc, room& rm) {
-   List<critter*> tmp_lst(rm.getCrits());
-   Cell<critter*> cell(tmp_lst);
+   SafeList<critter*> tmp_lst(rm.getCrits());
+   SCell<critter*> cell(tmp_lst);
    critter* crit_ptr;
    String buf(200);
    String msg;
@@ -1600,7 +1580,7 @@ int say(const char* message, critter& pc, room& rm) {
       return -1;
    }//if
    else { //good to go
-      Cell<object*> ocll(*(rm.getInv()));
+      SCell<object*> ocll(*(rm.getInv()));
       object* optr;
       while ((optr = ocll.next())) {
          if (optr->obj_proc && optr->obj_proc->w_eye_owner) {
@@ -1692,8 +1672,8 @@ int emote(CSentryE cs_entry, critter& pc, room& rm, short show_non_detects,
 
 int do_emote(const char* message, CSentryE cs_entry, critter& pc, room& rm, 
              short show_non_detects, int possessive, critter* crit = NULL) {
-   List<critter*> tmp_lst(rm.getCrits());
-   Cell<critter*> cell(tmp_lst);
+   SafeList<critter*> tmp_lst(rm.getCrits());
+   SCell<critter*> cell(tmp_lst);
    critter* crit_ptr;
    String buf(200);
    String msg;
@@ -1714,7 +1694,7 @@ int do_emote(const char* message, CSentryE cs_entry, critter& pc, room& rm,
    msg = message;
    //   pc.drunkifyMsg(msg);
 
-   Cell<object*> ocll(*(rm.getInv()));
+   SCell<object*> ocll(*(rm.getInv()));
    object* optr;
    while ((optr = ocll.next())) {
       if (optr->obj_proc && (crit_ptr = optr->obj_proc->w_eye_owner)) {
@@ -1789,7 +1769,7 @@ int do_emote(const char* message, CSentryE cs_entry, critter& pc, room& rm,
 
 
 int yell(const char* message, critter& pc) {
-   Cell<critter*> cell(pc_list);
+   SCell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
    String msg;
@@ -1868,7 +1848,7 @@ int yell(const char* message, critter& pc) {
 
 
 int gossip(const char* message, critter& pc) {
-   Cell<critter*> cell(pc_list);
+   SCell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
    String msg;
@@ -1977,7 +1957,7 @@ int group_say(const char* message, critter& pc) {
    else {
       String tag;
       String untag;
-      Cell<critter*> cll;
+      SCell<critter*> cll;
       
       if (pc.FOLLOWER_OF && pc.GROUPEES.isEmpty()) {
          pc.FOLLOWER_OF->GROUPEES.head(cll);
@@ -2040,7 +2020,7 @@ int group_say(const char* message, critter& pc) {
 
 
 int wizchat(const char* message, critter& pc) {
-   Cell<critter*> cell(pc_list);
+   SCell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
    String msg;
@@ -2113,7 +2093,7 @@ int wizchat(const char* message, critter& pc) {
 
 
 int auction(const char* message, critter& pc) {
-   Cell<critter*> cell(pc_list);
+   SCell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
    String msg;
@@ -2190,7 +2170,7 @@ int auction(const char* message, critter& pc) {
 
 
 int shout(const char* message, critter& pc) {
-   Cell<critter*> cell(pc_list);
+   SCell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
    String msg;
@@ -2326,7 +2306,7 @@ int rest(critter& pc) {
       return 0;
    }//if
    if (pc.POS < POS_REST) {
-      if (IsEmpty(pc.IS_FIGHTING)) {
+      if (!pc.isFighting()) {
          pc.show(CS_DO_REST);
          emote(CS_REST_EMOTE, pc, ROOM, FALSE);
          pc.setPosn(POS_REST); //rest
@@ -2360,7 +2340,7 @@ int sit(critter& pc) {
       return 0;
    }//if
    if ((pc.POS < POS_REST) || (pc.POS == POS_PRONE)) {
-      if (IsEmpty(pc.IS_FIGHTING)) {
+      if (!pc.isFighting()) {
          pc.show(CS_DO_SIT);
          emote(CS_SIT_EMOTE, pc, ROOM, FALSE);
          pc.setPosn(POS_SIT);
@@ -2429,7 +2409,7 @@ int sleep(critter& pc) {
       return 0;
    }//if
    else if ((pc.POS <= POS_MED)) {
-      if (IsEmpty(pc.IS_FIGHTING)) {
+      if (!pc.isFighting()) {
          pc.show(CS_DO_SLEEP);
          emote(CS_EMOTE_SLEEP, pc, ROOM, FALSE);
          pc.setPosn(POS_SLEEP);
@@ -2462,7 +2442,7 @@ int meditate(critter& pc) {
       return 0;
    }//if
    else if ((pc.POS != POS_SLEEP)) {
-      if (IsEmpty(pc.IS_FIGHTING)) {
+      if (!pc.isFighting()) {
          if (d(1, 75) < d(1, get_percent_lrnd(MEDITATION_SKILL_NUM, pc))) {
             pc.show(CS_DO_MED);
             emote(CS_MED_EMOTE, pc, ROOM, FALSE);
@@ -2527,7 +2507,7 @@ int wake(critter& pc) {
 /** Returns < 0 on error */
 int move(critter& pc, int i_th, const char* direction, short do_followers, 
          room& rm, int& is_dead) {
-   Cell<critter*> cell;
+   SCell<critter*> cell;
    critter* ptr2;
    door* door_ptr;   
    String buf(100);
@@ -2553,11 +2533,11 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
    else if (pc.POS != POS_STAND) {
       pc.show(CS_MOV_STANDING);
    }//if
-   else if (!IsEmpty(pc.IS_FIGHTING)) { //if fighting
+   else if (pc.isFighting()) {
       pc.show(CS_MOV_FIGHTING);
    }//if
-   else if ((door_ptr = door::findDoor(rm.DOORS, i_th, &str_dir, ~0, rm))) {
-      dest = abs(door_ptr->destination);
+   else if ((door_ptr = ROOM.findDoor(i_th, &str_dir))) {
+      dest = abs(door_ptr->getDestination());
 
       if (door_ptr->isSecret() && //secret and closed
 	  door_ptr->isClosed()) {
@@ -2568,17 +2548,16 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
                  pc.SEE_BIT));
          show(buf, pc);
       }//if
-      else if (door_ptr->dr_data->door_data_flags.get(14) &&
-	       door_ptr->crit_blocking &&
-	       (door_ptr->crit_blocking != &pc)) {
+      else if (door_ptr->isBlocked() && door_ptr->getCritBlocking() &&
+	       (door_ptr->getCritBlocking() != &pc)) {
 	Sprintf(buf, cstr(CS_MOV_BLOCKED, pc),
-		name_of_door(*door_ptr, pc.SEE_BIT),
-		name_of_crit(*(door_ptr->crit_blocking), pc.SEE_BIT));
+		door_ptr->getName(&pc),
+		door_ptr->getCritBlocking()->getName(&pc));
 	show(buf, pc);
       }//else
       else if (mob_can_enter(pc, room_list[dest], TRUE)) {
          //mudlog << "In move(), about to make a tmp_lst.\n" << flush;
-         List<critter*> tmp_lst(rm.getCrits());
+         SafeList<critter*> tmp_lst(rm.getCrits());
          //mudlog << "In move(), made tmp_lst.\n" << flush;
          tmp_lst.head(cell);
          while ((ptr2 = cell.next())) {
@@ -2586,8 +2565,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 	     if (ptr2->mob) {
 	       if (ptr2->mob->proc_data) {
 		 if (ptr2->mob->proc_data->int1 != 0) {
-		   if (strcasecmp(
-				  *(Top(door_list[ptr2->INT1].names)), 
+		   if (strcasecmp(*(door_list[ptr2->INT1].getFirstName()), 
 				  *(direction_of_door(*door_ptr))) == 0) {
 		     if ((ptr2->FLAG1.get(3) && (ptr2->CLASS == pc.CLASS)) ||
 			 (ptr2->FLAG1.get(4) && (ptr2->RACE == pc.RACE))) {
@@ -2613,7 +2591,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
             int posn = -1;
             
 	    token = have_obj_numbered(pc.inv, 1, door_ptr->getTokenNum(),
-                                      pc.SEE_BIT, rm);
+                                      pc);
             if (!token) {
                for (int i = 1; i<MAX_EQ; i++) {
                   if (pc.EQ[i] && 
@@ -2636,7 +2614,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
                      pc.inv.loseData(token);
                      drop_eq_effects(*token, pc, FALSE);
                   }
-                  if (token->IN_LIST) {
+                  if (token->isModified()) {
                      recursive_init_unload(*token, 0);
                      delete token;
                   }
@@ -2655,13 +2633,13 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 
 	 //         mudlog.log(DBG, "passed tests in move\n
 	 if (!pc.isNoHassle())
-	    pc.PAUSE += door_ptr->distance;
+	    pc.PAUSE += door_ptr->getDistance();
 
          //Sprintf(buf, "leaves %s.\n", direction);
          String dname = *(door_ptr->getDirection());
          int is_normal_dir = FALSE;
          for (int i = 1; i<= 10; i++) {
-            if (strcasecmp(dname, *(door_list[i].names.peekFront())) == 0) {
+            if (strcasecmp(dname, regular_directions[i]) == 0) {
                is_normal_dir = TRUE;
                break;
             }//if
@@ -3070,7 +3048,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
 
    //mudlog.log(DBG, "In obj_get_by.\n");
 
-   if (obj.OBJ_CUR_WEIGHT > (pc.CRIT_MAX_WT_CARRY - pc.CRIT_WT_CARRIED)) {
+   if (obj.getCurWeight() > (pc.getMaxWeight() - pc.getCurWeight())) {
       if (do_msg) {
          Sprintf(buf, cstr(CS_TOO_MUCH_WT, pc),
               &(obj.short_desc));
@@ -3137,10 +3115,10 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
 int source_give_to(critter& pc, object& obj, critter& targ) {
    String buf(100);
 
-   if (obj.OBJ_CUR_WEIGHT > (targ.CRIT_MAX_WT_CARRY - 
-                             targ.CRIT_WT_CARRIED)) {
+   if (obj.getCurWeight() > (targ.getMaxWeight() -
+                             targ.getCurWeight())) {
       Sprintf(buf, cstr(CS_SGT_TOO_MUCH_WT, pc),
-              &(obj.short_desc), name_of_crit(targ, pc.SEE_BIT)); 
+              obj.getLongName(&pc), targ.getName(&pc));
       buf.Cap();
       pc.show(buf);
 
@@ -3222,8 +3200,8 @@ int obj_drop_by(object& obj, critter& pc) {
 int gain_eq_effects(object& obj, object* bag, critter& pc,
                     short bag_in_inv, short do_msg, int& deleted_obj) { 
    String buf(100);
-   List<critter*> tmp_lst(ROOM.getCrits());
-   Cell<critter*>  cell(tmp_lst);
+   SafeList<critter*> tmp_lst(ROOM.getCrits());
+   SCell<critter*>  cell(tmp_lst);
    critter* crit_ptr;
 
    deleted_obj = FALSE;
@@ -3250,7 +3228,7 @@ int gain_eq_effects(object& obj, object* bag, critter& pc,
          show(buf, pc);
       }//if
       pc.loseInv(&obj); 
-      if (obj.IN_LIST) {
+      if (obj.isModified()) {
          delete &obj; 
          deleted_obj = TRUE;
          return 0;
@@ -3258,7 +3236,6 @@ int gain_eq_effects(object& obj, object* bag, critter& pc,
    }//if
 
                    /* messages for !gold*/
-
    else if (bag_in_inv == -1) {
       if (do_msg) {
          Sprintf(buf, cstr(CS_DO_GET, pc), long_name_of_obj(obj, pc.SEE_BIT));
@@ -3277,17 +3254,17 @@ int gain_eq_effects(object& obj, object* bag, critter& pc,
    }//if
    else if (bag && (bag_in_inv == 0)) {
       if (do_msg) {
-         Sprintf(buf, cstr(CS_DO_GET_FROM, pc), obj.getLongName(pc.SEE_BIT),
-                 bag->getLongName(pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_DO_GET_FROM, pc), obj.getLongName(&pc),
+                 bag->getLongName(&pc));
          show(buf, pc);
          
          tmp_lst.head(cell);
          while ((crit_ptr = cell.next())) {
             if (crit_ptr != &pc) {
                Sprintf(buf, cstr(CS_DO_GET_FROM_O, *crit_ptr),
-                       pc.getName(crit_ptr->SEE_BIT),
-                       obj.getLongName(*crit_ptr), 
-                       bag->getLongName(*crit_ptr));
+                       pc.getName(crit_ptr),
+                       obj.getLongName(crit_ptr), 
+                       bag->getLongName(crit_ptr));
                buf.Cap();
                show(buf, *crit_ptr);
             }//if
@@ -3297,16 +3274,16 @@ int gain_eq_effects(object& obj, object* bag, critter& pc,
    else if ( bag && (bag_in_inv == TRUE)) {
       if (do_msg) {
          Sprintf(buf, cstr(CS_DO_GET_YOUR, pc),
-                 obj.getLongName(pc.SEE_BIT), bag->getShortName(pc.SEE_BIT));
+                 obj.getLongName(&pc), bag->getShortName(&pc));
          show(buf, pc);
 
          tmp_lst.head(cell);
          while ((crit_ptr = cell.next())) {
             if (crit_ptr != &pc) {
                Sprintf(buf, cstr(CS_DO_GET_YOUR_O, *crit_ptr),
-                       pc.getName(crit_ptr->SEE_BIT),
-                       obj.getLongName(crit_ptr->SEE_BIT),
-                       bag->getLongName(crit_ptr->SEE_BIT));
+                       pc.getName(crit_ptr),
+                       obj.getLongName(crit_ptr),
+                       bag->getLongName(crit_ptr));
                buf.Cap();
                show(buf, *crit_ptr);
             }//if
@@ -3347,12 +3324,12 @@ int wear_eq_effects(object& obj, critter& pc, int posn, short do_msg) {
       ROOM.checkLight(FALSE);
    }//if
                       /* do stat_affects now */
-   Cell<stat_spell_cell*> cell(obj.stat_affects);
-   stat_spell_cell* st_ptr;
-   while ((st_ptr = cell.next())) {
-      if (st_ptr->stat_spell <= MOB_SHORT_CUR_STATS) //ignore food/drink/drug
-         pc.short_cur_stats[st_ptr->stat_spell] += 
-              st_ptr->bonus_duration;
+   Cell<StatBonus*> cell(obj.stat_affects);
+   StatBonus* sb_ptr;
+   while ((sb_ptr = cell.next())) {
+      if (sb_ptr->stat <= MOB_SHORT_CUR_STATS) { //ignore food/drink/drug
+         pc.short_cur_stats[sb_ptr->stat] += sb_ptr->bonus;
+      }//if
    }//while
 
    if (posn == 9 || posn == 10) {
@@ -3442,56 +3419,56 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
    //   mudlog.log(DBG, "About to do stat_affects.\n");
 
                       /* do stat_affects now */
-   Cell<stat_spell_cell*> cell(obj.stat_affects);
-   stat_spell_cell* st_ptr;
-   while ((st_ptr = cell.next())) {
-      switch (st_ptr->stat_spell) {
+   Cell<StatBonus*> cell(obj.stat_affects);
+   StatBonus* sb_ptr;
+   while ((sb_ptr = cell.next())) {
+      switch (sb_ptr->stat) {
          case THIRST_ID:
-            pc.THIRST += (int)((float)(st_ptr->bonus_duration) * 2.5);
+            pc.THIRST += (int)((float)(sb_ptr->bonus) * 2.5);
             if (pc.THIRST < 0)
                pc.THIRST = 0;
-            if ((st_ptr->bonus_duration > 0) && (do_msg)) 
+            if ((sb_ptr->bonus > 0) && (do_msg)) 
                pc.show(CS_LESS_THIRSTY);
-	    else if ((st_ptr->bonus_duration < 0) && (do_msg))
+	    else if ((sb_ptr->bonus < 0) && (do_msg))
                pc.show(CS_MORE_THIRSTY);
             break;
          case HUNGER_ID: //hunger
-            pc.HUNGER += (int)((float)(st_ptr->bonus_duration) * 2.5);
+            pc.HUNGER += (int)((float)(sb_ptr->bonus) * 2.5);
             if (pc.HUNGER < 0)
                pc.HUNGER = 0;
-            if ((st_ptr->bonus_duration > 0) && (do_msg))
+            if ((sb_ptr->bonus > 0) && (do_msg))
                pc.show(CS_LESS_HUNGRY);
-	    else if ((st_ptr->bonus_duration < 0) && (do_msg))
+	    else if ((sb_ptr->bonus < 0) && (do_msg))
                pc.show(CS_MORE_HUNGRY);
             break;
          case DRUGGED_ID: //drugged
-            pc.DRUGGED += (int)((float)(st_ptr->bonus_duration) * 2.5);
+            pc.DRUGGED += (int)((float)(sb_ptr->bonus) * 2.5);
             if (pc.DRUGGED < 0)
                pc.DRUGGED = 0;
-            if ((st_ptr->bonus_duration > 0) && (do_msg)) 
+            if ((sb_ptr->bonus > 0) && (do_msg)) 
                pc.show(CS_MORE_DRUGGED);
-	    else if ((st_ptr->bonus_duration < 0) && (do_msg))
+	    else if ((sb_ptr->bonus < 0) && (do_msg))
                pc.show(CS_LESS_DRUGGED);
             break;
          case 15: // current HP
-	    pc.HP += d(1, st_ptr->bonus_duration);
-	    if ((st_ptr->bonus_duration > 0) && (do_msg))
+	    pc.HP += d(1, sb_ptr->bonus);
+	    if ((sb_ptr->bonus > 0) && (do_msg))
 	      pc.show(CS_EAT_GAIN_HP);
-	    else if ((st_ptr->bonus_duration < 0) && (do_msg))
+	    else if ((sb_ptr->bonus < 0) && (do_msg))
 	      pc.show(CS_EAT_LOSE_HP);
 	    break;
          case 16: // current MANA
-	    pc.MANA += d(1, st_ptr->bonus_duration);
-	    if ((st_ptr->bonus_duration > 0) && (do_msg))
+	    pc.MANA += d(1, sb_ptr->bonus);
+	    if ((sb_ptr->bonus > 0) && (do_msg))
 	      pc.show(CS_EAT_GAIN_MANA);
-	    else if ((st_ptr->bonus_duration < 0) && (do_msg))
+	    else if ((sb_ptr->bonus < 0) && (do_msg))
 	      pc.show(CS_EAT_LOSE_MANA);
 	    break;
          case 17: // current MOV
-	    pc.MOV += d(1, st_ptr->bonus_duration);
-	    if ((st_ptr->bonus_duration > 0) && (do_msg))
+	    pc.MOV += d(1, sb_ptr->bonus);
+	    if ((sb_ptr->bonus > 0) && (do_msg))
 	      pc.show(CS_EAT_GAIN_MOV);
-	    else if ((st_ptr->bonus_duration < 0) && (do_msg))
+	    else if ((sb_ptr->bonus < 0) && (do_msg))
 	      pc.show(CS_EAT_LOSE_MOV);
 	    break;
 
@@ -3523,12 +3500,11 @@ int remove_eq_effects(object& obj, critter& pc, short from_corpse,
    }//if light_source
 
                       /* do stat_affects now */
-   Cell<stat_spell_cell*> cell(obj.stat_affects);
-   stat_spell_cell* st_ptr;
-   while ((st_ptr = cell.next())) {
-      if (st_ptr->stat_spell <= MOB_SHORT_CUR_STATS) { //ignore food/drink/drug
-         pc.short_cur_stats[st_ptr->stat_spell] -= 
-                 st_ptr->bonus_duration;
+   Cell<StatBonus*> cell(obj.stat_affects);
+   StatBonus* sb_ptr;
+   while ((sb_ptr = cell.next())) {
+      if (sb_ptr->stat <= MOB_SHORT_CUR_STATS) { //ignore food/drink/drug
+         pc.short_cur_stats[sb_ptr->stat] -= sb_ptr->bonus;
       }//if
    }//while
 
@@ -3583,8 +3559,8 @@ int remove_eq_effects(object& obj, critter& pc, short from_corpse,
 
 int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk = FALSE) {
    String buf(100);
-   List<critter*> tmp_lst(ROOM.getCrits());
-   Cell<critter*> cell(tmp_lst);
+   SafeList<critter*> tmp_lst(ROOM.getCrits());
+   SCell<critter*> cell(tmp_lst);
    critter* crit_ptr;
 
    if (pc.isMob()) {
@@ -3609,7 +3585,7 @@ int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk = FALS
 
    if (obj.OBJ_FLAGS.get(62)) {
       pc.CRIT_FLAGS.turn_off(4); //no longer has a boat
-      Cell<object*> cll(pc.inv);
+      SCell<object*> cll(pc.inv);
       object* obj_ptr;
       while ((obj_ptr = cll.next())) {
          if (obj_ptr->OBJ_FLAGS.get(62)) {
@@ -3644,8 +3620,8 @@ int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk = FALS
 
 int donate_eq_effects(object& obj, critter& pc, short do_msg) {
    String buf(100);
-   List<critter*> tmp_lst(ROOM.getCrits());
-   Cell<critter*> cell(tmp_lst);
+   SafeList<critter*> tmp_lst(ROOM.getCrits());
+   SCell<critter*> cell(tmp_lst);
    critter* crit_ptr;
 
    if (pc.isMob()) {
@@ -3660,18 +3636,17 @@ int donate_eq_effects(object& obj, critter& pc, short do_msg) {
       while ((crit_ptr = cell.next())) {
          if (crit_ptr != &pc) {
             Sprintf(buf, cstr(CS_DONATES, *crit_ptr),
-                    name_of_crit(pc, crit_ptr->SEE_BIT), 
-                    long_name_of_obj(obj, crit_ptr->SEE_BIT));
+                    pc.getName(crit_ptr), obj.getLongName(crit_ptr));
             buf.Cap();
             show(buf, *crit_ptr);
          }//if
       }//while
       
-      List<critter*> lst2(room_list[DONATE_ROOM].getCrits());
+      SafeList<critter*> lst2(room_list[DONATE_ROOM].getCrits());
       lst2.head(cell);
       while ((crit_ptr = cell.next())) {
          Sprintf(buf, cstr(CS_OBJ_APPEARS, *crit_ptr),
-                 long_name_of_obj(obj, crit_ptr->SEE_BIT));
+                 obj.getLongName(crit_ptr));
          buf.Cap();
          show(buf, *crit_ptr);
       }//while
@@ -3679,7 +3654,7 @@ int donate_eq_effects(object& obj, critter& pc, short do_msg) {
 
    if (obj.OBJ_FLAGS.get(62)) {
       pc.CRIT_FLAGS.turn_off(4); //no longer has a boat
-      Cell<object*> cll(pc.inv);
+      SCell<object*> cll(pc.inv);
       object* obj_ptr;
       while ((obj_ptr = cll.next())) {
          if (obj_ptr->OBJ_FLAGS.get(62)) {
@@ -3709,8 +3684,8 @@ int donate_eq_effects(object& obj, critter& pc, short do_msg) {
 // Returns TRUE if can be put, FALSE otherwise.
 int eq_put_by(object& vict, object& bag, critter& pc, short bag_in_inv) {
    String buf(100);
-   List<critter*> tmp_lst(ROOM.getCrits());
-   Cell<critter*> cell(tmp_lst);
+   SafeList<critter*> tmp_lst(ROOM.getCrits());
+   SCell<critter*> cell(tmp_lst);
    critter* crit_ptr;
 
    if (pc.isMob()) {
