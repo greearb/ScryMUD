@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.21 1999/07/18 19:25:21 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/07/18 19:25:21 $
+// $Id: misc.cc,v 1.22 1999/07/18 20:12:03 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/07/18 20:12:03 $
 
 //
 //ScryMUD Server Code
@@ -1084,7 +1084,6 @@ void decrease_timed_affecting_objects() {
       }//if
 
 			    /* corpses */
-
       if (mudlog.ofLevel(DBG)) {
          mudlog << "About to look after corpses.." << endl;
       }
@@ -1116,6 +1115,10 @@ void decrease_timed_affecting_objects() {
       }
 
    }//while
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "At end of decrease_timed_affecting_objects." << endl;
+   }
 }//decrease_timed_affecting_objects
 
 
@@ -1180,8 +1183,11 @@ void disolve_object(object& obj) {
 void do_disolve_object(object& obj) {
    Cell<object*> cell(obj.inv);
    object *obj_ptr;
+   String buf(100);
 
-   //log("In disolve_object\n");
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "do_disolve_obj, addr: " << &obj << endl;
+   }
 
    if (!obj.in_list) {
       core_dump("ERROR:  disolve_object called on non-sobj.\n");
@@ -1196,7 +1202,18 @@ void do_disolve_object(object& obj) {
    //log("Before Clear()\n");
    obj.inv.clear();
 
-   obj.in_list->loseData(&obj); //delete the original 
+   if (obj.in_list->loseData(&obj)) {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "Successfully removed it from it's list.\n";
+      }
+   }
+   else {
+      Sprintf(buf, "Failed to remove object ptr: %i from it's list.",
+              (int)(&obj));
+      mudlog << "Failed to remove object ptr: " << &obj << " from it's list:"
+             << obj.in_list << endl;
+      core_dump(buf);
+   }
 				       //obj to be disolved
    //log("Lost data.\n");
    delete &obj; //should fire deconstructors

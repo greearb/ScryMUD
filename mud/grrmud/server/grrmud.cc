@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.25 1999/07/18 00:59:23 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
+// $Id: grrmud.cc,v 1.26 1999/07/18 20:12:03 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/07/18 20:12:03 $
 
 //
 //ScryMUD Server Code
@@ -703,16 +703,6 @@ void game_loop(int s)  {
          pc_ptr = new_pc_list.lose(pc_cell);
       }//while
 
-      Cell<object*> obj_cll;
-      obj_to_be_disolved_list.head(obj_cll);
-      object* obj_ptr;
-      obj_ptr = obj_cll.next();
-      while (obj_ptr) {
-	 do_disolve_object(*obj_ptr);
-//	 log("In grrmud.cc, outside of do_disolve_object.\n");
-	 obj_ptr = obj_to_be_disolved_list.lose(obj_cll);
-      }//while
-
       FD_ZERO(&input_set);
       FD_ZERO(&output_set);
       FD_ZERO(&exc_set);
@@ -839,8 +829,18 @@ void game_loop(int s)  {
          // We will pulse one-tenth at a time (room wise).
 	 if ((pulse % 10) == 0)
 	   do_pulsed_spec_procs(First_Room, Last_Room);
-	 if ((pulse % 379) == 0)
+	 if ((pulse % 379) == 0) {
 	    do_tick(); //takes care of zones too
+
+            object* obj_ptr;
+            while (!obj_to_be_disolved_list.isEmpty()) {
+               obj_ptr = obj_to_be_disolved_list.popFront();
+               if (mudlog.ofLevel(DBG)) {
+                  mudlog << "About to disolve object: " << obj_ptr << endl;
+               }
+               do_disolve_object(*obj_ptr);
+            }//while
+         }
          
          if (((pulse + 1) % 1000) == 0) {
 	   save_all();  //save all, about every 5 ticks

@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.33 1999/07/18 01:21:44 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 1999/07/18 01:21:44 $
+// $Id: critter.cc,v 1.34 1999/07/18 20:12:03 greear Exp $
+// $Revision: 1.34 $  $Author: greear $ $Date: 1999/07/18 20:12:03 $
 
 //
 //ScryMUD Server Code
@@ -2425,10 +2425,11 @@ void critter::Read(ifstream& ofile, short read_all) {
             }//if
          }//if
          else {
-            Sprintf(tmp_str, 
-             "ERROR: trying to load non-existant object: %i, 
-             in critter's:  %S, inv.\n", i, &short_desc);
-            mudlog.log(ERR, tmp_str);
+            if (mudlog.ofLevel(ERR)) {
+               mudlog << "ERROR: trying to load non-existant object: " << i
+                      << " in critter: " << getIdNum() << " name: "
+                      << getName() << endl;
+            }
          }//else
       }//else
       ofile >> i;

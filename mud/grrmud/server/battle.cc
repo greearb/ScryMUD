@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.23 1999/07/18 00:59:22 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/07/18 00:59:22 $
+// $Id: battle.cc,v 1.24 1999/07/18 20:12:03 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/18 20:12:03 $
 
 //
 //ScryMUD Server Code
@@ -1282,7 +1282,7 @@ critter* mob_to_smob(critter& mob, const int room_num,
    return mob_to_smob(mob, room_list[room_num], suppress_msg);
 }
 
-// Must use this one if we are reading in in room, because we
+// Must use this one if we are reading in room, because we
 // are using a temporary room to put them in.  Should migrate
 // to this one, as opposed to the one above anyway..safer.
 critter* mob_to_smob(critter& mob, room& rm, int suppress_sub_fail_msg) {
@@ -1296,13 +1296,11 @@ critter* mob_to_smob(critter& mob, room& rm, int suppress_sub_fail_msg) {
 
    if (!mob.isMob()) {
       mudlog.log(ERR, "ERROR:  mob_to_smob called on nonMOB.\n");
-      do_shutdown = TRUE;
       core_dump("mob_to_smob1");
    }//if
 
    if (mob.pc) {
       mudlog.log(ERR, "ERROR:  mob has pc_data in mob_to_smob.\n");
-      do_shutdown = TRUE;
       core_dump("mob_to_smob2");
    }//if
 
