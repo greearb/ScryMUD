@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.19 2001/10/03 07:23:04 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 2001/10/03 07:23:04 $
+// $Id: spells2.cc,v 1.20 2001/10/07 23:00:37 justin Exp $
+// $Revision: 1.20 $  $Author: justin $ $Date: 2001/10/07 23:00:37 $
 
 //
 //ScryMUD Server Code
@@ -2608,11 +2608,11 @@ void do_cast_sober(critter& vict, critter& agg, int is_canned, int lvl) {
          Sprintf(buf, "You take the drugs from %S.\n",
                  name_of_crit(vict, agg.SEE_BIT));
          show(buf, agg);
-         Sprintf(buf, "%S absorbs your minds poison!\n",
+         Sprintf(buf, "%S absorbs your mind's poison!\n",
                  name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
-         Sprintf(buf, "%S absorbs some mind poison!",
+         Sprintf(buf, "absorbs some of %S's mind poison!",
                  name_of_crit(vict, ~0));
          emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
