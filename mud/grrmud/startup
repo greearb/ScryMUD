@@ -54,7 +54,7 @@ while ( : ) do
 	echo "<P><a href=core.gz>core file</a><P><a href=gmud.gz>gmud</a></body></html>" >> ~/public_html/private/index.html
     fi
 
-    tail -500 ./GMUD.LOG > /tmp/gmud.log
+    tail -n 500 ./GMUD.LOG > /tmp/gmud.log
     mv /tmp/gmud.log ./GMUD.log
 
     # Keep a history of the log files that might have been created.
