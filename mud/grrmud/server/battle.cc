@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.33 2001/10/27 02:17:29 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
+// $Id: battle.cc,v 1.34 2001/10/30 04:38:52 justin Exp $
+// $Revision: 1.34 $  $Author: justin $ $Date: 2001/10/30 04:38:52 $
 
 //
 //ScryMUD Server Code
@@ -526,7 +526,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       damage = (float)(exact_raw_damage((int)damage, NORMAL, vict, agg));
    }//else
 
-   if ( xp_damage > damage ) { // if damage is more than enough to kill victim
+   if ( xp_damage < damage ) { // if damage is more than enough to kill victim
       sprintf (dam_str, " [dam > victim hp: %d]", (int)damage); //let imms know hp was exceeded by damage
       xp_damage = damage;          // set xp gain damage to actual hp lost by victim
    }
@@ -647,7 +647,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
 
    // changed to reflect only actual hp lost, not damage inflicted
    if (!agg.getCurRoom()->isColiseum()) { // no xp gain in a coliseum
-      gain_xp(agg, (int)(xp_damage * 1.5), FALSE);  //fighting xp 
+      gain_xp(agg, (int)(damage * 1.5), FALSE);  //fighting xp 
    }
 
    buf = aggbuf;
