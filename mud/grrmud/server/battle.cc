@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.35 2002/01/05 23:40:56 eroper Exp $
-// $Revision: 1.35 $  $Author: eroper $ $Date: 2002/01/05 23:40:56 $
+// $Id: battle.cc,v 1.36 2002/01/12 05:07:17 justin Exp $
+// $Revision: 1.36 $  $Author: justin $ $Date: 2002/01/12 05:07:17 $
 
 //
 //ScryMUD Server Code
@@ -29,6 +29,7 @@
 #include "misc.h"
 #include "misc2.h"
 #include "spec_prc.h"
+#include <math.h>
 #include <iostream.h>
 #include <fstream.h>
 #include "commands.h"
@@ -759,7 +760,12 @@ void agg_kills_vict(critter* agg, critter& vict, int& show_vict_tags,
    }//if
    
    float val = ((float)(vict.ALIGN) / 10.0);
-   // TODO: adjust so that the extremes are harder to reach.
+   // Adjust so that the extremes are harder to reach.
+   if ((vict.ALIGN < 0 && agg->ALIGN > 0) ||
+       (vict.ALIGN > 0 && agg->ALIGN < 0)) {
+      val *= 1.0/pow(10, fabs(agg->ALIGN/1000.0));
+   }
+
    if (agg) {
       agg->ALIGN -= (int)(val);
 
