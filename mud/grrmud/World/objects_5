@@ -78,8 +78,8 @@ End of Object.
 
 
 106	 Start of Object
-wood spear ~	names
-a wood spear
+spear wood ~	names
+a wooden spear
 ~
 A wood spear is on the floor here.
 ~
@@ -151,7 +151,7 @@ End of Object.
 
 
 110	 Start of Object
-waterskin old ~	names
+waterskin old skin ~	names
 an old waterskin
 ~
 An old waterskin lies here unattended.
@@ -160,10 +160,10 @@ This waterskin is old leather but still can hold water for thirst.
 
 ~
 59 54 40 21 10 -1  -:| bitfield |:-
-0 0 100 0 40 1 0 0 0 	extras
+18 0 100 0 40 1 0 0 0 	extras
 1024 100 110 5 	cur_stats
 9 -1  -:| bitfield |:-
-0 10 50 -1 	 bag_stuff
+0 20 50 -1 	 bag_stuff
 -1	affected_by
 7 -1	inv
 -1	stat_affects
@@ -171,18 +171,18 @@ End of Object.
 
 
 112	 Start of Object
-skin bear ~	names
-a large black bear skin
+skin bearskin ~	names
+a bearskin
 ~
-A large black bear skin lies here.
+A bearskin lies here.
 ~
 This skin is covered in coarse, thick, black hair.  The skin itself is very
 think and could probably make a pretty decent piece of leather armor.
 
 ~
-63 50 40 21 10 0 -1  -:| bitfield |:-
-0 0 100 0 50 25 0 0 0 	extras
-1024 1250 112 5 	cur_stats
+67 63 50 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 100 20 0 0 0 	extras
+1024 100 112 5 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -221,11 +221,11 @@ the forest. It is light weight but very powerful in earth fey.
 
 ~
 56 40 25 17 15 13 10 -1  -:| bitfield |:-
-0 0 100 0 30 2 0 0 14 	extras
+0 0 100 0 30 2 0 0 20 	extras
 1024 3100 114 5 	cur_stats
 -1	affected_by
 -1	inv
-30 10 9 -10 -1	stat_affects
+9 -20 24 50 23 25 -1	stat_affects
 End of Object.
 
 
@@ -302,11 +302,11 @@ It has a green handle and a silver blade made from the silver leaves.
 
 ~
 57 43 31 30 10 4 -1  -:| bitfield |:-
-0 0 30 0 10 2 4 5 20 	extras
+0 0 30 0 10 8 4 5 20 	extras
 1024 1100 118 5 	cur_stats
 -1	affected_by
 -1	inv
-8 4 -1	stat_affects
+8 3 7 10 23 15 -1	stat_affects
 End of Object.
 
 
@@ -445,6 +445,50 @@ peculiar odor about it which makes you wonder whether it's safe to eat...
 End of Object.
 
 
+396	 Start of Object
+fragment piece copper fragmented broken ~	names
+A broken piece of copper.
+~
+A broken pice of copper lies here.
+~
+This piece of copper, obviously broken is engraved with what appear to be
+strange runes. The piece is warm to the touch and causes your entire body to
+tingle.
+
+~
+67 63 40 21 19 10 4 -1  -:| bitfield |:-
+0 0 50 0 50 5 0 0 0 	extras
+1024 500 396 5 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+1 -1  -:| bitfield |:-
+880 879 878 777 397 396	 target object, companions
+End of Object.
+
+
+397	 Start of Object
+fragment piece copper fragmented broken ~	names
+A broken piece of copper.
+~
+A broken pice of copper lies here.
+~
+This piece of copper, obviously broken is engraved with what appear to be
+strange runes. The piece is warm to the touch and causes your entire body to
+tingle.
+
+~
+67 63 40 21 19 10 4 -1  -:| bitfield |:-
+0 0 50 0 50 5 0 0 0 	extras
+1024 500 397 5 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+1 -1  -:| bitfield |:-
+880 879 878 777 397 396	 target object, companions
+End of Object.
+
+
 746	 Start of Object
 skin wolf ~	names
 the skin of a wolf
@@ -456,7 +500,7 @@ It is a smooth, soft grey coat, removed cleanly from its previous owner.
 ~
 56 50 40 25 10 -1  -:| bitfield |:-
 0 0 100 0 100 8 0 0 0 	extras
-0 100 746 5 	cur_stats
+1024 100 746 5 	cur_stats
 -1	affected_by
 -1	inv
 9 -10 -1	stat_affects
@@ -474,12 +518,176 @@ It is a small skin, cleanly removed from the carcass of a fox.
 ~
 67 63 56 50 40 25 10 -1  -:| bitfield |:-
 0 0 100 0 100 5 0 0 0 	extras
-0 10 747 5 	cur_stats
+1024 10 747 5 	cur_stats
 -1	affected_by
 -1	inv
 9 -5 -1	stat_affects
 1 -1  -:| bitfield |:-
 755 747 0 0 0 0	 target object, companions
+End of Object.
+
+
+777	 Start of Object
+fragment piece copper fragmented broken ~	names
+A broken piece of copper.
+~
+A broken piece of copper lies here.
+~
+This piece of copper, obviously broken is engraved with what appear to be
+strange runes. The piece is warm to the touch and causes your entire body to
+tingle.
+
+~
+67 63 40 21 19 10 4 -1  -:| bitfield |:-
+0 0 50 0 50 5 0 0 0 	extras
+1024 500 777 5 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+1 -1  -:| bitfield |:-
+880 879 878 777 397 396	 target object, companions
+End of Object.
+
+
+829	 Start of Object
+key duo gwechwynn tarnel ~	names
+a key
+~
+A small key lies here.
+~
+It is a small metal key.
+
+~
+40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 0 0 0 	extras
+1024 10 829 5 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+878	 Start of Object
+fragment piece copper fragmented broken ~	names
+A broken piece of copper.
+~
+A broken piece of copper lies here.
+~
+This piece of copper, obviously broken is engraved with what appear to be
+strange runes. The piece is warm to the touch and causes your entire body to
+tingle.
+
+~
+67 63 40 21 19 10 4 -1  -:| bitfield |:-
+0 0 50 0 50 5 0 0 0 	extras
+1024 500 878 5 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+1 -1  -:| bitfield |:-
+880 879 878 777 397 396	 target object, companions
+End of Object.
+
+
+879	 Start of Object
+fragment link copper fragmented broken chain ~	names
+A copper link chain.
+~
+A copper link chain lies here.
+~
+This piece of copper chain, obviously broken is warm to the touch and causes
+your entire body to tingle.
+
+~
+67 63 40 21 19 10 4 -1  -:| bitfield |:-
+0 0 50 0 50 5 0 0 0 	extras
+1024 500 879 5 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+1 -1  -:| bitfield |:-
+880 879 878 777 397 396	 target object, companions
+End of Object.
+
+
+880	 Start of Object
+medalion pendant copper glowing ~	names
+A glowing copper pendant.
+~
+A glowing copper pendant floats in the air.
+~
+This copper pendant glows with a shocking aura. It's craftsmanship is perfect
+and engraved upon it is depicted a man made of foliage. On the back are small
+letters which spell out "Property of Lanfear"
+
+~
+40 24 23 19 10 4 -1  -:| bitfield |:-
+0 0 50 0 50 5 0 0 0 	extras
+1024 500 880 5 	cur_stats
+-1	affected_by
+-1	inv
+15 -1000 23 -1000 -1	stat_affects
+End of Object.
+
+
+881	 Start of Object
+ring swirling seas ~	names
+a ring of the swirling seas
+~
+A ring of the swirling seas is glowing on the ground.
+~
+The material the ring is made of is fluid and constantly moving. It's coloring
+and motion resembles that of a restless sea. It is warm to the touch and glows
+faintly with a bluish hue. There is a small inscription on the inside of the
+ring that reads "Ring of Water Walking -- Lanfear".
+
+~
+62 56 40 38 37 19 10 4 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 1 	extras
+1024 50000 881 5 	cur_stats
+-1	affected_by
+-1	inv
+29 -25 32 -5 2 1 24 25 -1	stat_affects
+End of Object.
+
+
+882	 Start of Object
+potion blue red swirling ~	names
+a swirling potion of seperated red and blue
+~
+A swirling potion of seperated red and blue lies here overlooked.
+~
+It is a small bottle, filled half with red fluid and the other half with blue
+fluid. The fluids are constantly swirling about one another without ever
+mixing.
+
+~
+63 52 40 21 10 -1  -:| bitfield |:-
+1 0 100 0 1 2 0 0 0 	extras
+1024 3000 882 5 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+1 25 205 30 -1 spell#, level (casts)
+End of Object.
+
+
+883	 Start of Object
+heart still beating gabnit ~	names
+the still beating heart of Gabnit
+~
+Gabnit's heart lies here beating on the ground.
+~
+This heart has been removed from Gabnit's chest. It still continues to beat.
+
+~
+40 21 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 5 0 0 0 	extras
+1024 500 883 5 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
 End of Object.
 
 

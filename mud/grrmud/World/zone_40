@@ -21,7 +21,7 @@ the clearing.
 1 2 4085 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-23 308 -1	mobs
+308 23 -1	mobs
 End of Room
 4084		Room Number
 ne clearing ~	names
@@ -384,7 +384,7 @@ along with a few small wooden dwellings.
 1 4 4098 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-12 14 -1	mobs
+14 12 -1	mobs
 End of Room
 4100		Room Number
 woods ~	names
@@ -406,7 +406,7 @@ trees.
 1 2 4097 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-268 308 -1	mobs
+308 268 -1	mobs
 End of Room
 4101		Room Number
 woods ~	names
@@ -440,6 +440,8 @@ behind the wall of trees.
 1024 1 4102 0 	cur_stats
 -1	affected_by
 -1	inv
+1 1 1993 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 1 3 4103 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 7 4101 0 door# dest# distance
@@ -464,7 +466,7 @@ tumbles down the mountain every so often.
 1 4 4102 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-12 306 -1	mobs
+306 12 -1	mobs
 End of Room
 4104		Room Number
 woods ~	names
@@ -560,7 +562,7 @@ water is clear and cold, and looks like it would be very fit to drink from!
 30 23 21 4 -1  -:| bitfield |:-
 1024 1 4108 0 	cur_stats
 -1	affected_by
-185 609 609 609 609 -1	inv
+609 609 609 609 185 -1	inv
 1 5 4109 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 2 4107 0 door# dest# distance
@@ -813,7 +815,7 @@ On a small path
 ~
 The air is noticeably humid here, and water drips off of leaves and branches
 occasionally.  An occasional forest critter runs across the path, darting
-quickly into the underbrush.  The path continues north and southeast.
+quickly into the underbrush.  The path continues north and southwest.
 
 ~
 30 23 21 4 -1  -:| bitfield |:-
@@ -846,7 +848,7 @@ direction.  The path leads to the northeast and west.
 1 2 4122 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-268 307 -1	mobs
+307 268 -1	mobs
 End of Room
 4122		Room Number
 woods ~	names
@@ -968,22 +970,6 @@ south and northeast.
 1 7 4129 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 4 4126 0 door# dest# distance
--1	door Affected_Bye (end of door)
--1	End of Doors
--1	mobs
-End of Room
-4128		Room Number
-woods ~	names
-Dark woods of Tyro.
-~
-none
-
-~
-30 23 21 4 -1  -:| bitfield |:-
-1024 1 4128 0 	cur_stats
--1	affected_by
--1	inv
-1 8 4127 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
 -1	mobs
@@ -1131,7 +1117,7 @@ heard echoing throughout the woods.
 1 8 4134 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-92 12 -1	mobs
+12 92 -1	mobs
 End of Room
 4136		Room Number
 woods ~	names
@@ -1437,6 +1423,8 @@ your movements.  The tunnel heads to the east.
 -1	door Affected_Bye (end of door)
 1 8 4147 0 door# dest# distance
 -1	door Affected_Bye (end of door)
+1 3 2008 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 -1	End of Doors
 -1	mobs
 End of Room
@@ -1452,28 +1440,8 @@ upon their stash!
 23 21 14 -1  -:| bitfield |:-
 1025 5 4149 0 	cur_stats
 -1	affected_by
-583 582 582 581 288 406 584 -1	inv
+406 288 581 582 582 583 -1	inv
 1 2 4148 0 door# dest# distance
--1	door Affected_Bye (end of door)
--1	End of Doors
--1	mobs
-End of Room
-4170		Room Number
-woods ~	names
-A dark cave.
-~
-To the west you can see a wide stalagmite.  It must of took many years for this
-to form.  The ceiling is getting lower and you can feel water dripping on your
-head.
-
-~
-30 26 25 23 21 14 -1  -:| bitfield |:-
-1025 5 4170 0 	cur_stats
--1	affected_by
--1	inv
-1 7 4169 0 door# dest# distance
--1	door Affected_Bye (end of door)
-1 8 4166 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
 -1	mobs

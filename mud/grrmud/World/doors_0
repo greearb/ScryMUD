@@ -188,5 +188,21 @@ seen from time to time.
 
 ~
 
+136	Start of Door Data
+1024 136 0 0 0	vbit, door#, token#, key#
+10 9 8 -1  -:| bitfield |:-
+east door # door west ~	names
+The door to the tinkerer's shop is usually open.
+
+~
+
+147	Start of Door Data
+1024 147 0 401 0	vbit, door#, token#, key#
+10 9 8 5 4 -1  -:| bitfield |:-
+south gate gates # gates gate north ~	names
+The low southern gates of Garland are usually open.
+
+~
+
 
 -1 END OF DOOR FILE

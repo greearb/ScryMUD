@@ -9,17 +9,17 @@ flowers.  A set of oaken doors leads west to what seems to be the fellowship
 hall.  Large arches lead out of the temple to the north and south.
 
 ~
-23 21 10 8 7 -1  -:| bitfield |:-
+23 21 10 8 7 6 -1  -:| bitfield |:-
 1024 1 1 1 	cur_stats
 -1	affected_by
-31 32 145 -1	inv
-1 135 71 0 door# dest# distance
--1	door Affected_Bye (end of door)
+145 32 31 -1	inv
 1 10 22 0 door# dest# distance
 -1	door Affected_Bye (end of door)
-1 3 22 0 door# dest# distance
+1 1 19 1 door# dest# distance
 -1	door Affected_Bye (end of door)
-1 4 22 0 door# dest# distance
+1 3 3 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 17 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 2 2 0 door# dest# distance
 -1	door Affected_Bye (end of door)
@@ -37,7 +37,7 @@ There are two exits to the north and there is a fine wooden door to the west.
 To the east you can see main congregation area of the temple.
 
 ~
-32 23 21 -1  -:| bitfield |:-
+32 23 21 10 -1  -:| bitfield |:-
 1   Start of KeywordPair
 benches tables ~
 The benches are made of solid oak joined with dovetail cuts and
@@ -66,7 +66,7 @@ will have long talks around the low flickering flames.
 1 7 12 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-3 3 -1	mobs
+-1	mobs
 End of Room
 3		Room Number
 Plaza_North ~	names
@@ -78,7 +78,7 @@ directly to the south.  If you're feeling pious, you can go up the marble
 steps to the Temple.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 3 3 	cur_stats
 -1	affected_by
 -1	inv
@@ -86,18 +86,14 @@ steps to the Temple.
 -1	door Affected_Bye (end of door)
 1 3 21 0 door# dest# distance
 -1	door Affected_Bye (end of door)
-1 4 22 0 door# dest# distance
--1	door Affected_Bye (end of door)
-1 5 19 0 door# dest# distance
--1	door Affected_Bye (end of door)
-1 8 15 0 door# dest# distance
+1 4 22 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 9 1 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 2 14 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 -1	mobs
+204 531 204 204 -1	mobs
 End of Room
 4		Room Number
 Northern_Road_2 ~	names
@@ -119,10 +115,10 @@ leads south towards the center of town, and north towards the gates.
 -1	door Affected_Bye (end of door)
 1 4 21 0 door# dest# distance
 -1	door Affected_Bye (end of door)
-1 2 1498 1 door# dest# distance
+1 2 1499 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-3 204 204 -1	mobs
+204 3 -1	mobs
 End of Room
 5		Room Number
 Lily_Lane_North ~	names
@@ -142,7 +138,7 @@ collection of potted plants on your left.
 1 4 4 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 204 -1	mobs
+204 -1	mobs
 End of Room
 6		Room Number
 Newbie_Room ~	names
@@ -159,7 +155,7 @@ A large arched doorway leads off to the north.  A sign which reads "Education"
 hangs in the doorway.
 
 ~
-35 24 23 21 9 7 6 -1  -:| bitfield |:-
+35 24 23 21 10 9 7 6 5 -1  -:| bitfield |:-
 1024 1 6 6 	cur_stats
 -1	affected_by
 -1	inv
@@ -181,7 +177,7 @@ sell items you find here.  A large wooden bin rests in a corner of the room for
 long-term storage of items.
 
 ~
-23 21 -1  -:| bitfield |:-
+23 21 10 -1  -:| bitfield |:-
 1024 1 7 7 	cur_stats
 -1	affected_by
 742 -1	inv
@@ -201,7 +197,7 @@ direction you can hear people bumping into walls, and it sounds as if someone
 just cut himself with his knife!
 
 ~
-35 23 21 -1  -:| bitfield |:-
+35 23 21 10 -1  -:| bitfield |:-
 1024 1 8 8 	cur_stats
 -1	affected_by
 -1	inv
@@ -227,7 +223,7 @@ The adventurers' meeting room.
 journeys.
 
 ~
-23 21 -1  -:| bitfield |:-
+23 21 10 -1  -:| bitfield |:-
 1024 1 9 9 	cur_stats
 -1	affected_by
 -1	inv
@@ -243,7 +239,7 @@ The library.
      This is a quiet room filled with books of all kinds.  Several pamphlets
 are strewn about on the tables.  They might just be useful!!
 ~
-32 23 21 5 -1  -:| bitfield |:-
+32 23 21 10 5 -1  -:| bitfield |:-
 1   Start of KeywordPair
 pamplets manuals papers ~
 Several small pamphlets lie here in a pile.  They are topics of interest
@@ -279,7 +275,7 @@ comes from a crystal suspended from the ceiling, well out of your reach.
 There is a large oak desk in the center of the room.  It is quite neat
 with only a pen and some blank paper on it.
 ~
-32 23 21 5 -1  -:| bitfield |:-
+32 23 21 10 5 -1  -:| bitfield |:-
 1   Start of KeywordPair
 desk ~
 The desk is of dark cherry, polished to a sheen.  There are some 
@@ -303,7 +299,7 @@ In the stairwell.
      This is the stairwell that leads up to the second floor.  You can
 also exit through the door to the south into the fellowship hall.
 ~
-23 21 -1  -:| bitfield |:-
+23 21 10 -1  -:| bitfield |:-
 1024 1 12 12 	cur_stats
 -1	affected_by
 -1	inv
@@ -323,7 +319,7 @@ bulletin board is tacked to the wall and covered with articles people have
 written.
 
 ~
-23 21 5 -1  -:| bitfield |:-
+23 21 10 5 -1  -:| bitfield |:-
 1024 1 13 13 	cur_stats
 -1	affected_by
 365 -1	inv
@@ -353,8 +349,10 @@ west.
 -1	door Affected_Bye (end of door)
 1 5 22 0 door# dest# distance
 -1	door Affected_Bye (end of door)
+1 9 1 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 -1	End of Doors
-3 -1	mobs
+204 3 -1	mobs
 End of Room
 15		Room Number
 Western_Plaza ~	names
@@ -366,7 +364,7 @@ small plots of flowering hedges and neatly trimmed grass around them.  Wide
 steps lead up to the temple and the central plaza is just to the east.  
 Daisy Lane leads off to the east towards some shops.
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 15 15 	cur_stats
 -1	affected_by
 -1	inv
@@ -380,10 +378,12 @@ Daisy Lane leads off to the east towards some shops.
 -1	door Affected_Bye (end of door)
 1 5 17 0 door# dest# distance
 -1	door Affected_Bye (end of door)
+1 9 1 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 1 2 25 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-4 4 3 204 -1	mobs
+204 -1	mobs
 End of Room
 16		Room Number
 SW_Plaza ~	names
@@ -392,7 +392,7 @@ The southwest plaza.
      The plaza spreads out to the north and east and Violet Drive begins
 to the south west.  You can also go up the steps to the temple.
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 16 16 	cur_stats
 -1	affected_by
 -1	inv
@@ -404,8 +404,10 @@ to the south west.  You can also go up the steps to the temple.
 -1	door Affected_Bye (end of door)
 1 8 26 0 door# dest# distance
 -1	door Affected_Bye (end of door)
+1 9 1 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 -1	End of Doors
-3 -1	mobs
+204 3 -1	mobs
 End of Room
 17		Room Number
 South_Plaza ~	names
@@ -415,15 +417,13 @@ The southern plaza.
 To the north you see the central plaza and to the south Lily Lane begins.
 You can also go up the wide stairs to the temple.
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 17 17 	cur_stats
 -1	affected_by
 -1	inv
 1 1 18 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 3 22 0 door# dest# distance
--1	door Affected_Bye (end of door)
-1 6 19 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 7 15 0 door# dest# distance
 -1	door Affected_Bye (end of door)
@@ -434,7 +434,7 @@ You can also go up the wide stairs to the temple.
 1 2 16 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 -1	mobs
+537 4 204 -1	mobs
 End of Room
 18		Room Number
 SE_Plaza ~	names
@@ -444,7 +444,7 @@ The southeast plaza.
 The plaza continues to the north and west, or you can go up the steps
 to the temple.  To the southeast is Rose Drive.
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 18 18 	cur_stats
 -1	affected_by
 -1	inv
@@ -459,21 +459,21 @@ to the temple.  To the southeast is Rose Drive.
 1 2 17 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-3 204 -1	mobs
+204 3 -1	mobs
 End of Room
 19		Room Number
 Eastern_Plaza ~	names
 The eastern plaza.
 ~
-    You are in the renowned central plaza of Garland.  It spreads out to the
-east and Daisy Lane begins to the east.  You can also go up the marble
+   You are in the renowned central plaza of Garland.  It spreads out to the
+west and Daisy Lane begins to the east.  You can also go up the marble
 stairs to the temple.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 19 19 	cur_stats
 -1	affected_by
-1 -1	inv
+-1	inv
 1 1 29 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 3 20 0 door# dest# distance
@@ -489,7 +489,7 @@ stairs to the temple.
 1 2 22 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 204 -1	mobs
+-1	mobs
 End of Room
 20		Room Number
 NE_Plaza ~	names
@@ -500,7 +500,7 @@ you can go up the stairs to the temple.  Violet Drive leads off to the
 northeast.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 20 20 	cur_stats
 -1	affected_by
 -1	inv
@@ -515,7 +515,7 @@ northeast.
 1 2 3 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-3 -1	mobs
+4 204 3 -1	mobs
 End of Room
 21		Room Number
 Lily_Lane ~	names
@@ -540,7 +540,7 @@ courtyard.
 1 2 31 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-3 3 -1	mobs
+531 537 3 3 -1	mobs
 End of Room
 22		Room Number
 Central_Plaza ~	names
@@ -555,7 +555,7 @@ life pretty slowly so there are few accidents.
 A plaque with some directions has been fastened to a granite block.
 
 ~
-32 23 21 4 -1  -:| bitfield |:-
+32 23 21 -1  -:| bitfield |:-
 1   Start of KeywordPair
 sign map plaque loki ~
 One of the local artisans donated this plaque to the people of Garland so that
@@ -586,7 +586,7 @@ The crossroads:  east
 10 -1	inv
 1 1 19 0 door# dest# distance
 -1	door Affected_Bye (end of door)
-1 3 3 0 door# dest# distance
+1 3 3 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 6 20 0 door# dest# distance
 -1	door Affected_Bye (end of door)
@@ -604,7 +604,7 @@ The crossroads:  east
 -1	door Affected_Bye (end of door)
 
 -1	End of Doors
-3 204 204 -1	mobs
+4 531 3 3 3 -1	mobs
 End of Room
 23		Room Number
 Lily_Lane ~	names
@@ -623,7 +623,7 @@ and the road continues to the south towards the center of town.
 1 4 5 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 204 216 -1	mobs
+204 216 -1	mobs
 End of Room
 24		Room Number
 NW_Rose_Lane ~	names
@@ -632,7 +632,7 @@ Northwest Rose Lane.
      You are at the beginning of Rose Lane, which continues to the north
 west.  The plaza lies to the south east.
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 24 24 	cur_stats
 -1	affected_by
 -1	inv
@@ -641,7 +641,7 @@ west.  The plaza lies to the south east.
 1 5 14 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 204 204 -1	mobs
+-1	mobs
 End of Room
 25		Room Number
 W_Daisy_Lane ~	names
@@ -650,7 +650,7 @@ Western Daisy Lane.
    This is the beginning of the broad street known as Daisy Lane.  It is
 lined with all sorts of shops and filled with people going this way and that.
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 25 25 	cur_stats
 -1	affected_by
 -1	inv
@@ -663,7 +663,7 @@ lined with all sorts of shops and filled with people going this way and that.
 1 2 36 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-3 3 204 204 -1	mobs
+204 3 3 -1	mobs
 End of Room
 26		Room Number
 SW_Violet_Drive ~	names
@@ -673,7 +673,7 @@ Southwest Violet Drive.
 towards the central plaza.  Someone has placed a container of potted
 violets on their open window, just makes you feel good about life!
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 26 26 	cur_stats
 -1	affected_by
 -1	inv
@@ -682,7 +682,7 @@ violets on their open window, just makes you feel good about life!
 1 8 72 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-3 -1	mobs
+537 537 3 -1	mobs
 End of Room
 27		Room Number
 S_Lily_Lane ~	names
@@ -695,14 +695,14 @@ can be seen but it is not as comercialized as Daisy Drive.
 1024 1 27 27 	cur_stats
 -1	affected_by
 -1	inv
-1 1 1473 1 door# dest# distance
--1	door Affected_Bye (end of door)
 1 3 17 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 4 70 0 door# dest# distance
 -1	door Affected_Bye (end of door)
+1 2 94 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 -1	End of Doors
-3 204 204 -1	mobs
+204 3 -1	mobs
 End of Room
 28		Room Number
 SW_Rose_Lane ~	names
@@ -712,7 +712,7 @@ Southeastern Rose Lane.
 can be seen to the northwest.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 28 28 	cur_stats
 -1	affected_by
 -1	inv
@@ -734,10 +734,12 @@ made many people go back to the longer northern route that runs by the elven
 woods.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 29 29 	cur_stats
 -1	affected_by
 -1	inv
+1 10 1498 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 1 1 43 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 3 1497 1 door# dest# distance
@@ -747,7 +749,7 @@ woods.
 1 2 19 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-10 -1	mobs
+3 3 10 -1	mobs
 End of Room
 30		Room Number
 NW_Violet_Drive ~	names
@@ -757,7 +759,7 @@ This lane runs in a diagonal direction to the northeast towards a few of
 the guilds, and joins the northeast portion of the central plaza.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 30 30 	cur_stats
 -1	affected_by
 -1	inv
@@ -772,7 +774,7 @@ End of Room
 bakery ~	names
 The bakery
 ~
-	You find yourself in the most popular bakery in Garland.  The air is
+       You find yourself in the most popular bakery in Garland.  The air is
 filled with the smell of cinamon, cloves, apples, and the indescribably good
 smell of freshly baked bread.  Dorian, the baker, moves briskly about from the
 huge stone oven to the counter and back again as duty calls.  There is a basket
@@ -808,7 +810,7 @@ Hmmm, maybe you should visit here more often!
 1 4 43 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-233 264 265 -1	mobs
+233 -1	mobs
 End of Room
 33		Room Number
 NW_Rose_Lane ~	names
@@ -817,7 +819,7 @@ Northwest Rose Lane.
      You are at the beginning of Rose Lane, which continues to the north
 west.  The plaza lies to the south east.
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 33 33 	cur_stats
 -1	affected_by
 -1	inv
@@ -838,7 +840,7 @@ know you should probably continue back south east, towards the center of
 Garland.  Perhaps just one drink wouldn't hurt...
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 34 34 	cur_stats
 -1	affected_by
 -1	inv
@@ -885,7 +887,7 @@ stairwell leads down into a hole in the ground, and there is a sign mounted on
 a pole near it.
 
 ~
-32 23 21 4 -1  -:| bitfield |:-
+32 23 21 -1  -:| bitfield |:-
 1   Start of KeywordPair
 sign shop quad quadcaster ~
 Quad's store.  Dragon items are just the beginning!
@@ -903,14 +905,12 @@ the top and bottom of each piece.
 -1	door Affected_Bye (end of door)
 1 1 25 0 door# dest# distance
 -1	door Affected_Bye (end of door)
-1 3 37 0 door# dest# distance
--1	door Affected_Bye (end of door)
 1 4 96 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 2 76 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 3 -1	mobs
+4 3 -1	mobs
 End of Room
 37		Room Number
 ruins_garland ~	names
@@ -995,7 +995,7 @@ power of man.
 1024 1 39 0 	cur_stats
 -1	affected_by
 -1	inv
-1 12 -40 0 door# dest# distance
+1 12 -42 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
 -1	mobs
@@ -1033,7 +1033,7 @@ Gliding through the dark tunnel.
 ~
 0 1 north is_dest, i_th, dir, End of PathCell..
 -1 End of PathCells..
-8 40 300 300 8  End of Vehicle
+3 42 300 300 8  End of Vehicle
 40		Room Number
 tube_tunnel ~	names
 The tube
@@ -1050,8 +1050,6 @@ destination.  You are near Garland Station.
 -1	door Affected_Bye (end of door)
 1 4 41 0 door# dest# distance
 -1	door Affected_Bye (end of door)
-1 12 39 0 door# dest# distance
--1	door Affected_Bye (end of door)
 -1	End of Doors
 -1	mobs
 End of Room
@@ -1064,7 +1062,7 @@ covered with very fine dust.
 
 ~
 23 21 14 13 10 -1  -:| bitfield |:-
-1025 1 41 41 	cur_stats
+1024 1 41 41 	cur_stats
 -1	affected_by
 -1	inv
 1 3 40 0 door# dest# distance
@@ -1087,6 +1085,8 @@ You find yourself at the southern Station in Garland.
 -1	inv
 1 3 41 0 door# dest# distance
 -1	door Affected_Bye (end of door)
+1 12 39 0 door# dest# distance
+-1	door Affected_Bye (end of door)
 -1	End of Doors
 -1	mobs
 End of Room
@@ -1099,20 +1099,24 @@ west toward the central plaza.  The Bank of Garland is to the north and
 Gimbal, the local lawyer, has his office to the south.
 
 ~
-23 21 4 0 -1  -:| bitfield |:-
+23 21 0 -1  -:| bitfield |:-
 1024 1 43 43 	cur_stats
 -1	affected_by
 -1	inv
+1 10 1474 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 1 1 50 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 3 32 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 4 48 0 door# dest# distance
 -1	door Affected_Bye (end of door)
+1 9 2007 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 1 2 29 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 204 204 -1	mobs
+-1	mobs
 End of Room
 44		Room Number
 north_gate ~	names
@@ -1134,7 +1138,7 @@ because it is the main trade route to the northeast.
 1 4 23 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 204 204 204 -1	mobs
+204 -1	mobs
 End of Room
 45		Room Number
 traderoad ~	names
@@ -1169,7 +1173,7 @@ and keeps the tables and benches in good repair.  This is a popular place
 for the young people to spend their evenings when the weather is pleasant.
 
 ~
-25 23 21 4 -1  -:| bitfield |:-
+25 23 21 -1  -:| bitfield |:-
 1024 1 46 46 	cur_stats
 -1	affected_by
 -1	inv
@@ -1178,7 +1182,7 @@ for the young people to spend their evenings when the weather is pleasant.
 1 2 21 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-164 164 164 -1	mobs
+531 531 164 164 164 -1	mobs
 End of Room
 47		Room Number
 flower_shop ~	names
@@ -1194,7 +1198,7 @@ astonishing amount of noise.  Kaela smiles in greeting and offers her help
 in finding the perfect flower for the occasion.
 
 ~
-25 23 21 4 -1  -:| bitfield |:-
+25 23 21 -1  -:| bitfield |:-
 1024 1 47 47 	cur_stats
 -1	affected_by
 -1	inv
@@ -1226,7 +1230,7 @@ walked out of his back office.
 1 3 43 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-401 204 -1	mobs
+204 401 -1	mobs
 End of Room
 49		Room Number
 gimbals_office ~	names
@@ -1256,7 +1260,7 @@ The sounds of steel on steel resound from the north, which proves to be
 a blacksmith's store.  The armory is to the south.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 50 50 	cur_stats
 -1	affected_by
 -1	inv
@@ -1269,7 +1273,7 @@ a blacksmith's store.  The armory is to the south.
 1 2 43 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 -1	mobs
+-1	mobs
 End of Room
 51		Room Number
 east_gates ~	names
@@ -1281,13 +1285,13 @@ sized road winds along the outside of the city walls to the south, leading
 out across the plains.
 
 ~
-23 21 4 0 -1  -:| bitfield |:-
+23 21 0 -1  -:| bitfield |:-
 1024 1 51 51 	cur_stats
 -1	affected_by
 -1	inv
 1 31 52 0 door# dest# distance
 -1	door Affected_Bye (end of door)
-1 9 1512 1 door# dest# distance
+1 3 1512 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 2 50 0 door# dest# distance
 -1	door Affected_Bye (end of door)
@@ -1303,7 +1307,7 @@ east across a small field.  To the south another road snakes around the
 outside of the crumbling city walls.
 
 ~
-23 21 4 0 -1  -:| bitfield |:-
+23 21 0 -1  -:| bitfield |:-
 1024 1 52 52 	cur_stats
 -1	affected_by
 -1	inv
@@ -1325,7 +1329,7 @@ the guilds, and southwest back towards the center of town.  Farther to the
 north east, a bunch of young adults are standing around talking and laughing.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 53 53 	cur_stats
 -1	affected_by
 -1	inv
@@ -1334,7 +1338,7 @@ north east, a bunch of young adults are standing around talking and laughing.
 1 8 30 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 204 -1	mobs
+-1	mobs
 End of Room
 54		Room Number
 garlandstore ~	names
@@ -1393,7 +1397,7 @@ a wide brimmed leather hat.
 1 3 50 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-446 -1	mobs
+204 446 -1	mobs
 End of Room
 57		Room Number
 garlandmagic ~	names
@@ -1439,7 +1443,7 @@ and silver bracelets compell you to stay and look.
 1 3 25 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
--1	mobs
+531 279 -1	mobs
 End of Room
 59		Room Number
 NW_Violet_Drive ~	names
@@ -1452,7 +1456,7 @@ rivalry.  Often the elders of both schools sit outside their academies and
 discuss the shortcomings of their neighbors with zest!
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 59 59 	cur_stats
 -1	affected_by
 -1	inv
@@ -1481,7 +1485,7 @@ idealogical differences, but the students seem to be able to put those aside,
 and it must be said that the mages do put on a pretty good show at times!
 
 ~
-33 23 21 4 -1  -:| bitfield |:-
+33 23 21 -1  -:| bitfield |:-
 1024 1 60 60 	cur_stats
 -1	affected_by
 143 -1	inv
@@ -1504,7 +1508,7 @@ a teeming variety of life, including some brightly colored fish from foreign
 waters.  
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 61 61 	cur_stats
 -1	affected_by
 -1	inv
@@ -1513,7 +1517,7 @@ waters.
 1 7 59 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
--1	mobs
+204 -1	mobs
 End of Room
 62		Room Number
 NW_Violet_Drive ~	names
@@ -1539,7 +1543,7 @@ a door to the east leads out into the courtyard.
 1 9 63 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-81 79 -1	mobs
+79 81 -1	mobs
 End of Room
 63		Room Number
 NW_Violet_Drive ~	names
@@ -1572,7 +1576,7 @@ over the area that lasted 2 weeks.  A large stone slab stands in the middle of
 the yard, and on this the more advanced students put on shows and exhibitions.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 64 64 	cur_stats
 -1	affected_by
 -1	inv
@@ -1598,6 +1602,8 @@ leads to a room to the east.
 1 1 66 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 4 63 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 67 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
 -1	mobs
@@ -1636,7 +1642,7 @@ gives off quite a bit of light.
 1024 1 67 67 	cur_stats
 -1	affected_by
 -1	inv
-1 1 65 0 door# dest# distance
+1 1 65 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
 -1	mobs
@@ -1650,7 +1656,7 @@ a few bushes or shrubs, depending on your view, grow here and there.  A large,
 very sturdy looking building lies directly to the north.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 68 68 	cur_stats
 -1	affected_by
 -1	inv
@@ -1705,7 +1711,7 @@ broken down cart against the righthand wall.
 1 2 80 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-305 -1	mobs
+537 3 3 305 -1	mobs
 End of Room
 71		Room Number
 Temple_Garland ~	names
@@ -1717,7 +1723,7 @@ altar out, because food is a typical offering!  Flowers also can be
 seen from time to time.
 
 ~
-34 33 27 26 25 24 23 21 14 12 11 10 8 7 -1  -:| bitfield |:-
+34 33 27 26 25 24 23 21 14 12 11 10 8 7 6 -1  -:| bitfield |:-
 1025 1 71 1 	cur_stats
 -1	affected_by
 -1	inv
@@ -1734,7 +1740,7 @@ Southwest Violet Drive.
 towards the central plaza.  Someone has placed a container of potted
 violets on their open window, just makes you feel good about life!
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 72 72 	cur_stats
 -1	affected_by
 -1	inv
@@ -1743,7 +1749,7 @@ violets on their open window, just makes you feel good about life!
 1 6 26 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-3 204 204 -1	mobs
+3 -1	mobs
 End of Room
 73		Room Number
 mage_academy ~	names
@@ -1796,7 +1802,7 @@ Southeastern Rose Lane.
 towards the central plaza.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 75 28 	cur_stats
 -1	affected_by
 -1	inv
@@ -1820,7 +1826,7 @@ past.  Western Daisy lane continues to the east past another ancient structure,
 this one still mostly intact.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 76 76 	cur_stats
 -1	affected_by
 -1	inv
@@ -1829,7 +1835,7 @@ this one still mostly intact.
 1 2 77 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 160 3 204 -1	mobs
+3 160 -1	mobs
 End of Room
 77		Room Number
 W_Daisy_Lane ~	names
@@ -1844,10 +1850,12 @@ itself on scholarship and noble deeds.  To the east you catch a glimpse of the
 huge collection of rubble from which the pillars were extracted.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 77 77 	cur_stats
 -1	affected_by
 -1	inv
+1 159 1465 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 1 1 76 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 113 78 0 door# dest# distance
@@ -1865,7 +1873,7 @@ it a peaceful, if somewhat desolate look.  The road continues to the south
 west across the plains.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 78 78 	cur_stats
 -1	affected_by
 -1	inv
@@ -1889,14 +1897,12 @@ and in disrepair.
 1024 1 79 70 	cur_stats
 -1	affected_by
 -1	inv
-1 14 1463 1 door# dest# distance
--1	door Affected_Bye (end of door)
 1 3 70 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 4 92 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 204 204 -1	mobs
+-1	mobs
 End of Room
 80		Room Number
 alley ~	names
@@ -1917,7 +1923,7 @@ the alley opens into a larger road, and to the west it continues into darkness.
 1 2 81 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
--1	mobs
+204 -1	mobs
 End of Room
 81		Room Number
 alley ~	names
@@ -1982,8 +1988,10 @@ buildings.
 -1	door Affected_Bye (end of door)
 1 3 84 1 door# dest# distance
 -1	door Affected_Bye (end of door)
+1 2 1463 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 -1	End of Doors
-197 -1	mobs
+-1	mobs
 End of Room
 84		Room Number
 tavern ~	names
@@ -2008,7 +2016,7 @@ of stairs descending into the darkness.
 1 4 83 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-516 196 195 -1	mobs
+195 196 516 -1	mobs
 End of Room
 85		Room Number
 tavern ~	names
@@ -2028,7 +2036,7 @@ lead up to the tavern above.
 1 9 84 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-186 -1	mobs
+197 186 -1	mobs
 End of Room
 86		Room Number
 NW_Rose_Lane ~	names
@@ -2039,7 +2047,7 @@ Rose lane continues to run northwest to southeast, back towards the
 center of town.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 86 34 	cur_stats
 -1	affected_by
 -1	inv
@@ -2048,7 +2056,7 @@ center of town.
 1 5 34 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
--1	mobs
+204 -1	mobs
 End of Room
 87		Room Number
 NW_Rose_Lane ~	names
@@ -2060,7 +2068,7 @@ a few go on to become masters of their trade.  A low building lies to the
 west, where final examinations are given.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 87 34 	cur_stats
 -1	affected_by
 -1	inv
@@ -2087,6 +2095,8 @@ door leads back to the yard to the east.
 -1	affected_by
 -1	inv
 1 1 87 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 100 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
 199 -1	mobs
@@ -2120,16 +2130,16 @@ learn of the ancient peoples. The road continues back to the southwest
 towards the center of town.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 90 59 	cur_stats
 -1	affected_by
 -1	inv
-1 1 91 0 door# dest# distance
+1 136 91 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 8 59 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-204 -1	mobs
+-1	mobs
 End of Room
 91		Room Number
 tavern ~	names
@@ -2146,19 +2156,18 @@ those who are interested, so that his knowledge will not die with him.
 1024 1 91 0 	cur_stats
 -1	affected_by
 -1	inv
-1 2 90 0 door# dest# distance
+1 136 -90 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
--1	mobs
+347 -1	mobs
 End of Room
 92		Room Number
 S_Lily_Lane ~	names
 North of the Gates.
 ~
-Lily lane narrows here and the shops become more sparse.  To the south
-a semblance of a gate can be seen, but it is beyond repair.  A small path
-leads to the northeast where there is a meeting hall of some kind, and
-Lily lane continues north towards the center of town.
+Lily lane narrows here and the shops become more sparse.  To the south a
+semblance of a gate can be seen, but it is beyond repair.  Lily lane continues
+north towards the center of town.
 
 ~
 23 21 -1  -:| bitfield |:-
@@ -2186,6 +2195,8 @@ the rolling hills covered with grass and trees continue out of sight.
 -1	affected_by
 -1	inv
 1 3 92 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4585 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
 -1	mobs
@@ -2217,7 +2228,7 @@ Thank you.
 1024 1 94 27 	cur_stats
 -1	affected_by
 -1	inv
-1 1 27 0 door# dest# distance
+1 1 27 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 2 95 0 door# dest# distance
 -1	door Affected_Bye (end of door)
@@ -2232,14 +2243,39 @@ You stand in the back room of the pet shop.  The noise is deafening, and you
 wonder how anyone can stand it in here.
 
 ~
-23 21 -1  -:| bitfield |:-
+35 23 21 -1  -:| bitfield |:-
 1024 1 95 27 	cur_stats
 -1	affected_by
 -1	inv
 1 1 94 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
-409 -1	mobs
+373 -1	mobs
+1  Start of a room proc script
+give 373 -1 0	 Trigger Command, targ, actor 
+ DESCRIM_579 
+ mload 407;
+
+~
+2  Start of a room proc script
+give 373 -1 0	 Trigger Command, targ, actor 
+ DESCRIM_591 
+ mload 406;
+
+~
+3  Start of a room proc script
+give 373 -1 0	 Trigger Command, targ, actor 
+ DESCRIM_592 
+ mload 405;
+
+~
+4  Start of a room proc script
+give 373 -1 0	 Trigger Command, targ, actor 
+ DESCRIM_752 
+ mload 495;
+
+~
+-1  End of room proc scripts
 End of Room
 96		Room Number
 W_Daisy_Lane ~	names
@@ -2270,7 +2306,7 @@ in the breeze;  it reads simply:  Butcher.  The central plaza lies along the
 road to the northwest.
 
 ~
-23 21 4 -1  -:| bitfield |:-
+23 21 -1  -:| bitfield |:-
 1024 1 97 28 	cur_stats
 -1	affected_by
 -1	inv
@@ -2279,7 +2315,7 @@ road to the northwest.
 1 2 98 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
--1	mobs
+20 -1	mobs
 End of Room
 98		Room Number
 SW_Rose_Lane ~	names
@@ -2312,6 +2348,42 @@ it into something more edible for you!
 -1	door Affected_Bye (end of door)
 -1	End of Doors
 526 -1	mobs
+End of Room
+99		Room Number
+NW_Violet_Drive ~	names
+A large practice hall.
+~
+This is where more serious students come to test their skills and learn
+new ones.  The room is plain and sparsely decorated.  The ceiling is higher
+than it looked from outside because the floor is recessed into the ground.
+It is covered with sawdust, and shows signs of strenous combat.  The wide
+door leads back to the yard to the east.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 99 66 	cur_stats
+-1	affected_by
+-1	inv
+-1	End of Doors
+-1	mobs
+End of Room
+100		Room Number
+NW_Violet_Drive ~	names
+In the battle arena.
+~
+This is where aspiring warriors come to battle each other -- to the death! 
+Blood stains and bits of broken armor cover the floor, and innumerable graffiti
+scrawlings can be seen on the walls.
+
+~
+36 23 21 -1  -:| bitfield |:-
+1024 1 100 66 	cur_stats
+-1	affected_by
+-1	inv
+1 4 88 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
 End of Room
 
 

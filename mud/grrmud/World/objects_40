@@ -139,13 +139,14 @@ A reddish-colored gem lies here, glowing slightly.
 It is hot to the touch and gives off a bit of an aura.
 
 ~
-63 51 40 31 10 -1  -:| bitfield |:-
-4 0 100 0 100 1 0 0 4 	extras
+67 63 51 40 31 10 -1  -:| bitfield |:-
+4 0 0 0 100 1 0 0 4 	extras
 1024 200 584 40 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
-10 -1  -:| bitfield |:-
+10 1 -1  -:| bitfield |:-
+827 826 584 0 0 0	 target object, companions
 219 4 -1 spell#, level (casts)
 End of Object.
 
@@ -162,7 +163,7 @@ pretty good for looks!
 ~
 56 50 40 25 10 -1  -:| bitfield |:-
 0 0 100 0 100 5 0 0 0 	extras
-0 100 754 40 	cur_stats
+1024 100 754 40 	cur_stats
 -1	affected_by
 -1	inv
 9 -5 -1	stat_affects
@@ -180,7 +181,7 @@ It is a reddish color and looks to have come from a fox.
 ~
 56 50 40 22 10 -1  -:| bitfield |:-
 0 0 100 0 100 3 0 0 0 	extras
-0 200 755 40 	cur_stats
+1024 200 755 40 	cur_stats
 -1	affected_by
 -1	inv
 30 -30 -1	stat_affects

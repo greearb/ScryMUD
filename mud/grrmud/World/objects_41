@@ -104,7 +104,7 @@ It is small with feathers on one end and a wooden tip on the other.
 
 ~
 49 40 21 10 -1  -:| bitfield |:-
-0 0 100 0 1 0 3 1 0 	extras
+0 0 100 0 1000 0 3 1 0 	extras
 1024 20 88 41 	cur_stats
 -1	affected_by
 -1	inv
@@ -222,7 +222,7 @@ It has feathers on one end and a pointy tip made of flint on the other.
 
 ~
 49 40 21 10 -1  -:| bitfield |:-
-0 0 100 0 1 0 3 2 0 	extras
+0 0 100 0 1000 0 3 2 0 	extras
 1024 50 254 41 	cur_stats
 -1	affected_by
 -1	inv
@@ -240,7 +240,7 @@ It is made of wood with feathers on the end and a tip made of shale.
 
 ~
 49 40 21 10 -1  -:| bitfield |:-
-0 0 100 0 1 0 3 3 0 	extras
+0 0 100 0 1000 0 3 3 0 	extras
 1024 100 256 41 	cur_stats
 -1	affected_by
 -1	inv
@@ -258,7 +258,7 @@ It is small and made of wood.  It is topped with a copper head.
 
 ~
 49 40 21 10 -1  -:| bitfield |:-
-0 0 100 0 1 0 3 4 0 	extras
+0 0 100 0 1000 0 3 4 0 	extras
 1024 200 257 41 	cur_stats
 -1	affected_by
 -1	inv
@@ -276,7 +276,7 @@ It is small and has an iron tip.
 
 ~
 49 40 21 10 -1  -:| bitfield |:-
-0 0 100 0 1 0 3 5 0 	extras
+0 0 100 0 1000 0 3 5 0 	extras
 1024 430 258 41 	cur_stats
 -1	affected_by
 -1	inv
@@ -294,7 +294,7 @@ It is is made of wood and tipped with brass.
 
 ~
 49 40 21 10 -1  -:| bitfield |:-
-0 0 100 0 1 0 3 6 0 	extras
+0 0 100 0 1000 0 3 6 0 	extras
 1024 600 259 41 	cur_stats
 -1	affected_by
 -1	inv
@@ -391,7 +391,7 @@ skilled user.
 1024 800 289 41 	cur_stats
 -1	affected_by
 -1	inv
--1	stat_affects
+23 5 -1	stat_affects
 End of Object.
 
 
@@ -482,10 +482,10 @@ It looks nourishing enough to keep you alive, but not much more.
 ~
 61 40 21 10 -1  -:| bitfield |:-
 0 0 100 0 1000 1 0 0 1 	extras
-1024 7 336 41 	cur_stats
+1024 30 336 41 	cur_stats
 -1	affected_by
 -1	inv
-100 5 101 -2 -1	stat_affects
+101 -2 100 10 -1	stat_affects
 End of Object.
 
 
@@ -738,6 +738,25 @@ few arrows.
 -1	affected_by
 -1	inv
 -1	stat_affects
+End of Object.
+
+
+1019	 Start of Object
+breastplate plate leather breastplate plate leather ~	names
+a simple leather breastplate
+~
+A leather breastplate was left here.
+~
+The chestplate is of a simple desing made from decent quality leather. It looks
+like it could provide a little protection.
+
+~
+56 33 10 -1  -:| bitfield |:-
+0 0 100 0 100 8 0 0 2 	extras
+0 500 1019 41 	cur_stats
+-1	affected_by
+-1	inv
+15 5 9 5 -1	stat_affects
 End of Object.
 
 

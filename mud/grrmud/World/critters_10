@@ -1,422 +1,627 @@
-5	Start of Mob
-GGrock ~	names
-GGrock is here waiting to train builders with skills.
+325	Start of Mob
+trolloc ~	names
+A Trolloc
 ~
-GGrock is here waiting to train builders with skills.
+A Trolloc stands here.
 ~
-You see GGrock a magnificent trainer here.
+A tall disfigured Shadowspawn stands before you.
 
 ~
-18 -1  -:| bitfield |:-
-0 0 0 	long_data
-0 15 15 15 15 15 15 15 15 15 1 0 1 3 1 299 999 999 0 
-40 10 0 0 999 999 999 2 1 1 0 0 0 0 0 10 1 1 0 5 
-5 5 0 0 	shrt_cur_stats
-1025 1024 0 	cur_stats
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+5000 500000 0 	long_data
+0 15 14 15 14 14 14 2 2 60 2 0 1 1 1 100 100 100 50 
+5 1 0 0 100 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
 -1	eq: num, posn
 -1	affected_by
 -1	inv
- 5 0 1	mob#, tmp_num, max_n_game
-4 0 -1  -:| bitfield |:-
-13 2 -1  -:| bitfield |:-
-0	int1, above bitfield started spec_data
-8 7 6 5 4 3 2 1 -1  -:| bitfield |:-
-10 10 10 10 10  sk_viol, benev, def, bad_assed, soc_aware
+ 325 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
 	end_of_crit
 
-6	Start of Mob
-Mikel ~	names
-Mile Tyler
+326	Start of Mob
+Trolloc ~	names
+A Trolloc
 ~
-Mikel Tyler stands here eating snacks.
+A Trolloc stands here
 ~
-You see Mikel Tyler standing here munching on his favorite snack....YOUR MOMMA!
+A Trolloc stands here
 
 ~
-18 -1  -:| bitfield |:-
-20 17000000 0 	long_data
-4 7 2 4 4 2 1 1 100 150 1 0 2 8 7 200 200 200 0 
-20 10 0 0 30 30 30 2 200 15 100 100 100 100 0 10 1 1 0 5 
-5 5 350 0 	shrt_cur_stats
-1025 1024 0 	cur_stats
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+5000 500000 0 	long_data
+0 15 15 15 15 15 15 5 5 0 2 0 1 1 1 200 200 200 200 
+20 1 0 0 100 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
 -1	eq: num, posn
 -1	affected_by
 -1	inv
- 6 0 1	mob#, tmp_num, max_n_game
+ 326 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+453	Start of Mob
+Fade ~	names
+A Fade
+~
+A Fade stands here.
+~
+A Fade stands here immobile.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+5000 1000000 0 	long_data
+0 17 17 17 17 17 17 10 10 0 2 0 1 1 1 200 200 200 50 
+20 1 0 0 100 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 453 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+454	Start of Mob
+Trolloc ~	names
+A Trolloc
+~
+A Trolloc stands here grumpily.
+~
+A tall disfugred Shadowspawn stands here glaring at everything that passes.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+50000 5000000 0 	long_data
+0 18 18 18 18 18 18 5 5 0 2 0 1 1 1 300 300 300 50 
+20 1 0 0 100 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 454 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+459	Start of Mob
+crystal dragon ~	names
+crystal dragon
+~
+A crystal dragon stands here.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 7 7 -50 3 0 1 1 1 1000 1000 1000 50 
+25 1 0 0 1000 1000 1000 2 100 100 80 80 100 90 0 10 10 15 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 459 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+460	Start of Mob
+crystal dragon ~	names
+crystal dragon
+~
+A crystal dragon stands here.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 -15536 -15536 -15536 50 
+30 1 0 0 1 1 1 2 80 105 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 460 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+463	Start of Mob
+crystal dragon ~	names
+crystal dragon
+~
+A crystal dragon stands here.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 -15536 -15536 -15536 50 
+30 1 0 0 1 1 1 2 80 105 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 463 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+478	Start of Mob
+crystal dragon ~	names
+crystal dragon
+~
+A crystal dragon stands here.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 20000 20000 20000 50 
+30 1 0 0 20000 20000 20000 2 80 105 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 478 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+481	Start of Mob
+crystal dragon ~	names
+crystal dragon
+~
+A crystal dragon stands here.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 20000 20000 20000 50 
+30 1 0 0 20000 20000 20000 2 80 105 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 481 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+483	Start of Mob
+crystal dragon ~	names
+CLONE OF:  crystal dragon.
+~
+CLONE OF:  crystal dragon.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 20000 20000 20000 50 
+30 10 0 0 20000 20000 20000 2 80 105 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 483 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+484	Start of Mob
+crystal dragon ~	names
+CLONE OF:  crystal dragon.
+~
+CLONE OF:  crystal dragon.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 20000 20000 20000 50 
+30 10 0 0 20000 20000 20000 2 80 105 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 484 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+492	Start of Mob
+crystal dragon ~	names
+CLONE OF:  crystal dragon.
+~
+CLONE OF:  crystal dragon.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 20000 20000 20000 50 
+30 10 0 0 20000 20000 20000 2 80 105 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 492 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+496	Start of Mob
+crystal dragon ~	names
+CLONE OF:  crystal dragon.
+~
+CLONE OF:  crystal dragon.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 20000 20000 20000 50 
+30 10 0 0 20000 20000 20000 2 80 105 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 496 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+497	Start of Mob
+crystal dragon ~	names
+CLONE OF:  crystal dragon.
+~
+CLONE OF:  crystal dragon.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 20000 20000 20000 50 
+30 10 0 0 20000 20000 20000 2 80 105 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 497 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+499	Start of Mob
+crystal dragon ~	names
+crystal dragon
+~
+A crystal dragon stands here.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 30000 30000 30000 50 
+30 1 0 0 30000 30000 30000 2 60 110 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 499 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+504	Start of Mob
+crystal dragon ~	names
+CLONE OF:  crystal dragon.
+~
+CLONE OF:  crystal dragon.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 30000 30000 30000 50 
+30 10 0 0 30000 30000 30000 2 60 110 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 504 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+505	Start of Mob
+crystal dragon ~	names
+CLONE OF:  crystal dragon.
+~
+CLONE OF:  crystal dragon.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 30000 30000 30000 50 
+30 10 0 0 30000 30000 30000 2 60 110 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 505 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+506	Start of Mob
+crystal dragon ~	names
+CLONE OF:  crystal dragon.
+~
+CLONE OF:  crystal dragon.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 30000 30000 30000 50 
+30 10 0 0 30000 30000 30000 2 60 110 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 506 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+513	Start of Mob
+crystal dragon ~	names
+CLONE OF:  crystal dragon.
+~
+CLONE OF:  crystal dragon.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 30000 30000 30000 50 
+30 10 0 0 30000 30000 30000 2 60 110 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 513 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+527	Start of Mob
+crystal dragon ~	names
+CLONE OF:  crystal dragon.
+~
+CLONE OF:  crystal dragon.
+~
+A powerful crystal dragon stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 30000 30000 30000 50 
+30 10 0 0 30000 30000 30000 2 60 110 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 527 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+535	Start of Mob
+Grock ~	names
+Grock
+~
+Grock stands here.
+~
+Grock stands here.
+
+~
+19 18 17 16 12 11 10 9 8 7 6 5 3 -1  -:| bitfield |:-
+10000 10000000 0 	long_data
+0 25 25 25 25 25 25 10 10 -75 3 0 1 1 1 30000 30000 30000 50 
+30 1 0 0 30000 30000 30000 2 60 110 80 80 100 90 0 10 15 25 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 535 0 1	mob#, tmp_num, max_n_game
+17 4 -1  -:| bitfield |:-
+1  Start of a mob proc script
+enter 1 -1 1	 Trigger Command, targ, actor 
+
+ scratch;
+ say Hmm, Where to start...;
+
+~
+2  Start of a mob proc script
+enter -1 -1 1	 Trigger Command, targ, actor 
+
+ scratch;
+ say Hmm, Where to start...;
+
+~
+3  Start of a mob proc script
+enter 535 -1 1	 Trigger Command, targ, actor 
+
+ scratch;
+ say Hmm, Where to start...;
+
+~
+4  Start of a mob proc script
+enter 535 -1 1	 Trigger Command, targ, actor 
+ enters 
+ scratch;
+ say Hmm, Where to start...;
+
+~
+5  Start of a mob proc script
+enter 0 -1 1	 Trigger Command, targ, actor 
+
+ scratch;
+ say Hmm, Where to start...;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+536	Start of Mob
+old priest ~	names
+an old priest
+~
+An old priest stands here, curious why you're bothering him.
+~
+You see an old priest wearing a dark brown robe with the hood up. His light
+eyes locked on yours, trying to see a hint of purpose.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+400 1300000 0 	long_data
+0 16 16 16 16 16 16 4 4 0 2 0 1 1 4 400 400 400 50 
+20 1 0 0 400 400 400 2 100 100 80 80 100 90 0 10 3 5 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 536 0 1	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+541	Start of Mob
+hairy scout man ~	names
+A hairy scout
+~
+A very hairy man scouts the area here.
+~
+A man standing about 6 feet tall glares at you. His body is covered in a thin
+red hair. Small scraps of cloth and leather armor covers his body. His beard is
+braided into 3 thick braids.
+
+~
+18 12 11 10 9 8 7 6 5 -1  -:| bitfield |:-
+500 2000000 0 	long_data
+0 11 9 11 9 10 11 5 5 50 1 0 1 4 1 250 150 150 50 
+10 1 0 0 1000 1000 1000 2 100 100 50 50 50 50 0 10 3 6 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1028 0 	cur_stats
+876 9 -1	eq: num, posn
+-1	affected_by
+-1	inv
+ 541 0 1	mob#, tmp_num, max_n_game
+5 4 2 -1  -:| bitfield |:-
+	end_of_crit
+
+549	Start of Mob
+hairy scout man ~	names
+A hairy scout
+~
+A very hairy man scouts the area here.
+~
+A man standing about 6 feet tall glares at you. His body is covered in a thin
+red hair. Small scraps of cloth and leather armor covers his body. His beard is
+braided into 3 thick braids.
+
+~
+18 12 11 10 9 8 7 6 5 -1  -:| bitfield |:-
+500 2000000 0 	long_data
+0 18 18 18 18 18 18 8 8 -20 2 0 1 4 1 500 500 500 50 
+18 1 0 0 500 500 500 2 100 100 50 50 50 50 0 10 5 5 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1028 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 549 0 1	mob#, tmp_num, max_n_game
+5 4 2 -1  -:| bitfield |:-
+	end_of_crit
+
+550	Start of Mob
+hairy scout man ~	names
+A hairy scout
+~
+A very hairy man scouts the area here.
+~
+A man standing about 6 feet tall glares at you. His body is covered in a thin
+red hair. Small scraps of cloth and leather armor covers his body. His beard is
+braided into three thick braids.
+
+~
+18 12 11 10 9 8 7 6 5 -1  -:| bitfield |:-
+500 200000 0 	long_data
+0 11 9 11 9 10 11 5 5 50 1 0 1 4 1 250 150 150 50 
+10 1 0 0 250 150 150 2 100 100 50 50 50 50 0 10 3 6 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1028 0 	cur_stats
+876 9 -1	eq: num, posn
+-1	affected_by
+-1	inv
+ 550 0 1	mob#, tmp_num, max_n_game
+17 5 4 2 -1  -:| bitfield |:-
+1  Start of a mob proc script
+enter 0 -1 1	 Trigger Command, targ, actor 
+
+ emote grunts and backs away scowling.;
+ hide;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+551	Start of Mob
+Trolloc ~	names
+A Trolloc
+~
+A Trolloc stands here.
+~
+You see a tall disfigured creature. Maybe 2 feet above the average height of a
+human. This weird creature has the snout of a pig, and horns of a goat. Its
+feet are hooves and it tail is that of a horse. It growls at you staring at
+him.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+50 1000000 0 	long_data
+0 20 19 20 17 19 20 10 10 0 2 0 1 1 9 700 500 300 50 
+20 1 0 0 700 500 300 2 100 100 0 0 0 0 0 10 5 5 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 551 0 1	mob#, tmp_num, max_n_game
 -1  -:| bitfield |:-
-	end_of_crit
-
-364	Start of Mob
-Swamp Rat ~	names
-a swamp rat
-~
-A swamp rat stands here.
-~
-A swamp looks simmilar to a man but is definately a creature that is not
-natural.
-
-~
-18 17 16 5 -1  -:| bitfield |:-
-0 45600 0 	long_data
-0 13 5 15 14 14 14 3 7 0 1 0 1 1 14 200 100 100 50 
-5 1 0 0 300 100 300 2 100 100 80 80 100 90 5 10 5 6 100 100 
-100 5 150 0 	shrt_cur_stats
-1027 1024 0 	cur_stats
-283 9 -1	eq: num, posn
-13 -1 -1	affected_by
--1	inv
- 364 0 10	mob#, tmp_num, max_n_game
-16 2 1 -1  -:| bitfield |:-
-0        skin number
-	end_of_crit
-
-365	Start of Mob
-Swamp Rat ~	names
-a swamp rat
-~
-A swamp rat stands here.
-~
-A swamp looks simmilar to a man but is definately a creature that is not
-natural.
-
-~
-18 17 16 5 -1  -:| bitfield |:-
-0 45600 0 	long_data
-0 13 5 15 14 14 14 3 7 0 1 0 1 1 14 200 100 100 50 
-5 1 0 0 300 100 300 2 100 100 80 80 100 90 5 10 5 6 100 100 
-100 5 150 0 	shrt_cur_stats
-1027 1024 0 	cur_stats
-283 9 -1	eq: num, posn
-13 -1 -1	affected_by
--1	inv
- 365 0 10	mob#, tmp_num, max_n_game
-16 2 1 -1  -:| bitfield |:-
-0        skin number
-	end_of_crit
-
-366	Start of Mob
-Alley Cat ~	names
-an alley cat
-~
-An alley cat prowles around looking for food.
-~
-An alley cat looks starved and is rummaging around for food.
-
-~
-18 -1  -:| bitfield |:-
-0 2500 0 	long_data
-0 5 14 15 14 14 14 1 1 60 1 0 1 1 14 100 100 100 50 
-1 1 0 0 45 10 100 2 80 75 80 80 100 90 5 10 2 2 100 100 
-100 5 150 0 	shrt_cur_stats
-1024 1024 0 	cur_stats
--1	eq: num, posn
--1	affected_by
--1	inv
- 366 0 1	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
-	end_of_crit
-
-367	Start of Mob
-Alley Cat ~	names
-an alley cat
-~
-An alley cat prowles around looking for food.
-~
-An alley cat looks starved and is rummaging around for food.
-
-~
-18 -1  -:| bitfield |:-
-0 2500 0 	long_data
-0 5 14 15 14 14 14 1 1 60 1 0 1 1 14 100 100 100 50 
-1 1 0 0 45 10 100 2 80 75 80 80 100 90 5 10 2 2 100 100 
-100 5 150 0 	shrt_cur_stats
-1024 1024 0 	cur_stats
--1	eq: num, posn
--1	affected_by
--1	inv
- 367 0 1	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
-	end_of_crit
-
-368	Start of Mob
-grimy boy ~	names
-a little grimy boy
-~
-A little grimy boy leers at you.
-~
-A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
-he's ever bathed.
-
-~
-18 17 -1  -:| bitfield |:-
-100 50000 0 	long_data
-0 9 14 15 14 14 14 1 1 60 1 0 1 1 1 60 100 100 50 
-3 1 0 0 100 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
-100 5 150 0 	shrt_cur_stats
-1024 1024 0 	cur_stats
--1	eq: num, posn
--1	affected_by
--1	inv
- 368 0 1	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
-	end_of_crit
-
-369	Start of Mob
-grimy boy ~	names
-a little grimy boy
-~
-A little grimy boy leers at you.
-~
-A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
-he's ever bathed.
-
-~
-18 17 -1  -:| bitfield |:-
-100 50000 0 	long_data
-0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
-3 1 0 0 100 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
-100 5 60 0 	shrt_cur_stats
-1024 1024 0 	cur_stats
--1	eq: num, posn
--1	affected_by
--1	inv
- 369 0 15	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
-	end_of_crit
-
-370	Start of Mob
-grimy boy ~	names
-a little grimy boy
-~
-A little grimy boy leers at you.
-~
-A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
-he's ever bathed.
-
-~
-18 17 -1  -:| bitfield |:-
-100 50000 0 	long_data
-0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
-3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
-100 5 60 0 	shrt_cur_stats
-1024 1024 0 	cur_stats
--1	eq: num, posn
--1	affected_by
--1	inv
- 370 0 15	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
-	end_of_crit
-
-371	Start of Mob
-grimy boy ~	names
-a little grimy boy
-~
-A little grimy boy leers at you.
-~
-A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
-he's ever bathed.
-
-~
-18 17 -1  -:| bitfield |:-
-100 50000 0 	long_data
-0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
-3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
-100 5 60 0 	shrt_cur_stats
-1024 1024 0 	cur_stats
--1	eq: num, posn
--1	affected_by
--1	inv
- 371 0 15	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
-	end_of_crit
-
-372	Start of Mob
-grimy boy ~	names
-a little grimy boy
-~
-A little grimy boy leers at you.
-~
-A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
-he's ever bathed.
-
-~
-18 17 -1  -:| bitfield |:-
-100 1000000 0 	long_data
-0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
-3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
-100 5 60 0 	shrt_cur_stats
-1024 1024 0 	cur_stats
--1	eq: num, posn
--1	affected_by
--1	inv
- 372 0 15	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
-	end_of_crit
-
-373	Start of Mob
-grimy boy ~	names
-a little grimy boy
-~
-A little grimy boy leers at you.
-~
-A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
-he's ever bathed.
-
-~
-18 17 -1  -:| bitfield |:-
-100 50000 0 	long_data
-0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
-3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
-100 5 60 0 	shrt_cur_stats
-1024 1024 0 	cur_stats
--1	eq: num, posn
--1	affected_by
--1	inv
- 373 0 15	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
-	end_of_crit
-
-374	Start of Mob
-grimy boy ~	names
-a little grimy boy
-~
-A little grimy boy leers at you.
-~
-A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
-he's ever bathed.
-
-~
-18 17 -1  -:| bitfield |:-
-100 10000000 0 	long_data
-0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
-3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
-100 5 60 0 	shrt_cur_stats
-1024 1024 0 	cur_stats
--1	eq: num, posn
--1	affected_by
--1	inv
- 374 0 15	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
-	end_of_crit
-
-375	Start of Mob
-grimy boy ~	names
-a little grimy boy
-~
-A little grimy boy leers at you.
-~
-A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
-he's ever bathed.
-
-~
-18 17 -1  -:| bitfield |:-
-100 50000 0 	long_data
-0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
-3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
-100 5 60 0 	shrt_cur_stats
-1024 1024 0 	cur_stats
--1	eq: num, posn
--1	affected_by
-7 7 7 7 13 13 13 13 13 -1	inv
- 375 0 15	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
-	end_of_crit
-
-376	Start of Mob
-grimy boy ~	names
-a little grimy boy
-~
-A little grimy boy leers at you.
-~
-A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
-he's ever bathed.
-
-~
-18 17 -1  -:| bitfield |:-
-100 50000 0 	long_data
-0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
-3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
-100 5 60 0 	shrt_cur_stats
-1024 1024 0 	cur_stats
--1	eq: num, posn
--1	affected_by
-7 7 7 7 13 13 13 13 13 -1	inv
- 376 0 15	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
-	end_of_crit
-
-377	Start of Mob
-grimy boy ~	names
-a little grimy boy
-~
-A little grimy boy leers at you.
-~
-A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
-he's ever bathed.
-
-~
-18 17 -1  -:| bitfield |:-
-100 50000 0 	long_data
-0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
-3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
-100 5 60 0 	shrt_cur_stats
-1024 1024 0 	cur_stats
--1	eq: num, posn
--1	affected_by
-13 13 13 13 13 -1	inv
- 377 0 15	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
-	end_of_crit
-
-382	Start of Mob
-Alexander ~	names
-Alexander
-~
-Alexander the newbie stands here.
-~
-You see Alexander the newbie standing here.
-
-~
-18 11 10 9 8 7 6 5 4 -1  -:| bitfield |:-
-15000 150000 0 	long_data
-0 18 18 18 18 18 18 18 18 -15 2 0 1 4 1 200 200 200 1 
-6 10 0 0 350 350 350 2 50 200 0 50 50 50 0 10 24 24 100 100 
-100 5 220 0 	shrt_cur_stats
-1026 1026 0 	cur_stats
--1	eq: num, posn
--1	affected_by
--1	inv
- 382 0 1	mob#, tmp_num, max_n_game
-0 -1  -:| bitfield |:-
-13 8 6 -1  -:| bitfield |:-
-0	int1, above bitfield started spec_data
-0	 test_num, valid for give_proc mostly
-Alexander says, 'Well maybe you will have better luck next time without asking
-me, so go screw yourself dick head.'
-
-~
-
-0 2386	obj_num, trans_room#
-
-~
-end action_proc_data
-1    here starts a valid say_proc_cell.
-hello
-Alexander tells you, 'So you want me to reply to that huh?! Was that a trick or
-seriously a questiong? What you think I'm being funny? Well I'm not dick
-head*grin*. Alright Hello.'
-
-~
-tornado
-0 0	 end of say_proc_cell
--1    end of say_proc_cells
-
-~
-
-~
-
-~
-5 10 2 5 -2  sk_viol, benev, def, bad_assed, soc_aware
 	end_of_crit
 
 

@@ -47,11 +47,11 @@ ponder the sacrilege and then manage to rationalize your stealing of this
 former being's belongings.  What would a dead person need with gold, anyway?
 
 ~
-54 40 21 10 4 -1  -:| bitfield |:-
+70 54 40 21 10 -1  -:| bitfield |:-
 0 0 100 0 32000 150 0 0 0 	extras
 1024 100 3 0 	cur_stats
 128 9 -1  -:| bitfield |:-
-0 200 100 10 	 bag_stuff
+0 200 100 25 	 bag_stuff
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -86,7 +86,7 @@ A pile of gold lies here.
      You see a pile of gold lying on the ground, wish you could tell how
 big it was eh? :)
 ~
-55 40 10 -1  -:| bitfield |:-
+70 55 40 10 -1  -:| bitfield |:-
 0 0 100 0 32000 2 0 0 0 	extras
 1024 0 5 0 	cur_stats
 -1	affected_by
@@ -222,7 +222,7 @@ golden brown.  Just looking at it makes you drool!
 ~
 61 40 31 10 -1  -:| bitfield |:-
 10 0 75 0 9999 2 0 0 1 	extras
-1024 25 13 0 	cur_stats
+1024 15 13 0 	cur_stats
 -1	affected_by
 -1	inv
 100 8 101 -2 -1	stat_affects
@@ -342,7 +342,7 @@ branch and a bull hide.
 
 ~
 56 40 39 10 -1  -:| bitfield |:-
-0 0 0 0 25 6 0 0 6 	extras
+0 0 0 0 25 6 0 0 0 	extras
 1024 45 19 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -426,7 +426,7 @@ powerful spell.
 1024 50 23 0 	cur_stats
 -1	affected_by
 -1	inv
--1	stat_affects
+12 1 -1	stat_affects
 End of Object.
 
 
@@ -590,7 +590,7 @@ End of Object.
 
 
 32	 Start of Object
-board bulletin cork ~	names
+board ~	names
 a bulletin board
 ~
 A bulletin board hangs on the wall.
@@ -602,9 +602,9 @@ try 'read <number>.
 
 ~
 74 54 40 21 10 7 -1  -:| bitfield |:-
-0 0 100 0 50 500 0 0 0 	extras
+0 0 100 0 50 1001 0 0 0 	extras
 1024 5000 32 0 	cur_stats
--1  -:| bitfield |:-
+9 -1  -:| bitfield |:-
 0 500 100 -1 	 bag_stuff
 -1	affected_by
 -1	inv
@@ -627,7 +627,7 @@ It glows golden in the light.
 1024 6200 33 0 	cur_stats
 -1	affected_by
 -1	inv
--1	stat_affects
+23 5 -1	stat_affects
 End of Object.
 
 
@@ -838,8 +838,8 @@ protection to piercing weapons!
 
 ~
 67 63 56 40 35 10 -1  -:| bitfield |:-
-0 0 50 0 50 12 0 0 0 	extras
-1024 2100 101 0 	cur_stats
+0 0 50 0 50 12 0 0 5 	extras
+1024 1500 101 0 	cur_stats
 -1	affected_by
 -1	inv
 9 -15 -1	stat_affects
@@ -860,8 +860,8 @@ being around so much magic seems to have imbued it with an
 impervious sheen.
 
 ~
-50 40 21 10 7 -1  -:| bitfield |:-
-0 0 100 0 0 1 1000 0 0 	extras
+50 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 0 1000 0 0 0 	extras
 1024 500 143 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -896,7 +896,7 @@ End of Object.
 altar marble ~	names
 a marble altar
 ~
-A large, extremely heavy, marble altar stands in the center of the temple.
+A large, extremely heavy marble altar stands in the center of the temple.
 ~
 The altar contains many gifts that people offer as tokens to the
 powers of good.  Fortunately, temple attendants regularly clean the
@@ -904,11 +904,11 @@ altar out, because food is a typical offering!  Flowers also can be
 seen from time to time.
 
 ~
-54 40 21 10 7 -1  -:| bitfield |:-
-0 0 100 0 0 5000 0 0 0 	extras
-1024 500 145 0 	cur_stats
-9 -1  -:| bitfield |:-
-0 6000 100 -1 	 bag_stuff
+54 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 1000 0 0 0 	extras
+1024 0 145 0 	cur_stats
+10 9 -1  -:| bitfield |:-
+0 5000 100 -1 	 bag_stuff
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -930,7 +930,7 @@ three inches of granite to it's hilt, itself hissing violently!
 ~
 57 43 31 30 18 17 16 14 13 12 11 10 3 2 -1  -:| bitfield |:-
 0 0 10 0 3 8 4 7 20 	extras
-1024 500000 146 0 	cur_stats
+1024 15000 146 0 	cur_stats
 -1	affected_by
 -1	inv
 18 -300 23 25 35 2 -1	stat_affects
@@ -1029,8 +1029,8 @@ looks quite comfortable, and would no doubt protect you very well!
 
 ~
 56 40 33 10 0 -1  -:| bitfield |:-
-0 0 50 0 50 11 0 0 0 	extras
-1024 2500 188 0 	cur_stats
+0 0 50 0 50 11 0 0 5 	extras
+1024 1000 188 0 	cur_stats
 -1	affected_by
 -1	inv
 9 -13 -1	stat_affects
@@ -1730,7 +1730,7 @@ quite a lot!
 -1  -:| bitfield |:-
 0 75 100 -1 	 bag_stuff
 -1	affected_by
-13 13 13 13 13 37 99 4 87 342 182 -1	inv
+276 342 13 13 13 13 13 182 307 345 306 352 -1	inv
 -1	stat_affects
 End of Object.
 
@@ -1962,7 +1962,7 @@ thinking about it.
 1024 75 400 0 	cur_stats
 -1	affected_by
 -1	inv
-100 5 101 -2 -1	stat_affects
+100 5 -1	stat_affects
 End of Object.
 
 
@@ -2070,64 +2070,19 @@ End of Object.
 
 
 486	 Start of Object
-canteen ~	names
-CLONE OF:  canteen.
+pants cloth ~	names
+a pair of pants
 ~
-CLONE OF:  canteen.
+A pair of pants was left here.
 ~
-This is a simple canteen with a cork for a lid.  From the scuffed
-nature, you can believe it's seen a long life!
+The pants are made of a sturdy, heavy cloth.
 
 ~
-59 54 40 21 10 -1  -:| bitfield |:-
-20 0 100 0 1000 1 0 0 1 	extras
-1024 50 486 0 	cur_stats
-2 -1  -:| bitfield |:-
-0 10 100 -1 	 bag_stuff
+35 10 -1  -:| bitfield |:-
+0 0 100 0 500 3 0 0 1 	extras
+1024 10 486 0 	cur_stats
 -1	affected_by
-7 -1	inv
--1	stat_affects
-End of Object.
-
-
-487	 Start of Object
-canteen ~	names
-CLONE OF:  canteen.
-~
-CLONE OF:  canteen.
-~
-This is a simple canteen with a cork for a lid.  From the scuffed
-nature, you can believe it's seen a long life!
-
-~
-59 54 40 21 10 -1  -:| bitfield |:-
-20 0 100 0 1000 1 0 0 1 	extras
-1024 50 487 0 	cur_stats
-2 -1  -:| bitfield |:-
-0 10 100 -1 	 bag_stuff
--1	affected_by
-7 -1	inv
--1	stat_affects
-End of Object.
-
-
-488	 Start of Object
-canteen ~	names
-CLONE OF:  canteen.
-~
-CLONE OF:  canteen.
-~
-This is a simple canteen with a cork for a lid.  From the scuffed
-nature, you can believe it's seen a long life!
-
-~
-59 54 40 21 10 -1  -:| bitfield |:-
-20 0 100 0 1000 1 0 0 1 	extras
-1024 50 488 0 	cur_stats
-2 -1  -:| bitfield |:-
-0 10 100 -1 	 bag_stuff
--1	affected_by
-7 -1	inv
+-1	inv
 -1	stat_affects
 End of Object.
 
@@ -3449,6 +3404,28 @@ large piece of papyrus paper.
 End of Object.
 
 
+612	 Start of Object
+shield purple magic mage ~	names
+a mage's shield
+~
+A small, purple shield lies here.
+~
+This shield seems to have been designed for mages rather than warriors.  It
+seems to draw magic toward itself and away from the holder, and also seems to
+increase the holder's own magical power and magical reserves.  It is made of a
+smooth, iron frame covered with soft, purple velvet cloth and its handle is
+wrapped with soft leather.
+
+~
+56 40 39 10 -1  -:| bitfield |:-
+0 0 100 0 1 14 0 0 18 	extras
+1024 20000 612 0 	cur_stats
+-1	affected_by
+-1	inv
+38 20 32 -30 24 50 -1	stat_affects
+End of Object.
+
+
 629	 Start of Object
 board notices bulletin ~	names
 the development bulletin board
@@ -3541,7 +3518,7 @@ A small cauldron, made of iron, lies here.
 It is a small, slightly rusty iron cauldron.
 
 ~
-65 59 54 40 21 10 -1  -:| bitfield |:-
+65 54 40 21 10 -1  -:| bitfield |:-
 0 0 100 0 10000 25 0 0 0 	extras
 1024 800 737 0 	cur_stats
 9 -1  -:| bitfield |:-
@@ -3567,7 +3544,7 @@ of items left in the donation room.
 0 0 100 0 1 1000 0 0 0 	extras
 1024 10 742 0 	cur_stats
 10 -1  -:| bitfield |:-
-0 1200 100 -1 	 bag_stuff
+0 2000 100 -1 	 bag_stuff
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -3583,7 +3560,7 @@ Some honey lies in a sticky glob.
 It's probably not great to eat, but it's sticky and could hold things together!
 
 ~
-67 63 50 40 21 10 -1  -:| bitfield |:-
+67 63 61 50 40 21 10 -1  -:| bitfield |:-
 0 0 100 0 1 1 0 0 0 	extras
 1024 10 743 0 	cur_stats
 -1	affected_by
@@ -3606,6 +3583,291 @@ You see a small wooden token.
 50 40 21 10 -1  -:| bitfield |:-
 0 0 100 0 1 0 0 0 0 	extras
 1024 10 752 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+775	 Start of Object
+beanie ~	names
+a beanie
+~
+A beanie lies slumped here, propeller spinning slowly.
+~
+This brightly colored beanie is like no other. Wearing it makes 
+you feel like a kid again, and reminds you of those dreams of flying. The 
+propeller on top whirls quickly when the wind passes by, but it continues 
+to spin even after the wind stops. There must be some magic at work here! 
+And with that very thought in mind, it almost feels as if your feet are 
+lifting off the ground..
+
+~
+40 22 19 10 5 4 -1  -:| bitfield |:-
+0 0 3 0 1 2 0 0 0 	extras
+1024 10 775 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 9 -15 -1	stat_affects
+End of Object.
+
+
+785	 Start of Object
+sleeves metal ~	names
+a pair of metal sleeves
+~
+A pair of metal sleeves lies here.
+~
+They are rather basic, but still good protection.
+
+~
+56 40 26 10 -1  -:| bitfield |:-
+0 0 100 0 100 4 0 0 8 	extras
+1024 1000 785 0 	cur_stats
+-1	affected_by
+-1	inv
+23 5 9 -10 -1	stat_affects
+End of Object.
+
+
+786	 Start of Object
+breastplate plate metal ~	names
+a metal breastplate
+~
+A heavy, metal breastplate lies here.
+~
+It is thick and probably offers a good deal of protection from attacks.
+
+~
+56 40 33 10 -1  -:| bitfield |:-
+0 0 100 0 100 16 0 0 10 	extras
+1024 2000 786 0 	cur_stats
+-1	affected_by
+-1	inv
+23 5 27 -3 9 -15 -1	stat_affects
+End of Object.
+
+
+787	 Start of Object
+boots leather ~	names
+a pair of leather boots
+~
+A pair of leather boots lies here.
+~
+They are spartan in comfort, but they are quite thick and can certainly keep
+your feet dry and warm!
+
+~
+56 40 36 10 -1  -:| bitfield |:-
+0 0 100 0 100 6 0 0 4 	extras
+1024 800 787 0 	cur_stats
+-1	affected_by
+-1	inv
+39 10 25 15 -1	stat_affects
+End of Object.
+
+
+788	 Start of Object
+shield metal ~	names
+a metal shield
+~
+A metal shield lies here.
+~
+It is rather large and somewhat bulky, but no sword or arrow will ever pierce
+it!
+
+~
+56 40 39 10 -1  -:| bitfield |:-
+0 0 100 0 100 15 0 0 8 	extras
+1024 2000 788 0 	cur_stats
+-1	affected_by
+-1	inv
+23 10 37 5 9 -15 -1	stat_affects
+End of Object.
+
+
+789	 Start of Object
+bracer leather ~	names
+a leather bracer
+~
+A leather bracer lies here.
+~
+It is made of thick leather, but probably does not still offer very much
+protection.
+
+~
+56 40 28 27 10 -1  -:| bitfield |:-
+0 0 100 0 100 3 0 0 5 	extras
+1024 400 789 0 	cur_stats
+-1	affected_by
+-1	inv
+23 5 9 -5 -1	stat_affects
+End of Object.
+
+
+833	 Start of Object
+substance silvery ~	names
+a silvery substance
+~
+A silvery substance sits in a puddle.
+~
+A silvery substance sits in a puddle.
+
+~
+60 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 1 0 0 0 	extras
+1024 10 833 0 	cur_stats
+-1	affected_by
+-1	inv
+101 8 -1	stat_affects
+End of Object.
+
+
+834	 Start of Object
+canister silvery ~	names
+a silvery canister
+~
+An old rusty canister lies here.
+~
+It is a long, slightly rusted canister.  It bears an incoherent orange marking
+on its top.  Some peculiar liquid is sloshing around inside.
+
+~
+59 54 40 21 10 5 4 -1  -:| bitfield |:-
+-1 0 100 0 1 15 0 0 0 	extras
+1024 100 834 0 	cur_stats
+-1  -:| bitfield |:-
+0 16 100 -1 	 bag_stuff
+-1	affected_by
+7 -1	inv
+-1	stat_affects
+End of Object.
+
+
+836	 Start of Object
+cheese ~	names
+a small piece of cheese
+~
+A small piece of cheese sits here molding.
+~
+This is a plain pale yellow piece of cheese.
+
+~
+61 40 21 10 0 -1  -:| bitfield |:-
+0 0 50 0 150 1 0 0 1 	extras
+1024 10 836 0 	cur_stats
+-1	affected_by
+-1	inv
+100 10 101 -4 -1	stat_affects
+End of Object.
+
+
+973	 Start of Object
+tulip flower purple tulip flower purple ~	names
+a purple ^mtulip^0
+~
+A purple ^mtulip^0 lies here.
+~
+It's a simple purple ^mtulip^0, suitable for use as a gift or decoration.
+
+~
+57 31 30 10 -1  -:| bitfield |:-
+0 0 100 0 500 1 0 0 1 	extras
+1024 20 973 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+991	 Start of Object
+sandwich buffalo tongue ~	names
+a thick buffalo tongue sandwich
+~
+A thick brown-breaded sandwich lies here.
+~
+This thick sandwich includes an ingrediant that makes most butchers salavate,
+the famous brown buffalo tongue garnished with the finest spices, resting on a
+sweet wheat bun.
+
+~
+61 40 31 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 5 0 0 0 	extras
+1024 128 991 0 	cur_stats
+-1	affected_by
+-1	inv
+101 -2 100 5 -1	stat_affects
+End of Object.
+
+
+992	 Start of Object
+cake carrot ~	names
+a slice of carrot cake
+~
+A frosted slice of cake lies here alluring you.
+~
+A three-tier slice of carrot cake lies slightly crumbling in your hand, with a
+bitter-sweet vanilla frosting that envelopes it. 
+
+~
+61 40 31 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+1024 53 992 0 	cur_stats
+-1	affected_by
+-1	inv
+101 -2 100 10 -1	stat_affects
+End of Object.
+
+
+1020	 Start of Object
+necklace ~	names
+a plain necklace
+~
+A small necklace lies here.
+~
+It is a simple necklace made from an inexpensive metal.
+
+~
+24 23 10 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 1 	extras
+1024 150 1020 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+1021	 Start of Object
+a fancy gold necklace necklace gold ~	names
+a fancy gold necklace
+~
+A shiny gold necklace lies here.
+~
+It is made from a series of interlocking oval rings made from pure gold. It is
+masterfully made and appears to be very expensive.
+
+~
+24 23 10 -1  -:| bitfield |:-
+0 0 100 0 100 2 0 0 1 	extras
+1024 1000 1021 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+1030	 Start of Object
+head ~	names
+a decapitated head
+~
+A decapitated head lies here.
+~
+You see a nasty, rotting, decapitated head here!!
+
+~
+70 57 42 31 30 24 23 22 10 4 0 -1  -:| bitfield |:-
+0 0 0 0 1 5 2 1 1 	extras
+1024 0 1030 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects

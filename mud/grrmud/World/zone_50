@@ -9,7 +9,7 @@ north.  Type "north" to enter the newbie area and begin your education!  If you
 want to have a lesson repeated, just type "look".
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4643 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -42,7 +42,7 @@ not see them without some investigation.  Now, move to lesson two.  It is west
 of here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4644 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -62,7 +62,7 @@ themselves.  If you're unfamiliar with Scry's commands and interface, head
 north of here to start learning!
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4645 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -77,26 +77,28 @@ End of Room
 newbie ~	names
 Lesson Two: Communication
 ~
-Scry has various methods, called "channels", which you can use to communicate. 
-The first of these is "say".  Typing "say Hello!" will send a message to
-everyone that is in your current room.  Another channel is "gossip".  Typing
-"gossip Hello!" will send a message to everyone in the game who is not asleep,
-meditating, deaf, or has gossip turned off.  Other channels are:
-tell: Typing "tell grock Hello!" will send a message only to Grock.  Typing
-"reply Hello!" will send a message to the last person who sent a tell to you.
-shout: Typing "shout Hello!" will send a message to everyone near you.
-yell: Typing "yell Hello!" will send a message to everyone in the game.  This
-is for emergencies.
-emote: emote will send a message to everyone in your current room, but in the
-third-person.  If your name was Joe, typing "emote smiles." would display "Joe
-smiles.".
-Channels like gossip and yell are what are called "global" channels, in that
-they broadcast a message to everyone in the game.  People might get mad at you
-if you use these channels too much, or "spam" them.
-Now, move to lesson three.  It is down from here.
+ScryMUD has various methods of communication, known as "channels".  The most
+basic of these channels is called "say".  Typing "say Hello!" will send the
+message "Hello!" to everyone in the same room as you.  Another channel is
+gossip.  Typing "gossip Hello!" will send a message to everyone in the game. 
+There are other channels, including "shout" and "yell".  There is also a
+private method of communication known as "tell", which sends a message to a
+specific person only.  If you type "tell Grock I feel like a stranger in a
+strange land!", that message will go to Grock and Grock only.  The last method
+of communication is called "emote", and it is used to express your emotions in
+a non-verbal way.  If you type "emote smiles.", people will see "Grock smiles."
+if your name is Grock.
+Channels like gossip and yell are known as global channels, because they
+broadcast a message to everyone in the game.  People might get mad at you if
+you use these channels too much or "spam" them.
+If you're wondering why you're not hearing anyone talk on the global channels,
+that is because when you are in the learning area the global channels are
+disabled.  Once you complete the learning area and move into the real game
+you'll start hearing all the chit-chat going on.
+Now move to lesson three.  it is down from here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4646 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -130,7 +132,7 @@ pre-programmed setting.
 Now, move to lesson four.  It is east of here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4647 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -164,7 +166,7 @@ quite a unique person!
 Now, move to lesson five.  It is up from here.
 
 ~
-32 24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+32 24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1   Start of KeywordPair
 zmud ~
 If you're using zMUD, you might have trouble entering a description, because
@@ -210,7 +212,7 @@ battle, as it tells you how healthy (or unhealthy!) you are. Now, move to
 lesson six.  Is south of here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4649 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -241,7 +243,7 @@ leave an item on the ground, type 'drop item'.  Now, move to lesson seven,
 which is west of here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4650 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -271,7 +273,7 @@ fountain.  Type 'fill canteen fountain' to refill it, and try it again until
 the canteen is full.  Now, move to lesson eight, which is north of here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4651 0 	cur_stats
 -1	affected_by
 46 -1	inv
@@ -294,7 +296,7 @@ will leave it in the donation room in Garland where others can make use of it.
 Now, move to lesson nine, which is up from here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4652 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -320,7 +322,7 @@ item, type 'sell item'.  Only some shopkeepers will allow you to sell things to
 them.  Now, move to lesson ten, which is south of here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4653 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -356,7 +358,7 @@ inventory with the 'get all corpse' command.  Now, move to lesson eleven, which
 is east of here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4654 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -381,7 +383,7 @@ there are punishments for those who do this! Now, move to lesson twelve, which
 is northwest of here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4655 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -415,7 +417,7 @@ see a list of what skills and spells you currently have or can get, type
 'abilities'.  Now, more to lesson thirteen, which is southwest of here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4656 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -447,7 +449,7 @@ whether they're two words or not.  Now, move to lesson fourteen, which is to
 the west of here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4657 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -482,7 +484,7 @@ do anything to use them. Now, move to lesson fifteen, which is to the south of
 here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4658 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -512,7 +514,7 @@ dead" characters, as they are called, are forced to log out automatically after
 sixteen, which is to the east of here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4659 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -532,7 +534,7 @@ however, a few more things you'll need to learn before you can head on out into
 the world.  Move north of here to start the final stages of your instruction.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4660 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -563,7 +565,7 @@ realm, as well as a vast expanse of wilderness to explore!  Now, move to lesson
 seventeen, which is to the east of here.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4661 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -583,7 +585,7 @@ Scry's rules.  Most of these are simple, common decency rules and are there for
 your benefit. Head north to learn the rules.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4662 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -603,7 +605,7 @@ Scry's rules.  Most of these are simple, common decency rules and are there for
 your benefit. Head north to learn the rules.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4663 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -622,7 +624,7 @@ refrain from using vulgar words you will be silenced.  Move north to continue
 learning the rules.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4664 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -645,7 +647,7 @@ that, look forward to character deletion and sitebans.  Racial and sexual
 harassment are *not* taken lightly.  Move north to continue learning the rules.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4665 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -676,7 +678,7 @@ Immortals have a set of rules just like mortals do, and they are expected to
 follow the rules too. Now move north for in-character rules.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4666 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -701,7 +703,7 @@ frowned upon, and players won't like you much if you do it.  Now move north for
 the last section of rules.
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4667 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -723,7 +725,7 @@ idea commands to report them where they'll be read by the immortals and acted
 upon.  Now, head north to complete your education!
 
 ~
-24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4668 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -745,7 +747,13 @@ If you think you're ready to enter the game, just type 'enter game' now.
 Otherwise, if you'd like to repeat your training, type 'enter training' now.
 
 ~
-35 24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+35 32 24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
+1   Start of KeywordPair
+~
+if they can't figure out 'enter game', we prolly don't want em playing anyway!
+
+~
+-1  No more KeywordPairs
 1024 0 4669 0 	cur_stats
 -1	affected_by
 31 31 31 31 31 -1	inv
@@ -779,7 +787,7 @@ wanted to enter the game, don't fret - you won't have to go through the whole
 newbie zone again.  You can type 'enter game' from here, as well!
 
 ~
-35 24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+35 24 23 21 10 9 8 7 6 5 -1  -:| bitfield |:-
 1024 0 4670 0 	cur_stats
 -1	affected_by
 -1	inv

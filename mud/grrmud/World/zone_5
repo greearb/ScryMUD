@@ -911,6 +911,8 @@ to climb from here, but you could always walk farther south and try.
 1024 2 438 438 	cur_stats
 -1	affected_by
 -1	inv
+1 146 1514 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 1 4 437 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 2 446 0 door# dest# distance
@@ -1852,6 +1854,8 @@ splashes harmlessly on a huge flat rock.
 -1	door Affected_Bye (end of door)
 1 4 466 0 door# dest# distance
 -1	door Affected_Bye (end of door)
+1 174 -2036 1 door# dest# distance
+-1	door Affected_Bye (end of door)
 -1	End of Doors
 -1	mobs
 End of Room
@@ -2323,6 +2327,8 @@ forest trees can still reach 8 feet in diameter.
 1 4 459 0 door# dest# distance
 -1	door Affected_Bye (end of door)
 1 2 499 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 171 -2028 1 door# dest# distance
 -1	door Affected_Bye (end of door)
 -1	End of Doors
 -1	mobs

@@ -110,7 +110,7 @@ a beautiful pelt though!
 
 ~
 18 17 5 -1  -:| bitfield |:-
-0 250000 0 	long_data
+0 600000 0 	long_data
 0 20 8 20 8 8 20 10 5 30 2 0 0 5 16 450 40 150 -100 
 12 5 0 0 450 40 150 2 100 100 0 80 80 100 5 5 4 5 100 100 
 100 0 220 0 	shrt_cur_stats
@@ -319,7 +319,21 @@ He glances briefly at you sizing you up and continues warily on his way.
 -1	affected_by
 106 -1	inv
  91 0 9	mob#, tmp_num, max_n_game
-4 2 -1  -:| bitfield |:-
+17 4 2 -1  -:| bitfield |:-
+1  Start of a mob proc script
+hit 0 -1 0	 Trigger Command, targ, actor 
+
+ tell %M Fighting is not allowed here!;
+ if chance 1 5 4;
+ pause 1;
+ kill
+%M;
+ else;
+ pause 1;
+ cast calm;
+
+~
+-1  End of mob proc scripts
 	end_of_crit
 
 93	Start of Mob
@@ -422,9 +436,9 @@ staff.
 
 ~
 18 -1  -:| bitfield |:-
-400 950000 0 	long_data
-0 14 14 14 14 14 14 15 10 -40 1 0 1 7 11 700 500 500 300 
-20 5 0 0 700 500 500 2 90 110 0 50 50 50 4 5 2 9 10 10 
+400 16500000 0 	long_data
+0 30 30 30 30 30 30 30 30 -100 2 0 1 7 11 2000 500 500 300 
+20 5 0 0 2000 500 500 2 90 110 0 50 50 -100 4 5 10 8 100 100 
 10 0 0 0 	shrt_cur_stats
 1024 1031 0 	cur_stats
 115 10 -1	eq: num, posn
@@ -472,18 +486,19 @@ base. The lord puts much into proper respect.
 
 ~
 18 5 -1  -:| bitfield |:-
-500 1200000 0 	long_data
-0 16 16 16 16 16 16 20 20 -50 2 0 1 1 11 750 500 500 300 
-21 5 0 0 750 500 500 2 100 100 0 50 50 50 0 5 2 9 10 10 
-10 0 0 0 	shrt_cur_stats
-1026 1031 0 	cur_stats
-114 4 118 9 -1	eq: num, posn
+500 30000000 0 	long_data
+0 40 30 30 30 30 40 100 20 -100 2 0 1 1 11 4000 1000 500 500 
+31 5 300 0 4000 950 500 2 100 100 -100 -100 1 -100 0 5 12 12 200 200 
+100 0 0 0 	shrt_cur_stats
+1026 1031 490 	cur_stats
+118 9 -1	eq: num, posn
 -1	affected_by
 -1	inv
  98 0 1	mob#, tmp_num, max_n_game
 17 4 1 0 -1  -:| bitfield |:-
-9 -1  -:| bitfield |:-
+13 9 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
+3 3 3 10 3  sk_viol, benev, def, bad_assed, soc_aware
 1  Start of a mob proc script
 say 0 -1 0	 Trigger Command, targ, actor 
  sword 
