@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.46 2001/10/03 07:23:03 greear Exp $
-// $Revision: 1.46 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
+// $Id: command4.cc,v 1.47 2002/01/11 19:29:15 eroper Exp $
+// $Revision: 1.47 $  $Author: eroper $ $Date: 2002/01/11 19:29:15 $
 
 //
 //ScryMUD Server Code
@@ -2484,7 +2484,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
      }//if
    }//if
    else if (strncasecmp(*targ, "class", len1) == 0) {
-     if (check_l_range(new_val, 1, 8, pc, TRUE)) {
+     if (check_l_range(new_val, 1, 9, pc, TRUE)) {
        ptr->CLASS = new_val;
        flag = TRUE;
      }//if

@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.22 2002/01/08 04:57:21 eroper Exp $
-// $Revision: 1.22 $  $Author: eroper $ $Date: 2002/01/08 04:57:21 $
+// $Id: login.cc,v 1.23 2002/01/11 19:29:15 eroper Exp $
+// $Revision: 1.23 $  $Author: eroper $ $Date: 2002/01/11 19:29:15 $
 
 //
 //ScryMUD Server Code
@@ -935,6 +935,7 @@ int  quit_do_login_old(critter& pc) {
    }
 
    update_skills(pc); //sync them up, does not necessarly add new ones
+   pc.PC_FLAGS.turn_off(33); //make sure they aren't marked as afk
 
    show("Welcome back!!\n\n", pc);
    look(1, &NULL_STRING, pc); //autolook

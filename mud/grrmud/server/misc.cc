@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.43 2002/01/08 03:14:39 eroper Exp $
-// $Revision: 1.43 $  $Author: eroper $ $Date: 2002/01/08 03:14:39 $
+// $Id: misc.cc,v 1.44 2002/01/11 19:29:15 eroper Exp $
+// $Revision: 1.44 $  $Author: eroper $ $Date: 2002/01/11 19:29:15 $
 
 //
 //ScryMUD Server Code
@@ -472,16 +472,24 @@ void do_regeneration_pcs() {
 
       stat_spell_cell *spell_effect_ptr;
 
-      if ( ! (spell_effect_ptr = is_affected_by(REMOVE_HOPE_SKILL_NUM,
-               *crit_ptr)) ) {
+      
+      // if we are affected by remove hope we get no hp
+      if ( ! (is_affected_by(REMOVE_HOPE_SKILL_NUM, *crit_ptr)) ) {
       crit_ptr->HP += (int)((((float)(crit_ptr->CON) + 5.0) / 15.0) * 
                             (((float)(crit_ptr->HP_MAX)) / 9.0) * 
                             posn_mod * (((float)(crit_ptr->HP_REGEN)) / 100.0)
                             * adj + 10.0);
       }
 
-      if ( ! (spell_effect_ptr = is_affected_by(REMOVE_KARMA_SKILL_NUM,
-               *crit_ptr)) ) {
+      // if we are a necromancer we have to stay evil or we don't regen mana
+      // poo-poo.
+      if ( crit_ptr->isNecromancer() && crit_ptr->getLevel() > 5 &&
+              (crit_ptr->getAlignment() > (crit_ptr->getLevel()*20*-1)) ) {
+          crit_ptr->show("You are not evil enough for your deity.\n", HL_DEF);
+
+      }
+      // if we are affected by remove hope we get no mana
+      else if ( ! (is_affected_by(REMOVE_KARMA_SKILL_NUM, *crit_ptr)) ) {
       crit_ptr->MANA += (int)(((((float)(crit_ptr->INT)) + 5.0) / 16.0) *
                               posn_mod *
                               (((float)(crit_ptr->MA_MAX)) / 7.0) *

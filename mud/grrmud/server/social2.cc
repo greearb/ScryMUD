@@ -1,5 +1,5 @@
-// $Id: social2.cc,v 1.11 2002/01/04 21:26:02 eroper Exp $
-// $Revision: 1.11 $  $Author: eroper $ $Date: 2002/01/04 21:26:02 $
+// $Id: social2.cc,v 1.12 2002/01/11 19:29:15 eroper Exp $
+// $Revision: 1.12 $  $Author: eroper $ $Date: 2002/01/11 19:29:15 $
 
 //
 //ScryMUD Server Code
@@ -828,7 +828,7 @@ void bonk(int i_th, const String* vict, critter& pc, room& rm) {
       else if (pc.POS > POS_SIT)
          show("You would probably want to be standing to do that.\n", pc);
       else if (crit_ptr == &pc) {
-         show("You bonk youself. What a numbskull.\n", pc);
+         show("You bonk yourself. What a numbskull.\n", pc);
          Sprintf(buf, "bonks %s. What a weirdo.\n",
                  get_himself_herself(pc));
          emote(buf, pc, rm, TRUE);
