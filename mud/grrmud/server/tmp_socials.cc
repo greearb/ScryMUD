@@ -732,7 +732,7 @@ get_hisself_herself(pc));
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You ACK at spit at %S.\n",
+         Sprintf(buf, "You ACK and spit at %S.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
          Sprintf(buf, "%S ACKS and spits at you!  ACK!  PTHHH!\n",
