@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.41 1999/08/04 06:29:16 greear Exp $
-// $Revision: 1.41 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
+// $Id: critter.cc,v 1.42 1999/08/05 05:48:17 greear Exp $
+// $Revision: 1.42 $  $Author: greear $ $Date: 1999/08/05 05:48:17 $
 
 //
 //ScryMUD Server Code
@@ -1790,7 +1790,7 @@ int critter::write(ostream& ofile) {
 }//Write....crit
 
 
-int critter::read(istream& ofile, int read_all = TRUE) {
+int critter::read_v3(istream& ofile, int read_all = TRUE) {
    int i, z;
    char tmp[81];
    String tmp_str(80);
@@ -1803,6 +1803,9 @@ int critter::read(istream& ofile, int read_all = TRUE) {
       }
       return -1;
    }
+
+   Entity::read(ofile, read_all);
+   Scriptable::read(ofile, read_all);
 
    short_desc.read(ofile);
    in_room_desc.read(ofile);
@@ -2238,13 +2241,13 @@ room* critter::getCurRoom() {
 void critter::doSuicide() {
    if (!isPc())
       return;
-   String buf(100);
+   LString buf(100);
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In doSuicide, pc:  " << *(getName()) << endl;
    }
 
-   buf = *(Top(names));
+   buf = *(getName());
    buf.Tolower();
    buf.Prepend("rm ./Pfiles/");
    system(buf);
@@ -2547,7 +2550,7 @@ const String* critter::getName(critter* viewer) {
       return &SOMEONE;  //global string
    }
    if (isPc()) { //is a pc
-      const String* tmp = names.getFirstName(viewer->getLanguageChoice());
+      const String* tmp = names.getFirstKeyword(viewer->getLanguageChoice());
       if (tmp) {
          return tmp;
       }
@@ -2556,7 +2559,7 @@ const String* critter::getName(critter* viewer) {
       }
    }//if
    else {
-      return &(short_desc);
+      return &(short_desc.getString(viewer));
    }//else
 }//getName
 

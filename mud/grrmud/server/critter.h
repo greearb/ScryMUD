@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.33 1999/08/04 06:29:16 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
+// $Id: critter.h,v 1.34 1999/08/05 05:48:17 greear Exp $
+// $Revision: 1.34 $  $Author: greear $ $Date: 1999/08/05 05:48:17 $
 
 //
 //ScryMUD Server Code
@@ -547,7 +547,7 @@ public:
 
 ///***************************** critter ******************************///
 
-class critter : public Entity {
+class critter : public Entity, public Scriptable {
 protected:
    static int _cnt;
 
@@ -631,9 +631,15 @@ public:
    virtual ~critter();
    void clear();
    virtual int read(istream& da_file, int read_all = TRUE);
+   virtual int read_v2(istream& da_file, int read_all = TRUE);
+   virtual int read_v3(istream& da_file, int read_all = TRUE);
    virtual int write(ostream& da_file);
    critter& operator=(critter& source);
    
+   /** I think the compiler is screwing up, I shouldn't have to declare this here
+    * --Ben */
+   virtual const String* getName(int c_bit = ~0) { return Entity::getName(c_bit); }
+
    virtual const String* getName(critter* viewer); //overload Entity
    int getCurWeight();
    int getMaxWeight();

@@ -1,5 +1,5 @@
-// $Id: Serialized.h,v 1.1 1999/08/04 06:29:16 greear Exp $
-// $Revision: 1.1 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
+// $Id: Serialized.h,v 1.2 1999/08/05 05:48:17 greear Exp $
+// $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/05 05:48:17 $
 
 //
 //ScryMUD Server Code
@@ -60,6 +60,8 @@ enum LEtypeE {
    LE_MOB_PROC_DATA = 19,
    LE_MOB_DATA = 20,
    LE_PC_DATA = 21,
+   LE_KW_COLLECTION = 22,
+   LE_RM_KEYWORD = 23,
    LE_UNKNOWN = 0xFFFFFFE,
    LE_ANY = 0xFFFFFFF
 };

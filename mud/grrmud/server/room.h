@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.21 1999/08/04 06:29:17 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/04 06:29:17 $
+// $Id: room.h,v 1.22 1999/08/05 05:48:17 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/05 05:48:17 $
 
 //
 //ScryMUD Server Code
@@ -54,14 +54,15 @@ public:
    KeywordPair(const KeywordPair& src);
    ~KeywordPair();
 
-   void clear();
-   void write(ofstream& dafile);
-   void read(ifstream& dafile);
+   // These don't need changes from Entity at this time.
+   //void clear();
+   //int write(ostream& dafile);
+   //int read(istream& dafile, int read_all = TRUE);
    void show(int idx, critter& pc);
 
    KeywordPair& operator=(const KeywordPair& rhs);
    
-   int isNamed(const String* name);
+   virtual LEtypeE getEntityType() { return LE_RM_KEYWORD; }
    static int getInstanceCount() { return _cnt; }
 };//KeywordPair
 
@@ -117,7 +118,7 @@ public:
 
    bitfield& getFlags() { return room_flags; }
 
-   KeywordPair* haveKeyword(int i_th, const String* str);
+   KeywordPair* haveKeyword(int i_th, const String* str, critter* viewer);
 
    static int getInstanceCount() { return _cnt; }
 

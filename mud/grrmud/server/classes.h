@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.14 1999/08/04 06:29:16 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
+// $Id: classes.h,v 1.15 1999/08/05 05:48:17 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/05 05:48:17 $
 
 //
 //ScryMUD Server Code
@@ -110,12 +110,14 @@ protected:
    LanguageE lang;
 
 public:
-   LString() : String(5) { }
+   LString() : String(5), lang(English) { }
+   LString(int len) : String(len), lang(English) { }
    LString(LanguageE language, int len) : String(len), lang(language) { }
    LString(const LString& src);
    LString(LanguageE language, const String& s) : String(s), lang(language) { }
    LString(LanguageE language, const char* s) : String(s), lang(language) { }
    virtual ~LString() { }
+   virtual LString& operator=(const String& src); //default to english
    
    LanguageE getLanguage() const { return lang; }
    void setLanguage(LanguageE l) { lang = l; }
@@ -126,7 +128,9 @@ class LStringCollection : public PtrList<LString>, public Serialized {
 public:
    LStringCollection() : PtrList<LString>() { }
    virtual ~LStringCollection();
+
    LString& getString(LanguageE for_lang);
+   LString& getString(critter* viewer); //just call the one above.
 
    /** This will add the new string to the collection.  If a string with the
     * same language is already in it, then the old one will be deleted and
@@ -141,6 +145,36 @@ public:
 
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_LS_COLLECTION; }
+};
+
+/** This will be a list of single words, like names (keywords) for an
+ * object.  The LStringCollection above is more general in that it
+ * will take whole lines or more.
+ */
+class LKeywordCollection : public PtrList<LStringCollection>, public Serialized {
+public:
+   LKeywordCollection() { }
+   virtual ~LKeywordCollection();
+   LKeywordCollection& getCollection(LanguageE for_lang);
+
+   /** This will add the new string to the collection.  If a string with the
+    * same language is already in it, then the old one will be deleted and
+    * replaced by the new one.  The collection takes ownership of the memory
+    * when new_string is passed in, so passing a reference to a stack variable,
+    * for example, is a real bad idea.
+    */
+   void addLstring(LString* new_string);
+
+   virtual int write(ostream& dafile);
+   virtual int read(istream& dafile, int read_all = TRUE);
+
+   /** First keyword is default 'shortName' for PC's, but for mobiles,
+    * we often use the short_desc.
+    */
+   virtual const LString* getFirstKeyword(LanguageE preferred_lang);
+
+   /** Stuff used to generate meta data. */
+   virtual LEtypeE getEntityType() { return LE_KW_COLLECTION; }
 };
 
 
@@ -184,7 +218,7 @@ protected:
    int zone_num;
 
    PtrList<SpellDuration> affected_by;
-   LStringCollection names;
+   LKeywordCollection names;
    LStringCollection long_desc;
 
 public:
@@ -205,7 +239,8 @@ public:
    virtual const String* getName(critter* observer);
    virtual const String* getShortName(critter* observer);
    virtual const String* getLongDesc(critter* observer);
-   virtual int isNamed(const String& name) const;
+   virtual int isNamed(const String& name, critter* viwer);
+   virtual int isNamed(const String& name); //dflt to english (maybe all??)
    void appendName(String* nm);
    void appendName(LString* nm);
 
@@ -222,6 +257,12 @@ public:
    int getZoneNum() const { return zone_num; }
    void setZoneNum(int z) { zone_num = z; }
    void setIdNum(int i) { id_num = i; }
+
+   /** Format for human viewing. */
+   void show(String& preamble, critter* viewer, String& closing);
+   
+   /** Does client markup. */
+   void showClient(String& preamble, critter* viewer, String& closing);
 
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);

@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.31 1999/08/04 06:29:17 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/04 06:29:17 $
+// $Id: room.cc,v 1.32 1999/08/05 05:48:17 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/05 05:48:17 $
 
 //
 //ScryMUD Server Code
@@ -41,60 +41,18 @@ int KeywordPair::_cnt = 0;
 
 void KeywordPair::show(int idx, critter& pc) {
    String buf(100);
-   Sprintf(buf, "Keyword [%i] ", idx);
-   
-   Cell<String*> cll(names);
-   String* ptr;
 
-   while ((ptr = cll.next())) {
-      buf.Append(*ptr);
-      buf.Append(" ");
-   }//while
+   Sprintf(buf, "Keyword [%i]\n", idx);
 
-   buf.Append("\n\n");
-   pc.show(buf);
-   pc.show("\n");
-   
-   pc.show(desc);
-   pc.show("\n");
+   Entity::show(buf, &pc, NULL_STRING);
 
    if (pc.isUsingClient()) {
-      Sprintf(buf, "<KEYWORD %i ", idx);
-
-      names.head(cll);
-      while ((ptr = cll.next())) {
-         buf.Append(*ptr);
-         buf.Append(" ");
-      }//while
-
-      buf.Append(">\n");
-
-      pc.show(buf);
-      
-      pc.show("<KEYWORD_DESC>");
-      pc.show(desc);
-      pc.show("</KEYWORD_DESC>");
+      Sprintf(buf, "<KEYWORD %i>", idx);
+      String end("</KEYWORD>");
+      Entity::showClient(buf, &pc, end);
    }//if
 }//show
       
-
-int KeywordPair::isNamed(const String* name) {
-   Cell<String*> cll(names);
-   String* ptr;
-
-   while ((ptr = cll.next())) {
-      if (strncasecmp(*name, *ptr, name->Strlen()) == 0) {
-         return TRUE;
-      }//if
-   }//while
-
-   return FALSE;
-}//isNamed
-
-void KeywordPair::clear() {
-   clear_ptr_list(names);
-   desc.Clear();
-}
 
 KeywordPair::~KeywordPair() {
    _cnt--;
@@ -108,62 +66,20 @@ KeywordPair::KeywordPair(const KeywordPair& src) {
 
 KeywordPair& KeywordPair::operator=(const KeywordPair& rhs) {
    if (&rhs != this) {
-      clear();
-      
-      Cell<String*> cll(rhs.names);
-      String* ptr;
-
-      while ((ptr = cll.next())) {
-         names.append(new String(*ptr));
-      }
-
-      desc = rhs.desc;
+      *((Entity*)(this)) = (Entity)(rhs);
    }//if
 
    return *this;
 }//operator=
 
 
-void KeywordPair::write(ofstream& dafile) {
-   Cell<String*> cll(names);
-   String* ptr;
-
-   while ((ptr = cll.next())) {
-      dafile << *ptr << " ";
-   }//while
-
-   dafile << "~" << endl;
-
-   dafile << desc << "\n~\n";
-}//write
-
-
-void KeywordPair::read(ifstream& dafile) {
-   String buf(80);
-   char buf2[100];
-
-   while (TRUE) {
-      dafile >> buf;
-      if (strcmp(buf, "~") == 0) {
-         dafile.getline(buf2, 79);
-         break;
-      }
-      else {
-         names.append(new String(buf));
-      }
-   }//while
-
-   desc.Termed_Read(dafile);
-}//read
-
-
-KeywordPair* room::haveKeyword(int i_th, const String* name) {
+KeywordPair* room::haveKeyword(int i_th, const String* name, critter* viewer) {
    int cnt = 0;
    Cell<KeywordPair*> cll(keywords);
    KeywordPair* ptr;
 
    while ((ptr = cll.next())) {
-      if (ptr->isNamed(name)) {
+      if (ptr->isNamed(*name, viewer)) {
          cnt++;
          if (cnt == i_th) {
             return ptr;
@@ -177,7 +93,7 @@ KeywordPair* room::haveKeyword(int i_th, const String* name) {
 
 int room::_cnt = 0;
 
-room::room() {
+room::room() : critters(NULL), inv(NULL), doors(NULL) {
    _cnt++;
    for (int i = 0; i<ROOM_CUR_STATS; i++) {
       cur_stats[i] = 0;
@@ -187,7 +103,7 @@ room::room() {
    obj_ptr_log << "RM_CON " << getIdNum() << " " << this << "\n";
 } // sub_room constructor
 
-room::room(int rm_num) {
+room::room(int rm_num) : critters(NULL), inv(NULL), doors(NULL) {
    _cnt++;
    for (int i = 0; i<ROOM_CUR_STATS; i++) {
       cur_stats[i] = 0;
@@ -201,7 +117,7 @@ room::room(int rm_num) {
 
 
 int room::makeReadyForAreaSpell() {
-   Cell<critter*> cll(critters);
+   SCell<critter*> cll(critters);
    critter* ptr;
    
    while ((ptr = cll.next())) {
@@ -211,7 +127,7 @@ int room::makeReadyForAreaSpell() {
 }
 
 critter* room::findNextSpellCritter() {
-   Cell<critter*> cll(critters);
+   SCell<critter*> cll(critters);
    critter* ptr;
 
    while ((ptr = cll.next())) {
@@ -226,7 +142,7 @@ critter* room::findNextSpellCritter() {
 
 
 critter* room::findNextProcMob() {
-   Cell<critter*> cll(critters);
+   SCell<critter*> cll(critters);
    critter* ptr;
    
    while ((ptr = cll.next())) {
@@ -248,7 +164,7 @@ critter* room::findNextProcMob() {
 
 
 void room::recursivelyLoad() { //mobs and objects
-   Cell<critter*> ccll(critters);
+   SCell<critter*> ccll(critters);
    critter* cptr;
    
    while ((cptr = ccll.next())) {
@@ -256,7 +172,7 @@ void room::recursivelyLoad() { //mobs and objects
       cptr->incrementCurInGame(); //recursive_... no longer does it.
    }//while
    
-   Cell<object*> ocll(inv);
+   SCell<object*> ocll(inv);
    object* optr;
    while ((optr = ocll.next())) {
       recursive_init_loads(*optr, 0);
@@ -264,7 +180,7 @@ void room::recursivelyLoad() { //mobs and objects
 }//recursivelyLoad()
 
 
-room::room(room& source) {
+room::room(room& source) : critters(NULL), inv(NULL), doors(NULL) {
    _cnt++;
    *this = source; //overloaded = operator
    
@@ -283,7 +199,7 @@ room::~room() {
       embattled_rooms.loseData(this);
    }//if
 
-   Clear();
+   clear();
 }//sub_room deconstructor
 
 
@@ -292,54 +208,37 @@ room& room::operator=(room& source) {
    if (this == &source)
       return *this;
 
-   Cell<stat_spell_cell*> cell;
-   stat_spell_cell *tmp_stat, *tmp_stat2;
    int i;
    String* string;
-   Cell<String*> cll(source.names);
-   Cell<object*> obj_cll;
+   SCell<object*> obj_cll;
    object* obj_ptr;
-   Cell<critter*> crit_cll;
+   SCell<critter*> crit_cll;
    critter* crit_ptr;
    
    //mudlog.log(DBG, "In rm operator= overload.\n");
-   Clear(); //clear this thing out!!
+   clear(); //clear this thing out!!
    
-   while ((string = cll.next())) {
-      Put(new String(*(string)), names);
-   }//while
-   
+   *((Entity*)(this)) = (Entity)(source);
+   *((Scriptable*)(this)) = (Scriptable)(source);
+
    short_desc = source.short_desc;
-   long_desc = source.long_desc;
    
    room_flags = source.room_flags;
 
-   Cell<KeywordPair*> kcll(source.keywords);
-   KeywordPair* kptr;
-   while ((kptr = kcll.next())) {
-      keywords.append(new KeywordPair(*kptr));
-   }
+   keywords.becomeDeepCopyOf(source.keywords);
    
    for (i = 0; i<ROOM_CUR_STATS; i++) {
       cur_stats[i] = source.cur_stats[i];
    }
 
-   clear_ptr_list(affected_by);
-   source.affected_by.head(cell);
-   while ((tmp_stat = cell.next())) {
-      tmp_stat2 = new stat_spell_cell;
-      *tmp_stat2 = *tmp_stat; //shallow copy should work 
-      affected_by.append(tmp_stat2);
-   }//while
-   
    source.inv.head(obj_cll);
    while ((obj_ptr = obj_cll.next())) {
-      if (!obj_ptr->IN_LIST) { //no multiple ptrs to SOBJ's
+      if (!obj_ptr->isModified()) { //no multiple ptrs to SOBJ's
          inv.append(obj_ptr);
       }//if
    }//while
 
-   Cell<door*> dcell(source.doors);
+   SCell<door*> dcell(source.doors);
    door* dptr;
    while ((dptr = dcell.next())) {
       doors.append(new door(*dptr));
@@ -347,72 +246,67 @@ room& room::operator=(room& source) {
    
    source.critters.head(crit_cll);
    while ((crit_ptr = crit_cll.next())) {
-      if (crit_ptr->isMob()) { //only copy MOB's
+      if (!crit_ptr->isModified()) { //only copy MOB's
          gainCritter(crit_ptr); //will increment cur_in_game
       }//if
    }//while
-
-   Cell<RoomScript*> script_cll(room_proc_scripts);
-   RoomScript* script_ptr;
-   while ((script_ptr = script_cll.next())) {
-      room_proc_scripts.append(new RoomScript(*script_ptr));
-   }
-
-   // Don't copy pending scripts.
 
    return *this;
 }//room::operator= overload
 
 
-void room::Clear() {
+void room::clear() {
    int i;
    
    if (mudlog.ofLevel(TRC)) {
-      mudlog << "room::Clear..." << endl;
+      mudlog << "room::clear..." << endl;
    }
 
-   clear_ptr_list(names);
-   short_desc.Clear();
-   long_desc.Clear();
+   short_desc.clear();
    
-   room_flags.Clear();
+   room_flags.clear();
 
-   clear_ptr_list(keywords);
+   keywords.clearAndDestroy();
    
    for (i = 0; i<ROOM_CUR_STATS; i++) {
       cur_stats[i] = 0;
    }
 
-   clear_ptr_list(affected_by);
    clear_obj_list(inv);
 
-   // Assume here that the mob is only on the affected_mobs list.
-   // Otherwise, have to do a better cleanup to get em out of the game
-   // cleanly.
    critter* tmp;
    while (!critters.isEmpty()) {
       tmp = critters.peekFront();
       removeCritter(tmp); //decrement cur_in_game
-      if (tmp->isSmob()) {
-         affected_mobs.loseData(tmp);
+      if (tmp->isModified()) {
          delete tmp;
       }
    }//while
 
-   clear_ptr_list(doors); //doors.clear();
+   doors.clearAndDestroy();
 
    if (mudlog.ofLevel(TRC)) {
-      mudlog << "room::Clear...  DONE." << endl;
+      mudlog << "room::clear...  DONE." << endl;
    }
 
-   clear_ptr_list(pending_scripts);
-   clear_ptr_list(room_proc_scripts);
-   cur_script = NULL; // points into the pending_scripts
-   pause = 0;
-}// Clear
+}// clear
 
 
-void room::Read(ifstream& ofile, short read_all) {
+int room::read(istream& ifile, int read_all = TRUE) {
+   // Grab the first token, if it's <META then we're V3+, otherwise
+   // we're V2.
+   String str(50);
+   ofile >> str; //grab the first token, if V2.x it not be <META
+
+   if (str == "<META") {
+      read_v3(ifile, read_all);
+   }
+   else {
+      read_v2(ifile, read_all, str);
+   }
+}//read
+
+int room::read_v2(istream& ofile, int read_all, String& firstName) {
    int i, test = TRUE;
    stat_spell_cell* ss_ptr;
    char tmp[81];
@@ -424,7 +318,7 @@ void room::Read(ifstream& ofile, short read_all) {
       mudlog << "Reading room, read_all:  " << read_all << endl;
    }
 
-   Clear();  //stop up any memory leaks etc.
+   clear();  //stop up any memory leaks etc.
 
    if (!ofile) {
       if (mudlog.ofLevel(ERR)) {
@@ -440,7 +334,6 @@ void room::Read(ifstream& ofile, short read_all) {
          }
          return;
       }
-
       ofile >> tmp_str;
       if (strcmp(tmp_str, "~") == 0) {
          test = FALSE;
@@ -492,7 +385,7 @@ void room::Read(ifstream& ofile, short read_all) {
    ofile.getline(tmp, 80);
 
 
-		/*  Affected By */
+                /*  Affected By */
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
@@ -520,7 +413,7 @@ void room::Read(ifstream& ofile, short read_all) {
    if (mudlog.ofLevel(DB)) {
       mudlog << "Reading room, about to do inventory." << endl;
    }
-		/*  Inventory */
+                /*  Inventory */
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
@@ -574,7 +467,7 @@ void room::Read(ifstream& ofile, short read_all) {
 
       String* walk_name;
       while ((walker = cll.next())) {
-	 walk_name = name_of_door(*walker, ~0);
+         walk_name = name_of_door(*walker, ~0);
          if (*walk_name > *dr_name) {
             doors.insertBefore(cll, dr_ptr);
             did_insert = TRUE;
@@ -623,6 +516,7 @@ void room::Read(ifstream& ofile, short read_all) {
    }//while 
    ofile.getline(tmp, 80); //get comments after mobs...
 
+
    /* read procs, if we have them. */
    if (room_flags.get(35)) {
       //mudlog.log("Mob has proc scripts...");
@@ -658,6 +552,188 @@ void room::Read(ifstream& ofile, short read_all) {
    }//if it had proc scripts
 
    ofile.getline(tmp, 80); //get comments at end of room..
+   // Post processing...
+
+   int vb = getVisBit();
+   setVisBit(vb | 1024); //hack, forgot a flag :P
+   if (vb & 1) {
+      room_flags.turn_on(14); //make normally_dark
+   }
+
+   if (mudlog.ofLevel(DB)) {
+      mudlog << "Done reading room, number:  " << getRoomNum() << endl;
+   }
+}//read_v2
+
+
+
+//TODO
+int room::read_v3(istream& ofile, int read_all = TRUE) {
+   int i;
+   char tmp[81];
+   String tmp_str(80);
+   String* string;
+   door* dr_ptr;
+
+   if (mudlog.ofLevel(DB)) {
+      mudlog << "Reading room, read_all:  " << read_all << endl;
+   }
+
+   clear();  //stop up any memory leaks etc.
+
+   if (!ofile) {
+      if (mudlog.ofLevel(ERR)) {
+         mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
+      }
+      return -1;
+   }
+
+   Entity::read(ofile, read_all);
+   Scriptable::read(ofile, read_all);
+
+   short_desc.read(ofile);
+
+   room_flags.read(ofile);
+   room_flags.turn_on(23); //turn on in_use flag for CERTAIN
+   if (room_flags.get(21)) { //if zlocked
+      read_all = TRUE;
+      room_flags.turn_on(22); //it will be totally loaded
+   }//if
+   setComplete(); //if we can read it, it's complete!
+
+   KeywordPair* kwd_ptr;
+   if (room_flags.get(32)) { //if has keywords
+      while (TRUE) {
+         ofile >> i;
+         ofile.getline(tmp, 80);
+         if (i != -1) {
+            kwd_ptr = new KeywordPair();
+            kwd_ptr->read(ofile);
+            keywords.append(kwd_ptr);
+            kwd_ptr->setContainer(this);
+         }
+         else { //read line, then read desc
+            break;
+         }
+      }//while
+   }//if
+
+   if (mudlog.ofLevel(DB)) {
+      mudlog << "Reading room, about to do cur_stats.  " << endl;
+   }
+   
+   for (i = 0; i<ROOM_CUR_STATS; i++) {
+      ofile >> cur_stats[i];
+   }
+   ofile.getline(tmp, 80);
+
+
+   if (!affected_by.isEmpty()) {
+      // Also place it on the list of rooms to be checked for loss of spell...
+      affected_rooms.gainData(this);
+   }//if
+
+   if (mudlog.ofLevel(DB)) {
+      mudlog << "Reading room, about to do inventory." << endl;
+   }
+		/*  Inventory */
+   ofile >> i;
+   while (i != -1) {
+      if (!ofile) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  da_file FALSE in room read, inv."
+              << endl;
+         }
+         return -1;
+      }
+      if (check_l_range(i, 0, NUMBER_OF_ITEMS, mob_list[0], FALSE)) {
+         if (obj_list[i].isInUse()) {
+            if (read_all || 
+                ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
+                d(1,100)) {
+               gainInv(&(obj_list[i]));    //add it to inventory
+//               obj_list[i].OBJ_CUR_IN_GAME++; //increment cur_in_game
+            }//if
+         }//if
+         else {
+            Sprintf(tmp_str, 
+             "ERROR:  trying to load non_existant inv: %i in room:  %i.\n",
+             i, cur_stats[2]);
+            mudlog.log(ERR, tmp_str);
+         }//else
+      }//if
+      ofile >> i;
+   }//while
+   ofile.getline(tmp, 80);   
+
+                       /*  Doors  */
+   Cell<door*> cll;
+   door* walker;
+   short did_insert = FALSE;
+   ofile >> i; //check for terminal value
+   while (i != -1) {
+      if (!ofile) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
+         }
+         return;
+      }
+
+      dr_ptr = new door;
+      dr_ptr->read(ofile, read_all);
+      dr_ptr->setContainer(this);
+      doors.head(cll);
+
+      String* walk_name;
+      while ((walker = cll.next())) {
+	 walk_name = walker->getName();
+         if (*walk_name > *dr_name) {
+            doors.insertBefore(cll, dr_ptr);
+            did_insert = TRUE;
+            break;
+         }//if
+      }//while
+
+      if (!did_insert)
+         doors.append(dr_ptr);
+      ofile >> i; //check for next terminal value
+   }//while 
+   ofile.getline(tmp, 80); //clear rest of line
+
+   if (mudlog.ofLevel(DB)) {
+      mudlog << "Reading room About to read critters.." << endl;
+   }
+
+                      /*  Critters, stored mobl#  */
+   ofile >> i;
+   while (i != -1) {
+      if (!ofile) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
+         }
+         return;
+      }
+
+      if (mob_list[i].isInUse()) {
+         if (mob_list[i].isPlayerShopKeeper()) {
+            critter* shop_owner = load_player_shop_owner(i);
+            if (shop_owner) {
+               gainCritter(shop_owner);
+            }//if
+         }//if
+         else { //regular case
+            gainCritter(&(mob_list[i])); //this will increment cur_in_game
+         }
+      }//if
+      else {
+         Sprintf(tmp_str, 
+                 "ERROR:  trying to load non_existant mob: %i, in room: %i\n",
+                 i, cur_stats[2]);
+         mudlog.log(ERR, tmp_str);
+      }//else
+      ofile >> i;
+   }//while 
+   ofile.getline(tmp, 80); //get comments after mobs...
 
    // Post processing...
 
@@ -670,7 +746,7 @@ void room::Read(ifstream& ofile, short read_all) {
    if (mudlog.ofLevel(DB)) {
       mudlog << "Done reading room, number:  " << getRoomNum() << endl;
    }
-}//Read
+}//read_v3
 
 
 stat_spell_cell* room::isAffectedBy(int spell_num) {
@@ -1307,7 +1383,7 @@ int room::doRclear(int new_rm_num) {
       }//else
    }//while
 
-   Clear();  //clear out the room pc WAS in!!
+   clear();  //clear out the room pc WAS in!!
    return 0;
 }//doRclear
 
