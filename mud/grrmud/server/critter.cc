@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.59 2001/03/29 09:50:34 eroper Exp $
-// $Revision: 1.59 $  $Author: eroper $ $Date: 2001/03/29 09:50:34 $
+// $Id: critter.cc,v 1.60 2001/03/29 10:19:50 eroper Exp $
+// $Revision: 1.60 $  $Author: eroper $ $Date: 2001/03/29 10:19:50 $
 
 //
 //ScryMUD Server Code
@@ -4035,11 +4035,11 @@ void critter::doPrompt() {
                targ.Append(conv_buf);
                break;
              case '1':     /* medical conditions */
-               if (HUNGER == 0) {
+               if ( isHungry() ) {
                   targ.Append("(hun)");
-               } if (THIRST == 0) {
+               } if ( isThirsty() ) {
                   targ.Append("(thi)");
-               } if (DRUGGED > 0) {
+               } if ( isDrugged() ) {
                   targ.Append("(dru)");
                }
                break;
@@ -4048,7 +4048,7 @@ void critter::doPrompt() {
                   targ.Append("(snk)");
                } if ( isHiding() ) {
                   targ.Append("(hid)");
-               } if ( cur_stats[0] & 2 ) { //if invisible
+               } if ( isInvis() ) {
                   targ.Append("(inv)");
                }
                break;
@@ -4455,6 +4455,10 @@ int critter::isSneaking() const {
 
 int critter::isHiding() const {
    return crit_flags.get(22);
+}
+
+int critter::isInvis() const {
+    return (cur_stats[0] & 2);
 }
 
 int critter::hasAI() {
