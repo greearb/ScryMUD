@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.17 2002/08/15 20:29:46 eroper Exp $
-# $Revision: 1.17 $  $Author: eroper $ $Date: 2002/08/15 20:29:46 $
+# $Id: translations.spec,v 1.18 2002/08/15 21:09:29 eroper Exp $
+# $Revision: 1.18 $  $Author: eroper $ $Date: 2002/08/15 21:09:29 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -454,6 +454,12 @@ CS_NEEDS_TWO_HANDS
         spa "This weapon requires both hands.\n"
         ser "This weapon requires both hands.\n"
 	~
+
+CS_USING_TWO_HANDER
+       eng "The weapon you are using requires both hands.\n"
+       spa "The weapon you are using requires both hands.\n"
+       ser "The weapon you are using requires both hands.\n"
+       ~
 
 CS_REMOVE_WHAT
         eng "Remove what??\n"

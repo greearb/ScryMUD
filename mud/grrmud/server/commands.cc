@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.53 2002/08/15 20:29:46 eroper Exp $
-// $Revision: 1.53 $  $Author: eroper $ $Date: 2002/08/15 20:29:46 $
+// $Id: commands.cc,v 1.54 2002/08/15 21:09:28 eroper Exp $
+// $Revision: 1.54 $  $Author: eroper $ $Date: 2002/08/15 21:09:28 $
 
 //
 //ScryMUD Server Code
@@ -528,6 +528,16 @@ int wear(int i_th, const String* obj, int j, const String* posn,
       else { //i and maybe t are good
 
          // If it's two handed the player must have hold+wield empty.
+         // Also make sure they don't try and "hold" while two-handed wielding.
+
+         if ( i == 10 && pc.EQ[9] ) {
+            if ( pc.EQ[9]->isTwoHanded() ) {
+               pc.show(CS_USING_TWO_HANDER);
+               mudlog.log(DBG, "Wear failed, tried to hold while wielding a two-hander.\n");
+               return -1;
+            }
+         }
+
          if (obj_ptr->isTwoHanded() && (pc.EQ[9] || pc.EQ[10]) ) {
             pc.show(CS_NEEDS_TWO_HANDS);
             mudlog.log(DBG, "Wear failed, needs two-hands.\n");
@@ -3097,6 +3107,24 @@ int don_obj(object& obj, critter& pc) {
    else {
       for (int i = 22; i< (MAX_EQ + 21); i++) {
          if (obj.OBJ_FLAGS.get(i)) { //if obj is worn there
+
+         // If it's two handed the player must have hold+wield empty.
+         // Also make sure they don't try and "hold" while two-handed wielding.
+
+         if ( i-21 == 10 && pc.EQ[9] ) {
+            if ( pc.EQ[9]->isTwoHanded() ) {
+               pc.show(CS_USING_TWO_HANDER);
+               mudlog.log(DBG, "Wear failed, tried to hold while wielding a two-hander.\n");
+               return -1;
+            }
+         }
+
+         if (obj.isTwoHanded() && (pc.EQ[9] || pc.EQ[10]) ) {
+            pc.show(CS_NEEDS_TWO_HANDS);
+            mudlog.log(DBG, "Wear failed, needs two-hands.\n");
+            return -1;
+         }
+
             if (!pc.EQ[i - 21]) {
                if (obj_wear_by(obj, pc, i - 21, TRUE)) {
                   pc.EQ[i - 21] = &obj; 
