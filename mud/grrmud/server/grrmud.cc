@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.23 1999/07/16 02:10:56 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/07/16 02:10:56 $
+// $Id: grrmud.cc,v 1.24 1999/07/16 06:12:53 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
 
 //
 //ScryMUD Server Code
@@ -447,7 +447,7 @@ void sig_term_handler(int signo) {
       char buf[100];
       sprintf(buf, "%s.CRASH.%i", mudlog.getFileName(), getpid());
       mudlog.flushToFile(buf);
-      core_dump("SIGSEGV");
+      abort();
       //do_shutdown = TRUE;
    }
    else if (signo == SIGBUS) {
@@ -457,7 +457,7 @@ void sig_term_handler(int signo) {
       char buf[100];
       sprintf(buf, "%s.CRASH.%i", mudlog.getFileName(), getpid());
       mudlog.flushToFile(buf);
-      core_dump("SIGBUS");
+      abort();
       //do_shutdown = TRUE;
    }
    else {

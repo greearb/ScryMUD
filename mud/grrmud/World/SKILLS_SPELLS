@@ -31,7 +31,7 @@ illuminate
 physical arts
 0 55 0 0
 -1	pre-reqs
-128 202 -1	enables
+128 202 91 -1	enables
 
 6
 6
@@ -296,7 +296,6 @@ honor code
 0 75 0 0
 -1
 92 93 104 -1
-
 
 92
 92
@@ -611,7 +610,7 @@ butcher
 philosophy
 0 50 0 0
 -1
-135 137 138 91 -1
+135 137 138 -1
 
 135
 135

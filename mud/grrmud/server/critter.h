@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.25 1999/07/12 07:14:32 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
+// $Id: critter.h,v 1.26 1999/07/16 06:12:53 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
 
 //
 //ScryMUD Server Code
@@ -612,7 +612,7 @@ public:
 
    pc_data& operator= (const pc_data& source);
 
-   int canBeBeeped() const { return pc_data_flags.get(29); }
+   int canBeBeeped() const { return (!(pc_data_flags.get(29))); }
 
    void Clear();
    void Write(ofstream& ofile);

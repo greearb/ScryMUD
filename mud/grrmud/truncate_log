@@ -14,8 +14,8 @@ then
 
    echo "" >> log/ERROR.lg
    echo "" >> log/WARN.lg
-   echo "************************************************" >> log/ERROR.lg
-   echo "************************************************" >> log/WARN.lg
+   echo -n "***************  " >> log/ERROR.lg
+   echo -n "******************  " >> log/WARN.lg
 
    date >> log/ERROR.lg
    date >> log/WARN.lg
@@ -23,9 +23,9 @@ then
    grep ERROR ${LOG_FILE} >> log/ERROR.lg
    grep WARN ${LOG_FILE} >> log/WARN.lg
 
-   tail -1000 ${LOG_FILE} > /tmp/logfile.tmp
-
-   mv /tmp/logfile.tmp ${LOG_FILE}
+   # The logging class takes care of this kind of thing now.
+   #tail -1000 ${LOG_FILE} > /tmp/logfile.tmp
+   #mv /tmp/logfile.tmp ${LOG_FILE}
 
    exit 0
 

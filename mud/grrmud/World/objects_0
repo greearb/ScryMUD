@@ -42,11 +42,12 @@ a corpse
 ~
 You see a ghastly bug-ridden corpse!
 ~
-     This testament to the inherent violence of the universe saddens you.  
-You ponder the sacralige and then manage to rationalize your steeling of this
+    This testament to the inherent violence of the universe saddens you.  
+You ponder the sacrilige and then manage to rationalize your stealing of this
 former being's belongings.  What would a dead person need with gold anyway??
+
 ~
-54 40 31 10 -1  -:| bitfield |:-
+70 54 40 31 10 -1  -:| bitfield |:-
 0 0 100 0 32000 150 0 0 0 	extras
 1024 100 3 0 	cur_stats
 128 -1  -:| bitfield |:-
@@ -85,7 +86,7 @@ A pile of gold lies here.
      You see a pile of gold lying on the ground, wish you could tell how
 big it was eh? :)
 ~
-55 40 10 -1  -:| bitfield |:-
+70 55 40 10 -1  -:| bitfield |:-
 0 0 100 0 32000 2 0 0 0 	extras
 1024 0 5 0 	cur_stats
 -1	affected_by
@@ -249,14 +250,15 @@ End of Object.
 
 
 15	 Start of Object
-sulphur scroll ~	names
-an oderous yellow scroll
+scroll yellow sulphur ~	names
+an odorous yellow scroll
 ~
 A smelly yellow scroll lies here.
 ~
 	You see a scroll of coarse, yellow paper.  Some spidery writing
 covers it almost entirely.  The whole thing smells like sulphur and the
 signature reads Don Quemar.
+
 ~
 66 65 63 53 40 31 13 10 -1  -:| bitfield |:-
 1 0 100 0 20 1 0 0 5 	extras
@@ -677,9 +679,8 @@ black leather boots
 A supple pair of black leather boots lie here.
 ~
 These boots were well made and cared for.  They come about half way up your
-calf
-and feel very supportive.  They are light and comfortable, but sturdy enough to
-last a life time.
+calf and feel very supportive.  They are light and comfortable, but sturdy
+enough to last a life time.
 
 ~
 56 40 36 10 0 -1  -:| bitfield |:-
@@ -966,7 +967,7 @@ This soft scroll is covered with healing words and smells of ointment.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 8500 153 0 	cur_stats
+1024 8500 153 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1006,7 +1007,7 @@ cool, fire seems to burn around the edges...
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 6500 160 0 	cur_stats
+1024 6500 160 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1027,7 +1028,7 @@ fashioned this one!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 500 162 0 	cur_stats
+1024 500 162 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1037,7 +1038,7 @@ End of Object.
 
 
 188	 Start of Object
-ringmail chainmail mail ~	names
+ringmail chainmail mail shirt ~	names
 a ringmail shirt
 ~
 A shirt of fine rings lies here in a glittering heap.
@@ -1106,7 +1107,7 @@ When you are not staring straight at it, it almost seems to dissappear!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 500 196 0 	cur_stats
+1024 500 196 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1171,6 +1172,27 @@ your skin gives you a feeling of security.
 -1	affected_by
 -1	inv
 27 -10 -1	stat_affects
+End of Object.
+
+
+218	 Start of Object
+potion fly flight ~	names
+a potion of flight
+~
+A potion of flight lies here.
+~
+The fizzy contents of this little potion can make you able to fly above
+the ground and over water.
+
+~
+63 52 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 50 1 0 0 0 	extras
+1024 1500 218 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+172 25 -1 spell#, level (casts)
 End of Object.
 
 
@@ -1726,7 +1748,7 @@ life into a corpse.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 10500 361 0 	cur_stats
+1024 10500 361 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1747,7 +1769,7 @@ vision.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 1500 362 0 	cur_stats
+1024 1500 362 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1792,7 +1814,7 @@ beings.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 5500 366 0 	cur_stats
+1024 5500 366 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1814,7 +1836,7 @@ On the Detection of Magical Forces.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 5500 367 0 	cur_stats
+1024 5500 367 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1834,7 +1856,7 @@ This scroll promises to widen your eyes a bit!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 1500 368 0 	cur_stats
+1024 1500 368 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1855,7 +1877,7 @@ physical realm!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 1500 369 0 	cur_stats
+1024 1500 369 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1876,7 +1898,7 @@ glaze over and your senses begin to drift!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 1500 370 0 	cur_stats
+1024 1500 370 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1897,7 +1919,7 @@ they are going, or how they might be able to get back!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 12500 372 0 	cur_stats
+1024 12500 372 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1917,7 +1939,7 @@ This script calls down horrible luck on its victim.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 1500 373 0 	cur_stats
+1024 1500 373 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1938,7 +1960,7 @@ quaf it!
 ~
 63 52 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-0 3500 374 0 	cur_stats
+1024 3500 374 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1984,6 +2006,48 @@ of a problem than a possible raid.
 -1	affected_by
 -1	inv
 -1	stat_affects
+End of Object.
+
+
+454	 Start of Object
+potion invisibility invisible ~	names
+a potion of detect invisible
+~
+A potion that will show you invisible things lies here.
+~
+This potion is hardly liquid at all, but more of a thick air.  It can
+allow you to see things that are invisible to others!
+
+~
+63 52 40 31 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+0 2500 454 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+163 20 -1 spell#, level (casts)
+End of Object.
+
+
+455	 Start of Object
+potion hidden brown ~	names
+a brown potion
+~
+A brown potion that will show you hidden things lies here.
+~
+This potion is a thick viscous brown liquid.  Word has it that it will
+let you see hidden things!
+
+~
+63 52 40 31 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+0 1500 455 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+162 20 -1 spell#, level (casts)
 End of Object.
 
 

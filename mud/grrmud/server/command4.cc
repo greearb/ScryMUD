@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.27 1999/07/14 02:10:07 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/07/14 02:10:07 $
+// $Id: command4.cc,v 1.28 1999/07/16 06:12:52 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/07/16 06:12:52 $
 
 //
 //ScryMUD Server Code
@@ -1793,7 +1793,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       show("hp_max (0, 10000)           mana_max (0, 10000)\n", pc);
       show("mov_max (0, 10000)          religion (0, 6)\n", pc);
       show("guild (0, 10)               vis_bit (0, 2 billion)\n", pc);
-      show("see_bit (0, 2 billion)      max_to_load, for MOBS (0-200)\n", pc);
+      show("see_bit (0, 2 billion)      max_in_game, for MOBS (0-200)\n", pc);
       show("heat_resis (-100, 200)      cold_resis (-100, 200)\n", pc);
       show("elect_resis (-100, 200)     spell_resis (-100, 200)\n", pc);
       show("bhd_count (0, 20)           bhd_sides (0, 100)\n", pc);
@@ -1804,7 +1804,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       show("defensiveness (-10, 10)     social_awareness (-10, 10)\n", pc);
       show("benevolence (-10, 10)       pause (0, 50)\n", pc);
       show("Language (0 English, 1 Spanish, 2 Portugues)\n", pc);
-      show("home_room (0 - MAX_ROOMS)\n", pc);
+      show("home_room (0 - MAX_ROOMS)   password(3 char mininum)\n", pc);
       show("manager (of store)\n", pc);
       return 0;
    }//if
@@ -1966,6 +1966,15 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
 	  flag = TRUE;
 	}//if
       }//if
+      else if (strncasecmp(*targ, "password", len1) == 0) {
+         if (new_val_string->Strlen() > 3) {
+             ptr->pc->password = crypt(*new_val_string, "bg");
+             pc.show("Password changed.");
+             return 0;
+         }
+         pc.show("Password must be more than 3 characters long.");
+         return -1;
+      }//if
       else if (strncasecmp(*targ, "language", len1) == 0) {
 	if (check_l_range(new_val, (int)(English), (int)(LastLanguage - 1),
                           pc, TRUE)) {
@@ -1979,7 +1988,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
 
    /* go check the rest, can be for pc OR mob, no more restrictions */
 
-   if (strncasecmp(*targ, "max_to_load", len1) == 0) {
+   if (strncasecmp(*targ, "max_in_game", len1) == 0) {
      if (check_l_range(new_val, 0, 200, pc, TRUE)) {
        if (ptr->mob) {
           ptr->setMaxInGame(new_val);

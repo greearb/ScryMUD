@@ -36,7 +36,23 @@ There are two exits to the north and there is a fine wooden door to the west.
 To the east you can see main congregation area of the temple.
 
 ~
-23 21 -1  -:| bitfield |:-
+32 23 21 -1  -:| bitfield |:-
+1   Start of KeywordPair
+benches tables ~
+The benches are made of solid oak joined with dovetail cuts and
+wooden pegs.  They have been worn to a shine by the countless
+bottoms they have supported.   The tables are arranged against the
+wall, ready to be brought into the middle for meetings and feasts.
+
+~
+1   Start of KeywordPair
+fireplace ~
+The large stone fireplace offers warmth, both physical and spiritual
+to the occupants of the hall.  Often, the elders and town leaders
+will have long talks around the low flickering flames.
+
+~
+-1  No more KeywordPairs
 1024 1 2 2 	cur_stats
 -1	affected_by
 -1	inv
@@ -132,12 +148,13 @@ The Newbie Room.
 	WELCOME TO GARLAND!!! 
 This room is dedicated to the comfort of Newbies.  There should be lots
 of help booklets lying around the room, but in fact there is only one.  This
-is pre-beta still so things are not as complete as one might wish.  Read
+is beta still so things are not as complete as one might wish.  Read
 the manual, and check out help, and the web page... If you have any 
 questions you can't find an answer two, send me mail (greear@cyberhighway.net)
-or ask someone online if there is anyone.
-Check out our web page at:  
-www.primenet.com/~greear/ScryMUD/scry.html
+or ask someone online.
+Check out our web page at:   http://scry.WANfear.com
+Some useful commands:  Try: help [cmd] on the commands, eg: help help
+	say, gossip, topics, exits, toggle, look, buy, practice, deposit
 
 ~
 23 21 -1  -:| bitfield |:-
@@ -160,7 +177,7 @@ DO NOT sell items you find here.  Its just plain Immoral.
 23 21 -1  -:| bitfield |:-
 1024 1 7 7 	cur_stats
 -1	affected_by
-358 -1	inv
+358 358 -1	inv
 1 4 2 0
 -1	door Affected_Bye
 -1	door#, dest
@@ -236,7 +253,15 @@ comes from a crystal suspended from the ceiling, well out of your reach.
 There is a large oak desk in the center of the room.  It is quite neat
 with only a pen and some blank paper on it.
 ~
-35 23 21 5 -1  -:| bitfield |:-
+32 23 21 5 -1  -:| bitfield |:-
+1   Start of KeywordPair
+desk ~
+The desk is of dark cherry, polished to a sheen.  There are some 
+writing implements on the table, but it is arranged in a neat
+manner.
+
+~
+-1  No more KeywordPairs
 1024 1 11 11 	cur_stats
 -1	affected_by
 -1	inv
@@ -244,14 +269,6 @@ with only a pen and some blank paper on it.
 -1	door Affected_Bye
 -1	door#, dest
 -1	mobs
-1  Start of a room proc script
-pull -1 -1 0	 Trigger Command, targ, actor 
- table 
- pause 1;
- tell %M The table doesn't budge an inch!;
-
-~
--1  End of room proc scripts
 End of Room
 12		Room Number
 Stairs_Temple ~	names
@@ -432,7 +449,7 @@ stairs to the temple.
 23 21 -1  -:| bitfield |:-
 1024 1 19 19 	cur_stats
 -1	affected_by
--1	inv
+1 4 -1	inv
 1 1 29 0
 -1	door Affected_Bye
 1 3 20 0
@@ -448,15 +465,16 @@ stairs to the temple.
 1 2 22 0
 -1	door Affected_Bye
 -1	door#, dest
-204 3 -1	mobs
+204 -1	mobs
 End of Room
 20		Room Number
 NE_Plaza ~	names
 The northeast plaza.
 ~
-     The central plaza of Garland stretches out to the south and east or
-you can go up the stairs to the temple.  Violate Drive leads off to the
+    The central plaza of Garland stretches out to the south and east or
+you can go up the stairs to the temple.  Violet Drive leads off to the
 northeast.
+
 ~
 23 21 -1  -:| bitfield |:-
 1024 1 20 20 	cur_stats
@@ -479,8 +497,8 @@ End of Room
 Lily_Lane ~	names
 Northern Lily Lane.
 ~
-    You are on a well paved road leading north out of town and south
-towards the plaza.  THe wonderful scent of freshly baked bread comes from
+   You are on a well paved road leading north out of town and south
+towards the plaza.  The wonderful scent of freshly baked bread comes from
 the west, and some happy customers are sitting to the east in a small
 courtyard.
 
@@ -887,7 +905,7 @@ you the destinations available, and a small sign posted by the ticket machine.
 -1	door#, dest
 -1	mobs
 End of Room
-16777255		Vehicle number
+16777255		Room Number
 train ~	names
 On the Silver Train.
 ~
@@ -1138,10 +1156,10 @@ walked out of his back office.
 End of Room
 49		Room Number
 gimbals_office ~	names
-Gimbal's office
+Gimbal
 ~
 	This room is cluttered beyond belief.  Three of the corners are piled
-high with junk, and a third holds a low mattress, which may have once been
+high with junk, and a fourth holds a low mattress, which may have once been
 clean.  It becomes clear that Gimbal actually lives in this hole, and you
 no longer wonder why he keeps the door closed!
 
@@ -1305,7 +1323,7 @@ End of Room
 garlandmagic ~	names
 Magic Shop
 ~
-A kind, and gentle wizard greets you at the door. He is not ugly or wrinkled,
+A kind and gentle sorcerer greets you at the door. He is not ugly or wrinkled,
 but very handsome and intelligent for good magic is his way. On the side
 counter are scrolls of incantations used for a variety of spells. Magic potions
 bubble in flasks as a homely aroma fills the room. This small store enchants
@@ -1323,13 +1341,14 @@ you and you feel compelled to stay a bit longer.
 End of Room
 58		Room Number
 garlandjewelers ~	names
-Jewelers
+Rocks and Gold
 ~
-Jewels and diamonds lighten the store with a glorious light. Rubies and
-emeralds and sapphires and stones fill the room in baskets and shelves. A
+Jewels and diamonds lighten the store with a glorious light. Rubies,
+emeralds, sapphires and stones fill the room in baskets and shelves. A
 small, homely lady sings a little ditty to herself as she polishes her
-necklaces of gold. Beautiful and enchanting rings twinkle in your eye as golden
-and silver bracelets compel you to stay and look.
+necklaces of gold.  Beautiful and enchanting rings twinkle in your eye as
+golden
+and silver bracelets compell you to stay and look.
 
 ~
 23 21 -1  -:| bitfield |:-
@@ -1863,7 +1882,7 @@ In the courtyard.
 ~
 You are in the store courtyard that seems to be the hub of many small
 paths and alleys.  You can be sure that there are more than you see at
-first glance!  To the north is a large tavern, and it's large fireplace
+first glance!  To the north is a large tavern, and its large fireplace
 casts dancing shadows through the door and onto the surrounding
 buildings.  
 
@@ -2060,8 +2079,6 @@ Lily lane continues north towards the center of town.
 -1	affected_by
 -1	inv
 1 3 79 0
--1	door Affected_Bye
-1 6 2923 0
 -1	door Affected_Bye
 1 4 93 0
 -1	door Affected_Bye

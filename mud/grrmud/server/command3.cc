@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.20 1999/07/12 07:14:31 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/07/12 07:14:31 $
+// $Id: command3.cc,v 1.21 1999/07/16 06:12:52 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/07/16 06:12:52 $
 
 //
 //ScryMUD Server Code
@@ -1299,7 +1299,8 @@ int flee(critter& pc, int& is_dead) {
    critter* crit_ptr;
    String buf(100);
    short have_exit = FALSE;
-   door* dr_ptr;
+   door* dr_ptr = NULL;
+   door* valid_dr_ptr = NULL;
 
    //   mudlog.log(TRC, "In flee.\n");
 
@@ -1330,9 +1331,9 @@ int flee(critter& pc, int& is_dead) {
          if (flee_chance > d(1,100)) { //will try at least
 
             Cell<door*> dr_cll(ROOM.doors);
-            door* dr_ptr;
             while ((dr_ptr = dr_cll.next())) {
                if (!(dr_ptr->isClosed())) {
+                  valid_dr_ptr = dr_ptr;
                   have_exit = TRUE;
                   break;
                }//if
@@ -1356,14 +1357,13 @@ int flee(critter& pc, int& is_dead) {
             int sanity = 0;
             while (TRUE) {
                if (sanity++ > 20) {
-                  show("You can't find an exit!\n", pc);
-                  pc.PAUSE += 1;
-                  return -1;
+                  dr_ptr = valid_dr_ptr;
+                  break;
                }
                   
                if ((dr_ptr = door::findDoor(ROOM.doors, 1,
                       Top(door_list[d(1,10)].names), ~0, ROOM))) {
-                  if (!(dr_ptr->dr_data->door_data_flags.get(2))) {
+                  if (dr_ptr->isOpen()) {
                      break;  //weee hoooo, found a good one!
                   }//if
                }//if
@@ -1400,6 +1400,7 @@ int flee(critter& pc, int& is_dead) {
          while ((dr_ptr = dr_cll.next())) {
             if (!(dr_ptr->dr_data->door_data_flags.get(2))) {
                have_exit = TRUE;
+               valid_dr_ptr = dr_ptr;
                break;
             }//if
          }//while
@@ -1407,7 +1408,14 @@ int flee(critter& pc, int& is_dead) {
             show("You can't find an exit.\n", pc);
          }//if
          else {
+
+            int sanity = 0;
             while (TRUE) {
+               if (sanity++ > 20) {
+                  dr_ptr = valid_dr_ptr;
+                  break;
+               }
+
                if ((dr_ptr = door::findDoor(ROOM.doors, 1,
                       Top(door_list[d(1,10)].names), ~0, ROOM))) {
                   if (!(dr_ptr->dr_data->door_data_flags.get(2))) {
@@ -1415,6 +1423,7 @@ int flee(critter& pc, int& is_dead) {
                   }//if
                }//if
             }//while
+
             show("You try to flee the scene!\n", pc);
             Sprintf(buf, "tries to flee to the %S!", 
                     direction_of_door(*dr_ptr));
@@ -2324,10 +2333,9 @@ int sockets(critter& pc) {
    show("Verbose list of players:\n", pc);
 
    while ((ptr = cll.next())) {
-      Sprintf(buf, "%S(%i)%P25%S\n\t%S\n", name_of_crit(*ptr, pc.SEE_BIT),
-              ptr->LEVEL, &(ptr->short_desc),
-              &(ptr->pc->host));
-      show(buf, pc);
+      Sprintf(buf, "%S(%i)%P15 %S%P35% S\n", name_of_crit(*ptr, pc.SEE_BIT),
+              ptr->LEVEL, &(ptr->pc->host), &(ptr->short_desc));
+      pc.show(buf);
    }//while
    return 0;
 }//sockets

@@ -1,5 +1,5 @@
-// $Id: command5.h,v 1.11 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: command5.h,v 1.12 1999/07/16 06:12:53 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
 
 //
 //ScryMUD Server Code
@@ -71,9 +71,9 @@ int rem_obj_script(int obj_num, String& trigger, int i_th, critter& pc);
 int slist(int begin, const String& name, int howmany, critter& pc);
 int teach(int i_th, const String* name, int prcnt, const String* skill, 
 	   critter& pc);
-int add_perm_inv(int i_th, const String* name, int obj_num, critter& pc);
+int add_perm_inv(int obj_num, int i_th, const String* name, critter& pc);
 int rem_perm_inv(int i_th, const String* name, int j_th,
-		  const String* mob_name, critter& pc);
+                 const String* mob_name, critter& pc);
 int beep(int i_th, const String* name, critter& pc);
 int opurge(int i_th, const String* name, critter& pc);
 int do_transport(critter& targ, critter& pc, room& dest);

@@ -1,5 +1,5 @@
-# $Id: translation2.spec,v 1.8 1999/07/12 07:14:32 greear Exp $
-# $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
+# $Id: translation2.spec,v 1.9 1999/07/16 06:12:53 greear Exp $
+# $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
 
 # See translations.spec for more information.
 
@@ -31,7 +31,7 @@ CS_NOT_AFFECTED_SPELLS
 	~
 
 CS_HAVE_PETS
-	eng "You have these for pets:\n"
+	eng "You have these pets:\n"
 	~
 
 CS_SLAIN_DIED

@@ -1,5 +1,5 @@
-// $Id: pet_spll.cc,v 1.6 1999/06/16 06:43:27 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+// $Id: pet_spll.cc,v 1.7 1999/07/16 06:12:53 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
 
 //
 //ScryMUD Server Code
@@ -624,9 +624,10 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
       if (!is_canned)
          pc.MANA -= spell_mana / 2;
       
-      int which_un = d(1,4); //for choices
+      int tmp = d(1,4); //for choices
       
-      switch (which_un) {
+      int which_un = 0;
+      switch (tmp) {
       case 1:
          which_un = MINION_ONE_NUMBER;
          break;
@@ -641,9 +642,11 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
          break;
       }//switch
       
-      if (!mob_list[which_un].CRIT_FLAGS.get(10)) {
-         mudlog << "ERROR: need to create MINION of mob number: "
+      if ((which_un == 0) || (!mob_list[which_un].isInUse())) {
+         mudlog << "ERROR: (conjure minion) need to create MINION of mob number: "
                 << which_un << endl;
+         Sprintf(buf, "DB Error (conjured minion# %i is NOT inUse.\nTell an IMM to mstat it and report to Grock.\n", which_un);
+         pc.show(buf);
          return;
       }//if
 
@@ -724,30 +727,34 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
      show("You open a portal to the pits of Hell!\n", pc);
      emote("opens a portal for the minions of Hell!", pc, ROOM, TRUE);
 
-     int which_un;
+     int which_un = 0;
+     int tmp;
      int times = d(1, lvl/6) + 1;
      for (int i = 0; i<times; i++) {
-       which_un = d(1,4); //for choices
+       tmp = d(1,4); //for choices
      
-       switch (which_un) {
+       switch (tmp) {
        case 1:
-	 which_un = MINION_ONE_NUMBER;
-	 break;
+          which_un = MINION_ONE_NUMBER;
+          break;
        case 2:
-	 which_un = MINION_TWO_NUMBER;
-	 break;
+          which_un = MINION_TWO_NUMBER;
+          break;
        case 3:
-	 which_un = MINION_THREE_NUMBER;
-	 break;
+          which_un = MINION_THREE_NUMBER;
+          break;
        case 4:
-	 which_un = MINION_FOUR_NUMBER;
-	 break;
+          which_un = MINION_FOUR_NUMBER;
+          break;
        }//switch
 
-       if (!mob_list[which_un].CRIT_FLAGS.get(10)) {
+       if ((which_un == 0) || (!mob_list[which_un].isInUse())) {
           if (mudlog.ofLevel(ERR)) {
-             mudlog << "ERROR:  need to create MINION# " << which_un << endl;
+             mudlog << "ERROR:  (conjure horde) need to create MINION# " 
+                    << which_un << endl;
           }
+          Sprintf(buf, "DB Error (conjure horde# %i is NOT inUse.\nTell an IMM to mstat it and report to Grock.\n", which_un);
+          pc.show(buf);
           return;
        }//if
 

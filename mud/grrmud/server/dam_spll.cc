@@ -1,5 +1,5 @@
-// $Id: dam_spll.cc,v 1.5 1999/07/14 02:10:08 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/07/14 02:10:08 $
+// $Id: dam_spll.cc,v 1.6 1999/07/16 06:12:53 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
 
 //
 //ScryMUD Server Code
@@ -1000,9 +1000,9 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 
-      int dmg = d(2, 7) + lvl;
-      if (agg.ALIGN < 350)
-	dmg *= 2;
+      int dmg = d(2, 7) + lvl/2;
+      if ((agg.ALIGN < 350) && (vict.ALIGN < 350))
+         dmg *= 2;
 
       exact_raw_damage(dmg, NORMAL, vict, agg);
       if (!is_canned)

@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.27 1999/07/16 02:10:55 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/07/16 02:10:55 $
+// $Id: command5.cc,v 1.28 1999/07/16 06:12:52 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/07/16 06:12:52 $
 
 //
 //ScryMUD Server Code
@@ -761,7 +761,7 @@ int teach(int i_th, const String* name, int prcnt, const String* skill,
 }//teach
 
 
-int add_perm_inv(int i_th, const String* name, int obj_num, 
+int add_perm_inv(int obj_num, int i_th, const String* name,
                  critter& pc) {
    String buf(100);
    critter* ptr;

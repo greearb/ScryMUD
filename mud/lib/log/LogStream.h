@@ -1,5 +1,5 @@
-// $Id: LogStream.h,v 1.6 1999/07/16 02:10:56 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/16 02:10:56 $
+// $Id: LogStream.h,v 1.7 1999/07/16 06:12:53 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
 
 //
 //ScryMUD Server Code
@@ -33,7 +33,7 @@
 #ifndef LOG_STREAM_INCLUDE
 #define LOG_STREAM_INCLUDE
 
-#define LOG_STREAM_BUF_SIZE 50000  /* 50 kilobytes storage */
+#define LOG_STREAM_BUF_SIZE 200000  /* 200 kilobytes storage */
 
 
 enum LogLevelEnum {
@@ -78,6 +78,12 @@ public:
       *((ostrstream*)this) << ends;
       ofstream ofile(fname);
       ofile << str() << flush();
+
+      // Allow some outside filtering...
+      char buf[200];
+      sprintf(buf, "truncate_log %s", fname);
+      system(buf);
+
       seekp(0); //TODO:  This reset's it, no?
       return 0;
    }
@@ -93,7 +99,7 @@ public:
 
    LogStream& operator<< (const char* msg) {
       *((ostrstream*)this) << msg; 
-      if (pcount() > ((float)(LOG_STREAM_BUF_SIZE) * 0.9)) {
+      if (pcount() > ((float)(LOG_STREAM_BUF_SIZE) * 0.95)) {
          flushToFile(filename);
       }//if
       return *this;

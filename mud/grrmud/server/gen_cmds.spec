@@ -101,7 +101,7 @@ afk(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 agree socials ~
 agree(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 add_perm_inv ~
-return add_perm_inv(i, &(cooked_strs[1]), j, pc);
+return add_perm_inv(i, j, &(cooked_strs[1]), pc);
 assist ~
 return assist(i, &(cooked_strs[1]), pc);
 

@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.24 1999/07/16 02:10:56 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/16 02:10:56 $
+// $Id: room.cc,v 1.25 1999/07/16 06:12:53 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
 
 //
 //ScryMUD Server Code
@@ -183,6 +183,7 @@ room::room() {
       cur_stats[i] = 0;
    }
    setVisBit(1024); //hack, forgot 'normal' vis bit earlier
+   pause = 0;
 } // sub_room constructor
 
 room::room(int rm_num) {
@@ -399,6 +400,7 @@ void room::Clear() {
    clear_ptr_list(pending_scripts);
    clear_ptr_list(room_proc_scripts);
    cur_script = NULL; // points into the pending_scripts
+   pause = 0;
 }// Clear
 
 
