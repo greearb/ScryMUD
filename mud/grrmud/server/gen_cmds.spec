@@ -347,7 +347,7 @@ return exit(pc);
 examine ~
 return examine(i, &(cooked_strs[1]), pc);
 exact_damage ~
-return exact_damage(i, j, cooked_strs[2], pc, was_ordered);
+return exact_damage(i, j, cooked_strs[1], pc, was_ordered);
 elf *elf ~
 NOP
 elves *elves ~

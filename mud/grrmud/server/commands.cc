@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.39 2001/06/10 22:57:51 justin Exp $
-// $Revision: 1.39 $  $Author: justin $ $Date: 2001/06/10 22:57:51 $
+// $Id: commands.cc,v 1.40 2001/10/03 07:23:03 greear Exp $
+// $Revision: 1.40 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
 
 //
 //ScryMUD Server Code
@@ -2839,25 +2839,24 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
          //mudlog << "In move(), made tmp_lst.\n" << flush;
          tmp_lst.head(cell);
          while ((ptr2 = cell.next())) {
-           if (!(ptr2->pc)) {
+           if ((ptr2 != &pc) && !(ptr2->pc)) {
              if (ptr2->mob) {
                if (ptr2->mob->proc_data) {
                  if (ptr2->mob->proc_data->int1 != 0) {
-                   if (strcasecmp(
-                                  *(Top(door_list[ptr2->INT1].names)), 
+                   if (strcasecmp(*(Top(door_list[ptr2->INT1].names)), 
                                   *(direction_of_door(*door_ptr))) == 0) {
-                     if ((ptr2->FLAG1.get(3) && (ptr2->CLASS == pc.CLASS)) ||
-                         (ptr2->FLAG1.get(4) && (ptr2->RACE == pc.RACE))) {
-                       break;  //its ok for them to pass
-                     }//if
-                     Sprintf(buf, cstr(CS_BLOCKS_WAY, pc),
-                             name_of_crit(*ptr2, pc.SEE_BIT));
-                     buf.Cap();
-                     show(buf, pc);
-                     //TODO:  Translation problem.
-                     Sprintf(buf, "blocks %S's way.\n", name_of_crit(pc, ~0));
-                     emote(buf, *ptr2, rm, TRUE, &pc);
-                     return -1;
+                      if ((ptr2->FLAG1.get(3) && (ptr2->CLASS == pc.CLASS)) ||
+                          (ptr2->FLAG1.get(4) && (ptr2->RACE == pc.RACE))) {
+                         break;  //its ok for them to pass
+                      }//if
+                      Sprintf(buf, cstr(CS_BLOCKS_WAY, pc),
+                              name_of_crit(*ptr2, pc.SEE_BIT));
+                      buf.Cap();
+                      show(buf, pc);
+                      //TODO:  Translation problem.
+                      Sprintf(buf, "blocks %S's way.\n", name_of_crit(pc, ~0));
+                      emote(buf, *ptr2, rm, TRUE, &pc);
+                      return -1;
                    }//if
                  }//if a sentinal
                }//if

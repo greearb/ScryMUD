@@ -1,5 +1,5 @@
-// $Id: ez_skll.cc,v 1.11 2001/03/29 07:05:35 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 2001/03/29 07:05:35 $
+// $Id: ez_skll.cc,v 1.12 2001/10/03 07:23:03 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
 
 //
 //ScryMUD Server Code
@@ -277,7 +277,7 @@ int do_guard(critter& vict, critter& pc) {
    emote(buf, pc, ROOM, TRUE, &vict);
    Sprintf(buf, "%S starts guarding you.  You feel much safer!!\n", 
            name_of_crit(pc, vict.SEE_BIT));
-   show(buf, pc);
+   vict.show(buf);
    return 0;
 }//do_guard
 

@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.19 2001/03/29 03:02:34 eroper Exp $
-// $Revision: 1.19 $  $Author: eroper $ $Date: 2001/03/29 03:02:34 $
+// $Id: skills.cc,v 1.20 2001/10/03 07:23:03 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
 
 //
 //ScryMUD Server Code
@@ -647,7 +647,7 @@ int block(int i_th, const String* victim, critter& pc) {
        return -1;
      }//if
 
-     if (!ok_to_do_action(crit_ptr, "PFA", -1, pc)) {
+     if (!ok_to_do_action(crit_ptr, "PFAS", -1, pc)) {
         return -1;
      }//if
 

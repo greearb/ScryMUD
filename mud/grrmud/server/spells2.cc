@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.18 2001/08/15 02:58:14 justin Exp $
-// $Revision: 1.18 $  $Author: justin $ $Date: 2001/08/15 02:58:14 $
+// $Id: spells2.cc,v 1.19 2001/10/03 07:23:04 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 2001/10/03 07:23:04 $
 
 //
 //ScryMUD Server Code
@@ -278,7 +278,7 @@ void cast_recharge(int i_th, const String* victim, critter& pc) {
      return;
    }//if
 
-   if (vict->CHARGES != 0) {
+   if (vict->CHARGES >= obj_list[vict->getIdNum()].CHARGES) {
      show("It already contains as much power as you could place in it!\n",
           pc);
      return;

@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.18 2001/03/29 03:02:35 eroper Exp $
-// $Revision: 1.18 $  $Author: eroper $ $Date: 2001/03/29 03:02:35 $
+// $Id: spells.cc,v 1.19 2001/10/03 07:23:04 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 2001/10/03 07:23:04 $
 
 //
 //ScryMUD Server Code
@@ -421,7 +421,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "blasts %S with %s crimson inferno.\n", 
                       name_of_crit(vict, ~0), 
                       get_his_her(agg));
-               emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+               emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
             }//else
          }//else
       }//if did_hit

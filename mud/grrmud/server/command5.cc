@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.40 2001/08/20 05:30:06 greear Exp $
-// $Revision: 1.40 $  $Author: greear $ $Date: 2001/08/20 05:30:06 $
+// $Id: command5.cc,v 1.41 2001/10/03 07:23:03 greear Exp $
+// $Revision: 1.41 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
 
 //
 //ScryMUD Server Code
@@ -3421,7 +3421,6 @@ void client_command(const String* which, critter& pc) {
    
    if (!pc.isPc())
       return;
-
 
    if (which->Strlen()) {
 

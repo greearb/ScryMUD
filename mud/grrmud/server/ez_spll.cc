@@ -1,5 +1,5 @@
-// $Id: ez_spll.cc,v 1.18 2001/03/29 03:02:31 eroper Exp $
-// $Revision: 1.18 $  $Author: eroper $ $Date: 2001/03/29 03:02:31 $
+// $Id: ez_spll.cc,v 1.19 2001/10/03 07:23:03 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
 
 //
 //ScryMUD Server Code
@@ -39,6 +39,8 @@
 #include <PtrArray.h>
 #include "MudStats.h"
 #include "SkillSpell.h"
+#include "clients.h"
+
 
 void cast_detect_resistances(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
@@ -225,7 +227,7 @@ void cast_detect_poison(int i_th, const String* victim, critter& pc) {
       vict = have_obj_named(pc.inv, i_th, victim, 
                             pc.SEE_BIT, ROOM);
       if (!vict) {
-         show("You don't see that person.\n", pc);
+         show("You don't see that object.\n", pc);
          return;
       }//if
    }//if
@@ -1213,6 +1215,11 @@ void cast_enchant_armor(int i_th, const String* victim, critter& pc) {
      show("That's a weapon!\n", pc);
      return;
    }//if
+
+   if (!obj->OBJ_FLAGS.get(56)) {
+      pc.show("That's not a piece of properly constructed armor.\n");
+      return;
+   }
 
    do_cast_enchant_armor(*obj, pc, FALSE, 0);  //does no error checking
 
@@ -2517,6 +2524,9 @@ void do_cast_calm(critter& agg, int is_canned, int lvl) {
       while ((ptr = cll.next())) {
          if (room_list[rm_num].haveCritter(ptr)) {
             if (!ptr->IS_FIGHTING.isEmpty()) {
+               if (ptr->isUsingClient()) {
+                  ptr->show(CTAG_END_BATTLE(ptr->whichClient()));
+               }
                ptr->IS_FIGHTING.clear(); //no more battle
                affected.append(ptr);
             }

@@ -1,5 +1,5 @@
-// $Id: dam_spll.cc,v 1.10 2001/06/24 06:04:44 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 2001/06/24 06:04:44 $
+// $Id: dam_spll.cc,v 1.11 2001/10/03 07:23:03 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
 
 //
 //ScryMUD Server Code
@@ -1811,7 +1811,7 @@ void do_cast_burning_hands(critter& vict, critter& agg, int is_canned,
          else {
             show("You burn yourself horribly!\n", 
                  agg);
-            Sprintf(buf, "burnss %s with %s glowing hands.\n", 
+            Sprintf(buf, "burns %s with %s glowing hands.\n", 
                    get_himself_herself(vict), 
                    get_his_her(agg));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);

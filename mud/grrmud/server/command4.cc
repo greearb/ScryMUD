@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.45 2001/09/10 01:57:02 justin Exp $
-// $Revision: 1.45 $  $Author: justin $ $Date: 2001/09/10 01:57:02 $
+// $Id: command4.cc,v 1.46 2001/10/03 07:23:03 greear Exp $
+// $Revision: 1.46 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
 
 //
 //ScryMUD Server Code
@@ -285,6 +285,11 @@ int passwd(const String* old, const String* new1, const String* new2,
 
    if (*new1 != *new2) {
       pc.show("Your new passwords do not match, please retry.\n");
+      return -1;
+   }
+
+   if (new1->Strlen() < 3) {
+      pc.show("You must have at least 3 characters in your password.\n");
       return -1;
    }
 
