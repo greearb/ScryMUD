@@ -7,10 +7,10 @@ You will need to do an 'aosave' in the zone to which the object
 belongs in order to make the changes permanent.  The stat_to_remove
 is the first number of the pair, which can be seen through ostat.
 
-usage:  rm_stat_affect [mob_num] [stat_to_remove]
+usage:  rm_stat_affect [obj_num] [stat_to_remove]
 
 Example:
-        rm_stat_affect 65 7     // remove stat affecting stat 7 from mob 65
+        rm_stat_affect 65 7     // remove stat affecting stat 7 from obj 65
 
 
 
