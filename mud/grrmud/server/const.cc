@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.31 2002/01/03 19:31:11 eroper Exp $
-// $Revision: 1.31 $  $Author: eroper $ $Date: 2002/01/03 19:31:11 $
+// $Id: const.cc,v 1.32 2002/01/08 03:59:52 justin Exp $
+// $Revision: 1.32 $  $Author: justin $ $Date: 2002/01/08 03:59:52 $
 
 //
 //ScryMUD Server Code
@@ -446,7 +446,8 @@ const char* o_names[] = {
    "bulletin_board",
    "is_butcherable",
    "has_obj_script",//76
-   "is_two_handed" //77
+   "is_two_handed", //77
+   "!necromancer"
 };
 
 const BitfieldNames OBJ_FLAGS_NAMES(sizeof(o_names)/sizeof(const char*),

@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.37 2001/10/15 22:11:32 eroper Exp $
-// $Revision: 1.37 $  $Author: eroper $ $Date: 2001/10/15 22:11:32 $
+// $Id: object.h,v 1.38 2002/01/08 03:59:52 justin Exp $
+// $Revision: 1.38 $  $Author: justin $ $Date: 2002/01/08 03:59:52 $
 
 //
 //ScryMUD Server Code
@@ -181,6 +181,7 @@ public:
            // 68 concoct_component, 69 parchment, 70 needs_resetting
            // 71 !complete, 72 herb, 73 vend_machine, 74 bulletin_board
            // 75 is_butcherable, 76 has_obj_script 77 is_two_handed
+           // 78 !necromancer
    
    short extras[OBJ_MAX_EXTRAS + 1]; 
                 // 0 charges, light_count, 1 rechargeable, (wands), 2 %load,
