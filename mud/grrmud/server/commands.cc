@@ -2590,9 +2590,9 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 	show(buf, pc);
       }//else
       else if (mob_can_enter(pc, room_list[dest], TRUE)) {
-         mudlog << "In move(), about to make a tmp_lst.\n" << flush;
+         //mudlog << "In move(), about to make a tmp_lst.\n" << flush;
          List<critter*> tmp_lst(rm.getCrits());
-         mudlog << "In move(), made tmp_lst.\n" << flush;
+         //mudlog << "In move(), made tmp_lst.\n" << flush;
          tmp_lst.head(cell);
          while ((ptr2 = cell.next())) {
 	   if (!(ptr2->pc)) {
