@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.49 2002/03/01 17:28:15 gingon Exp $
-// $Revision: 1.49 $  $Author: gingon $ $Date: 2002/03/01 17:28:15 $
+// $Id: command4.cc,v 1.50 2002/09/14 00:54:40 eroper Exp $
+// $Revision: 1.50 $  $Author: eroper $ $Date: 2002/09/14 00:54:40 $
 
 //
 //ScryMUD Server Code
@@ -666,7 +666,11 @@ int possess(int i_th, const String* vict, critter& pc) {
 int _goto(int i_th, const String* name, critter& pc) {
    int rm_num = -1;
 
-   if (!ok_to_do_action(NULL, "IBF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+   if (pc.isMob() && !ok_to_do_action(NULL, "BF", 0, pc, pc.getCurRoom(),
+            NULL, TRUE) ) {
+      return -1;
+   } else if (!ok_to_do_action(NULL, "IBF", 0, pc, pc.getCurRoom(),
+            NULL, TRUE)) {
       return -1;
    }
 

@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.40 2002/09/12 03:41:07 eroper Exp $
-// $Revision: 1.40 $  $Author: eroper $ $Date: 2002/09/12 03:41:07 $
+// $Id: object.h,v 1.41 2002/09/14 00:54:40 eroper Exp $
+// $Revision: 1.41 $  $Author: eroper $ $Date: 2002/09/14 00:54:40 $
 
 //
 //ScryMUD Server Code
@@ -284,6 +284,7 @@ public:
    int isLiquid() const;
    int isCanteen() const;
    int isTwoHanded() const;
+   int isBoat() const { return OBJ_FLAGS.get(62); }
 
    void setComplete();
    void setIncomplete();

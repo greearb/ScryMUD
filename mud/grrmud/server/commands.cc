@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.55 2002/08/16 22:37:31 eroper Exp $
-// $Revision: 1.55 $  $Author: eroper $ $Date: 2002/08/16 22:37:31 $
+// $Id: commands.cc,v 1.56 2002/09/14 00:54:40 eroper Exp $
+// $Revision: 1.56 $  $Author: eroper $ $Date: 2002/09/14 00:54:40 $
 
 //
 //ScryMUD Server Code
@@ -3604,7 +3604,7 @@ int gain_eq_effects(object& obj, object* bag, critter& pc,
       mudlog << "In gain_eq_effects:  obj#:  " << obj.OBJ_NUM << endl;
    }
 
-   if (obj.OBJ_FLAGS.get(62)) { //boats
+   if (obj.isBoat()) { //boats
      pc.CRIT_FLAGS.turn_on(4);
    }//if
      
@@ -3994,12 +3994,14 @@ int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk = FALS
       }//while
    }//if
 
-   if (obj.OBJ_FLAGS.get(62)) {
+   if (obj.isBoat()) {
       pc.CRIT_FLAGS.turn_off(4); //no longer has a boat
       Cell<object*> cll(pc.inv);
       object* obj_ptr;
       while ((obj_ptr = cll.next())) {
-         if (obj_ptr->OBJ_FLAGS.get(62)) {
+         if (obj_ptr == &obj)
+            continue;
+         if (obj_ptr->isBoat()) {
             pc.CRIT_FLAGS.turn_on(4); //has boat now
             break;
          }//if
@@ -4007,7 +4009,7 @@ int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk = FALS
       if (!pc.CRIT_FLAGS.get(4)) {
          for (int i = 1; i<MAX_EQ; i++) {
             if (pc.EQ[i]) {
-               if (pc.EQ[i]->OBJ_FLAGS.get(62)) {
+               if (pc.EQ[i]->isBoat()) {
                   pc.CRIT_FLAGS.turn_on(4); //has boat now
                   break;
                }//if
@@ -4064,12 +4066,12 @@ int donate_eq_effects(object& obj, critter& pc, short do_msg) {
       }//while
    }//if
 
-   if (obj.OBJ_FLAGS.get(62)) {
+   if (obj.isBoat()) {
       pc.CRIT_FLAGS.turn_off(4); //no longer has a boat
       Cell<object*> cll(pc.inv);
       object* obj_ptr;
       while ((obj_ptr = cll.next())) {
-         if (obj_ptr->OBJ_FLAGS.get(62)) {
+         if (obj_ptr->isBoat()) {
             pc.CRIT_FLAGS.turn_on(4); //has boat now
             break;
          }//if
@@ -4077,7 +4079,7 @@ int donate_eq_effects(object& obj, critter& pc, short do_msg) {
       if (!pc.CRIT_FLAGS.get(4)) {
          for (int i = 1; i<MAX_EQ; i++) {
             if (pc.EQ[i]) {
-               if (pc.EQ[i]->OBJ_FLAGS.get(62)) {
+               if (pc.EQ[i]->isBoat()) {
                   pc.CRIT_FLAGS.turn_on(4); //has boat now
                   break;
                }//if
