@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.34 2002/01/08 05:36:55 eroper Exp $
-// $Revision: 1.34 $  $Author: eroper $ $Date: 2002/01/08 05:36:55 $
+// $Id: const.cc,v 1.35 2002/03/01 17:28:16 gingon Exp $
+// $Revision: 1.35 $  $Author: gingon $ $Date: 2002/03/01 17:28:16 $
 
 //
 //ScryMUD Server Code
@@ -364,7 +364,8 @@ const char* r_names[] = {
    "!mob_wander",//33
    "!foreign_mob_wander",//34
    "has_proc_script",//35
-   "coliseum"//36
+   "coliseum",//36
+   "is_vehicle"//37
 };
 const BitfieldNames ROOM_FLAGS_NAMES(sizeof(r_names)/sizeof(const char*),
                                      r_names, "Room Flags:");

@@ -1,5 +1,5 @@
-// $Id: vehicle.h,v 1.9 2001/03/29 03:02:36 eroper Exp $
-// $Revision: 1.9 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
+// $Id: vehicle.h,v 1.10 2002/03/01 17:28:16 gingon Exp $
+// $Revision: 1.10 $  $Author: gingon $ $Date: 2002/03/01 17:28:16 $
 
 //
 //ScryMUD Server Code
@@ -63,6 +63,9 @@ public:
    int canClimb() const;
    int canFloat() const;
    int canDive() const;
+   void setCurRoom(int i){
+         in_room = i;
+      }
 
    void toggleVehicleFlag(int i) {
       if ((i >=0) && (i<50)) {

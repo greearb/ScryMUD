@@ -1,5 +1,5 @@
-// $Id: command5.h,v 1.17 2001/03/29 03:02:29 eroper Exp $
-// $Revision: 1.17 $  $Author: eroper $ $Date: 2001/03/29 03:02:29 $
+// $Id: command5.h,v 1.18 2002/03/01 17:28:16 gingon Exp $
+// $Revision: 1.18 $  $Author: gingon $ $Date: 2002/03/01 17:28:16 $
 
 //
 //ScryMUD Server Code
@@ -154,7 +154,7 @@ int handle_olc(critter& pc, int do_sub);
 
 void client_command(const String* vict, critter& pc);
 
-
+int set_veh_croom(int vhcl, int rm, critter& pc);
 #endif
 
 

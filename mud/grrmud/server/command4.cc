@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.48 2002/02/09 21:50:49 eroper Exp $
-// $Revision: 1.48 $  $Author: eroper $ $Date: 2002/02/09 21:50:49 $
+// $Id: command4.cc,v 1.49 2002/03/01 17:28:15 gingon Exp $
+// $Revision: 1.49 $  $Author: gingon $ $Date: 2002/03/01 17:28:15 $
 
 //
 //ScryMUD Server Code
@@ -1780,14 +1780,18 @@ int tog_rflag(int flagnum, critter& pc) {
 
    if (flagnum == 23) {
       pc.show("You can't toggle that flag, try rclone or rclear.\n");
+      return -1;
+   }else if( flagnum == 37) {
+      pc.show("Vehicle flags can't be toggled, use olc to make a vehicle\n");
+      return -1;
    }
-   else {
-      Sprintf(buf, "Toggling flag#:  %i.\n", flagnum);
-      show(buf, pc);
-      ROOM.flipFlag(flagnum);
-      return 0;
-   }
-   return -1;
+   
+   Sprintf(buf, "Toggling flag#:  %i.\n", flagnum);
+   show(buf, pc);
+   ROOM.flipFlag(flagnum);
+   return 0;
+   
+   
 }//tog_rflag
 
 

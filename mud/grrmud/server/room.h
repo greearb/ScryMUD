@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.38 2001/06/10 18:05:15 justin Exp $
-// $Revision: 1.38 $  $Author: justin $ $Date: 2001/06/10 18:05:15 $
+// $Id: room.h,v 1.39 2002/03/01 17:28:16 gingon Exp $
+// $Revision: 1.39 $  $Author: gingon $ $Date: 2002/03/01 17:28:16 $
 
 //
 //ScryMUD Server Code
@@ -105,7 +105,7 @@ protected:
            // 27 !ranged, 28 need_dive_ability, 29 used_in_track
            // 30 can_camp 31 !complete (olc wise) 32 has_keywords
            // 33 !mob_wander, 34 !foreign_mob_wander, 35 has_proc_script,
-           // 36 coliseum
+           // 36 coliseum, 37 is_vehicle
 
    
 public:
@@ -218,7 +218,7 @@ public:
                  int see_bit);
    int sub_a_4_b(critter* a, critter* b, int i_th);
 
-   virtual int isVehicle() { return FALSE; }
+   virtual int isVehicle() { return room_flags.get(37);}
 
    virtual void Clear();
 #ifdef USEMYSQL

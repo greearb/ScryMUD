@@ -813,7 +813,9 @@ set_path_dir ~
 return set_path_dir(i, j, k, &(cooked_strs[1]), pc);
 set_path_pointer ~
 return set_path_pointer(i, j, pc);
-set_ven_stop ~
+set_veh_croom ~
+return set_veh_croom(i, j, pc);
+set_veh_stop ~ 
 return  set_veh_stop(i, j, &(cooked_strs[1]), pc);
 set_zflag ~
 return set_zflag(i, &(cooked_strs[1]), pc);

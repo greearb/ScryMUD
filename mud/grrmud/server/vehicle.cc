@@ -1,5 +1,5 @@
-// $Id: vehicle.cc,v 1.9 2001/03/29 03:02:36 eroper Exp $
-// $Revision: 1.9 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
+// $Id: vehicle.cc,v 1.10 2002/03/01 17:28:16 gingon Exp $
+// $Revision: 1.10 $  $Author: gingon $ $Date: 2002/03/01 17:28:16 $
 
 //
 //ScryMUD Server Code
@@ -146,7 +146,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
    //log("Got exit_dr_ptr.\n");
 
    if (!exit_dr_ptr) {
-      //mudlog.log(WRN, "WARNING:  destination dr_ptr is NULL in move_room.\n");
+      mudlog.log(WRN, "WARNING:  destination dr_ptr is NULL in move_room.\n");
       Sprintf(buf, "Your vehicle cannot go %S.\n", &exit_direction);
       showAllCept(buf);
       return FALSE;

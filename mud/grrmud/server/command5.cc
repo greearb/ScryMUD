@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.43 2002/01/25 22:39:40 eroper Exp $
-// $Revision: 1.43 $  $Author: eroper $ $Date: 2002/01/25 22:39:40 $
+// $Id: command5.cc,v 1.44 2002/03/01 17:28:15 gingon Exp $
+// $Revision: 1.44 $  $Author: gingon $ $Date: 2002/03/01 17:28:15 $
 
 //
 //ScryMUD Server Code
@@ -47,6 +47,7 @@
 #include "olc.h"
 #include "BuildInfo.h"
 #include "clients.h"
+#include "vehicle.h"
 
 
 int update_cur_in_game(critter& pc) {
@@ -3459,4 +3460,32 @@ void client_command(const String* which, critter& pc) {
    pc.show("\tUse 'client <client name>' to switch to that client. To turn off client support use 'client none'. To use plain telnet, turn off client support. If there is a client that you would like support added for, please contact an IMM, or use the 'idea' command.\n\nClients currently supported: Hegemon, none\n");
 }
 
+
+
+
+int set_veh_croom(int vhcl, int rm, critter &pc)
+{
+
+   if(pc.pc && pc.pc->imm_data){
+   
+      
+      if(rm < NUMBER_OF_ROOMS && vhcl < NUMBER_OF_ROOMS) {
+         if(room_list[vhcl].isVehicle()) {
+            //(vehicle)room_list[vhcl].in_room = rm;
+            vehicle* veh = (vehicle*)(room_list.elementAt(vhcl));
+            veh->setCurRoom(rm);
+            pc.show("Vehicle updated.\n");
+          return 1;
+         }
+         pc.show("That is not a vehicle.\n");
+      } else {
+         pc.show("That is not a valid room.\n");
+      }
+   }
+   else{
+      pc.show("Eh?\n");
+   }
+   return -1;
+}
+   
 
