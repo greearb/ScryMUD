@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.63 2003/05/08 00:25:16 eroper Exp $
-// $Revision: 1.63 $  $Author: eroper $ $Date: 2003/05/08 00:25:16 $
+// $Id: critter.h,v 1.64 2004/07/09 11:59:56 eroper Exp $
+// $Revision: 1.64 $  $Author: eroper $ $Date: 2004/07/09 11:59:56 $
 
 //
 //ScryMUD Server Code
@@ -1028,6 +1028,7 @@ public:
    int isFighting() const  { return !is_fighting.isEmpty(); }
    int isFighting(critter& da_pc) { return is_fighting.haveData(&da_pc); }
    int isGuard() { return MOB_FLAGS.get(MOBFLAG_IS_GUARD); }
+   int hasBoat() { return crit_flags.get(CRITFLAG_HAS_BOAT); }
    
    int isResting() const { return POS == POS_REST; }
    int isStanding() const { return POS == POS_STAND; }
@@ -1112,6 +1113,7 @@ public:
    int insertNewScript(MobScript* script);
 
    void breakEarthMeld();
+   void doDie(int do_msg, int& show_tags, int leave_corpse = TRUE);
 
    // Assumes this is a shop-keeper.
    int findItemSalePrice(object& item, critter& pc);

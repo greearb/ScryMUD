@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.58 2003/02/25 04:14:43 greear Exp $
-// $Revision: 1.58 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
+// $Id: misc.cc,v 1.59 2004/07/09 11:59:56 eroper Exp $
+// $Revision: 1.59 $  $Author: eroper $ $Date: 2004/07/09 11:59:56 $
 
 //
 //ScryMUD Server Code
@@ -511,13 +511,22 @@ void do_regeneration_pcs() {
                               adj + 4.0);
       }
 
-      int tmp_mov;
-      tmp_mov = (int)(((((float)(crit_ptr->DEX)) + 5.0) / 16.0) *
-                      posn_mod * adj *
-                      (((float)(crit_ptr->MV_MAX)) / 3.0) * 
-                      (((float)(crit_ptr->MV_REGEN)) / 100.0) + 3.0);
+      /* Lose 5 mov points if you're idleing in deep water without a boat or
+         flying. Regen none. */
+      if  ( crit_ptr->getCurRoom()->isBigWater() && 
+            ( ! ( crit_ptr->isFlying() || crit_ptr->hasBoat() ) ) ) {
+         crit_ptr->MOV -= 5;
+         // player should die if mov hits 0 
+      } else {
+         int tmp_mov;
 
-      crit_ptr->MOV += tmp_mov;
+         tmp_mov = (int)(((((float)(crit_ptr->DEX)) + 5.0) / 16.0) *
+               posn_mod * adj *
+               (((float)(crit_ptr->MV_MAX)) / 3.0) * 
+               (((float)(crit_ptr->MV_REGEN)) / 100.0) + 3.0);
+
+         crit_ptr->MOV += tmp_mov;
+      }
 
       //if (tmp_mov < 0) {
       //   if (mudlog.ofLevel(DBG)) {

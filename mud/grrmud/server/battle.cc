@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.56 2004/07/05 23:06:35 eroper Exp $
-// $Revision: 1.56 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
+// $Id: battle.cc,v 1.57 2004/07/09 11:59:55 eroper Exp $
+// $Revision: 1.57 $  $Author: eroper $ $Date: 2004/07/09 11:59:55 $
 
 //
 //ScryMUD Server Code
@@ -754,10 +754,6 @@ void agg_kills_vict(critter* agg, critter& vict, int& show_vict_tags,
    critter *ptr2;
    String buf(100);
 
-   if (do_msg) {
-      emote("is dead!", vict, room_list[vict.getCurRoomNum()], TRUE);
-   }
-
    while ((ptr2 = cll2.next())) { // others no longer fighting vict.
       ptr2->IS_FIGHTING.loseData(&vict); 
    }//while
@@ -803,8 +799,6 @@ void agg_kills_vict(critter* agg, critter& vict, int& show_vict_tags,
          agg->ALIGN = 1000;
    }
 
-   vict.IS_FIGHTING.clear(); //vict no longer fighting others
-
    if (vict.pc && agg && agg->pc) {
       doShowList(&vict, Selectors::instance().CC_gets_info_allow,
                  Selectors::instance().CC_none, pc_list,
@@ -819,14 +813,15 @@ void agg_kills_vict(critter* agg, critter& vict, int& show_vict_tags,
                  Selectors::instance().CC_none, pc_list,
                  CS_KILLED_INFO,
                  vict.getName(), agg->getName(), vict.getCurRoomNum());
-
-      vict.pc->died_count++;
    }
    
    if (agg) {
       disburse_xp(*agg, vict); //take care of xp
    }
-   dead_crit_to_corpse(vict, show_vict_tags); //remove all traces of vict
+
+
+   vict.doDie(do_msg, show_vict_tags);
+   //dead_crit_to_corpse(vict, show_vict_tags); //remove all traces of vict
    if (agg) {
       do_just_killed_procs(*agg); //autoloot etc
    }

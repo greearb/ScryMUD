@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.78 2004/07/06 20:06:44 eroper Exp $
-// $Revision: 1.78 $  $Author: eroper $ $Date: 2004/07/06 20:06:44 $
+// $Id: critter.cc,v 1.79 2004/07/09 11:59:56 eroper Exp $
+// $Revision: 1.79 $  $Author: eroper $ $Date: 2004/07/09 11:59:56 $
 
 //
 //ScryMUD Server Code
@@ -3974,6 +3974,23 @@ void critter::breakEarthMeld() {
    }//if
 }//breakEarthMeld
 
+void critter::doDie(int do_msg, int& show_tags, int leave_corpse)  {
+
+   if ( do_msg ) {
+      emote("is dead!");
+   }
+
+   is_fighting.clear();
+
+   if ( pc ) {
+      pc->died_count++;
+   }
+
+   if ( leave_corpse ) {
+      dead_crit_to_corpse(*this, show_tags);
+   }
+
+}//doDie
 
 int critter::isNamed(const String& name) const {
    Cell<String*> char_cell(names);
