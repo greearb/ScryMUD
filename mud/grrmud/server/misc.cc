@@ -558,8 +558,7 @@ void do_regeneration_pcs() {
       //   }
       //}
 
-      if ( (crit_ptr->HP > crit_ptr->HP_MAX) &&
-            ( ! is_affected_by(ABSORB_BLOWS_SKILL_NUM, *crit_ptr) ) ) {
+      if ( (crit_ptr->HP > crit_ptr->HP_MAX) ) {
          crit_ptr->HP = crit_ptr->HP_MAX;
       }
       if (crit_ptr->MANA > crit_ptr->MA_MAX)
