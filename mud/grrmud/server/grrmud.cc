@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.43 2002/02/07 06:35:59 eroper Exp $
-// $Revision: 1.43 $  $Author: eroper $ $Date: 2002/02/07 06:35:59 $
+// $Id: grrmud.cc,v 1.44 2002/02/07 19:32:09 eroper Exp $
+// $Revision: 1.44 $  $Author: eroper $ $Date: 2002/02/07 19:32:09 $
 
 //
 //ScryMUD Server Code
@@ -1052,7 +1052,7 @@ void game_loop(int s)  {
                   if ((victim = pc_ptr->getFirstFighting())) {
                      tank = victim->getFirstFighting();
                      if (tank) {
-                        prompt = "\n^WTank^0: ";
+                        prompt = "\nTank^0: ";
 
                         // Colorized tank graph
                         if (tank->getHP() >
@@ -1072,7 +1072,7 @@ void game_loop(int s)  {
                         for (i = 0; i < num_of_stars; i++) {
                            prompt += "*";
                         }//for
-                        prompt += "\n^WVict^0: ";
+                        prompt += "\nVict^0: ";
                         
                         // Colorized victim graph
                         // we have a random 30% skew when you yourself are <

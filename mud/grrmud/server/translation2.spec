@@ -1,5 +1,5 @@
-# $Id: translation2.spec,v 1.14 2002/02/07 08:04:01 eroper Exp $
-# $Revision: 1.14 $  $Author: eroper $ $Date: 2002/02/07 08:04:01 $
+# $Id: translation2.spec,v 1.15 2002/02/07 19:32:09 eroper Exp $
+# $Revision: 1.15 $  $Author: eroper $ $Date: 2002/02/07 19:32:09 $
 
 # See translations.spec for more information.
 
@@ -129,9 +129,9 @@ CS_SC_GOLD
 	~
 
 CS_SC_HP
-	eng "^yHP %P15^Y[^C%i^W/^c%i^Y]%P27 ^yMANA %P40^Y[^C%i^W/^c%i^Y]%P50 ^yMOVE %P63^Y[^C%i^W/^c%i^Y]\n"
-	ser "^yHP %P15^Y[^C%i^W/^c%i^Y]%P27 ^yMANA %P40^Y[^C%i^W/^c%i^Y]%P50 ^yMOVE %P63^Y[^C%i^W/^c%i^Y]\n"
-	ger "^yHP %P15^Y[^C%i^W/^c%i^Y]%P27 ^yMANA %P40^Y[^C%i^W/^c%i^Y]%P50 ^yMOVE %P63^Y[^C%i^W/^c%i^Y]\n"
+	eng "^yHP %P15^Y[^C%i^w/^c%i^Y]%P27 ^yMANA %P40^Y[^C%i^w/^c%i^Y]%P50 ^yMOVE %P63^Y[^C%i^w/^c%i^Y]\n"
+	ser "^yHP %P15^Y[^C%i^w/^c%i^Y]%P27 ^yMANA %P40^Y[^C%i^w/^c%i^Y]%P50 ^yMOVE %P63^Y[^C%i^w/^c%i^Y]\n"
+	ger "^yHP %P15^Y[^C%i^w/^c%i^Y]%P27 ^yMANA %P40^Y[^C%i^w/^c%i^Y]%P50 ^yMOVE %P63^Y[^C%i^w/^c%i^Y]\n"
 	~
 
 CS_SC_HPR
@@ -141,15 +141,15 @@ CS_SC_HPR
 	~
 
 CS_SC_ALIGN
-	eng "^yALIGNMENT %P15^Y[^C%i^Y]%P27 ^yPRACTICES %P40^Y[^C%i^Y]%P50 ^yWEIGHT%P63^Y[^C%i^W/^c%i^Y]\n"
-	ser "^yALIGNMENT %P15^Y[^C%i^Y]%P27 ^yPRACTICES %P40^Y[^C%i^Y]%P50 ^yWEIGHT%P63^Y[^C%i^W/^c%i^Y]\n"
-	ger "^yALIGNMENT %P15^Y[^C%i^Y]%P27 ^yPRACTICES %P40^Y[^C%i^Y]%P50 ^yGEWICHT%P63^Y[^C%i^W/^c%i^Y]\n"
+	eng "^yALIGNMENT %P15^Y[^C%i^Y]%P27 ^yPRACTICES %P40^Y[^C%i^Y]%P50 ^yWEIGHT%P63^Y[^C%i^w/^c%i^Y]\n"
+	ser "^yALIGNMENT %P15^Y[^C%i^Y]%P27 ^yPRACTICES %P40^Y[^C%i^Y]%P50 ^yWEIGHT%P63^Y[^C%i^w/^c%i^Y]\n"
+	ger "^yALIGNMENT %P15^Y[^C%i^Y]%P27 ^yPRACTICES %P40^Y[^C%i^Y]%P50 ^yGEWICHT%P63^Y[^C%i^w/^c%i^Y]\n"
 	~
 
 CS_SC_RES
-	eng "\n^WResistances^w:  ^MAC ^m[^M%i^m]  ^RHEAT ^r[^R%i^r]  ^BCOLD ^b[^B%i^b]  ^GELECTRICAL ^g[^G%i^g]  ^WSPELL ^w[^W%i^w]\n"
-	ser "\n^WOtpornost^w: ^MAC ^m[^M%i^m]  ^RTOPLOTA ^r[^R%i^r]  ^BHLADNOCA ^b[^B%i^b]  ^GELEKTRIKA ^g[^G%i^g] ^WCAROLIJE ^w[^W%i^w]\n"
-	ger "\n^WWiderstände^w:  AC [%i]  ^RHITZE [%i]  ^BKÄLTE [%i]  ^GELEKTRISCH [%i]  ^WMAGIE [%i]\n"
+	eng "\n^wResistances^w:  ^MAC ^m[^M%i^m]  ^RHEAT ^r[^R%i^r]  ^BCOLD ^b[^B%i^b]  ^GELECTRICAL ^g[^G%i^g]  ^YSPELL ^y[^Y%i^y]\n"
+	ser "\n^wOtpornost^w: ^MAC ^m[^M%i^m]  ^RTOPLOTA ^r[^R%i^r]  ^BHLADNOCA ^b[^B%i^b]  ^GELEKTRIKA ^g[^G%i^g] ^YCAROLIJE ^y[^Y%i^y]\n"
+	ger "\n^wWiderstände^w:  ^MAC ^m[^M%i^m]  ^RHITZE ^r[^R%i^r]  ^BKÄLTE ^b[^B%i^b]  ^GELEKTRISCH ^g[^G%i^g]  ^YMAGIE ^y[^Y%i^y]\n"
 	~
 
 CS_SC_EXP
