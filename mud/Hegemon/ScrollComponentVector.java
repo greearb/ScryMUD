@@ -25,7 +25,7 @@
 
 
 import java.util.*;
-
+/** Scroll component dealy. Outdated. */
 class ScrollComponentVector implements ScrollComponentCollection {
 
    Vector vect;

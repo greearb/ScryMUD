@@ -24,33 +24,36 @@
 //
 
 
-
-public class StringUtils extends Object
-{
-
-   public static String getString(String src, int begin_idx, String delimiters) 
-      {
-//         Log.it("In getString, src:  " + src + "idx:  " + begin_idx);
-         
-         StringBuffer retval = new StringBuffer(100);
-         String my_src = new String(src.substring(begin_idx));
-
-         my_src = my_src.trim();
-         int len = my_src.length();
-         char[] str = my_src.toCharArray();
-         char ch;
-         
-         for (int i = 0; i<len; i++) {
+/**
+ * Class of useful String Utilities.
+ */
+public class StringUtils extends Object {
+    
+    /**
+     * String delimiter utility. Check if this is necessary.
+     */
+    public static String getString(String src, int begin_idx, String delimiters) {
+        //Log.it("In getString, src:  " + src + "idx:  " + begin_idx);
+        
+        StringBuffer retval = new StringBuffer(100);
+        String my_src = new String(src.substring(begin_idx));
+        
+        my_src = my_src.trim();
+        int len = my_src.length();
+        char[] str = my_src.toCharArray();
+        char ch;
+        
+        for (int i = 0; i<len; i++) {
             ch = str[i];
             if (delimiters.indexOf(ch) != -1) {
-               return retval.toString();
+                return retval.toString();
             }
             else {
-               retval.append(ch);
+                retval.append(ch);
             }
-         }
-         return retval.toString();
-      }
+        }
+        return retval.toString();
+    }
 }
 
-         
+

@@ -26,7 +26,7 @@
 import java.util.*;
 import java.awt.*;
 
-
+/** Something to to with the Properties, I think */
 class HegemonDisplayProperties extends Object {
    HegemonManager hm = null;
    

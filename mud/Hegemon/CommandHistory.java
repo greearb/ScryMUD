@@ -27,6 +27,14 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
+/**
+ * Listing of sent commands.
+ *
+ */
+ /*
+ * TODO should probably keep username, but not password.
+ * TODO Does this do anything else?
+ */
 public class CommandHistory extends Frame {
    HegemonManager hm;
    TextArea ta;

@@ -26,7 +26,9 @@
 import java.awt.*;
 import java.awt.event.*;
 
-
+/**
+ * GUI for connecting to certain host.
+ */
 class HostDialog extends Frame {
   ConnectionManager parent;
   LabeledTextField mud_name;

@@ -27,6 +27,7 @@
 import java.util.*;
 import java.awt.*;
 
+/** Scroll component dealy. Outdated. */
 class ScrollComponentGraph extends ScrollComponent {
    Color color;
    float percent_full; /* range zero to 1 */

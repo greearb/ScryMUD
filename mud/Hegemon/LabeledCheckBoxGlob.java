@@ -27,184 +27,185 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 
+/** Seems to be a conglomerated check box dealy for GUI */
 class LabeledCheckBoxGlob extends Panel {
-  Label lbl;
-  CheckBoxGlob cbg;
-  ItemListener il;
-   
-  public LabeledCheckBoxGlob(String name, int rows, int cols) {
-    super();
-
-    il = null;
-    lbl = new Label(name);
-    cbg = new CheckBoxGlob(rows, cols);
+    Label lbl;
+    CheckBoxGlob cbg;
+    ItemListener il;
     
-    BorderLayout bl = new BorderLayout();
-    setLayout(bl);
-
-    add(lbl, "North");
-    add(cbg, "South");
-  }//constructor
-
-  public void setEnabled(boolean state) {
-     lbl.setEnabled(state);
-     cbg.setEnabled(state);
-     super.setEnabled(state);
-  }
-   
-  public void setListener(ItemListener _il) {
-     il = _il;
-  }
-   
-  public void addBox(Checkbox cb) {
-     if (il != null)
-       cb.addItemListener(il);
-     cbg.addBox(cb);
-  }
-
-  String getText() {
-    return cbg.getText();
-  }
-
-   public boolean getState(int num) {
-      return cbg.getState(num);
-   }
-
-   public void setState(int num, boolean state) {
-      cbg.setState(num, state);
-   }
-
-   public void setStateRange(int beg, int end, boolean state) {
-      cbg.setStateRange(beg, end, state);
-   }
-
-   public void setEnableRange(int beg, int end, boolean tf) {
-      cbg.setEnableRange(beg, end, tf);
-   }
-   
+    public LabeledCheckBoxGlob(String name, int rows, int cols) {
+        super();
+        
+        il = null;
+        lbl = new Label(name);
+        cbg = new CheckBoxGlob(rows, cols);
+        
+        BorderLayout bl = new BorderLayout();
+        setLayout(bl);
+        
+        add(lbl, "North");
+        add(cbg, "South");
+    }//constructor
+    
+    public void setEnabled(boolean state) {
+        lbl.setEnabled(state);
+        cbg.setEnabled(state);
+        super.setEnabled(state);
+    }
+    
+    public void setListener(ItemListener _il) {
+        il = _il;
+    }
+    
+    public void addBox(Checkbox cb) {
+        if (il != null)
+            cb.addItemListener(il);
+        cbg.addBox(cb);
+    }
+    
+    String getText() {
+        return cbg.getText();
+    }
+    
+    public boolean getState(int num) {
+        return cbg.getState(num);
+    }
+    
+    public void setState(int num, boolean state) {
+        cbg.setState(num, state);
+    }
+    
+    public void setStateRange(int beg, int end, boolean state) {
+        cbg.setStateRange(beg, end, state);
+    }
+    
+    public void setEnableRange(int beg, int end, boolean tf) {
+        cbg.setEnableRange(beg, end, tf);
+    }
+    
 }//LabeledCheckBoxGlob
 
-
+/** Not entirely sure what this is. Check into it. */
 class CheckBoxGlob extends Panel {
-   Vector invisibles;
-  
-   public CheckBoxGlob(int rows, int cols) {
-      super();
-      GridLayout fl = new GridLayout(rows, cols, 0, 0);
-      setLayout(fl);
-      invisibles = new Vector();
-   }
-   
-   public void addBox(Checkbox cb) {
-      add(cb);
-   }
-   
-   public void addBox(Checkbox cb, boolean invisible) {
-      if (!invisible)
+    Vector invisibles;
+    
+    public CheckBoxGlob(int rows, int cols) {
+        super();
+        GridLayout fl = new GridLayout(rows, cols, 0, 0);
+        setLayout(fl);
+        invisibles = new Vector();
+    }
+    
+    public void addBox(Checkbox cb) {
         add(cb);
-      else
-        invisibles.addElement(cb);
-   }
-
-   public void setEnabled(boolean state) {
-      int cnt = getComponentCount();
-      
-      NumCheckbox cb;
-      
-      for (int i = 0; i < cnt; i++) {
-         cb = (NumCheckbox)(getComponent(i));
-         cb.setEnabled(state);
-      }//for
-      
-      cnt = invisibles.size();
-      for (int i = 0; i < cnt; i++) {
-         cb = (NumCheckbox)(invisibles.elementAt(i));
-         cb.setEnabled(state);
-      }//for
-      
-   }//setEnabled
-      
-   
-   public String getText() { /* get them all */
-      int cnt = getComponentCount();
-      
-      String s;
-      StringBuffer sb = new StringBuffer(100);
-      NumCheckbox cb;
-      
-      for (int i = 0; i < cnt; i++) {
-         cb = (NumCheckbox)(getComponent(i));
-         if (cb.getState()) {
-            sb.append(cb.getNum());
-            sb.append(" ");
-         }//if
-      }//for
-      
-      cnt = invisibles.size();
-      for (int i = 0; i < cnt; i++) {
-         cb = (NumCheckbox)(invisibles.elementAt(i));
-         if (cb.getState()) {
-            sb.append(cb.getNum());
-            sb.append(" ");
-         }//if
-      }//for
-      
-      return new String(sb);
-   }//getText
-   
-   public NumCheckbox getBoxByNum(int num) {
-      int cnt = getComponentCount();
-      
-      NumCheckbox cb;
-      
-      for (int i = 0; i < cnt; i++) {
-         cb = (NumCheckbox)(getComponent(i));
-         if (cb.getNum() == num) {
-            return cb;
-         }
-      }//for
-      
-      cnt = invisibles.size();
-      for (int i = 0; i < cnt; i++) {
-         cb = (NumCheckbox)(invisibles.elementAt(i));
-         if (cb.getNum() == num) {
-            return cb;
-         }
-      }//for
-      return null;
-   }//getBoxByNum
-   
-   public boolean getState(int num) {
-      NumCheckbox cb = getBoxByNum(num);
-      if (cb != null)
-        return cb.getState();
-      else
-        return false;
-   }
-   //HEERE
-   
-   public void setState(int num, boolean state) {
-      NumCheckbox cb = getBoxByNum(num);
-      if (cb != null)
-        cb.setState(state);
-   }
-
-   public void setEnable(int num, boolean state) {
-      NumCheckbox cb = getBoxByNum(num);
-      if (cb != null)
-        cb.setEnabled(state);
-   }
-
-   public void setStateRange(int beg, int end, boolean state) {
-      for (int i = beg; i<= end; i++) {
-         setState(i, state);
-      }
-   }
-
-   public void setEnableRange(int beg, int end, boolean state) {
-      for (int i = beg; i<= end; i++) {
-         setEnable(i, state);
-      }
-   }
-
+    }
+    
+    public void addBox(Checkbox cb, boolean invisible) {
+        if (!invisible)
+            add(cb);
+        else
+            invisibles.addElement(cb);
+    }
+    
+    public void setEnabled(boolean state) {
+        int cnt = getComponentCount();
+        
+        NumCheckbox cb;
+        
+        for (int i = 0; i < cnt; i++) {
+            cb = (NumCheckbox)(getComponent(i));
+            cb.setEnabled(state);
+        }//for
+        
+        cnt = invisibles.size();
+        for (int i = 0; i < cnt; i++) {
+            cb = (NumCheckbox)(invisibles.elementAt(i));
+            cb.setEnabled(state);
+        }//for
+        
+    }//setEnabled
+    
+    
+    public String getText() { /* get them all */
+        int cnt = getComponentCount();
+        
+        String s;
+        StringBuffer sb = new StringBuffer(100);
+        NumCheckbox cb;
+        
+        for (int i = 0; i < cnt; i++) {
+            cb = (NumCheckbox)(getComponent(i));
+            if (cb.getState()) {
+                sb.append(cb.getNum());
+                sb.append(" ");
+            }//if
+        }//for
+        
+        cnt = invisibles.size();
+        for (int i = 0; i < cnt; i++) {
+            cb = (NumCheckbox)(invisibles.elementAt(i));
+            if (cb.getState()) {
+                sb.append(cb.getNum());
+                sb.append(" ");
+            }//if
+        }//for
+        
+        return new String(sb);
+    }//getText
+    
+    public NumCheckbox getBoxByNum(int num) {
+        int cnt = getComponentCount();
+        
+        NumCheckbox cb;
+        
+        for (int i = 0; i < cnt; i++) {
+            cb = (NumCheckbox)(getComponent(i));
+            if (cb.getNum() == num) {
+                return cb;
+            }
+        }//for
+        
+        cnt = invisibles.size();
+        for (int i = 0; i < cnt; i++) {
+            cb = (NumCheckbox)(invisibles.elementAt(i));
+            if (cb.getNum() == num) {
+                return cb;
+            }
+        }//for
+        return null;
+    }//getBoxByNum
+    
+    public boolean getState(int num) {
+        NumCheckbox cb = getBoxByNum(num);
+        if (cb != null)
+            return cb.getState();
+        else
+            return false;
+    }
+    //HEERE
+    
+    public void setState(int num, boolean state) {
+        NumCheckbox cb = getBoxByNum(num);
+        if (cb != null)
+            cb.setState(state);
+    }
+    
+    public void setEnable(int num, boolean state) {
+        NumCheckbox cb = getBoxByNum(num);
+        if (cb != null)
+            cb.setEnabled(state);
+    }
+    
+    public void setStateRange(int beg, int end, boolean state) {
+        for (int i = beg; i<= end; i++) {
+            setState(i, state);
+        }
+    }
+    
+    public void setEnableRange(int beg, int end, boolean state) {
+        for (int i = beg; i<= end; i++) {
+            setEnable(i, state);
+        }
+    }
+    
 }//CheckBoxGlob

@@ -29,7 +29,7 @@ import java.lang.*;
 import java.awt.*;
 import java.util.*;
 
-
+/** networking socket reader. */
 class SocketReader extends Thread {
    byte[] buf = new byte[10000];
    SocketManager parent;

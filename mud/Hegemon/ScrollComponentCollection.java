@@ -25,7 +25,7 @@
 
 import java.util.*;
 
-
+/** Interface for scrolling. Probably outdated. */
 public interface ScrollComponentCollection {
    public String toString();
    public int getTotalHeight();

@@ -26,6 +26,7 @@
 import java.awt.*;
 import java.util.*;
 
+/** Combines a text box glob (?) and a label for it. */
 class LabeledTextBoxGlob extends Panel {
   Label lbl;
   TextBoxGlob cbg;
@@ -67,7 +68,7 @@ class LabeledTextBoxGlob extends Panel {
   
 }//LabeledTextBoxGlob
 
-
+/** Not exactly sure... */
 class TextBoxGlob extends Panel {
   Vector invisibles;
    

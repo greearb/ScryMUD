@@ -26,7 +26,7 @@
 import java.awt.*;
 import java.awt.event.*;
 
-
+/** Some sort of color chooser GUI? */
 class ColorChoicesFrame extends Frame {
    
    public ColorChoicesFrame(String str) {

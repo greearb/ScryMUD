@@ -28,20 +28,32 @@ import java.awt.event.*;
 import java.applet.*;
 import java.net.*;
 
+/**
+ * Base class to begin hegemon Applet or application. Contains both main and init.
+ */
 public class hegemon extends Applet {
    static HegemonManager hm;
    boolean is_running = false;
    //Image image;
    int state;
+   //TODO Making STARTING, RUNNING, STOPPED enums?
    static final int STARTING = 0;
    static final int RUNNING = 1;
    static final int STOPPED = 2;
 
+   /**
+    * Constructor for running hegemon as an applet.
+    */
    public hegemon() {
       super();
       is_running = false;
    }
 
+   /**
+    * Entrance point for hegemon running as a stand-alone application
+    *
+    * @param args command line arguments
+    */
    public static void main(String args[]) {
       String rcfile = null;
       
@@ -49,6 +61,9 @@ public class hegemon extends Applet {
       hm = new HegemonManager("hegemon.properties", false, null);
    }//main
 
+   /**
+    * Entrance point for hegemon running as an applet.
+    */
    public void init() {
       String rcfile = getParameter("RC_FILE_URL");
       setBackground(Color.black);
@@ -92,12 +107,20 @@ public class hegemon extends Applet {
          state = s;
    }//setOperStatus
 
+   /**
+    * Dispose of the hegemon object.
+    */
    public void destroy() {
       state = STOPPED;
       repaint();
       hm = null;
    }
 
+   /**
+    * Method to print status text.
+    *
+    * @param g Graphics component for drawing
+    */
    public void paint(Graphics g) {
       g.setColor(Color.white);
       //g.drawImage(image, 0, 0, 200, 100, Color.black, null);

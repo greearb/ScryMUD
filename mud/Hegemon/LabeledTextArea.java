@@ -25,7 +25,7 @@
 
 import java.awt.*;
 
-
+/** Combines a text area and a label for it. */
 class LabeledTextArea extends Panel {
    String text;
    Label lb;

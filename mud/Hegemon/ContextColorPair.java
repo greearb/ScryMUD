@@ -27,7 +27,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
-
+/**
+ * Associating a context with a color... I think? 
+ */
 class ContextColorPair extends Panel {
    private Context context;
    private Color color;

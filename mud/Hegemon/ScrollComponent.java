@@ -26,7 +26,7 @@
 import java.util.*;
 import java.awt.*;
 
-
+/** A scrolling component. Probably outdated. */
 class ScrollComponent extends Object {
    protected int height;
    protected int vert_spacing;

@@ -26,6 +26,7 @@
 import java.awt.event.*;
 import java.awt.*;
 
+/** GUI for Logging. What does it do? Not sure. */
 public class LogFrame extends Frame {
    HegemonManager hm;
    ClientDisplay cd;

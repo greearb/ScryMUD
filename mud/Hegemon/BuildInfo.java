@@ -20,7 +20,9 @@
 //                                     greearb@agcs.com
 //
 
-
+/**
+ * Build information. Uhm, does this have to be here, and how do I change it?
+ */
 public class BuildInfo {
    static public String getBuildInfo() {
       return ("<color red>\n" +

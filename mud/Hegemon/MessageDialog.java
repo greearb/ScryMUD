@@ -26,7 +26,7 @@
 import java.awt.*;
 import java.awt.event.*;
 
-
+/** Convenient and consistent message dialog. Some GUI ugliness here. */
 class MessageDialog extends Frame {
   TextArea msg;
   

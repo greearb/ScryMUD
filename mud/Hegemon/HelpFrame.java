@@ -28,6 +28,7 @@ import java.io.*;
 import java.awt.event.*;
 import java.net.*;
 
+/** Help GUI Class. */
 class HelpFrame extends Frame {
    private String base_dir;
    private HegemonDisplay hd = null;

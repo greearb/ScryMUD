@@ -24,7 +24,9 @@
 //
 
 
-
+/**
+ * Class for defining hosts for connections.
+ */
 class HostAddr {
    String mud_name;
    String host_name;

@@ -25,7 +25,7 @@
 
 import java.awt.*;
 
-
+/** Combines a label and a text field. */
 class LabeledTextField extends Panel {
    String text;
    Label lb;

@@ -23,7 +23,7 @@
 //                                     bgreear@mayannetworks.com
 //
 
-/**  This command will be related to a specific tag and will run
+/** Huh?  This command will be related to a specific tag and will run
  *   according to this tag.  It is used primarily as an inner-class.
  */
 import java.util.*;

@@ -29,6 +29,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 
+/** Networking class GUI */
 class ConnectionManager extends Frame {
    java.awt.List hosts;
    HegemonManager hm;

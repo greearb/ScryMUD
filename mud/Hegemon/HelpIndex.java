@@ -28,8 +28,9 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 
-// This class represents an index for a certain category of
-// help topics...
+/** This class represents an index for a certain category of
+* help topics...
+ */
 class HelpIndex extends Frame {
    HelpFrame hf;
    HegemonManager hm;

@@ -25,7 +25,9 @@
 
 
 
-
+/**
+ * Context class for... something.
+ */
 class Context extends Object {
    int ctx_num;
    String name;

@@ -25,6 +25,7 @@
 
 import java.awt.*;
 
+/** Special number text box? */
 class NumTextBox extends LabeledTextField {
   int num;
 

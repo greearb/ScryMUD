@@ -27,6 +27,7 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 
+/** Combines a label and a Choice */
 class LabeledChoice extends Panel {
    public Label lbl;
    public Choice c;

@@ -26,7 +26,7 @@
 import java.awt.*;
 import java.awt.event.*;
 
-
+/** GUI for OLC door creation/editing */
 class OLCDoor extends Frame {
    ClientDisplay parent;
    

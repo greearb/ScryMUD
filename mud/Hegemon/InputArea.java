@@ -27,7 +27,7 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
 
-/**  Will hold the input text area, as well as the arrow pane for directions.
+/**  Holds the input text area, as well as the arrow pane for directions.
  */
 public class InputArea extends Panel { 
    TextArea input_field;

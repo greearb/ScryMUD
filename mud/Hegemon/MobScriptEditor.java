@@ -27,9 +27,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
-// This allows for some quick editing of already-created objects,
-// mobs, and rooms.  It auto-captures the info for easy editing...
-
+/** This allows for some quick editing of already-created objects,
+* mobs, and rooms.  It auto-captures the info for easy editing...
+*/
 class MobScriptEditor extends Frame {
    LabeledChoice trigger;
    LabeledTextField discrim;

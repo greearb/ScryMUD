@@ -27,6 +27,7 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/** OLC data storage? */
 class OlcStore extends Object {
    HegemonManager hm = null;
    public OLCDoor door = null;

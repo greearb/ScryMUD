@@ -27,7 +27,7 @@
 import java.awt.*;
 import java.awt.event.*;
 
-
+/** GUI for OLC room creation/editing. */
 class OLCRoom extends Frame {
    ClientDisplay parent;
    HegemonManager hm;

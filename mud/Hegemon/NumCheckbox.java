@@ -25,6 +25,7 @@
 
 import java.awt.*;
 
+/** Special number check box? */
 class NumCheckbox extends Checkbox {
   int num;
 

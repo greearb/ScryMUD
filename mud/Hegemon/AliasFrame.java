@@ -28,6 +28,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
+
+/**
+ * GUI for Alias functionality. Manages actions, including persistant storage.
+ */
 class AliasFrame extends Frame {
    HegemonManager hm;
    List aliases;

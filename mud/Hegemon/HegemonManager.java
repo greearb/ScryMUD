@@ -28,6 +28,10 @@ import java.util.*;
 import java.io.*;
 import java.net.*;
 
+/**
+ * Holds just about every instance in hegemon.
+ * Pretty large, high-level container. Not top-level.
+ */
 class HegemonManager extends Object {
    OlcStore olc_mgr;
    ActionFrame action_mgr;

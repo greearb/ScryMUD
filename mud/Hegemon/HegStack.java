@@ -25,6 +25,9 @@
 
 import java.util.*;
 
+/**
+ * Extended Stack which doesn't appear to do anything useful.
+ */
 class HegStack extends Stack {
    int stack_cnt;
 

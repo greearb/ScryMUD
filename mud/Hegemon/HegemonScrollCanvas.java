@@ -27,6 +27,9 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 
+/**
+ * Some scrolling GUI panel.
+ */
 class HegemonScrollCanvas extends Canvas {
    Vector text_components = null;
    boolean do_paint;

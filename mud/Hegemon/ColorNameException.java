@@ -23,7 +23,7 @@
 //                                     bgreear@mayannetworks.com
 //
 
-
+/** Exception class for invalid color name, I assume. */
 class ColorNameException extends Exception {
 
    public ColorNameException(String msg) {

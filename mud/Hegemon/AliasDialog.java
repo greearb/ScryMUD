@@ -26,7 +26,9 @@
 import java.awt.*;
 import java.awt.event.*;
 
-
+/**
+ * GUI for alias functionality.
+ */
 class AliasDialog extends Frame {
    LabeledTextArea action;
    LabeledTextField trigger;

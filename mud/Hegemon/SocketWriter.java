@@ -27,6 +27,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+
+/** Networking socket writer */
 class SocketWriter extends Object {
    HegemonManager hm;
    SocketManager parent;

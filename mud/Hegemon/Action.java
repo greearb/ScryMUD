@@ -24,7 +24,9 @@
 //
 
 
-
+/**
+ * Class that represents an Action.
+ */
 class Action extends Object {
    String trigger;
    String action;

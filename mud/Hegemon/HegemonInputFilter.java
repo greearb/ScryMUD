@@ -27,7 +27,9 @@ import java.util.*;
 import java.awt.*;
 
 
-/* filter stuff coming FROM mud */
+/** MUD filter/parser so that Hegemon can understand it.
+ * XML would be implemented here, probably.
+ */
 class HegemonInputFilter extends Object {
    StringBuffer current_line;
    OlcStore olc_store;

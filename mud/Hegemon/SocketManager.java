@@ -29,6 +29,7 @@ import java.lang.*;
 import java.awt.*;
 import java.util.*;
 
+/** Networking socket manager. */
 public class SocketManager {
    Socket sock;
    SocketReader reader;

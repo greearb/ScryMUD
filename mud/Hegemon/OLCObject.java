@@ -26,6 +26,7 @@
 import java.awt.*;
 import java.awt.event.*;
 
+/** GUI for OLC Object creation/editing. */
 class OLCObject extends Frame {
    ClientDisplay parent;
    HegemonManager hm;

@@ -26,7 +26,8 @@
 import java.awt.*;
 
 /**  Provides a few convenience functions on colors, and defines
-  some not found in class Color. */
+ * some not found in class Color. 
+ */
 class ColorUtils extends Object {
 
    /**  This converts a color name to a color.  The string must be a recognized

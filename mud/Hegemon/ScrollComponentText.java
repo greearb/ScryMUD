@@ -26,7 +26,7 @@
 import java.util.*;
 import java.awt.*;
 
-
+/** Scroll component dealy. Outdated. */
 class ScrollComponentText extends ScrollComponent {
    Vector segments;
    int width;

@@ -27,6 +27,7 @@
 import java.util.*;
 import java.awt.*;
 
+/** Scroll component dealy. Outdated. */
 class ScrollComponentNewline extends ScrollComponent {
 
    public ScrollComponentNewline(int _height, int vert_spacing) {

@@ -23,7 +23,7 @@
 //                                     bgreear@mayannetworks.com
 //
 
-
+/** Logging class. Not sure what the capabilities are. */
 class Log extends Object {
 
    public Log() {
