@@ -223,11 +223,7 @@ room::~room() {
       embattled_rooms.loseData(this);
    }//if
 
-   clear_ptr_list(names);
-   clear_ptr_list(affected_by);
-   clear_ptr_list(doors);
-   clear_ptr_list(keywords);
-
+   Clear();
 }//sub_room deconstructor
 
 

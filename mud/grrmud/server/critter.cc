@@ -2311,12 +2311,17 @@ int critter::haveObjNumbered(int cnt, int obj_num) {
    object* ptr;
    int count = 0;
 
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "haveObjNumbered: cnt: " << cnt << " obj_num: " 
+             << obj_num << endl;
+   }
+
    if (cnt == 0)
       return FALSE;
 
    while ((ptr = cll.next())) {
       count += ptr->getObjCountByNumber(obj_num, 0);
-      if (ptr->OBJ_NUM == obj_num) {
+      if (ptr->getIdNum() == obj_num) {
          count++;
       }//if obj nums agree
 

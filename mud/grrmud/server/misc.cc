@@ -715,6 +715,7 @@ void update_zone(int zone_num, short read_all) {
       rfile >> k;
       rfile.getline(temp_str, 80);
    }//while, the big loop, reads in a whole zone
+   tmp_room.Clear();
 }//update_zone
 
 

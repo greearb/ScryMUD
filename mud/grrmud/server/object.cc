@@ -966,7 +966,19 @@ void object::makeComponent(int targ, int comp1, int comp2, int comp3,
 }//makeComponent
 
 int object::getObjCountByNumber(int onum, int sanity) {
-   if (!ob->inv.isEmpty()) {
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "getObjCountByNumber onum: " << onum << " sanity: " 
+             << sanity << " Obj_NUM: " << getIdNum() << endl;
+   }
+
+   if (ob->inv.isEmpty()) {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "Inventory is empty, returning zero." << endl;
+      }
+      return 0;
+   }
+   else {
       Cell<object*> cll(ob->inv);
       object* ptr;
       int count = 0;
@@ -975,16 +987,21 @@ int object::getObjCountByNumber(int onum, int sanity) {
          return 0;
       }
 
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "Searching object inventory." << endl;
+      }
+
       while ((ptr = cll.next())) {
-         if (ptr->OBJ_NUM == onum) {
+         if (ptr->getIdNum() == onum) {
             count++;
          }//if detect
          count += ptr->getObjCountByNumber(onum, sanity + 1);
       }//while
 
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "Returning count: " << count << endl;
+      }
+
       return count;
    }//if
-   else {
-      return 0;
-   }
 }//getObjectCountByNumber
