@@ -1,5 +1,5 @@
-// $Id: rm_cmds.cc,v 1.7 1999/06/24 05:22:36 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/24 05:22:36 $
+// $Id: rm_cmds.cc,v 1.8 1999/07/05 22:32:08 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/05 22:32:08 $
 
 //
 //ScryMUD Server Code
@@ -169,7 +169,7 @@ int room::move_all(int i_th, const String* dir) {
          ptr = critters.peekFront();
          is_dead = FALSE;
 
-         ptr->doGoToRoom(dest_rm, NULL, NULL, is_dead, getIdNum());
+         ptr->doGoToRoom(dest_rm, NULL, NULL, is_dead, getIdNum(), 1);
          
          if (!is_dead) {
             look(1, &NULL_STRING, *ptr, FALSE);
@@ -196,7 +196,7 @@ int room::omove_all(int i_th, const String* dir) {
    if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS)) {
       while (!inv.isEmpty()) {
          ptr = inv.peekFront();
-         ptr->doGoToRoom(dest_rm, NULL, NULL, getIdNum());
+         ptr->doGoToRoom(dest_rm, NULL, NULL, getIdNum(), 1);
       }//while
    }//if
    return 0;
@@ -252,7 +252,7 @@ int room::move(int i_th, const String* pc, int j_th, const String* dir) {
 
    if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS)) {
       int is_dead;
-      ptr->doGoToRoom(dest_rm, NULL, NULL, is_dead, getIdNum());
+      ptr->doGoToRoom(dest_rm, NULL, NULL, is_dead, getIdNum(), 1);
    }//if
    else {
       if (mudlog.ofLevel(DBG)) {
@@ -295,7 +295,7 @@ int room::omove(int i_th, const String* obj, int j_th, const String* dir) {
    }
 
    if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS)) {
-      return ptr->doGoToRoom(dest_rm, NULL, NULL, getIdNum());
+      return ptr->doGoToRoom(dest_rm, NULL, NULL, getIdNum(), 1);
    }//if
    return -1;
 }//omove

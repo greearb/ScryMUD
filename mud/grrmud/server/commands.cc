@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.26 1999/06/30 01:57:28 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/06/30 01:57:28 $
+// $Id: commands.cc,v 1.27 1999/07/05 22:32:07 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
 
 //
 //ScryMUD Server Code
@@ -2681,7 +2681,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
             }
          }//if
 
-         pc.doGoToRoom(dest, from_dir, door_ptr, is_dead, rm.getIdNum());
+         pc.doGoToRoom(dest, from_dir, door_ptr, is_dead, rm.getIdNum(), 1);
 
          if (is_dead) {
             return -1;

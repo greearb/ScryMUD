@@ -2,13 +2,13 @@ Category:  OLC  Topic:  flip_door
 
 
 
-The internal door code is a bit messy for efficiency's sake.  For this reason
-when you create a door, it may exit to the OPPOSITE side that you want it
-to exit to.  If this is the case, you can 'flip_door' to reverse it.  This
-is quite strange, because it only flips one side of the door, the other
-side (in another room) remains the same.  For you coders:  the side of
-a door which faces a given room is determined by the sign of the destination
-room's number.
+The internal door code is a bit messy for efficiency's sake.  For
+this reason when you create a door, it may exit to the OPPOSITE side
+that you want it to exit to.  If this is the case, you can
+'flip_door' to reverse it.  This is quite strange, because it only
+flips one side of the door, the other side (in another room) remains
+the same.  For you coders:  the side of a door which faces a given
+room is determined by the sign of the destination room's number.
 
 syntax:  flip_door <n_th> [direction_of_door]
 

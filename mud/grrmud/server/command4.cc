@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.24 1999/06/30 01:57:28 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/06/30 01:57:28 $
+// $Id: command4.cc,v 1.25 1999/07/05 22:32:07 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
 
 //
 //ScryMUD Server Code
@@ -679,7 +679,7 @@ int _goto(int i_th, const String* name, critter& pc) {
    //mudlog << "WARNING: about to doGoToRoom: " << i_th << endl;
 
    int is_dead;
-   pc.doGoToRoom(i_th, NULL, NULL, is_dead, pc.getCurRoomNum());
+   pc.doGoToRoom(i_th, NULL, NULL, is_dead, pc.getCurRoomNum(), 1);
 
    if (pc.shouldDoPoofin()) {
       ROOM.doPoofIn(pc);
@@ -854,7 +854,7 @@ int zgoto(int i_th, critter& pc) {
    }
 
    int is_dead;
-   pc.doGoToRoom(rm_num, NULL, NULL, is_dead, pc.getCurRoomNum());
+   pc.doGoToRoom(rm_num, NULL, NULL, is_dead, pc.getCurRoomNum(), 1);
 
    if (pc.shouldDoPoofin()) {
       ROOM.doPoofIn(pc);

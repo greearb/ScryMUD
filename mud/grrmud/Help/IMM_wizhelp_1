@@ -2,3 +2,41 @@
 
 Here is a list of all immortal/builder help topics.
 
+active_zones     add_casts_spell  add_keyword      add_kname        
+add_mob_script   add_oname        add_path         add_perm_inv     
+add_rem_names    add_stat_affect  add_zone         adlist           
+affect_hp        affect_mana      affect_mov       amlist           
+aolist           aosave           arlist           ch_ddesc         
+ch_mdesc         ch_mndesc        ch_msdesc        ch_odesc         
+ch_osdesc        ch_path_desc     ch_rdesc         ch_rname         
+classes          clear_keyword    clear_mnames     clear_onames     
+create_conct     create_constrct  dclear           delete_door      
+door_to          dset             dstat            dsys             
+enslave          exact_damage     flip_door        force            
+freeze           gag              gecho            goto             
+keyword          ldwho            list_obj_scripts list_paths       
+list_scripts     list_site_bans   list_zones       log_level        
+make_pso         mclear           mclone           mlist            
+mreload          mset             mstat            mvnum            
+oclone           olc              olist            oload            
+oreload          oset             ostat            ovnum            
+possess          rclear           rclone           rem_mname        
+rem_path         rem_perm_inv     rem_zone         replace_door     
+rezone           rinit            rlist            rm_bow_proc      
+rm_curse_proc    rm_discuss_proc  rm_give_proc     rm_keyword       
+rm_move_all      rm_obj_script    rm_omove         rm_omove_all     
+rm_script        rm_stat_affect   rset             rstat            
+save_obj         see_all          set_path_dir     set_path_pointer 
+set_zflag        shutdown         siteban          slay             
+smob             snoop            sockets          stat_keyword     
+stat_path        stat_room_script stat_script      teach            
+tog_mflag        tog_oflag        tog_rflag        tog_veh_stop     
+ungag            unpossess        unpost           unsiteban        
+update_CIG       update_cig       uptime           visible          
+wizinvis         write_world      write_zone       zcreate          
+zenable          zgoto            zlist            zlock            
+
+
+<color=red>
+See Also:  commands, topics
+</color></help>

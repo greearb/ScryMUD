@@ -1,5 +1,5 @@
-// $Id: spells.h,v 1.4 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: spells.h,v 1.5 1999/07/05 22:32:08 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/07/05 22:32:08 $
 
 //
 //ScryMUD Server Code
@@ -69,7 +69,7 @@ void do_cast_summon(critter& vict, critter& pc, int is_canned, int lvl);
 ///********** effects of passive spells (when triggered **********///
 
 void do_firewall_effects(critter& pc, int& is_dead);
-void do_distortion_wall_effects(critter& pc, int& is_dead);
+int do_distortion_wall_effects(critter& pc, int& is_dead, int sanity);
 
 
 ///**************   auxillary spell/skill functions   *************///
@@ -80,7 +80,7 @@ void rem_effects_room(int spell_num, room& rm, short do_msg);
 void rem_effects_door(int spell_num, door& dr, room& rm1, room& rm2,
 		      short do_msg);
 
-int relocate_within_zone(critter& pc); //silent teleport
+int relocate_within_zone(critter& pc, int& is_dead, int sanity, int do_msgs);
 
 int has_all_prereqs(int skill_num, critter& pc); 
 int get_skill_difficulty(int skill_num);

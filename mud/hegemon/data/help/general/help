@@ -27,12 +27,10 @@ Sample commands:
 To see a list of all mortal commands, try: help topics,
 For immortals, try: help wizhelp
 
-
 See Also:  commands, socials
 
-To get help on a topic enter:  help <term_you_want_help_with>
+To get help on a topic enter:  help <term_you_want_help_with> <'mortal'>
 
 NOTE:  For a friendlier environment check out Hegemon, our Java Client!
 
 http://scry.WANfear.com
-

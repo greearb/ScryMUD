@@ -1,5 +1,5 @@
-// $Id: trv_spll.cc,v 1.6 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: trv_spll.cc,v 1.7 1999/07/05 22:32:08 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/05 22:32:08 $
 
 //
 //ScryMUD Server Code
@@ -698,7 +698,7 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
                
                int is_dead;
                ptr->doGoToRoom(new_room_num, NULL, NULL, is_dead,
-                               ptr->getCurRoomNum());
+                               ptr->getCurRoomNum(), 1);
                if (is_dead)
                   return;
                
@@ -831,7 +831,7 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
 
                int is_dead;
                ptr->doGoToRoom(new_room_num, NULL, NULL, is_dead,
-                               ptr->getCurRoomNum());
+                               ptr->getCurRoomNum(), 1);
                if (is_dead) {
                   return;
                }

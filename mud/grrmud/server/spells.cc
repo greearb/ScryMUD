@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.11 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: spells.cc,v 1.12 1999/07/05 22:32:08 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/05 22:32:08 $
 
 //
 //ScryMUD Server Code
@@ -295,20 +295,22 @@ void do_firewall_effects(critter& pc, int& is_dead) {
 }//do_firewall_effects(critter&
 
 
-void do_distortion_wall_effects(critter& pc, int& is_dead) {
+int do_distortion_wall_effects(critter& pc, int& is_dead, int sanity) {
    String buf(100);
-   is_dead = FALSE;
+   int retval;
 
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB sent to do_distortion_wall_effects.\n");
-      return;
+      is_dead = FALSE;
+      return -1;
    }//if
 
-   show("WOW, as you step into the next room you encounter a strange silvery\
-curtain of....energy!", pc);
+   show("**WOW**, as you step into the next room you encounter a strange
+silvery curtain of....energy!\n", pc);
    emote("blinks out of sight!", pc, ROOM, TRUE);
-   relocate_within_zone(pc); //silent teleport
+   retval = relocate_within_zone(pc, is_dead, sanity, FALSE);
    emote("materializes in front of you!", pc, ROOM, TRUE); //in new room now
+   return retval;
 }//do_distortion_wall_effects
 
 
@@ -510,7 +512,7 @@ void cast_fireball(int i_th, const String* victim, critter& pc) {
    if (victim->Strlen() == 0) 
       vict = Top(pc.IS_FIGHTING);
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to barbeque??\n", pc);
       return;
@@ -624,7 +626,7 @@ void do_cast_summon(critter& vict, critter& pc, int is_canned, int lvl) {
 
       int is_dead;
       vict.doGoToRoom(pc.getCurRoomNum(), NULL, NULL, is_dead,
-                      vict.getCurRoomNum()); //vict is always a PC
+                      vict.getCurRoomNum(), 1); //vict is always a PC
       
    }//if do_affects
    pc.PAUSE += 1; 
@@ -706,7 +708,7 @@ void do_cast_passdoor(door& dr, critter& vict, int is_canned, int lvl) {
       
       int is_dead;
       vict.doGoToRoom(abs(dr.destination), NULL, NULL, is_dead,
-                      vict.getCurRoomNum());
+                      vict.getCurRoomNum(), 1);
       
       if (!is_dead) {
          emote("steps back into your dimension.", vict,
@@ -723,7 +725,7 @@ void cast_recall(int i_th, const String* victim, critter& pc) {
    if (victim->Strlen() == 0)
      vict = &pc;
    else {
-     vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+     vict = ROOM.haveCritNamed(i_th, victim, pc);
    }//else
 
    if (!vict) {
@@ -775,7 +777,8 @@ void do_cast_recall(critter& vict, critter& pc, int is_canned, int lvl) {
             room_list[vict.getCurRoomNum()], TRUE); 
       
       int is_dead;
-      vict.doGoToRoom(RECALL_ROOM, NULL, NULL, is_dead, vict.getCurRoomNum());
+      vict.doGoToRoom(RECALL_ROOM, NULL, NULL, is_dead,
+                      vict.getCurRoomNum(), 1);
 
       if (!is_dead) {
          emote("blinks into existence.", vict, room_list[vict.getCurRoomNum()],
@@ -858,7 +861,7 @@ void do_cast_teleport(critter& vict, critter& pc, int is_canned, int lvl) {
             int is_dead;
             vict.doRemoveFromBattle();
             vict.doGoToRoom(new_room_num, NULL, NULL, is_dead,
-                            vict.getCurRoomNum());
+                            vict.getCurRoomNum(), 1);
             if (is_dead)
                return;
          }//if
@@ -878,7 +881,7 @@ void cast_poison(int i_th, const String* victim, critter& pc) {
    if (victim->Strlen() == 0) 
       vict = Top(pc.IS_FIGHTING);
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Who do you wish to poison??\n", pc);
       return;
@@ -1183,7 +1186,14 @@ short lost_concentration(critter& agg, int spell_num) {
 }//lost_concentration
 
 
-int relocate_within_zone(critter& pc) {
+int relocate_within_zone(critter& pc, int& is_dead, int sanity, int do_msgs) {
+   if (sanity > 20) {
+      mudlog << "ERROR:  sanity check failed in relocate_within_zone."
+             << endl;
+      is_dead = FALSE;
+      return FALSE;
+   }
+
    int zn = ROOM.getZoneNum();
 
    int begin_rm = ZoneCollection::instance().elementAt(zn).getBeginRoomNum();
@@ -1191,21 +1201,22 @@ int relocate_within_zone(critter& pc) {
    int count = 0;
    int new_room_num;
 
-      while (TRUE) {   
-         new_room_num = begin_rm + d(1, (end_rm - begin_rm));
-	 if (count++ > 15) 
-	    new_room_num = pc.getCurRoomNum();
-         if (mob_can_enter(pc, room_list[new_room_num], FALSE)) {
-            int pcs_room = pc.getCurRoomNum();
-            ROOM.removeCritter(&pc);
-	    leave_room_effects(room_list[pcs_room], pc);
-            room_list[new_room_num].removeCritter(&pc);
-            look(1, &NULL_STRING, pc, TRUE);
-	    return TRUE;
-         }//if
-	 if (count++ > 15) 
-	    return FALSE; //should never get here I think
-      }//while
+   while (TRUE) {   
+      new_room_num = begin_rm + d(1, (end_rm - begin_rm));
+      if (count++ > 15) 
+         new_room_num = pc.getCurRoomNum();
+
+      if (mob_can_enter(pc, room_list[new_room_num], FALSE)) {
+         pc.doGoToRoom(new_room_num, NULL, NULL, is_dead, pc.getCurRoomNum(),
+                       sanity, do_msgs);
+         return TRUE;
+      }//if
+
+      if (count++ > 15) {
+         is_dead = FALSE;
+         return FALSE; //should never get here I think
+      }
+   }//while
 }//relocate_within_zone
 
 

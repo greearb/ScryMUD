@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.8 1999/06/14 06:05:44 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/06/14 06:05:44 $
+// $Id: spells2.cc,v 1.9 1999/07/05 22:32:08 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/05 22:32:08 $
 
 //
 //ScryMUD Server Code
@@ -393,7 +393,7 @@ void cast_bind_wound(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = BIND_WOUND_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Who do you wish to bandage??\n", pc);
@@ -479,7 +479,7 @@ void cast_shadows_blessing(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = SHADOWS_BLESSING_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Who do you wish to cover in shadows??\n", pc);
@@ -564,7 +564,7 @@ void cast_cure_blind(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = CURE_BLINDNESS_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to make see again??\n", pc);
@@ -647,7 +647,7 @@ void cast_remove_poison(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = REMOVE_POISON_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to put to sleep??\n", pc);
@@ -746,7 +746,7 @@ void cast_sleep(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = SLEEP_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to put to sleep??\n", pc);
@@ -824,7 +824,7 @@ void cast_strength(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = STRENGTH_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to strengthen??\n", pc);
@@ -955,7 +955,7 @@ void cast_remove_curse(int i_th, const String* victim, critter& pc) {
      return;
    }//if
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
      obj = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT, ROOM);
@@ -996,7 +996,7 @@ void cast_curse(int i_th, const String* victim, critter& pc) {
    int spell_num = CURSE_SKILL_NUM;
    object* obj = NULL;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
      obj = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT, ROOM);
@@ -1229,7 +1229,7 @@ void cast_blindness(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = BLINDNESS_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to blind??\n", pc);
@@ -1323,7 +1323,7 @@ void cast_weaken(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = WEAKEN_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to weaken??\n", pc);
@@ -1402,7 +1402,7 @@ void cast_fly(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = FLY_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to make fly??\n", pc);
@@ -1490,7 +1490,7 @@ void cast_haste(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = HASTE_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to hasten??\n", pc);
@@ -1592,7 +1592,7 @@ void cast_dispell_magic(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = DISPEL_MAGIC_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to free of their magic??\n", pc);
@@ -1671,7 +1671,7 @@ void cast_fireproof(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = FIREPROOF_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to make fireproof??\n", pc);
@@ -1751,7 +1751,7 @@ void cast_magic_shield(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = MAGIC_SHIELD_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to shield??\n", pc);
@@ -1834,7 +1834,7 @@ void cast_sanctuary(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = SANCTUARY_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Who??\n", pc);
@@ -1915,7 +1915,7 @@ void cast_prismatic_globe(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = PRISMATIC_GLOBE_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Who??\n", pc);
@@ -1999,7 +1999,7 @@ void cast_stone_skin(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = STONE_SKIN_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Who??\n", pc);
@@ -2086,7 +2086,7 @@ void cast_armor(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = ARMOR_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to armor??\n", pc);
@@ -2241,7 +2241,7 @@ void cast_divine_protection(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = DIVINE_PROTECTION_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Whom do you wish to protect??\n", pc);

@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.23 1999/06/25 04:02:55 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/25 04:02:55 $
+// $Id: critter.h,v 1.24 1999/07/05 22:32:07 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
 
 //
 //ScryMUD Server Code
@@ -1022,7 +1022,8 @@ public:
    int doEnterRoom(room* new_room);
    void doRemoveFromBattle();
    void doGoToRoom(int dest_room, const char* from_dir, door* by_door,
-                   int& is_dead, int cur_room);
+                   int& is_dead, int cur_room, int sanity,
+                   int do_msgs = TRUE);
    void doScriptJump(int abs_index);
    int insertNewScript(MobScript* script);
 

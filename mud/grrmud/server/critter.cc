@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.29 1999/06/25 04:02:54 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
+// $Id: critter.cc,v 1.30 1999/07/05 22:32:07 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
 
 //
 //ScryMUD Server Code
@@ -2714,7 +2714,7 @@ void critter::doRemoveFromBattle() {
 }//doRemoveFromBattle
 
 void critter::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
-                        int& is_dead, int cur_room) {
+                        int& is_dead, int cur_room, int sanity, int do_msgs) {
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In doGoToRoom, dest_room:  " << dest_room
              << "  cur_room:  " << cur_room
@@ -2734,8 +2734,8 @@ void critter::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
    // This can cause us to delete ourselves btw...not very good coding
    // but..maybe it will work!
    do_entered_room_procs(*this, by_door, from_dir, room_list[dest_room],
-                         is_dead);
-   if (!is_dead) {
+                         is_dead, sanity);
+   if (!is_dead && do_msgs) {
       look(1, &NULL_STRING, *this, FALSE); //don't ignore brief
    }
 }//doGoToRoom

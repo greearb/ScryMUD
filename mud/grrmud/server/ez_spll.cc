@@ -1,5 +1,5 @@
-// $Id: ez_spll.cc,v 1.10 1999/06/23 04:16:06 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
+// $Id: ez_spll.cc,v 1.11 1999/07/05 22:32:07 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
 
 //
 //ScryMUD Server Code
@@ -46,7 +46,7 @@ void cast_detect_alignment(int i_th, const String* victim,
    critter* vict = NULL;
    int spell_num = DETECT_ALIGNMENT_SKILL_NUM;
 
-   if (!(vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT))) {
+   if (!(vict = ROOM.haveCritNamed(i_th, victim, pc))) {
      show("You don't see that person.\n", pc);
      return;
    }//if
@@ -187,7 +187,7 @@ void cast_detect_invisibility(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = DETECT_INVISIBILITY_SKILL_NUM;
 
-   if (!(vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT))) {
+   if (!(vict = ROOM.haveCritNamed(i_th, victim, pc))) {
       show("You don't see that person.\n", pc);
       return;
    }//if
@@ -471,7 +471,7 @@ void cast_bless(int i_th, const String* victim, critter& pc) {
 
    mudlog.dbg("In cast_bless.\n");
 
-   if (!(vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT))) {
+   if (!(vict = ROOM.haveCritNamed(i_th, victim, pc))) {
       show("You don't see that person.\n", pc);
       return;
    }//if
@@ -1438,7 +1438,7 @@ void cast_invisibility(int i_th, const String* victim, critter& pc) {
      return;
    }//if
 
-   if (!(vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT))) {
+   if (!(vict = ROOM.haveCritNamed(i_th, victim, pc))) {
      object* obj = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
      if (!obj) {
        obj = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT,
@@ -1648,7 +1648,7 @@ void cast_cure_serious(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = CURE_SERIOUS_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Who do you wish to heal??\n", pc);
@@ -1728,7 +1728,7 @@ void cast_cure_critical(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = CURE_CRITICAL_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Who do you wish to cure??\n", pc);
@@ -1809,7 +1809,7 @@ void cast_heal(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = HEAL_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Who do you wish to heal??\n", pc);
@@ -1890,7 +1890,7 @@ void cast_restore(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = RESTORE_SKILL_NUM;
 
-   vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Who do you wish to restore??\n", pc);
@@ -1977,7 +1977,7 @@ void cast_entangle(int i_th, const String* victim, critter& pc) {
    if (victim->Strlen() == 0) 
       vict = Top(pc.IS_FIGHTING);
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Who do you wish to entangle??\n", pc);
@@ -2009,7 +2009,7 @@ void cast_web(int i_th, const String* victim, critter& pc) {
    if (victim->Strlen() == 0) 
       vict = Top(pc.IS_FIGHTING);
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Who do you wish to web??\n", pc);
@@ -2227,7 +2227,7 @@ void cast_faerie_fire(int i_th, const String* victim, critter& pc) {
    if (victim->Strlen() == 0) 
       vict = Top(pc.IS_FIGHTING);
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
       show("Who do you wish to cast faerie fire on??\n", pc);

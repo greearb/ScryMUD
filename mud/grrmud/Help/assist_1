@@ -5,7 +5,7 @@ their current foe.
 
 Syntax:  assist <<i_th> [critter]
 
-Example:  assist merlon  Start fighting Merlon's current advisary
+Example:  assist merlon  Start fighting Merlon's current adversary
 
 <color = blue>
 See Also:  abilities, hit

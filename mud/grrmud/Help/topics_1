@@ -15,23 +15,24 @@ eq               examine          exit             exits
 flee             follow           get              give             
 group            guard            help             hide             
 hold             human            hurl             idea             
-ironclad         junk             list             lock             
-lore             meditate         move             nogossip         
-northeast        northwest        offer            ogrue            
-order            page_break       passwd           pay              
-picklock         post             practice         prompt           
-put              quaf             quit             races            
-recite           regeneration     remove           reply            
-roll             save             say              scan             
-scribe           sell             shield           shoot            
-sit              skills           skin             sleep            
-socials          sombre           south            southeast        
-stand            suicide          tail             tell             
-throw            time             title            toggle           
-track            ungroup          unlock           up               
-value_add        value_list       value_rem        value_set        
-wear             west             where            who              
-wimpy            withdraw         wizlist          
+ironclad         junk             languages        list             
+look             lore             meditate         move             
+north            northeast        northwest        offer            
+open             order            page_break       passwd           
+pemote           picklock         post             practice         
+prone            put              quaf             quit             
+read             recite           regeneration     remove           
+rest             roll             save             say              
+score            scribe           script_cmds      sell             
+shoot            shout            sit              skills           
+sleep            sneak            socials          sombre           
+southeast        southwest        stand            suicide          
+tell             theme            throw            time             
+toggle           topics           track            ungroup          
+up               use              value_add        value_list       
+value_set        wake             wear             west             
+who              wield            wimpy            withdraw         
+
 
 <color=red>
 See Also:  commands, wizhelp

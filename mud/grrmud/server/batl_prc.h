@@ -1,5 +1,5 @@
-// $Id: batl_prc.h,v 1.4 1999/06/25 04:02:54 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
+// $Id: batl_prc.h,v 1.5 1999/07/05 22:32:06 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/07/05 22:32:06 $
 
 //
 //ScryMUD Server Code
@@ -44,9 +44,9 @@ critter* find_weakest(List<critter*>& lst);
 void do_battle_proc(critter& pc);
 
 void do_entered_room_procs(critter& pc, door* by_dr, const char* from_dir,
-                           room& to_rm, int& is_dead);
+                           room& to_rm, int& is_dead, int sanity);
 void do_entered_room_procs(object& obj, door* by_dr, const char* from_dir,
-                           room& to_rm);
+                           room& to_rm, int sanity);
 
 void path_from_a_to_b(int a, int b, List<int>& path); //a,b are room numbers
 void track_to_kill(critter& vict, critter& agg);

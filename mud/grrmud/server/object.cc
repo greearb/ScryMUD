@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.12 1999/06/16 06:43:27 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+// $Id: object.cc,v 1.13 1999/07/05 22:32:07 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
 
 //
 //ScryMUD Server Code
@@ -1057,11 +1057,16 @@ int object::getObjCountByNumber(int onum, int sanity) {
 
 
 int object::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
-                       int cur_room) {
+                       int cur_room, int sanity) {
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In object::doGoToRoom, dest_room:  " << dest_room
-             << "  cur_room:  " << cur_room
-             << "  by_door:  " << by_door << endl;
+             << "  cur_room:  " << cur_room << "  by_door:  " 
+             << by_door  << " sanity: " << sanity << endl;
+   }
+
+   if (sanity > 20) {
+      mudlog << "ERROR: busted sanity check, object::doGoToRoom" << endl;
+      return -1;
    }
 
    room_list[cur_room].removeObject(this);
@@ -1072,7 +1077,8 @@ int object::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
 
    // This can cause us to delete ourselves btw...not very good coding
    // but..maybe it will work!
-   do_entered_room_procs(*this, by_door, from_dir, room_list[dest_room]);
+   do_entered_room_procs(*this, by_door, from_dir, room_list[dest_room],
+                         sanity);
 
    return 0;
 }//doGoToRoom

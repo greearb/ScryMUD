@@ -1,58 +1,68 @@
-NOTE: I have compiled on Linux and BSD for the PC. Should work on any Unix-ish OS
-without much change, but NT and others I have no idea about... Installation
-directions are as follows: 
+NOTE: I have compiled on Linux and BSD for the PC.
+Should work on any Unix-ish OS without much change, but NT
+and others I have no idea about... Installation directions
+are as follows: 
 
-NOTE: You will have to un-tar the file in the grrmud/World
-directory if this is your first installation. 
+NOTE:  UN-TAR'ING A SNAPSHOT WILL OVER-WRITE A FEW WORLD
+FILES (FOR ZONE ZERO).  IF YOU ARE UPGRADING AN EXISTING
+SERVER, YOU PROBABLY WANT TO FOLLOW THESE DIRECTIONS IN
+SOME SAFE DIRECTORY, THEN: make scry_dist_core
+TO CREATE SOMETHING YOU CAN SAFELY UN-TAR OVER YOUR EXISTING
+SERVER W/OUT HURTING YOUR WORLD DATABASE.
 
-  
+OF COURSE, I HIGHLY RECOMMEND MAKING A BACKUP OF YOUR EXISTING
+SERVER FIRST!!!
 
 Make a MUD directory to hold stuff and copy the distribution there.
 
 mkdir mud
-cp scry*.tar.gz mud/
+cp ScryMUD.snapshotXXX.tar.gz mud/
 cd mud
 
-tar -xvf *.gz
-
-You will find two .gz files.
-
-There will be another file in grrmud/World, which you will want to gunzip and
-untar if this is your first install.
-
-gunzip and untar each of them.  For later installations, you may want to only
-install certain files (like maybe just the ones in scry_dist_coreX.X.X.tar.gz.
-  For your own sake, make backups if you are updating an already-installed ScryMUD
-distribution. 
+gunzip -c ScryMUD.snapshotXXX.tar.gz | tar -xvf -         or
+tar -xvzf *.gz
 
 If all this worked, there should be a License file in your current directory.
 Please read and abide by it.
 
 Now, lets compile it.
 
-Edit the top of the MakeInclude file, to define your make utility (make or gmake
-usually).   You may want to change the MUD_HOME variable, but it
-shouldn't be needed if you unzip'ed all this stuff in $HOME/mud
+Run the ./configure script:
 
+./configure
+
+It should build a MakeInclude file for
+you.  If that doesn't work for some reason, please let me know.  If
+you know these kinds of things, you can probably build a proper MakeInclude
+file by looking at the ./configure script and the MakeInclude.bh file.
+
+The ./configure script is not complete yet, so you may still have to edit
+things in the MakeInclude.bh file and/or the ./configure script.
 
 Compile it:
 cd grrmud/server
 make clean
 make
 
-If this is a re-install, you must do a make clean!
-
 Watch for errors, if you can't figure them out, email me the errors and I'll see
 if I can.  There will be a few warnings about un-used variables.  These can
 be ignored.  egcs complains about unsigned v/s signed comparisons.  It should
 work fine anyway.
 
-Now move the grrmud executable to ../gmud:
+If this is your first install, you may install it (in its current position)
+like this:
+
+cd ../..       # Get back to the base directory.
+make install
+
+The really important step that the above should do is to copy the executable
+to the right place.  If it fails for some reason, do something like this:
+
 mv grrmud ../gmud
 
 Start the MUD:
 
-cd ..
+cd grrmud
 ./startup&
 
 It starts on port 4000 by default, you can edit the grrmud.ini file to change that
@@ -67,6 +77,12 @@ Log onto the game:  telnet localhost 4000
 Log on as admin, with password admin.  You'll want to create other
 admins and change this guy's password I'm sure.
 
+To do that, read the help pages on:  make_builder and mset at least.
 
+
+
+
+See the FAQ for more information.  It should be near the website you
+got this from, currently:  scry.wanfear.com
 
 

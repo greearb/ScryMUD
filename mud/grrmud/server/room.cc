@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.22 1999/06/26 06:14:17 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
+// $Id: room.cc,v 1.23 1999/07/05 22:32:08 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/07/05 22:32:08 $
 
 //
 //ScryMUD Server Code
@@ -1252,7 +1252,7 @@ int room::doRclear(int new_rm_num) {
       if ((crit_ptr->isPc()) || crit_ptr->isSmob()) {
          //mudlog << "Was a SMOB or PC." << endl;
          int is_dead;
-         crit_ptr->doGoToRoom(new_rm_num, NULL, NULL, is_dead, getIdNum());
+         crit_ptr->doGoToRoom(new_rm_num, NULL, NULL, is_dead, getIdNum(), 1);
          if (!is_dead) {
             show("The void has swallowed your previous location!!\n", 
                  *crit_ptr);
@@ -1387,7 +1387,6 @@ void room::gainCritter(critter* crit) {
       crit = mob_to_smob(*crit, *this);
    }//if
    crit->setCurRoomNum(getRoomNum());
-
 }
 
 void room::loseObjectFromGame(object& which_un) {

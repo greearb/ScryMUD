@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.7 1999/06/26 06:14:16 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/26 06:14:16 $
+// $Id: batl_prc.cc,v 1.8 1999/07/05 22:32:06 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/05 22:32:06 $
 
 //
 //ScryMUD Server Code
@@ -54,7 +54,13 @@
 
 
 void do_entered_room_procs(critter& pc, door* dr, const char* from_dir,
-                           room& rm, int& is_dead) {
+                           room& rm, int& is_dead, int sanity) {
+
+   if (mudlog.ofLevel(TRC)) {
+      mudlog << __FUNCTION__ << " pc: " << pc.getName() << " room: "
+             << rm.getIdNum() << endl;
+   }
+
    String buf(100);
    Cell<stat_spell_cell*> cll;
    stat_spell_cell* ptr;
@@ -73,7 +79,9 @@ void do_entered_room_procs(critter& pc, door* dr, const char* from_dir,
             do_firewall_effects(*crit, is_dead);
          }
          else if (ptr->stat_spell == DISTORTION_WALL_SKILL_NUM) {
-            do_distortion_wall_effects(*crit, is_dead);
+            // Increment sanity here because this may re-curse through
+            // this method again. --BEN
+            do_distortion_wall_effects(*crit, is_dead, sanity + 1);
          }
       }//while
    }//if
@@ -99,10 +107,12 @@ void do_entered_room_procs(critter& pc, door* dr, const char* from_dir,
 
 
 void do_entered_room_procs(object& obj, door* dr, const char* from_dir,
-                           room& rm) {
-   // This just uses the variables to cut down on compiler warnings.
-   if (&obj || dr || from_dir) {
-      rm.checkLight();
+                           room& rm, int sanity) {
+   if (sanity < 20) {
+      // This just uses the variables to cut down on compiler warnings.
+      if (&obj || dr || from_dir) {
+         rm.checkLight();
+      }
    }
 }//do_entered_room_procs (objects)
 

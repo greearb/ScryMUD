@@ -1,5 +1,5 @@
-// $Id: dam_skll.cc,v 1.5 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: dam_skll.cc,v 1.6 1999/07/05 22:32:07 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
 
 //
 //ScryMUD Server Code
@@ -149,7 +149,7 @@ int do_hurl(critter& vict, critter& pc) {
 
          int is_dead;
          vict.doGoToRoom(abs(dptr->destination), from_dir, dptr, is_dead,
-                         vict.getCurRoomNum());
+                         vict.getCurRoomNum(), 1);
          
          if (is_dead) {
             return 0;

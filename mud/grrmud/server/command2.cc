@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.30 1999/06/28 05:35:27 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/06/28 05:35:27 $
+// $Id: command2.cc,v 1.31 1999/07/05 22:32:06 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 1999/07/05 22:32:06 $
 
 //
 //ScryMUD Server Code
@@ -1504,6 +1504,11 @@ int practice(const String* spell, int j_th, const String* master,
    int s_num;
    String buf(100);
    critter* crit_ptr;
+
+   if (spell->Strlen() == 0) {
+      return abilities(pc);
+   }//if
+
    if (ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
 
       if (master->Strlen() == 0) {
@@ -1513,10 +1518,7 @@ int practice(const String* spell, int j_th, const String* master,
          crit_ptr = ROOM.haveCritNamed(j_th, master, pc.SEE_BIT);
       }//else
       
-      if (spell->Strlen() == 0) {
-         return abilities(pc);
-      }//if
-      else if (pc.EQ[9] || pc.EQ[10]) {
+      if (pc.EQ[9] || pc.EQ[10]) {
          pc.show(CS_NO_PRAC_WIELDING);
       }//else
       else if (pc.PRACS < 1) {
@@ -2667,10 +2669,15 @@ int dstat(int i_th, const String* name, critter& pc) {
 int do_dstat(door_data& dr, critter& pc) {
    String buf2(100);
 
-   if (Top(dr.names)) {
-      show(*(Top(dr.names)), pc);
-      show("\n", pc);
-   }//if
+   Cell<String*> cll(dr.names);
+   String* ptr;
+   pc.show("Names (keywords): ");
+   while ((ptr = cll.next())) {
+      pc.show(*ptr);
+      pc.show(" ");
+   }
+   pc.show("\n");
+
    show(dr.long_desc, pc);
 
    show("\nFlags set:", pc);

@@ -372,8 +372,6 @@ go enter go ~
 is_dead = FALSE; return go(i, &(cooked_strs[1]), pc, is_dead);
 goto ~
 return _goto(i, &(cooked_strs[1]), pc);
-gecho *gecho ~
-NOP
 gossip *channels ~
 NOP
 gt *channels ~
@@ -673,8 +671,6 @@ races *races ~
 NOP
 regeneration *regeneration ~
 NOP
-recho gecho *recho ~
-NOP
 rm_omove *rm_omove ~
 NOP
 rm_omove_all *rm_omove_all ~
@@ -949,8 +945,6 @@ zgoto ~
 return zgoto(i, pc); 
 zunlock ~
 return zunlock(i, pc); 
-zecho gecho *zecho ~
-NOP
 
 
 # Help Only, these mess up the parser if they
@@ -958,6 +952,8 @@ NOP
 classes sage wizard ranger thief alchemist cleric bard *classes ~
 NOP
 script_cmds push pull *script_cmds ~
+NOP
+recho gecho zecho *gecho ~
 NOP
 
 

@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.12 1999/06/25 04:02:55 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/25 04:02:55 $
+// $Id: object.h,v 1.13 1999/07/05 22:32:07 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
 
 //
 //ScryMUD Server Code
@@ -234,7 +234,7 @@ public:
    int consumesKey();
 
    int doGoToRoom(int dest_room, const char* from_dir, door* by_door,
-                  int cur_room);
+                  int cur_room, int sanity);
 
    int getZoneNum() const;
    const String* getShortName() { return getName(); }

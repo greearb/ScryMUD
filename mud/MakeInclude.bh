@@ -1,18 +1,9 @@
-#  -*-Makefile-*-
+#  -*-Makefile-*-"
 
-# $Id: MakeInclude,v 1.24 1999/06/29 01:07:38 greear Exp $
-# $Revision: 1.24 $  $Author: greear $ $Date: 1999/06/29 01:07:38 $
-
+PROG_HOME=${MUD_HOME}
 
 #  A common place IN YOUR PATH where tools can be put
 TOOL_BIN_DIR=${HOME}/bin
-
-#  This should be the directory that you unzip the distribution
-#  in.
-MUD_HOME=${HOME}/dev/ScryMUD/mud
-PROG_HOME=${MUD_HOME}
-
-#MUD_HOME=${HOME}/mud_dev
 
 #  This is the version of the make utility you wish to use.
 #  On some systems (BSD?) you might want this to be gmake.
@@ -20,18 +11,7 @@ PROG_HOME=${MUD_HOME}
 MAKE=make
 
 
-###################################################
-#  Normally won't have to configure under here...
-###################################################
-
-
-CUR_DATE=`date '+%y.%m.%d'`
-
-#  For distribution purposes
-SCRY_VERSION=1.9.9
-HEGEMON_VERSION=1.9.9
-
-LDFLAGS =  -L$(MUD_HOME)/lib #linker flaggs
+# TODO:  Choose these flags in the ./configure script.
 
 # NOTE:  Use these variables if you are using EGCS and glibc 5
 CCFLAGS = -g -D_GNU_SOURCE -fguiding-decls\
@@ -55,7 +35,7 @@ LDLIBS =  -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
 #LDLIBS =  -lefence -lpthread -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
 
 
-# NOTE:  Uncomment these if you are using the older g++
+# NOTE:  Uncomment these if you are using the older g++ and/or libc5
 #CCFLAGS = -g -Wall -I$(MUD_HOME)/include #compiler flags-fguiding-decl
 #LDLIBS =  -lm -lstring2 -lbitfield #-lnsl # -lsocket
 
@@ -70,6 +50,21 @@ LDLIBS =  -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
 #  not in the core file, should it produce one.)
 # (NOTE:  I haven't tested these, but one person was very pleased with
 #         the results and suggested them.) --BEN
+
+
+
+###################################################
+#  Normally won't have to configure under here...
+###################################################
+
+
+CUR_DATE=`date '+%y.%m.%d'`
+
+#  For distribution purposes
+SCRY_VERSION=1.9.10
+HEGEMON_VERSION=1.9.10
+
+LDFLAGS =  -L$(MUD_HOME)/lib #linker flaggs
 
 #  Other compilers may work, but I haven't tested with them.
 #  I don't suppose it could hurt to try though!

@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.24 1999/06/30 01:57:28 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/06/30 01:57:28 $
+// $Id: command5.cc,v 1.25 1999/07/05 22:32:07 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
 
 //
 //ScryMUD Server Code
@@ -1014,7 +1014,8 @@ int do_transport(critter& targ, critter& pc, room& dest) {
    show(buf, pc);
    
    int is_dead;
-   targ.doGoToRoom(dest.getRoomNum(), NULL, NULL, is_dead, targ.getCurRoomNum());
+   targ.doGoToRoom(dest.getRoomNum(), NULL, NULL, is_dead,
+                   targ.getCurRoomNum(), 1);
    
    if (!is_dead) {
       look(1, &NULL_STRING, targ, TRUE);
