@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.41 2001/10/03 07:23:03 greear Exp $
-// $Revision: 1.41 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
+// $Id: command5.cc,v 1.42 2002/01/03 19:31:10 eroper Exp $
+// $Revision: 1.42 $  $Author: eroper $ $Date: 2002/01/03 19:31:10 $
 
 //
 //ScryMUD Server Code
@@ -132,6 +132,10 @@ const String* getColorName(const char* ansi_code) {
       return &ANSI_BCYAN_S;
    else if (strcmp(ansi_code, ANSI_BWHITE) == 0)
       return &ANSI_BWHITE_S;
+
+   //terminal default now
+   else if (strcmp(ansi_code, ANSI_NORMAL) == 0)
+      return &ANSI_NONE_S;
    
    // else, unknown
    else
@@ -149,6 +153,9 @@ int isValidColor(const char* color) {
            (strcasecmp(color, ANSI_CYAN_S) == 0) ||
            (strcasecmp(color, ANSI_WHITE_S) == 0) ||
 
+           // Special terminal defaults color string.
+           (strcasecmp(color, ANSI_NONE_S) == 0) ||
+
            (strcasecmp(color, ANSI_BBLACK_S) == 0) ||
            (strcasecmp(color, ANSI_BRED_S) == 0) ||
            (strcasecmp(color, ANSI_BGREEN_S) == 0) ||
@@ -161,6 +168,8 @@ int isValidColor(const char* color) {
 
 
 const char* colorToAnsiCode(const char* color_name) {
+   if (strcasecmp(color_name, ANSI_NONE_S) == 0)
+      return ANSI_NORMAL;
    if (strcasecmp(color_name, ANSI_BLACK_S) == 0)
       return ANSI_BLACK;
    if (strcasecmp(color_name, ANSI_RED_S) == 0)
@@ -226,6 +235,9 @@ See 'help color' for more information.\n";
          pc.show(buf);
          Sprintf(buf, "Battle: %P18 %S %P35 Background: %P53 %S\n",
                  getColorName(pc.pc->battle_str), getColorName(pc.pc->bk_str));
+         pc.show(buf);
+         Sprintf(buf, "Room Name: %P18 %S %P35 %P53\n",
+                 getColorName(pc.pc->room_str));
          pc.show(buf);
       }//if
       else if (strncasecmp("OFF", var, 3) == 0) {
@@ -312,6 +324,9 @@ See 'help color' for more information.\n";
          }
          else if (strncasecmp(var, "battle", ln) == 0) {
             pc.pc->battle_str = val;
+         }
+         else if (strncasecmp(var, "room name", ln) == 0) {
+            pc.pc->room_str = val;
          }
          else {
             pc.show(usage);

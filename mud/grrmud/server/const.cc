@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.30 2001/10/15 22:11:31 eroper Exp $
-// $Revision: 1.30 $  $Author: eroper $ $Date: 2001/10/15 22:11:31 $
+// $Id: const.cc,v 1.31 2002/01/03 19:31:11 eroper Exp $
+// $Revision: 1.31 $  $Author: eroper $ $Date: 2002/01/03 19:31:11 $
 
 //
 //ScryMUD Server Code
@@ -547,6 +547,8 @@ String SOMEWHERE("somewhere");
 String UNKNOWN_DESC("You have reached a vague place that does not really exist!");
 
 String NULL_STRING;
+
+const String ANSI_NONE_S("NONE");
 
 const String ANSI_BLACK_S("FG_BLACK");
 const String ANSI_RED_S("FG_RED");

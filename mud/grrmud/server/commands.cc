@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.41 2001/10/30 04:35:06 justin Exp $
-// $Revision: 1.41 $  $Author: justin $ $Date: 2001/10/30 04:35:06 $
+// $Id: commands.cc,v 1.42 2002/01/03 19:31:10 eroper Exp $
+// $Revision: 1.42 $  $Author: eroper $ $Date: 2002/01/03 19:31:10 $
 
 //
 //ScryMUD Server Code
@@ -689,13 +689,23 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
          else {
             pc.show("<RM_SHORT_DESC 0>");
          }
+      } else if (pc.isUsingColor()) {
+           show(*(pc.getRoomColor()), pc);
       }
 
+      
       show(rm.short_desc, pc);
-      if (pc.USING_CLIENT) 
+
+      
+
+      if (pc.USING_CLIENT) {
          show("</RM_SHORT_DESC>\n", pc);
-      else
+      } else if (pc.isUsingColor()) {
+         show(*(pc.getDefaultColor()), pc);
          show("\n", pc);
+      } else {
+         show("\n", pc);
+      }
       
       if (!pc.IS_BRIEF || ignore_brief) { //isn't brief
          if (pc.USING_CLIENT) 

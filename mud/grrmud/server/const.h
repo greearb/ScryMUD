@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.29 2001/10/30 04:41:31 justin Exp $
-// $Revision: 1.29 $  $Author: justin $ $Date: 2001/10/30 04:41:31 $
+// $Id: const.h,v 1.30 2002/01/03 19:31:11 eroper Exp $
+// $Revision: 1.30 $  $Author: eroper $ $Date: 2002/01/03 19:31:11 $
 
 //
 //ScryMUD Server Code
@@ -745,6 +745,7 @@ enum CritterTableFieldsIndex {
    CRITTBL_USER1_COLOR,
    CRITTBL_USER2_COLOR,
    CRITTBL_USER3_COLOR,
+   CRITTBL_ROOM_NAME_COLOR,
    CRITTBL_GUARDING_DIRECTION,
    CRITTBL_STORE_MANAGER,
    CRITTBL_WRONG_ALIGN_MSG,
@@ -1258,6 +1259,7 @@ int
 
 #endif
 // End of penn-mush ansi color stuff...
+extern const String ANSI_NONE_S;
 
 extern const String ANSI_BLACK_S;
 extern const String ANSI_RED_S;

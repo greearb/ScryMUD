@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.65 2001/10/30 04:41:31 justin Exp $
-// $Revision: 1.65 $  $Author: justin $ $Date: 2001/10/30 04:41:31 $
+// $Id: critter.cc,v 1.66 2002/01/03 19:31:11 eroper Exp $
+// $Revision: 1.66 $  $Author: eroper $ $Date: 2002/01/03 19:31:11 $
 
 //
 //ScryMUD Server Code
@@ -1411,6 +1411,7 @@ void pc_data::Clear() {
    user1_str = ANSI_BLACK;
    user2_str = ANSI_BLACK;
    user3_str = ANSI_BLACK;
+   room_str = ANSI_BLACK;
 
    preferred_language = English;
    
@@ -1483,6 +1484,8 @@ pc_data& pc_data::operator=(const pc_data& source) {
    user1_str = source.user1_str;
    user2_str = source.user2_str;
    user3_str = source.user3_str;
+   room_str = source.room_str;
+
 
    preferred_language = source.preferred_language;
 
@@ -1559,6 +1562,7 @@ void pc_data::Write(ofstream& ofile) {
       ofile << user1_str << " User1 color" << endl;
       ofile << user2_str << " User2 Color" << endl;
       ofile << user3_str << " User3 color" << endl;
+      ofile << room_str << " Room Color" << endl;
    }//if
 
    if (pc_data_flags.get(27)) {
@@ -1674,6 +1678,9 @@ void pc_data::Read(ifstream& ofile) {
       ofile.getline(tmp, 80);
       
       ofile >> user3_str;
+      ofile.getline(tmp, 80);
+
+      ofile >> room_str;
       ofile.getline(tmp, 80);
    }//if
 
@@ -2587,6 +2594,7 @@ void critter::dbRead(int mob_num, int pc_num, short read_all) {
             pc->user1_str = row[CRITTBL_USER1_COLOR];
             pc->user2_str = row[CRITTBL_USER2_COLOR];
             pc->user3_str = row[CRITTBL_USER3_COLOR];
+            pc->room_str = row[CRITTBL_ROOM_NAME_COLOR];
          } // if
 
          if (pc->pc_data_flags.get(PCFLAG_HAS_LANGUAGE_CHOICE))
@@ -4640,6 +4648,13 @@ String* critter::getBackGroundColor() {
 String* critter::getBattleColor() {
    if (pc) {
       return &(pc->battle_str);
+   }
+   return &NULL_STRING;
+}
+
+String* critter::getRoomColor() {
+   if (pc) {
+      return &(pc->room_str);
    }
    return &NULL_STRING;
 }

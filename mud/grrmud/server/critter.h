@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.54 2001/06/10 20:20:57 greear Exp $
-// $Revision: 1.54 $  $Author: greear $ $Date: 2001/06/10 20:20:57 $
+// $Id: critter.h,v 1.55 2002/01/03 19:31:11 eroper Exp $
+// $Revision: 1.55 $  $Author: eroper $ $Date: 2002/01/03 19:31:11 $
 
 //
 //ScryMUD Server Code
@@ -611,6 +611,7 @@ public:
    String user1_str;
    String user2_str;
    String user3_str;
+   String room_str;
 
    LanguageE preferred_language; //ie English, spanish...
 
@@ -975,6 +976,7 @@ public:
    String* getDefaultColor(); //for foreground
    String* getBackGroundColor();
    String* getBattleColor();
+   String* getRoomColor();
 
    int isNamed(const String& str) const ;
    int isGagged();
