@@ -1,5 +1,5 @@
-// $Id: wep_skll.cc,v 1.10 2002/08/30 06:22:27 eroper Exp $
-// $Revision: 1.10 $  $Author: eroper $ $Date: 2002/08/30 06:22:27 $
+// $Id: wep_skll.cc,v 1.11 2002/09/01 19:51:29 eroper Exp $
+// $Revision: 1.11 $  $Author: eroper $ $Date: 2002/09/01 19:51:29 $
 
 //
 //ScryMUD Server Code
@@ -190,7 +190,7 @@ int backstab(int i_th, const String* victim, critter& pc) {
          return -1;
       }//if
 
-      if( (!(pc.isHiding())) || (!(pc.isInvis())) ) {
+      if ( ! ( (pc.isHiding()) || (pc.isInvis()) ) ) {
          pc.show("You must be hiding to backstab.\n") ;
          return -1;
       }
