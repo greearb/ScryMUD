@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.26 1999/07/18 20:12:03 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/07/18 20:12:03 $
+// $Id: grrmud.cc,v 1.27 1999/07/18 21:37:48 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/07/18 21:37:48 $
 
 //
 //ScryMUD Server Code
@@ -831,15 +831,6 @@ void game_loop(int s)  {
 	   do_pulsed_spec_procs(First_Room, Last_Room);
 	 if ((pulse % 379) == 0) {
 	    do_tick(); //takes care of zones too
-
-            object* obj_ptr;
-            while (!obj_to_be_disolved_list.isEmpty()) {
-               obj_ptr = obj_to_be_disolved_list.popFront();
-               if (mudlog.ofLevel(DBG)) {
-                  mudlog << "About to disolve object: " << obj_ptr << endl;
-               }
-               do_disolve_object(*obj_ptr);
-            }//while
          }
          
          if (((pulse + 1) % 1000) == 0) {

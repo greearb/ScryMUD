@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.23 1999/07/18 21:16:18 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/07/18 21:16:18 $
+// $Id: misc.cc,v 1.24 1999/07/18 21:37:48 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/18 21:37:48 $
 
 //
 //ScryMUD Server Code
@@ -306,10 +306,10 @@ void do_tick() {
 
 		   /* do all decrementing */
    decrease_timed_affecting_doors(); //takes care of affected_dors list
-   decrease_timed_affecting_objects(); //takes care of affected_objects list
    decrease_timed_affecting_lds();  //takes care of alllink deads
    decrease_timed_affecting_pcs();  //takes care of all pc's
    decrease_timed_affecting_smobs(); //takes care of affected_mobs list
+   decrease_timed_affecting_objects(); //takes care of affected_objects list
    decrease_timed_affecting_rooms(); //takes care of affected_rooms
 
 		   /* do all incrementing */
@@ -1114,6 +1114,14 @@ void decrease_timed_affecting_objects() {
          mudlog << "At end of while loop." << endl;
       }
 
+   }//while
+
+   while (!obj_to_be_disolved_list.isEmpty()) {
+      obj_ptr = obj_to_be_disolved_list.popFront();
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "About to disolve object: " << obj_ptr << endl;
+      }
+      do_disolve_object(*obj_ptr);
    }//while
 
    if (mudlog.ofLevel(DBG)) {
