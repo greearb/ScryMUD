@@ -2520,13 +2520,7 @@ void critter::Write(ofstream& ofile) {
    affected_by.head(ss_cell);
    while ((ss_ptr = ss_cell.next())) {
       ofile << ss_ptr->stat_spell << " " << ss_ptr->bonus_duration << " ";
-
-      /* This is only true for PC's now or we bork the hell out of the world
-       * database --Khaav
-       */
-      if ( isPc() ) {
       ofile << ss_ptr->bonus_value << " ";
-      }
 
       if ((++num_written % 20) == 0)
          ofile << endl;
@@ -3564,11 +3558,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
       ss_ptr = new stat_spell_cell;
       ss_ptr->stat_spell = i;
       ofile >> ss_ptr->bonus_duration;
-
-      /* again, no borking the world files on read --Khaav */
-      if ( isPc() ) {
-         ofile >> ss_ptr->bonus_value;
-      }
+      ofile >> ss_ptr->bonus_value;
 
       Put(ss_ptr, affected_by);
       ofile >> i;
