@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.36 2002/01/12 05:07:17 justin Exp $
-// $Revision: 1.36 $  $Author: justin $ $Date: 2002/01/12 05:07:17 $
+// $Id: battle.cc,v 1.37 2002/01/15 05:02:57 eroper Exp $
+// $Revision: 1.37 $  $Author: eroper $ $Date: 2002/01/15 05:02:57 $
 
 //
 //ScryMUD Server Code
@@ -760,13 +760,19 @@ void agg_kills_vict(critter* agg, critter& vict, int& show_vict_tags,
    }//if
    
    float val = ((float)(vict.ALIGN) / 10.0);
-   // Adjust so that the extremes are harder to reach.
-   if ((vict.ALIGN < 0 && agg->ALIGN > 0) ||
-       (vict.ALIGN > 0 && agg->ALIGN < 0)) {
-      val *= 1.0/pow(10, fabs(agg->ALIGN/1000.0));
-   }
 
    if (agg) {
+      
+      // Adjust so that the extremes are harder to reach.
+      //
+      // This causes lovely crashes when critters auto-expire i.e. minions of
+      // hell and golems and therefore must be protected like so inside the if
+      // (agg) loop... we always have a vict though.
+      if ((vict.ALIGN < 0 && agg->ALIGN > 0) ||
+            (vict.ALIGN > 0 && agg->ALIGN < 0)) {
+         val *= 1.0/pow(10, fabs(agg->ALIGN/1000.0));
+      }
+
       agg->ALIGN -= (int)(val);
 
       if (agg->ALIGN < -1000)
