@@ -1189,6 +1189,9 @@ int remort(int i_th, const String* v, const String* new_race,
       vict->show("+3 (TOTAL) stat bonuses.  They can be added to:  STRength,\n");
       vict->show("INTeligence, DEXterity, or CHArisma.\n");
 
+      //increase players remort count
+      vict->pc->remort_count++;
+
    }//if an immort of high level
    else {
       show("Eh??\n", pc);

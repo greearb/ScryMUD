@@ -1376,7 +1376,7 @@ void pc_data::Clear() {
    mode = MODE_NORMAL;
    descriptor = age = index = hunger = thirst = drugged = violence_timer = 0;
    birth_year = birth_day = rent_day = rent_year = pk_count = 
-      died_count = quest_points = idle_ticks = 0;
+      died_count = quest_points = idle_ticks = remort_count = 0;
    link_condition = CON_LOGGING_IN;
 
    if (imm_data) {
@@ -1467,6 +1467,7 @@ pc_data& pc_data::operator=(const pc_data& source) {
    drugged = source.drugged;
    pk_count = source.pk_count;
    died_count = source.died_count;
+   remort_count = source.remort_count;
    quest_points = source.quest_points;
    idle_ticks = source.idle_ticks;
    prompt = source.prompt;
@@ -1518,7 +1519,7 @@ void pc_data::Write(ofstream& ofile) {
    
    ofile << age << " " << hunger << " " << thirst << " " << drugged
          << " " << pk_count << " " << died_count << " " << quest_points
-         << " age hgr thr drg pk died qp\n";
+         << " " << remort_count << " age hgr thr drg pk died qp remort_cnt\n";
    
    ofile << prompt << endl;
 
@@ -1618,6 +1619,9 @@ void pc_data::Read(critter* parent, ifstream& ofile) {
    
    ofile >> age >> hunger >> thirst >> drugged >> pk_count >> died_count
          >> quest_points;
+   if ( format_version > 0 ) {
+      ofile >> remort_count;
+   }
    ofile.getline(tmp, 80);
    
    if ( format_version == 0 ) {

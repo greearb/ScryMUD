@@ -108,6 +108,8 @@ int do_score_long(critter& of_pc, critter& pc) {
    Sprintf(buf, cstr(CS_SLAIN_DIED, pc),
            of_pc.PK_COUNT, of_pc.DIED_COUNT);
    show(buf, pc);
+   Sprintf(buf, "Your remort count is: %d\n", of_pc.pc->remort_count);
+   show(buf, pc);
    //Sprintf(buf, cstr(CS_QP, pc), of_pc.QUEST_POINTS);
    //show(buf, pc);
 

@@ -597,6 +597,7 @@ public:
    String poofout;
    short pk_count;
    short died_count;
+   short remort_count;
    short quest_points;
    short idle_ticks;
 
