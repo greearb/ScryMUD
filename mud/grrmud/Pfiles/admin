@@ -12,14 +12,14 @@ problems for you.
 0 17 17 16 12 17 16 0 0 65 1 0 2 3 1 1000 1000 108 -82 
 40 0 0 5 1000 1000 108 0 100 100 115 106 105 87 0 0 2 3 100 100 
 100 0 0 0 	shrt_cur_stats
-1056 2047 1 	cur_stats
+1024 2047 86 	cur_stats
 -1	eq: num, posn
 -1	affected_by
 400 295 -1	inv
 bgio24h/ZwWLw	passwd
 26 25 19 16 14 11 7 6 5 2 -1  -:| bitfield |:-
-71 15 15 71 915590736 100		bday, byr, ryr, rday, llt, tto
-18 9379 9379 -2 0 0 0 age hgr thr drg pk died qp
+71 15 15 71 916629325 100		bday, byr, ryr, rday, llt, tto
+18 9353 9353 -2 0 0 0 age hgr thr drg pk died qp
 118 25 134 25 -1	ss_known
 %N<%hH %mM %vV >
 10	Imm level

@@ -686,6 +686,8 @@ public:
    int isCloaked() { return (pc && PC_FLAGS.get(3)); }
    int isInProcNow() { return (mob && mob->isInProcNow()); }
 
+   int haveObjNumbered(int count, int obj_num);
+
    /** If return is > 0, self is more powerful, if less than 0,
     * b is more powerful...  The larger/smaller the value, the more
     * extreme the difference.
@@ -714,6 +716,8 @@ public:
 
    const String* getName() const { return getName(~0); }
    const String* getName(int see_bit) const ;
+   const String* getLongName() const { return getName(); }
+   const String* getLongName(int see_bit) const { return getName(see_bit); }
    const String* getShortName() const { return getShortName(~0); }
    const String* getShortName(int see_bit) const ;
    void doBecomeNonPet(); //misc2.cc

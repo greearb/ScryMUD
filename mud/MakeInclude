@@ -7,6 +7,8 @@ TOOL_BIN_DIR=${HOME}/bin
 #  This should be the directory that you unzip the distribution
 #  in.
 MUD_HOME=${HOME}/dev/ScryMUD/mud
+PROG_HOME=${MUD_HOME}
+
 #MUD_HOME=${HOME}/mud_dev
 
 #  This is the version of the make utility you wish to use.

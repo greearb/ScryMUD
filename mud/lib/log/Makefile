@@ -13,9 +13,12 @@
 #-----------------------
 
 #$(ARCHIVE):     $(LIBOBJS)
+
+include ../../MakeInclude
+
 all: test1
 	@echo " "
-	cp LogStream.h ../../include
+	cp LogStream.h ${PROG_HOME}/include
 
 test1:
 	g++ -g -o test1 test1.cc
@@ -24,4 +27,4 @@ test1:
 clean:
 	rm -f test1
 	rm -f *~
-	rm -f ../../include/LogStream.h
+	rm -f ${PROG_HOME}/include/LogStream.h

@@ -1136,8 +1136,11 @@ critter* find_next_spell_mob(List<critter*>& lst) {
 }//find_next_spell_mob
 
 
+
+
 object* have_obj_numbered(const List<object*>& lst, const int i_th,
-        const int obj_num, const int see_bit, const room& rm) {
+                          const int obj_num, const int see_bit,
+                          const room& rm) {
    Cell<object*> cll(lst);
    object* ptr;
    int count = 0;

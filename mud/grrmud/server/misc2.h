@@ -79,7 +79,8 @@ short zone_is_locked(int znum);
 
 
 object* have_obj_numbered(const List<object*>& lst, const int i_th,
-        const int obj_num, const int see_bit, const room& rm);
+                          const int obj_num, const int see_bit,
+                          const room& rm);
 
 say_proc_cell* have_topic_named(List<say_proc_cell*> lst, const String& msg);
 

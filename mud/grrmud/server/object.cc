@@ -964,3 +964,27 @@ void object::makeComponent(int targ, int comp1, int comp2, int comp3,
              << endl;
    }
 }//makeComponent
+
+int object::getObjCountByNumber(int onum, int sanity) {
+   if (!ob->inv.isEmpty()) {
+      Cell<object*> cll(ob->inv);
+      object* ptr;
+      int count = 0;
+
+      if (sanity > 20) {
+         return 0;
+      }
+
+      while ((ptr = cll.next())) {
+         if (ptr->OBJ_NUM == onum) {
+            count++;
+         }//if detect
+         count += ptr->getObjCountByNumber(onum, sanity + 1);
+      }//while
+
+      return count;
+   }//if
+   else {
+      return 0;
+   }
+}//getObjectCountByNumber

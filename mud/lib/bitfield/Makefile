@@ -1,6 +1,6 @@
 include ../../MakeInclude
 
-ARCHIVE      = $(MUD_HOME)/lib/libbitfield.a
+ARCHIVE      = $(PROG_HOME)/lib/libbitfield.a
 
 # ADD YOUR .o FILE to those listed here and
 # then add a target/dependency for it at the
@@ -17,18 +17,18 @@ LIBOBJS      = bitfield.o
 #  directly in the lib directory
 #-----------------------
 
-all: ${ARCHIVE} ../../include/bitfield.h
+all: ${ARCHIVE} ${PROG_HOME}/include/bitfield.h
 
 ${ARCHIVE}:     $(LIBOBJS)
 	@echo " "
 	@echo "Making Archive Library $@ ..."
 	rm -f $@
 	$(AR) $(ARFLAGS) $@ $^ 
-	cp bitfield.h ../../include
+	cp bitfield.h ${PROG_HOME}/include
 	@echo "done"        #public_include.
 
-../../include/bitfield.h:
-	cp bitfield.h ../../include/bitfield.h
+${PROG_HOME}/include/bitfield.h:
+	cp bitfield.h ${PROG_HOME}/include/bitfield.h
 
 bitfield.o:   bitfield.cc bitfield.h
 	@echo " "
@@ -39,4 +39,4 @@ clean:
 	rm -f *.o
 	rm -f *~
 	rm -f ${ARCHIVE}
-	rm -f ../../include/bitfield.h
+	rm -f ${PROG_HOME}/include/bitfield.h

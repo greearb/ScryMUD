@@ -27,6 +27,7 @@ ch_rname
 ch_zname
 classes
 clear_keyword
+create_constrct
 delete_door
 dlist
 door_to

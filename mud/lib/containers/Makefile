@@ -1,4 +1,4 @@
-
+include ../../MakeInclude
 
 INC_FILES = \
 	KVPair.h \
@@ -13,19 +13,19 @@ INC_FILES = \
 
 
 all: ${INC_FILES}
-	cp -f ${INC_FILES} ../../include/
+	cp -f ${INC_FILES} ${PROG_HOME}/include/
 
 clean:
 	rm -f *.o
-	rm -f ../../include/PtrArray.h
-	rm -f ../../include/PtrArray.cc
-	rm -f ../../include/ProtectedList.h
-	rm -f ../../include/list2.h
-	rm -f ../../include/rb_tree.h
-	rm -f ../../include/rb_tree.cc
-	rm -f ../../include/tree2.h
-	rm -f ../../include/KVPair.h
+	rm -f ${PROG_HOME}/include/PtrArray.h
+	rm -f ${PROG_HOME}/include/PtrArray.cc
+	rm -f ${PROG_HOME}/include/ProtectedList.h
+	rm -f ${PROG_HOME}/include/list2.h
+	rm -f ${PROG_HOME}/include/rb_tree.h
+	rm -f ${PROG_HOME}/include/rb_tree.cc
+	rm -f ${PROG_HOME}/include/tree2.h
+	rm -f ${PROG_HOME}/include/KVPair.h
 
-purge:
+purge: clean
 	rm -f *~
 	rm -f *.flc

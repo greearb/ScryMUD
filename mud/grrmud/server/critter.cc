@@ -2173,7 +2173,7 @@ void critter::Read(ifstream& ofile, short read_all) {
       ofile >> z;
       if (!check_l_range(z, 1, MAX_EQ, mob_list[0], FALSE)) {
          if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  z out of range, crit.Read():  " << z <<
+            mudlog << "ERROR:  z out of range, crit.Read():  " << z
                    << "short desc:  " << short_desc << endl;
          }
          ofile >> i;
@@ -2302,9 +2302,44 @@ void critter::notifyHasBeenHurled() {
    }
 }
 
-int canBeHurled() {
+int critter::canBeHurled() {
    return !(CRIT_FLAGS.get(25));
 }
+
+int critter::haveObjNumbered(int cnt, int obj_num) {
+   Cell<object*> cll(inv);
+   object* ptr;
+   int count = 0;
+
+   if (cnt == 0)
+      return FALSE;
+
+   while ((ptr = cll.next())) {
+      count += ptr->getObjCountByNumber(obj_num, 0);
+      if (ptr->OBJ_NUM == obj_num) {
+         count++;
+      }//if obj nums agree
+
+      if (count >= cnt) {
+         return TRUE;
+      }//if
+   }//while
+
+   for (int i = 0; i<MAX_EQ; i++) {
+      if ((ptr = eq[i])) {
+         count += ptr->getObjCountByNumber(obj_num, 0);
+         if (ptr->OBJ_NUM == obj_num) {
+            count++;
+         }//if obj nums agree
+         
+         if (count >= cnt) {
+            return TRUE;
+         }//if
+      }//if
+   }//for
+
+   return FALSE;
+}//haveObjectNumbered
 
 
 void critter::setIdNum(int i) {

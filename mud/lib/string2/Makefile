@@ -1,6 +1,6 @@
 include ../../MakeInclude
 
-ARCHIVE      = $(MUD_HOME)/lib/libstring2.a
+ARCHIVE      = $(PROG_HOME)/lib/libstring2.a
 
 # ADD YOUR .o FILE to those listed here and
 # then add a target/dependency for it at the
@@ -14,19 +14,19 @@ LIBOBJS      = string2.o
 #  directly in the lib directory
 #-----------------------
 
-all: ${ARCHIVE} ../../include/string2.h
+all: ${ARCHIVE} ${PROG_HOME}/include/string2.h
 
 ${ARCHIVE}:     $(LIBOBJS)
 	@echo " "
 	@echo "Making Archive Library $@ ..."
 	rm -f $@
 	$(AR) $(ARFLAGS) $@ $^ 
-	cp string2.h ../../include
+	cp string2.h ${PROG_HOME}/include
 	@echo "done"        #public_include.
 
 
-../../include/string2.h:
-	cp string2.h ../../include/string2.h
+${PROG_HOME}/include/string2.h:
+	cp string2.h ${PROG_HOME}/include/string2.h
 
 string2.o:   string2.cc string2.h
 	@echo " "
@@ -34,7 +34,7 @@ string2.o:   string2.cc string2.h
 	$(CC) $(CCFLAGS) -c $<
 
 clean:
-	rm -f ../../include/string2.h
+	rm -f ${PROG_HOME}/include/string2.h
 	rm -f *.o
 	rm -f $(ARCHIVE)
 	rm -f *~

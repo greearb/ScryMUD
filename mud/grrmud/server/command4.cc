@@ -1145,6 +1145,8 @@ void flip_door(int i_th, const String* name, critter& pc) {
 
 
 int door_to(int room_num, int dist, const String* direction, critter& pc) {
+   String buf(100);
+
    if (!pc.pc)
       return FALSE;
 
@@ -1176,7 +1178,9 @@ int door_to(int room_num, int dist, const String* direction, critter& pc) {
    }//if
 
    if (room_num <= 1) {
-      show("You cannot build a door to that room ( room# <= 1).\n", pc);
+      Sprintf(buf, "You cannot build a door to that room ( room# <= 1): %i\n",
+              room_num);
+      pc.show(buf);
       return FALSE;
    }//if
 

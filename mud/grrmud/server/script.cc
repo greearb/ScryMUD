@@ -234,15 +234,15 @@ int does_own(critter& pc, int obj1, int obj2, int obj3, int obj4,
       obj6 = 0;
    }
 
-   if ((obj1 <= 1) || (have_obj_numbered(pc.inv, count1, obj1, ~0, ROOM))) {
-      if ((obj2 <= 1) || (have_obj_numbered(pc.inv, count2, obj2, ~0, ROOM))) {
-         if ((obj3 <= 1) || (have_obj_numbered(pc.inv, count3, obj3, ~0, ROOM))) {
+   if ((obj1 <= 1) || (pc.haveObjNumbered(count1, obj1))) {
+      if ((obj2 <= 1) || (pc.haveObjNumbered(count2, obj2))) {
+         if ((obj3 <= 1) || (pc.haveObjNumbered(count3, obj3))) {
             if ((obj4 <= 1) || 
-                (have_obj_numbered(pc.inv, count4, obj4, ~0, ROOM))) {
+                (pc.haveObjNumbered(count4, obj4))) {
                if ((obj5 <= 1) ||
-                   (have_obj_numbered(pc.inv, count5, obj5, ~0, ROOM))) {
+                   (pc.haveObjNumbered(count5, obj5))) {
                   if ((obj6 <= 1) ||
-                      (have_obj_numbered(pc.inv, count6, obj6, ~0, ROOM))) {
+                      (pc.haveObjNumbered(count6, obj6))) {
                      if (mudlog.ofLevel(DBG)) {
                         mudlog << "Returning TRUE" << endl;
                      }

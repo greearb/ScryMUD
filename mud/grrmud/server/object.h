@@ -285,6 +285,8 @@ public:
    int incrementCurInGame();
    int getMaxInGame();
    static int getInstanceCount() { return _cnt; }
+
+   int getObjCountByNumber(int onum, int sanity);
 }; // class object
 
 

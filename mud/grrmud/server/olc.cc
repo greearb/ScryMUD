@@ -87,6 +87,7 @@ void quit_olc(critter& pc) {
 
 void do_olc(critter& pc) {
    String string(100);
+   String buf(100);
    char* quitter = "quit_olc"; //will save a teensy bit of memory i think :)
    int i, j, z;
    String* tmp_str;
@@ -95,6 +96,12 @@ void do_olc(critter& pc) {
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In do_olc, O_COUNT is:  " << O_COUNT << ".\n";
+
+      if (OLC_ROOM) {
+         Sprintf(buf, "\nDEBUGGING:  OLC ROOM's id number: %i\n",
+                 OLC_ROOM->getIdNum());
+         pc.show(buf);
+      }
    }
 
    if (!pc.doesOwnRoom(ROOM)) {
@@ -1812,6 +1819,10 @@ void do_olc(critter& pc) {
 
             OLC_ROOM = &(room_list[i]); 
             OLC_ROOM->setRoomNum(i);
+
+            Sprintf(buf, "Using room number %i\n", OLC_ROOM->getIdNum());
+            pc.show(buf);
+
             O_COUNT = 39;
 	 }//if its a number
          else if (string == quitter) {

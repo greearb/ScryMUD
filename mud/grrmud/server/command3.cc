@@ -1748,9 +1748,9 @@ void do_tell(critter& pc, const char* message, critter& targ,
    String tag;
    String untag;
 
-   if (targ.pc && targ.USING_CLIENT) {
-      String tag = "<TELL>";
-      String untag = "</TELL>";
+   if (targ.isUsingClient()) {
+      tag = "<TELL>";
+      untag = "</TELL>";
    }
    else if (targ.isUsingColor()) {
       tag = *(targ.getTellColor());
@@ -1768,7 +1768,7 @@ void do_tell(critter& pc, const char* message, critter& targ,
 
    if (show_teller) {
 
-      if (pc.pc && pc.USING_CLIENT) {
+      if (pc.isUsingClient()) {
          tag = "<TELL>";
          untag = "</TELL>";
       }
@@ -1781,8 +1781,7 @@ void do_tell(critter& pc, const char* message, critter& targ,
          untag = "";
       }
 
-      Sprintf(buf,
-              "%SYou tell %S, '%S'\n%S",
+      Sprintf(buf, "%SYou tell %S, '%S'\n%S",
               &tag, name_of_crit(targ, pc.SEE_BIT), &msg, &untag);
       show(buf, pc);
    }//if

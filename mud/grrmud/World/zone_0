@@ -16,13 +16,13 @@ south.
 145 31 32 -1	inv
 1 10 22 0
 -1	door Affected_Bye
+1 1 95 0
+-1	door Affected_Bye
 1 3 22 0
 -1	door Affected_Bye
 1 4 22 0
 -1	door Affected_Bye
 1 2 2 0
--1	door Affected_Bye
-1 1 95 0
 -1	door Affected_Bye
 -1	door#, dest
 2 -1	mobs
@@ -335,7 +335,7 @@ Daisy Lane leads off to the east towards some shops.
 1 2 25 0
 -1	door Affected_Bye
 -1	door#, dest
-4 204 3 -1	mobs
+3 204 4 -1	mobs
 End of Room
 16		Room Number
 SW_Plaza ~	names
@@ -439,7 +439,7 @@ stairs to the temple.
 1 2 22 0
 -1	door Affected_Bye
 -1	door#, dest
-204 3 -1	mobs
+3 204 -1	mobs
 End of Room
 20		Room Number
 NE_Plaza ~	names
@@ -585,7 +585,7 @@ lined with all sorts of shops and filled with people going this way and that.
 1 2 36 0
 -1	door Affected_Bye
 -1	door#, dest
-204 4 3 3 -1	mobs
+3 3 4 204 -1	mobs
 End of Room
 26		Room Number
 SW_Violet_Drive ~	names
@@ -723,7 +723,7 @@ Hmmm, maybe you should visit here more often!
 1 4 43 0
 -1	door Affected_Bye
 -1	door#, dest
-264 265 -1	mobs
+265 264 -1	mobs
 End of Room
 33		Room Number
 NW_Rose_Lane ~	names
@@ -851,11 +851,9 @@ you the destinations available, and a small sign posted by the ticket machine.
 1024 1 38 38 	cur_stats
 -1	affected_by
 -1	inv
-1 12 39 0
--1	door Affected_Bye
 1 4 40 0
 -1	door Affected_Bye
-1 9 37 0
+1 12 39 0
 -1	door Affected_Bye
 -1	door#, dest
 -1	mobs
@@ -993,7 +991,7 @@ Gimbal, the local lawyer, has his office to the south.
 1 2 29 0
 -1	door Affected_Bye
 -1	door#, dest
-204 3 -1	mobs
+3 204 -1	mobs
 End of Room
 44		Room Number
 north_gate ~	names
@@ -1015,7 +1013,7 @@ because it is the main trade route to the northeast.
 1 4 23 0
 -1	door Affected_Bye
 -1	door#, dest
-204 204 204 216 204 -1	mobs
+204 216 204 204 204 -1	mobs
 End of Room
 45		Room Number
 traderoad ~	names
@@ -1411,7 +1409,7 @@ a door to the east leads out into the courtyard.
 1 9 63 0
 -1	door Affected_Bye
 -1	door#, dest
-79 81 -1	mobs
+81 79 -1	mobs
 End of Room
 63		Room Number
 NW_Violet_Drive ~	names
@@ -1610,7 +1608,7 @@ violets on their open window, just makes you feel good about life!
 1 6 26 0
 -1	door Affected_Bye
 -1	door#, dest
-3 160 -1	mobs
+160 3 -1	mobs
 End of Room
 73		Room Number
 mage_academy ~	names
@@ -1697,7 +1695,7 @@ this one still mostly intact.
 1 2 77 0
 -1	door Affected_Bye
 -1	door#, dest
-204 204 3 160 -1	mobs
+160 3 204 204 -1	mobs
 End of Room
 77		Room Number
 W_Daisy_Lane ~	names
@@ -1721,7 +1719,7 @@ huge collection of rubble from which the pillars were extracted.
 1 2 78 0
 -1	door Affected_Bye
 -1	door#, dest
-204 3 -1	mobs
+3 204 -1	mobs
 End of Room
 78		Room Number
 W_Daisy_Lane ~	names
@@ -1874,7 +1872,7 @@ of stairs descending into the darkness.
 1 4 83 1
 -1	door Affected_Bye
 -1	door#, dest
-195 196 -1	mobs
+196 195 -1	mobs
 End of Room
 85		Room Number
 tavern ~	names
