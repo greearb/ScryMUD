@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.31 2002/09/08 02:00:16 eroper Exp $
-// $Revision: 1.31 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.31 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

@@ -1,5 +1,5 @@
-// $Id: BuildInfo.h,v 1.2 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date$
+// $Id$
+// $Revision: 1.2 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

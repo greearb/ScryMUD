@@ -1,5 +1,5 @@
-// $Id: OLCDoor.java,v 1.4 2001/03/31 07:06:00 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date$
+// $Id$
+// $Revision: 1.4 $  $Author$ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code

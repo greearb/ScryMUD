@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.25 2004/07/07 20:34:56 eroper Exp $
-// $Revision: 1.25 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.25 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

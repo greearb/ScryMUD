@@ -1,5 +1,5 @@
-// $Id: pet_spll.cc,v 1.16 2002/08/23 18:47:58 gingon Exp $
-// $Revision: 1.16 $  $Author: gingon $ $Date$
+// $Id$
+// $Revision: 1.16 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

@@ -1,5 +1,5 @@
-# $Id: translation2.spec,v 1.15 2002/02/07 19:32:09 eroper Exp $
-# $Revision: 1.15 $  $Author: eroper $ $Date$
+# $Id$
+# $Revision: 1.15 $  $Author$ $Date$
 
 # See translations.spec for more information.
 

@@ -1,5 +1,5 @@
-// $Id: script.h,v 1.19 2002/03/02 19:30:09 gingon Exp $
-// $Revision: 1.19 $  $Author: gingon $ $Date$
+// $Id$
+// $Revision: 1.19 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

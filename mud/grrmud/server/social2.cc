@@ -1,5 +1,5 @@
-// $Id: social2.cc,v 1.14 2002/09/22 03:30:54 eroper Exp $
-// $Revision: 1.14 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.14 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

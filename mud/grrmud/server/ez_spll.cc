@@ -1,5 +1,5 @@
-// $Id: ez_spll.cc,v 1.20 2002/09/08 02:00:15 eroper Exp $
-// $Revision: 1.20 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.20 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

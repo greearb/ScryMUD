@@ -1,5 +1,5 @@
-// $Id: load_wld.cc,v 1.11 2004/07/09 04:55:22 eroper Exp $
-// $Revision: 1.11 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.11 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

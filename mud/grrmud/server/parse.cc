@@ -1,5 +1,5 @@
-// $Id: parse.cc,v 1.22 2001/03/29 03:02:33 eroper Exp $
-// $Revision: 1.22 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.22 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

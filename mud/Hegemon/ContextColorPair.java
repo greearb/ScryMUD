@@ -1,5 +1,5 @@
-// $Id: ContextColorPair.java,v 1.6 2001/03/31 07:05:59 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date$
+// $Id$
+// $Revision: 1.6 $  $Author$ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code

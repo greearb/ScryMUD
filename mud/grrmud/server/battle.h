@@ -1,5 +1,5 @@
-// $Id: battle.h,v 1.10 2001/03/29 03:02:28 eroper Exp $
-// $Revision: 1.10 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.10 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

@@ -1,5 +1,5 @@
-// $Id: pet_spll.h,v 1.3 2001/03/29 03:02:33 eroper Exp $
-// $Revision: 1.3 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.3 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

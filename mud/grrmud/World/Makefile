@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.4 1999/06/05 23:29:12 greear Exp $
-# $Revision: 1.4 $  $Author: greear $ $Date$
+# $Id$
+# $Revision: 1.4 $  $Author$ $Date$
 
 
 include ../../MakeInclude

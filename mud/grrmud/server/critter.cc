@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.79 2004/07/09 11:59:56 eroper Exp $
-// $Revision: 1.79 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.79 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

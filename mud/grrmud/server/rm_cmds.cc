@@ -1,5 +1,5 @@
-// $Id: rm_cmds.cc,v 1.11 2001/03/29 03:02:33 eroper Exp $
-// $Revision: 1.11 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.11 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

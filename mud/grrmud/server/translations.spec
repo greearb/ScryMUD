@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.20 2002/09/12 01:43:21 eroper Exp $
-# $Revision: 1.20 $  $Author: eroper $ $Date$
+# $Id$
+# $Revision: 1.20 $  $Author$ $Date$
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will

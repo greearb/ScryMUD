@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.4 2001/03/29 03:02:38 eroper Exp $
-# $Revision: 1.4 $  $Author: eroper $ $Date$
+# $Id$
+# $Revision: 1.4 $  $Author$ $Date$
 
 #ARCHIVE      = /home/greear/mud/lib/liblog.a
 

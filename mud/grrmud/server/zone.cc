@@ -1,5 +1,5 @@
-// $Id: zone.cc,v 1.7 2002/08/20 03:06:25 eroper Exp $
-// $Revision: 1.7 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.7 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

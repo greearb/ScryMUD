@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.29 2002/01/29 18:22:13 gingon Exp $
-// $Revision: 1.29 $  $Author: gingon $ $Date$
+// $Id$
+// $Revision: 1.29 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

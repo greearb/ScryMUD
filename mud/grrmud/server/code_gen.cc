@@ -1,5 +1,5 @@
-// $Id: code_gen.cc,v 1.14 2004/07/05 23:06:35 eroper Exp $
-// $Revision: 1.14 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.14 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

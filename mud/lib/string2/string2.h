@@ -1,5 +1,5 @@
-// $Id: string2.h,v 1.18 2003/02/25 04:14:44 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date$
+// $Id$
+// $Revision: 1.18 $  $Author$ $Date$
 
 //
 //Copyright (C) 1998-2001  Ben Greear

@@ -1,5 +1,5 @@
-// $Id: audit.h,v 1.1 1999/07/18 00:59:22 greear Exp $
-// $Revision: 1.1 $  $Author: greear $ $Date$
+// $Id$
+// $Revision: 1.1 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

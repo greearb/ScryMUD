@@ -1,5 +1,5 @@
-// $Id: spells.h,v 1.10 2002/02/22 18:06:11 gingon Exp $
-// $Revision: 1.10 $  $Author: gingon $ $Date$
+// $Id$
+// $Revision: 1.10 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

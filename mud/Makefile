@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.14 2002/08/26 06:52:21 greear Exp $
-# $Revision: 1.14 $  $Author: greear $ $Date$
+# $Id$
+# $Revision: 1.14 $  $Author$ $Date$
 
 #  Makefile for Hegemon and ScryMUD
 

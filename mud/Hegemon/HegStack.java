@@ -1,5 +1,5 @@
-// $Id: HegStack.java,v 1.3 2001/03/31 07:05:59 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date$
+// $Id$
+// $Revision: 1.3 $  $Author$ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code

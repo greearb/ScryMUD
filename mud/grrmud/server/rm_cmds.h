@@ -1,5 +1,5 @@
-// $Id: rm_cmds.h,v 1.3 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date$
+// $Id$
+// $Revision: 1.3 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

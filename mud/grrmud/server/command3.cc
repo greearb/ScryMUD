@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.39 2003/02/25 04:14:43 greear Exp $
-// $Revision: 1.39 $  $Author: greear $ $Date$
+// $Id$
+// $Revision: 1.39 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

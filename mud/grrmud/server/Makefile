@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.24 2003/02/25 04:14:43 greear Exp $
-# $Revision: 1.24 $  $Author: greear $ $Date$
+# $Id$
+# $Revision: 1.24 $  $Author$ $Date$
 
 # makefile template
 include ../../MakeInclude

@@ -1,5 +1,5 @@
-// $Id: SkillSpell.h,v 1.12 2003/05/08 23:22:07 eroper Exp $
-// $Revision: 1.12 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.12 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

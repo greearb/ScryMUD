@@ -1,5 +1,5 @@
-// $Id: dam_spll.h,v 1.7 2002/02/05 05:03:33 gingon Exp $
-// $Revision: 1.7 $  $Author: gingon $ $Date$
+// $Id$
+// $Revision: 1.7 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

@@ -1,5 +1,5 @@
-// $Id: trv_spll.cc,v 1.9 2001/03/29 03:02:36 eroper Exp $
-// $Revision: 1.9 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.9 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

@@ -1,5 +1,5 @@
-// $Id: obj_parse.cc,v 1.5 2001/03/29 03:02:32 eroper Exp $
-// $Revision: 1.5 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.5 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

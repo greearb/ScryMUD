@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.41 2002/09/14 00:54:40 eroper Exp $
-// $Revision: 1.41 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.41 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

@@ -1,5 +1,5 @@
-// $Id: PtrArray.h,v 1.6 2001/03/29 03:02:38 eroper Exp $
-// $Revision: 1.6 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.6 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
-# $Id: configure,v 1.4 2003/02/25 04:14:43 greear Exp $
-# $Revision: 1.4 $  $Author: greear $ $Date$
+# $Id$
+# $Revision: 1.4 $  $Author$ $Date$
 
 open(OFILE, ">MakeInclude") or die("Can't open MakeInclude\n");
 

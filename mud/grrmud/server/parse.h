@@ -1,5 +1,5 @@
-// $Id: parse.h,v 1.7 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date$
+// $Id$
+// $Revision: 1.7 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

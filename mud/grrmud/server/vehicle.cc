@@ -1,5 +1,5 @@
-// $Id: vehicle.cc,v 1.10 2002/03/01 17:28:16 gingon Exp $
-// $Revision: 1.10 $  $Author: gingon $ $Date$
+// $Id$
+// $Revision: 1.10 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code

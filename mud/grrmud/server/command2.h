@@ -1,5 +1,5 @@
-// $Id: command2.h,v 1.9 2001/03/29 03:02:29 eroper Exp $
-// $Revision: 1.9 $  $Author: eroper $ $Date$
+// $Id$
+// $Revision: 1.9 $  $Author$ $Date$
 
 //
 //ScryMUD Server Code
