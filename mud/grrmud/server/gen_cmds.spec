@@ -122,7 +122,7 @@ return arlist(i, j, pc);
 # Socials - A
 ack socials ~
 ack(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
-afk socials ~
+afk afk ~
 afk(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 agree socials ~
 agree(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;

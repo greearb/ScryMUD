@@ -1,0 +1,14 @@
+<help afk socials>
+
+This command alerts those in your current room that you are
+either stepping afk, or returning. It toggles the "afk" flag
+and can be set with "toggle afk" as well as through the use
+of the "afk" command. You will be marked as afk on the "who"
+listing whenever you are afk.
+
+Syntax: afk
+Alternate Syntax: toggle afk
+
+<color=red>
+See Also:  toggle, socials
+</color></help>
