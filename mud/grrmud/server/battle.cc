@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.42 2002/08/23 21:46:47 gingon Exp $
-// $Revision: 1.42 $  $Author: gingon $ $Date: 2002/08/23 21:46:47 $
+// $Id: battle.cc,v 1.43 2002/08/26 06:53:55 eroper Exp $
+// $Revision: 1.43 $  $Author: eroper $ $Date: 2002/08/26 06:53:55 $
 
 //
 //ScryMUD Server Code
@@ -1164,10 +1164,8 @@ void gain_level(critter& crit) {
       case WIZARD:
       case CLERIC:
       case ALCHEMIST:
-         mana_gain += d(2, crit.WIS/2);
-         break;
       case NECROMANCER:
-         mana_gain += d(3, crit.WIS/2);
+         mana_gain += d(2, crit.WIS/2);
          break;
       default:
          if (mudlog.ofLevel(DBG)) {
