@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.76 2003/05/05 22:04:00 eroper Exp $
-// $Revision: 1.76 $  $Author: eroper $ $Date: 2003/05/05 22:04:00 $
+// $Id: critter.cc,v 1.77 2003/05/08 00:25:16 eroper Exp $
+// $Revision: 1.77 $  $Author: eroper $ $Date: 2003/05/08 00:25:16 $
 
 //
 //ScryMUD Server Code
@@ -2305,6 +2305,100 @@ int critter::getCurRoomNum() {
    return IN_ROOM;
 }
 
+int critter::getDEX(char include_modifiers=FALSE) {
+   int p_lrnd;
+   int modifier = 0;
+
+   if ( include_modifiers && pc ) {
+      p_lrnd = get_percent_lrnd(QUICKFOOT_SKILL_NUM, *this);
+      if ( p_lrnd > 0 ) {
+         modifier += p_lrnd/30;
+      }
+   }
+
+   return DEX+modifier;
+}
+
+int critter::getWIS(char include_modifiers=FALSE) {
+   int p_lrnd;
+   int modifier = 0;
+
+   if ( include_modifiers && pc ) {
+      p_lrnd = get_percent_lrnd(HONOR_CODE_SKILL_NUM, *this);
+      if ( p_lrnd > 0 ) {
+         modifier += p_lrnd/30;
+      }
+   }
+
+   return WIS+modifier;
+}
+
+int critter::getCHA(char include_modifiers=FALSE) {
+   int p_lrnd;
+   int modifier = 0;
+
+   if ( include_modifiers && pc ) {
+      p_lrnd = get_percent_lrnd(LEADERSHIP_SKILL_NUM, *this);
+      if ( p_lrnd > 0 ) {
+         modifier += p_lrnd/30;
+      }
+
+      p_lrnd = get_percent_lrnd(LOGIC_SKILL_NUM, *this);
+      if ( p_lrnd > 0 ) {
+         modifier -= p_lrnd/30;
+      }
+   }
+
+   return CHA+modifier;
+}
+
+int critter::getBHDC(char include_modifiers=FALSE) {
+   int p_lrnd;
+   int modifier = 0;
+
+   if ( include_modifiers && pc ) {
+      p_lrnd = get_percent_lrnd(WRESTLING_SKILL_NUM, *this);
+      if ( p_lrnd > 0 ) {
+         modifier += p_lrnd/30;
+      }
+
+      p_lrnd = get_percent_lrnd(MARTIAL_ARTS_SKILL_NUM, *this);
+      if ( p_lrnd > 0 ) {
+         modifier += p_lrnd/30;
+      }
+   }
+
+   return BH_DICE_COUNT+modifier;
+}
+
+int critter::getBHDS(char include_modifiers=FALSE) {
+   int p_lrnd;
+   int modifier = 0;
+
+   if ( include_modifiers && pc ) {
+      p_lrnd = get_percent_lrnd(MARTIAL_ARTS_SKILL_NUM, *this);
+      if ( p_lrnd > 0 ) {
+         modifier += p_lrnd/30;
+      }
+   }
+
+   return BH_DICE_SIDES+modifier;
+}
+
+int critter::getDAM(char include_modifiers=FALSE) {
+   int p_lrnd;
+   int modifier = 0;
+
+   if ( include_modifiers && pc ) {
+      p_lrnd = get_percent_lrnd(WEAPON_MASTERY_SKILL_NUM, *this);
+      if ( p_lrnd > 0 ) {
+         modifier += p_lrnd/30;
+      }
+   }
+
+   return DAM+modifier;
+}
+
 void critter::checkForBattle(room& rm) {
 
    List<critter*> tmp_crits(rm.getCrits()); //just do shallow copy
@@ -3441,8 +3535,8 @@ void critter::fileRead(ifstream& ofile, short read_all) {
          }//
          else {
             Sprintf(tmp_str, 
-                    "ERROR:  trying to load non-existant obj: %i, 
-              in critter's: %S  eq.\n", i, &short_desc);
+                    "ERROR:  trying to load non-existant obj: %i, "
+              "in critter's: %S  eq.\n", i, &short_desc);
             mudlog.log(ERROR, tmp_str);
          }//else
       }//else

@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.62 2003/05/06 00:54:37 eroper Exp $
-// $Revision: 1.62 $  $Author: eroper $ $Date: 2003/05/06 00:54:37 $
+// $Id: critter.h,v 1.63 2003/05/08 00:25:16 eroper Exp $
+// $Revision: 1.63 $  $Author: eroper $ $Date: 2003/05/08 00:25:16 $
 
 //
 //ScryMUD Server Code
@@ -872,6 +872,12 @@ public:
    int getCharisma() const { return short_cur_stats[4]; }
    int getHP() const { return short_cur_stats[15]; }
    int getHP_MAX() const { return short_cur_stats[23]; }
+   int getDEX(char include_modifiers);
+   int getWIS(char include_modifiers);
+   int getCHA(char include_modifiers);
+   int getBHDC(char include_modifiers);
+   int getBHDS(char include_modifiers);
+   int getDAM(char include_modifiers);
    int getMana() const { return short_cur_stats[16]; }
    int getManaMax() const { return short_cur_stats[24]; }
    int getMov() const { return short_cur_stats[17]; }

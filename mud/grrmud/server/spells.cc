@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.27 2003/02/25 04:14:44 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 2003/02/25 04:14:44 $
+// $Id: spells.cc,v 1.28 2003/05/08 00:25:17 eroper Exp $
+// $Revision: 1.28 $  $Author: eroper $ $Date: 2003/05/08 00:25:17 $
 
 //
 //ScryMUD Server Code
@@ -610,8 +610,8 @@ int do_distortion_wall_effects(critter& pc, int& is_dead, int sanity) {
       return -1;
    }//if
 
-   show("**WOW**, as you step into the next room you encounter a strange
-silvery curtain of....energy!\n", pc);
+   show("**WOW**, as you step into the next room you encounter a strange "
+        "silvery curtain of....energy!\n", pc);
    emote("blinks out of sight!", pc, ROOM, TRUE);
    retval = relocate_within_zone(pc, is_dead, sanity, FALSE);
    emote("materializes in front of you!", pc, ROOM, TRUE); //in new room now
@@ -1618,7 +1618,7 @@ void update_skills(critter& pc) {
 
 
 void update_skill(int last_learned, critter& pc) {
-   
+
    if (!pc.pc) {
       return;
    }//if
@@ -1629,40 +1629,23 @@ void update_skill(int last_learned, critter& pc) {
 
    if (!check_l_range(last_learned, 0, NUMBER_OF_SKILL_SPELLS, pc, FALSE)) {
       mudlog.log(ERROR,
-                 "ERROR:  last_learned out of range, gain_spells_skills!!\n");
+            "ERROR:  last_learned out of range, gain_spells_skills!!\n");
       return;
    }//if
 
    Cell<int> cll(SSCollection::instance().getSS(last_learned).enables);
    int tmp;
    while ((tmp = cll.next())) {
-     if (has_all_prereqs(tmp, pc) && (get_percent_lrnd(tmp, pc) == -1)) {
-        pc.SKILLS_KNOWN.Insert(tmp, 1);
-        if (tmp == WEAPON_MASTERY_SKILL_NUM)
-           pc.DAM++;
-        else if (tmp == HONOR_CODE_SKILL_NUM)
-           pc.WIS++;
-        else if (tmp == LEADERSHIP_SKILL_NUM)
-           pc.CHA++;
-        else if (tmp == QUICKFOOT_SKILL_NUM)
-           pc.DEX++;
-        else if (tmp == WRESTLING_SKILL_NUM)
-           pc.BH_DICE_COUNT++;
-// This needs to be done in do_battle(), otherwise +1 attack items only work
-// for people with at least 1% in second attack.
-//        else if (tmp == SECOND_ATTACK_SKILL_NUM)
-//           pc.ATTACKS++;
-        else if (tmp == CLIMBING_SKILL_NUM)
-           pc.CRIT_FLAGS.turn_on(5);
-        else if (tmp == DUAL_WIELD_SKILL_NUM)
-           pc.CRIT_FLAGS.turn_on(16);
-        else if (tmp == LOGIC_SKILL_NUM)
-            pc.CHA--; //logical people are boring!!
-        else if (tmp == MARTIAL_ARTS_SKILL_NUM) {
-           pc.BH_DICE_COUNT++;
-           pc.BH_DICE_SIDES += 2;
-        }//martail arts
-     }//if
+      if (has_all_prereqs(tmp, pc) && (get_percent_lrnd(tmp, pc) == -1)) {
+         pc.SKILLS_KNOWN.Insert(tmp, 1);
+
+         if (tmp == CLIMBING_SKILL_NUM) {
+            pc.CRIT_FLAGS.turn_on(5);
+         } else if (tmp == DUAL_WIELD_SKILL_NUM) {
+            pc.CRIT_FLAGS.turn_on(16);
+         }//if
+
+      }//if
    }//while
 }//gain_spells_skills
 

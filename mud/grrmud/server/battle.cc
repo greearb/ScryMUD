@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.54 2003/02/25 04:14:43 greear Exp $
-// $Revision: 1.54 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
+// $Id: battle.cc,v 1.55 2003/05/08 00:25:16 eroper Exp $
+// $Revision: 1.55 $  $Author: eroper $ $Date: 2003/05/08 00:25:16 $
 
 //
 //ScryMUD Server Code
@@ -152,7 +152,7 @@ void do_battle() {
              /* check for second attack */
             if ((crit_ptr->isPc())
                 && (d(1,100) < d(1, (get_percent_lrnd(SECOND_ATTACK_SKILL_NUM, *(crit_ptr)) + 
-                                     crit_ptr->LEVEL) * (int)((float)(crit_ptr->DEX) / 9.0))-(crit_ptr->PAUSE*60)) ) {
+                                     crit_ptr->LEVEL) * (int)((float)(crit_ptr->getDEX(TRUE)) / 9.0))-(crit_ptr->PAUSE*60)) ) {
                atks++;
             }
 
@@ -209,7 +209,7 @@ void do_battle() {
             if (crit_ptr->isFighting() && crit_ptr->isDualWielding()) {
                int val = (int)(((float)(get_percent_lrnd(DUAL_WIELD_SKILL_NUM, 
                                                          *crit_ptr)) *
-                                (float)(crit_ptr->DEX) / 10.0));
+                                (float)(crit_ptr->getDEX(TRUE)) / 10.0));
                if (d(1,100) < d(1, val)-(crit_ptr->PAUSE*50) ) {
                   vict_ptr = Top(crit_ptr->IS_FIGHTING);
 
@@ -371,8 +371,8 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
          return;
    }//if
 
-   int j = (vict.DEX * 3) - (vict.AC / 10) + vict.LEVEL + (agg.POS * 5);
-   i = (agg.DEX * 3) + (agg.HIT * 2) + agg.LEVEL + (vict.POS * 5);
+   int j = (vict.getDEX(TRUE) * 3) - (vict.AC / 10) + vict.LEVEL + (agg.POS * 5);
+   i = (agg.getDEX(TRUE) * 3) + (agg.HIT * 2) + agg.LEVEL + (vict.POS * 5);
 
    if ((!vict.isStunned() && (d(1, j) > d(1, i))) ||
        (agg.POS == POS_STUN)) {  //missed, stunned
@@ -409,13 +409,13 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    if ( (!vict.isParalyzed()) && ( vict.isStanding() || vict.isSitting() ) ) {
       // bigger means less likely to hit, should range from around 1-600
       if ( vict.isStunned() ) {
-         chance = (float)(d(1, 300)) * (float)agg.DEX / 18.0;
+         chance = (float)(d(1, 300)) * (float)agg.getDEX(TRUE) / 18.0;
       } else {
-         chance = (float)(d(1, 600)) * (float)agg.DEX / 18.0;
+         chance = (float)(d(1, 600)) * (float)agg.getDEX(TRUE) / 18.0;
       }
       if ((chance < 100.0) && vict.isStanding()) {
          td = (d(1, get_percent_lrnd(DODGE_SKILL_NUM, vict, TRUE) +
-                  vict.DEX * 2) > d(4,25));
+                  vict.getDEX(TRUE) * 2) > d(4,25));
       }//if
 
       // Don't parry & dodge at the same time...
@@ -423,10 +423,10 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       if ((!td && (vict.EQ[9] || vict.EQ[18])) &&
             (vict.isStanding() || vict.isSitting())) {
          // bigger means less likely to hit, should range from around 1-600
-         chance = (float)(d(1, 800)) * ((float)(agg.DEX)) / 18.0;
+         chance = (float)(d(1, 800)) * ((float)(agg.getDEX(TRUE))) / 18.0;
          if (chance < 100.0) {
             tp = (d(1, get_percent_lrnd(PARRY_SKILL_NUM, vict, TRUE) +
-                     vict.DEX * 2) > d(4,25));
+                     vict.getDEX(TRUE) * 2) > d(4,25));
          }
       }//if
    }//if
@@ -470,7 +470,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
                      (agg.EQ[posn_of_weapon])->OBJ_DAM_DICE_SIDES);
    }//if
    else {
-      weapon_dam = d(agg.BH_DICE_COUNT, agg.BH_DICE_SIDES);
+      weapon_dam = d(agg.getBHDC(TRUE), agg.getBHDS(TRUE));
       //batlog << "no weapon, weapon_dam:  " << weapon_dam << endl;
    }//else
      
@@ -502,7 +502,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    }//switch
 
         /* no modifiers have been added yet, exact_raw... does that */
-   damage = ((float)agg.STR/3.0 + (float)agg.DAM + weapon_dam) *
+   damage = ((float)agg.STR/3.0 + (float)agg.getDAM(TRUE) + weapon_dam) *
       pos_mult;
 
    if (is_wielding) {
@@ -1206,7 +1206,7 @@ void gain_level(critter& crit) {
    crit.PRACS += d(2, (int)((float)(crit.INT)/6.0)) + 1;
    crit.MA_MAX += mana_gain;
    crit.setHP_MAX(crit.getHP_MAX() + hp_gain);
-   crit.MV_MAX += d(1, crit.DEX);
+   crit.MV_MAX += d(1, crit.getDEX(TRUE));
    crit.show("You rise a level.\n");
 
    if ( crit.RACE == DRAGON )
