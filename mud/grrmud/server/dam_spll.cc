@@ -1,5 +1,5 @@
-// $Id: dam_spll.cc,v 1.4 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: dam_spll.cc,v 1.5 1999/07/14 02:10:08 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/07/14 02:10:08 $
 
 //
 //ScryMUD Server Code
@@ -983,7 +983,7 @@ void cast_lightning(int i_th, const String* victim, critter& pc) {
 
 
 void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
- 		     int lvl) {
+                       int lvl) {
    String buf(100);
    short did_hit = TRUE;
    short do_join_in_battle = TRUE;
@@ -1012,8 +1012,7 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
          if (vict.HP < 0) {
             show("Your pierce your own throat!!\n", agg);
             Sprintf(buf, "pierces %s own throat with %s energy dart!\n",
-                    get_himself_herself(agg),
-                    get_himself_herself(agg));
+                    get_his_her(agg), get_his_her(agg));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
             do_fatality = TRUE;
          }//if
@@ -1021,8 +1020,8 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
             show("You pierce yourself with your dark dart of energy!\n", 
                  agg);
             Sprintf(buf, "pierces %s with %s dark energy dart.\n", 
-                   get_himself_herself(vict), 
-                   get_his_her(agg));
+                    get_himself_herself(vict), 
+                    get_his_her(agg));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
          }//else
          do_join_in_battle = FALSE;
@@ -1034,9 +1033,10 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
                  name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, 
-		    "%S pierces your throut with %s dark energy dart!\n",
+		    "%S pierces your throat with %s dark energy dart!\n",
 		    name_of_crit(agg, vict.SEE_BIT),
 		    get_his_her(agg));
+            buf.Cap();
             show(buf, vict);
             Sprintf(buf, "pierces %S's throat with %s dark energy dart!\n",
                     name_of_crit(vict, ~0),
@@ -1046,7 +1046,7 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
          }//if fatality
          else { //no fatality
             Sprintf(buf, 
-		 "You conjure a bolt of pure darkness and hurl it at %S!.\n",
+                    "You conjure a bolt of pure darkness and hit %S with it!.\n",
 		    name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, "%S's dart of dark energy slams into your chest!!\n",

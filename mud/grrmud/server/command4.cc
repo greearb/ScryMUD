@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.26 1999/07/12 07:14:31 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/07/12 07:14:31 $
+// $Id: command4.cc,v 1.27 1999/07/14 02:10:07 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/07/14 02:10:07 $
 
 //
 //ScryMUD Server Code
@@ -1912,7 +1912,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
           flag = TRUE;
 	}//if
       }//if
-      else if (strncasecmp(*targ, "manager", len1) == 0) {
+      else if (strncasecmp(*targ, "manager", 7) == 0) {
          flag = TRUE;
          if (pc.getImmLevel() >= 9) {
             if (ptr->isPlayerShopKeeper()) {

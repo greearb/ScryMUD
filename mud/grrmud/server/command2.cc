@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.34 1999/07/12 07:14:30 greear Exp $
-// $Revision: 1.34 $  $Author: greear $ $Date: 1999/07/12 07:14:30 $
+// $Id: command2.cc,v 1.35 1999/07/14 02:10:07 greear Exp $
+// $Revision: 1.35 $  $Author: greear $ $Date: 1999/07/14 02:10:07 $
 
 //
 //ScryMUD Server Code
@@ -2461,6 +2461,9 @@ int do_lore(object& obj, critter& pc, int show_extra) {
 
    // Take care of stat affects.
    if (show_extra) {
+      Sprintf(buf, "This object is of level: %i\n", obj.getLevel());
+      pc.show(buf);
+
       if (!obj.affected_by.isEmpty()) {
          show("It is affected by:\n", pc);
          out_spell_list(obj.affected_by, pc);      
