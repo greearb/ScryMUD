@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.32 1999/07/18 00:59:22 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 1999/07/18 00:59:22 $
+// $Id: critter.cc,v 1.33 1999/07/18 01:21:44 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 1999/07/18 01:21:44 $
 
 //
 //ScryMUD Server Code
@@ -1717,14 +1717,13 @@ critter::critter(critter& source) {
 //   }
    _cnt++;
 
-   obj_ptr_log << "CRI_CC " << getIdNum() << " " << this << "\n";
-
    pc = NULL;
    mob = NULL;
    possessed_by = NULL;
    possessing = NULL;
    temp_crit = NULL;
    *this = source;  //utilize overloaded =
+   obj_ptr_log << "CRI_CC " << getIdNum() << " " << this << "\n";
 } // crit constructor
 
 
