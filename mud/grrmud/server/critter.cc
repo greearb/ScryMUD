@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.77 2003/05/08 00:25:16 eroper Exp $
-// $Revision: 1.77 $  $Author: eroper $ $Date: 2003/05/08 00:25:16 $
+// $Id: critter.cc,v 1.78 2004/07/06 20:06:44 eroper Exp $
+// $Revision: 1.78 $  $Author: eroper $ $Date: 2004/07/06 20:06:44 $
 
 //
 //ScryMUD Server Code
@@ -2520,7 +2520,14 @@ void critter::Write(ofstream& ofile) {
    affected_by.head(ss_cell);
    while ((ss_ptr = ss_cell.next())) {
       ofile << ss_ptr->stat_spell << " " << ss_ptr->bonus_duration << " ";
+
+      /* This is only true for PC's now or we bork the hell out of the world
+       * database --Khaav
+       */
+      if ( isPc() ) {
       ofile << ss_ptr->bonus_value << " ";
+      }
+
       if ((++num_written % 20) == 0)
          ofile << endl;
    }//while
@@ -3557,7 +3564,12 @@ void critter::fileRead(ifstream& ofile, short read_all) {
       ss_ptr = new stat_spell_cell;
       ss_ptr->stat_spell = i;
       ofile >> ss_ptr->bonus_duration;
-      ofile >> ss_ptr->bonus_value;
+
+      /* again, no borking the world files on read --Khaav */
+      if ( isPc() ) {
+         ofile >> ss_ptr->bonus_value;
+      }
+
       Put(ss_ptr, affected_by);
       ofile >> i;
    }//while
