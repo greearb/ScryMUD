@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.24 2002/01/08 03:14:39 eroper Exp $
-// $Revision: 1.24 $  $Author: eroper $ $Date: 2002/01/08 03:14:39 $
+// $Id: spells2.cc,v 1.25 2002/01/08 08:05:31 eroper Exp $
+// $Revision: 1.25 $  $Author: eroper $ $Date: 2002/01/08 08:05:31 $
 
 //
 //ScryMUD Server Code
@@ -2713,13 +2713,13 @@ void do_cast_rust(critter &vict, critter &agg, int is_canned, int lvl)
             Sprintf(buf, "You rust %S's armor!\n",
                   name_of_crit(vict, agg.SEE_BIT));
             agg.show(buf, HL_DEF);
-            Sprintf(buf, "%S rusts your armor!\n",
+            Sprintf(buf, "Your armor rusts before your very eyes!\n",
                   name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             vict.show(buf, HL_DEF);
-            Sprintf(buf, "rusts %S's armor.\n",
+            Sprintf(buf, "armor rusts before your very eyes.\n",
                   name_of_crit(vict, ~0));
-            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+            pemote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &vict);
          }
       }
    }// end of "if - it - worked"
@@ -2793,13 +2793,13 @@ void do_cast_disfavor(critter &vict, critter &agg, int is_canned, int lvl)
             Sprintf(buf, "You call the spirits of the underworld to plague %S.\n",
                   name_of_crit(vict, agg.SEE_BIT));
             agg.show(buf, HL_DEF);
-            Sprintf(buf, "%S calls spirits of the underworld to plague you.\n",
+            Sprintf(buf, "You feel plagued by the spirits of the underworld.\n",
                   name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             vict.show(buf, HL_DEF);
-            Sprintf(buf, "calls the spirits of the underworld to plague %S.\n",
+            Sprintf(buf, "seems bothered.\n",
                   name_of_crit(vict, ~0));
-            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+            emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &vict);
          }
       }
    }// end of "if - it - worked"
@@ -2872,12 +2872,11 @@ void do_cast_remove_soul(critter &vict, critter &agg, int is_canned, int lvl)
                   name_of_crit(vict, agg.SEE_BIT));
             agg.show(buf, HL_DEF);
             Sprintf(buf,
-                  "%S causes you to scream in agony as your soul wretches.\n",
+                  "You scream in agony as your soul wretches.\n",
                   name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             vict.show(buf, HL_DEF);
             Sprintf(buf, "screams in agony as %s soul wretches.\n",
-                  name_of_crit(agg, ~0),
                   get_his_her(vict));
             emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &vict);
          }
