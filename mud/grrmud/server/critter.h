@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.60 2003/05/05 19:54:19 eroper Exp $
-// $Revision: 1.60 $  $Author: eroper $ $Date: 2003/05/05 19:54:19 $
+// $Id: critter.h,v 1.61 2003/05/05 23:23:57 eroper Exp $
+// $Revision: 1.61 $  $Author: eroper $ $Date: 2003/05/05 23:23:57 $
 
 //
 //ScryMUD Server Code
@@ -670,7 +670,8 @@ public:
    // 10 shout, 11 say, 12 tell, 13 NULL, 14 is_paralyzed,
    // 15 is_perm_sleeped, 16 is_dual_wielding, 17 is_sneak,
    // 18 in_use, 19 can_dive, 20 spell_tested_yet, 21 is_blocked,
-   // 22 is_hide, 23 is_tailing 24 !complete, 25 already_hurled
+   // 22 is_hide, 23 is_tailing 24 !complete, 25 already_hurled,
+   // 26 is_guard (as in city guard)
 
    long long_data[MOB_LONG_DATA + 1]; 
    // 0 gold 
@@ -1021,6 +1022,7 @@ public:
    int isNecromancer() const { return CLASS == NECROMANCER; }
    int isFighting() const  { return !is_fighting.isEmpty(); }
    int isFighting(critter& da_pc) { return is_fighting.haveData(&da_pc); }
+   int isGuard() { return crit_flags.get(CRITFLAG_IS_GUARD); }
    
    int isResting() const { return POS == POS_REST; }
    int isStanding() const { return POS == POS_STAND; }

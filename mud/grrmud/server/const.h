@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.37 2003/05/05 19:54:19 eroper Exp $
-// $Revision: 1.37 $  $Author: eroper $ $Date: 2003/05/05 19:54:19 $
+// $Id: const.h,v 1.38 2003/05/05 23:23:57 eroper Exp $
+// $Revision: 1.38 $  $Author: eroper $ $Date: 2003/05/05 23:23:57 $
 
 //
 //ScryMUD Server Code
@@ -147,7 +147,8 @@ enum crit_flags {
    CRITFLAG_IS_HIDE,
    CRITFLAG_IS_TAILING,
    CRITFLAG_NOT_COMPLETE,
-   CRITFLAG_ALREADY_HURLED
+   CRITFLAG_ALREADY_HURLED,
+   CRITFLAG_IS_GUARD
 };
 
 enum pc_data_flags {
