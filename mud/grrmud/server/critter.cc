@@ -2416,6 +2416,40 @@ int critter::getHIT(bool include_modifiers=false, object* weapon = NULL) {
       return HIT+modifier;
 }//critter::getHIT
 
+int critter::getWeapDAM(int position, bool include_modifiers=false) {
+   int count = 0;
+   int sides = 0;
+   int weapon_skill;
+   int p_lrnd;
+   object *weapon = EQ[position];
+
+   if ( (weapon) && (weapon->isWeapon()) ) {
+
+      if ( weapon->isSlash() ) {
+         weapon_skill = SWORD_SKILL_NUM;
+      } else if ( weapon->isPierce() ) {
+         weapon_skill = DAGGER_SKILL_NUM;
+      } else if ( weapon->isSmash() ) {
+         weapon_skill = MACE_SKILL_NUM;
+      } else if ( weapon->isWhip() ) {
+         weapon_skill = WHIP_SKILL_NUM;
+      } else if ( weapon->isBow() ) {
+         weapon_skill = BOW_SKILL_NUM;
+      }
+
+   } else { //not weapon, technically we shouldn't have this happen.
+      return 0;
+   }
+
+   p_lrnd = get_percent_lrnd(weapon_skill, *this);
+   if ( p_lrnd > 0 ) {
+      count = p_lrnd/50;
+      sides = p_lrnd/33;
+   }
+
+   return d(weapon->getDiceCnt()+count, weapon->getDiceSides()+sides);
+}//critter::getWeapDAM
+
 void critter::checkForBattle(room& rm) {
 
    List<critter*> tmp_crits(rm.getCrits()); //just do shallow copy

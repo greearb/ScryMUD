@@ -478,8 +478,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
 //   log("Did hit..going into messages.\n");
 
    if (is_wielding) { //wielded
-      weapon_dam = d((agg.EQ[posn_of_weapon])->OBJ_DAM_DICE_COUNT, 
-                     (agg.EQ[posn_of_weapon])->OBJ_DAM_DICE_SIDES);
+      weapon_dam = agg.getWeapDAM(posn_of_weapon, true);
    }//if
    else {
       weapon_dam = d(agg.getBHDC(TRUE), agg.getBHDS(TRUE));
