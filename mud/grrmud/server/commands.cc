@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.54 2002/08/15 21:09:28 eroper Exp $
-// $Revision: 1.54 $  $Author: eroper $ $Date: 2002/08/15 21:09:28 $
+// $Id: commands.cc,v 1.55 2002/08/16 22:37:31 eroper Exp $
+// $Revision: 1.55 $  $Author: eroper $ $Date: 2002/08/16 22:37:31 $
 
 //
 //ScryMUD Server Code
@@ -3253,7 +3253,10 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
       }//for
    }//if
 
-   if ((obj.OBJ_CUR_WEIGHT > pc.STR) && ((posn == 9) || (posn == 10))) {
+   if ( ( (obj.OBJ_CUR_WEIGHT > pc.STR) ||
+       (obj.isTwoHanded() && (int)(obj.OBJ_CUR_WEIGHT*0.75) > pc.STR) )
+       && ( (posn == 9) || (posn == 10) ) ) {
+
       if (do_msg) {
          Sprintf(buf, cstr(CS_TOO_HEAVY, pc),
                 &(obj.short_desc));
