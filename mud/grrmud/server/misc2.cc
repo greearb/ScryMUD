@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.20 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: misc2.cc,v 1.21 1999/06/15 03:32:34 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/15 03:32:34 $
 
 //
 //ScryMUD Server Code
@@ -922,7 +922,7 @@ void parse_communication(String& str) {
    String tmp(str);
    tmp.Tolower(); //make it all lower-case
 
-   const char* incoming = tmp; //will cast to char*
+   //const char* incoming = tmp; //will cast to char*
 
    // Skip censorship for now. --BEN
    //const char* censored;

@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.18 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: room.cc,v 1.19 1999/06/15 03:32:35 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/15 03:32:35 $
 
 //
 //ScryMUD Server Code
@@ -1691,9 +1691,14 @@ int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
          if (includes.matches(ptr, &pc)) {
             if (mudlog.ofLevel(DBG)) {
                mudlog << "room::doEmote, includes matched." << endl;
+               mudlog << "cstr of " << (int)(cs_entry) << "-:"
+                      << cstr(cs_entry, *ptr) << ":-" <<  endl;
             }
+
             vSprintf(buf, cstr(cs_entry, *ptr), argp);
-            //mudlog << endl << "buf -:" << buf << ":-" << endl << endl;
+            if (mudlog.ofLevel(DBG)) {
+               mudlog << endl << "buf -:" << buf << ":-" << endl << endl;
+            }
             Sprintf(buf2, "%S %S", pc.getName(ptr->SEE_BIT), &buf);
             buf2.Cap();
             ptr->show(buf2);

@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.7 1999/06/14 06:05:44 greear Exp $
-# $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/14 06:05:44 $
+# $Id: translations.spec,v 1.8 1999/06/15 03:32:35 greear Exp $
+# $Revision: 1.8 $  $Author: greear $ $Date: 1999/06/15 03:32:35 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -539,11 +539,11 @@ CS_MOV_NEED_KEY
 	~
 
 CS_HAS_ARRIVED
-	eng "has arrived."
+	eng "has arrived.\n"
 	~
 
 CS_YOU_FOLLOW
-	eng "You attempt to follow %S %s."
+	eng "You attempt to follow %S %s.\n"
 	~
 
 CS_NO_FIND_EXIT
@@ -852,13 +852,13 @@ CS_PUTS_IN_OWN
 	~
 
 CS_LEAVES_SPRINTF
-	eng "leaves %s."
+	eng "leaves %s.\n"
 	~
 
 CS_ARRIVED_FROM_SPRINTF
-	eng "has arrived from $S."
+	eng "has arrived from %S.\n"
 	~
 
 CS_ARRIVED_FROM_CUST_SP
-	eng "has arrived from the %S."
+	eng "has arrived from the %S.\n"
 	~

@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.19 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: commands.cc,v 1.20 1999/06/15 03:32:34 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/15 03:32:34 $
 
 //
 //ScryMUD Server Code
@@ -2599,7 +2599,6 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 	    pc.PAUSE += door_ptr->distance;
 
          //Sprintf(buf, "leaves %s.\n", direction);
-         mudlog << "DIR_ADDR: " << (void*)(direction) << endl;
          rm.doEmote(pc, Selectors::instance().CC_mob_entry_allow, 
                     Selectors::instance().CC_mob_entry_deny,
                     CS_LEAVES_SPRINTF, direction);
