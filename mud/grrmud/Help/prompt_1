@@ -16,7 +16,8 @@ prompt with special letter combinations as follows:
 %a      alignment               %p      practices
 %x      experience points       %X      experience to level
 %g      gold on hand            %G      gold in bank
-%1      medical conditions      %2      Visibility conditions
+%1      medical conditions      %2      visibility conditions
+%R      room name               %E      visible exits
 %%      a '%' symbol            %N      Newline
 
 Note on medical conditions:
