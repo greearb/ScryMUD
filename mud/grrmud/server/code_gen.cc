@@ -149,6 +149,7 @@ enum LanguageE {
    Spanish,
    Portugues,
    Italian,
+   French,
    LastLanguage
 };
 */

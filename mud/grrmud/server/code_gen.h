@@ -36,7 +36,7 @@
 /** Only change these two things to add a new language, and of course
  * the server code may need changes too.
  */
-#define NUM_LANGUAGES 7
+#define NUM_LANGUAGES 8
 
 char* languages[NUM_LANGUAGES] = {
    "English",
@@ -45,7 +45,8 @@ char* languages[NUM_LANGUAGES] = {
    "Italian",
    "Serbian",
    "German",
-   "Polish"
+   "Polish",
+   "French"
 };
 
 
