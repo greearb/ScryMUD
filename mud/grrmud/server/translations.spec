@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.15 2001/03/29 03:02:36 eroper Exp $
-# $Revision: 1.15 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
+# $Id: translations.spec,v 1.16 2001/06/24 06:04:44 greear Exp $
+# $Revision: 1.16 $  $Author: greear $ $Date: 2001/06/24 06:04:44 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -916,9 +916,9 @@ CS_WAKE_EMOTE
 	~
 
 CS_CANT_WAKE
-        eng "You can't wake up, don't you just hate that??!!\n"
-        spa "No puedes despertar, no odias eso??!!\n"
-        ser "Nemozes da se probudis, zar nemrzis taj osecaj??!!\n"
+        eng "You can't wake up, don't you just hate that?\n"
+        spa "No puedes despertar, no odias eso?\n"
+        ser "Nemozes da se probudis, zar nemrzis taj osecaj?\n"
 	~
 
 CS_WAKE_DEAD

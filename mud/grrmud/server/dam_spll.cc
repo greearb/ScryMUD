@@ -1,5 +1,5 @@
-// $Id: dam_spll.cc,v 1.9 2001/03/29 03:02:31 eroper Exp $
-// $Revision: 1.9 $  $Author: eroper $ $Date: 2001/03/29 03:02:31 $
+// $Id: dam_spll.cc,v 1.10 2001/06/24 06:04:44 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 2001/06/24 06:04:44 $
 
 //
 //ScryMUD Server Code
@@ -55,11 +55,12 @@ void do_cast_dark_spear(critter& vict, critter& agg, int is_canned,
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) &&
          (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 
-      int dmg = d(7, (10 + lvl/5 - agg.ALIGN/200));
-      if ((agg.ALIGN < -350) && (vict.ALIGN > 350))
+      float dmg = (float)(d(7, (10 + lvl/5 - agg.ALIGN/200)));
+      if ((agg.ALIGN < -350) && (vict.ALIGN > 350)) {
          dmg *= 1.5;
+      }
 
-      exact_raw_damage(dmg, NORMAL, vict, agg);
+      exact_raw_damage((int)(dmg), NORMAL, vict, agg);
       if (!is_canned)
         agg.MANA -= spell_mana;
 
