@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.36 2002/01/05 19:40:40 eroper Exp $
-// $Revision: 1.36 $  $Author: eroper $ $Date: 2002/01/05 19:40:40 $
+// $Id: command3.cc,v 1.37 2002/01/23 08:43:09 eroper Exp $
+// $Revision: 1.37 $  $Author: eroper $ $Date: 2002/01/23 08:43:09 $
 
 //
 //ScryMUD Server Code
@@ -1102,7 +1102,7 @@ int remort(int i_th, const String* v, const String* new_race,
       int cls = get_class_num(*new_class);
       switch (cls) {
       case WARRIOR: case SAGE: case WIZARD: case RANGER: case THIEF: case ALCHEMIST:
-      case CLERIC: case BARD: {
+      case CLERIC: case BARD: case NECROMANCER: {
          if (vict->getClass() == cls) {
             pc.show("INFO: That person is already that class, continuing.\n");
          }
@@ -1156,6 +1156,11 @@ int remort(int i_th, const String* v, const String* new_race,
       case CLERIC:
          vict->SKILLS_KNOWN.Insert(PHILOSOPHY_SKILL_NUM, 25);
          vict->SKILLS_KNOWN.Insert(PHYSIK_SKILL_NUM, 25);
+         break;
+      case NECROMANCER:
+         vict->SKILLS_KNOWN.Insert(CURSING_SKILL_NUM, 25);
+         vict->SKILLS_KNOWN.Insert(CONJURING_SKILL_NUM, 10);
+         vict->SKILLS_KNOWN.Insert(NECROPHILIA_SKILL_NUM, 25);
          break;
       default: {
          mudlog.log(ERROR, "ERROR:  In default of class modifiers in remort.\n");
