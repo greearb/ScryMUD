@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.19 2002/08/19 06:23:07 eroper Exp $
-# $Revision: 1.19 $  $Author: eroper $ $Date: 2002/08/19 06:23:07 $
+# $Id: translations.spec,v 1.20 2002/09/12 01:43:21 eroper Exp $
+# $Revision: 1.20 $  $Author: eroper $ $Date: 2002/09/12 01:43:21 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -801,6 +801,12 @@ CS_STUNNED
         eng "is lying here barely breathing."
         spa "esta tirado aqui apenas respirando."
         ser "lezi ovde tesko disuci."
+	~
+
+CS_FLYING
+        eng "is floating here."
+        spa "esta flotando aqui."
+        ser "is floating here."
 	~
 
 CS_DEAD

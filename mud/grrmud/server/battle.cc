@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.50 2002/09/08 02:00:15 eroper Exp $
-// $Revision: 1.50 $  $Author: eroper $ $Date: 2002/09/08 02:00:15 $
+// $Id: battle.cc,v 1.51 2002/09/12 01:43:21 eroper Exp $
+// $Revision: 1.51 $  $Author: eroper $ $Date: 2002/09/12 01:43:21 $
 
 //
 //ScryMUD Server Code
@@ -408,7 +408,11 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
     */
    if ( (!vict.isParalyzed()) && ( vict.isStanding() || vict.isSitting() ) ) {
       // bigger means less likely to hit, should range from around 1-600
-      chance = (float)(d(1, 600)) * (float)agg.DEX / 18.0;
+      if ( vict.isStunned() ) {
+         chance = (float)(d(1, 300)) * (float)agg.DEX / 18.0;
+      } else {
+         chance = (float)(d(1, 600)) * (float)agg.DEX / 18.0;
+      }
       if ((chance < 100.0) && vict.isStanding()) {
          td = (d(1, get_percent_lrnd(DODGE_SKILL_NUM, vict, TRUE) +
                   vict.DEX * 2) > d(4,25));

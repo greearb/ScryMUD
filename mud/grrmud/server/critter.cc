@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.71 2002/08/15 05:01:16 eroper Exp $
-// $Revision: 1.71 $  $Author: eroper $ $Date: 2002/08/15 05:01:16 $
+// $Id: critter.cc,v 1.72 2002/09/12 01:43:21 eroper Exp $
+// $Revision: 1.72 $  $Author: eroper $ $Date: 2002/09/12 01:43:21 $
 
 //
 //ScryMUD Server Code
@@ -2083,9 +2083,13 @@ int critter::doUnShield() {
 
 const char* critter::getPosnStr(critter& for_this_pc) {
    switch (getPosn())
-      {
+   {
       case POS_STAND:
-         return cstr(CS_STANDING, for_this_pc);
+         if ( isFlying() ) {
+            return cstr(CS_FLYING, for_this_pc);
+         } else {
+            return cstr(CS_STANDING, for_this_pc);
+         }
       case POS_SIT:
          return cstr(CS_SITTING, for_this_pc);
       case POS_PRONE:
@@ -2102,7 +2106,7 @@ const char* critter::getPosnStr(critter& for_this_pc) {
          return cstr(CS_DEAD, for_this_pc);
       default:
          return cstr(CS_UNKNOWN, for_this_pc);
-      }//switch
+   }//switch
 }//getPosnStr
 
 
