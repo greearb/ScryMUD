@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.17 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: critter.h,v 1.18 1999/06/08 05:10:45 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
 
 //
 //ScryMUD Server Code
@@ -943,6 +943,7 @@ public:
    int isCleric() const  { return CLASS == CLERIC; }
    int isThief() const  { return CLASS == THIEF; }
    int isFighting() const  { return !is_fighting.isEmpty(); }
+   int isFighting(critter& da_pc) { return is_fighting.haveData(&da_pc); }
 
    int isStanding() { return POS == POS_STAND; }
    int isSleeping() { return POS == POS_SLEEP; }

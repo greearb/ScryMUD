@@ -8,6 +8,7 @@ Valid states are:  all, open, assigned, retest, closed, defer
 
 buglist                     #  List all bugs in the open state.
 buglist [state]             #  Lists bugs in that state.
+buglist stat [bug#]         #  Verbose listing of a single bug.
 buglist assign [new assignee]  # Assign someone to be responsible.
 buglist chstate [bug#] [new state] [notes]  # Change the state of a bug.
 buglist comment [bug#]              # Puts you into a state in which

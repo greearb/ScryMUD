@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.16 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: command4.cc,v 1.17 1999/06/08 05:10:45 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
 
 //
 //ScryMUD Server Code
@@ -1357,7 +1357,7 @@ int give(int i_th, const String* obj, int j_th, const String* target,
 
    targ = ROOM.haveCritNamed(j_th, target, pc.SEE_BIT);
    if (!targ) {
-      show("You don't see that person here.\n", pc);
+      pc.show("To whom shall you give it?\n");
       return -1;
    }//if
 
@@ -1745,6 +1745,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       show("sex (0-female, 1-male, 2-neuter)\n", pc);
       show("position (0, 6)             align (-1000 1000)\n", pc);
       show("hunger (-1, 9999)           thirst (-1, 9999)\n", pc);
+      show("drugged (-1, 9999)          ", pc);
       show("quest_points (0, 1000)      gold (0, 50 million)\n", pc);
       show("experience (0, 100 million) bank_gold (0, 50 million)\n", pc);
       show("strength (0, 100)           inteligence (0, 100)\n", pc);
@@ -1911,6 +1912,12 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       else if (strncasecmp(*targ, "thirst", len1) == 0) {
 	if (check_l_range(new_val, -1, 9999, pc, TRUE)) {
 	  ptr->THIRST = new_val;
+          flag = TRUE;
+	}//if
+      }//if
+      else if (strncasecmp(*targ, "drugged", len1) == 0) {
+	if (check_l_range(new_val, -1, 9999, pc, TRUE)) {
+	  ptr->DRUGGED = new_val;
           flag = TRUE;
 	}//if
       }//if

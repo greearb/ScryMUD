@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.17 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: commands.cc,v 1.18 1999/06/08 05:10:45 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
 
 //
 //ScryMUD Server Code
@@ -797,6 +797,11 @@ int do_hit(critter& vict, critter& pc) {
       return -1;
    }//if
    
+   if (pc.isFighting(vict)) {
+      pc.show(CS_ASSIST_ALREADY_TRYING);
+      return -1;
+   }
+
    join_in_battle(pc, vict);   
    
    if (vict.isUsingClient()) {
@@ -2453,6 +2458,7 @@ int wake(critter& pc) {
 //*******************************************************************//
 
 
+/** Returns < 0 on error */
 int move(critter& pc, int i_th, const char* direction, short do_followers, 
          room& rm, int& is_dead) {
    Cell<critter*> cell;
@@ -2466,7 +2472,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 
    if (!direction) {
       mudlog.log(ERR, "ERROR: direction NULL in move.\n");
-      return FALSE;
+      return -1;
    }//if
 
    if (!ok_to_do_action(NULL, "FP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -2623,7 +2629,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
          pc.doGoToRoom(dest, from_dir, door_ptr, is_dead, rm.getIdNum());
 
          if (is_dead) {
-            return 0;
+            return -1;
          }
 
          if (from_dir.Strlen()) {
@@ -2656,7 +2662,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
             }//while
          }//if
 
-
+         //succes
          return 0;
       }//else
    }//if

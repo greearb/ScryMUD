@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.15 1999/06/06 19:38:24 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/06 19:38:24 $
+// $Id: spec_prc.cc,v 1.16 1999/06/08 05:10:45 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
 
 //
 //ScryMUD Server Code
@@ -834,7 +834,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
          while ((ptr = room_list[i].findNextProcMob())) {
             if (mudlog.ofLevel(DBG)) {
                mudlog << "Found ptr:  " << ptr << " name: "
-                      << ptr->getName() << endl;
+                      << *(ptr->getName()) << endl;
             }
             if (ptr->MOB_FLAGS.get(1)) { //scavenge
                if (d(1,100) <= 10) {
@@ -890,7 +890,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
 	    }//if hunting
             else if (ptr->shouldBeHoming() && room_list[i].haveCritter(ptr)) {
                is_dead = FALSE;
-               mudlog << "WARNING: doing travelToRoom from spec_prc.cc" << endl;
+               //mudlog << "WARNING: doing travelToRoom from spec_prc.cc" << endl;
                ptr->travelToRoom( ptr->getHomeRoom(), d(1, ptr->DEX/2),
                                  is_dead);
             }

@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.20 1999/06/06 18:15:42 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/06 18:15:42 $
+// $Id: command2.cc,v 1.21 1999/06/08 05:10:44 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/08 05:10:44 $
 
 //
 //ScryMUD Server Code
@@ -1046,7 +1046,7 @@ int drink(int i_th, const String* name, critter& pc) {
          }//if
          else if (obj_ptr->extras[0] == 0) { 
             Sprintf(buf, cstr(CS_CONT_EMPTY_SPRINTF, pc),
-                    &(obj_ptr->short_desc));
+                    obj_ptr->getShortName());
             show(buf, pc);
          }//if 
          else if (IsEmpty(obj_ptr->inv)) {

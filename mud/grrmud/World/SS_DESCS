@@ -319,7 +319,7 @@ This specialized spell makes a sword ice cold, which may cause
 extra damage to those who favor hot environments!
 ~
 gate
-This spell allows one to create a two-way portal between
+This spell allows one to create a one-way portal between
 oneself and another player.
 ~
 group heal
@@ -484,7 +484,7 @@ poisoned.  The damage is rarely fatal, but can linger for
 some time.
 ~
 portal
-This spell allows one to open a one-way portal to another player.
+This spell allows one to open a two-way portal to another player.
 ~
 prismatic globe
 This is a powerful spell of protection, completely wrapping the

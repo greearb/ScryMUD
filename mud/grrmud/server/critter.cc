@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.22 1999/06/06 19:38:24 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/06 19:38:24 $
+// $Id: critter.cc,v 1.23 1999/06/08 05:10:45 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
 
 //
 //ScryMUD Server Code
@@ -2018,13 +2018,33 @@ int critter::travelToRoom(int targ_room_num, int num_steps, int& is_dead) {
          
          if (dptr->isClosed()) {
             if (!open(1, dir, *this)) {
+               if (mudlog.ofLevel(DBG)) {
+                  mudlog << "WARNING: Could not open door: " << *dir 
+                         << " to room: " << next_room << " from room: "
+                         << getCurRoomNum() << endl;
+               }//if
                return -1;  //cant get there from here
             }//if
          }//if
          
          //move will take care of attack
-         move(*this, 1, *dir, TRUE, *(getCurRoom()), is_dead);
-         
+         if (move(*this, 1, *dir, TRUE, *(getCurRoom()), is_dead) < 0) {
+            if (mudlog.ofLevel(DBG)) {
+               if (!is_dead) {
+                  mudlog << "INFO: failed to move in travelToRoom, next_room: "
+                         << next_room << " from room: " << getCurRoomNum()
+                         << " critter: " << *(getName()) << " targ_room_num: "
+                         << targ_room_num << " num_steps: " << num_steps << endl;
+               }
+               else {
+                  mudlog << "INFO: failed to move in travelToRoom, next_room: "
+                         << next_room << " targ_room_num: " << targ_room_num 
+                         << " num_steps: " << num_steps << endl;
+               }
+            }//if
+            return -1;
+         }//if
+
          if (is_dead) {
             return -1;
          }

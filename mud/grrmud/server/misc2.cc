@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.18 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: misc2.cc,v 1.19 1999/06/08 05:10:45 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
 
 //
 //ScryMUD Server Code
@@ -203,131 +203,143 @@ void show_stat_affects(object& obj, critter& pc) {
    
    while ((ptr = cll.next())) {
       if (ptr->stat_spell == 1) {
-         Sprintf(buf, "Strength:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Strength[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 2) {
-         Sprintf(buf, "Inteligence:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Inteligence[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 3) {
-         Sprintf(buf, "Constitution:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Constitution[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 4) {
-         Sprintf(buf, "Charisma:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Charisma[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 5) {
-         Sprintf(buf, "Wisdom:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Wisdom[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 6) {
-         Sprintf(buf, "Dexterity:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Dexterity[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 7) {
-         Sprintf(buf, "Hit (chance):%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Hit (chance)[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 8) {
-         Sprintf(buf, "Damage:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Damage[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 9) {
-         Sprintf(buf, "AC (armor):%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "AC (armor)[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 10) {
-         Sprintf(buf, "Attacks:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Attacks[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 15) {
-         Sprintf(buf, "HP (current):%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "HP (current)[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 16) {
-         Sprintf(buf, "Mana (current):%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Mana (current)[%i]:%P25 %i\n",
+                 ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 17) {
-         Sprintf(buf, "Movement (current):%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Movement (current)[%i]:%P25 %i\n",
+                 ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 18) {
-         Sprintf(buf, "Alignment:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Alignment[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 22) {
-         Sprintf(buf, "Practices:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Practices[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 23) {
-         Sprintf(buf, "HP (max):%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "HP (max)[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 24) {
-         Sprintf(buf, "Mana (max):%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Mana (max)[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 25) {
-         Sprintf(buf, "Movement (max):%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Movement (max)[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 27) {
-         Sprintf(buf, "Damage Recieved Modifier:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Damage Recieved Modifier[%i]:%P25 %i\n",
+                 ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 28) {
-         Sprintf(buf, "Damage Given Modifier:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Damage Given Modifier[%i]:%P25 %i\n",
+                 ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 29) {
-         Sprintf(buf, "Heat Resistance:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Heat Resistance[%i]:%P25 %i\n",
+                 ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 30) {
-         Sprintf(buf, "Cold Resistance:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Cold Resistance[%i]:%P25 %i\n",
+                 ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 31) {
-         Sprintf(buf, "Electrical Resistance:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Electrical Resistance[%i]:%P25 %i\n",
+                 ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 32) {
-         Sprintf(buf, "Spell Resistance:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Spell Resistance[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 35) {
-         Sprintf(buf, "Bare Hand Dice Count:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Bare Hand Dice Count[%i]:%P25 %i\n",
+                 ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 36) {
-         Sprintf(buf, "Bare Hand Dice Sides:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Bare Hand Dice Sides[%i]:%P25 %i\n",
+                 ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 37) {
-         Sprintf(buf, "HP Regeneration:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "HP Regeneration[%i]:%P25 %i\n",
+                 ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 38) {
-         Sprintf(buf, "Mana Regeneration:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Mana Regeneration[%i]:%P25 %i\n",
+                 ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 39) {
-         Sprintf(buf, "Movement Regeneration:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Movement Regeneration[%i]:%P25 %i\n",
+                 ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 100) {
-         Sprintf(buf, "Hunger:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Hunger[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 101) {
-         Sprintf(buf, "Thirst:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Thirst[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 102) {
-         Sprintf(buf, "Drugged:%P25 %i\n", ptr->bonus_duration);
+         Sprintf(buf, "Drugged[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
          show(buf, pc);
       }//if
       else {
