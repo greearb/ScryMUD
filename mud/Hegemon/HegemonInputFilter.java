@@ -141,9 +141,10 @@ class HegemonInputFilter extends Object {
          Action a;
       
          int acts_len = 0;
-         if (acts_vect != null)
-           acts_len = acts_vect.length;
-      
+         if (acts_vect != null) {
+            acts_len = acts_vect.length;
+         }
+
          for (int i = 0; i<acts_len; i++) {
             a = acts_vect[i];
             if ((idx = ln.indexOf(a.getTrigger())) != -1) {
@@ -236,7 +237,7 @@ class HegemonInputFilter extends Object {
 
    // Depending on which case we're in, send text to certain places..
    void dispenseText(String txt) {
-
+      Log.instance().dbg("DispenseText, context_mode: " + context_mode + "\n");
       if (context_mode.equals(MODE_NORMAL)) {
          heg_scroll.append(txt);
          return;

@@ -1,10 +1,16 @@
 <help olc add_perm_inv>
 
-This is used to add permanent inventory to Shopkeepers.
+This is used to add permanent inventory to Shopkeepers.  You
+probably want to use the 'DB' method to directly affect the
+database.  Don't forget to do an amsave to make your changes
+permanent.
 
 Syntax:  add_perm_inv <<i_th> [shopkeeper] [object_number]
+Syntax:  add_perm_inv [VNUM] DB [object_number]
 
 Example:  add_perm_inv 2.baker 5	He now sells object number 5.
+Example:  add_perm_inv 55 DB 5		Mob # 55 now sells object number 5.
+
 <color=red>
-See Also:  olc, mstat, olist, aolist, buy, list, rem_perm_inv
+See Also:  aosave, mstat, olist, aolist, buy, list, rem_perm_inv
 </color></help>

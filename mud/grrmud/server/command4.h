@@ -77,8 +77,10 @@ int dlist(int start, int end, critter& pc);
 int adlist(critter& pc);
 int zlist(int start, int end, critter& pc);
 
+//loop through all rooms in zone.
+int set_zflag(int flagnum, const String* on_off, critter& pc);
+
 int tog_rflag(int flagnum, critter& pc);
-int tog_zflag(int flagnum, critter& pc); //loop through all rooms in zone.
 int tog_oflag(int flagnum, const String* flag_type, 
                int i_th, const String* obj, critter& pc); 
 int tog_mflag(int flagnum, const String* flag_type, 

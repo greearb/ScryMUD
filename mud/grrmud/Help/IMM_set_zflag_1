@@ -1,10 +1,11 @@
-<help olc tog_zflag>
+<help olc set_zflag>
 
-Used to toggle a room flag in every room in your CURRENT zone.
+Used to set a room flag in every room in your CURRENT zone.
 
-syntax:  tog_zflag <<flag_num>
+syntax:  set_zflag [flag_num] [on/off]
 
-example:  tog_zflag 3 		Toggles flag # 3 in current zone.
+example:  set_zflag 3 on	Sets flag # 3 in current zone.
+example:  set_zflag 4 off       Clears flag # 4 in current zone.
 
 Bugs:  Some flags are (and should be) restricted from toggling.  As
        an Imp adds/deletes/changes flags, he/she should check this

@@ -110,7 +110,7 @@ public:
 
    int calculateIndex(char val) {
       //convert to upper, subtract A, then hash
-      return ((toupper(val) - 'A') % CMD_ARRAY_LEN);
+      return (abs(toupper(val) - 'A') % CMD_ARRAY_LEN);
    }
 
 

@@ -18,6 +18,6 @@ Bugs:  Some flags are (and should be) restricted from toggling.  As
        an Imp adds/deletes/changes flags, he/she should check this
        and similar functions for possible tweaking.
 <color=red>
-See also:  olc, tog_mflag, tog_rflag, ostat
+See also:  olc, tog_mflag, tog_rflag, ostat, set_zflag
 </color></help>
 

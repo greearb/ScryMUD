@@ -167,12 +167,12 @@ void cast_wizard_eye(int i_th, const String* victim, critter& pc) {
    }//if
 
    if (!vict) {
-      show("Identify what??\n", pc);
+      show("On which item??\n", pc);
       return;
    }//if
 
    if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
-     return;
+      return;
    }//if
 
                  /* all checks have been passed, lets do it */
@@ -273,20 +273,19 @@ void do_cast_identify(object& vict, critter& agg, int is_canned,
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
 
-     if (!is_canned)
-       agg.MANA -= spell_mana;
+      if (!is_canned)
+         agg.MANA -= spell_mana;
 
-     do_lore(vict, agg);
-
-     show_stat_affects(vict, agg);
-
+      // Do lore with extra info.
+      do_lore(vict, agg, TRUE);
+      
    }//if it worked
    else { //not canned AND lost concentration
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
-     emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
+      emote("obviously forgot part of the spell!", agg, 
+            room_list[agg.getCurRoomNum()], TRUE);
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else lost concentration
    agg.PAUSE += 1; 
 }//do_cast_identify

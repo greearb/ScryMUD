@@ -2228,7 +2228,7 @@ int ostat(int i_th, const String* name, critter& pc) {
    object* obj_ptr;
    String buf(100);
 
-   if (ok_to_do_action(NULL, "IP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+   if (ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
 
       if (name->Strlen() == 0) {
          if (check_l_range(i_th, 0, NUMBER_OF_ITEMS, pc, TRUE)) {
@@ -2255,7 +2255,7 @@ int ostat(int i_th, const String* name, critter& pc) {
 }//ostat
 
 
-int lore(int i_th, const String* name, critter& pc) {
+int lore(int i_th, const String* name, critter& pc, int show_extra = FALSE) {
    object* obj_ptr;
    String buf(100);
 
@@ -2273,14 +2273,14 @@ int lore(int i_th, const String* name, critter& pc) {
          return -1;
       }//if
       else {
-         return do_lore(*obj_ptr, pc);
+         return do_lore(*obj_ptr, pc, show_extra);
       }//else
    }
    return -1;
 }//lore
 
 
-int do_lore(object& obj, critter& pc) {
+int do_lore(object& obj, critter& pc, int show_extra) {
    String buf(100);
 
    show((obj.ob->short_desc), pc);
@@ -2364,11 +2364,30 @@ int do_lore(object& obj, critter& pc) {
       if (obj.OBJ_FLAGS.get(39))
          show("Shield ", pc);
       
-      if (obj.OBJ_FLAGS.get(40))
+      if (obj.OBJ_FLAGS.get(40)) {
          show("\nIt is not a weapon.\n", pc);
-      else
-         show("\nIt is a weapon.\n", pc);
+      }
+      else {
+         if (show_extra) {
+            Sprintf(buf, "Weapon Damage: %id%i.\n",
+                    obj.getDiceCnt(), obj.getDiceSides());
+            pc.show(buf);
+         }
+         else {
+            show("\nIt is a weapon.\n", pc);
+         }
+      }
    }//else
+
+   // Take care of stat affects.
+   if (show_extra) {
+      show("It is affected by:\n", pc);
+      out_stat_spell_list(obj.ob->affected_by, pc);      
+
+      show("It's stat affects are:\n", pc);
+      out_stat_spell_list(obj.ob->stat_affects, pc);
+   }//if
+
    return 0;
 }//do_lore
 
@@ -2411,7 +2430,7 @@ Bag Flag Definitions:
       return -1;
    }//if
    else {
-      if (!pc.USING_CLIENT) {
+      if (!pc.isUsingClient()) {
          show("\n", pc);
          show((obj_ptr->ob->short_desc), pc);
          show("\n", pc);
@@ -2439,14 +2458,14 @@ Bag Flag Definitions:
          buf2 += " ";
       }//while
 
-      if (!pc.USING_CLIENT) {
+      if (!pc.isUsingClient()) {
          Sprintf(buf, "\nNames (Keywords): %S", &buf2);
          pc.show(buf);
       }//if
       else { //then show tags...
          Sprintf(buf, "<NAMES %S>\n", &buf2);
-         pc.show(buf2); //output that they can read
          pc.show(buf); //output the client deals with
+         pc.show(buf2); //output that they can read
       }//else
 
       Sprintf(buf2, "\nBelongs to zone:  %i.\n", obj_ptr->OBJ_IN_ZONE);
@@ -2505,12 +2524,12 @@ Bag Flag Definitions:
 
       if (obj_ptr->ob->obj_proc) {
          show("It has SPEC PROCS.\n", pc);
-         show("Here is obj_spec_data_flags:\n", pc);
+         show("\tHere is obj_spec_data_flags:\n", pc);
          out_field(obj_ptr->ob->obj_proc->obj_spec_data_flags, pc);
          if (obj_ptr->ob->obj_proc->construct_data) {
-            show("It has construct data.\n", pc);
+            show("\tIt has construct data.\n", pc);
             Sprintf(buf2, 
-       "Target: %i, item1: %i, item2: %i, item3: %i, item4: %i, item5: %i\n",
+       "\tTarget: %i, item1: %i, item2: %i, item3: %i, item4: %i, item5: %i\n",
                     obj_ptr->ob->obj_proc->construct_data->target_object,
                     obj_ptr->ob->obj_proc->construct_data->item1,
                     obj_ptr->ob->obj_proc->construct_data->item2,
@@ -2521,7 +2540,7 @@ Bag Flag Definitions:
          }//if construct data
          
          if (obj_ptr->CASTS_THESE_SPELLS.size() > 0) {
-            pc.show("Casts these spells:   (spell_level, spell_num)\n");
+            pc.show("\tCasts these spells:   (spell_level, spell_num)\n\t");
             Cell<stat_spell_cell*> cll(obj_ptr->CASTS_THESE_SPELLS);
             stat_spell_cell* ssptr;
             while ((ssptr = cll.next())) {
@@ -2529,6 +2548,7 @@ Bag Flag Definitions:
                        ssptr->stat_spell);
                pc.show(buf2);
             }//while
+            pc.show("\n");
          }//if
       }//if obj proc
 

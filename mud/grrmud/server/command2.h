@@ -64,8 +64,11 @@ int list_merchandise(int i_th, const String* keeper, critter& pc);
 
 int mstat(int i_th, const String* name, critter& pc); //stat critter
 int do_mstat(critter& targ, critter& pc);
-int lore(int i_th, const String* name, critter& pc); //stat object
-int do_lore(object& targ, critter& pc);
+
+//stat object
+int lore(int i_th, const String* name, critter& pc, int show_extra = FALSE);
+int do_lore(object& targ, critter& pc, int show_extra);
+
 int ostat(int i_th, const String* name, critter& pc); //stat object
 int do_ostat(object& obj, critter& pc);
 int rstat(int i_th, critter& pc); //stat room

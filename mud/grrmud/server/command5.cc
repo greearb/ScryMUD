@@ -653,6 +653,7 @@ int teach(int i_th, const String* name, int prcnt, const String* skill,
 int add_perm_inv(int i_th, const String* name, int obj_num, 
                  critter& pc) {
    String buf(100);
+   critter* ptr;
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
@@ -666,7 +667,19 @@ int add_perm_inv(int i_th, const String* name, int obj_num,
       return -1;
    }//if
 
-   critter* ptr = ROOM.haveCritNamed(i_th, name, pc.SEE_BIT);
+   if (*name == "DB") {
+      if (check_l_range(i_th, 2, NUMBER_OF_MOBS, pc, TRUE)) {
+         ptr = &(mob_list[i_th]);
+      }
+      else {
+         return -1;
+      }
+   }//if
+   else {
+      ptr = ROOM.haveCritNamed(i_th, name, pc.SEE_BIT);
+      pc.show("You may want to use the [VNUM].DB method.  See help.\n");
+   }
+
    if (ptr) {
       if (ptr->mob && ptr->mob->proc_data && 
           ptr->mob->proc_data->sh_data) {
@@ -717,14 +730,27 @@ int add_perm_inv(int i_th, const String* name, int obj_num,
 
 
 int rem_perm_inv(int j_th, const String* obj_name, int i_th,
-		  const String* targ, critter& pc) {
+                 const String* targ, critter& pc) {
    String buf(100);
+   critter* ptr;
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
 
-   critter* ptr = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
+   if (*targ == "DB") {
+      if (check_l_range(i_th, 2, NUMBER_OF_MOBS, pc, TRUE)) {
+         ptr = &(mob_list[i_th]);
+      }
+      else {
+         return -1;
+      }
+   }//if
+   else {
+      ptr = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
+      pc.show("You may want to use the [VNUM].DB method.  See help.\n");
+   }
+
    object* inv_obj = NULL;
 
    if (ptr) {
@@ -792,7 +818,7 @@ int rem_perm_inv(int j_th, const String* obj_name, int i_th,
    }//else maybe its an object?
    show("You don't see that object or critter here.\n", pc);
    return -1;
-}//add_perm_inv
+}//rem_perm_inv
 
    
 int beep(int i_th, const String* name, critter& pc) {
@@ -973,6 +999,10 @@ int suicide(const String* passwd,  critter& pc) {
   String buf(100);
 
    if (!ok_to_do_action(NULL, "mrBFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (!pc.isPc()) {
       return -1;
    }
 

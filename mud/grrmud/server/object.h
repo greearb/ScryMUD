@@ -287,6 +287,9 @@ public:
    int decrementCurInGame();
    int incrementCurInGame();
    int getMaxInGame();
+   int getDiceCnt() const { return ob->extras[6]; }
+   int getDiceSides() const { return ob->extras[7]; }
+
    static int getInstanceCount() { return _cnt; }
 
    int getObjCountByNumber(int onum, int sanity);

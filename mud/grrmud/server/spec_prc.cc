@@ -527,7 +527,7 @@ int do_wand_scroll_proc(object* otarg, int proc_num, critter& pc,
    switch (proc_num)
      {
        case 124: 
-         do_lore(*otarg, pc);
+         do_lore(*otarg, pc, FALSE);
          return 0;
        case 156: 
          do_cast_detect_poison(*otarg, pc, TRUE, spell_lvl);

@@ -1146,12 +1146,19 @@ void out_stat_spell_list(const List<stat_spell_cell*>& lst, critter& pc) {
    Cell<stat_spell_cell*> cll(lst);
    stat_spell_cell* ptr;
    String buf(100);
+   String buf2(100);
+
+   if (lst.isEmpty()) {
+      pc.show("NONE\n");
+      return;
+   }
 
    while ((ptr = cll.next())) {
-      Sprintf(buf, "%i %i ", ptr->stat_spell, ptr->bonus_duration);
-      show(buf, pc);
+      Sprintf(buf, "(%i %i) ", ptr->stat_spell, ptr->bonus_duration);
+      buf2.Append(buf);
    }//while
-   show("\n", pc);
+   buf2.Append("\n");
+   pc.show(buf2);
 }//out_stat_spell
 
 

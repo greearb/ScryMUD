@@ -517,7 +517,7 @@ pause add_mob_script ~
 return pause(i, pc);
 pinch socials ~
 pinch(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
-possesss ~
+possess ~
 return possess(i, &(cooked_strs[1]), pc);
 prompt ~
 return prompt(&(cooked_strs[1]), pc);
@@ -653,6 +653,8 @@ set_ven_stop ~
 return  set_veh_stop(i, j, &(cooked_strs[1]), pc);
 set_path_pointer ~
 return set_path_pointer(i, j, pc);
+set_zflag ~
+return set_zflag(i, &(cooked_strs[1]), pc);
 save_mob ~
 return save_mob(i, &(cooked_strs[1]), pc);
 save_obj ~
@@ -779,8 +781,6 @@ tog_oflag ~
 return tog_oflag(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 tog_rflag ~
 return tog_rflag(i, pc);
-tog_zflag ~
-return tog_zflag(i, pc);
 thaw ~
 return thaw(i, &(cooked_strs[1]), pc);
 topics *topics ~
@@ -811,6 +811,8 @@ use ~
 return use(i, &(cooked_strs[1]), pc); 
 using_client ~
 return using_client(pc); 
+unpossess *unpossess ~
+NOP
 
 # case V
 value_add ~
@@ -853,6 +855,8 @@ wibble(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 wimpy ~
 return wimpy(i, pc);
 wizchat *channels ~
+NOP
+wizhelp *wizhelp ~
 NOP
 wc *channels ~
 NOP

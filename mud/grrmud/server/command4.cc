@@ -1633,8 +1633,9 @@ int tog_rflag(int flagnum, critter& pc) {
 }//tog_rflag
 
 
-int tog_zflag(int flagnum, critter& pc) {
+int set_zflag(int flagnum, const String* on_off, critter& pc) {
    String buf(50);
+   int flag;
 
    if (!ok_to_do_action(NULL, "IFPR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
@@ -1644,18 +1645,35 @@ int tog_zflag(int flagnum, critter& pc) {
       return -1;
    }//if
 
+   if (strcasecmp(*on_off, "on") == 0) {
+      flag = 1;
+   }
+   else if (strcasecmp(*on_off, "off") == 0) {
+      flag = 0;
+   }
+   else {
+      pc.show("Syntax:  set_zflag [flag_num] [on/off]\n");
+      return -1;
+   }
+                                          
    if (flagnum == 23) {
       pc.show("You can't toggle that flag, try rclone or rclear.\n");
    }
    else {
       int start = ZoneCollection::instance().elementAt(pc.getCurRoom()->getZoneNum()).getBeginRoomNum();
       int end = ZoneCollection::instance().elementAt(pc.getCurRoom()->getZoneNum()).getEndRoomNum();
-      Sprintf(buf, "Toggling flag#:  %i in rooms %i through %i.\n",
-              flagnum, start, end);
+      if (flag) {
+         Sprintf(buf, "Turning ON flag#:  %i in rooms %i through %i.\n",
+                 flagnum, start, end);
+      }
+      else {
+         Sprintf(buf, "Turning OFF flag#:  %i in rooms %i through %i.\n",
+                 flagnum, start, end);
+      }         
       show(buf, pc);
       for (int i = start; i <= end; i++) {
          if (room_list.elementAtNoCreate(i)) {
-            room_list[i].flipFlag(flagnum);
+            room_list[i].setFlag(flagnum, flag);
          }//if
       }//for
       return 0;
@@ -2550,7 +2568,7 @@ int tog_oflag(int flagnum, const String* flag_type,
 
    object* obj_ptr = NULL;
 
-   if (obj->Strlen() > 0) {
+   if ((obj->Strlen() > 0) && (*obj != "DB")) {
       obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT,
                                ROOM);
       if (!obj_ptr) {
@@ -2559,7 +2577,7 @@ int tog_oflag(int flagnum, const String* flag_type,
       }
    }//if
    else { 
-      if (check_l_range(i_th, 2, NUMBER_OF_ITEMS, pc, TRUE))
+      if (!check_l_range(i_th, 2, NUMBER_OF_ITEMS, pc, TRUE))
          return -1;
       
       if (!obj_list[i_th].isInUse()) {

@@ -2308,7 +2308,7 @@ int meditate(critter& pc) {
    }//if
    else if ((pc.POS != POS_SLEEP)) {
       if (IsEmpty(pc.IS_FIGHTING)) {
-         if (d(1, 100) < d(1, get_percent_lrnd(MEDITATION_SKILL_NUM, pc))) {
+         if (d(1, 75) < d(1, get_percent_lrnd(MEDITATION_SKILL_NUM, pc))) {
             show("You relax into a deep trance.\n", pc);
             emote("goes into a trance.\n", pc, ROOM, FALSE);
             pc.POS = POS_MED; //sleep
@@ -3325,6 +3325,9 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
             else if (do_msg)
                show("Some feeling returns to your nose!.\n", pc);
             break;
+
+         default:
+            continue;
       }//switch
    }//while
    mudlog.log(DBG, "Done w/consume_eq_effects.\n");
