@@ -739,7 +739,7 @@ int exact_raw_damage(int damage, int damage_type, critter& vict,
    }//if
 
   vict.HP -= (int)(dam);
-  return abs((int)dam); //negative damages mess up messages
+  return abs((int)dam); //negative damages mess up error messages
 }//exact_raw_damage
 
 

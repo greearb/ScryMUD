@@ -1563,6 +1563,63 @@ void nod(int i_th, const String* vict, critter& pc, room& rm) {
    }
 }//nod
 
+
+void nog(int i_th, const String* vict, critter& pc, room& rm) {
+   String buf(100);
+   Cell<critter*> cll(rm.getCrits());
+   critter* ptr;
+   critter* targ = NULL;
+
+   if (vict->Strlen()) {
+      critter* crit_ptr = 
+            rm.haveCritNamed(i_th, vict, pc.SEE_BIT);
+
+      if (!crit_ptr) 
+         show(DONT_SEE_PERSON, pc);
+      else if (pc.POS > POS_SIT)
+         show(NOT_IN_POSN, pc);
+      else if (crit_ptr == &pc) {
+         show("You nog sagely to yourself.\n", pc);
+         Sprintf(buf, "nogs sagely to %s.\n", get_hisself_herself(pc));
+         emote(buf, pc, rm, TRUE);
+         targ = &pc;
+      }//if targ and agg is same
+      else {
+         targ = crit_ptr;
+         Sprintf(buf, "You nog in sagely agreement with %S.\n",
+                 name_of_crit(*crit_ptr, pc.SEE_BIT));
+         show(buf, pc);
+         Sprintf(buf, "%S nogs in sagely agreement with you!!\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         buf.Cap();
+         show(buf, *crit_ptr);
+         
+         while ((ptr = cll.next())) {
+            if ((ptr != &pc) && (ptr != crit_ptr)) {
+               Sprintf(buf, "%S nogs in sagely agreement with %S.\n",
+                 name_of_crit(pc, ptr->SEE_BIT), 
+                 name_of_crit(*crit_ptr, ptr->SEE_BIT));
+               buf.Cap();
+               show(buf, *ptr);
+            }//if
+         }//while
+      }//else
+   }//if a victim
+   else {      
+      show("You nog sagely.\n", pc);
+      emote("nogs sagely!!", pc, rm, TRUE);
+      targ = NULL;
+   }//else
+
+//   String cmd = "nod";
+//   if (targ) {
+//      rm.checkForProc(cmd, NULL_STRING, pc, targ->getIdNum());
+//   }
+//   else {
+//      rm.checkForProc(cmd, NULL_STRING, pc, 0);
+//   }
+}//nog
+
 void grin(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
    Cell<critter*> cll(rm.getCrits());

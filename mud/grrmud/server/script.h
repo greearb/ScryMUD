@@ -35,6 +35,13 @@
 
 class room;
 
+
+/**  This will not kill, but can set HP to 1 in worst case. */
+int affect_crit_stat(StatTypeE ste, String& up_down, int i_th,
+                     String* victim, int dice_cnt, int dice_sides,
+                     room* rm, critter* caller = NULL);
+
+
 /** Used to provide branching in scripts..  The lengths of the
  * cooked* arrays passed in are directly related to the cooked*
  * arrays found in parse.cc. 

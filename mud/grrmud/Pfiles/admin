@@ -1,4 +1,4 @@
-Admin ~	names 192.168.1.3 __LEVEL__ 40
+Admin ~	names 127.0.0.1 __LEVEL__ 40
 the IMP Supreme
 ~
 
@@ -9,10 +9,10 @@ problems for you.
 ~
 18 16 12 11 10 9 8 7 6 -1  -:| bitfield |:-
 2975 65917 0 	long_data
-2 17 17 16 12 17 16 1 1 65 1 0 2 3 1 75 500 500 -189 
+0 17 17 16 12 17 16 1 1 65 1 0 2 3 1 75 500 499 -189 
 40 0 0 5 75 500 500 0 100 100 115 106 105 87 0 0 2 3 100 100 
 100 0 0 0 	shrt_cur_stats
-1024 2047 1 	cur_stats
+1024 2047 69 	cur_stats
 -2 9	 Start of SOBJ
 sword steel shortsword ~	names
 a steel shortsword
@@ -45,10 +45,10 @@ End of Object.
 -1	affected_by
 400 -1	inv
 bgio24h/ZwWLw	passwd
-26 25 19 16 14 11 10 6 5 2 -1  -:| bitfield |:-
-71 15 15 71 923885283 100		bday, byr, ryr, rday, llt, tto
-18 5407 5407 -2 0 0 0 age hgr thr drg pk died qp
-117 1 118 25 134 25 -1	ss_known
+26 25 19 16 14 11 10 6 2 -1  -:| bitfield |:-
+71 15 15 71 924068291 100		bday, byr, ryr, rday, llt, tto
+18 5405 5405 -2 0 0 0 age hgr thr drg pk died qp
+14 1 117 1 118 25 134 25 147 100 178 100 -1	ss_known
 %N
 10	Imm level
 [36m Gos color

@@ -42,7 +42,7 @@
 #include "SkillSpell.h"
 #include "script.h"
 #include "olc.h"
-
+#include "BuildInfo.h"
 
 int update_cur_in_game(critter& pc) {
    if (pc.isImmort() && (pc.IMM_LEVEL >= 9)) {
@@ -2154,6 +2154,14 @@ int dsys(critter& pc) {
       return -1;
    }
 
+   Sprintf(buf, "ScryMUD version: %s
+Built on:        %s
+On Machine:      %s
+By:              %s\n\n",
+           BuildInfo::getVersion(), BuildInfo::getBuildDate(),
+           BuildInfo::getBuildMachine(), BuildInfo::getBuilder());
+   pc.show(buf);
+
    Sprintf(buf, "Listening on port: %i\n", DFLT_PORT);
    pc.show(buf);
 
@@ -2661,6 +2669,9 @@ int do_shoot(critter& targ, critter& pc) {
          delete ammo;
       }//if
    }//if
+
+   pc.setPause(pc.getPause() + 1);
+
    return 0;
 }//do_shoot
 

@@ -36,6 +36,15 @@ CCFLAGS = -g -D_GNU_SOURCE -fguiding-decls\
           -Wall -I$(MUD_HOME)/include
 LDLIBS =  -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
 
+#  Use Electric fence to find memory problems.
+#  Comment these two out for production code (these bloat the hell
+#  out of your code..you'll need 150MB of RAM/swap to run the binary)!!
+#   --Ben
+#CCFLAGS = -g -D_GNU_SOURCE -DUSE_SEMAPHORE -fguiding-decls\
+#          -Wall -I$(MUD_HOME)/include
+#LDFLAGS =  -L/home/greear/lib -L$(MUD_HOME)/lib #linker flaggs
+#LDLIBS =  -lefence -lpthread -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
+
 
 # NOTE:  Uncomment these if you are using the older g++
 #CCFLAGS = -g -Wall -I$(MUD_HOME)/include #compiler flags-fguiding-decl

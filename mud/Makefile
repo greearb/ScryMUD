@@ -1,9 +1,13 @@
 #  Makefile for Hegemon and ScryMUD
 
+# NOTE:  Much of this script assumes you have ./ in your PATH.  Please
+#        make sure that is the case!
 
 #You should not have to edit anything besides the MakeInclude file
 include MakeInclude
 
+#  These are all independent of the World Database.  When I complete
+#  a new load, I upload this set of files to my production servers.
 CORE_FILES = \
 	grrmud/Help/IMM*_1\
 	grrmud/Help/[a-z]*_1 \
@@ -18,6 +22,8 @@ CORE_FILES = \
 	grrmud/truncate_log License Credits grrmud/startup \
 	include/README lib/Makefile README grrmud/server/gen_cmds.spec
 
+#  Needed for a first time install.  World files are also needed,
+#  but handled elsewhere.
 MISC_FILES = \
 	grrmud/Boards/board_32 \
 	grrmud/Pfiles/admin grrmud/PlayerShops \
@@ -36,7 +42,6 @@ all: scry_dist_all hegemon
 # one MUD to another machine.
 # source, world, boards, help, log, etc
 
-
 scry_dist_all: scry_dist_misc scry_dist_core scry_dist_world
 	rm -f scry_dist_all$(SCRY_VERSION).tar.gz
 	tar -cvf scry_dist_all$(SCRY_VERSION).tar \
@@ -52,6 +57,7 @@ scry_dist_misc:
 	tar -cvf scry_dist_misc$(SCRY_VERSION).tar ${MISC_FILES}
 	gzip scry_dist_misc$(SCRY_VERSION).tar
 
+#  Build a binary (minus the world DB) distribution.
 scry_dist_core: build_html_pages
 	rm -f scry_dist_core$(SCRY_VERSION).tar.gz
 	tar -cvf scry_dist_core$(SCRY_VERSION).tar ${CORE_FILES}
@@ -59,10 +65,10 @@ scry_dist_core: build_html_pages
 
 
 scry_dist_world:
-	${MAKE} -C grrmud/World dist
+	${MAKE} -C ./grrmud/World dist
 
 scry_archive_world:
-	${MAKE} -C grrmud/World archive
+	${MAKE} -C ./grrmud/World archive
 
 
 archive: scry_archive_world
@@ -72,8 +78,8 @@ archive: scry_archive_world
 	gzip scry_archive.${CUR_DATE}.tar
 
 new_rel:
-	${MAKE} -C grrmud/server new_binary
-	${MAKE} -C grrmud/World new_db
+	${MAKE} -C ./grrmud/server new_binary
+	${MAKE} -C ./grrmud/World new_db
 
 
 install: build_scry_bin
@@ -88,7 +94,6 @@ install: build_scry_bin
 	mkdir -p grrmud/log/Warnings
 	cp grrmud/grrmud.ini grrmud/grrmud.ini.bak
 	mv -f grrmud/server/grrmud grrmud/gmud
-	mv -f grrmud/World/dist_zone_file grrmud/World/ZONE_FILE
 	@echo "You may want to check the grrmud/grrmud.ini file to make sure"
 	@echo "the settings are agreeable, especially the port."
 	@echo "" 
@@ -97,19 +102,19 @@ install: build_scry_bin
 	@echo ""
 
 build_lib_includes:
-	${MAKE} -C lib all
+	${MAKE} -C ./lib all
 
 
 build_scry_bin: build_lib_includes
-	${MAKE} -C grrmud/server all
+	${MAKE} -C ./grrmud/server all
 
 
 build_html_pages: build_help_filter
-	${MAKE} -C grrmud/Help all
+	${MAKE} -C ./grrmud/Help all
 
 
 build_help_filter:
-	${MAKE} -C grrmud/help_filter all
+	${MAKE} -C ./grrmud/help_filter all
 
 
 
@@ -190,5 +195,6 @@ clean:
 	rm -f scry_core$(SCRY_VERSION).tar
 
 purge: clean
+	${MAKE} -C grrmud/server purge
 	find . -name "*~" -exec rm {} \;
 	find . -name "*.flc" -exec rm {} \;

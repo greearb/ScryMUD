@@ -1710,6 +1710,28 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
          do_tell(*crit_ptr, "I don't trade for a living.", pc, FALSE, pc.getCurRoomNum());
       }//if
       else {                  /* ok, is a shopkeeper */
+         int cur_time = get_game_time();
+         if (crit_ptr->OPEN_TIME < crit_ptr->CLOSE_TIME) {
+            if ((cur_time < crit_ptr->OPEN_TIME) || 
+                (cur_time > crit_ptr->CLOSE_TIME)) {
+               Sprintf(buf, "Hours are from %s to %s.\n", 
+                       military_to_am(crit_ptr->OPEN_TIME),
+                       military_to_am(crit_ptr->CLOSE_TIME));
+               show(buf, pc);
+               return -1;
+            }//if
+         }//if
+         else {
+            if ((cur_time > crit_ptr->CLOSE_TIME) &&
+                (cur_time < crit_ptr->OPEN_TIME)) {
+               Sprintf(buf, "Hours are from %s to %s.\n", 
+                       military_to_am(crit_ptr->OPEN_TIME),
+                       military_to_am(crit_ptr->CLOSE_TIME));
+               show(buf, pc);
+               return -1;
+            }//if
+         }//else
+
          show("These items are for sale:\n", pc);
          
          Cell<object*> cell(crit_ptr->inv);

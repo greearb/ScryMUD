@@ -329,6 +329,10 @@ void critter::doLogin() {
                      
                      //should just clean up its mess...
                      setMode(MODE_LOGOFF_NEWBIE_PLEASE);
+
+                     if (isUsingClient()) {
+                        using_client(*old_ptr);
+                     }
                      
                      if (!old_ptr->isUsingClient()) {
                         old_ptr->show("<ENGAGE_HEGEMON>\n");
@@ -601,6 +605,9 @@ command:  prompt %N\n");
    look(1, &NULL_STRING, pc); //autolook
    show("\r\nIf your screen is 'stair-stepped', type:  toggle carriage\n",
 	pc);
+
+   pc.save(); //make sure they have a Pfile
+
    return 0;
 }//quit_do_login_new()
  
@@ -634,10 +641,6 @@ int  quit_do_login_old(critter& pc) {
    }
 
    pc.pc->last_login_time = time(NULL);
-
-   // Turn off, if they are using Hegemon, it will be automatically
-   // turned back on.
-   //pc.setNoClient();
 
    //if (pc.USING_CLIENT) {
    //   show("\n</PRE>\n", pc);
@@ -673,6 +676,3 @@ int  quit_do_login_old(critter& pc) {
    recursive_init_loads(pc); //update stuff in game, like IN_GAME count
    return 0;
 }//quit_do_login_old()
-
-
-

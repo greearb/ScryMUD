@@ -241,6 +241,21 @@ int object::processInput(String& input, room& rm) {
    switch (toupper(cooked_strs[0][0]))
       {
       case 'A':
+         if (strncasecmp(cooked_strs[0], "affect_hp", len1) == 0) { 
+            return affect_crit_stat(STAT_HP, cooked_strs[2], i, &(cooked_strs[1]),
+                                    j, k, &rm);
+         }
+         else if (strncasecmp(cooked_strs[0], "affect_mana", len1) == 0) {
+            return affect_crit_stat(STAT_MANA, cooked_strs[2], i, &(cooked_strs[1]),
+                                    j, k, &rm);
+         }
+         else if (strncasecmp(cooked_strs[0], "affect_mov", len1) == 0) {
+            return affect_crit_stat(STAT_MOV, cooked_strs[2], i, &(cooked_strs[1]),
+                                    j, k, &rm);
+         }
+         else {
+            return -1;
+         }
       case 'B':
       case 'C':
       case 'D':

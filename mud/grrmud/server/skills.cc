@@ -301,7 +301,7 @@ int do_steal(object* obj, critter& vict, critter& pc,
    else {  //got caught!!!
       
       Sprintf(buf, "%S catches you with your hands on %s things!!\n",
-              name_of_crit(vict, pc.SEE_BIT));
+              name_of_crit(vict, pc.SEE_BIT), get_his_her(vict));
       show(buf, pc);
       
       Sprintf(buf, "is caught trying to steal from %S.\n",

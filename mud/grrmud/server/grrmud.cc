@@ -64,7 +64,7 @@
 #include "login.h"
 #include <LogStream.h>
 #include "SkillSpell.h"
-
+#include "BuildInfo.h"
 
 #define MAX_HOSTNAME    256
 
@@ -476,6 +476,11 @@ int main() {
    system("rm -f GRRMUD.PID");
    system(buf);
    system("chmod a+r GRRMUD.PID");
+
+   cout << "ScryMUD version: " << BuildInfo::getVersion() << endl;
+   cout << "Built on:        " << BuildInfo::getBuildDate() << endl;
+   cout << "On machine:      " << BuildInfo::getBuildMachine() << endl;
+   cout << "By:              " << BuildInfo::getBuilder() << endl << endl;
 
    cout << "Welcome to SryMUD server by Ben Greear.
 This server and it's accompanying client, Hegemon, is distributed

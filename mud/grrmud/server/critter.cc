@@ -2650,6 +2650,18 @@ void critter::setHP(int i) {
    HP = i;
 }
 
+void critter::setMana(int i) {
+   if (i > 32000)
+      i = 32000;
+   MANA = i;
+}
+
+void critter::setMov(int i) {
+   if (i > 32000)
+      i = 32000;
+   MOV = i;
+}
+
 void critter::show(const char* msg) {
    ::show(msg, *this);
 }

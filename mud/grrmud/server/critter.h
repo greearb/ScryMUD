@@ -778,6 +778,8 @@ public:
    void setIdNum(int i);
    void setDoPrompt(int i) { PC_FLAGS.set(10, i); }
    void setHP(int i);
+   void setMana(int i);
+   void setMov(int i);
    void setHP_MAX(int i);
    void setMode(PcMode val);
    void setImmLevel(int i);

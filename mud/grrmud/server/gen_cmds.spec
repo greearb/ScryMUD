@@ -86,6 +86,12 @@ add_zone ~
 return addZone(i, pc);
 adlist ~
 return adlist(pc);
+affect_hp ~
+return affect_crit_stat(STAT_HP, cooked_strs[2], i, &(cooked_strs[1]), j, k, pc.getCurRoom(), &pc);
+affect_mana ~
+return affect_crit_stat(STAT_MANA, cooked_strs[2], i, &(cooked_strs[1]), j, k, pc.getCurRoom(), &pc);
+affect_mov ~
+return affect_crit_stat(STAT_MOV, cooked_strs[2], i, &(cooked_strs[1]), j, k, pc.getCurRoom(), &pc);
 afk socials ~
 afk(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 agree socials ~
@@ -483,6 +489,8 @@ nogossip ~
 return nogossip(pc);
 nod socials ~
 nod(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+nog socials ~
+nog(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 neighbor_echo *add_mob_script ~
 NOP
 

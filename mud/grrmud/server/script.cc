@@ -50,6 +50,65 @@
 int ScriptCmd::_cnt = 0;
 
 
+/**  This will not kill, but can set HP to 1 in worst case. */
+int affect_crit_stat(StatTypeE ste, String& up_down, int i_th,
+                     String* victim, int dice_cnt, int dice_sides,
+                     room* rm, critter* caller = NULL) {
+
+   critter* crit_ptr;
+   String buf(100);
+
+   if (caller && 
+       (caller->isCharmed() || 
+        (caller->isPc() && (caller->getImmLevel() < 7)))) {
+      caller->show("Huh??\n");
+      return -1;
+   }
+
+   crit_ptr = rm->haveCritNamed(i_th, victim, ~0);
+
+   if (!crit_ptr) {
+      return -1;
+   }//if
+
+   if (crit_ptr->isMob()) {
+      crit_ptr = mob_to_smob(*crit_ptr,  rm->getIdNum(), TRUE, i_th,
+                             victim, ~0);
+   }//if
+
+   switch (ste) 
+      {
+      case STAT_HP: {
+         if (strcasecmp(up_down, "up") == 0) {
+            crit_ptr->setHP(crit_ptr->getHP() + d(dice_cnt, dice_sides));
+         }
+         else {
+            crit_ptr->setHP(max(crit_ptr->getHP() - d(dice_cnt, dice_sides), 1));
+         }
+         return crit_ptr->getHP();
+      }
+      case STAT_MANA: {
+         if (strcasecmp(up_down, "up") == 0) {
+            crit_ptr->setMana(crit_ptr->getMana() + d(dice_cnt, dice_sides));
+         }
+         else {
+            crit_ptr->setMana(max(crit_ptr->getMana() - d(dice_cnt, dice_sides), 1));
+         }
+         return crit_ptr->getMana();
+      }
+      case STAT_MOV: {
+         if (strcasecmp(up_down, "up") == 0) {
+            crit_ptr->setMov(crit_ptr->getMov() + d(dice_cnt, dice_sides));
+         }
+         else {
+            crit_ptr->setMov(max(crit_ptr->getMov() - d(dice_cnt, dice_sides), 1));
+         }
+         return crit_ptr->getMov();
+      }
+      default:
+        return -1;
+      }//switch
+}//affect_crit_stat
 
 /** Exact some damage. */
 int exact_damage(int dice_cnt, int dice_sides, String& msg, critter& pc) {

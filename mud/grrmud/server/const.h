@@ -38,6 +38,13 @@ enum entity_type {
    ENTITY_OBJECT
 };// entity_type
 
+/** Used in affect_crit_stat, script.h */
+enum StatTypeE {
+   STAT_HP,
+   STAT_MANA,
+   STAT_MOV
+};
+
 extern LogStream mudlog;
 
 extern bitfield Obj_Wear_Flags_Mask;

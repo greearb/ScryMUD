@@ -1734,6 +1734,12 @@ int gossip(const char* message, critter& pc) {
    mudlog.log(DBG, message);
 
    msg = message;
+
+   if (msg.Strlen() == 0) {
+      pc.show("Gossip what??\n");
+      return -1;
+   }
+
    pc.drunkifyMsg(msg);
    
    if (pc.isGagged()) {

@@ -62,6 +62,7 @@ void disco(int i_th, const String* vict, critter& pc, room& rm);
 void puke(int i_th, const String* vict, critter& pc, room& rm);
 void cheer(int i_th, const String* vict, critter& pc, room& rm);
 void nod(int i_th, const String* vict, critter& pc, room& rm);
+void nog(int i_th, const String* vict, critter& pc, room& rm);
 void grin(int i_th, const String* vict, critter& pc, room& rm);
 void wave(int i_th, const String* vict, critter& pc, room& rm);
 void bow(int i_th, const String* vict, critter& pc, room& rm);
