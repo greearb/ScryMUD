@@ -1,0 +1,12 @@
+<help olc clear_mnames>
+
+Delete all the names from a critter.  This is most often done by
+the Hegemon Client when it is updating a critter.  (The new names
+will be added back.)
+
+Syntax:  clear_mnames [mob num]
+
+Example:  clear_mnames 55
+<color=red>
+See Also:  ch_rname, ch_odesc, add_oname, add_mname, rem_mname, rem_oname
+</color></help>
