@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.21 2001/04/05 03:05:28 justin Exp $
-// $Revision: 1.21 $  $Author: justin $ $Date: 2001/04/05 03:05:28 $
+// $Id: login.cc,v 1.22 2002/01/08 04:57:21 eroper Exp $
+// $Revision: 1.22 $  $Author: eroper $ $Date: 2002/01/08 04:57:21 $
 
 //
 //ScryMUD Server Code
@@ -341,6 +341,9 @@ void critter::doLogin() {
             else if (strncasecmp(string, "bard", slen) == 0) {
                j = BARD;
             }
+            else if (strncasecmp(string, "necromancer", slen) == 0) {
+               j = NECROMANCER;
+            }
             else if (strncasecmp(string, "help", slen) == 0) {
                j = 0;
             }
@@ -354,7 +357,7 @@ void critter::doLogin() {
                help(1, &classes, &NULL_STRING, *this);
             }
             else {
-               if (check_l_range(j, 1, 8, *this, FALSE) && j != 6) {
+               if (check_l_range(j, 1, 9, *this, FALSE) && j != 6) {
                   CLASS = j;
                   pc->index = 6; //go get race
                }//if
@@ -768,6 +771,14 @@ int  quit_do_login_new(critter& pc) {
          pc.SKILLS_KNOWN.Insert(PHYSIK_SKILL_NUM, 25);
          pc.WIS++;
          break;
+      case NECROMANCER:
+         pc.SKILLS_KNOWN.Insert(CURSING_SKILL_NUM, 25);
+         pc.SKILLS_KNOWN.Insert(CONJURING_SKILL_NUM, 10);
+         pc.STR-=2;
+         pc.DEX-=2;
+         pc.INT+=4;
+         pc.WIS+=3;
+         pc.CON-=3;
       default:
          mudlog.log(ERROR, 
                     "ERROR:  In default of class modifiers in login.cc.\n");

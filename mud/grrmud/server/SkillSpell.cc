@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.18 2002/01/08 03:14:38 eroper Exp $
-// $Revision: 1.18 $  $Author: eroper $ $Date: 2002/01/08 03:14:38 $
+// $Id: SkillSpell.cc,v 1.19 2002/01/08 04:57:20 eroper Exp $
+// $Revision: 1.19 $  $Author: eroper $ $Date: 2002/01/08 04:57:20 $
 
 //
 //ScryMUD Server Code
@@ -967,6 +967,8 @@ void SSCollection::read() {
             BIRDSEYE_SKILL_NUM = i;
 
          // New skills for the Necromancer class
+         else if (strcasecmp("cursing", getSS(i).getName()) == 0)
+            CURSING_SKILL_NUM = i;
          else if (strcasecmp("rust", getSS(i).getName()) == 0)
             RUST_SKILL_NUM = i;
          else if (strcasecmp("disfavor", getSS(i).getName()) == 0)

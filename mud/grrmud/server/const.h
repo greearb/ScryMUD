@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.33 2002/01/08 03:14:39 eroper Exp $
-// $Revision: 1.33 $  $Author: eroper $ $Date: 2002/01/08 03:14:39 $
+// $Id: const.h,v 1.34 2002/01/08 04:57:20 eroper Exp $
+// $Revision: 1.34 $  $Author: eroper $ $Date: 2002/01/08 04:57:20 $
 
 //
 //ScryMUD Server Code
@@ -300,7 +300,8 @@ enum obj_flags {
    OBJFLAG_BULLETIN_BOARD,
    OBJFLAG_IS_BUTCHERABLE,
    OBJFLAG_HAS_OBJ_SCRIPT,
-   OBJFLAG_IS_TWO_HANDED
+   OBJFLAG_IS_TWO_HANDED,
+   OBJFLAG_ANTI_NECROMANCER
 };
 
 enum bag_flags {
@@ -1550,15 +1551,16 @@ extern const char* HUH_MSG;
 
 // PLAYER CLASSES
 
-#define OTHER_CLASS                0
-#define WARRIOR                        1
-#define SAGE                        2
-#define WIZARD                        3
-#define RANGER                        4
-#define THIEF                        5
-#define ALCHEMIST                6
-#define CLERIC                        7
-#define BARD                        8
+#define OTHER_CLASS             0
+#define WARRIOR                 1
+#define SAGE                    2
+#define WIZARD                  3
+#define RANGER                  4
+#define THIEF                   5
+#define ALCHEMIST               6
+#define CLERIC                  7
+#define BARD                    8
+#define NECROMANCER             9
 
 #define SEX_FEMALE              0
 #define SEX_MALE                1

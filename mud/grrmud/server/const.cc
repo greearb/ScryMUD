@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.32 2002/01/08 03:59:52 justin Exp $
-// $Revision: 1.32 $  $Author: justin $ $Date: 2002/01/08 03:59:52 $
+// $Id: const.cc,v 1.33 2002/01/08 04:57:20 eroper Exp $
+// $Revision: 1.33 $  $Author: eroper $ $Date: 2002/01/08 04:57:20 $
 
 //
 //ScryMUD Server Code
@@ -170,7 +170,8 @@ const char* td_names[] = {
    "Thief",
    "Alchemist",
    "Cleric",
-   "Bard"
+   "Bard",
+   "Necromancer"
 };
 const BitfieldNames TEACH_DATA_FLAGS_NAMES(sizeof(td_names)/sizeof(const char*),
                                            td_names, "Teach Data Flags:");
@@ -618,6 +619,7 @@ char* login_prompts[] = {
         Thief                 (5)
         Cleric                (7)
         Bard                  (8)
+        Necromancer           (9)
 
    Enter 'help' or (0) for descriptions of the classes.
 
@@ -710,7 +712,7 @@ a -1 terminates.
 64 toolbox, 65 cauldron, 66 pen, 67 (DO NOT USE),
 68 (DO NOT USE), 69 parchment (for scribing), 71 (DO NOT USE),
 72 herb, 73 vend_machine, 74 bulletin_board, 75 is_butcherable,
-76 has_obj_script, 77 is_two_handed
+76 has_obj_script, 77 is_two_handed 78 !necromancer
 
 
 ***  If you're making a weapon, please consider flagging a flag between
@@ -842,7 +844,7 @@ Example:  566 2225 0\n",
 (11)attacks per round, (12)pause_count {0 is good}, 
 (13)sex {0 female, 1 male, 2 neuter}
 (14)class, {1 Warrior, 2 Sage, 3 Wizard, 4 Ranger, 5 Thief, 6 Alchemist, 
-          {7 Cleric, 8 Bard}
+          {7 Cleric, 8 Bard, 9 Necromancer}
 (15)race, {1 human, 2 anitre, 3 avintre, 4 darkling, 5 drow,
            6 dragon, 7 dwarf, 8 ironclad, 9 ogrue, 10 rocktroll,
            11 elf, 12 faerie, 13 entity, 14 sombrian, 15 undead,
@@ -975,7 +977,7 @@ Example:  8 -1\n",
 "\nTime to set teach_data flags.  The number of the flag will toggle it,
 a -1 terminates.  Choose what classes it will teach to:
 
-1 Warrior, 2 Sage, 3 Wizard, 4 Ranger, 5 Thief, 6 Alchemist, 7 Cleric, 8 Bard
+1 Warrior, 2 Sage, 3 Wizard, 4 Ranger, 5 Thief, 6 Alchemist, 7 Cleric, 8 Bard, 9 Necromancer
 
 Note:  You can choose more than one.\n",
 

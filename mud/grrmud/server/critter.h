@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.56 2002/01/05 01:42:38 eroper Exp $
-// $Revision: 1.56 $  $Author: eroper $ $Date: 2002/01/05 01:42:38 $
+// $Id: critter.h,v 1.57 2002/01/08 04:57:21 eroper Exp $
+// $Revision: 1.57 $  $Author: eroper $ $Date: 2002/01/08 04:57:21 $
 
 //
 //ScryMUD Server Code
@@ -144,7 +144,7 @@ protected:
 public:
    bitfield teach_data_flags; // Same as classes
    // 1 Warrior, 2 Sage, 3 Wizard, 4 Ranger, 5 Thief, 6 Alchemist
-   // 7 Cleric, 8 Bard
+   // 7 Cleric, 8 Bard 9 Necromancer
    
    teacher_data(); //constructor
    teacher_data(const teacher_data& source); // copy constructor
@@ -1001,6 +1001,7 @@ public:
    int isAlchemist() const  { return CLASS == ALCHEMIST; }
    int isCleric() const  { return CLASS == CLERIC; }
    int isThief() const  { return CLASS == THIEF; }
+   int isNecromancer() const { return CLASS == NECROMANCER; }
    int isFighting() const  { return !is_fighting.isEmpty(); }
    int isFighting(critter& da_pc) { return is_fighting.haveData(&da_pc); }
    

@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.35 2001/10/30 04:41:31 justin Exp $
-// $Revision: 1.35 $  $Author: justin $ $Date: 2001/10/30 04:41:31 $
+// $Id: misc2.cc,v 1.36 2002/01/08 04:57:21 eroper Exp $
+// $Revision: 1.36 $  $Author: eroper $ $Date: 2002/01/08 04:57:21 $
 
 //
 //ScryMUD Server Code
@@ -934,6 +934,8 @@ int get_class_num(const char* name) {
       return CLERIC;
    if (strcasecmp(name, "bard") == 0) 
       return BARD;
+   if (strcasecmp(name, "necromancer") == 0) 
+      return NECROMANCER;
    return OTHER_CLASS;
 }//get class num
 
@@ -1000,6 +1002,8 @@ const char* get_class_name(int num) {
       return "cleric";
    if (num == BARD)
       return "bard";
+   if (num == NECROMANCER)
+      return "necromancer";
    return "UNKNOWN";
 }//get class name
 
