@@ -1,0 +1,1141 @@
+-- Warning to players --------------------------------------------------
+   This document contains spoilers.  Part of the fun of these skills is
+   supposed to be finding all the little hidden quirks and interactions
+   that are set up.  If you are reading this, and don't want to ruin
+   this part of the game for yourself, I suggest you stop reading now.
+------------------------------------------------------------------------
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+==== All Races
+General Notes
+   The remort races are intended to be extremely powerful, but with
+   weaknesses that can be exploited by members of other races.  I
+   envision remort magic as being higly reactive, particularly when
+   coming in contact with other remort magic, and I encourage adding
+   unusual spell interactions wherever possible.  A common theme in
+   the remort skills is that the remorts have a very thin illusion of
+   control over their power.  Ideally, this illusion of control should
+   be convincing enough that the remorts themselves believe they have a
+   handle on things, until they drop their guard and everything comes
+   crashing down around them in spectacular (and often catastrophicly
+   destructive) ways.
+
+==== Drow
+General Notes
+   Though able to see in the dark, the Drow are totally blind in the
+   light, and the only way they are able to see is through use of the
+   dark veil spell. Drow spells become more effective as the Drow
+   becomes more negatively aligned.
+
+Black Rift - Room
+   Tears a rift in the ether through which one can pass into the other
+   realm.  Not all survive this journey.  This will either be a spell
+   similar to gate (or maybe teleport), or a gateway to a zone hostile
+   to anyone but Drow.  All depends on whether someone's willing to
+   create the zone.
+
+Tripweb - Room, Door, Mob
+   Room - Alerts the caster whenever a mob enters the room.
+   Door - Alerts the caster whenever a mob passes through the
+          door.
+   Mob  - Attaches a strand of darksilk to the victim's leg.  Give
+          the strand a good yank, hilarity ensues.
+
+Venom - Mob, Canteen
+   Mob     - Causes victim to become extremely ill. Every 1d3 short
+             ticks the victim either begins itching madly, spasms and
+             drops his wielded or held object, or vomits. In combat,
+             itching or vomiting causes 1 to be added to pause.  When
+             not in combat, 1d5 is added to pause for vomiting, and you
+             must remove an object to scratch some random wear spot or
+             you will continue to itch.  Vomiting lowers the victim's
+             hunger stat, and you are unable to eat.
+   Canteen - Liquid contents of canteens become affected by the venom
+             spell.  Drinking from the canteen causes 4d4 damage to the
+             drinker, and has a 1d3 chance of making him ill as
+             described above.
+
+Repel Light - Mob
+   Causes any normally dark room the target is in to remain dark, even
+   when a lantern or magical light source is present.
+
+Wall of Darkness - Room, Door
+   Room - Creates a wall of dark ether extending across the room
+          which slams into any mobs in it's way, crushing them into the
+          opposite wall. This must be done indoors.
+   Door - The exit is impassable, and anything thrown or shot through
+          it will either continue unaffected, double back and hit the
+          attacker, double back and hit any of the mobs in the room at
+          random, or warp to another place in the world and hit one of
+          the mobs in that room at random.
+
+Nightmare - Mob, Object, Room
+   Mob    - Victim sees 0 - 3 copies of his opponent which show fake
+            attack messages, additional opponents are summoned at
+            random times for one turn, fear causes victim to fail
+            skills sometimes, fake death messages are shown.  Victim is
+            unable to stay asleep, with a 1d3 chance each hour of waking
+            up screaming.
+   Object - Object becomes haunted, and the owner becomes subject to
+            Nightmare as if affected by it directly. There is a chance
+            the object may become anti-drop or anti-remove for duration
+            of the spell.
+   Room   - Room becomes haunted, lights go out intermittently,
+            critters show up and attack one of the occupants, occupants
+            sleep restlessly.
+
+Nyctophobia - Mob
+   Causes the victim to flee when in dark places.
+
+Acid bolt - Mob, Object, Door
+   Mob          - Deals acid damage to the target.
+   Door, Object - Destroys locks not protected from magic.
+
+Death Wrap - Mob
+   Deals crushing damage each short tick to the person afflicted by it.
+   Damage delt increases with each short tick.
+
+Dark Force - Mob
+   A blast of dark power. Possibly more powerful as the alignment of
+   the caster lowers.
+
+Dark Web - Mob, Door, Room, Object
+   Mob    - Prevents victim from leaving the room by any means other
+            than transport spells from others. Possibly impedes other
+            movement such as bash or block.
+   Door   - Blocks passage through the entrance, possibly catches
+            anyone who tries to use it.
+   Room   - Catches everyone who enters the room, also provides an
+            anchor for webwalk.  Alerts the caster when someone becomes
+            stuck in the web.
+   Object - Sticks an object to the ground, and glues it shut if it is
+            a closable container.
+
+Webwalk - Web
+   Transports the caster to the location of one of his webs.
+
+Shapeshift - Self
+   Become one of several lesser creatures of the night. Taking one of
+   these forms draws mana every battle tick at a rate depending on the
+   power of the form. At least 50% of the form's skill must be learned
+   to assume that shape, and the %lrnd of the form affects the amount
+   of mana drain per tick. Drow can not wear armor while shapeshifting.
+
+   Spider     - Able to climb.
+   Snake      - Poisonous.
+   Scorpion   - Poisonous.
+   Toad       - Useless.
+   Newt       - Useless.
+   Lizard     - Useless.
+   Mantis     - Useless.
+   Salamander - Useless.
+   Raven      - Able to fly.
+   Crow       - Able to fly.
+   Owl        - Able to fly, scan.
+   Bat        - Able to fly, possibly blind, possibly able scan.
+   Vulture    - Able to fly, possibly has butcher, or maybe can eat
+                corpses.
+   Manta ray  - Able to dive/swim, immobile and quickly dies out of
+                water.
+   Wolf       - Able to track.
+   Rat        - Able to sneak, tail.
+   Puma       - Able to sneak, tail.
+   Bobcat     - Fighter, but considerably weak.
+   Hyena      - Fighter, but considerably weak.
+   Bear       - Fighter, but considerably weak.
+   Wraith     - Fighter, fairly weak.
+   War beast  - Sheer whup-ass power, this is a heftier critter than
+                normal.
+   Wyvern     - Likes to eat war beasts.
+   Boar       - Rampage (allows Drow to use the tracking code for mobs).
+
+Dark veil - Self
+   Allows Drow to see in the light, must be cast in the dark.
+
+Night shard - None
+   Uses mana to create arrows on demand.
+
+Spin - None
+   Creates a random object from darksilk with random adjustments to the
+   stat affects.  Object disintegrates if exposed to the light for an
+   extended period of time.
+
+Drain Blade - None
+   Causes the Drow's weapon to draw a small amount of health from his
+   opponent and into himself on every attack. This is permanently in
+   effect, with the amount of drain is dependent on the level of
+   knowledge in the skill.
+
+==== Faerie
+General Notes
+   Faeries are quite frail, but they make up for it with a high
+   dexterity and with spells capable of doing massive amounts of damage
+   in a short time.  Faerie spells are more effective as the Faerie
+   becomes more positively aligned.  Their HP maxes out around 350, but
+   they have a large amount of mana, which can be charged up past the
+   natural limit through use of spells such as disenchant.  Faeries
+   have a permanent flight ability, and at higher levels they are less
+   susceptible to clumsy attacks such as bash and kick (perhaps their
+   DEX increases with level?)
+
+Fasting - None
+   Affects how much food/water the Faerie requires. At 100% they do not
+   require food or water.
+
+Faerie Flash - Room
+   Blinds all non-faeries in the room and causes damage to people with
+   infravision or similar vision altering spells enabled.
+
+Lightstorm - Mob
+   Blasts the target with thousands of tiny particles of energy, causing
+   great damage, particularly if the victim is using vision altering
+   spells. Multiple targets may be specified, and the damage divide
+   among them.
+
+Overgrowth - Self, Mob, Room, Door
+   Self - Encases the caster in an impenetrable cocoon of plants.  The
+          Faerie draws energy from the plants, regenerating health,
+          mana, and MOV points and is protected from attack.
+   Mob  - Encases the target in an impenetrable cocoon of plants.  The
+          victim is unable to escape, even through magic, and can
+          neither attack or be attacked by others in the room.
+   Door - Covers an exit with vines, preventing use.
+   Room - Covers all exits with vines, preventing entrance to or exit
+          from the room, except by magical means.
+
+Soulstar - Room
+   Creates a spectacular point of ethereal light capable of
+   illuminating several rooms.  It will also attract loose singularity
+   ends which will either anchor directly in the room containing the
+   star, or which will anchor nearby and slowly gravitate towards it.
+   Magical plants may become uncontrollable in the vicinity of a
+   Soulstar.
+
+Wild vines - Mob
+   Thorned vines lash out at the victim and take hold of a random limb,
+   dealing a small amount of damage in the process.  More vines will
+   continue to appear each battle round until the Faerie takes another
+   action, or until the victim is completely trapped in the vines.  If
+   the victim has a free hand, he may break up to his STR in vines each
+   battle round, otherwise he can break one of his hands free if it is
+   held by fewer than half his STR in vines.
+
+Serenity - Room
+   Ends any battle in the current room, with the added side effect of
+   putting all mortals in the room into a deep sleep and destroying any
+   spell effects in play, and any magical properties of equipment being
+   used in the battle, transferring it's value in mana to the caster's
+   pool as in disenchant.
+
+Detect Fashion - None
+   Allows the Faerie to become trendy and innately aware of fashion
+   don'ts.
+
+Absorb magic - Self
+   Spells you are affected by are absorbed into your mana pool.  "Evil"
+   spells will reduce the amount of mana in your pool, and have a
+   chance of dealing damage.
+
+Repel magic - Self
+    Spells cast at the Faerie are reflected, possibly hitting the
+    caster, possibly hitting another critter in the room, and possibly
+    hurling the Faerie out of the room entirely.
+
+Ethereal Singularity - Player
+   Tears a hole in the ether which anchors itself locally and in
+   several other rooms.  Non-faeries entering the room will be pulled
+   into the singularity and out the other side.  Faeries may enter and
+   leave a singularity at will, and if the singularity has more than
+   two anchor points, they may select a destination point.  Entering a
+   singularity that has the same source room as its destination room
+   results in a bumpy trip followed by a bloody pulp splattered on the
+   wall opposite the singularity's exit.  When used without specifying
+   a target, the singularity anchors in a random number of random
+   rooms.  When used with any number of PC targets a singularity is
+   anchored locally and in the room of each target.
+
+   Any kills resulting from a singularity will not give experience, and
+   will not leave behind equipment or gold.  PCs killed by a
+   singularity will not lose their equipment, but will lose the normal
+   amount of XP for a death at their level.  Rather than waking up in
+   the temple after such a death, they will awaken in a random spot in
+   the realm.
+
+Disenchant - Object
+   Strip magical weapons, armor, and items of their special attributes.
+   The power released by unbinding these attributes from the equipment
+   is transfered into the caster's mana pool.
+
+Enchant - Object
+   Spells may be cast on the affected item.  The effects of these spells
+   will be transferred to the wearer of the item. The effect is
+   temporary, and multiple enchantment create an increasing possibility
+   that the affected object will be destroyed.
+
+Imbue - Object
+   Causes the target object to gain the ability to cast a particular
+   spell.  If the object is a potion or a canteen, drinking from it
+   will trigger the spell effect.  Otherwise, the object can be used as
+   a wand, and each cast of Imbue will add 1d4 charges to the object.
+
+Magical Affinity - None
+   As the Faerie becomes more in tune with the magical energies around
+   him, he gains the ability to recognize magical properties of objects
+   and creatures.  This manifests itself first as detect magic, then
+   later adds a partial identify ability.
+
+Permanency - Object
+   Causes enchantments to become permanent.
+
+Mortal Magic - None
+   A tree of skills that allows the Faerie to learn various mortal
+   spells for the purposes of binding them to equipment.  This does not
+   allow the Faerie to cast these spells.
+
+==== Ironclad
+General Notes
+   Ironclads retain any combat techniques the had in their mortal forms.
+   They may hone these skills through use, though the process still uses
+   practices.
+
+Bind Armor - Self
+   Allows the Ironclad to bind armor directly to his flesh and bone,
+   making it both more effective and impossible to remove except by the
+   unbind skill.
+
+Graft Weapon - Self
+   As with Bind Armor, Graft Weapon allows the Ironclad to meld with his
+   weapon to make it more effective.  Depending on the weapon, this may
+   render the hand on the affected arm useless.
+
+Unbind - Self
+   Allows an Ironclad to seperate from bound armor or grafted weapons.
+
+Judge Quality - None
+   Ironclads are able to intuitively judge the quality of a weapon.
+   This ability becomes more accurate, and more detailed with practice.
+
+Metallurgy - Object
+   Allows the Ironclad to understand the properties of metals, and the
+   techniques required to work them.  These skills, in addition to the
+   smelting skill and forging skill set determine the quality of the
+   finished product when working with these metals.
+
+   If the Ironclad is knowledgeable in the proper combination of metals,
+   he may be able to form alloys from separate metals.  The quality of
+   the resulting alloy is dependent on how skilled the Ironclad is in
+   metallurgy, and in the lore of the metals involved.
+
+   Copper         - Plus tin for bronze.
+   Tin            - Plus copper for bronze.
+   Bronze         - Soft and heavy, but easy to work.  Bronze armor
+                    provides only an AC stat, and bronze weapons
+                    provide only a hit die roll.  Best used for
+                    bludgeoning weapons.  Due to its low melting
+                    temperature, bronze is particularly susceptible to
+                    damage when bound to fire spells.  It may be folded
+                    only a few times before it is destroyed.
+   Iron           - Strong, heavy metal.  Moderately easy to work.
+                    Provides a better AC or hit die stat than bronze,
+                    but at the cost of a few DEX points.
+   Steel          - Purified iron.  Stronger, lighter, and without the
+                    DEX hit.
+   Mithril        - Weak, light metal, which is very difficult to work
+                    and very resistant to the damaging effects of spell
+                    bindings.
+   Aluminum       - Very light, very weak metal, which is moderately
+                    difficult to work.  It is excellent for making
+                    arrowheads, but not sturdy enough to make good
+                    blades or armor.  When blended with iron or steel it
+                    produces a lighter, but weaker alloy.
+   Mercury        - Extremely difficult to work, and must be magicly
+                    cold enchanted before it can be worked at all.
+                    Mercury weapons and armor could have some magical
+                    property, perhaps the ability to re-constitute into
+                    other weapons. This re-constitution ability could be
+                    used to have one piece of armor with variable
+                    function, or simply for effect.  Mercury armor
+                    could be designed to flow with the body of the
+                    wearer, giving a DEX bonus, and allowing it to be
+                    worn by shapeshifting Drow.
+   Obsidianite    - Brittle, but highly heat resistant metal.  Very
+                    difficult to work.  Useful for binding with heat
+                    spells.  Armor made from obsidianite lowers the
+                    wearer's heat AC.
+   Minorite       - A.k.a Uranium.  Increadably toxic metal which is
+                    nearly impossible to work without protection.  Only
+                    Ogrue and their kin have the fortitude to use
+                    Minorite weapons and armor, however due to its
+                    deadly properties, Minorite weapons are extremely
+                    effective.
+   Lead           - Heavy, soft, and highly toxic metal.  Useful for
+                    arrowheads and piercing weapons due to its poisonous
+                    nature.
+   Gold           - Heavy, soft metal which is difficult to work and
+                    with a low melting temperature.  Fairly resilient to
+                    binding with cold spells.
+   Silver         - Light, soft metal.  Excellent for binding with
+                    protective spells, but does not provide significant
+                    protective capacity on its own.
+   Titanium       - Strong, light metal.  Best used for armor and
+                    cutting weapons.
+   Ni'ite         - Light, hard, but brittle metal.  Best used for
+                    piercing weapons, but makes extremely poor armor.
+                    Very difficult to work.
+
+Smelting - Object
+   Allows the Ironclad to separate metal from ore.  The quality of metal
+   produced depends on the skill level of the Ironclad.
+
+Forging - None
+   Skills in the Forging tree allow the Ironclad to hammer metal to form
+   it into weapons or armor.  The quality of the product is related to
+   the quality of the metal, the skill with which the Ironclad forges
+   it, and the level of the Ironclad.
+
+   The maximum power of the finished weapon depends on the material
+   being used and its quality, the skill of the Ironclad, and the amount
+   of time spent working the metal.
+
+Engraving - Object
+   Add custom descriptions to an item.
+
+Folding - Object
+   Strengthens a blade.  This skill increases the die roll for edged and
+   piercing weapons.
+
+Sharpen - Object
+   Sharpens a blade to a keen edge.  This skill increases the die sides
+   for edged and piercing weapons.
+
+Combat Experience - None
+   Allows the Ironclad to teach fighting techniques to other players,
+   even if they do not have the necessary prerequisites.  The
+   effectiveness of the teaching is dependent on the skill level the
+   Ironclad has in Combat Experience, whether or not the player has the
+   proper prerequisites, and the %lrnd the Ironclad has in the skill
+   being taught.
+
+   The skills themselves are taught through use, and still require
+   spending practices (though the Ironclad may be a more efficient
+   teacher than NPC teachers in some cases).  Ironclads may not practice
+   a skill and teach it to another player at the same time.
+
+==== Avintre
+Familiar - None
+   When Anitre remort to Avintre, they receive a familiar through
+   performance of a binding ritual.  The familiar animal guides them to
+   their power, with different animals opening different paths.  As the
+   familiar grows in strength, so too do the Avintre's powers.
+   However, the process works both ways.  If a familiar is killed, the
+   Avintre is crippled until he is able to replace it.  The animal
+   familiars and their powers are listed below.
+
+   Fox, Hyena, Salamander          - Path of Fire
+   Anaconda                        - Path of Water
+   Wolf, Snow Leopard, White Tiger - Path of Ice
+   Lizard, Rattlesnake             - Path of Dust
+   Hawk, Eagle, Antelope           - Path of Air
+   Raven, Owl                      - Path of Night
+   Common Cat, Peacock, Deer       - Path of Life
+   Cougar, Bear, Komodo            - Path of Power
+
+Path of Fire - None
+   The path of Fire allows control over natural and magical fire.  Fire
+   under control of an Avintre does not necessarily need to obey the
+   laws of physics.
+
+   This path also gives its followers enhanced mental abilities,
+   allowing greater control of self and manipulation of others.
+
+Path of Water - None
+   Followers of the path of Water are able to control the water around
+   them, as well as create water on demand.  At level 5 Water Avintre
+   become able to dive and breathe under water.
+
+Path of Ice - None
+   The path of Ice gives its followers control of natural and magical
+   cold, and over motion.
+
+Path of Dust - None
+   The path of Dust is the path of natural destruction.  He who walks
+   the path of Dust has the ability to accelerate or prevent natural
+   wear on objects and creatures.
+
+Path of Air - None
+   The path of Air allows those who walk it to control and ride the
+   currents.  Avintre following this path are also able to alter the
+   density of themselves and the things around them.
+
+Path of Night - None
+   The path of Night permits stealthy movement and gives he who walks
+   it power over the darkness.  Desiples of the Path of Night are able
+   to control darkness, in contrast with the Drow, who are slaves to
+   it.
+
+Path of Life - None
+   The path of Life gives its followers power over life and its
+   functions.
+
+Path of Power - None
+   Avintre who walk the path of power are able to control force itself.
+   Power skills ignore damage received modifiers.
+
+Psychic Link - Familiar
+   With time and training, the bond between the Avintre and his
+   familiar strengthens allowing increasingly effective communication
+   between the pair.  Initially, the familiar is able to understand
+   simple commands, e.g. fetch, heel, attack.  Gradually, the Avintre
+   becomes able to communicate more effectively, and the familiar
+   becomes able to respond.  At the highest level of ability, the
+   Avintre is able to see through the familiar's eyes, and give them
+   complicated lists of instructions to follow whenever certain
+   criteria are met.
+
+Fusion - Familiar
+   After level 10, the Avintre may learn to ritually meld with their
+   Familiar, allowing them to become a single, more powerful being.  The
+   resulting creature has the combined stats and attributes of Avintre
+   and Familiar.  New abilities become available, and learned abilities
+   become more effective.  This bond may be broken by the Avintre at any
+   time, however the duo must rest before performing the ritual again.
+   The amount of resting time needed depends on how long the bond has
+   been maintained.
+
+   Damage delt to the fused Avintre and Familiar is divided evenly
+   between them, and if either participant falls below 0hp, he is
+   killed, the bond is broken, and the other is left to fend for
+   himself.
+
+Union - Avintre Player
+   Through the Union ritual, the Avintre are able to share their powers
+   with eachother, forming a single large mana pool, giving each
+   participant access to the others' powers, and making new powers
+   available.  Fused Avintre may not enter into the Union ritual until
+   they seperate from their Familiar, and Fused powers are not available
+   to Avintre who follow other paths.
+
+Create Fire (fire) - Mob, Object, Door
+   Creates a fire that engulfs whatever it is cast on, even if it is not
+   flammable.  This magical fire reacts only to living or magical
+   beings, and will not damage inanimate objects.  The intensity of the
+   fire is dependent on the level of the Avintre.
+
+Inferno (fire;fused) - Mob, Object, Door, Room
+   Creates an intense magical fire which is capable of destroying or
+   killing anything it contacts within a few rounds.  The effect may be
+   localized to a single target, or spread throughout the entire room.
+   In the latter case, Fused Avintre following the paths of Fire, Ice,
+   or Water are immune to the blaze.
+
+Immolation (fire) - Self
+   Surrounds the Avintre with a shield of intense heat, which greatly
+   reduces the damage received from cold attacks, nullifies heat
+   attacks, and which causes burns to anyone who comes in contact with
+   the shield.
+
+   The duration of this effect is increased if it absorbs a fire attack,
+   and decreased if it absorbs an ice attack.
+
+Dreamwalk (fire) - Player
+   Allows the Avintre to enter the dream of a sleeping player and
+   interact with them.  Players can die if their representations are
+   killed within the dream, with the normal consequences, though killing
+   the dreamer is not necessarily safe for the dreamwalker.  This skill
+   is only usable while the Avintre is asleep.
+
+Empathic Invitation (fire) - Player
+   Allows the Avintre to hold conference with any number of other
+   sleeping players within the caster's own dream.  This skill is only
+   usable while the Avintre is asleep.
+
+Feedback (fire) - Player
+   Sends a psychic shockwave back to anyone who has a psychic link with
+   the Avintre.
+
+Hypnotic Dance (fire) - Room
+   Hypnotizes anyone in the room who can see the Avintre, placing them
+   under his control.  Only one creature will be hypnotized at a time,
+   and the Avintre is not able to control which creature is affected.
+
+Confusion (fire) - Mob
+   Causes the victim to become confused.  Confused creatures will have
+   difficulty choosing the desired target for their actions, and may
+   sponteniously switch sides in battle.
+
+Water Trick (water) - Mob
+   Creates a bubble of water around the target.  If the target is not
+   able to breathe under water, they take damage from drowning.  The
+   bubble will move along with the victim, however they may escape it
+   through magical transport, or using a sharp weapon to pop the bubble.
+
+Gyser (water;fire) - Mob
+   Causes a piller of boiling water to erupt beneath the target.
+
+Rain (water) - Room
+   Causes rain to fall.  Fires in the room may be extinguished.
+
+Flood (water;fused) - Room, Canteen
+   Creates a torrent of water which washes away anything in the room
+   that isn't nailed down.  As long as the Avintre is able to sustain
+   the spell, the flood continues, expanding out in all directions, and
+   exacting an increasing amount of mana for each affected room.  With
+   exception of the outer edge of the flood, all affected rooms are
+   considered underwater, and anyone in them needs to be able to breathe
+   in the water or take damage from drowning.
+
+   Additionally, this spell can be used to refill your canteen.  Don't
+   forget to open it first.
+
+Thunderstorm (water;power) - Room
+   Creates a powerful rain storm in the area.  Rarely lightning may
+   strike.
+
+Fog (water;air) - Room
+   Creates dense fog in the room, limiting visibility.
+
+Slow (ice) - Mob
+   Causes the victim to move more slowly, negating haste effects and
+   lowering dextarity for the duration of the spell.
+
+Chill (ice) - Room, Object, Mob, Door
+   Room - Lowers the temperature in the room to a few degrees above
+          freezing.  Creatures in the room not resistant to the cold may
+          fail in their attempts to act due to shivering.
+   Mob - As above, except the effect is localized to a particular
+         target, and hence is more effective.  The target may take a
+         slight amount of damage due to the low surrounding temperature.
+         If we're feeling ambitious, freezing the contents of the
+         target's canteen(s) would be a nice touch, as well.
+   Object - Causes an object to become extremely cold.  Only an Ice
+            Avintre will be able to touch the item without taking
+            damage.  When cast on weapons, this acts as an improved
+            frost blade.  When cast on canteens, the contents freeze.
+   Door - Anyone who tries to open or close a door affected by chill
+          will take damage from the cold.  People attempting to pick a
+          chilled lock will also take damage, and may additionally lose
+          some of their lockpicking ability.
+
+Ice Shield (ice) - Self
+   Creates a wall of ice that is capable of fully deflecting all attacks
+   during any turn that the Avintre takes no other action (other than
+   the automated melee combat).  After the shield absorbs a certian
+   amount of damage, it is destroyed, sending shrapnel flying in all
+   directions.
+
+Ice Spear (ice) - None
+   Creates a spear of ice that can be wielded or thrown.  The spear can
+   be maintained as long as it is in the posession of an Ice Avintre,
+   otherwise it quickly melts.  This weapon affects anyone who touches
+   it as if it were affected by chill.
+
+Ice Cage (ice) - Mob
+   Causes large pillers of ice to form around the target, trapping them
+   and preventing them from acting until the pillers are destroyed.
+
+Freeze (ice) - Mob
+   Encases the target in a large block of ice, preventing any sort of
+   movement.  This effect requires mana to maintain, and the block
+   quickly melts if not maintained by the Avintre or through a source of
+   cold.
+
+Dart of Ice (ice) - Mob
+   Flings several very sharp icicles at the target.  The number and
+   strength of the icicles increases with the Avintre's level.
+
+Hail (ice) - Mob
+   Pelts the target with hailstones.  The number and strength of the
+   hailstones increases with the Avintre's level.
+
+Ice Wall (ice) - Door
+   Creates (suprise) a wall of ice.  If cast on an open exit that exit
+   becomes blocked.  If cast on a closed door, the door is effectively
+   baracaded, and can not be opened except by bashing it down.
+
+Ice Slick (ice) - Room
+   Covers the floor with ice.  Anyone who enters the room will continue
+   sliding through the opposite exit.  If there is no exit in that
+   direction, they will crash into the wall and take a small amount of
+   damage.  Creatures in the room may lose their balance if they move
+   suddenly.
+
+Snow (ice) - Room
+   Causes snow to fall.
+
+Snowstorm (ice) - Room
+   Causes heavy snow to fall.  After an hour it begins to accumulate on
+   the ground and normal fires are extinguished.
+
+Blizzard (ice;air) - Room
+   Creates a powerful ice storm, damaging everyone in the room other
+   than Ice and Ice-Air Avintre.  The intense winds may blow creatures
+   or objects out of the room.  Flying creatures are always blown from
+   the room, take increased damage, and may be knocked out of the sky.
+   If a weapon is thrown from the room, it acts as a thrown projectile.
+   In the case of high level Ice-Air unions, the effect may spill over
+   into the adjacent rooms.
+
+Artic Blast (ice;air) - Mob
+   Attacks the target with an extremely cold blast of air, causing heavy
+   damage.  In some cases this may leave the victim stunned for several
+   rounds.
+
+Deterioration (dust) - Mob, Object, Door, Room
+   Accelerates the deterioration of magical effects on the target.
+   Spells which cause damage over time will not do an increased amount
+   of damage per period, however spells which have a periodical mana
+   cost will cost more to maintain.
+
+Rust (dust) - Object
+   Damages objects; weapons become dulled, armor weakens.  This effect
+   has no time limit, but is not cumulative, and can be reversed by the
+   Path of Life spell Restoration.
+
+Rot (dust) - Plant
+   Kills plants, including magical plants, and causes them to rapidly
+   decompose.
+
+Cavein (dust) - Room, Door
+   When underground this causes the ceiling to collapse, injuring anyone
+   in the room.  If cast on a door the cavein is localized to that exit,
+   blocking the way untill the rubble is cleared.
+
+Gust (air) - Mob
+   Creates a powerful blast of air that hurls the victim against the
+   wall.
+   
+Wind Shield (air) - Mob
+   Creates a whirlwind around the target which will deflect projectiles
+   off in another direction.
+
+Whirlwind (air) - Mob, Object, Room
+   Creates a whirlwind around the target, lifting it off the ground.
+   This whirlwind is under the control of the Avintre, and can move in
+   any direction he wishes.  If there is no exit in that direction, the
+   whirlwind slams the victim into the wall and dissipates.  The Avintre
+   can also throw out anything caught in the wind.  If an object is
+   thrown, it behaves as if the "throw" skill were used on it.  If a
+   creature is thrown, it behaves as if the "hurl" skill were used on
+   it.
+
+Mass Adjustment (air) - Mob, Object
+   Causes the target to become much lighter, allowing heavy objects to
+   be lifted and making skills such as climb more effective.
+   Unfortunately, the same effect makes skills such as hurl more
+   effective against the target of Mass Adjustment.
+
+Levitate (air;fused) - Mob
+   Allows the target to fly at will.
+
+Cloak of Darkness (night) - Object
+   When an affected object is worn around the body, the wearer becomes
+   invisible in the dark even to people who can normally see in the
+   dark.
+
+Stardust (night) - Object, Mob
+   Causes the target to glow in the dark.
+
+Darkvision (night) - None
+   Enables the Avintre to see in the dark.  At 100% the Avintre can see
+   in dark as in day.  At lower levels the Avintre is only able to get a
+   partial view of his surroundings, and may miss things conceiled in
+   darkenss.
+
+Starlight (night) - Room
+   Illuminates the room.
+
+Starburst (night) - Mob
+   Blasts the target with tiny but powerful darts of luminescent white
+   energy.
+
+Nova (night;fused) - Mob
+   A far more powerful version of Starburst.
+
+Novastorm (night;fused) - Room
+   Bombards the entire room with Novas, damaging all opponants.
+
+Detect Life (life) - Self
+   Allows the Avintre to become aware of living things, even if he
+   cannot see them.
+
+Animate Weapon (life) - Weapon
+   Imbdues a weapon with life.  The weapon will float along side the
+   Avintre and assist him in combat.
+
+Restoration (life) - Object
+   Dispels the effects of the Path of Dust spell Rust.
+
+Metabolic Control (life) - Person, Animal
+   Increases or decreases the metabolic rate of the target.  Increasing
+   the metabolic rate has the effect of reducing reaction times, and
+   increasing recovery rate, however it also causes the target to burn
+   calories more quickly, and increases the rate at which poison takes
+   effect.  Decreasing the metabolic rate has the opposite effect,
+   slowing poison and conserving energy, but making the target
+   sluggish, and slow to heal.  At either extreme, there is a risk the
+   stress on the body will be too great, resulting in a heart attack or
+   other organ failure.
+
+Stasis (life;ice) - Person, Animal
+   An advanced form of Metabolic Control, Stasis allows an Avintre to
+   completely halt all bodily functions of a sleeping creature without
+   risk of death.
+
+Disrupt Equilibrium (life) - Mob
+   Degrades the victim's sense of balance, making them more susceptible
+   to skills such as trip, and making even mundane tasks such as walking
+   difficult.
+
+Revive (life) - Mob
+   Negates spell effects such as sleep, flesh to stone, metabolic
+   control, etc.
+
+Renew (life) - Mob
+   Restores some health, movement, hunger and thirst in the target.
+
+Rejuvinate (life;fused) - Mob
+   The target's health, mana, movement, hunger and thirst are restored
+   up to their maximum levels or up to the amount of mana the Avintre
+   has.  This ability can not be used on the Avintre himself, but may
+   be used on his familiar.
+
+Dissipate Poison (life) - Mob, Object
+   Allows the Avintre to nullify poisons present in food or liquids,
+   or in the body of himself or others.
+
+Smite (life;fused) - Mob
+   High level Avintre who walk the path of life are able to instantly
+   slay any creature they wish, however they receive no experience, and
+   such actions may alienate their familiar.
+
+Force Explosion (power;fire) - Mob, Room
+   Mob  - Hits the victim with a powerful explosive blast capable of
+          knocking them off their feet.
+   Room - Centers the effect within the Avintre's opponants, striking
+          each with a slightly less powerful blast.
+
+Energy Containment (power) - Self
+   The Avintre creates a null energy orb, and all magical attacks
+   directed at the Avintre are instead absorbed into the orb.  The orb
+   requires mana each battle round to maintain, and if the Avintre stops
+   maintaining the orb at any time, the amount of energy the orb
+   absorbed is released and spread among the occupants of the room.  The
+   maintenance cost of the orb increases with the amount of energy it
+   has absorbed.
+
+Retribution (power) - Self
+   If the Avintre dies during the current battle while using
+   Retribution, all damage done to him while Retribution was active
+   strikes the person dealing the killing blow.  Retribution requires a
+   maintenance cost which increases with the amount of damage incurred.
+
+Powersink (power) - Room
+   Creates an ethereal sinkhole which absorbs any spell effects in the
+   room, and which pulls in lingering effects from nearby rooms.  If one
+   end of a portal enters this sinkhole, anyone attempting to use the
+   other end of the portal may either be transported to a random
+   location, or flung into the void, killing them instantly.  If an
+   Ethereal Singularity makes contact with the sinkhole, it creates a
+   huge multi-room explosion which destroys any magical effects it
+   contacts, and which has a 1d(distance)+1 chance of killing the people
+   inside the room.  Anyone inside the Singularity at the time is
+   immediately shredded as if they had entered a Singularity with both
+   ends anchored to the same point.
+
+Doom Orb (power) - Player
+   Creates a large orb of energy that  will slowly navigate from room to
+   room untill it finds the target, at which point it will explode.  The
+   orb can not enter anyplace that is haven or anti-magic.  The orb
+   requires mana to maintain, and if the Avintre runs out of mana before
+   the orb reaches its target, it will simply explode in the room it is
+   currently in.
+
+Death Orb (power;fused) - Player
+   A comblination of the Doom Orb and Powersink spells, this orb seeks
+   out its target, becoming more powerful as it absorbs spell effects
+   along the way.  This orb interacts with Etherial Singularities in the
+   same way that a Powersink does.  Death Orb has a maintenance cost
+   similar to Doom Orb which does not increase as it becomes more
+   powerful.
+
+Hold (power) - Mob
+   Allows the Avintre to refocus force to exactly counter any movement
+   the victim attempts to make, effectively paralyzing them.
+
+==== Rocktroll
+General Notes
+   Rocktrolls are highly resistant to edged and piercing weapons,
+   however their great mass causes them to move more slowly.  They more
+   than make up for this shortcoming in sheer physical power.
+
+Tunnel - Room
+   In some situations Rocktrolls are able to tunnel underground to
+   reach areas inaccessible to others.  The tunnel collapses in on
+   itself behind the Rocktroll.
+
+Anchor - Self
+   The Rocktroll binds himself to the earth, preventing others from
+   moving or lifting him.  Unfortunately, also prevents the Rocktroll
+   from moving until he releases his anchor, making him an easier
+   target and lowering his chances of successful melee attacks.
+
+   If a Rocktroll using this ability is pinned to the ground such as by
+   the Entity's Exert Force ability, he becomes unable to break the
+   anchor until he is released.
+
+Bury - Mob, Object, Room
+   Mob, Object - Opens a pit directly beneath the target, causing it to
+                 fall in if not flying or suspended by some other means.
+                 Once the pit has closed, exit is only possible by
+                 magical means (or tunneling, if the target is a
+                 Rocktroll).
+   Room        - As above, except the pit spans the entire floor of the
+                 room.
+
+Collapse - Room
+   In underground areas, the Rocktroll can bring the ceiling down on
+   everyone in the room.
+
+Harden - Self
+   Allows the Rocktroll to increase the strength and density of his
+   skin, lowering natural AC and increasing bare-handed HD.
+
+Solidify - Self
+   Allows the Rocktroll to literally become stone.  This has the same
+   effect as the mortal Flesh to Stone spell, but the Rocktroll is able
+   to control the transformation, and change back at will.
+
+Charge - Mob
+   The Rocktroll rushes at his opponent, using the mass of his own body
+   as a weapon.  The Rocktroll must spend two rounds recovering after
+   using this attack.
+
+Megacrush - Mob
+   As in Charge, the Rocktroll rushes his opponent, however just before
+   he hits, the Rocktroll leaps into the air and attempts to land on the
+   victim.
+
+Slam Punch - Mob
+   Deals a heavy blow to the victim's chest, which knocks the wind out
+   of them for several rounds, and may in fact knock them entirely out
+   of the room.
+
+Hammer Fist - Self
+   Allows the Rocktroll to transmute his fist into a giant stone hammer.
+   Any weapon held in the transmuted hand either falls to the ground or
+   is destroyed.
+
+Baracade - Self
+   Forms a six-inch thick stone shield on the Rocktroll's arm, which
+   completely protects the Rocktroll from frontal attacks until
+   destroyed.  Supporting this shield prevents the Rocktroll from taking
+   any other action.
+
+Create Earth wall - Door
+   Causes the ground to raise up, blocking access through the target
+   exit.
+
+Smash - Mob, Object, Door
+   The Rocktroll attempts to crush the target into the ground, or break
+   a door off of its hinges.
+
+Giant Growth - Self
+   Allows the Rocktroll to grow to immense size, increasing his strength
+   and mass, but decreasing his dexterity in the process.  In this
+   state, the Rocktroll may lift and carry around normal-sized
+   creatures.
+
+Toss - Mob
+   The Rocktroll is able to grab the victim and throw it aside.  If the
+   Rocktroll is in giant form at the time, he may throw the creature
+   several rooms away, most likely killing them in the process.
+
+Backhand - Mob
+   The Rocktroll slams his hand against the victim, sending them flying
+   across (or out of) the room.
+
+==== Entity
+General Notes
+   Entities are creatures manifested of pure thought.  They have no
+   physical form, and are vulnerable to attack only because they
+   believe they have been injured.  As they become more familiar with
+   their new form, they gradually gain resistance to physical harm.
+   The ethereal energy caused by the use of magic interacts in strange
+   ways with Entities, and contact with it yields unpredictable
+   results, particularly when dealing with the more potent powers of
+   other remorts.
+
+   Entities never fully lose the self-image of their previous form, and
+   as such they still find themselves bound by many of the physical
+   laws of nature.  Most develop the ability to fly, and if they
+   concentrate they may be able to pass through doors and some walls,
+   but if their concentration is broken they may suddenly find
+   themselves fused with the wall itself.
+
+   Entities maintain their presence with the same energy they use to
+   exert their powers, and as such use of their abilities drains their
+   "health" rather than a pool of mana.
+
+   Entities may have several effects in play at once, but each
+   additional effect degrades their concentration, making all effects
+   less potent, and possibly causing them to back-fire.
+
+Focus - Mob
+   The Entity forms a psychic link with other creatures, allowing him
+   to focus other spells on that target.  The range as well as the
+   number of simultenious links depends on the level of the Entity and
+   the level of the targets.  When focused on a target, the Entity is
+   less in-tune with their immediate surroundings, making them more
+   vulnerable to attack.
+
+   If the attack is detected, there is a chance that the link will
+   back-fire (unbeknownst to the aggressor) and merely give them the
+   illusion that their link is functioning.  If the victim is another
+   Entity, he will be able to redirect any of the attacks back to the
+   aggressor.  Otherwise, the victim is simply alerted to the attack and
+   to the location of the Entity.
+
+   For activities that require extreme concentration, such as passing
+   through matter, an Entity may turn his focus solely on himself.
+   Creating this internal link allows them to deaden the noise of the
+   outside world, and helps ensure that they will not be interrupted at
+   a crucial moment.  However, nothing is absolute.
+
+Influence - Focused mob
+   Allows the Entity to plant a suggestion in the target's mind.  The
+   next time the target tries to take a particular kind of action, they
+   will do so according to the Entity's suggestion.  E.g. if the Entity
+   tries to influence the target to walk north, the next time the
+   target attempts to move, he may go north rather than in the intended
+   direction.
+
+Confound - Focused mob
+   The victim is prevented from taking any action of his own free will.
+
+Force - Focused mob
+   Forces the victim to take whatever action the Entity wishes.
+
+Silence - Focused mob
+   Prevents the victim from speaking.  Does not impede psychic
+   abilities.
+
+Terrify - Focused mob
+   Causes the victim to flee in panic from anything they see.  An
+   encounter with fluffy bunnies are just as, if not more, horrible
+   than running across a rabid pack of hundred-headed 900 ft tall
+   fire-breathing hydras.
+
+Agony - Focused mob
+   Causes the victim to experience extreme pain in every part of his
+   body.  Depending on the intensity and duration of the effect, the
+   victim may fumble whatever action he is taken, crumple to the
+   ground, fall unconscious, or even immediately die of shock.
+   
+Deafen - Focused mob
+   Overloads the victim's aural centers, causing them to hear sounds as
+   nothing but garbled noises.
+
+Blind - Focused mob
+   Overloads the victim's visual centers, jumbling the images they see
+   until they are incomprehinsable.
+
+Weaken - Focused mob
+   Slowly drains away the victim's strength and ability to heal for the
+   duration of the link.
+
+Enfeeble - Focused mob
+   Causes the victim to lose skill ability with each use.
+
+Calm - Focused mob
+   Instills perfect focus and clarity in the target, greatly improving
+   skill success, fighting ability, and recovery rate.
+
+Fortify - Focused mob
+   Strengthens the target's resistance to mental attacks.
+
+Leach - Focused mob
+   Allows the Entity to gain (or lose!) experience from battles the
+   target is fighting.  Leaching from multiple targets reduces the
+   amount of XP drawn per target, rather than increase the overall
+   experience gained.
+
+Derange - Focused Mob
+   Causes the victim to go insane, causing them to attack friends and
+   creatures far more powerful than they are, to consume poisonous food
+   and drink, and to discard or destroy their own equipment.
+
+Mask Hunger - Focused mob
+Mask Thirst - Focused mob
+   Prevents the victim from realizing they are suffering from hunger or
+   thirst.  This does not negate the actual effects of hunger or thirst,
+   however.
+
+Mask Damage - Focused mob
+   Prevents the victim from realizing they are being injured.
+
+Exert Force - Object, Mob, Door
+   Object - Allows the Entity to pin objects to the ground, or levitate
+            objects they can not carry.
+   Mob    - Knocks the target back, or prevents them from moving.
+   Door   - Erects a wall of force which prevents creatures and
+            projectiles from entering the room by that means.
+
+Crushing Force - Object, Mob
+   When cast on an object, Crushing Force may utterly destroy the
+   object.  When cast on a mob, it deals massive amounts of damage to
+   the victim, and may destroy items he is carrying.  Crushing force
+   uses up to 95% of the Entity's energy, and the Entity must have at
+   least 90% of their maximum energy available just to cast it.
+
+Psychic Crush - Mob
+   Stuns the victim for 2-4 battle rounds.
+
+Create Illusion - Room, Object, Mob, Door
+   The Entity is able to construct illusionary surroundings around
+   himself.  This illusion can be maintained indefinitely, however it
+   uses the Entity's energy as long as it is in existence.  The amount
+   of energy used dependent on the size of the illusion, and the level
+   of concentration on the part of the Entity.  As time passes, the
+   amount of energy required to maintain the illusion gradually
+   decreases, until it requires none at all.  It still, however,
+   detracts from the Entity's focus.
+
+Mental Barrier - Self
+   Erects a protective barrier around the Entity capable of deflecting
+   attacks and redirecting spell effects.
+
+Pass - Self
+   With proper concentration, the Entity may temporally throw off their
+   corporal self-image, allowing them to pass directly through doors
+   and some walls.  Unfortunately, any interruption in their
+   concentration means destruction, as they suddenly find themselves
+   trying to occupy the same space as the object they are attempting to
+   pass through.
+
+Aural Specter - Object
+   The Entity can add a pre-recorded message to an object, which will be
+   spoken by the object (optionally in the Entity's voice) when certain
+   criteria are met.
+
+Visual Specter - None
+   Creates a floating eye, who's movement may be controlled by the
+   Entity, and which relays visual (but not aural) information back to
+   the Entity.  The eye moves silently, and thus has a natural sneak
+   ability.  If it is destroyed, the feedback will deal damage to the
+   Entity, and possibly cause him to lose control of some of his other
+   effects.
