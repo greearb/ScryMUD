@@ -32,10 +32,10 @@ slist            smob             snoop            sockets
 stat_obj_script  stat_path        stat_room_script stat_script      
 thaw             tog_mflag        tog_oflag        tog_rflag        
 tog_vflag        total_rezone     ungag            unpossess        
-unsiteban        unsnoop          update_CIG       update_cig       
-visible          wizhelp          wizinvis         write_world      
-zcreate          zdisable         zenable          zgoto            
-zlock            zunlock          
+unsiteban        unsnoop          update_cig       uptime           
+wizhelp          wizinvis         write_world      write_zone       
+zdisable         zenable          zgoto            zlist            
+zunlock          
 
 <color=red>
 See Also:  commands, topics

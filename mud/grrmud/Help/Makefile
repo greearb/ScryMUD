@@ -138,7 +138,6 @@ IMM_unpossess_1 \
 IMM_unpost_1 \
 IMM_unsiteban_1 \
 IMM_unsnoop_1 \
-IMM_update_CIG_1 \
 IMM_update_cig_1 \
 IMM_uptime_1 \
 IMM_visible_1 \
