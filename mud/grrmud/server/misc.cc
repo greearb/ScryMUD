@@ -1952,7 +1952,7 @@ void out_vehicles(const List<door*>& lst, critter& pc) {
          veh_ptr = static_cast<vehicle*>(room_ptr);
          if ( veh_ptr->isAtDestination() ) {
             if ( veh_ptr->veh_stopped.Strlen() ) {
-               Sprintf(buf,"%S\n", &(veh_ptr->veh_stopped));
+               Sprintf(buf,"       %S\n", &(veh_ptr->veh_stopped));
                pc.show(buf, HL_OBJ_LIST);
             }//has description
          } else {
