@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.30 2002/02/05 05:03:33 gingon Exp $
-// $Revision: 1.30 $  $Author: gingon $ $Date: 2002/02/05 05:03:33 $
+// $Id: spec_prc.cc,v 1.31 2002/09/08 02:00:16 eroper Exp $
+// $Revision: 1.31 $  $Author: eroper $ $Date: 2002/09/08 02:00:16 $
 
 //
 //ScryMUD Server Code
@@ -1497,9 +1497,14 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
          }//if
 
          //log("Found price.\n");
-         if (price > keeper.GOLD) {
+         if (
+               ( keeper.isPlayerShopKeeper() && (price > keeper.GOLD) )
+               ||
+               ( (! keeper.isPlayerShopKeeper() ) &&
+                 (price > keeper.GOLD * 10) )
+            ) {
             do_tell(keeper, "I'm fresh out of money, perhaps later.", pc,
-                    FALSE, pc.getCurRoomNum());
+                  FALSE, pc.getCurRoomNum());
             return -1;
          }//if
 
@@ -1510,7 +1515,11 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());
 
          pc.GOLD += price;
-         keeper.GOLD -= price;
+         if ( keeper.isPlayerShopKeeper() ) {
+            keeper.GOLD -= price;
+         } else {
+            keeper.GOLD -= (int)(price/10);
+         }
 
          drop_eq_effects(*obj_ptr, pc, FALSE, FALSE);
          pc.loseInv(obj_ptr);

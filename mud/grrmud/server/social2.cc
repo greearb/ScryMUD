@@ -1,5 +1,5 @@
-// $Id: social2.cc,v 1.12 2002/01/11 19:29:15 eroper Exp $
-// $Revision: 1.12 $  $Author: eroper $ $Date: 2002/01/11 19:29:15 $
+// $Id: social2.cc,v 1.13 2002/09/08 02:00:16 eroper Exp $
+// $Revision: 1.13 $  $Author: eroper $ $Date: 2002/09/08 02:00:16 $
 
 //
 //ScryMUD Server Code
@@ -2847,3 +2847,101 @@ void eyebrow(int i_th, const String* vict, critter& pc, room& rm) {
       emote("raises an eyebrow.\n", pc, rm, TRUE);
    }//else
 }//eyebrow
+
+void whimper(int i_th, const String* vict, critter& pc, room& rm) {
+   String buf(100);
+   Cell<critter*> cll(rm.getCrits());
+   critter* ptr;
+
+   if (pc.POS == POS_SLEEP) {
+      Sprintf(buf,"You whimper in your sleep.\n");
+      pc.show(buf);
+      return;
+   }
+
+   if (vict->Strlen()) {
+      critter* crit_ptr = 
+           rm.haveCritNamed(i_th, vict, pc);
+
+      if (!crit_ptr) 
+         show("You don't see that person.\n", pc);
+      else if (crit_ptr == &pc) {
+         show("You whimper.\n",
+                 pc);
+         Sprintf(buf, "whimpers.\n");
+         emote(buf, pc, rm, TRUE);
+      }//if targ and agg is same
+      else {
+         Sprintf(buf, "You whimper at %S.\n",
+                 name_of_crit(*crit_ptr, pc.SEE_BIT));
+         show(buf, pc);
+         Sprintf(buf, "%S whimpers at you.\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         buf.Cap();
+         show(buf, *crit_ptr);
+         
+         while ((ptr = cll.next())) {
+            if ((ptr != &pc) && (ptr != crit_ptr)) {
+               Sprintf(buf, "%S whimpers at %S.\n",
+                 name_of_crit(pc, ptr->SEE_BIT), 
+                 name_of_crit(*crit_ptr, ptr->SEE_BIT));
+               buf.Cap();
+               show(buf, *ptr);
+            }//if
+         }//while
+      }//else
+   }//if a victim
+   else {      //change these next two lines
+      show("You whimper.\n", pc);
+      emote("whimpers.\n", pc, rm, TRUE);
+   }//else
+}//whimper
+
+void duck(int i_th, const String* vict, critter& pc, room& rm) {
+   String buf(100);
+   Cell<critter*> cll(rm.getCrits());
+   critter* ptr;
+
+   if (pc.POS == POS_SLEEP) {
+      Sprintf(buf,"Eh?\n");
+      pc.show(buf);
+      return;
+   }
+
+   if (vict->Strlen()) {
+      critter* crit_ptr = 
+           rm.haveCritNamed(i_th, vict, pc);
+
+      if (!crit_ptr) 
+         show("You don't see that person.\n", pc);
+      else if (crit_ptr == &pc) {
+         show("You duck.\n",
+                 pc);
+         Sprintf(buf, "ducks.\n");
+         emote(buf, pc, rm, TRUE);
+      }//if targ and agg is same
+      else {
+         Sprintf(buf, "You duck to avoid %S's iimminent attack.\n",
+                 name_of_crit(*crit_ptr, pc.SEE_BIT));
+         show(buf, pc);
+         Sprintf(buf, "%S ducks to avoid you.\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         buf.Cap();
+         show(buf, *crit_ptr);
+         
+         while ((ptr = cll.next())) {
+            if ((ptr != &pc) && (ptr != crit_ptr)) {
+               Sprintf(buf, "%S ducks to avoid %S's imminent attack.\n",
+                 name_of_crit(pc, ptr->SEE_BIT), 
+                 name_of_crit(*crit_ptr, ptr->SEE_BIT));
+               buf.Cap();
+               show(buf, *ptr);
+            }//if
+         }//while
+      }//else
+   }//if a victim
+   else {      //change these next two lines
+      show("You duck.\n", pc);
+      emote("ducks.\n", pc, rm, TRUE);
+   }//else
+}//duck

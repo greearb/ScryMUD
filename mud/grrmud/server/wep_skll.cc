@@ -1,5 +1,5 @@
-// $Id: wep_skll.cc,v 1.11 2002/09/01 19:51:29 eroper Exp $
-// $Revision: 1.11 $  $Author: eroper $ $Date: 2002/09/01 19:51:29 $
+// $Id: wep_skll.cc,v 1.12 2002/09/08 02:00:16 eroper Exp $
+// $Revision: 1.12 $  $Author: eroper $ $Date: 2002/09/08 02:00:16 $
 
 //
 //ScryMUD Server Code
@@ -365,7 +365,7 @@ int do_disarm(critter& vict, critter& pc) {
    }//if
 
    int missed = FALSE;
-   if (d(1, 100) > d(1, pc.STR * 10 + 
+   if (d(1, 80) > d(1, pc.STR * 10 + 
                      get_percent_lrnd(SWORDBOND_SKILL_NUM, pc))) {
       missed = TRUE;
    }//if
@@ -385,7 +385,7 @@ int do_disarm(critter& vict, critter& pc) {
               name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
       
-      vict.gainInv(vict.EQ[posn]); //person does NOT lose eq
+      ROOM.gainInv(vict.EQ[posn]);
       remove_eq_effects(*(vict.EQ[posn]), vict, FALSE, FALSE, posn);
       vict.EQ[posn] = NULL;
    }//if

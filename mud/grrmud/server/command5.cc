@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.46 2002/09/03 02:23:15 eroper Exp $
-// $Revision: 1.46 $  $Author: eroper $ $Date: 2002/09/03 02:23:15 $
+// $Id: command5.cc,v 1.47 2002/09/08 02:00:15 eroper Exp $
+// $Revision: 1.47 $  $Author: eroper $ $Date: 2002/09/08 02:00:15 $
 
 //
 //ScryMUD Server Code
@@ -3234,7 +3234,7 @@ int did_shot_hit(critter& targ, critter& pc, int throwing = FALSE) {
                  get_percent_lrnd(ARCHERY_SKILL_NUM, pc));
    }//else
 
-   targ_roll = (4 * targ.DEX + 100); //the 100 offsets pc's percent lrnd
+   targ_roll = (4 * targ.DEX); 
    if (targ.EQ[18] || is_affected_by(MAGIC_SHIELD_SKILL_NUM, targ))
       targ_roll *= 2;
    targ_roll = d(1, (int)(targ_roll));

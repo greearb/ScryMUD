@@ -1,5 +1,5 @@
-// $Id: ez_spll.cc,v 1.19 2001/10/03 07:23:03 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
+// $Id: ez_spll.cc,v 1.20 2002/09/08 02:00:15 eroper Exp $
+// $Revision: 1.20 $  $Author: eroper $ $Date: 2002/09/08 02:00:15 $
 
 //
 //ScryMUD Server Code
@@ -2085,6 +2085,9 @@ void do_cast_restore(critter& vict, critter& agg, int is_canned, int lvl) {
       vict.HP += (d(7, 100) + 2 * lvl);
       if (vict.HP > vict.HP_MAX)
          vict.HP = vict.HP_MAX;
+      vict.MOV += (d(7,100) + 2 * lvl);
+      if (vict.MOV > vict.MV_MAX)
+         vict.MOV = vict.MV_MAX;
    }//if
 }//do_cast_restore
 

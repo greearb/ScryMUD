@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.49 2002/08/28 19:30:21 eroper Exp $
-// $Revision: 1.49 $  $Author: eroper $ $Date: 2002/08/28 19:30:21 $
+// $Id: battle.cc,v 1.50 2002/09/08 02:00:15 eroper Exp $
+// $Revision: 1.50 $  $Author: eroper $ $Date: 2002/09/08 02:00:15 $
 
 //
 //ScryMUD Server Code
@@ -398,19 +398,31 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
 
    td = tp = FALSE;
    float chance = 0.0;
-   if ((vict.getPause() <= 0) && (!vict.isParalyzed())) {
+
+   /* This used to check for battle stun, but in personal experience dodging
+      is a natural reaction... even when you've got the wind knocked out of
+      you or your world is spinning you can still manage to (instinctively)
+      move the hell out of the way.
+
+      Also if you're asleep, meditating, or dying... fat chance dodging buddy
+    */
+   if ( (!vict.isParalyzed()) && ( vict.isStanding() || vict.isSitting() ) ) {
       // bigger means less likely to hit, should range from around 1-600
       chance = (float)(d(1, 600)) * (float)agg.DEX / 18.0;
       if ((chance < 100.0) && vict.isStanding()) {
-         td = (d(1, get_percent_lrnd(DODGE_SKILL_NUM, vict, TRUE) + vict.DEX * 2) > d(4,25));
+         td = (d(1, get_percent_lrnd(DODGE_SKILL_NUM, vict, TRUE) +
+                  vict.DEX * 2) > d(4,25));
       }//if
 
       // Don't parry & dodge at the same time...
-      if ((!td && vict.EQ[9]) && (vict.isStanding() || vict.isSitting())) {
+      // 9 is wielded, 18 is shield... shields can parry a blow.
+      if ((!td && (vict.EQ[9] || vict.EQ[18])) &&
+            (vict.isStanding() || vict.isSitting())) {
          // bigger means less likely to hit, should range from around 1-600
          chance = (float)(d(1, 800)) * ((float)(agg.DEX)) / 18.0;
          if (chance < 100.0) {
-            tp = (d(1, get_percent_lrnd(PARRY_SKILL_NUM, vict, TRUE) + vict.DEX) > d(4,25));
+            tp = (d(1, get_percent_lrnd(PARRY_SKILL_NUM, vict, TRUE) +
+                     vict.DEX * 2) > d(4,25));
          }
       }//if
    }//if

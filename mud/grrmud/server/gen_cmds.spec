@@ -302,6 +302,8 @@ dset ~
 return dset(i, &(cooked_strs[1]), &(cooked_strs[2]), k, pc);
 dstat ~
 return dstat(i, &(cooked_strs[1]), pc);
+duck socials ~
+duck(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 dvnum ~
 return dvnum(i, &(cooked_strs[1]), pc);
 dsys ~
@@ -965,6 +967,8 @@ where ~
 return where(i, &(cooked_strs[1]), pc);
 whistle socials ~
 whistle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+whimper socials ~
+whimper(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 whine socials ~
 whine(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 who ~
