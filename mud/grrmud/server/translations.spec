@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.6 1999/06/08 05:10:45 greear Exp $
-# $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
+# $Id: translations.spec,v 1.7 1999/06/14 06:05:44 greear Exp $
+# $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/14 06:05:44 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -723,6 +723,10 @@ CS_SGT_TOO_MUCH_WT
 	eng "%S:\t%S can't carry that much weight.\n"
 	~
 
+CS_SGT_TOO_MUCH_WT_TARG
+	eng "%S can't give you %S because you are carrying too much weight already!"
+	~
+
 CS_SGT_NO_MORTAL
 	eng "%S is not for mortals!\n"
 	~
@@ -845,4 +849,16 @@ CS_PUTS
 
 CS_PUTS_IN_OWN
 	eng "%S puts %S in %s %S.\n"
+	~
+
+CS_LEAVES_SPRINTF
+	eng "leaves %s."
+	~
+
+CS_ARRIVED_FROM_SPRINTF
+	eng "has arrived from $S."
+	~
+
+CS_ARRIVED_FROM_CUST_SP
+	eng "has arrived from the %S."
 	~

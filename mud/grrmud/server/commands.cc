@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.18 1999/06/08 05:10:45 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
+// $Id: commands.cc,v 1.19 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -48,6 +48,7 @@
 #include "pet_spll.h"
 #include <PtrArray.h>
 #include "load_wld.h"
+#include "Filters.h"
 
 
 int inventory(critter& pc) {
@@ -555,6 +556,9 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
    }//if
    else if (pc.POS >= POS_DEAD) { //position
       pc.show(CS_LOOK_CANT_SEE);
+      if (pc.isUsingClient()) {
+         pc.show("<EXITS >");
+      }
    }//if
 
        /* just plain look? */
@@ -669,6 +673,11 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
          String cmd = "look";
          rm.checkForProc(cmd, NULL_STRING, pc, crit_ptr->MOB_NUM);
       }//if
+      else if ((kwd_ptr = rm.haveKeyword(i_th, obj))) {
+         pc.show("\n\n");
+         pc.show(kwd_ptr->desc);
+         pc.show("\n");
+      }
       else if ((door_ptr = 
            door::findDoor(rm.doors, i_th, obj, pc.SEE_BIT, rm))) {
          show("\n\n", pc);
@@ -678,11 +687,6 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
          String cmd = "look";
          rm.checkForProc(cmd, NULL_STRING, pc, door_ptr->dr_data->door_num);
       }//if
-      else if ((kwd_ptr = rm.haveKeyword(i_th, obj))) {
-         pc.show("\n\n");
-         pc.show(kwd_ptr->desc);
-         pc.show("\n");
-      }
       else if (strncasecmp(*obj, "sky", obj->Strlen()) == 0) {
          if (ROOM.canSeeSky()) {
             pc.show(CS_LOOK_SKY_CAN_SEE);
@@ -958,6 +962,8 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
       cast_illusion(pc);
    else if (strncasecmp(*spell, "invisibility", len) == 0) 
       cast_invisibility(j_th, victim, pc);
+   else if (strncasecmp(*spell, "locate", len) == 0) 
+      cast_locate(victim, pc);
    else if (strncasecmp(*spell, "lightning bolt", len) == 0) 
       cast_lightning(j_th, victim, pc);
    else if (strncasecmp(*spell, "lightning storm", len) == 0) 
@@ -1753,8 +1759,9 @@ int yell(const char* message, critter& pc) {
 
       while ((crit_ptr = cell.next())) {
          if (crit_ptr != &pc) { 
-            if (crit_ptr->IS_YELL) { //if channel yell is on
-               if (crit_ptr->pc && crit_ptr->USING_CLIENT) {
+            if (crit_ptr->IS_YELL && !crit_ptr->isMeditating()
+               && !crit_ptr->isSleeping()) { //if channel yell is on
+               if (crit_ptr->isUsingClient()) {
                   tag = "<YELL>";
                   untag = "</YELL>";
                }
@@ -1842,7 +1849,7 @@ int gossip(const char* message, critter& pc) {
          if (crit_ptr != &pc) {
             if (crit_ptr->IS_GOSSIP) { //if channel gossip is on
 
-               if (crit_ptr->isSleeping()) {
+               if (crit_ptr->isSleeping() || crit_ptr->isMeditating()) {
                   continue;
                }
 
@@ -1887,8 +1894,6 @@ int gossip(const char* message, critter& pc) {
    }//else
    return 0;
 }//gossip
-
-
 
 
 int group_say(const char* message, critter& pc) {
@@ -2006,7 +2011,7 @@ int wizchat(const char* message, critter& pc) {
          }
          if (crit_ptr != &pc) {
             if (crit_ptr->isWizchat()) { //if channel wizchat
-               if (crit_ptr->pc && crit_ptr->USING_CLIENT) {
+               if (crit_ptr->isUsingClient()) {
                   tag = "<GOSSIP>";
                   untag = "</GOSSIP>";
                }
@@ -2080,7 +2085,8 @@ int auction(const char* message, critter& pc) {
             continue;
          }
          if (crit_ptr != &pc) { 
-            if (crit_ptr->IS_AUCTION) { //if channel auction is on
+            if (crit_ptr->IS_AUCTION && !crit_ptr->isMeditating()
+                 && !crit_ptr->isSleeping()) { //if channel auction is on
                if (crit_ptr->pc && crit_ptr->USING_CLIENT) {
                   tag = "<AUCTION>";
                   untag = "</AUCTION>";
@@ -2162,7 +2168,8 @@ int shout(const char* message, critter& pc) {
 
       while ((crit_ptr = cell.next())) {
          if (crit_ptr != &pc) { 
-            if (crit_ptr->IS_SHOUT) { //if channel shout is on
+            if (crit_ptr->IS_SHOUT && !crit_ptr->isSleeping()
+                && !crit_ptr->isMeditating()) { //if channel shout is on
                if (which_z == (room_list[crit_ptr->getCurRoomNum()].getZoneNum())) {
                   if (crit_ptr->pc && crit_ptr->USING_CLIENT) {
                      tag = "<YELL>";
@@ -2591,18 +2598,11 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 	 if (!pc.isNoHassle())
 	    pc.PAUSE += door_ptr->distance;
 
-	 int sneak_worked = FALSE;
-	 if (pc.isSneaking() &&
-	     d(1, 100) < (d(1, get_percent_lrnd(SNEAK_SKILL_NUM, pc) +
-			    pc.DEX * 10 + pc.LEVEL * 5))) {
-	   sneak_worked = TRUE;
-	 }//if
-         
-	 if (!sneak_worked) {
-            //TODO:  Tranlation problem.
-            Sprintf(buf, "leaves %s.\n", direction);
-            emote(buf, pc, rm, FALSE);
-	 }//if
+         //Sprintf(buf, "leaves %s.\n", direction);
+         mudlog << "DIR_ADDR: " << (void*)(direction) << endl;
+         rm.doEmote(pc, Selectors::instance().CC_mob_entry_allow, 
+                    Selectors::instance().CC_mob_entry_deny,
+                    CS_LEAVES_SPRINTF, direction);
 
          if (!pc.isMob()) {
             pc.MOV -= rm.getMovCost();
@@ -2633,20 +2633,23 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
          }
 
          if (from_dir.Strlen()) {
-            if (!sneak_worked) {
-               if (is_custom) {
-                  Sprintf(buf, "has arrived from %S.", &from_dir);
-               }//if
-               else {
-                  Sprintf(buf, "has arrived from the %S.", &from_dir);
-               }//else
-               emote(buf, pc, room_list[dest], FALSE);
+            if (is_custom) {
+               //Sprintf(buf, "has arrived from %S.", &from_dir);
+               room_list[dest].doEmote(pc, Selectors::instance().CC_mob_entry_allow,
+                                       Selectors::instance().CC_mob_entry_deny,
+                                       CS_ARRIVED_FROM_SPRINTF, &from_dir);
             }//if
+            else {
+               //Sprintf(buf, "has arrived from the %S.", &from_dir);
+               room_list[dest].doEmote(pc, Selectors::instance().CC_mob_entry_allow, 
+                                       Selectors::instance().CC_mob_entry_deny,
+                                       CS_ARRIVED_FROM_CUST_SP, &from_dir);
+            }//else
          }//if
          else {
-            if (!sneak_worked) {
-               emote(CS_HAS_ARRIVED, pc, room_list[dest], FALSE);
-            }//if
+            room_list[dest].doEmote(pc, Selectors::instance().CC_mob_entry_allow, 
+                                    Selectors::instance().CC_mob_entry_deny,
+                                    CS_HAS_ARRIVED);
          }//else
 
          if (do_followers) {
@@ -3065,7 +3068,13 @@ int source_give_to(critter& pc, object& obj, critter& targ) {
       Sprintf(buf, cstr(CS_SGT_TOO_MUCH_WT, pc),
               &(obj.short_desc), name_of_crit(targ, pc.SEE_BIT)); 
       buf.Cap();
-      show(buf, pc);
+      pc.show(buf);
+
+      Sprintf(buf, cstr(CS_SGT_TOO_MUCH_WT_TARG, targ), pc.getName(targ.SEE_BIT),
+              obj.getLongName(targ.SEE_BIT));
+      buf.Cap();
+      targ.show(buf);
+
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(7)) && (targ.LEVEL < 31)) { //!mort

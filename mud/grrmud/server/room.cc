@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.17 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: room.cc,v 1.18 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -34,6 +34,7 @@
 #include "const.h"
 #include "zone.h"
 #include "load_wld.h"
+#include "Filters.h"
 
 
 int KeywordPair::_cnt = 0;
@@ -1662,3 +1663,42 @@ void room::doScriptJump(int abs_offset) {
    if (cur_script)
       cur_script->doScriptJump(abs_offset);
 }
+
+
+int room::doEmote(critter& pc, CSelectorColl& includes,
+                  CSelectorColl& denies, CSentryE cs_entry, ...) {
+   va_list argp;
+   va_start(argp, cs_entry);
+   int retval = 0;
+   retval = vDoEmote(pc, includes, denies, cs_entry, argp);
+   va_end(argp);
+   return retval;
+}
+
+int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
+                   CSentryE cs_entry, va_list& argp) {
+   Cell<critter*> cll(critters);
+   critter* ptr;
+   String buf(100);
+   String buf2(100);
+
+
+   while ((ptr = cll.next())) {
+      if (!(denies.matches(ptr, &pc))) {
+         if (mudlog.ofLevel(DBG)) {
+            mudlog << "room::doEmote, not denied." << endl;
+         }
+         if (includes.matches(ptr, &pc)) {
+            if (mudlog.ofLevel(DBG)) {
+               mudlog << "room::doEmote, includes matched." << endl;
+            }
+            vSprintf(buf, cstr(cs_entry, *ptr), argp);
+            //mudlog << endl << "buf -:" << buf << ":-" << endl << endl;
+            Sprintf(buf2, "%S %S", pc.getName(ptr->SEE_BIT), &buf);
+            buf2.Cap();
+            ptr->show(buf2);
+         }//if
+      }//if
+   }//while
+   return 0;
+}//vDoEmote

@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.23 1999/06/08 05:10:45 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
+// $Id: critter.cc,v 1.24 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -39,6 +39,7 @@
 #include "command5.h"
 #include "batl_prc.h"
 #include "battle.h"
+#include <stdarg.h>
 
 const char* PcPositionStrings[] = {"stand", "sit", "rest", "sleep", "meditate",
                                    "stun", "dead", "prone"};
@@ -2873,6 +2874,14 @@ void critter::emote(const char* msg) {
    ::emote(msg, *this, room_list[getCurRoomNum()], TRUE);
 }
 
+void critter::emote(CSelectorColl& includes, CSelectorColl& denies,
+                    CSentryE cs_entry, .../*Sprintf args*/) {
+   va_list argp;
+   va_start(argp, cs_entry);
+   getCurRoom()->vDoEmote(*this, includes, denies, cs_entry, argp);
+   va_end(argp);
+}
+
 
 void critter::doPrompt() {
    int i;
@@ -3285,11 +3294,11 @@ int critter::isNoHassle() {
    return (pc && PC_FLAGS.get(7));
 }
 
-int critter::isSneaking() {
+int critter::isSneaking() const {
    return crit_flags.get(17);
 }
 
-int critter::isHiding() {
+int critter::isHiding() const {
    return crit_flags.get(22);
 }
 
@@ -3712,11 +3721,11 @@ int critter::withdrawCoins(int count, critter& banker) { //do messages
       long_data[0] += count;
       Sprintf(buf, "%S gives you %i coins.\n", banker.getName(), count);
       show(buf);
-      Sprintf(buf, "Your balance is now %i coins.\n", long_data[2]);
+      Sprintf(buf, "Your balance is now %i coins.", long_data[2]);
       do_tell(banker, buf, *this, FALSE, getCurRoomNum());
       return 0;
    }
-   Sprintf(buf, "Your balance is only %i coins.\n", long_data[2]);
+   Sprintf(buf, "Your balance is only %i coins.", long_data[2]);
 
    do_tell(banker, buf, *this, FALSE, getCurRoomNum());
    return -1;
@@ -3738,11 +3747,11 @@ int critter::depositCoins(int count, critter& banker) { //do messages
       Sprintf(buf, "%S puts %i coins into your account.\n", banker.getName(),
               count);
       show(buf);
-      Sprintf(buf, "Your balance is now %i coins.\n", long_data[2]);
+      Sprintf(buf, "Your balance is now %i coins.", long_data[2]);
       do_tell(banker, buf, *this, FALSE, getCurRoomNum());
       return 0;
    }
-   Sprintf(buf, "Your have only %i coins.\n", long_data[0]);
+   Sprintf(buf, "Your have only %i coins.", long_data[0]);
 
    do_tell(banker, buf, *this, FALSE, getCurRoomNum());
    return -1;

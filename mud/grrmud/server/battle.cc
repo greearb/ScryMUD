@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.13 1999/06/06 19:38:24 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/06 19:38:24 $
+// $Id: battle.cc,v 1.14 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -143,12 +143,13 @@ void do_battle() {
 
             for (i = 0; i< atks; i++) {
 	             /* check for second attack */
-	       if ((i == 1) && (crit_ptr->pc) && (crit_ptr->PAUSE > 0)) {
-		  if (d(1, 100) > 
-		      d(1, get_percent_lrnd(SECOND_ATTACK_SKILL_NUM,
-                                       *(crit_ptr)) 
-                        * (int)((float)(crit_ptr->DEX) / 9.0))) {
-		    continue; //didn't get second hit
+	       if ((i == 1) && (crit_ptr->pc)) {
+                  if ((crit_ptr->PAUSE > 0) ||
+                      (d(1, 100) >
+                       d(1, (get_percent_lrnd(SECOND_ATTACK_SKILL_NUM,
+                                              *(crit_ptr)) + crit_ptr->LEVEL) 
+                         * (int)((float)(crit_ptr->DEX) / 9.0)))) {
+                     continue; //didn't get second hit
 		  }//if
 	       }//if
 
@@ -641,6 +642,7 @@ void agg_kills_vict(critter& agg, critter& vict) {
 void agg_kills_vict(critter& agg, critter& vict, int& show_vict_tags) {
    Cell<critter*> cll2(vict.IS_FIGHTING);
    critter *ptr2;
+   String buf(100);
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In agg_kills_vict, agg:  " << *(name_of_crit(agg, ~0))
@@ -682,10 +684,19 @@ void agg_kills_vict(critter& agg, critter& vict, int& show_vict_tags) {
    vict.IS_FIGHTING.clear(); //vict no longer fighting others
 
    if (vict.pc && agg.pc) {
+      Sprintf(buf, "  INFO:  %S has P-KILLED %S in room %i!!\n",
+              agg.getName(), vict.getName(), vict.getCurRoomNum());
+      show_all_info(buf);
+
       agg.pc->pk_count++;
-      vict.pc->died_count++;
       vict.pc->pk_count--;
    }//if
+   else if (vict.pc) {
+      Sprintf(buf, "  INFO:  %S was killed by %S in room: %i\n",
+              agg.getName(), vict.getName(), vict.getCurRoomNum());
+      show_all_info(buf);
+      vict.pc->died_count++;
+   }
 
    disburse_xp(agg, vict); //take care of xp
    dead_crit_to_corpse(vict, show_vict_tags); //remove all traces of vict
@@ -933,7 +944,7 @@ void gain_level(critter& crit) {
    crit.PRACS += (int)((float)(crit.INT)/4.0);
    crit.MA_MAX += mana_gain;
    crit.setHP_MAX(crit.getHP_MAX() + hp_gain);
-   crit.MV_MAX += d(2, crit.DEX);
+   crit.MV_MAX += d(1, crit.DEX);
    show("You rise a level.\n", crit);
 }//gain_level
 

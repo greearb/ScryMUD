@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.21 1999/06/08 05:10:44 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/08 05:10:44 $
+// $Id: command2.cc,v 1.22 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -1601,6 +1601,10 @@ int toggle_prompt(const String* field, critter& pc) {
       Sprintf(buf, cstr(CS_TOG4, pc),
               (int)(pc.PC_FLAGS.get(16)), (int)(pc.PC_FLAGS.get(15)));
       show(buf, pc);
+
+      Sprintf(buf, cstr(CS_TOG4_1, pc), (int)(pc.PC_FLAGS.get(28)));
+      show(buf, pc);
+
       if (pc.isImmort()) {
          Sprintf(buf, cstr(CS_TOG5, pc),
                  (int)(pc.PC_FLAGS.get(14)), (int)(pc.PC_FLAGS.get(7)),
@@ -1663,6 +1667,8 @@ int toggle_prompt(const String* field, critter& pc) {
       pc.PC_FLAGS.flip(22);
    else if (strncasecmp(*field, cstr(CS_TOG_ANSI, pc), len1) == 0) 
       pc.PC_FLAGS.flip(26);
+   else if (strncasecmp(*field, cstr(CS_TOG_MOB_ENTRY, pc), len1) == 0) 
+      pc.PC_FLAGS.flip(28);
    else {
       pc.show(CS_NO_FIND_TOGGLE);
       return -1;
@@ -2666,6 +2672,52 @@ int log_level(int lvl, critter& pc) {
       }//if
 
       String buf(100);
+      if (lvl == 1) {
+         pc.show(CS_LOG_FLAGS);
+         Sprintf(buf, cstr(CS_LOG_LVL_IS, pc), mudlog.getLevel());
+         pc.show(buf);
+         if (mudlog.ofLevel(DIS)) {
+            pc.show(CS_DISASTER);
+         }
+         if (mudlog.ofLevel(ERR)) {
+            pc.show(CS_ERROR);
+         }
+         if (mudlog.ofLevel(WRN)) {
+            pc.show(CS_WARNING);
+         }
+         if (mudlog.ofLevel(INF)) {
+            pc.show(CS_INFO);
+         }
+         if (mudlog.ofLevel(TRC)) {
+            pc.show(CS_FUNCT_TRACE);
+         }
+         if (mudlog.ofLevel(DBG)) {
+            pc.show(CS_DEBUG);
+         }
+         if (mudlog.ofLevel(SEC)) {
+            pc.show(CS_SECURITY);
+         }
+         if (mudlog.ofLevel(DB)) {
+            pc.show(CS_DB_RW);
+         }
+         if (mudlog.ofLevel(XMT)) {
+            pc.show(CS_XMIT);
+         }
+         if (mudlog.ofLevel(INP)) {
+            pc.show(CS_INPUT);
+         }
+         if (mudlog.ofLevel(SCRIPT)) {
+            pc.show(CS_SCRIPT);
+         }
+         if (mudlog.ofLevel(PARSE)) {
+            pc.show(CS_PARSE);
+         }
+         return 0;
+      }//if it was 1
+
+      if (lvl == -1) {
+         lvl = 1;
+      }
 
       Sprintf(buf, cstr(CS_SETTING_LOG, pc), lvl);
       pc.show(buf);

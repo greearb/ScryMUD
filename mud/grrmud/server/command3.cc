@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.14 1999/06/06 19:38:24 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/06 19:38:24 $
+// $Id: command3.cc,v 1.15 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -420,7 +420,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
            long_name_of_obj(*scroll, pc.SEE_BIT));
    show(buf, pc);
 
-   short found_proc = FALSE;
+   short found_proc = TRUE;
    Cell<stat_spell_cell*> cll(scroll->CASTS_THESE_SPELLS);
    stat_spell_cell* ptr;
 

@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.18 1999/06/08 05:10:45 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
+// $Id: critter.h,v 1.19 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -43,7 +43,7 @@ extern int bound(int l, int h, int v); //misc.h
 
 class critter;
 class room;
-
+class CSelectorColl;
 
 // MODES
 
@@ -551,7 +551,7 @@ public:
       // 17 is_blocking_door, 18 can_det_magic, 19 detect_inventory
       // 20 show_vnums, 21 has_poofin_poofout_msg, 22 page_output
       // 23 in_page_break_mode, 24 !wizchat, 25 has_colors, 26 use_color
-      // 27 has_language_choice
+      // 27 has_language_choice, 28 !show_mob_entry
 
    short birth_day; //day born
    short birth_year; //year born
@@ -754,6 +754,10 @@ public:
    void doLogin();
    void save();
    void emote(const char* msg);
+
+   void emote(CSelectorColl& includes, CSelectorColl& denies,
+              CSentryE cs_entry, .../*Sprintf args*/);
+
    void doSuicide();
 
    void addProcScript(const String& txt, MobScript* script_data);
@@ -842,7 +846,7 @@ public:
    int getPause() const { return short_cur_stats[11]; }
    void setPause(int i) { short_cur_stats[11] = i; }
 
-   int getPosn() { return bound(POS_STAND, POS_PRONE, short_cur_stats[0]); }
+   int getPosn() const { return bound(POS_STAND, POS_PRONE, short_cur_stats[0]); }
    void setPosn(int i) {
       if ((i >= POS_STAND) && (i <= POS_PRONE)) {
          short_cur_stats[0] = i;
@@ -894,9 +898,9 @@ public:
    int shouldDoPoofin();
    int shouldDoPoofout();
    int isNoHassle();
-   int isSneaking();
-   int isHiding();
-
+   int isSneaking() const;
+   int isHiding() const;
+   
    int isMob() const { return (CRITTER_TYPE == 2); }
    int isNPC() const { return (isMob() || isSmob()); }
    int isSmob() const { return (CRITTER_TYPE == 1); }
@@ -945,11 +949,13 @@ public:
    int isFighting() const  { return !is_fighting.isEmpty(); }
    int isFighting(critter& da_pc) { return is_fighting.haveData(&da_pc); }
 
-   int isStanding() { return POS == POS_STAND; }
-   int isSleeping() { return POS == POS_SLEEP; }
-   int isStunned() { return POS == POS_STUN; }
+   int isStanding() const { return POS == POS_STAND; }
+   int isSleeping() const { return POS == POS_SLEEP; }
+   int isStunned() const { return POS == POS_STUN; }
+   int isMeditating() const { return POS == POS_MED; }
+   int isPossessed() const { return (!possessed_by); }
 
-   int isEdible() { return mob && MOB_FLAGS.get(5); }
+   int isEdible() const { return mob && MOB_FLAGS.get(5); }
    
    int isHuman() { return RACE ==  HUMAN; }
    int isAnitre() { return ((RACE == ANITRE) || (RACE == AVINTRE)); }

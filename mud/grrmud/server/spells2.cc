@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.7 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: spells2.cc,v 1.8 1999/06/14 06:05:44 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/06/14 06:05:44 $
 
 //
 //ScryMUD Server Code
@@ -66,14 +66,27 @@ void do_cast_locate(const String* targ, critter& agg, int is_canned,
       if (!is_canned)
          agg.MANA -= spell_mana;
 
-      int zon = room_list[agg.getCurRoomNum()].getZoneNum();
-      int end = ZoneCollection::instance().elementAt(zon).getEndRoomNum();
-      int begin = ZoneCollection::instance().elementAt(zon).getBeginRoomNum();
+      int zon;
+      int end;
+      int begin;
       
+      if (agg.getImmLevel() > 5) {
+         // Search the entire game!!
+         end = Cur_Max_Room_Num;
+         begin = 1;
+      }
+      else {
+         zon = room_list[agg.getCurRoomNum()].getZoneNum();
+         end = ZoneCollection::instance().elementAt(zon).getEndRoomNum();
+         begin = ZoneCollection::instance().elementAt(zon).getBeginRoomNum();
+      }
+
       Cell<critter*> ccll;
       critter* ptr;
       Cell<object*> ocll;
       for (int i = begin; i<= end; i++) {
+         // TODO:  Optimize this..move it into room class so we don't have
+         // to make coppies of the list! --BEN
          List<critter*> tmp_crits(room_list[i].getCrits());
          tmp_crits.head(ccll);
          while ((ptr = ccll.next())) {
@@ -96,7 +109,7 @@ void do_cast_locate(const String* targ, critter& agg, int is_canned,
 }//do_cast_locate
  
 
-void cast_locate(int i_th, const String* victim, critter& pc) {
+void cast_locate(const String* victim, critter& pc) {
    int spell_num = LOCATE_SKILL_NUM;
 
 
@@ -2268,11 +2281,17 @@ void do_locate_object(object &obj, const String* targ, critter& pc,
 
    /* Must be magical (affect stats) before you can locate it. */
 
-   if (!obj.isMagic()) {
-      if (obj.getLevel() <= lvl) {
+   if (obj.isMagic() || pc.isImmort()) {
+      if ((obj.getLevel() <= lvl) || (pc.isImmort())) {
          String buf(100);
-         Sprintf(buf, "%S:  %P40%S.\n", long_name_of_obj(obj, ~0),
-                 &(room_list[rm_num].short_desc));
+         if (pc.isImmort()) {
+            Sprintf(buf, "ROOM: %i  %S:  %P40%S.\n", rm_num, long_name_of_obj(obj, ~0),
+                    &(room_list[rm_num].short_desc));
+         }
+         else {
+            Sprintf(buf, "%S:  %P40%S.\n", long_name_of_obj(obj, ~0),
+                    &(room_list[rm_num].short_desc));
+         }
          buf.Cap();
          show(buf, pc);
       }//if

@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.12 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: const.cc,v 1.13 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -276,7 +276,8 @@ const char* pcd_names[] = {
    "!wizchat",//24
    "has_colors",//25
    "use_color", //26
-   "has_language_choice" //27
+   "has_language_choice", //27
+   "!show_NPC_entry"
 };
 const BitfieldNames PC_DATA_FLAGS_NAMES(sizeof(pcd_names)/sizeof(const char*),
                                         pcd_names, "PC Data Flags:");

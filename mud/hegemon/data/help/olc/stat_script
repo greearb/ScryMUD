@@ -6,12 +6,12 @@ This function allows you to list a single script in it's entirety.  The
 client will be able to recognize this and have a menu specially designed to
 help you edit the script.
 
-usage:  stat_script [mob_num] <i_th trigger> [trigger_name]
+usage:  stat_script [mob_num] [script_index]
 
 Example:
-	stat_script 50 say                  // view the first say script
-	stat_script 50 3.say                // view the third say script
+	stat_script 55 0        // view script[0] (The first one.)
+	stat_script 404 5        // view script[5]
 
 
 
-See Also:  list_scripts add_mob_script rm_script
+See Also:  list_scripts add_mob_script rm_script stat_room_script

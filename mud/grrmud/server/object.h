@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.9 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: object.h,v 1.10 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -267,6 +267,8 @@ public:
    int isPaused() const { return pause > 0; }
    int isModified() const { return (in_list && 1); } //ie is it a SOBJ
    int hasScript() const { return obj_flags.get(76); }
+   int isLiquid() const;
+   int isCanteen() const;
 
    void setComplete();
    void setIncomplete();

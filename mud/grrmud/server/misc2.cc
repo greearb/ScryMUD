@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.19 1999/06/08 05:10:45 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
+// $Id: misc2.cc,v 1.20 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -203,143 +203,143 @@ void show_stat_affects(object& obj, critter& pc) {
    
    while ((ptr = cll.next())) {
       if (ptr->stat_spell == 1) {
-         Sprintf(buf, "Strength[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Strength[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 2) {
-         Sprintf(buf, "Inteligence[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Inteligence[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 3) {
-         Sprintf(buf, "Constitution[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Constitution[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 4) {
-         Sprintf(buf, "Charisma[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Charisma[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 5) {
-         Sprintf(buf, "Wisdom[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Wisdom[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 6) {
-         Sprintf(buf, "Dexterity[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Dexterity[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 7) {
-         Sprintf(buf, "Hit (chance)[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Hit (chance)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 8) {
-         Sprintf(buf, "Damage[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Damage[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 9) {
-         Sprintf(buf, "AC (armor)[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "AC (armor)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 10) {
-         Sprintf(buf, "Attacks[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Attacks[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 15) {
-         Sprintf(buf, "HP (current)[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "HP (current)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 16) {
          Sprintf(buf, "Mana (current)[%i]:%P25 %i\n",
-                 ptr->bonus_duration, ptr->stat_spell);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 17) {
          Sprintf(buf, "Movement (current)[%i]:%P25 %i\n",
-                 ptr->bonus_duration, ptr->stat_spell);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 18) {
-         Sprintf(buf, "Alignment[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Alignment[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 22) {
-         Sprintf(buf, "Practices[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Practices[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 23) {
-         Sprintf(buf, "HP (max)[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "HP (max)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 24) {
-         Sprintf(buf, "Mana (max)[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Mana (max)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 25) {
-         Sprintf(buf, "Movement (max)[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Movement (max)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 27) {
          Sprintf(buf, "Damage Recieved Modifier[%i]:%P25 %i\n",
-                 ptr->bonus_duration, ptr->stat_spell);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 28) {
          Sprintf(buf, "Damage Given Modifier[%i]:%P25 %i\n",
-                 ptr->bonus_duration, ptr->stat_spell);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 29) {
          Sprintf(buf, "Heat Resistance[%i]:%P25 %i\n",
-                 ptr->bonus_duration, ptr->stat_spell);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 30) {
          Sprintf(buf, "Cold Resistance[%i]:%P25 %i\n",
-                 ptr->bonus_duration, ptr->stat_spell);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 31) {
          Sprintf(buf, "Electrical Resistance[%i]:%P25 %i\n",
-                 ptr->bonus_duration, ptr->stat_spell);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 32) {
-         Sprintf(buf, "Spell Resistance[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Spell Resistance[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 35) {
          Sprintf(buf, "Bare Hand Dice Count[%i]:%P25 %i\n",
-                 ptr->bonus_duration, ptr->stat_spell);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 36) {
          Sprintf(buf, "Bare Hand Dice Sides[%i]:%P25 %i\n",
-                 ptr->bonus_duration, ptr->stat_spell);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 37) {
          Sprintf(buf, "HP Regeneration[%i]:%P25 %i\n",
-                 ptr->bonus_duration, ptr->stat_spell);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 38) {
          Sprintf(buf, "Mana Regeneration[%i]:%P25 %i\n",
-                 ptr->bonus_duration, ptr->stat_spell);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 39) {
          Sprintf(buf, "Movement Regeneration[%i]:%P25 %i\n",
-                 ptr->bonus_duration, ptr->stat_spell);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 100) {
-         Sprintf(buf, "Hunger[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Hunger[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 101) {
-         Sprintf(buf, "Thirst[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Thirst[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else if (ptr->stat_spell == 102) {
-         Sprintf(buf, "Drugged[%i]:%P25 %i\n", ptr->bonus_duration, ptr->stat_spell);
+         Sprintf(buf, "Drugged[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else {
@@ -924,13 +924,14 @@ void parse_communication(String& str) {
 
    const char* incoming = tmp; //will cast to char*
 
-   const char* censored;
-   for (int i = 0; (censored = CensoredStrings[i]); i++) {
-      if (strstr(incoming, censored)) {
-         str = "CENSORED";
-         return;
-      }
-   }
+   // Skip censorship for now. --BEN
+   //const char* censored;
+   //for (int i = 0; (censored = CensoredStrings[i]); i++) {
+   //   if (strstr(incoming, censored)) {
+   //      str = "CENSORED";
+   //      return;
+   //   }
+   //}
 
    String retval(len + 5);
 
@@ -1420,7 +1421,7 @@ int get_next_mob() {
 }//get_next_obj()
 
 
-int get_percent_lrnd(int skill_num, critter& pc, short automatic = FALSE) {
+int get_percent_lrnd(int skill_num, const critter& pc, short automatic = FALSE) {
    if (!pc.pc) {
       if (automatic && pc.mob && pc.mob->proc_data) {
          if (pc.FLAG1.get(12)) { //evasive maneuvers flag
@@ -1590,6 +1591,7 @@ void clear_crit_list(List<critter*>& lst) {
    }//while
 }//clear_crit_list
 
+
 void clear_obj_list(List<object*>& lst) {
    Cell<object*> cll(lst);
    object* ptr;
@@ -1606,6 +1608,7 @@ void clear_obj_list(List<object*>& lst) {
       ptr = lst.lose(cll);
    }//while
 }//clear_obj_list
+
 
 void out_field(const bitfield& field, critter& pc, const BitfieldNames& names) {
    int k = field.max_bit();

@@ -1,7 +1,7 @@
-# $Id: MakeInclude,v 1.19 1999/06/05 23:29:11 greear Exp $
-# $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/05 23:29:11 $
-
 #  -*-Makefile-*-
+
+# $Id: MakeInclude,v 1.20 1999/06/14 06:05:42 greear Exp $
+# $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/14 06:05:42 $
 
 
 #  A common place IN YOUR PATH where tools can be put
@@ -28,8 +28,8 @@ MAKE=make
 CUR_DATE=`date '+%y.%m.%d'`
 
 #  For distribution purposes
-SCRY_VERSION=1.9.5
-HEGEMON_VERSION=1.9.5
+SCRY_VERSION=1.9.6
+HEGEMON_VERSION=1.9.6
 
 LDFLAGS =  -L$(MUD_HOME)/lib #linker flaggs
 

@@ -13,7 +13,7 @@ south.
 23 21 10 -1  -:| bitfield |:-
 1024 1 1 1 	cur_stats
 -1	affected_by
-32 31 145 -1	inv
+145 31 32 -1	inv
 1 10 22 0
 -1	door Affected_Bye
 1 3 22 0
@@ -160,7 +160,7 @@ DO NOT sell items you find here.  Its just plain Immoral.
 23 21 -1  -:| bitfield |:-
 1024 1 7 7 	cur_stats
 -1	affected_by
-236 4 116 182 358 -1	inv
+358 4 -1	inv
 1 4 2 0
 -1	door Affected_Bye
 -1	door#, dest
@@ -334,7 +334,7 @@ Daisy Lane leads off to the east towards some shops.
 1 2 25 0
 -1	door Affected_Bye
 -1	door#, dest
-4 3 -1	mobs
+3 4 -1	mobs
 End of Room
 16		Room Number
 SW_Plaza ~	names
@@ -440,7 +440,7 @@ stairs to the temple.
 1 2 22 0
 -1	door Affected_Bye
 -1	door#, dest
-3 204 -1	mobs
+204 3 -1	mobs
 End of Room
 20		Room Number
 NE_Plaza ~	names
@@ -602,7 +602,7 @@ lined with all sorts of shops and filled with people going this way and that.
 1 2 36 0
 -1	door Affected_Bye
 -1	door#, dest
-3 3 204 -1	mobs
+204 3 3 -1	mobs
 End of Room
 26		Room Number
 SW_Violet_Drive ~	names
@@ -742,7 +742,7 @@ Hmmm, maybe you should visit here more often!
 1 4 43 0
 -1	door Affected_Bye
 -1	door#, dest
-264 265 233 -1	mobs
+233 265 264 -1	mobs
 End of Room
 33		Room Number
 NW_Rose_Lane ~	names
@@ -879,7 +879,7 @@ you the destinations available, and a small sign posted by the ticket machine.
 -1	door#, dest
 -1	mobs
 End of Room
-16777255		Room Number
+16777255		Vehicle number
 train ~	names
 On the Silver Train.
 ~
@@ -1012,7 +1012,7 @@ Gimbal, the local lawyer, has his office to the south.
 1 2 29 0
 -1	door Affected_Bye
 -1	door#, dest
-3 204 -1	mobs
+204 3 -1	mobs
 End of Room
 44		Room Number
 north_gate ~	names
@@ -1431,7 +1431,7 @@ a door to the east leads out into the courtyard.
 1 9 63 0
 -1	door Affected_Bye
 -1	door#, dest
-79 81 -1	mobs
+81 79 -1	mobs
 End of Room
 63		Room Number
 NW_Violet_Drive ~	names
@@ -1717,7 +1717,7 @@ this one still mostly intact.
 1 2 77 0
 -1	door Affected_Bye
 -1	door#, dest
-3 204 204 160 -1	mobs
+160 204 204 3 -1	mobs
 End of Room
 77		Room Number
 W_Daisy_Lane ~	names
@@ -1894,7 +1894,7 @@ of stairs descending into the darkness.
 1 4 83 1
 -1	door Affected_Bye
 -1	door#, dest
-195 196 197 -1	mobs
+197 196 195 -1	mobs
 End of Room
 85		Room Number
 tavern ~	names
@@ -2097,7 +2097,7 @@ oddities, and even more willing for you to part with the ones he has.
 1 4 29 0
 -1	door Affected_Bye
 -1	door#, dest
-294 -1	mobs
+-1	mobs
 End of Room
 
 

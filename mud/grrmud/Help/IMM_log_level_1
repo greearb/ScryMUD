@@ -2,7 +2,9 @@
 
 Sets the logging level for the primary log stream.  The values are as follows,
 add them together to get the desired level.  Only level 9 and 10 immorts can
-do this command.
+do this command.  If you enter log_level by itself, then you can see the current
+level.  To set the level to 1, you must enter a -1.  Other than that, things
+are normal!
 
    DIS = 1,   //disasters
    ERR = 2,   //errors
@@ -15,10 +17,12 @@ do this command.
    XMT = 256  // WRITE to PC's descriptor (ie output to player)
    SCRIPT = 1024, //Scripting specific stuff
    PARSE = 2048, //PARSE specific
+   ALL =   65535
 
-Syntax:  log_level [new_level]
+Syntax:  log_level <<new_level>
 
-Example:  log_level 7
+Example:  log_level 7                # Set level to 7
+Example:  log_level                  # Show current logging level.
 
 <color=red>
 See Also:  quit, save, write_zone

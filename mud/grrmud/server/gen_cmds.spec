@@ -601,7 +601,7 @@ return rest(pc);
 recite ~
 return recite(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 read ~
-return read(i, &(cooked_strs[1]), pc);
+return read(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 rem_name rm_name rem_name ~
 return rem_mname(i, &(cooked_strs[1]), pc);
 rem_oname rm_oname rem_oname ~

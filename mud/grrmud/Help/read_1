@@ -3,7 +3,11 @@
 This command allows you to read a post on a bulletin board. 
 
 Syntax:  read <<message_num>
-	 read <<i_th> <message>
+	 read <<i_th> <message> <<j_th> <board>
+
+Example: read 25
+Example: read 3 2.board
+
 <color=red>
 See also:  post, examine, look
 </color></help>

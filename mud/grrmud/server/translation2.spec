@@ -1,5 +1,5 @@
-# $Id: translation2.spec,v 1.2 1999/06/05 23:29:15 greear Exp $
-# $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+# $Id: translation2.spec,v 1.3 1999/06/14 06:05:44 greear Exp $
+# $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/14 06:05:44 $
 
 # See translations.spec for more information.
 
@@ -35,7 +35,7 @@ CS_HAVE_PETS
 	~
 
 CS_SLAIN_DIED
-	eng "You have slain %i Players.  You have died %i times.\n"
+	eng "Your PKILL count is: %i.  You have died %i times.\n"
 	~
 
 CS_QP
@@ -487,6 +487,9 @@ CS_TOG3
 CS_TOG4
 	eng "carriage-return(%i)%P20cr behind (default is behind)(%i)\n"
 	~
+CS_TOG4_1
+	eng "no_show_NPC_entry(%i)\n"
+	~
 
 CS_TOG5
 	eng "extra_info(%i)%P20no_hassle(%i)%P45no_vnums(%i)\n"
@@ -560,6 +563,10 @@ CS_TOG_ANSI
 	eng "ansi color"
 	~
 
+CS_TOG_MOB_ENTRY
+	eng "no_show_NPC_entry"
+	~
+
 CS_NO_FIND_TOGGLE
 	eng "Can't find the switch for that!\n"
 	~
@@ -612,8 +619,80 @@ CS_SHUTDOWN_HOW
 	eng "Shutdown how??\n"
 	~
 
+CS_LOG_LVL_IS
+	eng "The logging level is: %i\n\n"
+	~
+
+CS_DISASTER
+	eng "\tDisaster\n"
+	~
+
+CS_ERROR
+	eng "\tError\n"
+	~
+
+CS_WARNING
+	eng "\tWarning\n"
+	~
+
+CS_INFO
+	eng "\tInfo\n"
+	~
+
+CS_FUNCT_TRACE
+	eng "\tFunction trace\n"
+	~
+
+CS_DEBUG
+	eng "\tDebug\n"
+	~
+
+CS_SECURITY
+	eng "\tLog security violations\n"
+	~
+
+CS_DB_RW
+	eng "\tREAD or WRITE from the world files\n"
+	~
+
+CS_XMIT
+	eng "\tOutput from MUD to characters\n"
+	~
+
+CS_INPUT
+	eng "\tInput from players\n"
+	~
+
+CS_SCRIPT
+	eng "\tScripting specific stuff\n"
+	~
+
+CS_PARSE
+	eng "\tParse Specific\n"
+	~
+
 CS_SETTING_LOG
 	eng "Setting logging level to:  %i."
+	~
+
+CS_LOG_FLAGS
+	eng 
+"Possible Log Flags:
+   DIS = 1,   //disasters
+   ERR = 2,   //errors
+   WRN = 4,   //warnings
+   INF = 8,   //info
+   TRC = 16,  //function trace
+   DBG = 32,  //debug
+   SEC = 64,  // log security violations
+   DB = 128,  // READ or WRITE from the world files
+   XMT = 256, // Output from MUD to characters
+   INP = 512, // Input from players
+   SCRIPT = 1024, //Scripting specific stuff
+   PARSE = 2048, //PARSE specific
+   ALL = 65535 // all
+
+"
 	~
 
 CS_RELOADING_ZONE

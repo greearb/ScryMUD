@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.10 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: room.h,v 1.11 1999/06/14 06:05:44 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/14 06:05:44 $
 
 //
 //ScryMUD Server Code
@@ -39,8 +39,10 @@
 #include "classes.h"
 #include "script.h"
 #include "commands.h"
+#include "lang_strings.h"
 
 class zone;
+class CSelectorColl;
 
 class KeywordPair {
 protected:
@@ -287,6 +289,11 @@ public:
    int com_zecho(const String* msg);
    int wizchat(const char* message);
    int rm_pause(int ticks);
+
+   int doEmote(critter& pc, CSelectorColl& includes,
+               CSelectorColl& denies, CSentryE cs_entry, ...);
+   int vDoEmote(critter& pc, CSelectorColl& includes,
+                CSelectorColl& denies, CSentryE cs_entry, va_list& argp);
 
    int makeReadyForAreaSpell();
    critter* findNextProcMob();

@@ -1,5 +1,5 @@
-// $Id: string2.h,v 1.8 1999/06/05 23:29:16 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/06/05 23:29:16 $
+// $Id: string2.h,v 1.9 1999/06/14 06:05:44 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/14 06:05:44 $
 
 //
 //ScryMUD Server Code
@@ -108,6 +108,7 @@ public:
    friend ostream& operator<< (ostream& stream, const String& str);
    friend istream& operator>> (istream& stream, String& str);
    friend void Sprintf(String& targ, const char* string, ...);
+   friend void vSprintf(String& targ, const char* string, va_list& var_args);
    friend int Strncompare(const String& a, const String& b);
    
 ///**********************  MEMBER FUNCTIONS  ************************///

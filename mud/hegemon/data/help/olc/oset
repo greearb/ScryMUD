@@ -2,10 +2,10 @@ Category:  OLC  Topic:  oset
 
 
 
-Used to set values on an object.  This object can either be in your current
-room or in your inventory.  It checks your inventory first.  This can be
-used in conjunction with 'aosave' to permanently change the data base.  This
-DOES NOT turn the target into a SOBJ.
+Used to set values on an object.  This object can either be in your
+current room or in your inventory.  It checks your inventory first.
+This can be used in conjunction with 'aosave' to permanently change
+the data base.  This DOES NOT turn the target into a SOBJ.
 
 Syntax:  oset		// shows what you can set
          oset <i_th> [object] [thing_to_set] [new_value]
@@ -15,6 +15,7 @@ Example: oset
 
 See Also:  mset, rset, aosave, tog_oflag, sobj
 
-NOTE:  If your object is a OBJ as apposed to an SOBJ (ostat will tell you)
+NOTE:  If your object is a OBJ as apposed to an SOBJ
+       (ostat will tell you)
        then you will be changing the database, otherwise, only that
        particular object will be affected, not the database.

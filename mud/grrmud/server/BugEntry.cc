@@ -1,5 +1,5 @@
-// $Id: BugEntry.cc,v 1.7 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: BugEntry.cc,v 1.8 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -392,10 +392,19 @@ int BugEntry::writeHtml(ofstream& dafile) {
 String BugEntry::toString() {
    String retval(1000);
 
-   Sprintf(retval, "[%i] %P08[%s] %S\n\t  Submitted by %S on %S: in room %i.  Assigned to: %S\n",
-           bug_num, state_str[cur_state], &title, &reporter, &create_date,
-           room_num, &assigned_to);
-   
+   if (reports.isEmpty()) {
+      Sprintf(retval,
+              "[%i] %P08[%s] %S\n\t  Submitted by %S on %S: in room _%i_.  Assigned to: %S\n",
+              bug_num, state_str[cur_state], &title, &reporter, &create_date,
+              room_num, &assigned_to);
+   }
+   else {
+      Sprintf(retval,
+              "* [%i] %P08[%s] %S\n\t  Submitted by %S on %S: in room _%i_.  Assigned to: %S\n",
+              bug_num, state_str[cur_state], &title, &reporter, &create_date,
+              room_num, &assigned_to);
+   }
+
    Cell<CommentEntry*> cll(reports);
    CommentEntry* ptr;
    while ((ptr = cll.next())) {

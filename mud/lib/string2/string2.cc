@@ -1,5 +1,5 @@
-// $Id: string2.cc,v 1.9 1999/06/05 23:29:16 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/05 23:29:16 $
+// $Id: string2.cc,v 1.10 1999/06/14 06:05:44 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/14 06:05:44 $
 
 //
 //ScryMUD Server Code
@@ -1134,8 +1134,15 @@ int String::operator>= (const char* S) const {
 
 void Sprintf(String& targ, const char* string, ... ) {
    va_list ap;
-   int i = 0;
    va_start(ap, string);
+
+   vSprintf(targ, string, ap);
+   va_end(ap);
+   return;
+}
+
+void vSprintf(String& targ, const char* string, va_list& ap) {
+   int i = 0;
    int num = 0;
    String buf(100);
    int s_len;
@@ -1212,8 +1219,7 @@ void Sprintf(String& targ, const char* string, ... ) {
          i++;
       }//else
    }//for
-   va_end(ap);
-}//Sprintf
+}//vSprintf
 
 		/* WARNING:  this will fail if input is > 99 chars. */
 

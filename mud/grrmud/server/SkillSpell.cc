@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.9 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: SkillSpell.cc,v 1.10 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -77,7 +77,7 @@ String SkillSpell::getHtml() {
    if (!prereqs.isEmpty()) {
       while ((tmp = cll.next())) {
          const char* foo = SSCollection::instance().getNameForNum(tmp);
-         Sprintf(buf, "<A href = \"#%s\"> %s</a> ", foo, foo);
+         Sprintf(buf, "<A href = \"#%s\">%s</a> ", foo, foo);
          retval.Append(buf);
       }//while
    }//if
@@ -88,7 +88,7 @@ String SkillSpell::getHtml() {
       enables.head(cll);
       while ((tmp = cll.next())) {
          const char* foo = SSCollection::instance().getNameForNum(tmp);
-         Sprintf(buf, "<A href = \"#%s\"> %s</a> ", foo, foo);
+         Sprintf(buf, "<A href = \"#%s\">%s</a> ", foo, foo);
          retval.Append(buf);
       }//while
    }

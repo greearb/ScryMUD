@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.10 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: object.cc,v 1.11 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -847,11 +847,17 @@ int object::isScroll() const {
    return (OBJ_FLAGS.get(53) && obj_proc);
 }
 
+int object::isLiquid() const {
+   return OBJ_FLAGS.get(60);
+}
+
+int object::isCanteen() const {
+   return OBJ_FLAGS.get(59);
+}
+
 int object::isHerb() const {
    return (OBJ_FLAGS.get(72));
 }
-
-
 
 int object::isInUse() const {
    return (OBJ_FLAGS.get(10));
@@ -945,7 +951,6 @@ int object::decrementCurInGame() {
 int object::incrementCurInGame() {
    return ++(obj_list[getIdNum()].extras[3]);
 }
-
 
 void object::makeComponent(int targ, int comp1, int comp2, int comp3,
                            int comp4, int comp5, ComponentEnum con_type) {

@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.17 1999/06/08 05:10:45 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
+// $Id: command4.cc,v 1.18 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -132,16 +132,21 @@ int mreload(critter& pc) {
 }//mreload
 
 
-int read(int i_th, const String* post, critter& pc) {
+int read(int i_th, const String* post, int j_th, const String* board, critter& pc) {
    String buf(100);
 
    Cell<object*> cll(*(ROOM.getInv()));
    object* ptr;
-
-   while ((ptr = cll.next())) {
-      if (ptr->OBJ_FLAGS.get(74))
-         break;
-   }//while
+   
+   if (board->Strlen() == 0) {
+      while ((ptr = cll.next())) {
+         if (ptr->OBJ_FLAGS.get(74))
+            break;
+      }//while
+   }
+   else {
+      ptr = ROOM.haveObjNamed(j_th, board, pc.SEE_BIT);
+   }
 
    if (!ptr) {
       return look(i_th, post, pc, TRUE);
@@ -1605,6 +1610,9 @@ int adlist(critter& pc) {
 
    int zone_num = ROOM.getZoneNum();
 
+   Sprintf(buf, "Here are all the doors for zone: %i\n\n", zone_num);
+   pc.show(buf);
+
    for (int i = 0; i<NUMBER_OF_DOORS; i++) {
       if (door_list[i].isInUse() && door_list[i].isInZone(zone_num)) {
          Sprintf(buf, "       %i%P14%S\n", i, &(door_list[i].long_desc));
@@ -1725,8 +1733,15 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
          const String* new_val_string, critter& pc) {
    String buf(50);
 
-   if (!ok_to_do_action(NULL, "IFPR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
-      return -1;
+   if ((pc.getImmLevel() >= 7) && !(pc.getCurRoom()->isZlocked())) {
+      if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+         return -1;
+      }
+   }
+   else {
+      if (!ok_to_do_action(NULL, "IFPR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+         return -1;
+      }
    }
 
    if (vict->Strlen() == 0) {
@@ -1799,7 +1814,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
 
    if (!ptr->pc) {
       if ((pc.doesOwnCritter(*ptr)) ||
-          (!(ROOM.isZlocked()) && pc.getImmLevel() > 5)) {
+          (!(ROOM.isZlocked()) && pc.getImmLevel() > 6)) {
          //ok
       }
       else {
@@ -2333,8 +2348,8 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
       show("dice_sides (0, 50)          dice_count (0, 50)\n", pc);
       show("level (0, 30)               vis_bit (0, 2 billion)\n", pc);
       show("price (0, 50 million)       max_in_game(0, 1000)\n", pc);
-      show("obj_name (ie keyword)       short_desc", pc);
-      show("in_room_desc", pc);
+      show("obj_name (ie keyword)       short_desc\n", pc);
+      show("in_room_desc                liquid(1, MAX_OBJS)\n", pc);
       return 0;
    }//if
 
@@ -2397,6 +2412,31 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
 	  ptr->bag->time_till_disolve = new_val;
 	  flag = TRUE;
 	}//if
+      }//if
+      else if (strncasecmp(*targ, "liquid", len1) == 0) {
+	if (check_l_range(new_val, 1, Cur_Max_Obj_Num, pc, TRUE)) {
+           if (obj_list[new_val].isInUse() && obj_list[new_val].isLiquid()) {
+              if (ptr->isCanteen()) {
+                 Cell<object*> cll(ptr->inv);
+                 object* optr;
+                 while ((optr = cll.next())) {
+                    recursive_init_unload(*optr, 0);
+                 }//while
+                 clear_obj_list(ptr->inv);
+
+                 ptr->gainInv(&(obj_list[new_val]));
+                 obj_list[new_val].incrementCurInGame();
+                 pc.show(CS_OK);
+                 flag = TRUE;
+              }//if
+              else {
+                 pc.show("That isn't a canteen (liquid holder.)\n");
+              }
+           }//if
+           else {
+              pc.show("That 'liquid' object# isn't in the game, or isn't a liquid.\n");
+           }
+        }//if
       }//if
    }//bag only
 
@@ -2585,7 +2625,7 @@ int dset(int i_th, const String* vict, const String* targ, int new_val,
 
 
 int tog_oflag(int flagnum, const String* flag_type,
-               int i_th, const String* obj, critter& pc) {
+              int i_th, const String* obj, critter& pc) {
    String buf(50);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -2629,7 +2669,8 @@ int tog_oflag(int flagnum, const String* flag_type,
    }//if
 
    if ((strncasecmp(*flag_type, "obj_flag", 1) == 0) ||
-       (strncasecmp(*flag_type, "bag_flag", 1) == 0)) {
+       (strncasecmp(*flag_type, "bag_flag", 1) == 0) ||
+      (strncasecmp(*flag_type, "spec_flag", 1) == 0)) {
       if (obj_ptr->IN_LIST) {
          Sprintf(buf, "Toggling obj_flag#:  %i on SOBJ:  %S.\n", flagnum, 
                  &(obj_ptr->short_desc));
@@ -2642,7 +2683,7 @@ int tog_oflag(int flagnum, const String* flag_type,
       }//else
    }//if
    else {
-      show("You must specify flagtype as:  'obj_flag' or 'bag_flag'.\n",
+      show("You must specify flagtype as: obj_flag, bag_flag, or spec_flag.\n",
            pc);
       show("See the help page.\n", pc);
       return -1;
@@ -2659,13 +2700,28 @@ int tog_oflag(int flagnum, const String* flag_type,
          return -1;
       }//else
    }//if
-   else { //bag flags
+   else if (strncasecmp(*flag_type, "bag_flag", 1) == 0) { //bag flags
       if (!obj_ptr->bag) {
          show("Doh, thats not a bag!!\n", pc);
          return -1;
       }//if
       if (flagnum != 8) {
          obj_ptr->bag->bag_flags.flip(flagnum);
+         return 0;
+      }//if
+      else {
+         show("OOPS, you can't toggle that bag_flag.\n", pc);
+         return -1;
+      }//else
+   }//else
+   else { //spec flags
+      if (obj_ptr->obj_proc) {
+         obj_ptr->obj_proc = new obj_spec_data();
+         obj_ptr->obj_flags.turn_on(63);  //note we have spec data
+      }
+       
+      if ((flagnum == 3) || (flagnum == 0)) {
+         obj_ptr->obj_proc->obj_spec_data_flags.flip(flagnum);
          return 0;
       }//if
       else {

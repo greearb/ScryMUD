@@ -1,5 +1,5 @@
-// $Id: command4.h,v 1.5 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: command4.h,v 1.6 1999/06/14 06:05:43 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
 
 //
 //ScryMUD Server Code
@@ -58,7 +58,7 @@ int poofin(String* tit, critter& pc);
 int poofout(String* tit, critter& pc);
 int oreload(critter& pc);
 int mreload(critter& pc);
-int read(int i_th, const String* post, critter& pc);
+int read(int i_th, const String* post, int j_th, const String* board, critter& pc);
 int post(const String* title, critter& pc);
 int do_post(critter& pc);
 int log_out(critter& pc);
