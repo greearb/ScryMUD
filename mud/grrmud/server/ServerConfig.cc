@@ -23,6 +23,7 @@ ServerConfig::ServerConfig() {
    newbieRoom=6;
    loginRoom=1;
    donateRoom=7;
+   necrophiliaRoom=6888;
 
    newbieBagObject=358;
    corpseObject=3;
@@ -139,6 +140,9 @@ void ServerConfig::read(char* filename) {
          }
          else if (strcasecmp(key, "donateRoom") == 0) {
             donateRoom = (int)strtol(val, NULL, 0);
+         }
+         else if (strcasecmp(key, "necrophiliaRoom") == 0) {
+            necrophiliaRoom = (int)strtol(val, NULL, 0);
          }
          else if (strcasecmp(key, "newbieBagObject") == 0) {
             newbieBagObject = (int)strtol(val, NULL, 0);

@@ -1,5 +1,5 @@
-// $Id: rm_spll.cc,v 1.6 2001/03/29 03:02:33 eroper Exp $
-// $Revision: 1.6 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
+// $Id: rm_spll.cc,v 1.7 2002/01/12 20:54:07 eroper Exp $
+// $Revision: 1.7 $  $Author: eroper $ $Date: 2002/01/12 20:54:07 $
 
 //
 //ScryMUD Server Code
@@ -405,3 +405,58 @@ void do_cast_firewall(room& rm, critter& agg, int is_canned,
    }//if
 }//do_cast_firewall
 
+void do_cast_necrophilia(critter &agg, int is_canned, int lvl)
+{
+   int spell_num = NECROPHILIA_SKILL_NUM;
+   int mana_cost = get_mana_cost(spell_num, agg);
+
+   if (!is_canned)
+      lvl = agg.getLevel();
+
+   // no mobs allowed here
+   if ( agg.isMob() ) {
+      if ( mudlog.ofLevel(WRN)) {
+         mudlog << "WARNING: MOB in do_cast_necrophilia." << endl;
+      }
+      return;
+   } //if
+
+   if (agg.getCurRoom()->isNoMagExit()) {
+      agg.show("You cannot leave this place by magical means!\n");
+      return;
+   }
+
+   if ( is_canned || ( ! lost_concentration(agg, spell_num) ) ) {
+      if (!is_canned)
+         agg.MANA -= mana_cost;
+
+      agg.show("A dark portal opens before you.\n", HL_DEF);
+      emote("opens a dark portal to... somewhere.", agg,
+            room_list[agg.getCurRoomNum()], TRUE);
+
+      do_door_to(room_list[agg.getCurRoomNum()],
+            room_list[config.necrophiliaRoom], 0, agg,
+            &NULL_STRING, config.gateDoor);
+   } else {
+      agg.show(LOST_CONCENTRATION_MSG_SELF, HL_DEF);
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, room_list[agg.getCurRoomNum()], TRUE);
+
+      if (!is_canned)
+         agg.MANA -= mana_cost / 2;
+
+   } // else lost concentration
+
+   agg.PAUSE += 1;
+} // do_cast_necrophilia()
+
+void cast_necrophilia(critter &agg)
+{
+   int spell_num = NECROPHILIA_SKILL_NUM;
+
+   if (!ok_to_do_action(&agg, "KMNB", spell_num, agg)) {
+      return;
+   }
+
+   do_cast_necrophilia(agg, FALSE, 0);
+
+} // cast_necrophilia()

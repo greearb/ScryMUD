@@ -42,6 +42,7 @@ class ServerConfig {
       int newbieRoom;
       int loginRoom;
       int donateRoom;
+      int necrophiliaRoom;
 
       // Important object numbers
       int newbieBagObject;

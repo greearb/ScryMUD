@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.34 2002/01/08 04:57:20 eroper Exp $
-// $Revision: 1.34 $  $Author: eroper $ $Date: 2002/01/08 04:57:20 $
+// $Id: const.h,v 1.35 2002/01/12 20:54:06 eroper Exp $
+// $Revision: 1.35 $  $Author: eroper $ $Date: 2002/01/12 20:54:06 $
 
 //
 //ScryMUD Server Code
@@ -1180,7 +1180,8 @@ int
    REMOVE_HOPE_SKILL_NUM,
    REMOVE_KARMA_SKILL_NUM,
    SANCTUM_OF_THE_VICTIM_SKILL_NUM,
-   FEAR_SKILL_NUM;
+   FEAR_SKILL_NUM,
+   NECROPHILIA_SKILL_NUM;
    
 
 

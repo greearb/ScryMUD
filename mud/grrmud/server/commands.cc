@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.46 2002/01/08 03:14:38 eroper Exp $
-// $Revision: 1.46 $  $Author: eroper $ $Date: 2002/01/08 03:14:38 $
+// $Id: commands.cc,v 1.47 2002/01/12 20:54:06 eroper Exp $
+// $Revision: 1.47 $  $Author: eroper $ $Date: 2002/01/12 20:54:06 $
 
 //
 //ScryMUD Server Code
@@ -1239,6 +1239,8 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
       cast_sanctum_of_the_victim(j_th, victim, pc);
    else if (strncasecmp(*spell, "fear", len) == 0)
       cast_fear(j_th, victim, pc);
+   else if (strncasecmp(*spell, "necrophilia", len) == 0)
+      cast_necrophilia(pc);
    else {
       pc.show(CS_SPELL_RESEARCH);
       return -1;

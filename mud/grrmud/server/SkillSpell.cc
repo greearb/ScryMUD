@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.19 2002/01/08 04:57:20 eroper Exp $
-// $Revision: 1.19 $  $Author: eroper $ $Date: 2002/01/08 04:57:20 $
+// $Id: SkillSpell.cc,v 1.20 2002/01/12 20:54:06 eroper Exp $
+// $Revision: 1.20 $  $Author: eroper $ $Date: 2002/01/12 20:54:06 $
 
 //
 //ScryMUD Server Code
@@ -983,6 +983,8 @@ void SSCollection::read() {
             SANCTUM_OF_THE_VICTIM_SKILL_NUM = i;
          else if (strcasecmp("fear", getSS(i).getName()) == 0)
             FEAR_SKILL_NUM = i;
+         else if (strcasecmp("necrophilia", getSS(i).getName()) == 0)
+            NECROPHILIA_SKILL_NUM = i;
          
          else {
             mudlog << "ERROR:  could not match the spell with a constant, spell_num:" 

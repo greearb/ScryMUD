@@ -1,5 +1,5 @@
-// $Id: rm_spll.h,v 1.2 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: rm_spll.h,v 1.3 2002/01/12 20:54:07 eroper Exp $
+// $Revision: 1.3 $  $Author: eroper $ $Date: 2002/01/12 20:54:07 $
 
 //
 //ScryMUD Server Code
@@ -44,6 +44,9 @@ void cast_portal(int i_th, const String* targ, critter& pc);
 void do_cast_portal(room& rm, critter& agg, int is_canned, int lvl);
 void cast_distortion_wall(int i_th, const String* dr, critter& pc);
 void do_cast_distortion_wall(door& dr, critter& agg, int is_canned, int lvl);
+
+void cast_necrophilia(critter &agg);
+void do_cast_necrophilia(critter &agg, int is_canned, int lvl);
 
 ///********** effects of passive spells (when triggered **********///
 
