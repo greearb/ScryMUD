@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.10 1999/07/18 00:59:22 greear Exp $
-# $Revision: 1.10 $  $Author: greear $ $Date: 1999/07/18 00:59:22 $
+# $Id: Makefile,v 1.11 1999/07/23 02:57:19 greear Exp $
+# $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/23 02:57:19 $
 
 #  Makefile for Hegemon and ScryMUD
 
@@ -23,7 +23,7 @@ CORE_FILES = \
 	grrmud/World/SS_DESCS grrmud/World/SKILLS_SPELLS \
 	lib/string2/*.cc lib/string2/*.h lib/string2/Makefile \
 	grrmud/truncate_log License Credits \
-	grrmud/truncate_log grrmud/startup \
+	grrmud/crash_sanity grrmud/startup \
 	include/README lib/Makefile README grrmud/server/gen_cmds.spec \
 	grrmud/server/BuildInfo.prefix grrmud/server/translations.spec \
 	grrmud/server/translation2.spec
