@@ -43,25 +43,11 @@ while ( : ) do
     echo "************END OF CRASH FILE**************" >> ./log/CRASH
     echo "" >> ./log/CRASH
 
-    grep WARN ./log/logfile.txt >> ./log/WARN.lg
-    date >> ./log/WARN.lg
-    echo "*************END OF LOG************" >> ./log/WARN.lg
-    echo "" >> ./log/WARN.lg
+    # Grab warnings and errors out of the log files.
+    ./truncate_log ./log/logfile.txt
+    ./truncate_log ./log/obj_ptr.log
 
-    grep ERROR ./log/logfile.txt >> ./log/ERROR.lg
-    date >> ./log/ERROR.lg
-    echo "*************END OF LOG************" >> ./log/ERROR.lg
-    echo "" >> ./log/ERROR.lg
-
-
-    if [ -f ./log/logfile.txt4 ]; then
-	mv -f ./log/logfile.txt4 ./log/logfile.txt5
-    fi
-
-    if [ -f ./log/logfile.txt3 ]; then
-	mv -f ./log/logfile.txt3 ./log/logfile.txt4
-    fi
-
+    # Keep a history of the log files that might have been created.
     if [ -f ./log/logfile.txt2 ]; then
 	mv -f ./log/logfile.txt2 ./log/logfile.txt3
     fi
@@ -74,17 +60,20 @@ while ( : ) do
 	mv -f ./log/logfile.txt ./log/logfile.txt1
     fi
 
-
-    # Keep a history of the log files that might have been created.
-
-    if [ -f ./core4 ]; then
-	mv -f ./core4 ./core5
+    # And 3 object pointer logs.
+    if [ -f ./log/obj_ptr.log2 ]; then
+	mv -f ./log/obj_ptr.log2 ./log/obj_ptr.log3
     fi
 
-    if [ -f ./core3 ]; then
-	mv -f ./core3 ./core4
+    if [ -f ./log/obj_ptr.log1 ]; then
+	mv -f ./log/obj_ptr.log1 ./log/obj_ptr.log2
     fi
 
+    if [ -f ./log/obj_ptr.log ]; then
+	mv -f ./log/obj_ptr.log ./log/obj_ptr.log1
+    fi
+
+    # And 3 core files.
     if [ -f ./core2 ]; then
 	mv -f ./core2 ./core3
     fi

@@ -61,8 +61,8 @@ LDLIBS =  -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
 CUR_DATE=`date '+%y.%m.%d'`
 
 #  For distribution purposes
-SCRY_VERSION=1.9.11
-HEGEMON_VERSION=1.9.11
+SCRY_VERSION=1.9.12
+HEGEMON_VERSION=1.9.12
 
 LDFLAGS =  -L$(MUD_HOME)/lib #linker flaggs
 

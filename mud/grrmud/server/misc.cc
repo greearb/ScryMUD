@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.19 1999/07/18 00:59:23 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
+// $Id: misc.cc,v 1.20 1999/07/18 04:16:41 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/07/18 04:16:41 $
 
 //
 //ScryMUD Server Code
@@ -1089,6 +1089,8 @@ void decrease_timed_affecting_objects() {
          mudlog << "About to look after corpses.." << endl;
       }
 
+      // If we ever let more than this object disolve, see the normalize_obj
+      // method for notes on how not to crash the game!!
       if (obj_ptr->OBJ_NUM == CORPSE_OBJECT) { //if is corpse
 	 if (obj_ptr->bag && 
 	     obj_ptr->bag->time_till_disolve == 0) { //disolve it!!
@@ -1177,9 +1179,7 @@ void do_disolve_object(object& obj) {
    //log("In disolve_object\n");
 
    if (!obj.in_list) {
-      mudlog.log(ERR, "ERROR:  disolve_object called on non-sobj.\n");
-      do_shutdown = TRUE;
-      exit(100);
+      core_dump("ERROR:  disolve_object called on non-sobj.\n");
    }//if
 
    //log("Before while\n");

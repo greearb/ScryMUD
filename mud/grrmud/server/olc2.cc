@@ -1,5 +1,5 @@
-// $Id: olc2.cc,v 1.10 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: olc2.cc,v 1.11 1999/07/18 04:16:42 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/18 04:16:42 $
 
 //
 //ScryMUD Server Code
@@ -121,6 +121,22 @@ int normalize_obj(object& obj) {
    while (obj.stat_affects.size() > 5) {
       delete (obj.stat_affects.popBack());
    }
+
+   // If it can 'disolve', then it must not be wearable, because it
+   // makes a real mess when a corpse disolves and you are holding it!!
+   // It could be made to work, but not worth the trouble IMHO. --BEN
+   if (obj.getIdNum() == CORPSE_OBJECT) {
+      // Make sure it can't be worn.
+      obj.OBJ_FLAGS.turn_on(21);
+   }
+
+   // If not worn is on, then zero out the other worn flags just in case.
+   if (obj.OBJ_FLAGS.get(22)) { 
+      for (int i = 23; i<40; i++) {
+         obj.OBJ_FLAGS.turn_off(i);
+      }//for
+   }//if
+
    return 0;
 }//normalize_obj
 
@@ -161,6 +177,7 @@ int normalize_mob(critter& crit) {
    for (i = 38; i<41; i++) {
       crit.short_cur_stats[i] = bound(5, 1000, crit.short_cur_stats[i]);
    }//for
+
    return 0;
 }//normalize_mob
  
