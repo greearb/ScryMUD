@@ -1,5 +1,5 @@
-// $Id: string2.cc,v 1.18 2001/03/29 03:02:38 eroper Exp $
-// $Revision: 1.18 $  $Author: eroper $ $Date: 2001/03/29 03:02:38 $
+// $Id: string2.cc,v 1.19 2002/01/14 21:32:58 eroper Exp $
+// $Revision: 1.19 $  $Author: eroper $ $Date: 2002/01/14 21:32:58 $
 
 //
 //ScryMUD Server Code
@@ -750,6 +750,54 @@ int String::Strlen() const {
    return cur_len;
 }//Strlen
 
+int String::ColStrlen() const {
+   int          retval = 0;
+   char         *i;
+   char         *colstrWhich;
+   const char   *validFGColorCodes = "0nrgybmcwNRGYBMCW";
+   const char   *validBGColorCodes = "0nrgybmcw";
+   const char   *col_comp_ptr;
+
+   // Walk the string
+   for ( i = string; *i; i++ ) {
+
+      // possible color code
+      if ( *i == '^' || *i == '&' ) {
+
+         i++;
+
+         // this happens if ^ or & is the last character in a string.
+         if (! *i) {
+            break;
+         }
+
+         if ( *i == '^' || *i == '&' ) {
+            retval++;
+            continue;
+         }
+
+         if ( *(i-1) == '^' ) {
+            colstrWhich = (char *)validFGColorCodes;
+         } else if ( *(i-1) == '&' ) {
+            colstrWhich = (char *)validBGColorCodes;
+         }
+
+         // walk until we match or run out of valid color codes.
+         for ( col_comp_ptr = colstrWhich;
+               *col_comp_ptr && *col_comp_ptr != *i; col_comp_ptr++ );
+
+         // if we didn't match we have a literal ^& and a literal following
+         // character.
+         if ( ! (*col_comp_ptr == *i) ) {
+            retval += 2;
+         }
+      } else {
+         retval++;
+      }
+   } // for()
+   return(retval);
+}//ColStrlen()
+
 
 int String::Write(const int desc, const int max_to_write) {
    int sofar = 0, this_round;
@@ -1208,7 +1256,7 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                   }
                   i += 2; //now pointing to next valid letter
                   
-                  s_len = targ.Strlen();
+                  s_len = targ.ColStrlen();
                   while (s_len < num) {
                      targ.Append(" ");  //pad another space
                      s_len++;

@@ -1,5 +1,5 @@
-// $Id: string2.h,v 1.16 2001/03/29 03:02:39 eroper Exp $
-// $Revision: 1.16 $  $Author: eroper $ $Date: 2001/03/29 03:02:39 $
+// $Id: string2.h,v 1.17 2002/01/14 21:32:58 eroper Exp $
+// $Revision: 1.17 $  $Author: eroper $ $Date: 2002/01/14 21:32:58 $
 
 //
 //ScryMUD Server Code
@@ -144,6 +144,7 @@ public:
    void toLower() { Tolower(); } //makes total string lowercase
    void toUpper(); //makes total string lowercase
    int  Strlen() const;
+   int  ColStrlen() const;
    void Report() const; //logs vital stats, for debugging.
    void ensureCapacity(int max_length);
    unsigned int hash(); // return a value that should be pretty unique.
