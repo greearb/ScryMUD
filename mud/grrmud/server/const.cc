@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.18 1999/07/12 07:14:32 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
+// $Id: const.cc,v 1.19 1999/07/25 20:13:04 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
 
 //
 //ScryMUD Server Code
@@ -284,7 +284,7 @@ const char* pcd_names[] = {
 const BitfieldNames PC_DATA_FLAGS_NAMES(sizeof(pcd_names)/sizeof(const char*),
                                         pcd_names, "PC Data Flags:");
 
-const char* d_names[] = {
+const char* cl_names[] = {
    "open exit basically no door",//0
    "is_mag_lockable",//1
    "is_closed",//2
@@ -305,8 +305,8 @@ const char* d_names[] = {
    "consume_key",//17
    "!passdoor"//18
 };
-const BitfieldNames DOOR_DATA_FLAGS_NAMES(sizeof(d_names)/sizeof(const char*),
-                                          d_names, "Door Data Flags:");
+const BitfieldNames CLOSABLE_FLAGS_NAMES(sizeof(cl_names)/sizeof(const char*),
+                                         cl_names, "Closable Flags:");
 
 const char* v_names[] = {
    "is_self_guided",

@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.7 1999/06/22 05:33:09 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/22 05:33:09 $
+// $Id: door.h,v 1.8 1999/07/25 20:13:04 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
 
 //
 //ScryMUD Server Code
@@ -38,75 +38,36 @@
 
 class room;
 
-class door_data {
+class door_data : public LogicalEntity, public Closable {
 protected:
    static int _cnt;
-
-public:
+   int in_zone; //owner zone
    List<String*> names; //the direction e, w... will be first 
    String long_desc;
 
-   int vis_bit;
-   int door_num; // the vnum of the door
    int token_num;
    int key_num;
-   int in_zone; //owner zone
 
-   // When modifying this, modify DOOR_DATA_FLAGS_NAMES in const.cc
-   bitfield door_data_flags;
-	      // 0 open exit, basically no door
-              // 1 is_mag_lockable, 2 is_closed, 3 is_locked, 4 is_pckabl,
-	      // 5 is_lockable, 6 mag_locked (spell only can open it)
-	      // 7 is_destructable, 8 is_closeable, 9 is_flippable
-              // 10 in_use, 11 is_unopenable (by players, auto only)
-	      // 12 is_vehicle_exit, 13 is_secret, 14 is_blocked,
-              // 15 !complete 16 secret_when_open_too, 17 consume_key
-              // 18 !passdoor
+public:
 
-   int isOpen() const { return !(door_data_flags.get(2)); }
-   int canClose() const { return canOpen(); }
-   int isVehicleExit() const { return door_data_flags.get(12); }
-   int canOpen() const { return (!door_data_flags.get(11) 
-                                  && door_data_flags.get(8)); }
-   int canLock() const { return door_data_flags.get(5); }
+   virtual LEtypeE getEntityType() const { return LE_DOOR_DATA; }
 
-   int isClosed() const { return door_data_flags.get(2); }
-   int isLocked() const { return door_data_flags.get(3); }
-   int isMagLocked() const { return door_data_flags.get(6); }
-   int isSecret() const { 
-      return (door_data_flags.get(13) || door_data_flags.get(16)); }
-   int isInUse() const { return door_data_flags.get(10); }
    int isInZone(int zn) { return zn == in_zone; }
-   int isNotComplete() const { return door_data_flags.get(15); }
-   int isSecretWhenOpen()  const { return door_data_flags.get(16); }
-   int consumesKey() const { return door_data_flags.get(17); }
-   int isNoPassdoor() const { return door_data_flags.get(18); }
-
-   void setComplete() { door_data_flags.turn_off(15); }
-   void setNotComplete() { door_data_flags.turn_on(15); }
-   void setIdNum(int i) { door_num = i; }
-   
-
    int getZoneNum() const { return in_zone; }
    int getKeyNum() const { return key_num; }
    int getTokenNum() const { return token_num; }
+   int getVisBit() const { return vis_bit; }
 
    door_data (); //default constructor
    door_data(const door_data& source);  //copy constructor
    door_data& operator=(const door_data& source);
-   ~door_data ();
-
-   void close() { door_data_flags.turn_on(2); }
-   void open() { door_data_flags.turn_off(2); }
-   void lock() { close(); door_data_flags.turn_on(3); }
-   void unlock() { door_data_flags.turn_off(3); }
+   virtual ~door_data ();
 
    void Clear();
    void Read(ifstream& da_file);
    void Write(ofstream& da_file);
    static int getInstanceCount() { return _cnt; }
 }; //door_data
-
  
  
  
@@ -136,7 +97,7 @@ public:
    void Write(ofstream& da_file);
    void Read(ifstream& da_file);
 
-   int getVisBit() const { if (dr_data) return dr_data->vis_bit; return 0; }
+   int getVisBit() const { if (dr_data) return dr_data->getVisBit(); return 0; }
    int isOpen() const { return (dr_data && dr_data->isOpen()); }
    int isSecret() const { return dr_data && dr_data->isSecret(); }
    int isClosed() const { return dr_data && dr_data->isClosed(); }

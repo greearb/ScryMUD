@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.35 1999/07/18 23:00:21 greear Exp $
-// $Revision: 1.35 $  $Author: greear $ $Date: 1999/07/18 23:00:21 $
+// $Id: critter.cc,v 1.36 1999/07/25 20:13:04 greear Exp $
+// $Revision: 1.36 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
 
 //
 //ScryMUD Server Code
@@ -2979,6 +2979,17 @@ void critter::doPrompt() {
 critter* critter::getFirstFighting() {
    return IS_FIGHTING.peekFront();
 }
+
+int object::getCurRoomNum() const {
+   if (getContainer()) {
+      return getContainer()->getCurRoomNum();
+   }
+   if (mudlog.ofLevel(WRN)) {
+      mudlog << "WARNING:  object::getCurRoomNum failed, obj# " << getIdNum()
+             << endl;
+   }
+   return 0;
+}//getCurRoomNum
 
 
 int critter::getCurZoneNum() {

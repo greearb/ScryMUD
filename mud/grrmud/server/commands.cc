@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.28 1999/07/12 07:14:31 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/07/12 07:14:31 $
+// $Id: commands.cc,v 1.29 1999/07/25 20:13:04 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
 
 //
 //ScryMUD Server Code
@@ -280,8 +280,7 @@ int examine(int i_th, const String* obj, critter& pc) {
          obj_ptr = ROOM.haveObjNamed(i_th, obj, pc.SEE_BIT);
       }//if
       if (!obj_ptr) {
-         Sprintf(buf, cstr(CS_YOU_CANT_FIND_THE, pc), obj);
-         show(buf, pc);
+         return do_look(i_th, obj, pc, ROOM, TRUE);
       }//if
                    //is a container?
       else if (!obj_ptr->OBJ_FLAGS.get(54) || !obj_ptr->bag) {

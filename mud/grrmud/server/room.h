@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.14 1999/07/12 07:14:32 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
+// $Id: room.h,v 1.15 1999/07/25 20:13:04 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
 
 //
 //ScryMUD Server Code
@@ -68,7 +68,7 @@ public:
 };//KeywordPair
 
 
-class room {
+class room : public LogicalContainer, public LogicalEntity {
 private:
    static int _cnt;
 
@@ -78,9 +78,9 @@ protected:
    List<RoomScript*> pending_scripts;  /* queue holds scripts to be run */
    List<RoomScript*> room_proc_scripts; /* Scripts this room has. */
 
-   List<critter*> critters;
+   ObjectContainer critters;
 
-   List<object*> inv;
+   ObjectContainer inv;
 
    int cur_stats[ROOM_CUR_STATS + 1];  
 	   // 0 vis_bit {1 dark, 2 invis, 4 hidden,
@@ -106,7 +106,11 @@ protected:
 	   // 30 can_camp 31 !complete (olc wise) 32 has_keywords
            // 33 !mob_wander, 34 !foreign_mob_wander, 35 has_proc_script
 
-   
+   void gainObject_(critter& pc);
+   void gainObject_(object& obj);
+   void loseObject_(critter& pc);
+   void loseObject_(object& obj);
+
 public:
    List<stat_spell_cell*> affected_by;
    
@@ -130,8 +134,8 @@ public:
 
    static int getInstanceCount() { return _cnt; }
 
-   const List<object*>* peekInv() { return &inv; }
-   List<object*>* getInv() { return &inv; }
+   const ObjectContainer* peekInv() const { return &inv; }
+   ObjectContainer* getInv() { return &inv; }
 
    int getPause() const { return pause; }
    int decrementPause() { if (pause > 0) pause--; return pause; }
@@ -152,11 +156,10 @@ public:
    int attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
                                    critter& actor);
 
-   int getVisBit() const { return cur_stats[0]; }
+   virtual LEtypeE getEntityType() const { return LE_ROOM; }
+
    int getMovCost() const { return cur_stats[1]; }
-   int getRoomNum() const { return cur_stats[2]; }
-   int getIdNum() const { return getRoomNum(); }
-   void setVisBit(int i) { cur_stats[0] = i; }
+   int getRoomNum() const { return getIdNum(); }
    void setMovCost(int i) { cur_stats[1] = i; }
    void setRoomNum(int i) { cur_stats[2] = i; }   
    void setComplete() { room_flags.turn_off(31); }
@@ -198,7 +201,7 @@ public:
    void setFlag(int flg, int posn) { room_flags.set(flg, posn); }
    int getFlag(int flg) { return room_flags.get(flg); }
 
-   const List<critter*>& getCrits() { return critters; }
+   const ObjectContainer& getCrits() const { return critters; }
 
    void resetProcMobs();
    void purgeCritter(int mob_num, critter& pc);
@@ -231,24 +234,20 @@ public:
    virtual critter* haveCritNamed(int i_th, const String* name, critter& pc);
    virtual critter* haveCritter(critter* ptr);
    virtual object* haveObject(object* ptr);
-   virtual critter* getLastCritter() { return critters.peekBack(); }
+   virtual critter* getLastCritter() { return (critter*)(critters.getInv().peekBack()); }
    virtual critter* findFirstBanker();
    virtual critter* findFirstShopKeeper();
    virtual critter* findFirstTeacher();
 
-   virtual void gainCritter(critter* crit);
-   virtual critter* removeCritter(critter* crit);
-
-   virtual void gainObject(object* obj) { gainInv(obj); }
-   virtual object* removeObject(object* obj) { return loseInv(obj); }
+   virtual void gainObject(LogicalEntity* le);
+   virtual LogicalEntity* loseObject(LogicalEntity* le);
+   virtual int getCurRoomNum() const { return getIdNum(); }
 
    virtual void getPetsFor(critter& owner, List<critter*>& rslts);
    virtual int getCritCount(critter& pc);
 
    virtual void showCritters(critter& pc);
    virtual void outInv(critter& pc); //show inv to pc (use out_inv method)
-   virtual void gainInv(object* obj); //set IN_LIST if needed
-   virtual object* loseInv(object* obj);
    virtual void showAllCept(const char* msg, critter* pc = NULL) const;
    virtual void recursivelyLoad(); //mobs and objects
 

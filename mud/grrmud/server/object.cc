@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.16 1999/07/18 00:59:23 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
+// $Id: object.cc,v 1.17 1999/07/25 20:13:04 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
 
 //
 //ScryMUD Server Code
@@ -96,7 +96,7 @@ obj_spec_data::obj_spec_data(const obj_spec_data& source) { //copy constructr
 obj_spec_data::~obj_spec_data() { //destructor
    _cnt--;
    delete construct_data;
-   if (skin_ptr && skin_ptr->IN_LIST) {
+   if (skin_ptr && skin_ptr->isModified()) {
       delete skin_ptr;
       skin_ptr = NULL;
    }//if
@@ -119,7 +119,7 @@ obj_spec_data& obj_spec_data::operator=(const obj_spec_data& source) {
       construct_data = new obj_construct_data(*(source.construct_data));
    }//if
 
-   if (source.skin_ptr && !source.skin_ptr->IN_LIST) {
+   if (source.skin_ptr && !source.skin_ptr->isModified()) {
       skin_ptr = source.skin_ptr; //don't copy ptrs to SOBJ's
    }//if
    else {
@@ -141,7 +141,7 @@ void obj_spec_data::Clear() {
    delete construct_data;
    construct_data = NULL;
    
-   if (skin_ptr && skin_ptr->IN_LIST) {
+   if (skin_ptr && skin_ptr->isModified()) {
       delete skin_ptr;
    }//if
    skin_ptr = NULL;
@@ -248,10 +248,29 @@ bag_struct::bag_struct() {
    _cnt++;
 }//constructor
 
-bag_struct::bag_struct(const bag_struct& source) {
+bag_struct::bag_struct(bag_struct& source) {
    _cnt++;
    *this = source; //a shallow copy should work
 }//copy constructor
+
+bag_struct& bag_struct::operator=(bag_struct& src) {
+   object* obj_ptr;
+   Cell<object*> cll(src.getInv());
+   while ((obj_ptr = cll.next())) {
+      if (!obj_ptr->isModified()) { //multiple ptrs to SOBJ's will be a problem
+         append(obj_ptr);
+      }//if
+   }//while
+
+   bag_flags = src.bag_flags;
+   key_num = src.key_num;
+   max_weight = src.max_weight;
+   percentage_weight = src.percentage_weight;
+   time_till_disolve = src.time_till_disolve;
+   return *this;
+}//operator=
+   
+
 
 void bag_struct::Write(ofstream& ofile) const {
    bag_flags.Write(ofile);
@@ -278,10 +297,8 @@ int object::_cnt = 0;
 object::object (object& source) { //copy constructor
    _cnt++;
    pause = source.pause;
-   in_room = source.in_room;
    cur_script = NULL;
 
-   in_list = NULL;
    bag = NULL;
    obj_proc = NULL;
 
@@ -296,7 +313,6 @@ object::object() {
 
    _cnt++;
    pause = 0;
-   in_room = 0;
    cur_script = NULL;
   
    for (i = 0; i<OBJ_MAX_EXTRAS; i++)
@@ -304,7 +320,6 @@ object::object() {
    for (i = 0; i<OBJ_CUR_STATS; i++)
       cur_stats[i] = 0;    
    
-   in_list = NULL;
    bag = NULL;
    obj_proc = NULL;
    
@@ -318,8 +333,9 @@ object::~object() {
 
    obj_ptr_log << "OBJ_DES " << getIdNum() << " " << this << "\n";
 
-   if ((!in_list) && (!do_shutdown)) {
+   if ((!isModified()) && (!do_shutdown)) {
       mudlog.log(ERR, "ERROR:  trying to delete OBJ before shutdown.\n");
+      core_dump("~object");
       //do_shutdown = TRUE;
       //exit(2);
    }//if
@@ -341,11 +357,11 @@ object& object::operator= (object& source) {
    Cell<stat_spell_cell*> cell;
    stat_spell_cell *tmp_stat, *tmp_stat2;
    Cell<object*> cll;
-   object* obj_ptr;      
    int i;
    
-   if (!in_list && obj_flags.get(10)) {
+   if (!isModified() && obj_flags.get(10)) {
       mudlog.log(ERR, "ERROR:  OBJ being assigned to... should be a SOBJ!\n");
+      core_dump("object::operator=");
       //do_shutdown = TRUE;
       //exit(2);
    }//if
@@ -353,7 +369,6 @@ object& object::operator= (object& source) {
    Clear();
    
    pause = source.pause;
-   in_room = source.in_room;
 
    String* ptr;
    Cell<String*> scll(source.names);
@@ -364,8 +379,6 @@ object& object::operator= (object& source) {
    short_desc = source.short_desc;
    in_room_desc = source.in_room_desc;
    long_desc = source.long_desc;
-   
-   in_list = source.in_list;
    
    obj_flags = source.obj_flags; //use bitfield's overloaded =
 
@@ -390,13 +403,6 @@ object& object::operator= (object& source) {
       tmp_stat2 = new stat_spell_cell;
       *tmp_stat2 = *tmp_stat; //shallow copy should work 
       affected_by.append(tmp_stat2);
-   }//while
-   
-   source.inv.head(cll);
-   while ((obj_ptr = cll.next())) {
-      if (!obj_ptr->IN_LIST) { //multiple ptrs to SOBJ's will be a problem
-         inv.append(obj_ptr);
-      }//if
    }//while
    
    source.stat_affects.head(cell);
@@ -424,7 +430,6 @@ object& object::operator= (object& source) {
 
 void object::Clear() {
    pause = 0;
-   in_room = 0;
 
    if (cur_script) {
       delete cur_script;
@@ -440,11 +445,9 @@ void object::Clear() {
    
    delete bag;
    bag = NULL;
-   in_list = NULL;
    
    clear_ptr_list(affected_by);
    clear_ptr_list(stat_affects);
-   clear_obj_list(inv);
    
    delete obj_proc;
    obj_proc = NULL;
@@ -454,15 +457,17 @@ void object::Clear() {
    delete cur_script;
    cur_script = NULL;
 
+   setContainer(NULL);
+
 }//Clear
 
 
 int object::getCurWeight() const {
-   if (inv.isEmpty()) {
+   if (!bag || bag->getInv().isEmpty()) {
       return extras[5];
    }
    else {
-      Cell<object*> cll(inv);
+      Cell<object*> cll(bag->getInv());
       object* tmp_obj;
       int tmp_wt = 0;
       while ((tmp_obj = cll.next())) {
@@ -474,9 +479,9 @@ int object::getCurWeight() const {
 
 int object::getMaxWeight() const {
    if (bag) 
-      return bag->max_weight;
+      return bag->getMaxWeight();
    else
-      return getMaxWeight();
+      return 0;
 }//max_weight
 
 
@@ -537,11 +542,11 @@ void object::Write(ofstream& ofile) {
    
    /*  Inventory */
    
-   if (!obj_flags.get(74)) { //don't write out inv of a board
+   if (bag && !obj_flags.get(74)) { //don't write out inv of a board
       i = 0;
-      inv.head(ob_cell);
+      bag->getInv().head(ob_cell);
       while ((ob_ptr = ob_cell.next())) {
-         if (ob_ptr->IN_LIST) {
+         if (ob_ptr->isModified()) {
             ofile << -2 << "\t Start of SOBJ\n";
             ob_ptr->Write(ofile);
          }//if
@@ -691,10 +696,11 @@ void object::Read(ifstream& ofile, short read_all) {
          ofile.getline(tmp, 80);  //junk message
          new_obj->Read(ofile, TRUE);
 
-         inv.append(new_obj);    //add it to inventory
+         bag->append(new_obj);    //add it to inventory
          affected_objects.append(new_obj);
 
-         new_obj->IN_LIST = &(inv); //make sure its a SOBJ
+         new_obj->setModified(TRUE);
+         new_obj->setContainer(this);
       }//if
       else {
          if (obj_list[i].isInUse()) {
@@ -702,7 +708,7 @@ void object::Read(ifstream& ofile, short read_all) {
                 d(1,100)) {
                mudlog << "INFO:  Loading inventory object: " << i << " on object: "
                       << cur_stats[2] << endl;
-               inv.append(&(obj_list[i]));    //add it to inventory
+               bag->append(&(obj_list[i]));    //add it to inventory
             }//if
             else {
                if (mudlog.ofLevel(DB)) {
@@ -713,7 +719,7 @@ void object::Read(ifstream& ofile, short read_all) {
             }//else
          }//if
          else { //TODO:  load percentage ignored here....need a fix!
-            inv.append(&(obj_list[i]));    //add it to inventory
+            bag->append(&(obj_list[i]));    //add it to inventory
          }//if
       }//else
       ofile >> i;
@@ -793,8 +799,6 @@ void object::Read(ifstream& ofile, short read_all) {
 
    OBJ_VIS_BIT |= 1024; //hack, turn on 'normal' bit
    pause = 0;
-   in_room = 0;
-
 }//Read....object
 
 int object::isMagic() {
@@ -804,16 +808,29 @@ int object::isMagic() {
       return FALSE;
 }//is_magic
 
-object* object::loseInv(object* obj) {
-   return inv.loseData(obj);
-}
 
+void object::gainObject(LogicalEntity* le) {
+   switch (le->getEntityType()) {
+      case LE_OBJECT:
+         gainObject_((object*)(le));
+         return;
+      default:
+         core_dump("DEFAULT CASE in room::gainObject");
+         break;
+   }//switch
+}//gainObject
 
-void object::gainInv(object* obj) {
-   inv.append(obj);
-   if (obj->IN_LIST)
-      obj->IN_LIST = &(inv);
-}//gainInv
+LogicalEntity* object::loseObject(LogicalEntity* le) {
+   switch (le->getEntityType()) {
+      case LE_OBJECT:
+         return loseObject_((object*)(le));
+      default:
+         core_dump("DEFAULT CASE in room::loseObject");
+         break;
+   }//switch
+   return NULL;
+}//loseObject
+
 
 int object::getIdNum() {
    return OBJ_NUM;
@@ -833,16 +850,16 @@ int object::isFood() const {
 }
 
 int object::isLocked() const {
-   return (bag && BAG_FLAGS.get(3));
+   return (bag && bag->isLocked());
 }
 
 
 int object::isMagLocked() const {
-   return (bag && BAG_FLAGS.get(6));
+   return (bag && bag->isMagLocked());
 }
 
 int object::isClosed() const {
-   return (bag && BAG_FLAGS.get(2));
+   return (bag && bag->isClosed());
 }
 
 
@@ -902,7 +919,7 @@ int object::getMaxInGame() {
 
 int object::getKeyNum() {
    if (bag) {
-      return bag->key_num;
+      return bag->getKeyNum();
    }
    return 0;
 }
@@ -996,70 +1013,18 @@ void object::makeComponent(int targ, int comp1, int comp2, int comp3,
    }
 }//makeComponent
 
-void object::setCurRoomNum(int i, int sanity) {
-   in_room = i;
 
-   if (inv.isEmpty()) {
-      return;
-   }
-   else {
-      Cell<object*> cll(inv);
-      object* ptr;
-
-      if (sanity > 20) {
-         mudlog << "WARNING:  object::setCurInRoom, sanity over-run, obj#: "
-                << getIdNum() << endl;
-         return;
-      }
-
-      while ((ptr = cll.next())) {
-         if (ptr->isModified()) {
-            ptr->setCurRoomNum(i, sanity + 1);
-         }
-      }//while
-   }//if
-}//setCurInRoom
-
-
-int object::getObjCountByNumber(int onum, int sanity) {
+int object::getEntityCountByNumber(int onum, int sanity) {
 
    if (mudlog.ofLevel(DBG)) {
-      mudlog << "getObjCountByNumber onum: " << onum << " sanity: " 
+      mudlog << "object::getEntityCountByNumber onum: " << onum << " sanity: " 
              << sanity << " Obj_NUM: " << getIdNum() << endl;
    }
 
-   if (inv.isEmpty()) {
-      if (mudlog.ofLevel(DBG)) {
-         mudlog << "Inventory is empty, returning zero." << endl;
-      }
-      return 0;
+   if (bag) {
+      return bag->getEntityCountByNumber(onum, sanity);
    }
-   else {
-      Cell<object*> cll(inv);
-      object* ptr;
-      int count = 0;
-
-      if (sanity > 20) {
-         return 0;
-      }
-
-      if (mudlog.ofLevel(DBG)) {
-         mudlog << "Searching object inventory." << endl;
-      }
-
-      while ((ptr = cll.next())) {
-         if (ptr->getIdNum() == onum) {
-            count++;
-         }//if detect
-         count += ptr->getObjCountByNumber(onum, sanity + 1);
-      }//while
-
-      if (mudlog.ofLevel(DBG)) {
-         mudlog << "Returning count: " << count << endl;
-      }
-
-      return count;
-   }//if
+   return 0;
 }//getObjectCountByNumber
 
 
@@ -1280,3 +1245,27 @@ void object::checkForProc(String& cmd, String& arg1, critter& actor,
       }//if matches
    }//while
 }//checkForProcAction
+
+
+
+object* object::loseObject_(object* obj) {
+   return inv.loseData(obj);
+}
+
+void object::gainObject_(object* obj) {
+   inv.appendObject(obj);
+   if (obj->isModified()) {
+      obj->setContainer(this);
+   }
+}//gainInv
+
+int object::getCurRoomNum() const {
+   if (getContainer()) {
+      return getContainer()->getCurRoomNum();
+   }
+   if (mudlog.ofLevel(WRN)) {
+      mudlog << "WARNING:  object::getCurRoomNum failed, obj# " << getIdNum()
+             << endl;
+   }
+   return 0;
+}//getCurRoomNum

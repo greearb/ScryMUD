@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.15 1999/07/12 07:14:32 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
+// $Id: object.h,v 1.16 1999/07/25 20:13:04 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
 
 //
 //ScryMUD Server Code
@@ -104,55 +104,26 @@ public:
 
 
 
-///********************** bag struct ***********************************/// 
-class bag_struct {
-protected:
-   static int _cnt;
-
-public:
-   bitfield bag_flags;  // 0 NULL
-                 // 1 NULL, 2 is_closed, 3 is_locked, 4 is_pickable,
-		 // 5 is_mag_lockable, 6 is_mag_locked 
-		 // 7 is_destructable 
-		 //    {bash, fireball may open it till reset}
-		 // 8 is_corpse, 9 !close, 17 consume_key
-   int key_num;  //0 if no key needed
-   short max_weight;
-   short percentage_weight; //1 to 100, ie 50 bag makes objs half as heavy
-   short time_till_disolve; //for corpse, in ticks, -1 if not disolving
-
-   bag_struct(const bag_struct& source); //copy constructor
-   bag_struct(); //default constructor
-   ~bag_struct() { _cnt--; }
-
-   void Read(ifstream& da_file);
-   void Write(ofstream& da_file) const;
-
-   void open() { bag_flags.turn_off(2); }
-   void close() { bag_flags.turn_on(2); }
-   void lock() { bag_flags.turn_on(3); }
-   void unlock() { bag_flags.turn_off(3); }
-
-   int consumesKey() const { return bag_flags.get(17); }
-
-   int isOpen() const { return !bag_flags.get(2); }
-   int isLocked() const { return bag_flags.get(3); }
-   static int getInstanceCount() { return _cnt; }
-}; // bag_class
- 
-
 ///*********************  object  ******************************///
 
-class object {
+class object;
+class Bag;
+
+class object : public Entity,
+               public LogicalContainer {
 private:
    static int _cnt;
 
 protected:
    int pause;
-   int in_room;
    ObjectScript* cur_script;  /* currently executing script */
    List<ObjectScript*> pending_scripts;  /* queue holds scripts to be run */
    List<ObjectScript*> obj_proc_scripts; /* Scripts this object has. */
+
+   int is_modified; //takes the place of what IN_LIST used to do for us.
+
+   void gainObject_(object* obj);
+   object* loseObject_(object* obj);
 
 public:
    List<String*> names;
@@ -192,16 +163,9 @@ public:
 	   // 2 item_num;
 	   // 3 in_zone  //as in olc purposes, its origin
 
-   List<object*> *in_list; /* the list the object is in, for disolving
-                              NULL if not in someone's inv, a rooms inv,
-                              or another object's inv
-                              ALWAYS NULL when not a SOBJ */
-
-   bag_struct* bag; //NULL if not a bag
+   Bag* bag; //NULL if not a bag
   
    List<stat_spell_cell*> affected_by; 
- 
-   List<object*> inv; //empty if not a bag
  
    List<stat_spell_cell*> stat_affects;  
 
@@ -210,7 +174,7 @@ public:
    
    object (object& source); //copy constructor
    object();			     //default constructor
-   ~object();                     //destructor
+   virtual ~object();                     //destructor
    object& operator= (object& source);
 
    void Clear();
@@ -218,8 +182,9 @@ public:
    void Write(ofstream& da_file);
    int isMagic();
 
-   object* loseInv(object* obj);
-   void gainInv(object* obj);
+   LogicalEntity* loseObject(LogicalEntity* le);
+   void gainObject(LogicalEntity* le);
+   int getCurRoomNum() const;
 
    int getIdNum();
    int getKeyNum();
@@ -269,11 +234,12 @@ public:
    int isCoins() const { return OBJ_FLAGS.get(55); }
    int isHerb() const;
    int isPaused() const { return pause > 0; }
-   int isModified() const { return (in_list && 1); } //ie is it a SOBJ
+   int isModified() const { return is_modified; } //ie isSOBJ
    int hasScript() const { return obj_flags.get(76); }
    int isLiquid() const;
    int isCanteen() const;
 
+   void setModified(int mod) { is_modified = mod; }
    void setComplete();
    void setIncomplete();
    void setIdNum(int i);
@@ -291,9 +257,6 @@ public:
    static int getInstanceCount() { return _cnt; }
 
    int getObjCountByNumber(int onum, int sanity);
-
-   void setCurRoomNum(int i, int sanity);
-   int getCurRoomNum() const { return in_room; }
 
    const ScriptCmd* getNextScriptCmd() { return cur_script->getNextCommand(); }
    void finishedObjProc();
@@ -334,7 +297,40 @@ public:
    void checkForProc(String& cmd, String& arg1, critter& actor,
                      int targ, room& cur_room);
 
+   virtual LEtypeE getEntityType() const { return LE_OBJECT; }
 }; // class object
+
+
+///********************** Bag  ***********************************/// 
+class Bag : public EntityContainer, public Closable {
+protected:
+   static int _cnt;
+   // bag_flags are now in the Closable class.
+   int key_num;  //0 if no key needed
+   short max_weight;
+   short percentage_weight; //1 to 100, ie 50 bag makes objs half as heavy
+   short time_till_disolve; //for corpse, in ticks, -1 if not disolving
+public:
+
+   bag_struct(bag_struct& source); //copy constructor
+   bag_struct(); //default constructor
+   bag_struct& operator=(bag_struct& src);
+   ~bag_struct() { _cnt--; }
+
+   void Read(ifstream& da_file);
+   void Write(ofstream& da_file) const;
+
+   List<object*>& getInv() { return (List<object*>&)(getInv()); }
+   int getMaxWeight() const { return max_weight; }
+   int getPercentWeight() const { return percentage_weight; }
+   int getTimeTillDisolve() const { return time_till_disolve; }
+
+   void setMaxWeight(int i) { max_weight = i; }
+   void setPercentWeight(int i) { percentage_weight = i; }
+   void setTimeTillDisolve(int i) { time_till_disolve = i; }
+
+   static int getInstanceCount() { return _cnt; }
+}; // Bag
 
 
 #endif

@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.26 1999/07/16 06:12:53 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
+// $Id: critter.h,v 1.27 1999/07/25 20:13:04 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
 
 //
 //ScryMUD Server Code
@@ -623,7 +623,8 @@ public:
 
 ///***************************** critter ******************************///
 
-class critter {
+class critter : public LogicalEntity,
+                public LogicalContainer {
 protected:
    static int _cnt;
 
@@ -708,7 +709,7 @@ public:
 
    critter();
    critter(critter& source); //copy constructor
-   ~critter();
+   virtual ~critter();
    void Clear();
    critter& operator= (critter& source);
    
@@ -881,7 +882,6 @@ public:
    void setHP_MAX(int i);
    void setMode(PcMode val);
    void setImmLevel(int i);
-   void setCurRoomNum(int i); //assign in_roomtoo
    void setTrackingTarget(const String& targ_name);
    void setPoofin(const char* pin);
    void setPoofout(const char* pout);
@@ -1015,11 +1015,11 @@ public:
    void show(const char* msg);
    void show(CSentryE); //Pick language of choice, if available.
 
-   object* loseInv(object* obj); //returns the object removed. (or NULL)
    void loseObjectFromGame(object* obj);
 
-
-   void gainInv(object* obj);
+   LogicalEntity* loseObject(LogicalEntity* obj); //returns the object removed. (or NULL)
+   void gainObject(LogicalEntity* obj);
+   int getCurRoomNum() const;
 
    void doLeaveRoom();
    int doEnterRoom(room* new_room);
