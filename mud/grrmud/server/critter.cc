@@ -2347,18 +2347,6 @@ int critter::getBHDC(bool include_modifiers=false) {
    int p_lrnd;
    int modifier = 0;
 
-   if ( include_modifiers && pc ) {
-      p_lrnd = get_percent_lrnd(WRESTLING_SKILL_NUM, *this);
-      if ( p_lrnd > 0 ) {
-         modifier += p_lrnd/30;
-      }
-
-      p_lrnd = get_percent_lrnd(MARTIAL_ARTS_SKILL_NUM, *this);
-      if ( p_lrnd > 0 ) {
-         modifier += p_lrnd/30;
-      }
-   }
-
    return BH_DICE_COUNT+modifier;
 }
 
@@ -2369,7 +2357,7 @@ int critter::getBHDS(bool include_modifiers=false) {
    if ( include_modifiers && pc ) {
       p_lrnd = get_percent_lrnd(MARTIAL_ARTS_SKILL_NUM, *this);
       if ( p_lrnd > 0 ) {
-         modifier += p_lrnd/30;
+         modifier += p_lrnd/50;
       }
    }
 
