@@ -37,7 +37,7 @@
 #include "SkillSpell.h"
 
 
-void track(int i_th, const String* victim, critter& pc) {
+int track(int i_th, const String* victim, critter& pc) {
    critter* crit_ptr;
    String buf(100);
 
@@ -48,7 +48,7 @@ void track(int i_th, const String* victim, critter& pc) {
       Sprintf(buf, "You sense a trail to the %S.\n", 
               door_list[d(1,8)].names.peekFront());
       show(buf, pc);
-      return;
+      return 0;
    }//if
 
 
@@ -106,7 +106,7 @@ void track(int i_th, const String* victim, critter& pc) {
                    Sprintf(buf, "You sense a trail leading %S.\n", 
                            direction_of_door(*ptr));
                    show(buf, pc);
-                   return;
+                   return 0;
                 }//if
              }//while
              Sprintf(buf, "TRACK:  no exit to this room:  %i\n",
@@ -117,17 +117,18 @@ void track(int i_th, const String* victim, critter& pc) {
 	}//else not already in same room
       }//else found a crit ptr
    }//else, good to go
+   return -1;
 }//track
 
 
-void trip(int i_th, const String* victim, critter& pc) {
+int trip(int i_th, const String* victim, critter& pc) {
    critter* crit_ptr;
    String buf(100);
 
    if (!victim->Strlen()) {
       if (!(crit_ptr = pc.IS_FIGHTING.peekFront())) {
          show("Trip who?\n", pc);
-         return;
+         return -1;
       }//if
    }//if
    else {
@@ -138,7 +139,7 @@ void trip(int i_th, const String* victim, critter& pc) {
 
       if (crit_ptr == &pc) {
 	show("You trip over your own two feet!\n", pc);
-	return;
+	return 0;
       }//if
 
       if (crit_ptr->isMob()) {
@@ -146,29 +147,30 @@ void trip(int i_th, const String* victim, critter& pc) {
                                 TRUE, i_th, victim, pc.SEE_BIT);
       }//if
 
-      if (!ok_to_cast_spell(crit_ptr, "SVPF", -1, pc)) {
-	return;
+      if (!ok_to_do_action(crit_ptr, "SVPF", -1, pc)) {
+	return -1;
       }//if
 
       if (!(crit_ptr = check_for_diversions(*crit_ptr, "GM", pc)))
-	return;
+	return -1;
 
-      do_trip(*crit_ptr, pc);
+      return do_trip(*crit_ptr, pc);
    }//if
    else {
      show("Trip who??\n", pc);
    }//else
+   return -1;
 }//trip
 
 
-void do_trip(critter& vict, critter& pc) {
+int do_trip(critter& vict, critter& pc) {
    String buf(100);
    short do_fatality = FALSE;
 
 
    if ((vict.isMob()) || (pc.isMob())) {
       mudlog.log(ERR, "ERROR:  MOB sent to do_trip.\n");
-      return;
+      return -1;
    }//if
 
    if (!pc.IS_FIGHTING.haveData(&vict)) {
@@ -215,10 +217,11 @@ void do_trip(critter& vict, critter& pc) {
    if (do_fatality) {
       agg_kills_vict(pc, vict);
    }//if
+   return 0;
 }//do_trip()
 
 
-void steal(int i_th, const String* obj, int j_th, const String* victim,
+int steal(int i_th, const String* obj, int j_th, const String* victim,
 	   critter& pc) {
    critter* crit_ptr = NULL;
    object* objptr = NULL;
@@ -231,7 +234,7 @@ void steal(int i_th, const String* obj, int j_th, const String* victim,
    if (crit_ptr) {
       if (crit_ptr == &pc) {
 	show("There's a bright idea!\n", pc);
-	return;
+	return 0;
       }//if
 
       if (crit_ptr->isMob()) {
@@ -239,8 +242,8 @@ void steal(int i_th, const String* obj, int j_th, const String* victim,
                                 i_th, victim, pc.SEE_BIT);
       }//if
 
-      if (!ok_to_cast_spell(crit_ptr, "SVPF", -1, pc)) {
-	return;
+      if (!ok_to_do_action(crit_ptr, "mSVPF", -1, pc)) {
+         return -1;
       }//if
 
       if (!obj->Strlen() || (strcasecmp(*obj, "gold") == 0)) {
@@ -250,15 +253,16 @@ void steal(int i_th, const String* obj, int j_th, const String* victim,
 	objptr = have_obj_named(crit_ptr->inv, i_th, obj, pc.SEE_BIT,
 				ROOM);      
       }//else
-      do_steal(objptr, *crit_ptr, pc, gold);
+      return do_steal(objptr, *crit_ptr, pc, gold);
    }//if
    else {
      show("Steal from who??\n", pc);
    }//else
+   return -1;
 }//steal
 
 
-void do_steal(object* obj, critter& vict, critter& pc, 
+int do_steal(object* obj, critter& vict, critter& pc, 
 	      short steal_gold = FALSE) {
    String buf(100);
    int amt;
@@ -290,7 +294,9 @@ void do_steal(object* obj, critter& vict, critter& pc,
          show(
             "You snoop around undetected, but don't find what you're looking for!\n",
 	    pc);
-      }//else 
+         return 0;
+      }//else
+      return 0;
    }//if
    else {  //got caught!!!
       
@@ -321,18 +327,20 @@ void do_steal(object* obj, critter& vict, critter& pc,
             pc.PC_FLAGS.turn_on(20);
          }//if
       }//else
+      return -1;
    }//else
+   return -1;
 }//do_steal
 
 
-void kick(int i_th, const String* victim, critter& pc) {
+int kick(int i_th, const String* victim, critter& pc) {
    critter* crit_ptr;
    String buf(100);
 
    if (!victim->Strlen()) {
       if (!(crit_ptr = pc.IS_FIGHTING.peekFront())) {
          show("Kick who?\n", pc);
-         return;
+         return -1;
       }//if
    }//if
    else {
@@ -345,7 +353,7 @@ void kick(int i_th, const String* victim, critter& pc) {
 	show("You kick yourself for your stupidity!\n", pc);
 	Sprintf(buf, "kicks %s.", get_himself_herself(pc));
 	emote(buf, pc, ROOM, TRUE);
-	return;
+	return 0;
       }//if
 
       if (crit_ptr->isMob()) {
@@ -353,29 +361,30 @@ void kick(int i_th, const String* victim, critter& pc) {
                                pc.SEE_BIT);
       }//if
 
-      if (!ok_to_cast_spell(crit_ptr, "SVPF", -1, pc)) {
-	return;
+      if (!ok_to_do_action(crit_ptr, "SVPF", -1, pc)) {
+	return -1;
       }//if
 
       if (!(crit_ptr = check_for_diversions(*crit_ptr, "GM", pc)))
-	return;
+	return -1;
 
-      do_kick(*crit_ptr, pc);
+      return do_kick(*crit_ptr, pc);
    }//if
    else {
      show("Kick who??\n", pc);
    }//else
+   return -1;
 }//kick
 
 
-void do_kick(critter& vict, critter& pc) {
+int do_kick(critter& vict, critter& pc) {
    String buf(100);
    short do_fatality = FALSE;
 
 
    if ((vict.isMob()) || (pc.isMob())) {
       mudlog.log(ERR, "ERROR:  MOB sent to do_kick.\n");
-      return;
+      return -1;
    }//if
 
    if (!pc.IS_FIGHTING.haveData(&vict)) {
@@ -431,17 +440,18 @@ void do_kick(critter& vict, critter& pc) {
    if (do_fatality) {
       agg_kills_vict(pc, vict);
    }//if
+   return 0;
 }//do_kick()
 
 
-void bash(int i_th, const String* victim, critter& pc) {
+int bash(int i_th, const String* victim, critter& pc) {
    critter* crit_ptr;
    String buf(100);
 
    if (!victim->Strlen()) {
       if (!(crit_ptr = Top(pc.IS_FIGHTING))) {
          show("Bash who?\n", pc);
-         return;
+         return -1;
       }//if
    }//if
    else {
@@ -452,7 +462,7 @@ void bash(int i_th, const String* victim, critter& pc) {
 
       if (crit_ptr == &pc) {
          show("You shouldn't be bashing yourself..\n", pc);
-         return;
+         return -1;
       }//if
 
       if (crit_ptr->isMob()) {
@@ -460,24 +470,25 @@ void bash(int i_th, const String* victim, critter& pc) {
                                 pc.SEE_BIT);
       }//if
 
-      if (!ok_to_cast_spell(crit_ptr, "SVPF", -1, pc)) {
-	return;
+      if (!ok_to_do_action(crit_ptr, "SVPF", -1, pc)) {
+         return -1;
       }//if
 
       if (!(crit_ptr = check_for_diversions(*crit_ptr, "GM", pc)))
-	return;
+         return -1;
 
-      do_bash(*crit_ptr, pc);
+      return do_bash(*crit_ptr, pc);
    }//if
    else if (door* dptr = door::findDoor(ROOM.DOORS, i_th, victim,
 		pc.SEE_BIT, ROOM))
-      do_bash(*dptr, pc);
+      return do_bash(*dptr, pc);
    else
       show(NO_CAN_SEE_MSG, pc);
+   return -1;
 }//bash
 
 
-void do_bash(door& vict, critter& pc) { //bash for doors
+int do_bash(door& vict, critter& pc) { //bash for doors
    String buf(100);
 
    if (pc.isMob()) {
@@ -486,17 +497,17 @@ void do_bash(door& vict, critter& pc) { //bash for doors
                 << *(name_of_crit(pc, ~0)) << "  address:  " << &pc << endl;
       }
 
-      return;
+      return -1;
    }//if
 
    if (!vict.dr_data->door_data_flags.get(2)) {
       show("It isn't even closed.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!vict.dr_data->door_data_flags.get(3)) {
       show("Its not locked, just open it!\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!vict.dr_data->door_data_flags.get(7)) {
@@ -526,17 +537,18 @@ void do_bash(door& vict, critter& pc) { //bash for doors
    }//else  
    
    pc.PAUSE += d(1,3); //increment pause_count
+   return 0;
 }//do_bash()//door
 
 
 
-void do_bash(critter& vict, critter& pc) {
+int do_bash(critter& vict, critter& pc) {
    String buf(100);
    short do_fatality = FALSE;
 
    if ((vict.isMob()) || (pc.isMob())) {
       mudlog.log(ERR, "ERROR:  MOB sent to do_bash.\n");
-      return;
+      return -1;
    }//if
 
    if (!pc.IS_FIGHTING.haveData(&vict)) {
@@ -587,21 +599,23 @@ void do_bash(critter& vict, critter& pc) {
       show(buf, pc);
 
       pc.PAUSE += d(1,3); //increment pause_count
+      return -1;
    }//else
    if (do_fatality) {
       agg_kills_vict(pc, vict);
    }//if
+   return 0;
 }//do_bash()
 
 
-void block(int i_th, const String* victim, critter& pc) {
+int block(int i_th, const String* victim, critter& pc) {
    critter* crit_ptr;
    String buf(100);
 
    if (!victim->Strlen()) {
       if (!(crit_ptr = Top(pc.IS_FIGHTING))) {
          show("Block who?\n", pc);
-         return;
+         return -1;
       }//if
    }//if
    else {
@@ -611,33 +625,34 @@ void block(int i_th, const String* victim, critter& pc) {
    if (crit_ptr) {
      if (!pc.IS_FIGHTING.haveData(crit_ptr)) {
        show("You aren't fighting that person.\n", pc);
-       return;
+       return -1;
      }//if
 
-     if (!ok_to_cast_spell(crit_ptr, "PF", -1, pc)) {
-       return;
+     if (!ok_to_do_action(crit_ptr, "PF", -1, pc)) {
+        return -1;
      }//if
 
-     do_block(*crit_ptr, pc);
+     return do_block(*crit_ptr, pc);
    }//if
    else if (door* dptr = door::findDoor(ROOM.DOORS, i_th, victim,
 		pc.SEE_BIT, ROOM))
-      do_block(*dptr, pc);
+      return do_block(*dptr, pc);
    else
       show(NO_CAN_SEE_MSG, pc);
+   return -1;
 }//block
 
 
-void do_block(critter& vict, critter& pc) {
+int do_block(critter& vict, critter& pc) {
    String buf(100);
 
    if ((vict.isMob()) || (pc.isMob())) {
       mudlog.log(ERR, "ERROR:  MOB sent to do_block.\n");
-      return;
+      return -1;
    }//if
 
    if (!HaveData(&vict, pc.IS_FIGHTING)) {
-      return;
+      return -1;
    }//if
 
    if (skill_did_hit(pc, BLOCK_SKILL_NUM, vict)) {
@@ -650,6 +665,7 @@ void do_block(critter& vict, critter& pc) {
       emote(buf, pc, ROOM, TRUE, &vict);
       Sprintf(buf, "%S blocks you.\n", name_of_crit(pc, vict.SEE_BIT));
       show(buf, vict);
+      return 0;
    }//if
    else {  //missed
       show("You miss the block.\n", pc);
@@ -657,32 +673,33 @@ void do_block(critter& vict, critter& pc) {
       Sprintf(buf, "%S tries but fails to block you.\n", 
 	      name_of_crit(pc, vict.SEE_BIT));
       show(buf, vict);
+      return -1;
    }//else
 }//do_block()
 
 
 
-void do_block(door& vict, critter& pc) {
+int do_block(door& vict, critter& pc) {
    String buf(100);
 
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB sent to do_block.\n");
-      return;
+      return -1;
    }//if
 
    if (ROOM.isHaven() || ROOM.isNoPK()) {
      show("Aggression is not allowed here.\n", pc);
-     return;
+     return -1;
    }//if
 
    if (!pc.IS_FIGHTING.isEmpty()) {
      show("You can't block an entrance while fighting.\n", pc);
-     return;
+     return -1;
    }//if
 
    if (vict.dr_data->door_data_flags.get(14)) {
      show("Someone is already blocking that door!\n", pc);
-     return;
+     return -1;
    }//if
 
    if (d(1, 100) < get_percent_lrnd(BLOCK_SKILL_NUM, pc)) {
@@ -693,6 +710,7 @@ void do_block(door& vict, critter& pc) {
       vict.crit_blocking = &pc;
       Sprintf(buf, "starts blocking the %S!\n", name_of_door(vict, ~0));
       emote(buf, pc, ROOM, TRUE);
+      return 0;
    }//else
    else {
      pc.PAUSE += d(1, 2); //increment pause_count
@@ -700,16 +718,17 @@ void do_block(door& vict, critter& pc) {
     "You can't find a suitable spot, maybe if you tried a little harder.\n",
           pc);
    }//else      
+   return -1;
 }//do_block()//door
 
 
-void claw(int i_th, const String* victim, critter& pc) {
+int claw(int i_th, const String* victim, critter& pc) {
    critter* crit_ptr;
    String buf(100);
 
    if (pc.EQ[9] && pc.EQ[10]) {
       show("You don't have a free hand!\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!victim->Strlen()) {
@@ -723,7 +742,7 @@ void claw(int i_th, const String* victim, critter& pc) {
 
       if (crit_ptr == &pc) {
          show("You shouldn't be clawing yourself..\n", pc);
-         return;
+         return -1;
       }//if
 
       if (crit_ptr->isMob()) {
@@ -731,22 +750,23 @@ void claw(int i_th, const String* victim, critter& pc) {
                                 TRUE, i_th, victim, pc.SEE_BIT);
       }//if
 
-      if (!ok_to_cast_spell(crit_ptr, "SVPF", -1, pc)) {
-	return;
+      if (!ok_to_do_action(crit_ptr, "SVPF", -1, pc)) {
+         return -1;
       }//if
 
       if (!(crit_ptr = check_for_diversions(*crit_ptr, "GM", pc)))
-	return;
+         return -1;
 
-      do_claw(*crit_ptr, pc);
+      return do_claw(*crit_ptr, pc);
 
    }//if
    else 
       show("Claw who?\n", pc);
+   return -1;
 }//claw
 
 
-void do_claw(critter& vict, critter& pc) {
+int do_claw(critter& vict, critter& pc) {
    String buf(100);
    short do_fatality = FALSE;
 
@@ -754,12 +774,7 @@ void do_claw(critter& vict, critter& pc) {
 
    if ((vict.isMob()) || (pc.isMob())) {
       mudlog.log(ERR, "ERROR:  MOB sent to do_claw.\n");
-      return;
-   }//if
-
-   if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERR, "ERROR:  smob sent in to do_claw.\n");
-      return;
+      return -1;
    }//if
 
    if (!HaveData(&vict, pc.IS_FIGHTING)) {
@@ -812,15 +827,16 @@ void do_claw(critter& vict, critter& pc) {
       Sprintf(buf, "You try to claw %S but narrowly miss.\n",
              name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
-
+      return -1;
    }//else
    if (do_fatality) {
       agg_kills_vict(pc, vict);
    }//if
+   return 0;
 }//do_claw()
 
 
-void construct(critter& pc, short do_mob = FALSE) {
+int construct(critter& pc, short do_mob = FALSE) {
    String buf(100);
    object* toolbox, *ptr, *item1, *item2, *item3, *item4, *item5;
    Cell<object*> cll;
@@ -829,22 +845,11 @@ void construct(critter& pc, short do_mob = FALSE) {
    item1 = item2 = item3 = item4 = item5 = NULL;
 
    if (!pc.pc && !do_mob) //no ordering pets to do yer dirty-work
-     return;
+      return -1;
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  mob trying to construct..\n");
-      return;
-   }//if
-
-   if (pc.POS != POS_STAND) {
-      show("You must be standing up to construct something.\n", pc);
-      return;
-   }//if
-
-   if (!pc.IS_FIGHTING.isEmpty()) {
-      show("You can't construct things while fighting.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mBFPS", 0, pc)) {
+      return -1;
+   }
 
    pc.inv.head(cll);
    toolbox = NULL;
@@ -858,13 +863,13 @@ void construct(critter& pc, short do_mob = FALSE) {
    if (!toolbox) {
       show("You must have a toolbox in order to construct something.", 
            pc);
-      return;
+      return -1;
    }//if
 
    if (toolbox->ob->inv.isEmpty()) {
       show("You need components in your toolbox to work with!\n", 
            pc);
-      return;
+      return -1;
    }//if
 
 		/* found a tool box, make sure its clear of junk */
@@ -877,7 +882,7 @@ void construct(critter& pc, short do_mob = FALSE) {
          show(buf, pc);
          show("You have to have a clean toolbox in order to work!!\n", 
               pc);
-         return;
+         return -1;
       }//if
       if (ptr->OBJ_LEVEL > pc.LEVEL) {
          Sprintf(buf, "%S is too advanced for you to work with it.\n",
@@ -886,7 +891,7 @@ void construct(critter& pc, short do_mob = FALSE) {
          show(buf, pc);
          show("You must remove it from your work ", pc);
          show("area before you can continue.\n", pc);
-         return;
+         return -1;
       }//if
    }//while
 
@@ -896,13 +901,13 @@ void construct(critter& pc, short do_mob = FALSE) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL obj_proc.\n", 
               &(ptr->ob->short_desc));
       mudlog.log(ERR, buf);
-      return;
+      return -1;
    }//if
    if (!ptr->ob->obj_proc->construct_data) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL construct_data.\n", 
               &(ptr->ob->short_desc));
       mudlog.log(ERR, buf);
-      return;
+      return -1;
    }//if
 
                   /* check for all components available */
@@ -914,7 +919,7 @@ void construct(critter& pc, short do_mob = FALSE) {
                  &(obj_list[ptr->COMPONENT_ITEM1].ob->short_desc),
                  &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
          show(buf, pc);
-         return;
+         return -1;
       }//if
    }//if
 
@@ -926,7 +931,7 @@ void construct(critter& pc, short do_mob = FALSE) {
                  &(obj_list[ptr->COMPONENT_ITEM2].ob->short_desc),
                  &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
          show(buf, pc);
-         return;
+         return -1;
       }//if
    }//if
 
@@ -938,7 +943,7 @@ void construct(critter& pc, short do_mob = FALSE) {
                  &(obj_list[ptr->COMPONENT_ITEM3].ob->short_desc),
                  &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
          show(buf, pc);
-         return;
+         return -1;
       }//if
    }//if
 
@@ -950,7 +955,7 @@ void construct(critter& pc, short do_mob = FALSE) {
                  &(obj_list[ptr->COMPONENT_ITEM4].ob->short_desc),
                  &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
          show(buf, pc);
-         return;
+         return -1;
       }//if
    }//if
 
@@ -962,62 +967,62 @@ void construct(critter& pc, short do_mob = FALSE) {
                  &(obj_list[ptr->COMPONENT_ITEM5].ob->short_desc),
                  &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
          show(buf, pc);
-         return;
+         return -1;
       }//if
    }//if
 
 		/*  have all items and levels are compatable */
 
-      if (item1) {
-         toolbox->loseInv(item1);
-         drop_eq_effects(*item1, pc, FALSE);
-         recursive_init_unload(*item1, 0);
-         if (item1->IN_LIST) {
-            delete item1;
-            item1 = NULL;
-         }//if
+   if (item1) {
+      toolbox->loseInv(item1);
+      drop_eq_effects(*item1, pc, FALSE);
+      recursive_init_unload(*item1, 0);
+      if (item1->IN_LIST) {
+         delete item1;
+         item1 = NULL;
       }//if
-
-      if (item2) {
-         toolbox->loseInv(item2);
-         drop_eq_effects(*item2, pc, FALSE);
-         recursive_init_unload(*item2, 0);
-         if (item2->IN_LIST) {
-            delete item2;
-            item2 = NULL;
-         }//if
+   }//if
+   
+   if (item2) {
+      toolbox->loseInv(item2);
+      drop_eq_effects(*item2, pc, FALSE);
+      recursive_init_unload(*item2, 0);
+      if (item2->IN_LIST) {
+         delete item2;
+         item2 = NULL;
       }//if
-
-      if (item3) {
-         toolbox->loseInv(item3);
-         drop_eq_effects(*item3, pc, FALSE);
-         recursive_init_unload(*item3, 0);
-         if (item3->IN_LIST) {
-            delete item3;
-            item3 = NULL;
-         }//if
+   }//if
+   
+   if (item3) {
+      toolbox->loseInv(item3);
+      drop_eq_effects(*item3, pc, FALSE);
+      recursive_init_unload(*item3, 0);
+      if (item3->IN_LIST) {
+         delete item3;
+         item3 = NULL;
       }//if
-
-      if (item4) {
-         toolbox->loseInv(item4);
-         drop_eq_effects(*item4, pc, FALSE);
-         recursive_init_unload(*item4, 0);
-         if (item4->IN_LIST) {
-            delete item4;
-            item4 = NULL;
-         }//if
+   }//if
+   
+   if (item4) {
+      toolbox->loseInv(item4);
+      drop_eq_effects(*item4, pc, FALSE);
+      recursive_init_unload(*item4, 0);
+      if (item4->IN_LIST) {
+         delete item4;
+         item4 = NULL;
       }//if
-
-      if (item5) {
-         toolbox->loseInv(item5);
-         drop_eq_effects(*item5, pc, FALSE);
-         recursive_init_unload(*item5, 0);
-         if (item5->IN_LIST) {
-            delete item5;
-            item5 = NULL;
-         }//if
+   }//if
+   
+   if (item5) {
+      toolbox->loseInv(item5);
+      drop_eq_effects(*item5, pc, FALSE);
+      recursive_init_unload(*item5, 0);
+      if (item5->IN_LIST) {
+         delete item5;
+         item5 = NULL;
       }//if
-
+   }//if
+   
    if (skill_did_hit(pc, CONSTRUCT_SKILL_NUM, pc)) {
       pc.gainInv(&(obj_list[ptr->COMPONENT_TARG]));
       recursive_init_loads(obj_list[ptr->COMPONENT_TARG], 0);
@@ -1030,35 +1035,25 @@ void construct(critter& pc, short do_mob = FALSE) {
       show(" do is bugger them up completely.\n", pc);
    }//else
    pc.PAUSE += 4;
+   return 0;
 }//construct()
 
 
 
-void concoct(critter& pc, short do_mob = FALSE) {
+int concoct(critter& pc, short do_mob = FALSE) {
    String buf(100);
    object* cauldron, *ptr, *item1, *item2, *item3, *item4, *item5;
    Cell<object*> cll;
    //   log("In concoct.\n");
 
    if (!pc.pc && !do_mob) //no ordering pets to do yer dirty-work
-     return;
+     return -1;
 
    item1 = item2 = item3 = item4 = item5 = NULL;
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  mob trying to concoct..\n");
-      return;
-   }//if
-
-   if (pc.POS != POS_STAND) {
-      show("You must be standing up to concoct something.\n", pc);
-      return;
-   }//if
-
-   if (!pc.IS_FIGHTING.isEmpty()) {
-      show("You can't brew things while fighting.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mBFPS", 0, pc)) {
+      return -1;
+   }
 
    pc.inv.head(cll);
    cauldron = NULL;
@@ -1072,13 +1067,13 @@ void concoct(critter& pc, short do_mob = FALSE) {
    if (!cauldron) {
       show("You must have a cauldron in order to brew something.", 
            pc);
-      return;
+      return -1;
    }//if
 
    if (IsEmpty(cauldron->ob->inv)) {
       show("You need ingredients in your cauldron to brew with!\n", 
            pc);
-      return;
+      return -1;
    }//if
 
 		/* found a cauldron, make sure its clear of junk */
@@ -1091,7 +1086,7 @@ void concoct(critter& pc, short do_mob = FALSE) {
          buf.Cap();
          show(buf, pc);
          show("You'd better take it out.\n", pc);
-         return;
+         return -1;
       }//if
       if (ptr->OBJ_LEVEL > pc.LEVEL) {
          Sprintf(buf, "You do not yet fully comprehend the power of %S.\n",
@@ -1100,7 +1095,7 @@ void concoct(critter& pc, short do_mob = FALSE) {
          show(buf, pc);
          show("Until you better understand it, you shouldn't include", pc);
          show(" it in your cauldron.\n", pc);
-         return;
+         return -1;
       }//if
    }//while
 
@@ -1110,13 +1105,13 @@ void concoct(critter& pc, short do_mob = FALSE) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL obj_proc.\n", 
              &( ptr->ob->short_desc));
       mudlog.log(ERR, buf);
-      return;
+      return -1;
    }//if
    if (!ptr->ob->obj_proc->construct_data) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL construct_data.\n", 
               &(ptr->ob->short_desc));
       mudlog.log(ERR, buf);
-      return;
+      return -1;
    }//if
 
                   /* check for all components available */
@@ -1128,7 +1123,7 @@ void concoct(critter& pc, short do_mob = FALSE) {
                  &(obj_list[ptr->COMPONENT_ITEM1].ob->short_desc),
                  &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
          show(buf, pc);
-         return;
+         return -1;
       }//if
    }//if
 
@@ -1140,7 +1135,7 @@ void concoct(critter& pc, short do_mob = FALSE) {
                  &(obj_list[ptr->COMPONENT_ITEM2].ob->short_desc),
                  &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
          show(buf, pc);
-         return;
+         return -1;
       }//if
    }//if
 
@@ -1152,7 +1147,7 @@ void concoct(critter& pc, short do_mob = FALSE) {
                  &(obj_list[ptr->COMPONENT_ITEM3].ob->short_desc),
                  &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
          show(buf, pc);
-         return;
+         return -1;
       }//if
    }//if
 
@@ -1164,7 +1159,7 @@ void concoct(critter& pc, short do_mob = FALSE) {
                  &(obj_list[ptr->COMPONENT_ITEM4].ob->short_desc),
                  &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
          show(buf, pc);
-         return;
+         return -1;
       }//if
    }//if
 
@@ -1176,62 +1171,62 @@ void concoct(critter& pc, short do_mob = FALSE) {
                  &(obj_list[ptr->COMPONENT_ITEM5].ob->short_desc),
                  &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
          show(buf, pc);
-         return;
+         return -1;
       }//if
    }//if
 
 		/*  have all items, and levels are compatable */
 
-      if (item1) {
-         cauldron->loseInv(item1);
-         drop_eq_effects(*item1, pc, FALSE);
-         recursive_init_unload(*item1, 0);
-         if (item1->IN_LIST) {
-            delete item1;
-            item1 = NULL;
-         }//if
+   if (item1) {
+      cauldron->loseInv(item1);
+      drop_eq_effects(*item1, pc, FALSE);
+      recursive_init_unload(*item1, 0);
+      if (item1->IN_LIST) {
+         delete item1;
+         item1 = NULL;
       }//if
-
-      if (item2) {
-         cauldron->loseInv(item2);
-         drop_eq_effects(*item2, pc, FALSE);
-         recursive_init_unload(*item2, 0);
-         if (item2->IN_LIST) {
-            delete item2;
-            item2 = NULL;
-         }//if
+   }//if
+   
+   if (item2) {
+      cauldron->loseInv(item2);
+      drop_eq_effects(*item2, pc, FALSE);
+      recursive_init_unload(*item2, 0);
+      if (item2->IN_LIST) {
+         delete item2;
+         item2 = NULL;
       }//if
-
-      if (item3) {
-         cauldron->loseInv(item3);
-         drop_eq_effects(*item3, pc, FALSE);
-         recursive_init_unload(*item3, 0);
-         if (item3->IN_LIST) {
-            delete item3;
-            item3 = NULL;
-         }//if
+   }//if
+   
+   if (item3) {
+      cauldron->loseInv(item3);
+      drop_eq_effects(*item3, pc, FALSE);
+      recursive_init_unload(*item3, 0);
+      if (item3->IN_LIST) {
+         delete item3;
+         item3 = NULL;
       }//if
-
-      if (item4) {
-         cauldron->loseInv(item4);
-         drop_eq_effects(*item4, pc, FALSE);
-         recursive_init_unload(*item4, 0);
-         if (item4->IN_LIST) {
-            delete item4;
-            item4 = NULL;
-         }//if
+   }//if
+   
+   if (item4) {
+      cauldron->loseInv(item4);
+      drop_eq_effects(*item4, pc, FALSE);
+      recursive_init_unload(*item4, 0);
+      if (item4->IN_LIST) {
+         delete item4;
+         item4 = NULL;
       }//if
-
-      if (item5) {
-         cauldron->loseInv(item5);
-         drop_eq_effects(*item5, pc, FALSE);
-         recursive_init_unload(*item5, 0);
-         if (item5->IN_LIST) {
-            delete item5;
-            item5 = NULL;
-         }//if
+   }//if
+   
+   if (item5) {
+      cauldron->loseInv(item5);
+      drop_eq_effects(*item5, pc, FALSE);
+      recursive_init_unload(*item5, 0);
+      if (item5->IN_LIST) {
+         delete item5;
+         item5 = NULL;
       }//if
-
+   }//if
+   
    if (skill_did_hit(pc, BREW_SKILL_NUM, pc)) {
       pc.gainInv(&(obj_list[ptr->COMPONENT_TARG]));
       recursive_init_loads(obj_list[ptr->COMPONENT_TARG], 0);
@@ -1245,17 +1240,18 @@ void concoct(critter& pc, short do_mob = FALSE) {
       show("ingredients are ruined!!\n", pc);
    }//else
    pc.PAUSE += 4;
+   return 0;
 }//concoct()
 
 
-void scribe(const String* spell, critter& pc, short do_mob = FALSE) {
+int scribe(const String* spell, critter& pc, short do_mob = FALSE) {
    String buf(100);
    object* pen, *parchment; 
    int spell_num;
 
    /* default is that mob's can't scribe, ie no 'ordering' them to scribe */
    if (!pc.pc && !do_mob)
-     return;
+     return -1;
 
    //   log("In scribe.\n");
 
@@ -1269,28 +1265,17 @@ void scribe(const String* spell, critter& pc, short do_mob = FALSE) {
 
    if (spell->Strlen() == 0) {
       show("Please specify which spell you wish to scribe.\n", pc);
-      return;
+      return -1;
    }//if
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  mob trying to scribe..\n");
-      return;
-   }//if
-
-   if (pc.POS > POS_SIT) {
-      show("You are too relaxed to scribe.\n", pc);
-      return;
-   }//if
-
-   if (!IsEmpty(pc.IS_FIGHTING)) {
-      show("You can't scribe things while fighting.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mBFPr", spell_num, pc)) {
+      return -1;
+   }
 
    pen = pc.EQ[9];
    if (!pen || !pen->OBJ_FLAGS.get(66)) {
       show("You must be wielding a pen in order to scribe.\n", pc);
-      return;
+      return -1;
    }//if
 
 		// pen is valid, check for parchment //
@@ -1298,7 +1283,7 @@ void scribe(const String* spell, critter& pc, short do_mob = FALSE) {
    parchment = pc.EQ[10];
    if (!parchment || !parchment->OBJ_FLAGS.get(69)) {
       show("You must be holding a parchment in order to scribe.\n", pc);
-      return;
+      return -1;
    }//if
 
 		// parchment and pen are valid, check on spell //
@@ -1306,7 +1291,7 @@ void scribe(const String* spell, critter& pc, short do_mob = FALSE) {
    spell_num = SSCollection::instance().getNumForName(*spell);
    if (spell_num == -1) {
       show("That spell is in need of research.\n", pc);
-      return;
+      return -1;
    }//if
 
    /* does pc know the spell?? */
@@ -1314,7 +1299,7 @@ void scribe(const String* spell, critter& pc, short do_mob = FALSE) {
    int p_learned = get_percent_lrnd(spell_num, pc);
    if (p_learned == -1) {
      show("You don't know of that spell.\n", pc);
-     return;
+     return -1;
    }//if
 
 		// have valid spell number, now check levels
@@ -1323,12 +1308,12 @@ void scribe(const String* spell, critter& pc, short do_mob = FALSE) {
    
    if (spell_lvl > pen->OBJ_LEVEL) {
       show("Your pen is too weak to convey such magic.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (spell_lvl > parchment->OBJ_LEVEL) {
       show("Your parchment cannot hold such strong words of magic.\n", pc);
-      return;
+      return -1;
    }//if
 
             // have all items, levels are compatable //
@@ -1376,6 +1361,7 @@ void scribe(const String* spell, critter& pc, short do_mob = FALSE) {
       pc.PAUSE += 4;
       pc.MANA -= (get_mana_cost(spell_num) / 2);
    }//else
+   return 0;
 }//scribe()
 
 
@@ -1469,20 +1455,20 @@ short skill_did_hit(critter& agg, int spell_num, critter& vict) {
 }//skill_did_hit
 
 
-void sneak(critter& pc, int smob_too = FALSE) {
+int sneak(critter& pc, int smob_too = FALSE) {
    String buf(100);
    
    if (pc.isMob())
-      return; //no MOB's allowed!!
+      return -1; //no MOB's allowed!!
    
    if (!smob_too && !pc.pc) {
-      return;
+      return -1;
    }//if 
    
    
    if (pc.isFrozen()) {
       show("You are too frozen to do anything.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (pc.CRIT_FLAGS.get(17)) {
@@ -1498,22 +1484,23 @@ void sneak(critter& pc, int smob_too = FALSE) {
          show("You couldn't sneak up on a sleeping Ogrue!!\n", pc);
       }//else
    }//else, not sneaking right now
+   return 0;
 }//sneak
 
 
-void hide(critter& pc, int smob_too = FALSE) {
+int hide(critter& pc, int smob_too = FALSE) {
    String buf(100);
 
    if (pc.isMob())
-      return; //no MOB's allowed!!
+      return -1; //no MOB's allowed!!
    
    if (!smob_too && !pc.pc) {
-      return;
+      return -1;
    }//if 
    
    if (pc.isFrozen()) {
       show("You are too frozen to hide.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (pc.CRIT_FLAGS.get(22)) {
@@ -1529,22 +1516,23 @@ void hide(critter& pc, int smob_too = FALSE) {
          show("You are not skilled in this stealthy art!!\n", pc);
       }//else
    }//else, not hiding right now
+   return 0;
 }//hide
 
 /*  Basically, just hide for rangers. */
-void blend(critter& pc, int smob_too = FALSE) {
+int blend(critter& pc, int smob_too = FALSE) {
    String buf(100);
 
    if (pc.isMob())
-      return; //no MOB's allowed!!
+      return -1; //no MOB's allowed!!
    
    if (!smob_too && !pc.pc) {
-      return;
+      return -1;
    }//if 
    
    if (pc.isFrozen()) {
       show("You are too frozen to hide.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (pc.CRIT_FLAGS.get(22)) {
@@ -1560,16 +1548,17 @@ void blend(critter& pc, int smob_too = FALSE) {
          show("You are not skilled in this stealthy art!!\n", pc);
       }//else
    }//else, not hiding right now
+   return 0;
 }//blend
 	  
 
-void scan(critter& pc) {
+int scan(critter& pc) {
 
-   if (!ok_to_cast_spell(NULL, "KSNPF", SCAN_SKILL_NUM, pc)) {
-      return;
+   if (!ok_to_do_action(NULL, "KSNPF", SCAN_SKILL_NUM, pc)) {
+      return -1;
    }//if
 
-   ROOM.doScan(pc);
+   return ROOM.doScan(pc);
 }//scan
 
 

@@ -176,7 +176,7 @@ void cast_holy_word(int i_th, const String* victim, critter& pc) {
    }//if
 
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
-     return;
+      return;
    }//if
    
    do_cast_holy_word(*vict, pc, FALSE, 0);
@@ -201,7 +201,7 @@ void cast_dispell_evil(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
    
@@ -352,7 +352,7 @@ void cast_dispell_good(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
    
@@ -513,7 +513,7 @@ void cast_harm(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
    
@@ -664,7 +664,7 @@ void cast_cause_critical(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
    
@@ -818,7 +818,7 @@ void cast_cause_sickness(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
    
@@ -970,7 +970,7 @@ void cast_lightning(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
    
@@ -1125,7 +1125,7 @@ void cast_dark_dart(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
    
@@ -1280,7 +1280,7 @@ void cast_shocking_grasp(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
    
@@ -1430,7 +1430,7 @@ void cast_rainbow(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
    
@@ -1581,7 +1581,7 @@ void cast_burning_hands(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
 

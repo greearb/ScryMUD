@@ -68,6 +68,8 @@
 
 #define MAX_HOSTNAME    256
 
+int initCmdsCollection(); //found in parse_gen.cc
+int initCmdsArray();      //found in parse_gen.cc
 
 /* local globals */
 int     OPT_USEC;                   // in grrmud.ini
@@ -481,12 +483,18 @@ any strange occurances.
 --Ben Greear (greear@cyberhighway.net, greearb@agcs.com)\n\n";
 
    srand(time(0));
-   
+
+   // run the auto-generated methods that load all of our commands
+   // into the commands collection and arrays. (see parse_gen.cc)
+   initCmdsCollection();
+   initCmdsArray();
+
+
    read_setup();
    readSiteBanned();
 
    // By default, turn off logging specific to the DATABASE.
-   mudlog.setLevel(79);
+   //mudlog.setLevel(79);
 
    // Drop into our endless loop.
    run_the_game(DFLT_PORT);

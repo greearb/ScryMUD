@@ -46,13 +46,13 @@ NOP
 abilities ~
 return abilities(pc);
 ack socials ~
-return ack(i, &str2, pc, (*(pc.getCurRoom())));
+ack(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 add_kname ~
 return add_kname(i, &str2, pc);
 adjust_register ~
 return adjust_register(i, &str2, j, pc);
 add_keyword ~
-return add_keywordpc;
+return add_keyword(pc);
 add_mname ~
 return add_mname(i, &str2, pc);
 add_mob_script ~
@@ -68,11 +68,11 @@ return add_casts_spell(i, j, k, pc);
 add_zone ~
 return addZone(i, pc);
 adlist ~
-return adlistpc;
+return adlist(pc);
 afk socials ~
-return afk(i, &str2, pc, (*(pc.getCurRoom())));
+afk(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 agree socials ~
-return agree(i, &str2, pc, (*(pc.getCurRoom())));
+agree(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 add_perm_inv ~
 return add_perm_inv(i, &str2, j, pc);
 assist ~
@@ -107,25 +107,25 @@ return bash(i, &cooked_strs[1], pc);
 beep ~
 return beep(i, &str2, pc);
 beckon socials ~
-return beckon(i, &str2, pc, (*(pc.getCurRoom())));
+beckon(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 berserk ~
 return berserk(pc);
 blush socials ~
-return blush(i, &str2, pc, (*(pc.getCurRoom())));
+blush(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 blend ~
-return blendpc;
+return blend(pc);
 bonk socials ~
-return bonk(i, &str2, pc, (*(pc.getCurRoom())));
+bonk(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 body_slam bodyslam bodyslam ~
 return body_slam(i, &str2, pc);
 bounce socials ~
-return bounce(i, &str2, pc, (*(pc.getCurRoom())));
+bounce(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 bow socials ~
-return bow(i, &str2, pc, (*(pc.getCurRoom())));
+bow(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 concoct ~
 return concoct(pc);
 burp socials ~
-return burp(i, &str2, pc, (*(pc.getCurRoom())));
+burp(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 butcher ~
 return butcher(i, &str2, pc);
 buy ~
@@ -144,11 +144,11 @@ NOP
 cast ~
 return cast(&str2, j, &str3, pc);
 cackle socials ~
-return cackle(i, &str2, pc, (*(pc.getCurRoom())));
+cackle(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 circle ~
 return circle(i, &str2, pc);
 clap socials ~
-return clap(i, &str2, pc, (*(pc.getCurRoom())));
+clap(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 claw ~
 return claw(i, &str2, pc);
 clear_keryword ~
@@ -164,9 +164,9 @@ return color(str2, str3, pc);
 consider ~
 return consider(i, &str2, pc);
 cheer socials ~
-return cheer(i, &str2, pc, (*(pc.getCurRoom())));
+cheer(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 chuckle socials ~
-return chuckle(i, &str2, pc, (*(pc.getCurRoom())));
+chuckle(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 ch_mdesc ~
 return ch_mdesc(i, pc);
 ch_msdesc ~
@@ -198,9 +198,9 @@ return create_concoction(i, j, k, l, m, n, pc);
 create_construction create_constrct ~
 return create_construction(i, j, k, l, m, n, pc);
 curse ~
-return curse(i, &str2, pc, (*(pc.getCurRoom())));
+curse(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 curtsey socials ~
-return curtsey(i, &str2, pc, (*(pc.getCurRoom())));
+curtsey(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 
 drow *drow ~
 NOP
@@ -211,21 +211,21 @@ NOP
 darklings *darkling ~
 NOP
 down ~
-return down(pc, (*(pc.getCurRoom())));
+return down(pc, *(pc.getCurRoom()), is_dead);
 date ~
 return date(pc);
-dance ~
-return dance(i, &str2, pc, (*(pc.getCurRoom())));
+dance socials ~
+dance(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 describe ~
-return describepc;
+return describe(pc);
 delete_door ~
 return delete_door(i, &str2, pc);
 discuss ~
 return discuss(&str2, j, &str3, pc);
 disco socials ~
-return disco(j, &str2, pc, (*(pc.getCurRoom())));
+disco(j, &str2, pc, (*(pc.getCurRoom()))); return 0;
 disdain socials ~
-return disdain(i, &str2, pc, (*(pc.getCurRoom())));
+disdain(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 disarm ~
 return disarm(i, &str2, pc);
 donate ~
@@ -241,7 +241,7 @@ return door_to(i, j, &str2, pc);
 dstat ~
 return dstat(i, &str2, pc);
 dsys ~
-return dsyspc;
+return dsys(pc);
 dclear ~
 return dclear(i, pc);
 dlist ~
@@ -250,11 +250,11 @@ dvnum ~
 return dvnum(i, &str2, pc);
 
 east ~
-return east(pc, (*(pc.getCurRoom())));
+return east(pc, *(pc.getCurRoom()), is_dead);
 eat ~
 return eat(i, &str2, pc);
 earthmeld ~
-return earthmeldpc;
+return earthmeld(pc);
 equipment ~
 return show_eq(pc);
 empty ~
@@ -283,7 +283,7 @@ return follow(i, &str2, pc);
 flee ~
 return flee(pc, is_dead);
 flex socials ~
-return flex(i, &str2, pc, (*(pc.getCurRoom())));
+flex(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 flip_door ~
 return flip_door(i, &str2, pc);
 freeze ~
@@ -293,19 +293,19 @@ return gag(i, &str2, pc);
 get take get ~
 return get(i, &str2, j, &str3, pc);
 giggle socials ~
-return giggle(i, &str2, pc, (*(pc.getCurRoom())));
+giggle(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 give ~
 return give(i, &str2, j, &str3, pc);
 grin socials ~
-return grin(i, &str2, pc, (*(pc.getCurRoom())));
+grin(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 group ~
 return group(i, &str2, pc);
 growl socials ~
-return growl(i, &str2, pc, (*(pc.getCurRoom())));
+growl(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 grumble socials ~
-return grumble(i, &str2, pc, (*(pc.getCurRoom())));
+grumble(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 grunt socials ~
-return grunt(i, &str2, pc, (*(pc.getCurRoom())));
+grunt(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 guard ~
 return guard(i, &str2, pc);
 go enter go ~
@@ -315,22 +315,22 @@ return _goto(i, &str2, pc);
 
 hide ~
 return hide(pc);
-hit kill murder hit ~
+hit kill attack murder hit ~
 return hit(i, &str2, pc);
 help ~
 return help(i, &str2, pc);
 hehe socials ~
-return hehe(i, &str2, pc, (*(pc.getCurRoom())));
+hehe(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 hold ~
 return hold(i, &str2, pc);
 hop socials ~
-return hop(i, &str2, pc, (*(pc.getCurRoom())));
+hop(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 hmm socials ~
-return hmm(i, &str2, pc, (*(pc.getCurRoom())));
+hmm(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 hug socials ~
-return hug(i, &str2, pc, (*(pc.getCurRoom())));
+hug(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 hum socials ~
-return hum(i, &str2, pc, (*(pc.getCurRoom())));
+hum(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 hurl ~
 return hurl(i, &str2, pc);
 humans *human ~
@@ -341,9 +341,9 @@ NOP
 inventory ~
 return inventory(pc);
 insane socials ~
-return insane(i, &str2, pc, (*(pc.getCurRoom())));
+insane(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 itch socials ~
-return itch(i, &str2, pc, (*(pc.getCurRoom())));
+itch(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 itrans ~
 return itrans(i, &str2, j, pc);
 junk sacrifice junk ~
@@ -352,20 +352,20 @@ return junk(i, &str2, &str3, pc);
 keywords *keyword ~
 NOP
 kiss socials ~
-return kiss(i, &str2, pc, (*(pc.getCurRoom())));
+kiss(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 kick ~
 return kick(i, &str2, pc);
 
 look ~
 return look(i, &str2, pc);
 lag socials ~
-return lag(i, &str2, pc, (*(pc.getCurRoom())));
+lag(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 laugh socials ~
-return laugh(i, &str2, pc, (*(pc.getCurRoom())));
+laugh(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 label_dummy label: add_mob_script ~
 return -1; //should never get here
 lick socials ~
-return lick(i, &str2, pc, (*(pc.getCurRoom())));
+lick(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 list ~
 return list_merchandise(i, &str2, pc);
 list_paths ~
@@ -375,11 +375,11 @@ return list_scripts(i, pc);
 list_room_scripts ~
 return list_room_scripts(i, pc);
 list_site_bans ~
-return list_site_banspc;
+return list_site_bans(pc);
 list_zones ~
-return showZonespc;
+return showZones(pc);
 listen socials ~
-return listen(i, &str2, pc, (*(pc.getCurRoom())));
+listen(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 lock ~
 return lock(i, &str2, pc);
 lore ~
@@ -410,20 +410,20 @@ return mload(i, &str2, pc);
 mset ~
 return mset(i, &str2, &str3, k, &str4, pc);
 muahaha socials ~
-return muahaha(i, &str2, pc, (*(pc.getCurRoom())));
+muahaha(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 mvnum ~
 return mvnum(i, &str2, pc);
 
 north ~
-return north(pc, (*(pc.getCurRoom())));
+return north(pc, *(pc.getCurRoom()), is_dead);
 northeast ne northeast ~
-return northeast(pc, (*(pc.getCurRoom())));
+return northeast(pc, *(pc.getCurRoom()), is_dead);
 northwest nw northwest ~
-return northwest(pc, (*(pc.getCurRoom())));
+return northwest(pc, *(pc.getCurRoom()), is_dead);
 nogossip ~
 return nogossip(pc);
 nod socials ~
-return nod(i, &str2, pc, (*(pc.getCurRoom())));
+nod(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 
 ogrue *ogrue ~
 NOP
@@ -453,7 +453,7 @@ olc ~
 return handle_olc(pc, do_sub);
 
 pat socials ~
-return pat(i, &str2, pc, (*(pc.getCurRoom())));
+pat(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 passwd ~
 return passwd(&str2, &str3, &str4, pc);
 page_break ~
@@ -465,25 +465,25 @@ return pay(i, j, &str2, pc);
 pause add_mob_script ~
 return pause(i, pc);
 pinch socials ~
-return pinch(i, &str2, pc, (*(pc.getCurRoom())));
+pinch(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 possesss ~
 return possess(i, &str2, pc);
 prompt ~
 return prompt(&str2, pc);
 pft socials ~
-return pft(i, &str2, pc, (*(pc.getCurRoom())));
+pft(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 picklock ~
 return picklock(i, &str2, pc);
 poke socials ~
-return poke(i, &str2, pc, (*(pc.getCurRoom())));
+poke(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 ponder socials ~
-return ponder(i, &str2, pc, (*(pc.getCurRoom())));
+ponder(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 post ~
 return post(&str2, pc);
 prone ~
 return prone(pc);
 puke socials ~
-return puke(i, &str2, pc, (*(pc.getCurRoom())));
+puke(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 put ~
 return put(i, &str2, j, &str3, pc);
 
@@ -527,11 +527,11 @@ return rezone(pc);
 replace_door ~
 return replace_door(i, &str2, pc);
 rofl socials ~
-return rofl(i, &str2, pc, (*(pc.getCurRoom())));
+rofl(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 rinit ~
 return rinit(i, j, pc);
 roll ~
-if ((i != 1) || (j != 1)) return roll(i, j, pc); else return roll(i, &str2, pc, (*(pc.getCurRoom())));
+if ((i != 1) || (j != 1)) roll(i, j, pc); else roll(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 rstat ~
 return rstat(i, pc);
 rset ~
@@ -560,15 +560,15 @@ rclear ~
 return rclear(i, pc);
 
 south ~
-return south(pc, (*(pc.getCurRoom())));
+return south(pc, *(pc.getCurRoom()), is_dead);
 southeast se southeast ~
-return southeast(pc, (*(pc.getCurRoom())));
+return southeast(pc, *(pc.getCurRoom()), is_dead);
 southwest sw southwest ~
-return southwest(pc, (*(pc.getCurRoom())));
+return southwest(pc, *(pc.getCurRoom()), is_dead);
 save ~
-return ::savepc;
+return ::save(pc);
 scan ~
-return scanpc;
+return scan(pc);
 set_path ~
 return set_path_dir(i, j, k, &str2, pc);
 set_ven_stop ~
@@ -582,15 +582,15 @@ return save_obj(i, &str2, pc);
 score ~
 return score(&str2, pc);
 scold socials ~
-return scold(i, &str2, pc, (*(pc.getCurRoom())));
+scold(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 script_jump_true add_mob_proc ~
 return script_jump_true(cooked_strs, cooked_ints, pc, c_script_owner, r_script_owner);
 script_jump_false add_mob_script ~
 return script_jump_false(cooked_strs, cooked_ints, pc, c_script_owner, r_script_owner);
-scream ~
-return scream(i, &str2, pc, (*(pc.getCurRoom())));
+scream socials ~
+scream(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 scratch socials ~
-return scratch(i, &str2, pc, (*(pc.getCurRoom())));
+scratch(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 scribe ~
 return scribe(&str2, pc);
 see_all ~
@@ -598,21 +598,21 @@ return see_all(pc);
 shield ~
 return shield(i, &str2, pc);
 shrug socials ~
-return shrug(i, &str2, pc, (*(pc.getCurRoom())));
+shrug(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 shake socials ~
-return shake(i, &str2, pc, (*(pc.getCurRoom())));
+shake(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 shoot ~
 return shoot(i, &str2, j, &str3, pc);
 show_zones ~
-return showZonespc;
+return showZones(pc);
 sigh socials ~
-return sigh(i, &str2, pc, (*(pc.getCurRoom())));
+sigh(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 silly socials ~
-return silly(i, &str2, pc, (*(pc.getCurRoom())));
+silly(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 silent_junk add_mob_script ~
 return silent_junk(i, &str2, &str3, pc);
 sit ~
-return sitpc;
+return sit(pc);
 siteban ~
 return siteban(&str2, pc);
 sell ~
@@ -626,19 +626,19 @@ return slay(i, &str2, pc);
 slist ~
 return slist(i, j, pc);
 smirk socials ~
-return smirk(i, &str2, pc, (*(pc.getCurRoom())));
+smirk(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 snicker socials ~
-return snicker(i, &str2, pc, (*(pc.getCurRoom())));
+snicker(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 sneak ~
 return sneak(pc);
 snoop ~
 return snoop(i, &str2, pc);
 sob socials ~
-return sob(i, &str2, pc, (*(pc.getCurRoom())));
+sob(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 stat_script ~
 return stat_script(i, j, pc);
 splash socials ~
-return splash(i, &str2, pc, (*(pc.getCurRoom())));
+splash(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 stand ~
 return stand(pc);
 stat_keyword ~
@@ -656,11 +656,11 @@ return suicide(&str2, pc);
 shutdown ~
 return shutdown(&str2, pc);
 slap socials ~
-return slap(i, &str2, pc, (*(pc.getCurRoom())));
+slap(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 smile socials ~
-return smile(i, &str2, pc, (*(pc.getCurRoom())));
+smile(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 strut socials ~
-return strut(i, &str2, pc, (*(pc.getCurRoom())));
+strut(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 smob *smob ~
 NOP
 sombri *sombri ~
@@ -675,13 +675,13 @@ return teach(i, &str2, j, &str3, pc);
 throw ~
 return _throw(i, &str2, j, &str3, pc);
 thank socials ~
-return thank(i, &str2, pc, (*(pc.getCurRoom())));
+thank(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 time ~
 return time(pc);
 track ~
 return track(i, &str2, pc);
 twiddle socials ~
-return twiddle(i, &str2, pc, (*(pc.getCurRoom())));
+twiddle(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 toggle ~
 return toggle_prompt(&str2, pc);
 tog_veh_stop ~
@@ -702,7 +702,7 @@ topics *topics ~
 NOP
 
 up ~
-return up(pc, (*(pc.getCurRoom()))); 
+return up(pc, *(pc.getCurRoom()), is_dead); 
 unlock ~
 return unlock(i, &str2, pc); 
 unsiteban ~
@@ -712,13 +712,13 @@ return unpost(i, &str2, pc);
 ungag ~
 return ungag(i, &str2, pc); 
 ungroup ~
-return doUngroup(i, &str2); 
+return pc.doUngroup(i, &str2); 
 unsnoop ~
-return unsnooppc; 
+return unsnoop(pc); 
 uptime ~
-return uptimepc; 
+return uptime(pc); 
 update_cig update_cur_in_game update_cig ~
-return update_cur_in_gamepc; 
+return update_cur_in_game(pc); 
 use ~
 return use(i, &str2, pc); 
 using_client ~
@@ -737,22 +737,21 @@ return visible(pc);
 
 
 west ~
-return west(pc, (*(pc.getCurRoom())));
+return west(pc, *(pc.getCurRoom()), is_dead);
 wear ~
 return wear(i, &str2, j, &str3, pc);
 weep socials ~
-return weep(i, &str2, pc, (*(pc.getCurRoom())));
+weep(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 wake ~
 return wake(pc);
-wave ~
 wave socials ~
-return wave(i, &str2, pc, (*(pc.getCurRoom())));
+wave(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 wink socials ~
-return wink(i, &str2, pc, (*(pc.getCurRoom())));
+wink(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 wiggle socials ~
-return wiggle(i, &str2, pc, (*(pc.getCurRoom())));
+wiggle(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 whistle socials ~
-return whistle(i, &str2, pc, (*(pc.getCurRoom())));
+whistle(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 where ~
 return where(i, &str2, pc);
 who ~
@@ -760,7 +759,7 @@ return who(pc);
 wield ~
 return wield(i, &str2, pc);
 wibble socials ~
-return wibble(i, &str2, pc, (*(pc.getCurRoom())));
+wibble(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 wimpy ~
 return wimpy(i, pc);
 wizinvis ~
@@ -768,7 +767,7 @@ return wizinvis(pc);
 write_world ~
 return write_world(pc);
 yawn socials ~
-return yawn(i, &str2, pc, (*(pc.getCurRoom())));
+yawn(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
 zlock ~
 return zlock(i, pc); 
 zlist ~

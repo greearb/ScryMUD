@@ -37,7 +37,7 @@
 void cast_group_heal(critter& pc) {
    int spell_num = GROUP_HEAL_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -99,7 +99,7 @@ void do_cast_group_heal(critter& agg, int is_canned, int lvl) {
 void cast_flame_strike(critter& pc) {
    int spell_num = FLAME_STRIKE_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNV", spell_num, pc)) {
      return;
    }//if
 
@@ -192,7 +192,7 @@ void do_cast_flame_strike(critter& agg, int is_canned, int lvl) {
 void cast_meteorstorm(critter& pc) {
    int spell_num = METEORSTORM_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNV", spell_num, pc)) {
      return;
    }//if
 
@@ -284,7 +284,7 @@ void do_cast_meteorstorm(critter& agg, int is_canned, int lvl) {
 void cast_icestorm(critter& pc) {
    int spell_num = ICESTORM_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNV", spell_num, pc)) {
      return;
    }//if
 
@@ -376,7 +376,7 @@ void do_cast_icestorm(critter& agg, int is_canned, int lvl) {
 void cast_firestorm(critter& pc) {
    int spell_num = FIRESTORM_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNV", spell_num, pc)) {
      return;
    }//if
 
@@ -539,7 +539,7 @@ void do_cast_lightning_storm(critter& agg, int is_canned, int lvl) {
 void cast_lightning_storm(critter& pc) {
    int spell_num = LIGHTNING_STORM_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNV", spell_num, pc)) {
      return;
    }//if
 
@@ -628,7 +628,7 @@ void do_cast_quake(critter& agg, int is_canned, int lvl) {
 void cast_quake(critter& pc) {
    int spell_num = QUAKE_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNV", spell_num, pc)) {
      return;
    }//if
 
@@ -765,7 +765,7 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
 void cast_typhoon(critter& pc) {
    int spell_num = TYPHOON_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNV", spell_num, pc)) {
      return;
    }//if
 
@@ -900,7 +900,7 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
 void cast_tornado(critter& pc) {
    int spell_num = TORNADO_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNV", spell_num, pc)) {
      return;
    }//if
 

@@ -27,39 +27,39 @@
 #include "classes.h"
 #include <string2.h>
 
-void do_was_calmed_procs(critter& calmed, critter& calmer);
-void do_battle_proc(critter& pc);
-void do_just_killed_procs(critter& pc);
+int do_was_calmed_procs(critter& calmed, critter& calmer);
+int do_battle_proc(critter& pc);
+int do_just_killed_procs(critter& pc);
 
-void do_this_obj_proc(int type_of_proc, int proc_num, critter& owner, 
+int do_this_obj_proc(int type_of_proc, int proc_num, critter& owner, 
                       object& obj, int posn);
-void do_pulsed_spec_procs(int first_room, int last_room);
+int do_pulsed_spec_procs(int first_room, int last_room);
 
-void do_sell_proc(int prcnum, critter& shop_keeper, int i_th, const String* 
+int do_sell_proc(int prcnum, critter& shop_keeper, int i_th, const String* 
 		  item, critter& buyer);
-void do_vend_buy(object& vender, int i_th, const String* item, critter& pc);
-void do_buy_proc(int prcnum, critter& shop_keeper, int i_th, const String* 
+int do_vend_buy(object& vender, int i_th, const String* item, critter& pc);
+int do_buy_proc(int prcnum, critter& shop_keeper, int i_th, const String* 
 		  item, critter& buyer);
-void do_offer_proc(int prcnum, critter& shop_keeper, int i_th, const String* 
+int do_offer_proc(int prcnum, critter& shop_keeper, int i_th, const String* 
 		  item, critter& buyer);
 
-short do_wand_scroll_proc(critter* vict, int proc_num, critter& pc,
+int do_wand_scroll_proc(critter* vict, int proc_num, critter& pc,
                           int spell_lvl);
-short do_wand_scroll_proc(door* vict, int proc_num, critter& pc,
+int do_wand_scroll_proc(door* vict, int proc_num, critter& pc,
                           int spell_lvl);
-short do_wand_scroll_proc(int proc_num, critter& pc, int spell_lvl);
-short do_wand_scroll_proc(object* vict, int proc_num, critter& pc,
+int do_wand_scroll_proc(int proc_num, critter& pc, int spell_lvl);
+int do_wand_scroll_proc(object* vict, int proc_num, critter& pc,
                           int spell_lvl);
 
-void do_shot_proc(critter& targ, critter& pc, short did_hit,
+int do_shot_proc(critter& targ, critter& pc, short did_hit,
                   int& is_targ_dead); //assumes SMOB
 
-void do_domob_give_proc(critter& targ, critter& pc, object& obj);
-void do_domob_say_proc(critter& targ, critter& pc, const String& msg);
-void do_domob_bow_proc(critter& targ, critter& pc);
-void do_domob_curse_proc(critter& targ, critter& pc);
+int do_domob_give_proc(critter& targ, critter& pc, object& obj);
+int do_domob_say_proc(critter& targ, critter& pc, const String& msg);
+int do_domob_bow_proc(critter& targ, critter& pc);
+int do_domob_curse_proc(critter& targ, critter& pc);
 
-short pass_domob_checks(critter& mob, critter& pc);
+int pass_domob_checks(critter& mob, critter& pc);
 
 #endif
 

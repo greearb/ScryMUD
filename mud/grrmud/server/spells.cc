@@ -507,7 +507,7 @@ void cast_fireball(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
    
@@ -529,7 +529,7 @@ void cast_summon(int i_th, const String* targ, critter& pc) {
      return;
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSNB", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNB", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -638,7 +638,7 @@ void cast_passdoor(int i_th, const String* drr, critter& pc) {
       return;
    }
 
-   if (!ok_to_cast_spell(NULL, "KMSNB", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNB", spell_num, pc)) {
      return;
    }//if
 
@@ -713,7 +713,7 @@ void cast_recall(int i_th, const String* victim, critter& pc) {
      return;
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSNB", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNB", spell_num, pc)) {
      return;
    }//if
 
@@ -772,7 +772,7 @@ void do_cast_recall(critter& vict, critter& pc, int is_canned, int lvl) {
 void cast_teleport(critter& pc) {
    int spell_num = TELEPORT_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -871,7 +871,7 @@ void cast_poison(int i_th, const String* victim, critter& pc) {
                           victim, pc.SEE_BIT);
    }//if
  
-   if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
   
@@ -1002,7 +1002,7 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
 void cast_illuminate(critter& pc) {
    int spell_num = ILLUMINATE_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
      return;
    }//if
 

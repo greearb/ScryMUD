@@ -217,6 +217,18 @@ SSCollection::SSCollection() {
    ss_tree = new Tree<String, int>(&Strncompare);
 }//constructor   
 
+int SSCollection::doHelpFor(const String& key, critter& pc) {
+   int idx = getNumForName(key);
+   if (idx >= 0) {
+      String buf(100);
+      Sprintf(buf, "Help for Skill/Spell:  %S\n\n", &key);
+      pc.show(buf);
+      pc.show(getSSDesc(idx));
+      pc.show("\n\n");
+      return 0;
+   }
+   return -1;
+}
 
 SSCollection& SSCollection::instance() {
    static SSCollection self;

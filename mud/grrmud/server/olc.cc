@@ -2101,7 +2101,7 @@ void do_olc(critter& pc) {
             OLC_ROOM->lock(); // make it locked
             OLC_ROOM->setTotalLoaded(TRUE); //make it totally_loaded
 
-            if (door_to(OLC_ROOM->getRoomNum(), j, &string, pc)) {
+            if (door_to(OLC_ROOM->getRoomNum(), j, &string, pc) >= 0) {
                if (!OLC_ROOM->isVehicle()) {
                   finish_olc_room(pc);
                }

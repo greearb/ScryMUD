@@ -40,18 +40,18 @@ class room;
  * arrays found in parse.cc. 
  * Branches when the command evaluates to true.
  */
-void script_jump_true(String* cooked_strs, int* cooked_ints,
+int script_jump_true(String* cooked_strs, int* cooked_ints,
+                     critter& script_targ, critter* c_script_owner,
+                     room* r_script_owner);
+
+int script_jump_false(String* cooked_strs, int* cooked_ints,
                       critter& script_targ, critter* c_script_owner,
                       room* r_script_owner);
 
-void script_jump_false(String* cooked_strs, int* cooked_ints,
-                       critter& script_targ, critter* c_script_owner,
-                       room* r_script_owner);
-
 // The other two call this one with the first argument set accordingly.
-void script_jump(int on_test, String* cooked_strs, int* cooked_ints,
-                 critter& script_targ, critter* c_script_owner,
-                 room* r_script_owner);
+int script_jump(int on_test, String* cooked_strs, int* cooked_ints,
+                critter& script_targ, critter* c_script_owner,
+                room* r_script_owner);
 
 
 ///*************************  Conditionals  *************************///
@@ -72,18 +72,18 @@ int does_equal(critter& pc, String& rhs, String& rhs);
 int is_greater_than(critter& pc, String& lhs, String& rhs);
 
 /** For instance, is fighting PC, MOB, CLASS, LEVEL. */
-void is_fighting(critter& pc, String& discrim);
+int is_fighting(critter& pc, String& discrim);
 
 /** Remove self from battle, use in times of mercy.  Use flee
  * otherwise, to be fair to players.
  */
-void stop_battle(critter& pc);
+int stop_battle(critter& pc);
 
 /** "Exit" out of the script, all done. */
-void stop_script(critter& pc);
+int stop_script(critter& pc);
 
 /** Go some random direction. */
-void wander(critter& pc);
+int wander(critter& pc);
 
 
 class ScriptCmd {

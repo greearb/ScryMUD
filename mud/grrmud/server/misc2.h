@@ -40,10 +40,19 @@ void show_stat_affects(object& obj, critter& pc);
 
 critter* check_for_diversions(critter& pc, char* tests, critter& agg);
 
-//Tests this performs:  K(know spell), M(has mana), S(is_standing),
-//                      V(!violence), N(!magic)
-int ok_to_do_action(critter* vict, const char* flags, int mana_cost, 
-                    critter& pc, int do_msg = TRUE);
+/** Tests this performs:  B(!pc in_battle)  C(owns aux_crit) F(frozen)
+ *                        G(!gagged) I(is immort) K(know spell), M(has mana), 
+ *                        m(!mob, smob ok), N(!magic),
+ *                        P(paralyzed), R(owns aux_rm), r(resting or standing)
+ *                        S(is_standing), V(!violence), Z(room is zlocked)
+ *                                                
+ *  Case matters.
+ *  Evaluates the values (described in parentheses).  Returns TRUE only
+ *  if all are true.
+ */
+int ok_to_do_action(critter* vict, const char* flags, int spell_num,
+                    critter& pc, room* aux_rm = NULL, critter* aux_crit = NULL,
+                    int do_msg = TRUE);
 
 stat_spell_cell* is_affected_by(int spell_num, critter& pc);
 stat_spell_cell* is_affected_by(int spell_num, object& obj);

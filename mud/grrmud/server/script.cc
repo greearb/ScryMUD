@@ -54,18 +54,18 @@ int ScriptCmd::_cnt = 0;
  * cooked* arrays passed in are directly related to the cooked*
  * arrays found in parse.cc. 
  */
-void script_jump_true(String* cooked_strs, int* cooked_ints,
-                      critter& script_targ, critter* c_script_owner,
-                      room* r_script_owner) {
-   script_jump(TRUE, cooked_strs, cooked_ints, script_targ,
-               c_script_owner, r_script_owner);
+int script_jump_true(String* cooked_strs, int* cooked_ints,
+                     critter& script_targ, critter* c_script_owner,
+                     room* r_script_owner) {
+   return script_jump(TRUE, cooked_strs, cooked_ints, script_targ,
+                      c_script_owner, r_script_owner);
 }//script_jump_true
 
-void script_jump_false(String* cooked_strs, int* cooked_ints,
+int script_jump_false(String* cooked_strs, int* cooked_ints,
                       critter& script_targ, critter* c_script_owner,
-                       room* r_script_owner) {
-   script_jump(FALSE, cooked_strs, cooked_ints, script_targ,
-               c_script_owner, r_script_owner);
+                      room* r_script_owner) {
+   return script_jump(FALSE, cooked_strs, cooked_ints, script_targ,
+                      c_script_owner, r_script_owner);
 }
 
 int is_in_posn(critter& pc, String& str) {
@@ -89,9 +89,9 @@ int is_in_posn(critter& pc, String& str) {
  * cooked* arrays passed in are directly related to the cooked*
  * arrays found in parse.cc. 
  */
-void script_jump(int on_test, String* cooked_strs, int* cooked_ints,
-                 critter& test_targ, critter* c_code_owner,
-                 room* r_code_owner) {
+int script_jump(int on_test, String* cooked_strs, int* cooked_ints,
+                critter& test_targ, critter* c_code_owner,
+                room* r_code_owner) {
    //Conditional command is second cooked_str
    // offset is the first cooked int.
 
@@ -168,6 +168,7 @@ void script_jump(int on_test, String* cooked_strs, int* cooked_ints,
 
       }//if
    }//else
+   return 0;
 }//script_jump
 
 

@@ -34,52 +34,33 @@
 #include <PtrArray.h>
 
 
-void hurl(int i_th, const String* victim, critter& pc) {
+int hurl(int i_th, const String* victim, critter& pc) {
    critter* crit_ptr;
    String buf(100);
 
-   if (!victim) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to bash().\n");
-      return;
-   }//if
-
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  smob trying to bash..\n");
-      return;
-   }//if
-
-   if (ROOM.isHaven()) {
-      show("You can't bring yourself to perform violence here.\n", pc);
-      return;
-   }//if
-
-   if (pc.POS != POS_STAND) {
-      show("You aren't in a position to hurl anyone.\n", pc);
-      return;
-   }//if
-   else if (!victim->Strlen()) {
+   if (!victim->Strlen()) {
       crit_ptr = Top(pc.IS_FIGHTING);
    }//if
    else {
       crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
    }//if
 
+   if (!ok_to_do_action(crit_ptr, "mSVFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+   
    if (crit_ptr) {
-      if (ROOM.isNoPK() && crit_ptr->isPc()) {
-         show("This room is too nice for murder.\n", pc);
-         return;
-      }//if
 
       if (crit_ptr == &pc) {
          show("You can't hurl yourself!!\n", pc);
-         return;
+         return -1;
       }//if
 
       if (!crit_ptr->canBeHurled()) {
          Sprintf(buf, "%S is wary to that particular trick now!\n",
                  crit_ptr->getLongName());
          pc.show(buf);
-         return;
+         return -1;
       }//if
 
       if (crit_ptr->isMob()) {
@@ -87,30 +68,26 @@ void hurl(int i_th, const String* victim, critter& pc) {
                                pc.SEE_BIT);
       }//if
 
-      do_hurl(*crit_ptr, pc);
-
+      return do_hurl(*crit_ptr, pc);
    }//if
-   else 
+   else {
       show("Hurl who?\n", pc);
+      return -1;
+   }
 }//hurl
 
 
-void do_hurl(critter& vict, critter& pc) {
+int do_hurl(critter& vict, critter& pc) {
    String buf(100);
    short do_fatality = FALSE;
 
    if ((vict.isMob()) || (pc.isMob())) {
       mudlog.log(ERR, "ERROR:  MOB sent to do_hurl.\n");
-      return;
+      return -1;
    }//if
 
    if (!HaveData(&vict, pc.IS_FIGHTING)) {
       join_in_battle(pc, vict);
-   }//if
-
-   if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERR, "ERROR:  smob sent in to do_bash.\n");
-      return;
    }//if
 
    if (skill_did_hit(pc, HURL_SKILL_NUM, vict)) { 
@@ -171,7 +148,7 @@ void do_hurl(critter& vict, critter& pc) {
                          vict.getCurRoomNum());
          
          if (is_dead) {
-            return;
+            return 0;
          }
 
          exact_raw_damage(d(8, pc.STR) * (dptr->distance + 1), NORMAL,
@@ -220,50 +197,30 @@ void do_hurl(critter& vict, critter& pc) {
    if (do_fatality) {
       agg_kills_vict(pc, vict);
    }//if
+   return 0;
 }//do_hurl
 
 
 
-void body_slam(int i_th, const String* victim, critter& pc) {
+int body_slam(int i_th, const String* victim, critter& pc) {
    critter* crit_ptr;
    String buf(100);
 
-   if (!victim) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to bash().\n");
-      return;
-   }//if
-
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  smob trying to bash..\n");
-      return;
-   }//if
-
-   if (ROOM.isHaven()) {
-      show("You can't bring yourself to perform violence here.\n", pc);
-      return;
-   }//if
-
-   if (pc.POS != POS_STAND) {
-      show("You aren't in a position to bodyslam anyone.\n",
-            pc);
-      return;
-   }//if
-   else if (!victim->Strlen()) {
+   if (!victim->Strlen()) {
       crit_ptr = Top(pc.IS_FIGHTING);
    }//if
    else {
       crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
    }//if
 
-   if (crit_ptr) {
-      if (ROOM.isNoPK() && crit_ptr->isPc()) {
-         show("This room is too nice for murder.\n", pc);
-         return;
-      }//if
+   if (crit_ptr) { 
+      if (!ok_to_do_action(crit_ptr, "mSVFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+         return -1;
+      }
 
       if (crit_ptr == &pc) {
          show("You shouldn't be slamming yourself..\n", pc);
-         return;
+         return -1;
       }//if
 
       if (crit_ptr->isMob()) {
@@ -271,21 +228,22 @@ void body_slam(int i_th, const String* victim, critter& pc) {
                                pc.SEE_BIT);
       }//if
 
-      do_body_slam(*crit_ptr, pc);
-
+      return do_body_slam(*crit_ptr, pc);
    }//if
-   else 
+   else {
       show("Bodyslam who?\n", pc);
+      return -1;
+   }
 }//body_slam
 
 
-void do_body_slam(critter& vict, critter& pc) {
+int do_body_slam(critter& vict, critter& pc) {
    String buf(100);
    short do_fatality = FALSE;
 
    if ((vict.isMob()) || (pc.isMob())) {
       mudlog.log(ERR, "ERROR:  MOB sent to do_bash.\n");
-      return;
+      return -1;
    }//if
 
    if (!HaveData(&vict, pc.IS_FIGHTING)) {
@@ -356,5 +314,6 @@ void do_body_slam(critter& vict, critter& pc) {
    if (do_fatality) {
       agg_kills_vict(pc, vict);
    }//if
+   return 0;
 }//do_body_slam
 

@@ -298,7 +298,7 @@ void do_cast_distortion_wall(door& dr, critter& agg, int is_canned,
 void cast_firewall(critter& pc) {
    int spell_num = FIREWALL_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMVSN", spell_num, pc))
+   if (!ok_to_do_action(NULL, "KMVSN", spell_num, pc))
      return;
 
    do_cast_firewall(ROOM, pc, FALSE, 0);  //does no error checking

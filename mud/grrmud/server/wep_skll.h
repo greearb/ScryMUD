@@ -31,12 +31,12 @@
 #include "spells.h"
 #include "skills.h"
 
-void backstab(int i_th, const String* vict, critter& pc);
-void do_backstab(critter& vict, critter& pc);
-void circle(int i_th, const String* vict, critter& pc);
-void do_circle(critter& vict, critter& pc);
-void disarm(int i_th, const String* vict, critter& pc);
-void do_disarm(critter& vict, critter& pc);
+int backstab(int i_th, const String* vict, critter& pc);
+int do_backstab(critter& vict, critter& pc);
+int circle(int i_th, const String* vict, critter& pc);
+int do_circle(critter& vict, critter& pc);
+int disarm(int i_th, const String* vict, critter& pc);
+int do_disarm(critter& vict, critter& pc);
 
 
 ///*****************  auxillary functions  ***************************///

@@ -28,9 +28,7 @@
 #include "room.h"
 #include "misc.h"
 #include "misc2.h"
-
-
-void do_look(int i_th, const String* obj, critter& pc, room& rm); //commands.h
+#include "commands.h"
 
 vehicle::vehicle() {
    path_cells.head(cll);

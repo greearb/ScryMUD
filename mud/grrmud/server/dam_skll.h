@@ -31,10 +31,10 @@
 #include "spells.h"
 #include "skills.h"
 
-void body_slam(int i_th, const String* vict, critter& pc);
-void do_body_slam(critter& vict, critter& pc);
-void hurl(int i_th, const String* vict, critter& pc);
-void do_hurl(critter& vict, critter& pc);
+int body_slam(int i_th, const String* vict, critter& pc);
+int do_body_slam(critter& vict, critter& pc);
+int hurl(int i_th, const String* vict, critter& pc);
+int do_hurl(critter& vict, critter& pc);
 
 
 ///*****************  auxillary functions  ***************************///

@@ -55,7 +55,7 @@
 
 
 /** Execute these after a mob has just killed someone. */
-void do_just_killed_procs(critter& agg) {
+int do_just_killed_procs(critter& agg) {
 
    if (agg.pc) {  //if do pc things
       if (agg.PC_FLAGS.get(12)) { //autoloot
@@ -89,15 +89,16 @@ void do_just_killed_procs(critter& agg) {
        agg.processInput(cmd, FALSE);
      }//if
    }//if do mob things
+   return 0;
 }//do_just_killed_procs
 
 
 
 /* assumes both are either SMOB's or PC's, triggered by
  * give.  This is old style procs, should be deprecated. */
-void do_domob_give_proc(critter& targ, critter& pc, object& obj) {
+int do_domob_give_proc(critter& targ, critter& pc, object& obj) {
    if (!targ.isSmob())
-      return;
+      return -1;
    
    if (targ.mob && targ.mob->proc_data && 
        targ.mob->proc_data->give_proc) {  //if so, got a live one!
@@ -138,7 +139,7 @@ void do_domob_give_proc(critter& targ, critter& pc, object& obj) {
          recursive_init_unload(obj, 0);
          if (obj.IN_LIST) {
             delete &obj;
-            return;
+            return 0;
          }//if
          
       }//if gave right object
@@ -148,6 +149,7 @@ void do_domob_give_proc(critter& targ, critter& pc, object& obj) {
          }//if
       }//else
    }//if targ has such a special procedure
+   return 0;
 }//do_domob_give_proc
 
       
@@ -155,17 +157,17 @@ void do_domob_give_proc(critter& targ, critter& pc, object& obj) {
 /* assumes both are either SMOB's or PC's
  * this is triggered by 'discuss', not 'say'
  * This is old style procs, should be deprecated. */
-void do_domob_say_proc(critter& targ, critter& pc, const String& msg) {  
+int do_domob_say_proc(critter& targ, critter& pc, const String& msg) {  
   say_proc_cell* ptr;
 
   if (!targ.isSmob())
-    return;
+    return -1;
 
   if (targ.mob && targ.mob->proc_data && 
       !IsEmpty(targ.mob->proc_data->topics)) {  //if so, got a live one!
 
     if (!pass_domob_checks(targ, pc))
-      return;
+      return -1;
 
     if ((ptr = have_topic_named(targ.TOPICS, msg))) {  
       if (ptr->msg.Strlen()) { //if has a message
@@ -200,15 +202,16 @@ void do_domob_say_proc(critter& targ, critter& pc, const String& msg) {
 	      pc, FALSE, targ.getCurRoomNum());
     }//else
   }//if targ has such a special procedure
+  return 0;
 }//do_domob_say_proc
 
 
 /* assumes both are either SMOB's or PC's
  *  Triggered by bow.
  * This is old style procs, should be deprecated. */
-void do_domob_bow_proc(critter& targ, critter& pc) {
+int do_domob_bow_proc(critter& targ, critter& pc) {
   if (!targ.isSmob())
-    return;
+    return -1;
 
   if (targ.mob && targ.mob->proc_data && 
       targ.mob->proc_data->bow_proc) {  //if so, got a live one!
@@ -243,15 +246,16 @@ void do_domob_bow_proc(critter& targ, critter& pc) {
       do_transport(pc, targ, room_list[targ.BOW_TRANSPORT_ROOM]);
     }//if
   }//if has bow special procedure
+  return 0;
 }//do_domob_bow_proc
 
 
 /* assumes both are either SMOB's or PC's
  * Triggered by curse.
  * This is old style procs, should be deprecated. */
-void do_domob_curse_proc(critter& targ, critter& pc) {
+int do_domob_curse_proc(critter& targ, critter& pc) {
   if (!targ.isSmob())
-    return;
+    return -1;
 
   if (targ.mob && targ.mob->proc_data && 
       targ.mob->proc_data->curse_proc) {  //if so, got a live one!
@@ -286,11 +290,12 @@ void do_domob_curse_proc(critter& targ, critter& pc) {
       do_transport(pc, targ, room_list[targ.CURSE_TRANSPORT_ROOM]);
     }//if
   }//if has curse special procedure
+  return 0;
 }//do_domob_curse_proc
 
 
 /* assumes existance of targ.FLAG1, what a stupid fn name **doh**  */
-short pass_domob_checks(critter& targ, critter& pc) {
+int pass_domob_checks(critter& targ, critter& pc) {
    if (targ.FLAG1.get(9) && (targ.RACE != pc.RACE)) {
       show(targ.WRONG_RACE_MSG, pc);
       return FALSE;
@@ -318,21 +323,21 @@ short pass_domob_checks(critter& targ, critter& pc) {
 }//pass_domob_checks
 
 
-void do_shot_proc(critter& targ, critter& pc, short did_hit,
+int do_shot_proc(critter& targ, critter& pc, short did_hit,
                   int& is_targ_dead) {
   /* targ is victim, but is retaliating agains the pc here */
 
    if (!targ.mob)
-      return;
+      return -1;
    if (targ.isMob()) {
      mudlog.log(ERR, "ERROR:  targ is a MOB in do_shot_proc.\n");
-     return;
+     return -1;
    }//if
 
    /* default action */
    if (!did_hit || !targ.hasAI()) {
       prone(targ);
-      return;
+      return 0;
    }//if
 
 	   /* these have AI */
@@ -373,11 +378,12 @@ void do_shot_proc(critter& targ, critter& pc, short did_hit,
    else {
      prone(targ);
    }//else
+   return 0;
 }//do_shot_proc
 
 
-short do_wand_scroll_proc(door* dr_ptr, int proc_num, critter& pc,
-                          int spell_lvl) {
+int do_wand_scroll_proc(door* dr_ptr, int proc_num, critter& pc,
+                        int spell_lvl) {
    String buf(100);
 
    /*  Used for potions too btw.                             */
@@ -388,17 +394,17 @@ short do_wand_scroll_proc(door* dr_ptr, int proc_num, critter& pc,
       mudlog << "ERROR:  otarg is NULL in do_wand_scroll_proc"
              << endl;
       show("What do you wish to target?\n", pc);
-      return FALSE;
+      return -1;
    }//if
 
    switch (proc_num)
      {
        case 21: 
          do_cast_distortion_wall(*dr_ptr, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 181: 
          do_cast_passdoor(*dr_ptr, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        default:
          Sprintf(buf, 
                  "ERROR:  default called in do_wand_scroll_proc(DR):  %i.\n", 
@@ -406,14 +412,15 @@ short do_wand_scroll_proc(door* dr_ptr, int proc_num, critter& pc,
          mudlog.log(ERR, buf);
          show( "You call upon unknown forces, and nothing happens!\n",
               pc);
-         return FALSE;
+         return -1;
       }//switch
+   return 0;
 }//do_scroll_proc (DOOR)
 
 
 
-short do_wand_scroll_proc(int proc_num, critter& pc,
-                          int spell_lvl) {
+int do_wand_scroll_proc(int proc_num, critter& pc,
+                        int spell_lvl) {
    /*  Used for potions too btw.                             */
    /*  If targ is NOT NULL, then it is a SMOB or PC.         */
    /*  return value determines if should decrement the wand. */
@@ -422,72 +429,72 @@ short do_wand_scroll_proc(int proc_num, critter& pc,
      {
        case 22: 
          do_cast_lightning_storm(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 25: 
          do_cast_meteorstorm(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 145: 
          do_cast_create_golem(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 146: 
          do_cast_conjure_minion(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 147: 
          do_cast_conjure_horde(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 149: 
          do_cast_raise_undead(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 150: 
          do_cast_illusion(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 153: 
          do_cast_mirror_image(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 200: 
          do_cast_group_heal(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 210: 
          do_cast_create_food(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 211: 
          do_cast_heros_feast(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 218: 
          do_cast_create_light(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
 
          // Those used on rooms, always current room
        case 4: 
          do_cast_illuminate(ROOM, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 6: 
          do_cast_firewall(ROOM, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 12: 
          do_cast_calm(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 14: 
          do_cast_mass_charm(ROOM, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 17: 
          do_cast_typhoon(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 18: 
          do_cast_tornado(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 20: 
          do_cast_quake(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 198: 
          do_cast_flame_strike(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 215: 
          do_cast_icestorm(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 220: 
          do_cast_firestorm(pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
 
        default: 
        {
@@ -498,14 +505,15 @@ short do_wand_scroll_proc(int proc_num, critter& pc,
          mudlog.log(ERR, buf);
          show( "You call upon unknown forces, and nothing happens!\n",
               pc);
-         return FALSE;
+         return -1;
        }//default
       }//switch
+   return 0;
 }//do_scroll_proc (NONE)
 
 
-short do_wand_scroll_proc(object* otarg, int proc_num, critter& pc,
-                          int spell_lvl) {
+int do_wand_scroll_proc(object* otarg, int proc_num, critter& pc,
+                        int spell_lvl) {
    /*  Used for potions too btw.                             */
    /*  If targ is NOT NULL, then it is a SMOB or PC.         */
    /*  return value determines if should decrement the wand. */
@@ -513,41 +521,41 @@ short do_wand_scroll_proc(object* otarg, int proc_num, critter& pc,
       mudlog << "ERROR:  otarg is NULL in do_wand_scroll_proc"
              << endl;
       show("What do you wish to target?\n", pc);
-      return FALSE;
+      return -1;
    }//if
 
    switch (proc_num)
      {
        case 124: 
          do_lore(*otarg, pc);
-         return TRUE;
+         return 0;
        case 156: 
          do_cast_detect_poison(*otarg, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 165: 
          do_cast_identify(*otarg, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 182: 
          do_cast_enchant_weapon(*otarg, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 183: 
          do_cast_enchant_armor(*otarg, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 184: 
          do_cast_rune_edge(*otarg, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 185: 
          do_cast_frost_blade(*otarg, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 186: 
          do_cast_fire_blade(*otarg, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 196: 
          do_cast_curse(*otarg, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 213: 
          do_cast_create_water(*otarg, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        default:
          String buf(100);
          Sprintf(buf, 
@@ -556,13 +564,14 @@ short do_wand_scroll_proc(object* otarg, int proc_num, critter& pc,
          mudlog.log(ERR, buf);
          show( "You call upon unknown forces, and nothing happens!\n",
               pc);
-         return FALSE;
+         return -1;
       }//switch
+   return 0;
 }//do_scroll_proc (OBJECTS)
 
 
-short do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
-                          int spell_lvl) {
+int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
+                        int spell_lvl) {
    String buf(100);
 
 /*  Used for potions too btw.                             */
@@ -572,167 +581,167 @@ short do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
       mudlog << "ERROR:  targ is NULL in do_wand_scroll_proc"
              << endl;
       show("Who do you wish to target?\n", pc);
-      return FALSE;
+      return -1;
    }//if
 
    switch (proc_num)
      {
       case 1: //heal
          do_cast_heal(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 10: 
          do_cast_web(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 11: 
          do_cast_entangle(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 30: 
          do_cast_restore(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 38: 
          do_cast_burning_hands(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 39: 
          do_cast_rainbow(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 136: 
          do_cast_shocking_grasp(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 139: 
          do_cast_dark_dart(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 140: 
          do_cast_shadows_blessing(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 151: 
          do_cast_faerie_fire(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 152: 
          do_cast_invisibility(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 155: 
          do_cast_detect_magic(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 159:
          do_cast_gate(room_list[targ->getCurRoomNum()], pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 160: 
          do_cast_portal(room_list[targ->getCurRoomNum()], pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 162: 
          do_cast_detect_hidden(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 163: 
          do_cast_detect_invisibility(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 164:
          do_cast_detect_alignment(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 171: 
          do_cast_sleep(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 172: 
          do_cast_fly(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 174: 
          do_cast_fireproof(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 175: 
          do_cast_haste(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 176: 
          do_cast_dispell_magic(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 177: 
          do_cast_strength(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 178: 
          do_cast_charm(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 179:
          do_cast_teleport(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 180: 
          do_cast_recall(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 187: 
          do_cast_bind_wound(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 188: 
          do_cast_cure_serious(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 189: 
          do_cast_cure_critical(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 191: 
          do_cast_bless(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 192: 
          do_cast_pfe(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 193: 
          do_cast_pfg(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 194: 
          do_cast_remove_curse(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 195: 
          do_cast_dispell_good(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 197: 
          do_cast_harm(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 199: 
          do_cast_holy_word(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 201:
          do_cast_divine_protection(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 202: 
          do_cast_magic_shield(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 203: 
          do_cast_armor(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 204: 
          do_cast_stone_skin(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 205: 
          do_cast_sanctuary(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 206: 
          do_cast_prismatic_globe(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 208: 
          do_cast_absorb_blows(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 217:
          do_cast_lightning(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 219: //fireball
          do_cast_fireball(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 221: 
          do_cast_blindness(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 222:
          do_cast_cause_sickness(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 224: 
          do_cast_cause_critical(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 225: 
          do_cast_weaken(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        case 226: 
          do_cast_poison(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
          //case 227: //TODO:  code this up! 
          //do_cast_plague(*targ, pc, TRUE, spell_lvl);
-         //return TRUE;
+         //return 0;
        case 228: //this is not the error it looks like, see dam_spll.cc
          do_cast_dispell_good(*targ, pc, TRUE, spell_lvl);
-         return TRUE;
+         return 0;
        default:
          Sprintf(buf, 
                  "ERROR:  dflt called in do_wand_scroll_proc(CRIT):  %i.\n", 
@@ -740,12 +749,13 @@ short do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
          mudlog.log(ERR, buf);
          show( "You call upon unknown forces, and nothing happens!\n",
               pc);
-         return FALSE;
+         return 0;
       }//switch
+   return 0;
 }//do_scroll_proc
 
 
-void do_pulsed_spec_procs(int first_room, int last_room) {
+int do_pulsed_spec_procs(int first_room, int last_room) {
    Cell<critter*> cll;
    critter* ptr;
    int sz, i;
@@ -811,7 +821,7 @@ void do_pulsed_spec_procs(int first_room, int last_room) {
                      if (!obj_ptr) {
                         mudlog.log(ERR,
                                    "ERROR:  obj_ptr NULL in scavenge proc.\n");
-                        return;
+                        return -1;
                      }//if
   
                      Sprintf(gtobj, "get %S\n", Top(obj_ptr->ob->names));
@@ -856,11 +866,12 @@ void do_pulsed_spec_procs(int first_room, int last_room) {
       First_Room = 0;
       Last_Room = 100;
    }//if
+   return 0;
 }//do_pulsed
 
 
-void do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
-                      object& obj, int posn) {
+int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
+                     object& obj, int posn) {
    //log("In do_this_obj_proc.\n");
    String tmp_str(100);
    String other_msg(100);
@@ -973,7 +984,7 @@ void do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
          else {
             mudlog << "ERROR:  posn out of range in obj_wear_proc, obj#: "
                    << obj.getIdNum() << " posn: " << posn << endl;
-            return;
+            return -1;
          }//else
          emote(other_msg, pc, ROOM, TRUE);
          show(tmp_str, pc);
@@ -1012,11 +1023,12 @@ void do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
          mudlog.log(ERR, tmp_str);
       }//else
    }//if
+   return 0;
 }//do_this_obj_proc
 
 
-void do_buy_proc(int prc_num, critter& keeper, int i_th, 
-                 const String* item, critter& pc) {
+int do_buy_proc(int prc_num, critter& keeper, int i_th, 
+                const String* item, critter& pc) {
    object* obj_ptr;
    int price;
    short is_perm = FALSE;
@@ -1026,34 +1038,34 @@ void do_buy_proc(int prc_num, critter& keeper, int i_th,
 
    if (keeper.isMob()) {
       mudlog.log(ERR, "ERROR:  keeper is MOB in do_buy_proc.\n");
-      return;
+      return -1;
    }//if
 
    if (keeper.mob) {
       if (keeper.mob->proc_data) {
          if (!(keeper.mob->proc_data->sh_data)) {
             mudlog.log(ERR, "ERROR:  keeper has no sh_data in do_buy_proc.\n");
-            return;
+            return -1;
          }//if
       }//if
       else {
          mudlog.log(ERR, "ERROR:  keeper has no proc_data in do_buy_proc.\n");
-         return;
+         return -1;
       }//else
    }//if
    else {
       mudlog.log(ERR, "ERROR:  keeper's mob is NULL in do_buy_proc.\n");
-      return;
+      return -1;
    }//else
 
    if (!item) {
       mudlog.log(ERR, "ERROR:  item NULL in buy.\n");
-      return;
+      return -1;
    }//if
 
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB trying to buy.\n");
-      return;
+      return -1;
    }//if
 
    int cur_time;
@@ -1068,7 +1080,7 @@ void do_buy_proc(int prc_num, critter& keeper, int i_th,
                     military_to_am(keeper.OPEN_TIME),
                     military_to_am(keeper.CLOSE_TIME));
             show(buf, pc);
-            return;
+            return -1;
          }//if
       }//if
       else {
@@ -1078,7 +1090,7 @@ void do_buy_proc(int prc_num, critter& keeper, int i_th,
                     military_to_am(keeper.OPEN_TIME),
                     military_to_am(keeper.CLOSE_TIME));
             show(buf, pc);
-            return;
+            return -1;
          }//if
       }//else
 
@@ -1098,7 +1110,7 @@ void do_buy_proc(int prc_num, critter& keeper, int i_th,
       else {
          // This will do messages if needed.
          if (!obj_get_by(*obj_ptr, pc, TRUE)) {
-            return;
+            return -1;
          }//if
 
          price = keeper.findItemSalePrice(*obj_ptr, pc);
@@ -1106,14 +1118,14 @@ void do_buy_proc(int prc_num, critter& keeper, int i_th,
          if (price < 0) {
             do_tell(keeper, "I can't sell that to you now, inventory problem.\n",
                     pc, FALSE, pc.getCurRoomNum());
-            return;
+            return -1;
          }//if
 
          if (price > pc.GOLD) {
             do_tell(keeper, "I don't run a charity here!!", pc, FALSE, 
 		    pc.getCurRoomNum()); 
             disdain(1, Top(pc.names), keeper, ROOM);
-            return;
+            return -1;
          }//if
 
          // Deal with gold.
@@ -1146,25 +1158,21 @@ void do_buy_proc(int prc_num, critter& keeper, int i_th,
          mudlog << "ERROR:  bad proc num sent to do_buy_proc: "
                 << prc_num << endl;
       }//if
-   }//else        
+   }//else
+   return 0;
 }//do_buy_proc
 
 
-void do_vend_buy(object& vendor, int i_th, const String* item, critter& pc) {
+int do_vend_buy(object& vendor, int i_th, const String* item, critter& pc) {
    object* obj_ptr;
    int price;
    String buf(100);
 
    mudlog.log(TRC, "In do_vend_buy.\n");
 
-   if (!item) {
-      mudlog.log(ERR, "ERROR:  item NULL in buy.\n");
-      return;
-   }//if
-
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB trying to buy.\n");
-      return;
+      return -1;
    }//if
 
    obj_ptr = have_obj_named(vendor.ob->inv, i_th, item, pc.SEE_BIT,
@@ -1177,14 +1185,14 @@ void do_vend_buy(object& vendor, int i_th, const String* item, critter& pc) {
    else {
 
       if (!obj_get_by(*obj_ptr, pc, TRUE)) {
-         return;
+         return -1;
       }//if
 
       price = obj_ptr->PRICE;
 
       if (price > pc.GOLD) {
          show("You don't have enough credits.\n", pc);
-         return;
+         return -1;
       }//if
 
          	/* good to go I believe! */
@@ -1194,12 +1202,14 @@ void do_vend_buy(object& vendor, int i_th, const String* item, critter& pc) {
       Sprintf(buf, "You insert %i credits and out pops your %S.", price,
               name_of_obj(*obj_ptr, pc.SEE_BIT));
       show(buf, pc);
+      return 0;
    }//else
+   return -1;
 }//do_vend_buy
 
 
-void do_offer_proc(int prc_num, critter& keeper, int i_th, 
-                   const String* item, critter& pc) {
+int do_offer_proc(int prc_num, critter& keeper, int i_th, 
+                  const String* item, critter& pc) {
    object* obj_ptr;
    int price;
    short will_buy = FALSE;
@@ -1209,35 +1219,30 @@ void do_offer_proc(int prc_num, critter& keeper, int i_th,
 
    if (keeper.isMob()) {
       mudlog.log(ERR, "ERROR:  keeper is MOB in do_offer_proc.\n");
-      return;
+      return -1;
    }//if
 
    if (keeper.mob) {
       if (keeper.mob->proc_data) {
          if (!(keeper.mob->proc_data->sh_data)) {
             mudlog.log(ERR, "ERROR:  keeper has no sh_data in do_offer_proc.\n");
-            return;
+            return -1;
          }//if
       }//if
       else {
          mudlog.log(ERR, "ERROR:  keeper has no proc_data in do_offer_proc.\n");
-         return;
+         return -1;
       }//else
    }//if
    else {
       mudlog.log(ERR, "ERROR:  keeper's mob is NULL in do_offer_proc.\n");
-      return;
+      return -1;
    }//else
             
 
-   if (!item) {
-      mudlog.log(ERR, "ERROR:  NULL item sent to do_offer_proc.\n");
-      return;
-   }//if
-
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB trying to offer.\n");
-      return;
+      return -1;
    }//if
 
    if (prc_num == 2) { //offer proc_0
@@ -1248,7 +1253,7 @@ void do_offer_proc(int prc_num, critter& keeper, int i_th,
                  military_to_am(keeper.OPEN_TIME),
                  military_to_am(keeper.CLOSE_TIME));
          show(buf, pc);
-         return;
+         return -1;
       }//if
 
       //log("Looking for obj ptr...k\n");
@@ -1270,7 +1275,7 @@ void do_offer_proc(int prc_num, critter& keeper, int i_th,
          if (!will_buy) {
             do_tell(keeper, "I don't buy that type of stuff.", pc, 
 		    FALSE, pc.getCurRoomNum());
-            return;
+            return -1;
          }//if
 
          price = keeper.findItemBuyPrice(*obj_ptr, pc);
@@ -1278,20 +1283,21 @@ void do_offer_proc(int prc_num, critter& keeper, int i_th,
          if (price < 0) {
             do_tell(keeper, "I don't buy that type of stuff.", pc,
                     FALSE, pc.getCurRoomNum());
-            return;
+            return -1;
          }//if
 
          //log("Found price.\n");
          if (price > keeper.GOLD) {
             do_tell(keeper, "I'm fresh out of money, perhaps later.", pc,
                     FALSE, pc.getCurRoomNum());
-            return;
+            return -1;
          }//if
 
          //log("Good to go!\n");
          	/* good to go I believe! */
          Sprintf(buf, "I'd give you %i coins for that.", price);
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());
+         return 0;
       }//else
    }//if offer proc_2
    else {
@@ -1299,10 +1305,11 @@ void do_offer_proc(int prc_num, critter& keeper, int i_th,
               prc_num);
       mudlog.log(ERR, buf);
    }//else        
+   return -1;
 }//do_offer_proc
 
 
-void do_sell_proc(int prc_num, critter& keeper, int i_th, 
+int do_sell_proc(int prc_num, critter& keeper, int i_th, 
                  const String* item, critter& pc) {
    object* obj_ptr;
    int price;
@@ -1315,33 +1322,27 @@ void do_sell_proc(int prc_num, critter& keeper, int i_th,
       if (keeper.mob->proc_data) {
          if (!(keeper.mob->proc_data->sh_data)) {
             mudlog.log(ERR, "ERROR:  keeper has no sh_data in do_sell_proc.\n");
-            return;
+            return -1;
          }//if
       }//if
       else {
          mudlog.log(ERR, "ERROR:  keeper has no proc_data in do_sell_proc.\n");
-         return;
+         return -1;
       }//else
    }//if
    else {
       mudlog.log(ERR, "ERROR:  keeper's mob is NULL in do_sell_proc.\n");
-      return;
+      return -1;
    }//else
             
-
-   if (!item) {
-      mudlog.log(ERR, "ERROR:  NULL item sent to do_sell_proc.\n");
-      return;
-   }//if
-
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB trying to sell.\n");
-      return;
+      return -1;
    }//if
 
    if (keeper.isMob()) {
       mudlog.log(ERR, "ERROR:  keeper is MOB in do_sell_proc.\n");
-      return;
+      return -1;
    }//if
 
    if (prc_num == 1) { //sell proc_1
@@ -1352,7 +1353,7 @@ void do_sell_proc(int prc_num, critter& keeper, int i_th,
                  military_to_am(keeper.OPEN_TIME),
                  military_to_am(keeper.CLOSE_TIME));
          show(buf, pc);
-         return;
+         return -1;
       }//if
 
       //log("Looking for obj ptr...\n");
@@ -1373,7 +1374,7 @@ void do_sell_proc(int prc_num, critter& keeper, int i_th,
          if (!will_buy) {
             do_tell(keeper, "I don't buy that type of stuff.", pc, FALSE, 
 		    pc.getCurRoomNum());
-            return;
+            return -1;
          }//if
 
          price = keeper.findItemBuyPrice(*obj_ptr, pc);
@@ -1381,14 +1382,14 @@ void do_sell_proc(int prc_num, critter& keeper, int i_th,
          if (price < 0) {
             do_tell(keeper, "I don't buy that type of stuff.", pc, FALSE, 
 		    pc.getCurRoomNum());
-            return;
+            return -1;
          }//if
 
          //log("Found price.\n");
          if (price > keeper.GOLD) {
             do_tell(keeper, "I'm fresh out of money, perhaps later.", pc,
                     FALSE, pc.getCurRoomNum());
-            return;
+            return -1;
          }//if
 
          pc.loseInv(obj_ptr);
@@ -1406,6 +1407,7 @@ void do_sell_proc(int prc_num, critter& keeper, int i_th,
          if (keeper.isPlayerShopKeeper()) {
             save_player_shop_owner(keeper);
          }
+         return 0;
       }//else
    }//if sell proc_1
    else {
@@ -1413,5 +1415,6 @@ void do_sell_proc(int prc_num, critter& keeper, int i_th,
               prc_num);
       mudlog.log(ERR, buf);
    }//else        
+   return -1;
 }//do_sell_proc
 

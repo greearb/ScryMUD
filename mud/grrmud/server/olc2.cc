@@ -41,7 +41,7 @@
 #include "SkillSpell.h"
 
 
-void normalize_obj(object& obj) {
+int normalize_obj(object& obj) {
    if (obj.OBJ_NUM != obj_list[obj.OBJ_NUM].OBJ_NUM) {
       mudlog << "ERROR:  normalize_obj, object numbers not in sync:  "
              << " obj.OBJ_NUM:  " << obj.OBJ_NUM << "  other:  "
@@ -118,11 +118,12 @@ void normalize_obj(object& obj) {
    while (obj.ob->stat_affects.size() > 5) {
       delete (obj.ob->stat_affects.popBack());
    }
+   return 0;
 }//normalize_obj
 
 
 
-void normalize_mob(critter& crit) {
+int normalize_mob(critter& crit) {
    crit.CRIT_FLAGS.turn_on(18); //in_use
    crit.VIS_BIT |= 1024;
    crit.SEE_BIT |= 1024;
@@ -157,40 +158,35 @@ void normalize_mob(critter& crit) {
    for (i = 38; i<41; i++) {
       crit.short_cur_stats[i] = bound(5, 1000, crit.short_cur_stats[i]);
    }//for
-
+   return 0;
 }
  
 
-void normalize_door(door_data& dr_data) {
+int normalize_door(door_data& dr_data) {
   dr_data.vis_bit |= 1024;
+  return 0;
 }//normalize_door(data)
 
-void rm_give_proc(int mnum, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+int rm_give_proc(int mnum, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(mnum, 0, NUMBER_OF_MOBS, pc, TRUE))
-      return;
+      return -1;
 
    if (!mob_list[mnum].isInUse()) {
       show("This mob has not been created yet.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(mob_list[mnum])) {
       show("You don't own this mob.\n", pc);
-      return;
+      return -1;
    }//if
    if (O_COUNT != 0) {
       show("You must complete your OLC project first.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (mob_list[mnum].mob && mob_list[mnum].mob->proc_data &&
@@ -200,29 +196,19 @@ void rm_give_proc(int mnum, critter& pc) {
       mob_list[mnum].mob->proc_data->flag1.turn_off(5);
       show("Give proc removed.\n", pc);
       show("Must asave to make changes permanent.\n", pc);
+      return 0;
    }//if
    else {
       show("Failed to remove, did not exist.\n", pc);
+      return -1;
    }//else
 }//rm_give_proc
 
 
-void rm_keyword(int kwd_num, critter& pc) {
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (!pc.doesOwnRoom(ROOM)) {
-      show("You don't own this room.\n", pc);
-      return;
-   }//if
-
+int rm_keyword(int kwd_num, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFPRZ", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
    
    Cell<KeywordPair*> cll(ROOM.keywords);
    KeywordPair* ptr;
@@ -234,7 +220,7 @@ void rm_keyword(int kwd_num, critter& pc) {
          ROOM.keywords.lose(cll);
          pc.show("Keyword Removed from this room.\n");
          ROOM.normalize();
-         return;
+         return 0;
       }
       else {
          ptr = cll.next();
@@ -243,48 +229,27 @@ void rm_keyword(int kwd_num, critter& pc) {
    }//while
 
    pc.show("This room did not have a keyword numbered thusly.\n");
+   return -1;
 }//rm_keyword
 
 
-void add_keyword(critter& pc) {
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (!pc.doesOwnRoom(ROOM)) {
-      show("You don't own this room.\n", pc);
-      return;
-   }//if
+int add_keyword(critter& pc) {
+   if (!ok_to_do_action(NULL, "IFPRZ", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    ROOM.keywords.append(new KeywordPair());
    ROOM.normalize();
    pc.show("Added a new Keyword at index 0.\n");
+   return 0;
 }//add_keyword
 
 
-void clear_keyword(int kwd_num, critter& pc) {
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+int clear_keyword(int kwd_num, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFPRZ", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (!pc.doesOwnRoom(ROOM)) {
-      show("You don't own this room.\n", pc);
-      return;
-   }//if
-
-   
    Cell<KeywordPair*> cll(ROOM.keywords);
    KeywordPair* ptr;
    int cnt = 0;
@@ -293,7 +258,7 @@ void clear_keyword(int kwd_num, critter& pc) {
       if (cnt == kwd_num) {
          ptr->clear();
          pc.show("Keyword cleared.\n");
-         return;
+         return 0;
       }
       else {
          ptr = cll.next();
@@ -302,25 +267,14 @@ void clear_keyword(int kwd_num, critter& pc) {
    }//while
 
    pc.show("This room did not have a keyword numbered thusly.\n");
+   return -1;
 }//clear_keyword
 
 
-void add_kname(int kwd_num, const String* name, critter& pc) {
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (!pc.doesOwnRoom(ROOM)) {
-      show("You don't own this room.\n", pc);
-      return;
-   }//if
-
+int add_kname(int kwd_num, const String* name, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFPRZ", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
    
    Cell<KeywordPair*> cll(ROOM.keywords);
    KeywordPair* ptr;
@@ -330,7 +284,7 @@ void add_kname(int kwd_num, const String* name, critter& pc) {
       if (cnt == kwd_num) {
          ptr->names.append(new String(*name));
          pc.show("Name added.\n");
-         return;
+         return 0;
       }
       else {
          ptr = cll.next();
@@ -339,26 +293,15 @@ void add_kname(int kwd_num, const String* name, critter& pc) {
    }//while
 
    pc.show("This room did not have a keyword numbered thusly.\n");
+   return -1;
 }//clear_keyword
 
 
 
-void ch_kdesc(int kwd_num, critter& pc) {
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (!pc.doesOwnRoom(ROOM)) {
-      show("You don't own this room.\n", pc);
-      return;
-   }//if
-
+int ch_kdesc(int kwd_num, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFPRZ", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
    
    Cell<KeywordPair*> cll(ROOM.keywords);
    KeywordPair* ptr;
@@ -374,7 +317,7 @@ void ch_kdesc(int kwd_num, critter& pc) {
          ptr->desc.Clear();
          pc.pc->imm_data->edit_string = &(ptr->desc);
          pc.setMode(MODE_CH_DESC);
-         return;
+         return 0;
       }
       else {
          ptr = cll.next();
@@ -383,19 +326,14 @@ void ch_kdesc(int kwd_num, critter& pc) {
    }//while
 
    pc.show("This room did not have a keyword numbered thusly.\n");
+   return -1;
 }//ch_kdesc
 
 
-void stat_keyword(int kwd_num, critter& pc) {
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+int stat_keyword(int kwd_num, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    Cell<KeywordPair*> cll(ROOM.keywords);
    KeywordPair* ptr;
@@ -403,7 +341,7 @@ void stat_keyword(int kwd_num, critter& pc) {
    while ((ptr = cll.next())) {
       if (cnt == kwd_num) {
          ptr->show(cnt, pc);
-         return;
+         return 0;
       }
       else {
          cnt++;
@@ -411,31 +349,26 @@ void stat_keyword(int kwd_num, critter& pc) {
    }//while
 
    pc.show("This room did not have a keyword numbered thusly.\n");
+   return -1;
 }//stat_keyword
 
 
-void rm_stat_affect(int onum, int stat_num, critter& pc) {
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+int rm_stat_affect(int onum, int stat_num, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFPR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(onum, 2, NUMBER_OF_ITEMS, pc, TRUE))
-      return;
+      return -1;
    object* obj_ptr = &(obj_list[onum]);
    if (!obj_ptr->isInUse()) {
       show("This mob has not been created yet.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnObject(*obj_ptr)) {
       show("You don't own this object.\n", pc);
-      return;
+      return -1;
    }//if
 
    Cell<stat_spell_cell*> cll(obj_ptr->ob->stat_affects);
@@ -447,7 +380,7 @@ void rm_stat_affect(int onum, int stat_num, critter& pc) {
          pc.show("Removed that stat affect...\n");
          pc.show("Don't forget to aosave.\n");
          ptr = obj_ptr->ob->stat_affects.lose(cll);
-         return;
+         return 0;
       }
       else {
          ptr = cll.next();
@@ -455,70 +388,60 @@ void rm_stat_affect(int onum, int stat_num, critter& pc) {
    }//while
 
    show("Failed to remove, did not exist.\n", pc);
+   return -1;
 }//rm_stat_affect
 
 
-void add_stat_affect(int onum, int stat_num, int val, critter& pc) {
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+int add_stat_affect(int onum, int stat_num, int val, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(onum, 2, NUMBER_OF_ITEMS, pc, TRUE))
-      return;
+      return -1;
 
    object* obj_ptr = &(obj_list[onum]);
    if (!obj_ptr->isInUse()) {
       show("This mob has not been created yet.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnObject(*obj_ptr)) {
       show("You don't own this object.\n", pc);
-      return;
+      return -1;
    }//if
 
    obj_ptr->ob->stat_affects.append(new stat_spell_cell(stat_num, val));
    normalize_obj(*obj_ptr);
    pc.show("Was added..now normalizing object to weed out bad values...\n");
    pc.show("Don't forget to aosave.\n");
+   return 0;
 }//add_stat_affect
 
 
 
-void rm_casts_spell(int onum, int spell_num, critter& pc) {
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+int rm_casts_spell(int onum, int spell_num, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(onum, 2, NUMBER_OF_ITEMS, pc, TRUE, "Object Num"))
-      return;
+      return -1;
 
    object* obj_ptr = &(obj_list[onum]);
    if (!obj_ptr->isInUse()) {
       show("This mob has not been created yet.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnObject(*obj_ptr)) {
       show("You don't own this object.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!obj_ptr->ob->obj_proc) {
       pc.show("That object cannot have any spells to remove.\n");
-      return;
+      return -1;
    }
 
    Cell<stat_spell_cell*> cll(obj_ptr->CASTS_THESE_SPELLS);
@@ -530,7 +453,7 @@ void rm_casts_spell(int onum, int spell_num, critter& pc) {
          pc.show("Removed that spell...\n");
          pc.show("Don't forget to aosave.\n");
          ptr = obj_ptr->CASTS_THESE_SPELLS.lose(cll);
-         return;
+         return 0;
       }
       else {
          ptr = cll.next();
@@ -538,38 +461,35 @@ void rm_casts_spell(int onum, int spell_num, critter& pc) {
    }//while
 
    show("Failed to remove, did not exist.\n", pc);
+   return -1;
 }//rm_casts_spell
 
 
-void add_casts_spell(int onum, int level, int spell, critter& pc) {
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+int add_casts_spell(int onum, int level, int spell, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(onum, 2, NUMBER_OF_ITEMS, pc, TRUE, "Obj Number"))
-      return;
+      return -1;
+
    if (!check_l_range(level, 0, MOB_SHORT_CUR_STATS, pc, TRUE,
                       "Spell Level"))
-      return;
+      return -1;
+
    if (!check_l_range(spell, 0, NUMBER_OF_SKILL_SPELLS, pc, TRUE,
                       "Spell Number"))
-      return;
+      return -1;
 
    object* obj_ptr = &(obj_list[onum]);
    if (!obj_ptr->isInUse()) {
       show("This mob has not been created yet.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnObject(*obj_ptr)) {
       show("You don't own this object.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!obj_ptr->ob->obj_proc) {
@@ -585,36 +505,31 @@ void add_casts_spell(int onum, int level, int spell, critter& pc) {
    obj_ptr->OBJ_FLAGS.turn_on(63); //so it will write out spec procs
 
    pc.show("Spell was added, don't forget to aosave.\n");
+   return 0;
 }//add_casts_spell
 
 
-void rm_discuss_proc(int mnum, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+int rm_discuss_proc(int mnum, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(mnum, 0, NUMBER_OF_MOBS, pc, TRUE))
-      return;
+      return -1;
 
-   if (!mob_list[mnum].CRIT_FLAGS.get(18)) {
+   if (!mob_list[mnum].isInUse()) {
       show("This mob has not been created yet.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(mob_list[mnum])) {
       show("You don't own this mob.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (O_COUNT != 0) {
       show("You must complete your OLC project first.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (mob_list[mnum].mob && mob_list[mnum].mob->proc_data &&
@@ -623,39 +538,36 @@ void rm_discuss_proc(int mnum, critter& pc) {
       mob_list[mnum].mob->proc_data->flag1.turn_off(6);
       show("Disscuss procs removed.\n", pc);
       show("Must asave to make changes permanent.\n", pc);
+      return 0;
    }//if
    else {
       show("Failed to remove, did not exist.\n", pc);
    }//else
+   return -1;
 }//rm_discuss_proc
 
 
-void rm_curse_proc(int mnum, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+int rm_curse_proc(int mnum, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(mnum, 0, NUMBER_OF_MOBS, pc, TRUE))
-      return;
+      return -1;
 
-   if (!mob_list[mnum].CRIT_FLAGS.get(18)) {
+   if (!mob_list[mnum].isInUse()) {
       show("This mob has not been created yet.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(mob_list[mnum])) {
       show("You don't own this mob.\n", pc);
-      return;
+      return -1;
    }//if
+
    if (O_COUNT != 0) {
       show("You must complete your OLC project first.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (mob_list[mnum].mob && mob_list[mnum].mob->proc_data &&
@@ -665,38 +577,35 @@ void rm_curse_proc(int mnum, critter& pc) {
       mob_list[mnum].mob->proc_data->flag1.turn_off(8);
       show("Curse proc removed.\n", pc);
       show("Must asave to make changes permanent.\n", pc);
+      return 0;
    }//if
    else {
       show("Failed to remove, did not exist.\n", pc);
+      return -1;
    }//else
 }//rm_curse_proc
 
-void rm_bow_proc(int mnum, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+int rm_bow_proc(int mnum, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(mnum, 0, NUMBER_OF_MOBS, pc, TRUE))
-      return;
+      return -1;
 
    if (!mob_list[mnum].CRIT_FLAGS.get(18)) {
       show("This mob has not been created yet.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(mob_list[mnum])) {
       show("You don't own this mob.\n", pc);
-      return;
+      return -1;
    }//if
+
    if (O_COUNT != 0) {
       show("You must complete your OLC project first.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (mob_list[mnum].mob && mob_list[mnum].mob->proc_data &&
@@ -706,41 +615,37 @@ void rm_bow_proc(int mnum, critter& pc) {
       mob_list[mnum].mob->proc_data->flag1.turn_off(7);
       show("Bow proc removed.\n", pc);
       show("Must asave to make changes permanent.\n", pc);
+      return 0;
    }//if
    else {
       show("Failed to remove, did not exist.\n", pc);
+      return -1;
    }//else
 }//rm_bow_proc
 
 
 
-void add_proc(int mnum, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if 
-      
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if  
+int add_proc(int mnum, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(mnum, 0, NUMBER_OF_MOBS, pc, TRUE))
-      return;
+      return -1;
    
    if (!mob_list[mnum].CRIT_FLAGS.get(18)) {
       show("This mob has not been created yet.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(mob_list[mnum])) {
       show("You don't own this mob.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (O_COUNT != 0) {
       show("You must complete your OLC project first.\n", pc);
-      return;
+      return -1;
    }//if
 
    int znum = ROOM.getZoneNum();
@@ -749,6 +654,7 @@ void add_proc(int mnum, critter& pc) {
      show("You must be in your own zone in order to build.\n", pc);
      show("You will now be exited from OLC.  Go back to your zone!\n", pc);
      pc.pc->input = NULL_STRING; //discard all input
+     return -1;
    }//if
         
    OLC_MOB = &(mob_list[mnum]);
@@ -761,51 +667,41 @@ that you don't add a proc that is ALREADY THERE.  This will result in
 strange things.  It should NOT be fatal however, so you can just remove
 the proc later with the appropriate command(s).\n", pc);
    pc.setMode(MODE_OLC);
+   return 0;
 }//add_proc
 
 
-void reset_olc(critter& pc) {
-  mudlog.log(TRC, "In reset_olc.\n");
+int reset_olc(critter& pc) {
+   mudlog.log(TRC, "In reset_olc.\n");
+   
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
-  if (!pc.pc || !pc.pc->imm_data) {
-    show("You can't do that!\n", pc);
-    return;
-  }//if
   
-  if (pc.PC_FLAGS.get(13)) {
-    show("You must complete your current project.  You are in a special 
+   if (pc.PC_FLAGS.get(13)) {
+      show("You must complete your current project.  You are in a special 
 case of OLC.\n", pc);
-    return;
-  }//if
-  //log("About to delete.\n");
+      return -1;
+   }//if
+   //log("About to delete.\n");
 
-  pc.PC_FLAGS.turn_off(13); //olc_redo flag to FALSE
+   pc.PC_FLAGS.turn_off(13); //olc_redo flag to FALSE
   
-  int tmp = pc.IMM_LEVEL; //need to save this!!
-  pc.pc->imm_data->Clear();
-  pc.setImmLevel(tmp);
+   int tmp = pc.IMM_LEVEL; //need to save this!!
+   pc.pc->imm_data->Clear();
+   pc.setImmLevel(tmp);
   
-  pc.setMode(MODE_NORMAL);
-  show("OLC has been reset, type 'olc' to enter OLC.\n", pc);
-  
+   pc.setMode(MODE_NORMAL);
+   show("OLC has been reset, type 'olc' to enter OLC.\n", pc);
+   return 0;
 }//reset_olc
 
 
-void ch_rdesc(critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
-  
-   if (!ROOM.isZlocked()) {
-      show("Your zone must be locked to change the room desc.\n", pc);
-      return;
-   }//if
-
-   if (!pc.doesOwnRoom(ROOM)) {
-      show("You don't own this room.\n", pc);
-      return;
-   }//if
+int ch_rdesc(critter& pc) {
+   if (!ok_to_do_action(NULL, "IFPZR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    show("Enter a new room description for this room.\n", pc);
    show("Use a solitary '~' on a line by itself to end.\n", pc);
@@ -815,18 +711,18 @@ void ch_rdesc(critter& pc) {
    ROOM.long_desc.Clear();
    pc.pc->imm_data->edit_string = &(ROOM.long_desc);
    pc.setMode(MODE_CH_DESC);
+   return 0;
 }//ch_rdesc
 
 
-void list_paths(int veh_id, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+int list_paths(int veh_id, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    if ((veh_id < 0) || (veh_id > NUMBER_OF_ROOMS)) {
       pc.show("That vehicle cannot be defined. (id number out of range)");
-      return;
+      return -1;
    }
 
    if (veh_id == 1) {
@@ -835,29 +731,29 @@ void list_paths(int veh_id, critter& pc) {
 
    if (!room_list[veh_id].isVehicle()) {
       pc.show("That room is not a vehicle.");
-      return;
+      return -1;
    }
 
    vehicle* veh = (vehicle*)(room_list.elementAt(veh_id));
 
    veh->showPaths(pc);
+   return 0;
 }//list_paths
 
 
-void stat_path(int veh_id, int path_cell_num, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+int stat_path(int veh_id, int path_cell_num, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    if ((veh_id < 0) || (veh_id > NUMBER_OF_ROOMS)) {
       pc.show("That vehicle cannot be defined. (id number out of range)");
-      return;
+      return -1;
    }
 
    if (!room_list[veh_id].isVehicle()) {
       pc.show("That room is not a vehicle.");
-      return;
+      return -1;
    }
 
    vehicle* veh = (vehicle*)(room_list.elementAt(veh_id));
@@ -865,38 +761,38 @@ void stat_path(int veh_id, int path_cell_num, critter& pc) {
    PathCell* pcell;
    if (!(pcell = veh->hasPathCell(path_cell_num))) {
       pc.show("That path is not defined for that room (vehicle) id.\n");
-      return;
+      return -1;
    }
 
    pcell->stat(veh_id, path_cell_num, pc);
+   return 0;
 }//stat_path
 
 
-void set_path_dir(int veh_id, int path_cell_num, int i_th,
+int set_path_dir(int veh_id, int path_cell_num, int i_th,
                   const String* dir, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    if ((veh_id < 0) || (veh_id > NUMBER_OF_ROOMS)) {
       pc.show("That vehicle cannot be defined. (id number out of range)");
-      return;
+      return -1;
    }
 
    if (!room_list[veh_id].isZlocked()) {
       show("Your zone must be locked to change the vehicle.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnRoom(room_list[veh_id])) {
       show("You don't own this room.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (!room_list[veh_id].isVehicle()) {
       pc.show("That room is not a vehicle.");
-      return;
+      return -1;
    }
 
    vehicle* veh = (vehicle*)(room_list.elementAt(veh_id));
@@ -904,7 +800,7 @@ void set_path_dir(int veh_id, int path_cell_num, int i_th,
    PathCell* pcell;
    if (!(pcell = veh->hasPathCell(path_cell_num))) {
       pc.show("That path is not defined for that room (vehicle) id.\n");
-      return;
+      return -1;
    }
    
    
@@ -914,69 +810,69 @@ void set_path_dir(int veh_id, int path_cell_num, int i_th,
    Sprintf(buf, "Setting path num to:  %i  direction to -:%S:-\n",
            i_th, dir);
    pc.show(buf);
+   return 0;
 }//set_path_dir
 
 
 
-void set_path_pointer(int veh_id, int index, critter& pc) {
+int set_path_pointer(int veh_id, int index, critter& pc) {
 
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    if ((veh_id < 0) || (veh_id > NUMBER_OF_ROOMS)) {
       pc.show("That vehicle cannot be defined. (id number out of range)");
-      return;
+      return -1;
    }
 
    if (!room_list[veh_id].isZlocked()) {
       show("Your zone must be locked to change the vehicle.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnRoom(room_list[veh_id])) {
       show("You don't own this room.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (!room_list[veh_id].isVehicle()) {
       pc.show("That room is not a vehicle.");
-      return;
+      return -1;
    }
 
    vehicle* veh = (vehicle*)(room_list.elementAt(veh_id));
 
    veh->setPathPointer(index);
    pc.show("Pointer set..");
+   return 0;
 }//set_path_pointer
 
 
 //insert a blank path cell at the given index
-void add_path(int veh_id, int path_cell_num, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+int add_path(int veh_id, int path_cell_num, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    if ((veh_id < 0) || (veh_id > NUMBER_OF_ROOMS)) {
       pc.show("That vehicle cannot be defined. (id number out of range)");
-      return;
+      return -1;
    }
 
    if (!room_list[veh_id].isZlocked()) {
       show("Your zone must be locked to change the vehicle.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnRoom(room_list[veh_id])) {
       show("You don't own this room.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (!room_list[veh_id].isVehicle()) {
       pc.show("That room is not a vehicle.");
-      return;
+      return -1;
    }
 
    vehicle* veh = (vehicle*)(room_list.elementAt(veh_id));
@@ -984,33 +880,33 @@ void add_path(int veh_id, int path_cell_num, critter& pc) {
    veh->insertPathCell(path_cell_num, new PathCell());
 
    pc.show("Path inserted...");
+   return 0;
 }//add_path
 
 
-void tog_veh_stop(int veh_id, int path_cell_num, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+int tog_veh_stop(int veh_id, int path_cell_num, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    if ((veh_id < 0) || (veh_id > NUMBER_OF_ROOMS)) {
       pc.show("That vehicle cannot be defined. (id number out of range)");
-      return;
+      return -1;
    }
 
    if (!room_list[veh_id].isZlocked()) {
       show("Your zone must be locked to change the vehicle.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnRoom(room_list[veh_id])) {
       show("You don't own this room.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (!room_list[veh_id].isVehicle()) {
       pc.show("That room is not a vehicle.");
-      return;
+      return -1;
    }
 
    vehicle* veh = (vehicle*)(room_list.elementAt(veh_id));
@@ -1020,38 +916,39 @@ void tog_veh_stop(int veh_id, int path_cell_num, critter& pc) {
    if (pcell) {
       pcell->setIsDest(!(pcell->isDest()));
       pc.show("Stop toggled...\n");
+      return 0;
    }
    else {
       pc.show("That path cell does not exist in that vehicle.\n");
+      return -1;
    }
 }//tog_veh_stop
 
 
-void set_veh_stop(int veh_id, int path_cell_num,
+int set_veh_stop(int veh_id, int path_cell_num,
                   const String* yes_no, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    if ((veh_id < 0) || (veh_id > NUMBER_OF_ROOMS)) {
       pc.show("That vehicle cannot be defined. (id number out of range)");
-      return;
+      return -1;
    }
 
    if (!room_list[veh_id].isZlocked()) {
       show("Your zone must be locked to change the vehicle.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnRoom(room_list[veh_id])) {
       show("You don't own this room.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (!room_list[veh_id].isVehicle()) {
       pc.show("That room is not a vehicle.");
-      return;
+      return -1;
    }
 
    vehicle* veh = (vehicle*)(room_list.elementAt(veh_id));
@@ -1059,7 +956,7 @@ void set_veh_stop(int veh_id, int path_cell_num,
    PathCell* pcell;
    if (!(pcell = veh->hasPathCell(path_cell_num))) {
       pc.show("That path is not defined for that room (vehicle) id.\n");
-      return;
+      return -1;
    }
 
    if (strncasecmp(*yes_no, "yes", yes_no->Strlen()) == 0) {
@@ -1070,35 +967,33 @@ void set_veh_stop(int veh_id, int path_cell_num,
       pcell->setIsDest(FALSE);
       pc.show("Setting isDestination to FALSE.");
    }
+   return 0;
 }//set_path_stop
 
 
-
-
-void rem_path(int veh_id, int path_cell_num, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+int rem_path(int veh_id, int path_cell_num, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    if ((veh_id < 0) || (veh_id > NUMBER_OF_ROOMS)) {
       pc.show("That vehicle cannot be defined. (id number out of range)");
-      return;
+      return -1;
    }
 
    if (!room_list[veh_id].isZlocked()) {
       show("Your zone must be locked to change the vehicle.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnRoom(room_list[veh_id])) {
       show("You don't own this room.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (!room_list[veh_id].isVehicle()) {
       pc.show("That room is not a vehicle.");
-      return;
+      return -1;
    }
 
    vehicle* veh = (vehicle*)(room_list.elementAt(veh_id));
@@ -1106,33 +1001,33 @@ void rem_path(int veh_id, int path_cell_num, critter& pc) {
    veh->remPathCell(path_cell_num);
 
    pc.show("Path cell deleted...");
+   return 0;
 }//rem_path
 
 
-void ch_path_desc(int veh_id, int path_cell_num, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+int ch_path_desc(int veh_id, int path_cell_num, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    if ((veh_id < 0) || (veh_id > NUMBER_OF_ROOMS)) {
       pc.show("That vehicle cannot be defined. (id number out of range)");
-      return;
+      return -1;
    }
 
    if (!room_list[veh_id].isZlocked()) {
       show("Your zone must be locked to change the vehicle.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnRoom(ROOM)) {
       show("You don't own this room.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (!room_list[veh_id].isVehicle()) {
       pc.show("That room is not a vehicle.");
-      return;
+      return -1;
    }
 
    vehicle* veh = (vehicle*)(room_list.elementAt(veh_id));
@@ -1140,7 +1035,7 @@ void ch_path_desc(int veh_id, int path_cell_num, critter& pc) {
    PathCell* pcell;
    if (!(pcell = veh->hasPathCell(path_cell_num))) {
       pc.show("That path is not defined for that room (vehicle) id.\n");
-      return;
+      return -1;
    }
 
    pc.show("Enter a new description for this path segemnt.");
@@ -1151,36 +1046,30 @@ void ch_path_desc(int veh_id, int path_cell_num, critter& pc) {
    desc->Clear();
    pc.pc->imm_data->edit_string = desc;
    pc.setMode(MODE_CH_DESC);
-}//ch_rdesc
+   return 0;
+}//ch_path_desc
 
 
-
-void add_mob_script(critter& pc, int mob_num, String& trigger_cmd,
+int add_mob_script(critter& pc, int mob_num, String& trigger_cmd,
                     int actor_num, String& descriminator, int target_num,
                     int takes_precedence) {
-   if (!pc.isImmort()) {
-     show("Eh??\n", pc);
-     return;
-   }//if
-  
-   if (!ROOM.isZlocked()) {
-      show("Your zone must be locked to change the room desc.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (mob_num < 2 || mob_num > NUMBER_OF_MOBS) {
       show("That mob number is out of range.", pc);
-      return;
+      return -1;
    }
 
    if (!pc.doesOwnCritter(mob_list[mob_num])) {
       show("You don't own this mob.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!GenScript::validTrigger(trigger_cmd)) {
       show("That is not a valid trigger command.", pc);
-      return;
+      return -1;
    }
 
    // We prepend text too it so it's never a number as far as parsing
@@ -1216,35 +1105,30 @@ void add_mob_script(critter& pc, int mob_num, String& trigger_cmd,
       = &(pc.pc->imm_data->proc_script_buffer);
 
    pc.setMode(MODE_ADD_MOB_SCRIPT);
+   return 0;
 }//add_mob_script
 
 
-void add_room_script(critter& pc, int rm_num, String& trigger_cmd,
+int add_room_script(critter& pc, int rm_num, String& trigger_cmd,
                      int actor_num, String& descriminator, int target_num,
                      int takes_precedence) {
-   if (!pc.isImmort()) {
-     show("Eh??\n", pc);
-     return;
-   }//if
-  
-   if (!ROOM.isZlocked()) {
-      show("Your zone must be locked to change the room desc.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if ((rm_num < 2) || (rm_num > NUMBER_OF_ROOMS)) {
       show("That room number is out of range.", pc);
-      return;
+      return -1;
    }
 
    if (!pc.doesOwnRoom(room_list[rm_num])) {
       show("You don't own that room.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!GenScript::validTrigger(trigger_cmd)) {
       show("That is not a valid trigger command.", pc);
-      return;
+      return -1;
    }
 
    // We prepend text to it so it's never a number as far as parsing
@@ -1280,31 +1164,31 @@ void add_room_script(critter& pc, int rm_num, String& trigger_cmd,
       = &(pc.pc->imm_data->proc_script_buffer);
 
    pc.setMode(MODE_ADD_ROOM_SCRIPT);
+   return 0;
 }//add_room_script
 
 
-void create_concoction(int rslt, int comp1, int comp2, int comp3, int comp4,
+int create_concoction(int rslt, int comp1, int comp2, int comp3, int comp4,
                        int comp5, critter& pc) {
 
-   do_create_construction(rslt, comp1, comp2, comp3, comp4, comp5, pc,
-                          CONCOCTION);
+   return do_create_construction(rslt, comp1, comp2, comp3, comp4, comp5, pc,
+                                 CONCOCTION);
 }//create_concoction
 
-void create_construction(int rslt, int comp1, int comp2, int comp3, int comp4,
-                         int comp5, critter& pc) {
+int create_construction(int rslt, int comp1, int comp2, int comp3, int comp4,
+                        int comp5, critter& pc) {
 
-   do_create_construction(rslt, comp1, comp2, comp3, comp4, comp5, pc,
-                          CONSTRUCTION);
+   return do_create_construction(rslt, comp1, comp2, comp3, comp4, comp5, pc,
+                                 CONSTRUCTION);
 }//create_construction
 
 
-void do_create_construction(int rslt, int comp1, int comp2, int comp3, int comp4,
-                       int comp5, critter& pc, ComponentEnum con_type) {
+int do_create_construction(int rslt, int comp1, int comp2, int comp3, int comp4,
+                           int comp5, critter& pc, ComponentEnum con_type) {
 
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    /*  First, make sure all object numbers are in range. */
    if (!check_l_range(rslt, 1, NUMBER_OF_ITEMS, pc, TRUE) ||
@@ -1313,43 +1197,43 @@ void do_create_construction(int rslt, int comp1, int comp2, int comp3, int comp4
        !check_l_range(comp3, 1, NUMBER_OF_ITEMS, pc, TRUE) ||
        !check_l_range(comp4, 1, NUMBER_OF_ITEMS, pc, TRUE) ||
        !check_l_range(comp5, 1, NUMBER_OF_ITEMS, pc, TRUE)) {
-      return;
+      return -1;
    }//if
 
    if (rslt == 1) {
       pc.show("You must specify a resulting object, other than 1.\n");
-      return;
+      return -1;
    }
 
    if (comp1 == 1) {
       pc.show("Your components may not be 1, and you must specify at least one.\n");
-      return;
+      return -1;
    }
 
    /* First, make sure all objects are already created */
    if (!obj_list[rslt].isInUse() || !obj_list[comp1].isInUse()) {
       pc.show("You must create the objects first.\n");
-      return;
+      return -1;
    }//if
 
    if ((comp2 != 1) && (!obj_list[comp2].isInUse())) {
       pc.show("The second component is not created yet.\n");
-      return;
+      return -1;
    }
 
    if ((comp3 != 1) && (!obj_list[comp3].isInUse())) {
       pc.show("The third component is not created yet.\n");
-      return;
+      return -1;
    }
 
    if ((comp4 != 1) && (!obj_list[comp4].isInUse())) {
       pc.show("The fourth component is not created yet.\n");
-      return;
+      return -1;
    }
 
    if ((comp5 != 1) && (!obj_list[comp5].isInUse())) {
       pc.show("The fifth component is not created yet.\n");
-      return;
+      return -1;
    }
 
    /*  So, all numbers in bounds, got a valid result, and at least one
@@ -1358,32 +1242,32 @@ void do_create_construction(int rslt, int comp1, int comp2, int comp3, int comp4
    /* Now check ownership, must own all components. */
    if (!pc.doesOwnObject(obj_list[rslt])) {
       pc.show("You don't own the resulting object.\n");
-      return;
+      return -1;
    }
 
    if (!pc.doesOwnObject(obj_list[comp1])) {
       pc.show("You don't own the first component.\n");
-      return;
+      return -1;
    }
 
    if ((comp2 != 1) && !pc.doesOwnObject(obj_list[comp2])) {
       pc.show("You don't own the second component.\n");
-      return;
+      return -1;
    }
 
    if ((comp3 != 1) && !pc.doesOwnObject(obj_list[comp3])) {
       pc.show("You don't own the third component.\n");
-      return;
+      return -1;
    }
 
    if ((comp4 != 1) && !pc.doesOwnObject(obj_list[comp4])) {
       pc.show("You don't own the fourth component.\n");
-      return;
+      return -1;
    }
 
    if ((comp5 != 1) && !pc.doesOwnObject(obj_list[comp5])) {
       pc.show("You don't own the fifth component.\n");
-      return;
+      return -1;
    }
 
    /*  Ownership has been satisfied, now lets do it! */
@@ -1427,32 +1311,32 @@ void do_create_construction(int rslt, int comp1, int comp2, int comp3, int comp4
                                        my_comp4, my_comp5, con_type);
 
    pc.show("All done, enjoy!\n");
+   return 0;
 }//do_create_construction
 
 
 
-void ch_odesc(int which_un, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+int ch_odesc(int which_un, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    if (which_un == 1) {
      show("USAGE:  ch_odesc [obj_number]\n", pc);
-     return;
+     return -1;
    }//if
 
    if (!check_l_range(which_un, 2, NUMBER_OF_ITEMS, pc, TRUE))
-     return;
+      return -1;
 
    if (!obj_list[which_un].OBJ_FLAGS.get(10)) {
-     show("This object has not been created yet!\n", pc);
-     return;
+      show("This object has not been created yet!\n", pc);
+      return -1;
    }//if
 
    if (!pc.doesOwnObject(obj_list[which_un])) {
       show("You don't own this object.\n", pc);
-      return;
+      return -1;
    }//if
 
    show("Enter a new long_description for this object.\n", pc);
@@ -1463,52 +1347,43 @@ void ch_odesc(int which_un, critter& pc) {
    obj_list[which_un].ob->long_desc.Clear();
    pc.pc->imm_data->edit_string = &(obj_list[which_un].ob->long_desc);
    pc.setMode(MODE_CH_DESC);
+   return 0;
 }//ch_odesc
 
 
 
-void save_mob(int i_th, String* mob_name, critter& pc) {
+int save_mob(int i_th, String* mob_name, critter& pc) {
 
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
-   if (!ok_to_cast_spell(NULL, "F", -1, pc)) {
-     return;
-   }//if
-
    critter* crit = ROOM.haveCritNamed(i_th, mob_name, pc.SEE_BIT);
 
    if (!crit) {
-     show("Which mob?\n", pc);
-     return;
+      show("Which mob?\n", pc);
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(*crit)) {
       show("You don't own this mobile.\n", pc);
-      return;
+      return -1;
    }//if
 
    mob_list[crit->MOB_NUM] = *crit; //operator overload!!
    mob_list[crit->MOB_NUM].CRITTER_TYPE = 2;
 
-   show("OK, mob as been saved as is.  
-        Amsave will make the changes permanent.\n", pc);
-
+   show("OK, mob as been saved as is.  "
+        "Amsave will make the changes permanent.\n", pc);
+   return 0;
 }//mob_save
 
 
-void save_obj(int i_th, String* obj_name, critter& pc) {
+int save_obj(int i_th, String* obj_name, critter& pc) {
 
-   if (!pc.isImmort()) {
-      show("Eh??\n", pc);
-      return;
-   }//if
-  
-   if (!ok_to_cast_spell(NULL, "F", -1, pc)) {
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    object* vict;
    vict = have_obj_named(pc.inv, i_th, obj_name, pc.SEE_BIT, 
@@ -1521,12 +1396,12 @@ void save_obj(int i_th, String* obj_name, critter& pc) {
 
    if (!vict) {
      show("Which obj?  You must have it in your inventory.\n", pc);
-     return;
+     return -1;
    }//if
 
    if (!pc.doesOwnObject(*vict)) {
       show("You don't own this object.\n", pc);
-      return;
+      return -1;
    }//if
 
    obj_list[vict->OBJ_NUM].IN_LIST = &(pc.inv); //minor hack
@@ -1535,37 +1410,36 @@ void save_obj(int i_th, String* obj_name, critter& pc) {
 
    show("OK, object as been saved as is.  
         Aosave will make the changes permanent.\n", pc);
-
+   return 0;
 }//obj_save
 
-void make_pso(int i_th, const String* shop_keeper, critter& pc) {
-   if (!pc.isImmort()) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+int make_pso(int i_th, const String* shop_keeper, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    critter* crit_ptr = ROOM.haveCritNamed(i_th, shop_keeper, pc.SEE_BIT);
 
    if (!crit_ptr) {
       pc.show("Which NPC shall I make into a player-run shop owner??\n");
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(*crit_ptr)) {
       show("You don't own this critter.\n", pc);
-      return;
+      return -1;
    }//if
 
    // See if we got a shopkeeper...   
    if (!crit_ptr->mob || !crit_ptr->mob->proc_data ||
        !crit_ptr->mob->proc_data->sh_data) {
       pc.show("This is not a shopkeeper, can't make it a player-run shop owner.\n");
-      return;
+      return -1;
    }//if
 
    if (crit_ptr->isPlayerShopKeeper()) {
       pc.show("Already a Player-run Shop keeper!\n");
-      return;
+      return -1;
    }
 
    // Ok, do the work...
@@ -1576,32 +1450,31 @@ void make_pso(int i_th, const String* shop_keeper, critter& pc) {
    save_player_shop_owner(*crit_ptr);
 
    pc.show("Ok, done, don't forget to amsave!!\n");
-
+   return 0;
 }//make_pso
 
 
-void ch_mdesc(int which_un, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+int ch_mdesc(int which_un, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    if (which_un == 1) {
      show("USAGE:  ch_mdesc [mob_number]\n", pc);
-     return;
+     return -1;
    }//if
 
    if (!check_l_range(which_un, 2, NUMBER_OF_MOBS, pc, TRUE))
-     return;
+      return -1;
 
    if (!mob_list[which_un].CRIT_FLAGS.get(18)) {
-     show("This critter has not been created yet!\n", pc);
-     return;
+      show("This critter has not been created yet!\n", pc);
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(mob_list[which_un])) {
       show("You don't own this critter.\n", pc);
-      return;
+      return -1;
    }//if
 
    show("Enter a new long_description for this critter.\n", pc);
@@ -1612,31 +1485,31 @@ void ch_mdesc(int which_un, critter& pc) {
    mob_list[which_un].long_desc.Clear();
    pc.pc->imm_data->edit_string = &(mob_list[which_un].long_desc);
    pc.setMode(MODE_CH_DESC);
+   return 0;
 }//ch_mdesc
 
 
-void ch_ddesc(int which_un, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
-     show("Eh??\n", pc);
-     return;
-   }//if
+int ch_ddesc(int which_un, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
   
    if (which_un == 1) {
-     show("USAGE:  ch_ddesc [door_number]\n", pc);
-     return;
+      show("USAGE:  ch_ddesc [door_number]\n", pc);
+      return -1;
    }//if
 
    if (!check_l_range(which_un, 11, NUMBER_OF_DOORS, pc, TRUE))
-     return;
+      return -1;
 
    if (!door_list[which_un].isInUse()) {
-     show("This door has not been created yet!\n", pc);
-     return;
+      show("This door has not been created yet!\n", pc);
+      return -1;
    }//if
 
    if (!pc.doesOwnDoor(door_list[which_un])) {
       show("You don't own this door.\n", pc);
-      return;
+      return -1;
    }//if
 
    show("Enter a new description for this door.\n", pc);
@@ -1647,11 +1520,12 @@ void ch_ddesc(int which_un, critter& pc) {
    door_list[which_un].long_desc.Clear();
    pc.pc->imm_data->edit_string = &(door_list[which_un].long_desc);
    pc.setMode(MODE_CH_DESC);
+   return 0;
 }//ch_ddesc
 
 
 
-void do_ch_desc(critter& pc) {
+int do_ch_desc(critter& pc) {
    String buf = pc.pc->input.Get_Rest();
    String* edit_str;
    int is_pc_desc = FALSE;
@@ -1666,7 +1540,7 @@ void do_ch_desc(critter& pc) {
 
    while (TRUE) {
       if (buf.Strlen() == 0) {
-         return;
+         return 0;
       }//if
 
       if ((buf == "~") || (is_pc_desc && (edit_str->Contains('\n') > 10))) {
@@ -1678,7 +1552,7 @@ void do_ch_desc(critter& pc) {
             pc.pc->imm_data->edit_string = NULL;
          }
 
-         return;
+         return 0;
       }//if
 
       *(edit_str) += buf;  //append the line to desc
@@ -1686,16 +1560,17 @@ void do_ch_desc(critter& pc) {
 
       buf = pc.pc->input.Get_Rest();
    }//while
+   return 0;
 }//do_ch_desc
 
 
-void do_add_mob_script(critter& pc) {
+int do_add_mob_script(critter& pc) {
    String buf = pc.pc->input.Get_Rest();
    mudlog.log(TRC, "In do_add_mob_script...");
 
    while (TRUE) {
       if (buf.Strlen() == 0) {
-         return;
+         return 0;
       }//if
 
       if (buf == "~") {
@@ -1735,23 +1610,24 @@ void do_add_mob_script(critter& pc) {
          mudlog.log(TRC, "setting edit string to NULL");
 
 	 pc.pc->imm_data->edit_string = NULL;
-         return;
+         return 0;
       }//if
 
       *(pc.pc->imm_data->edit_string) += buf;  //append the line to desc
       *(pc.pc->imm_data->edit_string) += "\n";
       buf = pc.pc->input.Get_Rest();
    }//while
+   return 0;
 }//do_add_mob_script
 
 
-void do_add_room_script(critter& pc) {
+int do_add_room_script(critter& pc) {
    String buf = pc.pc->input.Get_Rest();
    mudlog.log(TRC, "In do_add_room_script...");
 
    while (TRUE) {
       if (buf.Strlen() == 0) {
-         return;
+         return 0;
       }//if
 
       if (buf == "~") {
@@ -1789,411 +1665,347 @@ void do_add_room_script(critter& pc) {
          mudlog.log(TRC, "setting edit string to NULL");
 
 	 pc.pc->imm_data->edit_string = NULL;
-         return;
+         return 0;
       }//if
 
       *(pc.pc->imm_data->edit_string) += buf;  //append the line to desc
       *(pc.pc->imm_data->edit_string) += "\n";
       buf = pc.pc->input.Get_Rest();
    }//while
+   return 0;
 }//do_add_room_script
 
 
-void ch_rname(const String* rname, critter& pc) {
+int ch_rname(const String* rname, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
+   if (!ok_to_do_action(NULL, "IFPR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (rname->Strlen() < 1) {
       show("See help for ch_rname.\n", pc);
-      return;
-   }//if
-
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (!pc.doesOwnRoom(ROOM)) {
-      show("You do not own this zone.\n", pc);
-      return;
+      return -1;
    }//if
 
    ROOM.short_desc = *rname;
 
    show("Room's short desc changed.\n", pc);
-
+   return 0;
 }//ch_rname
 
 
-void ch_osdesc(int which_un, const String* name, critter& pc) {
+int ch_osdesc(int which_un, const String* name, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (name->Strlen() < 1) {
       show("See help for ch_osdesc.\n", pc);
-      return;
+      return -1;
    }//if
 
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
 
    if (!check_l_range(which_un, 2, NUMBER_OF_ITEMS, pc, TRUE))
-     return;
+      return -1;
 
    if (!obj_list[which_un].OBJ_FLAGS.get(10)) {
-     show("That object hasn't been created yet.\n", pc);
-     return;
+      show("That object hasn't been created yet.\n", pc);
+      return -1;
    }//if
 
    if (!pc.doesOwnObject(obj_list[which_un])) {
       show("You do not own this object.\n", pc);
-      return;
+      return -1;
    }//if
 
    obj_list[which_un].ob->short_desc = *name;
 
    show("Object's short desc changed.\n", pc);
-
+   return 0;
 }//ch_osdesc
 
 
-void ch_ondesc(int which_un, const String* rname, critter& pc) {
+int ch_ondesc(int which_un, const String* rname, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (rname->Strlen() < 1) {
       show("See help for ch_osdesc.\n", pc);
-      return;
-   }//if
-
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!check_l_range(which_un, 2, NUMBER_OF_ITEMS, pc, TRUE))
-     return;
+      return -1;
 
    if (!obj_list[which_un].OBJ_FLAGS.get(10)) {
-     show("That object hasn't been created yet.\n", pc);
-     return;
+      show("That object hasn't been created yet.\n", pc);
+      return -1;
    }//if
 
    if (!pc.doesOwnObject(obj_list[which_un])) {
       show("You do not own this object.\n", pc);
-      return;
+      return -1;
    }//if
 
    obj_list[which_un].ob->in_room_desc = *rname;
 
    show("Object's in_room desc changed.\n", pc);
-
+   return 0;
 }//ch_osdesc
 
 
-void ch_msdesc(int which_un, const String* rname, critter& pc) {
+int ch_msdesc(int which_un, const String* rname, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (rname->Strlen() < 1) {
       show("See help for ch_msdesc.\n", pc);
-      return;
-   }//if
-
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!check_l_range(which_un, 2, NUMBER_OF_MOBS, pc, TRUE))
-     return;
+      return -1;
 
    if (!mob_list[which_un].CRIT_FLAGS.get(18)) {
-     show("That critter hasn't been created yet.\n", pc);
-     return;
+      show("That critter hasn't been created yet.\n", pc);
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(mob_list[which_un])) {
       show("You do not own this critter.\n", pc);
-      return;
+      return -1;
    }//if
 
    mob_list[which_un].short_desc = *rname;
 
    show("Mob's short desc changed.\n", pc);
-
+   return 0;
 }//ch_msdesc
 
 
-void ch_mndesc(int which_un, const String* rname, critter& pc) {
+int ch_mndesc(int which_un, const String* rname, critter& pc) {
    String buf(100);
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (rname->Strlen() < 1) {
       show("See help for ch_mndesc.\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!check_l_range(which_un, 2, NUMBER_OF_MOBS, pc, TRUE))
-     return;
+      return -1;
 
    if (!mob_list[which_un].isInUse()) {
-     show("That critter hasn't been created yet.\n", pc);
-     return;
+      show("That critter hasn't been created yet.\n", pc);
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(mob_list[which_un])) {
       show("You do not own this critter.\n", pc);
-      return;
+      return -1;
    }//if
 
    mob_list[which_un].in_room_desc = *rname;
 
    show("Mob's in room desc changed.\n", pc);
+   return 0;
 }//ch_mndesc
 
 
-void add_mname(int which_un, const String* name, critter& pc) {
+int add_mname(int which_un, const String* name, critter& pc) {
    String buf(100);
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (name->Strlen() < 1) {
       show("See help for add_mname.\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!check_l_range(which_un, 2, NUMBER_OF_MOBS, pc, TRUE))
-     return;
+      return -1;
 
    if (!mob_list[which_un].isInUse()) {
       show("That critter hasn't been created yet.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(mob_list[which_un])) {
       show("You do not own this critter.\n", pc);
-      return;
+      return -1;
    }//if
 
    Put(new String(*name), mob_list[which_un].names);
 
    show("Added a name to the critter.\n", pc);
+   return 0;
 }//add_mname
 
 
-void clear_mnames(int which_un, critter& pc) {
+int clear_mnames(int which_un, critter& pc) {
    String buf(100);
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(which_un, 2, NUMBER_OF_MOBS, pc, TRUE))
-     return;
+      return -1;
 
    if (!mob_list[which_un].isInUse()) {
       show("That critter hasn't been created yet.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(mob_list[which_un])) {
       show("You do not own this critter.\n", pc);
-      return;
+      return -1;
    }//if
 
    clear_ptr_list(mob_list[which_un].names); //all gone!
 
    show("Cleared the names from the critter.\n", pc);
+   return 0;
 }//clear_mnames
 
 
-void add_oname(int which_un, const String* name, critter& pc) {
+int add_oname(int which_un, const String* name, critter& pc) {
    String buf(100);
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (name->Strlen() < 1) {
       show("See help for add_oname.\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!check_l_range(which_un, 2, NUMBER_OF_ITEMS, pc, TRUE))
-     return;
+      return -1;
 
    if (!obj_list[which_un].isInUse()) {
-     show("That object hasn't been created yet.\n", pc);
-     return;
+      show("That object hasn't been created yet.\n", pc);
+      return -1;
    }//if
 
    if (!pc.doesOwnObject(obj_list[which_un])) {
       show("You do not own this object.\n", pc);
-      return;
+      return -1;
    }//if
 
    Put(new String(*name), obj_list[which_un].ob->names);
 
    show("Added a name to the object.\n", pc);
+   return 0;
 }//add_oname
 
 
-void clear_onames(int which_un, critter& pc) {
+int clear_onames(int which_un, critter& pc) {
    String buf(100);
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(which_un, 2, NUMBER_OF_ITEMS, pc, TRUE))
-     return;
+      return -1;
 
    if (!obj_list[which_un].isInUse()) {
       show("That object hasn't been created yet.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!pc.doesOwnObject(obj_list[which_un])) {
       show("You do not own this object.\n", pc);
-      return;
+      return -1;
    }//if
 
    clear_ptr_list(obj_list[which_un].ob->names); //all gone!
 
    show("Cleared the names from the object.\n", pc);
+   return 0;
 }//clear_onames
 
 
-void rem_oname(int which_un, const String* name, critter& pc) {
+int rem_oname(int which_un, const String* name, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (name->Strlen() < 1) {
       show("See help for add_oname.\n", pc);
-      return;
-   }//if
-
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!check_l_range(which_un, 2, NUMBER_OF_ITEMS, pc, TRUE))
-     return;
+      return -1;
 
-   if (!obj_list[which_un].OBJ_FLAGS.get(10)) {
-     show("That object hasn't been created yet.\n", pc);
-     return;
+   if (!obj_list[which_un].isInUse()) {
+      show("That object hasn't been created yet.\n", pc);
+      return -1;
    }//if
 
    if (!pc.doesOwnObject(obj_list[which_un])) {
       show("You do not own this object.\n", pc);
-      return;
+      return -1;
    }//if
 
    Cell<String*> cll(obj_list[which_un].ob->names);
    String* ptr;
 
    while ((ptr = cll.next())) {
-     if (*ptr == *name) {
-       show("OK, name removed.\n", pc);
-       delete ptr;
-       ptr = obj_list[which_un].ob->names.lose(cll);
-       return;
-     }//if
+      if (*ptr == *name) {
+         show("OK, name removed.\n", pc);
+         delete ptr;
+         ptr = obj_list[which_un].ob->names.lose(cll);
+         return 0;
+      }//if
    }//while
    show("Name not found.\n", pc);
+   return -1;
 }//rem_oname
 
 
-void rem_mname(int which_un, const String* name, critter& pc) {
+int rem_mname(int which_un, const String* name, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (name->Strlen() < 1) {
       show("See help for add_mname.\n", pc);
-      return;
-   }//if
-
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!check_l_range(which_un, 2, NUMBER_OF_MOBS, pc, TRUE))
-     return;
+      return -1;
 
-   if (!mob_list[which_un].CRIT_FLAGS.get(18)) {
-     show("That critter hasn't been created yet.\n", pc);
-     return;
+   if (!mob_list[which_un].isInUse()) {
+      show("That critter hasn't been created yet.\n", pc);
+      return -1;
    }//if
 
    if (!pc.doesOwnCritter(mob_list[which_un])) {
       show("You do not own this critter.\n", pc);
-      return;
+      return -1;
    }//if
 
    Cell<String*> cll(mob_list[which_un].names);
@@ -2204,10 +2016,11 @@ void rem_mname(int which_un, const String* name, critter& pc) {
        show("OK, name removed.\n", pc);
        delete ptr;
        ptr = mob_list[which_un].names.lose(cll);
-       return;
+       return 0;
      }//if
    }//while
    show("Name not found.\n", pc);
+   return -1;
 }//rem_mname
 
 

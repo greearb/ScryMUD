@@ -31,51 +31,51 @@
 #include "classes.h"
 
 
-void log_level(int lvl, critter& pc);
-void wimpy(int i, critter& pc);
-void abilities(critter& pc); //show's skills can lrn, %lrned
-void score(const String* str2, critter& pc);
-void score_long(critter& pc);
-//void doUngroup(int i_th, const String* vict);
-void exit(critter& pc); //disp exits
-void auto_exit(critter& pc); //disp exits, concisely
+int log_level(int lvl, critter& pc);
+int wimpy(int i, critter& pc);
+int abilities(critter& pc); //show's skills can lrn, %lrned
+int score(const String* str2, critter& pc);
+int score_long(critter& pc);
+//int doUngroup(int i_th, const String* vict);
+int exit(critter& pc); //disp exits
+int auto_exit(critter& pc); //disp exits, concisely
 int  open(int i_th, const String* name, critter& pc);
 int  unlock(int i_th, const String* name, critter& pc);
 int  lock(int i_th, const String* name, critter& pc);
-void close(int i_th, const String* name, critter& pc);
-void save(critter& pc);
-void nogossip(critter& pc);
-void eat(int i_th, const String* name, critter& pc);
-void drink(int i_th, const String* name, critter& pc);
-void fill(int i_th, const String* targ, int j_th, const String* source, 
+int close(int i_th, const String* name, critter& pc);
+int save(critter& pc);
+int nogossip(critter& pc);
+int eat(int i_th, const String* name, critter& pc);
+int drink(int i_th, const String* name, critter& pc);
+int fill(int i_th, const String* targ, int j_th, const String* source, 
           critter& pc);
-void empty(int i_th, const String* name, critter& pc);
-void help(int i_th, String* command, critter& pc);
-void buy(int i_th, const String* item, int j_th, const String* keeper,
+int empty(int i_th, const String* name, critter& pc);
+int help(int i_th, String* command, critter& pc);
+int buy(int i_th, const String* item, int j_th, const String* keeper,
          critter& pc);
-void offer(int i_th, const String* item, int j_th, const String* keeper,
+int offer(int i_th, const String* item, int j_th, const String* keeper,
          critter& pc);
-void sell(int i_th, const String* item, int j_th, const String* keeper,
+int sell(int i_th, const String* item, int j_th, const String* keeper,
          critter& pc);
-void practice(const String* spell, int j_th, const String* teacher, critter& 
+int practice(const String* spell, int j_th, const String* teacher, critter& 
               pc); 
-void toggle_prompt(const String* field, critter& pc);
-void list_merchandise(int i_th, const String* keeper, critter& pc);
+int toggle_prompt(const String* field, critter& pc);
+int list_merchandise(int i_th, const String* keeper, critter& pc);
 
-void mstat(int i_th, const String* name, critter& pc); //stat critter
-void do_mstat(critter& targ, critter& pc);
-void lore(int i_th, const String* name, critter& pc); //stat object
-void do_lore(object& targ, critter& pc);
-void ostat(int i_th, const String* name, critter& pc); //stat object
-void do_ostat(object& obj, critter& pc);
-void rstat(int i_th, critter& pc); //stat room
-void do_rstat(room& rm, critter& pc); //stat room
-void do_dstat(door_data& dr, critter& pc);
-void dstat(int i_th, const String* name, critter& pc); //stat door
+int mstat(int i_th, const String* name, critter& pc); //stat critter
+int do_mstat(critter& targ, critter& pc);
+int lore(int i_th, const String* name, critter& pc); //stat object
+int do_lore(object& targ, critter& pc);
+int ostat(int i_th, const String* name, critter& pc); //stat object
+int do_ostat(object& obj, critter& pc);
+int rstat(int i_th, critter& pc); //stat room
+int do_rstat(room& rm, critter& pc); //stat room
+int do_dstat(door_data& dr, critter& pc);
+int dstat(int i_th, const String* name, critter& pc); //stat door
 
-void shutdown(const String* cond, critter& pc); //do clean shutdown of game
-void rezone(critter& pc);
-void total_rezone(critter& pc);
+int shutdown(const String* cond, critter& pc); //do clean shutdown of game
+int rezone(critter& pc);
+int total_rezone(critter& pc);
 
 ///******************** auxillary commands ***************************///
 

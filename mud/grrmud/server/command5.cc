@@ -41,9 +41,10 @@
 #include "load_wld.h"
 #include "SkillSpell.h"
 #include "script.h"
+#include "olc.h"
 
 
-void update_cur_in_game(critter& pc) {
+int update_cur_in_game(critter& pc) {
    if (pc.isImmort() && (pc.IMM_LEVEL >= 9)) {
       //first, clear em all out!
       int i = 0;
@@ -66,10 +67,11 @@ void update_cur_in_game(critter& pc) {
    else {
       pc.show("Eh??");
    }
+   return 0;
 }//update_cur_in_game
 
 
-void page_break(int lines, critter& pc) {
+int page_break(int lines, critter& pc) {
    if (pc.isPc()) {
       pc.setLinesOnPage(bound(8, 10000, lines));
       
@@ -83,6 +85,7 @@ void page_break(int lines, critter& pc) {
    else {
       pc.show("Eh?\n");
    }
+   return 0;
 }//page_break
 
 const String* getColorName(const char* ansi_code) {
@@ -190,7 +193,7 @@ const char* colorToAnsiCode(const char* color_name) {
    return "";
 }//colorToAnsiCode
 
-void color(String& var, String& val_rough, critter& pc) {
+int color(String& var, String& val_rough, critter& pc) {
    String val;
    String buf(100);
 
@@ -307,7 +310,7 @@ See 'help color' for more information.\n";
          }
          else {
             pc.show(usage);
-            return;
+            return -1;
          }
 
          pc.show("Color set.\n");
@@ -315,50 +318,48 @@ See 'help color' for more information.\n";
       }//if
       else {
          pc.show(usage);
+         return -1;
       }
    }//if is a pc
    else {
       pc.show("You are not a PC!!\n");
+      return -1;
    }
+   return 0;
 }//color
 
 
-void pause(int rounds, critter& pc) {
+int pause(int rounds, critter& pc) {
   if (pc.isMob())
-    return; //no MOB's allowed!!
+    return -1; //no MOB's allowed!!
 
   if (!pc.mob) { //SMOB only
-    return;
+    return -1;
   }//if 
 
   if (rounds < 0)
-     return;
+     return 0;
 
   if (rounds > 300)
      rounds = 300;
 
   pc.PAUSE += rounds;
+  return 0;
 }//pause
 
 	  
-void list_scripts(int mob_num, critter& pc) {
+int list_scripts(int mob_num, critter& pc) {
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
    
    if (!check_l_range(mob_num, 1, NUMBER_OF_MOBS, pc, TRUE))
-       return;
+      return -1;
 
    if (!mob_list[mob_num].isInUse()) {
       show("That mob does not exist.", pc);
-      return;
+      return -1;
    }
 
    String buf(500);
@@ -383,22 +384,17 @@ may be seen by using the stat_script [mob_num] [script_index] command.\n\n");
    if (!found_one) {
       buf.Append("No scripts defined for this mob.\n");
       show(buf, pc);
+      return -1;
    }
-   
+   return 0;
 }//list_scripts
 
 
-void list_room_scripts(int rm_num, critter& pc) {
+int list_room_scripts(int rm_num, critter& pc) {
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
    
    if (rm_num == 1) {
       // Use current room, if player didn't enter anything
@@ -406,42 +402,36 @@ void list_room_scripts(int rm_num, critter& pc) {
    }
 
    if (!check_l_range(rm_num, 1, NUMBER_OF_ROOMS, pc, TRUE))
-      return;
+      return -1;
 
    if (!room_list[rm_num].isInUse()) {
       show("That Room does not exist.", pc);
-      return;
+      return -1;
    }
 
    room_list[rm_num].listScripts(pc);
-   
+   return 0;
 }//list_room_scripts
 
 
 
-void stat_script(int mob_num, int script_idx, critter& pc) {
+int stat_script(int mob_num, int script_idx, critter& pc) {
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In stat_script:  mob_num:  " << mob_num << " script_idx:  "
              << script_idx << endl;
    }
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
    
    if (!check_l_range(mob_num, 1, NUMBER_OF_MOBS, pc, TRUE))
-       return;
+      return -1;
 
    if (!mob_list[mob_num].isInUse()) {
       show("That mob does not exist.", pc);
-      return;
+      return -1;
    }
 
    String buf(500);
@@ -463,39 +453,33 @@ void stat_script(int mob_num, int script_idx, critter& pc) {
       buf.Append(ptr->getCompiledScript());
       
       show(buf, pc);
-      return;
+      return 0;
    }//if
 
    Sprintf(buf, "Mob: %S does not have a script of index: %i",
            mob_list[mob_num].getName(), script_idx);
    show(buf, pc);
-   
+   return -1;
 }//stat_script
 
 
-void stat_room_script(int rm_num, int script_idx, critter& pc) {
+int stat_room_script(int rm_num, int script_idx, critter& pc) {
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In stat_room_script:  rm_num:  " << rm_num << " script_idx:  "
              << script_idx << endl;
    }
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(rm_num, 1, NUMBER_OF_ROOMS, pc, TRUE))
-      return;
+      return -1;
 
    if (!room_list[rm_num].isInUse()) {
       show("That room does not exist.", pc);
-      return;
+      return -1;
    }
 
    String buf(500);
@@ -517,49 +501,43 @@ void stat_room_script(int rm_num, int script_idx, critter& pc) {
       buf.Append(ptr->getCompiledScript());
       
       show(buf, pc);
-      return;
+      return 0;
    }//if
 
    Sprintf(buf, "Room: %i does not have a script of index: %i",
            rm_num, script_idx);
    show(buf, pc);
-   
+   return -1;
 }//stat_room_script
 
 
 
-void rem_script(int mob_num, String& trigger, int i_th, critter& pc) {
+int rem_script(int mob_num, String& trigger, int i_th, critter& pc) {
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In rem_script:  mob_num:  " << mob_num << "  trigger:  "
              << trigger << "  i_th:  " << i_th << endl;
    }
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (trigger.Strlen() == 0) {
       show("Which trigger do you want to stat??\n", pc);
-      return;
+      return -1;
    }
 
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-   
    if (!check_l_range(mob_num, 1, NUMBER_OF_MOBS, pc, TRUE))
-       return;
+       return -1;
 
    if (!mob_list[mob_num].isInUse()) {
       show("That mob does not exist.\n", pc);
-      return;
+      return -1;
    }
 
    if (!pc.doesOwnCritter(mob_list[mob_num])) {
       show("You don't own that mob...\n", pc);
-      return;
+      return -1;
    }
 
    int sofar = 1;
@@ -574,7 +552,7 @@ void rem_script(int mob_num, String& trigger, int i_th, critter& pc) {
             delete ptr;
             ptr = mob_list[mob_num].mob->mob_proc_scripts.lose(cll);
             show("Deleted it...\n", pc);
-            return;
+            return 0;
          }//if
          else {
             ptr = cll.next();
@@ -587,64 +565,58 @@ void rem_script(int mob_num, String& trigger, int i_th, critter& pc) {
    }//while
 
    show("Didn't find that script..\n", pc);
+   return -1;
 }//rem_script
 
 
-void rem_room_script(int rm_num, String& trigger, int i_th, critter& pc) {
+int rem_room_script(int rm_num, String& trigger, int i_th, critter& pc) {
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In rem_room_script:  rm_num:  " << rm_num << "  trigger:  "
              << trigger << "  i_th:  " << i_th << endl;
    }
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (trigger.Strlen() == 0) {
       show("Which trigger do you want to stat??\n", pc);
-      return;
+      return -1;
    }
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
 
    if (rm_num == 1) {
       rm_num = ROOM.getIdNum();
    }
    
    if (!check_l_range(rm_num, 1, NUMBER_OF_ROOMS, pc, TRUE))
-      return;
+      return -1;
 
    if (!room_list[rm_num].isInUse()) {
       show("That room does not exist.\n", pc);
-      return;
+      return -1;
    }
 
    if (!pc.doesOwnRoom(room_list[rm_num])) {
       show("You don't own that room...\n", pc);
-      return;
+      return -1;
    }
 
    room_list[rm_num].removeScript(trigger, i_th, pc);
-
+   return 0;
 }//rem_room_script
 
 
-void teach(int i_th, const String* name, int prcnt, const String* skill, 
+int teach(int i_th, const String* name, int prcnt, const String* skill, 
 	   critter& pc) {
    int skill_num;
 
-   if (!pc.isImmort() || pc.IMM_LEVEL < 5) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
+   if (pc.IMM_LEVEL < 5) {
+      show("Eh?\n", pc);
+      return -1;
    }//if
 
    prcnt = bound(1, 100, prcnt);
@@ -653,14 +625,14 @@ void teach(int i_th, const String* name, int prcnt, const String* skill,
                                   pc.SEE_BIT, ROOM);
    if (!ptr) {
       show("That person is not logged on.\n", pc);
-      return;
+      return -1;
    }//if
 
    skill_num = SSCollection::instance().getNumForName(*skill);
 
    if (skill_num < 0) {
       show("That skill is unknown.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (get_percent_lrnd(skill_num, pc) < 0) { //then add it
@@ -674,183 +646,168 @@ void teach(int i_th, const String* name, int prcnt, const String* skill,
       ptr->SKILLS_KNOWN.Insert(skill_num, prcnt); //make sure its at 100
       update_skill(skill_num, pc);
    }//else
+   return 0;
 }//teach
 
 
-void add_perm_inv(int i_th, const String* name, int obj_num, 
-	   critter& pc) {
+int add_perm_inv(int i_th, const String* name, int obj_num, 
+                 critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (!check_l_range(obj_num, 2, NUMBER_OF_ITEMS, pc, TRUE)) 
-      return;
+      return -1;
 
    if (!obj_list[obj_num].OBJ_FLAGS.get(10)) {
       show("That object doesn't exist.\n", pc);
-      return;
+      return -1;
    }//if
 
    critter* ptr = ROOM.haveCritNamed(i_th, name, pc.SEE_BIT);
    if (ptr) {
-     if (ptr->mob && ptr->mob->proc_data && 
-	 ptr->mob->proc_data->sh_data) {
-       /* is a shopkeeper */
-       ptr->PERM_INV.append(&(obj_list[obj_num]));
-       Sprintf(buf, "%S added to %S's permanent (shop) inventory.\n",
-	       long_name_of_obj(obj_list[obj_num], ~0),
-	       name_of_crit(*ptr, ~0));
-       show(buf, pc);
-       return;
-     }//if
-     else {
-       ptr->gainInv(&(obj_list[obj_num]));
-       Sprintf(buf, "%S added to %S's regular inventory.\n",
-	       long_name_of_obj(obj_list[obj_num], ~0),
-	       name_of_crit(*ptr, ~0));
-       show(buf, pc);
-       return;
-     }//else
+      if (ptr->mob && ptr->mob->proc_data && 
+          ptr->mob->proc_data->sh_data) {
+         /* is a shopkeeper */
+         ptr->PERM_INV.append(&(obj_list[obj_num]));
+         Sprintf(buf, "%S added to %S's permanent (shop) inventory.\n",
+                 long_name_of_obj(obj_list[obj_num], ~0),
+                 name_of_crit(*ptr, ~0));
+         show(buf, pc);
+         return 0;
+      }//if
+      else {
+         ptr->gainInv(&(obj_list[obj_num]));
+         Sprintf(buf, "%S added to %S's regular inventory.\n",
+                 long_name_of_obj(obj_list[obj_num], ~0),
+                 name_of_crit(*ptr, ~0));
+         show(buf, pc);
+         return 0;
+      }//else
    }//if a mob ptr found
    else {
-     object* optr = have_obj_named(ROOM.inv, i_th, name, 
-                                   pc.SEE_BIT, ROOM);
-     if (!optr) {
-       optr =  have_obj_named(pc.inv, i_th, name, 
-                              pc.SEE_BIT, ROOM);
-     }//if
-     if (optr) {
-       if (optr->ob->bag) {
-	 optr->gainInv(&(obj_list[obj_num])); 
-	 Sprintf(buf, "%S added to %S's inventory.\n",
-		 long_name_of_obj(obj_list[obj_num], ~0),
-		 long_name_of_obj(*optr, ~0));
-	 show(buf, pc);
-	 return;
-       }//if
-       else {
-	 show("It isn't a bag!\n", pc);
-	 return;
-       }//else
-     }//if
-     show("You don't see that object or critter here.\n", pc);
-     return;
+      object* optr = have_obj_named(ROOM.inv, i_th, name, 
+                                    pc.SEE_BIT, ROOM);
+      if (!optr) {
+         optr =  have_obj_named(pc.inv, i_th, name, 
+                                pc.SEE_BIT, ROOM);
+      }//if
+      if (optr) {
+         if (optr->ob->bag) {
+            optr->gainInv(&(obj_list[obj_num])); 
+            Sprintf(buf, "%S added to %S's inventory.\n",
+                    long_name_of_obj(obj_list[obj_num], ~0),
+                    long_name_of_obj(*optr, ~0));
+            show(buf, pc);
+            return 0;
+         }//if
+         else {
+            show("It isn't a bag!\n", pc);
+            return -1;
+         }//else
+      }//if
+      show("You don't see that object or critter here.\n", pc);
+      return -1;
    }//else maybe its an object?
+   return -1;
 }//add_perm_inv
 
 
 
-void rem_perm_inv(int j_th, const String* obj_name, int i_th,
+int rem_perm_inv(int j_th, const String* obj_name, int i_th,
 		  const String* targ, critter& pc) {
    String buf(100);
 
-
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    critter* ptr = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
    object* inv_obj = NULL;
 
    if (ptr) {
-     if (ptr->mob && ptr->mob->proc_data && 
-	 ptr->mob->proc_data->sh_data) {
-       /* is a shopkeeper */
-       if ((inv_obj = have_obj_named(ptr->PERM_INV, j_th, obj_name, 
-				    pc.SEE_BIT, ROOM))) {
-	 ptr->PERM_INV.loseData(inv_obj);
-	 Sprintf(buf, "%S deleted from %S's permanent (shop) inventory.\n",
-		 long_name_of_obj(*inv_obj, ~0),
-		 name_of_crit(*ptr, ~0));
-	 show(buf, pc);
-	 if (inv_obj->IN_LIST)
-	   delete inv_obj;
-	 return;
-       }//if
-       else {
-	 show("That object is not in its permanent inventory.\n", pc);
-	 return;
-       }//else
-     }//if
-     else {
-       if ((inv_obj = have_obj_named(ptr->inv, j_th, obj_name, 
-				    pc.SEE_BIT, ROOM))) {
-	 ptr->loseInv(inv_obj);
-	 Sprintf(buf, "%S deleted from %S's inventory.\n",
-		 long_name_of_obj(*inv_obj, ~0),
-		 name_of_crit(*ptr, ~0));
-	 show(buf, pc);
-	 if (inv_obj->IN_LIST)
-	   delete inv_obj;
-	 return;
-       }//if
-       else {
-	 show("That object is not in its inventory.\n", pc);
-	 return;
-       }//else
-     }//else
+      if (ptr->mob && ptr->mob->proc_data && 
+          ptr->mob->proc_data->sh_data) {
+         /* is a shopkeeper */
+         if ((inv_obj = have_obj_named(ptr->PERM_INV, j_th, obj_name, 
+                                       pc.SEE_BIT, ROOM))) {
+            ptr->PERM_INV.loseData(inv_obj);
+            Sprintf(buf, "%S deleted from %S's permanent (shop) inventory.\n",
+                    long_name_of_obj(*inv_obj, ~0),
+                    name_of_crit(*ptr, ~0));
+            show(buf, pc);
+            if (inv_obj->IN_LIST)
+               delete inv_obj;
+            return 0;
+         }//if
+         else {
+            show("That object is not in its permanent inventory.\n", pc);
+            return -1;
+         }//else
+      }//if
+      else {
+         if ((inv_obj = have_obj_named(ptr->inv, j_th, obj_name, 
+                                       pc.SEE_BIT, ROOM))) {
+            ptr->loseInv(inv_obj);
+            Sprintf(buf, "%S deleted from %S's inventory.\n",
+                    long_name_of_obj(*inv_obj, ~0),
+                    name_of_crit(*ptr, ~0));
+            show(buf, pc);
+            if (inv_obj->IN_LIST)
+               delete inv_obj;
+            return 0;
+         }//if
+         else {
+            show("That object is not in its inventory.\n", pc);
+            return -1;
+         }//else
+      }//else
    }//if a mob ptr found
    else {
-     object* optr = have_obj_named(ROOM.inv, i_th, targ, 
-					  pc.SEE_BIT, ROOM);
-     if (!optr) {
-       optr =  have_obj_named(pc.inv, i_th, targ, 
-					  pc.SEE_BIT, ROOM);
-     }//if
-     if (optr) {
-       if ((inv_obj = have_obj_named(optr->ob->inv, j_th, obj_name, 
-				    pc.SEE_BIT, ROOM))) {
-	 optr->gainInv(inv_obj);
-	 Sprintf(buf, "%S deleted from %S's inventory.\n",
-		 long_name_of_obj(*inv_obj, ~0),
-		 name_of_obj(*optr, ~0));
-	 show(buf, pc);
-	 if (inv_obj->IN_LIST)
-	   delete inv_obj;
-	 return;
-       }//if
-       else {
-	 show("That object is not in its permanent inventory.\n", pc);
-	 return;
-       }//else
-     }//if
+      object* optr = have_obj_named(ROOM.inv, i_th, targ, 
+                                    pc.SEE_BIT, ROOM);
+      if (!optr) {
+         optr =  have_obj_named(pc.inv, i_th, targ, 
+                                pc.SEE_BIT, ROOM);
+      }//if
+      if (optr) {
+         if ((inv_obj = have_obj_named(optr->ob->inv, j_th, obj_name, 
+                                       pc.SEE_BIT, ROOM))) {
+            optr->gainInv(inv_obj);
+            Sprintf(buf, "%S deleted from %S's inventory.\n",
+                    long_name_of_obj(*inv_obj, ~0),
+                    name_of_obj(*optr, ~0));
+            show(buf, pc);
+            if (inv_obj->IN_LIST)
+               delete inv_obj;
+            return 0;
+         }//if
+         else {
+            show("That object is not in its permanent inventory.\n", pc);
+            return -1;
+         }//else
+      }//if
    }//else maybe its an object?
    show("You don't see that object or critter here.\n", pc);
-   return;
+   return -1;
 }//add_perm_inv
 
    
-void beep(int i_th, const String* name, critter& pc) {
+int beep(int i_th, const String* name, critter& pc) {
    char buf[20];
    String buf2(100);
 
-   if (!pc.pc) 
-      return;
-
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    critter* ptr = have_crit_named(pc_list, i_th, name,
                                   pc.SEE_BIT, ROOM);
    if (!ptr) {
       show("That person is not logged on.\n", pc);
-      return;
+      return -1;
    }//if
 
    buf[0] = 7; //beep
@@ -863,26 +820,16 @@ void beep(int i_th, const String* name, critter& pc) {
    show(buf2, *ptr);
 
    show("Done...\n", pc);
+   return 0;
 }//beep
 
 
-void opurge(int i_th, const String* name, critter& pc) {
+int opurge(int i_th, const String* name, critter& pc) {
    object* obj;
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (!pc.doesOwnRoom(ROOM)) {
-      show("You don't own this room.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFPR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    obj = have_obj_named(ROOM.inv, i_th, name, pc.SEE_BIT, ROOM);
    if (!obj) {
@@ -901,14 +848,14 @@ void opurge(int i_th, const String* name, critter& pc) {
       show("Ok, object purged from room.\n", pc);
       if (obj->IN_LIST) {
 	delete obj;
-	return;
       }//if
+      return 0;
    }//else
+   return -1;
 }//opurge
 
 
-
-void do_transport(critter& targ, critter& pc, room& dest) {
+int do_transport(critter& targ, critter& pc, room& dest) {
   /* assume targ AND pc are SMOB's or PC's */
 
    String buf(100);
@@ -926,27 +873,26 @@ void do_transport(critter& targ, critter& pc, room& dest) {
       look(1, &NULL_STRING, targ);
       emote("blinks into existence.", targ, dest, TRUE);
    }
+   return 0;
 }//do_transport
  
 
 /* Toggle client usage to TRUE */
-void using_client(critter& pc) {
-   pc.PC_FLAGS.turn_on(5);
+int using_client(critter& pc) {
+   if (pc.pc) {
+      pc.PC_FLAGS.turn_on(5);
+      return 0;
+   }
+   return 0;
 }
 
 
-void itrans(int i_th, const String* targ, int rm_num, critter& pc) {
+int itrans(int i_th, const String* targ, int rm_num, critter& pc) {
    String buf(100);
 
-   if (!pc.isImmort()) {
-      show("Eh??\n", pc);
-      return;
-   }//if
-   
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
    
    critter* ptr = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
    
@@ -956,7 +902,7 @@ void itrans(int i_th, const String* targ, int rm_num, critter& pc) {
    
    if (!ptr) {
       show("Who would you like to transport?\n", pc);
-      return;
+      return -1;
    }//if
    
    if (ptr->isMob()) {
@@ -965,7 +911,7 @@ void itrans(int i_th, const String* targ, int rm_num, critter& pc) {
    else if (ptr->pc && ptr->pc->imm_data && 
             (ptr->IMM_LEVEL >= pc.IMM_LEVEL)) {
       show("Whoa, you can't itrans one so powerful.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (rm_num == 1) {
@@ -973,95 +919,77 @@ void itrans(int i_th, const String* targ, int rm_num, critter& pc) {
    }//if
    
    if (check_l_range(rm_num, 0, NUMBER_OF_ROOMS, pc, TRUE)) {
-      do_transport(*ptr, pc, room_list[rm_num]);
+      return do_transport(*ptr, pc, room_list[rm_num]);
    }//
+   return -1;
 }//itrans
 
 
 
-void discuss(const String* topic, int i_th, const String* targ, critter& pc) {
-  String buf(100);
+int discuss(const String* topic, int i_th, const String* targ, critter& pc) {
+   String buf(100);
 
-  if (pc.isMob()) { 
-    mudlog.log(ERR, "ERROR:  MOB trying to discuss.\n");
-    return;
-  }//if
+   if (!ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
-  if (pc.POS > POS_SIT) {
-    show("You are too relaxed to discuss anything.\n", pc);
-    return;
-  }//if
+   critter* ptr = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
 
-  if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-    show("You are too frozen to do anything.\n", pc);
-    return;
-  }//if
-
-  critter* ptr = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
-
-  if (!ptr) {
-    show("With whom would you like to discuss?\n", pc);
-  }//if
-  else if (topic->Strlen() == 0) {
-    show("What would you like to discuss?\n", pc);
-  }//if
-  else if (pc.POS > POS_REST) {
-    show("You are too relaxed.\n", pc);
-  }//if
-  else if (!IsEmpty(pc.IS_FIGHTING)) {
-    show("You find it hard to have a decent conversation while fighting!\n",
-	 pc);
-  }//if
-  else { //looks like we're good to go
-    if (ptr->mob && !ptr->pc) {
-      if (ptr->mob->proc_data) {
-	if (!IsEmpty(ptr->mob->proc_data->topics)) { //then do it
-	  if (ptr->isMob()) {
-	    ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, targ, pc.SEE_BIT);
-	  }//if
-	  do_domob_say_proc(*ptr, pc, *topic);
-	}//if
+   if (!ptr) {
+      show("With whom would you like to discuss?\n", pc);
+   }//if
+   else if (topic->Strlen() == 0) {
+      show("What would you like to discuss?\n", pc);
+   }//if
+   else if (pc.POS > POS_REST) {
+      show("You are too relaxed.\n", pc);
+   }//if
+   else if (!IsEmpty(pc.IS_FIGHTING)) {
+      show("You find it hard to have a decent conversation while fighting!\n",
+           pc);
+   }//if
+   else { //looks like we're good to go
+      if (ptr->mob && !ptr->pc) {
+         if (ptr->mob->proc_data) {
+            if (!IsEmpty(ptr->mob->proc_data->topics)) { //then do it
+               if (ptr->isMob()) {
+                  ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, targ, pc.SEE_BIT);
+               }//if
+               return do_domob_say_proc(*ptr, pc, *topic);
+            }//if
+         }//if
       }//if
-    }//if
-    if (ptr->pc) {
-      Sprintf(buf, "%S wishes to discuss %S with you.\n", 
-	      name_of_crit(pc, ptr->SEE_BIT), topic);
-      show(buf, *ptr);
-    }//if
-  }//else
+      if (ptr->pc) {
+         Sprintf(buf, "%S wishes to discuss %S with you.\n", 
+                 name_of_crit(pc, ptr->SEE_BIT), topic);
+         show(buf, *ptr);
+      }//if
+   }//else
+   return -1;
 }//discuss
 
 
-void suicide(const String* passwd,  critter& pc) {
+int suicide(const String* passwd,  critter& pc) {
   String buf(100);
 
-  if (!pc.pc) {
-    return;
-  }//if
+   if (!ok_to_do_action(NULL, "mrBFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
-  if (pc.PC_FLAGS.get(0)) { //if frozen
-    show("You are too frozen to do anything.\n", pc);
-    return;
-  }//if
+   if (pc.pc->password != crypt(*passwd, "bg")) {
+      show("In order to FOREVER kill your character, you must enter your \n",
+           pc);
+      show("password too.\n", pc);
+      return -1;
+   }//if
 
-  if (!IsEmpty(pc.IS_FIGHTING)) {
-    show("You can't do a decent suicide while fighting someone else!\n", pc);
-    return;
-  }//if
-
-  if (pc.pc->password != crypt(*passwd, "bg")) {
-    show("In order to FOREVER kill your character, you must enter your \n",
-	 pc);
-    show("password too.\n", pc);
-    return;
-  }//if
-
-  pc.doSuicide();
+   pc.doSuicide();
+   return 0;
 }//suicide
 
 
 /* this is a 'give' for money basically */
-void pay(int amount, int i_th, const String* targ,  critter& pc) {
+int pay(int amount, int i_th, const String* targ,  critter& pc) {
    String buf(100);
 
    if (mudlog.ofLevel(DBG)) {
@@ -1069,31 +997,25 @@ void pay(int amount, int i_th, const String* targ,  critter& pc) {
              << " targ:  " << targ << endl;
    }
 
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-   
-   if (pc.POS > POS_REST) {
-      show("You are too relaxed.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
    
    critter* ptr = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
    
    if (!ptr) {
       show("Pay who??\n", pc);
-      return;
+      return -1;
    }//if
 
    if (amount <= 0) {
-      pc.show("The amount needs to be greater than zero!.\n");
-      return;
+      pc.show("The amount needs to be greater than zero!\n");
+      return -1;
    }
    
    if (amount > pc.GOLD) {
       show("You don't have that much!\n", pc);
-      return;
+      return -1;
    }//if
    
    if (ptr->isMob()) {
@@ -1117,17 +1039,17 @@ void pay(int amount, int i_th, const String* targ,  critter& pc) {
    amt.Append(amount);
 
    ROOM.checkForProc(cmd, amt, pc, ptr->MOB_NUM);
+   return 0;
 }//pay
 
 
-void mvnum(int i_th, const String* name, critter& pc) {
+int mvnum(int i_th, const String* name, critter& pc) {
    int i;
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (i_th < 0)
       i_th = 0;
@@ -1139,17 +1061,17 @@ void mvnum(int i_th, const String* name, critter& pc) {
       }//if
    }//for
    show("ok\n", pc);
+   return 0;
 }//mvnum
 
 
-void ovnum(int i_th, const String* name, critter& pc) {
+int ovnum(int i_th, const String* name, critter& pc) {
    int i;
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (i_th < 0)
       i_th = 0;
@@ -1161,17 +1083,17 @@ void ovnum(int i_th, const String* name, critter& pc) {
       }//if
    }//for
    show("ok\n", pc);
+   return 0;
 }//ovnum
 
 
-void dvnum(int i_th, const String* name, critter& pc) {
+int dvnum(int i_th, const String* name, critter& pc) {
    int i;
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (i_th < 0)
       i_th = 0;
@@ -1183,16 +1105,16 @@ void dvnum(int i_th, const String* name, critter& pc) {
       }//if
    }//for
    show("ok\n", pc);
+   return 0;
 }//dvnum
 
 
-void arlist(int zone, int how_many, critter& pc) {
+int arlist(int zone, int how_many, critter& pc) {
    String buf(100);
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if ((zone == 1) && (how_many == 1)) {
       zone = ROOM.getZoneNum();
@@ -1205,7 +1127,7 @@ void arlist(int zone, int how_many, critter& pc) {
 
    if (!check_l_range(zone, 0, NUMBER_OF_ZONES, pc, FALSE)) {
       show("Zone is out of range.\n", pc);
-      return;
+      return -1;
    }//if
    
    Sprintf(buf, "Here are all rooms defined for zone# %i.\n", zone);
@@ -1223,16 +1145,16 @@ void arlist(int zone, int how_many, critter& pc) {
 	 show(buf, pc);
       }//if
    }//for
+   return 0;
 }//arlist
 
 
-void slist(int begin, int how_many, critter& pc) {
+int slist(int begin, int how_many, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (how_many == 1)
       how_many = 20;
@@ -1255,16 +1177,16 @@ void slist(int begin, int how_many, critter& pc) {
               &(SSCollection::instance().getSS(i).getName()));
       show(buf, pc);
    }//for
+   return 0;
 }//slist
 
 
-void aolist(int zone, int how_many, critter& pc) {
+int aolist(int zone, int how_many, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (zone == 1) { // default to current zone
      zone = ROOM.getZoneNum();
@@ -1276,7 +1198,7 @@ void aolist(int zone, int how_many, critter& pc) {
 
    if (!check_l_range(zone, 0, NUMBER_OF_ZONES, pc, FALSE)) {
       show("Zone is out of range.\n", pc);
-      return;
+      return -1;
    }//if
    
    Sprintf(buf, "Here are all objects defined for zone# %i.\n", zone);
@@ -1293,21 +1215,16 @@ void aolist(int zone, int how_many, critter& pc) {
 	 }//if
       }//if
    }//for
+   return 0;
 }//aolist
 
 
-void aosave(int zone, critter& pc) {
+int aosave(int zone, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (zone == 1) {
       zone = ROOM.getZoneNum();
@@ -1315,83 +1232,77 @@ void aosave(int zone, critter& pc) {
 
    if (!check_l_range(zone, 0, NUMBER_OF_ZONES, pc, FALSE)) {
       show("Zone is out of range.\n", pc);
-      return;
+      return -1;
    }//if
  
    if (!ZoneCollection::instance().elementAt(zone).isOwnedBy(pc)) {
       show("You do not own that zone.  Only owners can aosave a zone.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!ZoneCollection::instance().elementAt(zone).canWriteObjects()) {
      show("All builders of your zone must finish their objects before\n", pc);
      show("you can write them to disk.\n", pc);
-     return;
+     return -1;
    }//if
 
    Sprintf(buf, "Re-writing the objects for zone# %i.\n", zone);
    show(buf, pc);
 
-   do_aosave(zone);
+   return do_aosave(zone);
 }//aosave
 
 
-void do_aosave(int zone) {
-  String buf(100);
+int do_aosave(int zone) {
+   String buf(100);
 
-  Sprintf(buf, "./World/objects_%i", zone);
-  ofstream ofile(buf);
-  if (!ofile) {
-    mudlog.log(ERR, "ERROR:  ofile is NULL, aosave.\n");
-    return;
-  }//if
+   Sprintf(buf, "./World/objects_%i", zone);
+   ofstream ofile(buf);
+   if (!ofile) {
+      mudlog.log(ERR, "ERROR:  ofile is NULL, aosave.\n");
+      return -1;
+   }//if
 
-  for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
-    if (obj_list[i].OBJ_FLAGS.get(10)) { //in use
-      if (obj_list[i].OBJ_IN_ZONE == zone) {
-	ofile << i << "\t Start of Object\n";
-	obj_list[i].Write(ofile);
-	ofile << endl;
+   for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+      if (obj_list[i].OBJ_FLAGS.get(10)) { //in use
+         if (obj_list[i].OBJ_IN_ZONE == zone) {
+            ofile << i << "\t Start of Object\n";
+            obj_list[i].Write(ofile);
+            ofile << endl;
+         }//if
       }//if
-    }//if
-  }//for
-  ofile << endl << "-1 END OF FILE" << endl;
+   }//for
+   ofile << endl << "-1 END OF FILE" << endl;
+   return 0;
 }//do_aosave
 
 
 //Writes every zone, if players are not currently editing the zones.
-void write_world(critter& pc) {
+int write_world(critter& pc) {
    String buf(100);
 
-   if (pc.getImmLevel() < 10) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+   
+   if (pc.getImmLevel() != 10) {
+      pc.show("You must be a level 10 immort to write the entire world!\n");
+      return -1;
+   }
 
    show("Writing the entire WORLD...\n", pc);
    
    ZoneCollection::instance().writeWorld(pc);
-
+   return 0;
 }//write_world
 
 
-void amsave(int zone, critter& pc) {
+int amsave(int zone, critter& pc) {
    String buf(100);
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (zone == 1) {
       zone = ROOM.getZoneNum();
@@ -1399,36 +1310,35 @@ void amsave(int zone, critter& pc) {
 
    if (!check_l_range(zone, 0, NUMBER_OF_ZONES, pc, FALSE)) {
       show("Zone is out of range.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (!ZoneCollection::instance().elementAt(zone).isOwnedBy(pc)) {
       show("You do not own that zone.  Only owners can amsave a zone.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!ZoneCollection::instance().elementAt(zone).canWriteMobs()) { //if locked (no write)
      show("All builders of your zone must finish their mobiles before\n", pc);
      show("you can write it to disk.\n", pc);
-     return;
+     return -1;
    }//if
 
    Sprintf(buf, "Re-writing the mobs for zone# %i.\n", zone);
    show(buf, pc);
    
-   do_amsave(zone);
-
+   return do_amsave(zone);
 }//amsave
 
 
-void do_amsave(int zone) {
+int do_amsave(int zone) {
    String buf(100);
    
    Sprintf(buf, "./World/critters_%i", zone);
    ofstream ofile(buf);
    if (!ofile) {
       mudlog.log(ERR, "ERROR:  ofile is NULL, amsave.\n");
-      return;
+      return -1;
    }//if
    
    for (int i = 0; i < NUMBER_OF_MOBS; i++) {
@@ -1443,21 +1353,16 @@ void do_amsave(int zone) {
       }//if
    }//for
    ofile << endl << "-1 END OF MOB FILE" << endl;
+   return 0;
 }//do_amsave
 
 
-void adsave(int zone, critter& pc) {
+int adsave(int zone, critter& pc) {
    String buf(100);
 
-   if (!pc.isImmort()) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (zone == 1) {
       zone = ROOM.getZoneNum();
@@ -1465,63 +1370,57 @@ void adsave(int zone, critter& pc) {
 
    if (!check_l_range(zone, 0, NUMBER_OF_ZONES, pc, FALSE)) {
       show("Zone is out of range.\n", pc);
-      return;
+      return -1;
    }//if
    
    if (!ZoneCollection::instance().elementAt(zone).isOwnedBy(pc)) {
       show("You do not own that zone.  Only owners can adsave a zone.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!ZoneCollection::instance().elementAt(zone).canWriteDoors()) { //if locked (no write)
       show("All builders of your zone must finish their doors before\n", pc);
       show("you can write them to disk.\n", pc);
-      return;
+      return -1;
    }//if
 
    Sprintf(buf, "Re-writing the doors for zone# %i.\n", zone);
    show(buf, pc);
 
-   do_adsave(zone);
-
+   return do_adsave(zone);
 }//adsave
 
 
-void do_adsave(int zone) {
-  String buf(100);
+int do_adsave(int zone) {
+   String buf(100);
 
-  Sprintf(buf, "./World/doors_%i", zone);
-  ofstream ofile(buf);
-  if (!ofile) {
-    mudlog.log(ERR, "ERROR:  ofile is NULL, adsave.\n");
-    return;
-  }//if
+   Sprintf(buf, "./World/doors_%i", zone);
+   ofstream ofile(buf);
+   if (!ofile) {
+      mudlog.log(ERR, "ERROR:  ofile is NULL, adsave.\n");
+      return -1;
+   }//if
 
-  for (int i = 0; i < NUMBER_OF_DOORS; i++) {
-    if (door_list[i].door_data_flags.get(10)) { //if in use
-      if (door_list[i].in_zone == zone) {
-	ofile << i << "\tStart of Door Data\n";
-	door_list[i].Write(ofile);
-	ofile << endl;
+   for (int i = 0; i < NUMBER_OF_DOORS; i++) {
+      if (door_list[i].door_data_flags.get(10)) { //if in use
+         if (door_list[i].in_zone == zone) {
+            ofile << i << "\tStart of Door Data\n";
+            door_list[i].Write(ofile);
+            ofile << endl;
+         }//if
       }//if
-    }//if
-  }//for
-  ofile << endl << "-1 END OF DOOR FILE" << endl;
+   }//for
+   ofile << endl << "-1 END OF DOOR FILE" << endl;
+   return 0;
 }//do_adsave
 
 
-void amlist(int zone, int how_many, critter& pc) {
+int amlist(int zone, int how_many, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh?\n", pc);
-      return;
-   }//if
-
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (zone == 1) {
       zone = ROOM.getZoneNum();
@@ -1533,7 +1432,7 @@ void amlist(int zone, int how_many, critter& pc) {
    
    if (!check_l_range(zone, 0, NUMBER_OF_ZONES, pc, FALSE)) {
       show("Zone is out of range.\n", pc);
-      return;
+      return -1;
    }//if
    
    Sprintf(buf, "Here are all mobs defined for zone# %i.\n", zone);
@@ -1550,31 +1449,30 @@ void amlist(int zone, int how_many, critter& pc) {
          }//if
       }//if
    }//for
+   return 0;
 }//amlist
 
 
 /* only imms of level 9 and above can do this */
-void make_builder(int i_th, const String* name, critter& pc) {
+int make_builder(int i_th, const String* name, critter& pc) {
 
-   if (!pc.pc || !pc.pc->imm_data || !pc.IMM_LEVEL >= 9) {
-      show("You can't do that!\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
+   if (pc.getImmLevel() < 9) {
+      return -1;
    }//if
 
    critter* ptr = ROOM.haveCritNamed(i_th, name, pc.SEE_BIT);
    if (!ptr) {
       show("You don't see that person here.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!ptr->pc) {
       show("Only pc's can become builders!!\n", pc);
-      return;
+      return -1;
    }//if
 
    if (ptr->pc->imm_data) {
@@ -1590,21 +1488,16 @@ void make_builder(int i_th, const String* name, critter& pc) {
         *ptr);
    show("be sure to see help on the 'theme' of the MUD.\n", *ptr);
    show("Done.\n", pc);
+   return 0;
 }//make_builder
 
 
-void gag(int i_th, const String* targ, critter& pc) {
+int gag(int i_th, const String* targ, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh??", pc);
-      return;
-   }//if
-
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    critter* crit = have_crit_named(pc_list, i_th, targ,
                                    pc.SEE_BIT, ROOM);
@@ -1615,12 +1508,12 @@ void gag(int i_th, const String* targ, critter& pc) {
 
    if (!crit) {
       show("That person isn't logged on!\n", pc);
-      return;
+      return -1;
    }//if
 
    if (crit->pc->imm_data && (crit->IMM_LEVEL >= pc.IMM_LEVEL)) {
       show("Nice try, but you could NEVER gag one so powerful!!\n", pc);
-      return;
+      return -1;
    }//if
 
    Sprintf(buf, "%S has gagged you!!\n", name_of_crit(pc, ~0));
@@ -1628,21 +1521,16 @@ void gag(int i_th, const String* targ, critter& pc) {
    emote("goes a-gagging!!", pc, ROOM, TRUE);
    emote("will speak no more!", *crit, room_list[crit->getCurRoomNum()], TRUE);
    crit->PC_FLAGS.turn_on(1);
+   return 0;
 }//gag
 
 
-void freeze(int i_th, const String* targ, critter& pc) {
+int freeze(int i_th, const String* targ, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh??", pc);
-      return;
-   }//if
-
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    critter* crit = have_crit_named(pc_list, i_th, targ,
                                    pc.SEE_BIT, ROOM);
@@ -1653,12 +1541,12 @@ void freeze(int i_th, const String* targ, critter& pc) {
 
    if (!crit) {
       show("That person isn't logged on!\n", pc);
-      return;
+      return -1;
    }//if
 
    if (crit->pc->imm_data && (crit->IMM_LEVEL >= pc.IMM_LEVEL)) {
       show("Nice try, but you could NEVER freeze one so powerful!!\n", pc);
-      return;
+      return -1;
    }//if
 
    Sprintf(buf, "%S has frozen you!!\n", name_of_crit(pc, ~0));
@@ -1666,21 +1554,16 @@ void freeze(int i_th, const String* targ, critter& pc) {
    emote("gets out the freezer!!", pc, ROOM, TRUE);
    emote("will do no more!", *crit, room_list[crit->getCurRoomNum()], TRUE);
    crit->PC_FLAGS.turn_on(0);
+   return 0;
 }//freeze
 
 
-void ungag(int i_th, const String* targ, critter& pc) {
+int ungag(int i_th, const String* targ, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh??", pc);
-      return;
-   }//if
-
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    critter* crit = have_crit_named(pc_list, i_th, targ,
                                    pc.SEE_BIT, ROOM);
@@ -1691,12 +1574,12 @@ void ungag(int i_th, const String* targ, critter& pc) {
 
    if (!crit) {
       show("That person isn't logged on!\n", pc);
-      return;
+      return -1;
    }//if
 
    if (crit->pc->imm_data && (crit->IMM_LEVEL >= pc.IMM_LEVEL)) {
       show("Nice try, but that gag was put on by one too powerful!!\n", pc);
-      return;
+      return -1;
    }//if
 
    Sprintf(buf, "%S has ungagged you!!\n", name_of_crit(pc, ~0));
@@ -1704,21 +1587,16 @@ void ungag(int i_th, const String* targ, critter& pc) {
    emote("removes a gag!!", pc, ROOM, TRUE);
    emote("can speak once more!", *crit, room_list[crit->getCurRoomNum()], TRUE);
    crit->PC_FLAGS.turn_off(1);
+   return 0;
 }//ungag
 
 
-void thaw(int i_th, const String* targ, critter& pc) {
+int thaw(int i_th, const String* targ, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
-      show("Eh??", pc);
-      return;
-   }//if
-
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    critter* crit = have_crit_named(pc_list, i_th, targ,
                                    pc.SEE_BIT, ROOM);
@@ -1729,17 +1607,12 @@ void thaw(int i_th, const String* targ, critter& pc) {
 
    if (!crit) {
       show("That person isn't logged on!\n", pc);
-      return;
-   }//if
-
-   if (!crit->PC_FLAGS.get(0)) {
-     show("They aren't frozen.\n", pc);
-     return;
+      return -1;
    }//if
 
    if (crit->pc->imm_data && (crit->IMM_LEVEL >= pc.IMM_LEVEL)) {
       show("Nice try, but that freeze was put on by one too powerful!!\n", pc);
-      return;
+      return -1;
    }//if
 
    Sprintf(buf, "%S has thawed you out!!\n", name_of_crit(pc, ~0));
@@ -1747,33 +1620,30 @@ void thaw(int i_th, const String* targ, critter& pc) {
    emote("thaws 'em out!!", pc, ROOM, TRUE);
    emote("is warm once more!", *crit, room_list[crit->getCurRoomNum()], TRUE);
    crit->PC_FLAGS.turn_off(0);
+   return 0;
 }//thaw
 
 
-void value_set(int i_th, const String* targ, int val_idx,
-               int sell_val, int buy_val, critter& pc) {
+int value_set(int i_th, const String* targ, int val_idx,
+              int sell_val, int buy_val, critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) { 
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mFPS", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    critter* crit = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
 
    if (!crit) {
       pc.show("Set value for which shopkeeper??\n");
-      return;
+      return -1;
    }//if
 
    if (crit->isPlayerShopKeeper()) {
       if (crit->isManagedBy(pc)) {
          crit->valueSet(val_idx, sell_val, buy_val, pc); //will do msgs
          save_player_shop_owner(*crit);
+         return 0;
       }//if
       else {
          pc.show("You are not the manager of this shopkeeper.\n");
@@ -1782,69 +1652,63 @@ void value_set(int i_th, const String* targ, int val_idx,
    else {
       pc.show("That is not a player-run shopkeeper.\n");
    }//else
+   return -1;
 }//value_set
 
 
-void value_list(int i_th, const String* targ, critter& pc) {
+int value_list(int i_th, const String* targ, critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) { 
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mSFBP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    critter* crit = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
 
    if (!crit) {
       pc.show("List values for which shopkeeper??\n");
-      return;
+      return -1;
    }//if
 
    if (crit->isPlayerShopKeeper()) {
       crit->valueList(i_th, targ, pc);
+      return 0;
    }//if
    else {
       pc.show("That is not a player-run shopkeeper.\n");
    }//else
+   return -1;
 }//value_list
 
 
-void value_add(int i_th, const String* targ, int j_th,
+int value_add(int i_th, const String* targ, int j_th,
                const String* obj, critter& pc) {
    String buf(100);
    object* obj_ptr;
 
-   if (pc.isMob()) { 
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mSBFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    critter* crit = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
 
    if (!crit) {
       pc.show("Add value for which shopkeeper??\n");
-      return;
+      return -1;
    }//if
 
    obj_ptr = have_obj_named(pc.inv, j_th, obj, pc.SEE_BIT, ROOM);
 
    if (!obj_ptr) {
       pc.show("You don't have that object.\n");
-      return;
+      return -1;
    }//if
 
    if (crit->isPlayerShopKeeper()) {
       if (crit->isManagedBy(pc)) {
          crit->valueAdd(*obj_ptr, pc); //will do msgs
          save_player_shop_owner(*crit);
+         return 0;
       }//if
       else {
          pc.show("You are not the manager of this shopkeeper.\n");
@@ -1853,32 +1717,28 @@ void value_add(int i_th, const String* targ, int j_th,
    else {
       pc.show("That is not a player-run shopkeeper.\n");
    }//else
+   return -1;
 }//value_add
 
 
-void adjust_register(int i_th, const String* targ, int new_balance,
+int adjust_register(int i_th, const String* targ, int new_balance,
                      critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) { 
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mBSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (new_balance < 0) {
       pc.show("That balance is a little too low!\n");
-      return;
+      return -1;
    }//if
 
    critter* crit = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
 
    if (!crit) {
       pc.show("Balance the register for which shopkeeper??\n");
-      return;
+      return -1;
    }//if
 
    if (crit->isPlayerShopKeeper()) {
@@ -1889,6 +1749,7 @@ void adjust_register(int i_th, const String* targ, int new_balance,
             Sprintf(buf, "The shopkeeper holds %i coins.\n",
                     crit->GOLD);
             pc.show(buf);
+            return 0;
          }//if
          else {
             if (crit->GOLD > new_balance) {
@@ -1901,11 +1762,13 @@ void adjust_register(int i_th, const String* targ, int new_balance,
                crit->GOLD = new_balance;
                pc.show(buf);
                save_player_shop_owner(*crit);
+               return 0;
             }//if
             else {
                // gonna give some to the shopkeeper
                if ((new_balance - crit->GOLD) > pc.GOLD) {
                   pc.show("Nice try, but you don't have that much gold to give!\n");
+                  return -1;
                }
                else {
                   pc.GOLD -= (new_balance - crit->GOLD);
@@ -1914,6 +1777,7 @@ void adjust_register(int i_th, const String* targ, int new_balance,
                   crit->GOLD = new_balance;
                   pc.show(buf);
                   save_player_shop_owner(*crit);
+                  return 0;
                }//else
             }//else
          }//else
@@ -1925,32 +1789,29 @@ void adjust_register(int i_th, const String* targ, int new_balance,
    else {
       pc.show("That is not a player-run shopkeeper.\n");
    }//else
+   return -1;
 }//adjust_register
 
 
-void value_rem(int i_th, const String* targ, int val_idx, critter& pc) {
+int value_rem(int i_th, const String* targ, int val_idx, critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) { 
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mSBFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    critter* crit = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
 
    if (!crit) {
       pc.show("Add value for which shopkeeper??\n");
-      return;
+      return -1;
    }//if
 
    if (crit->isPlayerShopKeeper()) {
       if (crit->isManagedBy(pc)) {
          crit->valueRem(val_idx, pc); //will do msgs
          save_player_shop_owner(*crit);
+         return 0;
       }//if
       else {
          pc.show("You are not the manager of this shopkeeper.\n");
@@ -1959,26 +1820,22 @@ void value_rem(int i_th, const String* targ, int val_idx, critter& pc) {
    else {
       pc.show("That is not a player-run shopkeeper.\n");
    }//else
+   return -1;
 }//value_rem
 
 
-void consider(int i_th, const String* targ, critter& pc) {
+int consider(int i_th, const String* targ, critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) { 
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    critter* crit = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
 
    if (!crit) {
       pc.show("Consider who??\n");
-      return;
+      return -1;
    }//if
 
    int comp_val = pc.compareTo(*crit);
@@ -2045,16 +1902,16 @@ void consider(int i_th, const String* targ, critter& pc) {
 
    String cmd = "consider";
    ROOM.checkForProc(cmd, NULL_STRING, pc, crit->MOB_NUM);
+   return 0;
 }//consider
 
 
-void dsys(critter& pc) {
+int dsys(critter& pc) {
    String buf(100);
 
-   if (!pc.isImmort()) {
-      show("Eh??", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    Sprintf(buf, "Listening on port: %i\n", DFLT_PORT);
    pc.show(buf);
@@ -2140,123 +1997,87 @@ void dsys(critter& pc) {
            proc_action_rooms.getCurLen());
    pc.show(buf);
 
-
+   return 0;
 }//dsys
 
 
 int handle_olc(critter& pc, int do_sub) {
-   if (!pc->isImmort()) {
-      show("You are not cleared to build, talk to a god.\n");
+   if (!pc.isImmort()) {
+      pc.show("You are not cleared to build, talk to a god.\n");
+      return -1;
    }
-   else if (pc->imm_data->olc_counter > 0) {
+   else if (pc.pc->imm_data->olc_counter > 0) {
       restart_olc(pc);
+      return 0;
    }
    else {
       start_olc(pc);
-      processInput(pc->input, do_sub);
+      // This mostly just shows the prompt... --BLG
+      return pc.processInput(pc.pc->input, do_sub);
    }//else
 }
 
 
 /* this is the command called by the player, it parses and calls emote() */
-void com_emote(const String* msg, critter& pc) {
+int com_emote(const String* msg, critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) {
-      return;
-   }//if
-
-   if (pc.POS >= POS_SLEEP) {
-      show("You are to relaxed to do anything.\n", pc);
-      return;
-   }//if
-
-   if (pc.isGagged()) {
-      pc.show("You have been gagged already!\n");
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mrGFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (msg->Strlen() == 0) {
       show("What do you wish to emote?\n", pc);
-      return;
+      return -1;
    }//if
 
    emote(*msg, pc, ROOM, TRUE);  //do it then 
    Sprintf(buf, "%S %S\n", name_of_crit(pc, ~0), msg);
    buf.Cap();
    show(buf, pc);
+   return -1;
 }//com_emote
 
 
 /* Possessive Emote
  * this is the command called by the player, it parses and calls pemote()
  */
-void com_pemote(const String* msg, critter& pc) {
+int com_pemote(const String* msg, critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) {
-      return;
-   }//if
-
-   if (pc.POS >= POS_SLEEP) {
-      show("You are to relaxed to do anything.\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (pc.isGagged()) {
-      pc.show("You have been gagged already!\n");
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mrGFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (msg->Strlen() == 0) {
       show("What do you wish to emote?\n", pc);
-      return;
+      return -1;
    }//if
 
    pemote(*msg, pc, ROOM, TRUE);  //do it then 
    Sprintf(buf, "%S's %S\n", name_of_crit(pc, ~0), msg);
    buf.Cap();
    show(buf, pc);
+   return 0;
 }//com_pemote
 
 
 /* command called by pc as gecho() */
-void com_gecho(const String* msg, critter& pc) {
+int com_gecho(const String* msg, critter& pc) {
    String buf2(100);
 
-   if (!pc.pc || !pc.pc->imm_data || pc.IMM_LEVEL < 5) {
+   if (!ok_to_do_action(NULL, "mrGFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (pc.getImmLevel() < 5) {
       show("You haven't the power!\n", pc);
-      return;
-   }//if
-
-   if (pc.isGagged()) {
-      show("You are gagged!.\n", pc);
-      return;
-   }//if
-
-   if (pc.POS >= POS_SLEEP) {
-      show("You are to relaxed to do anything.\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (msg->Strlen() == 0) {
       show("What do you wish to gecho?\n", pc);
-      return;
+      return -1;
    }//if
 
    Cell<critter*> cll(pc_list);
@@ -2272,35 +2093,25 @@ void com_gecho(const String* msg, critter& pc) {
          show("\n", *ptr);
       }
    }//while
+   return 0;
 }//com_gecho
 
 
 
 /* command called by pc as recho(), room echo */
-void com_recho(const String* msg, critter& pc) {
+int com_recho(const String* msg, critter& pc) {
    String buf2(100);
 
    if ((pc.isImmort() && pc.IMM_LEVEL > 1) ||
        ((pc.isSmob() && !pc.isCharmed()))) {
 
-      if (pc.isGagged()) {
-         show("You are gagged!.\n", pc);
-         return;
-      }//if
-
-      if (pc.POS >= POS_SLEEP) {
-         show("You are to relaxed to do anything.\n", pc);
-         return;
-      }//if
-
-      if (pc.isFrozen()) {
-         show("You are too frozen to do anything.\n", pc);
-         return;
-      }//if
+      if (!ok_to_do_action(NULL, "rGFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+         return -1;
+      }
 
       if (msg->Strlen() == 0) {
          show("What do you wish to recho?\n", pc);
-         return;
+         return -1;
       }//if
       
       Cell<critter*> cll(ROOM.getCrits());
@@ -2316,39 +2127,30 @@ void com_recho(const String* msg, critter& pc) {
             show("\n", *ptr);
          }
       }//while
+      return 0;
    }//if
    else {
       show("You haven't the power!\n", pc);
+      return -1;
    }//if
 }//com_gecho
    
 
 
 /* command called by pc as recho(), room echo */
-void com_pecho(int i_th, const String* targ, const String* msg, critter& pc) {
+int com_pecho(int i_th, const String* targ, const String* msg, critter& pc) {
    String buf2(100);
 
    if ((pc.isImmort() && pc.IMM_LEVEL > 1) ||
        ((pc.isSmob() && !pc.isCharmed()))) {
 
-      if (pc.isGagged()) {
-         show("You are gagged!.\n", pc);
-         return;
-      }//if
-
-      if (pc.POS >= POS_SLEEP) {
-         show("You are to relaxed to do anything.\n", pc);
-         return;
-      }//if
-
-      if (pc.isFrozen()) {
-         show("You are too frozen to do anything.\n", pc);
-         return;
-      }//if
+      if (!ok_to_do_action(NULL, "rGFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+         return -1;
+      }
 
       if (msg->Strlen() == 0) {
          show("What do you wish to pecho?\n", pc);
-         return;
+         return -1;
       }//if
       
       critter* ptr; //targ
@@ -2364,41 +2166,33 @@ void com_pecho(int i_th, const String* targ, const String* msg, critter& pc) {
             show(*msg, *ptr);
             show("\n", *ptr);
          }
+         return 0;
       }//if
    }//if
    else {
       show("You haven't the power!\n", pc);
    }//if
+   return -1;
 }//com_pecho
    
 
 /* command called by pc as zecho(), zone echo */
-void com_zecho(const String* msg, critter& pc) {
+int com_zecho(const String* msg, critter& pc) {
    String buf2(100);
 
-   if (!pc.pc || !pc.pc->imm_data || pc.IMM_LEVEL < 5) {
+   if (!ok_to_do_action(NULL, "IGFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+
+   if (pc.IMM_LEVEL < 5) {
       show("You haven't the power!\n", pc);
-      return;
-   }//if
-
-   if (pc.isGagged()) {
-      show("You are gagged!.\n", pc);
-      return;
-   }//if
-
-   if (pc.POS >= POS_SLEEP) {
-      show("You are to relaxed to do anything.\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (msg->Strlen() == 0) {
       show("What do you wish to zecho?\n", pc);
-      return;
+      return -1;
    }//if
 
    Cell<critter*> cll(pc_list);
@@ -2416,42 +2210,32 @@ void com_zecho(const String* msg, critter& pc) {
          }
       }//while
    }//if
+   return 0;
 }//com_zecho
 
 
-void prone(critter& pc) {
+int prone(critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to go prone.\n");
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mBFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (pc.POS == POS_PRONE) {
       show("You are already prone.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (pc.POS == POS_STUN) {
       show("You can't seem to order your body into motion!\n", pc);
-      return;
+      return -1;
    }//if
 
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
    if (pc.POS == POS_SLEEP) {
       show("You are asleep!\n", pc);
-      return;
+      return -1;
    }//if
 
-
-   if (!IsEmpty(pc.IS_FIGHTING)) {
-      show("You can't very well go prone while fighting!\n", pc);
-      return;
-   }//if
 
    emote("drops to the ground in a prone position.", pc, ROOM, TRUE);
    show("You drop to the prone position.\n", pc);
@@ -2459,47 +2243,33 @@ void prone(critter& pc) {
 
    String cmd = "prone";
    ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
-
+   return 0;
 }//prone()
 
 
 /* ranged attack, pretty neat eh?? */
-void shoot(int i_th, const String* dir, int j_th, const String* mob, 
+int shoot(int i_th, const String* dir, int j_th, const String* mob, 
 	   critter& pc) {
    String buf(100);
    door* dptr;
    int dest;
    critter* targ;
 
-   if (pc.isMob()) { //if its a MOB
-      mudlog.log(ERR, "ERROR:  MOB trying to shoot, forgot mob_to_smob.\n");
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "SFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
-   if (pc.POS != POS_STAND) {
-      show("You are in no position to do that!\n", pc);
-      return;
-   }//if
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-   if (pc.isParalyzed()) {
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
 			/* check for exit */
 
    dptr = door::findDoor(ROOM.DOORS, i_th, dir, pc.SEE_BIT, ROOM);
    if (!dptr) {
       show("You can't find an exit in that direction.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (dptr->isClosed()) {
       show("That direction is closed.\n", pc);
-      return;
+      return -1;
    }//if
 
 		/* have door, its open */
@@ -2510,7 +2280,7 @@ void shoot(int i_th, const String* dir, int j_th, const String* mob,
 
    if (!targ) {
       show("You can't find your target.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (targ->isMob()) { //its a SMOB
@@ -2519,14 +2289,14 @@ void shoot(int i_th, const String* dir, int j_th, const String* mob,
    }//if
 
    if (!(targ = check_for_diversions(*targ, "GSM", pc)))
-     return;
+      return -1;
 
    /* can't guard w/out being a NON-MOB (ie PC or SMOB */
-   do_shoot(*targ, pc);
+   return do_shoot(*targ, pc);
 }//shoot
 
 
-void do_shoot(critter& targ, critter& pc) {
+int do_shoot(critter& targ, critter& pc) {
    String buf(100);
    Cell<object*> cll;
    object* ammo = NULL;
@@ -2534,7 +2304,7 @@ void do_shoot(critter& targ, critter& pc) {
 
    if ((targ.isMob()) || (pc.isMob())) {
       mudlog.log(ERR, "ERROR:  SMOB sent to do_shoot.\n");
-      return;
+      return -1;
    }//if
 
    if (can_start_battle(targ, pc, TRUE)) {
@@ -2542,7 +2312,7 @@ void do_shoot(critter& targ, critter& pc) {
 		         pc.EQ[9]->OBJ_FLAGS.get(47))) {
   	 show("You must be wielding a projectile weapon in order to shoot.\n",
 	      pc);
-	 return; 
+	 return -1;
       }//if
       if (pc.EQ[9]->OBJ_FLAGS.get(45)) { //needs ammo to work
 	 if (pc.EQ[9]->OBJ_FLAGS.get(46)) { //needs darts
@@ -2566,7 +2336,7 @@ void do_shoot(critter& targ, critter& pc) {
 
          if (!ammo) {
 	    show("You are out of ammo.\n", pc);
-	    return;
+	    return -1;
  	 }//if
       }//if needs ammo
 
@@ -2650,36 +2420,32 @@ void do_shoot(critter& targ, critter& pc) {
          delete ammo;
       }//if
    }//if
+   return 0;
 }//do_shoot
 
 
-void _throw(int i_th, const String* dir, int j_th, const String* mob, 
+int _throw(int i_th, const String* dir, int j_th, const String* mob, 
             critter& pc) {
    String buf(100);
    door* dptr;
    int dest;
    critter* targ;
 
-   if (pc.isMob()) { //if its a MOB
-      mudlog.log(ERR, "ERROR:  MOB trying to throw\n");
-      return;
-   }//if
-
-   if (!ok_to_cast_spell(NULL, "SPF", 0, pc)) {
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
 			/* check for exit */
 
    dptr = door::findDoor(ROOM.DOORS, i_th, dir, pc.SEE_BIT, ROOM);
    if (!dptr) {
       show("You can't find an exit in that direction.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (dptr->isClosed()) {
       show("That direction is closed.\n", pc);
-      return;
+      return -1;
    }//if
 
 		/* have door, its open */
@@ -2690,7 +2456,7 @@ void _throw(int i_th, const String* dir, int j_th, const String* mob,
 
    if (!targ) {
       show("You can't find your target.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (targ->isMob()) { //its a SMOB
@@ -2699,19 +2465,19 @@ void _throw(int i_th, const String* dir, int j_th, const String* mob,
    }//if
 
    if (!(targ = check_for_diversions(*targ, "GSM", pc)))
-     return;
+      return -1;
 
-   do_throw(*targ, pc);
+   return do_throw(*targ, pc);
 }//throw
 
 
-void do_throw(critter& targ, critter& pc) {
+int do_throw(critter& targ, critter& pc) {
    String buf(100);
    int posn;
 
    if ((targ.isMob()) || (pc.isMob())) {
       mudlog.log(ERR, "ERROR:  MOB sent to do_throw.\n");
-      return;
+      return -1;
    }//if
 
    if (pc.EQ[10])
@@ -2720,11 +2486,11 @@ void do_throw(critter& targ, critter& pc) {
       posn = 9;
    else {
       show("You must be holding or wielding something to throw it!\n", pc);
-      return;
+      return -1;
    }//else
    
    if (!obj_drop_by(*(pc.EQ[posn]), pc)) {//should messages too
-      return;
+      return -1;
    }//if can't get rid of it
 
    if (pc.EQ[posn]->OBJ_FLAGS.get(57)) { //if its a weapon
@@ -2828,10 +2594,11 @@ void do_throw(critter& targ, critter& pc) {
       room_list[targ.getCurRoomNum()].gainInv(pc.EQ[posn]);
       pc.EQ[posn] = NULL; //don't have it any more
    }//else, not a weapon
+   return 0;
 }//do_throw
 
 
-short did_shot_hit(critter& targ, critter& pc, int throwing = FALSE) {
+int did_shot_hit(critter& targ, critter& pc, int throwing = FALSE) {
    float pc_roll;
    float targ_roll;
 
@@ -2861,50 +2628,48 @@ short did_shot_hit(critter& targ, critter& pc, int throwing = FALSE) {
 }//did_shot_hit
 
 
-void zcreate(int num_rooms, const String* name, int num_ticks,
+int zcreate(int num_rooms, const String* name, int num_ticks,
 	     critter& pc) {
    String buf(100);
 
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
    if (pc.getImmLevel() < 9) {
       show("Eh?", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
+      return -1;
    }//if
 
    if ((num_rooms == 1) || (name->Strlen() == 0)) {
       show("Usage:  zcreate [num_rooms] [num_ticks] ['zone name'].\n", pc);
-      return;
+      return -1;
    }//if
 
    ZoneCollection::instance().createNewZone(pc, num_ticks, num_rooms, *name);
-
+   return 0;
 }//zcreate
 
 
-void zenable(int znum, const String* char_name, critter& pc) {
+int zenable(int znum, const String* char_name, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data || pc.IMM_LEVEL < 9) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
+   if (pc.getImmLevel() < 9) {
+      show("Eh?\n", pc);
+      return -1;
    }//if
 
    if (char_name->Strlen() == 0) {
       show("You need to specify a pc-name.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!check_l_range(znum, 0, NUMBER_OF_ZONES -1, pc, TRUE))
-      return;
+      return -1;
 
    ZoneCollection::instance().elementAt(znum).addOwner(*char_name);
 
@@ -2913,29 +2678,29 @@ void zenable(int znum, const String* char_name, critter& pc) {
    show(buf, pc);
 
    ZoneCollection::instance().writeSelf();
+   return 0;
 }//zenable
 
 
-void ch_zname(int znum, const String* new_name, critter& pc) {
+int ch_zname(int znum, const String* new_name, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data || pc.IMM_LEVEL < 9) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
+   if (pc.getImmLevel() < 9) {
+      show("Eh?\n", pc);
+      return -1;
    }//if
 
    if (new_name->Strlen() == 0) {
       show("You need to specify a new name.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!check_l_range(znum, 0, NUMBER_OF_ZONES -1, pc, TRUE))
-      return;
+      return -1;
 
    ZoneCollection::instance().elementAt(znum).setName(*new_name);
 
@@ -2944,82 +2709,88 @@ void ch_zname(int znum, const String* new_name, critter& pc) {
    show(buf, pc);
 
    ZoneCollection::instance().writeSelf();
+   return 0;
 }//zenable
 
 
-void zdisable(int znum, const String* char_name, critter& pc) {
+int zdisable(int znum, const String* char_name, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data || pc.IMM_LEVEL < 9) {
-      show("Eh?\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
-   if (pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
+   if (pc.getImmLevel() < 9) {
+      show("Eh?\n", pc);
+      return -1;
    }//if
 
    if (char_name->Strlen() == 0) {
       show("You need to specify a pc-name.\n", pc);
-      return;
+      return -1;
    }//if
 
    if (!check_l_range(znum, 0, NUMBER_OF_ZONES -1, pc, TRUE))
-      return;
+      return -1;
 
    if (ZoneCollection::instance().elementAt(znum).removeOwner(*char_name)) {
       Sprintf(buf, "You delete '%S' from the owners of zone# %i.\n",
               char_name, znum);
       show(buf, pc);
       ZoneCollection::instance().writeSelf();
+      return 0;
    }//if
    else {
       pc.show("Couldn't find that name in the list of owners.\n");
+      return -1;
    }//else
 }//zdisable
 
 
-void see_all(critter& pc) {
+int see_all(critter& pc) {
    if (pc.pc && pc.pc->imm_data) {
       pc.SEE_BIT |= 47;   //all normal, and imm_invis1
       if (pc.IMM_LEVEL >= 3)
-	pc.SEE_BIT |= 16;
+         pc.SEE_BIT |= 16;
       if (pc.IMM_LEVEL >= 5)
-	pc.SEE_BIT |= 64;
+         pc.SEE_BIT |= 64;
       if (pc.IMM_LEVEL >= 7)
-	pc.SEE_BIT |= 128;
+         pc.SEE_BIT |= 128;
       if (pc.IMM_LEVEL >= 9)
-	pc.SEE_BIT |= 256;
+         pc.SEE_BIT |= 256;
       if (pc.IMM_LEVEL >= 10)
-	pc.SEE_BIT |= 512;
+         pc.SEE_BIT |= 512;
       
       show("You may now detect all but the most powerful beings!\n", pc);
+      return 0;
    }//if
    else {
-     show("Eh??\n", pc);
+      show("Eh??\n", pc);
+      return -1;
    }//else
 }//see_all
 
 
-void wizinvis(critter& pc) {
+int wizinvis(critter& pc) {
    if (pc.pc && pc.pc->imm_data) {
       pc.VIS_BIT |= 8;   //imm_invis1
       if (pc.IMM_LEVEL >= 3)
-	pc.VIS_BIT |= 16;
+         pc.VIS_BIT |= 16;
       if (pc.IMM_LEVEL >= 5)
-	pc.VIS_BIT |= 64;
+         pc.VIS_BIT |= 64;
       if (pc.IMM_LEVEL >= 7)
-	pc.VIS_BIT |= 128;
+         pc.VIS_BIT |= 128;
       if (pc.IMM_LEVEL >= 9)
-	pc.VIS_BIT |= 256;
+         pc.VIS_BIT |= 256;
       if (pc.IMM_LEVEL >= 10)
-	pc.VIS_BIT |= 512;
+         pc.VIS_BIT |= 512;
       
       show("You are invisible to all but the most powerful beings!\n", pc);
+      return 0;
    }//if
    else {
-     show("Eh??\n", pc);
+      show("Eh??\n", pc);
+      return -1;
    }//else
 }//wizinvis
 
@@ -3027,23 +2798,25 @@ void wizinvis(critter& pc) {
 /* make yourself visible, for gods only, it could be some sort of punishment
    for mortals to be invisible, they will have to find some other way of
    making themselves visible */
-void visible(critter& pc) {
+int visible(critter& pc) {
    if (pc.pc && pc.pc->imm_data) {
       pc.VIS_BIT = 0;
       emote("fades into sight.", pc, ROOM, TRUE);
       show("Your corporal form rejoins the living world.\n", pc);
+      return 0;
    }//if
    else {
      show("Not that easy here...", pc);
+     return -1;
    }//else
 }//visible
 
 
-void describe(critter& pc) {
+int describe(critter& pc) {
 
    if (pc.isNpc()) {
       show("Eh??\n", pc);
-      return;
+      return -1;
    }//if
   
    show("Enter a new description for yourself.\n", pc);
@@ -3053,6 +2826,7 @@ void describe(critter& pc) {
 
    pc.long_desc.Clear();
    pc.setMode(MODE_CH_DESC);
+   return 0;
 }//describe
 
 

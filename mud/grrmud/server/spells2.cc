@@ -98,7 +98,7 @@ void cast_locate(int i_th, const String* victim, critter& pc) {
 
 
                        /* check out pc */
-   if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
       return;
    }//if
 
@@ -171,7 +171,7 @@ void cast_wizard_eye(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -234,7 +234,7 @@ void cast_recharge(int i_th, const String* victim, critter& pc) {
    }//if
 
 
-   if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -306,7 +306,7 @@ void cast_identify(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -391,7 +391,7 @@ void cast_bind_wound(int i_th, const String* victim, critter& pc) {
 			victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSNB", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNB", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -477,7 +477,7 @@ void cast_shadows_blessing(int i_th, const String* victim, critter& pc) {
 			victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -561,7 +561,7 @@ void cast_cure_blind(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -644,7 +644,7 @@ void cast_remove_poison(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -743,7 +743,7 @@ void cast_sleep(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSVN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSVN", spell_num, pc)) {
      return;
    }//if
 
@@ -821,7 +821,7 @@ void cast_strength(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -936,7 +936,7 @@ void cast_remove_curse(int i_th, const String* victim, critter& pc) {
    int spell_num = REMOVE_CURSE_SKILL_NUM;
    object* obj = NULL;
 
-   if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -1005,7 +1005,7 @@ void cast_curse(int i_th, const String* victim, critter& pc) {
        }//else
      }//else
      /* if here then have a valid object */
-     if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+     if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
        return;
      }//if
      do_cast_curse(*obj, pc, FALSE, 0);
@@ -1015,7 +1015,7 @@ void cast_curse(int i_th, const String* victim, critter& pc) {
        vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
 			  victim, pc.SEE_BIT);
      }//if
-     if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+     if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
        return;
      }//if
      do_cast_curse(*vict, pc, FALSE, 0);
@@ -1226,7 +1226,7 @@ void cast_blindness(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSVN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSVN", spell_num, pc)) {
      return;
    }//if
 
@@ -1320,7 +1320,7 @@ void cast_weaken(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSVN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSVN", spell_num, pc)) {
      return;
    }//if
 
@@ -1399,7 +1399,7 @@ void cast_fly(int i_th, const String* victim, critter& pc) {
 			victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -1487,7 +1487,7 @@ void cast_haste(int i_th, const String* victim, critter& pc) {
 			victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -1589,7 +1589,7 @@ void cast_dispell_magic(int i_th, const String* victim, critter& pc) {
 			victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KSNV", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -1668,7 +1668,7 @@ void cast_fireproof(int i_th, const String* victim, critter& pc) {
 			victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -1748,7 +1748,7 @@ void cast_magic_shield(int i_th, const String* victim, critter& pc) {
 			victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -1831,7 +1831,7 @@ void cast_sanctuary(int i_th, const String* victim, critter& pc) {
 			victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -1912,7 +1912,7 @@ void cast_prismatic_globe(int i_th, const String* victim, critter& pc) {
 			victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -1996,7 +1996,7 @@ void cast_stone_skin(int i_th, const String* victim, critter& pc) {
 			victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -2083,7 +2083,7 @@ void cast_armor(int i_th, const String* victim, critter& pc) {
 			victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -2154,7 +2154,7 @@ void cast_absorb_blows(critter& pc) {
    critter* vict = NULL;
    int spell_num = ABSORB_BLOWS_SKILL_NUM;
 
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -2238,7 +2238,7 @@ void cast_divine_protection(int i_th, const String* victim, critter& pc) {
 			victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_cast_spell(vict, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
                  /* all checks have been passed, lets do it */

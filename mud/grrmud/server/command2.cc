@@ -50,6 +50,7 @@ int score_long(critter& pc) {
 
    if (!pc.isPc()) {
       return -1;
+   }
 
    if (pc.possessing) {
       Sprintf(buf, "You are possessing:  %S.\n",
@@ -118,7 +119,6 @@ int score_long(critter& pc) {
    }//if has temp data
    return 0;
 }//score_long
-
 
 int score(const String* str2, critter& pc) {
    String buf2(100);
@@ -944,11 +944,12 @@ int save(critter& pc) {
 
    if (!pc.isPc()) {
       mudlog.log(ERR, "ERROR:  npc tried to save, was blocked...\n");
-      return;
+      return -1;
    }//if
 
    show("Saving.....\n", pc);
    pc.save();
+   return 0;
 }//save
 
 
@@ -1290,10 +1291,17 @@ int help(int i_th, String* command, critter& pc) {
 
    const char* parsed_cmd = parse_hlp_command(*command);
 
+   if (!parsed_cmd) {
+      // short cut this to look for skill/spell help first
+      if (SSCollection::instance().doHelpFor(*command, pc) >= 0) {
+         return 0;
+      }
+   }
+
    if (pc.pc->imm_data) {
       if (parsed_cmd) 
          Sprintf(cmd, "./Help/IMM_%s_%i", parsed_cmd, i_th);
-      else                 
+      else
          Sprintf(cmd, "./Help/IMM_help_%i", i_th);
 
       page = get_page(cmd);
@@ -1429,7 +1437,7 @@ int sell(int i_th, const String* item, int j_th, const String* keeper,
    mudlog.log(TRC, "In sell.\n");
 
    // Check for:  Standing, !battle, Paralyzed, Frozen,
-   if (!ok_to_cast_spell(NULL, "mSBPF", 1, pc)) {
+   if (!ok_to_do_action(NULL, "mSBPF", 1, pc)) {
       return -1;
    }//if
 
@@ -1678,7 +1686,7 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
 
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR: MOB trying to list_merchandise.\n");
-      return;
+      return -1;
    }//if
 
    if (ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -2614,6 +2622,7 @@ int do_dstat(door_data& dr, critter& pc) {
    Sprintf(buf2, "v_bit: %i  DOOR#: %i  key_num: %i  token_num: %i.\n", 
            dr.vis_bit, dr.door_num, dr.key_num, dr.token_num);
    show(buf2, pc);
+   return 0;
 }//do_dstat
 
 
@@ -2674,7 +2683,8 @@ int log_level(int lvl, critter& pc) {
 int rezone(critter& pc) { //forces reload of zone in which pc is
    if (ok_to_do_action(NULL, "IRF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       show("Reloading zone...\n", pc);
-      return update_zone(ROOM.getZoneNum(), FALSE);
+      update_zone(ROOM.getZoneNum(), FALSE);
+      return 0;
    }
    return -1;
 }//rezone();

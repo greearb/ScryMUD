@@ -1131,7 +1131,7 @@ void room::doPoofOut(critter& pc) {
 }//doPoofOut
 
 
-void room::doRclear(int new_rm_num) {
+int room::doRclear(int new_rm_num) {
    critter* crit_ptr;
 
    while (!critters.isEmpty()) {
@@ -1153,10 +1153,11 @@ void room::doRclear(int new_rm_num) {
    }//while
 
    Clear();  //clear out the room pc WAS in!!
+   return 0;
 }//doRclear
 
 
-void room::doScan(critter& pc) {
+int room::doScan(critter& pc) {
    String buf(100);
    Cell<door*> dcll(doors);
    Cell<critter*> cll;
@@ -1191,6 +1192,7 @@ void room::doScan(critter& pc) {
          }//if
       }//if
    }//while
+   return 0;
 }//doScan
 
 void room::doPoofIn(critter& pc) {

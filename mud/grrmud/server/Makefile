@@ -47,9 +47,9 @@ $(OBJS): %.o: %.cc %.h
 	$(CC) $(CCFLAGS) \
 	-c $<
 
-parse_gen.cc: parse_gen.h
+parse_gen.cc: code_gen.h code_gen.cc ${GEN_SPEC}
 
-parse_gen.h: ${CODE_GEN_TARG} ${GEN_SPEC}
+parse_gen.h: code_gen.h code_gen.cc ${GEN_SPEC}
 	${CODE_GEN_TARG} ${GEN_SPEC} parse_gen.cc parse_gen.h
 
 $(CODE_GEN_OBJS): %.o: %.cc %.h
@@ -66,7 +66,7 @@ depend:
 	makedepend $(SRCS)
 
 clean:
-	rm -f *.o
+	rm -f *.o parse_gen.cc parse_gen.h
 	${MAKE} -C ../../lib clean
 
 purge: clean

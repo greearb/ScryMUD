@@ -35,38 +35,38 @@
 #define EARTHMELD_NON_BATTLE_MANA_COST 1
 
 
-void bash(int i_th, const String* vict, critter& pc);
-void do_bash(critter& vict, critter& pc);
-void do_bash(door& vict, critter& pc);
+int bash(int i_th, const String* vict, critter& pc);
+int do_bash(critter& vict, critter& pc);
+int do_bash(door& vict, critter& pc);
 
-void block(int i_th, const String* vict, critter& pc);
-void do_block(critter& vict, critter& pc);
-void do_block(door& vict, critter& pc);
+int block(int i_th, const String* vict, critter& pc);
+int do_block(critter& vict, critter& pc);
+int do_block(door& vict, critter& pc);
 
-void claw(int i_th, const String* vict, critter& pc);
-void do_claw(critter& vict, critter& pc);
+int claw(int i_th, const String* vict, critter& pc);
+int do_claw(critter& vict, critter& pc);
 
-void kick(int i_th, const String* vict, critter& pc);
-void do_kick(critter& vict, critter& pc);
+int kick(int i_th, const String* vict, critter& pc);
+int do_kick(critter& vict, critter& pc);
 
-void steal(int i_th, const String* obj, int j_th, const String* vict,
+int steal(int i_th, const String* obj, int j_th, const String* vict,
 	   critter& pc);
-void do_steal(object* obj, critter& vict, critter& pc, short is_gold = FALSE);
+int do_steal(object* obj, critter& vict, critter& pc, short is_gold = FALSE);
 
-void trip(int i_th, const String* vict, critter& pc);
-void do_trip(critter& vict, critter& pc);
+int trip(int i_th, const String* vict, critter& pc);
+int do_trip(critter& vict, critter& pc);
 
-void construct(critter& pc, short do_mob = FALSE);
-void concoct(critter& pc, short do_mob = FALSE);
+int construct(critter& pc, short do_mob = FALSE);
+int concoct(critter& pc, short do_mob = FALSE);
 
-void scribe(const String* spell, critter& pc, short do_mob = FALSE);
-void track(int i_th, const String* vict, critter& pc);
+int scribe(const String* spell, critter& pc, short do_mob = FALSE);
+int track(int i_th, const String* vict, critter& pc);
 
-void sneak(critter& pc, int smob_too = FALSE);
-void hide(critter& pc, int smob_too = FALSE);
-void blend(critter& pc, int smob_too = FALSE);
+int sneak(critter& pc, int smob_too = FALSE);
+int hide(critter& pc, int smob_too = FALSE);
+int blend(critter& pc, int smob_too = FALSE);
 
-void scan(critter& pc);
+int scan(critter& pc);
 
 
 ///*****************  auxillary functions  ***************************///

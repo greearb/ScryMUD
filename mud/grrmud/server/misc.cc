@@ -1892,6 +1892,7 @@ short is_newbie_banned(const String& ip) {
    return FALSE;
 }//is_newbie_banned
 
-short detect(int see_bit, int vis_bit) {
+
+int detect(int see_bit, int vis_bit) {
    return ((see_bit & vis_bit) == vis_bit);
 }//detect

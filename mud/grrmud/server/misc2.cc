@@ -337,10 +337,10 @@ void show_stat_affects(object& obj, critter& pc) {
 
 
 /** Tests this performs:  B(!pc in_battle)  C(owns aux_crit) F(frozen)
- *                        I(is immort) K(know spell), M(has mana), 
+ *                        G(!gagged) I(is immort) K(know spell), M(has mana), 
  *                        m(!mob, smob ok), N(!magic),
- *                        P(paralyzed), R(owns aux_rm)
- *                        S(is_standing), V(!violence), 
+ *                        P(paralyzed), R(owns aux_rm), r(resting or standing)
+ *                        S(is_standing), V(!violence), Z(room is zlocked)
  *                                                
  *  Case matters.
  */
@@ -387,6 +387,14 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
            return FALSE;
         }//if
      }//if    
+     else if (chr == 'G') {
+        if (pc.isGagged()) {
+           if (do_msg) {
+              show("You have been gagged.\n", pc);
+              return FALSE;
+           }//if
+        }
+     }
      else if (chr == 'P') {
         if (pc.CRIT_FLAGS.get(14)) {
            if (do_msg) {
@@ -397,14 +405,6 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
      }//if    
      else if (chr == 'F') {
         if (pc.pc && pc.PC_FLAGS.get(0)) {
-           if (do_msg) {
-              show("You are frozen!\n", pc);
-           }//if
-           return FALSE;
-        }//if
-     }//if
-     else if (chr == 'F') {
-        if (pc.pc && pc.CRIT_FLAGS.get(0)) {
            if (do_msg) {
               show("You are frozen!\n", pc);
            }//if
@@ -444,15 +444,23 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
         }//if
      }//if
      else if (chr == 'R') {
-        if (!pc.doesOwnRoom(*aux_rm)) {
+        if (!aux_rm || !pc.doesOwnRoom(*aux_rm)) {
            if (do_msg) {
               pc.show("You do not own that room.\n");
            }//if
            return FALSE;
         }//if
      }//if
+     else if (chr == 'Z') {
+        if (!aux_rm || aux_rm->isZlocked()) {
+           if (do_msg) {
+              show("You cannot edit a room that is not locked.\n", pc);
+           }//if
+           return FALSE;
+        }//if
+     }//if
      else if (chr == 'C') {
-        if (!pc.doesOwnCrit(*aux_crit)) {
+        if (!pc.doesOwnCritter(*aux_crit)) {
            if (do_msg) {
               pc.show("You do not own that critter.\n");
            }//if
@@ -1574,22 +1582,22 @@ void out_field(const bitfield& field, critter& pc) {
 }//out_field
 
    
-void critter::doBecomeNonPet() {
+int critter::doBecomeNonPet() {
    String buf(100);
 
    if (isMob()) {
       mudlog.log(ERR, "ERROR:  mob sent to unpet.\n");
-      return;
+      return -1;
    }//if
 
    if (!MASTER) {
-      return;
+      return -1;
    }//if
 
    MASTER->PETS.loseData(this); //master no longer has pc as pet...
    MASTER = NULL;   // slave of none
 
-   doUngroup(1, &NULL_STRING);
+   return doUngroup(1, &NULL_STRING);
 }//unpet
 
 

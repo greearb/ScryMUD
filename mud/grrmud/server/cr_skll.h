@@ -30,10 +30,10 @@
 #include "classes.h"
 #include "spells.h"
 
-void skin(int i_th, const String* vict, critter& pc);
-void do_skin(object& vict, critter& pc);
-void butcher(int i_th, const String* vict, critter& pc);
-void do_butcher(object& vict, critter& pc);
+int skin(int i_th, const String* vict, critter& pc);
+int do_skin(object& vict, critter& pc);
+int butcher(int i_th, const String* vict, critter& pc);
+int do_butcher(object& vict, critter& pc);
 
 
 ///*****************  auxillary functions  ***************************///

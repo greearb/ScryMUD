@@ -723,9 +723,9 @@ public:
    const String* getLongName(int see_bit) const { return getName(see_bit); }
    const String* getShortName() const { return getShortName(~0); }
    const String* getShortName(int see_bit) const ;
-   void doBecomeNonPet(); //misc2.cc
-   void doUngroup(int i_th, const String* vict); //command2.cc
-   void doFollow(critter& pc, int do_msgs = TRUE);
+   int doBecomeNonPet(); //misc2.cc
+   int doUngroup(int i_th, const String* vict); //command2.cc
+   int doFollow(critter& pc, int do_msgs = TRUE);
 
    int getNakedWeight() const;
    PcMode getMode() { return pc->mode; }

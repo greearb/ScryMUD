@@ -376,7 +376,7 @@ void critter::doLogin() {
 }//do_login
 
 
-void  quit_do_login_new(critter& pc) {
+int  quit_do_login_new(critter& pc) {
    int i;
    //log("in quit_do_login_new\n");
 
@@ -578,11 +578,12 @@ void  quit_do_login_new(critter& pc) {
    look(1, &NULL_STRING, pc); //autolook
    show("\r\nIf your screen is 'stair-stepped', type:  toggle carriage\n",
 	pc);
+   return 0;
 }//quit_do_login_new()
  
 
 
-void  quit_do_login_old(critter& pc) {
+int  quit_do_login_old(critter& pc) {
    String temp_str(100);
       
    mudlog.log(TRC, "In quit_do_login_old\n");
@@ -644,7 +645,7 @@ void  quit_do_login_old(critter& pc) {
    look(1, &NULL_STRING, pc); //autolook
 
    recursive_init_loads(pc); //update stuff in game, like IN_GAME count
-
+   return 0;
 }//quit_do_login_old()
 
 

@@ -69,6 +69,7 @@ int  create_pc(critter& pc); //prompts for name, password...creates
 int  add_obj_to_permlist(const object& obj); 
 void close_files();  
 
+int detect(int see_bit, int vis_bit); //does bit comparison
 
 void show(const char* message, critter& pc);
 void show_all_but_2(critter& A, critter& B, const char* message, 

@@ -36,12 +36,12 @@
 
 
 
-void skin(int i_th, const String* vict, critter& pc) {
+int skin(int i_th, const String* vict, critter& pc) {
    int skill_num = SKIN_SKILL_NUM;
    object* obj;
 
-   if (!ok_to_cast_spell(NULL, "SPF", skill_num, pc)) {
-     return;
+   if (!ok_to_do_action(NULL, "mBSPFK", skill_num, pc)) {
+      return -1;
    }//if     
 
    int in_rm = FALSE;
@@ -52,7 +52,7 @@ void skin(int i_th, const String* vict, critter& pc) {
    }//if
    if (!obj) {
       show("You don't see that here.\n", pc); 
-      return;
+      return -1;
    }//if
 
    if (!obj->IN_LIST) {
@@ -64,11 +64,11 @@ void skin(int i_th, const String* vict, critter& pc) {
 			   pc.SEE_BIT, ROOM);
    }//if
 
-   do_skin(*obj, pc); 
+   return do_skin(*obj, pc); 
 }//skin
 
 
-void do_skin(object& obj, critter& pc) {
+int do_skin(object& obj, critter& pc) {
    String buf(100);
 
    if ((obj.ob->obj_proc && obj.ob->obj_proc->skin_ptr &&
@@ -79,7 +79,7 @@ void do_skin(object& obj, critter& pc) {
 	  !obj.ob->obj_proc->skin_ptr ||
 	  !obj.ob->obj_proc->skin_ptr->OBJ_FLAGS.get(10)) { //not in use?
 	 show("This thing doesn't have a skin!.\n", pc);
-	 return;
+	 return -1;
       }//if
 
       pc.gainInv(obj.ob->obj_proc->skin_ptr);
@@ -95,7 +95,7 @@ void do_skin(object& obj, critter& pc) {
       if (!obj.ob->obj_proc ||
 		!obj.ob->obj_proc->obj_spec_data_flags.get(2)) {
 	 show("It doesn't have a skin.\n", pc);
-	 return;
+	 return -1;
       }//if
 
       obj.ob->obj_proc->obj_spec_data_flags.turn_off(2);
@@ -113,38 +113,18 @@ void do_skin(object& obj, critter& pc) {
 		long_name_of_obj(obj, ~0));      
       show(buf, pc);
    }//else
-
+   return 0;
 }//do_skin
 
 
 
-void butcher(int i_th, const String* vict, critter& pc) {
+int butcher(int i_th, const String* vict, critter& pc) {
    int skill_num = BUTCHER_SKILL_NUM;
    object* obj;
 
-   if (pc.isMob()) {
-      return; 
-   }//if
-
-   if (get_percent_lrnd(skill_num, pc) == -1) {
-      show("You wouldn't even know where to start!\n", pc); 
-      return; 
-   }//if
-
-   if (pc.POS > POS_REST) {
-      show("You are too relaxed.\n", pc); 
-      return; 
-   }//if
-
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc); 
-      return; 
-   }//if
-
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed return; 
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mBSPF", skill_num, pc)) {
+      return -1;
+   }//if     
 
    int in_rm = FALSE;
    obj = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT, ROOM);
@@ -154,12 +134,12 @@ void butcher(int i_th, const String* vict, critter& pc) {
    }//if
    if (!obj) {
       show("You don't see that here.\n", pc); 
-      return;
+      return -1;
    }//if
 
    if (!obj->OBJ_FLAGS.get(75)) {
-     show("This doesn't look the least bit edible!!\n", pc);
-     return;
+      show("This doesn't look the least bit edible!!\n", pc);
+      return -1;
    }//if
 
    if (!obj->IN_LIST) {
@@ -171,16 +151,16 @@ void butcher(int i_th, const String* vict, critter& pc) {
 			   pc.SEE_BIT, ROOM);
    }//if
 
-   do_butcher(*obj, pc); 
+   return do_butcher(*obj, pc); 
 }//butcher
 
 
-void do_butcher(object& obj, critter& pc) {
+int do_butcher(object& obj, critter& pc) {
    String buf(100);
 
    if (!obj.OBJ_FLAGS.get(75)) {
-     show("This doesn't look the least bit edible!!\n", pc);
-     return;
+      show("This doesn't look the least bit edible!!\n", pc);
+      return -1;
    }//if
 
    if (skill_did_hit(pc, BUTCHER_SKILL_NUM, pc)) {
@@ -194,10 +174,11 @@ void do_butcher(object& obj, critter& pc) {
          emote(buf, pc, ROOM, TRUE);
          Sprintf(buf, "You butcher %S.\n", long_name_of_obj(obj, ~0));      
          show(buf, pc);
+         return 0;
       }//if
       else {
 	 show("BUG, my gawd, you've found a BUG!!\n", pc);
-	 return;
+	 return -1;
       }//if
    }//if skill worked
    else {
@@ -210,7 +191,8 @@ void do_butcher(object& obj, critter& pc) {
      emote(buf, pc, ROOM, TRUE);
 
      obj.OBJ_FLAGS.turn_off(75);
-   }//else
+     return -1;
+   }//else   
 }//do_skin
 
 

@@ -30,7 +30,7 @@
 #include "classes.h"
 #include "spells.h"
 
-void berserk(critter& pc);
-void do_berserk(critter& pc);
+int berserk(critter& pc);
+int do_berserk(critter& pc);
  
 #endif 

@@ -36,41 +36,28 @@
 
 
 
-void berserk(critter& pc) {
+int berserk(critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  smob trying to berserk..\n");
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mVSPF", 0, pc)) {
+      return -1;
+   }//if     
 
-   if (ROOM.isHaven()) {
-      show("You can't bring yourself to perform violence here.\n", pc);
-      return;
-   }//if
-
-   if (pc.POS != POS_STAND) {
-      show("You can't hardly go berserk on your butt!!\n", 
-            pc);
-      return;
-   }//if
-
-   do_berserk(pc);
-
+   return do_berserk(pc);
 }//berserk
 
 
-void do_berserk(critter& pc) {
+int do_berserk(critter& pc) {
    String buf(100);
 
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB sent to do_berserk.\n");
-      return;
+      return -1;
    }//if
 
    if (pc.MOV < 35) {
       show("You are too exhausted!\n", pc);
-      return;
+      return -1;
    }//if
 
    List<critter*> tmp_lst(ROOM.getCrits());
@@ -114,6 +101,7 @@ void do_berserk(critter& pc) {
       }//while
       if (!flag) {
          show("There is no one here to go berserk on!!\n", pc);
+         return -1;
       }//if
       else {
          pc.MOV -= 35;
@@ -122,7 +110,9 @@ void do_berserk(critter& pc) {
    else {
       show("You trip and nearly break a leg!!\n", pc);
       emote("gets all riled up nearly trips!!\n", pc, ROOM, TRUE);
+      return -1;
    }//else
+   return 0;
 }//do_berserk
 
 

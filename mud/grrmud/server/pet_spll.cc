@@ -57,7 +57,7 @@ void cast_charm(int i_th, const String* vict, critter& pc) {
                         pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(ptr, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(ptr, "KMSNV", spell_num, pc)) {
      return;
    }//if
 
@@ -144,7 +144,7 @@ void cast_mass_charm(critter& pc) {
    critter* ptr;
    int spell_num = MASS_CHARM_SKILL_NUM;
 
-   if (!ok_to_cast_spell(ptr, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(ptr, "KMSNV", spell_num, pc)) {
       return;
    }//if
 
@@ -262,7 +262,7 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
 void cast_raise_undead(critter& pc) {
    int spell_num = RAISE_UNDEAD_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSNB", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNB", spell_num, pc)) {
      return;
    }//if
 
@@ -336,7 +336,7 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
 void cast_create_golem(critter& pc) {
    int spell_num = CREATE_GOLEM_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSNB", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNB", spell_num, pc)) {
      return;
    }//if
 
@@ -390,7 +390,7 @@ void do_cast_create_light(critter& pc, int is_canned, int lvl) {
 void cast_create_light(critter& pc) {
    int spell_num = CREATE_LIGHT_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -443,7 +443,7 @@ void do_cast_create_food(critter& pc, int is_canned, int lvl) {
 void cast_create_food(critter& pc) {
    int spell_num = CREATE_FOOD_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -514,7 +514,7 @@ void do_cast_heros_feast(critter& pc, int is_canned, int lvl) {
 void cast_heros_feast(critter& pc) {
    int spell_num = HEROS_FEAST_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -586,7 +586,7 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
 void cast_illusion(critter& pc) {
    int spell_num = ILLUSION_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSN", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -673,7 +673,7 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
 void cast_conjure_minion(critter& pc) {
    int spell_num = CONJURE_MINION_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSNB", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNB", spell_num, pc)) {
      return;
    }//if
 
@@ -684,7 +684,7 @@ void cast_conjure_minion(critter& pc) {
 void cast_conjure_horde(critter& pc) {
    int spell_num = CONJURE_HORDE_SKILL_NUM;
 
-   if (!ok_to_cast_spell(NULL, "KMSNB", spell_num, pc)) {
+   if (!ok_to_do_action(NULL, "KMSNB", spell_num, pc)) {
      return;
    }//if
 

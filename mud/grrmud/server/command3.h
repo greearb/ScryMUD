@@ -30,56 +30,56 @@
 #include "const.h"
 #include "classes.h"
 
-void oclone(int i_th, const String* name, critter& pc);
-void mclone(int i_th, const String* name, critter& pc);
-void oload(int i_th, const String* name, critter& pc);
-void mload(int i_th, const String* name, critter& pc);
-void rclone(int i_th, const String* direction, int distance, critter& pc);
-void rinit(int src_room, int dest_rm, critter& pc);
+int oclone(int i_th, const String* name, critter& pc);
+int mclone(int i_th, const String* name, critter& pc);
+int oload(int i_th, const String* name, critter& pc);
+int mload(int i_th, const String* name, critter& pc);
+int rclone(int i_th, const String* direction, int distance, critter& pc);
+int rinit(int src_room, int dest_rm, critter& pc);
 
-void wield(int i_th, const String* name, critter& pc);
-void hold(int i_th, const String* name, critter& pc);
-void flee(critter& pc, int& is_dead);
-void flee_to_safety(critter& pc, int& is_dead);  // MOB PROC
-void slay(int i_th, const String* name, critter& pc);
+int wield(int i_th, const String* name, critter& pc);
+int hold(int i_th, const String* name, critter& pc);
+int flee(critter& pc, int& is_dead);
+int flee_to_safety(critter& pc, int& is_dead);  // MOB PROC
+int slay(int i_th, const String* name, critter& pc);
 
 // Dealing with active (zunlocked) zones.
-void addZone(int i, critter& pc);
-void showZones(critter& pc);
-void remZone(int i, critter& pc);
+int addZone(int i, critter& pc);
+int showZones(critter& pc);
+int remZone(int i, critter& pc);
 
 
-void junk(int i_th, const String* str1, const String* str2, critter& pc);
-void silent_junk(int i_th, const String* str1, const String* str2,
+int junk(int i_th, const String* str1, const String* str2, critter& pc);
+int silent_junk(int i_th, const String* str1, const String* str2,
                  critter& pc);
-void do_junk(int do_msg, int i_th, const String* str1,
+int do_junk(int do_msg, int i_th, const String* str1,
              const String* str2, critter& pc);
 
-void enslave(int i_th, const String* name, critter& pc);
-void time(critter& pc);
-void order(String* str, critter& pc);
-void force(String* str, critter& pc);
-void force_all(String* str, critter& pc);
-void date(critter& pc);
-void group(int i_th, const String* name, critter& pc);
+int enslave(int i_th, const String* name, critter& pc);
+int time(critter& pc);
+int order(String* str, critter& pc);
+int force(String* str, critter& pc);
+int force_all(String* str, critter& pc);
+int date(critter& pc);
+int group(int i_th, const String* name, critter& pc);
 
-void tail(int i_th, const String* name, critter& pc, int do_smob = FALSE);
-void follow(int i_th, const String* name, critter& pc, int do_msg = TRUE);
-//void critter::doFollow(critter& vict, int do_msg = TRUE);
+int tail(int i_th, const String* name, critter& pc, int do_smob = FALSE);
+int follow(int i_th, const String* name, critter& pc, int do_msg = TRUE);
+//int critter::doFollow(critter& vict, int do_msg = TRUE);
 
-void do_tell(critter& pc, const char* msg, critter& targ, short show_teller,
+int do_tell(critter& pc, const char* msg, critter& targ, short show_teller,
 	     int room_num_of_targ); //last arg is for mob_to_smob in spec procs
-void tell(int i_th, const String* targ, const char* msg, critter& pc);
+int tell(int i_th, const String* targ, const char* msg, critter& pc);
 
-void who(critter& pc);
-void ldwho(critter& pc);
-void sockets(critter& pc);  //verbose who/ldwho
+int who(critter& pc);
+int ldwho(critter& pc);
+int sockets(critter& pc);  //verbose who/ldwho
 
-void idea(const String& str, critter& pc);
-void bug(const String& str, critter& pc);
-void use(int i_th, const String* target, critter& pc); // must be holding
-void recite(int i_th, const String* target, int j_th, const String* vict, 
+int idea(const String& str, critter& pc);
+int bug(const String& str, critter& pc);
+int use(int i_th, const String* target, critter& pc); // must be holding
+int recite(int i_th, const String* target, int j_th, const String* vict, 
             critter& pc); //can be holding, but no have to
-void quaf(int i_th, const String* potion, critter& pc); //only target user
+int quaf(int i_th, const String* potion, critter& pc); //only target user
 
 #endif //include

@@ -62,16 +62,16 @@ int gossip(const char* message, critter& pc);
 int group_say(const char* message, critter& pc);
 int wizchat(const char* message, critter& pc);
 int auction(const char* message, critter& pc);
-int west(critter& pc, room& rm);
-int east(critter& pc, room& rm);
-int south(critter& pc, room& rm);
-int north(critter& pc, room& rm);
-int northwest(critter& pc, room& rm);
-int southwest(critter& pc, room& rm);
-int southeast(critter& pc, room& rm);
-int northeast(critter& pc, room& rm);
-int up(critter& pc, room& rm);
-int down(critter& pc, room& rm);
+int west(critter& pc, room& rm, int& is_dead);
+int east(critter& pc, room& rm, int& is_dead);
+int south(critter& pc, room& rm, int& is_dead);
+int north(critter& pc, room& rm, int& is_dead);
+int northwest(critter& pc, room& rm, int& is_dead);
+int southwest(critter& pc, room& rm, int& is_dead);
+int southeast(critter& pc, room& rm, int& is_dead);
+int northeast(critter& pc, room& rm, int& is_dead);
+int up(critter& pc, room& rm, int& is_dead);
+int down(critter& pc, room& rm, int& is_dead);
 int remove(int i_th, const String* obj, critter& pc); 
 int rest(critter& pc);
 int sleep(critter& pc);
@@ -104,7 +104,6 @@ int quit_do_login_old(critter& pc);
 ///*********************  auxillary functions  ***********************///
 
 int source_give_to(critter& pc, object& obj, critter& targ); //does msgs
-int detect(int see_bit, int vis_bit); //does bit comparison
 int move(critter& pc, int i_th, const char* direction, short do_followers,
           room& cur_room, int& is_dead);
 int don_obj(object& obj, critter& pc);

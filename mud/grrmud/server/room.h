@@ -235,8 +235,8 @@ public:
 
    virtual void doPoofOut(critter& pc);
    virtual void doPoofIn(critter& pc);
-   virtual void doScan(critter& pc);
-   virtual void doRclear(int new_rm_num);
+   virtual int doScan(critter& pc);
+   virtual int doRclear(int new_rm_num);
    virtual void loseObjectFromGame(object& which_un);
 
    /* this returns the critter if exists.  rm_num is the number of

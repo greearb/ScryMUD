@@ -35,6 +35,7 @@
 #define NUMBER_OF_SKILL_SPELLS          400
 
 class object;
+class critter;
 
 class SkillSpell {
  protected:
@@ -94,7 +95,8 @@ class SSCollection {
    int getNumForName(const String& name);
    void read();
    void treeInsert(const String& ss_name, int ss_num);
-   
+   int doHelpFor(const String& key, critter& pc);
+
    String generateGifDotScript();
    String generatePsDotScript();
    String generateHtml();

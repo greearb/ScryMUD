@@ -47,19 +47,21 @@ protected:
 
 public:
    CmdSpecifier(const char* w, int l, CmdId cmd_id, const char* help_key)
-         : word(w), len(l), id(cmd_id), hlp_key(help_key), next(NULL)
-      { _cnt++; word.toUpper(); }
+         : word(w), hlp_key(help_key), len(l), id(cmd_id), next(NULL)
+      { _cnt++; word.Tolower(); }
    CmdSpecifier(const char* w, int l) 
          : word(w), len(l), id(ci_UNKNOWN), next(NULL)
-      { _cnt++; word.toUpper()}
+      { _cnt++; word.Tolower(); }
    CmdSpecifier() 
          : len(0), id(ci_UNKNOWN), next(NULL)
-      { _cnt++; word.toUpper()}
+      { _cnt++; word.Tolower(); }
    ~CmdSpecifier() { _cnt--; }
 
    int doesMatch(const CmdSpecifier& src) {
       return *this == src;
    }
+
+   String toString();
 
    int operator==(const CmdSpecifier& src) {
       return (strncasecmp(word, src.word, max(len, src.len)) == 0);
@@ -73,11 +75,11 @@ public:
       return (strncasecmp(word, src.word, max(len, src.len)) > 0);
    }
 
-   unsigned int hash() { return word.hash(); }
+   //unsigned int hash() { return word.hash(); }
    String getHelpKey() const { return hlp_key; }
    CmdId getId() const { return id; }
    CmdSpecifier* getNext() const { return next; }
-   
+   String getCmd() const { return word; }
    void setNext(CmdSpecifier* ptr) { next = ptr; }
 
    static int getInstanceCount() { return _cnt; }
@@ -99,6 +101,12 @@ public:
 
    // can return NULL
    const CmdSpecifier* findSpecifierFor(const CmdSpecifier* cs);
+
+   int calculateIndex(char val) {
+      //convert to upper, subtract A, then hash
+      return ((toupper(val) - 'A') % CMD_ARRAY_LEN);
+   }
+
 
 };
 

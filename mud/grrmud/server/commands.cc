@@ -47,7 +47,7 @@
 #include "load_wld.h"
 
 
-void inventory(critter& pc) {
+int inventory(critter& pc) {
    String buf(100);
    
    if (mudlog.ofLevel(DBG)) {
@@ -57,10 +57,11 @@ void inventory(critter& pc) {
 
    show("Your inventory:  \n", pc);
    out_inv(pc.inv, pc, CRIT_INV);
+   return 0;
 }//inventory
 
 
-void drop(int i_th, const String* pre_obj, const String* obj_all,
+int drop(int i_th, const String* pre_obj, const String* obj_all,
           critter& pc) {
    object *obj_ptr;
    Cell<object*> cell(pc.inv);
@@ -69,35 +70,13 @@ void drop(int i_th, const String* pre_obj, const String* obj_all,
 
    mudlog.log(TRC, "In drop.\n");
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to drop.\n");
-      return;
-   }//if
-
-   if (!pre_obj || !obj_all) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to drop().\n");
-      return;
-   }//if
-
-   if (pc.POS > POS_REST) {
-      show("You aren't in a lively enough position to drop something.\n", 
-            pc);
-      return;
-   }//if
-
-   if (pc.isParalyzed()) {
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if ((pre_obj->Strlen() == 0) && (obj_all->Strlen() == 0)) {
       pc.show("Drop what??\n");
-      return;
+      return -1;
    }
 
                    /* adjust for: drop all.sword
@@ -167,11 +146,13 @@ void drop(int i_th, const String* pre_obj, const String* obj_all,
    }//if   
    else {
          show("You don't seem to have that.\n", pc);
+         return -1;
    }//else
+   return 0;
 }//drop
 
 
-void donate(int i_th, const String* pre_obj, const String* obj_all,
+int donate(int i_th, const String* pre_obj, const String* obj_all,
           critter& pc) {
    object *obj_ptr;
    Cell<object*> cell(pc.inv);
@@ -180,35 +161,13 @@ void donate(int i_th, const String* pre_obj, const String* obj_all,
 
    mudlog.log(DBG, "In donate.\n");
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to donate.\n");
-      return;
-   }//if
-
-   if (!pre_obj || !obj_all) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to donate().\n");
-      return;
-   }//if
-
-   if (pc.POS > POS_REST) {
-      show("You aren't in a lively enough position to donate something.\n", 
-            pc);
-      return;
-   }//if
-
-   if (pc.isParalyzed()) {
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if ((pre_obj->Strlen() == 0) && (obj_all->Strlen() == 0)) {
       pc.show("Donate what??\n");
-      return;
+      return -1;
    }
 
                    /* adjust for: donate all.sword
@@ -268,7 +227,7 @@ void donate(int i_th, const String* pre_obj, const String* obj_all,
       }//while obj_ptr
    }// if drop all.waybread
    else if ((obj_ptr = have_obj_named(pc.inv, i_th, &obj, pc.SEE_BIT, 
-            ROOM))) {
+                                      ROOM))) {
       mudlog.log(DBG, "donate called as: donate sword or drop 2.sword\n");
       if (obj_drop_by(*obj_ptr, pc)) {
          pc.loseInv(obj_ptr);
@@ -277,12 +236,14 @@ void donate(int i_th, const String* pre_obj, const String* obj_all,
       }//if
    }//if   
    else {
-         show("You don't seem to have that.\n", pc);
+      show("You don't seem to have that.\n", pc);
+      return -1;
    }//else
+   return 0;
 }//donate
 
 
-void show_eq(critter& pc) {
+int show_eq(critter& pc) {
    String posn(100);
 
    mudlog.log(DBG, "In eq.\n");
@@ -291,89 +252,62 @@ void show_eq(critter& pc) {
 
    out_eq(pc, pc);
    pc.show("\n");
+   return 0;
 }//eq
 
 
-void examine(int i_th, const String* obj, critter& pc) {
+int examine(int i_th, const String* obj, critter& pc) {
    String buf(100);
 
-   if (!obj) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to examine().\n");
-
-      return;
-   }//if
-
-   if (pc.POS > POS_SIT) {
-     show("You are too relaxed.\n", pc);
-     return;
-   }//if
+   if (ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
    
-   object* obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT, 
-                                    ROOM);
+      object* obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT, 
+                                       ROOM);
 
-   if (!obj_ptr) {
-      obj_ptr = ROOM.haveObjNamed(i_th, obj, pc.SEE_BIT);
-   }//if
-   if (!obj_ptr) {
-      Sprintf(buf, "You can't find the %S.\n", obj);
-      show(buf, pc);
-   }//if
+      if (!obj_ptr) {
+         obj_ptr = ROOM.haveObjNamed(i_th, obj, pc.SEE_BIT);
+      }//if
+      if (!obj_ptr) {
+         Sprintf(buf, "You can't find the %S.\n", obj);
+         show(buf, pc);
+      }//if
                    //is a container?
-   else if (!obj_ptr->OBJ_FLAGS.get(54) || !obj_ptr->ob->bag) {
-      show("That is not a container.\n", pc);
-   }//if
-   else if (obj_ptr->isClosed()) {
-      show("Its closed!\n", pc);
-   }//if
-   else {
-      Sprintf(buf, "%S contains: \n\n", &(obj_ptr->ob->short_desc));
-      buf.Cap();
-      show(buf, pc);
-
-      out_inv(obj_ptr->ob->inv, pc, OBJ_INV);
-
-      String cmd = "examine";
-      ROOM.checkForProc(cmd, NULL_STRING, pc, obj_ptr->OBJ_NUM);
-   }//else
+      else if (!obj_ptr->OBJ_FLAGS.get(54) || !obj_ptr->ob->bag) {
+         show("That is not a container.\n", pc);
+      }//if
+      else if (obj_ptr->isClosed()) {
+         show("Its closed!\n", pc);
+      }//if
+      else {
+         Sprintf(buf, "%S contains: \n\n", &(obj_ptr->ob->short_desc));
+         buf.Cap();
+         show(buf, pc);
+         
+         out_inv(obj_ptr->ob->inv, pc, OBJ_INV);
+         
+         String cmd = "examine";
+         ROOM.checkForProc(cmd, NULL_STRING, pc, obj_ptr->OBJ_NUM);
+      }//else
+      return 0;
+   }
+   return -1;
 }//examine
 
 
 
-void wear(int i_th, const String* obj, int j, const String* posn,
+int wear(int i_th, const String* obj, int j, const String* posn,
           critter &pc) {
    Cell<object*> cell;
    object *obj_ptr;
    int i = 0, t = 0;
 
    mudlog.log(DBG, "In wear.\n");
-   
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to wear.\n");
-      return;
-   }//if
 
-   if (!obj || !posn) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to wear().\n");
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      mudlog.log(DBG, "Wear failed, frozen pc.\n");
-      return;
-   }//if
-
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed
-      show("You can't move a muscle.\n", pc);
-      mudlog.log(DBG, "Wear failed, paralyzed pc.\n");
-      return;
-   }//if
-   
-   if (pc.POS > POS_REST) {
-      show("You're too relaxed to be changing clothes.\n", pc);
-      mudlog.log(DBG, "Wear failed, posn > REST\n");
-   }//if
-   else if (!obj->Strlen()) {
+   if (!obj->Strlen()) {
       show("Wear what??\n", pc);
       mudlog.log(DBG, "Wear failed, object not specified.\n");
    }//if
@@ -386,13 +320,16 @@ void wear(int i_th, const String* obj, int j, const String* posn,
          show("You have nothing to wear!\n", pc);
       }//if
       else {
+         int retval = -1;
          while (obj_ptr) {
-            if (don_obj(*obj_ptr, pc)) { //takes care of all changes...
+            if (don_obj(*obj_ptr, pc) >= 0) { //takes care of all changes...
                obj_ptr = pc.inv.lose(cell);
+               retval = 0;
             }//if
             else
                obj_ptr = cell.next();
          }//while
+         return retval;
       }//else
    }//if
    else if (!posn->Strlen()) { //no posn noted
@@ -403,8 +340,10 @@ void wear(int i_th, const String* obj, int j, const String* posn,
          mudlog.log(DBG, "Wear failed, don't have item.\n");
       }//if
       else {
-         if (don_obj(*obj_ptr, pc)) 
+         if (don_obj(*obj_ptr, pc) >= 0) { 
             pc.loseInv(obj_ptr);
+            return 0;
+         }
       }//else
    }//if
    else { //posn was noted
@@ -413,6 +352,7 @@ void wear(int i_th, const String* obj, int j, const String* posn,
       if (!obj_ptr) {
          show("You don't have that item.\n", pc);
          mudlog.log(DBG, "Wear failed, don't have object\n");
+         return -1;
       }//if
       else {
          i = t = 0;
@@ -472,6 +412,7 @@ void wear(int i_th, const String* obj, int j, const String* posn,
       if (!i) { //not a valid key_word for posn
          show("Wear it where??\n", pc);
          mudlog.log(DBG, "Wear failed, posn invalid.\n");
+         return -1;
       }//if
       else { //i and maybe t are good
          if (pc.EQ[i] || (j == 2)) { //gotta go in posn t if anywhere
@@ -480,6 +421,7 @@ void wear(int i_th, const String* obj, int j, const String* posn,
                   pc.loseInv(obj_ptr);
                   pc.EQ[t] = obj_ptr;
                   wear_eq_effects(*obj_ptr, pc, t, TRUE); 
+                  return 0;
                }//if
             }//if
             else { //can go in neither posn
@@ -494,37 +436,25 @@ void wear(int i_th, const String* obj, int j, const String* posn,
                pc.loseInv(obj_ptr);
                pc.EQ[i] = obj_ptr;
                wear_eq_effects(*obj_ptr, pc, i, TRUE); 
+               return 0;
             }//if
          }//else, put it in posn i
       }//else, i and MAYBE t are good
    }//else, posn was noted
+   return -1;
 }//wear
 
 
-void remove(int i_th, const String* obj, critter &pc) {
+int remove(int i_th, const String* obj, critter &pc) {
    int i = 0;
    int found_one = FALSE;
+   int retval = -1;
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to remove.\n");
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (pc.isParalyzed()) {
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (pc.POS > POS_REST) {
-      show("You aren't in a lively enough position to remove something.\n", 
-            pc);
-   }//if
-   else if (!obj->Strlen()) {
+   if (!obj->Strlen()) {
       show("Remove what??\n", pc);
    }//if
    else if (strcasecmp(*obj, "all") == 0) {
@@ -536,6 +466,7 @@ void remove(int i_th, const String* obj, critter &pc) {
                pc.gainInv(pc.EQ[i]);
                remove_eq_effects(*(pc.EQ[i]), pc, FALSE, TRUE, i);
                pc.EQ[i] = NULL;// remove it from eq list
+               retval = 0;
             }//if ok to remove
          }//if wearing an item there
       }//for i loop
@@ -555,7 +486,7 @@ void remove(int i_th, const String* obj, critter &pc) {
                         remove_eq_effects(*(pc.EQ[i]), pc, FALSE, TRUE,
 					  i);
                         pc.EQ[i] = NULL;
-                        return;
+                        return 0;
                      }//if ok to remove
                   }//if count is right
                }//obj is named right
@@ -566,26 +497,20 @@ void remove(int i_th, const String* obj, critter &pc) {
    if (!found_one) {
       show("You don't seem to be wearing that.\n", pc);
    }//if
+   return retval;
 }//remove
 
 
       
-void look(int i_th, const String* obj, critter &pc) {
+int look(int i_th, const String* obj, critter &pc) {
 
    mudlog.log(DBG, "In look.\n");
    
-   if (!obj) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to look().\n");
-      return;
-   }//if
-
-   do_look(i_th, obj, pc, ROOM);
-
-   mudlog.log(DBG, "Done with look.\n");
+   return do_look(i_th, obj, pc, ROOM);
 }
 
 
-void do_look(int i_th, const String* obj, critter& pc, room& rm) {
+int do_look(int i_th, const String* obj, critter& pc, room& rm) {
    critter* crit_ptr;
    object* obj_ptr;
    door* door_ptr;
@@ -757,45 +682,41 @@ void do_look(int i_th, const String* obj, critter& pc, room& rm) {
          show(NO_CAN_SEE_MSG, pc);
       }//else
    }//else, look <thingie>
+   return 0; //no real thought put into this at this time..
 }//do_look
 
 
 
 /* hit is generic battle starter..same as kill */
-void hit(int i_th, const String* victim, critter &pc) {
+int hit(int i_th, const String* victim, critter &pc) {
    critter* crit_ptr;
    String buf(100);
 
    crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
 
-   if (pc.isMob()) {
-      mudlog << "ERROR:  MOB trying to assist.\n";
-      return;
-   }
-
    if (!crit_ptr) {
-     show("Fight who??\n", pc);
-     return;
+      show("Fight who??\n", pc);
+      return -1;
    }//if
 
    if (crit_ptr->isMob()) {
-     crit_ptr = mob_to_smob(*crit_ptr,  pc.getCurRoomNum(), TRUE, i_th,
-			    victim, pc.SEE_BIT);
+      crit_ptr = mob_to_smob(*crit_ptr,  pc.getCurRoomNum(), TRUE, i_th,
+                             victim, pc.SEE_BIT);
    }//if
-
-   if (!ok_to_cast_spell(crit_ptr, "SVPF", -1, pc)) {
-     return;
+      
+   if (!ok_to_do_action(crit_ptr, "mSVPF", -1, pc)) {
+      return -1;
    }//if
 
    if (!(crit_ptr = check_for_diversions(*crit_ptr, "GSM", pc)))
-     return;
+      return -1;
 
-   do_hit(*crit_ptr, pc);
+   return do_hit(*crit_ptr, pc);
 }//hit
 
 
 /* hit is generic battle starter..same as kill */
-void assist(int i_th, const String* targ, critter &pc) {
+int assist(int i_th, const String* targ, critter &pc) {
    critter* crit_ptr;
    critter* friendly;
 
@@ -803,48 +724,48 @@ void assist(int i_th, const String* targ, critter &pc) {
 
    friendly = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
 
-   if (pc.isMob()) {
-      mudlog << "ERROR:  MOB trying to assist.\n";
-      return;
+   if (!ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
    }
 
    if (!friendly) {
      show("Assist who??\n", pc);
-     return;
+     return -1;
    }//if
 
    if (friendly == &pc) {
       pc.show("You're already giving it your all!\n");
-      return;
+      return -1;
    }
 
    if (friendly->isFighting()) {
       crit_ptr = friendly->getFirstFighting();
 
       if (!(crit_ptr = check_for_diversions(*crit_ptr, "GSM", pc)))
-         return;
+         return -1;
 
       if (crit_ptr == &pc) {
          pc.show("You start giving yourself a hard time!\n");
-         return;
+         return -1;
       }
 
       Sprintf(buf, "You assist %S in fighting against %S!\n",
               friendly->getName(), crit_ptr->getName(pc.SEE_BIT));
       pc.show(buf);
 
-      do_hit(*crit_ptr, pc);
+      return do_hit(*crit_ptr, pc);
    }//if
    else {
       pc.show("You cannot assist someone who is not fighting.\n");
    }
+   return -1;
 }//hit
 
 
-void do_hit(critter& vict, critter& pc) {
+int do_hit(critter& vict, critter& pc) {
   if (&vict == &pc) {
      show("You rare back and smack the s**t out of yourself!\n", pc);
-     return;
+     return -1;
   }//if
 
   join_in_battle(pc, vict);   
@@ -853,11 +774,11 @@ void do_hit(critter& vict, critter& pc) {
   String cmd = "hit";
   ROOM.checkForProc(cmd, NULL_STRING, pc, vict.MOB_NUM);
   show("Battle envelops you!\n", pc);
-
+  return 0;
 }//do_hit
 
 
-void cast(const String* spell, int j_th, const String* victim, critter &pc) {
+int cast(const String* spell, int j_th, const String* victim, critter &pc) {
    int len = spell->Strlen();
 
    if (mudlog.ofLevel(TRC)) {
@@ -865,25 +786,9 @@ void cast(const String* spell, int j_th, const String* victim, critter &pc) {
              << "  vict:  " << *victim << endl;
    }
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to cast.\n");
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (pc.isParalyzed()) {
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (!spell || !victim) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to cast().\n");
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mFPN", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (strncasecmp(*spell, "absorb blows", len) == 0) 
       cast_absorb_blows(pc);
@@ -1059,11 +964,13 @@ void cast(const String* spell, int j_th, const String* victim, critter &pc) {
       cast_web(j_th, victim, pc);
    else {
       show("That spell is in need of research.\n", pc);
+      return -1;
    }//else
+   return 0;
 }//pc_cast()
 
 
-void put(int i, const String* item, int j, const String* bag, 
+int put(int i, const String* item, int j, const String* bag, 
          critter& pc) {      
    String buf(100);
    Cell<object*> cell;
@@ -1073,31 +980,11 @@ void put(int i, const String* item, int j, const String* bag,
 
    mudlog.log(DBG, "In put\n");
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to put.\n");
-      return;
-   }//if
-
-   if (!item || !bag) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to put().\n");
-      return;
-   }//if
-
-   if (pc.isFrozen()) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
    
-   if (pc.POS > POS_REST) {
-      show("You feel too relaxed.\n", pc);
-      return;
-   }//if
-   else if (i == -1) { //as in: "put all.waybread bag"
+   if (i == -1) { //as in: "put all.waybread bag"
       mudlog.log(DBG, 
                  "called put with something like: put all.waybread bag\n");
 
@@ -1110,15 +997,15 @@ void put(int i, const String* item, int j, const String* bag,
       }//if
       if (!bag_ptr) {
          show("You don't seem to have that container.\n", pc);
-         return;
+         return -1;
       }//if
       else if (!bag_ptr->ob->bag) {
          show("How are you gonna put something in THAT?\n", pc);
-         return;
+         return -1;
       }//if
       else if (bag_ptr->isClosed()) {
          show("You need to open it first.\n\0", pc);
-         return;
+         return -1;
       }//if 
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
          if (bag_in_inv) { 
@@ -1173,15 +1060,15 @@ void put(int i, const String* item, int j, const String* bag,
       }//if
       if (!bag_ptr) {
          show("You don't see that container.\n", pc);
-         return;
+         return -1;
       }//if
       else if (!bag_ptr->ob->bag) {
          show("How can put something in THAT?\n", pc);
-         return;
+         return -1;
       }//if
       else if (bag_ptr->isClosed()) {
          show("You need to open it first.\n", pc);
-         return;
+         return -1;
       }//if 
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
          if (bag_in_inv) { 
@@ -1231,19 +1118,19 @@ void put(int i, const String* item, int j, const String* bag,
 
       if (!bag_ptr) {
          show("You do not see that container.\n", pc);
-         return;
+         return -1;
       }//if
       else if (!vict_ptr) {
          show("You do not see that item.\n", pc);
-         return;
+         return -1;
       }//if
       else if (!bag_ptr->ob->bag) {
          show("How the hell are you gonna fit something in that???\n", pc);
-         return;
+         return -1;
       }//if
       else if (bag_ptr->isClosed()) {
          show("You need to open it first.\n\0", pc);
-         return;
+         return -1;
       }//if 
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
          if (bag_in_inv) { 
@@ -1263,7 +1150,7 @@ void put(int i, const String* item, int j, const String* bag,
       if (!vict_ptr) {
          Sprintf(buf, "You do not see the %S.\n", item);
          show(buf, pc);
-         return;
+         return -1;
       }//if
       
                //If here, we assume have a bag, have an item.//
@@ -1275,12 +1162,14 @@ void put(int i, const String* item, int j, const String* bag,
       }//if
       else {
          show("Attempt to self contain aborted!!\n", pc);
+         return -1;
       }//else
    }//else
+   return 0;
 }//put
 
 
-void get(int i, const String* item, int j, const String* bag, critter& pc) {
+int get(int i, const String* item, int j, const String* bag, critter& pc) {
    String buf(100);
    object* bag_ptr;
    object* vict_ptr, *tmp;
@@ -1289,31 +1178,13 @@ void get(int i, const String* item, int j, const String* bag, critter& pc) {
    short tst = FALSE;
 
    //mudlog.log(DBG, "In get\n");
-
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB tried to 'get'.\n");
-      return;
-   }//if
-
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
-
-   if (pc.isParalyzed()) {
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (pc.POS > POS_REST) {
-      show("You aren't in a lively enough position to get something.\n", 
-            pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if ((item->Strlen() == 0) && (bag->Strlen() == 0)) {
       pc.show("Get what??\n");
-      return;
+      return -1;
    }
 
 
@@ -1327,9 +1198,11 @@ void get(int i, const String* item, int j, const String* bag, critter& pc) {
          if (detect(pc.SEE_BIT, (vict_ptr->OBJ_VIS_BIT | 
                                  ROOM.getVisBit()))) {
             tst = TRUE; //Something is there....
-            Sprintf(buf, "detected object:  %S.\n", 
-                          &(vict_ptr->ob->short_desc));
-            mudlog.log(DBG, buf);
+            if (mudlog.ofLevel(DBG)) {
+               mudlog << "detected object:  " << vict_ptr->ob->short_desc
+                      << endl;
+            }
+
             if (obj_get_by(*vict_ptr, pc, TRUE)) {
                pc.gainInv(vict_ptr);
                gain_eq_effects(*vict_ptr, obj_list[0], pc, -1, TRUE); 
@@ -1344,9 +1217,11 @@ void get(int i, const String* item, int j, const String* bag, critter& pc) {
             vict_ptr = cell.next();         
          }//else
       }//while
-      if (!tst) 
+      if (!tst) {
          show("You can't detect anything...\n", pc);
-      return;
+         return -1;
+      }
+      return 0;
    }// if "get all"
    else if ((i == -1) && (bag->Strlen() != 0)) { 
                //as in: "get all.waybread bag"
@@ -1359,19 +1234,19 @@ void get(int i, const String* item, int j, const String* bag, critter& pc) {
       }//if
       if (!bag_ptr) {
          show("You don't seem to have that container.\n", pc);
-         return;
+         return -1;
       }//if
       if (!bag_ptr->ob->bag) {
          show("How are you gonna get something from THAT?\n", pc);
-         return;
+         return -1;
       }//if
       if (bag_ptr->OBJ_FLAGS.get(59)) {
          show("Try empty instead!\n", pc);
-         return;
+         return -1;
       }//if
-      if (bag_ptr->ob->bag->bag_flags.get(2)) { //is it closed?
+      if (bag_ptr->isClosed()) {
          show("You need to open it first.\n\0", pc);
-         return;
+         return -1;
       }//if 
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
          if (bag_in_inv) { 
@@ -1435,23 +1310,23 @@ void get(int i, const String* item, int j, const String* bag, critter& pc) {
       }//if
       if (!bag_ptr) {
          show("You don't see that container.\n", pc);
-         return;
+         return -1;
       }//if
       else if (!bag_ptr->ob->bag) {
          show("How are you gonna get something from THAT?\n", pc);
-         return;
+         return -1;
       }//if
       else if (bag_ptr->isClosed()) {
          show("You need to open it first.\n", pc);
-         return;
+         return -1;
       }//if 
       if (bag_ptr->OBJ_FLAGS.get(59)) {
          show("Try empty instead!\n", pc);
-         return;
+         return -1;
       }//if
       if (bag_ptr->isBulletinBoard()) {
          pc.show("You cannot get things from that!\n");
-         return;
+         return -1;
       }
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
          if (bag_in_inv) { 
@@ -1527,19 +1402,19 @@ void get(int i, const String* item, int j, const String* bag, critter& pc) {
       }//if
       if (!bag_ptr) {
          show("You do not see that container.\n", pc);
-         return;
+         return -1;
       }//if
       else if (!bag_ptr->ob->bag) {
          show("How are you gonna get something from THAT?\n", pc);
-         return;
+         return -1;
       }//if
-      else if (bag_ptr->ob->bag->bag_flags.get(2)) { //if closed
+      else if (bag_ptr->isClosed()) {
          show("You need to open it first.\n", pc);
-         return;
+         return -1;
       }//if
       if (bag_ptr->OBJ_FLAGS.get(59)) {
          show("Try empty instead!\n", pc);
-         return;
+         return -1;
       }//if
 
 			/* have a valid bag_ptr here */
@@ -1558,7 +1433,7 @@ void get(int i, const String* item, int j, const String* bag, critter& pc) {
                             pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "The %S doesn't contain the %S.\n", bag, item);
          show(buf, pc);
-         return;
+         return -1;
       }//if
       else {
          //If here, we assume have a bag, have an item.//
@@ -1574,31 +1449,28 @@ void get(int i, const String* item, int j, const String* bag, critter& pc) {
          }//else
       }//else
    }//else
+   return 0;
 }//get
 
 
 
-void say(const char* message, critter& pc, room& rm) {
+int say(const char* message, critter& pc, room& rm) {
    List<critter*> tmp_lst(rm.getCrits());
    Cell<critter*> cell(tmp_lst);
    critter* crit_ptr;
    String buf(200);
    String msg;
 
-   if (!message) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to say().\n");
-      return;
-   }//if
-   else {
-      msg = message;
-      pc.drunkifyMsg(msg);
-   }
-
+   msg = message;
+   pc.drunkifyMsg(msg);
+   
    if (pc.isGagged()) {
       show("You have been gagged.\n", pc);
+      return -1;
    }//if
    else if (pc.POS > POS_REST) {
       show("You mutter something in your sleep....\n", pc);
+      return -1;
    }//if
    else { //good to go
       Cell<object*> ocll(rm.inv);
@@ -1667,21 +1539,22 @@ void say(const char* message, critter& pc, room& rm) {
       ROOM.checkForProc(cmd, arg1, pc, -1);
       
    }//else
+   return 0;
 }//say
 
 
-void pemote(const char* message, critter& pc, room& rm, short show_non_detects,
+int pemote(const char* message, critter& pc, room& rm, short show_non_detects,
 	   critter* crit = NULL) {
-   do_emote(message, pc, rm, show_non_detects, EMOTE_POSSESSIVE, crit);
+   return do_emote(message, pc, rm, show_non_detects, EMOTE_POSSESSIVE, crit);
 }
 
-void emote(const char* message, critter& pc, room& rm, short show_non_detects,
-            critter* crit = NULL) {
-   do_emote(message, pc, rm, show_non_detects, EMOTE_NON_POSSESSIVE, crit);
+int emote(const char* message, critter& pc, room& rm, short show_non_detects,
+          critter* crit = NULL) {
+   return do_emote(message, pc, rm, show_non_detects, EMOTE_NON_POSSESSIVE, crit);
 }
 
 
-void do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
+int do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
               int possessive, critter* crit = NULL) {
    List<critter*> tmp_lst(rm.getCrits());
    Cell<critter*> cell(tmp_lst);
@@ -1699,17 +1572,11 @@ void do_emote(const char* message, critter& pc, room& rm, short show_non_detects
 
 
    if (pc.pc && (pc.MODE == MODE_LOGGING_IN)) { 
-      return; //beautification hack
+      return -1; //beautification hack
    }// if
 
-   if (!message) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to do_emote().\n");
-      return;
-   }//if
-   else {
-      msg = message;
-      //   pc.drunkifyMsg(msg);
-   }
+   msg = message;
+   //   pc.drunkifyMsg(msg);
 
    Cell<object*> ocll(rm.inv);
    object* optr;
@@ -1773,11 +1640,12 @@ void do_emote(const char* message, critter& pc, room& rm, short show_non_detects
             }//if
          }//else
       }//if
-   }//while               
+   }//while
+   return 0;
 }//do_emote
 
 
-void yell(const char* message, critter& pc) {
+int yell(const char* message, critter& pc) {
    Cell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
@@ -1785,23 +1653,20 @@ void yell(const char* message, critter& pc) {
 
    mudlog.log(DBG, "In yell\n");
 
-   if (!message) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to yell().\n");
-      return;
-   }//if
-   else {
-      msg = message;
-      pc.drunkifyMsg(msg);
-   }
-
+   msg = message;
+   pc.drunkifyMsg(msg);
+   
    if (!pc.IS_YELL) {
-     show("You are deaf to yells.\n", pc);
+      show("You are deaf to yells.\n", pc);
+      return -1;
    }//if
    else if (pc.pc && pc.PC_FLAGS.get(1)) {
       show("You have been gagged.\n", pc);
+      return -1;
    }//if
    else if (pc.POS > POS_REST) {
       show("\nYou roar in your sleep!\n", pc);
+      return -1;
    }//if
    else {
 
@@ -1854,10 +1719,11 @@ void yell(const char* message, critter& pc) {
       ROOM.checkForProc(cmd, arg1, pc, -1);
 
    }//else
+   return 0;
 }//yell
 
 
-void gossip(const char* message, critter& pc) {
+int gossip(const char* message, critter& pc) {
    Cell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
@@ -1866,23 +1732,20 @@ void gossip(const char* message, critter& pc) {
    mudlog.log(DBG, "In gossip:");
    mudlog.log(DBG, message);
 
-   if (!message) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to gossip().\n");
-      return;
-   }//if
-   else {
-      msg = message;
-      pc.drunkifyMsg(msg);
-   }
-
+   msg = message;
+   pc.drunkifyMsg(msg);
+   
    if (pc.isGagged()) {
       show("You have been gagged.\n", pc);
+      return -1;
    }//if
    else if (!(pc.IS_GOSSIP)) {
       show("You are not on the gossip channel.\n", pc);
+      return -1;
    }//if
    else if (pc.POS > POS_REST) {
       show("\nYou mutter in your sleep!\n", pc);
+      return -1;
    }//if
    else {
       String tag;
@@ -1938,12 +1801,13 @@ void gossip(const char* message, critter& pc) {
          }//else
       }//while
    }//else
+   return 0;
 }//gossip
 
 
 
 
-void group_say(const char* message, critter& pc) {
+int group_say(const char* message, critter& pc) {
    critter* crit_ptr;
    String buf(200);
    String msg;
@@ -1951,20 +1815,16 @@ void group_say(const char* message, critter& pc) {
    mudlog.log(DBG, "In group_say:");
    mudlog.log(DBG, message);
 
-   if (!message) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to gossip().\n");
-      return;
-   }//if
-   else {
-      msg = message;
-      pc.drunkifyMsg(msg);
-   }
-
+   msg = message;
+   pc.drunkifyMsg(msg);
+   
    if (pc.isGagged()) {
       show("You have been gagged.\n", pc);
+      return -1;
    }//if
    else if (pc.POS > POS_REST) {
       show("\nYou mutter in your sleep!\n", pc);
+      return -1;
    }//if
    else {
       String tag;
@@ -2021,32 +1881,30 @@ void group_say(const char* message, critter& pc) {
          }//while
       }//else
    }//else
+   return 0;
 }//group_say
 
 
-void wizchat(const char* message, critter& pc) {
+int wizchat(const char* message, critter& pc) {
    Cell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
    String msg;
 
-   if (!message) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to wizchat().\n");
-      return;
-   }//if
-   else {
-      msg = message;
-      //pc.drunkifyMsg(msg);
-   }
-
+   msg = message;
+   //pc.drunkifyMsg(msg);
+   
    if (pc.isGagged()) {
       show("You have been gagged.\n", pc);
+      return -1;
    }//if
    else if (!(pc.isWizchat())) {
       show("You are not on the wizchat channel.\n", pc);
+      return -1;
    }//if
    else if (pc.POS > POS_REST) {
       show("\nYou mutter in your sleep!\n", pc);
+      return -1;
    }//if
    else {
       String tag;
@@ -2096,10 +1954,11 @@ void wizchat(const char* message, critter& pc) {
          }//else
       }//while
    }//else
+   return 0;
 }//wizchat
 
 
-void auction(const char* message, critter& pc) {
+int auction(const char* message, critter& pc) {
    Cell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
@@ -2108,23 +1967,20 @@ void auction(const char* message, critter& pc) {
    mudlog.log(DBG, "In auction:");
    mudlog.log(DBG, message);
 
-   if (!message) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to auction().\n");
-      return;
-   }//if
-   else {
-      msg = message;
-      pc.drunkifyMsg(msg);
-   }
-
-   if (pc.pc && pc.PC_FLAGS.get(1)) {
+   msg = message;
+   pc.drunkifyMsg(msg);
+   
+   if (pc.isGagged()) {
       show("You have been gagged.\n", pc);
+      return -1;
    }//if
    else if (!(pc.IS_AUCTION)) {
       show("You are not on the auction channel.\n", pc);
+      return 1;
    }//if
    else if (pc.POS > POS_REST) {
       show("\nYou mutter in your sleep!\n", pc);
+      return 1;
    }//if
    else {
       String tag;
@@ -2173,11 +2029,12 @@ void auction(const char* message, critter& pc) {
          }//else
       }//while
    }//else
+   return 0;
 }//auction
 
 
 
-void shout(const char* message, critter& pc) {
+int shout(const char* message, critter& pc) {
    Cell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
@@ -2186,14 +2043,8 @@ void shout(const char* message, critter& pc) {
    mudlog.log(DBG, "In shout:");
    mudlog.log(DBG, message);
 
-   if (!message) {
-      mudlog.log(ERR, "ERROR:  NULL(s) sent to shout().\n");
-      return;
-   }//if
-   else {
-      msg = message;
-      pc.drunkifyMsg(msg);
-   }
+   msg = message;
+   pc.drunkifyMsg(msg);
 
    int which_z = 0;
    if (pc.isMob()) { //then we need to guess a zone
@@ -2203,14 +2054,17 @@ void shout(const char* message, critter& pc) {
       which_z = ROOM.getZoneNum();
    }
 
-   if (pc.pc && pc.PC_FLAGS.get(1)) {
+   if (pc.isGagged()) {
       show("You have been gagged.\n", pc);
+      return -1;
    }//if
    else if (!(pc.IS_SHOUT)) {
       show("You are not on the shout channel.\n", pc);
+      return -1;
    }//if
    else if (pc.POS > POS_REST) {
       show("\nYou mutter in your sleep!\n", pc);
+      return -1;
    }//if
    else {
       String tag;
@@ -2259,81 +2113,61 @@ void shout(const char* message, critter& pc) {
          }//else
       }//while
    }//else
+   return 0;
 }//shout
 
 
-void east(critter& pc, room& rm) {
-   int is_dead;
-   move(pc, 1, "east", TRUE, rm, is_dead);
+int east(critter& pc, room& rm, int& is_dead) {
+   return move(pc, 1, "east", TRUE, rm, is_dead);
 }//east
 
-void west(critter& pc, room& rm) {
-   int is_dead;
-   move(pc, 1, "west", TRUE, rm, is_dead);
+int west(critter& pc, room& rm, int& is_dead) {
+   return move(pc, 1, "west", TRUE, rm, is_dead);
 }//west
 
-void south(critter& pc, room& rm) {
-   int is_dead;
-   move(pc, 1, "south", TRUE, rm, is_dead);
+int south(critter& pc, room& rm, int& is_dead) {
+   return move(pc, 1, "south", TRUE, rm, is_dead);
 }
 
-void north(critter& pc, room& rm) {
-   int is_dead;
-   move(pc, 1, "north", TRUE, rm, is_dead);
+int north(critter& pc, room& rm, int& is_dead) {
+   return move(pc, 1, "north", TRUE, rm, is_dead);
 }
 
-void northwest(critter& pc, room& rm) {
-   int is_dead;
-   move(pc, 1, "northwest", TRUE, rm, is_dead);
+int northwest(critter& pc, room& rm, int& is_dead) {
+   return move(pc, 1, "northwest", TRUE, rm, is_dead);
 }
 
-void southwest(critter& pc, room& rm) {
-   int is_dead;
-   move(pc, 1, "southwest", TRUE, rm, is_dead);
+int southwest(critter& pc, room& rm, int& is_dead) {
+   return move(pc, 1, "southwest", TRUE, rm, is_dead);
 }
 
-void southeast(critter& pc, room& rm) {
-   int is_dead;
-   move(pc, 1, "southeast", TRUE, rm, is_dead);
+int southeast(critter& pc, room& rm, int& is_dead) {
+   return move(pc, 1, "southeast", TRUE, rm, is_dead);
 }
 
-void northeast(critter& pc, room& rm) {
-   int is_dead;
-   move(pc, 1, "northeast", TRUE, rm, is_dead);
+int northeast(critter& pc, room& rm, int& is_dead) {
+   return move(pc, 1, "northeast", TRUE, rm, is_dead);
 }
 
-void up(critter& pc, room& rm) {
-   int is_dead;
-   move(pc, 1, "up", TRUE, rm, is_dead);
+int up(critter& pc, room& rm, int& is_dead) {
+   return move(pc, 1, "up", TRUE, rm, is_dead);
 }
 
-void down(critter& pc, room& rm) {
-   int is_dead;
-   move(pc, 1, "down", TRUE, rm, is_dead);
+int down(critter& pc, room& rm, int& is_dead) {
+   return move(pc, 1, "down", TRUE, rm, is_dead);
 }
 
 
-void rest(critter& pc) {
+int rest(critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to rest.\n");
-      return;
-   }//if
-
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (pc.POS == POS_REST) {
       show("You're already resting.\n", pc);
-      return;
+      return 0;
    }//if
    if (pc.POS < POS_REST) {
       if (IsEmpty(pc.IS_FIGHTING)) {
@@ -2348,35 +2182,27 @@ void rest(critter& pc) {
       }//if
       else {
          show("You can't rest now, you're fighting!!\n", pc);
+         return -1;
       }//else
    }//if
    else {
       show("You're already way beyond resting!\n", pc);
+      return -1;
    }//else
+   return 0;
 }//rest
 
 
-void sit(critter& pc) {
+int sit(critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to sit.\n");
-      return;
-   }//if
-
-   if (pc.isParalyzed()) {
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (pc.POS == POS_SIT) {
       show("You're already sitting.\n", pc);
-      return;
+      return 0;
    }//if
    if ((pc.POS < POS_REST) || (pc.POS == POS_PRONE)) {
       if (IsEmpty(pc.IS_FIGHTING)) {
@@ -2389,37 +2215,29 @@ void sit(critter& pc) {
       }//if
       else {
          show("You can't sit now, you're fighting!!\n", pc);
+         return -1;
       }//else
    }//if
    else {
       show("You're already way beyond sitting!\n", pc);
+      return -1;
    }//else
+   return 0;
 }//sit
 
 
-void stand(critter& pc) {
+int stand(critter& pc) {
    String buf(100);
 
    mudlog.log(DBG, "In stand.\n");
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to stand.\n");
-      return;
-   }//if
-
-   if (pc.isParalyzed()) {
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (pc.POS == POS_STAND) {
       show("You're already standing.\n", pc);
-      return;
+      return 0;
    }//if
 
    if ((pc.POS < POS_SLEEP) || (pc.POS == POS_PRONE)) {
@@ -2433,34 +2251,27 @@ void stand(critter& pc) {
       }//if
       else {
          show("You can't even FEEL your legs, how can you stand?\n", pc);
+         return -1;
       }//else
    }//if
    else {
       show("Maybe you should try to wake first.\n", pc);
+      return -1;
    }//else
+   return 0;
 }//stand
 
 
-void sleep(critter& pc) {
+int sleep(critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to sleep.\n");
-      return;
-   }//if
-
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (pc.POS == POS_SLEEP) {
       show("You're already sleeping.\n", pc);
+      return 0;
    }//if
    else if ((pc.POS <= POS_MED)) {
       if (IsEmpty(pc.IS_FIGHTING)) {
@@ -2473,77 +2284,61 @@ void sleep(critter& pc) {
       }//if
       else {
          show("You can't sleep now, you're fighting!!\n", pc);
+         return -1;
       }//else
    }//if
    else {
       show("You're already way beyond sleeping!\n", pc);
+      return -1;
    }//else
+   return 0;
 }//sleep
 
 
-void meditate(critter& pc) {
+int meditate(critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to sleep.\n");
-      return;
-   }//if
-
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (pc.POS == POS_MED) {
       show("You're already meditating.\n", pc);
+      return 0;
    }//if
    else if ((pc.POS != POS_SLEEP)) {
       if (IsEmpty(pc.IS_FIGHTING)) {
-	if (d(1, 100) < d(1, get_percent_lrnd(MEDITATION_SKILL_NUM, pc))) {
-	  show("You relax into a deep trance.\n", pc);
-	  emote("goes into a trance.\n", pc, ROOM, FALSE);
-	  pc.POS = POS_MED; //sleep
-
-          String cmd = "meditate";
-          ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
-	}//if
-	else {
-	  show("You just can't seem to concentrate...\n", pc);
-	  pc.PAUSE += 2;
-	}//else
+         if (d(1, 100) < d(1, get_percent_lrnd(MEDITATION_SKILL_NUM, pc))) {
+            show("You relax into a deep trance.\n", pc);
+            emote("goes into a trance.\n", pc, ROOM, FALSE);
+            pc.POS = POS_MED; //sleep
+            
+            String cmd = "meditate";
+            ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
+            return 0;
+         }//if
+         else {
+            show("You just can't seem to concentrate...\n", pc);
+            pc.PAUSE += 2;
+         }//else
       }//if
       else {
          show("You can't meditate now, you're fighting!!\n", pc);
       }//else
    }//if
    else {
-     show("You must wake first.\n", pc);
+      show("You must wake first.\n", pc);
    }//else
+   return -1;
 }//meditate
 
 
-void wake(critter& pc) {
+int wake(critter& pc) {
    String buf(100);
 
-   if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to wake.\n");
-      return;
-   }//if
-
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed
-      show("You can't move a muscle.\n", pc);
-      return;
-   }//if
-   
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
-      show("You are too frozen to do anything.\n", pc);
-      return;
-   }//if
+   if (!ok_to_do_action(NULL, "mFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
 
    if (pc.POS < POS_SLEEP) {
       show("You're already awake.\n", pc);
@@ -2556,6 +2351,7 @@ void wake(critter& pc) {
 
          String cmd = "wake";
          ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
+         return 0;
       }//if
       else {
          show("You can't wake up, don't you just hate that??!!\n", pc);
@@ -2565,6 +2361,7 @@ void wake(critter& pc) {
       show("You see a flickering...REDISH??? light coming towards you!\n", 
            pc);
    }//else
+   return -1;
 }//wake
 
 
@@ -2589,15 +2386,9 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
       return FALSE;
    }//if
 
-   if (pc.isFrozen()) {
-      show("You are too frozen to do anything.\n", pc);
-      return FALSE;
-   }//if
-
-   if (pc.isParalyzed()) {
-      show("You can't move a muscle.\n", pc);
-      return FALSE;
-   }//if
+   if (!ok_to_do_action(NULL, "FP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
    
    String str_dir(direction);
 
@@ -2653,7 +2444,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 		     show(buf, pc);
 		     Sprintf(buf, "blocks %S's way.\n", name_of_crit(pc, ~0));
 		     emote(buf, *ptr2, rm, TRUE, &pc);
-		     return FALSE;
+		     return -1;
 		   }//if
 		 }//if a sentinal
 	       }//if
@@ -2702,7 +2493,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
                        obj_list[bound(1, NUMBER_OF_ITEMS,
                                       door_ptr->getTokenNum())].getLongName());
                pc.show(buf);
-               return FALSE;
+               return -1;
 	    }//else
          }//if
 
@@ -2748,7 +2539,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
          pc.doGoToRoom(dest, from_dir, door_ptr, is_dead, rm.getIdNum());
 
          if (is_dead) {
-            return TRUE;
+            return 0;
          }
 
          if (from_dir.Strlen()) {
@@ -2782,13 +2573,13 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
          }//if
 
 
-         return TRUE;
+         return 0;
       }//else
    }//if
    else {
       show("You can't discern an exit in that direction.\n\0", pc);
    }//else
-   return FALSE;
+   return -1;
 }//move
 
 
@@ -2808,7 +2599,7 @@ int don_obj(object& obj, critter& pc) {
                if (obj_wear_by(obj, pc, i - 21, TRUE)) {
                   pc.EQ[i - 21] = &obj; 
                   wear_eq_effects(obj, pc, i - 21, TRUE); 
-                  return TRUE;
+                  return 0;
                }//if
             }//if
             else {
@@ -2823,11 +2614,11 @@ int don_obj(object& obj, critter& pc) {
          }//if
       }//for
    }//else
-   return FALSE;
+   return -1;
 }//don_object
 
 
-void out_eq(critter& targ, critter& looker) {
+int out_eq(critter& targ, critter& looker) {
    String wmsg(81);
    String buf(100);
 
@@ -2905,9 +2696,11 @@ void out_eq(critter& targ, critter& looker) {
          show(buf, looker);
       }//if eq there
    }//for
+   return 0;
 }//out_eq
 
 
+// Returns TRUE if can be worn, FALSE otherwise.
 int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    String buf(100);
    int i, posn = in_posn, k;
@@ -3113,6 +2906,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
 }//obj_wear_by 
 
 
+// Returns TRUE if can be gotten, FALSE otherwise.
 int obj_get_by(object& obj, critter& pc, short do_msg) {
    String buf(100);
 
@@ -3186,6 +2980,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
 }//obj_get_by
 
 
+// Returns TRUE if can be given, FALSE otherwise.
 int source_give_to(critter& pc, object& obj, critter& targ) {
    String buf(100);
 
@@ -3233,6 +3028,7 @@ int source_give_to(critter& pc, object& obj, critter& targ) {
 }//source_give_to
 
 
+// Returns TRUE if can be removed, FALSE otherwise.
 int obj_remove_by(object& obj, critter& pc) {
    String buf(100);
 
@@ -3249,6 +3045,7 @@ int obj_remove_by(object& obj, critter& pc) {
 }//obj_remove_by
 
 
+// Returns TRUE if can be dropped, FALSE otherwise.
 int obj_drop_by(object& obj, critter& pc) {
    String buf(100);
 
@@ -3265,8 +3062,8 @@ int obj_drop_by(object& obj, critter& pc) {
 }//obj_drop_by
 
 
-void gain_eq_effects(object& obj, object& bag, critter& pc,
-                     short bag_in_inv, short do_msg) { 
+int gain_eq_effects(object& obj, object& bag, critter& pc,
+                    short bag_in_inv, short do_msg) { 
    String buf(100);
    List<critter*> tmp_lst(ROOM.getCrits());
    Cell<critter*>  cell(tmp_lst);
@@ -3274,7 +3071,7 @@ void gain_eq_effects(object& obj, object& bag, critter& pc,
 
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB in gain_eq_effects.\n");
-      return;
+      return -1;
    }//if
 
    if (mudlog.ofLevel(DBG)) {
@@ -3296,7 +3093,7 @@ void gain_eq_effects(object& obj, object& bag, critter& pc,
       pc.loseInv(&obj); 
       if (obj.IN_LIST) {
          delete &obj; 
-         return;
+         return 0;
       }
    }//if
 
@@ -3376,12 +3173,12 @@ void gain_eq_effects(object& obj, object& bag, critter& pc,
 
    String cmd = "get";
    ROOM.checkForProc(cmd, NULL_STRING, pc, obj.OBJ_NUM);
-
+   return 0;
 }//gain_eq_effects
 
 
 
-void wear_eq_effects(object& obj, critter& pc, int posn, short do_msg) { 
+int wear_eq_effects(object& obj, critter& pc, int posn, short do_msg) { 
             //lights, stat adjusts
    String buf(100);
    short flag = FALSE;
@@ -3452,22 +3249,22 @@ void wear_eq_effects(object& obj, critter& pc, int posn, short do_msg) {
 
    String cmd = "wear";
    ROOM.checkForProc(cmd, NULL_STRING, pc, obj.OBJ_NUM);
-
+   return 0;
 }//wear_eq_effects
 
 
-void consume_eq_effects(object& obj, critter& pc, short do_msg) { 
+int consume_eq_effects(object& obj, critter& pc, short do_msg) { 
    String buf(100);
    //mudlog.log(DBG, "In consume_eq_effects.\n");
 
    if (!((obj.OBJ_FLAGS.get(60)) || (obj.OBJ_FLAGS.get(61)))) {
       mudlog.log(ERR, "ERROR: consuming something that ain't edible.\n");
-      return;
+      return -1;
    }//if 
 
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  pc is MOB in consume_eq_effects.\n");
-      return;
+      return -1;
    }//if
 
                     /* do spec_procs */
@@ -3491,8 +3288,8 @@ void consume_eq_effects(object& obj, critter& pc, short do_msg) {
    String cmd = "eat";
    ROOM.checkForProc(cmd, NULL_STRING, pc, obj.OBJ_NUM);
 
-   if (!pc.pc) //ie not a pc
-      return;
+   if (!pc.isPc()) //ie not a pc
+      return -1;
 
    //   mudlog.log(DBG, "About to do stat_affects.\n");
 
@@ -3531,10 +3328,11 @@ void consume_eq_effects(object& obj, critter& pc, short do_msg) {
       }//switch
    }//while
    mudlog.log(DBG, "Done w/consume_eq_effects.\n");
+   return 0;
 }//consume_eq_effects
 
 
-void remove_eq_effects(object& obj, critter& pc, short from_corpse,
+int remove_eq_effects(object& obj, critter& pc, short from_corpse,
                        short do_msg, int posn) { 
                       //lights, stat adjusts
    String buf(100);
@@ -3544,7 +3342,7 @@ void remove_eq_effects(object& obj, critter& pc, short from_corpse,
    
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB in remove_eq_effects.\n");
-      return;
+      return -1;
    }//if
 
                      /*  Lights  */
@@ -3617,11 +3415,11 @@ void remove_eq_effects(object& obj, critter& pc, short from_corpse,
 
    String cmd = "remove";
    ROOM.checkForProc(cmd, NULL_STRING, pc, obj.OBJ_NUM);
-
+   return 0;
 }//remove_eq_effects
 
 
-void drop_eq_effects(object& obj, critter& pc, short do_msg) {
+int drop_eq_effects(object& obj, critter& pc, short do_msg) {
    String buf(100);
    List<critter*> tmp_lst(ROOM.getCrits());
    Cell<critter*> cell(tmp_lst);
@@ -3629,7 +3427,7 @@ void drop_eq_effects(object& obj, critter& pc, short do_msg) {
 
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB in drop_eq_effects.\n");
-      return;
+      return -1;
    }//if
 
    if (do_msg) {
@@ -3671,11 +3469,12 @@ void drop_eq_effects(object& obj, critter& pc, short do_msg) {
 
    String cmd = "drop";
    ROOM.checkForProc(cmd, NULL_STRING, pc, obj.OBJ_NUM);
+   return 0;
 }//drop_eq_effects
 
 
 
-void donate_eq_effects(object& obj, critter& pc, short do_msg) {
+int donate_eq_effects(object& obj, critter& pc, short do_msg) {
    String buf(100);
    List<critter*> tmp_lst(ROOM.getCrits());
    Cell<critter*> cell(tmp_lst);
@@ -3683,7 +3482,7 @@ void donate_eq_effects(object& obj, critter& pc, short do_msg) {
 
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB in drop_eq_effects.\n");
-      return;
+      return -1;
    }//if
 
    if (do_msg) {
@@ -3734,9 +3533,11 @@ void donate_eq_effects(object& obj, critter& pc, short do_msg) {
 
    String cmd = "donate";
    ROOM.checkForProc(cmd, NULL_STRING, pc, obj.OBJ_NUM);
+   return 0;
 }//donate_eq_effects
 
 
+// Returns TRUE if can be put, FALSE otherwise.
 int eq_put_by(object& vict, object& bag, critter& pc, short bag_in_inv) {
    String buf(100);
    List<critter*> tmp_lst(ROOM.getCrits());

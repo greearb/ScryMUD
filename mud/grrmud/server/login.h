@@ -30,10 +30,10 @@
 #include "const.h"
 #include "classes.h"
 
-void start_login(critter& pc);
-void do_login(critter& pc);
-void quit_do_login_new(critter& pc);
-void quit_do_login_old(critter& pc);
+int start_login(critter& pc);
+int do_login(critter& pc);
+int quit_do_login_new(critter& pc);
+int quit_do_login_old(critter& pc);
 int is_valid_name(const String& name);
 
 #endif //include
