@@ -1,5 +1,5 @@
-// $Id: social2.cc,v 1.10 2002/01/04 21:07:28 eroper Exp $
-// $Revision: 1.10 $  $Author: eroper $ $Date: 2002/01/04 21:07:28 $
+// $Id: social2.cc,v 1.11 2002/01/04 21:26:02 eroper Exp $
+// $Revision: 1.11 $  $Author: eroper $ $Date: 2002/01/04 21:26:02 $
 
 //
 //ScryMUD Server Code
@@ -595,8 +595,17 @@ void kiss(int i_th, const String* vict, critter& pc, room& rm) {
 void afk(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
 
-   show("You go afk.\n", pc);
-   Sprintf(buf, "steps away from %s keyboard.", get_his_her(pc));
+   // Actually toggles the players AFK flag.
+   pc.PC_FLAGS.flip(33);
+
+   if ( pc.isAFK() ) {
+      show("You go afk.\n", pc);
+      Sprintf(buf, "steps away from %s keyboard.", get_his_her(pc));
+   } else {
+      show("You are no longer afk.\n", pc);
+      Sprintf(buf, "returns to %s keyboard.", get_his_her(pc));
+   }
+
    emote(buf, pc, rm, TRUE); 
 }//afk
 
