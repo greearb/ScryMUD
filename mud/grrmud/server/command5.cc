@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.45 2002/08/23 21:46:47 gingon Exp $
-// $Revision: 1.45 $  $Author: gingon $ $Date: 2002/08/23 21:46:47 $
+// $Id: command5.cc,v 1.46 2002/09/03 02:23:15 eroper Exp $
+// $Revision: 1.46 $  $Author: eroper $ $Date: 2002/09/03 02:23:15 $
 
 //
 //ScryMUD Server Code
@@ -2976,6 +2976,7 @@ int do_shoot(critter& targ, critter& pc) {
          if (ammo) {
                damage += d(ammo->extras[7], ammo->extras[6]);
          }//if
+         damage += d(1, pc.STR);
          exact_raw_damage(damage, NORMAL, targ);
 
          if (targ.HP > 0) { //still alive
