@@ -2603,7 +2603,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
      }//if
    }//if
    else if (strncasecmp(*targ, "race", len1) == 0) {
-     if (check_l_range(new_val, 1, 17, pc, TRUE)) {
+     if (check_l_range(new_val, 1, 18, pc, TRUE)) {
         ptr->RACE = new_val;
         flag = TRUE;
      }//if
