@@ -1,5 +1,5 @@
-// $Id: list2.h,v 1.14 2001/03/29 03:02:38 eroper Exp $
-// $Revision: 1.14 $  $Author: eroper $ $Date: 2001/03/29 03:02:38 $
+// $Id: list2.h,v 1.15 2003/05/08 21:01:07 eroper Exp $
+// $Revision: 1.15 $  $Author: eroper $ $Date: 2003/05/08 21:01:07 $
 
 //
 //ScryMUD Server Code
@@ -600,12 +600,12 @@ private:
 protected:
    friend class List<T>;
 
-   List<T>::Node *node;
+   typename List<T>::Node *node;
    List<T>* in_lst;
 
    virtual void insertBefore (const T& data) {
       Assert((int)node);
-      List<T>::Node *N = new List<T>::Node; 
+      typename List<T>::Node *N = new typename List<T>::Node; 
       if (!N) {
          mudlog.log(ERROR, "ERROR, out of Memory trying to allocate a cell.\n");
          exit (101);
@@ -627,7 +627,7 @@ protected:
    /*  INSTERT_AFTER-- Insert an item into a list after a given cell. */
    virtual void insertAfter(const T& data) {
       Assert((int)node);
-      List<T>::Node *N = new List<T>::Node; 
+      typename List<T>::Node *N = new typename List<T>::Node; 
       N->item = data;
       N->prev = node;
       N->next = node->next;
@@ -640,7 +640,7 @@ protected:
        List<>, and that takes care of keeping other Cell<> iterators
        cleaned up. */
    virtual T lose() {
-      class List<T>::Node* node_ptr = node;    
+      typename List<T>::Node* node_ptr = node;    
       
       node->prev->next = node->next;
       node->next->prev = node->prev;
