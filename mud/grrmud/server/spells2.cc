@@ -906,73 +906,71 @@ void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
 
    int lost_con = FALSE;
 
-   if (!is_canned)
-     lvl = agg.LEVEL;
+   if (!is_canned) {
+      lvl = agg.LEVEL;
+      agg.MANA -= spell_mana;
+   }
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
-     
-     if (!is_canned) {
-       agg.MANA -= spell_mana;
+      stat_spell_cell* ptr = is_affected_by(spell_num, vict);
 
-       if (ptr) {
-          ptr->bonus_duration += lvl / 2;
+      if (ptr) {
+         ptr->bonus_duration += lvl / 2;
 
-          if (ptr->bonus_duration > 40) {
-             if (agg.pc) {
-                if (agg.STR > 20) {
-                   if (d(1,7) == 5) { //ouch, lost some CON!!
-                      agg.show("Oops...somehow you think that spell might have backfired!!\n");
-                      agg.STR--;
-                   }
-                }//if
-                else if (agg.DEX > 20) {
-                   if (d(1,7) == 7) { //ouch, lost some CON!!
-                      agg.show("Oops...somehow you think that spell might have backfired!!\n");
-                      agg.DEX--;
-                   }
-                }//if
-                else if (agg.CON > 20) {
-                   if (d(1,7) == 7) { //ouch, lost some DAMCON!!
-                      agg.show("Oops...somehow you think that spell might have backfired!!\n");
-                      agg.CON--;
-                   }
-                }//if
-             }
-          }
-       }
+         agg.show("Ok.\n");
 
-       show("Ok.\n", agg);
-     }//if
-     else {
-       Put(new stat_spell_cell(spell_num, lvl), 
-           vict.affected_by);
-       vict.STR += STRENGTH_EFFECT;
+         if ( (ptr->bonus_duration > 40) && (!is_canned) ) {
+            if (agg.pc) {
+               if (agg.STR > 20) {
+                  if (d(1,7) == 5) { //ouch, lost some CON!!
+                     agg.show("Oops...somehow you think that spell might have backfired!!\n");
+                     agg.STR--;
+                  }
+               }//if
+               else if (agg.DEX > 20) {
+                  if (d(1,7) == 7) { //ouch, lost some CON!!
+                     agg.show("Oops...somehow you think that spell might have backfired!!\n");
+                     agg.DEX--;
+                  }
+               }//if
+               else if (agg.CON > 20) {
+                  if (d(1,7) == 7) { //ouch, lost some DAMCON!!
+                     agg.show("Oops...somehow you think that spell might have backfired!!\n");
+                     agg.CON--;
+                  }
+               }//if
+            } // agg.pc
+         } // already duration > 40 and !canned
+      } //if ptr
+      else {
+         Put(new stat_spell_cell(spell_num, lvl), 
+               vict.affected_by);
+         vict.STR += STRENGTH_EFFECT;
 
-       if (&vict == &agg) {
-         show("You feel stronger!\n", agg);
-       }//if
-       else {
-         Sprintf(buf, "You make %S stronger!\n", 
-                 name_of_crit(vict, agg.SEE_BIT));
-         show(buf, agg);
-         Sprintf(buf, "%S makes you stronger!\n", 
-                 name_of_crit(agg, vict.SEE_BIT));
-         buf.Cap();
-         show(buf, vict);
-         Sprintf(buf, "gives %S strength!",
-                 name_of_crit(vict, ~0));
-         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-       }//else
-     }//else
+         if (&vict == &agg) {
+            show("You feel stronger!\n", agg);
+         }//if
+         else {
+            Sprintf(buf, "You make %S stronger!\n", 
+                  name_of_crit(vict, agg.SEE_BIT));
+            show(buf, agg);
+            Sprintf(buf, "%S makes you stronger!\n", 
+                  name_of_crit(agg, vict.SEE_BIT));
+            buf.Cap();
+            show(buf, vict);
+            Sprintf(buf, "gives %S strength!",
+                  name_of_crit(vict, ~0));
+            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         }//else
+      }//else
    }//if worked
    else { //not canned && LOST concentration
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
-     emote("feels a little weak in the head!", agg, 
-           room_list[agg.getCurRoomNum()], TRUE);       
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
+      emote("feels a little weak in the head!", agg, 
+            room_list[agg.getCurRoomNum()], TRUE);       
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else lost concentration
    agg.PAUSE += 1; 
 }//do_cast_strength
