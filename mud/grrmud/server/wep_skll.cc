@@ -1,5 +1,5 @@
-// $Id: wep_skll.cc,v 1.7 2001/03/29 03:02:36 eroper Exp $
-// $Revision: 1.7 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
+// $Id: wep_skll.cc,v 1.8 2002/08/19 06:23:07 eroper Exp $
+// $Revision: 1.8 $  $Author: eroper $ $Date: 2002/08/19 06:23:07 $
 
 //
 //ScryMUD Server Code
@@ -270,7 +270,7 @@ int do_backstab(critter& vict, critter& pc) {
          Sprintf(buf, "places %S in %S's back.",
                  weap_name, name_of_crit(vict, ~0));
          emote(buf, pc, ROOM, TRUE, &vict);
-         Sprintf(buf, "You place %S in %S's back.", 
+         Sprintf(buf, "You place %S in %S's back.\n", 
                  weap_name, name_of_crit(vict, pc.SEE_BIT));
          show(buf, pc);
       }//else

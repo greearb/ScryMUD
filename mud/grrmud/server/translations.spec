@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.18 2002/08/15 21:09:29 eroper Exp $
-# $Revision: 1.18 $  $Author: eroper $ $Date: 2002/08/15 21:09:29 $
+# $Id: translations.spec,v 1.19 2002/08/19 06:23:07 eroper Exp $
+# $Revision: 1.19 $  $Author: eroper $ $Date: 2002/08/19 06:23:07 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -606,13 +606,13 @@ CS_MUST_DROP_MORE_GOLD
 	~
         
 CS_DROP_I_COINS
-        eng "You drop %i coins."
-        spa "Dejas %i monedas."
-        ser "Ispustio si %i dukata."
+        eng "You drop %i coins.\n"
+        spa "Dejas %i monedas.\n"
+        ser "Ispustio si %i dukata.\n"
 	~
 
 CS_PUT_I_COINS
-        eng "You put %i coins in %S."
+        eng "You put %i coins in %S.\n"
 	~
 
 CS_AMT_MUST_BE_GREATER

@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.26 2002/02/07 08:51:49 eroper Exp $
-// $Revision: 1.26 $  $Author: eroper $ $Date: 2002/02/07 08:51:49 $
+// $Id: spells2.cc,v 1.27 2002/08/19 06:23:07 eroper Exp $
+// $Revision: 1.27 $  $Author: eroper $ $Date: 2002/08/19 06:23:07 $
 
 //
 //ScryMUD Server Code
@@ -1547,7 +1547,7 @@ void do_cast_fly(critter& vict, critter& agg, int is_canned, int lvl) {
        vict.CRIT_FLAGS.turn_on(3);
 
        if (&vict == &agg) {
-         show("Your feet leave the ground and only the wind slows you down!", 
+         show("Your feet leave the ground and only the wind slows you down!\n", 
               agg);
        }//if
        else {
