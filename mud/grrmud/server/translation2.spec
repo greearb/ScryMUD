@@ -1,5 +1,5 @@
-# $Id: translation2.spec,v 1.5 1999/06/18 06:52:38 greear Exp $
-# $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
+# $Id: translation2.spec,v 1.6 1999/06/24 05:22:36 greear Exp $
+# $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/24 05:22:36 $
 
 # See translations.spec for more information.
 
@@ -671,6 +671,10 @@ CS_PARSE
 	eng "\tParse Specific\n"
 	~
 
+CS_DBG2
+	eng "\tDebug lvl 2"
+	~
+
 CS_SETTING_LOG
 	eng "Setting logging level to:  %i."
 	~
@@ -690,6 +694,7 @@ CS_LOG_FLAGS
    INP = 512, // Input from players
    SCRIPT = 1024, //Scripting specific stuff
    PARSE = 2048, //PARSE specific
+   DBG2 = 4096,  //More verbose than DBG even.
    ALL = 65535 // all
 
 "

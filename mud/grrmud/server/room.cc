@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.20 1999/06/15 04:45:13 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/15 04:45:13 $
+// $Id: room.cc,v 1.21 1999/06/24 05:22:36 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/24 05:22:36 $
 
 //
 //ScryMUD Server Code
@@ -976,8 +976,8 @@ void room::stat(critter& pc) {
    out_field(room_flags, pc, ROOM_FLAGS_NAMES);
 
    show("\n", pc);
-   Sprintf(buf2, "v_bit: %i  mv$: %i  r_num: %i.\n", 
-           getVisBit(), getMovCost(), getRoomNum());
+   Sprintf(buf2, "v_bit: %i  mv$: %i  r_num: %i  pause: %i\n", 
+           getVisBit(), getMovCost(), getRoomNum(), getPause());
    show(buf2, pc);
 
    Sprintf(buf2, "Number of critters:  %i  Number of Scripts Pending: %i\n\n",

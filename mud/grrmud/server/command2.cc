@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.25 1999/06/20 02:01:43 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/06/20 02:01:43 $
+// $Id: command2.cc,v 1.26 1999/06/24 05:22:35 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/06/24 05:22:35 $
 
 //
 //ScryMUD Server Code
@@ -237,11 +237,6 @@ int critter::doUngroup(int i_th, const String* vict) {
    Cell<critter*> cll;
    critter* ptr1, *ptr2;
    String buf(81);
-
-   if (!vict) {
-      mudlog.log(ERR, "ERROR:  vict is NULL in ungroup.\n");
-      return -1;
-   }//if
 
    if (isMob()) {
       mudlog.log(ERR, "ERROR: MOB trying to ungroup.\n");
@@ -2738,6 +2733,9 @@ int log_level(int lvl, critter& pc) {
          }
          if (mudlog.ofLevel(PARSE)) {
             pc.show(CS_PARSE);
+         }
+         if (mudlog.ofLevel(DBG2)) {
+            pc.show(CS_DBG2);
          }
          return 0;
       }//if it was 1

@@ -1,5 +1,5 @@
-// $Id: rm_cmds.cc,v 1.6 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: rm_cmds.cc,v 1.7 1999/06/24 05:22:36 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/24 05:22:36 $
 
 //
 //ScryMUD Server Code
@@ -155,6 +155,9 @@ int room::move_all(int i_th, const String* dir) {
    critter* ptr;
    door* door_ptr = door::findDoor(DOORS, i_th, dir, ~0, *this);
    if (!door_ptr || !door_ptr->getDestRoom()) {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << __FUNCTION__ << " failed, no door or dest room\n";
+      }
       return -1;
    }
 

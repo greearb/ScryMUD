@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.21 1999/06/23 04:16:06 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
+// $Id: grrmud.cc,v 1.22 1999/06/24 05:22:36 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/24 05:22:36 $
 
 //
 //ScryMUD Server Code
@@ -1043,14 +1043,24 @@ void game_loop(int s)  {
          }//if
          else {
             if (rm_ptr->getPause() > 0) {
+               if (mudlog.ofLevel(SCRIPT)) {
+                  mudlog << "room_script execute: pause is > 0:  " << rm_ptr->getPause()
+                         << "  for room: " << rm_ptr->getIdNum() << endl;
+               }
                continue;
             }
+            else {
+               if (mudlog.ofLevel(SCRIPT)) {
+                  mudlog << "room_script execute: attempting to get script cmd for room: "
+                         << rm_ptr->getIdNum() << endl;
+               }
+            }//else
 
             ScriptCmd* tmp_cmd_ptr;
             // Cast away const'ness, but still use it as if it's const.
             if ((tmp_cmd_ptr = (ScriptCmd*)(rm_ptr->getNextScriptCmd()))) {
 
-               if (mudlog.ofLevel(DBG)) {
+               if (mudlog.ofLevel(SCRIPT)) {
                   mudlog << "grrmud.cc:  got a room script command -:"
                          << tmp_cmd_ptr->getCommand() << ":-" << endl;
                }

@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.19 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: spec_prc.cc,v 1.20 1999/06/24 05:22:36 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/24 05:22:36 $
 
 //
 //ScryMUD Server Code
@@ -823,7 +823,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
           !room_list[i].isZlocked() && //if not locked
           room_list[i].isInUse()) { //and in use
 
-         if (mudlog.ofLevel(DBG)) {
+         if (mudlog.ofLevel(DBG2)) {
             mudlog << "Found an unlocked room:  " << i << endl;
          }
          

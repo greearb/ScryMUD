@@ -1,5 +1,5 @@
-// $Id: LogStream.h,v 1.4 1999/06/05 23:29:16 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:16 $
+// $Id: LogStream.h,v 1.5 1999/06/24 05:22:36 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/24 05:22:36 $
 
 //
 //ScryMUD Server Code
@@ -47,6 +47,7 @@ enum LogLevelEnum {
    INP = 512, // Input from players
    SCRIPT = 1024, //Scripting specific stuff
    PARSE = 2048, //PARSE specific
+   DBG2 = 4096,  //More verbose than debug even..
    ALL = ~(0) // all
 };//enum
 

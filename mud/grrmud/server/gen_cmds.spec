@@ -100,7 +100,7 @@ add_perm_inv ~
 return add_perm_inv(i, &(cooked_strs[1]), j, pc);
 assist ~
 return assist(i, &(cooked_strs[1]), pc);
-asave ~
+asave write_zone write_zone ~
 return write_zone(i, pc);
 alist zlist zlist ~
 return zlist(i, j, pc); 

@@ -11,10 +11,10 @@ You cannot save a zone which has not been 'zlock'ed, and you should
 be very carefull about zunlocking a zone, zlocking a zone, and saving
 it, as the mobs may move or be changed while it is zunlocked.
 
-syntax:  write_zone <zone_number>
+syntax:  write_zone <<zone_number>
+syntax:  asave <<zone_number>
 <color=red>
-See also:  zlock, where, arlist
-</color>
+See also:  zlock, where, arlist</color>
 
 NOTE:   You must also be the OWNER of the zone to write it out.  This
 	is to provide a little security.  
