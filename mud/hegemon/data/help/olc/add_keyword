@@ -11,4 +11,4 @@ usage:  add_keyword
 
 
 See Also:  rstat, rm_keyword, stat_keyword, clear_keyword, ch_kdesc,
-           add_kname
+See Also:  add_kname, asave

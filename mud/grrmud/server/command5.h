@@ -32,8 +32,8 @@
 
 
 
-int withdraw(int i_th, const String* coins, int j_th,
-             const String* banker, critter& pc);
+int withdraw(int i_th, const String& coins, int j_th,
+             const String& banker, critter& pc);
 
 int balance(int i_th, const String* banker, critter& pc);
 

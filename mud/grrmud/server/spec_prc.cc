@@ -386,6 +386,12 @@ int do_wand_scroll_proc(door* dr_ptr, int proc_num, critter& pc,
                         int spell_lvl) {
    String buf(100);
 
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "do_wand_scroll_proc: (DOOR) " << proc_num << " pc: "
+             << *(pc.getName()) << " spell_lvl: " << spell_lvl
+             << " dr_ptr: " << dr_ptr << endl;
+   }
+
    /*  Used for potions too btw.                             */
    /*  If targ is NOT NULL, then it is a SMOB or PC.         */
    /*  return value determines if should decrement the wand. */
@@ -415,7 +421,7 @@ int do_wand_scroll_proc(door* dr_ptr, int proc_num, critter& pc,
          return -1;
       }//switch
    return 0;
-}//do_scroll_proc (DOOR)
+}//do_wand_scroll_proc (DOOR)
 
 
 
@@ -424,6 +430,12 @@ int do_wand_scroll_proc(int proc_num, critter& pc,
    /*  Used for potions too btw.                             */
    /*  If targ is NOT NULL, then it is a SMOB or PC.         */
    /*  return value determines if should decrement the wand. */
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "do_wand_scroll_proc: (NO TARG) " << proc_num << " pc: "
+             << *(pc.getName()) << " spell_lvl: " << spell_lvl
+             << endl;
+   }
 
    switch (proc_num)
      {
@@ -514,6 +526,16 @@ int do_wand_scroll_proc(int proc_num, critter& pc,
 
 int do_wand_scroll_proc(object* otarg, int proc_num, critter& pc,
                         int spell_lvl) {
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "do_wand_scroll_proc: (OBJ) " << proc_num << " pc: "
+             << *(pc.getName()) << " spell_lvl: " << spell_lvl
+             << " otarg: " << otarg << endl;
+      if (otarg)
+         mudlog << "Targ's num " << otarg->getIdNum() << endl;
+   }
+
+
    /*  Used for potions too btw.                             */
    /*  If targ is NOT NULL, then it is a SMOB or PC.         */
    /*  return value determines if should decrement the wand. */
@@ -573,6 +595,14 @@ int do_wand_scroll_proc(object* otarg, int proc_num, critter& pc,
 int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
                         int spell_lvl) {
    String buf(100);
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "do_wand_scroll_proc: " << proc_num << " pc: "
+             << *(pc.getName()) << " spell_lvl: " << spell_lvl
+             << " targ: " << targ << endl;
+      if (targ)
+         mudlog << "Targ's name: " << *(targ->getName()) << endl;
+   }
 
 /*  Used for potions too btw.                             */
 /*  If targ is NOT NULL, then it is a SMOB or PC.         */

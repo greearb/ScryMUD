@@ -39,7 +39,11 @@ class LabeledTextArea extends Panel {
       add (txt, "Center");
    }//constructor
 
-   String getText() {
+   public TextArea getTextArea() {
+      return txt;
+   }
+
+   public String getText() {
       if (txt == null)
         return " ";
       else

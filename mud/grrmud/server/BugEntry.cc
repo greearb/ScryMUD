@@ -39,13 +39,13 @@ char* BugEntry::state_str[] = {
   };
 
 char* BugEntry::html_color[] = {
-   "<font color=#ffffff> ",
-   "<font color=#aaaaff> ",
-   "<font color=#ffaaaa> ",
-   "<font color=#aaffaa> ",
-   "<font color=#ffffff> ",
-   "<font color=#ffffff> ",
-   "<font color=#ffffff> "
+   "<font color=\"#000000\"> ", //open (black)
+   "<font color=\"#0000cc\"> ", //assigned (blue)
+   "<font color=\"#cc0000\"> ", //retest (red)
+   "<font color=\"#00cc00\"> ", //closed (green)
+   "<font color=\"#000000\"> ", //all (black)  //these last 3 not used now.
+   "<font color=\"#000000\"> ", //none (black)
+   "<font color=\"#000000\"> " //high_state (black)
   };
 
 char* BugCollection::ct_strs[] = {
@@ -57,22 +57,31 @@ char* BugCollection::ct_strs[] = {
 ///********************* CommentEntry  *****************************///
 ///*************************************************************///
 
+CommentEntry::CommentEntry(const char* d, const char* rr, const char* r)
+      : date(d), reporter(rr), report(r) {
+   html_safe_report = report.sterilizeForHtml();
+   heg_safe_report = report;
+   parse_communication(heg_safe_report);
+}//constructor
+
 
 int CommentEntry::read(ifstream& dafile) {
    char buf[100];
+   int sent;
+   dafile >> sent;
+   if (sent == -1)
+     return -1;
 
-   dafile.getline(buf, 99);
-   date = buf;
-   date.Strip();
-
-   if (date == "~") {
-      return -1;
-   }
+   date.Termed_Read(dafile);
 
    dafile >> reporter;
    dafile.getline(buf, 99);
    
    report.Termed_Read(dafile);
+
+   html_safe_report = report.sterilizeForHtml();
+   heg_safe_report = report;
+   parse_communication(heg_safe_report);
 
    if (dafile)
      return 0;
@@ -80,30 +89,40 @@ int CommentEntry::read(ifstream& dafile) {
 }
 
 int CommentEntry::write(ofstream& dafile) {
-   dafile << date << endl;
+   dafile << 1 << endl; //sentinal
+   dafile << date << "\n~\n";
    dafile << reporter << endl;
    dafile << report << "\n~\n";
    if (dafile)
      return 0;
    return -1;
-}
+}//
 
-int CommentEntry::writeHtml(ofstream& dafile) {
-   dafile << "<pre><u>" << date << "</u>   " << reporter
-          << "</pre><br>\n" << report << endl;
+int CommentEntry::writeSentinal(ofstream& dafile) {
+   dafile << -1 << endl;
+   if (dafile)
+     return 0;
+   return -1;
+}//writeSentinal
+
+int CommentEntry::writeHtml(ofstream& dafile, const char* fnt) {
+   dafile << "<tr><td nowrap>" << fnt << date << "</font></td> <td>" 
+          << fnt << reporter << "</font></td> <td>" << fnt
+          << html_safe_report << "</font></td></tr>" << endl;
    return 0;
 }
 
 String CommentEntry::toStringHeg() {
    String buf(200);
-   Sprintf(buf, "<BUG_COMMENT_ENTRY \"%S\" %S>\n%S\n</BUG_COMMENT_ENTRY>",
-           &date, &reporter, &report);
+   Sprintf(buf, "<BUG_COMMENT_ENTRY \"%S\" %S>%S</BUG_COMMENT_ENTRY>",
+           &date, &reporter, &heg_safe_report);
    return buf;
 }
 
+
 String CommentEntry::toString() {
    String buf(200);
-   Sprintf(buf, "\t%S: %S\n\t%S\n", &date, &reporter, &report);
+   Sprintf(buf, "   %S: %S\n\t%S\n", &date, &reporter, &report);
    return buf;
 }//toString
 
@@ -130,7 +149,9 @@ BugEntry::state BugEntry::getState(const String& fer_state) {
 BugEntry::BugEntry(const BugEntry& src) //copy constructor
    : bug_num(src.bug_num), room_num(src.room_num), cur_state(src.cur_state), 
      create_date(src.create_date), reporter(src.reporter),
-     assigned_to(src.assigned_to), title(src.title) {
+     assigned_to(src.assigned_to), title(src.title),
+     html_safe_title(src.html_safe_title),
+     heg_safe_title(src.heg_safe_title) {
         
    clear_ptr_list(reports);
 
@@ -141,6 +162,20 @@ BugEntry::BugEntry(const BugEntry& src) //copy constructor
    }
    _cnt++;
 }//copy constructor
+
+
+BugEntry::BugEntry(int bn, const char* _reporter, const char* _date, 
+                   const char* _title, int rn)
+      : bug_num(bn), room_num(rn), cur_state(open), 
+        create_date(_date), reporter(_reporter),
+        assigned_to("ADMIN"), title(_title) {
+
+   html_safe_title = title.sterilizeForHtml();
+   heg_safe_title = title;
+   parse_communication(heg_safe_title);
+   _cnt++;
+}//Constructor
+
     
 int BugEntry::clear() {
    bug_num = room_num = 0;
@@ -151,6 +186,8 @@ int BugEntry::clear() {
    assigned_to.Clear();
    clear_ptr_list(reports);
    title.Clear();
+   html_safe_title.Clear();
+   heg_safe_title.Clear();
    return 0;
 }//clear
 
@@ -163,7 +200,8 @@ BugEntry& BugEntry::operator=(const BugEntry& src) {
    reporter = src.reporter;
    assigned_to = src.assigned_to;
    title = src.title;
-   
+   html_safe_title = src.html_safe_title;
+   heg_safe_title = src.heg_safe_title;
    clear_ptr_list(reports);
    
    Cell<CommentEntry*> cll(src.reports);
@@ -232,6 +270,8 @@ int BugEntry::changeState(state new_state, int imm_level, const String& name) {
 
 int BugEntry::read(ifstream& dafile) {
    char buf[100];
+   clear();
+
    dafile >> bug_num;
 
    // Terminator reached.
@@ -258,6 +298,10 @@ int BugEntry::read(ifstream& dafile) {
 
    title.Termed_Read(dafile);
 
+   html_safe_title = title.sterilizeForHtml();
+   heg_safe_title = title;
+   parse_communication(heg_safe_title);
+
    CommentEntry re;
    while (re.read(dafile) >= 0) {
       reports.append(new CommentEntry(re));
@@ -266,7 +310,7 @@ int BugEntry::read(ifstream& dafile) {
 }
 
 int BugEntry::write(ofstream& dafile) {
-   dafile << bug_num << " " << room_num << " " << cur_state
+   dafile << bug_num << " " << room_num << " " << (int)cur_state
           << " bug_num, room_num, state\n";
 
    flags.Write(dafile);
@@ -282,7 +326,7 @@ int BugEntry::write(ofstream& dafile) {
    while ((ptr = cll.next())) {
       ptr->write(dafile);
    }
-   dafile << "\n~\n";
+   CommentEntry::writeSentinal(dafile);
 
    if (dafile)
      return 0;
@@ -290,37 +334,47 @@ int BugEntry::write(ofstream& dafile) {
 };
 
 
+// Write a table row entry...
 int BugEntry::writeHtml(ofstream& dafile) {
    String buf(200);
 
-   dafile << "li> " << html_color[cur_state] << endl;
+   dafile << "\n<table width=\"95%\" border=3>
+<caption align=top><strong>" << html_color[cur_state];
 
-   Sprintf(buf, "<pre>[%i] %P08[%s]%P17 <u>%S</u>  %P35By %S %P60Room: %i</pre>\n",
+   Sprintf(buf, "[%i] %P08[%s]%P17 <u>%S</u>  %P35By %S %P60Room: %i<br>\n<font size += 1>%S</font>",
            bug_num, state_str[cur_state], &create_date, &reporter,
-           room_num);
+           room_num, &html_safe_title);
    
-   dafile << buf << "<ul>\n";
+   dafile << buf << "</font></strong></caption><h4>\n";
 
    Cell<CommentEntry*> cll(reports);
    CommentEntry* ptr;
+   int did_one = FALSE;
    while ((ptr = cll.next())) {
-      ptr->writeHtml(dafile);
+      did_one = TRUE;
+      ptr->writeHtml(dafile, html_color[cur_state]);
    }
 
-   dafile << "</ul></font> </li>\n";
+   // Empty tables don't even show the caption...
+   if (!did_one) {
+      dafile << "<tr><td> N/A</td><td>N/A</td><td>N/A</td></tr>";
+   }
+
+   dafile << "</h4></table>\n";
    
    if (dafile)
      return 0;
    return -1;
 };   
 
+
 /** This is w/out hegemon markup */
 String BugEntry::toString() {
    String retval(1000);
 
-   Sprintf(retval, "[%i] %P08[%s] Submitted by %S on %S: in room %i.  Assigned to: %S\n%S",
-           bug_num, state_str[cur_state], &reporter, &create_date, room_num,
-           &assigned_to, &title);
+   Sprintf(retval, "[%i] %P08[%s] %S\n\t  Submitted by %S on %S: in room %i.  Assigned to: %S\n",
+           bug_num, state_str[cur_state], &title, &reporter, &create_date,
+           room_num, &assigned_to);
    
    Cell<CommentEntry*> cll(reports);
    CommentEntry* ptr;
@@ -329,15 +383,28 @@ String BugEntry::toString() {
    }
 
    return retval;
-}
+}//toString
+
+
+/** This is w/out hegemon markup */
+String BugEntry::toStringBrief() {
+   String retval(1000);
+
+   Sprintf(retval, "[%i] %P08[%s] %S\n\t  Submitted by %S on %S: in room %i.  Assigned to: %S\n",
+           bug_num, state_str[cur_state], &heg_safe_title, &reporter,
+           &create_date, room_num, &assigned_to);
+   
+   return retval;
+}//toStringBrief
+
 
 /** This is with hegemon markup */
 String BugEntry::toStringHeg(const char* col_type) {
    String retval(1000);
    String buf(100);
 
-   Sprintf(retval, "<BUG_TITLE>%S</BUG_TITLE>", &title);
-   Sprintf(buf, "<BUG_ENTRY %i %s \"%S\" %S %i %S %s>\n",
+   Sprintf(retval, "<BUG_TITLE>%S</BUG_TITLE>", &heg_safe_title);
+   Sprintf(buf, "<BUG_ENTRY %i %s \"%S\" %S %i %S %s>",
            bug_num, state_str[cur_state], &create_date, &reporter, room_num,
            &assigned_to, col_type);
 
@@ -346,7 +413,7 @@ String BugEntry::toStringHeg(const char* col_type) {
    Cell<CommentEntry*> cll(reports);
    CommentEntry* ptr;
    while ((ptr = cll.next())) {
-      retval += ptr->toString();
+      retval += ptr->toStringHeg();
    }
 
    retval += "</BUG_ENTRY>";
@@ -436,55 +503,74 @@ int BugCollection::writeHtml() {
 <CENTER>
 <H2>
 <a href=http://www.primenet.com/~greear/ScryMUD/scry.html>ScryMUD "
-     << coll_name << "</a></H2></CENTER>
+     << coll_name << "</a></H2></CENTER><P>
+
 This is an automagically generated list of <b>" << coll_name << "</b> entries
 from ScryMUD.<P>
 
+<center>
 <a href=\"#open\">Open Issues</a> 
 <a href=\"#assigned\">Assigned Issues</a> 
 <a href=\"#retest\">Issues to Retest</a> 
-<a href=\"#closed\">Closed Issues</a> 
+<a href=\"#closed\">Closed Issues</a>
+</center><P>
 ";
 
       Cell<BugEntry*> cll(bugs);
       BugEntry* ptr;
 
-      dafile << "<a name=#open><center><u>Open Issues</u></center> <ul>\n";
+      dafile << "<center>
+<a name=\"open\"></a>
+<h2><u>Open Issues</u></h2><br>
+ <table width=\"100%\"border=3>\n";
       while ((ptr = cll.next())) {
          if (ptr->getState() == BugEntry::open) {
+            dafile << "<tr><td>\n";
             ptr->writeHtml(dafile);
-            dafile << "<hr width=75% align=center><P>" << endl;
+            dafile << "</td></tr><P>" << endl;
          }
       }//while
 
-      dafile << "</ul><P>\n<a name=#assigned><center><u>Assigned Issues</u></center> <ul>\n";
+      dafile << "</table><P>
+<a name=\"assigned\"></a>
+<h2><u>Assigned Issues</u></h2>
+ <table width=\"100%\"border=3>\n";
       bugs.head(cll);
       while ((ptr = cll.next())) {
          if (ptr->getState() == BugEntry::assigned) {
+            dafile << "<tr><td>\n";
             ptr->writeHtml(dafile);
-            dafile << "<hr width=75% align=center><P>" << endl;
+            dafile << "</td></tr><P>" << endl;
          }
       }//while
 
-      dafile << "</ul><P>\n<a name=#retest><center><u>Issues In Retest</u></center> <ul>\n";
+      dafile << "</table><P>
+<a name=\"retest\"></a>
+<h2><u>Issues In Retest</u></h2>
+ <table width=\"100%\"border=3>\n";
       bugs.head(cll);
       while ((ptr = cll.next())) {
          if (ptr->getState() == BugEntry::retest) {
+            dafile << "<tr><td>\n";
             ptr->writeHtml(dafile);
-            dafile << "<hr width=75% align=center><P>" << endl;
+            dafile << "</td></tr><P>" << endl;
          }
       }//while
 
-      dafile << "</ul><P>\n<a name=#closed><center><u>Closed Issues</u></center><ul>\n";
+      dafile << "</table><P>
+<a name=\"closed\"></a>
+<h2><u>Closed Issues</u></h2>
+ <table width=\"100%\"border=3>\n";
       bugs.head(cll);
       while ((ptr = cll.next())) {
          if (ptr->getState() == BugEntry::closed) {
+            dafile << "<tr><td>\n";
             ptr->writeHtml(dafile);
-            dafile << "<hr width=75% align=center><P>" << endl;
+            dafile << "</td></tr><P>" << endl;
          }
       }//while
 
-      dafile << "</ul><hr>
+      dafile << "</table></center>\n\n<hr>
 <ADDRESS>
 Generated by:<A HREF=\"mailto:greear@cyberhighway.net\">ScryMUD Admin</A>
 </ADDRESS></body></html>\n";
@@ -515,7 +601,7 @@ int BugCollection::read() {
 
    if (dafile) {
       dafile >> version >> version_num;
-      
+
       if (strcmp(version, "_VERSION_") != 0) {
          mudlog << "ERROR:  BugCollection file -:" << file_name
                 << ":- is an incompatible version.\n  It will be ignored "
@@ -661,6 +747,22 @@ String BugCollection::toString(const String& in_state, int use_heg_markup) {
             buf.Append(ptr->toString());
          }
          buf.Append("\n");
+      }
+   }
+   return buf;
+}
+
+
+String BugCollection::toStringBrief(const String& in_state) {
+   String buf(10000);
+   
+   BugEntry::state s = BugEntry::getState(in_state);
+
+   Cell<BugEntry*> cll(bugs);
+   BugEntry* ptr;
+   while ((ptr = cll.next())) {
+      if ((s == BugEntry::all) || (s == ptr->getState())) {
+         buf.Append(ptr->toStringBrief());
       }
    }
    return buf;

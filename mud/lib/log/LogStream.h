@@ -82,6 +82,10 @@ public:
       }
    }
 
+   void dbg(const char* msg) {
+      log(DBG, msg);
+   }
+
    void log(const char* msg) {
       log(DBG, msg);
    }

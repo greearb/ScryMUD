@@ -2527,6 +2527,9 @@ int do_ostat(object& obj, critter& pc) {
             }//while
             pc.show("\n");
          }//if
+         else {
+            pc.show("Casts NO SPELLS.\n");
+         }
       }//if obj proc
 
       show_stat_affects(*obj_ptr, pc);

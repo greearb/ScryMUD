@@ -182,7 +182,7 @@ int do_mob_comparison(int i_th, const String& rhs_critter,
    if (mudlog.ofLevel(SCRIPT)) {
       mudlog << "do_mob_comparison, i_th: " << i_th << " rhs_critter: "
              << rhs_critter << " field: " << field
-             << " ComparisonTypeE:" << ct << endl;
+             << " ComparisonTypeE: " << (int)ct << endl;
    }
 
    critter* crit_ptr = ROOM.haveCritNamed(i_th, &rhs_critter, ~0);

@@ -2714,7 +2714,7 @@ void critter::doSuicide() {
 
 
 void critter::setMode(PcMode val) {
-   mudlog << "Setting mode to:  " << val << endl;
+   mudlog << "Setting mode to:  " << (int)val << endl;
    pc->mode = val;
 }
 

@@ -65,10 +65,15 @@ public:
    int bonus_duration;
    
    stat_spell_cell() : stat_spell(0), bonus_duration(0) { _cnt++; }
-   stat_spell_cell(int ss, int bd) : stat_spell(ss), bonus_duration(bd) { _cnt++; }
+   stat_spell_cell(int ss, int bd) :
+         stat_spell(ss),
+         bonus_duration(bd) { _cnt++; }
    stat_spell_cell(const stat_spell_cell& src) :
-         stat_spell(src.stat_spell), bonus_duration(src.bonus_duration) { _cnt++; }
+         stat_spell(src.stat_spell),
+         bonus_duration(src.bonus_duration) { _cnt++; }
    ~stat_spell_cell() { _cnt--; }
+
+   String toString() const ;
 
    static int getInstanceCount() { return _cnt; } //how many ZoneList objects exist?
 };//stat_spell 

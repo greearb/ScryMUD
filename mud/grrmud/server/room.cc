@@ -517,7 +517,7 @@ void room::Read(ifstream& ofile, short read_all) {
          return;
       }
       if (check_l_range(i, 0, NUMBER_OF_ITEMS, mob_list[0], FALSE)) {
-         if (obj_list[i].OBJ_FLAGS.get(10)) {
+         if (obj_list[i].isInUse()) {
             if (read_all || 
                 ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
                 d(1,100)) {
@@ -1395,6 +1395,17 @@ void room::outInv(critter& pc) {
 }
 
 void room::gainInv(object* obj) {
+   if (obj->obj_flags.get(55)) { //if it's coins
+      if (obj->cur_stats[1] == 0) {
+         if (obj->IN_LIST) {
+            mudlog << "ERROR:  Possible memory leak, gainInv:  obj is SOBJ"
+                   << " but has zero coins, obj#" << obj->getIdNum()
+                   << " room# " << getIdNum() << endl;
+         }
+         return; //don't add it, it had zero coins
+      }//if
+   }//if
+         
    inv.prepend(obj);
    if (obj->IN_LIST) {
       obj->IN_LIST = &inv;

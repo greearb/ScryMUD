@@ -1600,10 +1600,15 @@ critter* have_crit_named(List<critter*>& lst, const int i_th,
    Cell<String*> char_cell;
    Cell<critter*> cell(lst);
    critter* crit_ptr;
-   int count = 0, ptr_v_bit, len;
+   int count = 0;
+   int ptr_v_bit, len;
    String *string;
 
-   //log("In have_crit_named:");
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "in have_crit_named, i_th: " << i_th << " name -:"
+             << *name << ":- see_bit: " << see_bit << " rm# "
+             << rm.getIdNum() << " do_exact: " << do_exact << endl;
+   }
 
    if (!name) {
       mudlog.log(ERR, "ERROR:  NULL name sent to have_crit_named.\n");
@@ -1616,18 +1621,22 @@ critter* have_crit_named(List<critter*>& lst, const int i_th,
    if (i_th <= 0)
       return NULL;
 
+   int matched;
    while ((crit_ptr = cell.next())) {
       ptr_v_bit = (crit_ptr->VIS_BIT | rm.getVisBit()); 
       if (detect(see_bit, ptr_v_bit)) {
 	 crit_ptr->names.head(char_cell);
-	 while ((string = char_cell.next())) {
+         matched = FALSE;
+	 while ((string = char_cell.next()) && !matched) {
 	    if (do_exact) {
-   	       if (strcasecmp(*string, *name) == 0){ 
+   	       if (strcasecmp(*string, *name) == 0) { 
+                  matched = TRUE;
 	          count++;
 	       }//if
 	    }//if exact
 	    else {
-   	       if (strncasecmp(*string, *name, len) == 0){ 
+   	       if (strncasecmp(*string, *name, len) == 0) { 
+                  matched = TRUE;
 	          count++;
 	       }//if
 	    }//else
@@ -1662,12 +1671,15 @@ int crit_sub_a_4_b(critter* a, List<critter*>& lst,
       return FALSE;
    }//if
 
+   int matched;
    while ((crit_ptr = cell.next())) {
       ptr_v_bit = (crit_ptr->VIS_BIT | rm.getVisBit()); 
       if (detect(see_bit, ptr_v_bit)) {
 	 crit_ptr->names.head(char_cell);
-	 while ((string = char_cell.next())) {
+         matched = FALSE;
+	 while ((string = char_cell.next()) && !matched) {
 	    if (strncasecmp(*string, *name, name->Strlen()) == 0){ 
+               matched = TRUE;
 	       count++;
 	       if (count == i_th) {  //found right one
                   lst.assign(cell, a);
@@ -1701,12 +1713,15 @@ int obj_sub_a_4_b(object* a, List<object*>& lst, const int i_th,
       return FALSE;
    }//if
 
+   int matched;
    while ((obj_ptr = cell.next())) {
       ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | rm.getVisBit()); 
       if (detect(see_bit, ptr_v_bit)) {
          obj_ptr->names.head(char_cell);
-	 while ((string = char_cell.next())) {
+         matched = FALSE;
+	 while ((string = char_cell.next()) && !matched) {
 	    if (strncasecmp(*string, *name, name->Strlen()) == 0){ 
+               matched = TRUE;
 	       count++;
 	       if (count == i_th) {  //found right one
                   //obj_ptr = Prev(cell);  //back cell up one
@@ -1729,8 +1744,6 @@ object* have_obj_named(const List<object*>& lst, const int i_th,
    int count = 0, ptr_v_bit;
    String *string;
 
-   //log("In have_obj_named:");
-
    if (!name) {
       mudlog.log(ERR, "ERROR:  Null sent to have_obj_named.k\n");
       return NULL;
@@ -1739,12 +1752,15 @@ object* have_obj_named(const List<object*>& lst, const int i_th,
    if (name->Strlen() == 0) 
       return NULL;
 
+   int matched;
    while ((obj_ptr = cell.next())) {
       ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | rm.getVisBit());
       if (detect(see_bit, ptr_v_bit)) {
 	 obj_ptr->names.head(char_cell);
-	 while ((string = char_cell.next())) {
+         matched = FALSE;
+	 while ((string = char_cell.next()) && !matched) {
 	    if (strncasecmp(*string, *name, name->Strlen()) == 0){ 
+               matched = TRUE;
 	       count++;
 	       if (count == i_th) {
 		  return obj_ptr;
@@ -1843,6 +1859,7 @@ String* name_of_room(const room& rm, int see_bit) {
 String* name_of_door(const door& dr, int see_bit) {
    return name_of_dr_data(*(dr.dr_data), see_bit, dr.destination);
 }//name_of_door
+
 
 String* name_of_dr_data(const door_data& dr, int see_bit, int dest) {
    Cell<String*> cell(dr.names);

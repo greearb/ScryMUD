@@ -4,6 +4,7 @@ LOG_FILE=$1
 
 if [ $# = "0" ]
 then
+   echo "Called as: $*"
    echo "Usage:  %0 <file_name>"
    exit 2
 fi
@@ -30,6 +31,8 @@ then
 
 else
 
+   echo "File not found: ${LOG_FILE}"
+   echo "Called as: $*"
    echo "Usage:  $0 <file_name>"
 
    exit 1

@@ -506,7 +506,11 @@ int remove(int i_th, const String* obj, critter &pc) {
 int look(int i_th, const String* obj, critter &pc,
          int ignore_brief = FALSE) {
 
-   mudlog.log(DBG, "In look.\n");
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In look, i_th: " << i_th << " obj -:" << *obj
+             << ":-  pc -:" << pc.getName() << ":- ignore_brief: "
+             << ignore_brief << endl;
+   }
    
    return do_look(i_th, obj, pc, ROOM, ignore_brief);
 }
@@ -1838,57 +1842,64 @@ int group_say(const char* message, critter& pc) {
    else {
       String tag;
       String untag;
-
-      if (pc.groupees.isEmpty()) {
-         pc.show("You are not in any group!\n");
-      }
+      Cell<critter*> cll;
+      
+      if (pc.FOLLOWER_OF && pc.GROUPEES.isEmpty()) {
+         pc.FOLLOWER_OF->GROUPEES.head(cll);
+      }//if
       else {
-         Cell<critter*> cell(pc.groupees);
-         while ((crit_ptr = cell.next())) {
-            if (crit_ptr != &pc) {
-               if (crit_ptr->isSleeping()) {
-                  continue;
-               }
-               if (crit_ptr->pc && crit_ptr->USING_CLIENT) {
-                  tag = "<TELL>";
-                  untag = "</TELL>";
-               }
-               else if (crit_ptr->isUsingColor()) {
-                  tag = *(crit_ptr->getTellColor());
-                  untag = *(crit_ptr->getDefaultColor());
-               }
-               else {
-                  tag = "";
-                  untag = "";
-               }
+         pc.GROUPEES.head(cll); //then IS the leader
+      }//if
 
-               Sprintf(buf, "%S\n%S tells the group, '%S'\n%S", 
-                       &tag, name_of_crit(pc, crit_ptr->SEE_BIT),
-                       &msg, &untag);
-               buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
-               show(buf, *crit_ptr); 
-            }//if
+      int did_find_one = FALSE;
+      while ((crit_ptr = cll.next())) {
+         if (crit_ptr != &pc) {
+            if (crit_ptr->isSleeping()) {
+               continue;
+            }
+            did_find_one = TRUE;
+            if (crit_ptr->pc && crit_ptr->USING_CLIENT) {
+               tag = "<TELL>";
+               untag = "</TELL>";
+            }
+            else if (crit_ptr->isUsingColor()) {
+               tag = *(crit_ptr->getTellColor());
+               untag = *(crit_ptr->getDefaultColor());
+            }
             else {
-
-               if (pc.pc && pc.USING_CLIENT) {
-                  tag = "<TELL>";
-                  untag = "</TELL>";
-               }
-               else if (pc.isUsingColor()) {
-                  tag = *(pc.getTellColor());
-                  untag = *(pc.getDefaultColor());
-               }
-               else {
-                  tag = "";
-                  untag = "";
-               }
+               tag = "";
+               untag = "";
+            }
             
-               Sprintf(buf, "%SYou tell the group, '%S'\n%S", &tag, &msg,
-                       &untag);
-               pc.show(buf);
-            }//else
-         }//while
-      }//else
+            Sprintf(buf, "%S\n%S tells the group, '%S'\n%S", 
+                    &tag, name_of_crit(pc, crit_ptr->SEE_BIT),
+                    &msg, &untag);
+            buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
+            show(buf, *crit_ptr); 
+         }//if
+      }//while
+
+      if (did_find_one) {
+         if (pc.pc && pc.USING_CLIENT) {
+            tag = "<TELL>";
+            untag = "</TELL>";
+         }
+         else if (pc.isUsingColor()) {
+            tag = *(pc.getTellColor());
+            untag = *(pc.getDefaultColor());
+         }
+         else {
+            tag = "";
+            untag = "";
+         }
+         
+         Sprintf(buf, "%SYou tell the group, '%S'\n%S", &tag, &msg,
+                 &untag);
+         pc.show(buf);
+      }//if
+      else {
+         pc.show("There is no one in your group to talk to now!\n");
+      }
    }//else
    return 0;
 }//group_say

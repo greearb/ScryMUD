@@ -58,6 +58,13 @@ String HegemonMarkup::makeSafeForHegTag(const char* str) {
 
 int stat_spell_cell::_cnt = 0;
 
+String stat_spell_cell::toString() const {
+   String retval(100);
+   Sprintf(retval, "stat_spell: %i  bonus_duration: %i", stat_spell,
+           bonus_duration);
+   return retval;
+}
+
 
 int PathCell::_cnt = 0;
 

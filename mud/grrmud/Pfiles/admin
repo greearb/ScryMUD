@@ -1,4 +1,4 @@
-Admin ~	names 192.168.1.3 __LEVEL__ 40
+Admin ~	names 127.0.0.1 __LEVEL__ 40
 the IMP Supreme
 ~
 
@@ -7,20 +7,20 @@ Admin is a fine fellow, always fixing problems for others and making
 problems for you.
 
 ~
-18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-0 46880 0 	long_data
-0 17 17 16 12 17 16 0 0 65 1 0 2 3 1 75 500 500 -155 
+20 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+975100 43265 0 	long_data
+0 17 17 16 12 17 16 0 0 65 1 0 2 3 1 75 500 500 -145 
 40 0 0 5 75 500 500 0 100 100 115 106 105 87 0 0 2 3 100 100 
 100 0 0 0 	shrt_cur_stats
-1056 2047 1 	cur_stats
+1024 2047 25 	cur_stats
 -1	eq: num, posn
 -1	affected_by
--1	inv
+26 26 26 26 358 -1	inv
 bgio24h/ZwWLw	passwd
-26 25 19 16 14 11 6 5 2 -1  -:| bitfield |:-
-71 15 15 71 925701647 100		bday, byr, ryr, rday, llt, tto
-18 5116 5116 -2 0 0 0 age hgr thr drg pk died qp
-14 1 117 1 118 25 134 25 147 100 178 100 -1	ss_known
+26 25 19 16 14 11 10 6 2 -1  -:| bitfield |:-
+71 15 15 71 926801385 100		bday, byr, ryr, rday, llt, tto
+18 9963 9963 -2 1 0 0 age hgr thr drg pk died qp
+14 1 25 1 117 1 118 25 134 25 147 100 178 100 220 100 -1	ss_known
 %N< %hH %mM %vV >  
 10	Imm level
 [36m Gos color

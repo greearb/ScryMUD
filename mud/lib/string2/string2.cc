@@ -63,6 +63,28 @@ void String::setLogFile(LogStream* dafile) { logfile = dafile; }
 
 LogStream* String::getLogFile() { return logfile; }
 
+String String::sterilizeForHtml() const {
+   String retval(Strlen() + 20);
+   
+   char ch;
+   for (int i = 0; i<cur_len; i++) {
+      ch = string[i];
+      if (ch == '<') {
+         retval += "&lt;";
+      }
+      else if (ch == '>') {
+         retval += "&gt;";
+      }
+      else if (ch == '&') {
+         retval += "&amp;";
+      }
+      else {
+         retval += ch;
+      }
+   }//for
+   return retval;
+}//sterilizeForHtml
+
 void String::Strip() {
    int i;
 

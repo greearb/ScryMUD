@@ -508,7 +508,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
       if (strcmp("slash", wmsg) == 0) {
          Sprintf(victbuf, "%S slashes you hard ",
                  name_of_crit(agg, vict.SEE_BIT));
-         Sprintf(otherbuf, "%S slahses %S hard ", name_of_crit(agg, ~0), 
+         Sprintf(otherbuf, "%S slashes %S hard ", name_of_crit(agg, ~0), 
                  name_of_crit(vict, ~0));
       }
       else {
@@ -1076,6 +1076,8 @@ a trophy--a symbol of %S's defeat.\n",
          vict.MANA = 1;
          vict.HP   = 1;
          vict.MOV  = 1;
+         vict.HUNGER = 20;
+         vict.THIRST = 20;
          vict.setPosn(POS_REST);
          if (vict.EXP < 5000000)
             vict.EXP -= (vict.EXP/13);

@@ -375,7 +375,7 @@ int quaf(int i_th, const String* item, critter& pc) { //for wands
 
 
 int recite(int i_th, const String* item, int j_th, const String* vict, 
-            critter& pc) { //for scrolls
+           critter& pc) { //for scrolls
    critter* targ = NULL;
    object* scroll = NULL;
    String buf(100);
@@ -417,11 +417,14 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
            long_name_of_obj(*scroll, pc.SEE_BIT));
    show(buf, pc);
 
-   short found_proc = TRUE;
+   short found_proc = FALSE;
    Cell<stat_spell_cell*> cll(scroll->CASTS_THESE_SPELLS);
    stat_spell_cell* ptr;
 
    while ((ptr = cll.next())) {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "In while loop, spell: " << ptr->toString() << endl;
+      }
       switch (ptr->stat_spell)
         {
            //First, those requiring a MOB for target
@@ -437,6 +440,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         case 221: case 222: case 224: case 225: case 226:
         case 227: case 228:
         {
+           mudlog.dbg("Requires mob for target.\n");
            found_proc = TRUE;
            if (vict->Strlen() == 0) {
               targ = Top(pc.IS_FIGHTING);
@@ -465,6 +469,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
 
         case 159:        //special case, gate spell (portal too?)
         {
+           mudlog.dbg("gate/portal case.\n");
            targ = have_crit_named(pc_list, i_th, vict, pc.SEE_BIT,
                                   ROOM);
            if (!targ) {
@@ -481,6 +486,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         // now for doors
         case 21: case 181:
         {
+           mudlog.dbg("Doors case.\n");
            door* dr_ptr;
            if ((dr_ptr = door::findDoor(ROOM.DOORS, i_th, vict,
                                         pc.SEE_BIT, ROOM))) {
@@ -512,6 +518,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         case 4: case 6: case 14: case 17: case 18: case 20:
         case 198: case 215: case 220:
         {
+           mudlog.dbg("No target needed.\n");
            if (do_wand_scroll_proc(ptr->stat_spell, pc,
                                    ptr->bonus_duration) >= 0) {
               junk_scroll = TRUE;
@@ -525,6 +532,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         case 165: case 182: case 183: case 184: case 185:
         case 186: case 196: case 213:
         {
+           mudlog.dbg("Object for target...\n");
            object* ob_ptr;
            ob_ptr = have_obj_named(pc.inv, i_th, vict,
                                    pc.SEE_BIT, ROOM);
@@ -667,14 +675,14 @@ int buglist(BugTypeE bt, int i, const String& cmd, int j, const String& mod,
        (strcasecmp(cmd, "retest") == 0)) {
       if (bt == BT_BUGS) {
          pc.show("Bug Listing:\n");
-         pc.show(bl_bugs.toString(cmd, pc.isUsingClient()));
+         pc.show(bl_bugs.toStringBrief(cmd)); // FALSE == No Hegemon Tagging
       }
       else if (bt == BT_IDEAS) {
          pc.show("Idea Listing:\n");
-         pc.show(bl_ideas.toString(cmd, pc.isUsingClient()));
+         pc.show(bl_ideas.toStringBrief(cmd));
       }
       return 0;
-   }
+   }//if just want a listing
 
    if (strncasecmp(cmd, "chstate", cmd.Strlen()) == 0) {
 
@@ -796,9 +804,7 @@ int buglist(BugTypeE bt, int i, const String& cmd, int j, const String& mod,
          if (pc.isUsingClient()) {
             pc.show(be->toStringHeg(ct));
          }
-         else {
-            pc.show(be->toString());
-         }
+         pc.show(be->toString());
          return 0;
       }//if
       else {
@@ -1547,7 +1553,7 @@ int group(int i_th, const String* vict, critter& pc) {
          return -1;
       }//if
 
-      Sprintf(buf, "Name %P30 Class%P48 Hp         Mana        Mov\n\n");
+      Sprintf(buf, "Name %P30 Class%P45 Hp %P55Mana %P68Mov\n\n");
       show(buf, pc);
 
       if (pc.FOLLOWER_OF && pc.GROUPEES.isEmpty()) {

@@ -336,12 +336,16 @@ void show_stat_affects(object& obj, critter& pc) {
 }//show_stat_affects
 
 
-/** Tests this performs:  B(!pc in_battle)  C(owns aux_crit) F(frozen)
+/** Tests this performs:  A(!animal)
+ *                        B(!pc in_battle)  C(owns aux_crit) F(frozen)
  *                        G(!gagged) I(is immort) K(know spell), M(has mana), 
  *                        m(!mob, smob ok), N(!magic),
  *                        P(paralyzed), R(owns aux_rm), r(resting or standing)
  *                        S(is_standing), V(!violence), Z(room is zlocked)
- *                                                
+ *  Syntax is:  If test is TRUE, then action can be done.  Note that some
+ *     of the conditions are negative logic.  Thus, 'A' will be TRUE if
+ *     the critter is NOT an ANIMAL.
+ *
  *  Case matters.
  */
 int ok_to_do_action(critter* vict, const char* flags, int spell_num,
@@ -355,7 +359,7 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
   mana_cost = SSCollection::instance().getSS(spell_num).getManaCost();
   
   if (pc.isMob()) {
-     Sprintf(buf, "ERROR:  smob casting spell# %i.\n", spell_num);
+     Sprintf(buf, "ERROR:  mob casting spell# %i.\n", spell_num);
      mudlog.log(ERR, buf);
      return FALSE;
   }//if
@@ -370,6 +374,14 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
            return FALSE;
         }//if
      }//if
+     else if (chr == 'A') {
+        if (pc.getClass() == ANIMAL) {
+           if (do_msg) {
+              show("Animals can't do that!\n", pc);
+           }//if
+           return FALSE;
+        }//if
+     }//if    
      else if (chr == 'K') {
         if (get_percent_lrnd(spell_num, pc) <= 0) {
            if (do_msg) {
@@ -491,7 +503,7 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
      }//if
   }//for
   return TRUE;
-}//ok_to_cast_spell
+}//ok_to_do_action
 
       
 

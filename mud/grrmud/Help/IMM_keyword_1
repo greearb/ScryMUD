@@ -12,6 +12,9 @@ room, then the player could see your text.  If, on the other hand,
 the player types 'get sign', it will be as though the sign does
 not exist in the game.
 
-</help>
+<color=red>
+See Also:  rstat, rm_keyword, stat_keyword, clear_keyword, ch_kdesc,
+See Also:  add_kname, add_keyword, asave
+</color></help>
 
 

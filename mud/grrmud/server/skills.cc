@@ -147,12 +147,12 @@ int trip(int i_th, const String* victim, critter& pc) {
                                 TRUE, i_th, victim, pc.SEE_BIT);
       }//if
 
-      if (!ok_to_do_action(crit_ptr, "SVPF", -1, pc)) {
-	return -1;
+      if (!ok_to_do_action(crit_ptr, "SVPFA", -1, pc)) {
+         return -1;
       }//if
 
       if (!(crit_ptr = check_for_diversions(*crit_ptr, "GM", pc)))
-	return -1;
+         return -1;
 
       return do_trip(*crit_ptr, pc);
    }//if
@@ -222,7 +222,7 @@ int do_trip(critter& vict, critter& pc) {
 
 
 int steal(int i_th, const String* obj, int j_th, const String* victim,
-	   critter& pc) {
+          critter& pc) {
    critter* crit_ptr = NULL;
    object* objptr = NULL;
    int gold = FALSE;
@@ -357,8 +357,8 @@ int kick(int i_th, const String* victim, critter& pc) {
       }//if
 
       if (crit_ptr->isMob()) {
-         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE, i_th, victim,
-                                pc.SEE_BIT);
+         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE,
+                                i_th, victim, pc.SEE_BIT);
       }//if
 
       if (!ok_to_do_action(crit_ptr, "SVPF", -1, pc)) {
@@ -474,7 +474,7 @@ int bash(int i_th, const String* victim, critter& pc) {
                                 pc.SEE_BIT);
       }//if
 
-      if (!ok_to_do_action(crit_ptr, "SVPF", -1, pc)) {
+      if (!ok_to_do_action(crit_ptr, "SVPFA", -1, pc)) {
          return -1;
       }//if
 
@@ -636,7 +636,7 @@ int block(int i_th, const String* victim, critter& pc) {
        return -1;
      }//if
 
-     if (!ok_to_do_action(crit_ptr, "PF", -1, pc)) {
+     if (!ok_to_do_action(crit_ptr, "PFA", -1, pc)) {
         return -1;
      }//if
 

@@ -871,7 +871,7 @@ visible ~
 return visible(pc);
 
 
-#case W
+# case W
 west ~
 return west(pc, *(pc.getCurRoom()), is_dead);
 wear ~
@@ -892,6 +892,8 @@ where ~
 return where(i, &(cooked_strs[1]), pc);
 who ~
 return who(pc);
+withdraw ~
+return withdraw(i, cooked_strs[1], j, cooked_strs[2], pc);
 wield ~
 return wield(i, &(cooked_strs[1]), pc);
 wibble socials ~

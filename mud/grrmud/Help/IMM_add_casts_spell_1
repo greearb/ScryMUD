@@ -8,13 +8,12 @@ CASTS SPELL  Relates to staffs, scrolls, and potions, currently.
 
 See slist for spell numbers available.
 
-usage:  add_casts_spell [mob_num] [spell_level] [spell_num]
+Syntax:  add_casts_spell [obj_num] [spell_level] [spell_num]
 
-Example:
-        add_casts_spell 65 30 7  // add a level 30 spell numbered 7
-				 // to object 65.
+Example: add_casts_spell 65 30 7  // add a level 30 spell numbered 7
+                                  // to object 65.
 
 
 <color=red>
-See Also:  add_stat_affect, ostat add_casts_spell slist
+See Also:  add_stat_affect ostat add_casts_spell slist
 </color></help>

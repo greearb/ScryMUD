@@ -1,0 +1,13 @@
+Category:  General  Topic:  balance
+
+
+
+Lets you check your bank balance if you can find a banker.
+
+Syntax:  balance <i_th> <banker>
+
+Example:  balance
+Example:  balance 2.banker
+
+
+See Also:  withdraw deposit

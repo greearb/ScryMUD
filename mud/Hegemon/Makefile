@@ -4,15 +4,15 @@
 
 CUR_DATE=`date '+%y.%m.%d %h:%m:%s'`
 
-JHOME=/usr/local/jdk
+JHOME=/usr/local/jdk117_v2
 JBIN=${JHOME}/bin
 JAVAC=${JBIN}/javac
 JAR=${JBIN}/jar
 
-CLASSPATH=${JHOME}/lib/classes.zip:./
+FLAGS=-classpath ${JHOME}/lib/classes.zip:./ -deprecation
 
 %.class : %.java
-	${JAVAC} -classpath ${CLASSPATH} -deprecation $<
+	${JAVAC} ${FLAGS} $<
 
 OBJS=hegemon.class \
 Action.class \

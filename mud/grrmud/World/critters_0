@@ -26,7 +26,7 @@ tavern after a few too many!
 0	int1, above bitfield started spec_data
  200 75 12 3	shop_data shorts
 61 59 2 1 0 -1  -:| bitfield |:-
-65 -1  End of perm_inv
+-1  End of perm_inv
 	end_of_crit
 
 2	Start of Mob
@@ -163,6 +163,28 @@ have kneaded bread for all these years could definately knead your head!
 14 11 13 -1  End of perm_inv
 	end_of_crit
 
+12	Start of Mob
+generic ~	names
+a generic critter
+~
+A generic critter stands here.
+~
+A generic critter looks hopelessly vague.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+0 0 0 	long_data
+0 15 14 15 14 14 14 1 1 60 1 0 1 1 1 100 100 100 50 
+5 1 0 0 100 100 100 2 100 100 80 80 100 90 0 0 2 2 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 12 0 1	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
 16	Start of Mob
 wizard man ~	names
 a bitter old wizard
@@ -215,7 +237,7 @@ bestow great wisdom on those who were kind, and patient enough listen.
 -1	affected_by
 -1	inv
  19 0 1	mob#, tmp_num, max_n_game
-4 0 -1  -:| bitfield |:-
+0 -1  -:| bitfield |:-
 7 6 5 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
 60	 test_num, valid for give_proc mostly
@@ -615,7 +637,7 @@ but his manner is that of a city dweller.
 -1	affected_by
 -1	inv
  78 0 5	mob#, tmp_num, max_n_game
--1  -:| bitfield |:-
+4 -1  -:| bitfield |:-
 	end_of_crit
 
 79	Start of Mob
@@ -1051,7 +1073,7 @@ understand the source of such strength!
 0	int1, above bitfield started spec_data
  200 75 7 21	shop_data shorts
 2 1 0 -1  -:| bitfield |:-
-190 87 -1  End of perm_inv
+190 -1  End of perm_inv
 0 0 0 4 0  sk_viol, benev, def, bad_assed, soc_aware
 	end_of_crit
 
@@ -1163,7 +1185,7 @@ you need to continue on your journey.
 0	int1, above bitfield started spec_data
  100 50 5 23	shop_data shorts
 64 62 61 59 58 54 2 1 0 -1  -:| bitfield |:-
-91 11 4 79 -1  End of perm_inv
+11 4 -1  End of perm_inv
 	end_of_crit
 
 288	Start of Mob

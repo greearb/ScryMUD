@@ -5,18 +5,19 @@ Category:  General  Topic:  topics
 Here is a list of all mortal help topics.
 
 abilities        adjust_register  anitre           assist           
-bash             beep             berserk          bodyslam         
-bug              butcher          buy              cast             
-circle           claw             close            color            
-concoct          consider         construct        credits          
-darkling         date             describe         disarm           
-donate           down             drink            drop             
-east             eat              elf              emote            
-eq               examine          exit             exits            
-flee             follow           get              give             
-group            guard            help             hit              
-human            hurl             idea             inventory        
-junk             list             lock             look             
+balance          bash             beep             berserk          
+brief            bug              buglist          butcher          
+cast             channels         circle           claw             
+color            commands         concoct          consider         
+credits          curse            darkling         date             
+describe         disarm           discuss          donate           
+drink            drop             dwarf            east             
+elf              emote            empty            eq               
+exit             exits            fill             flee             
+get              give             go               group            
+help             hide             hit              hold             
+hurl             idea             inventory        ironclad         
+list             lock             look             lore             
 move             nogossip         north            northeast        
 offer            ogrue            open             order            
 passwd           pay              pemote           picklock         
@@ -25,13 +26,14 @@ quit             races            read             recite
 remove           reply            rest             roll             
 say              scan             score            scribe           
 shield           shoot            shout            sit              
-sleep            sneak            socials          sombre           
-southeast        southwest        stand            suicide          
-tell             theme            throw            time             
-toggle           topics           track            ungroup          
-up               use              value_add        value_list       
-value_set        wake             wear             west             
-who              wield            wimpy            wizlist          
+skin             sleep            sneak            socials          
+south            southeast        southwest        stand            
+tail             tell             theme            throw            
+title            toggle           topics           track            
+unlock           up               use              value_add        
+value_rem        value_set        wake             wear             
+where            who              wield            wimpy            
+wizlist          
 
 
 See Also:  commands, wizhelp

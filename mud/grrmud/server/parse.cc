@@ -247,7 +247,7 @@ int critter::processInput(String& input, short do_sub, int script_driven,
             pc->input = NULL_STRING;  //get rid of any junk still there
             if (MODE == MODE_OLC) { //still
                if (USING_CLIENT) {
-                  Sprintf(buf, "<Phase = %i>", pc->imm_data->olc_counter);
+                  Sprintf(buf, "<Phase %i>", pc->imm_data->olc_counter);
                   show(buf);
                }
                show(olc_prompts[pc->imm_data->olc_counter]); //show prompt

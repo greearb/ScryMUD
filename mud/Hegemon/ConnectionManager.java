@@ -27,12 +27,12 @@ import java.io.*;
 import java.net.*;
 
 class ConnectionManager extends Frame {
-   List hosts;
+   java.awt.List hosts;
    HegemonManager hm;
    
    public ConnectionManager(HegemonManager h) {
       super("Connection Manager");
-      hosts = new List(10, false);
+      hosts = new java.awt.List(10, false);
       hm = h;
 
       hosts.addActionListener(new ActionListener() {

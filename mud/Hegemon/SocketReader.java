@@ -93,12 +93,12 @@ class SocketReader extends Thread {
                if (len > 9999) //don't want to overflow buffer
                  len = 9999;
                
-               if (dis.read(buf, 0, len) == -1) {
+               if ((real_len = dis.read(buf, 0, len)) == -1) {
                   Log.instance().err("SocketReader:  read failed.");
                   break;  //end of file, socket closed
                }//if
                
-               str = new String(buf, 0, len);
+               str = new String(buf, 0, real_len);
             }//else
             
             Log.instance().io("From MUD -:" + str + ":-");

@@ -32,16 +32,22 @@ public:
    String date;
    String reporter;
    String report;
+   String html_safe_report; //not saved to disk
+   String heg_safe_report; //not saved to disk
 
    CommentEntry() { }; //Strings initialize themselves...
-   CommentEntry(const char* d, const char* rr, const char* r)
-     : date(d), reporter(rr), report(r) { }
+   CommentEntry(const char* d, const char* rr, const char* r);
+
    CommentEntry(const CommentEntry& src)
-     : date(src.date), reporter(src.reporter), report(src.report) { }
+     : date(src.date), reporter(src.reporter), report(src.report),
+      html_safe_report(src.html_safe_report),
+      heg_safe_report(src.heg_safe_report) { }
 
    int read(ifstream& dafile);
    int write(ofstream& dafile);
-   int writeHtml(ofstream& dafile);
+   int writeHtml(ofstream& dafile, const char* font);
+   static int writeSentinal(ofstream& dafile);
+
    String toString();
    String toStringHeg(); //Hegemon markup
 };
@@ -65,12 +71,7 @@ public:
    }
 
    BugEntry(int bn, const char* _reporter, const char* _date, 
-            const char* _title, int rn)
-         : bug_num(bn), room_num(rn), cur_state(open), 
-           create_date(_date), reporter(_reporter),
-           assigned_to("ADMIN"), title(_title) {
-      _cnt++;
-   }
+            const char* _title, int rn);
 
    /** Copy constructor */
    BugEntry(const BugEntry& src);
@@ -120,6 +121,9 @@ protected:
    String assigned_to; /* name of person asigned to fix it */
    List<CommentEntry*> reports;
    String title;
+
+   String html_safe_title; //not saved to disk
+   String heg_safe_title; //not saved to disk
 
 private:
    static int _cnt;
@@ -184,6 +188,7 @@ public:
    int addComment(int bug, const CommentEntry& re, int imm_level,
                   const String& name);
    String toString(const String& in_state, int use_heg_markup);
+   String toStringBrief(const String& in_state);
 
 };
 

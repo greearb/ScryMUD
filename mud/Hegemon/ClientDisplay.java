@@ -322,13 +322,21 @@ class ClientDisplay extends Frame {
       ///*************************  Controls Menu  ********************///
       
       MenuItem pso_mi;
+      MenuItem bug_mi;
+
       controls_m = new Menu("Controls");
 
       controls_m.add((pso_mi = new MenuItem("Player-Run Stores")));
+      controls_m.add((bug_mi = new MenuItem("Bug Reports")));
 
       pso_mi.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             do_show_pso_editor();
+         }});
+
+      bug_mi.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            do_show_bug_editor();
          }});
       
       
@@ -553,6 +561,10 @@ class ClientDisplay extends Frame {
 
    public void do_show_pso_editor() {
       hm.getPsoEditor().setVisible(true);
+   }
+
+   public void do_show_bug_editor() {
+      hm.getBugListEditor().setVisible(true);
    }
 
    public void send(String str) {

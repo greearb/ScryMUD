@@ -1,0 +1,15 @@
+<help skills earthmeld>
+
+This skill allows the experienced ranger to bind him or herself to the
+earth in such a way that the earth absorbs some of the damage meant
+to go to the ranger.  It costs considerable mana to keep this 
+connection alive.  If you move out of your immediate surroundings,
+the meld is broken.
+
+Syntax:  earthmeld
+
+Example: earthmeld
+
+<color=red>
+See Also:  meditate mana
+</color></help>

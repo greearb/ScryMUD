@@ -224,11 +224,11 @@ or object.  It's cost is proportional to the magical powers it
 is undoing!
 ~
 dispel good
-Allows an evil person to bring the wrath of his or her chosen diety
+Allows an evil person to bring the wrath of his or her chosen deity
 down upon one of good nature.
 ~
 dispel evil
-Allows a benelovent person to bring the wrath of his or her chosen diety
+Allows a benelovent person to bring the wrath of his or her chosen deity
 down upon one of evil nature.
 ~
 divine protection
@@ -339,7 +339,7 @@ attack in each round of battle.  Such power is like a strong
 drug though:  It may have long term side effects!
 ~
 heal
-This spell allows one to bring forth his diety's healing powers
+This spell allows one to bring forth his deity's healing powers
 on those who need it.
 ~
 herbalism
@@ -359,7 +359,7 @@ beast.
 ~
 holy word
 This spell allows the high priests to directly tap into the power
-of their diety to the great dismay of the unfortunate victim.
+of their deity to the great dismay of the unfortunate victim.
 ~
 hurl
 This skill allows very strong warriors to hurl an opponent clear
@@ -418,6 +418,12 @@ wants to succeed at more advanced topics of study.
 ~
 mace
 Allows one to better utilize blunt objects.
+~
+mana
+This area of knowledge allows one to better understand the magical
+forces found in the realm.  This understanding leads to better
+proficiency in the magical arts, and a faster regeneration of
+magical powers.
 ~
 magic shield
 This allows mages to magically shield themselves or others

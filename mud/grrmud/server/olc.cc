@@ -47,10 +47,14 @@ Check the help if you have questions.
 
 NOTE:  You can only do olc while IN a zone you own now.  Shouldn't be much
 of a change for most of you though.
-<press enter to continue>\n\n", pc);
+[[press enter to continue]]\n\n", pc);
 
-   if (pc.pc && pc.USING_CLIENT) {
-      show("<Phase = 999>", pc);
+   if (pc.isUsingClient()) {
+      /** Last char sent to the client in any
+       * given transaction should not be a closing tag, thus the space 
+       * here.
+       */
+      show("<Phase 999> ", pc);
    }
 
    O_COUNT = 0; //start at the beginning
@@ -73,7 +77,7 @@ void restart_olc(critter& pc) {
    show("\n\nRe-entering OLC.\n", pc);
    pc.pc->mode = MODE_OLC;
    if (pc.pc) {
-      Sprintf(buf, "<Phase = %i>", O_COUNT); 
+      Sprintf(buf, "<Phase %i> ", O_COUNT); 
       show(buf, pc);
    }
    show(olc_prompts[O_COUNT], pc);

@@ -1629,16 +1629,17 @@ int make_builder(int i_th, const String* name, critter& pc) {
 
 
 
-int withdraw(int i_th, const String* coins, int j_th,
-             const String* banker, critter& pc) {
+int withdraw(int i_th, const String& coins, int j_th,
+             const String& banker, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "SBFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
 
-   if (coins->Strlen() && (strncasecmp(*coins, "coins", coins->Strlen()) != 0) &&
-       (strncasecmp(*coins, "gold", coins->Strlen()) != 0)) {
+   if (coins.Strlen() && 
+       (strncasecmp(coins, "coins", coins.Strlen()) != 0) &&
+       (strncasecmp(coins, "gold", coins.Strlen()) != 0)) {
       pc.show("You must withdraw 'gold' or 'coins'.\n");
       return -1;
    }
@@ -1648,7 +1649,7 @@ int withdraw(int i_th, const String* coins, int j_th,
       return -1;
    }
 
-   critter* crit = ROOM.haveCritNamed(j_th, banker, pc.SEE_BIT);
+   critter* crit = ROOM.haveCritNamed(j_th, &banker, pc.SEE_BIT);
 
    if (!crit) {
       crit = ROOM.getLastCritter(); //most likely to be a banker, if one exists

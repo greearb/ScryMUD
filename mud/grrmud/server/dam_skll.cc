@@ -45,7 +45,8 @@ int hurl(int i_th, const String* victim, critter& pc) {
       crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_do_action(crit_ptr, "mSVFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+   if (!ok_to_do_action(crit_ptr, "mSVFP", 0, pc,
+                        pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
    
@@ -64,8 +65,8 @@ int hurl(int i_th, const String* victim, critter& pc) {
       }//if
 
       if (crit_ptr->isMob()) {
-         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE, i_th, victim,
-                               pc.SEE_BIT);
+         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE,
+                                i_th, victim, pc.SEE_BIT);
       }//if
 
       return do_hurl(*crit_ptr, pc);
@@ -152,7 +153,7 @@ int do_hurl(critter& vict, critter& pc) {
          }
 
          exact_raw_damage(d(8, pc.STR) * (dptr->distance + 1), NORMAL,
-                             vict, pc);
+                          vict, pc);
          
       }//if hurled into another room
       else { //hurled against the wall
@@ -214,7 +215,8 @@ int body_slam(int i_th, const String* victim, critter& pc) {
    }//if
 
    if (crit_ptr) { 
-      if (!ok_to_do_action(crit_ptr, "mSVFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      if (!ok_to_do_action(crit_ptr, "mSVFPA", 0, pc, pc.getCurRoom(),
+                           NULL, TRUE)) {
          return -1;
       }
 

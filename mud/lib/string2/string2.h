@@ -145,6 +145,7 @@ public:
 
    void Strip(); //take spaces off of front and back
    void dropFromEnd(int num_chards); //drop a few off the end of the string
+   String sterilizeForHtml() const;
 
    /* Both of these next two delete what they grab from the string. */
    
