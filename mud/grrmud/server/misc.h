@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.21 2001/03/29 03:02:32 eroper Exp $
-// $Revision: 1.21 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
+// $Id: misc.h,v 1.22 2002/01/04 02:21:24 eroper Exp $
+// $Revision: 1.22 $  $Author: eroper $ $Date: 2002/01/04 02:21:24 $
 
 //
 //ScryMUD Server Code
@@ -186,6 +186,8 @@ int file_update_objects(int zone_num, short read_all);
 void do_tick();
 void do_mini_tick(); //every round of battle....
 bool isNightTime();
+
+String *colorize(const char *input, critter &pc); 
 
 
 #endif 

@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.39 2002/01/04 00:30:23 eroper Exp $
-// $Revision: 1.39 $  $Author: eroper $ $Date: 2002/01/04 00:30:23 $
+// $Id: misc.cc,v 1.40 2002/01/04 02:21:23 eroper Exp $
+// $Revision: 1.40 $  $Author: eroper $ $Date: 2002/01/04 02:21:23 $
 
 //
 //ScryMUD Server Code
@@ -1671,8 +1671,7 @@ void add_spell_affecting_obj(int spell, int duration, object& vict) {
 void show(const char* message, critter& pc) {
    //log(message);
 
-   String output;
-   int i;
+   String *output;
 
    if (mudlog.ofLevel(XMT)) {
       mudlog << "OUTPUT from -:" << *(pc.getName());
@@ -1698,198 +1697,12 @@ void show(const char* message, critter& pc) {
       if (!message)
          return;
 
-      // Parse ANSI stuff
-      /*
-      for(i=0;i<=strlen(message);i++) {
-         if ( message[i] == '^' ) {
-            i++;
-            if (i > strlen(message)) {
-               break;
-            }
-            switch (message[i]) {
-               case '0':
-                  output.Append(ANSI_NORMAL);
-                  break;
-
-               case 'n':
-                  output.Append(ANSI_NORMAL);
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_BLACK);
-                  output.Append(END_ESC);
-                  break;
-               case 'r':
-                  output.Append(ANSI_NORMAL);
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_RED);
-                  output.Append(END_ESC);
-                  break;
-               case 'g':
-                  output.Append(ANSI_NORMAL);
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_GREEN);
-                  output.Append(END_ESC);
-                  break;
-               case 'y':
-                  output.Append(ANSI_NORMAL);
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_YELLOW);
-                  output.Append(END_ESC);
-                  break;
-               case 'b':
-                  output.Append(ANSI_NORMAL);
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_BLUE);
-                  output.Append(END_ESC);
-                  break;
-               case 'm':
-                  output.Append(ANSI_NORMAL);
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_MAGENTA);
-                  output.Append(END_ESC);
-                  break;
-               case 'c':
-                  output.Append(ANSI_NORMAL);
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_CYAN);
-                  output.Append(END_ESC);
-                  break;
-               case 'w':
-                  output.Append(ANSI_NORMAL);
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_WHITE);
-                  output.Append(END_ESC);
-                  break;
-
-                  // Start HILITE colors now.
-
-               case 'N':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_HILITE);
-                  output.Append(BB_ANSI_SEPERATE);
-                  output.Append(BB_ANSI_BLACK);
-                  output.Append(END_ESC);
-                  break;
-               case 'R':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_HILITE);
-                  output.Append(BB_ANSI_SEPERATE);
-                  output.Append(BB_ANSI_RED);
-                  output.Append(END_ESC);
-                  break;
-               case 'G':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_HILITE);
-                  output.Append(BB_ANSI_SEPERATE);
-                  output.Append(BB_ANSI_GREEN);
-                  output.Append(END_ESC);
-                  break;
-               case 'Y':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_HILITE);
-                  output.Append(BB_ANSI_SEPERATE);
-                  output.Append(BB_ANSI_YELLOW);
-                  output.Append(END_ESC);
-                  break;
-               case 'B':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_HILITE);
-                  output.Append(BB_ANSI_SEPERATE);
-                  output.Append(BB_ANSI_BLUE);
-                  output.Append(END_ESC);
-                  break;
-               case 'M':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_HILITE);
-                  output.Append(BB_ANSI_SEPERATE);
-                  output.Append(BB_ANSI_MAGENTA);
-                  output.Append(END_ESC);
-                  break;
-               case 'C':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_HILITE);
-                  output.Append(BB_ANSI_SEPERATE);
-                  output.Append(BB_ANSI_CYAN);
-                  output.Append(END_ESC);
-                  break;
-               case 'W':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_HILITE);
-                  output.Append(BB_ANSI_SEPERATE);
-                  output.Append(BB_ANSI_WHITE);
-                  output.Append(END_ESC);
-                  break;
-
-               default:
-                  output.Append(message[i]);
-
-            } // case
-         } // ^ encountered 
-         else if ( message[i] == '&' ) {
-            i++;
-            if (i > strlen(message)) {
-               break;
-            }
-            switch (message[i]) {
-               case '0':
-                  output.Append(ANSI_NORMAL);
-                  break;
-               case 'n':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_BBLACK);
-                  output.Append(END_ESC);
-                  break;
-               case 'r':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_BRED);
-                  output.Append(END_ESC);
-                  break;
-               case 'g':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_BGREEN);
-                  output.Append(END_ESC);
-                  break;
-               case 'y':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_BYELLOW);
-                  output.Append(END_ESC);
-                  break;
-               case 'b':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_BBLUE);
-                  output.Append(END_ESC);
-                  break;
-               case 'm':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_BMAGENTA);
-                  output.Append(END_ESC);
-                  break;
-               case 'c':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_BCYAN);
-                  output.Append(END_ESC);
-                  break;
-               case 'w':
-                  output.Append(ESC_SEQ);
-                  output.Append(BB_ANSI_BWHITE);
-                  output.Append(END_ESC);
-                  break;
-
-               default:
-                  output.Append(message[i]);
-            } // case
-         } // & encountered 
-         else {
-            output.Append(message[i]);
-         }
-      } // for loop
-
-      output.Append(ANSI_NORMAL);
-      // parse ansi stuff
-      */
+      // This is commented out because it's not fully functional as of yet.
+      // output = colorize(message, pc);
 
       if (pc.pc->output.Strlen() < OUTPUT_MAX_LEN) {
          pc.pc->output.Append(message);
-         //pc.pc->output.Append(output);
+         // pc.pc->output.Append(*output);
       }//if
    }//if
 }//show 
@@ -2702,4 +2515,226 @@ bool isNightTime() {
       return true;
    else
       return false;
+}
+
+String *colorize(const char *message, critter &pc)
+{
+
+   static String output;
+   char *i;
+   short dont_reset = FALSE;
+
+   output = "";
+   
+   if ( pc.isUsingColor() ) {
+      // Parse ANSI stuff
+      for(i=(char *)message;*i;i++) {
+
+         if ( *i == ESC_CHAR ) {
+            dont_reset = TRUE;
+         }
+
+         if ( *i == '\n' && ( ! dont_reset ) ) {
+            output.Append(ANSI_NORMAL);
+         }
+
+         if ( *i == '^' ) {
+            i++;
+            if (! *i) {
+               break;
+            }
+            switch (*i) {
+               case '0':
+                  output.Append(ANSI_NORMAL);
+                  break;
+
+               case 'n':
+                  output.Append(ANSI_NORMAL);
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_BLACK);
+                  output.Append(END_ESC);
+                  break;
+               case 'r':
+                  output.Append(ANSI_NORMAL);
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_RED);
+                  output.Append(END_ESC);
+                  break;
+               case 'g':
+                  output.Append(ANSI_NORMAL);
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_GREEN);
+                  output.Append(END_ESC);
+                  break;
+               case 'y':
+                  output.Append(ANSI_NORMAL);
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_YELLOW);
+                  output.Append(END_ESC);
+                  break;
+               case 'b':
+                  output.Append(ANSI_NORMAL);
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_BLUE);
+                  output.Append(END_ESC);
+                  break;
+               case 'm':
+                  output.Append(ANSI_NORMAL);
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_MAGENTA);
+                  output.Append(END_ESC);
+                  break;
+               case 'c':
+                  output.Append(ANSI_NORMAL);
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_CYAN);
+                  output.Append(END_ESC);
+                  break;
+               case 'w':
+                  output.Append(ANSI_NORMAL);
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_WHITE);
+                  output.Append(END_ESC);
+                  break;
+
+                  // Start HILITE colors now.
+
+               case 'N':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_HILITE);
+                  output.Append(BB_ANSI_SEPERATE);
+                  output.Append(BB_ANSI_BLACK);
+                  output.Append(END_ESC);
+                  break;
+               case 'R':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_HILITE);
+                  output.Append(BB_ANSI_SEPERATE);
+                  output.Append(BB_ANSI_RED);
+                  output.Append(END_ESC);
+                  break;
+               case 'G':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_HILITE);
+                  output.Append(BB_ANSI_SEPERATE);
+                  output.Append(BB_ANSI_GREEN);
+                  output.Append(END_ESC);
+                  break;
+               case 'Y':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_HILITE);
+                  output.Append(BB_ANSI_SEPERATE);
+                  output.Append(BB_ANSI_YELLOW);
+                  output.Append(END_ESC);
+                  break;
+               case 'B':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_HILITE);
+                  output.Append(BB_ANSI_SEPERATE);
+                  output.Append(BB_ANSI_BLUE);
+                  output.Append(END_ESC);
+                  break;
+               case 'M':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_HILITE);
+                  output.Append(BB_ANSI_SEPERATE);
+                  output.Append(BB_ANSI_MAGENTA);
+                  output.Append(END_ESC);
+                  break;
+               case 'C':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_HILITE);
+                  output.Append(BB_ANSI_SEPERATE);
+                  output.Append(BB_ANSI_CYAN);
+                  output.Append(END_ESC);
+                  break;
+               case 'W':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_HILITE);
+                  output.Append(BB_ANSI_SEPERATE);
+                  output.Append(BB_ANSI_WHITE);
+                  output.Append(END_ESC);
+                  break;
+
+               default:
+                  output.Append(*i);
+
+            } // case
+         } // ^ encountered 
+         else if ( *i == '&' ) {
+            i++;
+            if (! *i) {
+               break;
+            }
+            switch (*i) {
+               case '0':
+                  output.Append(ANSI_NORMAL);
+                  break;
+               case 'n':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_BBLACK);
+                  output.Append(END_ESC);
+                  break;
+               case 'r':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_BRED);
+                  output.Append(END_ESC);
+                  break;
+               case 'g':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_BGREEN);
+                  output.Append(END_ESC);
+                  break;
+               case 'y':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_BYELLOW);
+                  output.Append(END_ESC);
+                  break;
+               case 'b':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_BBLUE);
+                  output.Append(END_ESC);
+                  break;
+               case 'm':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_BMAGENTA);
+                  output.Append(END_ESC);
+                  break;
+               case 'c':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_BCYAN);
+                  output.Append(END_ESC);
+                  break;
+               case 'w':
+                  output.Append(ESC_SEQ);
+                  output.Append(BB_ANSI_BWHITE);
+                  output.Append(END_ESC);
+                  break;
+
+               default:
+                  output.Append(*i);
+            } // case
+         } // & encountered 
+         else {
+            output.Append(*i);
+         }
+      } // for loop
+      // parse ansi stuff
+   } else { // We go here if they aren't using color.
+      for(i=(char *)message;*i;i++) {
+         if ( *i == '^' || *i == '&' ) {
+            i++;
+            if (! *i) {
+               break;
+            }
+            if ( *i == '^' || *i == '&' ) {
+               output.Append(*i);
+            }
+         } else {
+            output.Append(*i);
+         }
+      }
+
+   } 
+   return(&output);
 }
