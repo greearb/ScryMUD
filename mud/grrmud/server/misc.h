@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.8 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: misc.h,v 1.9 1999/06/18 06:52:38 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
 
 //
 //ScryMUD Server Code
@@ -118,6 +118,14 @@ critter* have_crit_named(List<critter*>& lst, const int i_th,
 
 object*  have_obj_named(const List<object*>& lst, const int i_th, 
          const String* name, const int see_bit, const room& rm);
+
+/** Return the number of instances of an object with that name, as would
+ * be found by have_obj_named, in the lst.  Used for finding i_th element
+ * in two lists that look like one list to the user.  
+ * (ie list_merchandise, buy)
+ */
+int obj_named_count(const List<object*>& lst, const String* name,
+                    const int see_bit, const room& rm);
 
 //String* critter::getName(int see_bit);
 const String* name_of_crit(critter& pc, int see_bit);

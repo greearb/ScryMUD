@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.14 1999/06/16 06:43:27 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+// $Id: const.cc,v 1.15 1999/06/18 06:52:38 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
 
 //
 //ScryMUD Server Code
@@ -642,6 +642,8 @@ char* login_prompts[] = {
    	Thief		(5)
    	Cleric		(7)
    	Bard		(8)
+
+   Enter 'help' or (0) for descriptions of the classes.
 
    Your choice is:  ",
 					/* for non-new players */

@@ -1,0 +1,56 @@
+<help olc classes>
+
+These are the classes and their corresponding numbers:
+ OTHER_CLASS(0)
+ WARRIOR    (1)
+	Warriors excell in the physical arts including both armed and
+	unarmed battle.  They may have special abilities to shield
+	and protect those who need it.
+
+ SAGE       (2)
+	Sages specialize in knowledge, especially of the past.  They
+	may have the ability to work with ancient technology and
+	alchemy.  They may learn the healing arts of potions and other
+	simple magics.
+
+ WIZARD     (3)
+	Wizards channel most of their energy into tapping the ephemeral
+	forces present in the realm.  They may grow to have great magical
+	powers, though more often for destruction than healing.  They
+	may also learn how to conjure beings from other realms.  Beware,
+	though, these demons are not always happy to be conjured!!
+
+ RANGER     (4)
+	Rangers are general purpose adventurers.  They may become
+	skilled in battle, as well as in the herb lore of the
+	forests, their preferred homes.  Rangers are known for
+	their philantropic bent, and make good leaders.
+
+ THIEF      (5)
+	Thieves may work for the powers of good or evil, but they
+	work best in secret and alone!  They are skilled in all things
+	acrobatic and sneaky.  They also have very lethal first-strike
+	abilities, but may not fare so well in a drawn out battle.
+
+ ALCHEMIST  (6)
+	Alchemists are a specilized form of Sages, ones specializing
+	in the creation of potions and other creations.  They may also
+	learn some magics in their tinkering, but it will probably not
+	be their strong point.
+
+ CLERIC     (7)
+	Clerics are great users of the protective magics of the realm.
+	They often have a very real contact with their deities of choice,
+	who often confer special powers to their ardent followers.  Not
+	all the world can be saved with grace however, and some clerics
+	become a central part of groups battling to bring the world into
+	the alignment of thier choice.
+
+ BARD       (8)
+	Bards are similar to rangers, though they thrive better in the
+	cities and in the company of others, while the rangers often
+	prefer the quieter bucolic surroundings.
+
+<color=red>
+See Also:  classes
+</color></help>

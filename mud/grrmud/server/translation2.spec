@@ -1,5 +1,5 @@
-# $Id: translation2.spec,v 1.4 1999/06/16 06:43:27 greear Exp $
-# $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+# $Id: translation2.spec,v 1.5 1999/06/18 06:52:38 greear Exp $
+# $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
 
 # See translations.spec for more information.
 
@@ -95,7 +95,7 @@ CS_SC_RES
 	~
 
 CS_SC_EXP
-	eng "Experience to Next Level  [%i]\n"
+	eng "Experience to Next Level  [%i]    Weight of gold  [%i]\n"
 	~
 
 CS_SC_DAM

@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.17 1999/06/16 06:43:27 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+// $Id: spec_prc.cc,v 1.18 1999/06/18 06:52:38 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
 
 //
 //ScryMUD Server Code
@@ -840,6 +840,10 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
                mudlog << "Found ptr:  " << ptr << " name: "
                       << *(ptr->getName()) << endl;
             }
+            if (ptr->isInBattle()) {
+               //Already pretty busy!!
+               continue;
+            }
             if (ptr->MOB_FLAGS.get(1)) { //scavenge
                if (d(1,100) <= 10) {
                   if ((sz = room_list[i].getInv()->size())) { //objs to pick up?
@@ -1072,7 +1076,7 @@ int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
 
 int do_buy_proc(int prc_num, critter& keeper, int i_th, 
                 const String* item, critter& pc) {
-   object* obj_ptr;
+   object* obj_ptr = NULL;
    int price;
    short is_perm = FALSE;
    String buf(100);
@@ -1100,11 +1104,6 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
       mudlog.log(ERR, "ERROR:  keeper's mob is NULL in do_buy_proc.\n");
       return -1;
    }//else
-
-   if (!item) {
-      mudlog.log(ERR, "ERROR:  item NULL in buy.\n");
-      return -1;
-   }//if
 
    if (pc.isMob()) {
       mudlog.log(ERR, "ERROR:  MOB trying to buy.\n");
@@ -1137,14 +1136,99 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
       }//else
 
       //log("Looking for obj ptr...k\n");
-      obj_ptr = have_obj_named(keeper.inv, i_th, item, pc.SEE_BIT,
-                               ROOM);
-      if (!obj_ptr) {
-         obj_ptr = have_obj_named(keeper.PERM_INV, i_th, item, pc.SEE_BIT,
+      object* tmp_optr = NULL;
+
+      if (item->Strlen() > 0) {
+         obj_ptr = have_obj_named(keeper.inv, i_th, item, pc.SEE_BIT,
                                   ROOM);
-         is_perm = TRUE;
-      }//if
+
+         if (!obj_ptr) {
+            int first_cnt = obj_named_count(keeper.inv, item, pc.SEE_BIT, ROOM);
+            obj_ptr = have_obj_named(keeper.PERM_INV, (i_th - first_cnt), item, pc.SEE_BIT,
+                                     ROOM);
+            is_perm = TRUE;
+         }//if
      
+      }
+      else {
+         // Maybe they are trying to get it by the index....gotta reproduce the code
+         // that listed them like this...  Cut-And-Pasted from the list_merchandise()
+         // method in command2.cc
+
+         Cell<object*> cell(keeper.inv);
+         static int item_counts[NUMBER_OF_ITEMS + 1];
+         
+         memset(item_counts, 0, sizeof(int) * (NUMBER_OF_ITEMS + 1));
+         
+         // Now, find the instance count.
+         while ((tmp_optr = cell.next())) {
+            item_counts[tmp_optr->getIdNum()]++;
+         }//while
+         
+         keeper.PERM_INV.head(cell);
+         while ((tmp_optr = cell.next())) {
+            item_counts[tmp_optr->getIdNum()]++;
+         }//while
+         
+         keeper.inv.head(cell);
+         int id_num;
+         int cnt = 0;
+         while ((tmp_optr = cell.next())) {
+            
+            id_num = tmp_optr->getIdNum();
+            
+            if (!tmp_optr->in_list &&
+                (item_counts[id_num] == -1)) { //already done it
+               continue;
+            }
+            
+            if (detect(pc.SEE_BIT, (tmp_optr->OBJ_VIS_BIT | ROOM.getVisBit()))) {
+               price = keeper.findItemSalePrice(*tmp_optr, pc);
+               
+               if (price < 0) {
+                  continue; //buf = "  NOT FOR SALE NOW.";
+               }//if
+               
+               cnt++;
+               if (i_th == cnt) {
+                  obj_ptr = tmp_optr;
+                  break;
+               }
+
+               item_counts[id_num] = -1;               
+            }//if detectable
+         }//while
+
+         keeper.PERM_INV.head(cell);
+         while ((tmp_optr = cell.next())) {
+            
+            id_num = tmp_optr->getIdNum();
+            
+            if (!tmp_optr->in_list &&
+                (item_counts[id_num] == -1)) { //already done it
+               continue;
+            }
+            
+            if (detect(pc.SEE_BIT, (tmp_optr->OBJ_VIS_BIT | ROOM.getVisBit()))) {
+               price = keeper.findItemSalePrice(*tmp_optr, pc);
+               
+               if (price < 0) {
+                  continue; //buf = "  NOT FOR SALE NOW.";
+               }//if
+               
+               cnt++;
+               if (i_th == cnt) {
+                  obj_ptr = tmp_optr;
+                  break;
+               }
+
+               item_counts[id_num] = -1;
+               
+            }//if detectable
+
+         }//while
+      }//else, tried to get it by index only.
+
       if (!obj_ptr) {
          do_tell(keeper, "I don't have that in stock right now...", pc,
                  FALSE, pc.getCurRoomNum()); 

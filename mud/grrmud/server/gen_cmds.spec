@@ -120,7 +120,7 @@ adsave ~
 return adsave(i, pc);
 arlist ~
 return arlist(i, j, pc);
-auction *channels ~
+auction yell *channels ~
 NOP
 avintre *avintre ~
 NOP
@@ -179,6 +179,8 @@ clap socials ~
 clap(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 claw ~
 return claw(i, &(cooked_strs[1]), pc);
+classes sage wizard ranger thief alchemist cleric bard *classes ~
+NOP
 clear_keryword ~
 return clear_keyword(i, pc);
 clear_mnames ~
@@ -401,6 +403,8 @@ NOP
 # case I
 inventory ~
 return inventory(pc);
+idea *idea ~
+NOP
 idealist buglist ~
 return buglist(BT_IDEAS, i, cooked_strs[1], j, cooked_strs[2], cooked_strs[3], pc);
 insane socials ~
@@ -417,8 +421,6 @@ itch socials ~
 itch(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 itrans ~
 return itrans(i, &(cooked_strs[1]), j, pc);
-idea *idea ~
-NOP
 ironclads *ironclad ~
 NOP
 

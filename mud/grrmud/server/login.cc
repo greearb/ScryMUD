@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.10 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: login.cc,v 1.11 1999/06/18 06:52:38 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
 
 //
 //ScryMUD Server Code
@@ -95,7 +95,14 @@ void critter::doLogin() {
                show("Detected Hegemon Client\n");
                break;
             }
-            
+            else if ((strcasecmp(string, "quit") == 0) ||
+                     (strcasecmp(string, "exit") == 0) ||
+                     (string.Strlen() == 0)) {
+               show("Bye!!\n\n");
+               setMode(MODE_LOGOFF_NEWBIE_PLEASE);
+               break;
+            }
+
             if (mudlog.ofLevel(DBG)) {
                mudlog << "TRACE:  in do_login, got name -:" << string << ":-"
                       << endl;
@@ -142,6 +149,13 @@ void critter::doLogin() {
             if (string == "__HEGEMON__") {
                using_client(*this);
                show("Detected Hegemon Client\n");
+               break;
+            }
+            else if ((strcasecmp(string, "quit") == 0) ||
+                     (strcasecmp(string, "exit") == 0) ||
+                     (string.Strlen() == 0)) {
+               show("Bye!!\n\n");
+               setMode(MODE_LOGOFF_NEWBIE_PLEASE);
                break;
             }
 
@@ -237,10 +251,48 @@ void critter::doLogin() {
             }
             break;
             
-         case 4: //get class
+         case 4: { //get class
             string = pc->input.Get_Command(eos, term_by_period);
-            if (isnum(string)) {
+            j = 0;
+            int slen = string.Strlen();
+            if (slen == 0) {
+               show("Please enter the number or name of the class you want.\n\n");
+               break;
+            }
+            else if (isnum(string)) {
                j = atoi(string);
+            }//if
+            else if (strncasecmp(string, "warrior", slen) == 0) {
+               j = WARRIOR;
+            }
+            else if (strncasecmp(string, "sage", slen) == 0) {
+               j = SAGE;
+            }
+            else if (strncasecmp(string, "wizard", slen) == 0) {
+               j = WIZARD;
+            }
+            else if (strncasecmp(string, "ranger", slen) == 0) {
+               j = RANGER;
+            }
+            else if (strncasecmp(string, "thief", slen) == 0) {
+               j = CLERIC;
+            }
+            else if (strncasecmp(string, "bard", slen) == 0) {
+               j = BARD;
+            }
+            else if (strncasecmp(string, "help", slen) == 0) {
+               j = 0;
+            }
+            else {
+               show("Enter a class name or the number representing it,\n or help if you need it.\n");
+               break;
+            }
+
+            if (j == 0) {
+               String classes("classes");
+               help(1, &classes, *this);
+            }
+            else {
                if (check_l_range(j, 1, 8, *this, FALSE) && j != 6) {
                   CLASS = j;
                   pc->index = 6; //go get race
@@ -248,9 +300,10 @@ void critter::doLogin() {
                else {
                   show("That is not a valid race.\n");
                }//else
-            }//if
+            }//else
             break;
-            
+         }
+
          case 5: //password for non-new players.
             mudlog.log(DBG, "in case 5\n");
             if (TRUE) { //needs to be inside a block to shut g++ up!!

@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.23 1999/06/16 06:43:26 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
+// $Id: command2.cc,v 1.24 1999/06/18 06:52:38 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
 
 //
 //ScryMUD Server Code
@@ -173,7 +173,7 @@ int score(const String* str2, critter& pc) {
            pc.AC, pc.HEAT_RESIS, pc.COLD_RESIS, pc.ELEC_RESIS, pc.SPEL_RESIS);
    show(buf2, pc);
 
-   Sprintf(buf2, cstr(CS_SC_EXP, pc), pc.getXpToNextLevel());
+   Sprintf(buf2, cstr(CS_SC_EXP, pc), pc.getXpToNextLevel(), (pc.GOLD / 1000));
    pc.show(buf2);
 
    Sprintf(buf2, cstr(CS_SC_DAM, pc), pc.DAM_REC_MOD, pc.DAM_GIV_MOD);
@@ -1371,7 +1371,7 @@ String get_page(const char* path_name) {
 
 
 int buy(int i_th, const String* item, int j_th, const String* keeper,
-         critter& pc) {
+        critter& pc) {
    String buf(100);
    critter* crit_ptr;
 
@@ -1755,7 +1755,7 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
          
          crit_ptr->inv.head(cell);
          int id_num;
-         
+         int cnt = 0;
          while ((obj_ptr = cell.next())) {
             
             id_num = obj_ptr->getIdNum();
@@ -1783,12 +1783,13 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
                   }
                }
                else {
+                  cnt++;
                   if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-                     Sprintf(buf, "%P12 %S%P50%i", &(obj_ptr->short_desc),
+                     Sprintf(buf, "  [%i]%P12 %S%P50%i", cnt, &(obj_ptr->short_desc),
                              price);
                   }
                   else {
-                     Sprintf(buf, "  [*%i]%P12 %S%P50%i", item_counts[id_num],
+                     Sprintf(buf, "  [%i] [*%i]%P12 %S%P50%i", cnt, item_counts[id_num],
                              &(obj_ptr->short_desc), price);
                   }
                }
@@ -1835,12 +1836,13 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
                   }
                }
                else {
+                  cnt++;
                   if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-                     Sprintf(buf, "%P12 %S%P50%i", &(obj_ptr->short_desc),
+                     Sprintf(buf, "  [%i]%P12 %S%P50%i", cnt, &(obj_ptr->short_desc),
                              price);
                   }
                   else {
-                     Sprintf(buf, "  [*%i]%P12 %S%P50%i", item_counts[id_num],
+                     Sprintf(buf, "  [%i] [*%i]%P12 %S%P50%i", cnt, item_counts[id_num],
                              &(obj_ptr->short_desc), price);
                   }
                }

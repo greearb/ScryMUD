@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.16 1999/06/16 06:43:27 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+// $Id: misc.cc,v 1.17 1999/06/18 06:52:38 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
 
 //
 //ScryMUD Server Code
@@ -1809,6 +1809,33 @@ object* have_obj_named(const List<object*>& lst, const int i_th,
       }//if
    }//while
    return NULL;
+}//have_obj_named 
+
+
+int obj_named_count(const List<object*>& lst, const String* name,
+                    const int see_bit, const room& rm) {
+   Cell<String*> char_cell;
+   Cell<object*> cell(lst);
+   object* obj_ptr;
+   int count = 0, ptr_v_bit;
+   String *string;
+
+   if (name->Strlen() == 0) 
+      return 0;
+
+   while ((obj_ptr = cell.next())) {
+      ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | rm.getVisBit());
+      if (detect(see_bit, ptr_v_bit)) {
+	 obj_ptr->names.head(char_cell);
+	 while ((string = char_cell.next())) {
+	    if (strncasecmp(*string, *name, name->Strlen()) == 0){ 
+	       count++;
+               break; //out of the internal while loop
+	    }//if
+	 }//while
+      }//if
+   }//while
+   return count;
 }//have_obj_named 
 
 
