@@ -25,6 +25,8 @@
 
 ///************************  object.h  ********************************///
 
+#define OBJECT_FORMAT_VERSION 1
+
 #ifndef GRRMUD_OBJECT_INCLUDE_H
 #define GRRMUD_OBJECT_INCLUDE_H
 

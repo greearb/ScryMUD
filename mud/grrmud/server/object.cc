@@ -513,6 +513,8 @@ void object::Write(ofstream& ofile) {
    object* ob_ptr;
    Cell<String*> st_cell(names);
    String* st_ptr;
+
+   ofile << "%" << OBJECT_FORMAT_VERSION << "\tobject format version" << endl;
    
    int len_writ = 0;
    while ((st_ptr = st_cell.next())) {
@@ -554,7 +556,8 @@ void object::Write(ofstream& ofile) {
    i = 0;
    affected_by.head(ss_cell);
    while ((ss_ptr = ss_cell.next())) {
-      ofile << ss_ptr->stat_spell << " " << ss_ptr->bonus_duration << " ";
+      ofile << ss_ptr->stat_spell << " " << ss_ptr->bonus_duration << " "
+         << ss_ptr->bonus_value << " ";
       if ((++i % 20) == 0)
          ofile << endl;
    }//while
@@ -1085,6 +1088,7 @@ void object::fileRead(ifstream& ofile, short read_all) {
    char tmp[81];
    String tmp_str(80);
    String* string;
+   int format_version;
    
    Clear();  //stop up any memory leaks etc.
 
@@ -1095,6 +1099,20 @@ void object::fileRead(ifstream& ofile, short read_all) {
          mudlog << "ERROR:  da_file FALSE in obj read." << endl;
       }
       return;
+   }
+
+   // look for a file-version identifier
+   {
+      char tst_char;
+      ofile.get(tst_char);
+      if ( tst_char != '%' ) {
+         // no file version 
+         ofile.putback(tst_char);
+         format_version = 0;
+      } else {
+         ofile >> format_version;
+         ofile.getline(tmp, 80);
+      }
    }
 
    test = TRUE;
@@ -1159,6 +1177,9 @@ void object::fileRead(ifstream& ofile, short read_all) {
       ss_ptr = new stat_spell_cell;
       ss_ptr->stat_spell = i;
       ofile >> ss_ptr->bonus_duration;
+      if ( format_version > 0 ) {
+         ofile >> ss_ptr->bonus_value;
+      }
       affected_by.append(ss_ptr);
       ofile >> i;
    }//while

@@ -858,7 +858,7 @@ String zone::createMapFile() {
 }//createMapFile
 
 void zone::spaceToNewlines(String& str) {
-   for (int i = 0; i<str.Strlen(); i++) {
+   for (unsigned int i = 0; i<str.Strlen(); i++) {
       if (isspace(str[i])) {
          str.setCharAt(i, '\n');
       }//if

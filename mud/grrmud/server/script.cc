@@ -1068,7 +1068,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
                //       << tmp_arg1 << ":-" << endl;
                if (!strstr(tmp_arg1, trig_discriminator)) {
                   //now try turning all punctuation to spaces...
-                  for (int i = 0; i<tmp_arg1.Strlen(); i++) {
+                  for (unsigned int i = 0; i<tmp_arg1.Strlen(); i++) {
                      if (ispunct(tmp_arg1.charAt(i))) {
                         tmp_arg1.setCharAt(i, ' ');
                      }//if
