@@ -143,7 +143,7 @@ int do_circle(critter& vict, critter& pc) {
          Sprintf(buf, "circles and places %S in %S's back.",
                  weap_name, name_of_crit(vict, ~0));
          emote(buf, pc, ROOM, TRUE, &vict);
-         Sprintf(buf, "You circle and place %S in %S's back.", 
+         Sprintf(buf, "You circle and place %S in %S's back.\n", 
                  weap_name, name_of_crit(vict, pc.SEE_BIT));
          show(buf, pc);
       }//else
