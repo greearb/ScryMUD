@@ -1,5 +1,5 @@
-// $Id: string2.h,v 1.10 1999/06/15 04:45:13 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/15 04:45:13 $
+// $Id: string2.h,v 1.11 1999/06/22 05:33:09 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/22 05:33:09 $
 
 //
 //ScryMUD Server Code
@@ -47,6 +47,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <LogStream.h>
+#include <stdarg.h>
 
 #define LOGFILE (*(String::getLogFile()))
 

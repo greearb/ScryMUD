@@ -1,7 +1,7 @@
 #  -*-Makefile-*-
 
-# $Id: MakeInclude,v 1.21 1999/06/16 06:43:26 greear Exp $
-# $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
+# $Id: MakeInclude,v 1.22 1999/06/22 05:33:08 greear Exp $
+# $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/22 05:33:08 $
 
 
 #  A common place IN YOUR PATH where tools can be put
@@ -33,11 +33,17 @@ HEGEMON_VERSION=1.9.7
 
 LDFLAGS =  -L$(MUD_HOME)/lib #linker flaggs
 
-# NOTE:  Use these variables if you are using EGCS
-
+# NOTE:  Use these variables if you are using EGCS and glibc 5
 CCFLAGS = -g -D_GNU_SOURCE -fguiding-decls\
           -Wall -I$(MUD_HOME)/include
 LDLIBS =  -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
+
+
+# This one works on some modern Slackware systems.
+#CCFLAGS = -g -D_GNU_SOURCE -fguiding-decls\
+#          -Wall -I$(MUD_HOME)/include
+#LDLIBS =  -lm -lstring2 -lbitfield #-lcrypt #-lnsl # -lsocket
+
 
 #  Use Electric fence to find memory problems.
 #  Comment these two out for production code (these bloat the hell

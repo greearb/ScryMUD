@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.20 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: command4.cc,v 1.21 1999/06/22 05:33:09 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/22 05:33:09 $
 
 //
 //ScryMUD Server Code
@@ -1760,8 +1760,9 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       show(buf, pc);
       show("open_time [shop keepers] (0, 23)\n", pc);
       show("close_time [shop keepers] (0, 23)\n", pc);
+      show("buy% (0, 1000)              markup% (sell) (0, 10000)\n", pc);
       show("mob_name (keyword)          short_desc\n", pc);
-      show("in_room_desc                naked_weight (20, 20000)\n", pc);
+      show("in_room_desc                naked_weight (1, 20000)\n", pc);
       show("sex (0-female, 1-male, 2-neuter)\n", pc);
       show("position (0, 6)             align (-1000 1000)\n", pc);
       show("hunger (-1, 9999)           thirst (-1, 9999)\n", pc);
@@ -1976,7 +1977,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
      }//if
    }//if
    else if (strncasecmp(*targ, "naked_weight", len1) == 0) {
-     if (check_l_range(new_val, 20, 20000, pc, TRUE)) {
+     if (check_l_range(new_val, 1, 20000, pc, TRUE)) {
         ptr->setNakedWeight(new_val);
         flag = TRUE;
      }//if
@@ -2008,6 +2009,42 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       else {
          show("This can only work on MOBILES.\n", pc);
       }//else
+   }//if
+   else if (strncasecmp(*targ, "close_time", len1) == 0) {
+     if (check_l_range(new_val, 0, 23, pc, TRUE)) {
+       if (ptr->mob && ptr->mob->proc_data &&
+	   ptr->mob->proc_data->sh_data) {
+	  ptr->mob->proc_data->sh_data->close_time = new_val;
+          flag = TRUE;
+	}//if
+	else {
+	  show("This can only work on MOBILES.\n", pc);
+	}//else
+     }//if
+   }//if
+   else if (strncasecmp(*targ, "buy%", len1) == 0) {
+     if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
+       if (ptr->mob && ptr->mob->proc_data &&
+	   ptr->mob->proc_data->sh_data) {
+	  ptr->mob->proc_data->sh_data->buy_percentage = new_val;
+          flag = TRUE;
+	}//if
+	else {
+	  show("This can only work on MOBILES.\n", pc);
+	}//else
+     }//if
+   }//if
+   else if (strncasecmp(*targ, "markup%", len1) == 0) {
+     if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
+       if (ptr->mob && ptr->mob->proc_data &&
+	   ptr->mob->proc_data->sh_data) {
+	  ptr->mob->proc_data->sh_data->markup = new_val;
+          flag = TRUE;
+	}//if
+	else {
+	  show("This can only work on MOBILES.\n", pc);
+	}//else
+     }//if
    }//if
    else if (strncasecmp(*targ, "close_time", len1) == 0) {
      if (check_l_range(new_val, 0, 23, pc, TRUE)) {

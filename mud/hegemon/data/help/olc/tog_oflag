@@ -2,19 +2,23 @@ Category:  OLC  Topic:  tog_oflag
 
 
 
-Used to toggle object flags, including bag flags.
+Used to toggle object flags, including bag flags. You
+can see the definitions of the flags with the:  dsys flags
+command.
 
-syntax:  tog_oflag [flag_num] [Obj_flag/Bag_flag] <n_th> [obj name]
-syntax:  tog_oflag [flag_num] [Obj_flag/Bag_flag] [obj_num]
+Flag types: obj_flag, bag_flag, or spec_flag
+
+Syntax:  tog_oflag [flag_num] [flag_type] <n_th> [obj name]
+Syntax:  tog_oflag [flag_num] [flag_type] [obj_num] DB
 
 These should be used when you don't want permanent changes, in
 the database, just changes for this one particular object.
-example:  tog_oflag 3 obj_flag 2.sword 		Toggles obj_flags # 3
-          tog_oflag 5 bag_flag 3.backpack 	Toggles 5_th bag flag
+Example:  tog_oflag 3 obj_flag 2.sword 		Toggles obj_flags # 3
+E         tog_oflag 5 bag_flag 3.backpack 	Toggles 5_th bag flag
 
 Use this for permanent database changes (don't forget aosave!)
-Example: tog_oflag 8 bag_flag 512       #  Change bag flag 8 on object
-                                        #  number 512.
+Example: tog_oflag 8 bag_flag 512 DB      #  Change bag flag 8 on object
+Example:                                  #  number 512.
 
 Bugs:  Some flags are (and should be) restricted from toggling.  As
        an Imp adds/deletes/changes flags, he/she should check this

@@ -1,5 +1,5 @@
-// $Id: door.cc,v 1.2 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: door.cc,v 1.3 1999/06/22 05:33:09 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/22 05:33:09 $
 
 //
 //ScryMUD Server Code
@@ -105,6 +105,7 @@ void door_data::Read(ifstream& da_file) {
    
    door_data_flags.Read(da_file);
    door_data_flags.turn_on(10); //set in use flag no matter what
+
    setComplete();  //if we can read it, it's complete!
 
    test = TRUE;

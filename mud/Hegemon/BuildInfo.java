@@ -1,6 +1,3 @@
-// $Id: BuildInfo.java,v 1.9 1999/06/05 23:29:12 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
-
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -27,7 +24,7 @@
 public class BuildInfo {
    static public String getBuildInfo() {
       return ("<color red>\n" +
-"Built on:   Mon May 31 16:32:18 MST 1999 \n" +
+"Built on:   Mon Jun 21 20:56:13 MST 1999 \n" +
 "By:         greear \n" +
 "On machine: Linux burrito.cyberhighway.net 2.2.5-15 i686 unknown \n" +
 " </color><color blue>\n" +

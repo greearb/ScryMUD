@@ -1,5 +1,5 @@
-// $Id: command3.h,v 1.7 1999/06/16 06:43:26 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
+// $Id: command3.h,v 1.8 1999/06/22 05:33:09 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/06/22 05:33:09 $
 
 //
 //ScryMUD Server Code
@@ -46,6 +46,7 @@ int rinit(int src_room, int dest_rm, critter& pc);
 
 int wield(int i_th, const String* name, critter& pc);
 int hold(int i_th, const String* name, critter& pc);
+int light(int i_th, const String* name, critter& pc);
 int flee(critter& pc, int& is_dead);
 int flee_to_safety(critter& pc, int& is_dead);  // MOB PROC
 int slay(int i_th, const String* name, critter& pc);

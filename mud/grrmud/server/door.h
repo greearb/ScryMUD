@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.6 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: door.h,v 1.7 1999/06/22 05:33:09 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/22 05:33:09 $
 
 //
 //ScryMUD Server Code
@@ -68,6 +68,8 @@ public:
    int isVehicleExit() const { return door_data_flags.get(12); }
    int canOpen() const { return (!door_data_flags.get(11) 
                                   && door_data_flags.get(8)); }
+   int canLock() const { return door_data_flags.get(5); }
+
    int isClosed() const { return door_data_flags.get(2); }
    int isLocked() const { return door_data_flags.get(3); }
    int isMagLocked() const { return door_data_flags.get(6); }

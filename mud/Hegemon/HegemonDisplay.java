@@ -1,5 +1,5 @@
-// $Id: HegemonDisplay.java,v 1.3 1999/06/05 23:29:12 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+// $Id: HegemonDisplay.java,v 1.4 1999/06/22 05:33:08 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/22 05:33:08 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -102,14 +102,14 @@ class HegemonDisplay extends Panel {
    }
 
    public void do_page_up_adjustment() {
-      view_y = vbar.getValue() - vbar.getVisibleAmount();
+      view_y = vbar.getValue() - vbar.getVisibleAmount() + 30;
       vbar.setValue(view_y);
 
       conformAdjustment();
    }
 
    public void do_page_down_adjustment() {
-      view_y = vbar.getValue() + vbar.getVisibleAmount();
+      view_y = vbar.getValue() + vbar.getVisibleAmount() - 30;
       vbar.setValue(view_y);
 
       conformAdjustment();

@@ -1,5 +1,5 @@
-// $Id: PsoEditor.java,v 1.2 1999/06/05 23:29:12 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+// $Id: PsoEditor.java,v 1.3 1999/06/22 05:33:08 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/22 05:33:08 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -37,7 +37,7 @@ class PsoEditor extends Frame {
    LabeledTextField keeper;
    TextField register;
    LabeledTextField new_obj;
-   Button reload_b, new_b, update_reg_b;
+   Button reload_b, new_b, update_reg_b, done_b;
 
    GridBagLayout gridbag;
    GridBagConstraints c;
@@ -60,7 +60,7 @@ class PsoEditor extends Frame {
       elements = new Vector();
       reload_b = new Button("Re-list");
       new_b = new Button("New Entry");
-
+      done_b = new Button("Done");
 
       update_reg_b = new Button("Update Register");
 
@@ -90,6 +90,10 @@ class PsoEditor extends Frame {
             do_update_reg();
          }});
 
+      done_b.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            setVisible(false);
+         }});
 
       int REM = GridBagConstraints.REMAINDER;
       gridbag = new GridBagLayout();
@@ -113,8 +117,12 @@ class PsoEditor extends Frame {
       add(new_obj);
 
       c.gridwidth = REM;
-      p.add("South", reload_b);
+      Panel p_top = new Panel();
+      p_top.add(reload_b);
+      p_top.add(done_b);
+      
       p.add("North", new_b);
+      p.add("South", p_top);
       gridbag.setConstraints(p, c);
       add(p);
 

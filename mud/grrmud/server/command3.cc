@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.17 1999/06/20 02:01:43 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/20 02:01:43 $
+// $Id: command3.cc,v 1.18 1999/06/22 05:33:08 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/22 05:33:08 $
 
 //
 //ScryMUD Server Code
@@ -1254,6 +1254,13 @@ int wield(int i_th, const String* item, critter& pc) {
 
 int hold(int i_th, const String* item, critter& pc) {
    String buf("hold");
+  
+   return wear(i_th, item, 1, &buf, pc);
+}//hold
+
+
+int light(int i_th, const String* item, critter& pc) {
+   String buf("light");
   
    return wear(i_th, item, 1, &buf, pc);
 }//hold

@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.22 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: commands.cc,v 1.23 1999/06/22 05:33:09 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/22 05:33:09 $
 
 //
 //ScryMUD Server Code
@@ -305,7 +305,7 @@ int examine(int i_th, const String* obj, critter& pc) {
 
 
 int wear(int i_th, const String* obj, int j, const String* posn,
-          critter &pc) {
+         critter &pc) {
    Cell<object*> cell;
    object *obj_ptr;
    int i = 0, t = 0;
@@ -357,7 +357,15 @@ int wear(int i_th, const String* obj, int j, const String* posn,
    }//if
    else { //posn was noted
       mudlog.log(DBG, "Wear, posn noted.\n");
-      obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT, ROOM);
+      int is_light = FALSE;
+      if (strcasecmp(*posn, "light") == 0) {
+         obj_ptr = have_obj_named(pc.inv, i_th, obj, ~0, ROOM);
+         is_light = TRUE;
+      }
+      else {
+         obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT, ROOM);
+      }
+
       if (!obj_ptr) {
          pc.show(CS_DONT_SEEM_TO_HAVE_THAT);
          mudlog.log(DBG, "Wear failed, don't have object\n");
@@ -425,6 +433,15 @@ int wear(int i_th, const String* obj, int j, const String* posn,
       }//if
       else { //i and maybe t are good
          if (pc.EQ[i] || (j == 2)) { //gotta go in posn t if anywhere
+            
+            if (t == 11 /* light */) {
+               if (pc.EQ[t]) {
+                  remove_eq_effects(*(pc.EQ[t]), pc, FALSE, TRUE, 11);
+                  pc.gainInv(pc.EQ[t]);
+                  pc.EQ[t] = NULL;
+               }//if
+            }//if
+
             if (!pc.EQ[t]) { //then can go there
                if (obj_wear_by(*obj_ptr, pc, t, TRUE)) {
                   pc.loseInv(obj_ptr);
@@ -3432,7 +3449,7 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
 
 
 int remove_eq_effects(object& obj, critter& pc, short from_corpse,
-                       short do_msg, int posn) { 
+                      short do_msg, int posn) { 
                       //lights, stat adjusts
    String buf(100);
 
