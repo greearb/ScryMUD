@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.34 2001/04/21 07:15:29 eroper Exp $
-// $Revision: 1.34 $  $Author: eroper $ $Date: 2001/04/21 07:15:29 $
+// $Id: command3.cc,v 1.35 2001/04/21 08:02:11 eroper Exp $
+// $Revision: 1.35 $  $Author: eroper $ $Date: 2001/04/21 08:02:11 $
 
 //
 //ScryMUD Server Code
@@ -1782,7 +1782,7 @@ int tail(int i_th, const String* vict, critter& pc, int do_smob = FALSE) {
   }//if
 
   String cmd = "tail";
-  getCurRoom()->checeForProc(cmd, NULL_STRING, *this, vict.MOB_NUM);
+  //getCurRoom()->checkForProc(cmd, NULL_STRING, *this, vict.MOB_NUM);
   
   pc.CRIT_FLAGS.turn_on(23);
   pc.doFollow(*ptr, FALSE);
@@ -1870,7 +1870,7 @@ int critter::doFollow(critter& vict, int do_msg = TRUE) {
       show(buf);
       
       String cmd = "follow";
-      getCurRoom()->checeForProc(cmd, NULL_STRING, *this, vict.MOB_NUM);
+      getCurRoom()->checkForProc(cmd, NULL_STRING, *this, vict.MOB_NUM);
       
    }//else, follow some other
    return 0;
