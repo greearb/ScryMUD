@@ -1,5 +1,5 @@
-// $Id: ez_spll.cc,v 1.12 1999/07/07 06:05:11 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/07 06:05:11 $
+// $Id: ez_spll.cc,v 1.13 1999/07/22 04:56:15 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/07/22 04:56:15 $
 
 //
 //ScryMUD Server Code
@@ -525,10 +525,8 @@ void do_cast_bless(critter& vict, critter& agg, int is_canned,
             Sprintf(buf, "You give your god's blessing to %S.\n", 
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
-            Sprintf(buf, 
-                    "%S gives you %s god's blessing.\n",
-                    get_his_her(agg),
-                    name_of_crit(agg, vict.SEE_BIT));
+            Sprintf(buf, "%S gives you %s god's blessing.\n",
+                    agg.getName(vict.SEE_BIT), get_his_her(agg));
             buf.Cap();
             show(buf, vict);
             Sprintf(buf, "gives %s god's blessing to %S.\n",

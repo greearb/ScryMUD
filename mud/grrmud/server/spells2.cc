@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.9 1999/07/05 22:32:08 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/05 22:32:08 $
+// $Id: spells2.cc,v 1.10 1999/07/22 04:56:15 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/07/22 04:56:15 $
 
 //
 //ScryMUD Server Code
@@ -2284,16 +2284,20 @@ void do_locate_object(object &obj, const String* targ, critter& pc,
    if (obj.isMagic() || pc.isImmort()) {
       if ((obj.getLevel() <= lvl) || (pc.isImmort())) {
          String buf(100);
-         if (pc.isImmort()) {
-            Sprintf(buf, "ROOM: %i  %S:  %P40%S.\n", rm_num, long_name_of_obj(obj, ~0),
-                    &(room_list[rm_num].short_desc));
-         }
-         else {
-            Sprintf(buf, "%S:  %P40%S.\n", long_name_of_obj(obj, ~0),
-                    &(room_list[rm_num].short_desc));
-         }
-         buf.Cap();
-         show(buf, pc);
+         if (obj.isNamed(*targ)) {
+            if (pc.isImmort()) {
+               Sprintf(buf, "ROOM: %i  [%i]%S:  %P40%S.\n", rm_num,
+                       obj.getIdNum(), long_name_of_obj(obj, ~0),
+                       &(room_list[rm_num].short_desc));
+            }
+            else {
+               Sprintf(buf, "%S:  %P40%S.\n", long_name_of_obj(obj, ~0),
+                       &(room_list[rm_num].short_desc));
+            }
+
+            buf.Cap();
+            show(buf, pc);
+         }//if it's named thusly.
       }//if
    }//if
 }//do locate object (object)

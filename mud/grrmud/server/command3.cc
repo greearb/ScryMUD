@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.23 1999/07/20 05:05:40 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/07/20 05:05:40 $
+// $Id: command3.cc,v 1.24 1999/07/22 04:56:14 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/22 04:56:14 $
 
 //
 //ScryMUD Server Code
@@ -449,6 +449,14 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
       show("Recite what??\n", pc);
       return -1;
    }//if
+
+   if (!scroll->obj_proc) {
+      mudlog << "ERROR:  Scroll: " << scroll
+             << " does not have an obj_proc, scroll# " << scroll->getIdNum()
+             << nl;
+      pc.show("Looks like a bug, please tell an imm about that scroll.\n");
+      return -1;
+   }
 
    Sprintf(buf, "You unroll %S and begin to read...\n",
            long_name_of_obj(*scroll, pc.SEE_BIT));

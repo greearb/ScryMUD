@@ -73,23 +73,36 @@ while ( : ) do
 	mv -f ./log/obj_ptr.log ./log/obj_ptr.log1
     fi
 
-    # And 3 core files.
-    if [ -f ./core2 ]; then
-	mv -f ./core2 ./core3
+    # Core's take up too much space, just going to grap the useful info
+    # with gdb.
+    if [ -f ./gdb.out4 ]; then
+	mv -f ./gdb.out4 ./gdb.out5
     fi
 
-    if [ -f ./core1 ]; then
-	mv -f ./core1 ./core2
+    if [ -f ./gdb.out3 ]; then
+	mv -f ./gdb.out3 ./gdb.out4
+    fi
+
+    if [ -f ./gdb.out2 ]; then
+	mv -f ./gdb.out2 ./gdb.out3
+    fi
+
+    if [ -f ./gdb.out1 ]; then
+	mv -f ./gdb.out1 ./gdb.out2
     fi
 
     # Depending on the shell..one of these may exist.
 
     if [ -f ./core ]; then
-	mv -f ./core ./core1
+	echo bt > /tmp/gdb_input
+	echo quit >> /tmp/gdb_input
+	gdb gmud ./core < /tmp/gdb_input > gdb.out1
     fi
 
     if [ -f ./gmud.core ]; then
-	mv -f ./gmud.core ./core1
+	echo bt > /tmp/gdb_input
+	echo quit >> /tmp/gdb_input
+	gdb gmud ./gmud.core < /tmp/gdb_input > gdb.out1
     fi
 
     echo "Checking RETVAL:  ${RETVAL}"
