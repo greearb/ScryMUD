@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.43 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.43 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: critter.h,v 1.44 1999/08/27 03:10:04 greear Exp $
+// $Revision: 1.44 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
 
 //
 //ScryMUD Server Code
@@ -682,9 +682,6 @@ public:
    static int createWithDescriptor(int socket);
    void startLogin();
 
-   void checkForProc(String& cmd, String& arg1, critter& actor,
-                     int targ, room& cur_room);
-
    object* findObjInEq(int i_th, const String& name, int see_bit,
                        room& rm, int& posn, int& count_sofar);
    
@@ -709,7 +706,6 @@ public:
 
    void doSuicide();
 
-   void addProcScript(const String& txt, MobScript* script_data);
    void remember(critter& pc);
    void trackToKill(critter& vict, int& is_dead);
    int travelToRoom(int targ_room_num, int num_steps, int& is_dead);
@@ -1006,6 +1002,7 @@ public:
    void show(const char* msg);
    void show(CSentryE); //Pick language of choice, if available.
    void show(LString& msg);
+   void show(String& msg);
    void show(LStringCollection& msg, int show_all = FALSE);
    void show(const String* msg);
 

@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.30 1999/08/25 06:35:11 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
+// $Id: command5.cc,v 1.31 1999/08/27 03:10:03 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
 
 //
 //ScryMUD Server Code
@@ -2186,11 +2186,11 @@ By:              %s\n\n",
    Sprintf(buf, "[%i]%P10 door_data %P30[%i] %P42 ScriptCmd\n",
            door_data::getInstanceCount(), ScriptCmd::getInstanceCount());
    pc.show(buf);
-   Sprintf(buf, "[%i]%P10 GenScript  %P30[%i] %P42 MobScript\n",
-           GenScript::getInstanceCount(), MobScript::getInstanceCount());
+   Sprintf(buf, "[%i]%P10 GenScript  %P30[0] %P42 NULL\n",
+           GenScript::getInstanceCount());
    pc.show(buf);
-   Sprintf(buf, "[%i]%P10 RoomScript  %P30[%i] %P42 BugCollection\n",
-           RoomScript::getInstanceCount(), BugCollection::getInstanceCount());
+   Sprintf(buf, "[0]%P10 NULL  %P30[%i] %P42 BugCollection\n",
+           BugCollection::getInstanceCount());
    pc.show(buf);
 
    Sprintf(buf, "\nSize (length) of:\n\tembattled_rooms: %i \t affected_doors: %i\n",

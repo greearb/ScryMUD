@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.30 1999/08/22 07:16:20 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
+// $Id: object.h,v 1.31 1999/08/27 03:10:04 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
 
 //
 //ScryMUD Server Code
@@ -328,8 +328,7 @@ public:
    int wizchat(const char* message, room& rm);
    int obj_pause(int ticks);
 
-   void checkForProc(String& cmd, String& arg1, critter& actor,
-                     int targ, room& cur_room);
+   virtual int processInput(String& input, room& rm); /* for object scripts */
 
 }; // class object
 

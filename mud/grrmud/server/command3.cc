@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.28 1999/08/20 06:20:05 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
+// $Id: command3.cc,v 1.29 1999/08/27 03:10:03 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
 
 //
 //ScryMUD Server Code
@@ -1594,7 +1594,7 @@ int critter::doFollow(critter& vict, int do_msg = TRUE) {
       show(buf);
       
       String cmd = "follow";
-      getCurRoom()->checkForProc(cmd, NULL_STRING, *this, vict.MOB_NUM);
+      getCurRoom()->checkForProc(cmd, NULL_STRING, *this, vict.getIdNum());
       
    }//else, follow some other
    return 0;
@@ -1698,7 +1698,7 @@ int group(int i_th, const String* vict, critter& pc) {
       pc.show(buf);
 
       String cmd = "group";
-      ROOM.checkForProc(cmd, NULL_STRING, pc, ptr->MOB_NUM);
+      ROOM.checkForProc(cmd, NULL_STRING, pc, ptr->getIdNum());
 
    }//else
    return 0;

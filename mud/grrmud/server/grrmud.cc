@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.30 1999/08/20 06:20:05 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
+// $Id: grrmud.cc,v 1.31 1999/08/27 03:10:04 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
 
 //
 //ScryMUD Server Code
@@ -1059,7 +1059,7 @@ void game_loop(int s)  {
                   case LE_ROOM:
                   case LE_VEHICLE: {
                      if ((script_ret_val = 
-                          RoomScript::parseScriptCommand(*cmd_ptr, *((room*)(sptr)))) < 0) {
+                          GenScript::parseRoomScriptCommand(*cmd_ptr, *((room*)(sptr)))) < 0) {
                         if (mudlog.ofLevel(WRN)) {
                            mudlog << "RoomScript command: target -:" 
                                   << cmd_ptr->getTarget() << ":-  cmd -:"
@@ -1072,7 +1072,7 @@ void game_loop(int s)  {
                   }
                   case LE_CRITTER: {
                      if ((script_ret_val = 
-                          MobScript::parseScriptCommand(*cmd_ptr, *((critter*)(sptr)))) < 0) {
+                          GenScript::parseMobScriptCommand(*cmd_ptr, *((critter*)(sptr)))) < 0) {
                         if (mudlog.ofLevel(WRN)) {
                            mudlog << "MobScript command: target -:" 
                                   << cmd_ptr->getTarget() << ":-  cmd -:"
@@ -1085,7 +1085,7 @@ void game_loop(int s)  {
                   }
                   case LE_OBJECT: {
                      int script_ret_val;
-                     if ((script_ret_val = ObjectScript::parseScriptCommand(*cmd_ptr,
+                     if ((script_ret_val = GenScript::parseObjScriptCommand(*cmd_ptr,
                                                                             *((object*)(sptr)))) < 0) {
                         if (mudlog.ofLevel(WRN)) {
                            mudlog << "WARNING:  ObjectScript command: target -:" 

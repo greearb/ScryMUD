@@ -1,5 +1,5 @@
-// $Id: list2.h,v 1.12 1999/08/01 08:40:24 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/01 08:40:24 $
+// $Id: list2.h,v 1.13 1999/08/27 03:10:05 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/27 03:10:05 $
 
 //
 //ScryMUD Server Code
@@ -743,9 +743,9 @@ public:
    SortedPtrList(const T &Nil) : PtrList<T>(Nil) { }
    virtual ~SortedPtrList() { }
 
-   void insertSorted(T val) {
-      Cell<T> cll(*this);
-      T ptr;
+   void insertSorted(T* val) {
+      Cell<T*> cll(*this);
+      T* ptr;
       while ((ptr = cll.next())) {
          if (*val < *ptr) {
             insertBefore(cll, val);

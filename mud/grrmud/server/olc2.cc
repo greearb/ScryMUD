@@ -1,5 +1,5 @@
-// $Id: olc2.cc,v 1.15 1999/08/22 07:16:20 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
+// $Id: olc2.cc,v 1.16 1999/08/27 03:10:04 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
 
 //
 //ScryMUD Server Code
@@ -867,7 +867,9 @@ int stat_path(int veh_id, int path_cell_num, critter& pc) {
       return -1;
    }
 
-   pcell->stat(veh_id, path_cell_num, pc);
+   String buf(500);
+   pcell->toStringStat(veh_id, path_cell_num, pc, buf, ST_ALL);
+   pc.show(buf);
    return 0;
 }//stat_path
 
@@ -1199,7 +1201,7 @@ int add_mob_script(critter& pc, int mob_num, String& trigger_cmd,
    show("Use a solitary '~' on a line by itself to end.\n", pc);
 
    pc.pc->imm_data->tmp_proc_script
-      = new MobScript(trigger_cmd, target_num, actor_num, descriminator,
+      = new GenScript(trigger_cmd, target_num, actor_num, descriminator,
                       takes_precedence);
    pc.pc->imm_data->proc_script_buffer.clearAndDestroy();
    pc.pc->imm_data->tmp_script_entity_num = mob_num;
@@ -1258,7 +1260,7 @@ int add_room_script(critter& pc, int rm_num, String& trigger_cmd,
    show("Use a solitary '~' on a line by itself to end.\n", pc);
 
    pc.pc->imm_data->tmp_proc_script
-      = new RoomScript(trigger_cmd, target_num, actor_num, descriminator,
+      = new GenScript(trigger_cmd, target_num, actor_num, descriminator,
                        takes_precedence);
    pc.pc->imm_data->proc_script_buffer.clearAndDestroy();
    pc.pc->imm_data->tmp_script_entity_num = rm_num;
@@ -1317,7 +1319,7 @@ int add_obj_script(critter& pc, int obj_num, String& trigger_cmd,
    show("Use a solitary '~' on a line by itself to end.\n", pc);
 
    pc.pc->imm_data->tmp_proc_script
-      = new ObjectScript(trigger_cmd, target_num, actor_num, descriminator,
+      = new GenScript(trigger_cmd, target_num, actor_num, descriminator,
                          takes_precedence);
    pc.pc->imm_data->proc_script_buffer.clearAndDestroy();
    pc.pc->imm_data->tmp_script_entity_num = obj_num;
@@ -1755,7 +1757,7 @@ int do_add_mob_script(critter& pc) {
 
                mob_list[mob_num].
                   addProcScript(*(pc.pc->imm_data->edit_string->getString(&pc)),
-                                (MobScript*)(pc.pc->imm_data->tmp_proc_script));
+                                pc.pc->imm_data->tmp_proc_script);
                mudlog.log(TRC, "Done with addProcScript");
                pc.pc->imm_data->tmp_proc_script = NULL;
             }//if
@@ -1812,7 +1814,7 @@ int do_add_room_script(critter& pc) {
 
                room_list[rm_num].
                   addProcScript(*(pc.pc->imm_data->edit_string->getString(&pc)),
-                                (RoomScript*)(pc.pc->imm_data->tmp_proc_script));
+                                pc.pc->imm_data->tmp_proc_script);
                pc.pc->imm_data->tmp_proc_script = NULL;
             }//if
          }//if script checks out ok
@@ -1869,7 +1871,7 @@ int do_add_obj_script(critter& pc) {
 
                obj_list[obj_num].
                   addProcScript(*(pc.pc->imm_data->edit_string->getString(pc.getLanguage())),
-                                (ObjectScript*)(pc.pc->imm_data->tmp_proc_script));
+                                pc.pc->imm_data->tmp_proc_script);
                pc.pc->imm_data->tmp_proc_script = NULL;
             }//if
          }//if script checks out ok

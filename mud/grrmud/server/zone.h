@@ -1,5 +1,5 @@
-// $Id: zone.h,v 1.3 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: zone.h,v 1.4 1999/08/27 03:10:05 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/08/27 03:10:05 $
 
 //
 //ScryMUD Server Code
@@ -41,9 +41,6 @@
 class room;
 class critter;
 class door;
-
-
-
 
 
 /**  The zones that are to be enabled, ie zunlocked when we transition
@@ -96,7 +93,7 @@ protected:
    int begin_room_num;
    int end_room_num;
    int zone_num;
-   List<String*> owners; //who has right to edit it
+   PtrList<String> owners; //who has right to edit it
 
    //Helper, should probably be added to the string class or something.
    void spaceToNewlines(String& str);
@@ -126,10 +123,10 @@ public:
    /**  znum will be assigned to zone_num, kinda a hack to fix
     * an oversight.
     */
-   int Read(ifstream& dafile, int znum);
-   int Write(ofstream& dafile);
+   int read(istream& dafile, int znum);
+   int write(ostream& dafile);
 
-   void Clear();
+   void clear();
 
 
    /**  From mortal intervention, mob procs, vehicle movement.. */

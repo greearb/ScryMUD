@@ -1,5 +1,5 @@
-// $Id: zone.cc,v 1.3 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: zone.cc,v 1.4 1999/08/27 03:10:05 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/08/27 03:10:05 $
 
 //
 //ScryMUD Server Code
@@ -180,7 +180,7 @@ void ZoneCollection::readSelf() {
          do_shutdown = TRUE;
          exit(100);
       }//if
-      zone_list[k].Read(zfile, k);
+      zone_list[k].read(zfile, k);
       zfile >> k;
       zfile.getline(buf, 80);
    }//while
@@ -309,7 +309,7 @@ void ZoneCollection::writeSelf() {
    for (int i = 0; i<NUMBER_OF_ZONES; i++) {
       if (zone_list[i].isInUse()) {
          dafile << i << "\tBegin of zone\n";
-	 zone_list[i].Write(dafile);
+	 zone_list[i].write(dafile);
       }//if
    }//for
 
@@ -423,7 +423,7 @@ zone::zone(const zone& src) { //copy constructor
 
 zone::~zone() {
    _cnt--;
-   clear_ptr_list(owners);
+   owners.clearAndDestroy();
 }//~zone
 
 
@@ -436,7 +436,7 @@ String zone::createNeatoMapFile() {
 
    // This will create lots of duplicate entries, but the
    // neato program should deal with it easier than I can!
-   Cell<door*> cll;
+   SCell<door*> cll;
    door* ptr;
 
    String cur_room_name(50);
@@ -562,7 +562,7 @@ int zone::isOwnedBy(critter& pc) {
       String* ptr;
       
       while ((ptr = cll.next())) {
-         if (strcasecmp(*ptr, *(Top(pc.names))) == 0)
+         if (strcasecmp(*ptr, *(pc.getFirstName())) == 0)
             return TRUE;
       }//wile
    }//if
@@ -572,11 +572,11 @@ int zone::isOwnedBy(critter& pc) {
 
 
 /** znum will be the number for this zone. */
-int zone::Read(ifstream& dafile, int znum) {
+int zone::read(istream& dafile, int znum) {
    mudlog.log(DBG, "In zone::read.\n");
    char buf[81];
 
-   Clear();
+   clear();
 
    if ((znum < 0) || (znum > NUMBER_OF_ZONES)) {
       mudlog << "ERROR:  znum is out of range: " << znum << endl;
@@ -603,7 +603,7 @@ int zone::Read(ifstream& dafile, int znum) {
    dafile.getline(buf, 80);  //clear junk
 
    //mudlog.log(DBG, "About to read zone_flags.\n");
-   zone_flags.Read(dafile);
+   zone_flags.read(dafile);
    //mudlog.log(DBG, "read em.\n");
 
    short test = TRUE;
@@ -633,7 +633,7 @@ int zone::Read(ifstream& dafile, int znum) {
 }//Read
 
 
-int zone::Write(ofstream& dafile) {
+int zone::write(ostream& dafile) {
    Cell<String*> st_cell(owners);
    String* st_ptr;
 
@@ -643,7 +643,7 @@ int zone::Write(ofstream& dafile) {
 
    int len = 0;
 
-   zone_flags.Write(dafile);
+   zone_flags.write(dafile);
 
    while ((st_ptr = st_cell.next())) {
       len += st_ptr->Strlen() + 1;
@@ -657,10 +657,10 @@ int zone::Write(ofstream& dafile) {
    return TRUE;
 }//Write
 
-void zone::Clear() {
-   zone_name.Clear();
-   zone_flags.Clear();
-   clear_ptr_list(owners);
+void zone::clear() {
+   zone_name.clear();
+   zone_flags.clear();
+   owners.clearAndDestroy();
    ticks_in_regen_cycle = ticks_till_regen = begin_room_num = end_room_num = 0;
    zone_num = 0;
 }//clear

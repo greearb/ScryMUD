@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.27 1999/08/20 06:20:06 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
+// $Id: object.cc,v 1.28 1999/08/27 03:10:04 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
 
 //
 //ScryMUD Server Code
@@ -773,7 +773,7 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
    if (obj_flags.get(76)) {
       //mudlog.log("Object has proc scripts...");
       int sent_;
-      ObjectScript* ptr;
+      GenScript* ptr;
 
       ofile >> sent_;
       ofile.getline(tmp, 80);
@@ -793,7 +793,7 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
             return -1;
          }
 
-         ptr = new ObjectScript();
+         ptr = new GenScript();
          ptr->read(ofile);
          addProcScript(ptr);
          ofile >> sent_;

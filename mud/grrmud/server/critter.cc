@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.49 1999/08/22 07:16:20 greear Exp $
-// $Revision: 1.49 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
+// $Id: critter.cc,v 1.50 1999/08/27 03:10:03 greear Exp $
+// $Revision: 1.50 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
 
 //
 //ScryMUD Server Code
@@ -1348,7 +1348,7 @@ int pc_data::read(istream& ofile, int read_all = TRUE) {
    int i;
    char tmp[81];
    
-   clear();
+   pc_data::clear();
 
    if (!ofile) {
       if (mudlog.ofLevel(ERR)) {

@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.32 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: room.h,v 1.33 1999/08/27 03:10:04 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
 
 //
 //ScryMUD Server Code
@@ -213,8 +213,6 @@ public:
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_ROOM; }
 
-   virtual void checkForProc(String& cmd, String& arg1, critter& actor,
-                             int targ);
    void checkForBattle(critter& pc_who_is_being_checked_for);
    const String* getRandomExitDir(critter& for_this_pc);
    int getZoneNum();
@@ -328,6 +326,9 @@ public:
    int makeReadyForAreaSpell();
    critter* findNextProcMob();
    critter* findNextSpellCritter();
+
+   void checkForProc(String& cmd, String& arg1, critter& actor,
+                     int targ_num);
 }; // class room
 
 #endif

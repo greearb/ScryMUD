@@ -1,5 +1,5 @@
-// $Id: SkillSpell.h,v 1.7 1999/07/29 06:35:08 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/29 06:35:08 $
+// $Id: SkillSpell.h,v 1.8 1999/08/27 03:10:03 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
 
 //
 //ScryMUD Server Code
@@ -76,6 +76,8 @@ class SkillSpell {
 
  public:
 
+   // zero will be the 'null' value.  This means you can never insert a
+   // zero into one of these lists.
    List<int> prereqs;  //spell/skill numbers of pre-requisites
    List<int> enables;  //spell/skill numbers it enables you to take
 

@@ -1,5 +1,5 @@
-// $Id: BugEntry.cc,v 1.10 1999/08/10 07:06:17 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
+// $Id: BugEntry.cc,v 1.11 1999/08/27 03:10:03 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
 
 //
 //ScryMUD Server Code
@@ -77,12 +77,12 @@ int CommentEntry::read(ifstream& dafile) {
    if (sent == -1)
      return -1;
 
-   date.Termed_Read(dafile);
+   date.termedRead(dafile);
 
    dafile >> reporter;
    dafile.getline(buf, 99);
    
-   report.Termed_Read(dafile);
+   report.termedRead(dafile);
 
    html_safe_report = report.sterilizeForHtml();
    heg_safe_report = report;
@@ -158,7 +158,7 @@ BugEntry::BugEntry(const BugEntry& src) //copy constructor
      html_safe_title(src.html_safe_title),
      heg_safe_title(src.heg_safe_title) {
         
-   clear_ptr_list(reports);
+   reports.clearAndDestroy();
 
    Cell<CommentEntry*> cll(src.reports);
    CommentEntry* ptr;
@@ -185,14 +185,14 @@ BugEntry::BugEntry(int bn, const char* _reporter, const char* _date,
 int BugEntry::clear() {
    bug_num = room_num = 0;
    cur_state = open;
-   flags.Clear();
-   create_date.Clear();
-   reporter.Clear();
-   assigned_to.Clear();
-   clear_ptr_list(reports);
-   title.Clear();
-   html_safe_title.Clear();
-   heg_safe_title.Clear();
+   flags.clear();
+   create_date.clear();
+   reporter.clear();
+   assigned_to.clear();
+   reports.clearAndDestroy();
+   title.clear();
+   html_safe_title.clear();
+   heg_safe_title.clear();
    return 0;
 }//clear
 
@@ -207,13 +207,7 @@ BugEntry& BugEntry::operator=(const BugEntry& src) {
    title = src.title;
    html_safe_title = src.html_safe_title;
    heg_safe_title = src.heg_safe_title;
-   clear_ptr_list(reports);
-   
-   Cell<CommentEntry*> cll(src.reports);
-   CommentEntry* ptr;
-   while ((ptr = cll.next())) {
-      reports.append(new CommentEntry(*ptr));
-   }
+   reports.becomeDeepCopyOf(src.reports);
    return *this;
 }//operatoe=
 
@@ -295,7 +289,7 @@ int BugEntry::read(ifstream& dafile) {
    cur_state = (state)(cs);
    dafile.getline(buf, 99);
 
-   flags.Read(dafile);
+   flags.read(dafile);
 
    dafile.getline(buf, 99);
    create_date = buf;
@@ -307,7 +301,7 @@ int BugEntry::read(ifstream& dafile) {
    dafile >> assigned_to;
    dafile.getline(buf, 99);
 
-   title.Termed_Read(dafile);
+   title.termedRead(dafile);
 
    html_safe_title = title.sterilizeForHtml();
    heg_safe_title = title;
@@ -324,7 +318,7 @@ int BugEntry::write(ofstream& dafile) {
    dafile << bug_num << " " << room_num << " " << (int)cur_state
           << " bug_num, room_num, state\n";
 
-   flags.Write(dafile);
+   flags.write(dafile);
 
    dafile << create_date << endl;
    dafile << reporter << endl;

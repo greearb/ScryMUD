@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.12 1999/06/26 06:14:16 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/26 06:14:16 $
+// $Id: SkillSpell.cc,v 1.13 1999/08/27 03:10:03 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
 
 //
 //ScryMUD Server Code
@@ -31,7 +31,7 @@
 ///******************************************************************///
 ///*********************  skill spell  ******************************///
 
-SkillSpell::SkillSpell() {
+SkillSpell::SkillSpell() : prereqs(0), enables(0) {
    ss_num = 0;
    min_level = 0;
    difficulty = 0;
@@ -39,7 +39,7 @@ SkillSpell::SkillSpell() {
    scroll_num = 0;
 }//constructor
 
-SkillSpell::SkillSpell(const SkillSpell& source) {
+SkillSpell::SkillSpell(const SkillSpell& source) : prereqs(0), enables(0) {
    *this = source;
 }//copy constructor
 
@@ -454,7 +454,7 @@ can learn by limiting the prerequisites we give them upon login for the
 first time.<P>";
 
    //Lets make an index!!
-   SortedPtrList<String*> lst;
+   SortedPtrList<String> lst;
    for (int i = 0; i<NUMBER_OF_SKILL_SPELLS; i++) {
       if (ss_list[i].getIdNum() != 0) {
          lst.insertSorted(&(ss_list[i].getName()));
@@ -953,7 +953,7 @@ void SSCollection::read() {
       else {
          mudlog << "Reading ss -:" << tstr << ":-" << endl;
          
-         str_buf.Termed_Read(desc_file);
+         str_buf.termedRead(desc_file);
          
          mudlog << "Got Description -:" << str_buf << ":-" << endl;
          

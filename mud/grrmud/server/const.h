@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.21 1999/08/16 00:37:06 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
+// $Id: const.h,v 1.22 1999/08/27 03:10:03 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
 
 //
 //ScryMUD Server Code
@@ -36,13 +36,6 @@
 
 //Foward declarations.
 template <class T> class SafeList;
-
-enum entity_type {
-   ENTITY_CRITTER,
-   ENTITY_ROOM,
-   ENTITY_DOOR,
-   ENTITY_OBJECT
-};// entity_type
 
 /** Used in affect_crit_stat, script.h */
 enum StatTypeE {

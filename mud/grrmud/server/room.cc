@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.39 1999/08/20 06:20:06 greear Exp $
-// $Revision: 1.39 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
+// $Id: room.cc,v 1.40 1999/08/27 03:10:04 greear Exp $
+// $Revision: 1.40 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
 
 //
 //ScryMUD Server Code
@@ -514,7 +514,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
    if (room_flags.get(35)) {
       //mudlog.log("Mob has proc scripts...");
       int sent_;
-      RoomScript* ptr;
+      GenScript* ptr;
 
       ofile >> sent_;
       ofile.getline(tmp, 80);
@@ -534,7 +534,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
             return -1;
          }
 
-         ptr = new RoomScript();
+         ptr = new GenScript();
          ptr->read(ofile);
          addProcScript(ptr);
          ofile >> sent_;
@@ -571,7 +571,7 @@ int room::read_v3(istream& ofile, int read_all = TRUE) {
       mudlog << "Reading room, read_all:  " << read_all << endl;
    }
 
-   clear();  //stop up any memory leaks etc.
+   room::clear();  //stop up any memory leaks etc.
 
    if (!ofile) {
       if (mudlog.ofLevel(ERR)) {

@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.30 1999/08/20 06:20:05 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
+// $Id: misc.cc,v 1.31 1999/08/27 03:10:04 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
 
 //
 //ScryMUD Server Code
@@ -748,7 +748,7 @@ int update_zone(int zone_num, short read_all) {
             mudlog << "About to read vehicle:  " << k
                 << " zone:  " << zone_num << endl;
          }
-         tmp_veh.Read(rfile, read_all);
+         tmp_veh.read(rfile, read_all);
          room_ptr = &tmp_veh;
       }
       else {

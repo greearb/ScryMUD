@@ -1,5 +1,5 @@
-// $Id: Scriptable.h,v 1.6 1999/08/25 06:35:11 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
+// $Id: Scriptable.h,v 1.7 1999/08/27 03:10:03 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
 
 //
 //ScryMUD Server Code
@@ -49,6 +49,7 @@ public:
 
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
+   virtual int read_v2(istream& dafile); //read in a version 2 script.
    virtual int clear();
 
    /** Give as much info as possible, used by immortals.  Include client
@@ -61,16 +62,6 @@ public:
 
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_SCRIPT_COLL; }
-
-   /** For scripts, the script_targ is always *this.  The script_owner
-    * will be null (for non-script specific stuff) and should be specified
-    * if it relates to scripting of course.
-    */
-   virtual int processInput(String& input, short do_sub, int script_driven, 
-                            critter* c_script_owner = NULL,
-                            room* r_script_owner = NULL, int was_ordered = FALSE);
-   virtual int processInput(String& input);
-   virtual int processInput(String& input, room* rm); /* for object scripts */
 
    /**  Run a command after it has been parsed by processInput.  Also called
     * from the script_jump method.
@@ -99,6 +90,9 @@ public:
     */
    virtual int attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
                                            critter* actor);
+
+   virtual void checkForProc(String& cmd, String& arg1, critter* actor,
+                             int targ, room* rm, object* obj_actor);
 
    virtual void listScripts(LEtypeE type, critter* pc);
 };//Scriptable

@@ -1,5 +1,5 @@
-// $Id: script.h,v 1.15 1999/08/04 06:29:17 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/04 06:29:17 $
+// $Id: script.h,v 1.16 1999/08/27 03:10:04 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
 
 //
 //ScryMUD Server Code
@@ -187,14 +187,13 @@ public:
                        int targ, int obj_actor_num = -1);
    virtual int matches(const GenScript& src);
    virtual void generateScript(String& cmd, String& arg1, critter& act,
-                               int targ, room& rm, critter* script_owner,
-                               object* object_owner = NULL);
+                               int targ, room& rm, Entity* script_owner);
    virtual int getPrecedence() { return precedence; }
    virtual void compile(); //compile into script assembly...
    virtual void setScript(const String& txt);
    virtual const String* getTrigger() { return &trigger_cmd; }
    virtual String toStringBrief(int client_format, int mob_num,
-                                entity_type entity, int idx);
+                                LEtypeE entity, int idx);
 
    /** Source code. */
    virtual String getScript();
@@ -221,96 +220,11 @@ public:
    static int getInstanceCount() { return _cnt; }
    static int validTrigger(const char* trig);
    static int checkScript(const String& str);
+
+   static int parseMobScriptCommand(ScriptCmd& cmd, critter& owner);
+   static int parseRoomScriptCommand(ScriptCmd& cmd, room& owner);
+   static int parseObjScriptCommand(ScriptCmd& cmd, object& owner);
+
 };//GenScript
-
-
-class MobScript : public GenScript {
-private:
-   static int _cnt;
-
-protected:
-
-public:
-   MobScript() : GenScript() { _cnt++; };
-   MobScript(String& trig, int targ, int act, String& discriminator,
-             int precedence) : GenScript(trig, targ, act,
-                                         discriminator, precedence) {
-      _cnt++;
-   }
-
-   MobScript(const MobScript& src) : GenScript((GenScript)src) { _cnt++; }
-
-   virtual ~MobScript() { _cnt--; }
-
-   MobScript& operator=(const MobScript& src) {
-      if (this != &src) {
-         *((GenScript*)(this)) = (GenScript)(src);
-      }
-      return *this;
-   }
-
-   static int getInstanceCount() { return _cnt; }
-   static int parseScriptCommand(ScriptCmd& cmd, critter& owner);
-};//MobScript
-
-
-class RoomScript : public GenScript {
-private:
-   static int _cnt;
-
-protected:
-
-public:
-   RoomScript() : GenScript() { _cnt++; };
-   RoomScript(String& trig, int targ, int act, String& discriminator,
-             int precedence) : GenScript(trig, targ, act,
-                                         discriminator, precedence) {
-      _cnt++;
-   }
-
-   RoomScript(const RoomScript& src) : GenScript((GenScript)src) { _cnt++; }
-
-   virtual ~RoomScript() { _cnt--; }
-
-   RoomScript& operator=(const RoomScript& src) {
-      if (this != &src) {
-         *((GenScript*)(this)) = (GenScript)(src);
-      }//if
-      return *this;
-   }
-
-   static int getInstanceCount() { return _cnt; }
-   static int parseScriptCommand(ScriptCmd& cmd, room& owner);
-};//RoomScript
-
-
-class ObjectScript : public GenScript {
-private:
-   static int _cnt;
-
-protected:
-
-public:
-   ObjectScript() : GenScript() { _cnt++; };
-   ObjectScript(String& trig, int targ, int act, String& discriminator,
-             int precedence) : GenScript(trig, targ, act,
-                                         discriminator, precedence) {
-      _cnt++;
-   }
-
-   ObjectScript(const ObjectScript& src) : GenScript((GenScript)src) { _cnt++; }
-
-   virtual ~ObjectScript() { _cnt--; }
-
-   ObjectScript& operator=(const ObjectScript& src) {
-      if (this != &src) {
-         *((GenScript*)(this)) = (GenScript)(src);
-      }//if
-      return *this;
-   }
-
-   static int getInstanceCount() { return _cnt; }
-   static int parseScriptCommand(ScriptCmd& cmd, object& owner);
-};//ObjectScript
 
 #endif

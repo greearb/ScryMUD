@@ -260,8 +260,6 @@ describe ~
 return describe(pc);
 delete_door ~
 return delete_door(i, &(cooked_strs[1]), pc);
-discuss ~
-return discuss(&(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 disco socials ~
 disco(j, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 disdain socials ~

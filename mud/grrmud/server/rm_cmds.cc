@@ -1,5 +1,5 @@
-// $Id: rm_cmds.cc,v 1.9 1999/07/12 07:14:32 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
+// $Id: rm_cmds.cc,v 1.10 1999/08/27 03:10:04 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
 
 //
 //ScryMUD Server Code
@@ -60,9 +60,8 @@ int room::do_tell(const char* msg, critter& targ) {
       untag = *(targ.getDefaultColor());
    }
 
-   Sprintf(buf, "%S%s\n%S",
-           &tag, msg, &untag);
-   show(buf, targ);
+   Sprintf(buf, "%S%s\n%S", &tag, msg, &untag);
+   targ.show(buf);
 
    return 0;
 }//do_tell
@@ -71,17 +70,17 @@ int room::do_tell(const char* msg, critter& targ) {
 int room::com_recho(const String* msg) {
    String buf2(100);
 
-   Cell<critter*> cll(critters);
+   SCell<critter*> cll(critters);
    critter* ptr;
    
    while ((ptr = cll.next())) {
       if (ptr->isImmort()) {
          Sprintf(buf2, "[RECHO]  %S", msg);
-         show(buf2, *ptr);
+         ptr->show(buf2);
       }
       else {
-         show(*msg, *ptr);
-         show("\n", *ptr);
+         ptr->show(*msg);
+         ptr->show("\n");
       }
    }//while
    return 0;
@@ -91,7 +90,7 @@ int room::com_recho(const String* msg) {
 int room::com_zecho(const String* msg) {
    String buf2(100);
 
-   Cell<critter*> cll(pc_list);
+   SCell<critter*> cll(pc_list);
    critter* ptr;
    int znum = getZoneNum();
 
@@ -99,11 +98,11 @@ int room::com_zecho(const String* msg) {
       if (ptr->getCurZoneNum() == znum) {
          if (ptr->isImmort()) {
             Sprintf(buf2, "[ZECHO]  %S", msg);
-            show(buf2, *ptr);
+            ptr->show(buf2);
          }
          else {
-            show(*msg, *ptr);
-            show("\n", *ptr);
+            ptr->show(*msg);
+            ptr->show("\n");
          }
       }//while
    }//if
@@ -112,7 +111,7 @@ int room::com_zecho(const String* msg) {
 
 
 int room::wizchat(const char* message) {
-   Cell<critter*> cell(pc_list);
+   SCell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
    String msg(message);
@@ -153,7 +152,7 @@ int room::wizchat(const char* message) {
 int room::move_all(int i_th, const String* dir) {
    String buf(100);
    critter* ptr;
-   door* door_ptr = door::findDoor(DOORS, i_th, dir, ~0, *this);
+   door* door_ptr = findDoor(i_th, dir);
    if (!door_ptr || !door_ptr->getDestRoom()) {
       if (mudlog.ofLevel(DBG)) {
          mudlog << __FUNCTION__ << " failed, no door or dest room\n";
@@ -220,7 +219,7 @@ int room::otransport_all(int dest_rm) {
 int room::omove_all(int i_th, const String* dir) {
    String buf(100);
    object* ptr;
-   door* door_ptr = door::findDoor(DOORS, i_th, dir, ~0, *this);
+   door* door_ptr = findDoor(i_th, dir);
    if (!door_ptr || !door_ptr->getDestRoom()) {
       return -1;
    }
@@ -249,7 +248,7 @@ int room::move(int i_th, const String* pc, int j_th, const String* dir) {
    }
 
 
-   door* door_ptr = door::findDoor(DOORS, j_th, dir, ~0, *this);
+   door* door_ptr = findDoor(j_th, dir);
    if (!door_ptr || !door_ptr->getDestRoom()) {
       if (mudlog.ofLevel(DBG)) {
          mudlog << "room::move:  could not find door, j_th: " << j_th
@@ -270,7 +269,7 @@ int room::move(int i_th, const String* pc, int j_th, const String* dir) {
       ptr = critters.peekFront();
    }
    else if (*pc == "__BOTTOM__") {
-      ptr = critters.peekBack();
+      ptr = critters.peekRear();
    }
    else {
       ptr = haveCritNamed(i_th, pc, ~0);
@@ -318,7 +317,7 @@ int room::transport(int i_th, const String* pc, int dest_rm) {
       ptr = critters.peekFront();
    }
    else if (*pc == "__BOTTOM__") {
-      ptr = critters.peekBack();
+      ptr = critters.peekRear();
    }
    else {
       ptr = haveCritNamed(i_th, pc, ~0);
@@ -350,7 +349,7 @@ int room::transport(int i_th, const String* pc, int dest_rm) {
 int room::omove(int i_th, const String* obj, int j_th, const String* dir) {
    String buf(100);
    object* ptr;
-   door* door_ptr = door::findDoor(DOORS, i_th, dir, ~0, *this);
+   door* door_ptr = findDoor(i_th, dir);
    if (!door_ptr || !door_ptr->getDestRoom()) {
       return -1;
    }
@@ -366,7 +365,7 @@ int room::omove(int i_th, const String* obj, int j_th, const String* dir) {
       ptr = inv.peekFront();
    }
    else if (*obj == "__BOTTOM__") {
-      ptr = inv.peekBack();
+      ptr = inv.peekRear();
    }
    else {
       ptr = haveObjNamed(i_th, obj, ~0);
@@ -396,7 +395,7 @@ int room::otransport(int i_th, const String* obj, int dest_rm) {
       ptr = inv.peekFront();
    }
    else if (*obj == "__BOTTOM__") {
-      ptr = inv.peekBack();
+      ptr = inv.peekRear();
    }
    else {
       ptr = haveObjNamed(i_th, obj, ~0);
@@ -415,7 +414,7 @@ int room::otransport(int i_th, const String* obj, int dest_rm) {
 
 /** Echo message into the room in this direction */
 int room::neighbor_echo(int i_th, const String* dir, const String& buf) {
-   door* door_ptr = door::findDoor(DOORS, i_th, dir, ~0, *this);
+   door* door_ptr = findDoor(i_th, dir);
    if (!door_ptr) {
       return -1;
    }

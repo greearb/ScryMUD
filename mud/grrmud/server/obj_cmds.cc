@@ -1,5 +1,5 @@
-// $Id: obj_cmds.cc,v 1.2 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: obj_cmds.cc,v 1.3 1999/08/27 03:10:04 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
 
 //
 //ScryMUD Server Code
@@ -60,9 +60,8 @@ int object::do_tell(const char* msg, critter& targ) {
       untag = *(targ.getDefaultColor());
    }
 
-   Sprintf(buf, "%S%s\n%S",
-           &tag, msg, &untag);
-   show(buf, targ);
+   Sprintf(buf, "%S%s\n%S", &tag, msg, &untag);
+   targ.show(buf);
 
    return 0;
 }//do_tell
@@ -79,7 +78,7 @@ int object::com_zecho(const String* msg, room& rm) {
 
 
 int object::wizchat(const char* message, room& rm) {
-   Cell<critter*> cell(pc_list);
+   SCell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
    String msg(message);
