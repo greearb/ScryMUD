@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.52 2002/09/13 01:52:07 eroper Exp $
-// $Revision: 1.52 $  $Author: eroper $ $Date: 2002/09/13 01:52:07 $
+// $Id: battle.cc,v 1.53 2002/09/14 00:55:05 eroper Exp $
+// $Revision: 1.53 $  $Author: eroper $ $Date: 2002/09/14 00:55:05 $
 
 //
 //ScryMUD Server Code
@@ -1242,7 +1242,6 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
 
    vict.doUngroup(1, &NULL_STRING);   //no more part of group
    vict.doBecomeNonPet();             //dead pets make no sense!
-   vict.CRIT_FLAGS.turn_off(4);      // no boat
 
    // Get rid of any pets victim may own.
    critter* pptr;
