@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.23 2001/11/13 04:37:09 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 2001/11/13 04:37:09 $
+// $Id: spells2.cc,v 1.24 2002/01/08 03:14:39 eroper Exp $
+// $Revision: 1.24 $  $Author: eroper $ $Date: 2002/01/08 03:14:39 $
 
 //
 //ScryMUD Server Code
@@ -2681,4 +2681,518 @@ void do_cast_sober(critter& vict, critter& agg, int is_canned, int lvl) {
 }//do_cast_sober
 
 
+void do_cast_rust(critter &vict, critter &agg, int is_canned, int lvl)
+{
+   String buf(100);
+   int spell_num = RUST_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, agg);
 
+   int lost_con = FALSE;
+
+   if (!is_canned)
+      lvl = agg.LEVEL;
+
+   // Time to rock n' roll.
+   if ( is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
+
+      stat_spell_cell *ptr = is_affected_by(spell_num, vict);
+
+      if ( ! is_canned )
+         agg.MANA -= spell_mana;
+
+      if ( ptr ) {
+         ptr->bonus_duration += lvl / 2;
+      } else {
+         Put(new stat_spell_cell(spell_num, lvl), vict.affected_by);
+         vict.AC += RUST_EFFECT;
+          
+         // Cast on self
+         if ( &vict == &agg ) {
+            vict.show("You have rusted your own armor.", HL_DEF);
+         } else {
+            Sprintf(buf, "You rust %S's armor!\n",
+                  name_of_crit(vict, agg.SEE_BIT));
+            agg.show(buf, HL_DEF);
+            Sprintf(buf, "%S rusts your armor!\n",
+                  name_of_crit(agg, vict.SEE_BIT));
+            buf.Cap();
+            vict.show(buf, HL_DEF);
+            Sprintf(buf, "rusts %S's armor.\n",
+                  name_of_crit(vict, ~0));
+            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         }
+      }
+   }// end of "if - it - worked"
+   else { // !canned && lost concentration
+      agg.show(LOST_CONCENTRATION_MSG_SELF, HL_DEF);
+      Sprintf(buf, "seems to have lost %s concentration.", get_his_her(agg));
+      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+      if ( ! is_canned )
+         agg.MANA -= spell_mana / 2;
+   }
+
+}
+
+void cast_rust(int i_th, const String *victim, critter &pc)
+{
+   critter *vict = NULL;
+   int spell_num = RUST_SKILL_NUM;
+
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
+
+   if (!vict) {
+      pc.show("Whose armor do you wish to rust?", HL_DEF);
+      return;
+   }
+
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th, victim, pc.SEE_BIT);
+   } // if
+
+   if (!ok_to_do_action(vict, "KMVN", spell_num, pc)) {
+      return;
+   }
+
+   do_cast_rust(*vict, pc, FALSE, 0);
+}
+
+void do_cast_disfavor(critter &vict, critter &agg, int is_canned, int lvl)
+{
+   String buf(100);
+   int spell_num = DISFAVOR_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, agg);
+
+   int lost_con = FALSE;
+
+   if (!is_canned)
+      lvl = agg.LEVEL;
+
+   // Time to rock n' roll.
+   if ( is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
+
+      stat_spell_cell *ptr = is_affected_by(spell_num, vict);
+
+      if ( ! is_canned )
+         agg.MANA -= spell_mana;
+
+      if ( ptr ) {
+         ptr->bonus_duration += lvl / 2;
+      } else {
+         Put(new stat_spell_cell(spell_num, lvl), vict.affected_by);
+         vict.HEAT_RESIS += DISFAVOR_EFFECT;
+         vict.COLD_RESIS += DISFAVOR_EFFECT;
+         vict.ELEC_RESIS += DISFAVOR_EFFECT;
+         vict.SPEL_RESIS += DISFAVOR_EFFECT;
+          
+         // Cast on self
+         if ( &vict == &agg ) {
+            vict.show(
+                  "You call the spirits of the underworld to plague yourself.",
+                  HL_DEF);
+         } else {
+            Sprintf(buf, "You call the spirits of the underworld to plague %S.\n",
+                  name_of_crit(vict, agg.SEE_BIT));
+            agg.show(buf, HL_DEF);
+            Sprintf(buf, "%S calls spirits of the underworld to plague you.\n",
+                  name_of_crit(agg, vict.SEE_BIT));
+            buf.Cap();
+            vict.show(buf, HL_DEF);
+            Sprintf(buf, "calls the spirits of the underworld to plague %S.\n",
+                  name_of_crit(vict, ~0));
+            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         }
+      }
+   }// end of "if - it - worked"
+   else { // !canned && lost concentration
+      agg.show(LOST_CONCENTRATION_MSG_SELF, HL_DEF);
+      Sprintf(buf, "seems to have lost %s concentration.", get_his_her(agg));
+      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+      if ( ! is_canned )
+         agg.MANA -= spell_mana / 2;
+   }
+
+}
+
+void cast_disfavor(int i_th, const String *victim, critter &pc)
+{
+   critter *vict = NULL;
+   int spell_num = DISFAVOR_SKILL_NUM;
+
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
+
+   if (!vict) {
+      pc.show("Who do you wish to plague?", HL_DEF);
+      return;
+   }
+
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th, victim, pc.SEE_BIT);
+   } // if
+
+   if (!ok_to_do_action(vict, "KMVN", spell_num, pc)) {
+      return;
+   }
+
+   do_cast_disfavor(*vict, pc, FALSE, 0);
+}
+
+void do_cast_remove_soul(critter &vict, critter &agg, int is_canned, int lvl)
+{
+   String buf(100);
+   int spell_num = REMOVE_SOUL_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, agg);
+
+   int lost_con = FALSE;
+
+   if (!is_canned)
+      lvl = agg.LEVEL;
+
+   // Time to rock n' roll.
+   if ( is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
+
+      stat_spell_cell *ptr = is_affected_by(spell_num, vict);
+
+      if ( ! is_canned )
+         agg.MANA -= spell_mana;
+
+      if ( ptr ) {
+         ptr->bonus_duration += lvl / 2;
+      } else {
+         Put(new stat_spell_cell(spell_num, lvl), vict.affected_by);
+         vict.SPEL_RESIS += REMOVE_SOUL_EFFECT;
+          
+         // Cast on self
+         if ( &vict == &agg ) {
+            vict.show(
+                  "Ok.",
+                  HL_DEF);
+         } else {
+            Sprintf(buf,
+                  "You cause %S to scream in agony as their soul wretches.\n",
+                  name_of_crit(vict, agg.SEE_BIT));
+            agg.show(buf, HL_DEF);
+            Sprintf(buf,
+                  "%S causes you to scream in agony as your soul wretches.\n",
+                  name_of_crit(agg, vict.SEE_BIT));
+            buf.Cap();
+            vict.show(buf, HL_DEF);
+            Sprintf(buf, "screams in agony as %s soul wretches.\n",
+                  name_of_crit(agg, ~0),
+                  get_his_her(vict));
+            emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         }
+      }
+   }// end of "if - it - worked"
+   else { // !canned && lost concentration
+      agg.show(LOST_CONCENTRATION_MSG_SELF, HL_DEF);
+      Sprintf(buf, "seems to have lost %s concentration.", get_his_her(agg));
+      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+      if ( ! is_canned )
+         agg.MANA -= spell_mana / 2;
+   }
+
+}
+
+void cast_remove_soul(int i_th, const String *victim, critter &pc)
+{
+   critter *vict = NULL;
+   int spell_num = REMOVE_SOUL_SKILL_NUM;
+
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
+
+   if (!vict) {
+      pc.show("Who's soul do you wish to remove?", HL_DEF);
+      return;
+   }
+
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th, victim, pc.SEE_BIT);
+   } // if
+
+   if (!ok_to_do_action(vict, "KMVN", spell_num, pc)) {
+      return;
+   }
+
+   do_cast_remove_soul(*vict, pc, FALSE, 0);
+}
+
+void do_cast_remove_hope(critter &vict, critter &agg, int is_canned, int lvl)
+{
+   String buf(100);
+   int spell_num = REMOVE_HOPE_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, agg);
+
+   int lost_con = FALSE;
+
+   if (!is_canned)
+      lvl = agg.LEVEL;
+
+   // Time to rock n' roll.
+   if ( is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
+
+      stat_spell_cell *ptr = is_affected_by(spell_num, vict);
+
+      if ( ! is_canned )
+         agg.MANA -= spell_mana;
+
+      // Dont let the duration accumulate.
+      if ( ptr ) {
+         agg.show("You can do no more.", HL_DEF);
+      } else {
+         // Hardcoded in this lasts for 4 ticks.
+         Put(new stat_spell_cell(spell_num, 4), vict.affected_by);
+          
+         // Cast on self
+         if ( &vict == &agg ) {
+            vict.show("You become hopeless.", HL_DEF);
+         } else {
+            Sprintf(buf, "You are overcome with a feeling of hopelessness.\n");
+            vict.show(buf, HL_DEF);
+            Sprintf(buf,
+                  "quivers and drops to %s knees with a frail cry of hopelessness.\n",
+                  get_his_her(vict));
+            emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         }
+      }
+   }// end of "if - it - worked"
+   else { // !canned && lost concentration
+      agg.show(LOST_CONCENTRATION_MSG_SELF, HL_DEF);
+      Sprintf(buf, "seems to have lost %s concentration.", get_his_her(agg));
+      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+      if ( ! is_canned )
+         agg.MANA -= spell_mana / 2;
+   }
+
+}
+
+void cast_remove_hope(int i_th, const String *victim, critter &pc)
+{
+   critter *vict = NULL;
+   int spell_num = REMOVE_HOPE_SKILL_NUM;
+
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
+
+   if (!vict) {
+      pc.show("Who do you to psychologically destroy?", HL_DEF);
+      return;
+   }
+
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th, victim, pc.SEE_BIT);
+   } // if
+
+   if (!ok_to_do_action(vict, "KMVN", spell_num, pc)) {
+      return;
+   }
+
+   do_cast_remove_hope(*vict, pc, FALSE, 0);
+}
+
+void do_cast_remove_karma(critter &vict, critter &agg, int is_canned, int lvl)
+{
+   String buf(100);
+   int spell_num = REMOVE_KARMA_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, agg);
+
+   int lost_con = FALSE;
+
+   if (!is_canned)
+      lvl = agg.LEVEL;
+
+   // Time to rock n' roll.
+   if ( is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
+
+      stat_spell_cell *ptr = is_affected_by(spell_num, vict);
+
+      if ( ! is_canned )
+         agg.MANA -= spell_mana;
+
+      // Dont let the duration accumulate.
+      if ( ptr ) {
+         agg.show("You can do no more.", HL_DEF);
+      } else {
+         // Hardcoded in this lasts for 4 ticks.
+         Put(new stat_spell_cell(spell_num, 4), vict.affected_by);
+          
+         // Cast on self
+         if ( &vict == &agg ) {
+            vict.show("You remove your ability to gain mana.", HL_DEF);
+         } else {
+            Sprintf(buf, "You feel a cold sensation as your skin glows briefly.\n");
+            vict.show(buf, HL_DEF);
+            Sprintf(buf, "glows a faint blue and then returns to normal.\n");
+            emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         }
+      }
+   }// end of "if - it - worked"
+   else { // !canned && lost concentration
+      agg.show(LOST_CONCENTRATION_MSG_SELF, HL_DEF);
+      Sprintf(buf, "seems to have lost %s concentration.", get_his_her(agg));
+      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+      if ( ! is_canned )
+         agg.MANA -= spell_mana / 2;
+   }
+
+}
+
+void cast_remove_karma(int i_th, const String *victim, critter &pc)
+{
+   critter *vict = NULL;
+   int spell_num = REMOVE_KARMA_SKILL_NUM;
+
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
+
+   if (!vict) {
+      pc.show("Who do you to mentally destroy?", HL_DEF);
+      return;
+   }
+
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th, victim, pc.SEE_BIT);
+   } // if
+
+   if (!ok_to_do_action(vict, "KMVN", spell_num, pc)) {
+      return;
+   }
+
+   do_cast_remove_karma(*vict, pc, FALSE, 0);
+}
+
+void do_cast_sanctum_of_the_victim(critter &vict, critter &agg, int is_canned, int lvl)
+{
+   String buf(100);
+   int spell_num = SANCTUM_OF_THE_VICTIM_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, agg);
+
+   int lost_con = FALSE;
+
+   if (!is_canned)
+      lvl = agg.LEVEL;
+
+   // Time to rock n' roll.
+   if ( is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
+
+      stat_spell_cell *ptr = is_affected_by(spell_num, vict);
+
+      if ( ! is_canned )
+         agg.MANA -= spell_mana;
+
+      if ( ptr ) {
+         ptr->bonus_duration += 1;
+      } else {
+         Put(new stat_spell_cell(spell_num, lvl), vict.affected_by);
+         vict.DAM_REC_MOD += SANCTUM_EFFECT;
+          
+         // Cast on self
+         if ( &vict == &agg ) {
+            vict.show("You have made yourself frail.", HL_DEF);
+         } else {
+            Sprintf(buf, "You make %S frail!\n",
+                  name_of_crit(vict, agg.SEE_BIT));
+            agg.show(buf, HL_DEF);
+            Sprintf(buf, "You feel frail!\n",
+                  name_of_crit(agg, vict.SEE_BIT));
+            buf.Cap();
+            vict.show(buf, HL_DEF);
+         }
+      }
+   }// end of "if - it - worked"
+   else { // !canned && lost concentration
+      agg.show(LOST_CONCENTRATION_MSG_SELF, HL_DEF);
+      Sprintf(buf, "seems to have lost %s concentration.", get_his_her(agg));
+      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+      if ( ! is_canned )
+         agg.MANA -= spell_mana / 2;
+   }
+
+}
+
+void cast_sanctum_of_the_victim(int i_th, const String *victim, critter &pc)
+{
+   critter *vict = NULL;
+   int spell_num = SANCTUM_OF_THE_VICTIM_SKILL_NUM;
+
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
+
+   if (!vict) {
+      pc.show("Who is your victim?", HL_DEF);
+      return;
+   }
+
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th, victim, pc.SEE_BIT);
+   } // if
+
+   if (!ok_to_do_action(vict, "KMVN", spell_num, pc)) {
+      return;
+   }
+
+   do_cast_sanctum_of_the_victim(*vict, pc, FALSE, 0);
+}
+
+void do_cast_fear(critter &vict, critter &agg, int is_canned, int lvl)
+{
+   String buf(100);
+   int spell_num = FEAR_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, agg);
+
+   int lost_con = FALSE;
+
+   if (!is_canned)
+      lvl = agg.LEVEL;
+
+   // Time to rock n' roll.
+   if ( is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
+
+      if ( ! is_canned )
+         agg.MANA -= spell_mana;
+
+      vict.MOV = 0;
+
+      // Cast on self
+      if ( &vict == &agg ) {
+         vict.show("You idiot, now you can't move.", HL_DEF);
+      } else {
+         Sprintf(buf, "You put fear into the heart of %S\n",
+               name_of_crit(vict, agg.SEE_BIT));
+         agg.show(buf, HL_DEF);
+         Sprintf(buf, "Your face turns a pale white. You are afraid.\n",
+               name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         vict.show(buf, HL_DEF);
+         Sprintf(buf, "face turns a pale white.\n");
+         pemote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &vict);
+      }
+   }// end of "if - it - worked"
+   else { // !canned && lost concentration
+      agg.show(LOST_CONCENTRATION_MSG_SELF, HL_DEF);
+      Sprintf(buf, "seems to have lost %s concentration.", get_his_her(agg));
+      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+      if ( ! is_canned )
+         agg.MANA -= spell_mana / 2;
+   }
+
+}
+
+void cast_fear(int i_th, const String *victim, critter &pc)
+{
+   critter *vict = NULL;
+   int spell_num = FEAR_SKILL_NUM;
+
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
+
+   if (!vict) {
+      pc.show("In whom do you wish to instill fear?", HL_DEF);
+      return;
+   }
+
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th, victim, pc.SEE_BIT);
+   } // if
+
+   if (!ok_to_do_action(vict, "KMVN", spell_num, pc)) {
+      return;
+   }
+
+   do_cast_fear(*vict, pc, FALSE, 0);
+}

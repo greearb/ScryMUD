@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.17 2001/03/29 03:02:27 eroper Exp $
-// $Revision: 1.17 $  $Author: eroper $ $Date: 2001/03/29 03:02:27 $
+// $Id: SkillSpell.cc,v 1.18 2002/01/08 03:14:38 eroper Exp $
+// $Revision: 1.18 $  $Author: eroper $ $Date: 2002/01/08 03:14:38 $
 
 //
 //ScryMUD Server Code
@@ -965,6 +965,23 @@ void SSCollection::read() {
             PLUCK_SKILL_NUM = i;
          else if (strcasecmp("birdseye", getSS(i).getName()) == 0)
             BIRDSEYE_SKILL_NUM = i;
+
+         // New skills for the Necromancer class
+         else if (strcasecmp("rust", getSS(i).getName()) == 0)
+            RUST_SKILL_NUM = i;
+         else if (strcasecmp("disfavor", getSS(i).getName()) == 0)
+            DISFAVOR_SKILL_NUM = i;
+         else if (strcasecmp("remove soul", getSS(i).getName()) == 0)
+            REMOVE_SOUL_SKILL_NUM = i;
+         else if (strcasecmp("remove hope", getSS(i).getName()) == 0)
+            REMOVE_HOPE_SKILL_NUM = i;
+         else if (strcasecmp("remove karma", getSS(i).getName()) == 0)
+            REMOVE_KARMA_SKILL_NUM = i;
+         else if (strcasecmp("sanctum of the victim", getSS(i).getName()) == 0)
+            SANCTUM_OF_THE_VICTIM_SKILL_NUM = i;
+         else if (strcasecmp("fear", getSS(i).getName()) == 0)
+            FEAR_SKILL_NUM = i;
+         
          else {
             mudlog << "ERROR:  could not match the spell with a constant, spell_num:" 
                    << i << "  name -:" << getSS(i).getName() << ":- " << endl;

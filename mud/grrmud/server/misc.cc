@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.42 2002/01/05 04:00:57 eroper Exp $
-// $Revision: 1.42 $  $Author: eroper $ $Date: 2002/01/05 04:00:57 $
+// $Id: misc.cc,v 1.43 2002/01/08 03:14:39 eroper Exp $
+// $Revision: 1.43 $  $Author: eroper $ $Date: 2002/01/08 03:14:39 $
 
 //
 //ScryMUD Server Code
@@ -470,16 +470,24 @@ void do_regeneration_pcs() {
          posn_mod = (2.0 + (float)(crit_ptr->POS)) / 4.0;
       }
 
+      stat_spell_cell *spell_effect_ptr;
+
+      if ( ! (spell_effect_ptr = is_affected_by(REMOVE_HOPE_SKILL_NUM,
+               *crit_ptr)) ) {
       crit_ptr->HP += (int)((((float)(crit_ptr->CON) + 5.0) / 15.0) * 
                             (((float)(crit_ptr->HP_MAX)) / 9.0) * 
                             posn_mod * (((float)(crit_ptr->HP_REGEN)) / 100.0)
                             * adj + 10.0);
+      }
 
+      if ( ! (spell_effect_ptr = is_affected_by(REMOVE_KARMA_SKILL_NUM,
+               *crit_ptr)) ) {
       crit_ptr->MANA += (int)(((((float)(crit_ptr->INT)) + 5.0) / 16.0) *
                               posn_mod *
                               (((float)(crit_ptr->MA_MAX)) / 7.0) *
                               (((float)(crit_ptr->MA_REGEN)) / 100.0) *
                               adj + 4.0);
+      }
 
       int tmp_mov;
       tmp_mov = (int)(((((float)(crit_ptr->DEX)) + 5.0) / 16.0) *

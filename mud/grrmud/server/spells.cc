@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.19 2001/10/03 07:23:04 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 2001/10/03 07:23:04 $
+// $Id: spells.cc,v 1.20 2002/01/08 03:14:39 eroper Exp $
+// $Revision: 1.20 $  $Author: eroper $ $Date: 2002/01/08 03:14:39 $
 
 //
 //ScryMUD Server Code
@@ -36,6 +36,7 @@
 #include "battle.h"
 #include "classes.h"
 #include "spells.h"
+#include "spells2.h"
 #include "skills.h"
 #include "ez_spll.h"
 #include "spells2.h"
@@ -231,6 +232,31 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
    else if (spell_num == INVISIBILITY_SKILL_NUM) {
       pc.show("Your cloak of invisibility fades away.\n");
       pc.VIS_BIT &= ~2;
+   }//if
+   else if (spell_num == RUST_SKILL_NUM) {
+      pc.show("Your armor is restored to normal.\n");
+      pc.AC -= RUST_EFFECT;
+   }//if
+   else if (spell_num == DISFAVOR_SKILL_NUM) {
+      pc.show("Your armor is restored to normal.\n");
+      pc.HEAT_RESIS -= DISFAVOR_EFFECT;
+      pc.COLD_RESIS -= DISFAVOR_EFFECT;
+      pc.ELEC_RESIS -= DISFAVOR_EFFECT;
+      pc.SPEL_RESIS -= DISFAVOR_EFFECT;
+   }//if
+   else if (spell_num == REMOVE_SOUL_SKILL_NUM) {
+      pc.show("Your armor is restored to normal.\n");
+      pc.SPEL_RESIS -= REMOVE_SOUL_EFFECT;
+   }//if
+   else if (spell_num == REMOVE_HOPE_SKILL_NUM) {
+      pc.show("You once again feel confident.\n");
+   }//if
+   else if (spell_num == REMOVE_KARMA_SKILL_NUM) {
+      pc.show("You once again feel warm.\n");
+   }//if
+   else if (spell_num == SANCTUM_OF_THE_VICTIM_SKILL_NUM) {
+      pc.show("You no longer feel fragile.\n");
+      pc.DAM_REC_MOD -= SANCTUM_EFFECT;
    }//if
    else {
       Sprintf(buf, "ERROR:  rem_effects_crit DEFAULT: spll# [%i] %s.\n",

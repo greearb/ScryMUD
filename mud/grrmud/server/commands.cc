@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.45 2002/01/05 23:40:56 eroper Exp $
-// $Revision: 1.45 $  $Author: eroper $ $Date: 2002/01/05 23:40:56 $
+// $Id: commands.cc,v 1.46 2002/01/08 03:14:38 eroper Exp $
+// $Revision: 1.46 $  $Author: eroper $ $Date: 2002/01/08 03:14:38 $
 
 //
 //ScryMUD Server Code
@@ -1225,6 +1225,20 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
       cast_web(j_th, victim, pc);
    else if (strncasecmp(*spell, "wizard eye", len) == 0)
       cast_wizard_eye(j_th, victim, pc);
+   else if (strncasecmp(*spell, "rust", len) == 0)
+      cast_rust(j_th, victim, pc);
+   else if (strncasecmp(*spell, "disfavor", len) == 0)
+      cast_disfavor(j_th, victim, pc);
+   else if (strncasecmp(*spell, "remove soul", len) == 0)
+      cast_remove_soul(j_th, victim, pc);
+   else if (strncasecmp(*spell, "remove hope", len) == 0)
+      cast_remove_hope(j_th, victim, pc);
+   else if (strncasecmp(*spell, "remove karma", len) == 0)
+      cast_remove_karma(j_th, victim, pc);
+   else if (strncasecmp(*spell, "sanctum of the victim", len) == 0)
+      cast_sanctum_of_the_victim(j_th, victim, pc);
+   else if (strncasecmp(*spell, "fear", len) == 0)
+      cast_fear(j_th, victim, pc);
    else {
       pc.show(CS_SPELL_RESEARCH);
       return -1;

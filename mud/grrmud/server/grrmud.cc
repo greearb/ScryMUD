@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.36 2001/10/27 02:17:29 greear Exp $
-// $Revision: 1.36 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
+// $Id: grrmud.cc,v 1.37 2002/01/08 03:14:39 eroper Exp $
+// $Revision: 1.37 $  $Author: eroper $ $Date: 2002/01/08 03:14:39 $
 
 //
 //ScryMUD Server Code
@@ -361,8 +361,16 @@ int
    GLARE_SKILL_NUM,
    WINDZONE_SKILL_NUM,
    PLUCK_SKILL_NUM,
-   BIRDSEYE_SKILL_NUM;
-
+   BIRDSEYE_SKILL_NUM,
+   // New skills for the Necromancer class
+   CURSING_SKILL_NUM,
+   RUST_SKILL_NUM,
+   DISFAVOR_SKILL_NUM,
+   REMOVE_SOUL_SKILL_NUM,
+   REMOVE_HOPE_SKILL_NUM,
+   REMOVE_KARMA_SKILL_NUM,
+   SANCTUM_OF_THE_VICTIM_SKILL_NUM,
+   FEAR_SKILL_NUM;
 
 
                /* end of global variables */
