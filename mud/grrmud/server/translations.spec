@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.4 1999/06/05 23:29:15 greear Exp $
-# $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+# $Id: translations.spec,v 1.5 1999/06/06 18:15:42 greear Exp $
+# $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/06 18:15:42 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -543,7 +543,7 @@ CS_HAS_ARRIVED
 	~
 
 CS_YOU_FOLLOW
-	eng "You follow %S %s."
+	eng "You attempt to follow %S %s."
 	~
 
 CS_NO_FIND_EXIT

@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.19 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: command2.cc,v 1.20 1999/06/06 18:15:42 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/06 18:15:42 $
 
 //
 //ScryMUD Server Code
@@ -135,16 +135,16 @@ int score(const String* str2, critter& pc) {
       return 0;
    }//if
 
-   Sprintf(buf2, "\n\n%S %S\n", name_of_crit(pc, ~0),
+   Sprintf(buf2, "\n%S %S\n", pc.getName(),
 	   &(pc.short_desc));
    show(buf2, pc);
 
    if (pc.SEX == 0) 
       buf2 = cstr(CS_FEMALE, pc);
    else if (pc.SEX == 1) 
-      buf2 += cstr(CS_MALE, pc);
+      buf2 = cstr(CS_MALE, pc);
    else if (pc.SEX == 2) 
-      buf2 += cstr(CS_NEUTER, pc);
+      buf2 = cstr(CS_NEUTER, pc);
 
    buf2 += get_class_name(pc.CLASS);
    buf2 += cstr(CS_OF_LEVEL, pc);

@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.18 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: grrmud.cc,v 1.19 1999/06/06 18:15:42 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/06 18:15:42 $
 
 //
 //ScryMUD Server Code
@@ -796,9 +796,9 @@ void game_loop(int s)  {
 	    do_mini_tick(); //decrements pause ect.
 	 }//if
 
-         // Will try to pulse the entire MUD ever 10 seconds.
+         // Will try to pulse the entire MUD ever 20 seconds.
          // We will pulse one-tenth at a time (room wise).
-	 if ((pulse % 5) == 0)
+	 if ((pulse % 10) == 0)
 	   do_pulsed_spec_procs(First_Room, Last_Room);
 	 if ((pulse % 379) == 0)
 	    do_tick(); //takes care of zones too

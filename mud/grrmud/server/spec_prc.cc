@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.13 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: spec_prc.cc,v 1.14 1999/06/06 18:15:42 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/06 18:15:42 $
 
 //
 //ScryMUD Server Code
@@ -844,11 +844,15 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
                         ptr = mob_to_smob(*ptr, i);
                      }//if
 
-                     obj_ptr = room_list[i].getInv()->elementAt(d(1,sz));
+                     int attempted = d(1, sz);
+                     obj_ptr = room_list[i].getInv()->elementAt(attempted);
  
                      if (!obj_ptr) {
-                        mudlog.log(ERR,
-                                   "ERROR:  obj_ptr NULL in scavenge proc.\n");
+                        if (mudlog.ofLevel(ERR)) {
+                           mudlog << "ERROR:  obj_ptr NULL in scavenge proc, rm:"
+                                  << i << " inv_size: " << sz << " attempted: "
+                                  << attempted << endl;
+                        }//if
                         return -1;
                      }//if
   
@@ -886,6 +890,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
 	    }//if hunting
             else if (ptr->shouldBeHoming() && room_list[i].haveCritter(ptr)) {
                is_dead = FALSE;
+               mudlog << "WARNING: doing travelToRoom from spec_prc.cc" << endl;
                ptr->travelToRoom( ptr->getHomeRoom(), d(1, ptr->DEX/2),
                                  is_dead);
             }

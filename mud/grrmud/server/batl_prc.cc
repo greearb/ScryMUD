@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.4 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: batl_prc.cc,v 1.5 1999/06/06 18:15:42 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/06 18:15:42 $
 
 //
 //ScryMUD Server Code
@@ -625,7 +625,8 @@ void path_from_a_to_b(int start_room, int targ_room, List<int>& path) {
 
    while (par) { //break out when found, or determined unfindable
       if (counter++ > 500) { //insanity check
-	 mudlog.log(WRN, "WARNING:  TRACK: Busted insanity check!\n");
+         mudlog << "WARNING:  TRACK: Busted insanity check!, start_room: "
+                << start_room << " targ_room: " << targ_room << endl;
          tcll.Head(tree);
          while (tcll) {
             counter = tcll.Next_Breadth();

@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.20 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: critter.cc,v 1.21 1999/06/06 18:15:42 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/06 18:15:42 $
 
 //
 //ScryMUD Server Code
@@ -1992,7 +1992,8 @@ int critter::travelToRoom(int targ_room_num, int num_steps, int& is_dead) {
             if (mudlog.ofLevel(WRN)) {
                mudlog << "WARNING: Could not find door to room: "
                       << next_room << " from room: " << getCurRoomNum()
-                      << endl;
+                      << " critter: " << *(getName()) << " targ_room_num: "
+                      << targ_room_num << " num_steps: " << num_steps << endl;
             }//if
             return -1;
          }//if
@@ -3533,6 +3534,7 @@ void critter::doHuntProc(int num_steps, int& is_dead) {
          checkForBattle(*(getCurRoom()));
       }
       else {
+         mudlog << "WARNING:  travelToRoom from doHuntProc" << endl;
          travelToRoom(targ_room_num, num_steps, is_dead);
       }
    }//else go get em
@@ -3690,7 +3692,7 @@ int critter::withdrawCoins(int count, critter& banker) { //do messages
       long_data[0] += count;
       Sprintf(buf, "%S gives you %i coins.\n", banker.getName(), count);
       show(buf);
-      Sprintf(buf, "Your balance now %i coins.\n", long_data[2]);
+      Sprintf(buf, "Your balance is now %i coins.\n", long_data[2]);
       do_tell(banker, buf, *this, FALSE, getCurRoomNum());
       return 0;
    }
@@ -3702,7 +3704,7 @@ int critter::withdrawCoins(int count, critter& banker) { //do messages
 
 int critter::balanceCoins(critter& banker) {
    String buf(100);
-   Sprintf(buf, "Your balance %i coins.\n", long_data[2]);
+   Sprintf(buf, "Your balance is %i coins.", long_data[2]);
    do_tell(banker, buf, *this, FALSE, getCurRoomNum());
    return 0;
 }
@@ -3716,7 +3718,7 @@ int critter::depositCoins(int count, critter& banker) { //do messages
       Sprintf(buf, "%S puts %i coins into your account.\n", banker.getName(),
               count);
       show(buf);
-      Sprintf(buf, "Your balance now %i coins.\n", long_data[2]);
+      Sprintf(buf, "Your balance is now %i coins.\n", long_data[2]);
       do_tell(banker, buf, *this, FALSE, getCurRoomNum());
       return 0;
    }
