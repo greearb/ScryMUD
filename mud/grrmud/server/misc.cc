@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.51 2002/02/09 21:50:50 eroper Exp $
-// $Revision: 1.51 $  $Author: eroper $ $Date: 2002/02/09 21:50:50 $
+// $Id: misc.cc,v 1.52 2002/02/25 19:35:25 gingon Exp $
+// $Revision: 1.52 $  $Author: gingon $ $Date: 2002/02/25 19:35:25 $
 
 //
 //ScryMUD Server Code
@@ -562,7 +562,7 @@ void do_regeneration_smobs() {
       }
       
       // if we are affected by remove hope we get no mana
-      else if ( ! (is_affected_by(REMOVE_KARMA_SKILL_NUM, *crit_ptr)) ) {
+      if ( ! (is_affected_by(REMOVE_KARMA_SKILL_NUM, *crit_ptr)) ) {
       crit_ptr->MANA +=
          (int)(((crit_ptr->INT + 5.0) / 16.0)  * posn_mod *
                (crit_ptr->MA_MAX / 7.0) * (crit_ptr->MA_REGEN / 100.0) * adj + 4.0);
