@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.40 2002/02/05 21:55:45 eroper Exp $
-// $Revision: 1.40 $  $Author: eroper $ $Date: 2002/02/05 21:55:45 $
+// $Id: grrmud.cc,v 1.41 2002/02/07 03:59:08 eroper Exp $
+// $Revision: 1.41 $  $Author: eroper $ $Date: 2002/02/07 03:59:08 $
 
 //
 //ScryMUD Server Code
@@ -1052,7 +1052,19 @@ void game_loop(int s)  {
                   if ((victim = pc_ptr->getFirstFighting())) {
                      tank = victim->getFirstFighting();
                      if (tank) {
-                        prompt = "\nTank: ";
+                        prompt = "\n^WTank^0: ";
+
+                        // Colorized tank graph
+                        if (tank->getHP() >
+                              (int)((float)(tank->getHP_MAX())*0.70)) {
+                           prompt += "^g";
+                        } else if (tank->getHP() >
+                              (int)((float)(tank->getHP_MAX())*0.30)) {
+                           prompt += "^Y";
+                        } else {
+                           prompt += "^R";
+                        }
+
                         int num_of_stars = (int)(((float)
                                                   (tank->getHP())/
                                                   (float)(tank->getHP_MAX())) *
@@ -1060,7 +1072,18 @@ void game_loop(int s)  {
                         for (i = 0; i < num_of_stars; i++) {
                            prompt += "*";
                         }//for
-                        prompt += "\nVict: ";
+                        prompt += "\n^WVict^0: ";
+                        
+                        // Colorized victim graph
+                        if (victim->getHP() >
+                              (int)((float)(victim->getHP_MAX())*0.70)) {
+                           prompt += "^g";
+                        } else if (victim->getHP() >
+                              (int)((float)(victim->getHP_MAX())*0.30)) {
+                           prompt += "^Y";
+                        } else {
+                           prompt += "^R";
+                        }
 
                         num_of_stars = (int)(((float)
                                                   (victim->getHP())/
