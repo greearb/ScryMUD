@@ -1,5 +1,5 @@
-// $Id: dam_spll.cc,v 1.11 2001/10/03 07:23:03 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
+// $Id: dam_spll.cc,v 1.12 2002/01/29 18:22:13 gingon Exp $
+// $Revision: 1.12 $  $Author: gingon $ $Date: 2002/01/29 18:22:13 $
 
 //
 //ScryMUD Server Code
@@ -36,7 +36,107 @@
 #include <PtrArray.h>
 
 
+class SpellSpearOfDarkness : public MobSpell{
+	public:
+	int doCastEffects(); // effects of spell
+} spellSpearOfDarkness;
 
+int SpellSpearOfDarkness::doCastEffects(){
+	String buf(100);
+	//int did_hit = TRUE;
+	short do_join_in_battle = TRUE;
+	short do_fatality = FALSE;
+	critter& victim = *(spellSpearOfDarkness.victim); /*can someone explain why
+			        this fixes the error? it seems to totaly ignore *victim elsewhere. 
+				and, isn't there a better way to achieve the same thing? as in, not wasting ram?*/
+	
+    if (did_spell_hit(victim, NORMAL, agg, clvl, TRUE)){
+
+        float dmg = (float)(d(7, (10 + clvl/5 - agg.ALIGN/200)));
+        if ((agg.ALIGN < -350) && (victim.ALIGN > 350)) dmg *= 1.5;
+
+        exact_raw_damage((int)(dmg), NORMAL, victim, agg);
+
+	if (&victim == &agg) {
+            if (victim.HP < 0) {
+                show("You pierce your own heart!!\n", agg);
+                Sprintf(buf, "pierces %s own heart with %s spear of darkness!\n",
+                        get_his_her(agg), get_his_her(agg));
+                emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+                do_fatality = TRUE;
+            }//if
+            else {
+                show("You impale yourself with your spear of darkness!\n",
+                     agg);
+                Sprintf(buf, "impales %s with %s spear of dark energy.\n",
+                        get_himself_herself(victim),
+                        get_his_her(agg));
+                emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+            }//else
+            do_join_in_battle = FALSE;
+        }//if agg == victim
+        else { //agg is NOT the victim
+             if (victim.HP < 0) {
+                Sprintf(buf,
+                     "Your spear of dark energy protrudes from %S's unbeating heart!\n",
+                     name_of_crit(victim, agg.SEE_BIT));
+                show(buf, agg);
+                Sprintf(buf,
+                        "%S pierces your heart with %s spear of dark energy!\n",
+                        name_of_crit(agg, victim.SEE_BIT),
+                        get_his_her(agg));
+                buf.Cap();
+                show(buf, victim);
+                Sprintf(buf, "impales %S's heart with %s spear of dark energy!\n",
+                        name_of_crit(victim, ~0),
+                        get_his_her(victim));
+                emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
+                do_fatality = TRUE;
+             }//if fatality
+        
+	     else { //no fatality
+		
+                 Sprintf(buf, "You conjure a spear of pure darkness and impale %S with it!.\n",
+                         name_of_crit(victim, agg.SEE_BIT));
+                 show(buf, agg);
+                 Sprintf(buf, "%S's spear of dark energy slams into your chest!!\n",
+                     name_of_crit(agg, victim.SEE_BIT));
+                 buf.Cap();
+                 show(buf, victim);
+                 Sprintf(buf, "impales %S with %s spear of dark energy!\n", name_of_crit(victim, ~0),
+                         get_his_her(agg));
+                 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
+	     }
+	}
+    }
+
+   if (!do_fatality && do_join_in_battle &&
+       !HaveData(&victim, agg.IS_FIGHTING)) {
+      join_in_battle(agg, victim);
+   }//if
+
+   if (do_fatality) {
+      agg_kills_vict(&agg, victim);
+   }//if
+   return TRUE;
+} //SpellSpearOfDarkness::onCast
+
+
+
+void cast_dark_spear(int i_th, const String* victim, critter& pc){
+	spellSpearOfDarkness.setupSpell(251, 0, "KMSNV", "SPeaR", "GSM");
+	spellSpearOfDarkness.onCast(i_th, victim, pc);
+	
+	
+} //wrapper for testing
+
+void do_cast_dark_spear(critter& vict, critter& agg, int is_canned,
+                       int lvl){ return; } // just for testing purposes
+		
+
+
+
+/*
 void do_cast_dark_spear(critter& vict, critter& agg, int is_canned,
                        int lvl) {
    String buf(100);
@@ -51,7 +151,8 @@ void do_cast_dark_spear(critter& vict, critter& agg, int is_canned,
 
    int lost_con = FALSE;
    if ((is_canned && (did_hit =
-                      did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
+     do_cast_dark_spear(critter& vict, critter& agg, int is_canned,
+                       int lvl)                 did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) &&
          (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 
@@ -131,7 +232,7 @@ void do_cast_dark_spear(critter& vict, critter& agg, int is_canned,
      else { //missed, and agg does NOT equal vict
        Sprintf(buf, "You miss %S with your spear of dark energy.\n",
                name_of_crit(vict, agg.SEE_BIT));
-       show(buf, agg);
+       show(buf, agg);String buf(100);
        Sprintf(buf,
                "You narrowly elude %S's spear of dark energy!\n",
                name_of_crit(agg, vict.SEE_BIT));
@@ -196,7 +297,7 @@ void cast_dark_spear(int i_th, const String* victim, critter& pc) {
      return;
 
    do_cast_dark_spear(*vict, pc, FALSE, 0);
-}//cast_dark_spear
+}//cast_dark_spear */
 
 
 

@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.28 2001/10/30 04:41:31 justin Exp $
-// $Revision: 1.28 $  $Author: justin $ $Date: 2001/10/30 04:41:31 $
+// $Id: misc2.h,v 1.29 2002/01/29 18:22:13 gingon Exp $
+// $Revision: 1.29 $  $Author: gingon $ $Date: 2002/01/29 18:22:13 $
 
 //
 //ScryMUD Server Code
@@ -167,5 +167,11 @@ char icharswap(char oldch, char newch);
 String transform(const String &input,
       const PtrList<String> &wordpats, const PtrList<String> &wordreps,
       const PtrList<String> &fragpats, const PtrList<String> &fragreps);
+
+
+critter* get_target_mob(int i_th, const String* target, critter& pc, char* diversions); //self explainatory
+object* get_target_obj(int i_th, const String* target, critter& pc);
+door* get_target_door(int i_th, const String* target, critter& pc);
+room* get_target_room(critter& pc);
 
 #endif 

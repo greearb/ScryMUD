@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.36 2002/01/08 04:57:21 eroper Exp $
-// $Revision: 1.36 $  $Author: eroper $ $Date: 2002/01/08 04:57:21 $
+// $Id: misc2.cc,v 1.37 2002/01/29 18:22:13 gingon Exp $
+// $Revision: 1.37 $  $Author: gingon $ $Date: 2002/01/29 18:22:13 $
 
 //
 //ScryMUD Server Code
@@ -2127,4 +2127,51 @@ String transform(const String &input,
       }
    }
    return output;
+}
+
+
+
+
+critter* get_target_mob(int i_th, const String* target, critter& pc, char* diversions){
+   critter* vict = NULL;
+   if (target->Strlen() == 0)
+      vict = Top(pc.IS_FIGHTING);
+   else
+      vict = ROOM.haveCritNamed(i_th, target, pc);
+//   if (!vict) doFailureNoTarget();
+
+   if(vict) vict = check_for_diversions(*vict, diversions, pc);
+   return vict;
+}
+
+
+object* get_target_obj(int i_th, const String* target, critter& pc) {
+    object* vict = NULL;
+
+    if (!(vict = have_obj_named(pc.inv, i_th, target, pc.SEE_BIT, 
+                               ROOM))) 
+    vict = ROOM.haveObjNamed(i_th, target, pc.SEE_BIT);
+  //  if (!vict) doFailureNoTarget();
+
+    return vict;
+    
+}
+
+door* get_target_door(int i_th, const String* target, critter& pc) {
+    door* dptr = NULL;
+
+    dptr = door::findDoor(ROOM.DOORS, i_th, target, pc.SEE_BIT, ROOM);
+//    if (!dptr) doFailureNoTarget();
+    
+    return dptr;
+      
+}
+
+room* get_target_room(critter& pc){
+    //no error checking, mobs should always be in a room
+    room* rm = room_list.elementAt(pc.getCurRoomNum());
+    rm->makeReadyForAreaSpell();// not techinically part of targeting, but putting it here removes redundancy in other areas
+
+    return rm;
+    
 }

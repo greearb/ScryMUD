@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.20 2002/01/08 03:14:39 eroper Exp $
-// $Revision: 1.20 $  $Author: eroper $ $Date: 2002/01/08 03:14:39 $
+// $Id: spells.cc,v 1.21 2002/01/29 18:22:13 gingon Exp $
+// $Revision: 1.21 $  $Author: gingon $ $Date: 2002/01/29 18:22:13 $
 
 //
 //ScryMUD Server Code
@@ -49,6 +49,142 @@
 #include "clients.h"
 
 
+//deal with the Spell class stuff first
+
+
+int Spell::getSpellTarget(int i_th, const String* target, critter& pc){
+    mudlog << "Error: default Spell::getSpellTarget called\n";
+    return FALSE;
+}
+
+int Spell::onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
+                  int lvl = 0){ 
+	
+    if ( !getSpellTarget(i_th, vict, pc)) {
+        doFailureNoTarget();
+        return FALSE;
+    }
+    if (!ok_to_do_action(NULL, actions, spell_num, pc))
+        return FALSE;
+
+    agg = &pc; // doing it here avoids an unneeded assignment in some cases
+    spell_mana = get_mana_cost(spell_num, pc);
+
+	
+    if (is_canned){
+	clvl = lvl;
+        return doCastEffects(); 
+    }
+    if (lost_concentration(pc, spell_num)) { // we know it's ok to do action, and that it's not canned
+        doFailureLostCon();
+	return FALSE;
+    }
+    pc.MANA -= spell_mana;
+    pc.PAUSE += pause;
+//    lvl = agg.level;
+    clvl = pc.LEVEL;
+    return doCastEffects();
+
+}
+
+int Spell::doCastEffects(){
+
+	mudlog << "Error: default Spell::doCastEffects called.\n";
+	return FALSE;
+}
+
+
+int Spell::doSpellEffects(){
+
+    mudlog << "Error: default Spell::doSpellEffects called.\n";
+    return FALSE;
+}
+
+int Spell::doWearOffEffects(){
+
+    mudlog << "Error: default Spell::doSpellEffects called.\n";
+    return FALSE;
+}
+
+int Spell::doMovementEffects(){
+    
+    mudlog << "Error: default Spell::doMovementEffects called.\n";
+    return FALSE;
+}
+
+int Spell::doPerTickEffects(){
+    
+    mudlog << "Error: default Spell::doPerTickEffects called.\n";
+    return FALSE;
+}
+
+
+void Spell::doFailureLostCon(){
+	
+     agg->show(LOST_CONCENTRATION_MSG_SELF);
+     agg->emote(msg_lost_con);
+     agg->MANA -= spell_mana / 2;
+     agg->PAUSE += pause;
+}
+
+void Spell::doFailureCanned(){
+	mudlog << "Error: default Spell::doFailureCanned called.\n";
+}
+
+void Spell::doFailureNoTarget() {
+	mudlog << "Error: default Spell::doFailureNoTarget called.\n";
+}
+
+void Spell::setupSpell(int spelln, int spellp, char* act, char* spell_name, char* divers,  
+	char no_target[] = "You don't see that here.",
+	char lost_con[] = "obviously forgot part of the spell\n"){
+
+	spell_num = spelln;
+	//spell_mana = spellm;
+	pause = spellp;
+	name = spell_name;
+	msg_no_target = no_target;
+	msg_lost_con = lost_con;
+	actions = act;
+	diversions = divers;
+}
+
+/// end of Spell functions, on to the target specific classes
+
+int MobSpell::getSpellTarget(int i_th, const String* vict, critter& pc){
+    victim = NULL;
+    victim = get_target_mob(i_th, vict, pc, diversions);
+    if (!victim) return FALSE;
+    return TRUE;
+}
+
+
+int ObjSpell::getSpellTarget(int i_th, const String* vict, critter& pc){
+    target = NULL; // not sure i really need to set this as null
+    target = get_target_obj(i_th, vict, pc);
+    if (!target) return FALSE;
+    return TRUE;
+}
+
+int DoorSpell::getSpellTarget(int i_th, const String* vict, critter& pc){
+    target = NULL;
+    target = get_target_door(i_th, vict, pc);
+    if (!target) return FALSE;
+    return TRUE;
+}
+
+int RoomSpell::getSpellTarget(int i_th, const String* vict, critter& pc){
+    target = NULL;	
+    target = get_target_room(pc);
+    if (!target) return FALSE;
+    return TRUE;
+}
+
+
+
+
+
+//////////////////////////////////
 int get_mana_cost(int spell_num) {
    return SSCollection::instance().getSS(spell_num).getManaCost();
 }
