@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.43 2002/08/26 06:53:55 eroper Exp $
-// $Revision: 1.43 $  $Author: eroper $ $Date: 2002/08/26 06:53:55 $
+// $Id: battle.cc,v 1.44 2002/08/28 03:01:13 eroper Exp $
+// $Revision: 1.44 $  $Author: eroper $ $Date: 2002/08/28 03:01:13 $
 
 //
 //ScryMUD Server Code
@@ -862,7 +862,17 @@ int exact_raw_damage(int damage, int damage_type, critter& vict, critter& agg) {
    if (armor_value < 0) {
       armor_value = 0;
    }//if
-   
+
+   // Special damages add an additional 10% owie at the 1:1 ratio.
+   switch(damage_type) {
+      case FIRE:
+      case D_BREATH:
+      case ICE:
+      case ELECTRICITY:
+         dam += ( dam*0.10 );
+         break;
+   }
+
    dam = dam * ((float)armor_value/200.0);
    
    damage_magic_shields(dam, vict);
@@ -875,13 +885,13 @@ int exact_raw_damage(int damage, int damage_type, critter& vict, critter& agg) {
       dam += (float)(d(1, pl/20));
    }//if
    
-   if ((agg.ALIGN < -350) && vict.CRIT_FLAGS.get(24)) {
+   if ((agg.ALIGN < -350) && is_affected_by(PFE_SKILL_NUM, vict)) {
       dam -= (float)(d(1, 10));
       if (dam < 0)
         dam = 0;
    }//if
    
-   if ((agg.ALIGN > 350) && vict.CRIT_FLAGS.get(25)) {
+   if ((agg.ALIGN > 350) &&is_affected_by(PFG_SKILL_NUM, vict)) {
       dam -= (float)(d(1, 10));
       if (dam < 0)
         dam = 0;
