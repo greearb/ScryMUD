@@ -38,6 +38,17 @@ while ( : ) do
     echo "************END OF CRASH FILE**************" >> ./gmud.log
     cat ./gmud.log >> ./GMUD.LOG
 
+    if [ -f core ]; then
+	mv -f core ~/public_html/private/core
+	rm -f ~/public_html/private/core.gz
+	gzip ~/public_html/private/core
+	chmod a+r ~/public_html/private/core.gz
+
+	echo "<html><body>Core created at:" > ~/public_html/private/index.html
+	date >> ~/public_html/private/index.html
+	echo "<P><a href=core.gz>core file</a></body></html>" >> ~/public_html/private/index.html
+    fi
+
     tail -500 ./GMUD.LOG > /tmp/gmud.log
     mv /tmp/gmud.log ./GMUD.log
 
