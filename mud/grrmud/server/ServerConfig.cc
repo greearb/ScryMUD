@@ -29,6 +29,7 @@ ServerConfig::ServerConfig() {
    corpseObject=3;
    goldCoinsObject=5;
    pcSkinObject=8;
+   HeadObject=1030;
    meatObject=97;
    createFoodObject1=94;
    createFoodObject2=68;
@@ -156,6 +157,9 @@ void ServerConfig::read(char* filename) {
          }
          else if (strcasecmp(key, "pcSkinObject") == 0) {
             pcSkinObject = (int)strtol(val, NULL, 0);
+         }
+         else if (strcasecmp(key, "HeadObject") == 0) {
+            HeadObject = (int)strtol(val, NULL, 0);
          }
          else if (strcasecmp(key, "meatObject") == 0) {
             meatObject = (int)strtol(val, NULL, 0);

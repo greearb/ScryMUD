@@ -49,6 +49,7 @@ class ServerConfig {
       int corpseObject;
       int goldCoinsObject;
       int pcSkinObject;
+      int HeadObject;
       int meatObject;
       int createFoodObject1;
       int createFoodObject2;
