@@ -740,6 +740,9 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
       if (pc.shouldDoAutoExits()) { //if autoexit set
          auto_exit(pc);
       }//if
+      
+      rm.showVehicles(pc);
+      pc.show("\n");
 
       rm.showCritters(pc);
 

@@ -2117,7 +2117,7 @@ void do_olc(critter& pc) {
                   finish_olc_room(pc);
                }
                else {
-                  O_COUNT = 52;  //go do vehicle
+                  O_COUNT = 80;  //go do vehicle
                }
                
                break;
@@ -2330,7 +2330,8 @@ void do_olc(critter& pc) {
          finish_olc_door(pc);
          break;
 
-      case 52: //first vehicle only case
+      case 52:
+         //second vehicle only case, in room descriptions case:80/81 are first
          //lets do vehicle flags...
          eos = FALSE;
          while (!eos) {
@@ -2363,12 +2364,13 @@ void do_olc(critter& pc) {
          ((vehicle*)(OLC_ROOM))->showVehicleFlags(pc);
          break;
 
-      case 53: //vehicle, integer data:  ticks_between_stops, cur_fuel,
-         // max_fuel (automatically starts in current room.)
+      case 53: /* vehicle, integer data:
+                * ticks_between_stops, cur_fuel,
+                * max_fuel (automatically starts in current room.),
+                * ticks_at_stops
+                */
 
-                        /* ticks cur_fuel stop */
-
-                        /* ticks between stops */
+         //ticks between stops 
          string = pc.pc->input.Get_Command(eos, tp);
 
          if (string.Strlen() == 0)
@@ -2379,6 +2381,25 @@ void do_olc(critter& pc) {
             if (!check_l_range(i, 0, 23, pc, TRUE))
                break;
             ((vehicle*)(OLC_ROOM))->setTicksBetweenStops(i);
+         }//if
+         else {
+            if (string == quitter) {
+               quit_olc(pc);  //removes bit, outputs txt
+            }//if
+            break;
+         }//else
+
+         //ticks at stops
+         string = pc.pc->input.Get_Command(eos, tp);
+
+         if (string.Strlen() == 0)
+            break;         
+
+         if (isnum(string)) {
+            i = atoi(string);
+            if (!check_l_range(i, 0, 23, pc, TRUE))
+               break;
+            ((vehicle*)(OLC_ROOM))->setTicksAtStops(i);
          }//if
          else {
             if (string == quitter) {
@@ -2406,7 +2427,7 @@ void do_olc(critter& pc) {
             break;
          }//else
 
-                        /* max fuel */
+         // max fuel
          string = pc.pc->input.Get_Command(eos, tp);
 
          if (string.Strlen() == 0)
@@ -3066,6 +3087,58 @@ void do_olc(critter& pc) {
               }//if
             }//else
          }//while         
+         break;
+         
+      case 80: //vehicle stopped description
+         string = pc.pc->input.Get_Rest();
+
+         if ((j = string.Strlen()) == 0)
+            break;         
+
+         if (isnum(string)) {
+            show("A number for a vehicle stopped desc??\n", pc);
+            break;
+         }//if
+         else {
+            if (string == quitter) {
+               quit_olc(pc);  //removes bit, outputs txt
+               break;
+            }//if
+         }//else
+         if (!check_l_range(j, 0, 79, pc, FALSE)) {
+            show("The veh_stopped desc should be less than 80 characters.\n", pc);
+            break;
+         }//if
+         else {
+            static_cast<vehicle*>(OLC_ROOM)->veh_stopped = string;
+            O_COUNT = 81; 
+         }//else
+         break;
+
+      case 81: //vehicle moving description
+         string = pc.pc->input.Get_Rest();
+
+         if ((j = string.Strlen()) == 0)
+            break;         
+
+         if (isnum(string)) {
+            show("A number for a vehicle moving desc??\n", pc);
+            break;
+         }//if
+         else {
+            if (string == quitter) {
+               quit_olc(pc);  //removes bit, outputs txt
+               break;
+            }//if
+         }//else
+         if (!check_l_range(j, 0, 79, pc, FALSE)) {
+            show("The veh_moving desc should be less than 80 characters.\n", pc);
+            break;
+         }//if
+         else {
+            static_cast<vehicle*>(OLC_ROOM)->veh_moving = string;
+            O_COUNT = 52; 
+         }//else
          break;
 
 

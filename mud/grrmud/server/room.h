@@ -269,6 +269,7 @@ public:
    virtual int getObjCount(int onum);
 
    virtual void showCritters(critter& pc);
+   virtual void showVehicles(critter& pc);
    virtual void outInv(critter& pc); //show inv to pc (use out_inv method)
    virtual void gainInv(object* obj); //set IN_LIST if needed
    virtual object* loseInv(object* obj);

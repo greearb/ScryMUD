@@ -1106,8 +1106,9 @@ char* olc_prompts[] = {
                                             "NOTE:  For unlimited fuel, you should toggle the appropriate flag (2).\n"
                                             "\n"
                                             "(1) time_between_stops   (in mini_ticks/battle rounds, how fast it moves, 5-10)\n"
-                                            "(2) current fuel         (What the vehicle starts out with.)\n"
-                                            "(3) max_fuel             (What is the maximum amount of fuel it can hold.)\n",
+                                            "(2) time_at_stops        (in mini_ticks/battle rounds, how long it waits, 5-20)\n"
+                                            "(3) current fuel         (What the vehicle starts out with.)\n"
+                                            "(4) max_fuel             (What is the maximum amount of fuel it can hold.)\n",
 
                                          /* 54 vehicle::number, */
                                          "\nInput the vehicle number:  ",
@@ -1286,7 +1287,21 @@ char* olc_prompts[] = {
                                             "will cast.  You can find the spell_numbers via the 'slist' command.\n"
                                             "A negative one (-1) terminates.  (LEVEL SPELL_NUM) pairs, level first.\n"
                                             "\n"
-                                            "Example: 30 10 -1  /* This would make it cast a level 30 'web' spell. */\n"
+                                            "Example: 30 10 -1  /* This would make it cast a level 30 'web' spell. */\n",
+
+                                         /* 80 vehicle stopped description */
+                                         "\nNow enter the description players will see for this vehicle when it is\n"
+                                           "stopped in their current room. This is a one line description that should\n"
+                                           "be capitalized and should not exceed 80 characters.\n"
+                                           "\n"
+                                           "Example: A rickety coach is parked here.\n",
+
+                                         /* 81 vehicle moving description */
+                                         "\nNow enter the description players will see for this vehicle when it is\n"
+                                           "moving through their current room. This is a one line description that\n"
+                                           "should be capitalized and should not exceed 80 characters.\n"
+                                           "\n"
+                                           "Example: A rickety coach is making at a racket as it passes by.\n"
 
 
 }; //olc prompts

@@ -1789,9 +1789,7 @@ const char* abbrev_dir_of_door(const door& drr) {
       return "U";
    else if (strcasecmp(*dir, "down") == 0)
       return "D";
-   else if ( room_list[abs(drr.destination)].isVehicle() ) {
-      return *dir;
-   } else return "??";
+   } else return *dir;
 }//abbrev_dir_of_door
 
 

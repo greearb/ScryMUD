@@ -28,6 +28,8 @@
 #ifndef GRRMUD_VEHICLE_INCLUDE_H
 #define GRRMUD_VEHICLE_INCLUDE_H
 
+#define VEHICLE_FORMAT_VERSION 1
+
 #include "room.h"
 #include "misc.h"
 #include "misc2.h"
@@ -37,7 +39,7 @@ protected:
    bitfield vehicle_flags;
    /* 0 is_self_guided, 1 is_stealthy, 2 unlimited_fuel,
     * 3 can_fly, 4 can_climb, 5 can_float, 6 can_dive,
-    * 7 can_see_out (show room descs to passengers) 
+    * 7 can_see_out (show room descs to passengers),
     */
 
    Cell<PathCell*> cll; //this will iterate around and around
@@ -47,8 +49,11 @@ protected:
    int cur_fuel;
    int max_fuel;
    int ticks_between_stops;
+   int ticks_at_stops;
 
 public:
+   String veh_stopped; //in room description when stopped
+   String veh_moving;  //in room description when moving
 
    vehicle();
    vehicle(int num);
@@ -94,6 +99,7 @@ public:
    void setCurFuel(int i) { cur_fuel = i; }
    void setMaxFuel(int i) { max_fuel = i; }
    void setTicksBetweenStops(int i) { ticks_between_stops = i; }
+   void setTicksAtStops(int i) { ticks_at_stops = i; }
 
    String getPassengerMessage();
    String getExitDirection();

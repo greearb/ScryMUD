@@ -2381,6 +2381,10 @@ void room::showCritters(critter& pc) {
    out_crit(critters, pc);
 }
 
+void room::showVehicles(critter& pc) {
+   out_vehicles(doors, pc);
+}
+
 //show inv to pc (use out_inv method)
 void room::outInv(critter& pc) {
    out_inv(inv, pc, ROOM_INV);

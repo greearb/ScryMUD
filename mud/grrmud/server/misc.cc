@@ -1937,6 +1937,33 @@ void out_str(const List<String*>& lst, critter& pc) {
    }//if
 }//out_str
 
+void out_vehicles(const List<door*>& lst, critter& pc) {
+   Cell<door*> cell(lst);
+   door* door_ptr;
+   vehicle* veh_ptr;
+   room* room_ptr;
+   String buf(100);
+   
+   while ( (door_ptr = cell.next()) ) {
+      room_ptr = door_ptr->getDestRoom();
+      if ( room_ptr->isVehicle() &&
+            (room_ptr != pc.getCurRoom()) //dont show us our own veh.
+         ) {
+         veh_ptr = static_cast<vehicle*>(room_ptr);
+         if ( veh_ptr->isAtDestination() ) {
+            if ( veh_ptr->veh_stopped.Strlen() ) {
+               Sprintf(buf,"%S\n", &(veh_ptr->veh_stopped));
+               pc.show(buf, HL_OBJ_LIST);
+            }//has description
+         } else {
+            if ( veh_ptr->veh_moving.Strlen() ) {
+               Sprintf(buf,"       %S\n", &(veh_ptr->veh_moving));
+               pc.show(buf, HL_OBJ_LIST);
+            }//has description
+         }//not at destination
+      }//if vehicle
+   }//while doors
+}//out_vehicles
 
 /** Can over-ride the VIS/SEE bit stuff if you set see_all to true. */
 void out_crit(const List<critter*>& lst, critter& pc, int see_all) {
@@ -2073,7 +2100,7 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all) {
                   Sprintf(buf, "     [%i]%P11 %S\n", crit_ptr->MOB_NUM,
                           &(crit_ptr->in_room_desc));
                }
-            }//if
+            }//if vnums
             else {
                if (crit_ptr->isParalyzed()) {
                   Sprintf(buf, "       %S %s\n",

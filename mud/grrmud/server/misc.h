@@ -110,6 +110,7 @@ int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
 
 void out_str(const List<String*>& lst, critter& pc); 
 void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE);
+void out_vehicles(const List<door*>& lst, critter& pc);
 void out_inv(List<object*>& lst, critter& pc, const short l_type, const
       int is_board = false); 
          //outs the names object*, formats according to l_type

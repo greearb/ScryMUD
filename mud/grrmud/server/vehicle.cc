@@ -38,7 +38,8 @@ vehicle::vehicle() {
    cll.next(); //move to first one.
 
    ticks_till_next_stop = in_room = cur_fuel = max_fuel = 0;
-   ticks_between_stops = 0;
+   ticks_at_stops = ticks_between_stops = 0;
+   veh_stopped.Clear();
 }
 
 vehicle::vehicle(int num) : room(num) {
@@ -46,7 +47,8 @@ vehicle::vehicle(int num) : room(num) {
    cll.next(); //move to first one.
 
    ticks_till_next_stop = in_room = cur_fuel = max_fuel = 0;
-   ticks_between_stops = 0;
+   ticks_at_stops = ticks_between_stops = 0;
+   veh_moving.Clear();
 }
 
 
@@ -112,18 +114,25 @@ int vehicle::move() {
 }
 
 void vehicle::stat(critter& pc) {
-   room::stat(pc);
-   show("\n\t\t\tIS A VEHICLE\nVehicle flags:\n", pc);
-   out_field(vehicle_flags, pc, VEHICLE_FLAGS_NAMES);
-
    String buf(200);
+   room::stat(pc);
+
+   pc.show("\n\t\t\tIS A VEHICLE\n");
+
+   Sprintf(buf, "In Room Stopped:\n%S\n", &veh_stopped);
+   pc.show(buf);
+   Sprintf(buf, "In Room Moving:\n%S\n", &veh_moving);
+   pc.show(buf);
+
+   pc.show("Vehicle flags:\n");
+   out_field(vehicle_flags, pc, VEHICLE_FLAGS_NAMES);
 
    Sprintf(buf, "ticks_till_next_stop:  %i, in_room:  %i, cur_fuel:  %i\n",
            ticks_till_next_stop, in_room, cur_fuel);
    show(buf, pc);
 
-   Sprintf(buf, "Max fuel:  %i, ticks_between_stops:  %i\n",
-           max_fuel, ticks_between_stops);
+   Sprintf(buf, "Max fuel:  %i, ticks_between_stops:  %i, ticks_at_stops:  %i\n",
+           max_fuel, ticks_between_stops, ticks_at_stops);
    show(buf, pc);
 }//stat
 
@@ -409,10 +418,13 @@ int vehicle::getExitNum() {
 void vehicle::Clear() {
    room::Clear();
    vehicle_flags.Clear();
+   veh_stopped.Clear();
+   veh_moving.Clear();
    path_cells.clearAndDestroy();
    path_cells.head(cll);
    ticks_till_next_stop = in_room = cur_fuel = max_fuel = 0;
    ticks_between_stops = 0;
+   ticks_at_stops = 0;
 }
 
 
@@ -544,10 +556,30 @@ void vehicle::dbRead(int veh_num, short read_all) {
 void vehicle::fileRead(ifstream& da_file, short read_all) {
    Clear();
    room::fileRead(da_file, read_all);
+   int format_version = 0;
 
 
    char tmp[81];
    //now, read in vehicle specific stuff...
+
+   // look for a file-version identifier
+   {
+      char tst_char;
+      da_file.get(tst_char);
+      if ( tst_char != '%' ) {
+         // no file version 
+         da_file.putback(tst_char);
+         format_version = 0;
+      } else {
+         da_file >> format_version;
+         da_file.getline(tmp, 80);
+      }
+   }
+
+   if ( format_version > 0 ) {
+      veh_stopped.Termed_Read(da_file);
+      veh_moving.Termed_Read(da_file);
+   }
 
    vehicle_flags.Read(da_file);
 
@@ -572,6 +604,10 @@ void vehicle::fileRead(ifstream& da_file, short read_all) {
 
    da_file >> ticks_till_next_stop >> in_room >> cur_fuel >> max_fuel;
    da_file >> ticks_between_stops;
+   
+   if ( format_version > 0 ) {
+      da_file >> ticks_at_stops;
+   }
       
    da_file.getline(tmp, 80);
 }//Read
@@ -643,8 +679,16 @@ void vehicle::dbWrite() {
 
 void vehicle::fileWrite(ofstream& da_file) {
    room::fileWrite(da_file);
-   vehicle_flags.Write(da_file);
 
+   da_file << "%" << VEHICLE_FORMAT_VERSION << "\tvehicle format version"
+      << endl;
+
+   parse_for_max_80(veh_stopped);
+   da_file << veh_stopped << endl << "~" << endl;
+   parse_for_max_80(veh_moving);
+   da_file << veh_moving << endl << "~" << endl;
+
+   vehicle_flags.Write(da_file);
    da_file << endl;
 
    Cell<PathCell*> pcell(path_cells);
@@ -657,7 +701,8 @@ void vehicle::fileWrite(ofstream& da_file) {
    da_file << "-1 End of PathCells..\n";
 
    da_file << ticks_till_next_stop << " " << in_room << " " << cur_fuel 
-           << " " << max_fuel << " " << ticks_between_stops
+           << " " << max_fuel << " " << ticks_between_stops << " "
+           << ticks_at_stops
            << "  End of Vehicle" << endl;
 }//write
 
