@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.54 2002/08/08 04:22:58 jpiper Exp $
-// $Revision: 1.54 $  $Author: jpiper $ $Date: 2002/08/08 04:22:58 $
+// $Id: misc.cc,v 1.55 2002/08/17 18:28:03 eroper Exp $
+// $Revision: 1.55 $  $Author: eroper $ $Date: 2002/08/17 18:28:03 $
 
 //
 //ScryMUD Server Code
@@ -401,6 +401,9 @@ void do_mini_tick() { // decrement pause count ect
 
       if (crit_ptr->PAUSE > 0)
          crit_ptr->PAUSE--;
+      // Eliminate 15 minutes of real-life battle stun.
+      if (crit_ptr->PAUSE > 4)
+         crit_ptr->PAUSE = 4;
 
       crit_ptr->MINI_AFFECTED_BY.head(scell);
       sc_ptr = scell.next();
