@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.15 1999/07/25 20:13:04 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
+// $Id: room.h,v 1.16 1999/07/28 05:57:05 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
 
 //
 //ScryMUD Server Code
@@ -68,7 +68,7 @@ public:
 };//KeywordPair
 
 
-class room : public LogicalContainer, public LogicalEntity {
+class room : public LogicalContainer, public Entity {
 private:
    static int _cnt;
 
@@ -239,8 +239,8 @@ public:
    virtual critter* findFirstShopKeeper();
    virtual critter* findFirstTeacher();
 
-   virtual void gainObject(LogicalEntity* le);
-   virtual LogicalEntity* loseObject(LogicalEntity* le);
+   virtual void gainObject(Entity* le);
+   virtual Entity* loseObject(Entity* le);
    virtual int getCurRoomNum() const { return getIdNum(); }
 
    virtual void getPetsFor(critter& owner, List<critter*>& rslts);

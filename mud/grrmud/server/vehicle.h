@@ -1,5 +1,5 @@
-// $Id: vehicle.h,v 1.3 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: vehicle.h,v 1.4 1999/07/28 05:57:05 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
 
 //
 //ScryMUD Server Code
@@ -31,6 +31,45 @@
 #include "room.h"
 #include "misc.h"
 #include "misc2.h"
+
+///***********************  PathCell  *****************************///
+
+class PathCell {
+private:
+   String desc;
+   String dir_to_next;
+   int i_th_dir;
+   int is_destination;
+   static int _cnt;
+   PathCell(const PathCell& src);
+
+public:
+   PathCell(String& description, String& direction_to_next, int is_dest);
+   PathCell();
+
+   ~PathCell() { _cnt--; }
+
+   static int getInstanceCount() { return _cnt; }
+
+   void setDesc(String& description) { desc = description; }
+   String& getDesc() { return desc; }
+   String* getDescPtr() { return &desc; }
+
+   void setDir(int i_th, const String& dir) { i_th_dir = i_th; dir_to_next = dir; }
+   String& getDir() { return dir_to_next; }
+   int getDirNum() const { return i_th_dir; }
+
+   void setIsDest(int i);
+   int isDest();
+
+   //need the veh_num and cell_num to display appropriately.
+   void stat(int veh_num, int cell_num, critter& pc);
+
+   void Clear();
+   void Read(ifstream& da_file);
+   void Write(ofstream& da_file);
+};//PathCell
+
 
 class vehicle : public room {
 protected:

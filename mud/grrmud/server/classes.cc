@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.5 1999/07/25 20:13:04 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
+// $Id: classes.cc,v 1.6 1999/07/28 05:57:05 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
 
 //
 //ScryMUD Server Code
@@ -100,25 +100,9 @@ ContainedObject::~ContainedObject() {
 }//destructor
 
 
-int EntityContainer::getEntityCountByNumber(int id_num, int sanity) {
-   Cell<Entity*> cll(getInv());
-   Entity* ptr;
-   int count = 0;
-
-   if (sanity > 20) {
-      return 0;
-   }
-
-   while ((ptr = cll.next())) {
-      if (ptr->getIdNum() == onum) {
-         count++;
-      }//if detect
-      count += ptr->getObjCountByNumber(onum, sanity + 1);
-   }//while
-
-   return count;
-}//getEntityCountByNumber
-
+int Entity::isEntityType(LEtypeE le) {
+   return ((le == LE_ALL) || (getEntityType() == le));
+}
 
 
 int stat_spell_cell::_cnt = 0;

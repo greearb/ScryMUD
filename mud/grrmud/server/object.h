@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.16 1999/07/25 20:13:04 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
+// $Id: object.h,v 1.17 1999/07/28 05:57:05 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
 
 //
 //ScryMUD Server Code
@@ -47,7 +47,7 @@ enum ComponentEnum {
 
 ///********************  obj construct data  **********************///
 
-class obj_construct_data {
+class ConstructData {
 protected:
    static int _cnt;
 
@@ -60,57 +60,67 @@ public:
    int item4;
    int item5;
    
-   obj_construct_data();
-   obj_construct_data(const obj_construct_data& source); //copy constuctr
-   ~obj_construct_data() { _cnt--; }
+   ConstructData();
+   ConstructData(const ConstructData& source); //copy constuctr
+   ~ConstructData() { _cnt--; }
 
    //void Clear();
    void Read(ifstream& da_file);
    void Write(ofstream& da_file) const;
    static int getInstanceCount() { return _cnt; }
-}; //obj_construct_data
+}; //ConstructData
 
 
 ///**********************  obj spec data  *****************///
 
-class obj_spec_data {
-protected:
+/** Special Procedure data. */
+class SpecProcData {
+private:
    static int _cnt;
 
-public:
-   bitfield obj_spec_data_flags; // 0 consume_teleport, 
+protected:
+   bitfield flags; // 0 consume_teleport, 
    // 1 has_construct_data, 2 has_skin, 3 consume_poison,
    // 4 NULL, 5 NULL, 6 NULL,
    // 7 NULL, 8 NULL, 9 NULL,
    // 10 casts_spells
    //
-   obj_construct_data* construct_data;
+   ConstructData* construct_data;
    object* skin_ptr;
    critter* w_eye_owner;
-   List<stat_spell_cell*> casts_these_spells;
-   
-   
-   obj_spec_data();
-   obj_spec_data(const obj_spec_data& source);  //copy constructor
-   ~obj_spec_data();
+   List<SpellDuration*> casts_these_spells;
 
-   obj_spec_data& operator=(const obj_spec_data& source);
+public:
+   SpecProcData();
+   SpecProcData(const SpecProcData& source);  //copy constructor
+   ~SpecProcData();
+
+   SpecProcData& operator=(const SpecProcData& source);
+
+   int castsSpells() { return flags.get(10); }
+   int consumeTeleport() { return flags.get(0); }
+   int hasConstructData() { return flags.get(1); }
+   int hasSkin() { return flags.get(2); }
+   int consumePoison() { return flags.get(3); }
+   object* getSkin() { return skin_ptr; }
+   void setSkin(object* sk) { skin_ptr = sk; }
+   critter* getWizardEyeOwner() { return w_eye_owner; }
+   void setWizardEyeOwner(critter* cr) { w_eye_owner = cr; }
+
+   bitfield& getFlags() { return flags; }
+   List<SpellDuration*>& getSpellsCast() { return casts_these_spells; }
 
    void Clear();
    void Read(ifstream& da_file);
    void Write(ofstream& da_file) const;
    static int getInstanceCount() { return _cnt; }
-};//obj_spec_data
+};//SpecProcData
 
 
 
 ///*********************  object  ******************************///
 
-class object;
-class Bag;
-
-class object : public Entity,
-               public LogicalContainer {
+class object : public Entity {
 private:
    static int _cnt;
 
@@ -125,7 +135,6 @@ protected:
    void gainObject_(object* obj);
    object* loseObject_(object* obj);
 
-public:
    List<String*> names;
    String short_desc;
    String in_room_desc;
@@ -163,14 +172,13 @@ public:
 	   // 2 item_num;
 	   // 3 in_zone  //as in olc purposes, its origin
 
-   Bag* bag; //NULL if not a bag
-  
    List<stat_spell_cell*> affected_by; 
  
    List<stat_spell_cell*> stat_affects;  
 
-   obj_spec_data* obj_proc;
+   SpecProcData* obj_proc;
 
+public:
    
    object (object& source); //copy constructor
    object();			     //default constructor
@@ -182,24 +190,16 @@ public:
    void Write(ofstream& da_file);
    int isMagic();
 
-   LogicalEntity* loseObject(LogicalEntity* le);
-   void gainObject(LogicalEntity* le);
+   Entity* loseObject(Entity* le);
+   void gainObject(Entity* le);
    int getCurRoomNum() const;
 
-   int getIdNum();
-   int getKeyNum();
    int getLevel() const { return extras[8]; }
-   int getMaxWeight() const;
    int getCurWeight() const;
-   int getEmptyWeight() const { return extras[5]; }
    
+   int getEmptyWeight() const { return extras[5]; }
    void setEmptyWeight(int wt) { extras[5] = wt; }
    
-   void lock();
-   void unlock();
-   void open();
-   int consumesKey();
-
    int doGoToRoom(int dest_room, const char* from_dir, door* by_door,
                   int cur_room, int sanity);
 
@@ -220,9 +220,6 @@ public:
                       int comp5, ComponentEnum con_type);
 
    int isNamed(const String& name) const;
-   int isLocked() const;
-   int isMagLocked() const;
-   int isClosed() const;
    int isPotion() const;
    int isFood() const ;
    int isInUse() const ;
@@ -242,7 +239,6 @@ public:
    void setModified(int mod) { is_modified = mod; }
    void setComplete();
    void setIncomplete();
-   void setIdNum(int i);
    void setButcherable(int val);
 
    // These return the current value after the operation
@@ -256,7 +252,7 @@ public:
 
    static int getInstanceCount() { return _cnt; }
 
-   int getObjCountByNumber(int onum, int sanity);
+   int getObjCountByNumber(LEtypeE type, int onum, int sanity);
 
    const ScriptCmd* getNextScriptCmd() { return cur_script->getNextCommand(); }
    void finishedObjProc();
@@ -302,7 +298,7 @@ public:
 
 
 ///********************** Bag  ***********************************/// 
-class Bag : public EntityContainer, public Closable {
+class Bag : public ObjectContainer, public object, public Closable {
 protected:
    static int _cnt;
    // bag_flags are now in the Closable class.
@@ -312,10 +308,10 @@ protected:
    short time_till_disolve; //for corpse, in ticks, -1 if not disolving
 public:
 
-   bag_struct(bag_struct& source); //copy constructor
-   bag_struct(); //default constructor
-   bag_struct& operator=(bag_struct& src);
-   ~bag_struct() { _cnt--; }
+   Bag(Bag& source); //copy constructor
+   Bag(); //default constructor
+   Bag& operator=(Bag& src);
+   ~Bag() { _cnt--; }
 
    void Read(ifstream& da_file);
    void Write(ofstream& da_file) const;
@@ -330,6 +326,8 @@ public:
    void setTimeTillDisolve(int i) { time_till_disolve = i; }
 
    static int getInstanceCount() { return _cnt; }
+
+   virtual LEtypeE getEntityType() const { return LE_BAG_OBJ; }
 }; // Bag
 
 

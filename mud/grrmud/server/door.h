@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.8 1999/07/25 20:13:04 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
+// $Id: door.h,v 1.9 1999/07/28 05:57:05 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
 
 //
 //ScryMUD Server Code
@@ -38,7 +38,7 @@
 
 class room;
 
-class door_data : public LogicalEntity, public Closable {
+class door_data : public Entity, public Closable {
 protected:
    static int _cnt;
    int in_zone; //owner zone

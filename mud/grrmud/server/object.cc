@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.17 1999/07/25 20:13:04 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
+// $Id: object.cc,v 1.18 1999/07/28 05:57:05 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
 
 //
 //ScryMUD Server Code
@@ -809,7 +809,7 @@ int object::isMagic() {
 }//is_magic
 
 
-void object::gainObject(LogicalEntity* le) {
+void object::gainObject(Entity* le) {
    switch (le->getEntityType()) {
       case LE_OBJECT:
          gainObject_((object*)(le));
@@ -820,7 +820,7 @@ void object::gainObject(LogicalEntity* le) {
    }//switch
 }//gainObject
 
-LogicalEntity* object::loseObject(LogicalEntity* le) {
+Entity* object::loseObject(Entity* le) {
    switch (le->getEntityType()) {
       case LE_OBJECT:
          return loseObject_((object*)(le));
@@ -832,13 +832,28 @@ LogicalEntity* object::loseObject(LogicalEntity* le) {
 }//loseObject
 
 
-int object::getIdNum() {
-   return OBJ_NUM;
-}
+int object::getEntityCountByNumber(LEtypeE type, int id_num,
+                                   int sanity) {
+   if (bag) {
+      Cell<Entity*> cll(bag->getInv());
+      Entity* ptr;
+      int count = 0;
 
-void object::setIdNum(int i) {
-   OBJ_NUM = i;
-}
+      if (sanity > 20) {
+         return 0;
+      }
+
+      while ((ptr = cll.next())) {
+         if ((ptr->getIdNum() == id_num) && ptr->isType(type)) {
+            count++;
+         }//if detect
+         count += ptr->getObjCountByNumber(type, id_num, sanity + 1);
+      }//while
+
+      return count;
+   }//if
+   return 0;
+}//getEntityCountByNumber
 
 
 int object::getZoneNum() const {

@@ -1,5 +1,5 @@
-// $Id: SkillSpell.h,v 1.5 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: SkillSpell.h,v 1.6 1999/07/28 05:57:05 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
 
 //
 //ScryMUD Server Code
@@ -40,6 +40,29 @@
 
 class object;
 class critter;
+
+/** A pairing of Spell and it's Duration. */
+class SpellDuration {
+private:
+   static int _cnt;
+
+public:
+   int spell;
+   int duration;
+   
+   SpellDuration() : spell(0), duration(0) { _cnt++; }
+   SpellDuration(int ss, int bd) :
+         spell(ss), duration(bd) { _cnt++; }
+   SpellDuration(const SpellDuration& src) :
+         spell(src.spell),
+         duration_duration(src.duration) { _cnt++; }
+   ~SpellDuration() { _cnt--; }
+
+   String toString() const ;
+
+   static int getInstanceCount() { return _cnt; }
+};//SpellDuration
+
 
 class SkillSpell {
  protected:

@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.27 1999/07/25 20:13:04 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
+// $Id: critter.h,v 1.28 1999/07/28 05:57:05 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
 
 //
 //ScryMUD Server Code
@@ -623,7 +623,7 @@ public:
 
 ///***************************** critter ******************************///
 
-class critter : public LogicalEntity,
+class critter : public Entity,
                 public LogicalContainer {
 protected:
    static int _cnt;
@@ -1017,8 +1017,8 @@ public:
 
    void loseObjectFromGame(object* obj);
 
-   LogicalEntity* loseObject(LogicalEntity* obj); //returns the object removed. (or NULL)
-   void gainObject(LogicalEntity* obj);
+   Entity* loseObject(Entity* obj); //returns the object removed. (or NULL)
+   void gainObject(Entity* obj);
    int getCurRoomNum() const;
 
    void doLeaveRoom();

@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.8 1999/07/25 20:13:04 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
+// $Id: classes.h,v 1.9 1999/07/28 05:57:05 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
 
 //
 //ScryMUD Server Code
@@ -35,15 +35,10 @@
 #include <bitfield.h>
 #include <list2.h>
 #include "script.h"
+#include "lang_strings.h"
+
 
 class critter;  //foward declaration
-
-
-// This is used for reading in overloaded objects
-enum class_id_enum {
-   ROOM_CLASS_ID = 0,
-   VEHICLE_CLASS_ID = 1
-};//class_id_enum
 
 
 class HegemonMarkup {
@@ -62,15 +57,22 @@ public:
 enum LEtypeE {
    LE_CRITTER,
    LE_OBJECT,
+   LE_BAG_OBJ,
    LE_ROOM,
+   LE_VEHICLE,
    LE_DOOR_DATA,
    LE_DOOR,
-   LE_UNKNOWN
+   LE_UNKNOWN,
+   LE_ANY
 };
 
 
 class ContainedObject;
 
+/**  This class contains objects.  The container knows all of its
+ * objects, and the objects know all of their containers, so hopefully
+ * memory management will be cleaner and wrapped up at this lower layer.
+ */
 class ObjectContainer {
    friend class ContainedObject;
 public:
@@ -89,13 +91,16 @@ private:
 
 };//ObjectContainer
 
+/** Keeps a list of what contains it so it can clean up easily upon
+ * destruction and hopefully not leak memory or dangle pointers.
+ */
 class ContainedObject {
    friend class ObjectContainer;
 public:
    ContainedObject() { }
 
    /** Remove from all containers. */
-   ~ContainedObject();
+   virtual ~ContainedObject();
    List<ObjectContainer*>& getContainerList() { return contained_by; }
 
 private:
@@ -106,44 +111,39 @@ private:
 };//ContainedObject
 
 
-class EntityContainer : public ObjectContainer {
-public:
-   int getEntityCountByNumber(int id_num, int sanity);
-   List<Entity*>& getInv() { return (List<Entity*>&)(ObjectContainer::getInv()); }
-};//EntityContainer
-
-
-class LogicalContainer;
-
+/** This will be the base class for all objects, doors, critters, and rooms.
+ */
 class Entity : public ContainedObject {
 protected:
-   LogicalContainer* container;
+   Entity* container;
    int vis_bit;
    int id_num;
 
 public:
    Entity() : container(NULL) { }
+   virtual ~Entity() { }
 
    virtual LEtypeE getEntityType() const = 0;
+   virtual getEntityCount(LEtypeE type, int id_num, int sanity) = 0;
+   virtual void gainObject(Entity* le) = 0;
+   virtual Entity* loseObject(Entity* le) = 0;
+   /** Returns zero if we can't find anything better. */
+   virtual int getCurRoomNum() const = 0;
 
-   virtual void setContainer(LogicalContainer* cont) { container = cont; }
-   LogicalContainer* getContainer() { return container; }
 
+   virtual void setContainer(Entity* cont) { container = cont; }
+   Entity* getContainer() { return container; }
+
+   int isEntityType(LEtypeE le);
    int getVisBit() const { return vis_bit; }
    int getIdNum() const { return id_num; }
    void setIdNum(int i) { id_num = i; }
 };
 
-class LogicalContainer {
-public:
-   virtual void gainObject(Entity* le) = 0;
-   virtual LogicalEntity* loseObject(Entity* le) = 0;
 
-   /** Returns zero if we can't find anything better. */
-   virtual int getCurRoomNum() const = 0;
-};
-
-
+/**  This class holds a bitfield that concentrates all of the flags
+ * that relate to all closable objects, including doors and containers.
+ */
 class Closable {
 protected:
    // When modifying this, modify CLOSABLE_FLAGS_NAMES in const.cc
@@ -199,68 +199,28 @@ public:
 };
    
 
-///************************  stat_cell  ************************///
+///************************  StatBonus  ************************///
  
-class stat_spell_cell {
+/** A pairing of Stat and Bonus */
+class StatBonus {
 private:
    static int _cnt;
 
 public:
-   int stat_spell;
-   int bonus_duration;
+   int stat;
+   int bonus;
    
-   stat_spell_cell() : stat_spell(0), bonus_duration(0) { _cnt++; }
-   stat_spell_cell(int ss, int bd) :
-         stat_spell(ss),
-         bonus_duration(bd) { _cnt++; }
-   stat_spell_cell(const stat_spell_cell& src) :
-         stat_spell(src.stat_spell),
-         bonus_duration(src.bonus_duration) { _cnt++; }
-   ~stat_spell_cell() { _cnt--; }
+   StatBonus() : stat(0), bonus(0) { _cnt++; }
+   StatBonus(int ss, int bd) :
+         stat(ss), bonus(bd) { _cnt++; }
+   StatBonus(const StatBonus& src) :
+         stat(src.stat),
+         bonus_duration(src.bonus) { _cnt++; }
+   ~StatBonus() { _cnt--; }
 
    String toString() const ;
 
-   static int getInstanceCount() { return _cnt; } //how many ZoneList objects exist?
-};//stat_spell 
- 
-
-
-///***********************  PathCell  *****************************///
-
-class PathCell {
-private:
-   String desc;
-   String dir_to_next;
-   int i_th_dir;
-   int is_destination;
-   static int _cnt;
-   PathCell(const PathCell& src);
-
-public:
-   PathCell(String& description, String& direction_to_next, int is_dest);
-   PathCell();
-
-   ~PathCell() { _cnt--; }
-
-   static int getInstanceCount() { return _cnt; } //how many ZoneList objects exist?
-
-   void setDesc(String& description) { desc = description; }
-   String& getDesc() { return desc; }
-   String* getDescPtr() { return &desc; }
-
-   void setDir(int i_th, const String& dir) { i_th_dir = i_th; dir_to_next = dir; }
-   String& getDir() { return dir_to_next; }
-   int getDirNum() const { return i_th_dir; }
-
-   void setIsDest(int i);
-   int isDest();
-
-   //need the veh_num and cell_num to display appropriately.
-   void stat(int veh_num, int cell_num, critter& pc);
-
-   void Clear();
-   void Read(ifstream& da_file);
-   void Write(ofstream& da_file);
-};//PathCell
+   static int getInstanceCount() { return _cnt; }
+};//StatBonus
 
 #endif

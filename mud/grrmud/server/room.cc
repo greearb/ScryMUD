@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.28 1999/07/25 20:13:04 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
+// $Id: room.cc,v 1.29 1999/07/28 05:57:05 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
 
 //
 //ScryMUD Server Code
@@ -1401,7 +1401,7 @@ int room::sub_a_4_b(critter* a, critter* b, int i_th) {
    return FALSE;
 }
 
-void room::gainObject(LogicalEntity* le) {
+void room::gainObject(Entity* le) {
    switch (le->getEntityType()) {
       case LE_OBJECT:
          gainObject_((object&)(*le));
@@ -1415,7 +1415,7 @@ void room::gainObject(LogicalEntity* le) {
    }//switch
 }//gainObject
 
-LogicalEntity* room::loseObject(LogicalEntity* le) {
+Entity* room::loseObject(Entity* le) {
    switch (le->getEntityType()) {
       case LE_OBJECT:
          return loseObject_((object&)(*le));
