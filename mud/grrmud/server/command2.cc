@@ -435,11 +435,19 @@ int auto_exit(critter& pc) { //more brief than the previous
                dr_ptr->isSecretWhenOpen())) {
             dest = abs(dr_ptr->destination);
             if (pc.isImmort()) { //if immortal, show extra info
-               Sprintf(buf, "%s[%i] ", abbrev_dir_of_door(*dr_ptr),
+               Sprintf(buf, "%s[%i]", abbrev_dir_of_door(*dr_ptr),
                        dest);
+               if ( dr_ptr->isClosed() ) {
+                  buf.Append("(closed)");
+               }
+               buf.Append(" ");
             }//if
             else {
-               Sprintf(buf, "%s ", abbrev_dir_of_door(*dr_ptr));
+               Sprintf(buf, "%s", abbrev_dir_of_door(*dr_ptr));
+               if ( dr_ptr->isClosed() ) {
+                  buf.Append("(closed)");
+               }
+               buf.Append(" ");
             }//else
             reg_disp.Append(buf);
 
