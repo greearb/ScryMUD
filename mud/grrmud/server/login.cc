@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.20 2001/03/29 03:02:32 eroper Exp $
-// $Revision: 1.20 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
+// $Id: login.cc,v 1.21 2001/04/05 03:05:28 justin Exp $
+// $Revision: 1.21 $  $Author: justin $ $Date: 2001/04/05 03:05:28 $
 
 //
 //ScryMUD Server Code
@@ -604,7 +604,8 @@ void critter::doLogin() {
 
 
 int  quit_do_login_new(critter& pc) {
-   int i;
+   int i, j, pos;
+   int positions[] = { 1, 2, 3, 4, 5, 6 };
    int points, points_left=30;
    //log("in quit_do_login_new\n");
 
@@ -620,14 +621,20 @@ int  quit_do_login_new(critter& pc) {
    pc.PC_FLAGS.turn_on(6); //auto-exits
 
    pc.setPosn(POS_STAND);
+   for (i = 0; i<6; i++) {
+      pos = d(1, 6) - 1;
+      j = positions[i];
+      positions[i] = positions[pos];
+      positions[pos] = j;
+   }
    // con, cha, int, wis.......
-   for (i = 1; i<7; i++) {
+   for (i = 0; i<6; i++) {
       // You can still get high stats, but your stats will never be lower than
       // 10, and they will never add up to more than 90 -- Justin
       points = d(1,8);
       if (points > points_left) { points = points_left; points_left=0; }
       else points_left -= points;
-      pc.short_cur_stats[i] = points+10;
+      pc.short_cur_stats[positions[i]] = points+10;
    }//for
    pc.HIT = 1; //7
    pc.DAM = 1;  // 8
