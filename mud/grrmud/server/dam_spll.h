@@ -1,5 +1,5 @@
-// $Id: dam_spll.h,v 1.4 2001/03/29 03:02:31 eroper Exp $
-// $Revision: 1.4 $  $Author: eroper $ $Date: 2001/03/29 03:02:31 $
+// $Id: dam_spll.h,v 1.5 2002/01/31 11:45:54 gingon Exp $
+// $Revision: 1.5 $  $Author: gingon $ $Date: 2002/01/31 11:45:54 $
 
 //
 //ScryMUD Server Code
@@ -31,14 +31,29 @@
 #include "const.h"
 #include <string2.h>
 #include "classes.h"
+#include "spells.h"
 
 /* define affects constants here */
 
-void cast_dark_spear(int i_th, const String* victim, critter& pc);
-void do_cast_dark_spear(critter& vict, critter& agg, int is_canned, int lvl);
+//void cast_dark_spear(int i_th, const String* victim, critter& pc);
+//void do_cast_dark_spear(critter& vict, critter& agg, int is_canned, int lvl);
 
-void cast_orb_of_power(int i_th, const String* dr, critter& agg);
-void do_cast_orb_of_power(critter& vict, critter& pc, int is_canned, int lvl);
+class SpellSpearOfDarkness : public MobSpell{
+	public:
+	void doSpellEffects(); // effects of spell
+};
+
+extern SpellSpearOfDarkness spellSpearOfDarkness;
+
+class SpellOrbOfPower : public MobSpell{
+	public:
+	void doSpellEffects(); // effects of spell
+};
+
+extern SpellOrbOfPower spellOrbOfPower;
+
+//void cast_orb_of_power(int i_th, const String* dr, critter& agg);
+//void do_cast_orb_of_power(critter& vict, critter& pc, int is_canned, int lvl);
 
 void cast_rainbow(int i_th, const String* dr, critter& agg);
 void do_cast_rainbow(critter& vict, critter& pc, int is_canned, int lvl);

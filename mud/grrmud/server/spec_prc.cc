@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.27 2001/03/29 03:02:35 eroper Exp $
-// $Revision: 1.27 $  $Author: eroper $ $Date: 2001/03/29 03:02:35 $
+// $Id: spec_prc.cc,v 1.28 2002/01/31 11:45:55 gingon Exp $
+// $Revision: 1.28 $  $Author: gingon $ $Date: 2002/01/31 11:45:55 $
 
 //
 //ScryMUD Server Code
@@ -786,7 +786,8 @@ int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
          do_cast_dispel_good(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 233:
-         do_cast_orb_of_power(*targ, pc, TRUE, spell_lvl);
+         //do_cast_orb_of_power(*targ, pc, TRUE, spell_lvl);
+	 spellOrbOfPower.onCast(*targ, pc, TRUE, spell_lvl);
          return 0;
        default:
          Sprintf(buf, 

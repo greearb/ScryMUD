@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.38 2002/01/12 20:54:06 eroper Exp $
-// $Revision: 1.38 $  $Author: eroper $ $Date: 2002/01/12 20:54:06 $
+// $Id: grrmud.cc,v 1.39 2002/01/31 11:45:54 gingon Exp $
+// $Revision: 1.39 $  $Author: gingon $ $Date: 2002/01/31 11:45:54 $
 
 //
 //ScryMUD Server Code
@@ -75,6 +75,7 @@
 #include "BugEntry.h"
 #include "Filters.h"
 #include "ServerConfig.h"
+#include "spells.h"
 #include <new>
 
 #define MAX_HOSTNAME    256
@@ -693,6 +694,8 @@ void run_the_game(int port) {
 
    mudlog.log(DBG, "Entering game loop.\n");
 
+
+   config_spells(); // configure spells
    game_loop(s);
 
    close_sockets(s);

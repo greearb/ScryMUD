@@ -1,5 +1,5 @@
-// $Id: dam_spll.cc,v 1.12 2002/01/29 18:22:13 gingon Exp $
-// $Revision: 1.12 $  $Author: gingon $ $Date: 2002/01/29 18:22:13 $
+// $Id: dam_spll.cc,v 1.13 2002/01/31 11:45:54 gingon Exp $
+// $Revision: 1.13 $  $Author: gingon $ $Date: 2002/01/31 11:45:54 $
 
 //
 //ScryMUD Server Code
@@ -35,20 +35,16 @@
 #include "skills.h"
 #include <PtrArray.h>
 
+SpellSpearOfDarkness spellSpearOfDarkness;
+SpellOrbOfPower spellOrbOfPower;
 
-class SpellSpearOfDarkness : public MobSpell{
-	public:
-	int doCastEffects(); // effects of spell
-} spellSpearOfDarkness;
 
-int SpellSpearOfDarkness::doCastEffects(){
-	String buf(100);
-	//int did_hit = TRUE;
-	short do_join_in_battle = TRUE;
-	short do_fatality = FALSE;
-	critter& victim = *(spellSpearOfDarkness.victim); /*can someone explain why
-			        this fixes the error? it seems to totaly ignore *victim elsewhere. 
-				and, isn't there a better way to achieve the same thing? as in, not wasting ram?*/
+void SpellSpearOfDarkness::doSpellEffects(){
+    String buf(100);
+    short do_join_in_battle = TRUE;
+    short do_fatality = FALSE;
+    critter& victim = *(spellSpearOfDarkness.victim);
+    critter& agg = *(spellSpearOfDarkness.agg);
 	
     if (did_spell_hit(victim, NORMAL, agg, clvl, TRUE)){
 
@@ -57,7 +53,7 @@ int SpellSpearOfDarkness::doCastEffects(){
 
         exact_raw_damage((int)(dmg), NORMAL, victim, agg);
 
-	if (&victim == &agg) {
+	    if (&victim == &agg) {
             if (victim.HP < 0) {
                 show("You pierce your own heart!!\n", agg);
                 Sprintf(buf, "pierces %s own heart with %s spear of darkness!\n",
@@ -106,34 +102,142 @@ int SpellSpearOfDarkness::doCastEffects(){
                  Sprintf(buf, "impales %S with %s spear of dark energy!\n", name_of_crit(victim, ~0),
                          get_his_her(agg));
                  emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
-	     }
-	}
-    }
+            }
+        }
+    } else if (&agg == &victim) {
+        show("Your spear circles towards you but misses!\n", agg);
+        Sprintf(buf, "misses %s with %s spear of dark energy!!\n",
+                get_himself_herself(victim),
+                get_his_her(victim));
+        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+        do_join_in_battle = FALSE;
+    }//if
+    else { //missed, and agg does NOT equal vict
+        Sprintf(buf, "You miss %S with your spear of dark energy.\n",
+               name_of_crit(victim, agg.SEE_BIT));
+        show(buf, agg);String buf(100);
+        Sprintf(buf,
+                "You narrowly elude %S's spear of dark energy!\n",
+                name_of_crit(agg, victim.SEE_BIT));
+        buf.Cap();
+        show(buf, victim);
+        Sprintf(buf, "misses %S with %s spear of dark energy!\n",
+               name_of_crit(victim, ~0),
+               get_his_her(agg));
+        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
+    }//else did miss AND vict NOT equal to agg
 
-   if (!do_fatality && do_join_in_battle &&
+    if (!do_fatality && do_join_in_battle &&
        !HaveData(&victim, agg.IS_FIGHTING)) {
-      join_in_battle(agg, victim);
-   }//if
+        join_in_battle(agg, victim);
+    }//if
 
-   if (do_fatality) {
-      agg_kills_vict(&agg, victim);
-   }//if
-   return TRUE;
+    if (do_fatality) {
+        agg_kills_vict(&agg, victim);
+    }//if
 } //SpellSpearOfDarkness::onCast
 
 
+void SpellOrbOfPower::doSpellEffects() {
+   String buf(100);
+   short do_join_in_battle = TRUE;
+   short do_fatality = FALSE;
+   critter& victim = *(spellOrbOfPower.victim);
+   critter& agg = *(spellOrbOfPower.agg);
 
-void cast_dark_spear(int i_th, const String* victim, critter& pc){
-	spellSpearOfDarkness.setupSpell(251, 0, "KMSNV", "SPeaR", "GSM");
-	spellSpearOfDarkness.onCast(i_th, victim, pc);
-	
-	
-} //wrapper for testing
+   if (did_spell_hit(victim, NORMAL, agg, clvl, TRUE)){
+      int dmg = d(10, clvl + 10);
+      exact_raw_damage(dmg, FIRE, victim, agg);
 
-void do_cast_dark_spear(critter& vict, critter& agg, int is_canned,
-                       int lvl){ return; } // just for testing purposes
-		
+      if (&victim == &agg) { // Critter attacked itself...
+         if (victim.HP < 0) { // Fatality
+            show("Your power consumes you!\n", agg);
+            Sprintf(buf, "invokes powers %s cannot controll!", get_he_she(agg));
+            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+            do_fatality = TRUE;
+         } // if fatality
+         else { // Survived their foolish act
+            show("Your orb crushes itself into your body!\n", agg);
+            Sprintf(buf, "orb crushes itself into %s body!", get_his_her(agg));
+            pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+         } // survived
+         do_join_in_battle = FALSE;
+      } // if agg == vict
+      else { // agg not the victim
+         if (victim.HP < 0) { // Fatality
+            Sprintf(buf, "Your orb tears the flesh from %S's body!\n",
+                    name_of_crit(victim, agg.SEE_BIT));
+            show(buf, agg);
+            Sprintf(buf, "%S's orb tears the flesh from your body!\n",
+                    name_of_crit(agg, victim.SEE_BIT));
+            show(buf, victim);
+            Sprintf(buf, "orb rips the flesh from %S's body!",
+                    name_of_crit(victim, ~0));
+            pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
+            do_fatality = TRUE;
+         } //if fatality
+         else { // survived
+            if (dmg <= 5*(clvl+10)) { // kinda wimpy, average or worse damage...
+               Sprintf(buf, "Your orb slams into %S!\n",
+                       name_of_crit(victim, agg.SEE_BIT));
+               show(buf, agg);
+               Sprintf(buf, "%S's orb slams into you!!\n",
+                       name_of_crit(agg, victim.SEE_BIT));
+               show(buf, victim);
+               Sprintf(buf, "orb slams into %S!",
+                       name_of_crit(victim, ~0));
+               pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
+ 
+            } // if kinda wimpy
 
+            else {  // oh yeah, that's the stuff...
+               Sprintf(buf, "Your orb crushes itself into %S's body!\n",
+                       name_of_crit(victim, agg.SEE_BIT));
+               show(buf, agg);
+               Sprintf(buf, "%S's orb crushes itself into your body!\n",
+                       name_of_crit(agg, victim.SEE_BIT));
+               show(buf, victim);
+               Sprintf(buf, "orb crushes itself into %S's body!",
+                       name_of_crit(victim, ~0));
+               pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
+
+               // Kinda stops you in yer tracks, don't it?
+               victim.PAUSE+=d(1,3);
+            } // if nasty gaping wound time
+         }
+      } // agg not victim
+   } // did hit
+   else { //missed
+
+      if (&agg == &victim) { // couldn't even hit yourself!?
+         show("Your orb passes harmlessly through your body.\n",agg);
+         Sprintf(buf, "orb passes harmlessly through %s body.", get_his_her(victim));
+         pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+         do_join_in_battle = FALSE;
+      } // missed self
+      else { // missed somebody else...
+         Sprintf(buf, "%S dodges your orb just before %s is struck!\n",
+                 name_of_crit(victim, agg.SEE_BIT), get_he_she(victim));
+         show(buf, agg);
+         Sprintf(buf, "You duck out of the path of %S's orb just in time!\n",
+                 name_of_crit(agg, victim.SEE_BIT));
+         show(buf, victim);
+         Sprintf(buf, "orb blasts past %S, missing by mere inches!",
+                 name_of_crit(victim, ~0));
+         pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
+      }
+   }//missed
+   if (!do_fatality && do_join_in_battle && !HaveData(&victim, agg.IS_FIGHTING))
+      join_in_battle(agg, victim);
+   
+   if (do_fatality) {
+      if (victim.mob && victim.MOB_FLAGS.get(16)) {
+         victim.MOB_FLAGS.turn_off(16);
+         room_list[victim.getCurRoomNum()].gainInv(&obj_list[victim.mob->skin_num]);
+      }
+      agg_kills_vict(&agg, victim);
+   }
+}
 
 
 /*
@@ -301,7 +405,7 @@ void cast_dark_spear(int i_th, const String* victim, critter& pc) {
 
 
 
-void do_cast_orb_of_power(critter& vict, critter& agg, int is_canned, int lvl) {
+/*void do_cast_orb_of_power(critter& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);
    short did_hit = TRUE;
    short do_join_in_battle = TRUE;
@@ -314,9 +418,8 @@ void do_cast_orb_of_power(critter& vict, critter& agg, int is_canned, int lvl) {
    
    int   lost_con = FALSE;
    if ((is_canned && (did_hit = did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
-       (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) &&
+      (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) &&
         (did_hit = did_spell_hit(agg, NORMAL, vict)))) { // Did hit
-      
       int dmg = d(10, lvl + 10);
       
       exact_raw_damage(dmg, FIRE, vict, agg);
@@ -426,9 +529,9 @@ void do_cast_orb_of_power(critter& vict, critter& agg, int is_canned, int lvl) {
       }
       agg_kills_vict(&agg, vict);
    }
-} // do_cast_orb_of_power
+} // do_cast_orb_of_power*/
 
-void cast_orb_of_power(int i_th, const String* victim, critter& pc) {
+/*void cast_orb_of_power(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = ORB_OF_POWER_SKILL_NUM;
    
@@ -449,7 +552,7 @@ void cast_orb_of_power(int i_th, const String* victim, critter& pc) {
       return;
 
    do_cast_orb_of_power(*vict, pc, FALSE, 0);
-} // cast_orb_of_power
+} // cast_orb_of_power */
 
 void do_cast_holy_word(critter& vict, critter& agg, int is_canned,
                       int lvl) {

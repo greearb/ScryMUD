@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.47 2002/01/12 20:54:06 eroper Exp $
-// $Revision: 1.47 $  $Author: eroper $ $Date: 2002/01/12 20:54:06 $
+// $Id: commands.cc,v 1.48 2002/01/31 11:45:54 gingon Exp $
+// $Revision: 1.48 $  $Author: gingon $ $Date: 2002/01/31 11:45:54 $
 
 //
 //ScryMUD Server Code
@@ -1162,7 +1162,7 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
    else if (strncasecmp(*spell, "mirror image", len) == 0) 
       cast_mirror_image(pc);
    else if (strncasecmp(*spell, "orb of power", len) == 0) 
-      cast_orb_of_power(j_th, victim, pc);
+      spellOrbOfPower.onCast(j_th, victim, pc);
    else if (strncasecmp(*spell, "passdoor", len) == 0) 
       cast_passdoor(j_th, victim, pc);
    else if (strncasecmp(*spell, "poison", len) == 0) 
@@ -1204,7 +1204,7 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
    else if (strncasecmp(*spell, "sober", len) == 0)
       cast_sober(j_th, victim, pc);
    else if (strncasecmp(*spell, "spear of darkness", len) == 0)
-      cast_dark_spear(j_th, victim, pc);
+      spellSpearOfDarkness.onCast(j_th, victim, pc);
    else if (strncasecmp(*spell, "stone skin", len) == 0) 
       cast_stone_skin(j_th, victim, pc);
    else if (strncasecmp(*spell, "summon", len) == 0) 

@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.20 2002/01/12 20:54:06 eroper Exp $
-// $Revision: 1.20 $  $Author: eroper $ $Date: 2002/01/12 20:54:06 $
+// $Id: SkillSpell.cc,v 1.21 2002/01/31 11:45:54 gingon Exp $
+// $Revision: 1.21 $  $Author: gingon $ $Date: 2002/01/31 11:45:54 $
 
 //
 //ScryMUD Server Code
@@ -27,6 +27,8 @@
 
 #include "object.h"
 #include "misc.h"
+//these are required for the new spell classes
+#include "dam_spll.h"
 
 ///******************************************************************///
 ///*********************  skill spell  ******************************///

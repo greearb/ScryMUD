@@ -1,5 +1,5 @@
-// $Id: spells.h,v 1.7 2002/01/29 18:22:13 gingon Exp $
-// $Revision: 1.7 $  $Author: gingon $ $Date: 2002/01/29 18:22:13 $
+// $Id: spells.h,v 1.8 2002/01/31 11:45:55 gingon Exp $
+// $Revision: 1.8 $  $Author: gingon $ $Date: 2002/01/31 11:45:55 $
 
 //
 //ScryMUD Server Code
@@ -113,7 +113,8 @@ int get_number_of_scroll(int spell_num); //returns -1 if !exist
  *    for spells that can target things outside of the current room, such as gate and portal, you will need a custom 
  *        getSpellTarget, and method for getting the actual target
  * 3) setup the spell with spell_name.setupSpell(args...) with the proper info
- * 4) that's it, the spell should be ready to go
+ * 4) things that used to call do_cast_x directly need to manually set spell.victim or spell.target before calling spell.onCast
+ * 5) that's it, the spell should be ready to go
  */
 
 /* most recent modifications:
@@ -124,7 +125,7 @@ int get_number_of_scroll(int spell_num); //returns -1 if !exist
  */ 
 
 
-
+void config_spells();
 
 
 class Spell
@@ -144,14 +145,15 @@ class Spell
 	char* msg_no_target; //no target message
 	char* actions;// string passed to ok_to_do_action
 	char* diversions;// string passed to check_for_diversions
+	int canned;
 
-	virtual int onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
+	virtual void onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
                   int lvl = 0); // checks to see if the spell can be cast, if the target is correct, and if the casting fails
 	virtual int doCastEffects();// imediate effects, fireball, buff etc...
-	virtual int doSpellEffects(); // not used by any spells, may remove it later
-	virtual int doWearOffEffects();// what to do when it wears off
-	virtual int doMovementEffects(); // mainly for spells like distortion wall
-	virtual int doPerTickEffects(); // spells that operate over time, no current spells use this
+	virtual void doSpellEffects(); // not used by any spells, may remove it later
+	virtual void doWearOffEffects();// what to do when it wears off
+	virtual void doMovementEffects(); // mainly for spells like distortion wall
+	virtual void doPerTickEffects(); // spells that operate over time, no current spells use this
 	
 	void doFailureLostCon(); // lost concentration failure stuff
 	void doFailureCanned();// canned failure, not used by any spell currently
@@ -161,8 +163,9 @@ class Spell
  
 	Spell(){} // supresss warning about default constructer, should be optimized out by g++	
 	
-	virtual void setupSpell(int spelln, int spellp, char* act, char* spell_name, char* divers,  char no_target[] = "You don't see that here.",
-			char lost_con[] = "obviously forgot part of the spell\n");
+	virtual void setupSpell(int spelln, int spellp, char* act, char* divers, char* spell_name,
+			char* no_target,
+			char lost_con[] = "obviously forgot part of the spell.\n");
 
 	
 	//okToCast(int i_th, const String* dr, critter& pccritter* vict, const char* flags, critter& pc, 
@@ -170,6 +173,7 @@ class Spell
         //            int do_msg = TRUE);
 
 };
+
 
   
 ////////////////////////////////////////////
@@ -179,6 +183,9 @@ class MobSpell : public Spell {
     critter* victim;
 	
     int getSpellTarget(int i_th, const String* vict, critter& pc);
+    void onCast(critter& vict, critter& pc, int is_canned = FALSE,
+                       int lvl = 0);
+    
 //	int doCastEffects(critter& victim, critter& agg, int lvl); //don't bother defining this here
 };    
 
