@@ -194,12 +194,18 @@ int exact_damage(int dice_cnt, int dice_sides, String& msg, critter& pc, int was
    dice_cnt = bound(0, 20, dice_cnt);
    dice_sides = bound(0, 100, dice_sides);
 
-   pc.emote(msg);
+   if (pc.pc) {
+      pc.setDoPrompt(TRUE);
+   }
+
+   if (msg.Strlen() > 0) {
+      pc.emote(msg);
+   }
 
    exact_raw_damage(d(dice_cnt, dice_sides), NORMAL, pc);
 
    if (pc.HP < 0) { //was a fatality
-      agg_kills_vict(&pc, pc);
+      agg_kills_vict(NULL, pc);
    }
 
    return 0;
@@ -1169,7 +1175,6 @@ void GenScript::clear() {
 
 int MobScript::_cnt = 0;
 int MobScript::parseScriptCommand(ScriptCmd& cmd, critter& owner, int& obj_was_deleted) {
-   int result;
    // Look at first command and see if it has non-standard actors.
    obj_was_deleted = FALSE;
    critter* script_actor = NULL;
@@ -1216,11 +1221,7 @@ int MobScript::parseScriptCommand(ScriptCmd& cmd, critter& owner, int& obj_was_d
    }//if
 
    targ = cmd.getCommand(); //reuse targ, it should contain the command now.
-   result = script_actor->processInput(targ, FALSE, TRUE, &owner, NULL);
-   if (script_actor->pc && script_actor != &owner) {
-      script_actor->setDoPrompt(TRUE);
-   }
-   return result;
+   return script_actor->processInput(targ, FALSE, TRUE, &owner, NULL);
 }//parseScriptCommand
 
 
