@@ -597,6 +597,8 @@ peck socials ~
 peck(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 pemote *pemote ~
 NOP
+pet socials ~
+pet(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 pft socials ~
 pft(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 picklock ~

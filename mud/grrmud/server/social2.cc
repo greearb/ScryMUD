@@ -1,5 +1,5 @@
-// $Id: social2.cc,v 1.13 2002/09/08 02:00:16 eroper Exp $
-// $Revision: 1.13 $  $Author: eroper $ $Date: 2002/09/08 02:00:16 $
+// $Id: social2.cc,v 1.14 2002/09/22 03:30:54 eroper Exp $
+// $Revision: 1.14 $  $Author: eroper $ $Date: 2002/09/22 03:30:54 $
 
 //
 //ScryMUD Server Code
@@ -2921,7 +2921,7 @@ void duck(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You duck to avoid %S's iimminent attack.\n",
+         Sprintf(buf, "You duck to avoid %S's imminent attack.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
          Sprintf(buf, "%S ducks to avoid you.\n",
@@ -2945,3 +2945,52 @@ void duck(int i_th, const String* vict, critter& pc, room& rm) {
       emote("ducks.\n", pc, rm, TRUE);
    }//else
 }//duck
+
+void pet(int i_th, const String* vict, critter& pc, room& rm) {
+   String buf(100);
+   Cell<critter*> cll(rm.getCrits());
+   critter* ptr;
+
+   if (pc.POS == POS_SLEEP) {
+      Sprintf(buf,"You must be awake to do this.\n");
+      pc.show(buf);
+      return;
+   }
+
+   if (vict->Strlen()) {
+      critter* crit_ptr = 
+           rm.haveCritNamed(i_th, vict, pc);
+
+      if (!crit_ptr) 
+         show("You don't see that person.\n", pc);
+      else if (crit_ptr == &pc) {
+         show("You pet yourself and enjoy it greatly.\n",
+                 pc);
+         Sprintf(buf, "pets %s lasciviously.\n", get_himself_herself(pc));
+         emote(buf, pc, rm, TRUE);
+      }//if targ and agg is same
+      else {
+         Sprintf(buf, "You pet %S fondly.\n",
+                 name_of_crit(*crit_ptr, pc.SEE_BIT));
+         show(buf, pc);
+         Sprintf(buf, "%S pets you affectionately.\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         buf.Cap();
+         show(buf, *crit_ptr);
+         
+         while ((ptr = cll.next())) {
+            if ((ptr != &pc) && (ptr != crit_ptr)) {
+               Sprintf(buf, "%S pets %S affectionately.\n",
+                 name_of_crit(pc, ptr->SEE_BIT), 
+                 name_of_crit(*crit_ptr, ptr->SEE_BIT));
+               buf.Cap();
+               show(buf, *ptr);
+            }//if
+         }//while
+      }//else
+   }//if a victim
+   else {      //change these next two lines
+      show("You attempt to pet the air.\n", pc);
+      emote("pets something that's not there.\n", pc, rm, TRUE);
+   }//else
+}//pet

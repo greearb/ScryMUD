@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.72 2002/09/12 01:43:21 eroper Exp $
-// $Revision: 1.72 $  $Author: eroper $ $Date: 2002/09/12 01:43:21 $
+// $Id: critter.cc,v 1.73 2002/09/22 03:30:54 eroper Exp $
+// $Revision: 1.73 $  $Author: eroper $ $Date: 2002/09/22 03:30:54 $
 
 //
 //ScryMUD Server Code
@@ -4006,9 +4006,9 @@ void critter::doPrompt() {
 
    char go_ahead_str[] =
    {
-           (char) IAC,
-           (char) GA,
-           (char) 0
+      (char) IAC,
+      (char) GA,
+      (char) 0
    };
 
    // for visible exits
@@ -4024,121 +4024,125 @@ void critter::doPrompt() {
    String conv_buf(20); 
    int source_len = PROMPT_STRING.Strlen();
 
-   for (i = 0; i < source_len; ) {
-      if (PROMPT_STRING[i] == '%') {
-         i++;
-         if (i >= source_len) {
-            break;
-         }
-         if (PROMPT_STRING[i] != '%') {
-            switch (PROMPT_STRING[i]) {
-             case 'N':    /* newline */  
-               targ.Append("\n");
-               break;
-             case 'h':    /* cur hp */  
-               targ.Append(HP);
-               break;
-             case 'H':     /* max hp */
-               targ.Append(HP_MAX);
-               break;
-             case 'v':    /* cur mov */  
-               targ.Append(MOV);
-               break;
-             case 'V':     /* max mov */
-               targ.Append(MV_MAX);
-               break;
-             case 'm':    /* cur mana */  
-               targ.Append(MANA);
-               break;
-             case 'M':     /* max mana */
-               targ.Append(MA_MAX);
-               break;
-             case 'a':     /* align */
-               targ.Append(ALIGN);
-               break;
-             case 'p':     /* pracs */
-               targ.Append(PRACS);
-               break;
-             case 'x':     /* xp */
-               Sprintf(conv_buf, "%i", EXP);
-               targ.Append(conv_buf);
-               break;
-             case 'X':     /* xp to level */
-               Sprintf(conv_buf, "%i", getXpToNextLevel());
-               targ.Append(conv_buf);
-               break;
-             case 'g':     /* gold */
-               Sprintf(conv_buf, "%i", GOLD);
-               targ.Append(conv_buf);
-               break;
-             case 'G':     /* bank gold */
-               Sprintf(conv_buf, "%i", BANK_GOLD);
-               targ.Append(conv_buf);
-               break;
-             case '1':     /* medical conditions */
-               if ( isGettingHungry() ) {
-                  targ.Append("(hun)");
-               } if ( isGettingThirsty() ) {
-                  targ.Append("(thi)");
-               } if ( isDrugged() ) {
-                  targ.Append("(dru)");
-               }
-               break;
-             case '2':     /* visibility conditions */
-               if ( isSneaking() ) {
-                  targ.Append("(snk)");
-               } if ( isHiding() ) {
-                  targ.Append("(hid)");
-               } if ( isInvis() ) {
-                  targ.Append("(inv)");
-               }
-               break;
-            case 'R':     /* name of the current room */
-               targ.Append(getCurRoom()->short_desc);
-               break;
-            case 'E':     /* visible exits */
-               while ((dr_ptr = cll.next())) {
-                  if (detect(SEE_BIT, dr_ptr->dr_data->vis_bit)) {
-                     if (!((dr_ptr->isClosed() && dr_ptr->isSecret()) ||
-                           dr_ptr->isSecretWhenOpen())) {
-                        dest = abs(dr_ptr->destination);
-                        if (isImmort()) { //if immortal, show extra info
-                           Sprintf(buf, "%s[%i] ", abbrev_dir_of_door(*dr_ptr),
-                                   dest);
-                        }//if
-                        else {
-                           Sprintf(buf, "%s ", abbrev_dir_of_door(*dr_ptr));
-                        }//else
-                        reg_disp.Append(buf);
-                     }//if its open, don't show closed exits
-                  }//if detect
-               }//while
-               reg_disp.Strip();
-               targ.Append(reg_disp);
-               break;
-            case 'w':   /* weight currently being carried */
-               Sprintf(conv_buf, "%i", CRIT_WT_CARRIED);
-               targ.Append(conv_buf);
-               break;
-            case 'W':   /* weight currently being carried */
-               Sprintf(conv_buf, "%i", CRIT_MAX_WT_CARRY);
-               targ.Append(conv_buf);
-               break;
-             default:
-               targ.Append(PROMPT_STRING[i]);
-            }//switch
+   if (! isAFK() ) {
+      for (i = 0; i < source_len; ) {
+         if (PROMPT_STRING[i] == '%') {
             i++;
+            if (i >= source_len) {
+               break;
+            }
+            if (PROMPT_STRING[i] != '%') {
+               switch (PROMPT_STRING[i]) {
+                  case 'N':    /* newline */  
+                     targ.Append("\n");
+                     break;
+                  case 'h':    /* cur hp */  
+                     targ.Append(HP);
+                     break;
+                  case 'H':     /* max hp */
+                     targ.Append(HP_MAX);
+                     break;
+                  case 'v':    /* cur mov */  
+                     targ.Append(MOV);
+                     break;
+                  case 'V':     /* max mov */
+                     targ.Append(MV_MAX);
+                     break;
+                  case 'm':    /* cur mana */  
+                     targ.Append(MANA);
+                     break;
+                  case 'M':     /* max mana */
+                     targ.Append(MA_MAX);
+                     break;
+                  case 'a':     /* align */
+                     targ.Append(ALIGN);
+                     break;
+                  case 'p':     /* pracs */
+                     targ.Append(PRACS);
+                     break;
+                  case 'x':     /* xp */
+                     Sprintf(conv_buf, "%i", EXP);
+                     targ.Append(conv_buf);
+                     break;
+                  case 'X':     /* xp to level */
+                     Sprintf(conv_buf, "%i", getXpToNextLevel());
+                     targ.Append(conv_buf);
+                     break;
+                  case 'g':     /* gold */
+                     Sprintf(conv_buf, "%i", GOLD);
+                     targ.Append(conv_buf);
+                     break;
+                  case 'G':     /* bank gold */
+                     Sprintf(conv_buf, "%i", BANK_GOLD);
+                     targ.Append(conv_buf);
+                     break;
+                  case '1':     /* medical conditions */
+                     if ( isGettingHungry() ) {
+                        targ.Append("(hun)");
+                     } if ( isGettingThirsty() ) {
+                        targ.Append("(thi)");
+                     } if ( isDrugged() ) {
+                        targ.Append("(dru)");
+                     }
+                     break;
+                  case '2':     /* visibility conditions */
+                     if ( isSneaking() ) {
+                        targ.Append("(snk)");
+                     } if ( isHiding() ) {
+                        targ.Append("(hid)");
+                     } if ( isInvis() ) {
+                        targ.Append("(inv)");
+                     }
+                     break;
+                  case 'R':     /* name of the current room */
+                     targ.Append(getCurRoom()->short_desc);
+                     break;
+                  case 'E':     /* visible exits */
+                     while ((dr_ptr = cll.next())) {
+                        if (detect(SEE_BIT, dr_ptr->dr_data->vis_bit)) {
+                           if (!((dr_ptr->isClosed() && dr_ptr->isSecret()) ||
+                                    dr_ptr->isSecretWhenOpen())) {
+                              dest = abs(dr_ptr->destination);
+                              if (isImmort()) { //if immortal, show extra info
+                                 Sprintf(buf, "%s[%i] ", abbrev_dir_of_door(*dr_ptr),
+                                       dest);
+                              }//if
+                              else {
+                                 Sprintf(buf, "%s ", abbrev_dir_of_door(*dr_ptr));
+                              }//else
+                              reg_disp.Append(buf);
+                           }//if its open, don't show closed exits
+                        }//if detect
+                     }//while
+                     reg_disp.Strip();
+                     targ.Append(reg_disp);
+                     break;
+                  case 'w':   /* weight currently being carried */
+                     Sprintf(conv_buf, "%i", CRIT_WT_CARRIED);
+                     targ.Append(conv_buf);
+                     break;
+                  case 'W':   /* weight currently being carried */
+                     Sprintf(conv_buf, "%i", CRIT_MAX_WT_CARRY);
+                     targ.Append(conv_buf);
+                     break;
+                  default:
+                     targ.Append(PROMPT_STRING[i]);
+               }//switch
+               i++;
+            }//if
+            else { //
+               i++;
+               targ.Append("%");
+            }//else
          }//if
-         else { //
+         else {
+            targ.Append(PROMPT_STRING[i]);
             i++;
-            targ.Append("%");
          }//else
-      }//if
-      else {
-         targ.Append(PROMPT_STRING[i]);
-         i++;
-      }//else
-   }//for
+      }//for
+   } else {
+      targ.Append("< AFK > ");
+   }
    targ.Append(pc->input);
 
    if (! isUsingClient()) {
@@ -4150,8 +4154,8 @@ void critter::doPrompt() {
    if (isUsingClient()) {
       // HP, HP-MAX, MANA, MANA-MAX, MOV, MOV-MAX
       Sprintf(targ, "<PROMPT %i %i %i %i %i %i> ", // the trailing space is important.
-              getHP(), getHP_MAX(), getMana(), getManaMax(),
-              getMov(), getMovMax());
+            getHP(), getHP_MAX(), getMana(), getManaMax(),
+            getMov(), getMovMax());
       show(targ);
    }
 
