@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.24 2004/07/05 23:06:35 eroper Exp $
-// $Revision: 1.24 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
+// $Id: SkillSpell.cc,v 1.25 2004/07/07 20:34:56 eroper Exp $
+// $Revision: 1.25 $  $Author: eroper $ $Date: 2004/07/07 20:34:56 $
 
 //
 //ScryMUD Server Code
@@ -408,6 +408,7 @@ String SSCollection::generatePsDotScript() {
 
    retval = "digraph ss_graph {\n\tpage=\"8.5,11\";\n\tsize=\"64,30\";\n";
    retval += "\t//orientation=landscape;\n";
+   retval += "\trankdir=LR;\n";
 
    for (int i = 0; i<NUMBER_OF_SKILL_SPELLS; i++) {
       if (ss_list[i].getIdNum() != 0) {
@@ -433,7 +434,7 @@ String SSCollection::generatePsDotScript() {
                }
             }
          }
-         Sprintf(buf, "\"];\n");
+         Sprintf(buf, "\", shape=plaintext];\n");
          retval.Append(buf);
 
          while ((val = cll.next())) {
@@ -443,7 +444,8 @@ String SSCollection::generatePsDotScript() {
          }//while
          ss_list[i].prereqs.head(cll);
          while ((val = cll.next())) {
-            Sprintf(buf, "\t\"%S\" -> \"%S\" [color=blue,dir=back];\n",
+            Sprintf(buf,
+                  "\t\"%S\" -> \"%S\" [color=red,dir=back,shape=plaintext];\n",
                     &(getSS(val).getName()), &(ss_list[i].getName()));
             retval.Append(buf);
          }//while
@@ -490,7 +492,7 @@ String SSCollection::generateGifDotScript() {
                }
             }
          }
-         Sprintf(buf, "\"];\n");
+         Sprintf(buf, "\", shape=plaintext];\n");
          retval.Append(buf);
 
          while ((val = cll.next())) {
@@ -500,7 +502,8 @@ String SSCollection::generateGifDotScript() {
          }//while
          ss_list[i].prereqs.head(cll);
          while ((val = cll.next())) {
-            Sprintf(buf, "\t\"%S\" -> \"%S\" [color=blue, dir=back];\n",
+            Sprintf(buf,
+                  "\t\"%S\" -> \"%S\" [color=red, dir=back,shape=plaintext];\n",
                     &(getSS(val).getName()), &(ss_list[i].getName()));
             retval.Append(buf);
          }//while
