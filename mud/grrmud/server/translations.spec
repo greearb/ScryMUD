@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.13 1999/08/10 07:06:21 greear Exp $
-# $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/10 07:06:21 $
+# $Id: translations.spec,v 1.14 1999/08/19 06:34:36 greear Exp $
+# $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/19 06:34:36 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -26,6 +26,11 @@
 
 # This is used as a kind of NULL enum.  It should never be used
 # where a real CSentry entity is desired.
+
+CS_OUT
+	eng "(OUT)"
+	~
+
 CS_NONE
         eng "Should Never See This"
         spa "Nunca Deberias Ver Esto"

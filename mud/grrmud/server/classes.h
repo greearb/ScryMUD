@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.21 1999/08/16 07:31:24 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
+// $Id: classes.h,v 1.22 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -41,6 +41,7 @@
 
 class critter;  //foward declaration
 class Scriptable;
+class object; 
 
 
 /** Used to determine the scope of the toStringStat methods. They will
@@ -247,6 +248,7 @@ public:
 
    /** Returns zero if we can't find anything better. */
    virtual int getCurRoomNum() = 0;
+   virtual void gainInv(object* obj) = 0;
 
    virtual void setContainer(Entity* cont) { container = cont; }
    Entity* getContainer() { return container; }
@@ -265,6 +267,7 @@ public:
    virtual const String* getLongDesc(critter* observer);
    virtual int isNamed(const String& name, critter* viwer);
    virtual int isNamed(const String& name); //dflt to english (maybe all??)
+   virtual int isNamed(const String& name, int do_exact); //dflt to english (maybe all??)
 
    /** Makes copy of incoming data. */
    virtual void addName(String& nm);
@@ -281,6 +284,8 @@ public:
     * or olc.cc will be broken.
     */
    virtual void addAffectedBy(SpellDuration* new_affect);
+   virtual void remAffectedBy(SpellDuration* victim);
+   virtual void addAffectedBy(int spell, int duration);
 
    virtual PtrList<SpellDuration>& getAffectedBy() { return affected_by; }
 

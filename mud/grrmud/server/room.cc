@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.37 1999/08/16 07:31:25 greear Exp $
-// $Revision: 1.37 $  $Author: greear $ $Date: 1999/08/16 07:31:25 $
+// $Id: room.cc,v 1.38 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.38 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -777,10 +777,10 @@ void room::checkLight(int do_msg) {
    if (do_msg) {
       if (vb != getVisBit()) {
          if (vb & 1) { //it was changed to dark
-            showAllCept("The room becomes dark.\n");
+            showAllCept(CS_ROOM_BECOMES_DARK);
          }//if
          else {
-            showAllCept("The room becomes light.\n");
+            showAllCept(CS_ROOM_BECOMES_LIGHT);
          }//else
       }//if
    }//if do_messages
@@ -1485,14 +1485,15 @@ critter* room::findFirstTeacher() {
 
 
 
-void room::showAllCept(const char* msg, critter* pc) {
+void room::showAllCept(CSentryE msg, critter* pc, critter* pc2) {
    SCell<critter*> cell(critters);
    critter* crit_ptr;
 
    while ((crit_ptr = cell.next())) { 
-      if (crit_ptr != pc)  
+      if ((crit_ptr != pc) && (crit_ptr != pc2)) {  
 	 if (crit_ptr->POS < POS_SLEEP)  
 	    crit_ptr->show(msg);
+      }
    }//while
 
    SCell<object*> cll(inv);
@@ -1500,13 +1501,42 @@ void room::showAllCept(const char* msg, critter* pc) {
 
    while ((obj = cll.next())) {
      if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
-       if (crit_ptr != pc) {
+       if ((crit_ptr != pc) && (crit_ptr != pc2)) {
 	 if (crit_ptr->POS < POS_SLEEP) {
 	   crit_ptr->show("#####");
 	   crit_ptr->show(msg);
 	 }//if
        }//if
      }//if
+   }//while
+}// show_all_cept
+
+
+void room::showAllCept(CSentryE msg, Entity* getNameOf) {
+   SCell<critter*> cell(critters);
+   critter* crit_ptr;
+   String buf(100);
+
+   while ((crit_ptr = cell.next())) { 
+      if (crit_ptr->POS < POS_SLEEP) {
+         Sprintf(buf, cstr(msg, *crit_ptr), getNameOf->getName(crit_ptr));
+         buf.cap();
+         crit_ptr->show(buf);
+      }
+   }//while
+
+   SCell<object*> cll(inv);
+   object* obj;
+
+   while ((obj = cll.next())) {
+      if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
+	 if (crit_ptr->POS < POS_SLEEP) {
+            crit_ptr->show("#####");
+            Sprintf(buf, cstr(msg, *crit_ptr), getNameOf->getName(crit_ptr));
+            buf.cap();
+            crit_ptr->show(msg);
+	 }//if
+      }//if
    }//while
 }// show_all_cept
 

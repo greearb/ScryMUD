@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.14 1999/08/16 00:37:07 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
+// $Id: misc.h,v 1.15 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -47,6 +47,7 @@ extern SafeList<object*> obj_to_be_disolved_list; //grrmud.cc
 extern SafeList<critter*> pulsed_proc_mobs;
 extern SafeList<room*> pulsed_proc_rooms;
 extern SafeList<object*> pulsed_proc_objects;
+extern PtrArray<Scriptable>  scripting_entities;
 
 extern BugCollection bl_ideas;
 extern BugCollection bl_bugs;
@@ -99,16 +100,18 @@ int detect(int see_bit, int vis_bit); //does bit comparison
 void show(const char* message, critter& pc);
 void show_all_but_2(critter& A, critter& B, const char* message, 
                     room& rm); 
-void show_all(const char* msg, const room& rm);
+
+/** Show to all PC's flagged to accept extra info. */
+void showExtraInfo(CSentryE msg);
 
 int vDoShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
                 SafeList<critter*>& lst, CSentryE cs_entry, va_list argp);
 int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
                SafeList<critter*>& lst, CSentryE cs_entry, ...);
 
-void out_str(const SafeList<String*>& lst, critter& pc); 
-void out_crit(const SafeList<critter*>& lst, critter& pc, int see_all = FALSE);
-void out_inv(const SafeList<object*>& lst, critter& pc, const short l_type); 
+void out_str(SafeList<String*>& lst, critter& pc); 
+void out_crit(SafeList<critter*>& lst, critter& pc, int see_all = FALSE);
+void out_inv(SafeList<object*>& lst, critter& pc, const short l_type); 
          //outs the names object*, formats according to l_type
 
 
@@ -164,7 +167,6 @@ int door_is_named(const door_data& dr, const String& name);
 short is_banned(const String& hostname);
 short is_newbie_banned(const String& ip);
 
-void disolve_object(object& obj);
 void do_disolve_object(object& obj);
 
 void decrease_timed_affecting_pcs();

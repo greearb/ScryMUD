@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.16 1999/08/16 00:37:07 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
+// $Id: door.h,v 1.17 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -53,6 +53,8 @@ public:
    int write(ostream& da_file);
    static int getInstanceCount() { return _cnt; }
 
+   virtual String* getName(critter* viewer, int dir);
+   virtual String* getName(critter* viewer);
    String* getDirection();
    virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
@@ -93,6 +95,8 @@ public:
    void clear();
    int write(ostream& da_file);
    int read(istream& da_file, int read_all = TRUE);
+   virtual String* getName(int c_bit = ~0);
+   virtual String* getName(critter* viewer);
    
    critter* getCritBlocking() const { return crit_blocking; }
    void setCritBlocking(critter* pc) { crit_blocking = pc; }
@@ -100,6 +104,11 @@ public:
    void setDestination(int val) { destination = val; }
    int getDistance() const { return distance; }
    void setDistance(int val) { distance = val; }
+   virtual void gainInv(object* obj) { core_dump("door::gainInv...can't be called."); }
+
+   void setTicksTillDisolve(int val) { ticks_till_disolve = val; }
+   int getTicksTillDisolve() const { return ticks_till_disolve; }
+   int decrementTicksTillDisolve() { return --ticks_till_disolve; }
 
    int isOwnedBy(critter& pc);
    int getVisBit() const { if (dr_data) return dr_data->getVisBit(); return 0; }

@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.11 1999/08/16 00:37:06 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
+// $Id: classes.cc,v 1.12 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -76,7 +76,6 @@ String StatBonus::toString() const {
    Sprintf(retval, "stat: %i  bonus: %i", stat, bonus);
    return retval;
 }
-
 
 int Entity::affectedByToString(critter* viewer, String& rslt) {
    String buf(100);

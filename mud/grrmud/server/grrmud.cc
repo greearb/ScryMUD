@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.28 1999/08/16 00:37:07 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
+// $Id: grrmud.cc,v 1.29 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -128,7 +128,7 @@ SafeList<object*>         affected_objects(NULL);
    /* a list of mobs currently doing
       mob procs, will get a command 
       off of their queues untill queues are empty. */
-PtrArray<Scriptable>        scripting_entities;
+PtrArray<Scriptable>      scripting_entities;
 
 
 SafeList<critter*>        pulsed_proc_mobs(NULL);

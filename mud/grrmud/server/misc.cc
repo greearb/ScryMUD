@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.28 1999/08/16 07:31:24 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
+// $Id: misc.cc,v 1.29 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -277,7 +277,7 @@ void join_in_battle(critter& agg, critter& vict) {
       }
    }
    critter* chack = &vict;
-   agg.getIsFighting().append(hack);
+   agg.getIsFighting().append(chack);
    chack = &agg;
    vict.getIsFighting().append(chack);
 
@@ -416,25 +416,17 @@ void do_mini_tick() { // decrement pause count ect
       }//while
    }//while
 
-   // Decrease pause count for rooms that are running scripts.
-   room* rm_ptr;
-   for (int cnt = 0; cnt < proc_action_rooms.getCurLen(); cnt++) {
-      if (!(rm_ptr = proc_action_rooms.elementAt(cnt))) {
+   // Decrease pause count for rooms and objects that are running scripts,
+   // critters were taken care of above...
+   Scriptable* sptr;
+   for (int cnt = 0; cnt < scripting_entities.getCurLen(); cnt++) {
+      if (!(sptr = scripting_entities.elementAt(cnt))) {
          continue;
       }//if
       else {
-         rm_ptr->decrementPause();
-      }
-   }//for
-
-   // Decrease pause count for objects that are running scripts.
-   object* o_ptr;
-   for (int cnt = 0; cnt < proc_action_objs.getCurLen(); cnt++) {
-      if (!(o_ptr = proc_action_objs.elementAt(cnt))) {
-         continue;
-      }//if
-      else {
-         o_ptr->decrementPause();
+         if (sptr->getEntityType() != LE_CRITTER) { //taken care of above.
+            sptr->decrementPause();
+         }
       }
    }//for
 
@@ -443,8 +435,7 @@ void do_mini_tick() { // decrement pause count ect
 
 void do_regeneration_pcs() {
    float adj = 1.0, posn_mod;
-   Cell<critter*> crit_cell;
-   pc_list.head(crit_cell);
+   SCell<critter*> crit_cell(pc_list);
    critter* crit_ptr;
 
    //log("In do_regeneration_pcs\n");
@@ -463,7 +454,7 @@ void do_regeneration_pcs() {
       posn_mod = (2.0 + (float)(crit_ptr->POS)) / 4.0;
 
       crit_ptr->HP += (int)((((float)(crit_ptr->CON) + 5.0) / 15.0) * 
-                            (((float)(crit_ptr->HP_MAX)) / 9.0) * 
+                            (((float)(crit_ptr->getHpMax())) / 9.0) * 
                             posn_mod * (((float)(crit_ptr->HP_REGEN)) / 100.0)
                             * adj + 10.0);
 
@@ -489,8 +480,8 @@ void do_regeneration_pcs() {
       //   }
       //}
 
-      if (crit_ptr->HP > crit_ptr->HP_MAX)
-	 crit_ptr->HP = crit_ptr->HP_MAX;
+      if (crit_ptr->HP > crit_ptr->getHpMax())
+	 crit_ptr->HP = crit_ptr->getHpMax();
       if (crit_ptr->MANA > crit_ptr->MA_MAX)
 	 crit_ptr->MANA = crit_ptr->MA_MAX;
       if (crit_ptr->MOV > crit_ptr->MV_MAX)
@@ -502,11 +493,10 @@ void do_regeneration_pcs() {
       if (crit_ptr->MOV < 0)
 	 crit_ptr->MOV = 0;
 
-      if ((((float)(crit_ptr->HP)) / (float)(crit_ptr->HP_MAX)) > 0.80) {
-         stat_spell_cell* ssptr = 
-            is_affected_by(BIND_WOUND_SKILL_NUM, *crit_ptr);
-         if (ssptr) {
-            crit_ptr->affected_by.loseData(ssptr);
+      if ((((float)(crit_ptr->HP)) / (float)(crit_ptr->getHpMax())) > 0.80) {
+         SpellDuration* sdptr = crit_ptr->isAffectedBy(BIND_WOUND_SKILL_NUM);
+         if (sdptr) {
+            crit_ptr->remAffectedBy(sdptr);
             rem_effects_crit(BIND_WOUND_SKILL_NUM, *crit_ptr, TRUE);
 	}
       }//if
@@ -517,8 +507,7 @@ void do_regeneration_pcs() {
 
 void do_regeneration_smobs() {
    float posn_mod, adj = 1.0;
-   Cell<critter*> crit_cell;
-   affected_mobs.head(crit_cell);
+   SCell<critter*> crit_cell(affected_mobs);
    critter* crit_ptr;
 
    //log("In do_regeneration_smobs\n");
@@ -527,7 +516,7 @@ void do_regeneration_smobs() {
       posn_mod = (2.0 + crit_ptr->POS) / 4.0;
       crit_ptr->HP +=
          (int)(((crit_ptr->CON + 5.0) / 15.0) * 
-               (crit_ptr->HP_MAX / 9.0) * 
+               (crit_ptr->getHpMax() / 9.0) * 
                posn_mod * (crit_ptr->HP_REGEN / 100.0) * adj + 10.0);
       crit_ptr->MANA +=
          (int)(((crit_ptr->INT + 5.0) / 16.0)  * posn_mod *
@@ -537,18 +526,17 @@ void do_regeneration_smobs() {
                adj *
                (crit_ptr->MV_MAX / 2.0) * (crit_ptr->MV_REGEN / 100.0) + 5.0);
       
-      if (crit_ptr->HP > crit_ptr->HP_MAX)
-	 crit_ptr->HP = crit_ptr->HP_MAX;
+      if (crit_ptr->HP > crit_ptr->getHpMax())
+	 crit_ptr->HP = crit_ptr->getHpMax();
       if (crit_ptr->MANA > crit_ptr->MA_MAX)
 	 crit_ptr->MANA = crit_ptr->MA_MAX;
       if (crit_ptr->MOV > crit_ptr->MV_MAX)
 	 crit_ptr->MOV = crit_ptr->MV_MAX;
       
-      if (((float)crit_ptr->HP / (float)crit_ptr->HP_MAX) > 0.80) {
-         stat_spell_cell* ssptr = 
-            is_affected_by(BIND_WOUND_SKILL_NUM, *crit_ptr);
-         if (ssptr) {
-            crit_ptr->affected_by.loseData(ssptr);
+      if (((float)crit_ptr->HP / (float)crit_ptr->getHpMax()) > 0.80) {
+         SpellDuration* sdptr = crit_ptr->isAffectedBy(BIND_WOUND_SKILL_NUM);
+         if (sdptr) {
+            crit_ptr->remAffectedBy(sdptr);
             rem_effects_crit(BIND_WOUND_SKILL_NUM, *crit_ptr, TRUE);
          }
       }//if
@@ -563,7 +551,7 @@ void do_regeneration_objects() {
 
 
 int update_critters(int zone_num, short read_all) {
-   Cell<object*> ocell;
+   SCell<object*> ocell;
    critter tmp_mob;
    int k, i;
    object* obj_ptr;
@@ -598,7 +586,7 @@ int update_critters(int zone_num, short read_all) {
          return -1;
       }//if
 
-      tmp_mob.Read(mobfile, read_all);
+      tmp_mob.read(mobfile, read_all);
 
       if (!mob_list[k].mob) {
          mudlog << "WARNING:  mob[" << k 
@@ -613,7 +601,7 @@ int update_critters(int zone_num, short read_all) {
                if ((obj_count(tmp_mob.inv, *obj_ptr) >
                    obj_count(mob_list[k].inv, *obj_ptr))
                    && (obj_ptr->getCurInGame() < obj_ptr->getMaxInGame())) {
-                  Put(&(obj_list[obj_ptr->getIdNum()]), mob_list[k].inv);
+                  mob_list[k].gainInv(&(obj_list[obj_ptr->getIdNum()]));
                   recursive_init_loads(obj_list[obj_ptr->getIdNum()], 0);
                }//if
             }//while      
@@ -640,7 +628,7 @@ int update_critters(int zone_num, short read_all) {
 
 
 int update_objects(int zone_num, short read_all) {
-   Cell<object*> ocell;
+   SCell<object*> ocell;
    int k;
    object temp_obj;
    object* obj_ptr;
@@ -655,8 +643,8 @@ int update_objects(int zone_num, short read_all) {
       buf.Prepend("cp ./World/DEFAULT_OBJECTS ");
       system(buf);
       mudlog.log(ERR, "WARNING:  created new OBJECT_FILE in update_objects");
-      temp_obj.IN_LIST = room_list[0].getInv(); //hack to let destructor fire
-                                                //happily, turn it into a SOBJ
+      temp_obj.setModified(TRUE); /* hack to let destructor fire
+                                   * happily, make it modified. */
       return 0;
    }//if
 
@@ -668,7 +656,7 @@ int update_objects(int zone_num, short read_all) {
                 << " zone:  " << zone_num << endl;
       }
 
-      temp_obj.Read(objfile, read_all);
+      temp_obj.read(objfile, read_all);
 
       if (!objfile) {
          if (mudlog.ofLevel(ERR)) {
@@ -686,7 +674,7 @@ int update_objects(int zone_num, short read_all) {
             if ((obj_count(temp_obj.inv, *obj_ptr) >
                  obj_count(obj_list[k].inv, *obj_ptr))
                 && (obj_ptr->getCurInGame() < obj_ptr->getMaxInGame())) {
-               Put(&(obj_list[obj_ptr->getIdNum()]), obj_list[k].inv);
+               obj_list[k].gainInv(&(obj_list[obj_ptr->getIdNum()]));
                recursive_init_loads(obj_list[obj_ptr->getIdNum()], 0);
             }//if
          }//while      
@@ -696,8 +684,8 @@ int update_objects(int zone_num, short read_all) {
       objfile.getline(temp_str, 80);
    }//while, the big loop, reads in a whole mob list
 
-   temp_obj.IN_LIST = room_list[0].getInv(); //hack to let destructor fire
-                                             //happily, turn it into a SOBJ
+   temp_obj.setModified(TRUE); /* hack to let destructor fire
+                                * happily, make it modified. */
    //log("Done w/update objects.\n");
    return 0;
 }//update_objects
@@ -710,9 +698,9 @@ int update_zone(int zone_num, short read_all) {
    vehicle tmp_veh;
 
    object* obj_ptr;
-   Cell<object*> ocell;
+   SCell<object*> ocell;
    critter* crit_ptr;
-   Cell<critter*> ccell;
+   SCell<critter*> ccell;
    char temp_str[100];
    String buf(100);
 
@@ -768,7 +756,7 @@ int update_zone(int zone_num, short read_all) {
             mudlog << "About to read room:  " << k
                    << " zone:  " << zone_num << endl;
          }
-         tmp_room.Read(rfile, read_all);
+         tmp_room.read(rfile, read_all);
          room_ptr = &tmp_room;
       }
 
@@ -791,7 +779,7 @@ int update_zone(int zone_num, short read_all) {
       }//while      
 
       //log("Checking for load-more-critters?\n");
-      List<critter*> tmp_lst(room_ptr->getCrits());
+      SafeList<critter*> tmp_lst(room_ptr->getCrits());
       tmp_lst.head(ccell);
       int tmp_cc;
       int ingame_cc;
@@ -828,255 +816,59 @@ int update_zone(int zone_num, short read_all) {
       rfile >> k;
       rfile.getline(temp_str, 80);
    }//while, the big loop, reads in a whole zone
-   tmp_room.Clear();
-   tmp_veh.Clear();
+   tmp_room.clear();
+   tmp_veh.clear();
    return 0;
 }//update_zone
 
 
-void decrease_timed_affecting_pcs() {  //will decrease all
-	    //timed affects by one time unit, if zero, it will  
-	    //delete them from the spells_affecting list, it
-	    //will output all neccessary messages
-	    //UNLESS THE SPELL IS PERMANENT (ie if time_left = -1)
-
+/*  Will decrease all timed affects by one time unit, if zero, it will  
+    delete them from the spells_affecting list, it will output all
+    neccessary messages UNLESS THE SPELL IS PERMANENT
+    (ie if time_left = -1)
+*/
+void decrease_timed_affecting_pcs() {
    // log("In decrease_timed_affecting_pcs\n");
 
-   Cell<critter*> crit_cell;
-   pc_list.head(crit_cell);
+   SCell<critter*> crit_cell(pc_list);
    critter* crit_ptr;
-   Cell<stat_spell_cell*> sp_cell;
-   stat_spell_cell* sp_ptr;
-   String buf(100);
-
    while ((crit_ptr = crit_cell.next())) {
-      if ((++(crit_ptr->pc->idle_ticks) > 30) && 
-	  (!crit_ptr->pc->imm_data || (crit_ptr->IMM_LEVEL < 2))) {
-         if (mudlog.ofLevel(DBG)) {
-            mudlog << "Logging off player in decrease_timed_affecting_pcs,"
-                   << " name:  " << *(name_of_crit(*crit_ptr, ~0)) 
-                   << "  address:  " << crit_ptr << "  ticks:  "
-                   << crit_ptr->pc->idle_ticks << endl;
-         }
-         log_out(*crit_ptr);
-      }//if
-
-      if (TRUE /*crit_ptr->pc->mode == MODE_NORMAL*/) {
-         crit_ptr->affected_by.head(sp_cell);
-         sp_ptr = sp_cell.next();
-         while (sp_ptr) {
-   	    if (sp_ptr->bonus_duration != -1)
-	       sp_ptr->bonus_duration--;
-	    if (sp_ptr->bonus_duration == 0) {
-	       rem_effects_crit(sp_ptr->stat_spell, *crit_ptr, TRUE);
-	       delete sp_ptr;
-               sp_ptr = crit_ptr->affected_by.lose(sp_cell);
-	    }//if
-	    else
-	       sp_ptr = sp_cell.next();
-         }//while
-
-         if (crit_ptr->HUNGER > 0)
-	    crit_ptr->HUNGER--;  //food
-         if (crit_ptr->THIRST > 0)
-	    crit_ptr->THIRST--;  //drink
-         if (crit_ptr->DRUGGED > 0)
-	    crit_ptr->DRUGGED--;  //drugged
-
-	 if (crit_ptr->MODE == MODE_NORMAL) {
-            if (crit_ptr->HUNGER == 0)
-      	       show("You are famished.\n", *crit_ptr);
-            if (crit_ptr->THIRST == 0)
-	       show("You are thirsty.\n", *crit_ptr);
-            if (crit_ptr->DRUGGED == 0) {
-	       show("You no longer feel drugged.\n", *crit_ptr);
-	       crit_ptr->DRUGGED = -1;
-            }//if
-	 }//if
-
-		/* check for lights about to go out */
-         if (crit_ptr->EQ[11]) {
-	    if (!crit_ptr->EQ[11]->IN_LIST) {
-	       crit_ptr->EQ[11] = obj_to_sobj(*(crit_ptr->EQ[11]), 
-					      &(crit_ptr->inv), crit_ptr->getCurRoomNum());
-	    }//if
-	    if (crit_ptr->EQ[11]->extras[0] == 1) {
-	       Sprintf(buf, "%S flickers.\n", 
-                       long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
-               buf.Cap();
-	       show(buf, *crit_ptr);
-	    }//if
-         }//if
-
-		/* check for lights gone out */
-         if (crit_ptr->EQ[11]) {
-	    if (crit_ptr->EQ[11]->extras[0] == 0) {
-	       crit_ptr->EQ[11]->extras[0] = -2;
-	       Sprintf(buf, "%S dims and glows its last.\n", 
-                       long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
-               buf.Cap();
-	       show(buf, *crit_ptr);
-	       crit_ptr->crit_flags.turn_off(USING_LIGHT_SOURCE);
-	       room_list[crit_ptr->getCurRoomNum()].checkLight(FALSE);
-               crit_ptr->EQ[11]->short_desc += "(OUT)";
-               crit_ptr->EQ[11]->in_room_desc += "(OUT)";
-	    }//if
-         }//if
-      }//if
+      crit_ptr->doDecreaseTimedAffecting();
    }//while
 
 }//decrease_timed_affecting_pcs
 
 
 void decrease_timed_affecting_lds() {
-
    // log("In decrease_timed_affecting_pcs\n");
-
-   Cell<critter*> crit_cell;
-   linkdead_list.head(crit_cell);
+   SCell<critter*> crit_cell(linkdead_list);
    critter* crit_ptr;
-   Cell<stat_spell_cell*> sp_cell;
-   stat_spell_cell* sp_ptr;
-   String buf(100);
 
    while ((crit_ptr = crit_cell.next())) {
-      if (++(crit_ptr->pc->idle_ticks) > 30) {
-         mudlog << "Logging off player in decrease_timed_affecting_lds,"
-                << " name:  " << *(name_of_crit(*crit_ptr, ~0)) 
-                << "  address:  " << crit_ptr << endl;
-         log_out(*crit_ptr);
-      }//if
-
-      if (TRUE /*crit_ptr->pc->mode == MODE_NORMAL*/) {
-         crit_ptr->affected_by.head(sp_cell);
-         sp_ptr = sp_cell.next();
-         while (sp_ptr) {
-   	    if (sp_ptr->bonus_duration != -1)
-	       sp_ptr->bonus_duration--;
-	    if (sp_ptr->bonus_duration == 0) {
-	       rem_effects_crit(sp_ptr->stat_spell, *crit_ptr, TRUE);
-	       delete sp_ptr;
-               sp_ptr = crit_ptr->affected_by.lose(sp_cell);
-	    }//if
-	    else
-	       sp_ptr = sp_cell.next();
-         }//while
-
-         if (crit_ptr->HUNGER > 0)
-	    crit_ptr->HUNGER--;  //food
-         if (crit_ptr->THIRST > 0)
-	    crit_ptr->THIRST--;  //drink
-         if (crit_ptr->DRUGGED == 0)
-	    crit_ptr->DRUGGED--;  //food
-
-	 if (crit_ptr->MODE == MODE_NORMAL) {
-            if (crit_ptr->HUNGER == 0)
-      	       show("You are famished.\n", *crit_ptr);
-            if (crit_ptr->THIRST == 0)
-	       show("You are thirsty.\n", *crit_ptr);
-            if (crit_ptr->DRUGGED == 0) {
-	       show("You no longer feel drugged.\n", *crit_ptr);
-	       crit_ptr->DRUGGED = -1;
-            }//if
-	 }//if
-
-		/* check for lights about to go out */
-         if (crit_ptr->EQ[11]) {
-	    if (!crit_ptr->EQ[11]->IN_LIST) {
-	       crit_ptr->EQ[11] = obj_to_sobj(*(crit_ptr->EQ[11]), 
-					      &(crit_ptr->inv), crit_ptr->getCurRoomNum());
-	    }//if
-	    if (crit_ptr->EQ[11]->extras[0] == 1) {
-	       Sprintf(buf, "%S flickers.\n", 
-		    long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
-               buf.Cap();
-	       show(buf, *crit_ptr);
-	    }//if
-         }//if
-
-		/* check for lights gone out */
-         if (crit_ptr->EQ[11]) {
-	    if (crit_ptr->EQ[11]->extras[0] == 0) {
-	       crit_ptr->EQ[11]->extras[0] = -2;
-	       Sprintf(buf, "%S dims and glows its last.\n", 
-		    long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
-               buf.Cap();
-	       show(buf, *crit_ptr);
-	       crit_ptr->crit_flags.turn_off(USING_LIGHT_SOURCE);
-	       room_list[crit_ptr->getCurRoomNum()].checkLight(FALSE);
-	    }//if
-         }//if
-      }//if
+      crit_ptr->doDecreaseTimedAffecting();
    }//while
 
 }//decrease_timed_affecting_lds
 
 
-void decrease_timed_affecting_smobs() {  //will decrease all
-	    //timed affects by one time unit, if zero, it will  
-	    //delete them from the spells_affecting list, it
-	    //will output all neccessary messages
-	    //UNLESS THE SPELL IS PERMANENT (ie if time_left = -1)
-
+void decrease_timed_affecting_smobs() {
    // log("In decrease_timed_affecting_mobs\n");
-
-   Cell<critter*> crit_cell;
-   affected_mobs.head(crit_cell);
+   SCell<critter*> crit_cell(affected_mobs);
    critter* crit_ptr;
-   Cell<stat_spell_cell*> sp_cell;
-   stat_spell_cell* sp_ptr;
 
-   crit_ptr = crit_cell.next();
-   while (crit_ptr) {
-      if (IsEmpty(crit_ptr->affected_by)) {
-         
-         // Can't ever take them off, because then they
-         // don't decrease their PAUSE counts from ordering
-         // and such.
-         crit_ptr = crit_cell.next(); 
-
-//          if (crit_ptr->PAUSE > 0) {
-//             crit_ptr = crit_cell.next();
-//          }
-//          else {
-//             if (crit_ptr->mob->mob_data_flags.get(17)) {
-//                //then got spec data, should be on here.
-//                crit_ptr = crit_cell.next();
-//             }
-//             else {
-//                // Else, then we can safely take them off the list I believe
-//                crit_ptr = crit_cell.lose();
-//             }
-//          }//else
-      }//if
-      else {
-         crit_ptr->affected_by.head(sp_cell);
-         sp_ptr = sp_cell.next();
-         while (sp_ptr) {
-	    if (sp_ptr->bonus_duration != -1)
-	       sp_ptr->bonus_duration--;
-   	    if (sp_ptr->bonus_duration == 0) {
-	       rem_effects_crit(sp_ptr->stat_spell, *crit_ptr, TRUE);
-               delete sp_ptr;
-               sp_ptr = crit_ptr->affected_by.lose(sp_cell);
-	    }//if
-	    else 
-	       sp_ptr = sp_cell.next();
-         }//while
-         crit_ptr = crit_cell.next();
-      }//else
+   while ((crit_ptr = crit_cell.next())) {
+      crit_ptr->doDecreaseTimedAffecting();
    }//while
 
 }//decrease_timed_affecting_smobs
 
 
-
 void decrease_timed_affecting_objects() {  
-   Cell<stat_spell_cell*> sp_cell;
-   stat_spell_cell* sp_ptr;
-   Cell<object*> cell;
-   affected_objects.head(cell);
+   Cell<SpellDuration*> sd_cell;
+   SpellDuration* sd_ptr;
+   SCell<object*> cell(affected_objects);
    object* obj_ptr;
+   object* temp_obj;
    String buf(100);
 
    //log("In decrease_timed_affecting_objects\n");
@@ -1088,33 +880,30 @@ void decrease_timed_affecting_objects() {
                 << obj_ptr->OBJ_NUM << " obj_ptr: " << obj_ptr << endl;
       }
 
-      obj_ptr->affected_by.head(sp_cell);
-      sp_ptr = sp_cell.next();
-      while (sp_ptr) {
-	 if (sp_ptr->bonus_duration == 0) {
-	    rem_effects_obj(sp_ptr->stat_spell, *obj_ptr);
-            delete sp_ptr;
-            sp_ptr = obj_ptr->affected_by.lose(sp_cell);
+      obj_ptr->getAffectedBy().head(sd_cell);
+      sd_ptr = sd_cell.next();
+      while (sd_ptr) {
+	 if (sd_ptr->duration == 0) {
+	    rem_effects_obj(sd_ptr->spell, *obj_ptr);
+            delete sd_ptr;
+            sd_ptr = obj_ptr->getAffectedBy().lose(sd_cell);
 	 }//if
 	 else { 
-	   if (sp_ptr->bonus_duration != -1)
-	     sp_ptr->bonus_duration--;
-	   sp_ptr = sp_cell.next();
+	   if (sd_ptr->duration != -1)
+              sd_ptr->duration--;
+	   sd_ptr = sd_cell.next();
 	 }//else
       }//while
 
       if (mudlog.ofLevel(DBG)) {
          mudlog << "About to look after lightts.." << endl;
       }
-      
 		    /* take care of lights */
-
       if (obj_ptr->OBJ_FLAGS.get(OBJ_LIGHT_SOURCE)) {
 	 if (obj_ptr->extras[0] > -1) { //is not perm
-	   obj_ptr->extras[0]--;
+            obj_ptr->extras[0]--;
 	 }//if
       }//if
-
 			    /* corpses */
       if (mudlog.ofLevel(DBG)) {
          mudlog << "About to look after corpses.." << endl;
@@ -1124,14 +913,15 @@ void decrease_timed_affecting_objects() {
       // method for notes on how not to crash the game!!
       if (obj_ptr->OBJ_NUM == CORPSE_OBJECT) { //if is corpse
 	 if (obj_ptr->bag && 
-	     obj_ptr->bag->time_till_disolve == 0) { //disolve it!!
-	    disolve_object(*obj_ptr);
+	     obj_ptr->bag->getTimeTillDisolve() == 0) { //disolve it!!
+            temp_obj = obj_ptr;
 	    obj_ptr = affected_objects.lose(cell);
+	    do_disolve_object(*temp_obj);
 	 }//if
 	 else {
-	   if (obj_ptr->bag->time_till_disolve != -1) {
-	     obj_ptr->bag->time_till_disolve--;
-	     obj_ptr = cell.next();
+	   if (obj_ptr->bag->getTimeTillDisolve() != -1) {
+              obj_ptr->bag->decrementTimeTillDisolve();
+              obj_ptr = cell.next();
 	   }//if
            else {
               obj_ptr = cell.next();
@@ -1145,15 +935,6 @@ void decrease_timed_affecting_objects() {
       if (mudlog.ofLevel(DBG)) {
          mudlog << "At end of while loop." << endl;
       }
-
-   }//while
-
-   while (!obj_to_be_disolved_list.isEmpty()) {
-      obj_ptr = obj_to_be_disolved_list.popFront();
-      if (mudlog.ofLevel(DBG)) {
-         mudlog << "About to disolve object: " << obj_ptr << endl;
-      }
-      do_disolve_object(*obj_ptr);
    }//while
 
    if (mudlog.ofLevel(DBG)) {
@@ -1163,10 +944,9 @@ void decrease_timed_affecting_objects() {
 
 
 void decrease_timed_affecting_doors() {  
-   Cell<stat_spell_cell*> sp_cell;
-   stat_spell_cell* sp_ptr;
-   Cell<door*> cell;
-   affected_doors.head(cell);
+   Cell<SpellDuration*> sd_cell;
+   SpellDuration* sd_ptr;
+   SCell<door*> cell(affected_doors);
    door* dr_ptr;
    String buf(100);
 
@@ -1175,15 +955,14 @@ void decrease_timed_affecting_doors() {
    int take_me_off;
    dr_ptr = cell.next();
    while (dr_ptr) {
-      if (dr_ptr->ticks_till_disolve > 0) {
+      if (dr_ptr->getTicksTillDisolve() > 0) {
          mudlog.log(DBG, "About to decrement a door's ticks_till_disolve.\n");
-         if (--(dr_ptr->ticks_till_disolve) <= 0) {
+         if (dr_ptr->decrementTicksTillDisolve() <= 0) {
             mudlog.log(DBG, "Gonna delete a door.\n");
-            room_list[dr_ptr->in_room].DOORS.loseData(dr_ptr);
-            Sprintf(buf, "%S closes up and vanishes.\n", 
-                    name_of_door(*dr_ptr, ~0));
-            buf.Cap();
-            room_list[dr_ptr->in_room].showAllCept(buf);
+            room_list[dr_ptr->getCurRoomNum()].DOORS.loseData(dr_ptr);
+            
+            room_list[dr_ptr->getCurRoomNum()].showAllCept(CS_CLOSES_N_VANISHES,
+                                                           dr_ptr);
             delete dr_ptr;
             dr_ptr = affected_doors.lose(cell);
             continue;
@@ -1191,21 +970,22 @@ void decrease_timed_affecting_doors() {
       }//if
       
       take_me_off = TRUE;
-      dr_ptr->affected_by.head(sp_cell);
-      sp_ptr = sp_cell.next();
-      while (sp_ptr) {
+      dr_ptr->getAffectedBy().head(sd_cell);
+      sd_ptr = sd_cell.next();
+      while (sd_ptr) {
 	 take_me_off = FALSE;
-	 if (sp_ptr->bonus_duration != -1)
-            sp_ptr->bonus_duration--;
-	 if ((sp_ptr->bonus_duration == 0) || (sp_ptr->bonus_duration < -1)) {
-	    rem_effects_door(sp_ptr->stat_spell, *dr_ptr, 
-			     room_list[abs(dr_ptr->destination)],
-			     room_list[dr_ptr->in_room], TRUE);
-            delete sp_ptr;
-            sp_ptr = dr_ptr->affected_by.lose(sp_cell);
+	 if (sd_ptr->duration != -1)
+            sd_ptr->duration--;
+	 if ((sd_ptr->duration == 0) || (sd_ptr->duration < -1)) {
+	    rem_effects_door(sd_ptr->spell, *dr_ptr, 
+			     room_list[abs(dr_ptr->getDestination())],
+			     room_list[dr_ptr->getCurRoomNum()], TRUE);
+            delete sd_ptr;
+            sd_ptr = dr_ptr->getAffectedBy().lose(sd_cell);
 	 }//if
-	 else
-	    sp_ptr = sp_cell.next();
+	 else {
+	    sd_ptr = sd_cell.next();
+         }
       }//while
       if (take_me_off)
 	 dr_ptr = affected_doors.lose(cell);
@@ -1215,13 +995,8 @@ void decrease_timed_affecting_doors() {
 }//decrease_timed_affecting_doors
 
 
-void disolve_object(object& obj) {
-   obj_to_be_disolved_list.append(&obj);
-}//disolve_object
-
-
 void do_disolve_object(object& obj) {
-   Cell<object*> cell(obj.inv);
+   SCell<object*> cell(obj.inv);
    object *obj_ptr;
    String buf(100);
 
@@ -1229,31 +1004,19 @@ void do_disolve_object(object& obj) {
       mudlog << "do_disolve_obj, addr: " << &obj << endl;
    }
 
-   if (!obj.in_list) {
+   if (!obj.isModified()) {
       core_dump("ERROR:  disolve_object called on non-sobj.\n");
    }//if
 
    //log("Before while\n");
    while ((obj_ptr = cell.next())) {
-      if (obj_ptr->in_list)
-         obj_ptr->in_list = obj.in_list;
-      obj.in_list->append(obj_ptr);
+      if (obj_ptr->isModified()) {
+         obj_ptr->setContainer(obj.getContainer());
+      }
+      obj_ptr->getContainer()->gainInv(obj_ptr);
    }//while
    //log("Before Clear()\n");
    obj.inv.clear();
-
-   if (obj.in_list->loseData(&obj)) {
-      if (mudlog.ofLevel(DBG)) {
-         mudlog << "Successfully removed it from it's list.\n";
-      }
-   }
-   else {
-      Sprintf(buf, "Failed to remove object ptr: %i from it's list.",
-              (int)(&obj));
-      mudlog << "Failed to remove object ptr: " << &obj << " from it's list:"
-             << obj.in_list << endl;
-      core_dump(buf);
-   }
 				       //obj to be disolved
    //log("Lost data.\n");
    delete &obj; //should fire deconstructors
@@ -1267,11 +1030,10 @@ void decrease_timed_affecting_rooms() {  //will decrease all
 	    //will output all neccessary messages
 	    //UNLESS THE SPELL IS PERMANENT (ie if time_left = -1)
 
-   Cell<room*> cell;
-   affected_rooms.head(cell);
+   SCell<room*> cell(affected_rooms);
    room* rm_ptr = NULL;
-   Cell<stat_spell_cell*> sp_cell;
-   stat_spell_cell* sp_ptr = NULL;
+   Cell<SpellDuration*> sd_cell;
+   SpellDuration* sd_ptr = NULL;
    short take_it_off = FALSE;
 
    if (mudlog.ofLevel(DBG)) {
@@ -1287,12 +1049,12 @@ void decrease_timed_affecting_rooms() {  //will decrease all
          mudlog << "dta_rooms, rm_ptr: " << rm_ptr << endl;
       }
 
-      Cell<door*> dcll(rm_ptr->DOORS);
+      SCell<door*> dcll(rm_ptr->DOORS);
       door* dptr, *tmp_dptr;
       dptr = dcll.next();
       while (dptr) {
-         if (dptr->ticks_till_disolve != -1) {
-            if ((--dptr->ticks_till_disolve) == 0) {
+         if (dptr->getTicksTillDisolve() != -1) {
+            if (dptr->decrementTicksTillDisolve() == 0) {
                tmp_dptr = dptr;
                dptr = rm_ptr->DOORS.lose(dcll);
                delete tmp_dptr;
@@ -1306,20 +1068,20 @@ void decrease_timed_affecting_rooms() {  //will decrease all
             dptr = dcll.next();
       }//while
       
-      rm_ptr->affected_by.head(sp_cell);
-      sp_ptr = sp_cell.next();
-      while (sp_ptr) {
-	 if (sp_ptr->bonus_duration != -1) { //if not permanent
+      rm_ptr->getAffectedBy().head(sd_cell);
+      sd_ptr = sd_cell.next();
+      while (sd_ptr) {
+	 if (sd_ptr->duration != -1) { //if not permanent
             take_it_off = FALSE;
-	    sp_ptr->bonus_duration--;
+	    sd_ptr->duration--;
          }//if
-	 if (sp_ptr->bonus_duration == 0) {
-	    rem_effects_room(sp_ptr->stat_spell, *rm_ptr, TRUE);
-            delete sp_ptr;
-            sp_ptr = rm_ptr->affected_by.lose(sp_cell);
+	 if (sd_ptr->duration == 0) {
+	    rem_effects_room(sd_ptr->spell, *rm_ptr, TRUE);
+            delete sd_ptr;
+            sd_ptr = rm_ptr->getAffectedBy().lose(sd_cell);
 	 }//if
 	 else
-	    sp_ptr = sp_cell.next();
+	    sd_ptr = sd_cell.next();
       }//while
       
       if (take_it_off) {
@@ -1336,28 +1098,6 @@ void decrease_timed_affecting_rooms() {  //will decrease all
       }
    }//while
 }//decrease_timed_affecting_rooms
-
-
-void add_spell_affecting_critter(int spell, int duration, critter& vict) {
-   stat_spell_cell* spcell = new stat_spell_cell;
-
-   //log("In add_spell_affecting_critter");
-
-   spcell->stat_spell = spell;
-   spcell->bonus_duration = duration; 
-   Put(spcell, vict.affected_by);
-}//gain spell_affected_by    
-
-
-void add_spell_affecting_obj(int spell, int duration, object& vict) {
-   stat_spell_cell* spcell = new stat_spell_cell;
-
-   //log("In add_spell_affecting_obj\n");
-
-   spcell->stat_spell = spell;
-   spcell->bonus_duration = duration; 
-   Put(spcell, vict.affected_by);
-}//gain spell_affected_by    
 
 
 void show(const char* message, critter& pc) {
@@ -1394,40 +1134,8 @@ void show(const char* message, critter& pc) {
 }//show 
 
 
-void show_all(const char* msg, const room& rm) {
-   rm.showAllCept(msg, NULL);
-}
-
-
-void show_all_but_2(critter& A, critter& B, const char* msg,
-                    room& rm) {
-   Cell<critter*> cell(rm.getCrits());
-   critter* crit_ptr;
-
-   // log("In show_all_but_2\n");
-   while ((crit_ptr = cell.next()))  { 
-      if ((crit_ptr != &A) && (crit_ptr != &B)) 
-	 if (crit_ptr->POS < POS_SLEEP)  
-	    show(msg, *crit_ptr);
-   }//while
-
-   Cell<object*> cll(*(rm.getInv()));
-   object* obj;
-
-   while ((obj = cll.next())) {
-     if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
-       if (crit_ptr->POS < POS_SLEEP) {
-	 show("#####", *crit_ptr);
-	 show(msg, *crit_ptr);
-       }//if
-     }//if
-   }//while
-
-}//show_all_but_2
-
-
 int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
-               List<critter*>& lst, CSentryE cs_entry, ...) {
+               SafeList<critter*>& lst, CSentryE cs_entry, ...) {
    va_list argp;
    va_start(argp, cs_entry);
    int retval = 0;
@@ -1438,8 +1146,8 @@ int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
 
 
 int vDoShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
-                List<critter*>& lst, CSentryE cs_entry, va_list argp) {
-   Cell<critter*> cll(lst);
+                SafeList<critter*>& lst, CSentryE cs_entry, va_list argp) {
+   SCell<critter*> cll(lst);
    critter* ptr;
    String buf(100);
    String buf2(100);
@@ -1465,13 +1173,13 @@ int vDoShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
 }//voDoShowList
 
 
-void show_all(const char* msg) {
-   Cell<critter*> cell(pc_list);
+void showExtraInfo(CSentryE msg) {
+   SCell<critter*> cell(pc_list);
    critter* crit_ptr;
 
    while ((crit_ptr = cell.next()))  { 
       if (crit_ptr->pc && crit_ptr->PC_FLAGS.get(14)) {
-	 show(msg, *crit_ptr);
+	 crit_ptr->show(msg);
       }//if
    }//while
 }//show_all_info
@@ -1497,10 +1205,8 @@ void out_str(const List<String*>& lst, critter& pc) {
 
 
 /** Can over-ride the VIS/SEE bit stuff if you set see_all to true. */
-void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
-   Cell<critter*> cell(lst);
-   Cell<stat_spell_cell*> cell2;
-   stat_spell_cell* sp;
+void out_crit(SafeList<critter*>& lst, critter& pc, int see_all = FALSE) {
+   SCell<critter*> cell(lst);
    critter* crit_ptr;
    String buf(100);
 
@@ -1545,17 +1251,14 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
                buf.setCharAt(1, '*');
             }//if
             
-            show(buf, pc);
-            crit_ptr->affected_by.head(cell2);
-            while ((sp = cell2.next())) {
-               if (sp->stat_spell == SANCTUARY_SKILL_NUM) {
-                  Sprintf(buf, "\t\t%s glows brightly.\n", 
-                          get_he_she(*crit_ptr));
-                  buf.Cap();
-                  show(buf, pc);
-                  break; //cause there are no others to display now
-               }//if
-            }//while
+            SpellDuration* sd = crit_ptr->isAffectedBy(SANCTUARY_SKILL_NUM);
+            if (sd) {
+               Sprintf(buf, cstr(CS_GLOWS_BRIGHTLY, pc),
+                       get_he_she(*crit_ptr));
+               buf.Cap();
+               show(buf, pc);
+               break; //cause there are no others to display now
+            }//if
          }//if
          else if (crit_ptr->isSmob() &&
                   (crit_ptr->POS != mob_list[crit_ptr->getIdNum()].POS)) {
@@ -1581,16 +1284,14 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
             }//if
             show(buf, pc);
             
-            crit_ptr->affected_by.head(cell2);
-            while ((sp = cell2.next())) {
-               if (sp->stat_spell == SANCTUARY_SKILL_NUM) {
-                  Sprintf(buf, "\t\t%s glows brightly.\n", 
-                          get_he_she(*crit_ptr));
-                  buf.Cap();
-                  show(buf, pc);
-                  break;
-               }//if
-            }//while
+            SpellDuration* sd = crit_ptr->isAffectedBy(SANCTUARY_SKILL_NUM);
+            if (sd) {
+               Sprintf(buf, cstr(CS_GLOWS_BRIGHTLY, pc),
+                       get_he_she(*crit_ptr));
+               buf.Cap();
+               show(buf, pc);
+               break; //cause there are no others to display now
+            }//if
          }//if
          else { //then it is a mob, or SMOB w/same posn as MOB
 
@@ -1612,16 +1313,14 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
             buf.Cap();
             show(buf, pc);
             
-            crit_ptr->affected_by.head(cell2);
-            while ((sp = cell2.next())) {
-               if (sp->stat_spell == SANCTUARY_SKILL_NUM) {
-                  Sprintf(buf, "\t\t%s glows brightly.\n", 
-                          get_he_she(*crit_ptr));
-                  buf.Cap();
-                  show(buf, pc);
-                  break;
-               }//if
-            }//while
+            SpellDuration* sd = crit_ptr->isAffectedBy(SANCTUARY_SKILL_NUM);
+            if (sd) {
+               Sprintf(buf, cstr(CS_GLOWS_BRIGHTLY, pc),
+                       get_he_she(*crit_ptr));
+               buf.Cap();
+               show(buf, pc);
+               break; //cause there are no others to display now
+            }//if
          }//else
       }//if
    }//while
@@ -1635,10 +1334,10 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
 
 
 
-void out_inv(const List<object*>& lst, critter& pc, 
+void out_inv(SafeList<object*>& lst, critter& pc, 
 	     const short type_of_list) {
 			       //outs the names object*
-   Cell<object*> cell(lst);
+   SCell<object*> cell(lst);
    object*  obj_ptr;
    String buf(100);
 
@@ -1651,7 +1350,7 @@ void out_inv(const List<object*>& lst, critter& pc,
       pc.show(*(pc.getObjListColor()));
    }
    
-   if (IsEmpty(lst) && type_of_list == OBJ_INV) {
+   if (lst.isEmpty() && type_of_list == OBJ_INV) {
       show("	[empty]	\n", pc);
       if (pc.isUsingClient()) {
          show("</ITEM_LIST>", pc);
@@ -1686,9 +1385,7 @@ void out_inv(const List<object*>& lst, critter& pc,
                   }//if
                }//if
 
-               if (pc.canDetectMagic() &&
-                   (!IsEmpty(obj_ptr->affected_by) ||
-                    !IsEmpty(obj_ptr->stat_affects))) {
+               if (pc.canDetectMagic() && obj_ptr->isMagic()) {
                   buf.Append(" {Blue Glow}\n");
                }//if
                else {
@@ -1723,9 +1420,7 @@ void out_inv(const List<object*>& lst, critter& pc,
                   }//if
                }//if
 
-               if  (pc.canDetectMagic() &&
-                    (!IsEmpty(obj_ptr->affected_by) ||
-                     !IsEmpty(obj_ptr->stat_affects))) {
+               if  (pc.canDetectMagic() && obj_ptr->isMagic()) {
                   buf.Append(" {Blue Glow}\n");
                }//if
                else {
@@ -1755,22 +1450,20 @@ void out_inv(const List<object*>& lst, critter& pc,
 
 }//out_inv
 
-critter* have_crit_named(List<critter*>& lst, const int i_th,
+critter* have_crit_named(SafeList<critter*>& lst, const int i_th,
                          const String* name, const int see_bit,
                          const room& rm, int do_exact = FALSE) {
    int foo;
    return have_crit_named(lst, i_th, name, see_bit, foo, rm, do_exact);
 }
 
-critter* have_crit_named(List<critter*>& lst, const int i_th,
+critter* have_crit_named(SafeList<critter*>& lst, const int i_th,
                          const String* name, const int see_bit,
                          int& count_sofar, const room& rm, int do_exact = FALSE) {
-   Cell<String*> char_cell;
-   Cell<critter*> cell(lst);
+   SCell<critter*> cell(lst);
    critter* crit_ptr;
    int count = 0;
    int ptr_v_bit, len;
-   String *string;
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "in have_crit_named, i_th: " << i_th << " name -:"
@@ -1789,27 +1482,13 @@ critter* have_crit_named(List<critter*>& lst, const int i_th,
    if (i_th <= 0)
       return NULL;
 
-   int matched;
    while ((crit_ptr = cell.next())) {
       ptr_v_bit = (crit_ptr->VIS_BIT | rm.getVisBit()); 
       if (detect(see_bit, ptr_v_bit)) {
-	 crit_ptr->names.head(char_cell);
-         matched = FALSE;
-	 while ((string = char_cell.next()) && !matched) {
-	    if (do_exact) {
-   	       if (strcasecmp(*string, *name) == 0) { 
-                  matched = TRUE;
-	          count++;
-                  count_sofar++;
-	       }//if
-	    }//if exact
-	    else {
-   	       if (strncasecmp(*string, *name, len) == 0) { 
-                  matched = TRUE;
-	          count++;
-                  count_sofar++;
-	       }//if
-	    }//else
+         if (crit_ptr->isNamed(*name, do_exact)) {
+            count++;
+            count_sofar++;
+
 	    if (count == i_th) {
 	       return crit_ptr;
 	    }//if
@@ -1820,14 +1499,12 @@ critter* have_crit_named(List<critter*>& lst, const int i_th,
 }//have_crit_named 
 
 
-int crit_sub_a_4_b(critter* a, List<critter*>& lst, 
+int crit_sub_a_4_b(critter* a, SafeList<critter*>& lst, 
                    const int i_th, const String* name,
                    const int see_bit, room& rm) {
-   Cell<String*> char_cell;
-   Cell<critter*> cell(lst);
+   SCell<critter*> cell(lst);
    critter* crit_ptr;
    int count = 0, ptr_v_bit;
-   String *string;
 
    //log("In crit_sub_a_4_b.\n");
 
@@ -1841,35 +1518,27 @@ int crit_sub_a_4_b(critter* a, List<critter*>& lst,
       return FALSE;
    }//if
 
-   int matched;
    while ((crit_ptr = cell.next())) {
       ptr_v_bit = (crit_ptr->VIS_BIT | rm.getVisBit()); 
       if (detect(see_bit, ptr_v_bit)) {
-	 crit_ptr->names.head(char_cell);
-         matched = FALSE;
-	 while ((string = char_cell.next()) && !matched) {
-	    if (strncasecmp(*string, *name, name->Strlen()) == 0){ 
-               matched = TRUE;
-	       count++;
-	       if (count == i_th) {  //found right one
-                  lst.assign(cell, a);
-		  return TRUE;
-	       }//if
-	    }//if
-	 }//while
+         if (crit_ptr->isNamed(*name)) {
+            count++;
+            if (count == i_th) {  //found right one
+               lst.assign(cell, a);
+               return TRUE;
+            }//if
+         }//if
       }//if
    }//while
    return FALSE;
 }//crit_sub_a_4_b 
 
 
-int obj_sub_a_4_b(object* a, List<object*>& lst, const int i_th,
+int obj_sub_a_4_b(object* a, SafeList<object*>& lst, const int i_th,
                   const String* name, const int see_bit, room& rm) {
-   Cell<String*> char_cell;
-   Cell<object*> cell(lst);
+   SCell<object*> cell(lst);
    object* obj_ptr;
    int count = 0, ptr_v_bit;
-   String *string;
 
    //log("In obj_sub_a_4_b.\n");
 
@@ -1883,44 +1552,36 @@ int obj_sub_a_4_b(object* a, List<object*>& lst, const int i_th,
       return FALSE;
    }//if
 
-   int matched;
    while ((obj_ptr = cell.next())) {
       ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | rm.getVisBit()); 
       if (detect(see_bit, ptr_v_bit)) {
-         obj_ptr->names.head(char_cell);
-         matched = FALSE;
-	 while ((string = char_cell.next()) && !matched) {
-	    if (strncasecmp(*string, *name, name->Strlen()) == 0){ 
-               matched = TRUE;
-	       count++;
-	       if (count == i_th) {  //found right one
-                  //obj_ptr = Prev(cell);  //back cell up one
-                  lst.assign(cell, a);
-		  return TRUE;
-	       }//if
-	    }//if
-	 }//while
+         if (obj_ptr->isNamed(*name)) {
+            count++;
+            if (count == i_th) {  //found right one
+               //obj_ptr = Prev(cell);  //back cell up one
+               lst.assign(cell, a);
+               return TRUE;
+            }//if
+         }//if
       }//if
    }//while
    return FALSE;
 }//obj_sub_a_4_b 
 
 
-object* have_obj_named(const List<object*>& lst, const int i_th,
+object* have_obj_named(SafeList<object*>& lst, const int i_th,
                        const String* name, const int see_bit,
                        const room& rm) {
    int foo;
    return have_obj_named(lst, i_th, name, see_bit, rm, foo);
 }
 
-object* have_obj_named(const List<object*>& lst, const int i_th,
+object* have_obj_named(SafeList<object*>& lst, const int i_th,
                        const String* name, const int see_bit,
                        const room& rm, int& count_sofar) {
-   Cell<String*> char_cell;
-   Cell<object*> cell(lst);
+   SCell<object*> cell(lst);
    object* obj_ptr;
    int count = 0, ptr_v_bit;
-   String *string;
 
    if (!name) {
       mudlog.log(ERR, "ERROR:  Null sent to have_obj_named.k\n");
@@ -1930,35 +1591,27 @@ object* have_obj_named(const List<object*>& lst, const int i_th,
    if (name->Strlen() == 0) 
       return NULL;
 
-   int matched;
    while ((obj_ptr = cell.next())) {
       ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | rm.getVisBit());
       if (detect(see_bit, ptr_v_bit)) {
-	 obj_ptr->names.head(char_cell);
-         matched = FALSE;
-	 while ((string = char_cell.next()) && !matched) {
-	    if (strncasecmp(*string, *name, name->Strlen()) == 0){ 
-               matched = TRUE;
-	       count++;
-               count_sofar++;
-	       if (count == i_th) {
-		  return obj_ptr;
-	       }//if
-	    }//if
-	 }//while
+         if (obj_ptr->isNamed(*name)) {
+            count++;
+            count_sofar++;
+            if (count == i_th) {
+               return obj_ptr;
+            }//if
+         }//if
       }//if
    }//while
    return NULL;
 }//have_obj_named 
 
 
-int obj_named_count(const List<object*>& lst, const String* name,
+int obj_named_count(SafeList<object*>& lst, const String* name,
                     const int see_bit, const room& rm) {
-   Cell<String*> char_cell;
-   Cell<object*> cell(lst);
+   SCell<object*> cell(lst);
    object* obj_ptr;
    int count = 0, ptr_v_bit;
-   String *string;
 
    if (name->Strlen() == 0) 
       return 0;
@@ -1966,144 +1619,14 @@ int obj_named_count(const List<object*>& lst, const String* name,
    while ((obj_ptr = cell.next())) {
       ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | rm.getVisBit());
       if (detect(see_bit, ptr_v_bit)) {
-	 obj_ptr->names.head(char_cell);
-	 while ((string = char_cell.next())) {
-	    if (strncasecmp(*string, *name, name->Strlen()) == 0){ 
-	       count++;
-               break; //out of the internal while loop
-	    }//if
-	 }//while
+         if (obj_ptr->isNamed(*name)) {
+            count++;
+         }//if
       }//if
    }//while
    return count;
 }//have_obj_named 
 
-
-int  obj_is_named(const object& obj, const String& name) {
-   Cell<String*> char_cell(obj.names);
-   String *string;
-   int len;
-
-   //log("In obj_is_named\n");
-
-   if ((len = name.Strlen()) == 0)
-      return FALSE;
-
-   while ((string = char_cell.next())) {
-      if (strncasecmp(*string, name, len) == 0) {
-	 return TRUE;
-      }//if
-   }//while
-   return FALSE;
-}//obj_is_named 
-
-
-int  door_is_named(const door_data& dr, const String& name) {
-   Cell<String*> char_cell(dr.names);
-   String *string;
-   int len;
-
-   //log("In obj_is_named\n");
-
-   if ((len = name.Strlen()) == 0)
-      return FALSE;
-
-   while ((string = char_cell.next())) {
-      if (strncasecmp(*string, name, len) == 0) {
-	 return TRUE;
-      }//if
-   }//while
-   return FALSE;
-}//door_is_named
-
-
-//boolean functionality here...
-int  mob_is_named(const critter& pc, const String& name) {
-   return pc.isNamed(name);
-}
-
-
-const String* name_of_crit(critter& pc, int see_bit) {
-   return pc.getName(see_bit);
-}
-
-
-String* name_of_obj(const object& obj, int see_bit) {
-   if (!detect(see_bit, obj.OBJ_VIS_BIT)) {
-      return &SOMETHING;
-   }//if
-   else {
-      String* tmp = Top(obj.names);
-      if (tmp)
-         return tmp;
-      else
-         return &SOMETHING;
-   }//else
-}//name_of_obj
-
-
-String* long_name_of_obj(object& obj, int see_bit) {
-   if (obj.short_desc.Strlen() == 0 ||
-	!detect(see_bit, obj.OBJ_VIS_BIT)) {
-      return &SOMETHING;
-   }//if
-   else {
-      return &(obj.short_desc);
-   }//else
-}//long name_of_obj
-
-String* name_of_room(const room& rm, int see_bit) {
-   if ((IsEmpty(rm.names)) || !detect(see_bit, rm.getVisBit())) {
-      return &SOMEWHERE;
-   }//if
-   else {
-      return Top(rm.names);
-   }//else
-}//name_of_room
-
-
-String* name_of_door(const door& dr, int see_bit) {
-   return name_of_dr_data(*(dr.dr_data), see_bit, dr.destination);
-}//name_of_door
-
-
-String* name_of_dr_data(const door_data& dr, int see_bit, int dest) {
-   Cell<String*> cell(dr.names);
-   String *str, *str2;
-
-   if (!detect(see_bit, dr.vis_bit)) {
-      return &SOMETHING;
-   }//if
-
-   if (IsEmpty(dr.names))
-      return &UNKNOWN;
-
-   if (dest >= 0) {
-      str = cell.next();
-      str2 = cell.next();
-
-      if (str2)
-	 if (*str2 != "#")
-	    return str2;
-	 else
-	    return str;
-      else  // no specific name, just the direction
-	 return str;
-    }//if
-    else {
-      str = cell.prev();
-      str2 = cell.prev();
-
-      if (str2)
-	 if (*(str2) != "#")
-	    return str2;
-	 else
-	    return str;
-      else  // no specific name, just the direction
-	 return str;
-   }//else
-}//name_of_dr_data
-       
 
 // Will be sent an IP with an optional N on the beginning,
 // all, not just newbies

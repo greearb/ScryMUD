@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.15 1999/08/16 00:37:07 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
+// $Id: spells.cc,v 1.16 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -45,7 +45,7 @@
 #include "trv_spll.h"
 #include <PtrArray.h>
 #include "SkillSpell.h"
-
+#include "lang_strings.h"
 
 int get_mana_cost(int spell_num) {
    return SSCollection::instance().getSS(spell_num).getManaCost();
@@ -236,14 +236,14 @@ void rem_effects_door(int spell_num, door& dr, room& rm1,
   
   if (spell_num == FIREWALL_SKILL_NUM) {
      if (do_msg) {
-        show_all("The flames on the exit die down.\n", rm1);
-        show_all("The flames on the exit die down.\n", rm2);
+        rm1.showAllCept(CS_FLAMES_DIE_DOWN);
+        rm2.showAllCept(CS_FLAMES_DIE_DOWN);
      }//if
   }//if
   else if (spell_num == DISTORTION_WALL_SKILL_NUM) {
     if (do_msg) {
-      show_all("The distortion field fades.\n", rm1);
-      show_all("The distortion field fades.\n", rm2);
+       rm1.showAllCept(CS_DISTORTION_FADES);
+       rm2.showAllCept(CS_DISTORTION_FADES);
     }//if
   }//if
   else {

@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.39 1999/08/16 07:31:24 greear Exp $
-// $Revision: 1.39 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
+// $Id: critter.h,v 1.40 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.40 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -728,6 +728,8 @@ public:
    void addInRoomDesc(LString& buf);
    void addShortDesc(String& buf);
    void addShortDesc(LString& buf);
+   void appendShortDesc(CSentryE whichun);
+   void appendInRoomDesc(CSentryE whichun);
 
    int haveObjNumbered(int count, int obj_num);
    /** Viewer may be self, but may not be as well. */
@@ -1029,6 +1031,7 @@ public:
 
    /** Assume we are removing this object at this posn. */
    void checkLight(object* obj = NULL, int posn = -1);
+   void doDecreaseTimedAffecting();
    void drunkifyMsg(String& msg);
    void checkForBattle(room& rm);
    static int getInstanceCount() { return _cnt; }

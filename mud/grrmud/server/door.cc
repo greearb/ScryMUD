@@ -1,5 +1,5 @@
-// $Id: door.cc,v 1.7 1999/08/16 07:31:24 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
+// $Id: door.cc,v 1.8 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -333,6 +333,48 @@ int door::write(ostream& da_file) {
            << distance << "dr_data#, dest, dist\n";
    return 0;
 }//Write()
+
+
+String* door_data::getName(critter* viewer, int dest) {
+   LStringCollection* ls_coll = getNamesCollection(viewer->getLanguage());
+
+   if (!ls_coll || ls_coll->isEmpty()) {
+      return &UNKNOWN;
+   }
+
+   Cell<LString*> cell(*ls_coll);
+   String *str, *str2;
+
+   if (!detect(viewer->getSeeBit(), getVisBit())) {
+      return &SOMETHING;
+   }//if
+
+   if (dest >= 0) {
+      str = cell.next();
+      str2 = cell.next();
+
+      if (str2)
+	 if (*str2 != "#")
+	    return str2;
+	 else
+	    return str;
+      else  // no specific name, just the direction
+	 return str;
+    }//if
+    else {
+      str = cell.prev();
+      str2 = cell.prev();
+
+      if (str2)
+	 if (*(str2) != "#")
+	    return str2;
+	 else
+	    return str;
+      else  // no specific name, just the direction
+	 return str;
+   }//else
+}//getName(critter* viewer, int direction)...
+       
 
 
 

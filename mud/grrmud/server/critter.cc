@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.46 1999/08/16 00:37:06 greear Exp $
-// $Revision: 1.46 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
+// $Id: critter.cc,v 1.47 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.47 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -36,11 +36,13 @@
 #include "commands.h"
 #include "command2.h"
 #include "command3.h"
+#include "command4.h"
 #include "command5.h"
 #include "batl_prc.h"
 #include "battle.h"
 #include <stdarg.h>
 #include "Markup.h"
+#include "spells.h"
 
 const char* PcPositionStrings[] = {"stand", "sit", "rest", "sleep", "meditate",
                                    "stun", "dead", "prone"};
@@ -3506,3 +3508,88 @@ int critter::doDropCoins(int cnt) {
       return 0;
    }//all is well
 }//doDropCoins
+
+
+
+void critter::doDecreaseTimedAffecting() {
+   Cell<SpellDuration*> sd_cell;
+   SpellDuration* sd_ptr;
+   String buf(100);
+   
+   if (isPc()) {
+      if ((++(pc->idle_ticks) > 30) && 
+          (!pc->imm_data || (IMM_LEVEL < 2))) {
+         if (mudlog.ofLevel(DBG)) {
+            mudlog << "Logging off player in decrease_timed_affecting_pcs,"
+                   << " name:  " << *(getName(~0))
+                   << "  address:  " << this << "  ticks:  "
+                   << pc->idle_ticks << endl;
+         }
+         log_out(*this);
+      }//if
+      
+      if (TRUE /*crit_ptr->pc->mode == MODE_NORMAL*/) {
+         getAffectedBy().head(sd_cell);
+         sd_ptr = sd_cell.next();
+         while (sd_ptr) {
+            if (sd_ptr->duration != -1)
+               sd_ptr->duration--;
+            if (sd_ptr->duration == 0) {
+               rem_effects_crit(sd_ptr->spell, *this, TRUE);
+               delete sd_ptr;
+               sd_ptr = getAffectedBy().lose(sd_cell);
+            }//if
+            else {
+               sd_ptr = sd_cell.next();
+            }
+         }//while
+         
+         if (HUNGER > 0)
+            HUNGER--;  //food
+         if (THIRST > 0)
+            THIRST--;  //drink
+         if (DRUGGED > 0)
+            DRUGGED--;  //drugged
+         
+         if (MODE == MODE_NORMAL) {
+            if (HUNGER == 0)
+               show("You are famished.\n");
+            if (THIRST == 0)
+               show("You are thirsty.\n");
+            if (DRUGGED == 0) {
+               show("You no longer feel drugged.\n");
+               DRUGGED = -1;
+            }//if
+         }//if
+      }//if a PC
+
+      // These work for both NPC's and PCs
+
+      /* check for lights about to go out */
+      if (EQ[11]) {
+         if (!EQ[11]->isModified()) {
+            EQ[11] = obj_to_sobj(*(EQ[11]), this);
+         }//if
+         if (EQ[11]->extras[0] == 1) {
+            Sprintf(buf, "%S flickers.\n", EQ[11]->getLongName(this));
+            buf.Cap();
+            show(buf);
+         }//if
+      }//if
+      
+      /* check for lights gone out */
+      if (EQ[11]) {
+         if (EQ[11]->extras[0] == 0) {
+            EQ[11]->extras[0] = -2;
+            Sprintf(buf, "%S dims and glows its last.\n", 
+                    EQ[11]->getLongName(this));
+            buf.Cap();
+            show(buf);
+            crit_flags.turn_off(USING_LIGHT_SOURCE);
+            room_list[getCurRoomNum()].checkLight(FALSE);
+            EQ[11]->appendShortDesc(CS_OUT);
+            EQ[11]->appendInRoomDesc(CS_OUT);
+         }//if
+      }//if
+   }//if
+}//doDecreaseTimedAffecting

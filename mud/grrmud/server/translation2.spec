@@ -1,9 +1,25 @@
-# $Id: translation2.spec,v 1.10 1999/08/10 07:06:21 greear Exp $
-# $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/10 07:06:21 $
+# $Id: translation2.spec,v 1.11 1999/08/19 06:34:36 greear Exp $
+# $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/19 06:34:36 $
 
 # See translations.spec for more information.
 
 #  These strings are primarily used in command2.cc
+
+CS_SHARP_CLICK
+	eng "You hear a sharp click from %S.\n"
+	~
+
+CS_FAINT_CLICK
+	eng "You hear a faint click from %S.\n"
+	~
+
+CS_OPENS_QUIETLY
+	eng "%S opens quietly.\n"
+	~
+
+CS_CLOSES_QUIETLY
+	eng "%S closes quietly.\n"
+	~
 
 CS_IMM_ONLY_ACCESS
 	eng "Only immortals can do that.\n"

@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.28 1999/08/16 07:31:25 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/16 07:31:25 $
+// $Id: room.h,v 1.29 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -63,6 +63,7 @@ public:
    virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
       core_dump("KeywordPair::toStringStat (wrong one)");
    }
+   virtual void gainInv(object* obj) { core_dump("KeywordPair::gainInv"); }
 
    virtual void toStringStat(critter* viewer, String& rslt, int idx,
                              ToStringTypeE st);
@@ -249,7 +250,14 @@ public:
    virtual void outInv(critter& pc); //show inv to pc (use out_inv method)
    virtual void gainInv(object* obj); //set IN_LIST if needed
    virtual object* loseInv(object* obj);
-   virtual void showAllCept(const char* msg, critter* pc = NULL);
+   virtual void showAllCept(CSentryE msg, critter* pc = NULL, critter* pc2 = NULL);
+
+   /** Substitutes the result of getNameTarg->getName(foo), for all critters
+    * foo in the room, into the constant string obtained from msg.  Complicated,
+    * but quite useful :)
+    */
+   virtual void showAllCept(CSentryE msg, Entity* getNameTarg);
+
    virtual void recursivelyLoad(); //mobs and objects
 
    virtual void doPoofOut(critter& pc);

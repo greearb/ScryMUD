@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.27 1999/08/16 07:31:24 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
+// $Id: object.h,v 1.28 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -129,6 +129,7 @@ public:
    void setMaxWeight(int i) { max_weight = i; }
    void setPercentWeight(int i) { percentage_weight = i; }
    void setTimeTillDisolve(int i) { time_till_disolve = i; }
+   int decrementTimeTillDisolve() { return --time_till_disolve; }
 
    virtual int read(istream& da_file, int read_all = TRUE);
    virtual int write(ostream& da_file);
@@ -234,6 +235,9 @@ public:
    /** These default to english, makes a copy of incoming data. */
    void addShortDesc(String& new_val);
    void addInRoomDesc(String& new_val);
+
+   void appendShortDesc(CSentryE whichun);
+   void appendInRoomDesc(CSentryE whichun);
 
    /** Makes a copy of incoming data. */
    void addShortDesc(LString& new_val);

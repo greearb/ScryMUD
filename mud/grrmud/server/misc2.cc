@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.26 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: misc2.cc,v 1.27 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -1612,9 +1612,9 @@ const char* abbrev_dir_of_door(const door& drr) {
 }//abbrev_dir_of_door
 
 
-int obj_count(List<object*>& lst, object& src) {
+int obj_count(SafeList<object*>& lst, object& src) {
    int retval = 0;
-   Cell<object*> cll(lst);
+   SCell<object*> cll(lst);
    object* ptr;
 
    while ((ptr = cll.next())) {

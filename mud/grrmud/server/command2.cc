@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.41 1999/08/16 00:37:06 greear Exp $
-// $Revision: 1.41 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
+// $Id: command2.cc,v 1.42 1999/08/19 06:34:35 greear Exp $
+// $Revision: 1.42 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
 
 //
 //ScryMUD Server Code
@@ -336,13 +336,11 @@ int lock(int i_th, const String* name, critter& pc) {
                      ob_ptr->lock();
 
                      //TODO:  Translation problem.
-                     Sprintf(buf, "locks the %S.\n", name_of_obj(*ob_ptr, ~0));
+                     Sprintf(buf, "locks the %S.\n", ob_ptr->getName());
                      emote(buf, pc, ROOM, TRUE);
                      
                      // send message to other side of the door...
-                     Sprintf(buf, "You hear a sharp click from %S.\n",
-                             name_of_door(*dr_ptr, ~0));
-                     show_all(buf, *(dr_ptr->getDestRoom()));
+                     dr_ptr->getDestRoom()->showAllCept(CS_SHARP_CLICK, dr_ptr);
                      
                      String cmd = "lock";
                      ROOM.checkForProc(cmd, NULL_STRING, pc, ob_ptr->OBJ_NUM);
@@ -434,19 +432,14 @@ int unlock(int i_th, const String* name, critter& pc) {
                   dr_ptr->unlock();
 
                   //TODO:  Translation problem.
-                  Sprintf(buf, "unlocks the %S.\n", name_of_door(*dr_ptr, ~0));
+                  Sprintf(buf, "unlocks the %S.\n", dr_ptr->getName());
                   emote(buf, pc, ROOM, TRUE);
        
-                  // TODO:  Translation problem.
                   // send message to other side of the door...
-                  Sprintf(buf, "You hear a faint click from %S.\n",
-                          name_of_door(*dr_ptr, 0));
-                  show_all(buf, *(dr_ptr->getDestRoom()));
+                  dr_ptr->getDestRoom()->showAllCept(CS_FAINT_CLICK, dr_ptr);
                   
                   String cmd = "unlock";
-                  ROOM.checkForProc(cmd, NULL_STRING, pc,
-                                    dr_ptr->getIdNum());
-                  
+                  ROOM.checkForProc(cmd, NULL_STRING, pc, dr_ptr->getIdNum());
                   
                   return 0;
                }//if
@@ -594,12 +587,10 @@ int open(int i_th, const String* name, critter& pc) {
                emote(buf, pc, ROOM, TRUE);
                
                // send message to other side of the door...
-               Sprintf(buf, "%S opens quietly.\n", name_of_door(*dr_ptr, ~0));
-               show_all(buf, *(dr_ptr->getDestRoom()));
+               dr_ptr->getDestRoom()->showAllCept(CS_OPENS_QUIETLY, dr_ptr);
                
                String cmd = "open";
-               ROOM.checkForProc(cmd, NULL_STRING, pc,
-                                 dr_ptr->getIdNum());
+               ROOM.checkForProc(cmd, NULL_STRING, pc, dr_ptr->getIdNum());
                
                return 0;
             }//else
@@ -680,14 +671,11 @@ int close(int i_th, const String* name, critter& pc) {
                Sprintf(buf, cstr(CS_YOU_CLOSE, pc), dr_ptr->getName(&pc));
                show(buf, pc);
                
-               //TODO:  Translation problem
                // send message to other side of the door...
-               Sprintf(buf, "%S closes quietly.\n", name_of_door(*dr_ptr, 0));
-               show_all(buf, *(dr_ptr->getDestRoom()));
+               dr_ptr->getDestRoom()->showAllCept(CS_CLOSES_QUIETLY, dr_ptr);
                
                String cmd = "close";
-               ROOM.checkForProc(cmd, NULL_STRING, pc, 
-                                 dr_ptr->getIdNum());
+               ROOM.checkForProc(cmd, NULL_STRING, pc, dr_ptr->getIdNum());
                
                return 0;
             }//if
