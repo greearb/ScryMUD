@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.36 2002/08/28 06:32:30 eroper Exp $
-// $Revision: 1.36 $  $Author: eroper $ $Date: 2002/08/28 06:32:30 $
+// $Id: const.cc,v 1.37 2003/05/06 00:54:37 eroper Exp $
+// $Revision: 1.37 $  $Author: eroper $ $Date: 2003/05/06 00:54:37 $
 
 //
 //ScryMUD Server Code
@@ -246,7 +246,8 @@ const char* md_names[] = {
    "NULL", //14
    "NULL", //15
    "has_skin", //16
-   "has_mob_script" /*17*/
+   "has_mob_script", /*17*/
+   "is_guard" //18
 };
 const BitfieldNames MOB_DATA_FLAGS_NAMES(sizeof(md_names)/sizeof(const char*),
                                          md_names, "Mob Data Flags:");

@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.61 2003/05/05 23:23:57 eroper Exp $
-// $Revision: 1.61 $  $Author: eroper $ $Date: 2003/05/05 23:23:57 $
+// $Id: critter.h,v 1.62 2003/05/06 00:54:37 eroper Exp $
+// $Revision: 1.62 $  $Author: eroper $ $Date: 2003/05/06 00:54:37 $
 
 //
 //ScryMUD Server Code
@@ -460,7 +460,7 @@ public:
      // 8 !homing (won't come home after tracking),
      // 9 disolvable (ie summoned critters),
      // 10 !victim_flee, 11 NULL, 12 NULL, 13 NULL, 14 NULL, 15 NULL,
-     // 16 has_skin, 17 has_mob_script
+     // 16 has_skin, 17 has_mob_script, 18 is_guard
      //
 
    spec_data* proc_data;
@@ -671,7 +671,6 @@ public:
    // 15 is_perm_sleeped, 16 is_dual_wielding, 17 is_sneak,
    // 18 in_use, 19 can_dive, 20 spell_tested_yet, 21 is_blocked,
    // 22 is_hide, 23 is_tailing 24 !complete, 25 already_hurled,
-   // 26 is_guard (as in city guard)
 
    long long_data[MOB_LONG_DATA + 1]; 
    // 0 gold 
@@ -1022,7 +1021,7 @@ public:
    int isNecromancer() const { return CLASS == NECROMANCER; }
    int isFighting() const  { return !is_fighting.isEmpty(); }
    int isFighting(critter& da_pc) { return is_fighting.haveData(&da_pc); }
-   int isGuard() { return crit_flags.get(CRITFLAG_IS_GUARD); }
+   int isGuard() { return MOB_FLAGS.get(MOBFLAG_IS_GUARD); }
    
    int isResting() const { return POS == POS_REST; }
    int isStanding() const { return POS == POS_STAND; }

@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.38 2003/05/05 23:23:57 eroper Exp $
-// $Revision: 1.38 $  $Author: eroper $ $Date: 2003/05/05 23:23:57 $
+// $Id: const.h,v 1.39 2003/05/06 00:54:37 eroper Exp $
+// $Revision: 1.39 $  $Author: eroper $ $Date: 2003/05/06 00:54:37 $
 
 //
 //ScryMUD Server Code
@@ -148,7 +148,6 @@ enum crit_flags {
    CRITFLAG_IS_TAILING,
    CRITFLAG_NOT_COMPLETE,
    CRITFLAG_ALREADY_HURLED,
-   CRITFLAG_IS_GUARD
 };
 
 enum pc_data_flags {
@@ -221,7 +220,8 @@ enum mob_data_flag {
    MOBFLAG_NULL5,
    MOBFLAG_NULL6,
    MOBFLAG_HAS_SKIN,
-   MOBFLAG_HAS_MOB_SCRIPT
+   MOBFLAG_HAS_MOB_SCRIPT,
+   MOBFLAG_IS_GUARD
 };
 enum obj_flags {
    OBJFLAG_NO_REST,
