@@ -33,6 +33,7 @@ public:
    static const char* getBuilder(); // $USER that built it
    static const char* getVersion(); // Code version, according to MakeInclude
    static const char* getBuildDate(); // as shown by `date`
+   static const char* getRevision(); // Code revision, according to Subversion
 };
 
 

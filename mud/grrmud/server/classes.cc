@@ -95,13 +95,14 @@ void CmdLineInfo::init(int argc, char** argv) {
             break;
          }            
          case 'v': {
-            cout << "ScryMUD version: " << BuildInfo::getVersion() << " built on: "
-                 << BuildInfo::getBuildDate() << "\nby: " << BuildInfo::getBuilder()
-                 << " on machine: " << BuildInfo::getBuildMachine() << endl;
-            do_shutdown = TRUE;
-            exit(0);
-            break;
-         }
+           cout << "ScryMUD version: " << BuildInfo::getVersion() << " (" <<
+                BuildInfo::getRevision() << ") built on: "
+                << BuildInfo::getBuildDate() << "\nby: " << BuildInfo::getBuilder()
+                << " on machine: " << BuildInfo::getBuildMachine() << endl;
+           do_shutdown = TRUE;
+           exit(0);
+           break;
+                   }
          case 'h':
          case 'u': {
                       cout << "ScryMUD Usage:\n"

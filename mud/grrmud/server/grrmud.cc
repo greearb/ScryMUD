@@ -526,7 +526,8 @@ int main(int argc, char** argv) {
 
    BOOT_TIME = time(NULL);
 
-   cout << "ScryMUD version: " << BuildInfo::getVersion() << endl;
+   cout << "ScryMUD version: " << BuildInfo::getVersion() 
+      << " (" << BuildInfo::getRevision() << ")" << endl;
    cout << "Built on:        " << BuildInfo::getBuildDate() << endl;
    cout << "On machine:      " << BuildInfo::getBuildMachine() << endl;
    cout << "By:              " << BuildInfo::getBuilder() << endl << endl;

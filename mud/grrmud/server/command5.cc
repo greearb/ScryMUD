@@ -2477,12 +2477,13 @@ int dsys(int i, const String& cmd, const String& arg1, critter& pc) {
       return 0;
    }
 
-   Sprintf(buf, "ScryMUD version: %s\n"
+   Sprintf(buf, "ScryMUD version: %s (%s)\n"
          "Built on:        %s\n"
          "On Machine:      %s\n"
          "By:              %s\n\n",
-         BuildInfo::getVersion(), BuildInfo::getBuildDate(),
-         BuildInfo::getBuildMachine(), BuildInfo::getBuilder());
+         BuildInfo::getVersion(), BuildInfo::getRevision(),
+         BuildInfo::getBuildDate(), BuildInfo::getBuildMachine(),
+         BuildInfo::getBuilder());
    pc.show(buf);
 
    Sprintf(buf, "Listening on port: %i\n", config.port);

@@ -69,7 +69,10 @@ $(OBJS): %.o: %.cc %.h
 	$(CC) $(CCFLAGS) \
 	-c $<
 
-BuildInfo.cc: $(SRCS) Makefile BuildInfo.prefix
+Subversion-Revision:
+	svn info |grep Revision |awk '{print $$2}' >Subversion-Revision
+
+BuildInfo.cc: $(SRCS) Makefile BuildInfo.prefix Subversion-Revision
 	cat BuildInfo.prefix > BuildInfo.cc
 	echo "const char* BuildInfo::getBuildMachine() { return \"`uname -mrspn`\"; }" >> BuildInfo.cc
 	echo "" >> BuildInfo.cc
@@ -78,6 +81,8 @@ BuildInfo.cc: $(SRCS) Makefile BuildInfo.prefix
 	echo "const char* BuildInfo::getBuildDate() { return \"`date`\"; }" >> BuildInfo.cc
 	echo "" >> BuildInfo.cc
 	echo "const char* BuildInfo::getVersion() { return \"${SCRY_VERSION}\"; }" >> BuildInfo.cc
+	echo "" >> BuildInfo.cc
+	echo "const char* BuildInfo::getRevision() { return \"`cat Subversion-Revision`\"; }" >> BuildInfo.cc
 
 
 parse_gen.cc: ${CODE_GEN_TARG} ${GEN_SPEC}
