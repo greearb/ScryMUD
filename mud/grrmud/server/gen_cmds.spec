@@ -200,10 +200,10 @@ close ~
 return close(i, &(cooked_strs[1]), pc);
 color ansi color ~
 return color((cooked_strs[1]), (cooked_strs[2]), pc);
-concoct brew concoct ~
-return concoct(pc, !was_ordered);
 consider ~
 return consider(i, &(cooked_strs[1]), pc);
+concoct brew concoct ~
+return concoct(pc, !was_ordered);
 construct ~
 return construct(pc, !was_ordered);
 cough socials ~
