@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.39 2002/01/31 11:45:54 gingon Exp $
-// $Revision: 1.39 $  $Author: gingon $ $Date: 2002/01/31 11:45:54 $
+// $Id: grrmud.cc,v 1.40 2002/02/05 21:55:45 eroper Exp $
+// $Revision: 1.40 $  $Author: eroper $ $Date: 2002/02/05 21:55:45 $
 
 //
 //ScryMUD Server Code
@@ -1052,7 +1052,7 @@ void game_loop(int s)  {
                   if ((victim = pc_ptr->getFirstFighting())) {
                      tank = victim->getFirstFighting();
                      if (tank) {
-                        prompt = "\n";
+                        prompt = "\nTank: ";
                         int num_of_stars = (int)(((float)
                                                   (tank->getHP())/
                                                   (float)(tank->getHP_MAX())) *
@@ -1060,7 +1060,17 @@ void game_loop(int s)  {
                         for (i = 0; i < num_of_stars; i++) {
                            prompt += "*";
                         }//for
+                        prompt += "\nVict: ";
+
+                        num_of_stars = (int)(((float)
+                                                  (victim->getHP())/
+                                                  (float)(victim->getHP_MAX())) *
+                                                 40.0);
+                        for (i = 0; i < num_of_stars; i++) {
+                           prompt += "*";
+                        }//for
                         prompt += "\n";
+
                         pc_ptr->show(prompt);
                      }// if tank
                   }//if victim
