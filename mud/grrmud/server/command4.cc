@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.28 1999/07/16 06:12:52 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/07/16 06:12:52 $
+// $Id: command4.cc,v 1.29 1999/07/18 23:00:20 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/07/18 23:00:20 $
 
 //
 //ScryMUD Server Code
@@ -1140,6 +1140,8 @@ int do_door_to(room& cur_room, room& targ_room, int distance, critter&
    new_door->in_room = cur_room.getRoomNum();
    if (is_gate) {
       new_door->ticks_till_disolve = pc.LEVEL/8 + 1;
+      obj_ptr_log << "NOTE " << cur_room.getIdNum() << " " << &cur_room
+                  << "Adding to affected_rooms bcause of gate." << endl;
       affected_rooms.gainData(&cur_room);
    }//if
    Put(new_door, cur_room.doors);

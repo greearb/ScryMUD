@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.34 1999/07/18 20:12:03 greear Exp $
-// $Revision: 1.34 $  $Author: greear $ $Date: 1999/07/18 20:12:03 $
+// $Id: critter.cc,v 1.35 1999/07/18 23:00:21 greear Exp $
+// $Revision: 1.35 $  $Author: greear $ $Date: 1999/07/18 23:00:21 $
 
 //
 //ScryMUD Server Code
@@ -2427,8 +2427,7 @@ void critter::Read(ifstream& ofile, short read_all) {
          else {
             if (mudlog.ofLevel(ERR)) {
                mudlog << "ERROR: trying to load non-existant object: " << i
-                      << " in critter: " << getIdNum() << " name: "
-                      << getName() << endl;
+                      << " in critter named: " << *(getName()) << endl;
             }
          }//else
       }//else
@@ -2605,14 +2604,13 @@ void critter::checkForProc(String& cmd, String& arg1, critter& actor,
 
    // Look through all objects the person is using.
    for (int i = 1; i < MAX_EQ; i++) {
-      // TODO:  Demote these logging msgs when we find the bug.
-      if (mudlog.ofLevel(INF)) {
+      if (mudlog.ofLevel(DBG2)) {
          mudlog << "Critter [" << getIdNum() << "] " << *(getName())
                 << ":  Checking EQ[" << i << "] == " << EQ[i] << ", in rm: "
                 << rm.getIdNum() << endl;
       }
       if (EQ[i] && (EQ[i]->hasScript())) {
-         if (mudlog.ofLevel(INF)) 
+         if (mudlog.ofLevel(DBG2)) 
             mudlog << "Found an object with a script: EQ[" << i << "]\n";
          // make it modified, if it is not already so.
          if (!(EQ[i]->isModified())) {

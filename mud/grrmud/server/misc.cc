@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.24 1999/07/18 21:37:48 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/18 21:37:48 $
+// $Id: misc.cc,v 1.25 1999/07/18 23:00:21 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/07/18 23:00:21 $
 
 //
 //ScryMUD Server Code
@@ -220,6 +220,11 @@ short isnum(String& word) {
 
 void join_in_battle(critter& agg, critter& vict) {
   //log("In join_in_battle...\n");
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "join_in_battle: agg: " << &agg << " vict: " << &vict << endl;
+   }
+
    if (agg.isMob()) {
       mudlog.log(ERR, "ERROR: join_in_battle called with agg as mob\n");
       return;
@@ -799,6 +804,7 @@ void update_zone(int zone_num, short read_all) {
       rfile.getline(temp_str, 80);
    }//while, the big loop, reads in a whole zone
    tmp_room.Clear();
+   tmp_veh.Clear();
 }//update_zone
 
 

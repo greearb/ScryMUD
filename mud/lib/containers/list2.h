@@ -1,5 +1,5 @@
-// $Id: list2.h,v 1.8 1999/07/18 00:59:23 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
+// $Id: list2.h,v 1.9 1999/07/18 23:00:21 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/18 23:00:21 $
 
 //
 //ScryMUD Server Code
@@ -296,24 +296,26 @@ public:
    }//toString
 
    /*  LOSEDATA  finds and cuts the node with the specified data in it out 
-       of the list.  Only cuts ONE instance, not multiple, if they exist. */
+    *  of the list.  Now cut's multiple copies if they exits.
+    */
    virtual T loseData (const T& data) {
       Cell<T> cell(*this);
       T ldata;
+      T retval = (T)(0);
 
       Assert((int)data);
 
       ldata = cell.next();
       while (ldata) {
          if (ldata == data) {
+            retval = ldata;
             handleLosingCell(cell);
-            cell.lose();  //this WILL NOT delete the item pointed to.
+            ldata = cell.lose();  //this WILL NOT delete the item pointed to.
             sz--;
-            return ldata;
          }//if
          ldata = cell.next();
       }//while
-      return (T)(0);
+      return retval;
    }//LoseData
 
  

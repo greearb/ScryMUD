@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.12 1999/07/05 22:32:08 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/05 22:32:08 $
+// $Id: spells.cc,v 1.13 1999/07/18 23:00:21 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/07/18 23:00:21 $
 
 //
 //ScryMUD Server Code
@@ -1076,6 +1076,9 @@ void do_cast_illuminate(room& rm, critter& agg, int is_canned,
             return;
          }//if
       }//while
+
+      obj_ptr_log << "NOTE " << rm.getIdNum() << " " << &rm
+                  << "Adding to affected_rooms bcause of illuminate." << endl;
 
       affected_rooms.gainData(&rm); //add to global affected list so
                                      //spell can wear off eventually

@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.26 1999/07/18 21:16:18 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/07/18 21:16:18 $
+// $Id: room.cc,v 1.27 1999/07/18 23:00:21 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/07/18 23:00:21 $
 
 //
 //ScryMUD Server Code
@@ -514,7 +514,7 @@ void room::Read(ifstream& ofile, short read_all) {
 
    if (!affected_by.isEmpty()) {
       // Also place it on the list of rooms to be checked for loss of spell...
-      affected_rooms.append(this);
+      affected_rooms.gainData(this);
    }//if
 
    if (mudlog.ofLevel(DB)) {
