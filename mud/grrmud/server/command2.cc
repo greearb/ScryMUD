@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.29 1999/06/26 06:14:16 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/06/26 06:14:16 $
+// $Id: command2.cc,v 1.30 1999/06/28 05:35:27 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/06/28 05:35:27 $
 
 //
 //ScryMUD Server Code
@@ -1978,6 +1978,37 @@ int wimpy(int i, critter& pc) {
 }//wimpy
 
 
+int language(const String& lang,  critter& pc) {
+   String buf(100);
+
+   if (ok_to_do_action(NULL, "mFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+
+      int len = max(lang.Strlen(), 1);
+      if (strncasecmp(lang, "English", len) == 0) {
+         pc.pc->preferred_language = English;
+      }
+      else if ((strncasecmp(lang, "Spanish", len) == 0) ||
+               (strncasecmp(lang, "Espanol", len) == 0)) {
+         pc.pc->preferred_language = Spanish;
+      }
+      else if (strncasecmp(lang, "Portugues", len) == 0) {
+         pc.pc->preferred_language = Portugues;
+      }
+      else {
+         //TODO:  Translate
+         pc.show("Only:  English, Spanish, and Portugues are supported now.\n");
+         pc.show("Usage:  language <<language_choice>\n\n");
+         return -1;
+      }
+
+      pc.PC_FLAGS.turn_on(27);
+      pc.show(CS_OK);
+      return 0;
+   }
+   return -1;
+}//language
+
+
 int mstat(int i_th, const String* name, critter& pc) {
    critter* crit_ptr;
 
@@ -2435,7 +2466,7 @@ int do_lore(object& obj, critter& pc, int show_extra) {
          show_stat_affects(obj, pc);
       }
 
-      if (!obj.CASTS_THESE_SPELLS.isEmpty()) {
+      if (!obj.obj_proc && obj.CASTS_THESE_SPELLS.isEmpty()) {
          pc.show("Casts these spells:\n");
          out_spell_list(obj.CASTS_THESE_SPELLS, pc);
          pc.show("\n");

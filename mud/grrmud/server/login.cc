@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.13 1999/06/23 04:16:06 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
+// $Id: login.cc,v 1.14 1999/06/28 05:35:27 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/28 05:35:27 $
 
 //
 //ScryMUD Server Code
@@ -82,7 +82,7 @@ void critter::doLogin() {
       return;
    }//if
 
-   if ((pc->index > 6) || (pc->index < 0)) {
+   if ((pc->index > 7) || (pc->index < 0)) {
       mudlog.log(ERR, "ERROR:  bad index sent to do_login.\n");
       setMode(MODE_LOGOFF_NEWBIE_PLEASE);
    }//if
@@ -139,7 +139,7 @@ void critter::doLogin() {
                      setMode(MODE_LOGOFF_NEWBIE_PLEASE);
                   }
                   else {
-                     pc->index = 1;
+                     pc->index = 7; //go choose language
                   }
                }//else
             }//else            
@@ -474,7 +474,22 @@ void critter::doLogin() {
                }//else
             }//if TRUE
             break;
-            
+
+         case 7: //Language choice for newbies.
+            string = pc->input.Get_Command(eos, term_by_period);
+            if (isnum(string)) {
+               j = atoi(string);
+               
+               if ((j >= English) && (j < LastLanguage)) {
+                  pc->preferred_language = (LanguageE)(j);
+                  pc->index = 1; //go get the password.
+                  PC_FLAGS.turn_on(27);
+                  break;
+               }
+            }
+            show("Please pick a valid number.\n");
+            break;
+   
          default:
             mudlog.log(ERR, "ERROR:  default called in do_login.\n");
             show("ERROR found, tell imp:  'default called in do_login'.\n");

@@ -445,6 +445,8 @@ laugh socials ~
 laugh(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 label_dummy label: add_mob_script ~
 return -1; //should never get here
+language languages ~
+return language(cooked_strs[1], pc);
 light wear ~
 return light(i, &(cooked_strs[1]), pc);
 lick socials ~

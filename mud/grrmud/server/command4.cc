@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.22 1999/06/25 04:02:54 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
+// $Id: command4.cc,v 1.23 1999/06/28 05:35:27 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/28 05:35:27 $
 
 //
 //ScryMUD Server Code
@@ -1959,8 +1959,10 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
 	}//if
       }//if
       else if (strncasecmp(*targ, "language", len1) == 0) {
-	if (check_l_range(new_val, 0, 2, pc, TRUE)) {
+	if (check_l_range(new_val, (int)(English), (int)(LastLanguage - 1),
+                          pc, TRUE)) {
 	  ptr->pc->preferred_language = (LanguageE)(new_val);
+          ptr->PC_FLAGS.turn_on(27);
 	  flag = TRUE;
 	}//if
       }//if

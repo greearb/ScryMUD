@@ -1,5 +1,5 @@
-// $Id: code_gen.cc,v 1.8 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: code_gen.cc,v 1.9 1999/06/28 05:35:27 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/28 05:35:27 $
 
 //
 //ScryMUD Server Code
@@ -91,6 +91,8 @@ int LanguageEntry::read(ifstream& dafile) {
    char junk[200];
    String tmp_lang(50);
    String tmp_val;
+
+   clear();
 
    // Grab comments, if there are any.
    while (TRUE) {

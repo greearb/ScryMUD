@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.16 1999/06/25 04:02:54 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
+// $Id: const.cc,v 1.17 1999/06/28 05:35:27 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/28 05:35:27 $
 
 //
 //ScryMUD Server Code
@@ -662,8 +662,19 @@ char* login_prompts[] = {
 	Ogrue		(9)			(109)
 	Elf		(11)			(111)
 
-	Your choice: "
+	Your choice: ",
+      
+      /* case 6 */
+      "
+Choose your preferred language:
+Lengua:
 
+        English         (0)
+        Espanol         (1)
+        Portugues       (2)
+
+        Your choice:
+        Selection: "
 
 }; //login_prompts
 

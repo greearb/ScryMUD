@@ -1,5 +1,5 @@
-// $Id: command2.h,v 1.5 1999/06/20 02:01:43 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/20 02:01:43 $
+// $Id: command2.h,v 1.6 1999/06/28 05:35:27 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/28 05:35:27 $
 
 //
 //ScryMUD Server Code
@@ -36,6 +36,7 @@
 
 int log_level(int lvl, critter& pc);
 int wimpy(int i, critter& pc);
+int language(const String& lang,  critter& pc);
 int abilities(critter& pc); //show's skills can lrn, %lrned
 int score(const String* str2, critter& pc);
 int score_long(critter& pc);
