@@ -112,7 +112,20 @@ void critter::save() {
       return;
    }//if
 
+   int i;
+   for(i = 0; i<MAX_EQ; i++) {
+       if (EQ[i]) {
+           remove_eq_effects(*(EQ[i]), *this, FALSE, FALSE, i);
+       }
+   }
+
    Write(ofile);
+
+   for(i=0;i<MAX_EQ;i++) {
+       if (EQ[i]) {
+           wear_eq_effects(*(EQ[i]), *this, i, FALSE);
+       }
+   }
 }//save_pc
 
 
