@@ -1,5 +1,5 @@
-// $Id: zone.h,v 1.2 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: zone.h,v 1.3 1999/07/30 06:42:23 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
 
 //
 //ScryMUD Server Code
@@ -57,10 +57,10 @@ protected:
    ZoneList(const ZoneList& src); //maybe code this some day
    ZoneList() { _cnt++; }
 
-   List<int*> nums;
+   PtrList<int> nums;
 
 public:
-   ~ZoneList() { _cnt--; clear_ptr_list(nums); }
+   ~ZoneList() { _cnt--; nums.clearAndDestroy(); }
 
    static ZoneList& instance(); //singleton.
    static int getInstanceCount() { return _cnt; } //how many ZoneList objects exist?

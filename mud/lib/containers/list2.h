@@ -1,5 +1,5 @@
-// $Id: list2.h,v 1.10 1999/07/20 05:05:41 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/07/20 05:05:41 $
+// $Id: list2.h,v 1.11 1999/07/30 06:42:23 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
 
 //
 //ScryMUD Server Code
@@ -200,28 +200,6 @@ public:
       }//if
       else {
          header->item = Nil;
-         header->next = header;
-         header->prev = header;
-      }//else
-
-   } // constructor
-
-
-   List() : sz(0) {
-      __list_cnt++;
-      header = new Node;
-
-      memset(cll_list, 0, NUMBER_OF_CONCURENT_CELLS * sizeof(Cell<T>*));
-      //for (int i = 0; i<NUMBER_OF_CONCURENT_CELLS; i++) {
-      //   cll_list[i] = NULL;
-      //}
-
-      if (!header) { 
-         //log("ERROR:  out of mem, list constructor, exiting!\n");
-         exit (101);
-      }//if
-      else {
-         header->item = (T)(NULL);
          header->next = header;
          header->prev = header;
       }//else
@@ -574,7 +552,6 @@ public:
       return TRUE;
    }
 
-   friend void clear_ptr_list(List<T> &L);  //DOES delete the data
    friend void Put(const T& val, List<T> &L);
    friend T Top(const List<T> &L);
    friend int IsEmpty(const List<T> &L);
@@ -599,16 +576,6 @@ template <class T> T Top(const List<T>& L) {
 template <class T> void Put(const T& val, List<T>& L) {
    L.append(val);
 }
-
-template <class T> void clear_ptr_list(List<T>& L) {
-   Cell<T> cll(L);
-   T tmp = cll.next();
-   while (tmp) {
-      delete tmp;
-      tmp = L.lose(cll);
-   }//while
-}//
-
 
  
 ///************************************************************************///
@@ -749,12 +716,42 @@ public:
 
 };
 
-
-template <class T> class SortedPtrList : public List<T> {
+template <class T> class PtrList : public List<T*> {
 public:
-   SortedPtrList() : List<T>() { }
-   SortedPtrList(const List<T> &L) : List<T>(L) { }
-   SortedPtrList(const T &Nil) : List<T>(Nil) { }
+   PtrList() : List<T*>((T*)NULL) { }
+   PtrList(const PtrList<T> &L) : List<T*>(L) { }
+   PtrList(const T &Nil) : List<T*>(Nil) { }
+   virtual ~PtrList() { }
+
+   /** NOTE:  does a clearAndDestroy on self before starting on copying
+    * the other.
+    */
+   void becomeDeepCopyOf(const PtrList<T>& lst) {
+      clearAndDestroy();
+      Cell<T*> cll(lst);
+      T* ptr;
+      while ((ptr = cll.next())) {
+         append(new T(*ptr));
+      }//while
+   }//becomeDeepCopyOf
+
+   void clearAndDestroy() {
+      T* val;
+      while (!isEmpty()) {
+         val = popFront();
+         delete val;
+      }//while
+   }//clearAndDestroy
+
+};//PtrList
+
+
+template <class T> class SortedPtrList : public PtrList<T> {
+public:
+   SortedPtrList() : PtrList<T>() { }
+   SortedPtrList(const SortedPtrList<T> &L) : PtrList<T>(L) { }
+   SortedPtrList(const T &Nil) : PtrList<T>(Nil) { }
+   virtual ~SortedPtrList() { }
 
    void insertSorted(T val) {
       Cell<T> cll(*this);
@@ -767,6 +764,7 @@ public:
       }//while
       insertBefore(cll, val);
    }//insertSorted
+
 };//SortedPtrList
 
 

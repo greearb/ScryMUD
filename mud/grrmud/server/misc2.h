@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.14 1999/07/29 06:35:09 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/07/29 06:35:09 $
+// $Id: misc2.h,v 1.15 1999/07/30 06:42:23 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
 
 //
 //ScryMUD Server Code
@@ -95,8 +95,6 @@ short zone_is_locked(int znum);
 object* have_obj_numbered(const List<object*>& lst, const int i_th,
                           const int obj_num, const int see_bit,
                           const room& rm);
-
-say_proc_cell* have_topic_named(List<say_proc_cell*> lst, const String& msg);
 
 const String* next_mov_dir(room& car);
 short is_car_at_dest(room& car);

@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.29 1999/07/29 06:35:09 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/07/29 06:35:09 $
+// $Id: critter.h,v 1.30 1999/07/30 06:42:23 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
 
 //
 //ScryMUD Server Code
@@ -115,7 +115,7 @@ public:
    room* olc_room;
    door_data* olc_door;
    object* olc_obj;
-   List<String*> tmplist;
+   PtrList<String> tmplist;
    short imm_level;
    
    String* edit_string;
@@ -220,7 +220,6 @@ class shop_data {
 private:
    static int _cnt;
 
-public:
    short markup;       // %markup
    short buy_percentage;       // buy_percentage
    short open_time;
@@ -229,23 +228,24 @@ public:
    // 3 Player-run shopkeeper
    // 40-73 type to trade flags, same as obj_flags
    //
-   List<object*> perm_inv; //holds perm inventory
+   ObjectContainer perm_inv; //holds perm inventory
 
    // Holds extra info for player run shops.
-   List<PlayerShopData*> ps_data_list;
+   PtrList<PlayerShopData> ps_data_list;
    String manager;
 
+public:
 
    shop_data();
-   shop_data(const shop_data& source);  //copy constructor
-   ~shop_data();
+   shop_data(shop_data& source);  //copy constructor
+   shop_data& operator=(shop_data& src);
+   virtual ~shop_data();
 
    int isPlayerRun() const { return shop_data_flags.get(3); }
 
    void Clear();
    void Read(ifstream& da_file, short read_all);
    void Write(ofstream& da_file) const ;
-   shop_data& operator=(const shop_data& src);
 
    static int getInstanceCount() { return _cnt; }
 
@@ -280,7 +280,7 @@ protected:
    static int _cnt;
 
 public:
-   List<String*> hunting;
+   PtrList<String> hunting;
    String tracking;
    
    temp_proc_data();
@@ -356,7 +356,7 @@ protected:
    //12 body, 13 belt, 14 legs, 15 feet, 16 finger, 17 finger
    //18 shield 
    
-   List<SpellDuration*> mini_affected_by; //decreased every battle
+   PtrList<SpellDuration> mini_affected_by; //decreased every battle
    //round
    ObjectContainer inv; // collection of items in inventory
    
@@ -918,6 +918,9 @@ public:
    String& getPoofin();
    String& getPoofout();
    String* getHostName() const;
+
+   void setWizardEyeObject(object* o) { w_eye_obj = o; }
+   object* getWizardEyeObject() { return w_eye_obj; }
 
    String* getInput() { return &(input); }
    PcMode getMode() { return mode; }

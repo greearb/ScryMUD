@@ -1,5 +1,5 @@
-// $Id: script.h,v 1.11 1999/07/29 06:35:09 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/29 06:35:09 $
+// $Id: script.h,v 1.12 1999/07/30 06:42:23 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
 
 //
 //ScryMUD Server Code
@@ -316,13 +316,19 @@ public:
  * rooms, mobs and others may inherit it.
  */
 class Scriptable {
+private:
+   int _cnt;
+
 protected:
-   List<GenScript*> scripts;
+   PtrList<GenScript> scripts;
    GenScript* cur_script; // a pointer into the List of MobScripts.
-   List<GenScript*> pending_scripts;
+   PtrList<GenScript> pending_scripts;
    int pause;
 
 public:
+   Scriptable() : pause(0) { _cnt++; }
+   virtual ~Scriptable();
+
    /** For scripts, the script_targ is always *this.  The script_owner
     * will be null (for non-script specific stuff) and should be specified
     * if it relates to scripting of course.
@@ -351,9 +357,11 @@ public:
 
    int getPause() const { return pause; }
    void setPause(int i) { pause = i; }
+   void decrementPause() { if (pause > 0) pause--; }
 
    void doScriptJump(int abs_index);
-   int insertNewScript(MobScript* script);
+   virtual int insertNewScript(GenScript* original) = 0;
+
    GenScript* getScriptAt(int idx) { return scripts.elementAt(idx); }
 
    /** Attempt to trigger a room script directly.  So far, we support only

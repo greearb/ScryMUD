@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.10 1999/07/29 06:35:08 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/07/29 06:35:08 $
+// $Id: classes.h,v 1.11 1999/07/30 06:42:23 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
 
 //
 //ScryMUD Server Code
@@ -94,15 +94,23 @@ enum LEtypeE {
 class LString : public String {
 protected:
    LanguageE lang;
+
 public:
+   LString() : String(5) { }
    LString(LanguageE language, int len) : String(len), lang(language) { }
+   LString(const LString& src);
+   LString(LanguageE language, const String& s) : String(s), lang(language) { }
+   LString(LanguageE language, const char* s) : String(s), lang(language) { }
+   virtual ~LString() { }
+   
    LanguageE getLanguage() const { return lang; }
    void setLanguage(LanguageE l) { lang = l; }
    int isLanguage(LanguageE l) const { return lang == l; }
 };
 
-class LStringCollection : public List<LString*> {
+class LStringCollection : public PtrList<LString> {
 public:
+   LStringCollection() : PtrList<LString>() { }
    virtual ~LStringCollection();
    LString& getString(LanguageE for_lang);
 
@@ -131,13 +139,14 @@ public:
    virtual int prepend(ContainedObject* o);
    virtual int insertUnique(ContainedObject* o);
    virtual ContainedObject* remove(ContainedObject* o);
-   List<ContainedObject*>& getInv() { return inv; }
-   const List<ContainedObject*>& peekInv() const { return inv; }
+   PtrList<ContainedObject>& getInv() { return inv; }
+   const PtrList<ContainedObject>& peekInv() const { return inv; }
    virtual int isEmpty() const { return inv.isEmpty(); }
    int haveData(ContainedObject* obj) const { return (inv.haveData(obj) || 0); }
+   virtual void clear() { inv.clear(); }
 
 private:
-   List<ContainedObject*> inv;
+   PtrList<ContainedObject> inv;
    ContainedObject* privRemoveObject(ContainedObject* o) { return inv.loseData(o); }
 
 };//ObjectContainer
@@ -152,12 +161,12 @@ public:
 
    /** Remove from all containers. */
    virtual ~ContainedObject();
-   List<ObjectContainer*>& getContainerList() { return contained_by; }
+   PtrList<ObjectContainer>& getContainerList() { return contained_by; }
 
 private:
    void privAddToContainer(ObjectContainer* ptr) { contained_by.gainData(ptr); }
    void privRemoveFromContainer(ObjectContainer* ptr) { contained_by.loseData(ptr); }
-   List<ObjectContainer*> contained_by;
+   PtrList<ObjectContainer> contained_by;
 
 };//ContainedObject
 
@@ -172,8 +181,9 @@ protected:
    Entity* container;
    int vis_bit;
    int id_num;
+   int zone_num;
 
-   List<SpellDuration*> affected_by;
+   PtrList<SpellDuration> affected_by;
    LStringCollection names;
    LStringCollection long_desc;
 
@@ -186,22 +196,16 @@ public:
    virtual void gainObject(Entity* le) = 0;
    virtual Entity* loseObject(Entity* le) = 0;
    /** Returns zero if we can't find anything better. */
-   virtual int getCurRoomNum() const = 0;
-
+   virtual int getCurRoomNum() = 0;
 
    virtual void setContainer(Entity* cont) { container = cont; }
    Entity* getContainer() { return container; }
 
-   virtual const String* getShortName() { return getName(); }
-   virtual const String* getShortName(int c_bit) { return getName(c_bit); }
-   virtual const String* getName() { return getName(~0); };
-   virtual const String* getName(int c_bit);
-   virtual const String* getLongName() { return getLongName(~0); }
-   virtual const String* getLongName(int c_bit);
+   virtual const String* getName(int c_bit = ~0);
+   virtual const String* getLongName(int c_bit = ~0);
 
    /**  These will take care of language translation and see-bits. */
    virtual const String* getName(critter* observer);
-   virtual const String* getShortName(critter* observer);
    virtual const String* getLongName(critter* observer);
    virtual const String* getLongDesc(critter* observer);
 
@@ -212,6 +216,9 @@ public:
 
    int getVisBit() const { return vis_bit; }
    int getIdNum() const { return id_num; }
+   /** Zone it 'belongs' to. */
+   int getZoneNum() const { return zone_num; }
+   void setZoneNum(int z) { zone_num = z; }
    void setIdNum(int i) { id_num = i; }
 };
 

@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.18 1999/07/29 06:35:09 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/07/29 06:35:09 $
+// $Id: object.h,v 1.19 1999/07/30 06:42:23 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
 
 //
 //ScryMUD Server Code
@@ -35,6 +35,7 @@
 #include "critter.h"
 
 class object;
+class Pc;
  
 enum ComponentEnum {
    CONSTRUCTION = 0,
@@ -65,6 +66,15 @@ public:
    //void Clear();
    void Read(ifstream& da_file);
    void Write(ofstream& da_file) const;
+   void makeComponent(int targ, int comp1, int comp2, int comp3, int comp4,
+                      int comp5);
+   int getTarget() const { return target_object; }
+   int getItem1() const { return item1; }
+   int getItem2() const { return item2; }
+   int getItem3() const { return item3; }
+   int getItem4() const { return item4; }
+   int getItem5() const { return item5; }
+
    static int getInstanceCount() { return _cnt; }
 }; //ConstructData
 
@@ -72,18 +82,15 @@ public:
 
 ///*********************  object  ******************************///
 
-class object : public Entity, public Scriptable {
+class object : public Entity {
 private:
    static int _cnt;
 
 protected:
    int is_modified; //takes the place of what IN_LIST used to do for us.
 
-   void gainObject_(object* obj);
-   object* loseObject_(object* obj);
-
-   String short_desc;
-   String in_room_desc;
+   LString short_desc;
+   LString in_room_desc;
    
    bitfield obj_flags; 
 	   // 0 no_rest,  1 !evil, 2 !neutral, 3 !good, 
@@ -117,7 +124,7 @@ protected:
 	   // 2 item_num;
 	   // 3 in_zone  //as in olc purposes, its origin
 
-   List<StatBonus*> stat_affects;  
+   PtrList<StatBonus> stat_affects;  
 
 public:
    object (object& source); //copy constructor
@@ -130,29 +137,23 @@ public:
    void Write(ofstream& da_file);
    int isMagic();
 
-   Entity* loseObject(Entity* le);
-   void gainObject(Entity* le);
-   int getCurRoomNum() const;
+   virtual Entity* loseObject(Entity* le);
+   virtual void gainObject(Entity* le);
+   virtual int getCurRoomNum();
 
    int getLevel() const { return extras[8]; }
-   int getCurWeight() const;
-   
+
+   virtual int getCurWeight() const { return getEmptyWeight(); }
    int getEmptyWeight() const { return extras[5]; }
    void setEmptyWeight(int wt) { extras[5] = wt; }
+   virtual int getEntityCount(LEtypeE type, int id_num, int sanity) { return 0; }
    
    int doGoToRoom(int dest_room, const char* from_dir, door* by_door,
                   int cur_room, int sanity);
 
    int getZoneNum() const;
    int getDefaultPrice() { return cur_stats[1]; }
-   int getPause() const { return pause; }
    
-   void setPause(int i) { pause = i; }
-   void decrementPause() { if (pause > 0) pause--; }
-
-   void makeComponent(int targ, int comp1, int comp2, int comp3, int comp4,
-                      int comp5, ComponentEnum con_type);
-
    int isPotion() const;
    int isFood() const ;
    int isInUse() const ;
@@ -219,12 +220,12 @@ public:
 
 
 /** Special Procedure extensions to an object. */
-class ProcObject : public object {
+class ProcObject : public object, public Scriptable {
 private:
    static int _cnt;
 
 protected:
-   bitfield flags; // 0 consume_teleport, 
+   bitfield proc_flags; // 0 consume_teleport, 
    // 1 has_construct_data, 2 has_skin, 3 consume_poison,
    // 4 NULL, 5 NULL, 6 NULL,
    // 7 NULL, 8 NULL, 9 NULL,
@@ -232,8 +233,8 @@ protected:
    //
    ConstructData* construct_data;
    object* skin_ptr;
-   critter* w_eye_owner;
-   List<SpellDuration*> casts_these_spells;
+   Pc* w_eye_owner;
+   PtrList<SpellDuration> casts_these_spells;
 
 public:
    ProcObject();
@@ -242,18 +243,23 @@ public:
 
    ProcObject& operator=(const ProcObject& source);
 
-   int castsSpells() { return flags.get(10); }
-   int consumeTeleport() { return flags.get(0); }
-   int hasConstructData() { return flags.get(1); }
-   int hasSkin() { return flags.get(2); }
-   int consumePoison() { return flags.get(3); }
+   void makeComponent(int targ, int comp1, int comp2, int comp3, int comp4,
+                      int comp5, ComponentEnum con_type);
+
+   int castsSpells() { return proc_flags.get(10); }
+   int consumeTeleport() { return proc_flags.get(0); }
+   int hasConstructData() { return proc_flags.get(1); }
+   int hasSkin() { return proc_flags.get(2); }
+   int consumePoison() { return proc_flags.get(3); }
    object* getSkin() { return skin_ptr; }
    void setSkin(object* sk) { skin_ptr = sk; }
-   critter* getWizardEyeOwner() { return w_eye_owner; }
-   void setWizardEyeOwner(critter* cr) { w_eye_owner = cr; }
+   Pc* getWizardEyeOwner() { return w_eye_owner; }
+   void setWizardEyeOwner(Pc* cr) { w_eye_owner = cr; }
 
-   bitfield& getFlags() { return flags; }
-   List<SpellDuration*>& getSpellsCast() { return casts_these_spells; }
+   virtual int insertNewScript(GenScript* original);
+
+   bitfield& getFlags() { return proc_flags; }
+   PtrList<SpellDuration>& getSpellsCast() { return casts_these_spells; }
 
    void Clear();
    void Read(ifstream& da_file);
@@ -265,7 +271,7 @@ public:
 
 
 ///********************** Bag  ***********************************/// 
-class Bag : public ObjectContainer, public object, public Closable {
+class BaseBag : public ObjectContainer, public Closable {
 private:
    static int _cnt;
 
@@ -275,16 +281,18 @@ protected:
    short percentage_weight; //1 to 100, ie 50 bag makes objs half as heavy
    short time_till_disolve; //for corpse, in ticks, -1 if not disolving
 
+   virtual void loseObject_(object* obj);
+
 public:
-   Bag(Bag& source); //copy constructor
-   Bag(); //default constructor
-   Bag& operator=(Bag& src);
-   ~Bag() { _cnt--; }
+   BaseBag(BaseBag& source); //copy constructor
+   BaseBag(); //default constructor
+   BaseBag& operator=(BaseBag& src);
+   ~BaseBag() { _cnt--; }
 
    void Read(ifstream& da_file);
    void Write(ofstream& da_file) const;
 
-   List<object*>& getInv() { return (List<object*>&)(getInv()); }
+   virtual PtrList<object>& getInv() { return (PtrList<object>&)(getInv()); }
    int getMaxWeight() const { return max_weight; }
    int getPercentWeight() const { return percentage_weight; }
    int getTimeTillDisolve() const { return time_till_disolve; }
@@ -293,10 +301,34 @@ public:
    void setPercentWeight(int i) { percentage_weight = i; }
    void setTimeTillDisolve(int i) { time_till_disolve = i; }
 
+   virtual int getEntityCount(LEtypeE type, int id_num, int sanity);
+
+   virtual int getCurWeight();
+
    static int getInstanceCount() { return _cnt; }
 
    virtual LEtypeE getEntityType() const { return LE_BAG_OBJ; }
-}; // Bag
+}; // BaseBag
 
+class Bag : public object, public BaseBag {
+protected:
+   virtual void gainObject_(object* obj);
+
+public:
+   virtual int getCurWeight() { return BaseBag::getCurWeight() +
+                                         object::getCurWeight(); }
+   virtual void gainObject(Entity* obj);
+};
+
+class ProcBag : public ProcObject, public BaseBag {
+protected:
+   virtual void gainObject_(object* obj);
+
+public:
+
+   virtual int getCurWeight() { return BaseBag::getCurWeight() +
+                                         object::getCurWeight(); }
+   virtual void gainObject(Entity* obj);
+};
 
 #endif

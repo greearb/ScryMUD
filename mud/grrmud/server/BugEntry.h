@@ -1,8 +1,8 @@
-// $Id: BugEntry.h,v 1.6 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: BugEntry.h,v 1.7 1999/07/30 06:42:23 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
 
-// $Id: BugEntry.h,v 1.6 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: BugEntry.h,v 1.7 1999/07/30 06:42:23 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
 
 //
 //ScryMUD Server Code
@@ -126,7 +126,7 @@ protected:
    String create_date; //it was created.
    String reporter;
    String assigned_to; /* name of person asigned to fix it */
-   List<CommentEntry*> reports;
+   PtrList<CommentEntry> reports;
    String title;
 
    String html_safe_title; //not saved to disk
@@ -153,7 +153,7 @@ protected:
    String file_name;
    String coll_name;
    CollectionType type;
-   List<BugEntry*> bugs;
+   PtrList<BugEntry> bugs;
 
    static char* ct_strs[];
 

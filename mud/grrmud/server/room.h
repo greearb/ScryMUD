@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.17 1999/07/29 06:35:09 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/07/29 06:35:09 $
+// $Id: room.h,v 1.18 1999/07/30 06:42:23 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
 
 //
 //ScryMUD Server Code
@@ -44,14 +44,11 @@
 class zone;
 class CSelectorColl;
 
-class KeywordPair {
+class KeywordPair : public Entity {
 protected:
    static int _cnt;
 
 public:
-   List<String*> names;
-   String desc;
-
    KeywordPair() { _cnt++; }
    KeywordPair(const KeywordPair& src);
    ~KeywordPair();
@@ -106,8 +103,8 @@ protected:
    
    LStringCollection short_desc;
 
-   List<door*> doors;   
-   List<KeywordPair*> keywords;
+   PtrList<door> doors;   
+   ObjectContainer keywords;
 
    void gainObject_(critter& pc);
    void gainObject_(object& obj);
@@ -135,6 +132,7 @@ public:
    int decrementPause() { if (pause > 0) pause--; return pause; }
 
    virtual LEtypeE getEntityType() const { return LE_ROOM; }
+   virtual int getEntityCount(LEtypeE type, int id_num, int sanity);
 
    int getMovCost() const { return cur_stats[1]; }
    int getRoomNum() const { return getIdNum(); }

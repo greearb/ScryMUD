@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.37 1999/07/29 06:35:08 greear Exp $
-// $Revision: 1.37 $  $Author: greear $ $Date: 1999/07/29 06:35:08 $
+// $Id: critter.cc,v 1.38 1999/07/30 06:42:23 greear Exp $
+// $Revision: 1.38 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
 
 //
 //ScryMUD Server Code
@@ -100,7 +100,7 @@ void immort_data::Clear() {
       olc_door->Clear();
       olc_door = NULL;
    }//if
-   clear_ptr_list(tmplist);
+   tmplist.clearAndDestroy();
    olc_counter = temp_olc_int = imm_level = 0;
    edit_string = NULL; //clearing it probably not the right solution
 
@@ -186,7 +186,7 @@ shop_data::shop_data() {
    markup = buy_percentage = open_time = close_time = 0;
 }//constructor;
 
-shop_data::shop_data(const shop_data& source) {
+shop_data::shop_data(shop_data& source) {
    _cnt++;
    *this = source;
 }//constructor;
@@ -196,33 +196,30 @@ shop_data::~shop_data() {
    Clear();
 }
 
-
-shop_data& shop_data::operator=(const shop_data& source) {
+shop_data& shop_data::operator=(shop_data& source) {
    
    if (this == &source)
       return *this;
 
-   clear_obj_list(perm_inv);
+   Clear();
 
    markup = source.markup;
    buy_percentage = source.buy_percentage;
    open_time = source.open_time;
    close_time = source.close_time;
-   
-   Cell<object*> cll(source.perm_inv);
-   object* ptr;
+
+   ContainedObject* ptr;
+   Cell<ContainedObject*> cll(source.perm_inv.getInv());
+   object* optr;
    while ((ptr = cll.next())) {
-      if (!ptr->IN_LIST) {
+      optr = (object*)(ptr);
+      if (!optr->isModified()) {
          perm_inv.append(ptr);
       }//if
    }//while
 
    // Deep copy here...
-   Cell<PlayerShopData*> pcll(source.ps_data_list);
-   PlayerShopData* pptr;
-   while ((pptr = pcll.next())) {
-      ps_data_list.pushBack(new PlayerShopData(*pptr));
-   }
+   ps_data_list.becomeDeepCopyOf(source.ps_data_list);
   
    perm_inv = source.perm_inv;
    shop_data_flags = source.shop_data_flags;
@@ -232,16 +229,14 @@ shop_data& shop_data::operator=(const shop_data& source) {
 
 void shop_data::Clear() {
    markup = buy_percentage = close_time = open_time = 0;
-   clear_obj_list(perm_inv);
+   perm_inv.clear();
    shop_data_flags.Clear();
-   clear_ptr_list(ps_data_list);
+   ps_data_list.clearAndDestroy();
 }//Clear
 
 void shop_data::Read(ifstream& da_file, short read_all) {
-   int i;
-   String buf(100);
-   char tmp[81];
-   
+   // TODO
+
    Clear();
 
    if (!da_file) {
@@ -264,11 +259,11 @@ void shop_data::Read(ifstream& da_file, short read_all) {
          object* new_obj = new object;
          da_file.getline(tmp, 80);  //junk message
          new_obj->Read(da_file, read_all);
-         new_obj->IN_LIST = &(perm_inv); //make sure its a SOBJ
+         //TODO w_obj->IN_LIST = &(perm_inv); //make sure its a SOBJ
          perm_inv.append(new_obj);    //add it to inventory
       }//if
       else {
-         if (obj_list[i].OBJ_FLAGS.get(10)) {
+         if (obj_list[i].isInUse()) {
             if (read_all || 
                 ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
                 d(1,100)) {
