@@ -2181,3 +2181,35 @@ room* get_target_room(critter& pc){
     return rm;
     
 }
+
+
+
+void DistProbMatrix::add(int value, unsigned int weight){
+	int* tmp = NULL;
+	unsigned int tmp_size = 0;
+	unsigned int i = 0;
+
+	tmp_size = weight + size;
+	tmp = new int[tmp_size];
+
+	if(size != 0){
+		while(i < size){
+			tmp[i] = matrix[i];
+			++i;
+		}
+		delete matrix;
+	}
+
+	while(i < tmp_size){
+		tmp[i] = value;
+		++i;
+	}
+ 
+	matrix = tmp;
+	size = tmp_size;
+}	
+
+int DistProbMatrix::get(){
+	return matrix[(rand() % size)-1];
+}
+		  

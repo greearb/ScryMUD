@@ -174,4 +174,21 @@ object* get_target_obj(int i_th, const String* target, critter& pc);
 door* get_target_door(int i_th, const String* target, critter& pc);
 room* get_target_room(critter& pc);
 
+//distributed probability matrix code
+//only handles single dimension probability matrices
+//multidimension would be nice though...
+class DistProbMatrix {
+private:
+   int* matrix; //stores pointer to probability matrix
+   unsigned int size; // can only support MAX_INT entries
+public:
+   void add(int size, unsigned int weight);
+   int get();
+	
+   DistProbMatrix(){size = 0;matrix = NULL;}
+   ~DistProbMatrix(){delete matrix;}
+};																					 
+
+
+
 #endif 
