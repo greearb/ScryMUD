@@ -22,12 +22,14 @@ while ( : ) do
 
     # Just in case.
     chmod u+x ./gmud
-
-    ./gmud >& gmud.log
+    
+    if [ -x ./gmud ]; then
+       ./gmud >& gmud.log
+    fi
     RETVAL=$?
 
     echo "ScryMUD stopped at: `date`"
-
+    sleep 1  # Make infinite loop not so bad.
 
     date >> ./gmud.log
     echo "************END OF CRASH FILE**************" >> ./gmud.log
@@ -48,9 +50,6 @@ while ( : ) do
     echo "*************END OF LOG************" >> ./log/ERROR.lg
     echo "" >> ./log/ERROR.lg
 
-
-    cat ./log/idea_log >> ./log/IDEAS
-    cat ./log/bug_log >> ./log/BUGS
 
     if [ -f ./log/logfile.txt4 ]; then
 	mv -f ./log/logfile.txt4 ./log/logfile.txt5
