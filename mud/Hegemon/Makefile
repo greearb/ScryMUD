@@ -2,6 +2,8 @@
 # Makefile created at Thu Mar 29 22:13:20 2001, by mmake
 #
 
+DIST_DIR=Hegemon20
+
 # Programs (with common options):
 SHELL		= /bin/sh
 RM              = rm -f
@@ -176,9 +178,37 @@ BuildInfo.java: $(SRCS) Makefile BuildInfo.prefix BuildInfo.suffix
 	echo "\"On machine: `uname -mrspn` \\n\" +" >> BuildInfo.java
 	cat BuildInfo.suffix >> BuildInfo.java
 
-distrib: $(JAR_FILE) runheg
-	cp runheg ../heg
-	cp $(JAR_FILE) ../heg
+distrib: distrib_linux distrib_dos distrib_no_jre
+
+distrib_linux: $(JAR_FILE) 
+	rm -fr $(DIST_DIR)
+	mkdir $(DIST_DIR)
+	cp -r data $(DIST_DIR)
+	cp $(JAR_FILE) $(DIST_DIR)/
+	cp -r $(HOME)/btbits_jre/jre1.3.0_02_linux $(DIST_DIR)/jre
+	cp runheg.bash $(DIST_DIR)
+	tar -cvzf $(DIST_DIR)_Linux.tar.gz  $(DIST_DIR)
+	mv -f $(DIST_DIR)_Linux.tar.gz $(HOME)/dev/downloads
+
+distrib_dos: $(JAR_FILE) 
+	rm -fr $(DIST_DIR)
+	mkdir $(DIST_DIR)
+	cp -r data $(DIST_DIR)
+	cp $(JAR_FILE) $(DIST_DIR)/
+	cp -r $(HOME)/btbits_jre/jre_1.3_dos $(DIST_DIR)/jre
+	cp runheg.bat $(DIST_DIR)
+	zip $(DIST_DIR)_WIN32.zip -r $(DIST_DIR)
+	cat unzipsfx.exe $(DIST_DIR)_WIN32.zip > $(DIST_DIR)_WIN32.zip.exe
+	zip -A $(DIST_DIR)_WIN32.zip.exe
+	mv -f $(DIST_DIR)_WIN32.zip.exe $(HOME)/dev/downloads/
+
+distrib_no_jre: $(JAR_FILE) 
+	rm -fr $(DIST_DIR)
+	mkdir $(DIST_DIR)
+	cp -r data $(DIST_DIR)
+	cp $(JAR_FILE) $(DIST_DIR)/
+	zip $(DIST_DIR)_NO_JRE.zip -r $(DIST_DIR)
+	mv -f $(DIST_DIR)_NO_JRE.zip $(HOME)/dev/downloads/
 
 # Jar target
 ifneq ($(strip $(JAR_FILE)),)

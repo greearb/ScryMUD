@@ -16,15 +16,15 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greearb@candelatech.com, (preferred)
-//                                     bgreear@mayannetworks.com
+// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
+//                                     greearb@agcs.com
 //
 
 
 public class BuildInfo {
    static public String getBuildInfo() {
       return ("<color red>\n" +
-"Built on:   Thu Mar 29 22:43:18 MST 2001 \n" +
+"Built on:   Sat Mar 31 22:33:59 MST 2001 \n" +
 "By:         greear \n" +
 "On machine: Linux grok.yi.org 2.2.17-14 i686 unknown \n" +
 " </color><color blue>\n" +
@@ -46,8 +46,8 @@ public class BuildInfo {
 "along with this program; if not, write to the Free Software\n" +
 "Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.\n" +
 "\n" +
-" To contact the Author, Ben Greear:  greearb@candelatech.com, (preferred)\n" +
-"                                     bgreear@mayannetworks.com\n" +
+" To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)\n" +
+"                                     greearb@agcs.com\n" +
 "\n" +
 "</color>");
    }//getBuildInfo
