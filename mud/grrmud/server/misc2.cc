@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.34 2001/10/27 02:17:29 greear Exp $
-// $Revision: 1.34 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
+// $Id: misc2.cc,v 1.35 2001/10/30 04:41:31 justin Exp $
+// $Revision: 1.35 $  $Author: justin $ $Date: 2001/10/30 04:41:31 $
 
 //
 //ScryMUD Server Code
@@ -2036,4 +2036,91 @@ int find_and_delete_obj(object* obj_to_find, object* find_in) {
    // Guess we didn't find it
    mudlog.log(DBG, "DEBUG:  Couldn't find object in container.\n");
    return FALSE;
+}
+
+// Swap one letter for another, preserving case.
+char icharswap(char oldch, char newch) {
+   if (isalpha(oldch) && isalpha(newch)) {
+      char a = tolower(oldch);
+      char b = tolower(newch);
+      return oldch + (b - a);
+   }
+   else {
+      return newch;
+   }
+}
+
+String transform(const String &input,
+      const PtrList<String> &wordpats, const PtrList<String> &wordreps,
+      const PtrList<String> &fragpats, const PtrList<String> &fragreps) {
+   String output;
+   char lastalpha = 'a';
+   for (int i = 0; i < input.Strlen(); i++) {
+      // On a symbol, or in the middle of a word
+      if (!isalnum(input[i]) || (i > 0 && isalnum(input[i-1]))) {
+         Cell<String*> patcll(fragpats);
+         String* pat;
+         Cell<String*> repcll(fragreps);
+         String* rep;
+
+         while ((pat = patcll.next()) && (rep = repcll.next())) {
+            if (input.Strlen() >= pat->Strlen() + i &&
+                  strncasecmp(((const char*)input)+i, *pat, pat->Strlen()) == 0) {
+               // output.Append(*rep);
+               for (int j=0; j < rep->Strlen(); j++) {
+                  if (j < pat->Strlen() && isalnum(input[i+j])) lastalpha = input[i+j];
+                  output.Append(icharswap(lastalpha, (*rep)[j]));
+               }
+               i+=pat->Strlen() - 1;
+               break;
+            }
+         }
+         // Didn't find a match (or ran out of replacements before we ran out of patterns)
+         if (!pat || !rep) output.Append(input[i]);
+      }
+      // Must be at the beginning of the string or a word, then
+      else { // if (i == 0 || !isalnum(input[i-1]))
+         Cell<String*> patcll(wordpats);
+         String* pat;
+         Cell<String*> repcll(wordreps);
+         String* rep;
+
+         while ((pat = patcll.next()) && (rep = repcll.next())) {
+            if (input.Strlen() >= pat->Strlen() + i &&
+                  (input.Strlen() == pat->Strlen() + i ||
+                     !isalnum(input[pat->Strlen() + i ])) &&
+                  strncasecmp(((const char*)input)+i, *pat, pat->Strlen()) == 0) {
+               // output.Append(*rep);
+               for (int j=0; j < rep->Strlen(); j++) {
+                  if (j < pat->Strlen() && isalnum(input[i+j])) lastalpha = input[i+j];
+                  output.Append(icharswap(lastalpha, (*rep)[j]));
+               }
+               i+=pat->Strlen() - 1;
+               break;
+            }
+         }
+         // Didn't find a word match, try a fragment
+         if (!pat || !rep) {
+            // fragpats.head(patcll);
+            Cell<String*> patcll(fragpats);
+            // fragreps.head(repcll);
+            Cell<String*> repcll(fragreps);
+            while ((pat = patcll.next()) && (rep = repcll.next())) {
+               if (input.Strlen() >= pat->Strlen() + i &&
+                     strncasecmp(((const char*)input)+i, *pat, pat->Strlen()) == 0) {
+                  // output.Append(*rep);
+                  for (int j=0; j < rep->Strlen(); j++) {
+                     if (j < pat->Strlen() && isalnum(input[i+j])) lastalpha = input[i+j];
+                     output.Append(icharswap(lastalpha, (*rep)[j]));
+                  }
+                  i+=pat->Strlen() - 1;
+                  break;
+               }
+            }
+            // Didn't find a match
+            if (!pat || !rep) output.Append(input[i]);
+         }
+      }
+   }
+   return output;
 }

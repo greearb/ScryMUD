@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.64 2001/10/27 02:17:29 greear Exp $
-// $Revision: 1.64 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
+// $Id: critter.cc,v 1.65 2001/10/30 04:41:31 justin Exp $
+// $Revision: 1.65 $  $Author: justin $ $Date: 2001/10/30 04:41:31 $
 
 //
 //ScryMUD Server Code
@@ -4299,19 +4299,24 @@ int critter::canClimb() {
 
 
 void critter::drunkifyMsg(String& msg) {
-   char ch;
    if (pc && (pc->drugged > 0)) {
-      for (int i = 0; i<msg.Strlen(); i++) {
-         if ((msg.charAt(i) != '<') && (d(1, 15) < d(1, pc->drugged))) {
-            ch = (char)(d(1, 52) + 41);
-
-            // Don't want to translate < in case of hegemon markup messups.
-            if (ch == '<') {
-               ch = '!';
-            }
-            msg.setCharAt(i, ch);
-         }//if
-      }//for
+      PtrList<String> wordpats, wordreps, fragpats, fragreps;
+      wordpats.append(new String("and"));    wordreps.append(new String("und"));
+      wordpats.append(new String("I said")); wordreps.append(new String("I'm like"));
+      wordpats.append(new String("I say"));  wordreps.append(new String("I'm like"));
+      wordpats.append(new String("it's"));   wordreps.append(new String("ish"));
+      wordpats.append(new String("its"));    wordreps.append(new String("ish"));
+      wordpats.append(new String("have"));   wordreps.append(new String("gots"));
+      wordpats.append(new String("that"));   wordreps.append(new String("tha"));
+      wordpats.append(new String("their"));  wordreps.append(new String("thar"));
+      fragpats.append(new String("th"));     fragreps.append(new String("f"));
+      fragpats.append(new String("ck"));     fragreps.append(new String("fk"));
+      fragpats.append(new String("sc"));     fragreps.append(new String("shhc"));
+      fragpats.append(new String("s"));      fragreps.append(new String("sh"));
+      fragpats.append(new String("ou"));     fragreps.append(new String("oo"));
+      fragpats.append(new String("ur"));     fragreps.append(new String("uh"));
+      fragpats.append(new String(","));      fragreps.append(new String(" (hic!)"));
+      msg = transform(msg, wordpats, wordreps, fragpats, fragreps);
    }//if
 }//drunkifyMsg
 

@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.28 2001/10/15 22:11:32 eroper Exp $
-// $Revision: 1.28 $  $Author: eroper $ $Date: 2001/10/15 22:11:32 $
+// $Id: const.h,v 1.29 2001/10/30 04:41:31 justin Exp $
+// $Revision: 1.29 $  $Author: justin $ $Date: 2001/10/30 04:41:31 $
 
 //
 //ScryMUD Server Code
@@ -1534,13 +1534,14 @@ extern const char* HUH_MSG;
 #define AGILITY         210
 
 
-#define HUNGER_ID          100                         //these are for identification
-#define THIRST_ID          101                        //of stat_affects
-#define DRUGGED_ID        102
+#define HUNGER_ID          100                    //these are for identification
+#define THIRST_ID          101                    //of stat_affects
+#define DRUGGED_ID         102
+#define STONED_ID          103
 
 #define CON_PLAYING     1
 #define CON_LINKDEAD    2
-#define CON_LOGGING_IN        3
+#define CON_LOGGING_IN  3
 
 #define TRUE            1       
 #define FALSE           0

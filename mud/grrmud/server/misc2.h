@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.27 2001/10/27 02:17:29 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
+// $Id: misc2.h,v 1.28 2001/10/30 04:41:31 justin Exp $
+// $Revision: 1.28 $  $Author: justin $ $Date: 2001/10/30 04:41:31 $
 
 //
 //ScryMUD Server Code
@@ -163,5 +163,9 @@ int find_and_delete_obj(object* obj_to_find, int room_num);
 int find_and_delete_obj(object* obj_to_find, critter* crit_ptr);
 int find_and_delete_obj(object* obj_to_find, object* find_in);
 
+char icharswap(char oldch, char newch);
+String transform(const String &input,
+      const PtrList<String> &wordpats, const PtrList<String> &wordreps,
+      const PtrList<String> &fragpats, const PtrList<String> &fragreps);
 
 #endif 
