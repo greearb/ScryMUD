@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.17 2001/06/24 05:45:55 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 2001/06/24 05:45:55 $
+// $Id: spells2.cc,v 1.18 2001/08/15 02:58:14 justin Exp $
+// $Revision: 1.18 $  $Author: justin $ $Date: 2001/08/15 02:58:14 $
 
 //
 //ScryMUD Server Code
@@ -84,6 +84,7 @@ void do_cast_locate(const String* targ, critter& agg, int is_canned,
       Cell<critter*> ccll;
       critter* ptr;
       Cell<object*> ocll;
+      object* optr;
       for (int i = begin; i<= end; i++) {
          // TODO:  Optimize this..move it into room class so we don't have
          // to make coppies of the list! --BEN
@@ -93,8 +94,8 @@ void do_cast_locate(const String* targ, critter& agg, int is_canned,
             do_locate_object(*ptr, targ, agg, i, 0, lvl);
          }//while
          room_list[i].getInv()->head(ocll);
-         while ((ptr = ccll.next())) {
-            do_locate_object(*ptr, targ, agg, i, 0, lvl);
+         while ((optr = ocll.next())) {
+            do_locate_object(*optr, targ, agg, i, 0, lvl);
          }//while
       }//for
    }//if it worked
