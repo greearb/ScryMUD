@@ -21,7 +21,7 @@ CORE_FILES = \
 	lib/string2/*.cc lib/string2/*.h lib/string2/Makefile \
 	grrmud/truncate_log License Credits grrmud/startup \
 	include/README lib/Makefile README grrmud/server/gen_cmds.spec \
-	grrmud/server/BuildInfo.prefix
+	grrmud/server/BuildInfo.prefix grrmud/server/translations.spec
 
 #  Needed for a first time install.  World files are also needed,
 #  but handled elsewhere.

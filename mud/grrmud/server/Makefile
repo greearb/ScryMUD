@@ -62,13 +62,13 @@ BuildInfo.cc: $(SRCS) Makefile BuildInfo.prefix
 	echo "const char* BuildInfo::getVersion() { return \"${SCRY_VERSION}\"; }" >> BuildInfo.cc
 
 
-parse_gen.cc: code_gen.h code_gen.cc ${GEN_SPEC}
-parse_gen.h: code_gen.h code_gen.cc ${GEN_SPEC}
+parse_gen.cc: ${CODE_GEN_TARG} ${GEN_SPEC}
+parse_gen.h: ${CODE_GEN_TARG} ${GEN_SPEC}
 	${CODE_GEN_TARG} -C ${GEN_SPEC} parse_gen.cc parse_gen.h
 
 
-lang_strings.cc: code_gen.h code_gen.cc ${LANG_SPEC}
-lang_strings.h: code_gen.h code_gen.cc ${LANG_SPEC}
+lang_strings.cc: ${CODE_GEN_TARG} ${LANG_SPEC}
+lang_strings.h: ${CODE_GEN_TARG} ${LANG_SPEC}
 	${CODE_GEN_TARG} -L ${LANG_SPEC} lang_strings.cc lang_strings.h
 
 
