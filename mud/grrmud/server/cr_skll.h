@@ -1,5 +1,5 @@
-// $Id: cr_skll.h,v 1.3 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: cr_skll.h,v 1.4 2002/08/28 07:23:29 eroper Exp $
+// $Revision: 1.4 $  $Author: eroper $ $Date: 2002/08/28 07:23:29 $
 
 //
 //ScryMUD Server Code
@@ -37,6 +37,8 @@ int skin(int i_th, const String* vict, critter& pc);
 int do_skin(object& vict, critter& pc);
 int butcher(int i_th, const String* vict, critter& pc);
 int do_butcher(object& vict, critter& pc);
+int behead(int i_th, const String* vict, critter& pc);
+int do_behead(object& vict, critter& pc);
 
 
 ///*****************  auxillary functions  ***************************///

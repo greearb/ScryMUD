@@ -1,5 +1,5 @@
-// $Id: cr_skll.cc,v 1.6 2001/03/29 03:02:30 eroper Exp $
-// $Revision: 1.6 $  $Author: eroper $ $Date: 2001/03/29 03:02:30 $
+// $Id: cr_skll.cc,v 1.7 2002/08/28 07:23:29 eroper Exp $
+// $Revision: 1.7 $  $Author: eroper $ $Date: 2002/08/28 07:23:29 $
 
 //
 //ScryMUD Server Code
@@ -196,12 +196,67 @@ int do_butcher(object& obj, critter& pc) {
      obj.OBJ_FLAGS.turn_off(75);
      return -1;
    }//else   
-}//do_skin
+}//do_butcher
+
+// this is intentionally using the same skill as skin...
+int behead(int i_th, const String* vict, critter& pc) {
+   int skill_num = SKIN_SKILL_NUM;
+   object* obj;
+
+   if (!ok_to_do_action(NULL, "mBSPFK", skill_num, pc)) {
+      return -1;
+   }//if     
+
+   int in_rm = FALSE;
+   obj = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT, ROOM);
+   if (!obj) {
+      in_rm = TRUE;
+      obj = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);
+   }//if
+   if (!obj) {
+      show("You don't see that here.\n", pc); 
+      return -1;
+   }//if
+
+   if (!obj->IN_LIST) {
+      if (in_rm) 
+         obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, vict,
+                           pc.SEE_BIT, ROOM);
+      else
+         obj = obj_to_sobj(*obj, &(pc.inv), TRUE, i_th, vict,
+                           pc.SEE_BIT, ROOM);
+   }//if
+
+   return do_behead(*obj, pc); 
+}//behead
 
 
+int do_behead(object& obj, critter& pc) {
+   String buf(100);
 
+   if ((obj.obj_proc && obj.obj_proc->head_ptr)) {
 
+      if (!obj.obj_proc ||
+          !obj.obj_proc->obj_spec_data_flags.get(11) || 
+          !obj.obj_proc->head_ptr ||
+          !obj.obj_proc->head_ptr->OBJ_FLAGS.get(10)) { //not in use?
+         show("This thing doesn't have a head!.\n", pc);
+         return -1;
+      }//if
 
+      pc.gainInv(obj.obj_proc->head_ptr);
+      obj.obj_proc->obj_spec_data_flags.turn_off(11);
+      obj.obj_proc->head_ptr = NULL;
 
+      Sprintf(buf, "beheads %S.", long_name_of_obj(obj, ~0));
+      emote(buf, pc, ROOM, TRUE);
+      Sprintf(buf, "You behead %S.\n", long_name_of_obj(obj, ~0));      
+      show(buf, pc);
+   }//if
+   else {
+         pc.show("It doesn't have a head.\n");
+         return -1;
+   }
 
-
+   return 0;
+}//do_behead
