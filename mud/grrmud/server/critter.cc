@@ -2519,8 +2519,8 @@ void critter::Write(ofstream& ofile) {
    num_written = 0;
    affected_by.head(ss_cell);
    while ((ss_ptr = ss_cell.next())) {
-      ofile << ss_ptr->stat_spell << " " << ss_ptr->bonus_duration << " ";
-      ofile << ss_ptr->bonus_value << " ";
+      ofile << ss_ptr->stat_spell << " " << ss_ptr->bonus_duration << " "
+      << ss_ptr->bonus_value << " ";
 
       if ((++num_written % 20) == 0)
          ofile << endl;
