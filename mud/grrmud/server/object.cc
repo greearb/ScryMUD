@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.28 1999/08/27 03:10:04 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
+// $Id: object.cc,v 1.29 1999/08/29 01:17:16 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
 
 //
 //ScryMUD Server Code
@@ -1180,7 +1180,7 @@ void object::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
 
       if (!stat_affects.isEmpty()) {
          rslt.append("Stat affects:\n");
-         Markup::toString(&stat_affects, viewer, buf);
+         Markup::toString(&stat_affects, viewer, STAT_AFFECT_NAMES, buf);
          rslt.append(buf);
       }
 
@@ -1195,7 +1195,7 @@ void object::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
 
       if (!inv.isEmpty()) {
          rslt.append("Inventory:\n");
-         Markup::toString(&inv, viewer, buf);
+         Markup::toString(&inv, viewer, OBJ_INV, buf);
          rslt.append(buf);
       }
 

@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.31 1999/08/27 03:10:04 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
+// $Id: misc.cc,v 1.32 1999/08/29 01:17:16 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
 
 //
 //ScryMUD Server Code
@@ -1206,6 +1206,13 @@ void out_str(const List<String*>& lst, critter& pc) {
 
 /** Can over-ride the VIS/SEE bit stuff if you set see_all to true. */
 void out_crit(SafeList<critter*>& lst, critter& pc, int see_all = FALSE) {
+   String buf(500);
+   do_out_crit_list(lst, pc, buf, see_all);
+   pc.show(buf);
+}
+
+void do_out_crit_list(SafeList<critter*>& lst, critter& pc, String& rslt,
+                      int see_all = FALSE) {
    SCell<critter*> cell(lst);
    critter* crit_ptr;
    String buf(100);
@@ -1218,9 +1225,9 @@ void out_crit(SafeList<critter*>& lst, critter& pc, int see_all = FALSE) {
    }
 
    if (pc.isUsingClient())
-      show("<MOB_LIST>", pc);
+      rslt.append("<MOB_LIST>");
    else if (pc.isUsingColor()) {
-      pc.show(*(pc.getMobListColor()));
+      rslt.append(*(pc.getMobListColor()));
    }
 
    while ((crit_ptr = cell.next())) {
@@ -1237,106 +1244,103 @@ void out_crit(SafeList<critter*>& lst, critter& pc, int see_all = FALSE) {
             continue; //successful hide
          }//if
 
-         if (crit_ptr->pc) { //is a pc
+         SpellDuration* sd = crit_ptr->isAffectedBy(SANCTUARY_SKILL_NUM);
 
-            if (mudlog.ofLevel(DBG)) {
-               mudlog << "Doing pc..." << endl;
-            }
+         if (pc.isUsingClient()) {
+            rslt.append("<LI ");
+            if (crit_ptr->isPc()) {
+               rslt.append("PC ");
 
-            Sprintf(buf, "     %S %S %s\n", 
-                    name_of_crit(*crit_ptr, see_bits), 
-                    &(crit_ptr->short_desc), crit_ptr->getPosnStr(pc));
-            buf.Cap();
-            if (crit_ptr->VIS_BIT & 2) {
-               buf.setCharAt(1, '*');
-            }//if
-            
-            SpellDuration* sd = crit_ptr->isAffectedBy(SANCTUARY_SKILL_NUM);
-            if (sd) {
-               Sprintf(buf, cstr(CS_GLOWS_BRIGHTLY, pc),
-                       get_he_she(*crit_ptr));
-               buf.Cap();
-               show(buf, pc);
-               break; //cause there are no others to display now
-            }//if
-         }//if
-         else if (crit_ptr->isSmob() &&
-                  (crit_ptr->POS != mob_list[crit_ptr->getIdNum()].POS)) {
-            //is a SMOB with a different posn than corresponding MOB
-            if (mudlog.ofLevel(DBG)) {
-               mudlog << "Doing SMOB" << endl;
-            }
-
-            if (pc.shouldShowVnums()) {
-               Sprintf(buf, "     [%i]%P11 %S %s\n", crit_ptr->MOB_NUM,
-                       name_of_crit(*crit_ptr, see_bits), 
+               Sprintf(buf, "<NAME>%S</NAME><SD>%S</SD><POSN>%s</POSN>",
+                       crit_ptr->getName(&pc), crit_ptr->getShortDesc(&pc),
                        crit_ptr->getPosnStr(pc));
             }
-            else {
-               Sprintf(buf, "     %S %s\n",
-                       name_of_crit(*crit_ptr, see_bits), 
+            else if (crit_ptr->isSmob() &&
+                     (crit_ptr->POS != mob_list[crit_ptr->getIdNum()].POS)) {
+               rslt.append("NPC ");
+
+               Sprintf(buf, "<SD>%S</SD><POSN>%s</POSN>",
+                       crit_ptr->getName(&pc), crit_ptr->getPosnStr(pc));
+            }
+            else { //then it is a mob, or SMOB w/same posn as MOB
+               rslt.append("NPC ");
+               Sprintf(buf, "<NRD>%S</NRD>",
+                       crit_ptr->getName(&pc), crit_ptr->getPosnStr(pc));
+            }
+               
+            if (crit_ptr->isInvisible()) {
+               rslt.append("INVIS ");
+            }//if
+            
+            if (sd)
+               rslt.append("SANCT ");
+            
+            rslt.append(">");
+            
+            rslt.append(buf);
+            rslt.append("</LI>\n");
+         }
+         else {
+            if (crit_ptr->isPc()) {
+               Sprintf(buf, "     %S %S %s\n", 
+                       crit_ptr->getName(&pc), crit_ptr->getShortDesc(&pc),
                        crit_ptr->getPosnStr(pc));
             }
+            else if (crit_ptr->isSmob() &&
+                     (crit_ptr->POS != mob_list[crit_ptr->getIdNum()].POS)) {
+               if (pc.shouldShowVnums()) {
+                  Sprintf(buf, "     [%i]%P11 %S %s\n", crit_ptr->getIdNum(),
+                          crit_ptr->getName(&pc), crit_ptr->getPosnStr(pc));
+               }
+               else {
+                  Sprintf(buf, "     %S %s\n",
+                          crit_ptr->getName(&pc), crit_ptr->getPosnStr(pc));
+               }
+            }
+            else { //then it is a mob, or SMOB w/same posn as MOB
+               if (pc.shouldShowVnums()) {
+                  Sprintf(buf, "     [%i]%P11 %S\n", crit_ptr->MOB_NUM,
+                          crit_ptr->getInRoomDesc(&pc));
+               }//if
+               else {
+                  Sprintf(buf, "       %S\n", crit_ptr->getInRoomDesc(&pc));
+               }
+            }
             buf.Cap();
 
             if (crit_ptr->VIS_BIT & 2) {
                buf.setCharAt(1, '*');
             }//if
-            show(buf, pc);
             
-            SpellDuration* sd = crit_ptr->isAffectedBy(SANCTUARY_SKILL_NUM);
+            rslt.append(buf);
+
             if (sd) {
                Sprintf(buf, cstr(CS_GLOWS_BRIGHTLY, pc),
                        get_he_she(*crit_ptr));
                buf.Cap();
-               show(buf, pc);
-               break; //cause there are no others to display now
-            }//if
-         }//if
-         else { //then it is a mob, or SMOB w/same posn as MOB
-
-            if (mudlog.ofLevel(DBG)) {
-               mudlog << "Doing MOB" << endl;
-            }
-
-            if (pc.shouldShowVnums()) {
-               Sprintf(buf, "     [%i]%P11 %S\n", crit_ptr->MOB_NUM,
-                       &(crit_ptr->in_room_desc));
-            }//if
-            else {
-               Sprintf(buf, "       %S\n", &(crit_ptr->in_room_desc));
-            }
-
-            if (crit_ptr->VIS_BIT & 2) {
-               buf.setCharAt(1, '*');
-            }//if
-            buf.Cap();
-            show(buf, pc);
-            
-            SpellDuration* sd = crit_ptr->isAffectedBy(SANCTUARY_SKILL_NUM);
-            if (sd) {
-               Sprintf(buf, cstr(CS_GLOWS_BRIGHTLY, pc),
-                       get_he_she(*crit_ptr));
-               buf.Cap();
-               show(buf, pc);
-               break; //cause there are no others to display now
+               rslt.append(buf);
             }//if
          }//else
       }//if
    }//while
    if (pc.USING_CLIENT) {
-      show("</MOB_LIST>", pc);
+      rslt.append("</MOB_LIST>");
    }
    else if (pc.isUsingColor()) {
-      pc.show(*(pc.getDefaultColor()));
+      rslt.append(*(pc.getDefaultColor()));
    }
 }//out_crit
 
 
-
 void out_inv(SafeList<object*>& lst, critter& pc, 
-	     const short type_of_list) {
-			       //outs the names object*
+	     ObjListTypeE type_of_list) {
+   String buf(500);
+   do_out_obj_list(lst, pc, type_of_list, buf);
+   pc.show(buf);
+}
+
+void do_out_obj_list(SafeList<object*>& lst, critter& pc, 
+                     ObjListTypeE type_of_list, String& rslt) {
    SCell<object*> cell(lst);
    object*  obj_ptr;
    String buf(100);
@@ -1344,100 +1348,116 @@ void out_inv(SafeList<object*>& lst, critter& pc,
    mudlog.log(TRC, "In out_inv.\n");
 
    if (pc.isUsingClient()) {
-      show("<ITEM_LIST>", pc);
+      rslt = "<ITEM_LIST ";
+      if (type_of_list == ROOM_INV) {
+         rslt.append("R_INV ");
+      }
+      else if (type_of_list == OBJ_INV) {
+         rslt.append("O_INV ");
+      }
+      else if (type_of_list == CRIT_INV) {
+         rslt.append("C_INV ");
+      }
+      rslt.append(">");
    }
    else if (pc.isUsingColor()) {
-      pc.show(*(pc.getObjListColor()));
+      rslt = *(pc.getObjListColor());
    }
-   
-   if (lst.isEmpty() && type_of_list == OBJ_INV) {
-      show("	[empty]	\n", pc);
-      if (pc.isUsingClient()) {
-         show("</ITEM_LIST>", pc);
-      }
-      else if (pc.isUsingColor()) {
-         pc.show(*(pc.getDefaultColor()));
-      }
+   else {
+      rslt.clear();
+   }
 
-      mudlog.log(DBG, "Done with out_inv (empty).\n");
-      return;
+   if (lst.isEmpty() && type_of_list == OBJ_INV) {
+      if (pc.isUsingClient()) {
+         rslt.append("</ITEM_LIST>");
+      }
+      else {
+         rslt.append("	[empty]	\n");
+         
+         if (pc.isUsingColor()) {
+            rslt.append(*(pc.getDefaultColor()));
+         }
+         return;
+      }
    }//if
 
-   switch (type_of_list)
-      {
-      case ROOM_INV:
-         while ((obj_ptr = cell.next())) {
+   while ((obj_ptr = cell.next())) {
+      if (detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
+         if (pc.isUsingClient()) {
+            rslt.append("<LI ");
 
-	    if (detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
+            if (pc.shouldShowVnums()) {
+               Sprintf(buf, "VN=%i ", obj_ptr->getIdNum());
+               rslt.append(buf);
+            }
+
+            if (obj_ptr->isHerb()) {
+               if (d(1, 100) <= 
+                   d(1, 2 * get_percent_lrnd(HERBALISM_SKILL_NUM, pc))) {
+                  rslt.append("HERB ");
+               }//if
+            }//if
+
+            if (pc.canDetectMagic() && obj_ptr->isMagic()) {
+               rslt.append("MAGIC ");
+            }//if
+
+            if (obj_ptr->isInvisible()) {
+               rslt.append("INVIS ");
+            }//if
+
+            rslt.append(">");
+            if (type_of_list == ROOM_INV) {
+               Sprintf(buf, "<NRD>%S</NRD>\n", obj_ptr->getInRoomDesc(&pc));
+            }
+            else {
+               Sprintf(buf, "<SD>%S</SD>\n", obj_ptr->getLongName(&pc));
+            }
+            rslt.append(buf);
+         }
+         else {
+            if (type_of_list == ROOM_INV) {
                if (pc.shouldShowVnums()) {
                   Sprintf(buf, "     [%i] %P11 %S", obj_ptr->OBJ_NUM,
-                          &(obj_ptr->in_room_desc));
+                          obj_ptr->getInRoomDesc(&pc));
                }
                else {
-                  Sprintf(buf, "\t%S", &(obj_ptr->in_room_desc));
+                  Sprintf(buf, "\t%S", obj_ptr->getInRoomDesc(&pc));
                }
-               buf.Cap();
-
-               if (obj_ptr->isHerb()) {
-                  if (d(1, 100) <= 
-                      d(1, 2 * get_percent_lrnd(HERBALISM_SKILL_NUM, pc))) {
-                     buf.Append("(herb)");
-                  }//if
-               }//if
-
-               if (pc.canDetectMagic() && obj_ptr->isMagic()) {
-                  buf.Append(" {Blue Glow}\n");
-               }//if
-               else {
-                  buf.Append("\n");
-               }
-
-               if (obj_ptr->OBJ_VIS_BIT & 2) {
-                  buf.Prepend("*");
-               }//if
-
-               show(buf, pc);
-            }//if
-	 }//while
-         break;
-      case OBJ_INV: case CRIT_INV:
-         while ((obj_ptr = cell.next())) {
-	    if (detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
+            }
+            else { //obj or crit inv
                if (pc.shouldShowVnums()) {
-                  Sprintf(buf, "     [%i]%P11 %S", obj_ptr->OBJ_NUM,
-                          long_name_of_obj(*obj_ptr, ~0));
+                  Sprintf(buf, "     [%i]%P11 %S", obj_ptr->getIdNum(),
+                          obj_ptr->getLongName(&pc));
                }
                else {
-                  Sprintf(buf, "\t%S", long_name_of_obj(*obj_ptr, ~0));
+                  Sprintf(buf, "\t%S", obj_ptr->getLongName(&pc));
                }
+            }
+            buf.Cap();
 
-               buf.Cap();
-
-               if (obj_ptr->isHerb()) {
-                  if (d(1, 100) <= 
-                      d(1, 2 * get_percent_lrnd(HERBALISM_SKILL_NUM, pc))) {
-                     buf.Append("(herb)");
-                  }//if
+            if (obj_ptr->isHerb()) {
+               if (d(1, 100) <= 
+                   d(1, 2 * get_percent_lrnd(HERBALISM_SKILL_NUM, pc))) {
+                  buf.append("(herb)");
                }//if
-
-               if  (pc.canDetectMagic() && obj_ptr->isMagic()) {
-                  buf.Append(" {Blue Glow}\n");
-               }//if
-               else {
-                  buf.Append("\n");
-               }
-
-               if (obj_ptr->OBJ_VIS_BIT & 2) {
-                  buf.Prepend("*");
-               }//if
-               show(buf, pc);
             }//if
-	 }//while
-         break;
-      default:
-	 mudlog.log(ERR, "ERROR:  default called in out_inv.\n");
-         break;
-      }//switch type_of_list
+
+            if (pc.canDetectMagic() && obj_ptr->isMagic()) {
+               buf.append(" {Blue Glow}\n");
+            }//if
+            else {
+               buf.append("\n");
+            }
+
+            if (obj_ptr->isInvisible()) {
+               buf.Prepend("*");
+            }//if
+
+            rslt.append(buf);
+	 }//else, not using client
+      }//if detected it
+   }//while
 
    if (pc.isUsingClient()) {
       show("</ITEM_LIST>", pc);
@@ -1447,8 +1467,7 @@ void out_inv(SafeList<object*>& lst, critter& pc,
    }
 
    mudlog.log(DBG, "Done with out_inv.\n");
-
-}//out_inv
+}//do_out_obj_list
 
 critter* have_crit_named(SafeList<critter*>& lst, const int i_th,
                          const String* name, const int see_bit,

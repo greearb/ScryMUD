@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.21 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: misc2.h,v 1.22 1999/08/29 01:17:16 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
 
 //
 //ScryMUD Server Code
@@ -120,10 +120,6 @@ int crit_count(SafeList<critter*>& lst, critter& src);
 void clear_crit_list(SafeList<critter*>& lst);
 void clear_obj_list(SafeList<object*>& lst);
 
-void out_field(const bitfield& field, critter& pc, const BitfieldNames& names);
-void out_stat_list(const List<SpellDuration*>& lst, critter& pc,
-                   const BitfieldNames& names);
-void out_spell_list(const List<SpellDuration*>& lst, critter& pc);
 //void critter::doBecomeNonPet();
 const String* single_obj_name(object& obj, int see_bit);
 int name_is_secret(const String* name, door& dr);

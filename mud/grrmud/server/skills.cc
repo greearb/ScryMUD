@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.16 1999/08/20 06:20:06 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
+// $Id: skills.cc,v 1.17 1999/08/29 01:17:17 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/29 01:17:17 $
 
 //
 //ScryMUD Server Code
@@ -859,7 +859,7 @@ int construct(critter& pc, short do_mob = FALSE) {
    while ((ptr = cll.next())) {
       if (!(ptr->OBJ_FLAGS.get(67))) {
          Sprintf(buf, "%S is not a component to any construction.\n",
-                 &(ptr->short_desc));
+                 ptr->getShortDesc(&pc));
          buf.Cap();
          show(buf, pc);
          show("You have to have a clean toolbox in order to work!!\n", 
@@ -868,7 +868,7 @@ int construct(critter& pc, short do_mob = FALSE) {
       }//if
       if (ptr->OBJ_LEVEL > pc.LEVEL) {
          Sprintf(buf, "%S is too advanced for you to work with it.\n",
-                 &(ptr->short_desc));
+                 ptr->getShortDesc(&pc));
          buf.Cap();
          show(buf, pc);
          show("You must remove it from your work ", pc);
@@ -881,13 +881,13 @@ int construct(critter& pc, short do_mob = FALSE) {
 
    if (!ptr->obj_proc) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL obj_proc.\n", 
-              &(ptr->short_desc));
+              ptr->getShortDesc(&pc));
       mudlog.log(ERR, buf);
       return -1;
    }//if
    if (!ptr->obj_proc->construct_data) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL construct_data.\n", 
-              &(ptr->short_desc));
+              ptr->getShortDesc(&pc));
       mudlog.log(ERR, buf);
       return -1;
    }//if
@@ -1009,7 +1009,7 @@ int construct(critter& pc, short do_mob = FALSE) {
       pc.gainInv(&(obj_list[ptr->COMPONENT_TARG]));
       recursive_init_loads(obj_list[ptr->COMPONENT_TARG], 0);
       Sprintf(buf, "You have successfully constructed %S.\n",
-              &(obj_list[ptr->COMPONENT_TARG].short_desc));
+              obj_list[ptr->COMPONENT_TARG].getShortDesc(&pc));
       show(buf, pc);
    }//if skill_did_hit, ie if pc knew it well enuf not to fail
    else {
@@ -1064,7 +1064,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
       if (!(ptr->OBJ_FLAGS.get(68))) { //concoct component
          Sprintf(buf, 
              "%S will certainly distort the properties of your brew.  ",
-             &(ptr->short_desc));
+             ptr->getLongName(&pc));
          buf.Cap();
          show(buf, pc);
          show("You'd better take it out.\n", pc);
@@ -1072,7 +1072,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
       }//if
       if (ptr->OBJ_LEVEL > pc.LEVEL) {
          Sprintf(buf, "You do not yet fully comprehend the power of %S.\n",
-                 &(ptr->short_desc));
+                 ptr->getLongName(&pc));
          buf.Cap();
          show(buf, pc);
          show("Until you better understand it, you shouldn't include", pc);
@@ -1090,9 +1090,10 @@ int concoct(critter& pc, short do_mob = FALSE) {
       return -1;
    }//if
    if (!ptr->obj_proc->construct_data) {
-      Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL construct_data.\n", 
-              &(ptr->short_desc));
-      mudlog.log(ERR, buf);
+      if (mudlog.ofLevel(ERR)) {
+         mudlog << "ERROR:  object# " << ptr->getIdNum()
+                << " is COMPONENT w/NULL construct_data.\n";
+      }
       return -1;
    }//if
 
@@ -1213,7 +1214,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
       pc.gainInv(&(obj_list[ptr->COMPONENT_TARG]));
       recursive_init_loads(obj_list[ptr->COMPONENT_TARG], 0);
       Sprintf(buf, "You have successfully brewed %S.\n",
-              &(obj_list[ptr->COMPONENT_TARG].short_desc));
+              obj_list[ptr->COMPONENT_TARG].getLongName(&pc));
       show(buf, pc);
    }//if skill_did_hit, ie if pc knew it well enuf not to fail
    else {
@@ -1314,7 +1315,7 @@ int scribe(const String* spell, critter& pc, short do_mob = FALSE) {
          recursive_init_loads(obj_list[scroll_num], 0);
 
          Sprintf(buf, "You have successfully scribed %S.\n",
-              &(obj_list[scroll_num].short_desc));
+              obj_list[scroll_num].getLongName(&pc));
          show(buf, pc);
          pc.MANA -= get_mana_cost(spell_num);
          pc.PAUSE += 4;

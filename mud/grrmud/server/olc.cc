@@ -1,5 +1,5 @@
-// $Id: olc.cc,v 1.16 1999/08/16 07:31:24 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
+// $Id: olc.cc,v 1.17 1999/08/29 01:17:17 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/29 01:17:17 $
 
 //
 //ScryMUD Server Code
@@ -396,7 +396,8 @@ void do_olc(critter& pc) {
          OLC_OBJ->obj_flags.turn_on(54); //bulletin boards are bags
       }//if
       show("These flags are set so far:\n", pc);
-      out_field(OLC_OBJ->obj_flags, pc, OBJ_FLAGS_NAMES);
+      Markup::toString(OLC_OBJ->obj_flags, OBJ_FLAGS_NAMES, &pc, buf);
+      pc.show(buf);
       break;
       
    case 7:  //extras
@@ -520,8 +521,8 @@ void do_olc(critter& pc) {
          }//else
       }//while
       show("These flags are set so far:\n", pc);
-      Markup::toString(NULL, OLC_OBJ->bag->getFlags(), BAG_FLAGS_NAMES,
-                       &pc, NULL, buf);
+      Markup::toString(OLC_OBJ->bag->getFlags(), BAG_FLAGS_NAMES,
+                       &pc, buf);
       pc.show(buf);
       break;
 
@@ -772,7 +773,8 @@ void do_olc(critter& pc) {
          }//else
       }//while
       show("These flags are set so far:\n", pc);
-      out_field(OLC_OBJ->OBJ_SPEC_FLAGS, pc, OBJ_SPEC_DATA_FLAGS_NAMES);
+      Markup::toString(OLC_OBJ->OBJ_SPEC_FLAGS, OBJ_SPEC_DATA_FLAGS_NAMES, &pc, buf);
+      pc.show(buf);
       break;
 
 //************************************************************************//
@@ -960,7 +962,8 @@ void do_olc(critter& pc) {
          }//else
       }//while
       show("These flags are set so far:\n", pc);
-      out_field(OLC_MOB->crit_flags, pc, CRIT_FLAGS_NAMES);
+      Markup::toString(OLC_MOB->crit_flags, CRIT_FLAGS_NAMES, &pc, buf);
+      pc.show(buf);
       break;
       
    case 21:  //long data
@@ -1364,7 +1367,9 @@ void do_olc(critter& pc) {
          }//else
       }//while
       show("These flags are set so far:\n", pc);
-      out_field(OLC_MOB->mob->mob_data_flags, pc, MOB_DATA_FLAGS_NAMES);
+      Markup::toString(OLC_MOB->mob->mob_data_flags, MOB_DATA_FLAGS_NAMES,
+                       &pc, buf);
+      pc.show(buf);
       break;
       
    case 31: //spec_data: int1
@@ -1527,7 +1532,8 @@ void do_olc(critter& pc) {
          }//else
       }//while
       show("These flags are set so far:\n", pc);
-      out_field(OLC_MOB->FLAG1, pc, MOB_PROC_DATA_FLAGS_NAMES);
+      Markup::toString(OLC_MOB->FLAG1, MOB_PROC_DATA_FLAGS_NAMES, &pc, buf);
+      pc.show(buf);
       break;
 
    case 33: //shopkeeper: markup, buy%
@@ -1643,7 +1649,9 @@ void do_olc(critter& pc) {
          }//else
       }//while
       show("These flags are set so far:\n", pc);
-      out_field(OLC_MOB->SHOP_DATA_FLAGS, pc, SHOP_DATA_FLAGS_NAMES);
+      Markup::toString(OLC_MOB->SHOP_DATA_FLAGS, SHOP_DATA_FLAGS_NAMES,
+                       &pc, buf);
+      pc.show(buf);
       break;
 
    case 35: //sh_data: perm_inv
@@ -1718,7 +1726,9 @@ void do_olc(critter& pc) {
          }//else
       }//while
       show("These flags are set so far:\n", pc);
-      out_field(OLC_MOB->TEACH_DATA_FLAGS, pc, TEACH_DATA_FLAGS_NAMES);
+      Markup::toString(OLC_MOB->TEACH_DATA_FLAGS, TEACH_DATA_FLAGS_NAMES,
+                       &pc, buf);
+      pc.show(buf);
       break;
       
    case 37: //was construct data
@@ -1909,7 +1919,8 @@ void do_olc(critter& pc) {
          }//else
       }//while
       show("These flags are set so far:\n", pc);
-      out_field(OLC_ROOM->getFlags(), pc, ROOM_FLAGS_NAMES);
+      Markup::toString(OLC_ROOM->getFlags(), ROOM_FLAGS_NAMES, &pc, buf);
+      pc.show(buf);
       break;
       
    case 43:  //cur stats

@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.31 1999/08/27 03:10:04 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
+// $Id: object.h,v 1.32 1999/08/29 01:17:16 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
 
 //
 //ScryMUD Server Code
@@ -148,10 +148,10 @@ private:
 
 protected:
    int is_modified;
-
-public:
    LStringCollection short_desc;
    LStringCollection in_room_desc;
+
+public:
    
    bitfield obj_flags; 
 	   // 0 no_rest,  1 !evil, 2 !neutral, 3 !good, 
@@ -248,8 +248,10 @@ public:
    void addShortDesc(LString& new_val);
    void addInRoomDesc(LString& new_val);
 
-   String* getShortDesc(critter* viewer);
-   String* getShortDesc(int see_bit = ~0);
+   virtual String* getShortDesc(critter* viewer);
+   virtual String* getShortDesc(int see_bit = ~0);
+
+   virtual String* getInRoomDesc(critter* observer);
 
    int getDefaultPrice() { return cur_stats[1]; }
 

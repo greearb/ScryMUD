@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.43 1999/08/20 06:20:04 greear Exp $
-// $Revision: 1.43 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
+// $Id: command2.cc,v 1.44 1999/08/29 01:17:15 greear Exp $
+// $Revision: 1.44 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
 
 //
 //ScryMUD Server Code
@@ -843,7 +843,7 @@ int drink(int i_th, const String* name, critter& pc) {
          }//if 
          else if (obj_ptr->getInv().isEmpty()) {
             Sprintf(buf, cstr(CS_NO_LIQ_IN_CONT, pc),
-                    &(obj_ptr->short_desc));
+                    obj_ptr->getLongName(&pc));
             buf.Cap();
             show(buf, pc);
          }//if 
@@ -915,12 +915,12 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
       }//if
       else if (!(source_obj->OBJ_FLAGS.get(59)) || !(source_obj->bag)) {
          Sprintf(buf, cstr(CS_NOT_LIQ_CONT_FILL, pc),
-                 &(source_obj->short_desc));
+                 source_obj->getLongName(&pc));
          show(buf, pc);
       }//if      
       else if (!(targ_obj->OBJ_FLAGS.get(59)) || !(targ_obj->bag)) {
          Sprintf(buf, cstr(CS_NOT_LIQ_CONT_FILL, pc),
-                 &(targ_obj->short_desc));
+                 targ_obj->getLongName(&pc));
          show(buf, pc);
       }//if      
                   /* so both are containers */

@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.33 1999/08/22 07:16:19 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 1999/08/22 07:16:19 $
+// $Id: command4.cc,v 1.34 1999/08/29 01:17:15 greear Exp $
+// $Revision: 1.34 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
 
 //
 //ScryMUD Server Code
@@ -1422,12 +1422,12 @@ int do_give(critter& targ, critter& pc, object& obj) {
       }//if
    }//while
 
-   Sprintf(buf, "You give %S to %S.\n", &(obj.short_desc),
-        name_of_crit(targ, pc.SEE_BIT));
+   Sprintf(buf, "You give %S to %S.\n", obj.getShortDesc(&pc),
+           targ.getName(&pc));
    show(buf, pc);
 
-   Sprintf(buf, "%S gives you %S.\n", name_of_crit(pc, targ.SEE_BIT),
-           long_name_of_obj(obj, targ.SEE_BIT));
+   Sprintf(buf, "%S gives you %S.\n", pc.getName(&targ),
+           obj.getLongName(&targ));
    buf.Cap();
    show(buf, targ);
 
@@ -1472,7 +1472,7 @@ int olist(int start, int end, critter& pc) {
 
    for (int i = start; i<= end; i++) {
       if (obj_list[i].OBJ_FLAGS.get(10)) {
-         Sprintf(buf, "\t%i\t%S\n", i, &(obj_list[i].short_desc));
+         Sprintf(buf, "\t%i\t%S\n", i, obj_list[i].getShortDesc(&pc));
          show(buf, pc);
       }//if
       else {
@@ -1536,7 +1536,7 @@ int mlist(int start, int end, critter& pc) {
 
    for (int i = start; i<= end; i++) {
       if (mob_list[i].CRIT_FLAGS.get(18)) {
-         Sprintf(buf, "\t%i\t%S\n", i, &(mob_list[i].short_desc));
+         Sprintf(buf, "\t%i\t%S\n", i, mob_list[i].getShortDesc(&pc));
          show(buf, pc);
       }//if
       else {
@@ -2759,7 +2759,7 @@ int tog_oflag(int flagnum, const String* flag_type,
       }//if SOBJ
       else {
          Sprintf(buf, "Toggling obj_flag#:  %i on OBJ:  %S.\n", flagnum, 
-                 &(obj_ptr->short_desc));
+                 obj_ptr->getShortDesc(&pc));
          show(buf, pc);
       }//else
    }//if
@@ -2868,13 +2868,13 @@ int tog_mflag(int flagnum, const String* flag_type,
        (strncasecmp(*flag_type, "teach_flag", 1) == 0) ||
        (strncasecmp(*flag_type, "shop_flag", 1) == 0)) {
       if (mob_ptr->isMob()) {
-         Sprintf(buf, "Toggling flag#:  %i on MOB:  %S.\n", flagnum,
-                 &(mob_ptr->short_desc));
+         Sprintf(buf, "Toggling flag#:  %i on NON-MODIFIED (DB) Critter:  %S.\n",
+                 flagnum, mob_ptr->getShortDesc(&pc));
          show(buf, pc);
       }//if SOBJ
       else if (mob_ptr->isSmob()) {
-         Sprintf(buf, "Toggling flag#:  %i on SMOB:  %S.\n", flagnum,
-                 &(mob_ptr->short_desc));
+         Sprintf(buf, "Toggling flag#:  %i on MODIFIED Critter:  %S.\n", flagnum,
+                 mob_ptr->getShortDesc(&pc));
          show(buf, pc);
       }//else
       else if (mob_ptr->isPc()) {

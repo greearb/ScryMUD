@@ -1,5 +1,5 @@
-// $Id: Serialized.h,v 1.4 1999/08/27 03:10:03 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
+// $Id: Serialized.h,v 1.5 1999/08/29 01:17:15 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
 
 //
 //ScryMUD Server Code
@@ -47,6 +47,7 @@ enum LEtypeE {
    LE_DOOR_DATA = 6,
    LE_DOOR = 7,
    LE_GEN_SCRIPT = 8,
+   LE_SKILL_SPELL = 9,
    LE_LS_COLLECTION = 11,
    LE_SCRIPT_COLL = 12,
    LE_CLOSABLE = 13,

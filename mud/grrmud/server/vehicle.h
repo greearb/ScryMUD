@@ -1,5 +1,5 @@
-// $Id: vehicle.h,v 1.6 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: vehicle.h,v 1.7 1999/08/29 01:17:17 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/29 01:17:17 $
 
 //
 //ScryMUD Server Code
@@ -112,7 +112,9 @@ public:
    }
 
    void showVehicleFlags(critter& pc) {
-      out_field(vehicle_flags, pc, VEHICLE_FLAGS_NAMES);
+      String buf(300);
+      Markup::toString(vehicle_flags, VEHICLE_FLAGS_NAMES, &pc, buf);
+      pc.show(buf);
    }
 
    void showPaths(critter& pc);

@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.28 1999/08/20 06:20:06 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
+// $Id: misc2.cc,v 1.29 1999/08/29 01:17:16 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
 
 //
 //ScryMUD Server Code
@@ -1159,51 +1159,6 @@ int mob_can_enter(critter& pc, room& rm, short do_msg) {
 }//mob_can_enter
 
 
-
-void out_stat_list(const List<StatBonus*>& lst, critter& pc,
-                   const BitfieldNames& names) {
-   Cell<StatBonus*> cll(lst);
-   StatBonus* ptr;
-   String buf(100);
-   String buf2(100);
-
-   if (lst.isEmpty()) {
-      pc.show("NONE\n");
-      return;
-   }
-
-   while ((ptr = cll.next())) {
-      Sprintf(buf, "(%s %i) ", names.getName(ptr->stat),
-              ptr->bonus);
-      buf2.Append(buf);
-   }//while
-   buf2.Append("\n");
-   pc.show(buf2);
-}//out_stat_list
-
-
-void out_spell_list(const List<SpellDuration*>& lst, critter& pc) {
-   Cell<SpellDuration*> cll(lst);
-   SpellDuration* ptr;
-   String buf(100);
-   String buf2(100);
-
-   if (lst.isEmpty()) {
-      pc.show("NONE\n");
-      return;
-   }
-
-   while ((ptr = cll.next())) {
-      Sprintf(buf, "(%s %i) ",
-              SSCollection::instance().getNameForNum(ptr->spell),
-              ptr->duration);
-      buf2.Append(buf);
-   }//while
-   buf2.Append("\n");
-   pc.show(buf2);
-}//out_spell_list
-
-
 int get_game_time() {
    return Hour;
 }//get_game_time
@@ -1511,34 +1466,6 @@ void clear_obj_list(SafeList<object*>& lst) {
 }//clear_obj_list
 
 
-void out_field(const bitfield& field, critter& pc, const BitfieldNames& names) {
-   int k = field.max_bit();
-   String buf(100);
-   String tmp(50);
-   int sofar = 0;
-
-   Sprintf(buf, "%S (SET)\n\t", &(names.getHeader()));
-   pc.show(buf);
-   buf = "";
-
-   for (int i = 0; i <= k; i++) {
-      if (field.get(i)) {
-         Sprintf(tmp, "[%i] %s,  ", i, names.getName(i));
-         if ((sofar + tmp.Strlen()) > 80) {
-            buf += "\n\t";
-            sofar = tmp.Strlen();
-         }
-         else {
-            sofar += tmp.Strlen();
-         }
-         buf += tmp;
-      }//if
-   }//for
-   buf.Append("\n");
-   show(buf, pc);
-}//out_field
-
-   
 int critter::doBecomeNonPet() {
    String buf(100);
 

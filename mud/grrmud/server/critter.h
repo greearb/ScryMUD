@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.44 1999/08/27 03:10:04 greear Exp $
-// $Revision: 1.44 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
+// $Id: critter.h,v 1.45 1999/08/29 01:17:16 greear Exp $
+// $Revision: 1.45 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
 
 //
 //ScryMUD Server Code
@@ -567,10 +567,10 @@ public:
 class critter : public Entity, public Scriptable {
 protected:
    static int _cnt;
-
-public:
    LStringCollection short_desc;
    LStringCollection in_room_desc;
+
+public:
    
    bitfield crit_flags;
    // 0 can_see_inv, 1 using_light_src, 2 NULL, 3 is_flying,           
@@ -734,6 +734,9 @@ public:
    virtual void appendShortDesc(CSentryE whichun);
    virtual void appendInRoomDesc(CSentryE whichun);
 
+   virtual String* getShortDesc(critter* observer);
+   virtual String* getInRoomDesc(critter* observer);
+
    virtual LStringCollection* getInRoomDescColl() { return &in_room_desc; }
    virtual void setInRoomDescColl(LStringCollection& ldesc);
    virtual LStringCollection* getShortDescColl() { return &short_desc; }
@@ -771,6 +774,7 @@ public:
    int getXpToNextLevel() const;
    int getVisBit() const { return cur_stats[0]; }
    int getSeeBit() const { return cur_stats[1]; }
+
    String* getTrackingTarget();
 
    int doBecomeNonPet(); //misc2.cc

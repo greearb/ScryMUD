@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.25 1999/08/20 06:20:06 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
+// $Id: spec_prc.cc,v 1.26 1999/08/29 01:17:17 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/29 01:17:17 $
 
 //
 //ScryMUD Server Code
@@ -684,6 +684,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
 }//do_pulsed
 
 
+// TODO:  Translations problems with the emotes here...
 // Just does messages, no real actions.
 int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
                      object& obj, int posn) {
@@ -697,103 +698,103 @@ int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
          //log("Doing generic wear proc.\n");
          if (posn == 1) {
             Sprintf(tmp_str, "You start wearing %S on your head.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "starts wearing %S on %s head.\n", 
-                    &(obj.short_desc), get_his_her(pc));
+                    obj.getShortDesc(), get_his_her(pc));
          }//if
          else if (posn == 2 || posn == 3) {
             Sprintf(tmp_str, "You start wearing %S around your neck.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "starts wearing %S around %s neck.\n", 
-                    &(obj.short_desc), 
+                    obj.getShortDesc(), 
                     get_his_her(pc));
          }//if
          else if (posn == 4) {
             Sprintf(tmp_str, "You start wearing %S about your body.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "starts wearing %S about %s body.\n", 
-                    &(obj.short_desc), 
+                    obj.getShortDesc(), 
                     get_his_her(pc));
          }//if
          else if (posn == 5) {
             Sprintf(tmp_str, "You start wearing %S on your arms.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "starts wearing %S on %s arms.\n", 
-                    &(obj.short_desc),
+                    obj.getShortDesc(),
                     get_his_her(pc));
          }//if
          else if (posn == 6 || posn == 7) {
             Sprintf(tmp_str, "You start wearing %S around your wrist.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "starts wearing %S around %s wrist.\n", 
-                    &(obj.short_desc), 
+                    obj.getShortDesc(), 
                     get_his_her(pc));
          }//if
          else if (posn == 8) {
             Sprintf(tmp_str, "You place %S on your hands.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "places %S on %s hands.\n", 
-                    &(obj.short_desc), 
+                    obj.getShortDesc(), 
                     get_his_her(pc));
          }//if
          else if (posn == 9) {
             Sprintf(tmp_str, "You wield %S.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "wields %S.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc());
          }//if
          else if (posn == 10) {
             Sprintf(tmp_str, "You grab %S.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "grabs %S.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc());
          }//if
          else if (posn == 11) {
             Sprintf(tmp_str, "You start using %S as a light.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "starts using %S as a light.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc());
          }//if
          else if (posn == 12) {
             Sprintf(tmp_str, "You wear %S on your body.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "wears %S on %s body.\n", 
-                    &(obj.short_desc), 
+                    obj.getShortDesc(), 
                     get_his_her(pc));
          }//if
          else if (posn == 13) {
             Sprintf(tmp_str, "You start wearing %S around your waist.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "starts wearing %S around %s waist.\n", 
-                    &(obj.short_desc), 
+                    obj.getShortDesc(), 
                     get_his_her(pc));
          }//if
          else if (posn == 14) {
             Sprintf(tmp_str, "You start wearing %S on your legs.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "starts wearing %S on %s legs.\n", 
-                    &(obj.short_desc), 
+                    obj.getShortDesc(), 
                     get_his_her(pc));
          }//if
          else if (posn == 15) {
             Sprintf(tmp_str, "You put %S on your feet.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "puts %S on %s feet.\n", 
-                    &(obj.short_desc), 
+                    obj.getShortDesc(), 
                     get_his_her(pc));
          }//if
          else if (posn == 16 || posn == 17) {
             Sprintf(tmp_str, "You place %S on your finger.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "places %S on %s finger.\n", 
-                    &(obj.short_desc), 
+                    obj.getShortDesc(), 
                     get_his_her(pc));
          }//if
          else if (posn == 18) {
             Sprintf(tmp_str, "You start using %S as a shield.\n", 
-                    &(obj.short_desc));
+                    obj.getShortDesc(&pc));
             Sprintf(other_msg, "starts using %S as a shield.\n", 
-                    &(obj.short_desc), 
+                    obj.getShortDesc(), 
                     get_his_her(pc));
          }//if
          else {
@@ -813,9 +814,9 @@ int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
    else if (type_of_proc == OBJ_REMOVE_PROC) {
       if (proc_num == -2) { //rem_prc1, default
          Sprintf(tmp_str, "You stop using %S.\n", 
-		&(obj.short_desc));
+		obj.getShortDesc(&pc));
          Sprintf(other_msg, "stops using %S.", 
-              &(obj.short_desc));
+              obj.getShortDesc());
          emote(other_msg, pc, ROOM, TRUE);
          show(tmp_str, pc);
       }//if proc -2
@@ -1264,7 +1265,7 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
          }//if
 
          Sprintf(buf, "You now have %S.\n", 
-		&(obj_ptr->short_desc));
+		obj_ptr->getShortDesc(&keeper));
          show(buf, keeper);
          Sprintf(buf, "Here's %i coins.", price);
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());

@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.31 1999/08/27 03:10:03 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
+// $Id: command5.cc,v 1.32 1999/08/29 01:17:15 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
 
 //
 //ScryMUD Server Code
@@ -1041,7 +1041,7 @@ int mvnum(int i_th, const String* name, critter& pc) {
 
    for (i = i_th; i<NUMBER_OF_MOBS; i++) {
       if (mob_is_named(mob_list[i], *name)) {
-	 Sprintf(buf, "[%i] %S\n", i, &(mob_list[i].short_desc));
+	 Sprintf(buf, "[%i] %S\n", i, mob_list[i].getShortDesc(&pc));
 	 show(buf, pc);
       }//if
    }//for
@@ -1063,7 +1063,7 @@ int ovnum(int i_th, const String* name, critter& pc) {
 
    for (i = i_th; i<NUMBER_OF_ITEMS; i++) {
       if (obj_is_named(obj_list[i], *name)) {
-	 Sprintf(buf, "[%i] %S\n", i, &(obj_list[i].short_desc));
+	 Sprintf(buf, "[%i] %S\n", i, obj_list[i].getShortDesc(&pc));
 	 show(buf, pc);
       }//if
    }//for
@@ -1217,7 +1217,7 @@ int aolist(int zone, int how_many, critter& pc) {
    for (int i = 0; (i < NUMBER_OF_ITEMS && count < how_many); i++) {
       if (obj_list[i].OBJ_FLAGS.get(10)) {
 	 if (obj_list[i].OBJ_IN_ZONE == zone) {
-	    Sprintf(buf, "[%i]\t%S\n", i, &(obj_list[i].short_desc));
+	    Sprintf(buf, "[%i]\t%S\n", i, obj_list[i].getShortDesc(&pc));
 	    count++;
 	    show(buf, pc);
 	 }//if
@@ -1451,7 +1451,7 @@ int amlist(int zone, int how_many, critter& pc) {
    for (int i = 0; (i<NUMBER_OF_MOBS && count < how_many); i++) {
       if (mob_list[i].getNativeZoneNum() == zone) {
          if (mob_list[i].isInUse()) {
-            Sprintf(buf, "[%i]\t%S\n", i, &(mob_list[i].short_desc));
+            Sprintf(buf, "[%i]\t%S\n", i, mob_list[i].getShortDesc(&pc));
             count++;
             show(buf, pc);
          }//if
@@ -2071,54 +2071,54 @@ int dsys(int i, const String& cmd, const String& arg1, critter& pc) {
 
       if (do_crit) {
          pc.show("----------------------->> CRITTER FLAGS <<---------------------\n");
-         CRIT_FLAGS_NAMES.listNames(buf);
+         CRIT_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
          
          pc.show("\n");
-         MOB_DATA_FLAGS_NAMES.listNames(buf);
+         MOB_DATA_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
          
          pc.show("\n");
-         MOB_PROC_DATA_FLAGS_NAMES.listNames(buf);
+         MOB_PROC_DATA_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
          
          pc.show("\n");
-         SHOP_DATA_FLAGS_NAMES.listNames(buf);
+         SHOP_DATA_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
          
          pc.show("\n");
-         TEACH_DATA_FLAGS_NAMES.listNames(buf);
+         TEACH_DATA_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
          
          pc.show("\n");
-         PC_DATA_FLAGS_NAMES.listNames(buf);
+         PC_DATA_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
       }
 
       if (do_objs) {
          pc.show("\n----------------------->> OBJECT FLAGS <<---------------------\n");
-         OBJ_FLAGS_NAMES.listNames(buf);
+         OBJ_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
          
          pc.show("\n");
-         BAG_FLAGS_NAMES.listNames(buf);
+         BAG_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
          
          pc.show("\n");
-         OBJ_SPEC_DATA_FLAGS_NAMES.listNames(buf);
+         OBJ_SPEC_DATA_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
       }
 
       if (do_door) {
          pc.show("\n----------------------->> DOOR FLAGS <<---------------------\n");
-         DOOR_DATA_FLAGS_NAMES.listNames(buf);
+         DOOR_DATA_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
          pc.show("\n");
       }
 
       if (do_room) {
          pc.show("\n----------------------->> ROOM FLAGS <<---------------------\n");
-         ROOM_FLAGS_NAMES.listNames(buf);
+         ROOM_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
          pc.show("\n");
       }

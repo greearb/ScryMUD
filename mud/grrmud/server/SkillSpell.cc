@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.13 1999/08/27 03:10:03 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
+// $Id: SkillSpell.cc,v 1.14 1999/08/29 01:17:15 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
 
 //
 //ScryMUD Server Code
@@ -62,7 +62,7 @@ String SkillSpell::getHtml() {
    String buf(100);
    String retval(500);
    Sprintf(retval, "<center><A name=\"%S\">\n<h3>Skill name: %S</h3>\n",
-           &name, &name);
+           name.getString(), name.getString());
 
    Sprintf(buf, "num: %i &nbsp; mininum level: %i &nbsp; difficulty: %i/100 &nbsp;",
            ss_num, min_level, difficulty);
@@ -103,7 +103,7 @@ String SkillSpell::toString() {
    String retval(500);
 
    Sprintf(retval, "[%i]%P06 %S%P19 min lvl: %i  difficulty: %i/100  mana: %i  scroll# %i\n",
-           ss_num, &name, min_level, difficulty, mana_cost, scroll_num);
+           ss_num, name.getString(), min_level, difficulty, mana_cost, scroll_num);
 
    int tmp = 0;
    if (!objs_casting_spell.isEmpty()) {
@@ -143,35 +143,43 @@ String SkillSpell::toString() {
 
    
 
-void SkillSpell::Read(ifstream& da_file) {
+int SkillSpell::read(istream& da_file, int read_all) {
    char buf[100];
    int tmp;
    String bf(100);
 
-   Clear();
+   clear();
 
    if (!da_file) {
       if (mudlog.ofLevel(ERR)) {
          mudlog << "ERROR:  da_file FALSE in SkillSpell read." << endl;
       }
-      return;
+      return -1;
    }
 
-   da_file >> ss_num;
-   da_file.getline(buf, 80);
+   da_file >> bf;
+
+   if (isnum(bf)) { //v02
+      ss_num = atoi(bf);
+      da_file.getline(buf, 80);
    
-   mudlog << "SkillSpell::READ, ss_num = " << ss_num << endl;
+      mudlog << "SkillSpell::READ, ss_num = " << ss_num << endl;
 
-   da_file.getline(buf, 80);
-   name = buf;
+      da_file.getline(buf, 80);
+      LString ls(English, buf);
+      ls.strip();
+      name.addLstring(ls);
+   }
+   else { //v03
+      MetaTags mt(bf, da_file);
 
-   name.Strip();
-
-   mudlog << "Name -:" << name << ":-" << endl;
+      da_file >> ss_num;
+      name.read(da_file);
+   }
 
    da_file >> min_level >> difficulty >> mana_cost >> scroll_num;
    da_file.getline(buf, 80);
-  
+      
    da_file >> tmp;
    while (tmp != -1) {
       prereqs.append(tmp);
@@ -186,13 +194,18 @@ void SkillSpell::Read(ifstream& da_file) {
    }//while
    da_file.getline(buf, 80);
    da_file.getline(buf, 80);
+   return 0;
 }//read
 
-void SkillSpell::Write(ofstream& da_file) {
+int SkillSpell::write(ostream& da_file) {
    int tmp;
 
+   MetaTags mt(*this);
+   mt.write(da_file);
+
    da_file << ss_num << "SPELL/SKILL NUMBER\n";
-   da_file << name << endl;
+   name.write(da_file);
+
    da_file << min_level << " " << difficulty << " " << mana_cost 
            << " " << scroll_num << " minlvl, diff, mana, scroll#\n";
    
@@ -208,6 +221,7 @@ void SkillSpell::Write(ofstream& da_file) {
    }//while
    da_file << -1 << "\tenables\n";
    da_file << endl;
+   return 0;
 }//write
 
 
@@ -218,9 +232,9 @@ int SkillSpell::getScrollNum() {
    return -1;
 }
 
-void SkillSpell::Clear() {
+void SkillSpell::clear() {
    min_level = 0;
-   name.Clear();
+   name.clear();
    ss_num = 0;
    difficulty = 0;
    mana_cost = 0;
@@ -328,8 +342,11 @@ void SSCollection::treeInsert(const String& ss_name, int ss_num) {
 }
 
 
-const char* SSCollection::getNameForNum(int skill_num) {
-   
+const char* SSCollection::getNameForNum(int skill_num, critter* viewer) {
+   return getNameForNum(skill_num, viewer->getLanguage());
+}
+
+const char* SSCollection::getNameForNum(int skill_num, LanguageE lang) {
    if (!check_l_range(skill_num, 0, NUMBER_OF_SKILL_SPELLS, mob_list[0],
 		      FALSE)) {
       if (mudlog.ofLevel(ERR)) {
@@ -340,7 +357,7 @@ const char* SSCollection::getNameForNum(int skill_num) {
    }//if
 
    if (ss_list[skill_num].getName().Strlen()) {
-      return (const char*)(ss_list[skill_num].getName());
+      return (const char*)(ss_list[skill_num].getName(lang));
    }//if
    else
       return "UNKNOWN";
@@ -549,7 +566,7 @@ void SSCollection::read() {
          mudlog.log(ERR, "ERROR:  zone number is out of range, fatal\n");
          return;
       }//if
-      instance().getSS(k).Read(zfile);
+      instance().getSS(k).read(zfile);
       zfile >> k;
       zfile.getline(buf, 80);
    }//while

@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.22 1999/08/16 07:31:24 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
+// $Id: const.cc,v 1.23 1999/08/29 01:17:16 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
 
 //
 //ScryMUD Server Code
@@ -55,456 +55,435 @@ const char* regular_directions[] = {
    "down"
 };
 
-const char* osd_names[] = {
-   "consume_teleport", 
-   "has_construct_data",
-   "has_skin",
-   "consume_poison",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "casts_spells"
+CSentryE osd_names[] = {
+   CS_CONSUME_TELEPORT_F,
+   CS_CONSTR_DATA_F,
+   CS_HAS_SKIN_F,
+   CS_CONSUME_POISON_F,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_CASTS_SPELLS_F
 };
-const BitfieldNames OBJ_SPEC_DATA_FLAGS_NAMES(sizeof(osd_names)/sizeof(const char*),
-                                              osd_names, "Obj Spec Data Flags:");
+const LstrArray OBJ_SPEC_DATA_FLAGS_NAMES(sizeof(osd_names)/sizeof(CSentryE),
+                                              osd_names, CS_OBJ_SPEC_DATA_FLAGS);
 
-const char* bf_names[] = { 
-   "NULL",
-   "NULL",
-   "is_closed",
-   "is_locked",
-   "is_pickable",
-   "is_mag_lockable",
-   "is_mag_locked",
-   "is_destructable {fireball may open it till reset}",
-   "is_corpse",
-   "!close",
-   "NULL",//10
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "consume_key"//17
+CSentryE bf_names[] = { 
+   CS_OPEN_EXIT_F,
+   CS_MAG_LOCKABLE_F,
+   CS_IS_CLOSED_F,
+   CS_IS_LOCKED_F,
+   CS_IS_PICKABLE_F,
+   CS_IS_LOCKED_F, // 5
+   CS_IS_MAG_LOCKED_F,
+   CS_IS_DESTRUCTABLE_F, //7
+   CS_IS_CLOSABLE_F, //8
+   CS_IS_FLIPPABLE_F,
+   CS_IS_IN_USE_F, //10
+   CS_IS_NO_OPEN_F,
+   CS_IS_VEHICLE_EXIT_F, //12
+   CS_IS_SECRET_F,
+   CS_IS_BLOCKED_F,
+   CS_IS_NOT_COMPLETE_F,
+   CS_SECRET_WHEN_OPEN_F,
+   CS_CONSUME_KEY_F,
+   CS_NO_PASSDOOR_F,
+   CS_IS_CORPSE_F
 };
-const BitfieldNames BAG_FLAGS_NAMES(sizeof(bf_names)/sizeof(const char*),
-                                    bf_names, "Bag Flags:");
+const LstrArray BAG_FLAGS_NAMES(sizeof(bf_names)/sizeof(CSentryE),
+                                    bf_names, CS_CONTAINER_FLAGS);
 
-const char* sd_names[] = {
-   "buy_0",//0
-   "sell_0",//1
-   "offer_0",//2
-   "Player-run shopkeeper",//3
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",//10
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",//20
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",//30
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NULL",
-   "NON weapon",//40
-   "slash",
-   "smash",
-   "pierce",
-   "whip", 
-   "needs_ammo",
-   "dart_thrower",
-   "bow", 
-   "dart",
-   "arrow",
-   "junk", //50
-   "wand",
-   "potion",
-   "scroll",
-   "container",
-   "coins",//55
-   "armor",
-   "weapon",
-   "light_source",
-   "canteen",
-   "liquid",//60
-   "food",
-   "boat",
-   "has_spec_proc_data",
-   "toolbox",
-   "cauldron",//65
-   "pen", 
-   "construct_component",
-   "concoct_component",
-   "parchment", //69
-   "NULL",
-   "NULL",
-   "herb", //72
-   "vend_machine"//73
+CSentryE sd_names[] = {
+   CS_BUY_ZERO_F,
+   CS_SELL_ZERO_F,
+   CS_OFFER_ZERO_F,
+   CS_PLAYER_RUN_SHOPKEEPER_F, //3
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,//10
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,//20
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,//30
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NON_WEAPON_F,
+   CS_SLASH_F,
+   CS_SMASH_F,
+   CS_PIERCE_F,
+   CS_WHIP_F,
+   CS_NEEDS_AMMO_F,
+   CS_DART_THROWER_F,
+   CS_BOW_F,
+   CS_DART_F,
+   CS_ARROW_F,
+   CS_JUNK_F, //50
+   CS_WAND_F,
+   CS_POTION_F,
+   CS_SCROLL_F,
+   CS_CONTAINER_F,
+   CS_COINS_F,//55
+   CS_ARMOR_F,
+   CS_WEAPON_F,
+   CS_LIGHT_SOURCE_F,
+   CS_CANTEEN_F,
+   CS_LIQUID_F,//60
+   CS_FOOD_F,
+   CS_BOAT_F,
+   CS_NULL,
+   CS_TOOLBOX_F,
+   CS_CAULDRON_F,//65
+   CS_PEN_F,
+   CS_CONSTR_COMP_F,
+   CS_CONCOCT_COMP_F,
+   CS_PARCHMENT_F,
+   CS_NULL,
+   CS_NULL,
+   CS_HERB_F, //72
+   CS_VEND_MACHINE_F//73
 };
-const BitfieldNames SHOP_DATA_FLAGS_NAMES(sizeof(sd_names)/sizeof(const char*),
-                                          sd_names, "Shop Data Flags (Trades):");
+const LstrArray SHOP_DATA_FLAGS_NAMES(sizeof(sd_names)/sizeof(CSentryE),
+                                      sd_names, CS_SHOP_DATA_FLAGS);
 
-const char* td_names[] = {
-   "NULL",
-   "Warrior",
-   "Sage",
-   "Wizard",
-   "Ranger",
-   "Thief",
-   "Alchemist",
-   "Cleric",
-   "Bard"
+CSentryE class_names[] = {
+   CS_NULL,
+   CS_WARRIOR,
+   CS_SAGE,
+   CS_WIZARD,
+   CS_RANGER,
+   CS_THIEF,
+   CS_ALCHEMIST,
+   CS_CLERIC,
+   CS_BARD
 };
-const BitfieldNames TEACH_DATA_FLAGS_NAMES(sizeof(td_names)/sizeof(const char*),
-                                           td_names, "Teach Data Flags:");
+const LstrArray TEACH_DATA_FLAGS_NAMES(sizeof(class_names)/sizeof(CSentryE),
+                                       class_names, CS_TEACH_DATA_FLAGS);
 
 /** FLAG1 */
-const char* mp_names[] = {
-   "NULL",
-   "shopkeeper",
-   "teacher",
-   "let_same_class_pass",
-   "let_same_race_pass",
-   "has_mob_give_proc",
-   "has_mob_say_proc",
-   "has_mob_bow_proc",
-   "has_mob_curse_proc",
-   "proc_with_same_race", 
-   "proc_with_same_align",
-   "proc_with_same_class",
-   "NULL",
-   "has_AI"
+CSentryE mp_names[] = {
+   CS_NULL,
+   CS_SHOPKEEPER_F,
+   CS_TEACHER_F,
+   CS_SAME_CLASS_PASS_F,
+   CS_LET_SAME_RACE_PASS_F,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_NULL,
+   CS_HAS_AI_F,
 };
-const BitfieldNames MOB_PROC_DATA_FLAGS_NAMES(sizeof(mp_names)/sizeof(const char*),
-                                              mp_names, "Mob Proc Flags:");
+const LstrArray MOB_PROC_DATA_FLAGS_NAMES(sizeof(mp_names)/sizeof(CSentryE),
+                                          mp_names, CS_MOB_PROC_FLAGS);
 
-const char* c_names[] = {
-   "can_see_inv",
-   "using_light_src",
-   "NULL",
-   "is_flying",           
-   "have_boat",
-   "can_climb",
-   "gos",
-   "yell",
-   "gratz",
-   "auc", 
-   "shout",
-   "say",
-   "tell",
-   "wiznet",
-   "is_paralyzed",
-   "is_perm_sleeped",
-   "is_dual_wielding",
-   "is_sneak",
-   "in_use",
-   "can_dive",
-   "spell_tested_yet",
-   "is_blocked",
-   "is_hide",
-   "is_tailing",
-   "!complete",
-   "already_hurled"
+CSentryE c_names[] = {
+   CS_CAN_SEE_INV_F,
+   CS_USING_LIGHT_SRC_F,
+   CS_NULL,
+   CS_IS_FLYING_F,
+   CS_HAVE_BOAT_F,
+   CS_CAN_CLIMB_F,
+   CS_GOS_F,
+   CS_YELL_F,
+   CS_GRATZ_F,
+   CS_AUC_F,
+   CS_SHOUT_F,
+   CS_SAY_F,
+   CS_TELL_F,
+   CS_WIZNET_F,
+   CS_PARALYZED_F,
+   CS_PERM_SLEEPED_F,
+   CS_DUAL_WIELDING_F,
+   CS_IS_SNEAK_F,
+   CS_IS_IN_USE_F,
+   CS_CAN_DIVE_F,
+   CS_SPELL_TESTED_YET_F,
+   CS_IS_BLOCKED_F,
+   CS_IS_HIDING_F,
+   CS_IS_TAILING_F,
+   CS_IS_NOT_COMPLETE_F,
+   CS_ALREADY_HURLED_F
 };
-const BitfieldNames CRIT_FLAGS_NAMES(sizeof(c_names)/sizeof(const char*),
-                                     c_names, "Critter Flags:");
+const LstrArray CRIT_FLAGS_NAMES(sizeof(c_names)/sizeof(CSentryE),
+                                 c_names, CS_CRIT_FLAGS);
 
-const char* md_names[] = {
-   "has_proc_data", //0
-   "scavenge", //1
-   "wander", //2
-   "should_do_procs", //3
-   "need_resetting", //4
-   "edible_corpse", //5
-   "is_banker", //6,
-   "is_sessile", //7
-   "!homing", //8
-   "NULL", //9
-   "NULL", //10
-   "NULL", //11
-   "NULL", //12
-   "NULL", //13
-   "NULL", //14
-   "NULL", //15
-   "has_skin", //16
-   "has_mob_script" /*17*/
+CSentryE md_names[] = {
+   CS_HAS_PROC_DATA_F,
+   CS_SCAVENGE_F,
+   CS_WANDER_F,
+   CS_SHOULD_DO_PROCS_F,
+   CS_NEEDS_RESETTING_F, //4
+   CS_EDIBLE_CORPSE_F,
+   CS_IS_BANKER_F,
+   CS_IS_SESSILE_F, //7
+   CS_IS_NO_HOMING_F, //8
+   CS_NULL, //9
+   CS_NULL, //10
+   CS_NULL, //11
+   CS_NULL, //12
+   CS_NULL, //13
+   CS_NULL, //14
+   CS_NULL, //15
+   CS_HAS_SKIN_F,
+   CS_HAS_SCRIPT_F, /*17*/
 };
-const BitfieldNames MOB_DATA_FLAGS_NAMES(sizeof(md_names)/sizeof(const char*),
-                                         md_names, "Mob Data Flags:");
+const LstrArray MOB_DATA_FLAGS_NAMES(sizeof(md_names)/sizeof(CSentryE),
+                                     md_names, CS_MOB_DATA_FLAGS);
 
-const char* pcd_names[] = {
-   "frozen",//0
-   "gagged",//1
-   "has_imm_data", //2
-   "cloaked",//3
-   "tank_graph",//4
-   "using_client",//5
-   "auto_exit",//6
-   "!hassle",//7
-   "brief",//8
-   "autosplit",//9 
-   "do_prompt",//10
-   "is_builder",//11
-   "autoloot",//12
-   "olc_redo",//13
-   "extra_info",//14
-   "cr_behind",//15
-   "do_carriage_return",//16
-   "is_blocking_door",//17
-   "can_det_magic",//18
-   "detect_inventory",//19
-   "show_vnums",//20
-   "has_poofin_poofout_msg",//21
-   "page_output",//22
-   "in_page_break_mode",//23
-   "!wizchat",//24
-   "has_colors",//25
-   "use_color", //26
-   "has_language_choice", //27
-   "!show_NPC_entry",
-   "no_beep" //29
+CSentryE pcd_names[] = {
+   CS_FROZEN_F,
+   CS_GAGGED_F,
+   CS_HAS_IMM_DATA_F,
+   CS_CLOAKED_F,
+   CS_TANK_GRAPH_F,
+   CS_USING_CLIENT_F,
+   CS_AUTO_EXIT_F,
+   CS_NO_HASSLE_F,
+   CS_BRIEF_F,//8
+   CS_AUTOSPLIT_F,
+   CS_DO_PROMPT_F,//10
+   CS_IS_BUILDER_F,
+   CS_AUTOLOOT_F,//12
+   CS_OLC_REDO_F,
+   CS_EXTRA_INFO_F,//14
+   CS_CR_BEHIND_F,
+   CS_DO_CR_F,
+   CS_IS_BLOCKING_DOOR_F,
+   CS_CAN_DET_MAGIC_F,
+   CS_DET_INV_F,
+   CS_SHOW_VNUMS_F,//20
+   CS_HAS_POOF_MSGS_F,
+   CS_PAGE_OUTPUT_F,//22
+   CS_PB_MODE_F,
+   CS_NO_WIZCHAT_F,
+   CS_HAS_COLORS_F,//25
+   CS_USE_COLOR_F,
+   CS_HAS_LANG_CHOICE_F,
+   CS_NO_SHOW_NPC_ENTRY_F,
+   CS_NO_BEEP_F
 };
-const BitfieldNames PC_DATA_FLAGS_NAMES(sizeof(pcd_names)/sizeof(const char*),
-                                        pcd_names, "PC Data Flags:");
+const LstrArray PC_DATA_FLAGS_NAMES(sizeof(pcd_names)/sizeof(CSentryE),
+                                    pcd_names, CS_PC_DATA_FLAGS);
 
-const char* cl_names[] = {
-   "open exit basically no door",//0
-   "is_mag_lockable",//1
-   "is_closed",//2
-   "is_locked",//3
-   "is_pckabl",//4
-   "is_lockable", //5
-   "mag_locked (spell only can open it)",//6
-   "is_destructable",//7
-   "is_closeable",//8
-   "is_flippable",//9
-   "in_use",//10
-   "is_unopenable (by players, auto only)",//11
-   "is_vehicle_exit",//12
-   "is_secret",//13
-   "is_blocked",//14
-   "!complete",//15
-   "secret_when_open_too",//16
-   "consume_key",//17
-   "!passdoor"//18
-};
-const BitfieldNames CLOSABLE_FLAGS_NAMES(sizeof(cl_names)/sizeof(const char*),
-                                         cl_names, "Closable Flags:");
 
-const char* v_names[] = {
-   "is_self_guided",
-   "is_stealthy",
-   "unlimited_fuel",
-   "can_fly",
-   "can_climb", 
-   "can_float",
-   "can_dive",
-   "can_see_out (show room descs to passengers)"
+CSentryE v_names[] = {
+   CS_IS_SELF_GUIDED_F,
+   CS_STEALTHY_F,
+   CS_UNLIMITED_FUEL_F,
+   CS_IS_FLYING_F,
+   CS_CAN_CLIMB_F,
+   CS_CAN_FLOAT_F,
+   CS_CAN_DIVE_F,
+   CS_CAN_SEE_OUT_F,
 };
-const BitfieldNames VEHICLE_FLAGS_NAMES(sizeof(v_names)/sizeof(const char*),
-                                        v_names, "Vehicle Flags:");
+const LstrArray VEHICLE_FLAGS_NAMES(sizeof(v_names)/sizeof(CSentryE),
+                                    v_names, CS_VEH_FLAGS);
     
-const char* r_names[] = {
-   "No-Restrictions",//0
-   "Anti-Immort",//1
-   "Anti-God",//2
-   "is_perm_dark",//3
-   "weather",//4
-   "!shout",//5
-   "!mag_exit",//6
-   "is_haven", //7
-   "!PK", //8
-   "!magic", //9
-   "!mob",//10
-   "!potions",//11
-   "!staffs",//12
-   "!mort",//13
-   "normally_dark",//14
-   "river/small lake",//15
-   "ocean/big lake",//16
-   "swamp", //17
-   "need_fly",//18
-   "need_boat",//19
-   "need_climb",//20
-   "is_zlocked (for olc)",//21
-   "is_totally_loaded",//22
-   "is_used",//23
-   "!magic_entry",//24
-   "!vehicle (vehicles can't drive here)",//25
-   "cramped (!huge)",//26
-   "!ranged",//27
-   "need_dive_ability",//28
-   "used_in_track",//29
-   "can_camp",//30
-   "!complete (olc wise)",//31
-   "has_keywords",//32
-   "!mob_wander",//33
-   "!foreign_mob_wander",//34
-   "has_proc_script"//35
+CSentryE r_names[] = {
+   CS_NO_REST_F,
+   CS_NO_IMM_F,//1
+   CS_NO_GOD_F,//2
+   CS_IS_PERM_DARK_F,//3
+   CS_HAS_WEATHER_F,
+   CS_NO_SHOUT_F,//5
+   CS_NO_MAG_EXIT_F,
+   CS_HAVEN_F,
+   CS_NO_PK_F, //8
+   CS_NO_MAGIC_F,
+   CS_ANTI_NPC_F,//10
+   CS_ANTI_POTION_F,
+   CS_ANTI_STAFF_F,
+   CS_ANTI_MORT_F,
+   CS_NORMAL_DARK_F,
+   CS_RIVER_LAKE_F,
+   CS_OCEAN_LAKE_F,
+   CS_SWAMP_F, //17
+   CS_NEED_FLY_F,//18
+   CS_NEED_BOAT_F,
+   CS_NEED_CLIMB_F,
+   CS_ZLOCKED_F,
+   CS_TOT_LOADED_F,
+   CS_IS_IN_USE_F,
+   CS_NO_MAG_ENTRY_F,//24
+   CS_NO_VEH_F,
+   CS_CRAMPED_F,
+   CS_NO_RANGED_F,
+   CS_NEED_DIVE_F,
+   CS_USED_IN_TRACK_F,
+   CS_CAN_CAMP_F,//30
+   CS_IS_NOT_COMPLETE_F,
+   CS_HAS_KEYWORDS_F,
+   CS_NO_MOB_WANDER_F,
+   CS_NO_FOREIGN_MOB_WANDER_F,
+   CS_HAS_SCRIPT_F//35
 };
-const BitfieldNames ROOM_FLAGS_NAMES(sizeof(r_names)/sizeof(const char*),
-                                     r_names, "Room Flags:");
+const LstrArray ROOM_FLAGS_NAMES(sizeof(r_names)/sizeof(CSentryE),
+                                 r_names, CS_ROOM_FLAGS);
 
-const char* o_names[] = {
-   "No-Restrictions",//0
-   "Anti-Evil", 
-   "Anti-Neutral",
-   "Anti-Good", 
-   "Anti-Donate",
-   "Anti-Drop",
-   "Anti-Remove",
-   "Anti-Mortal",
-   "Anti-Immortal",
-   "Anti-Demi",
-   "in_use",//10
-   "Anti-Warrior",
-   "Anti-Sage",
-   "Anti-Wizard",
-   "Anti-Ranger",
-   "Anti-Thief",
-   "Anti-Alchemist", 
-   "Anti-Cleric",
-   "Anti-Bard",
-   "Anti-NPC",
-   "Abti-PC",//20
-   "Not-worn",
-   "Worn-head",
-   "Worn-neck",
-   "Worn-neck",
-   "Worn-around-body",
-   "Worn-arms", 
-   "Worn-wrist1",
-   "Worn-wrist2", 
-   "Worn-hands",
-   "Wielded",//30
-   "Held",
-   "Worn-Light",
-   "Worn-body",
-   "Belt",
-   "Worn-legs",
-   "Worn-feet",
-   "Worn-finger1", 
-   "Worn-finger2",
-   "Shield", //39
-   "Not-weapon",//40
-   "Weapon-slash",
-   "Weapon-smash",
-   "Weapon-pierce",
-   "Weapon-whip", 
-   "Needs-ammo",
-   "Dart-thrower",
-   "Bow", 
-   "Dart",
-   "Arrow",
-   "Junk", //50
-   "Wand",
-   "Potion",
-   "Scroll",
-   "Container",
-   "Coins",//55
-   "Armor",
-   "Weapon",
-   "Light-source",
-   "Canteen",
-   "Liquid",//60
-   "Food",
-   "Boat",
-   "has_spec_proc_data",
-   "Toolbox",
-   "Cauldron",
-   "Pen", 
-   "Construct_component",
-   "Concoct_component",
-   "Parchment", 
-   "Needs_resetting",//70
-   "Not-Complete", 
-   "Herb", //72
-   "Vend_machine",
-   "Bulletin_board",
-   "Is_butcherable",
-   "Has_obj_script"//76
+CSentryE o_names[] = {
+   CS_NO_REST_F,
+   CS_NO_EVIL_F,
+   CS_NO_NEUT_F,
+   CS_NO_GOOD_F,
+   CS_NO_DONATE_F,
+   CS_NO_DROP_F,
+   CS_NO_REM_F,
+   CS_ANTI_MORT_F,
+   CS_NO_IMM_F,
+   CS_NO_DEMI_F,
+   CS_IS_IN_USE_F, //10
+   CS_NO_WARRIOR_F,
+   CS_NO_SAGE_F,
+   CS_NO_WIZ_F,
+   CS_NO_RANGER_F,
+   CS_NO_THIEF_F,
+   CS_NO_ALCH_F,
+   CS_NO_CLERIC_F,
+   CS_NO_BARD_F,
+   CS_ANTI_NPC_F,
+   CS_NO_PC_F,//20
+   CS_NOT_WORN_F,
+   CS_WORN_HEAD_F,
+   CS_WORN_NECK_F,
+   CS_WORN_NECK_F,
+   CS_ARND_BODY_F,
+   CS_WORN_ARMS_F,
+   CS_WORN_W1_F,
+   CS_WORN_W2_F,
+   CS_WORN_HANDS_F,
+   CS_WIELDED_F,//30
+   CS_HELD_F,
+   CS_WORN_LIGHT_F,
+   CS_WORN_BODY_F,
+   CS_BELT_F,
+   CS_WORN_LEGS_F,
+   CS_WORN_FEET_F,
+   CS_WORN_FINGER1_F,
+   CS_WORN_FINGER2_F,
+   CS_SHIELD_F, //39
+   CS_NON_WEAPON_F,
+   CS_SLASH_F,
+   CS_SMASH_F,
+   CS_PIERCE_F,
+   CS_WHIP_F,
+   CS_NEEDS_AMMO_F,
+   CS_DART_THROWER_F,
+   CS_BOW_F,
+   CS_DART_F,
+   CS_ARROW_F,
+   CS_JUNK_F, //50
+   CS_WAND_F,
+   CS_POTION_F,
+   CS_SCROLL_F,
+   CS_CONTAINER_F,
+   CS_COINS_F,//55
+   CS_ARMOR_F,
+   CS_WEAPON_F,
+   CS_LIGHT_SOURCE_F,
+   CS_CANTEEN_F,
+   CS_LIQUID_F,//60
+   CS_FOOD_F,
+   CS_BOAT_F,
+   CS_HAS_PROC_DATA_F,
+   CS_TOOLBOX_F,
+   CS_CAULDRON_F,//65
+   CS_PEN_F,
+   CS_CONSTR_COMP_F,
+   CS_CONCOCT_COMP_F,
+   CS_PARCHMENT_F,
+   CS_NEEDS_RESETTING_F,
+   CS_IS_NOT_COMPLETE_F,
+   CS_HERB_F, //72
+   CS_VEND_MACHINE_F,
+   CS_BULLETIN_BOARD_F,
+   CS_BUTCHERABLE_F,
+   CS_HAS_SCRIPT_F//76
 };
 
-const BitfieldNames OBJ_FLAGS_NAMES(sizeof(o_names)/sizeof(const char*),
-                                    o_names, "Object Flags:");
+const LstrArray OBJ_FLAGS_NAMES(sizeof(o_names)/sizeof(CSentryE),
+                                o_names, CS_OBJ_FLAGS);
 
 /** Stat Affect names */
-const char* sa_names[] = {
-   "position",
-   "Strength",
-   "Inteligence",
-   "Constitution",
-   "Charisma",
-   "Wisdom",
-   "Dexterity",
-   "HIT",
-   "Damage",
-   "AC",
-   "Attacks", //10
-   "PAUSE_CNT",
-   "SEX",
-   "CLASS",
-   "RACE",
-   "Current HP",
-   "Current MANA",
-   "Current Movement",
-   "Alignment",
-   "Level",
-   "hometown", //20
-   "wimpy",
-   "practices",
-   "MAX HP",
-   "MAX MANA",
-   "MAX Movement",
-   "PC/SMOB/MOB",
-   "DAM_RECV_Modifier",
-   "DAM_Given_Modifier",
-   "Head Resistance",
-   "Cold Resistance",
-   "Electrical Resistance",
-   "Spell Resistance",
-   "Religion",
-   "Belongs to Zone",
-   "Bare Hand Dice Count",
-   "Bare Hand Dice Sides",
-   "HP Regeneration",
-   "MANA Regeneration",
-   "Movement Regeneration",
-   "Guild",
-   "Naked Weight",
-   "NULL"
+CSentryE sa_names[] = {
+   CS_POSN_F,
+   CS_STR_F,
+   CS_INT_F,
+   CS_CON_F,
+   CS_CHA_F,
+   CS_WIZ_F,
+   CS_DEX_F,
+   CS_HIT_F,
+   CS_DAM_F,
+   CS_AC_F,
+   CS_ATTACKS_F, //10
+   CS_PAUSE_F,
+   CS_SEX_F,
+   CS_CLASS_F,
+   CS_RACE_F,
+   CS_CUR_HP_F,
+   CS_CUR_MA_F,
+   CS_CUR_MOV_F,
+   CS_ALIGN_F,
+   CS_LVL_F,
+   CS_HOMETOWN_F, //20
+   CS_WIMPY_F,
+   CS_PRAC_F,
+   CS_MAX_HP_F,
+   CS_MAX_MA_F,
+   CS_MAX_MOV_F,
+   CS_CTYPE_F,
+   CS_DRM_F,
+   CS_DGM_F,
+   CS_HT_RESIS_F,
+   CS_CLD_RESIS_F,
+   CS_ELEC_RESIS_F,
+   CS_SPELL_RESIS_F,
+   CS_RELIGION_F,
+   CS_HOME_ZONE_F,
+   CS_BHDC_F,
+   CS_BHDS_F,
+   CS_HP_REGEN_F,
+   CS_MA_REGEN_F,
+   CS_MV_REGEN_F,
+   CS_GUILD_F,
+   CS_NAKED_WEIGHT_F,
+   CS_NULL
 };
-const BitfieldNames STAT_AFFECT_NAMES(sizeof(sa_names)/sizeof(const char*),
-                                      sa_names, "Stat Affects:");
+const LstrArray STAT_AFFECT_NAMES(sizeof(sa_names)/sizeof(CSentryE),
+                                  sa_names, CS_STAT_AFFECTS);
 
 
 const char* DARK_MSG = "It is too dark to see.\n";

@@ -1,5 +1,5 @@
-// $Id: Markup.h,v 1.2 1999/08/16 00:37:06 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
+// $Id: Markup.h,v 1.3 1999/08/29 01:17:15 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
 
 //
 //ScryMUD Server Code
@@ -36,18 +36,36 @@ class critter;
 class object;
 class StatBonus;
 class SpellDuration;
+class LstrArray;
+
+enum ObjListTypeE {
+   ROOM_INV,
+   OBJ_INV,
+   CRIT_INV
+};
 
 class Markup {
 public:
+   /**  Turn any hot characters, such as <,> into Hegemon
+    * markup characters.  This will make this string safe for
+    * inclusion in hegemon markup text.
+    */
+   static String makeSafeForHegTag(const char* string);
+
    static void toString(const char* pre, const bitfield& flags,
-                        const BitfieldNames& flag_names, critter* pc,
+                        const LstrArray& flag_names, critter* pc,
                         const char* post, String& rslt);
+
+   static void toString(const bitfield& flags, const LstrArray& flag_names,
+                        critter* pc, String& rslt);
 
    static void toString(SafeList<critter*>* lst, critter* viewer, String& rslt);
 
-   static void toString(SafeList<object*>* lst, critter* viewer, String& rslt);
+   static void toString(SafeList<object*>* lst, critter* viewer,
+                        ObjListTypeE list_type, String& rslt);
 
-   static void toString(PtrList<StatBonus>* lst, critter* viewer, String& rslt);
+   static void toString(PtrList<StatBonus>* lst, critter* viewer,
+                        const LstrArray& names, String& rslt);
 
    static void toString(PtrList<SpellDuration>* lst, critter* viewer, String& rslt);
 

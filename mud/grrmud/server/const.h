@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.22 1999/08/27 03:10:03 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
+// $Id: const.h,v 1.23 1999/08/29 01:17:16 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
 
 //
 //ScryMUD Server Code
@@ -36,6 +36,7 @@
 
 //Foward declarations.
 template <class T> class SafeList;
+class LstrArray;
 
 /** Used in affect_crit_stat, script.h */
 enum StatTypeE {
@@ -55,22 +56,23 @@ enum BugTypeE {
    BT_BUGS
 };
 
+
 #define GOLD_PER_LB 10000
 
-extern const BitfieldNames MOB_DATA_FLAGS_NAMES;
-extern const BitfieldNames MOB_PROC_DATA_FLAGS_NAMES;
-extern const BitfieldNames SHOP_DATA_FLAGS_NAMES;
-extern const BitfieldNames TEACH_DATA_FLAGS_NAMES;
-extern const BitfieldNames PC_DATA_FLAGS_NAMES;
-extern const BitfieldNames CRIT_FLAGS_NAMES;
-extern const BitfieldNames DOOR_DATA_FLAGS_NAMES;
-extern const BitfieldNames VEHICLE_FLAGS_NAMES;
-extern const BitfieldNames ROOM_FLAGS_NAMES;
-extern const BitfieldNames OBJ_FLAGS_NAMES;
-extern const BitfieldNames OBJ_SPEC_DATA_FLAGS_NAMES;
-extern const BitfieldNames BAG_FLAGS_NAMES;
+extern const LstrArray MOB_DATA_FLAGS_NAMES;
+extern const LstrArray MOB_PROC_DATA_FLAGS_NAMES;
+extern const LstrArray SHOP_DATA_FLAGS_NAMES;
+extern const LstrArray TEACH_DATA_FLAGS_NAMES;
+extern const LstrArray PC_DATA_FLAGS_NAMES;
+extern const LstrArray CRIT_FLAGS_NAMES;
+extern const LstrArray DOOR_DATA_FLAGS_NAMES;
+extern const LstrArray VEHICLE_FLAGS_NAMES;
+extern const LstrArray ROOM_FLAGS_NAMES;
+extern const LstrArray OBJ_FLAGS_NAMES;
+extern const LstrArray OBJ_SPEC_DATA_FLAGS_NAMES;
+extern const LstrArray BAG_FLAGS_NAMES;
 
-extern const BitfieldNames STAT_AFFECT_NAMES;
+extern const LstrArray STAT_AFFECT_NAMES;
 
 extern LogStream mudlog;
 extern LogStream obj_ptr_log;
@@ -732,10 +734,6 @@ extern int EXP_DIVISOR;   // critter.exp/exp_divisor =>exp gained per kill
 #define OUTPUT_MAX_LEN  25000  //can hold this many chars in output buffer
 #define DFLT_DIR        .
 #define MAX_EQ          19
-
-#define ROOM_INV 0
-#define OBJ_INV  1
-#define CRIT_INV 2
 
 #define ROOM             room_list[pc.getCurRoomNum()]
 #define GOLD    	 long_data[0]

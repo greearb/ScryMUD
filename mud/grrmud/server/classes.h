@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.25 1999/08/25 06:35:11 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
+// $Id: classes.h,v 1.26 1999/08/29 01:17:15 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
 
 //
 //ScryMUD Server Code
@@ -81,15 +81,6 @@ public:
 };//StatBonus
 
 
-class HegemonMarkup {
-public:
-   /**  Turn any hot characters, such as <,> into Hegemon
-    * markup characters.  This will make this string safe for
-    * inclusion in hegemon markup text.
-    */
-   static String makeSafeForHegTag(const char* string);
-};
-
 class MTPair {
 public:
    String key;
@@ -138,12 +129,39 @@ public:
    int isLanguage(LanguageE l) const { return lang == l; }
 };
 
+class LstrArray {
+protected:
+   int len;
+   CSentryE* names;
+   CSentryE header;
+   static int _cnt;
+public:
+   /** Does not copy char** names, so make sure you don't delete it!
+    */
+   LstrArray(int length, const CSentryE* names, const CSentryE col_name);
+   
+   ~LstrArray() {
+      _cnt--;
+   }
+
+   int getLength() const { return len; }
+   const CSentryE* getNames() const { return (const CSentryE*)names; }
+   const char* getName(int idx, critter* viewer) const;
+   const char* getHeader(critter* viewer) const;
+
+   /** put names into the buf for display */
+   void listNames(String& buf, critter* viewer) const;
+
+   static int getInstanceCount() { return _cnt; } 
+};
+
+
 class LStringCollection : public PtrList<LString>, public Serialized {
 public:
    LStringCollection() : PtrList<LString>() { }
    virtual ~LStringCollection();
 
-   LString* getString(LanguageE for_lang);
+   LString* getString(LanguageE for_lang = English);
    LString* getString(critter* viewer); //just call the one above.
 
    /** This will add the new string to the collection.  If a string with the
@@ -321,6 +339,8 @@ public:
    virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
    virtual int getVisBit() const { return vis_bit; }
+   virtual int isInvisible() const { return getVisBit() | 2; }
+
    virtual int getIdNum() const { return id_num; }
    /** Zone it 'belongs' to. */
    virtual int getZoneNum() const { return zone_num; }

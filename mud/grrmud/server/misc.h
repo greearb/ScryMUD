@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.16 1999/08/20 06:20:06 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
+// $Id: misc.h,v 1.17 1999/08/29 01:17:16 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
 
 //
 //ScryMUD Server Code
@@ -39,6 +39,8 @@
 #include "BugEntry.h"
 #include "SkillSpell.h"
 #include "MudStats.h"
+#include "Markup.h"
+
 
 extern LazyPtrArray<room> room_list;
 extern SafeList<room*> embattled_rooms; 
@@ -111,8 +113,12 @@ int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
 
 void out_str(SafeList<String*>& lst, critter& pc); 
 void out_crit(SafeList<critter*>& lst, critter& pc, int see_all = FALSE);
-void out_inv(SafeList<object*>& lst, critter& pc, const short l_type); 
-         //outs the names object*, formats according to l_type
+void do_out_crit_list(SafeList<critter*>& lst, critter& pc, String& rslt,
+                      int see_all = FALSE);
+
+void out_inv(SafeList<object*>& lst, critter& pc, ObjListTypeE l_type); 
+void do_out_obj_list(SafeList<object*>& lst, critter& pc,
+                     ObjListTypeE l_type, String& rslt); 
 
 
 	 /* searches the given list, lst will not be modified */

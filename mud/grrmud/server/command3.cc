@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.29 1999/08/27 03:10:03 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
+// $Id: command3.cc,v 1.30 1999/08/29 01:17:15 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
 
 //
 //ScryMUD Server Code
@@ -2123,8 +2123,7 @@ int do_junk(int do_msg, int i_th, const String* str1,
                   drop_eq_effects(*obj_ptr, pc, FALSE, TRUE);
 
                   if (do_msg) {
-                     Sprintf(buf, "You junk %S.\n", 
-                             &(obj_ptr->short_desc));
+                     Sprintf(buf, "You junk %S.\n", obj_ptr->getLongName(&pc));
                      show(buf, pc);
                   }//if
 
@@ -2180,8 +2179,7 @@ int do_junk(int do_msg, int i_th, const String* str1,
             drop_eq_effects(*obj_ptr, pc, FALSE, TRUE);
             pc.loseInv(obj_ptr);
             if (do_msg) {
-               Sprintf(buf, "You junk %S.\n", 
-                       &(obj_ptr->short_desc));
+               Sprintf(buf, "You junk %S.\n", obj_ptr->getLongName(&pc));
                show(buf, pc);
                show("The gods reward you for your sacrifice.\n", pc);
             }//if
@@ -2312,7 +2310,7 @@ int who(critter& pc) {
       }//else
 
       Sprintf(buf, "%S %S %P45%S(%S)%P25\n",
-              ptr->getName(pc.SEE_BIT), &(ptr->short_desc),
+              ptr->getName(&pc), ptr->getLongName(&pc),
               &class_str, &lvl_str);
       show(buf, pc);
    }//while
@@ -2339,7 +2337,7 @@ int sockets(critter& pc) {
 
    while ((ptr = cll.next())) {
       Sprintf(buf, "%S(%i)%P15 %S%P35 %S\n", name_of_crit(*ptr, pc.SEE_BIT),
-              ptr->LEVEL, &(ptr->pc->host), &(ptr->short_desc));
+              ptr->LEVEL, &(ptr->pc->host), ptr->getLongDesc(&pc));
       pc.show(buf);
    }//while
    return 0;
@@ -2360,7 +2358,7 @@ int ldwho(critter& pc) {
    while ((ptr = cll.next())) {
       Sprintf(buf, "%S%P20%s(%i)%P35%S\n", name_of_crit(*ptr, ~0),
               get_class_name(ptr->CLASS), ptr->LEVEL, 
-              &(ptr->short_desc));
+              ptr->getLongDesc(&pc));
       show(buf, pc);
    }//while
    return 0;

@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.13 1999/08/20 06:20:04 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
+// $Id: classes.cc,v 1.14 1999/08/29 01:17:15 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
 
 //
 //ScryMUD Server Code
@@ -38,26 +38,9 @@
 #include "SkillSpell.h"
 
 
-
-
-
-/** Static method */
-String HegemonMarkup::makeSafeForHegTag(const char* str) {
-   int len = strlen(str);
-   char c;
-   String retval(len + 50);
-
-   for (int i = 0; i<len; i++) {
-      c = str[i];
-      if (c == '>') {
-         retval += ">>";
-      }
-      else {
-         retval += c;
-      }
-   }//for
-   return retval;
-}//convertToHeg
+const char* LstrArray::getHeader(critter* viewer) const {
+   return cstr(header, *viewer);
+}
 
 ContainedObject::~ContainedObject() {
    SafeList<ContainedObject*>* ptr;

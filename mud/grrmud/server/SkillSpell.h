@@ -1,5 +1,5 @@
-// $Id: SkillSpell.h,v 1.8 1999/08/27 03:10:03 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
+// $Id: SkillSpell.h,v 1.9 1999/08/29 01:17:15 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
 
 //
 //ScryMUD Server Code
@@ -33,6 +33,10 @@
 #include <iostream.h>
 #include <rb_tree.h>
 #include <PtrArray.h>
+#include "Serialized.h"
+#include "lang_strings.h"
+#include "classes.h"
+
 
 ///***********************  skill spell  *****************************///
 
@@ -64,10 +68,10 @@ public:
 };//SpellDuration
 
 
-class SkillSpell {
+class SkillSpell : public Serialized {
  protected:
    short ss_num;
-   String name;
+   LStringCollection name;
    short min_level; //absolute minimum that ANYONE can learn it at
    short difficulty; //0-100, 100 is more difficult
    short mana_cost;  //baseline mana cost
@@ -84,10 +88,11 @@ class SkillSpell {
    SkillSpell();
    SkillSpell(const SkillSpell& source);
    SkillSpell& operator=(const SkillSpell& source);
+   virtual ~SkillSpell() { }
 
-   void Read(ifstream& da_file);
-   void Write(ofstream& da_file);
-   void Clear();
+   int read(istream& da_file, int read_all = TRUE);
+   int write(ostream& da_file);
+   void clear();
 
    String getHtml();
    String toString();
@@ -102,16 +107,20 @@ class SkillSpell {
 
    object* getScroll(); //can return NULL
    int getScrollNum();
-   String& getName() { return name; }
+   String& getName(LanguageE lang) { return *(name.getString(lang)); }
+   String& getName() { return *(name.getString(English)); }
    int getMinLevel() const { return min_level; }
    int getDifficulty() const { return difficulty; }
    int getManaCost() const { return mana_cost; }
    int getIdNum() const { return ss_num; }
    int getSSNum() const { return ss_num; }
-   int isInUse() const { return (name.Strlen() > 0); }
+   int isInUse() { return (name.getString()->Strlen() > 0); }
 
    int isValid();
    void normalize();
+
+   virtual LEtypeE getEntityType() { return LE_SKILL_SPELL; }
+
 };//SkillSpell class
 
 
@@ -131,7 +140,8 @@ class SSCollection {
    SkillSpell& getSS(int i);
 
    String& getSSDesc(int i) { return ss_descs[i]; }
-   const char* getNameForNum(int ss_number);
+   const char* getNameForNum(int ss_number, critter* viewer);
+   const char* getNameForNum(int ss_number, LanguageE lang = English);
    int getNumForName(const char* name);
    int getNumForName(const String& name);
    void read();

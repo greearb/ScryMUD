@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.32 1999/08/20 06:20:05 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
+// $Id: commands.cc,v 1.33 1999/08/29 01:17:16 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
 
 //
 //ScryMUD Server Code
@@ -273,11 +273,10 @@ int examine(int i_th, const String* obj, critter& pc) {
 
    if (ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
    
-      object* obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT, 
-                                       ROOM);
+      object* obj_ptr = pc.haveObjNamed(i_th, obj);
 
       if (!obj_ptr) {
-         obj_ptr = ROOM.haveObjNamed(i_th, obj, pc.SEE_BIT);
+         obj_ptr = ROOM.haveObjNamed(i_th, obj, pc);
       }//if
       if (!obj_ptr) {
          return do_look(i_th, obj, pc, ROOM, TRUE);
@@ -291,7 +290,7 @@ int examine(int i_th, const String* obj, critter& pc) {
          pc.show(CS_ITS_CLOSED);
       }//if
       else {
-         Sprintf(buf, cstr(CS_CONTAINS, pc), &(obj_ptr->short_desc));
+         Sprintf(buf, cstr(CS_CONTAINS, pc), obj_ptr->getLongName(&pc));
          buf.Cap();
          show(buf, pc);
          
@@ -304,7 +303,6 @@ int examine(int i_th, const String* obj, critter& pc) {
    }
    return -1;
 }//examine
-
 
 
 int wear(int i_th, const String* obj, int j, const String* posn,
@@ -553,7 +551,6 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
    String buf(100);
    short flag = FALSE;
 
-
    int count_sofar = 0;
    int posn = 0;
 
@@ -601,7 +598,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
          }
       }
 
-      pc.show(rm.getLongName(&pc));
+      pc.show(rm.getShortDesc(&pc));
       if (pc.USING_CLIENT) 
          show("</RM_SHORT_DESC>\n", pc);
       else
@@ -610,7 +607,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
       if (!pc.IS_BRIEF || ignore_brief) { //isn't brief
          if (pc.USING_CLIENT) 
             show("<RM_DESC>", pc);
-         pc.show(rm.getLongName(&pc));
+         pc.show(rm.getShortDesc(&pc));
          if (pc.USING_CLIENT) 
             show("</RM_DESC>\n", pc);
          else
@@ -2733,7 +2730,7 @@ int don_obj(object& obj, critter& pc) {
 
    mudlog.log(DBG, "In don_obj\n");
    if (obj.OBJ_FLAGS.get(21)) {
-      Sprintf(buf, cstr(CS_NO_WEAR, pc), &(obj.short_desc));
+      Sprintf(buf, cstr(CS_NO_WEAR, pc), obj.getLongName(&pc));
       mudlog.log(DBG, "don_obj failed, obj failed flag 21.\n");
       show(buf, pc);
    }//if
@@ -2871,7 +2868,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_CUR_WEIGHT > pc.STR) && ((posn == 9) || (posn == 10))) {
       if (do_msg) {
 	 Sprintf(buf, cstr(CS_TOO_HEAVY, pc),
-		&(obj.short_desc));
+		obj.getLongName(&pc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2921,8 +2918,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(7)) && (!pc.pc || !pc.pc->imm_data)) { 
       if (do_msg) {
-         Sprintf(buf, cstr(CS_IMM_ONLY, pc),
-		&(obj.short_desc));
+         Sprintf(buf, cstr(CS_IMM_ONLY, pc), obj.getLongName(&pc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2933,7 +2929,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
 		!(pc.IMM_LEVEL > 5))) {
       if (do_msg) {
          Sprintf(buf, cstr(CS_DEMI_ONLY, pc),
-		&(obj.short_desc));
+		obj.getLongName(&pc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2943,7 +2939,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(9)) && (!pc.pc || !pc.pc->imm_data ||
 		pc.IMM_LEVEL < 9)) {
       if (do_msg)  {
-         Sprintf(buf, cstr(CS_GOD_ONLY, pc), &(obj.short_desc));
+         Sprintf(buf, cstr(CS_GOD_ONLY, pc), obj.getLongName(&pc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2952,8 +2948,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(11)) && (pc.CLASS == 1)) { //warrior
       if (do_msg) {
-         Sprintf(buf, cstr(CS_NO_WARRIOR, pc),
-              &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_WARRIOR, pc), obj.getLongName(&pc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !warrior.\n");
@@ -2961,7 +2956,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(12)) && (pc.CLASS == 2)) {  // sage
       if (do_msg) {
-         Sprintf(buf, cstr(CS_NO_SAGE, pc), &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_SAGE, pc), obj.getLongName(&pc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !sage.\n");
@@ -2969,7 +2964,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(13)) && (pc.CLASS == 3)) { // wizard
       if (do_msg) {
-         Sprintf(buf, cstr(CS_NO_WIZARD, pc), &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_WIZARD, pc), obj.getLongName(&pc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !wizard.\n");
@@ -2977,8 +2972,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(14)) && (pc.CLASS == 4)){ //ranger
       if (do_msg) {
-         Sprintf(buf, cstr(CS_NO_RANGER, pc),
-              &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_RANGER, pc), obj.getLongName(&pc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !ranger.\n");
@@ -2986,7 +2980,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(15)) && (pc.CLASS == 5)) {//thief
       if (do_msg) {
-         Sprintf(buf, cstr(CS_NO_THIEF, pc), &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_THIEF, pc), obj.getLongName(&pc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !thief.\n");
@@ -2994,7 +2988,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(16)) && (pc.CLASS == 6)){ //alchemist
       if (do_msg) {
-         Sprintf(buf, cstr(CS_NO_ALCHEMISTS, pc), &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_ALCHEMISTS, pc), obj.getLongName(&pc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !alchemist.\n");
@@ -3003,7 +2997,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(17)) && (pc.CLASS == 7)){ //cleric
       if (do_msg) {
          Sprintf(buf, cstr(CS_NO_CLERIC, pc),
-              &(obj.short_desc));
+              obj.getLongName(&pc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !cleric.\n");
@@ -3012,7 +3006,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(18)) && (pc.CLASS == 8)){ //bard
       if (do_msg) {
          Sprintf(buf, cstr(CS_NO_BARD, pc),
-              &(obj.short_desc));
+              obj.getLongName(&pc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !bard.\n");
@@ -3020,7 +3014,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(19)) && (pc.isNPC())) {
       if (do_msg) {
-         Sprintf(buf, cstr(CS_NO_MOB, pc), &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_MOB, pc), obj.getLongName(&pc));
          buf.Cap();
          show(buf, pc); //no-one should ever see this i believe
       }//if
@@ -3029,7 +3023,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(20)) && (pc.isPc())) { //!pc
       if (do_msg) {
-         Sprintf(buf, cstr(CS_NO_PC, pc), &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_PC, pc), obj.getLongName(&pc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -3051,7 +3045,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    if (obj.getCurWeight() > (pc.getMaxWeight() - pc.getCurWeight())) {
       if (do_msg) {
          Sprintf(buf, cstr(CS_TOO_MUCH_WT, pc),
-              &(obj.short_desc));
+              obj.getLongName(&pc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -3059,7 +3053,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(7)) && (!pc.pc || !pc.pc->imm_data)) { 
       if (do_msg) {
-         Sprintf(buf, cstr(CS_IMM_ONLY, pc), &(obj.short_desc));
+         Sprintf(buf, cstr(CS_IMM_ONLY, pc), obj.getLongName(&pc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -3068,7 +3062,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    if ((obj.OBJ_FLAGS.get(8)) && (!pc.pc || !pc.pc->imm_data ||
 		!(pc.IMM_LEVEL > 5))) {
       if (do_msg) {
-         Sprintf(buf, cstr(CS_DEMI_ONLY, pc), &(obj.short_desc));
+         Sprintf(buf, cstr(CS_DEMI_ONLY, pc), obj.getLongName(&pc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -3077,7 +3071,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    if ((obj.OBJ_FLAGS.get(9)) && (!pc.pc || !pc.pc->imm_data ||
 		pc.IMM_LEVEL < 9)) {
       if (do_msg)  {
-         Sprintf(buf, cstr(CS_GOD_ONLY, pc), &(obj.short_desc));
+         Sprintf(buf, cstr(CS_GOD_ONLY, pc), obj.getLongName(&pc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -3085,7 +3079,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(19)) && (pc.isNPC())) {
       if (do_msg) {
-         Sprintf(buf, cstr(CS_NO_MOB, pc), &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_MOB, pc), obj.getLongName(&pc));
          buf.Cap();
          show(buf, pc); //no-one should ever see this i believe
       }//if
@@ -3093,7 +3087,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(20)) && (pc.isPc())) { //!pc
       if (do_msg) {
-         Sprintf(buf, cstr(CS_NO_PC, pc), &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_PC, pc), obj.getLongName(&pc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -3130,31 +3124,31 @@ int source_give_to(critter& pc, object& obj, critter& targ) {
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(7)) && (targ.LEVEL < 31)) { //!mort
-      Sprintf(buf, cstr(CS_SGT_NO_MORTAL, pc), &(obj.short_desc));
+      Sprintf(buf, cstr(CS_SGT_NO_MORTAL, pc), obj.getLongName(&pc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(8)) && ((targ.LEVEL <= 35) && (targ.LEVEL >= 31))){
-      Sprintf(buf, cstr(CS_SGT_NO_DEMI, pc), &(obj.short_desc));
+      Sprintf(buf, cstr(CS_SGT_NO_DEMI, pc), obj.getLongName(&pc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(9)) && ((targ.LEVEL > 35) && (targ.LEVEL < 40))){
-      Sprintf(buf, cstr(CS_SGT_NO_GOD, pc), &(obj.short_desc));
+      Sprintf(buf, cstr(CS_SGT_NO_GOD, pc), obj.getLongName(&pc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(19)) && (targ.isNPC())) {
-      Sprintf(buf, cstr(CS_SGT_PC_ONLY, pc), &(obj.short_desc));
+      Sprintf(buf, cstr(CS_SGT_PC_ONLY, pc), obj.getLongName(&pc));
       buf.Cap();
       show(buf, pc); 
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(20)) && (targ.isPc())) { //!pc
-      Sprintf(buf, cstr(CS_SGT_MOB_ONLY, pc), &(obj.short_desc));
+      Sprintf(buf, cstr(CS_SGT_MOB_ONLY, pc), obj.getLongName(&pc));
       buf.Cap(); 
       show(buf, pc); //few should ever see this!!
       return FALSE;
@@ -3170,7 +3164,7 @@ int obj_remove_by(object& obj, critter& pc) {
    //mudlog.log(DBG, "In obj_remove_by.\n");
 
    if (obj.OBJ_FLAGS.get(6)) {
-      Sprintf(buf, cstr(CS_NO_REMOVE, pc), &(obj.short_desc));
+      Sprintf(buf, cstr(CS_NO_REMOVE, pc), obj.getLongName(&pc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
@@ -3186,7 +3180,7 @@ int obj_drop_by(object& obj, critter& pc) {
    //mudlog.log(DBG, "In obj_drop_by.\n");
 
    if (obj.OBJ_FLAGS.get(5)) {
-      Sprintf(buf, cstr(CS_NO_DROP, pc), &(obj.short_desc));
+      Sprintf(buf, cstr(CS_NO_DROP, pc), obj.getLongName(&pc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
@@ -3403,10 +3397,10 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
 
    //TODO:  Translation problem.
    if (obj.OBJ_FLAGS.get(60)) { //liquid
-      Sprintf(buf, "drinks %S.\n", &(obj.short_desc));
+      Sprintf(buf, "drinks %S.\n", obj.getLongName(&pc));
    }//if
    else {
-      Sprintf(buf, "eats %S.\n", &(obj.short_desc));
+      Sprintf(buf, "eats %S.\n", obj.getLongName(&pc));
    }//else
    emote(buf, pc, ROOM, FALSE);
 
