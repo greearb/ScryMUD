@@ -7,7 +7,7 @@ Admin is a fine fellow, always fixing problems for others and making
 problems for you.
 
 ~
-27 20 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
 275 62875 450 	long_data
 0 80 17 16 12 17 80 0 99 65 1 0 2 3 1 1032 567 511 97 
 7 0 0 29 1032 567 511 0 100 100 115 106 105 87 0 0 2 3 100 100 
@@ -18,8 +18,8 @@ problems for you.
 -1	inv
 bgio24h/ZwWLw	passwd
 27 26 25 21 20 19 16 14 12 11 10 9 6 2 -1  -:| bitfield |:-
-71 15 15 71 1052181997 100		bday, byr, ryr, rday, llt, tto
-18 0 0 -2 1 35 0 age hgr thr drg pk died qp
+71 15 15 71 1052182110 100		bday, byr, ryr, rday, llt, tto
+18 -1 -1 -2 1 35 0 age hgr thr drg pk died qp
 1 100 12 100 13 100 14 1 21 100 25 1 30 1 92 100 94 1 101 100 
 103 1 105 100 107 1 117 1 118 25 134 25 138 100 147 100 152 100 153 1 
 159 100 160 1 165 100 166 100 178 100 179 100 188 100 189 1 191 100 192 1 
