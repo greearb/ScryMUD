@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.41 2002/01/05 01:42:38 eroper Exp $
-// $Revision: 1.41 $  $Author: eroper $ $Date: 2002/01/05 01:42:38 $
+// $Id: misc.cc,v 1.42 2002/01/05 04:00:57 eroper Exp $
+// $Revision: 1.42 $  $Author: eroper $ $Date: 2002/01/05 04:00:57 $
 
 //
 //ScryMUD Server Code
@@ -2538,9 +2538,17 @@ String *colorize(const char *message, critter &pc, hilite_type hl_type)
 
    output = "";
    
-   if ( pc.isUsingColor() ) {
+   if ( pc.isUsingColor() && (! pc.isUsingClient()) ) {
       // Parse ANSI stuff
       for(i=(char *)message;*i;i++) {
+         
+         // This strips those silly << for Hegemon protection
+         if ( (*i == '<') && (*(i+1) == '<' ) ) {
+            i++;
+            if (! *i) {
+               break;
+            }
+         }
 
          if ( *i == ESC_CHAR ) {
             dont_reset = TRUE;
@@ -2788,6 +2796,17 @@ String *colorize(const char *message, critter &pc, hilite_type hl_type)
       // parse ansi stuff
    } else { // We go here if they aren't using color.
       for(i=(char *)message;*i;i++) {
+         
+         // This strips those silly << for Hegemon protection
+         if ( ! pc.isUsingClient() ) {
+            if ( (*i == '<') && (*(i+1) == '<' ) ) {
+               i++;
+               if (! *i) {
+                  break;
+               }
+            }
+         }
+         
          if ( *i == '^' || *i == '&' ) {
             i++;
             if (! *i) {
