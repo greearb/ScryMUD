@@ -1,4 +1,4 @@
-<help olc affect_mana>
+<help olc affect_mov>
 
 Used to affect the Movement (up or down) of a particular
 victim.  This command can be used by scripting mobs

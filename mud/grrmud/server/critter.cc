@@ -39,7 +39,7 @@
 
 
 const char* PcPositionStrings[] = {"stand", "sit", "rest", "sleep", "meditate",
-                                 "stun", "dead", "prone"};
+                                   "stun", "dead", "prone"};
 
 //**********************************************************//
 ///*********************** immort data ********************///
@@ -1967,7 +1967,7 @@ void critter::checkForBattle(room& rm) {
          if (ptr->doesRemember(*this) && ptr->canDetect(*this) &&
              (d(1, DEX) < (d(1, ptr->DEX * 2 + ptr->INT)))) {
             say("There you are!!", *ptr, *(ptr->getCurRoom()));
-            ptr->processInput(buf, FALSE);
+            ptr->processInput(buf, FALSE, TRUE);
          }//if
       }//if
 
@@ -1979,7 +1979,7 @@ void critter::checkForBattle(room& rm) {
              (d(1, ptr->DEX) < (d(1, DEX * 2 + INT)))) {
             say("I've found you now!!", *this, *(getCurRoom()));
             Sprintf(buf2, "hit %S\n", ptr->getShortName());
-            processInput(buf2, FALSE);
+            processInput(buf2, FALSE, TRUE);
          }//if
       }//if
    }//while
@@ -2566,7 +2566,7 @@ void critter::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
    do_entered_room_procs(*this, by_door, from_dir, room_list[dest_room],
                          is_dead);
    if (!is_dead) {
-      look(1, &NULL_STRING, *this);
+      look(1, &NULL_STRING, *this, FALSE); //don't ignore brief
    }
 }
 
@@ -3616,4 +3616,26 @@ int critter::depositCoins(int count, critter& banker) { //do messages
 
    do_tell(banker, buf, *this, FALSE, getCurRoomNum());
    return -1;
+}
+
+/**  Translates an asci string (like HP, MANA, MOV, ALIGN, etc)
+ * and returns the integer value.  Returns 0 if it can't
+ * resolve the field.
+ */
+int critter::getFieldValue(const char* field) const {
+   if (strcasecmp(field, "HP") == 0) {
+      return getHP();
+   }
+   else if (strcasecmp(field, "MANA") == 0) {
+      return getMana();
+   }
+   else if (strcasecmp(field, "MOV") == 0) {
+      return getMov();
+   }
+   else if (strcasecmp(field, "ALIGN") == 0) {
+      return getAlignment();
+   }
+   else {
+      return 0;
+   }
 }

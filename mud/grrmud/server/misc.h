@@ -33,6 +33,7 @@
 #include <PtrArray.h>
 #include "script.h"
 #include "zone.h"
+#include "BugEntry.h"
 
 extern LazyPtrArray<room> room_list;
 extern List<room*> embattled_rooms; 
@@ -43,6 +44,15 @@ extern List<room*> pulsed_proc_rooms;
 extern List<object*> pulsed_proc_objects;
 extern PtrArray<room> proc_action_rooms;
 extern PtrArray<object> proc_action_objs;
+
+extern BugCollection bl_ideas;
+extern BugCollection bl_bugs;
+extern BugCollection bl_comp_ideas;
+extern BugCollection bl_comp_bugs;
+
+
+// Returns address of static member (not thread safe)
+String& getCurTime(); //in the real world (tm) :)
 
 // Inclusive.
 int bound(int low, int high, int val);

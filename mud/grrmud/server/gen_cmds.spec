@@ -130,6 +130,8 @@ NOP
 # case B
 bug typo *bug ~
 NOP
+buglist ~
+return buglist(BT_BUGS, i, cooked_strs[1], j, cooked_strs[2], cooked_strs[3], pc);
 balance ~
 return balance(i, &(cooked_strs[1]), pc);
 backstab bs ~
@@ -258,6 +260,8 @@ disdain socials ~
 disdain(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 disarm ~
 return disarm(i, &(cooked_strs[1]), pc);
+does_own comparators ~
+return does_own(pc, i, j, k, l, m, n);
 donate ~
 return donate(i, &(cooked_strs[1]), &(cooked_strs[2]), pc);
 drop ~
@@ -271,7 +275,7 @@ return door_to(i, j, &(cooked_strs[1]), pc);
 dstat ~
 return dstat(i, &(cooked_strs[1]), pc);
 dsys ~
-return dsys(pc);
+return dsys(i, cooked_strs[1], pc);
 dclear ~
 return dclear(i, pc);
 dlist ~
@@ -362,7 +366,7 @@ goto ~
 return _goto(i, &(cooked_strs[1]), pc);
 gecho *gecho ~
 NOP
-gossip *gossip ~
+gossip *channels ~
 NOP
 gt *channels ~
 NOP
@@ -396,8 +400,18 @@ NOP
 # case I
 inventory ~
 return inventory(pc);
+idealist buglist ~
+return buglist(BT_IDEAS, i, cooked_strs[1], j, cooked_strs[2], cooked_strs[3], pc);
 insane socials ~
 insane(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+is_equal_to comparators ~
+return is_equal_to(i, cooked_strs[1], cooked_strs[2], pc);
+is_greater_than comparators ~
+return is_greater_than(i, cooked_strs[1], cooked_strs[2], pc);
+is_in_posn comparators ~
+return is_in_posn(cooked_strs[1], pc);
+is_less_than comparators ~
+return is_less_than(i, cooked_strs[1], cooked_strs[2], pc);
 itch socials ~
 itch(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 itrans ~
@@ -416,7 +430,7 @@ keywords *keyword ~
 NOP
 
 look ls look ~
-return look(i, &(cooked_strs[1]), pc);
+return look(i, &(cooked_strs[1]), pc, TRUE); /* ignore brief */
 lag socials ~
 lag(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 laugh socials ~
@@ -485,12 +499,12 @@ northeast ne northeast ~
 return northeast(pc, *(pc.getCurRoom()), is_dead);
 northwest nw northwest ~
 return northwest(pc, *(pc.getCurRoom()), is_dead);
+nog socials ~
+nog(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 nogossip ~
 return nogossip(pc);
 nod socials ~
 nod(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
-nog socials ~
-nog(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 neighbor_echo *add_mob_script ~
 NOP
 
@@ -688,9 +702,9 @@ return score(&(cooked_strs[1]), pc);
 scold socials ~
 scold(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 script_jump_true add_mob_proc ~
-return script_jump_true(cooked_strs, cooked_ints, pc, c_script_owner, r_script_owner);
+return script_jump_true(cooked_strs, cooked_ints, pc, c_script_owner, r_script_owner, sanity);
 script_jump_false add_mob_script ~
-return script_jump_false(cooked_strs, cooked_ints, pc, c_script_owner, r_script_owner);
+return script_jump_false(cooked_strs, cooked_ints, pc, c_script_owner, r_script_owner, sanity);
 scream socials ~
 scream(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 scratch socials ~

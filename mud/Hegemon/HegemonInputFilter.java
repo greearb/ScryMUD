@@ -627,6 +627,14 @@ class HegemonInputFilter extends Object {
             } catch (Exception e) { e.printStackTrace(); }
             valid = true;
          }
+         else if (cmd.equalsIgnoreCase("__SCRY__")) {
+            try {
+               /* let the server know what we are.
+                */
+               hm.getSocketManager().write("__HEGEMON__\n");
+            } catch (Exception e) { e.printStackTrace(); }
+            valid = true;
+         }
       }//if len == 1
       else if (len == 2) { //all these require exactly two
          if (cmd.equalsIgnoreCase("RM_SHORT_DESC")) {

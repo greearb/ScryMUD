@@ -394,7 +394,7 @@ void do_olc(critter& pc) {
             OLC_OBJ->obj_flags.turn_on(54); //bulletin boards are bags
          }//if
          show("These flags are set so far:\n", pc);
-         out_field(OLC_OBJ->obj_flags, pc);
+         out_field(OLC_OBJ->obj_flags, pc, OBJ_FLAGS_NAMES);
 	 break;
 
       case 7:  //extras
@@ -518,7 +518,7 @@ void do_olc(critter& pc) {
 	    }//else
          }//while
          show("These flags are set so far:\n", pc);
-         out_field(OLC_OBJ->bag->bag_flags, pc);
+         out_field(OLC_OBJ->bag->bag_flags, pc, BAG_FLAGS_NAMES);
 	 break;
 
       case 10:  //other bag data, numbers only
@@ -769,7 +769,7 @@ void do_olc(critter& pc) {
 	    }//else
          }//while
          show("These flags are set so far:\n", pc);
-         out_field(OLC_OBJ->OBJ_SPEC_FLAGS, pc);
+         out_field(OLC_OBJ->OBJ_SPEC_FLAGS, pc, OBJ_SPEC_DATA_FLAGS_NAMES);
 	 break;
 
 
@@ -956,7 +956,7 @@ void do_olc(critter& pc) {
 	    }//else
          }//while
          show("These flags are set so far:\n", pc);
-         out_field(OLC_MOB->crit_flags, pc);
+         out_field(OLC_MOB->crit_flags, pc, CRIT_FLAGS_NAMES);
 	 break;
 
       case 21:  //long data
@@ -1363,7 +1363,7 @@ void do_olc(critter& pc) {
 	    }//else
          }//while
          show("These flags are set so far:\n", pc);
-         out_field(OLC_MOB->mob->mob_data_flags, pc);
+         out_field(OLC_MOB->mob->mob_data_flags, pc, MOB_DATA_FLAGS_NAMES);
 	 break;
       
       case 31: //spec_data: int1
@@ -1557,7 +1557,7 @@ void do_olc(critter& pc) {
 	    }//else
          }//while
          show("These flags are set so far:\n", pc);
-         out_field(OLC_MOB->FLAG1, pc);
+         out_field(OLC_MOB->FLAG1, pc, MOB_PROC_DATA_FLAGS_NAMES);
 	 break;
 
       case 33: //shopkeeper: markup, buy%
@@ -1673,7 +1673,7 @@ void do_olc(critter& pc) {
 	    }//else
          }//while
          show("These flags are set so far:\n", pc);
-         out_field(OLC_MOB->SHOP_DATA_FLAGS, pc);
+         out_field(OLC_MOB->SHOP_DATA_FLAGS, pc, SHOP_DATA_FLAGS_NAMES);
 	 break;
 
       case 35: //sh_data: perm_inv
@@ -1765,7 +1765,7 @@ void do_olc(critter& pc) {
 	    }//else
          }//while
          show("These flags are set so far:\n", pc);
-         out_field(OLC_MOB->TEACH_DATA_FLAGS, pc);
+         out_field(OLC_MOB->TEACH_DATA_FLAGS, pc, TEACH_DATA_FLAGS_NAMES);
 	 break;
 
       case 37: //was construct data
@@ -1949,7 +1949,7 @@ void do_olc(critter& pc) {
 	    }//else
          }//while
          show("These flags are set so far:\n", pc);
-         out_field(OLC_ROOM->getFlags(), pc);
+         out_field(OLC_ROOM->getFlags(), pc, ROOM_FLAGS_NAMES);
 	 break;
 
       case 43:  //cur stats
@@ -2252,7 +2252,7 @@ void do_olc(critter& pc) {
          if (OLC_DOOR->door_data_flags.get(12))
             OLC_DOOR->door_data_flags.turn_on(11);
 
-         out_field(OLC_DOOR->door_data_flags, pc);
+         out_field(OLC_DOOR->door_data_flags, pc, DOOR_DATA_FLAGS_NAMES);
 	 break;
 
 

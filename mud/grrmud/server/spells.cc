@@ -1187,7 +1187,7 @@ int relocate_within_zone(critter& pc) {
             ROOM.removeCritter(&pc);
 	    leave_room_effects(room_list[pcs_room], pc);
             room_list[new_room_num].removeCritter(&pc);
-            look(1, &NULL_STRING, pc);
+            look(1, &NULL_STRING, pc, TRUE);
 	    return TRUE;
          }//if
 	 if (count++ > 15) 

@@ -138,19 +138,85 @@ int exact_damage(int dice_cnt, int dice_sides, String& msg, critter& pc) {
  */
 int script_jump_true(String* cooked_strs, int* cooked_ints,
                      critter& script_targ, critter* c_script_owner,
-                     room* r_script_owner) {
+                     room* r_script_owner, int sanity) {
    return script_jump(TRUE, cooked_strs, cooked_ints, script_targ,
-                      c_script_owner, r_script_owner);
+                      c_script_owner, r_script_owner, sanity);
 }//script_jump_true
 
 int script_jump_false(String* cooked_strs, int* cooked_ints,
                       critter& script_targ, critter* c_script_owner,
-                      room* r_script_owner) {
+                      room* r_script_owner, int sanity) {
    return script_jump(FALSE, cooked_strs, cooked_ints, script_targ,
-                      c_script_owner, r_script_owner);
+                      c_script_owner, r_script_owner, sanity);
 }
 
-int is_in_posn(critter& pc, String& str) {
+
+/**  Does a great many comparisons.   Supported fields are:
+ *  HP, MANA, MOV, ALIGN
+ */
+int is_equal_to(int i_th, const String& rhs_critter,
+                const String& field, critter& pc) {
+   return do_mob_comparison(i_th, rhs_critter, field, pc, CT_EQUALS);
+}//is_equal_to
+         
+
+/**  Does a great many comparisons.  Supported fields are:
+ *  HP, MANA, MOV, ALIGN
+ */
+int is_greater_than(int i_th, const String& rhs_critter,
+                    const String& field, critter& pc) {
+   return do_mob_comparison(i_th, rhs_critter, field, pc, CT_GT);
+}//isGreaterThan
+
+/**  Does a great many comparisons.  Supported fields are:
+ *  HP, MANA, MOV, ALIGN
+ */
+int is_less_than(int i_th, const String& rhs_critter,
+                 const String& field, critter& pc) {
+   return do_mob_comparison(i_th, rhs_critter, field, pc, CT_LT);
+}//isLessThan
+
+int do_mob_comparison(int i_th, const String& rhs_critter,
+                      const String& field, critter& pc, ComparisonTypeE ct) {
+
+   if (mudlog.ofLevel(SCRIPT)) {
+      mudlog << "do_mob_comparison, i_th: " << i_th << " rhs_critter: "
+             << rhs_critter << " field: " << field
+             << " ComparisonTypeE:" << ct << endl;
+   }
+
+   critter* crit_ptr = ROOM.haveCritNamed(i_th, &rhs_critter, ~0);
+
+   int rhs_val;
+   int pc_val;
+
+   if (!crit_ptr) {
+      if (mudlog.ofLevel(ERR)) {
+         mudlog << "ERROR:  Couldn't find crit_ptr, i_th: " << i_th
+                << " rhs -:" << rhs_critter << ":-\n";
+      }
+      return 0;
+   }
+   
+   if (pc.isImmort() || (pc.isSmob() && !pc.isCharmed())) {
+
+      rhs_val = crit_ptr->getFieldValue(field);
+      pc_val = pc.getFieldValue(field);
+
+      switch (ct)
+         {
+         case CT_EQUALS:
+            return (rhs_val == pc_val);
+         case CT_GT:
+            return (pc_val > rhs_val);
+         case CT_LT:
+            return (pc_val < rhs_val);
+         }
+   }
+   return 0;
+}
+
+int is_in_posn(String& str, critter& pc) {
    if (isnum(str)) {
       return pc.POS == atoi(str);
    }
@@ -173,9 +239,15 @@ int is_in_posn(critter& pc, String& str) {
  */
 int script_jump(int on_test, String* cooked_strs, int* cooked_ints,
                 critter& test_targ, critter* c_code_owner,
-                room* r_code_owner) {
+                room* r_code_owner, int sanity) {
    //Conditional command is second cooked_str
    // offset is the first cooked int.
+
+   if (mudlog.ofLevel(SCRIPT)) {
+      mudlog << "script_jump, on_test: " << on_test << " c_owner: "
+             << c_code_owner << " r_owner: " << r_code_owner 
+             << " sanity: " << sanity << endl;
+   }
 
    int offset = cooked_ints[1];
    String cmd = cooked_strs[1];
@@ -187,47 +259,46 @@ int script_jump(int on_test, String* cooked_strs, int* cooked_ints,
    if ((c_code_owner && c_code_owner->isInProcNow()) ||
        (r_code_owner && r_code_owner->isInProcNow())) {
 
-      // Only exact matching (case-insensitive at least) will be allowed.
-      
-      if (strcasecmp(cmd, "does_own") == 0) {
-         if (does_own(test_targ, cooked_ints[2], cooked_ints[3], cooked_ints[4],
-                      cooked_ints[5], cooked_ints[6], cooked_ints[7])) {
-            test = TRUE;
-         }//if
-         else {
-            test = FALSE;
-         }
+      if (mudlog.ofLevel(SCRIPT)) {
+         mudlog << "had an owner, and was inProcNow()" << endl;
       }
-      else if (strcasecmp(cmd, "is_in_posn") == 0) {
-         if (is_in_posn(test_targ, cooked_strs[2])) {
-            test = TRUE;
-         }//if
-         else {
-            test = FALSE;
-         }
-      }//
-      else if (strcasecmp(cmd, "TRUE") == 0) {
+
+      if (strcasecmp(cmd, "TRUE") == 0) {
          test = TRUE;
       }
       else if (strcasecmp(cmd, "FALSE") == 0) {
          test = FALSE;
       }
       else {
-         if (c_code_owner) {
-            if (mudlog.ofLevel(WRN)) {
-               mudlog << "WARNING:  Script is funky for test_targ:  "
-                      << *(test_targ.getName()) << " code_owner: "
-                      << *(c_code_owner->getName()) << " unknown conditional: "
-                      << cmd << endl;
+
+         //  The + 1 steps past the first command, which was script_jump_***
+         test = test_targ.executeCommand(cooked_strs + 1, cooked_ints + 1, sanity,
+                                         c_code_owner, r_code_owner,
+                                         FALSE/* do_sub */);
+         if (mudlog.ofLevel(SCRIPT)) {
+            mudlog << "script_jump, test is: " << test << " on test: "
+                   << on_test << endl;
+         }
+
+         if (test < 0) {
+            if (c_code_owner) {
+               if (mudlog.ofLevel(WRN)) {
+                  mudlog << "WARNING:  Script is funky for test_targ:  "
+                         << *(test_targ.getName()) << " code_owner: "
+                         << *(c_code_owner->getName()) << " failed conditional: "
+                         << cmd << " error: " << test << endl;
+               }//if
             }//if
-         }//if
-         else if (r_code_owner) {
-            if (mudlog.ofLevel(WRN)) {
-               mudlog << "WARNING:  Script is funky for test_targ:  "
-                      << *(test_targ.getName()) << " code_owner: "
-                      << r_code_owner->getIdNum() << " unknown conditional: "
-                      << cmd << endl;
-            }
+            else if (r_code_owner) {
+               if (mudlog.ofLevel(WRN)) {
+                  mudlog << "WARNING:  Script is funky for test_targ:  "
+                         << *(test_targ.getName()) << " code_owner: "
+                         << r_code_owner->getIdNum() << " failed conditional: "
+                         << cmd << " error: " << test << endl;
+               }
+            }//if
+
+            test = FALSE;
          }//if
       }//else
 
@@ -254,13 +325,12 @@ int script_jump(int on_test, String* cooked_strs, int* cooked_ints,
 }//script_jump
 
 
-
 //used in mob scripts primarily.
-int does_own(critter& pc, int obj1, int obj2, int obj3, int obj4,
+ int does_own(critter& pc, int obj1, int obj2, int obj3, int obj4,
              int obj5, int obj6) {
 
    //figure out if the player owns all the objects in question.
-   if (mudlog.ofLevel(DBG)) {
+   if (mudlog.ofLevel(SCRIPT)) {
       mudlog << "In does_own, critter:  " << *(pc.getName())
              << " obj1: " << obj1 << " obj2: " << obj2
              << " obj3: " << obj3 << " obj4: " << obj4 << " obj5: "
@@ -351,7 +421,7 @@ int does_own(critter& pc, int obj1, int obj2, int obj3, int obj4,
                    (pc.haveObjNumbered(count5, obj5))) {
                   if ((obj6 <= 1) ||
                       (pc.haveObjNumbered(count6, obj6))) {
-                     if (mudlog.ofLevel(DBG)) {
+                     if (mudlog.ofLevel(SCRIPT)) {
                         mudlog << "Returning TRUE" << endl;
                      }
                      return TRUE;
@@ -362,7 +432,7 @@ int does_own(critter& pc, int obj1, int obj2, int obj3, int obj4,
       }//if
    }//if
    
-   if (mudlog.ofLevel(DBG)) {
+   if (mudlog.ofLevel(SCRIPT)) {
       mudlog << "Returning FALSE" << endl;
    }
 
@@ -424,12 +494,15 @@ void GenScript::doScriptJump(int abs_offset) {
 
 
 const ScriptCmd* GenScript::getNextCommand() {
-   //mudlog << "GenScript::getNextCommand, stack_ptr: " << stack_ptr
-   //       << endl << getRunningScript() << endl;
+   if (mudlog.ofLevel(SCRIPT)) {
+      mudlog << "GenScript::getNextCommand, stack_ptr: " << stack_ptr
+             << endl << getRunningScript() << endl;
+   }
+
    if (stack_ptr >= 0) {
       int tmp = stack_ptr;
       stack_ptr++;
-      if (mudlog.ofLevel(DBG)) {
+      if (mudlog.ofLevel(SCRIPT)) {
          mudlog << "GenScript::getNextCommand, tmp: " << tmp << endl;
          if (running_cmds[tmp])
             mudlog << " returning: " << running_cmds[tmp]->getCommand() << endl;
@@ -437,7 +510,7 @@ const ScriptCmd* GenScript::getNextCommand() {
       return running_cmds[tmp];
    }//if
    else {
-      if (mudlog.ofLevel(DBG)) {
+      if (mudlog.ofLevel(SCRIPT)) {
          mudlog << "GenScript::getNextCommand, stack_ptr: " << stack_ptr
                 << " returning NULL" << endl;
       }
@@ -1048,7 +1121,7 @@ int MobScript::parseScriptCommand(ScriptCmd& cmd, critter& owner) {
    }//if
 
    targ = cmd.getCommand(); //reuse targ, it should contain the command now.
-   return script_actor->processInput(targ, FALSE, &owner, NULL);
+   return script_actor->processInput(targ, FALSE, TRUE, &owner, NULL);
 }//parseScriptCommand
 
 
@@ -1607,7 +1680,7 @@ int RoomScript::parseScriptCommand(ScriptCmd& cmd, room& owner) {
    else if (script_actor) {
       mudlog.log("Had a script_actor.\n");
       targ = cmd.getCommand(); //reuse targ, it should contain the command now.
-      return script_actor->processInput(targ, FALSE, NULL, &owner);
+      return script_actor->processInput(targ, FALSE, TRUE, NULL, &owner);
    }
    else {
       mudlog.log("Room was the owner.\n");
@@ -1672,7 +1745,8 @@ int ObjectScript::parseScriptCommand(ScriptCmd& cmd, object& owner) {
    else if (script_actor) {
       mudlog.log("Had a script_actor.\n");
       targ = cmd.getCommand(); //reuse targ, it should contain the command now.
-      return script_actor->processInput(targ, FALSE, NULL, &(room_list[owner.getCurRoomNum()]));
+      return script_actor->processInput(targ, FALSE, TRUE, NULL,
+                                        &(room_list[owner.getCurRoomNum()]));
    }
    else {
       mudlog.log("Room was the owner.\n");

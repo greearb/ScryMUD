@@ -75,6 +75,9 @@ int who(critter& pc);
 int ldwho(critter& pc);
 int sockets(critter& pc);  //verbose who/ldwho
 
+int buglist(BugTypeE bt, int i, const String& cmd, int j, const String& mod,
+            const String& notes, critter& pc);
+
 int idea(const String& str, critter& pc);
 int bug(const String& str, critter& pc);
 int use(int i_th, const String* target, critter& pc); // must be holding

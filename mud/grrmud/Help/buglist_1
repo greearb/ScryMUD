@@ -1,0 +1,26 @@
+<help general buglist>
+
+This shows the current listing of bugs and ideas that users
+have entered.  Only immortals can remove bugs and ideas.
+
+NOTE:  The description should be (at least) the first 5 characters
+of the report.  That should help keep you from making mistakes
+when removing entries.  The Notes will be appended to the entry.
+This should contain info about why it was closed.  Be sure to put
+it in single quotes!!
+
+Commands:  remove, completed
+
+syntax:  buglist <<CMD> <<i_th> <<'description'> <<'Notes'>
+syntax:  idealist <<CMD> <<i_th> <<'description'> <<'Notes'>
+
+example:  buglist    # List all un-fixed bugs.
+example:  idealist   # List all ideas the admins haven't addressed.
+example:  buglist remove 333 'The bug command' 'Fixed it in the code.'
+example:  buglist completed  # Show's all bugs that have been addressed.
+example:  idealist completed # Show's all ideas that have been addressed.
+
+<color=red>
+See Also:  idea bug
+</color>
+</help>

@@ -144,7 +144,8 @@ public:
    void insertAfter(int i, const char* str);
 
    void Strip(); //take spaces off of front and back
-   
+   void dropFromEnd(int num_chards); //drop a few off the end of the string
+
    /* Both of these next two delete what they grab from the string. */
    
    String Get_Command(short& eos, short& term_by_period, short is_first = 0);	

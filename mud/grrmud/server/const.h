@@ -45,6 +45,31 @@ enum StatTypeE {
    STAT_MOV
 };
 
+enum ComparisonTypeE {
+   CT_EQUALS,
+   CT_GT,
+   CT_LT
+};
+
+enum BugTypeE {
+   BT_IDEAS,
+   BT_BUGS
+};
+
+extern const BitfieldNames MOB_DATA_FLAGS_NAMES;
+extern const BitfieldNames MOB_PROC_DATA_FLAGS_NAMES;
+extern const BitfieldNames SHOP_DATA_FLAGS_NAMES;
+extern const BitfieldNames TEACH_DATA_FLAGS_NAMES;
+extern const BitfieldNames PC_DATA_FLAGS_NAMES;
+extern const BitfieldNames CRIT_FLAGS_NAMES;
+extern const BitfieldNames DOOR_DATA_FLAGS_NAMES;
+extern const BitfieldNames VEHICLE_FLAGS_NAMES;
+extern const BitfieldNames ROOM_FLAGS_NAMES;
+extern const BitfieldNames OBJ_FLAGS_NAMES;
+extern const BitfieldNames OBJ_SPEC_DATA_FLAGS_NAMES;
+extern const BitfieldNames BAG_FLAGS_NAMES;
+
+
 extern LogStream mudlog;
 
 extern bitfield Obj_Wear_Flags_Mask;
@@ -215,6 +240,7 @@ int
    NECROMANCY_SKILL_NUM,
    PARRY_SKILL_NUM,
    PASSDOOR_SKILL_NUM,
+   PHYSICAL_ARTS_SKILL_NUM,
    PHYSIK_SKILL_NUM,
    PFE_SKILL_NUM,
    PFG_SKILL_NUM,
@@ -570,6 +596,9 @@ extern List<struct object*>    affected_objects; /* ditto for objs */
 extern List<critter*>   pc_list;      //head of pc list  
 extern List<critter*>   linkdead_list;  //holds link dead folks
 extern PtrArray<critter>   proc_action_mobs; //holds mob-proc'ing mobs
+
+
+extern const char* CensoredStrings[];
 
 
 extern const char* DARK_MSG;

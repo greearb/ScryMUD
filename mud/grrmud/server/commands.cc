@@ -503,15 +503,17 @@ int remove(int i_th, const String* obj, critter &pc) {
 
 
       
-int look(int i_th, const String* obj, critter &pc) {
+int look(int i_th, const String* obj, critter &pc,
+         int ignore_brief = FALSE) {
 
    mudlog.log(DBG, "In look.\n");
    
-   return do_look(i_th, obj, pc, ROOM);
+   return do_look(i_th, obj, pc, ROOM, ignore_brief);
 }
 
 
-int do_look(int i_th, const String* obj, critter& pc, room& rm) {
+int do_look(int i_th, const String* obj, critter& pc, room& rm,
+            int ignore_brief) {
    critter* crit_ptr;
    object* obj_ptr;
    door* door_ptr;
@@ -569,7 +571,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm) {
       else
          show("\n", pc);
       
-      if (!pc.IS_BRIEF) { //isn't brief
+      if (!pc.IS_BRIEF || ignore_brief) { //isn't brief
          if (pc.USING_CLIENT) 
             show("<RM_DESC>", pc);
          show(rm.long_desc, pc);

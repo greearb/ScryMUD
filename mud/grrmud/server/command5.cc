@@ -362,15 +362,20 @@ int list_scripts(int mob_num, critter& pc) {
       return -1;
    }
 
-   String buf(500);
-   buf.Append("These scripts are defined for this mob,  the actual scripts
+   pc.show("These scripts are defined for this mob,  the actual scripts
 may be seen by using the stat_script [mob_num] [script_index] command.\n\n");
 
-   pc.show(buf);
+   return do_list_scripts(mob_list[mob_num], pc);
+}
 
+int do_list_scripts(critter& targ, critter& pc) {
+   if (!targ.mob)
+      return -1;
+   
+   String buf(500);
    String tmp(100);
    int found_one = FALSE;
-   Cell<MobScript*> cll(mob_list[mob_num].mob->mob_proc_scripts);
+   Cell<MobScript*> cll(targ.mob->mob_proc_scripts);
    MobScript* ptr;
    int idx = 0;
    while ((ptr = cll.next())) {
@@ -997,7 +1002,7 @@ int do_transport(critter& targ, critter& pc, room& dest) {
    targ.doGoToRoom(dest.getRoomNum(), NULL, NULL, is_dead, targ.getCurRoomNum());
    
    if (!is_dead) {
-      look(1, &NULL_STRING, targ);
+      look(1, &NULL_STRING, targ, TRUE);
       emote("blinks into existence.", targ, dest, TRUE);
    }
    return 0;
@@ -2147,11 +2152,64 @@ int consider(int i_th, const String* targ, critter& pc) {
 }//consider
 
 
-int dsys(critter& pc) {
+int dsys(int i, const String& cmd, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
+   }
+
+   if (strncasecmp(cmd, "flags", max(cmd.Strlen(), 1)) == 0) {
+      // Show all of our flags that we have FLAG_NAMES for
+      pc.show("Flags defined currently:\n");
+
+      pc.show("----------------------->> CRITTER FLAGS <<---------------------\n");
+      CRIT_FLAGS_NAMES.listNames(buf);
+      pc.show(buf);
+
+      pc.show("\n");
+      MOB_DATA_FLAGS_NAMES.listNames(buf);
+      pc.show(buf);
+
+      pc.show("\n");
+      MOB_PROC_DATA_FLAGS_NAMES.listNames(buf);
+      pc.show(buf);
+
+      pc.show("\n");
+      SHOP_DATA_FLAGS_NAMES.listNames(buf);
+      pc.show(buf);
+
+      pc.show("\n");
+      TEACH_DATA_FLAGS_NAMES.listNames(buf);
+      pc.show(buf);
+
+      pc.show("\n");
+      PC_DATA_FLAGS_NAMES.listNames(buf);
+      pc.show(buf);
+
+      pc.show("\n----------------------->> OBJECT FLAGS <<---------------------\n");
+      OBJ_FLAGS_NAMES.listNames(buf);
+      pc.show(buf);
+
+      pc.show("\n");
+      BAG_FLAGS_NAMES.listNames(buf);
+      pc.show(buf);
+
+      pc.show("\n");
+      OBJ_SPEC_DATA_FLAGS_NAMES.listNames(buf);
+      pc.show(buf);
+
+      pc.show("\n----------------------->> DOOR FLAGS <<---------------------\n");
+      DOOR_DATA_FLAGS_NAMES.listNames(buf);
+      pc.show(buf);
+      pc.show("\n");
+
+      pc.show("\n----------------------->> ROOM FLAGS <<---------------------\n");
+      ROOM_FLAGS_NAMES.listNames(buf);
+      pc.show(buf);
+      pc.show("\n");
+
+      return 0;
    }
 
    Sprintf(buf, "ScryMUD version: %s
@@ -2209,8 +2267,8 @@ By:              %s\n\n",
            obj_construct_data::getInstanceCount(),
            obj_spec_data::getInstanceCount());
    pc.show(buf);
-   Sprintf(buf, "[%i]%P10 bag_struct %P30[%i] %P42 object\n", //NOTE:  Re-use this one!
-           bag_struct::getInstanceCount(), object::getInstanceCount());
+   Sprintf(buf, "[%i]%P10 bag_struct %P30[%i] %P42 BugEntry\n",
+           bag_struct::getInstanceCount(), BugEntry::getInstanceCount());
    pc.show(buf);
    Sprintf(buf, "[%i]%P10 door_data %P30[%i] %P42 ScriptCmd\n",
            door_data::getInstanceCount(), ScriptCmd::getInstanceCount());
@@ -2218,8 +2276,8 @@ By:              %s\n\n",
    Sprintf(buf, "[%i]%P10 GenScript  %P30[%i] %P42 MobScript\n",
            GenScript::getInstanceCount(), MobScript::getInstanceCount());
    pc.show(buf);
-   Sprintf(buf, "[%i]%P10 RoomScript\n",
-           RoomScript::getInstanceCount());
+   Sprintf(buf, "[%i]%P10 RoomScript  %P30[%i] %P42 BugCollection\n",
+           RoomScript::getInstanceCount(), BugCollection::getInstanceCount());
    pc.show(buf);
 
    Sprintf(buf, "\nSize (length) of:\n\tembattled_rooms: %i \t affected_doors: %i\n",
@@ -2262,9 +2320,9 @@ int handle_olc(critter& pc, int do_sub) {
    else {
       start_olc(pc);
       // This mostly just shows the prompt... --BLG
-      return pc.processInput(pc.pc->input, do_sub);
+      return pc.processInput(pc.pc->input, do_sub, FALSE);
    }//else
-}
+}//handleOLC
 
 
 /* this is the command called by the player, it parses and calls emote() */

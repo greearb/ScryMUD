@@ -49,16 +49,16 @@ int affect_crit_stat(StatTypeE ste, String& up_down, int i_th,
  */
 int script_jump_true(String* cooked_strs, int* cooked_ints,
                      critter& script_targ, critter* c_script_owner,
-                     room* r_script_owner);
+                     room* r_script_owner, int sanity);
 
 int script_jump_false(String* cooked_strs, int* cooked_ints,
                       critter& script_targ, critter* c_script_owner,
-                      room* r_script_owner);
+                      room* r_script_owner, int sanity);
 
 // The other two call this one with the first argument set accordingly.
 int script_jump(int on_test, String* cooked_strs, int* cooked_ints,
                 critter& script_targ, critter* c_script_owner,
-                room* r_script_owner);
+                room* r_script_owner, int sanity);
 
 
 ///*************************  Conditionals  *************************///
@@ -70,13 +70,29 @@ int does_own(critter& pc, int obj1, int obj2, int obj3, int obj4,
              int obj5, int obj6);
 
 /** Check if the mob's posn is.  */
-int is_in_posn(critter& pc, String& posn);
+int is_in_posn(String& posn, critter& pc);
 
-/**  Does a great many comparisons. */
-int does_equal(critter& pc, String& rhs, String& rhs);
+/**  Does a great many comparisons.   Supported fields are:
+ *  HP, MANA, MOV, ALIGN
+ */
+int is_equal_to(int i_th, const String& rhs_critter,
+                const String& field, critter& pc);
 
-/**  Does a great many comparisons. */
-int is_greater_than(critter& pc, String& lhs, String& rhs);
+/**  Does a great many comparisons.  Supported fields are:
+ *  HP, MANA, MOV, ALIGN
+ */
+int is_greater_than(int i_th, const String& rhs_critter,
+                    const String& field, critter& pc);
+
+/**  Does a great many comparisons.  Supported fields are:
+ *  HP, MANA, MOV, ALIGN
+ */
+int is_less_than(int i_th, const String& rhs_critter,
+                 const String& field, critter& pc);
+
+/** Do the work for the specific comparisons above. */
+int do_mob_comparison(int i_th, const String& rhs_critter,
+                      const String& field, critter& pc, ComparisonTypeE ct);
 
 /** For instance, is fighting PC, MOB, CLASS, LEVEL. */
 int is_fighting(critter& pc, String& discrim);

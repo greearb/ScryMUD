@@ -28,7 +28,7 @@ import java.net.*;
 /**  This is our main GUI, it holds all the rest, including the
   HegemonDisplay, which draws the stuff coming from the server. */
 class ClientDisplay extends Frame {
-
+   boolean first_time_help = true;
    HegemonManager hm; //keep track of all our different objects
    HelpFrame hf;
    ColorChoicesFrame ccf;
@@ -299,18 +299,16 @@ class ClientDisplay extends Frame {
       
       help_m = new Menu("Help");
 
-      MenuItem help_intro_mi = new MenuItem("View Topics");
-      MenuItem help_view_mi, help_about_mi;
+      MenuItem help_view_mi = new MenuItem("View Topics");
+      MenuItem help_about_mi;
 
-      if (!hm.IS_APPLET) {
-         help_m.add(help_intro_mi);
-      }
+      help_m.add(help_view_mi);
 
       help_m.add((help_about_mi = new MenuItem("About")));
       
-      help_intro_mi.addActionListener(new ActionListener() {
+      help_view_mi.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            doIntroHelp();
+            doViewHelp();
          }});
 
       help_about_mi.addActionListener(new ActionListener() {
@@ -488,6 +486,10 @@ class ClientDisplay extends Frame {
 
    void doViewHelp() {
       if (!hm.IS_APPLET) {
+         if (first_time_help) {
+            hf.show("opening_page.bml");
+            first_time_help = false;
+         }
          hf.setVisible(true);
       }
       else {
@@ -517,11 +519,6 @@ class ClientDisplay extends Frame {
    void doKEditor() {
       //Log.it("Making Keyword editor visible..");
       ke.setVisible(true);
-   }
-
-   void doIntroHelp() {
-      hf.setVisible(true);
-      hf.show("opening_page.bml");
    }
 
    void doHegemonHelp() {

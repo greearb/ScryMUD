@@ -154,15 +154,19 @@ BuildInfo.java: $(SRCS) Makefile BuildInfo.prefix BuildInfo.suffix
 all: tar jar release
 
 
-tar: $(OBJS)
+heg.tar: $(OBJS)
 	rm -f heg.tar
 	rm -f heg.tar.gz
 	tar -cvf heg.tar *.class
 	gzip heg.tar
 
-jar: $(OBJS)
+heg.jar: $(OBJS)
 	rm -f heg.jar
 	${JAR} -cvf heg.jar *.class
 
 clean: 
 	rm -f *.class
+
+purge:  clean
+	rm -f *~ *.flc
+	rm -f heg.jar heg.tar heg.tar.gz

@@ -886,6 +886,24 @@ void parse_communication(String& str) {
    char ch;
    int max_len = 380;
    
+   // First, check for censored strings.  This is a lot of work
+   // for the computer, and I hate censoring, but experience has
+   // shown it to be needed.  Edit the CensoredStrings in const.cc
+   // to modify this...
+
+   String tmp(str);
+   tmp.Tolower(); //make it all lower-case
+
+   const char* incoming = tmp; //will cast to char*
+
+   const char* censored;
+   for (int i = 0; (censored = CensoredStrings[i]); i++) {
+      if (strstr(incoming, censored)) {
+         str = "CENSORED";
+         return;
+      }
+   }
+
    String retval(len + 5);
 
    for (int i = 0; i<len; i++) {
@@ -1575,14 +1593,27 @@ void clear_obj_list(List<object*>& lst) {
    }//while
 }//clear_obj_list
 
-void out_field(const bitfield& field, critter& pc) {
+void out_field(const bitfield& field, critter& pc, const BitfieldNames& names) {
    int k = field.max_bit();
    String buf(100);
+   String tmp(50);
+   int sofar = 0;
+
+   Sprintf(buf, "%S (SET)\n\t", &(names.getHeader()));
+   pc.show(buf);
+   buf = "";
 
    for (int i = 0; i <= k; i++) {
       if (field.get(i)) {
-         buf.Append(i);
-         buf.Append(" ");
+         Sprintf(tmp, "[%i] %s,  ", i, names.getName(i));
+         if ((sofar + tmp.Strlen()) > 80) {
+            buf += "\n\t";
+            sofar = tmp.Strlen();
+         }
+         else {
+            sofar += tmp.Strlen();
+         }
+         buf += tmp;
       }//if
    }//for
    buf.Append("\n");

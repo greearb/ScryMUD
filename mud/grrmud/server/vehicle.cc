@@ -111,7 +111,7 @@ int vehicle::move() {
 void vehicle::stat(critter& pc) {
    room::stat(pc);
    show("\n\t\t\tIS A VEHICLE\nVehicle flags:\n", pc);
-   out_field(vehicle_flags, pc);
+   out_field(vehicle_flags, pc, VEHICLE_FLAGS_NAMES);
 
    String buf(200);
 
@@ -320,7 +320,8 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
       Cell<critter*> ccll(CRITTERS);
 
       while ((cptr = ccll.next())) {
-         do_look(1, &NULL_STRING, *cptr, room_list[in_room]);
+         do_look(1, &NULL_STRING, *cptr, room_list[in_room],
+                 TRUE); /* ignore brief */
       }//while
    }//if can see out
 

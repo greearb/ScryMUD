@@ -70,9 +70,11 @@ PtrArrayBase<T>::~PtrArrayBase() {
 template <class T>
 void PtrArrayBase<T>::becomeDeepCopyOf(const PtrArrayBase<T>& src) {
    
-   mudlog << "In becomeDeepCopy, src.cur_len:  " << src.getCurLen()
-          << " cur_len: " << cur_len << " max_len:  " << max_len
-          << endl;
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In becomeDeepCopy, src.cur_len:  " << src.getCurLen()
+             << " cur_len: " << cur_len << " max_len:  " << max_len
+             << endl;
+   }
 
    ensureCapacity(src.getCurLen());
    
@@ -84,7 +86,7 @@ void PtrArrayBase<T>::becomeDeepCopyOf(const PtrArrayBase<T>& src) {
       }
       
       if (src.ptr_list[i]) {
-         mudlog << "Source existed for idx: " << i << endl << flush;
+         //mudlog << "Source existed for idx: " << i << endl << flush;
          ptr_list[i] = new T(*(src.ptr_list[i]));
          cur_len = i + 1;
       }
@@ -93,10 +95,10 @@ void PtrArrayBase<T>::becomeDeepCopyOf(const PtrArrayBase<T>& src) {
       }
    }//for
 
-   mudlog << "Cleaning up remainder..." << endl;
+   //mudlog << "Cleaning up remainder..." << endl;
    for (; i<getMaxLen(); i++) {
       if (ptr_list[i]) {
-         mudlog << "Deleting idx:  " << i << endl;
+         //mudlog << "Deleting idx:  " << i << endl;
          delete ptr_list[i];
       }
       ptr_list[i] = NULL;

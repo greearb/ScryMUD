@@ -68,7 +68,7 @@ public:
    }
 
    void showVehicleFlags(critter& pc) {
-      out_field(vehicle_flags, pc);
+      out_field(vehicle_flags, pc, VEHICLE_FLAGS_NAMES);
    }
 
    void showPaths(critter& pc);

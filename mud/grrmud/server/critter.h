@@ -211,7 +211,7 @@ public:
    short close_time;
    bitfield shop_data_flags; //0 buy_0, 1 sell_0, 2 offer_0
    // 3 Player-run shopkeeper
-   // 40-62 type to trade flags, same as obj_flags
+   // 40-73 type to trade flags, same as obj_flags
    //
    List<object*> perm_inv; //holds perm inventory
 
@@ -242,6 +242,14 @@ public:
 
    int findItemSalePrice(object& obj);
    int findItemBuyPrice(object& obj);
+
+   int togShopFlag(int flag_num) {
+      if ((flag_num >= 0) && (flag_num < 74)) {
+         shop_data_flags.flip(flag_num);
+         return 0;
+      }
+      return -1;
+   }
 
    void makePSO() { shop_data_flags.turn_on(3); }
 
@@ -387,6 +395,7 @@ public:
    int isSentinel() const { return (int1 != 0); }
    void auditAI();
    int hasAI() const { return flag1.get(13); }
+   int hasShopData() { return (sh_data != 0); }
 
    // Higher is 'more'
    void setSocialAwareness(int i) { social_awareness = i; auditAI(); }
@@ -394,6 +403,12 @@ public:
    void setSkillViolence(int i) { skill_violence = i; auditAI(); }
    void setDefensiveness(int i) { defensiveness = i; auditAI(); }
    void setBadAssedness(int i) { bad_assedness = i; auditAI(); }
+
+   int togShopFlag(int flag) {
+      if (sh_data)
+         return sh_data->togShopFlag(flag);
+      return -1;
+   }
 
 }; //spec_data
 
@@ -409,6 +424,8 @@ protected:
 public:
    int mob_num;
    int tmp_num; //not used now
+
+   // When modifying this, modify MOB_DATA_FLAGS_NAMES in const.cc
    bitfield mob_data_flags; //all the proc bits
      // 0 has_proc_data, 1 scavenge, 2 wander, 3 should_do_procs,
      // 4 need_resetting, 5 edible_corpse, 6 is_banker, 7 NULL,
@@ -453,7 +470,10 @@ public:
    void auditAI(); //update flag according to internal values...
 
    int isSentinel() const;
-   
+   int hasProcData() const { return mob_data_flags.get(0); } 
+   int hasMobScript() const { return mob_data_flags.get(17); }
+   int isRunningScript() const { return cur_script != 0; }
+
    void Clear();
    mob_data& operator= (mob_data& source);
    void Write(ofstream& ofile);
@@ -463,6 +483,12 @@ public:
    void finishedMobProc();
    void doScriptJump(int abs_offset);
    static int getInstanceCount() { return _cnt; }
+
+   int togShopFlag(int flag) {
+      if (proc_data)
+         return proc_data->togShopFlag(flag);
+      return -1;
+   }
 
 }; //mob_data
 
@@ -480,6 +506,8 @@ public:
    String last_input;
    String rep_to;
    int descriptor;    //socket descriptor
+
+   // When modifying this, modify PC_DATA_FLAGS_NAMES in const.cc
    bitfield pc_data_flags;
       // 0 frozen, 1 gagged, 2 has_imm_data, 3 cloaked, 4 tank_graph,
       // 5 using_client, 6 auto_exit, 7 !hassle, 8 brief, 9 autosplit, 
@@ -648,8 +676,16 @@ public:
     * will be null (for non-script specific stuff) and should be specified
     * if it relates to scripting of course.
     */
-   int processInput(String& input, short do_sub, critter* c_script_owner = NULL,
+   int processInput(String& input, short do_sub, int script_driven, 
+                    critter* c_script_owner = NULL,
                     room* r_script_owner = NULL);
+
+   /**  Run a command after it has been parsed by processInput.  Also called
+    * from the script_jump method.
+    */
+   int executeCommand(String* cooked_strs, int* cooked_ints,
+                      int sanity, critter* c_script_owner,
+                      room* r_script_owner, int do_sub);
 
    int writeOutput();
    int readInput();
@@ -738,16 +774,18 @@ public:
    int getCurRoomNum();
    int getCurZoneNum(); //what are we in right now
    String* getInput() { return &(pc->input); }
-   int getHP() { return short_cur_stats[15]; }
-   int getHP_MAX() { return short_cur_stats[23]; }
-   int getMana() { return short_cur_stats[16]; }
-   int getManaMax() { return short_cur_stats[24]; }
-   int getMov() { return short_cur_stats[17]; }
-   int getMovMax() { return short_cur_stats[25]; }
-   
+   int getHP() const { return short_cur_stats[15]; }
+   int getHP_MAX() const { return short_cur_stats[23]; }
+   int getMana() const { return short_cur_stats[16]; }
+   int getManaMax() const { return short_cur_stats[24]; }
+   int getMov() const { return short_cur_stats[17]; }
+   int getMovMax() const { return short_cur_stats[25]; }
+   int getAlignment() const { return short_cur_stats[18]; }
+
    const ScriptCmd* getNextScriptCmd() {
-      if (mob)
+      if (mob) {
          return mob->cur_script->getNextCommand();
+      }
       return NULL;
    }
 
@@ -843,19 +881,19 @@ public:
    int isNotComplete() const ;
    int isWizchat() const;
    int isInUse() const;
-   int isFemale() { return SEX == SEX_FEMALE; }
-   int isMale() { return SEX == SEX_MALE; }
-   int isNeuter() { return SEX == SEX_NEUTER; }
-   int isBard() { return CLASS == BARD; }
-   int isWarrior() { return CLASS == WARRIOR; }
-   int isSage() { return CLASS == SAGE; }
-   int isWizard() { return CLASS == WIZARD; }
-   int isRanger() { return CLASS == RANGER; }
-   int isAlchemist() { return CLASS == ALCHEMIST; }
-   int isCleric() { return CLASS == CLERIC; }
-   int isThief() { return CLASS == THIEF; }
-   int isFighting() { return !is_fighting.isEmpty(); }
-   
+   int isFemale() const { return SEX == SEX_FEMALE; }
+   int isMale() const { return SEX == SEX_MALE; }
+   int isNeuter() const { return SEX == SEX_NEUTER; }
+   int isBard() const { return CLASS == BARD; }
+   int isWarrior()  const { return CLASS == WARRIOR; }
+   int isSage()  const { return CLASS == SAGE; }
+   int isWizard() const  { return CLASS == WIZARD; }
+   int isRanger() const  { return CLASS == RANGER; }
+   int isAlchemist() const  { return CLASS == ALCHEMIST; }
+   int isCleric() const  { return CLASS == CLERIC; }
+   int isThief() const  { return CLASS == THIEF; }
+   int isFighting() const  { return !is_fighting.isEmpty(); }
+
    int isStanding() { return POS == POS_STAND; }
    int isSleeping() { return POS == POS_SLEEP; }
    int isStunned() { return POS == POS_STUN; }
@@ -891,6 +929,13 @@ public:
    void clearIGFlags(); //clear the Inc/Dec Cur In Game checks
 
    int getLevel() { return LEVEL; }
+   int getClass() const { return CLASS; }
+
+   /**  Translates an asci string (like HP, MANA, MOV, ALIGN, etc)
+    * and returns the integer value.  Returns 0 if it can't
+    * resolve the field.
+    */
+   int getFieldValue(const char* field) const;
  
    /**  Get the attribute att, from this critter, used for
     * scripting mostly. */

@@ -48,6 +48,8 @@ public:
    int token_num;
    int key_num;
    int in_zone; //owner zone
+
+   // When modifying this, modify DOOR_DATA_FLAGS_NAMES in const.cc
    bitfield door_data_flags;
 	      // 0 open exit, basically no door
               // 1 is_mag_lockable, 2 is_closed, 3 is_locked, 4 is_pckabl,

@@ -372,17 +372,22 @@ class HegemonScroll extends Panel {
             }
             else if (comp_len_sofar > mx_size) {
                int my_len = sb.length();
+               Log.instance().dbg("Comp_len_sofar: " + comp_len_sofar
+                                  + " > mx_size: " + mx_size + " sb -:"
+                                  + sb + "last_ws_idx: " + last_ws_idx
+                                  + " sb.length(): " + sb.length());
                if (last_ws_idx > 0) {
                   my_len = sb.length() - (i - last_ws_idx);
                   i = last_ws_idx;
                }
 
-               //Log.it("\tLength > 0");
+               Log.instance().dbg("i: " + i + " my_len: " + my_len);
                char[] buf = new char[my_len + 1];
                sb.getChars(0, my_len, buf, 0);
                comp_in_progress.addChars(buf, 0, my_len, props);
                addComponent(comp_in_progress);
                comp_in_progress = new ScrollComponentText(vert_spacing, props);
+               last_ws_idx = 0;
                sb = new StringBuffer(100);
                comp_len_sofar = 0;
             }
@@ -408,6 +413,7 @@ class HegemonScroll extends Panel {
                   }//if
                   addComponent(new ScrollComponentNewline(12, vert_spacing));
                }
+               last_ws_idx = 0;
                comp_len_sofar = 0;
             }
             else {

@@ -123,7 +123,7 @@ collection of potted plants on your left.
 1 4 4 0
 -1	door Affected_Bye
 -1	door#, dest
-204 -1	mobs
+216 -1	mobs
 End of Room
 6		Room Number
 Newbie_Room ~	names
@@ -160,7 +160,7 @@ DO NOT sell items you find here.  Its just plain Immoral.
 23 21 -1  -:| bitfield |:-
 1024 1 7 7 	cur_stats
 -1	affected_by
-358 4 -1	inv
+358 342 182 116 4 5 236 344 500 -1	inv
 1 4 2 0
 -1	door Affected_Bye
 -1	door#, dest
@@ -277,7 +277,7 @@ written.
 23 21 5 -1  -:| bitfield |:-
 1024 1 13 13 	cur_stats
 -1	affected_by
--1	inv
+365 -1	inv
 1 3 8 0
 -1	door Affected_Bye
 -1	door#, dest
@@ -333,7 +333,7 @@ Daisy Lane leads off to the east towards some shops.
 1 2 25 0
 -1	door Affected_Bye
 -1	door#, dest
-4 204 3 -1	mobs
+3 4 -1	mobs
 End of Room
 16		Room Number
 SW_Plaza ~	names
@@ -583,7 +583,7 @@ lined with all sorts of shops and filled with people going this way and that.
 1 2 36 0
 -1	door Affected_Bye
 -1	door#, dest
-204 4 3 3 -1	mobs
+204 3 3 -1	mobs
 End of Room
 26		Room Number
 SW_Violet_Drive ~	names
@@ -655,6 +655,8 @@ woods.
 -1	inv
 1 1 43 0
 -1	door Affected_Bye
+1 3 94 0
+-1	door Affected_Bye
 1 4 54 0
 -1	door Affected_Bye
 1 2 19 0
@@ -721,7 +723,7 @@ Hmmm, maybe you should visit here more often!
 1 4 43 0
 -1	door Affected_Bye
 -1	door#, dest
-264 265 -1	mobs
+265 264 -1	mobs
 End of Room
 33		Room Number
 NW_Rose_Lane ~	names
@@ -830,7 +832,7 @@ into a cavernous room.
 1 4 36 0
 -1	door Affected_Bye
 -1	door#, dest
-204 -1	mobs
+-1	mobs
 End of Room
 38		Room Number
 garland_tube_stop ~	names
@@ -852,6 +854,8 @@ you the destinations available, and a small sign posted by the ticket machine.
 1 4 40 0
 -1	door Affected_Bye
 1 12 39 0
+-1	door Affected_Bye
+1 9 37 0
 -1	door Affected_Bye
 -1	door#, dest
 -1	mobs
@@ -912,7 +916,7 @@ Gliding through the dark tunnel.
 ~
 0 1 north is_dest, i_th, dir, End of PathCell..
 -1 End of PathCells..
-8 38 300 300 8  End of Vehicle
+0 38 300 300 8  End of Vehicle
 40		Room Number
 tube_tunnel ~	names
 The tube
@@ -1011,7 +1015,7 @@ because it is the main trade route to the northeast.
 1 4 23 0
 -1	door Affected_Bye
 -1	door#, dest
-204 204 204 216 204 -1	mobs
+204 204 204 204 -1	mobs
 End of Room
 45		Room Number
 traderoad ~	names
@@ -1022,7 +1026,7 @@ gates are to your south and the road continues to the north towards
 Glenwood.
 
 ~
-23 21 0 -1  -:| bitfield |:-
+33 23 21 0 -1  -:| bitfield |:-
 1024 1 45 45 	cur_stats
 -1	affected_by
 -1	inv
@@ -1031,7 +1035,7 @@ Glenwood.
 1 4 44 0
 -1	door Affected_Bye
 -1	door#, dest
-204 204 -1	mobs
+-1	mobs
 End of Room
 46		Room Number
 pick_nick_area ~	names
@@ -1255,9 +1259,10 @@ End of Room
 garlandarmory ~	names
 Armory
 ~
-In this dark and mysterious shop, armor of all types can be found. Some hang
-from the walls to the ceiling with chains. At the front desk, a shadowy figure
-grunts at your entrance and shows you some fine pieces of armor for sell.
+In this dark and mysterious shop, armor of all types can be found.  Some
+pieces are of finely linked steel rings, others of massive plates of steel.
+More exotic pieces lie behind the counter, where sits a gaunt man in
+a wide brimmed leather hat. 
 
 ~
 23 21 -1  -:| bitfield |:-
@@ -1267,7 +1272,7 @@ grunts at your entrance and shows you some fine pieces of armor for sell.
 1 3 50 1
 -1	door Affected_Bye
 -1	door#, dest
--1	mobs
+446 -1	mobs
 End of Room
 57		Room Number
 garlandmagic ~	names
@@ -1287,7 +1292,7 @@ you and you feel compelled to stay a bit longer.
 1 4 25 1
 -1	door Affected_Bye
 -1	door#, dest
--1	mobs
+447 -1	mobs
 End of Room
 58		Room Number
 garlandjewelers ~	names
@@ -1407,7 +1412,7 @@ a door to the east leads out into the courtyard.
 1 9 63 0
 -1	door Affected_Bye
 -1	door#, dest
-79 81 -1	mobs
+81 79 -1	mobs
 End of Room
 63		Room Number
 NW_Violet_Drive ~	names
@@ -1449,14 +1454,14 @@ the yard, and on this the more advanced students put on shows and exhibitions.
 1 2 62 0
 -1	door Affected_Bye
 -1	door#, dest
--1	mobs
+78 -1	mobs
 End of Room
 65		Room Number
 NW_Violet_Drive ~	names
 End of the hall.
 ~
-The hallway leads back towards the south from whence you came and two doors
-lead to rooms to the east and west.
+The hallway leads back towards the south from whence you came and a door
+leads to a room to the east.
 
 ~
 23 21 -1  -:| bitfield |:-
@@ -1606,7 +1611,7 @@ violets on their open window, just makes you feel good about life!
 1 6 26 0
 -1	door Affected_Bye
 -1	door#, dest
-3 160 -1	mobs
+160 3 -1	mobs
 End of Room
 73		Room Number
 mage_academy ~	names
@@ -1693,7 +1698,7 @@ this one still mostly intact.
 1 2 77 0
 -1	door Affected_Bye
 -1	door#, dest
-204 204 3 160 -1	mobs
+160 204 204 3 -1	mobs
 End of Room
 77		Room Number
 W_Daisy_Lane ~	names
@@ -1717,7 +1722,7 @@ huge collection of rubble from which the pillars were extracted.
 1 2 78 0
 -1	door Affected_Bye
 -1	door#, dest
-204 3 -1	mobs
+3 -1	mobs
 End of Room
 78		Room Number
 W_Daisy_Lane ~	names
@@ -1792,7 +1797,7 @@ you, and you can't tell if the whispering sounds from above are of man,
 beast or wind!
 
 ~
-35 25 23 21 -1  -:| bitfield |:-
+25 23 21 -1  -:| bitfield |:-
 1024 1 81 0 	cur_stats
 -1	affected_by
 12 -1	inv
@@ -1802,16 +1807,6 @@ beast or wind!
 -1	door Affected_Bye
 -1	door#, dest
 -1	mobs
-1  Start of a room proc script
-enter -1 -1 1	 Trigger Command, targ, actor 
- east 
- tell %M Your momentum and the slick rocks send you skidding to the southwest!;
- pause 1;
- neighbor_echo southwest %M comes skidding into view!;
- rm_move %M southwest;
-
-~
--1  End of room proc scripts
 End of Room
 82		Room Number
 alley ~	names
@@ -1855,7 +1850,7 @@ buildings.
 1 3 84 1
 -1	door Affected_Bye
 -1	door#, dest
-197 -1	mobs
+-1	mobs
 End of Room
 84		Room Number
 tavern ~	names
@@ -1880,7 +1875,7 @@ of stairs descending into the darkness.
 1 4 83 1
 -1	door Affected_Bye
 -1	door#, dest
-195 196 -1	mobs
+197 196 195 -1	mobs
 End of Room
 85		Room Number
 tavern ~	names
@@ -2065,18 +2060,25 @@ the rolling hills covered with grass and trees continue out of sight.
 -1	mobs
 End of Room
 94		Room Number
-foo ~	names
-A test room
+E_Daisy_Drive ~	names
+Gryphon's shop of Oddities
 ~
-Test room
+Shifting aside the bead curtain reveals a small bazaar of 
+items, ranging from the typical to the bizarre. There are trinkets and 
+weapons, jewels and armor, and nearly everything you could possibly 
+imagine. Standing at a counter in the back of the dirt-floored room is 
+Balthazar, gleefully willing to add to his and Gryphon's collection of 
+oddities, and even more willing for you to part with the ones he has.
 
 ~
-23 21 -1  -:| bitfield |:-
-1024 0 94 0 	cur_stats
+23 21 9 -1  -:| bitfield |:-
+1024 1 94 29 	cur_stats
 -1	affected_by
 -1	inv
+1 4 29 0
+-1	door Affected_Bye
 -1	door#, dest
--1	mobs
+294 -1	mobs
 End of Room
 
 

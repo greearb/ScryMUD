@@ -71,6 +71,10 @@ combat.  Some players also learn how to use the bow much as one
 would use a quarter-staff, which gives some advantage in close
 combat.
 ~
+brawling
+This skill provides you a general knowledge of fighting, especially
+hand-to-hand combat.  It should increase your effectiveness in battle.
+~
 brew
 This skill allows knowledgeable clerics and wizards to create their
 own potions from choice ingredients.  In order to brew something,
@@ -456,6 +460,13 @@ This skill protects you from many aggressive attacks by goodly creatures.
 philosophy
 This basic skill allows one to gain a more complete understanding
 of the universe and the myriad of powers that flow within it.
+~
+physik
+This study involves the basic nature of health and it's opposite.
+~
+physical arts
+This is the broad dicipline that, when mastered, allows it's practioners
+access to a great treasure of other skills.
 ~
 picklock
 This skill allows skillful thieves to pick the locks on many normal

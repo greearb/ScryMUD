@@ -214,14 +214,17 @@ String& str1, String& str2, String& str3, String& str4, \
 String& str5, int i, int j, int k, int l, int m, int n,\
 int& is_dead, critter& pc, critter* c_script_owner, \
 room* r_script_owner, String* cooked_strs, int* cooked_ints, \
-int do_sub
+int do_sub, int sanity
 \n");
 
+   // Hopefully, a smart compiler will get rid of this test.  It's
+   // here to keep the compiler from complaining about un-used variables.
+   // --BLG
    exe_cmds.Append("
 #define CODE_GEN_VAR_TEST_IF \
 1 || &str1 || &str2 || &str3 || &str4 || &str5 || i || j || k || l \
 || m || n || is_dead || &pc ||c_script_owner || r_script_owner \
-|| cooked_strs || cooked_ints || do_sub\n\n");
+|| cooked_strs || cooked_ints || do_sub || sanity\n\n");
 
 
    exe_cmds.Append("

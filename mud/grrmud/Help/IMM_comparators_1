@@ -1,0 +1,25 @@
+<help olc comparators>
+
+These commands are designed to be used in scripts to allow
+conditional branching.  Position options are:
+	stand, sit, rest, sleep, meditate, stun, dead, prone
+
+You may compare these fields currently:  MOV, MANA, HP, ALIGN
+
+Syntax: is_equal_to <<i_th> [targ] [field]
+Syntax: is_less_than <<i_th> [targ] [field]
+Syntax: is_greater_than <<i_th> [targ] [field]
+
+Syntax: is_in_posn [POSITION]
+Syntax: does_own [obj# 1] ... <<obj# 6>
+
+Usage: is_equal_to 2.guard HP
+Usage: is_less_than guard ALIGN
+Usage: is_greater_than Fubar MANA
+
+Usage: is_in_posn STAND
+Usage: does_own 50 2 2 5                # TRUE if one owns these 4 objects.
+
+<color=red>
+See Also:  add_mob_script
+</color></help>

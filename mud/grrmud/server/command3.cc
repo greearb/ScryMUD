@@ -37,6 +37,7 @@
 #include <PtrArray.h>
 #include "load_wld.h"
 
+
 ofstream bug_log("./log/bug_log");
 
 
@@ -610,9 +611,12 @@ int idea(const String& str, critter& pc) {
       return -1;
    }//if
 
-   Sprintf(buf, "%S, room %i:  %S\n\n", name_of_crit(pc, ~0),
+   Sprintf(buf, "%S %S, room %i:  %S\n\n", &(getCurTime()), name_of_crit(pc, ~0),
            pc.getCurRoomNum(), &str);
    idea_log << buf << flush;
+
+   bl_ideas.addBug(getCurTime(), pc.getCurRoomNum(), *(pc.getName()), str); 
+
    show("Idea logged, thanks a heap.\n", pc);
    return 0;
 }//idea
@@ -629,12 +633,87 @@ int bug(const String& str, critter& pc) {
       return -1;
    }//if
 
-   Sprintf(buf, "%S, room %i:  %S\n\n", name_of_crit(pc, ~0), pc.getCurRoomNum(), 
-           &str);
+   Sprintf(buf, "%S %S, room %i:  %S\n\n", &(getCurTime()), name_of_crit(pc, ~0),
+           pc.getCurRoomNum(), &str);
    bug_log << buf << flush;
+
+   bl_bugs.addBug(getCurTime(), pc.getCurRoomNum(), *(pc.getName()), str); 
+
    show("Bug logged, thanks.\n", pc);
    return 0;
 }//bug
+
+
+int buglist(BugTypeE bt, int i, const String& cmd, int j, const String& mod,
+            const String& notes, critter& pc) {
+   if (!pc.isPc()) {
+      return -1;
+   }
+
+   if (cmd.Strlen() == 0) {
+      if (bt == BT_BUGS) {
+         pc.show("Bug Listing:\n");
+         pc.show(bl_bugs.toString());
+      }
+      else if (bt == BT_IDEAS) {
+         pc.show("Idea Listing:\n");
+         pc.show(bl_ideas.toString());
+      }
+      return 0;
+   }
+
+   if (strncasecmp(cmd, "completed", cmd.Strlen()) == 0) {
+      if (bt == BT_BUGS) {
+         pc.show("Bug Listing (Completed):\n");
+         pc.show(bl_comp_bugs.toString());
+      }
+      else if (bt == BT_IDEAS) {
+         pc.show("Idea Listing (Completed):\n");
+         pc.show(bl_comp_ideas.toString());
+      }
+      return 0;
+   }
+   else if (strncasecmp(cmd, "remove", cmd.Strlen()) == 0) {
+
+      if (pc.getImmLevel() < 9) {
+         pc.show("You must be level 9 IMMORT or higher to remove bug/idea postings.\n");
+         return -1;
+      }
+
+      if (notes.Strlen() < 10) {
+         pc.show("Notes must be at least 10 characters.  Be sure to put them in
+single quotes.\n");
+         return -1;
+      }
+
+      String my_notes(100);
+      Sprintf(my_notes, "%S %S: %S\n", &(getCurTime()), pc.getName(), &notes);
+
+      if (bt == BT_BUGS) {
+         if (bl_bugs.removeBug(j, mod, my_notes, bl_comp_bugs) < 0) {
+            pc.show("Could not remove that bug.\n");
+            return -1;
+         }
+         else {
+            pc.show("Removed the bug from the listing.\n");
+            return 0;
+         }
+      }
+      else if (bt == BT_IDEAS) {
+         if (bl_ideas.removeBug(j, mod, my_notes, bl_comp_ideas) < 0) {
+            pc.show("Could not remove that idea.\n");
+            return -1;
+         }
+         else {
+            pc.show("Removed the idea from the listing.\n");
+            return 0;
+         }
+      }
+   }
+
+   pc.show("Bug/Idea list command not recognized, see help for buglist.\n");
+   return -1;
+}//buglist
 
 
 int oclone(int i_th, const String* item, critter& pc) {
@@ -1028,7 +1107,7 @@ int flee(critter& pc, int& is_dead) {
    else { //lets try it
       if ((crit_ptr = Top(pc.IS_FIGHTING))) { //ie in battle
          if (crit_ptr->mob) { //if its a mob
-            if (crit_ptr->MOB_FLAGS.get(1)) { //if !flee
+            if (crit_ptr->MOB_FLAGS.get(1) && (d(1,100) > 12)) { //if !flee
                Sprintf(buf, "%S prevents you from fleeing.\n",
                        name_of_crit(*crit_ptr, pc.SEE_BIT));
                buf.Cap();
@@ -1285,7 +1364,9 @@ int critter::doFollow(critter& vict, int do_msg = TRUE) {
    else {                       //follow some other
       if (FOLLOWER_OF) {  // if possibly part of a group
          doUngroup(1, &NULL_STRING);  //pets will still be pets....for now
+         show("You are now removed from your old group.\n");
       }//if
+
       FOLLOWER_OF = &vict;
       vict.FOLLOWERS.append(this);
       
@@ -1326,7 +1407,7 @@ int group(int i_th, const String* vict, critter& pc) {
       Sprintf(buf, "Name %P30 Class%P48 Hp         Mana        Mov\n\n");
       show(buf, pc);
 
-      if (pc.FOLLOWER_OF) {
+      if (pc.FOLLOWER_OF && pc.GROUPEES.isEmpty()) {
          pc.FOLLOWER_OF->GROUPEES.head(cll);
       }//if
       else {
@@ -1343,7 +1424,7 @@ int group(int i_th, const String* vict, critter& pc) {
       }//while
    }//if displaying group
 
- 	//*******************  group all  *****************************//
+   //*******************  group all  *****************************//
 
    else if (strcasecmp("all", *vict) == 0) {
       if (pc.FOLLOWER_OF) {
@@ -1444,7 +1525,7 @@ int order(String* str, critter& pc) {
 	 tmp_lst.head(cll);
 	 while ((ptr = cll.next())) {
             if (ROOM.haveCritter(ptr)) {
-               ptr->processInput(*str, TRUE);
+               ptr->processInput(*str, TRUE, FALSE);
             }//if
 	 }//while
 
@@ -1458,7 +1539,7 @@ int order(String* str, critter& pc) {
                String cmd = "order";
                ROOM.checkForProc(cmd, *str, pc, ptr->MOB_NUM);
 
-               ptr->processInput(*str, TRUE);
+               ptr->processInput(*str, TRUE, FALSE);
                show("Ok.\n", pc);
             }//if
             else {
@@ -1543,7 +1624,7 @@ int force(String* str, critter& pc) {
         Sprintf(buf, "%S has forced you to: %S\n", 
 		name_of_crit(pc, ptr->SEE_BIT), str);
         show(buf, *ptr);
-	ptr->processInput(*str, TRUE);
+	ptr->processInput(*str, TRUE, TRUE);
 	show("Ok\n", pc);
       }//if
       else {
@@ -1592,7 +1673,7 @@ int force_all(String* str, critter& pc) {
             Sprintf(buf, "%S has forced you to: %S\n", 
                     name_of_crit(pc, ptr->SEE_BIT), str);
             show(buf, *ptr);
-            ptr->processInput(*str, FALSE);
+            ptr->processInput(*str, FALSE, TRUE);
          }//if
       }//if in normal mode
    }//while

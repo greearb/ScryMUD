@@ -22,9 +22,16 @@ cure blindness
 4
 4
 illuminate
-0 25 10 29
+0 55 10 29
 212 -1  pre-reqs
 218 -1  enables
+
+5
+5
+physical arts
+0 55 0 0
+-1	pre-reqs
+128 202 -1	enables
 
 6
 6
@@ -32,7 +39,6 @@ firewall
 18 85 85 0
 219 -1  pre-reqs
 -1  enables
-
 
 10
 10

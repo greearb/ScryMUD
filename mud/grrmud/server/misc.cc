@@ -39,7 +39,19 @@
 #include "load_wld.h"
 #include "command3.h"
 #include "skills.h"
+#include <time.h>
 
+
+String& getCurTime() { //in the real world (tm) :)
+   static String retval(100);
+
+   long int cur_time;
+   time(&cur_time);
+   retval = ctime(&cur_time);
+
+   retval.Strip();
+   return retval;
+}
 
 int bound(int low, int high, int val) {
    if (val < low)

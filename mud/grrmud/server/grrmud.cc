@@ -65,6 +65,7 @@
 #include <LogStream.h>
 #include "SkillSpell.h"
 #include "BuildInfo.h"
+#include "BugEntry.h"
 
 #define MAX_HOSTNAME    256
 
@@ -99,7 +100,13 @@ List<String*>        banned_hosts;
 class critter        mob_list[NUMBER_OF_MOBS + 1];
 class object         obj_list[NUMBER_OF_ITEMS + 1];
 class door_data      door_list[NUMBER_OF_DOORS + 1];
-LazyPtrArray<room>       room_list;
+LazyPtrArray<room>   room_list;
+
+
+BugCollection bl_ideas("./World/BC_IDEAS", "Idea Listing");
+BugCollection bl_bugs("./World/BC_BUGS", "Bug Listing");
+BugCollection bl_comp_ideas("./World/BC_CLOSED_IDEAS", "Idea Listing (Completed)");
+BugCollection bl_comp_bugs("./World/BC_CLOSED_BUGS", "Bug Listing (Completed)");
 
 
 List<critter*>        linkdead_list; 
@@ -277,6 +284,7 @@ int
    NECROMANCY_SKILL_NUM,
    PARRY_SKILL_NUM,
    PASSDOOR_SKILL_NUM,
+   PHYSICAL_ARTS_SKILL_NUM,
    PHYSIK_SKILL_NUM,
    PFE_SKILL_NUM,
    PFG_SKILL_NUM,
@@ -541,6 +549,15 @@ void run_the_game(int port) {
 
    ZoneList::instance().readSelf();
    ZoneList::instance().execute(); //modify zones as needed
+
+   // Read in the bug and idea list.
+   bl_bugs.read();
+   bl_ideas.read();
+
+   //completed ones
+   bl_comp_bugs.read();
+   bl_comp_ideas.read();
+
 
    Load_Modifier = Regular_Load_Modifier;
    //cout << "The Universe has been created, but it took me more than \n";
@@ -924,7 +941,7 @@ void game_loop(int s)  {
                   }//if
                   else {
                      pc_ptr->possessing->processInput(*(pc_ptr->getInput()),
-                                                      FALSE);
+                                                      FALSE, TRUE);
                      if (mudlog.ofLevel(DBG)) {
                         mudlog << "input after processInput: " << *(pc_ptr->getInput())
                                << endl;
@@ -933,7 +950,7 @@ void game_loop(int s)  {
                   }
                }//if possessing
                else {
-                  pc_ptr->processInput(*(pc_ptr->getInput()), TRUE);
+                  pc_ptr->processInput(*(pc_ptr->getInput()), TRUE, FALSE);
                }
 	    }//else
          }//if

@@ -24,7 +24,7 @@
 public class BuildInfo {
    static public String getBuildInfo() {
       return ("<color red>\n" +
-"Built on:   Mon Apr 12 21:26:36 MST 1999 \n" +
+"Built on:   Sun Apr 25 21:17:24 MST 1999 \n" +
 "By:         greear \n" +
 "On machine: Linux burrito.cyberhighway.net 2.0.36 i686 unknown \n" +
 " </color><color blue>\n" +

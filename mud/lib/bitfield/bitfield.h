@@ -26,8 +26,37 @@
 
 #include <iostream.h>
 #include <fstream.h>
+#include <string2.h> //my string class
 
 #define MAX_BIT_ALLOWED 256
+
+class BitfieldNames {
+protected:
+   int len;
+   const char** bit_names;
+   static int _cnt;
+   String header;
+
+public:
+   /** Does not copy char** names, so make sure you don't delete it!
+    */
+   BitfieldNames(int length, const char** names, const char* col_name);
+   
+   ~BitfieldNames() {
+      _cnt--;
+   }
+
+   int getLength() const { return len; }
+   const char** getNames() const { return (const char**)bit_names; }
+   const char* getName(int idx) const;
+   const String& getHeader() const { return header; }
+
+   /** put names into the buf for display */
+   void listNames(String& buf) const;
+
+   static int getInstanceCount() { return _cnt; } 
+};
+
 
 class bitfield {
 
@@ -50,7 +79,7 @@ public:
    short is_zero() const;
    int max_bit() const; //returns highest bit posn that field contains
    void ensureCapacity(short bit_posn);
-   
+
    bitfield();  //default constructor
    bitfield(short bit_count);
    bitfield(const bitfield& b); //copy constructor

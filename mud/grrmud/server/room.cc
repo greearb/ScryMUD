@@ -900,19 +900,6 @@ int room::getZoneNum() {
 
 void room::stat(critter& pc) {
    String buf2(100);
-   int i, k;
-
-   pc.show("\nRoom Flag definitions:  \n");
-   pc.show("     0 no_rest, 1 !imm, 2 !god, 3 is_perm_dark, 4 weather,
-     5 !shout, 6 !mag_exit, 7 is_haven(!kill_mob and !pk), 8 !pk, 9 !magic, 10 !mob,
-     11 !potions, 12 !staffs, 13 !mort 14 normally_dark,
-     15 river/small lake, 16 ocean/big lake, 17 swamp, 18 need_fly,
-     19 need_boat, 20 need_climb 21 is_zlocked (for olc),
-     22 is_total_loaded, 23 is_used, 24 !magic_entry
-     25 !vehicle (vehicles can't drive here), 26 cramped (!huge)
-     27 !ranged, 28 need_dive_ability, 29 used_in_track, 30 can_camp
-     31 !complete, 32 has_keywords, 33 !mob_wander 34 !foreign_mob_wander
-     35 has_proc_script\n\n");
 
    if (names.peekFront()) {
       show(*(names.peekFront()), pc);
@@ -935,14 +922,8 @@ void room::stat(critter& pc) {
       cnt++;
    }
 
-   show("\nRoom Flags set:", pc);
-   k = room_flags.max_bit();
-   for (i = 0; i <= k; i++) {
-      if (room_flags.get(i)) {
-         Sprintf(buf2, "%i ", i);
-         show(buf2, pc);
-      }//if
-   }//for
+   out_field(room_flags, pc, ROOM_FLAGS_NAMES);
+
    show("\n", pc);
    Sprintf(buf2, "v_bit: %i  mv$: %i  r_num: %i.\n", 
            getVisBit(), getMovCost(), getRoomNum());

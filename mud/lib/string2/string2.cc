@@ -97,6 +97,17 @@ void String::Strip() {
    *this = buf;
 }//Strip
 
+//drop a few off the end of the string
+void String::dropFromEnd(int num_chars) {
+   if (cur_len > num_chars) {
+      string[cur_len - num_chars] = 0;
+      cur_len -= num_chars;
+   }
+   else {
+      *this = "";
+   }
+}
+
 /** Starts inserting in the string[i+1] position. */
 void String::insertAfter(int i, const char* str) {
    if (!str || (i < 0))
@@ -805,7 +816,11 @@ void String::Append(const char* source) {
    int k = strlen(source);
 
    ensureCapacity(cur_len + k);
-   strcat(string, source);
+
+   /*  string + cur_len suggested by Nevyn.  Good idea, should
+    *   make it faster. --Ben
+    */
+   strcat(string + cur_len, source);
    cur_len += k;
 }//Append      
 

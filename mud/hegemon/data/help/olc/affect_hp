@@ -1,0 +1,15 @@
+Category:  OLC  Topic:  affect_hp
+
+
+
+Used to affect the Hit Points (up or down) of a particular
+victim.  The worst this command can do is put the HP to 1.  It
+will never kill.  This command can be used by scripting mobs
+and immortals, objects, and rooms.
+
+syntax:  affect_hp <i_th> [victim] [dice_count] [up/down] [dice_sides]
+example:  affect_hp 2.guard 5 down 4  # Lower guard's HP by 5d4
+example:  affect_hp guard 5 up 4      # Raise guard's HP by 5d4
+
+
+See also:  affect_mana affect_mov add_mob_script roll

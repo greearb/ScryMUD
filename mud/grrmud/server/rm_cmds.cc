@@ -166,7 +166,7 @@ int room::move_all(int i_th, const String* dir) {
          ptr->doGoToRoom(dest_rm, NULL, NULL, is_dead, getIdNum());
          
          if (!is_dead) {
-            look(1, &NULL_STRING, *ptr);
+            look(1, &NULL_STRING, *ptr, FALSE);
          }//if
       }//while
    }//if

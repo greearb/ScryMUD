@@ -27,6 +27,407 @@
 #include "object.h"
 
 
+/** All the words and phrases that one deems useless to the
+ * cause of humane communication goes here.
+ */
+const char* CensoredStrings[] = {
+   "asshole",
+   "cunt",
+   "dick",
+   "fag", //This may catch too many??
+   "fuck",
+   "pussy",
+   NULL  /* don't forget this!! */
+};
+
+const char* osd_names[] = {
+   "consume_teleport", 
+   "has_construct_data",
+   "has_skin",
+   "consume_poison",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "casts_spells"
+};
+const BitfieldNames OBJ_SPEC_DATA_FLAGS_NAMES(sizeof(osd_names)/sizeof(const char*),
+                                              osd_names, "Obj Spec Data Flags:");
+
+const char* bf_names[] = { 
+   "NULL",
+   "NULL",
+   "is_closed",
+   "is_locked",
+   "is_pickable",
+   "is_mag_lockable",
+   "is_mag_locked",
+   "is_destructable {fireball may open it till reset}",
+   "is_corpse",
+   "!close",
+   "NULL",//10
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "consume_key"//17
+};
+const BitfieldNames BAG_FLAGS_NAMES(sizeof(bf_names)/sizeof(const char*),
+                                    bf_names, "Bag Flags:");
+
+const char* sd_names[] = {
+   "buy_0",//0
+   "sell_0",//1
+   "offer_0",//2
+   "Player-run shopkeeper",//3
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",//10
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",//20
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",//30
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NON weapon",//40
+   "slash",
+   "smash",
+   "pierce",
+   "whip", 
+   "needs_ammo",
+   "dart_thrower",
+   "bow", 
+   "dart",
+   "arrow",
+   "junk", //50
+   "wand",
+   "potion",
+   "scroll",
+   "container",
+   "coins",//55
+   "armor",
+   "weapon",
+   "light_source",
+   "canteen",
+   "liquid",//60
+   "food",
+   "boat",
+   "has_spec_proc_data",
+   "toolbox",
+   "cauldron",//65
+   "pen", 
+   "construct_component",
+   "concoct_component",
+   "parchment", //69
+   "NULL",
+   "NULL",
+   "herb", //72
+   "vend_machine"//73
+};
+const BitfieldNames SHOP_DATA_FLAGS_NAMES(sizeof(sd_names)/sizeof(const char*),
+                                          sd_names, "Shop Data Flags (Trades):");
+
+const char* td_names[] = { "NULL" };
+const BitfieldNames TEACH_DATA_FLAGS_NAMES(sizeof(osd_names)/sizeof(const char*),
+                                           td_names, "Teach Data Flags:");
+
+/** FLAG1 */
+const char* mp_names[] = {
+   "NULL",
+   "shopkeeper",
+   "teacher",
+   "let_same_class_pass",
+   "let_same_race_pass",
+   "has_mob_give_proc",
+   "has_mob_say_proc",
+   "has_mob_bow_proc",
+   "has_mob_curse_proc",
+   "proc_with_same_race", 
+   "proc_with_same_align",
+   "proc_with_same_class",
+   "NULL",
+   "has_AI"
+};
+const BitfieldNames MOB_PROC_DATA_FLAGS_NAMES(sizeof(mp_names)/sizeof(const char*),
+                                              mp_names, "Mob Proc Flags:");
+
+const char* c_names[] = {
+   "can_see_inv",
+   "using_light_src",
+   "is_flying",           
+   "have_boat",
+   "can_climb",
+   "gos",
+   "yell",
+   "gratz",
+   "auc", 
+   "shout",
+   "say",
+   "tell",
+   "wiznet",
+   "is_paralyzed",
+   "is_perm_sleeped",
+   "is_dual_wielding",
+   "is_sneak",
+   "in_use",
+   "can_dive",
+   "spell_tested_yet",
+   "is_blocked",
+   "is_hide",
+   "is_tailing",
+   "!complete",
+   "already_hurled"
+};
+const BitfieldNames CRIT_FLAGS_NAMES(sizeof(c_names)/sizeof(const char*),
+                                     c_names, "Critter Flags:");
+
+const char* md_names[] = {
+   "has_proc_data", //0
+   "scavenge", //1
+   "wander", //2
+   "should_do_procs", //3
+   "need_resetting", //4
+   "edible_corpse", //5
+   "is_banker", //6,
+   "NULL", //7
+   "NULL", //8
+   "NULL", //9
+   "NULL", //10
+   "NULL", //11
+   "NULL", //12
+   "NULL", //13
+   "NULL", //14
+   "NULL", //15
+   "has_skin", //16
+   "has_mob_script" /*17*/
+};
+const BitfieldNames MOB_DATA_FLAGS_NAMES(sizeof(md_names)/sizeof(const char*),
+                                         md_names, "Mob Data Flags:");
+
+const char* pcd_names[] = {
+   "frozen",//0
+   "gagged",//1
+   "has_imm_data", //2
+   "cloaked",//3
+   "tank_graph",//4
+   "using_client",//5
+   "auto_exit",//6
+   "!hassle",//7
+   "brief",//8
+   "autosplit",//9 
+   "do_prompt",//10
+   "is_builder",//11
+   "autoloot",//12
+   "olc_redo",//13
+   "extra_info",//14
+   "cr_behind",//15
+   "do_carriage_return",//16
+   "is_blocking_door",//17
+   "can_det_magic",//18
+   "detect_inventory",//19
+   "show_vnums",//20
+   "has_poofin_poofout_msg",//21
+   "page_output",//22
+   "in_page_break_mode",//23
+   "!wizchat",//24
+   "has_colors",//25
+   "use_color" //26
+};
+const BitfieldNames PC_DATA_FLAGS_NAMES(sizeof(pcd_names)/sizeof(const char*),
+                                        pcd_names, "PC Data Flags:");
+
+const char* d_names[] = {
+   "open exit basically no door",//0
+   "is_mag_lockable",//1
+   "is_closed",//2
+   "is_locked",//3
+   "is_pckabl",//4
+   "is_lockable", //5
+   "mag_locked (spell only can open it)",//6
+   "is_destructable",//7
+   "is_closeable",//8
+   "is_flippable",//9
+   "in_use",//10
+   "is_unopenable (by players, auto only)",//11
+   "is_vehicle_exit",//12
+   "is_secret",//13
+   "is_blocked",//14
+   "!complete",//15
+   "secret_when_open_too",//16
+   "consume_key",//17
+   "!passdoor"//18
+};
+const BitfieldNames DOOR_DATA_FLAGS_NAMES(sizeof(d_names)/sizeof(const char*),
+                                          d_names, "Door Data Flags:");
+
+const char* v_names[] = {
+   "is_self_guided",
+   "is_stealthy",
+   "unlimited_fuel",
+   "can_fly",
+   "can_climb", 
+   "can_float",
+   "can_dive",
+   "can_see_out (show room descs to passengers)"
+};
+const BitfieldNames VEHICLE_FLAGS_NAMES(sizeof(v_names)/sizeof(const char*),
+                                        v_names, "Vehicle Flags:");
+    
+const char* r_names[] = {
+   "no_rest",//0
+   "!imm",//1
+   "!god",//2
+   "is_perm_dark",//3
+   "weather",//4
+   "!shout",//5
+   "!mag_exit",//6
+   "is_haven", //7
+   "!PK", //8
+   "!magic", //9
+   "!mob",//10
+   "!potions",//11
+   "!staffs",//12
+   "!mort",//13
+   "normally_dark",//14
+   "river/small lake",//15
+   "ocean/big lake",//16
+   "swamp", //17
+   "need_fly",//18
+   "need_boat",//19
+   "need_climb",//20
+   "is_zlocked (for olc)",//21
+   "is_totally_loaded",//22
+   "is_used",//23
+   "!magic_entry",//24
+   "!vehicle (vehicles can't drive here)",//25
+   "cramped (!huge)",//26
+   "!ranged",//27
+   "need_dive_ability",//28
+   "used_in_track",//29
+   "can_camp",//30
+   "!complete (olc wise)",//31
+   "has_keywords",//32
+   "!mob_wander",//33
+   "!foreign_mob_wander",//34
+   "has_proc_script"//35
+};
+const BitfieldNames ROOM_FLAGS_NAMES(sizeof(r_names)/sizeof(const char*),
+                                     r_names, "Room Flags:");
+
+const char* o_names[] = {
+   "no_rest",//0
+   "!evil", 
+   "!neutral",
+   "!good", 
+   "!donate",
+   "!drop",
+   "!remove",
+   "!mortal",
+   "!imm",
+   "!demi",
+   "in_use",//10
+   "!warrior",
+   "!sage",
+   "!wizard",
+   "!ranger",
+   "!thief",
+   "!alchemist", 
+   "!cleric",
+   "!bard",
+   "!mob",
+   "!pc",//20
+   "not worn",
+   "head",
+   "neck",
+   "neck",
+   "around body",
+   "arms", 
+   "wrist1",
+   "wrist2", 
+   "hands",
+   "wielded",//30
+   "held",
+   "light",
+   "body",
+   "belt",
+   "legs",
+   "feet",
+   "finger1", 
+   "finger2",
+   "shield", //39
+   "not a weapon",//40
+   "slash",
+   "smash",
+   "pierce",
+   "whip", 
+   "needs_ammo",
+   "dart_thrower",
+   "bow", 
+   "dart",
+   "arrow",
+   "junk", //50
+   "wand",
+   "potion",
+   "scroll",
+   "container",
+   "coins",//55
+   "armor",
+   "weapon",
+   "light_source",
+   "canteen",
+   "liquid",//60
+   "food",
+   "boat",
+   "has_spec_proc_data",
+   "toolbox",
+   "cauldron",
+   "pen", 
+   "construct_component",
+   "concoct_component",
+   "parchment", 
+   "needs_resetting",//70
+   "!complete", 
+   "herb", //72
+   "vend_machine",
+   "bulletin_board",
+   "is_butcherable",
+   "has_obj_script"//76
+};
+
+const BitfieldNames OBJ_FLAGS_NAMES(sizeof(o_names)/sizeof(const char*),
+                                    o_names, "Object Flags:");
+
 const char* DARK_MSG = "It is too dark to see.\n";
 const char* SLEEP_MSG = "Dream on, my friend.\n";
 const char* BLIND_MSG = "You are blind as a bat, and your ears are small.\n";
@@ -97,7 +498,7 @@ const unsigned int Max_Int = (1 << (sizeof(int) * 8 - 1));
 const unsigned long Max_Long = (1 << (sizeof(long int) * 8 - 1));
 const unsigned short Max_Short = (1 << (sizeof(short int) * 8 - 1));
 
-const char* Opening_Screen = "\n\n\n
+const char* Opening_Screen = "<__SCRY__>\n\n\n
 
 
                                                        $$$
@@ -176,7 +577,7 @@ char* login_prompts[] = {
    
    //"\n\x9B\x4D\x31\x32\x68\nChoose a Password:  ", 
    //"\n\x9B\x4D\x31\x32\x68\nEnter your password again for verification:  ",
-   "\nChoose a Password:  ", 
+   "\nChoose a Password (Will be Echoed):  ", 
    "\nEnter your password again for verification:  ",
    "(M)ale, (F)emale, or (N)euter:  ",
    "\n\nSelection of Classes: \n
@@ -194,7 +595,7 @@ char* login_prompts[] = {
 					/* for non-new players */
 
    //"\n\x9B\x31\x32\x68\nEnter your password:  ",
-   "\nEnter your password:  ",
+   "\nEnter your password (Will be echoed):  ",
    
    "\nChoose your Race, or you can choose help on the races.
 
@@ -205,13 +606,14 @@ char* login_prompts[] = {
 	Dwarf		(7)			(107)
 	Ogrue		(9)			(109)
 	Elf		(11)			(111)
-        Sombrian        (14)                    (114)
 
 	Your choice: "
 
 
 }; //login_prompts
 
+//  This race was never defined good enough to add.
+//        Sombrian        (14)                    (114)
 
 
                          /* data for OLC */

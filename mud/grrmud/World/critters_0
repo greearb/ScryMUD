@@ -21,12 +21,12 @@ tavern after a few too many!
 -1	affected_by
 -1	inv
  1 0 1	mob#, tmp_num, max_n_game
-1 0 -1  -:| bitfield |:-
+4 1 0 -1  -:| bitfield |:-
 1 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
  200 75 12 3	shop_data shorts
 61 59 2 1 0 -1  -:| bitfield |:-
-65 -1	perm_inv
+65 -1  End of perm_inv
 	end_of_crit
 
 2	Start of Mob
@@ -52,7 +52,7 @@ described his journey.
 -1	affected_by
 -1	inv
  2 0 1	mob#, tmp_num, max_n_game
-17 -1  -:| bitfield |:-
+17 4 -1  -:| bitfield |:-
 1  Start of a mob proc script
 say 0 0 0	 Trigger Command, targ, actor 
  god 
@@ -85,7 +85,7 @@ contented look on his face and waves as he passes you.
 -1	affected_by
 4 -1	inv
  3 0 25	mob#, tmp_num, max_n_game
--1  -:| bitfield |:-
+4 -1  -:| bitfield |:-
 	end_of_crit
 
 4	Start of Mob
@@ -109,7 +109,7 @@ that never seems to quite get full, no matter how much junk he picks up.
 -1	affected_by
 -1	inv
  4 0 10	mob#, tmp_num, max_n_game
-2 1 -1  -:| bitfield |:-
+4 2 1 -1  -:| bitfield |:-
 	end_of_crit
 
 10	Start of Mob
@@ -132,7 +132,7 @@ in some places, but hard in others.  You better watch out!
 -1	affected_by
 -1	inv
  10 0 1	mob#, tmp_num, max_n_game
-2 -1  -:| bitfield |:-
+4 2 -1  -:| bitfield |:-
 	end_of_crit
 
 11	Start of Mob
@@ -155,12 +155,12 @@ have kneaded bread for all these years could definately knead your head!
 -1	affected_by
 -1	inv
  11 0 1	mob#, tmp_num, max_n_game
-0 -1  -:| bitfield |:-
+4 0 -1  -:| bitfield |:-
 1 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
  100 50 5 23	shop_data shorts
 61 59 54 52 2 1 0 -1  -:| bitfield |:-
-14 11 13 -1	perm_inv
+14 11 13 -1  End of perm_inv
 	end_of_crit
 
 16	Start of Mob
@@ -187,7 +187,7 @@ so nothing ever does...
 -1	affected_by
 -1	inv
  16 0 1	mob#, tmp_num, max_n_game
-1 0 -1  -:| bitfield |:-
+4 1 0 -1  -:| bitfield |:-
 13 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
 0 -4 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
@@ -215,7 +215,7 @@ bestow great wisdom on those who were kind, and patient enough listen.
 -1	affected_by
 -1	inv
  19 0 1	mob#, tmp_num, max_n_game
-0 -1  -:| bitfield |:-
+4 0 -1  -:| bitfield |:-
 7 6 5 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
 60	 test_num, valid for give_proc mostly
@@ -474,7 +474,7 @@ for the best, but his quest was dangerous, and she fears for the worst.
 -1	affected_by
 -1	inv
  76 0 1	mob#, tmp_num, max_n_game
-17 0 -1  -:| bitfield |:-
+17 4 0 -1  -:| bitfield |:-
 13 4 3 2 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
 6 3 2 -1  -:| bitfield |:-
@@ -639,7 +639,7 @@ wrong, but you suspect he just had a meeting that didn't go so well!
 -1	affected_by
 -1	inv
  79 0 5	mob#, tmp_num, max_n_game
--1  -:| bitfield |:-
+4 -1  -:| bitfield |:-
 	end_of_crit
 
 81	Start of Mob
@@ -664,7 +664,7 @@ the top.
 -1	affected_by
 -1	inv
  81 0 5	mob#, tmp_num, max_n_game
--1  -:| bitfield |:-
+4 -1  -:| bitfield |:-
 	end_of_crit
 
 154	Start of Mob
@@ -739,7 +739,7 @@ lost all self respect, and hides in the shadows when you come near.
 -1	affected_by
 -1	inv
  160 0 25	mob#, tmp_num, max_n_game
--1  -:| bitfield |:-
+4 -1  -:| bitfield |:-
 	end_of_crit
 
 164	Start of Mob
@@ -762,7 +762,7 @@ He completely ignores you, absorbed in his own little world.
 -1	affected_by
 4 -1	inv
  164 0 25	mob#, tmp_num, max_n_game
--1  -:| bitfield |:-
+4 -1  -:| bitfield |:-
 	end_of_crit
 
 186	Start of Mob
@@ -794,7 +794,7 @@ and treacherous family in Dar Thane.
 -1	affected_by
 -1	inv
  186 0 1	mob#, tmp_num, max_n_game
-0 -1  -:| bitfield |:-
+4 0 -1  -:| bitfield |:-
 13 4 3 2 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
 5 -1  -:| bitfield |:-
@@ -824,7 +824,7 @@ a fine dagger sheathed in her belt, swaying with her every step.
 -1	affected_by
 50 50 -1	inv
  195 0 1	mob#, tmp_num, max_n_game
-17 3 1 -1  -:| bitfield |:-
+17 4 3 1 -1  -:| bitfield |:-
 1  Start of a mob proc script
 hit 197 -1 1	 Trigger Command, targ, actor 
 
@@ -850,11 +850,11 @@ hit 196 -1 1	 Trigger Command, targ, actor
 bodyguard guard man ~	names
 A stout man with watchful eyes
 ~
-A stout man sips tea and keeps an eye on the croud.
+A stout man sips tea and keeps an eye on the crowd.
 ~
 This fellow is six feet tall and built like a wall.  His biceps ripple
 noticeably as he brings a cup of tea to his lips, and his eyes never
-stray from the croud.  He sits with his back to the counter, near the
+stray from the crowd.  He sits with his back to the counter, near the
 stairs.  Occasionally he and the bartender exchange a few words
 as people come and go.
 
@@ -869,7 +869,7 @@ as people come and go.
 -1	affected_by
 -1	inv
  196 0 1	mob#, tmp_num, max_n_game
-17 0 -1  -:| bitfield |:-
+17 4 0 -1  -:| bitfield |:-
 13 3 -1  -:| bitfield |:-
 10	int1, above bitfield started spec_data
 9 -6 0 8 5  sk_viol, benev, def, bad_assed, soc_aware
@@ -917,7 +917,7 @@ strapped to each thigh.
 -1	affected_by
 50 50 -1	inv
  197 0 1	mob#, tmp_num, max_n_game
-17 2 1 -1  -:| bitfield |:-
+17 4 2 1 -1  -:| bitfield |:-
 1  Start of a mob proc script
 hit 196 -1 1	 Trigger Command, targ, actor 
 
@@ -962,7 +962,7 @@ along!
 -1	affected_by
 -1	inv
  199 0 1	mob#, tmp_num, max_n_game
-0 -1  -:| bitfield |:-
+4 0 -1  -:| bitfield |:-
 13 4 3 2 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
 8 4 1 -1  -:| bitfield |:-
@@ -991,7 +991,7 @@ who ask for, and will accept, his teachings.
 -1	affected_by
 -1	inv
  201 0 1	mob#, tmp_num, max_n_game
-0 -1  -:| bitfield |:-
+4 0 -1  -:| bitfield |:-
 13 4 3 2 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
 7 -1  -:| bitfield |:-
@@ -1010,7 +1010,7 @@ talking to the locals as doing any real work, but no one seems to mind.
 ~
 18 16 -1  -:| bitfield |:-
 1200 480000 0 	long_data
-0 12 12 12 12 12 12 9 17 10 2 0 1 1 11 600 200 200 100 
+0 12 12 12 12 12 12 9 8 10 2 0 1 1 1 600 200 200 100 
 17 5 0 0 600 200 200 2 100 110 0 50 50 50 0 0 4 4 100 100 
 100 0 0 0 	shrt_cur_stats
 1024 1027 1 	cur_stats
@@ -1018,7 +1018,7 @@ talking to the locals as doing any real work, but no one seems to mind.
 -1	affected_by
 -1	inv
  204 0 15	mob#, tmp_num, max_n_game
-2 0 -1  -:| bitfield |:-
+4 2 0 -1  -:| bitfield |:-
 13 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
 0 0 0 -5 0  sk_viol, benev, def, bad_assed, soc_aware
@@ -1046,12 +1046,12 @@ understand the source of such strength!
 -1	affected_by
 -1	inv
  205 0 1	mob#, tmp_num, max_n_game
-0 -1  -:| bitfield |:-
+4 0 -1  -:| bitfield |:-
 13 4 3 1 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
  200 75 7 21	shop_data shorts
 2 1 0 -1  -:| bitfield |:-
-190 87 -1	perm_inv
+190 87 -1  End of perm_inv
 0 0 0 4 0  sk_viol, benev, def, bad_assed, soc_aware
 	end_of_crit
 
@@ -1076,7 +1076,7 @@ anything to occupy his rich, but empty life.
 -1	affected_by
 -1	inv
  216 0 1	mob#, tmp_num, max_n_game
-17 2 -1  -:| bitfield |:-
+17 4 2 -1  -:| bitfield |:-
 1  Start of a mob proc script
 enter -1 -1 0	 Trigger Command, targ, actor 
  FEM 
@@ -1108,7 +1108,7 @@ big as his partner, he is nearly as strong, and twice as fast!
 -1	affected_by
 -1	inv
  264 0 1	mob#, tmp_num, max_n_game
-0 -1  -:| bitfield |:-
+4 0 -1  -:| bitfield |:-
 13 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
 0 4 0 7 0  sk_viol, benev, def, bad_assed, soc_aware
@@ -1135,7 +1135,7 @@ man, nodding to the customers as he looks out for trouble.
 -1	affected_by
 -1	inv
  265 0 1	mob#, tmp_num, max_n_game
--1  -:| bitfield |:-
+4 -1  -:| bitfield |:-
 	end_of_crit
 
 278	Start of Mob
@@ -1158,12 +1158,76 @@ you need to continue on your journey.
 -1	affected_by
 -1	inv
  278 0 100	mob#, tmp_num, max_n_game
-0 -1  -:| bitfield |:-
+4 0 -1  -:| bitfield |:-
 1 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
  100 50 5 23	shop_data shorts
 64 62 61 59 58 54 2 1 0 -1  -:| bitfield |:-
-91 11 4 79 -1	perm_inv
+91 11 4 79 -1  End of perm_inv
+	end_of_crit
+
+288	Start of Mob
+tracor ~	names
+a tracor
+~
+Tracor wiggles around.
+~
+A gigantic worm like creature. A small circular mouth at one end is filled with
+very sharp teeth. Small little wiggling tenacles lashes out from its side.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+1000 5500000 0 	long_data
+0 25 14 15 14 14 20 2 2 60 3 0 1 1 1 2000 100 100 -1000 
+29 1 0 0 2000 100 100 2 100 100 80 80 100 90 0 0 2 2 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1032 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 288 0 1	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+294	Start of Mob
+Balthazar shopkeeper storekeeper keeper ~	names
+Balthazar
+~
+Balthazar is leaning against the counter.
+~
+He is a queer little man, short, wiry, and  obviously blind. You think
+for a minute of just picking things off the shelves and leaving without 
+paying the man. However, you notice by his movements he is quite aware
+of his surroundings and if you did so you would pay the ultimate
+payment, death.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+9500 1200000 0 	long_data
+0 23 14 15 14 14 20 20 30 10 1 0 1 1 9 1100 100 100 150 
+25 0 0 0 1100 100 100 2 100 100 -20 80 100 90 0 0 4 8 100 100 
+100 5 0 0 	shrt_cur_stats
+1024 1024 970 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 294 0 1	mob#, tmp_num, max_n_game
+17 0 -1  -:| bitfield |:-
+13 4 3 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 200 75 7 21	shop_data shorts
+3 2 1 0 -1  -:| bitfield |:-
+-1  End of perm_inv
+-1  End of PlayerShopData list
+Gryphon  Manager
+0 0 0 4 0  sk_viol, benev, def, bad_assed, soc_aware
+1  Start of a mob proc script
+enter -1 -1 0	 Trigger Command, targ, actor 
+
+ say "Har, Har! I has a visitor, does ye want to buys enythin %M?";
+
+~
+-1  End of mob proc scripts
 	end_of_crit
 
 400	Start of Mob
@@ -1190,7 +1254,7 @@ story.
 -1	affected_by
 -1	inv
  400 0 1	mob#, tmp_num, max_n_game
--1  -:| bitfield |:-
+4 -1  -:| bitfield |:-
 	end_of_crit
 
 401	Start of Mob
@@ -1215,7 +1279,70 @@ visibly.
 -1	affected_by
 -1	inv
  401 0 1	mob#, tmp_num, max_n_game
-1 -1  -:| bitfield |:-
+4 1 -1  -:| bitfield |:-
+	end_of_crit
+
+446	Start of Mob
+armorer man ~	names
+a shadowy man
+~
+A gaunt man wearing a large leather hat looks up as you enter.
+~
+This man is simply the armorer.  If he ever had another name, it has been
+forgotten by all who would tell.  He is rather tall, but his frame is slight.
+He wears a wide brimmed leather hat, leaving his entire face in shadows.
+As he greets you, you can only see his chin move in the shadows.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+9500 1200000 0 	long_data
+0 23 14 15 14 14 20 20 30 7 1 0 1 1 1 1100 100 100 150 
+25 0 0 0 1100 100 100 2 100 100 -20 80 100 90 0 0 4 8 100 100 
+100 5 0 0 	shrt_cur_stats
+1024 1024 56 	cur_stats
+224 1 -1	eq: num, posn
+-1	affected_by
+-1	inv
+ 446 0 1	mob#, tmp_num, max_n_game
+4 0 -1  -:| bitfield |:-
+13 4 3 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 200 75 7 21	shop_data shorts
+2 1 0 -1  -:| bitfield |:-
+224 188 101 -1  End of perm_inv
+0 0 0 4 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+447	Start of Mob
+sorcerer magician mage ~	names
+a sorcerer
+~
+A sorcerer in clean white robes waits to fill your order.
+~
+The sorcerer is a bright young man freshly from the local guild.
+He is neither the greatest, nor the least powerful, but he is happy
+with is place and derives great joy from helping others with their
+magical needs.  He keeps a large supply of scrolls and potions
+on hand.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+9500 1200000 0 	long_data
+0 23 14 15 14 14 20 20 30 7 1 0 1 1 1 1100 100 100 150 
+25 0 0 0 1100 100 100 2 100 100 -20 80 100 90 0 0 4 8 100 100 
+100 5 0 0 	shrt_cur_stats
+1024 1024 57 	cur_stats
+224 1 -1	eq: num, posn
+-1	affected_by
+-1	inv
+ 447 0 1	mob#, tmp_num, max_n_game
+4 0 -1  -:| bitfield |:-
+13 4 3 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 200 75 7 21	shop_data shorts
+2 1 0 -1  -:| bitfield |:-
+26 30 295 313 246 247 -1  End of perm_inv
+0 0 0 4 0  sk_viol, benev, def, bad_assed, soc_aware
 	end_of_crit
 
 

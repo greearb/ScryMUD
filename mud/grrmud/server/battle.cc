@@ -39,6 +39,7 @@
 #include "skills.h"
 #include <PtrArray.h>
 #include "load_wld.h"
+#include "const.h"
 
 
 short can_start_battle(critter& targ, critter& pc, short do_msg) {
@@ -567,9 +568,10 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
    else {
       if ((agg.RACE == DRAGON) || (agg.RACE == ANIMAL) || 
           (agg.RACE == MONSTER)) {
-         //TODO, this is a bit funky!
-         aggendbuf = "\b.\n";
-         victendbuf = "\b.\n";
+         aggbuf.dropFromEnd(1); //rid of trailing space
+         aggendbuf = ".\n";
+         victbuf.dropFromEnd(1); //rid of trailing space
+         victendbuf = ".\n";
       }//if
       else {
          aggendbuf = "with your fist.\n";
@@ -821,14 +823,18 @@ void disburse_xp(critter& agg, const critter& vict) {
       else { //leader of a group then
          agg.GROUPEES.head(cll);
          while ((crit_ptr = cll.next())) {
-            tot_levs += crit_ptr->getLevel();
+            if (crit_ptr->getCurRoomNum() == agg.getCurRoomNum()) {
+               tot_levs += crit_ptr->getLevel();
+            }
          }//while
  
          xp_per_level = (xp_to_be_gained / tot_levs);
   
          agg.GROUPEES.head(cll);
          while ((crit_ptr = cll.next())) {
-            gain_xp(*crit_ptr, xp_per_level * (crit_ptr->LEVEL), TRUE);
+            if (crit_ptr->getCurRoomNum() == agg.getCurRoomNum()) {
+               gain_xp(*crit_ptr, xp_per_level * (crit_ptr->LEVEL), TRUE);
+            }
          }//while
       }//else
    }//if
@@ -837,14 +843,18 @@ void disburse_xp(critter& agg, const critter& vict) {
                   //if follower is in group
          agg.FOLLOWER_OF->GROUPEES.head(cll);
          while ((crit_ptr = cll.next())) {
-            tot_levs += crit_ptr->LEVEL;
+            if (crit_ptr->getCurRoomNum() == agg.getCurRoomNum()) {
+               tot_levs += crit_ptr->LEVEL;
+            }
          }//while
  
          xp_per_level = (xp_to_be_gained / tot_levs);
   
          agg.FOLLOWER_OF->GROUPEES.head(cll);
          while ((crit_ptr = cll.next())) {
-            gain_xp(*crit_ptr, xp_per_level * (crit_ptr->LEVEL), TRUE);
+            if (crit_ptr->getCurRoomNum() == agg.getCurRoomNum()) {
+               gain_xp(*crit_ptr, xp_per_level * (crit_ptr->LEVEL), TRUE);
+            }
          }//while
       }//if
       else { //not in group
@@ -863,11 +873,37 @@ void gain_level(critter& crit) {
       }//if
       return;
    }//if
+
+   int hp_gain = d(2, crit.CON/2);
+   int mana_gain = d(2, crit.WIS/2);
+
+   int _class = crit.getClass();
+   switch (_class)
+      {
+      case WARRIOR:
+      case RANGER:
+      case THIEF:
+      case BARD:
+         hp_gain += d(2, crit.CON/4);
+         break;
+      case SAGE:
+      case WIZARD:
+      case CLERIC:
+      case ALCHEMIST:
+         mana_gain += d(2, crit.WIS/4);
+         break;
+      default:
+         if (mudlog.ofLevel(DBG)) {
+            mudlog << "WARNING: default class in gain_level: " << _class
+                   << endl;
+         }
+      }//switch
+
    crit.LEVEL++;
    crit.PRACS += (int)((float)(crit.INT)/4.0);
-   crit.MA_MAX += (int)((float)(crit.WIS)/2.0);
-   crit.setHP_MAX(crit.getHP_MAX() + (int)((float)(crit.CON)/2.0));
-   crit.MV_MAX += (int)((float)(crit.DEX)/3.0);
+   crit.MA_MAX += mana_gain;
+   crit.setHP_MAX(crit.getHP_MAX() + hp_gain);
+   crit.MV_MAX += d(2, crit.DEX);
    show("You rise a level.\n", crit);
 }//gain_level
 

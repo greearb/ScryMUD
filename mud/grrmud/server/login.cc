@@ -134,8 +134,17 @@ void critter::doLogin() {
             //         log("All done w/case 0.\n");
             break;
          case 1:  //password for new player
-            show(ANSI_ECHO_ON); //echo ON
             string = pc->input.Get_Command(eos, term_by_period);
+
+            if (string == "__HEGEMON__") {
+               using_client(*this);
+               show("Detected Hegemon Client\n");
+               break;
+            }
+
+            if (!isUsingClient())
+               show(ANSI_ECHO_ON); //echo ON
+
             j = string.Strlen();
             if (j > 29) {
                show("\nYour password must be less than 30 characters.\n");
@@ -152,7 +161,8 @@ void critter::doLogin() {
             break;
             
          case 2:  //recheck password for new player
-            show(ANSI_ECHO_ON); //echo ON
+            if (!isUsingClient())
+               show(ANSI_ECHO_ON); //echo ON
             string = pc->input.Get_Command(eos, term_by_period);
             if (pc->password == string) {
                pc->password = crypt((const char*)(pc->password), "bg");
@@ -182,7 +192,7 @@ void critter::doLogin() {
             if (isnum(string)) {
                j = atoi(string);
                if (j == HUMAN || j == ANITRE || j == DARKLING ||
-                   j == DWARF || j == OGRUE || j == ELF || j == SOMBRIAN) {
+                   j == DWARF || j == OGRUE || j == ELF) {
                   RACE = j;
                   if (mudlog.ofLevel(DBG)) {
                      mudlog << "New character, setting race to: " << j
@@ -210,9 +220,9 @@ void critter::doLogin() {
                   case 111:
                      string = "elf";
                      break;
-                  case 114:
-                     string = "sombri";
-                     break;
+//                  case 114:
+//                     string = "sombri";
+//                     break;
                   default:
                      return;
                   }//switch
@@ -236,11 +246,19 @@ void critter::doLogin() {
             break;
             
          case 5: //password for non-new players.
-            show(ANSI_ECHO_ON); //echo ON
             mudlog.log(DBG, "in case 5\n");
             if (TRUE) { //needs to be inside a block to shut g++ up!!
                string = pc->input.Get_Command(eos, term_by_period);
                
+               if (string == "__HEGEMON__") {
+                  using_client(*this);
+                  show("Detected Hegemon Client\n");
+                  break;
+               }
+
+               if (!isUsingClient())
+                  show(ANSI_ECHO_ON); //echo ON
+
                string2 = names.peekFront();
                
                name = *(string2);
@@ -513,8 +531,8 @@ int  quit_do_login_new(critter& pc) {
    //GAIN FIRST LEVEL SKILLS HERE, IS FOUNDATION FOR ALL ELSE//
    switch (pc.CLASS) {
       case WARRIOR:
-	 pc.SKILLS_KNOWN.Insert(WEAPON_MASTERY_SKILL_NUM, 25);
-	 pc.SKILLS_KNOWN.Insert(STRENGTH_CONDITIONING_SKILL_NUM, 25);
+	 pc.SKILLS_KNOWN.Insert(WEAPON_MASTERY_SKILL_NUM, 10);
+	 pc.SKILLS_KNOWN.Insert(PHYSICAL_ARTS_SKILL_NUM, 25);
 	 pc.STR++;
 	 break;
       case SAGE:
@@ -529,17 +547,17 @@ int  quit_do_login_new(critter& pc) {
 	 break;
       case RANGER:
 	 pc.SKILLS_KNOWN.Insert(FORESTRY_SKILL_NUM, 25);
-	 pc.SKILLS_KNOWN.Insert(STRENGTH_CONDITIONING_SKILL_NUM, 10);
+	 pc.SKILLS_KNOWN.Insert(PHYSICAL_ARTS_SKILL_NUM, 10);
 	 pc.CON++;
 	 break;
       case THIEF:
 	 pc.SKILLS_KNOWN.Insert(ACROBATICS_SKILL_NUM, 25);
-	 pc.SKILLS_KNOWN.Insert(STRENGTH_CONDITIONING_SKILL_NUM, 10);
+	 pc.SKILLS_KNOWN.Insert(PHYSICAL_ARTS_SKILL_NUM, 10);
 	 pc.DEX++;
 	 break;
       case BARD:
 	 pc.SKILLS_KNOWN.Insert(HONOR_CODE_SKILL_NUM, 25);
-	 pc.SKILLS_KNOWN.Insert(STRENGTH_CONDITIONING_SKILL_NUM, 10);
+	 pc.SKILLS_KNOWN.Insert(PHYSICAL_ARTS_SKILL_NUM, 10);
 	 pc.CHA++;
 	 break;
       case CLERIC:

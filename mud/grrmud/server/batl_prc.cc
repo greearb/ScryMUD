@@ -757,15 +757,15 @@ void alert_room_proc(int rm_num, int alert_type, critter& targ,
          if (ptr->mob && ptr->mob->proc_data) {
             if (ptr->mob->getBadAssedness() > 3) {
                buf = "get all corpse";
-               ptr->processInput(buf, FALSE);
+               ptr->processInput(buf, FALSE, TRUE);
             }//if
             if (ptr->mob->getBadAssedness() > 8) {
                buf = "skin corpse";
-               ptr->processInput(buf, FALSE);
+               ptr->processInput(buf, FALSE, TRUE);
             }//if
             if (ptr->mob->getBadAssedness() > 6) {
                buf = "wear all";
-               ptr->processInput(buf, FALSE);
+               ptr->processInput(buf, FALSE, TRUE);
             }//if
          }//if
       }//if PROJECTILE_DEATH

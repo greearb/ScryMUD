@@ -102,14 +102,14 @@ const CmdSpecifier* CmdCollection::findSpecifierFor(const CmdSpecifier* cs,
    int idx = calculateIndex(cs->getCmd().charAt(0));
    CmdSpecifier* ptr;
 
-   if (mudlog.ofLevel(DBG)) {
+   if (mudlog.ofLevel(PARSE)) {
       mudlog << "CmdCollection::findSpecifierFor:  cs: " << cs->toString()
              << "\n calculated index: " << idx << endl;
    }
 
    for (ptr = cmd_specifiers[idx]; ptr != NULL; ptr = ptr->getNext()) {
       if (cmd_only && (ptr->getId() == ci_HELP_ONLY)) {
-         if (mudlog.ofLevel(DBG)) {
+         if (mudlog.ofLevel(PARSE)) {
             mudlog << "Comparing ptr: " << ptr->toString() 
                    << " was HELP_ONLY, and we are just doing commands!\n";
          }
@@ -117,14 +117,14 @@ const CmdSpecifier* CmdCollection::findSpecifierFor(const CmdSpecifier* cs,
       }
 
       if (cs->doesSatisfyMatch(*ptr)) {
-         if (mudlog.ofLevel(DBG)) {
+         if (mudlog.ofLevel(PARSE)) {
             mudlog << "Comparing ptr: " << ptr->toString()
                    << " to cs, was EQUAL." << endl;
          }
          return ptr;
       }//if
       else {
-         if (mudlog.ofLevel(DBG)) {
+         if (mudlog.ofLevel(PARSE)) {
             mudlog << "Comparing ptr: " << ptr->toString() 
                    << " to cs, was NOT EQUAL." << endl;
          }
@@ -135,7 +135,7 @@ const CmdSpecifier* CmdCollection::findSpecifierFor(const CmdSpecifier* cs,
 }
 
 	     /******************************************/
-int critter::processInput(String& input, short do_sub,
+int critter::processInput(String& input, short do_sub, int script_driven,
                           critter* c_script_owner, room* r_script_owner) {
    String raw_strings[RAW_MAX];
    String cooked_strs[COOKED_MAX];
@@ -167,7 +167,7 @@ int critter::processInput(String& input, short do_sub,
       return -1;
    }//if
 
-   if (PAUSE > 0) {
+   if ((PAUSE > 0) && !script_driven) {
       buf = input.Look_Command(TRUE); //look at the first one
       if (buf == "\'") {
          buf = "say";
@@ -184,7 +184,7 @@ int critter::processInput(String& input, short do_sub,
       return -1; //do nothing
    }//if
    else {
-      if (pc) {
+      if (pc && !script_driven) {
          if (isInPageBreak()) {
             releasePageBreak();
             input = "";
@@ -194,7 +194,7 @@ int critter::processInput(String& input, short do_sub,
             setDoPrompt(TRUE);
          }
       }//if
-      else if (possessed_by) {
+      else if (possessed_by && !script_driven) {
          if (possessed_by->isInPageBreak()) {
             possessed_by->releasePageBreak();
             input = "";
@@ -265,6 +265,7 @@ int critter::processInput(String& input, short do_sub,
          return 0;
       }//if logging in
 
+      // TODO:  This can be interesting when coupled with scripting!
       if (MODE == MODE_CH_DESC) {
          return do_ch_desc(*this);
       }//if
@@ -301,7 +302,8 @@ int critter::processInput(String& input, short do_sub,
    if (pc) {
       if (raw_strings[0] == "!") {
          pc->input.Prepend(pc->last_input);
-         return processInput(pc->input, do_sub);
+         return processInput(pc->input, do_sub, script_driven, c_script_owner,
+                             r_script_owner);
       }//if
    }//if a pc
 
@@ -482,7 +484,8 @@ int critter::processInput(String& input, short do_sub,
       buf = input.Get_Rest();
       buf += "\n";  //better fer processing!
       if (possessed_by) {
-         return possessed_by->processInput(buf, do_sub);
+         return possessed_by->processInput(buf, do_sub, script_driven,
+                                           c_script_owner, r_script_owner);
       }
       else {
          show("Eh??");
@@ -583,7 +586,7 @@ int critter::processInput(String& input, short do_sub,
       buf = raw_strings[j];
    }//for
 
-   if (mudlog.ofLevel(DBG)) {
+   if (mudlog.ofLevel(PARSE)) {
       mudlog << "OK, made it to beginning of definitions.\n"
              << "Here are cooked_strs\n";
       for (i = 0; i< COOKED_MAX; i++) {
@@ -601,7 +604,22 @@ int critter::processInput(String& input, short do_sub,
    /********************************************************/
    /***********  HERE START DEFINITIONS OF COMMANDS ********/
    /********************************************************/
+
+   return executeCommand(cooked_strs, cooked_ints, 1,
+                         c_script_owner, r_script_owner, do_sub);
+}// process input
+
+
+int critter::executeCommand(String* cooked_strs, int* cooked_ints,
+                            int sanity, critter* c_script_owner,
+                            room* r_script_owner, int do_sub) {
    int is_dead = FALSE;
+   int i, len1;
+
+   // Recurse sanity check
+   if (sanity > 5) {
+      return -1;
+   }
 
    if ((len1 = cooked_strs[0].Strlen()) == 0) {
       show(PARSE_ERR_MSG);
@@ -609,9 +627,9 @@ int critter::processInput(String& input, short do_sub,
    }//if
 
    CmdSpecifier cur_cmd((cooked_strs[0]), len1);
-   const CmdSpecifier* real_cmd = cmds_collection.findSpecifierFor(&cur_cmd,
-                                                                   TRUE);
-
+   const CmdSpecifier* real_cmd =
+      cmds_collection.findSpecifierFor(&cur_cmd, TRUE);
+   
    if (real_cmd) {
       i = (int)(real_cmd->getId());
       if (exe_cmd_array[i]) {
@@ -621,7 +639,7 @@ int critter::processInput(String& input, short do_sub,
                     cooked_ints[1], cooked_ints[2], cooked_ints[3],
                     cooked_ints[4], cooked_ints[5], cooked_ints[6],
                     is_dead, *this, c_script_owner, r_script_owner,
-                    cooked_strs, cooked_ints, do_sub);
+                    cooked_strs, cooked_ints, do_sub, sanity + 1);
       }//if we have a command handler.
       else {
          show("You may need to be more specific, or maybe there is only\n");
@@ -638,7 +656,8 @@ int critter::processInput(String& input, short do_sub,
    }//switch
 
    return -1;
-}// process input
+}//executeCommand
+
 
 String parse_hlp_command(const String& topic) {
    //mudlog << "parse_hlp_command: topic -:" << topic << ":-\n";

@@ -42,6 +42,8 @@ enum LogLevelEnum {
    DB = 128,  // READ or WRITE from the world files
    XMT = 256, // Output from MUD to characters
    INP = 512, // Input from players
+   SCRIPT = 1024, //Scripting specific stuff
+   PARSE = 2048, //PARSE specific
    ALL = ~(0) // all
 };//enum
 

@@ -1994,49 +1994,36 @@ int mstat(int i_th, const String* name, critter& pc) {
 
 
 int do_mstat(critter& targ, critter& pc) {
-   String buf2(100);
+   String buf2(200);
    String buf(100);
    critter* crit_ptr = &targ; //to reduce my typing :P
    mudlog.log(TRC, "In do_mstat.\n");
 
-   pc.show("CRIT FLAG Definitions:
-0 can_see_inv, 1 using_light_src, 3 is_flying, 4 have_boat, 5 can_climb,
-6 gos, 7 yell, 8 gratz, 9 auc, 10 shout, 11 say, 12 tell, 13 wiznet,
-14 is_paralyzed, 15 is_perm_sleeped, 16 is_dual_wielding, 17 is_sneak,
-18 in_use, 19 can_dive, 20 spell_tested_yet, 21 is_blocked,
-22 is_hide, 23 is_tailing 24 !complete
-
-MOB FLAGS Definitions:
-0 has_proc_data, 1 scavenge, 2 wander, 3 should_do_procs,
-4 need_resetting, 5 edible_corpse, 6 is_banker, 7 NULL, 8 NULL, 9 NULL
-10 NULL, 11 NULL, 12 NULL, 13 NULL, 14 NULL, 15 NULL, 16 has_skin
-17 has_mob_script\n\n");
-
-
-   if (!crit_ptr->CRIT_FLAGS.get(18)) {
+   if (!crit_ptr->isInUse()) {
       show("This critter UNDEFINED.\n", pc);
       return -1;
    }//if
    else {
 
-      if (!pc.USING_CLIENT || crit_ptr->pc) {
+      if (!pc.isUsingClient() || crit_ptr->pc) {
          show("\n", pc);
          show((crit_ptr->short_desc), pc);
          show("\n", pc);
+         show((crit_ptr->in_room_desc), pc);
+         show("\n", pc);
          show((crit_ptr->long_desc), pc);
          show("\n", pc);
-         show((crit_ptr->in_room_desc), pc);
       }
       else {
          Sprintf(buf2, "<MSTAT %i>", crit_ptr->MOB_NUM);
          show(buf2, pc);
          show("\n<STAT_SD>", pc);
          show((crit_ptr->short_desc), pc);
-         show("</STAT>\n<STAT_LD>", pc);
-         show((crit_ptr->long_desc), pc);
          show("</STAT>\n<STAT_ND>", pc);
          show((crit_ptr->in_room_desc), pc);
-         show("</STAT>", pc);
+         show("</STAT>\n<STAT_LD>", pc);
+         show((crit_ptr->long_desc), pc);
+         show("</STAT>\n", pc);
       }//else
 
       Cell<String*> cll(crit_ptr->names);
@@ -2047,18 +2034,18 @@ MOB FLAGS Definitions:
          buf2 += " ";
       }//while
 
-      if (!pc.USING_CLIENT || crit_ptr->pc) {
-         Sprintf(buf, "\nNames (Keywords): %S\n", &buf2);
+      if (!pc.isUsingClient() || crit_ptr->pc) {
+         Sprintf(buf, "\nNames (Keywords): %S\n\n", &buf2);
          pc.show(buf);
       }//if
       else { //then show tags...
          Sprintf(buf, "<NAMES %S>\n", &buf2);
          pc.show(buf); //output the client deals with
          pc.show(buf2); //output that they can read
+         pc.show("\n\n");
       }//else
 
-      show("\nCRIT_FLAGS: ", pc);
-      out_field(crit_ptr->CRIT_FLAGS, pc);
+      out_field(crit_ptr->CRIT_FLAGS, pc, CRIT_FLAGS_NAMES);
 
       Sprintf(buf2, "\nCLASS:  %s  race:  %s    Belongs to ZONE:  %i\n", 
 	      get_class_name(crit_ptr->CLASS), get_race_name(crit_ptr->RACE),
@@ -2120,17 +2107,7 @@ MOB FLAGS Definitions:
 
 
       if (crit_ptr->pc) {
-         show("PC Flags definitions:      
-     0 frozen, 1 gagged, 2 has_imm_data, 3 cloaked, 4 tank_graph,
-     5 using_client, 6 auto_exit, 7 !hassle, 8 brief, 9 autosplit, 
-     10 do_prompt, 11 is_builder, 12 autoloot, 13 olc_redo 
-     14 extra_info, 15 cr_behind, 16 do_carriage_return
-     17 is_blocking_door, 18 can_det_magic, 19 detect_inventory
-     20 show_vnums, 21 has_poofin_poofout_msg, 22 page_output
-     23 in_page_break_mode, 24 !wizchat, 25 has_colors, 26 use_color", pc);
-
-         show("\n\n  PC_FLAGS: ", pc);
-         out_field(crit_ptr->pc->pc_data_flags, pc);
+         out_field(crit_ptr->pc->pc_data_flags, pc, PC_DATA_FLAGS_NAMES);
 
          Sprintf(buf2, "\n\tDescriptor:  %i,  Host:  %S.\n", 
              crit_ptr->pc->descriptor, &crit_ptr->pc->host);
@@ -2167,13 +2144,12 @@ MOB FLAGS Definitions:
                  crit_ptr->getCurInGame(), crit_ptr->getMaxInGame());
 	 show(buf2, pc);
 
-         show("\tMob Flags:  ", pc);
-         out_field(crit_ptr->MOB_FLAGS, pc);
+         out_field(crit_ptr->MOB_FLAGS, pc, MOB_DATA_FLAGS_NAMES);
 
          if (crit_ptr->mob->proc_data) {
             //show("\tIt has PROC_DATA.\n", pc);
             show("\tProc Flags (flag1):  ", pc);
-            out_field(crit_ptr->FLAG1, pc);
+            out_field(crit_ptr->FLAG1, pc, MOB_PROC_DATA_FLAGS_NAMES);
             Sprintf(buf2, "\tDirection Guarding:  %i\n", crit_ptr->INT1);
             show(buf2, pc);
 	    Sprintf(buf2, 
@@ -2192,16 +2168,14 @@ MOB FLAGS Definitions:
                show(buf2, pc);
                Sprintf(buf2, " close_time  %i\n", crit_ptr->CLOSE_TIME);
                show(buf2, pc);
-               show("Shop_data_flags:  ", pc);
-               out_field(crit_ptr->SHOP_DATA_FLAGS, pc);
+               out_field(crit_ptr->SHOP_DATA_FLAGS, pc, SHOP_DATA_FLAGS_NAMES);
                show("Permanent Inventory:\n", pc);
                out_inv(crit_ptr->PERM_INV, pc, CRIT_INV);
             }//if shopkeeper
 
             if (crit_ptr->mob->proc_data->teach_data) {
                show("Its a TEACHER.\n", pc);
-               show("Teach data flags:  ", pc);
-               out_field(crit_ptr->TEACH_DATA_FLAGS, pc);
+               out_field(crit_ptr->TEACH_DATA_FLAGS, pc, TEACH_DATA_FLAGS_NAMES);
             }//if
 	    if (crit_ptr->mob->proc_data->give_proc) {
 	      show("It HAS a give proc.\n", pc);
@@ -2220,8 +2194,24 @@ MOB FLAGS Definitions:
 	      show(buf2, pc);
 	    }//while
          }//if proc data
-	 Sprintf(buf2, "Skin num: %i\n", crit_ptr->mob->skin_num);
+	 Sprintf(buf2, "Skin num: %i\n\n", crit_ptr->mob->skin_num);
 	 show(buf2, pc);
+
+         if (crit_ptr->mob->hasMobScript()) {
+            pc.show("Mob scripts:\n");
+            do_list_scripts(*crit_ptr, pc);
+         }
+
+         if (crit_ptr->mob->isRunningScript()) {
+            pc.show("Running Scripts:\n");
+            Cell<MobScript*> ms_cll(crit_ptr->mob->pending_scripts);
+            MobScript* ms_ptr;
+            while ((ms_ptr = ms_cll.next())) {
+               pc.show(ms_ptr->getRunningScript());
+               pc.show("\n\n");
+            }
+         }
+
       }//if a mob
 
                  /* pc data */
@@ -2412,34 +2402,6 @@ int do_ostat(object& obj, critter& pc) {
    String buf2(100);
    String buf(100);
    object* obj_ptr = &obj;  //to save me typing more!!
-   int i, k;
-
-   pc.show("Object Flags definitions:  \n
-     0 no_rest,  1 !evil, 2 !neutral, 3 !good, 
-     4 !donate, 5 !drop, 6 !remove, 7 !mortal, 8 !imm, 9 !demi,
-     10 in_use, 11 !warrior, 12 !sage, 13 !wizard, 14 !ranger,
-     15 !thief, 16 !alchemist, 17 !cleric, 18 !bard, 19 !mob, 20 !pc
- 
-     21 not worn, 22 head, 23 neck, 24 neck, 25 around body, 26 arms, 
-     27 wrist1, 28 wrist2, 29 hands, 30 wielded, 31 held, 32 light,
-     33 body, 34 belt, 35 legs, 36 feet, 37 finger1, 
-     38 finger2, 39 shield
-     40 not a weapon, 41 slash, 42 smash, 43 pierce,44 whip, 
-     45 needs_ammo,  46 dart_thrower, 47 bow, 48 dart, 49 arrow 
-     50 junk, 51 wand, 52 potion, 53 scroll, 54 container,
-     55 coins, 56 armor, 57 weapon, 58 light_source,
-     59 canteen, 60 liquid, 61 food, 62 boat, 63 has_spec_proc_data,
-     64 toolbox, 65 cauldron, 66 pen, 67 construct_component
-     68 concoct_component, 69 parchment, 70 needs_resetting
-     71 vid_screen, 72 herb, 73 vend_machine, 74 bulletin_board
-     75 is_butcherable, 76 has_obj_proc
-
-Bag Flag Definitions:
-
-     0 NULL, 1 NULL, 2 is_closed, 3 is_locked, 4 is_pickable,
-     5 is_mag_lockable, 6 is_mag_locked, 7 is_destructable,
-     8 is_corpse (probably shouldn't use 9 is_NON_closeable,
-     17 consumes_key\n");
 
    if (!obj.isInUse()) {
       show("This object is NULL, not init'd by the game.\n", pc);
@@ -2450,20 +2412,21 @@ Bag Flag Definitions:
          show("\n", pc);
          show((obj_ptr->short_desc), pc);
          show("\n", pc);
+         show((obj_ptr->in_room_desc), pc);
+         show("\n", pc);
          show((obj_ptr->long_desc), pc);
          show("\n", pc);
-         show((obj_ptr->in_room_desc), pc);
       }
       else {
          Sprintf(buf2, "<OSTAT %i>", obj_ptr->OBJ_NUM);
          show(buf2, pc);
          show("\n<STAT_SD>", pc);
          show((obj_ptr->short_desc), pc);
-         show("</STAT>\n<STAT_LD>", pc);
-         show((obj_ptr->long_desc), pc);
          show("</STAT>\n<STAT_ND>", pc);
          show((obj_ptr->in_room_desc), pc);
-         show("</STAT>", pc);
+         show("</STAT>\n<STAT_LD>", pc);
+         show((obj_ptr->long_desc), pc);
+         show("</STAT>\n", pc);
       }
 
       Cell<String*> cll(obj_ptr->names);
@@ -2487,14 +2450,8 @@ Bag Flag Definitions:
       Sprintf(buf2, "\nBelongs to zone:  %i.\n", obj_ptr->OBJ_IN_ZONE);
       show(buf2, pc);
 
-      show("\nobj flags set:", pc);
-      k = obj_ptr->obj_flags.max_bit();
-      for (i = 0; i <= k; i++) {
-         if (obj_ptr->obj_flags.get(i)) {
-            Sprintf(buf2, "%i ", i);
-            show(buf2, pc);
-         }//if
-      }//for
+      out_field(obj_ptr->obj_flags, pc, OBJ_FLAGS_NAMES);
+
       show("\n", pc);
       Sprintf(buf2, "chrgs: %i  rechrg: %i  p_load: %i  cur_in_game: %i.\n", 
               (int)(obj_ptr->extras[0]), (int)(obj_ptr->extras[1]), 
@@ -2530,7 +2487,7 @@ Bag Flag Definitions:
                  obj_ptr->bag->time_till_disolve);
          show(buf2, pc);
          show("Bag flags set:\n", pc);
-         out_field(obj_ptr->bag->bag_flags, pc);
+         out_field(obj_ptr->bag->bag_flags, pc, BAG_FLAGS_NAMES);
          Sprintf(buf2, "Key number (zero is NO KEY): %i.\n", 
                  obj_ptr->bag->key_num);
          show(buf2, pc);
@@ -2543,9 +2500,9 @@ Bag Flag Definitions:
       out_stat_spell_list(obj_ptr->stat_affects, pc);
 
       if (obj_ptr->obj_proc) {
-         show("It has SPEC PROCS.\n", pc);
-         show("\tHere is obj_spec_data_flags:\n", pc);
-         out_field(obj_ptr->obj_proc->obj_spec_data_flags, pc);
+         show("\tIt has SPEC PROCS.\n", pc);
+         out_field(obj_ptr->obj_proc->obj_spec_data_flags, pc,
+                   OBJ_SPEC_DATA_FLAGS_NAMES);
          if (obj_ptr->obj_proc->construct_data) {
             show("\tIt has construct data.\n", pc);
             Sprintf(buf2, 
@@ -2635,16 +2592,6 @@ int dstat(int i_th, const String* name, critter& pc) {
 
 int do_dstat(door_data& dr, critter& pc) {
    String buf2(100);
-   int i, k;
-
-   show("\nDoor Flag Definitions:  \n", pc);
-   pc.show("     0 open exit, basically no door
-     1 is_mag_lockable, 2 is_closed, 3 is_locked, 4 is_pckabl,
-     5 is_lockable, 6 mag_locked (spell only can open it)
-     7 is_destructable, 8 is_closeable, 9 is_flippable
-     10 in_use, 11 is_unopenable (by players, auto only)
-     12 is_vehicle_exit, 13 is_secret, 14 is_blocked,
-     16 secret_when_open, 17 consumes_key, 18 !passdoor\n\n");
 
    if (Top(dr.names)) {
       show(*(Top(dr.names)), pc);
@@ -2653,13 +2600,8 @@ int do_dstat(door_data& dr, critter& pc) {
    show(dr.long_desc, pc);
 
    show("\nFlags set:", pc);
-   k = dr.door_data_flags.max_bit();
-   for (i = 0; i <= k; i++) {
-      if (dr.door_data_flags.get(i)) {
-         Sprintf(buf2, "%i ", i);
-         show(buf2, pc);
-      }//if
-   }//for
+   out_field(dr.door_data_flags, pc, DOOR_DATA_FLAGS_NAMES);
+
    show("\n", pc);
    Sprintf(buf2, "v_bit: %i  DOOR#: %i  key_num: %i  token_num: %i.\n", 
            dr.vis_bit, dr.door_num, dr.key_num, dr.token_num);

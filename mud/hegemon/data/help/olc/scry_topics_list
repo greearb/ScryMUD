@@ -9,6 +9,9 @@ add_perm_inv
 add_proc
 add_stat_affect
 adlist
+affect_hp
+affect_mana
+affect_mov
 amlist
 aolist
 aosave

@@ -46,7 +46,7 @@ You see a ghastly bug-ridden corpse!
 You ponder the sacralige and then manage to rationalize your steeling of this
 former being's belongings.  What would a dead person need with gold anyway??
 ~
-54 40 31 10 -1  -:| bitfield |:-
+70 54 40 31 10 -1  -:| bitfield |:-
 0 0 100 0 32000 150 0 0 0 	extras
 1024 100 3 0 	cur_stats
 128 -1  -:| bitfield |:-
@@ -85,7 +85,7 @@ A pile of gold lies here.
      You see a pile of gold lying on the ground, wish you could tell how
 big it was eh? :)
 ~
-55 40 10 -1  -:| bitfield |:-
+70 55 40 10 -1  -:| bitfield |:-
 0 0 100 0 32000 2 0 0 0 	extras
 1024 0 5 0 	cur_stats
 -1	affected_by
@@ -553,20 +553,21 @@ A newbie manual lies here unread.
 You see the keys to happiness and addiction.
 It reads:
 	Welcome to ScryMUD, coded by Ben Greear(currently 
-greear@cyberhighway.net).  The game has a long way to go yet, in fact unless
-you are an immortal you probably can't even move around.  You can check out
-help for some hint as to how it will be.
-	I suppose only a select few will be reading this, so
-if you would like to become builder, mail me your desired name and I'll advance
-him/her and give you permission to build in the test zone (10).  Many changes
-and additions still need to take place so have patience.  The bug and idea
-commands work just fine, or you can email me.  Next time you log in you will
-be in a more hospitible room, where you can read the message board, and even
-post if you wish.  Also, please check out the web page for news and
+greear@cyberhighway.net).  Please check out the web page for news and
 information:  www.primenet.com/~greear/ScryMUD/scry.html
 ...
-If you are using the client, type:  toggle client to turn on the client
-effects (ie colors, etc)....
+ScryMUD is all original code and world, written from the ground up by
+myself and our band of merry builders.  We would be honored if you
+would join us in re-discovering the realm you now find yourself in.
+...
+For a complete list of help commands, try:  help topics
+...
+I have written a special client, Hegemon for ScryMUD.  It has some nice
+features, including color and a navigation panel.  Hegemon is a java
+applet, and you may get to it from the page mentioned above.
+...
+Enjoy your stay,
+-- Grock, Shamu and the rest
 
 ~
 40 31 10 0 -1  -:| bitfield |:-
@@ -837,6 +838,27 @@ would be a stylish way to hold up your pants!
 End of Object.
 
 
+101	 Start of Object
+leggings chain ~	names
+some chain leggings
+~
+A heap of fine rings seems to be some kind of garment.
+~
+Some craftsman must have spent weeks constructing this fine
+set of chain mail leggings.  Each loop of shining metal is looped with
+three of its neighbors.  It is supprisingly light, and affords great
+protection to piercing weapons!
+
+~
+56 40 35 10 -1  -:| bitfield |:-
+0 0 50 0 50 12 0 0 0 	extras
+0 2100 101 0 	cur_stats
+-1	affected_by
+-1	inv
+9 -15 -1	stat_affects
+End of Object.
+
+
 143	 Start of Object
 bench wooden ~	names
 a wooden bench
@@ -944,6 +966,25 @@ goes to a door or a large chest.
 End of Object.
 
 
+188	 Start of Object
+ringmail chainmail mail ~	names
+a ringmail shirt
+~
+A shirt of fine rings lies here in a glittering heap.
+~
+This shirt has been painstakingly created one silvery loop at a time.  It
+looks quite comfortable, and would no doubt protect you very well!
+
+~
+56 40 33 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 11 0 0 0 	extras
+0 2500 188 0 	cur_stats
+-1	affected_by
+-1	inv
+9 -13 -1	stat_affects
+End of Object.
+
+
 190	 Start of Object
 sword steel shortsword ~	names
 a steel shortsword
@@ -955,21 +996,12 @@ grip is made of wrapped leather, with a small guard to protect
 the fingers.
 
 ~
-76 57 41 31 30 10 0 -1  -:| bitfield |:-
+57 41 31 30 10 0 -1  -:| bitfield |:-
 0 0 100 0 200 8 4 3 0 	extras
 1024 500 190 0 	cur_stats
 -1	affected_by
 -1	inv
 7 1 8 1 -1	stat_affects
-1  Start of a object proc script
-wield 190 -1 0	 Trigger Command, targ, actor 
-
- say I've been wielded!!;
- pause 4;
- say yep;
-
-~
--1  End of object proc scripts
 End of Object.
 
 
@@ -1048,6 +1080,26 @@ your skin gives you a feeling of security.
 -1	affected_by
 -1	inv
 27 -10 -1	stat_affects
+End of Object.
+
+
+224	 Start of Object
+hat leather ~	names
+a wide-brimmed leather hat
+~
+A wide brimmed leather hat lies here.
+~
+This hat is sturdily crafted of bulls hide and sewn with sinew.  It
+wouldn't stop an axe, but it shades the eyes from sun and rain, and
+has been known to turn heads as the wearer walks by!
+
+~
+56 40 22 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+0 300 224 0 	cur_stats
+-1	affected_by
+-1	inv
+9 -3 -1	stat_affects
 End of Object.
 
 
@@ -1360,6 +1412,27 @@ words.  A powerful argument for the pen, over the sword!
 End of Object.
 
 
+313	 Start of Object
+scroll identify identification ~	names
+a scroll of identification
+~
+A piece of rolled parchment lies here.
+~
+This scroll seems to hold some sort of spell to help ascertain the
+properties of any object.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+0 500 313 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+165 25 -1 spell#, level (casts)
+End of Object.
+
+
 318	 Start of Object
 scroll charm ~	names
 a scroll of mass charm
@@ -1546,6 +1619,30 @@ quite a lot!
 0 75 100 -1 	 bag_stuff
 -1	affected_by
 13 13 13 13 13 37 99 4 87 342 182 -1	inv
+-1	stat_affects
+End of Object.
+
+
+365	 Start of Object
+board bulletin cork ~	names
+a reading board
+~
+A bulletin board has been set up for adventurers to share tales on.
+~
+	You see a cork bulletin board hanging on the wall.  It is covered with
+stories of the adventures people have experienced, and those they plan to
+experience in the future.  To see the messages you should
+'examine' it.  To write one of your own, try post.  To read a message 
+try 'read <number>'   Example:  read 1.
+
+~
+74 54 40 21 10 7 -1  -:| bitfield |:-
+0 0 100 0 50 45 0 0 0 	extras
+1024 5000 365 0 	cur_stats
+-1  -:| bitfield |:-
+0 500 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
 -1	stat_affects
 End of Object.
 

@@ -60,7 +60,7 @@ int do_just_killed_procs(critter& agg) {
    if (agg.pc) {  //if do pc things
       if (agg.PC_FLAGS.get(12)) { //autoloot
          agg.pc->input.Prepend("get all corpse\n");
-         agg.processInput(agg.pc->input, FALSE);
+         agg.processInput(agg.pc->input, FALSE, TRUE);
       }//if
    }//if
 
@@ -68,25 +68,25 @@ int do_just_killed_procs(critter& agg) {
      int bad_ass = agg.mob->getBadAssedness();
      String cmd("get all corpse\n");
      if (bad_ass > 7) {
-       agg.processInput(cmd, FALSE);
+       agg.processInput(cmd, FALSE, TRUE);
        cmd = "wear all\n";
-       agg.processInput(cmd, FALSE);
+       agg.processInput(cmd, FALSE, TRUE);
        cmd = "skin corpse\n";
-       agg.processInput(cmd, FALSE);
+       agg.processInput(cmd, FALSE, TRUE);
        cmd = "wear skin\n";
-       agg.processInput(cmd, FALSE);
+       agg.processInput(cmd, FALSE, TRUE);
        cmd = "growl\n";
-       agg.processInput(cmd, FALSE);
+       agg.processInput(cmd, FALSE, TRUE);
      }//if
      else if (bad_ass > 4) {
        cmd = "wear all\n";
-       agg.processInput(cmd, FALSE);
+       agg.processInput(cmd, FALSE, TRUE);
        cmd = "laugh\n";
-       agg.processInput(cmd, FALSE);
+       agg.processInput(cmd, FALSE, TRUE);
      }//if
      else if (bad_ass > 0) {
        cmd = "laugh\n";
-       agg.processInput(cmd, FALSE);
+       agg.processInput(cmd, FALSE, TRUE);
      }//if
    }//if do mob things
    return 0;
@@ -821,8 +821,8 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
   
                      Sprintf(gtobj, "get %S\n", Top(obj_ptr->names));
  
-                     ptr->processInput(gtobj, FALSE);
-                     ptr->processInput(wr_all, FALSE);
+                     ptr->processInput(gtobj, FALSE, TRUE);
+                     ptr->processInput(wr_all, FALSE, TRUE);
 
                   }//if random chance
                }//if
@@ -1131,6 +1131,10 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
          if (keeper.isPlayerShopKeeper()) {
             keeper.GOLD += price;
          }//if
+         else {
+            // Give half back into the game so others can sell their stuff.
+            keeper.GOLD += price/2;
+         }
 
          if (!is_perm) {
             keeper.loseInv(obj_ptr);

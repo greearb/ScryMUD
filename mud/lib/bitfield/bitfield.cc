@@ -26,13 +26,54 @@
     modification */
 
 #include "bitfield.h"
-#include <string2.h>
 #include <iostream.h>
 
 
 static const short int_len = 8 * sizeof(unsigned short int);
 ofstream bitlog("./log/bitlog");
 extern int core_dump(const char* msg); //misc2.cc
+
+//static
+int BitfieldNames::_cnt = 0;
+
+
+/** Constructor. */
+BitfieldNames::BitfieldNames(int length, const char** names, const char* col_name)
+      : len(length), bit_names(names), header(col_name) {
+   bitlog << "BitfieldNames Constructor, length: " << length
+          << " collection name -:" << col_name << ":-" << endl;
+   _cnt++;
+}
+
+void BitfieldNames::listNames(String& buf) const {
+   String tmp(100);
+
+   buf = header;
+   buf += " (DEFINED)\n\t";
+   int sofar = 0;
+
+   for (int i = 0; i<len; i++) {
+      Sprintf(tmp, "[%i] %s, ", i, bit_names[i]);
+      if ((sofar + tmp.Strlen()) > 80) {
+         buf += "\n\t";
+         sofar = tmp.Strlen();
+      }
+      else {
+         sofar += tmp.Strlen();
+      }
+      buf += tmp;
+   }
+   buf += "\n";
+}
+
+const char* BitfieldNames::getName(int idx) const {
+   if ((idx >= 0) && (idx < len)) {
+      return bit_names[idx];
+   }
+   else {
+      return "OUT_OF_RANGE";
+   }
+}
 
  
 int bitfield::Assert(int boolean_val, const char* msg) {

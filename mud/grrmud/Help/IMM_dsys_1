@@ -3,8 +3,13 @@
 Displays some low level information dealing with the actual server
 code.  Used for trouble-shooting code problems mostly.
 
-Syntax:  dsys
+It now will display the definitions for most of the flags used
+in ScryMUD, especially those relating to Objects, Critters, Rooms
+and Doors.
+
+Syntax:  dsys             # Shows memory usage and debugging info.
+Syntax:  dsys flags       # Shows the flags defined.
 
 <color=red>
-See Also:  who, sockets, ldwho, uptime
+See Also:  who, sockets, ldwho, uptime, mset, oset, dset, rset
 </color></help>

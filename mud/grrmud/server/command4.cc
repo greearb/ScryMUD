@@ -141,7 +141,7 @@ int read(int i_th, const String* post, critter& pc) {
    }//while
 
    if (!ptr) {
-      return look(i_th, post, pc);
+      return look(i_th, post, pc, TRUE);
       //show("You don't see a bulletin board here.\n", pc);
       //return -1;
    }//if
@@ -442,8 +442,10 @@ int do_post(critter& pc) {
 		     ptr->OBJ_NUM);
 	    system(buf2); //now it exists
 	 }//if
-	 else
+	 else {
 	    mudlog.log(INF, "CHECK:  didn't create new board file.\n");
+         }
+
 	 ofstream da_msg("./Boards/TMP_MSG");
 	 da_msg << i << "\tmessage number\n";
 	 pc.pc->post_msg->Write(da_msg);
@@ -2685,7 +2687,7 @@ int tog_mflag(int flagnum, const String* flag_type,
       return -1;
    }//if
 
-   if (mob_ptr->pc && mob_ptr->pc->imm_data) {
+   if (mob_ptr->pc && mob_ptr->isImmort()) {
       if ((mob_ptr->IMM_LEVEL >= pc.IMM_LEVEL) && (&pc != mob_ptr)) {
          show("You don't have permission to edit this player.\n", pc);
          return -1;
@@ -2698,7 +2700,8 @@ int tog_mflag(int flagnum, const String* flag_type,
    }//if
 
    if ((strncasecmp(*flag_type, "mob_flag", 1) == 0) ||
-       (strncasecmp(*flag_type, "crit_flag", 1) == 0)) {
+       (strncasecmp(*flag_type, "crit_flag", 1) == 0) ||
+       (strncasecmp(*flag_type, "shop_flag", 1) == 0)) {
       if (mob_ptr->isMob()) {
          Sprintf(buf, "Toggling flag#:  %i on MOB:  %S.\n", flagnum,
                  &(mob_ptr->short_desc));
@@ -2737,7 +2740,16 @@ int tog_mflag(int flagnum, const String* flag_type,
          return -1;
       }//else
    }//if
-   else {
+   else if (strncasecmp(*flag_type, "shop_flag", 1) == 0) {
+      if (mob_ptr->mob && mob_ptr->mob->hasProcData()) {
+         return mob_ptr->mob->togShopFlag(flagnum);
+      }
+      else {
+         pc.show("OOPS:  That critter is not a shop owner.\n");
+         return -1;
+      }
+   }
+   else if (strncasecmp(*flag_type, "crit_flag", 1) == 0) {
       if ((flagnum != 18) && (flagnum != 24)) { //put restrictions here
          mob_ptr->CRIT_FLAGS.flip(flagnum);
          return 0;
@@ -2747,4 +2759,8 @@ int tog_mflag(int flagnum, const String* flag_type,
          return -1;
       }//else
    }//else 
+   else {
+      pc.show("You must specify a flag type of:  crit_flag, mob_flag, or shop_flag");
+      return -1;
+   }
 }// tog_mflag

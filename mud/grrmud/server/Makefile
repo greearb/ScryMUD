@@ -15,7 +15,7 @@ login.cc command4.cc olc2.cc command5.cc batl_prc.cc spells2.cc \
 ez_spll.cc dam_spll.cc trv_spll.cc rm_spll.cc dam_skll.cc wep_skll.cc \
 ez_skll.cc social2.cc cr_skll.cc ar_skll.cc pet_spll.cc vehicle.cc \
 script.cc SkillSpell.cc zone.cc rm_parse.cc rm_cmds.cc obj_parse.cc \
-obj_cmds.cc
+obj_cmds.cc BugEntry.cc
 
 OBJS = parse_gen.o classes.o object.o critter.o \
 room.o door.o skills.o command3.o \
@@ -25,7 +25,7 @@ command4.o olc2.o command5.o batl_prc.o spells2.o \
 ez_spll.o dam_spll.o trv_spll.o rm_spll.o dam_skll.o wep_skll.o \
 ez_skll.o social2.o cr_skll.o ar_skll.o pet_spll.o vehicle.o const.o \
 script.o SkillSpell.o zone.o rm_parse.o rm_cmds.o obj_parse.o \
-obj_cmds.o BuildInfo.o
+obj_cmds.o BuildInfo.o BugEntry.o
 
 GEN_SPEC = gen_cmds.spec
 

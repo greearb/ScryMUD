@@ -53,6 +53,7 @@ int using_client(critter& pc);
 int update_cur_in_game(critter& pc);
 
 int list_scripts(int mob_num, critter& pc);
+int do_list_scripts(critter& targ, critter& pc);
 int stat_script(int mob_num, int script_idx, critter& pc);
 int rem_script(int mob_num, String& trigger, int i_th, critter& pc);
 
@@ -94,7 +95,7 @@ int do_amsave(int zone);
 int adsave(int zone, critter& pc);
 int do_adsave(int zone);
 
-int dsys(critter& pc);
+int dsys(int i, const String& cmd, critter& pc);
 
 int amlist(int zone, int how_many, critter& pc);
 int make_builder(int i_th, const String* name, critter& pc);

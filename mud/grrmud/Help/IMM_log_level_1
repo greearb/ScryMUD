@@ -13,6 +13,8 @@ do this command.
    SEC = 64,  // log security violations
    DB = 128,  // READ or WRITE from the world files
    XMT = 256  // WRITE to PC's descriptor (ie output to player)
+   SCRIPT = 1024, //Scripting specific stuff
+   PARSE = 2048, //PARSE specific
 
 Syntax:  log_level [new_level]
 

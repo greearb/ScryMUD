@@ -175,11 +175,6 @@ class HegemonManager extends Object {
       }
       socket_mgr = new SocketManager(hostname, port, this);
 
-      /* let the server know what we are.  This should probably
-       * be optional so you can easily use Hegemon with other
-       * servers.  Bleh, do that some other time :)
-       */
-      socket_mgr.write("__HEGEMON__\n");
    }
 
    public void closeConnection() {

@@ -41,8 +41,10 @@ int donate(int i_th, const String* obj, const String* obj_all, critter& pc);
 int wear(int i_th, const String* obj, int j, const String* posn, critter& 
           pc); 
 int inventory(critter& pc);
-int look(int i_th, const String* object, critter& looker);
-int do_look(int i_th, const String* obj, critter& pc, room& rm);
+int look(int i_th, const String* object, critter& looker,
+         int ignore_brief = FALSE);
+int do_look(int i_th, const String* obj, critter& pc, room& rm,
+            int ignore_brief);
 
 int cast(const String* spell_name, int j, const String* victim, critter& 
           caster); 

@@ -687,6 +687,8 @@ void SSCollection::read() {
             PASSDOOR_SKILL_NUM = i;
          else if (strcasecmp("philosophy", getSS(i).getName()) == 0)
             PHILOSOPHY_SKILL_NUM = i;
+         else if (strcasecmp("physical arts", getSS(i).getName()) == 0)
+            PHYSICAL_ARTS_SKILL_NUM = i;
          else if (strcasecmp("physik", getSS(i).getName()) == 0)
             PHYSIK_SKILL_NUM = i;
          else if (strcasecmp("picklock", getSS(i).getName()) == 0)
