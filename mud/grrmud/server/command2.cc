@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.32 1999/07/07 06:05:11 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 1999/07/07 06:05:11 $
+// $Id: command2.cc,v 1.33 1999/07/08 04:42:16 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 1999/07/08 04:42:16 $
 
 //
 //ScryMUD Server Code
@@ -2468,7 +2468,7 @@ int do_lore(object& obj, critter& pc, int show_extra) {
          show_stat_affects(obj, pc);
       }
 
-      if (!obj.obj_proc && obj.CASTS_THESE_SPELLS.isEmpty()) {
+      if (obj.obj_proc && !obj.CASTS_THESE_SPELLS.isEmpty()) {
          pc.show("Casts these spells:\n");
          out_spell_list(obj.CASTS_THESE_SPELLS, pc);
          pc.show("\n");
