@@ -1,5 +1,5 @@
-// $Id: pet_spll.cc,v 1.13 2001/03/29 03:02:33 eroper Exp $
-// $Revision: 1.13 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
+// $Id: pet_spll.cc,v 1.14 2001/04/07 22:31:55 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 2001/04/07 22:31:55 $
 
 //
 //ScryMUD Server Code
@@ -60,190 +60,200 @@ void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
    /*      increment pause_count, */
 
    if (!is_canned)
-     lvl = pc.LEVEL;
+      lvl = pc.LEVEL;
 
    int lost_con = FALSE;
 
    critter* golem = NULL;
 
    if (is_canned || !(lost_con = lost_concentration(pc, spell_num))) {
-     /* create an elemental golem: earth */
-     if (!is_canned)
-       pc.MANA -= spell_mana;
+      /* create an elemental golem: earth */
+      if (!is_canned)
+         pc.MANA -= spell_mana;
       
-     if (!mob_list[config.graniteGolemMob].isInUse() || 
-        !mob_list[config.iceGolemMob].isInUse() || 
-        !mob_list[config.lightningGolemMob].isInUse() || 
-        !mob_list[config.hellfireGolemMob].isInUse()) {
-       mudlog.log(ERROR, "ERROR: Greater Golem doesn't exist.\n");
-       return;
-     }//if
+      if (!mob_list[config.graniteGolemMob].isInUse() || 
+          !mob_list[config.iceGolemMob].isInUse() || 
+          !mob_list[config.lightningGolemMob].isInUse() || 
+          !mob_list[config.hellfireGolemMob].isInUse()) {
+         mudlog.log(ERROR, "ERROR: Greater Golem doesn't exist.\n");
+         return;
+      }//if
+      
+      
+      if (pc.PETS.size() >= (pc.CHA/4 +1)) {
+         show(nofollow[whichgolem], pc);
+         return;
+      }//if
 
 
-     if (pc.PETS.size() >= (pc.CHA/4 +1)) {
-       show(nofollow[whichgolem], pc);
-       return;
-     }//if
-
-
-	 
-	 if (d(pc.INT/2, lvl) > 25) 
-	 {
+      
+      if (d(pc.INT/2, lvl) > 25) {
 
 	
-       golem = mob_to_smob(mob_list[golemnums[whichgolem]], pc.getCurRoomNum(), TRUE);
-       golem->mob->setDisolvable(TRUE);
-       golem->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
-       ROOM.gainCritter(golem);
-       recursive_init_loads(*golem);
+         golem = mob_to_smob(mob_list[golemnums[whichgolem]], pc.getCurRoomNum(), TRUE);
+         golem->mob->setDisolvable(TRUE);
+         golem->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
+         ROOM.gainCritter(golem);
+         recursive_init_loads(*golem);
+         
+         Sprintf(buf, "You create a golem of animated %s.\n", &golemnames[whichgolem]);
+         show(buf, pc);
+         Sprintf(buf, "creates a golem of animated %s!", &golemnames[whichgolem]);
+         emote(buf, pc, ROOM, TRUE);
+         
+         /* now figure out it's strength, and HP and other stuff*/
+         golem->HP = d(5, lvl * 3)+200+lvl*2;
+         golem->setHP_MAX(golem->HP);
+         golem->STR = d(2, lvl/3) + (lvl/5);
+         golem->LEVEL = pc.LEVEL;
+         golem->setHomeTown(ROOM.getZoneNum()); //belong to current zone
 
-       Sprintf(buf, "You create a golem of animated %s.\n", &golemnames[whichgolem]);
-       show(buf, pc);
-       Sprintf(buf, "creates a golem of animated %s!", &golemnames[whichgolem]);
-       emote(buf, pc, ROOM, TRUE);
+         if( lvl > 20) {
+            golem->ATTACKS = 2;
+         }
+         else {
+            golem->ATTACKS=1;
+         }
 
-       /* now figure out it's strength, and HP and other stuff*/
-       golem->HP = d(5, lvl * 3)+200+lvl*2;
-       golem->setHP_MAX(golem->HP);
-       golem->STR = d(2, lvl/3) + (lvl/5);
-       golem->LEVEL = pc.LEVEL;
-       if( lvl > 20)
-       {
-         golem->ATTACKS = 2;
-       }
-       else golem->ATTACKS=1;
+         switch (whichgolem) {
+          case 0:
+             golem->STR += d(2,2) + 1;
+             golem->DEX = lvl/3;
+             golem->CON = lvl/2 + d(2,2) + 1;
+             golem->HIT = lvl/3;
+             golem->DAM = lvl/4;
+             golem->DAM_GIV_MOD = 100;
+             golem->DAM_REC_MOD = 100-(lvl+10);
+             golem->AC = 50-d(10,lvl/5);
+             golem->HEAT_RESIS = 50-d(10, lvl/5);
+             golem->COLD_RESIS = 50-d(10, lvl/5);
+             golem->SPEL_RESIS = 50-d(10, lvl/5);
+             golem->ELEC_RESIS = 50-d(10, lvl/5);
+             if (lvl/10 > 10)
+                golem->mob->setSkillViolence(10);
+             else
+                golem->mob->setSkillViolence(lvl/10);
+             golem->mob->setDefensiveness(-10);
+             golem->mob->setBenevolence(-10);
+             golem->mob->setBadAssedness(-10);
+             golem->mob->setSocialAwareness(-10);
+             golem->BH_DICE_COUNT = lvl/5;
+             golem->BH_DICE_SIDES = lvl/4;
+             break;
 
-       switch (whichgolem) {
-	     case 0:
-		   golem->STR += d(2,2) + 1;
-		   golem->DEX = lvl/3;
-		   golem->CON = lvl/2 + d(2,2) + 1;
-		   golem->HIT = lvl/3;
-		   golem->DAM = lvl/4;
-		   golem->DAM_GIV_MOD = 100;
-		   golem->DAM_REC_MOD = 100-(lvl+10);
-		   golem->AC = 50-d(10,lvl/5);
-		   golem->HEAT_RESIS = 50-d(10, lvl/5);
-	  	   golem->COLD_RESIS = 50-d(10, lvl/5);
-		   golem->SPEL_RESIS = 50-d(10, lvl/5);
-		   golem->ELEC_RESIS = 50-d(10, lvl/5);
-		   if (lvl/10 > 10) golem->mob->setSkillViolence(10);
-		   else golem->mob->setSkillViolence(lvl/10);
-		   golem->mob->setDefensiveness(-10);
-		   golem->mob->setBenevolence(-10);
-		   golem->mob->setBadAssedness(-10);
-		   golem->mob->setSocialAwareness(-10);
-		   golem->BH_DICE_COUNT = lvl/5;
-		   golem->BH_DICE_SIDES = lvl/4;
-		   break;
-
-	     case 1:
-		   golem->DEX = lvl/2;
-		   golem->HIT = lvl/3 + d(1,2);
-		   golem->DAM = lvl/4+d(2,2);
-		   golem->DAM_GIV_MOD = 100;
-		   golem->DAM_REC_MOD = 90;
-		   golem->AC = 50-d(10,lvl/5);
-		   golem->HEAT_RESIS = 50-d(10,lvl/5);
-		   golem->COLD_RESIS = 30-d(10,lvl/5);
-		   golem->SPEL_RESIS = 50-d(10,lvl/5);
-		   golem->ELEC_RESIS = 50-d(10,lvl/5);
-		   if (lvl/7 > 10) golem->mob->setSkillViolence(10);
-		   else golem->mob->setSkillViolence(lvl/7);
-		   golem->mob->setDefensiveness(-10);
-		   golem->mob->setBenevolence(-10);
-		   golem->mob->setBadAssedness(-10);
-		   golem->mob->setSocialAwareness(-10);
-		   golem->BH_DICE_COUNT = lvl/5;
-		   golem->BH_DICE_SIDES = lvl/4;
-		   break;
-
-
-	     case 2:
-		   golem->HP -=200;
-                   golem->MANA = d(5, lvl * 2)+(pc.INT/2)+lvl/2;
-		   golem->STR -= 6 ;
-		   golem->DEX = lvl/2;
-		   golem->INT = pc.INT/3+lvl/3 + d(2,2);
-           golem->WIS = pc.INT/3+lvl/3 + d(2,2);
-		   golem->HIT = lvl/3;
-		   golem->DAM = lvl/4;
-		   golem->DAM_GIV_MOD = 100;
-		   golem->DAM_REC_MOD = 100;
-		   golem->AC = 50-d(10,lvl/5);
-		   golem->HEAT_RESIS = 50-d(10,lvl/5);
-		   golem->COLD_RESIS = 50-d(10,lvl/5);
-		   golem->SPEL_RESIS = 30-d(10,lvl/5);
-		   golem->ELEC_RESIS = 50-d(10,lvl/5);
-		   if (lvl/6 > 10) golem->mob->setSkillViolence(10);
-		   else golem->mob->setSkillViolence(lvl/6);
-		   golem->mob->setDefensiveness(-10);
-		   golem->mob->setBenevolence(-10);
-		   golem->mob->setBadAssedness(-10);
-		   golem->mob->setSocialAwareness(-10);
-		   golem->BH_DICE_COUNT = lvl/6;
-		   golem->BH_DICE_SIDES = lvl/5;
-		   break;
-
-	     case 3:
-		   golem->STR += 2;
-		   golem->DEX = lvl/2 + d(2,2) + 1;
-		   golem->HIT = lvl/3+d(1,2);
-		   golem->DAM = lvl/4 + d(2,2);
-		   golem->DAM_GIV_MOD = 100 + lvl/2;
-		   golem->DAM_REC_MOD = 100;
-		   golem->AC = 50-d(10,lvl/5);
-		   golem->HEAT_RESIS = 30-d(10,lvl/5);
-		   golem->COLD_RESIS = 50-d(10,lvl/5);
-		   golem->SPEL_RESIS = 50-d(10,lvl/5);
-		   golem->ELEC_RESIS = 50-d(10,lvl/5);
-		   if (lvl/6 > 10) golem->mob->setSkillViolence(10);
-		   else golem->mob->setSkillViolence(lvl/6);
-		   golem->mob->setDefensiveness(-10);
-		   golem->mob->setBenevolence(-10);
-		   golem->mob->setBadAssedness(-10);
-		   golem->mob->setSocialAwareness(-10);
-		   golem->BH_DICE_COUNT = lvl/5;
-		   golem->BH_DICE_SIDES = lvl/4;
-		   break;
-
-	      default: mudlog.log(DBG, "DEBUG: Default Golem in: do_cast_greater_golem:pet_spll.cc, setting golem stats");
-	   }//switch 
-       golem->setHP_MAX(golem->HP);
-       golem->MA_MAX = golem->MANA;
-       /* now it follows and is a pet of the person */
-       Put(golem, pc.PETS);
-       golem->MASTER = &pc;
-
-	   golem->doFollow(pc); // golem starts following caster
-   }//if golem explosion
-   else {
-	   //do_exploding_golem(pc, whichgolem,lvl)
-	   emote("loses control of the energies he has summoned!!\n", pc, ROOM, TRUE);
-	   show("You lose control of the energy that forms the life of the golem!!",pc);
-      
-       switch(whichgolem){
-	      case 0:
-              do_cast_quake(pc, TRUE, lvl*2);
-              break;
           case 1:
-              do_cast_icestorm(pc, TRUE, lvl*2);             
-              break;
+             golem->DEX = lvl/2;
+             golem->HIT = lvl/3 + d(1,2);
+             golem->DAM = lvl/4+d(2,2);
+             golem->DAM_GIV_MOD = 100;
+             golem->DAM_REC_MOD = 90;
+             golem->AC = 50-d(10,lvl/5);
+             golem->HEAT_RESIS = 50-d(10,lvl/5);
+             golem->COLD_RESIS = 30-d(10,lvl/5);
+             golem->SPEL_RESIS = 50-d(10,lvl/5);
+             golem->ELEC_RESIS = 50-d(10,lvl/5);
+             if (lvl/7 > 10)
+                golem->mob->setSkillViolence(10);
+             else
+                golem->mob->setSkillViolence(lvl/7);
+             golem->mob->setDefensiveness(-10);
+             golem->mob->setBenevolence(-10);
+             golem->mob->setBadAssedness(-10);
+             golem->mob->setSocialAwareness(-10);
+             golem->BH_DICE_COUNT = lvl/5;
+             golem->BH_DICE_SIDES = lvl/4;
+             break;
+             
+
           case 2:
-              do_cast_lightning_storm(pc, TRUE, lvl*2);
-              break;
+             golem->HP -=200;
+             golem->MANA = d(5, lvl * 2)+(pc.INT/2)+lvl/2;
+             golem->STR -= 6 ;
+             golem->DEX = lvl/2;
+             golem->INT = pc.INT/3+lvl/3 + d(2,2);
+             golem->WIS = pc.INT/3+lvl/3 + d(2,2);
+             golem->HIT = lvl/3;
+             golem->DAM = lvl/4;
+             golem->DAM_GIV_MOD = 100;
+             golem->DAM_REC_MOD = 100;
+             golem->AC = 50-d(10,lvl/5);
+             golem->HEAT_RESIS = 50-d(10,lvl/5);
+             golem->COLD_RESIS = 50-d(10,lvl/5);
+             golem->SPEL_RESIS = 30-d(10,lvl/5);
+             golem->ELEC_RESIS = 50-d(10,lvl/5);
+             if (lvl/6 > 10)
+                golem->mob->setSkillViolence(10);
+             else
+                golem->mob->setSkillViolence(lvl/6);
+             golem->mob->setDefensiveness(-10);
+             golem->mob->setBenevolence(-10);
+             golem->mob->setBadAssedness(-10);
+             golem->mob->setSocialAwareness(-10);
+             golem->BH_DICE_COUNT = lvl/6;
+             golem->BH_DICE_SIDES = lvl/5;
+             break;
+             
           case 3:
-              do_cast_firestorm(pc, TRUE, lvl*2);
-              break;
+             golem->STR += 2;
+             golem->DEX = lvl/2 + d(2,2) + 1;
+             golem->HIT = lvl/3+d(1,2);
+             golem->DAM = lvl/4 + d(2,2);
+             golem->DAM_GIV_MOD = 100 + lvl/2;
+             golem->DAM_REC_MOD = 100;
+             golem->AC = 50-d(10,lvl/5);
+             golem->HEAT_RESIS = 30-d(10,lvl/5);
+             golem->COLD_RESIS = 50-d(10,lvl/5);
+             golem->SPEL_RESIS = 50-d(10,lvl/5);
+             golem->ELEC_RESIS = 50-d(10,lvl/5);
+             if (lvl/6 > 10)
+                golem->mob->setSkillViolence(10);
+             else
+                golem->mob->setSkillViolence(lvl/6);
+             golem->mob->setDefensiveness(-10);
+             golem->mob->setBenevolence(-10);
+             golem->mob->setBadAssedness(-10);
+             golem->mob->setSocialAwareness(-10);
+             golem->BH_DICE_COUNT = lvl/5;
+             golem->BH_DICE_SIDES = lvl/4;
+             break;
+
+          default: mudlog.log(DBG, "DEBUG: Default Golem in: do_cast_greater_golem:pet_spll.cc, setting golem stats");
+         }//switch 
+         golem->setHP_MAX(golem->HP);
+         golem->MA_MAX = golem->MANA;
+         /* now it follows and is a pet of the person */
+         Put(golem, pc.PETS);
+         golem->MASTER = &pc;
+         
+         golem->doFollow(pc); // golem starts following caster
+      }//if golem explosion
+      else {
+         //do_exploding_golem(pc, whichgolem,lvl)
+         emote("loses control of the energies he has summoned!!\n", pc, ROOM, TRUE);
+         show("You lose control of the energy that forms the life of the golem!!",pc);
+         
+         switch(whichgolem){
+          case 0:
+             do_cast_quake(pc, TRUE, lvl*2);
+             break;
+          case 1:
+             do_cast_icestorm(pc, TRUE, lvl*2);             
+             break;
+          case 2:
+             do_cast_lightning_storm(pc, TRUE, lvl*2);
+             break;
+          case 3:
+             do_cast_firestorm(pc, TRUE, lvl*2);
+             break;
           default: mudlog.log(DBG, "DEBUG: Default Golem in: do_cast_greater_golem:pet_spll.cc, exploding golem");
-	   }//switch whichgolem
+         }//switch whichgolem
       }//else
    }//if canned or didn't lose concentration
    else { //not canned AND lost concentration
-     show(LOST_CONCENTRATION_MSG_SELF, pc);
-     emote("obviously forgot part of the spell!\n", pc, ROOM, TRUE);
-     if (!is_canned)
-       pc.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, pc);
+      emote("obviously forgot part of the spell!\n", pc, ROOM, TRUE);
+      if (!is_canned)
+         pc.MANA -= spell_mana / 2;
    }//else lost concentration
    pc.PAUSE += 1;
 }//do_cast_create_golem
@@ -437,6 +447,7 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
       pet = mob_to_smob(mob_list[config.walkingCorpseMob], pc.getCurRoomNum(), TRUE);
       pet->mob->setDisolvable(TRUE);
       pet->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
+      pet->setHomeTown(ROOM.getZoneNum()); //belong to current zone
       ROOM.gainCritter(pet);
       
       recursive_init_loads(*pet);
@@ -530,21 +541,23 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
        pc.MANA -= spell_mana;
 
      if (!mob_list[config.earthGolemMob].isInUse() ||
-        !mob_list[config.waterGolemMob].isInUse() ||
-        !mob_list[config.airGolemMob].isInUse() ||
-        !mob_list[config.fireGolemMob].isInUse()) {
-       mudlog.log(ERROR, "ERROR: Greater Golem doesn't exist.\n");
-       return;
+         !mob_list[config.waterGolemMob].isInUse() ||
+         !mob_list[config.airGolemMob].isInUse() ||
+         !mob_list[config.fireGolemMob].isInUse()) {
+        mudlog.log(ERROR, "ERROR: Greater Golem doesn't exist.\n");
+        return;
      }//if
      
      if (pc.PETS.size() >= (pc.CHA/4 +1)) {
-       show(nofollow[whichgolem], pc);
-       return;
+        show(nofollow[whichgolem], pc);
+        return;
      }//if
 
      golem = mob_to_smob(mob_list[golemnums[whichgolem]], pc.getCurRoomNum(), TRUE);
      golem->mob->setDisolvable(TRUE);
      golem->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
+     golem->setHomeTown(ROOM.getZoneNum()); //belong to current zone
+
      ROOM.gainCritter(golem);
      recursive_init_loads(*golem);
 
@@ -789,6 +802,7 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       golem = mob_to_smob(mob_list[config.illusionMob], pc.getCurRoomNum(), TRUE);
       golem->mob->setDisolvable(TRUE);
       golem->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
+      golem->setHomeTown(ROOM.getZoneNum()); //belong to current zone
       ROOM.gainCritter(golem);
 
       recursive_init_loads(mob_list[config.illusionMob]);
@@ -894,6 +908,7 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
       golem = mob_to_smob(mob_list[which_un], pc.getCurRoomNum(), TRUE);
       golem->mob->setDisolvable(TRUE);
       golem->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
+      golem->setHomeTown(ROOM.getZoneNum()); //belong to current zone
       ROOM.gainCritter(golem);
 
       recursive_init_loads(mob_list[which_un]);
@@ -901,28 +916,28 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
       show("You summon a minion from the pits of Hell!\n", pc);
       emote("summons a minion of Hell!", pc, ROOM, TRUE);
 
-     if (pc.PETS.size() < (pc.CHA/4 + 1) && 
-         (d(1, pc.CHA * 10 + lvl * 4) > (d(1, golem->LEVEL * 4)))) {
-       /* now it follows and is a pet of the person */
-       Put(golem, pc.PETS);
-       golem->MASTER = &pc;       
-       golem->doFollow(pc); // golem starts following caster     
-     }//if it worked
-     else {
-       Sprintf(buf, "whirls around and attacks %S with a great fury!\n",
-               name_of_crit(pc, ~0));
-       emote(buf, *golem, ROOM, TRUE, &pc);
-       Sprintf(buf, "Uh-oh, %S has broken free of your spell!!\n",
-               name_of_crit(*golem, pc.SEE_BIT));
-       show(buf, pc);
-       join_in_battle(*golem, pc);
-     }//else
+      if (pc.PETS.size() < (pc.CHA/4 + 1) && 
+          (d(1, pc.CHA * 10 + lvl * 4) > (d(1, golem->LEVEL * 4)))) {
+         /* now it follows and is a pet of the person */
+         Put(golem, pc.PETS);
+         golem->MASTER = &pc;       
+         golem->doFollow(pc); // golem starts following caster     
+      }//if it worked
+      else {
+         Sprintf(buf, "whirls around and attacks %S with a great fury!\n",
+                 name_of_crit(pc, ~0));
+         emote(buf, *golem, ROOM, TRUE, &pc);
+         Sprintf(buf, "Uh-oh, %S has broken free of your spell!!\n",
+                 name_of_crit(*golem, pc.SEE_BIT));
+         show(buf, pc);
+         join_in_battle(*golem, pc);
+      }//else
    }//if canned or didn't lose concentration
    else { //not canned AND lost concentration
-     show(LOST_CONCENTRATION_MSG_SELF, pc);
-     emote("garbles the name of a minion of Hell!\n", pc, ROOM, TRUE);
-     if (!is_canned)
-       pc.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, pc);
+      emote("garbles the name of a minion of Hell!\n", pc, ROOM, TRUE);
+      if (!is_canned)
+         pc.MANA -= spell_mana / 2;
    }//else lost concentration
    pc.PAUSE += 1; 
 }//do_cast_conjure_minion
@@ -1004,6 +1019,7 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
        golem = mob_to_smob(mob_list[which_un], pc.getCurRoomNum(), TRUE);
        golem->mob->setDisolvable(TRUE);
        golem->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
+       golem->setHomeTown(ROOM.getZoneNum()); //belong to current zone
        ROOM.gainCritter(golem);
        recursive_init_loads(mob_list[which_un]);
 

@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.12 2001/03/29 03:02:24 eroper Exp $
-# $Revision: 1.12 $  $Author: eroper $ $Date: 2001/03/29 03:02:24 $
+# $Id: Makefile,v 1.13 2001/04/07 22:31:54 greear Exp $
+# $Revision: 1.13 $  $Author: greear $ $Date: 2001/04/07 22:31:54 $
 
 #  Makefile for Hegemon and ScryMUD
 
@@ -129,48 +129,8 @@ build_help_filter:
 ########  Hegemon (Java Client) Related rules ####################
 ##################################################################
 
-hegemon: hegemon_dos hegemon_unix hegemon_applet hegemon_src
-
-hegemon_dos:  hegemon_update
-	rm -f hegemon$(HEGEMON_VERSION).zip
-	zip hegemon$(HEGEMON_VERSION).zip  hegemon/*.class \
-		hegemon/hegemon.properties \
-		hegemon/data/colors.def hegemon/data/alias.def \
-		hegemon/data/hosts.def \
-		hegemon/data/help/battle/* hegemon/data/help/client/* \
-		hegemon/data/help/communications/* \
-		hegemon/data/help/general/* hegemon/data/help/immortal/* \
-		hegemon/data/help/olc/* hegemon/data/help/skills/* \
-		hegemon/data/help/spells/* hegemon/data/help/*.bml
-
-
-hegemon_unix:  hegemon_update
-	rm -f hegemon$(HEGEMON_VERSION).tar.gz
-	tar -cvf hegemon$(HEGEMON_VERSION).tar  hegemon/*.class \
-		hegemon/hegemon.properties \
-		hegemon/data/colors.def hegemon/data/alias.def \
-		hegemon/data/hosts.def \
-		hegemon/data/help/battle/* hegemon/data/help/client/* \
-		hegemon/data/help/communications/* \
-		hegemon/data/help/general/* hegemon/data/help/immortal/* \
-		hegemon/data/help/olc/* hegemon/data/help/skills/* \
-		hegemon/data/help/spells/* hegemon/data/help/*.bml
-	gzip hegemon$(HEGEMON_VERSION).tar
-
-
-hegemon_archive: hegemon_update
-	rm -f hegemon_archive$(CUR_DATE).tar.gz
-	tar -cvf hegemon_archive.$(CUR_DATE).tar \
-		Hegemon/*.java Hegemon/Makefile Hegemon/*.html \
-		Hegemon/*.properties \
-		hegemon
-	gzip hegemon_archive.$(CUR_DATE).tar
-
-hegemon_src:
-	rm -f hegemon$(HEGEMON_VERSION).src.tar.gz
-	tar -cvf hegemon$(HEGEMON_VERSION).src.tar Hegemon/*.java License \
-		Hegemon/*.html Hegemon/Makefile
-	gzip hegemon$(HEGEMON_VERSION).src.tar
+hegemon:
+	make -C Hegemon distrib
 
 
 hegemon_applet:  hegemon_update
@@ -186,10 +146,6 @@ hegemon_applet:  hegemon_update
 	cp -r hegemon/data heg_applet/data
 	tar -cvf heg_applet$(HEGEMON_VERSION).tar heg_applet/*
 	gzip heg_applet$(HEGEMON_VERSION).tar
-
-
-hegemon_update:
-	${MAKE} -C Hegemon all
 
 clean:
 	${MAKE} -C grrmud/server clean

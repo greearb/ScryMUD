@@ -20,22 +20,22 @@ immrules         inventory        ironclad         junk
 list             lock             look             lore             
 move             nogossip         north            northeast        
 offer            ogrue            open             order            
-passwd           pay              pemote           picklock         
-practice         prompt           prone            put              
-quit             races            read             recite           
-remort           remove           reply            rescue           
-roll             rules            sacrifice        save             
-scan             score            scribe           script_cmds      
-shield           shoot            shops            shout            
-skills           skin             sleep            sneak            
-sombre           south            southeast        southwest        
-stand            steal            suicide          tail             
-theme            throw            time             title            
-topics           track            trip             ungroup          
-up               use              value_add        value_list       
-value_set        wake             wear             west             
-who              wield            wimpy            withdraw         
-zones            
+page_break       passwd           pay              pemote           
+post             practice         prompt           prone            
+quaf             quit             races            read             
+regeneration     remort           remove           reply            
+rest             roll             rules            sacrifice        
+say              scan             score            scribe           
+sell             shield           shoot            shops            
+sit              skills           skin             sleep            
+socials          sombre           south            southeast        
+split            stand            steal            suicide          
+tell             theme            throw            time             
+toggle           topics           track            trip             
+unlock           up               use              value_add        
+value_rem        value_set        wake             wear             
+where            who              wield            wimpy            
+wizlist          zones            
 
 <color=red>
 See Also:  commands, wizhelp

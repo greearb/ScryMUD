@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.39 2001/04/01 06:16:51 greear Exp $
-// $Revision: 1.39 $  $Author: greear $ $Date: 2001/04/01 06:16:51 $
+// $Id: command4.cc,v 1.40 2001/04/07 22:31:55 greear Exp $
+// $Revision: 1.40 $  $Author: greear $ $Date: 2001/04/07 22:31:55 $
 
 //
 //ScryMUD Server Code
@@ -1962,7 +1962,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       show("benevolence (-10, 10)       pause (0, 50)\n", pc);
       show("Language (0 English, 1 Spanish, 2 Portugues)\n", pc);
       show("home_room (0 - MAX_ROOMS)   password(3 char mininum)\n", pc);
-      show("manager (of store)          ticks_old(0, 500)", pc);
+      show("manager (of store)          ticks_old(0, 500)\n", pc);
       show("ticks_till_freedom (0 - 500000)  home_town(0, max_zones)\n", pc);
       return 0;
    }//if
