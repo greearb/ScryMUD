@@ -1,5 +1,5 @@
-// $Id: Scriptable.h,v 1.4 1999/08/16 07:31:24 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
+// $Id: Scriptable.h,v 1.5 1999/08/20 06:20:04 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
 
 //
 //ScryMUD Server Code
@@ -96,7 +96,7 @@ public:
     * pull and push, but more can easily be added.
     */
    virtual int attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
-                                   critter* actor);
+                                           critter* actor);
 
    virtual void listScripts(critter* pc);
 };//Scriptable

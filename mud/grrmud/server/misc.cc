@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.29 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: misc.cc,v 1.30 1999/08/20 06:20:05 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
 
 //
 //ScryMUD Server Code
@@ -765,10 +765,10 @@ int update_zone(int zone_num, short read_all) {
       }//if
 
       //log("About to check if need to load more inv into the room.\n");
-      room_ptr->getInv()->head(ocell);
+      room_ptr->getInv().head(ocell);
       while ((obj_ptr = ocell.next())) {
-         if ((obj_count(*(room_ptr->getInv()), *obj_ptr) >
-              obj_count(*(room_list[k].getInv()), *obj_ptr)) &&
+         if ((obj_count(room_ptr->getInv(), *obj_ptr) >
+              obj_count(room_list[k].getInv(), *obj_ptr)) &&
 	     (obj_ptr->getCurInGame()
               < obj_list[obj_ptr->getIdNum()].getMaxInGame())) {
 
@@ -1501,10 +1501,11 @@ critter* have_crit_named(SafeList<critter*>& lst, const int i_th,
 
 int crit_sub_a_4_b(critter* a, SafeList<critter*>& lst, 
                    const int i_th, const String* name,
-                   const int see_bit, room& rm) {
+                   critter& viewer) {
    SCell<critter*> cell(lst);
    critter* crit_ptr;
    int count = 0, ptr_v_bit;
+   int see_bit = viewer.getSeeBit();
 
    //log("In crit_sub_a_4_b.\n");
 
@@ -1519,9 +1520,9 @@ int crit_sub_a_4_b(critter* a, SafeList<critter*>& lst,
    }//if
 
    while ((crit_ptr = cell.next())) {
-      ptr_v_bit = (crit_ptr->VIS_BIT | rm.getVisBit()); 
+      ptr_v_bit = (crit_ptr->VIS_BIT | viewer.getCurRoom()->getVisBit()); 
       if (detect(see_bit, ptr_v_bit)) {
-         if (crit_ptr->isNamed(*name)) {
+         if (crit_ptr->isNamed(*name, &viewer)) {
             count++;
             if (count == i_th) {  //found right one
                lst.assign(cell, a);
@@ -1535,10 +1536,11 @@ int crit_sub_a_4_b(critter* a, SafeList<critter*>& lst,
 
 
 int obj_sub_a_4_b(object* a, SafeList<object*>& lst, const int i_th,
-                  const String* name, const int see_bit, room& rm) {
+                  const String* name, critter& viewer) {
    SCell<object*> cell(lst);
    object* obj_ptr;
    int count = 0, ptr_v_bit;
+   int see_bit = viewer.getSeeBit();
 
    //log("In obj_sub_a_4_b.\n");
 
@@ -1553,9 +1555,9 @@ int obj_sub_a_4_b(object* a, SafeList<object*>& lst, const int i_th,
    }//if
 
    while ((obj_ptr = cell.next())) {
-      ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | rm.getVisBit()); 
+      ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | viewer.getCurRoom()->getVisBit()); 
       if (detect(see_bit, ptr_v_bit)) {
-         if (obj_ptr->isNamed(*name)) {
+         if (obj_ptr->isNamed(*name, &viewer)) {
             count++;
             if (count == i_th) {  //found right one
                //obj_ptr = Prev(cell);  //back cell up one

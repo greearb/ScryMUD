@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.15 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: misc.h,v 1.16 1999/08/20 06:20:06 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
 
 //
 //ScryMUD Server Code
@@ -49,6 +49,8 @@ extern SafeList<room*> pulsed_proc_rooms;
 extern SafeList<object*> pulsed_proc_objects;
 extern PtrArray<Scriptable>  scripting_entities;
 
+extern SafeList<object*> dummy_inv;
+
 extern BugCollection bl_ideas;
 extern BugCollection bl_bugs;
 extern BugCollection bl_comp_ideas;
@@ -73,12 +75,10 @@ int bound(int low, int high, int val);
 int  d(const int num_rolls, const int dice_sides); 
 //void critter::save();
 
-int obj_sub_a_4_b(object* a, List<object*>& lst, 
-                  const int i_th, const String* name, const int see_bit,
-                  room& rm);
+int obj_sub_a_4_b(object* a, SafeList<object*>& lst, 
+                  const int i_th, const String* name, critter* viewer);
 int crit_sub_a_4_b(critter* a, SafeList<critter*>& lst, 
-                   const int i_th, const String* name, const int see_bit,
-                   room& rm);
+                   const int i_th, const String* name, critter* viewer);
 
 short isnum(String& word);
 
@@ -145,7 +145,7 @@ object*  have_obj_named(const SafeList<object*>& lst, const int i_th,
  * in two lists that look like one list to the user.  
  * (ie list_merchandise, buy)
  */
-int obj_named_count(const List<object*>& lst, const String* name,
+int obj_named_count(const SafeList<object*>& lst, const String* name,
                     const int see_bit, const room& rm);
 
 //String* critter::getName(int see_bit);

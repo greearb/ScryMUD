@@ -1,5 +1,5 @@
-// $Id: door.cc,v 1.8 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: door.cc,v 1.9 1999/08/20 06:20:05 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
 
 //
 //ScryMUD Server Code
@@ -376,6 +376,42 @@ String* door_data::getName(critter* viewer, int dest) {
 }//getName(critter* viewer, int direction)...
        
 
+int door::nameIsSecret(const String* name) {
+   Cell<LStringCollection*> col_cell(getNames());
+   String* ptr;
+   int len = name->Strlen();
+
+   if (len == 0)
+      return FALSE;
+
+   LStringCollection* coll;
+   while ((coll = col_cell.next())) {
+      Cell<LString*> cll(*coll);
+
+      if (destination >= 0) { //if positive, go from top
+         ptr = cll.next();
+         while ((ptr = cll.next())) {
+            if (*ptr == "#")
+               break; // didn't find it
+            if (strncasecmp(*name, *ptr, len) == 0)
+               return TRUE;
+         }//while
+         return FALSE;
+      }//if
+      else {
+         ptr = cll.prev();
+         while ((ptr = cll.prev())) {
+            if (*ptr == "#")
+               break; // didn't find it
+            if (strncasecmp(*name, *ptr, len) == 0)
+               return TRUE;
+         }//while
+         return FALSE;
+      }//else
+   }//while
+   return FALSE;
+}//nameIsSecret
+
 
 
    ///******************  Static Functions ***************************///
@@ -479,6 +515,65 @@ room* door::getDestRoom() {
 }//getDestRoom
 
 
-String* door::getDirection() {
-   return direction_of_door(*this);
+SafeList<object*>& door::getInv() {
+   core_dump("door::getInv");
+   return dummy_inv;
 }
+
+
+SafeList<object*>& door_data::getInv() {
+   core_dump("door_data::getInv");
+   return dummy_inv;
+}
+
+
+String* door::getDirection() {
+   String* ptr = NULL;
+   if (destination < 0)
+      ptr = dr_data->getLastName();
+   else
+      ptr = dr_data->getFirstName();
+   
+   if (ptr)
+      return ptr;
+   else
+      return &UNKNOWN;
+}//getDirection
+
+
+const char* door::getAbrevDir() {
+   String* dir;
+
+   if (destination < 0) 
+      dir = dr_data->getLastName();
+   else
+      dir = dr_data->getFirstName();
+
+   if (dir == NULL) {
+      return "??";
+   }//if
+
+   if (strcasecmp(*dir, "north") == 0) 
+      return "N";
+   else if (strcasecmp(*dir, "northwest") == 0)
+      return "NW";
+   else if (strcasecmp(*dir, "northeast") == 0)
+      return "NE";
+   else if (strcasecmp(*dir, "east") == 0)
+      return "E";
+   else if (strcasecmp(*dir, "south") == 0)
+      return "S";
+   else if (strcasecmp(*dir, "southeast") == 0)
+      return "SE";
+   else if (strcasecmp(*dir, "southwest") == 0)
+      return "SW";
+   else if (strcasecmp(*dir, "west") == 0)
+      return "W";
+   else if (strcasecmp(*dir, "up") == 0)
+      return "U";
+   else if (strcasecmp(*dir, "down") == 0)
+      return "D";
+   else return "??";
+}//abbrev_dir_of_door
+
+

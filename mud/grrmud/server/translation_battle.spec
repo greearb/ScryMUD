@@ -1,5 +1,5 @@
-# $Id: translation_misc.spec,v 1.2 1999/08/20 06:20:06 greear Exp $
-# $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
+# $Id: translation_battle.spec,v 1.1 1999/08/20 06:20:06 greear Exp $
+# $Revision: 1.1 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
 
 # The syntax is as follows:
 # ENUM_NAME LANGUAGE "TEXT" LANGUAGE "TEXT" ... ~
@@ -24,20 +24,28 @@
 
 # See translations.spec for more details...
 
-
-CS_GLOWS_BRIGHTLY
-	eng "\t\t%s glows brightly.\n"
+CS_APPEARS_DEAD
+	eng "%S appears in the room looking quite dead!\n"
 	~
 
-CS_CLOSES_N_VANISHES
-	eng "%S closes up and vanishes.\n"
+CS_YOU_DEAD_NL
+	eng "\n\n\n\nYOU ARE DEAD!!!!!!!!!!!\n"
 	~
 
-CS_THE_NEWBIE
-	eng " the newbie"
+CS_WELCOME_AGAIN
+	eng "\nWelcome once again.\n"
 	~
 
-CS_NEWBIE_LONG_DESC
-	eng "You see someone who is quite normal."
+CS_FARE_BETTER
+	eng "Perhaps this time you'll fare a little better!!\n"
+	~
+
+CS_END_OF_LUCK
+	eng "You have reached the end of your luck!.  Perhaps your soul will endure longer
+next time.  Please feel free to rejoin the Realm in another mortal coil!\n"
+	~
+
+CS_GASP_FAREWELL
+	eng "gasps a final farewell to the Realm in which %s has dwelt for %i years!"
 	~
 

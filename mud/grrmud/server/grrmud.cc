@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.29 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: grrmud.cc,v 1.30 1999/08/20 06:20:05 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
 
 //
 //ScryMUD Server Code
@@ -118,6 +118,8 @@ SafeList<critter*>        linkdead_list(NULL);
 SafeList<critter*>        pc_list(NULL);
 SafeList<critter*>        new_pc_list(NULL);
 SafeList<room*>           embattled_rooms(NULL);
+
+SafeList<object*>         dummy_inv(NULL);
 
 SafeList<door*>	          affected_doors(NULL);
 SafeList<critter*>        affected_mobs(NULL);

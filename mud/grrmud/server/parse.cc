@@ -1,5 +1,5 @@
-// $Id: parse.cc,v 1.20 1999/08/10 07:06:20 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
+// $Id: parse.cc,v 1.21 1999/08/20 06:20:06 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
 
 //
 //ScryMUD Server Code
@@ -669,7 +669,7 @@ int critter::executeCommand(String* cooked_strs, int* cooked_ints,
       int retval = getCurRoom()->attemptExecuteUnknownScript(cooked_strs[0],
                                                              cooked_ints[1],
                                                              cooked_strs[1],
-                                                             *this);
+                                                             this);
       if (retval >= 0) {
          return retval;
       }

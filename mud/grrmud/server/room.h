@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.29 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: room.h,v 1.30 1999/08/20 06:20:06 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
 
 //
 //ScryMUD Server Code
@@ -64,6 +64,7 @@ public:
       core_dump("KeywordPair::toStringStat (wrong one)");
    }
    virtual void gainInv(object* obj) { core_dump("KeywordPair::gainInv"); }
+   virtual SafeList<object*>& getInv();
 
    virtual void toStringStat(critter* viewer, String& rslt, int idx,
                              ToStringTypeE st);
@@ -132,7 +133,7 @@ public:
    virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
    const SafeList<object*>* peekInv() { return &inv; }
-   SafeList<object*>* getInv() { return &inv; }
+   SafeList<object*>& getInv() { return inv; }
 
    void listScripts(critter& pc);
 
@@ -193,7 +194,7 @@ public:
    int processInput(String& input); /* for room scripts */
 
    int sub_a_4_b(critter* crit_ptr, int i_th, const String& name,
-                 int see_bit);
+                 critter* viewer);
    int sub_a_4_b(critter* a, critter* b, int i_th);
 
    virtual int isVehicle() { return FALSE; }

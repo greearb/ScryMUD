@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.42 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.42 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: command2.cc,v 1.43 1999/08/20 06:20:04 greear Exp $
+// $Revision: 1.43 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
 
 //
 //ScryMUD Server Code
@@ -162,11 +162,11 @@ int exit(critter& pc) {
             else
                dest = dr_ptr->getDestination();
             if (pc.isImmort()) {
-               Sprintf(buf, "%P07%S[%i]:%P27", direction_of_door(*dr_ptr),
+               Sprintf(buf, "%P07%S[%i]:%P27", dr_ptr->getDirection(),
                        dr_ptr->getIdNum());
             }
             else {
-               Sprintf(buf, "%P07%S:%P27", direction_of_door(*dr_ptr));
+               Sprintf(buf, "%P07%S:%P27", dr_ptr->getDirection());
             }
 
             buf.Cap();
@@ -211,16 +211,15 @@ int auto_exit(critter& pc) { //more brief than the previous
                dr_ptr->isSecretWhenOpen())) {
             dest = abs(dr_ptr->getDestination());
             if (pc.isImmort()) { //if immortal, show extra info
-               Sprintf(buf, "%s[%i] ", abbrev_dir_of_door(*dr_ptr),
-                       dest);
+               Sprintf(buf, "%s[%i] ", dr_ptr->getAbrevDir(), dest);
             }//if
             else {
-               Sprintf(buf, "%s ", abbrev_dir_of_door(*dr_ptr));
+               Sprintf(buf, "%s ", dr_ptr->getAbrevDir());
             }//else
             reg_disp.Append(buf);
 
             if (pc.USING_CLIENT) {
-               client_disp.Append(abbrev_dir_of_door(*dr_ptr));
+               client_disp.Append(dr_ptr->getAbrevDir());
                client_disp.Append(" ");
             }//if
          }//if its open, don't show closed exits
@@ -1187,7 +1186,7 @@ int buy(int i_th, const String* item, int j_th, const String* keeper,
    if (keeper->Strlen() == 0) {
       crit_ptr = ROOM.findFirstShopKeeper();
       if (!crit_ptr) { //check for vending machine of some type
-         SCell<object*> cll(*(ROOM.getInv()));
+         SCell<object*> cll(ROOM.getInv());
          object* ptr;
          while ((ptr = cll.prev())) {
             if (ptr->OBJ_FLAGS.get(73)) { //if its a vend machine
@@ -1487,7 +1486,7 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
          crit_ptr = ROOM.findFirstShopKeeper();
          if (!crit_ptr) {
             //check for vending machine of some type
-            SCell<object*> cll(*(ROOM.getInv()));
+            SCell<object*> cll(ROOM.getInv());
             object* ptr;
             while ((ptr = cll.prev())) {
                if (ptr->OBJ_FLAGS.get(73)) { //if its a vend machine

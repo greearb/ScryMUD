@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.27 1999/08/16 00:37:06 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
+// $Id: command3.cc,v 1.28 1999/08/20 06:20:05 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
 
 //
 //ScryMUD Server Code
@@ -1276,7 +1276,7 @@ int flee_to_safety(critter& pc, int& is_dead) {
       if (room_list[abs(ptr->getDestination())].isHaven() ||  //haven
 	  room_list[abs(ptr->getDestination())].isNoMagic() ||  //!magic
 	  room_list[abs(ptr->getDestination())].isSwamp()) { //swamp
-	 if (move(pc, 1, *(direction_of_door(*ptr)), TRUE, ROOM, is_dead) >= 0) {
+	 if (move(pc, 1, *(ptr->getDirection()), TRUE, ROOM, is_dead) >= 0) {
 	    return 0;
 	 }//if
 	 else {
@@ -1365,8 +1365,7 @@ int flee(critter& pc, int& is_dead) {
             }//while
             
             show("You try to flee the scene!\n", pc);
-            Sprintf(buf, "tries to flee %S!", 
-                    direction_of_door(*dr_ptr));
+            Sprintf(buf, "tries to flee %S!", dr_ptr->getDirection());
             emote(buf, pc, ROOM, FALSE);
 
             if (pc.isUsingClient()) {
@@ -1376,7 +1375,7 @@ int flee(critter& pc, int& is_dead) {
                pc.show(*(pc.getDefaultColor()));
             }
 
-            move(pc, 1, *(direction_of_door(*dr_ptr)), FALSE, ROOM, is_dead);
+            move(pc, 1, *(dr_ptr->getDirection()), FALSE, ROOM, is_dead);
             
             if (is_dead)
                return 0;
@@ -1419,8 +1418,7 @@ int flee(critter& pc, int& is_dead) {
             }//while
 
             show("You try to flee the scene!\n", pc);
-            Sprintf(buf, "tries to flee %S!", 
-                    direction_of_door(*dr_ptr));
+            Sprintf(buf, "tries to flee %S!", dr_ptr->getDirection());
             emote(buf, pc, ROOM, FALSE);
             move(pc, 1, *(dr_ptr->getDirection()), FALSE, ROOM, is_dead);
             

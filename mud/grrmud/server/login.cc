@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.17 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: login.cc,v 1.18 1999/08/20 06:20:05 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
 
 //
 //ScryMUD Server Code
@@ -122,8 +122,7 @@ void critter::doLogin() {
             }//if
             else {
                //log("In else of case 0\n");
-               string2 = new String(string);
-               Put(string2, (names));
+               addName(string);
                name = string;
                name.Tolower();
                name.Prepend("./Pfiles/");
@@ -334,7 +333,7 @@ void critter::doLogin() {
                if (!isUsingClient())
                   show(ANSI_ECHO_ON); //echo ON
 
-               string2 = names.peekFront();
+               string2 = getFirstName();
                
                name = *(string2);
                name.Tolower();
@@ -356,7 +355,7 @@ void critter::doLogin() {
                tmp_host = pc->host;
                int using_hegemon = isUsingClient();
 
-               Read(rfile, TRUE);
+               read(rfile, TRUE);
                setNoClient(); //turn off by default
 
                if (using_hegemon) {
@@ -386,11 +385,11 @@ void critter::doLogin() {
                   
                   critter* old_ptr;
                   old_ptr = have_crit_named(linkdead_list, 1, 
-                                            Top((names)), ~0, *(getCurRoom()),
+                                            getFirstName(), ~0, *(getCurRoom()),
                                             TRUE);
                   if (!old_ptr) {
                      old_ptr = have_crit_named(pc_list, 2,
-                                               Top(names), ~0, *(getCurRoom()),
+                                               getFirstName(), ~0, *(getCurRoom()),
                                                TRUE);
                      was_link_dead = FALSE;
                   }//if
@@ -514,8 +513,8 @@ int  quit_do_login_new(critter& pc) {
    int i;
    //log("in quit_do_login_new\n");
 
-   pc.short_desc = " the newbie";
-   pc.long_desc = "You see someone who is quite normal.";
+   pc.setShortDesc(CS_THE_NEWBIE);
+   pc.setLongDesc(CS_NEWBIE_LONG_DESC);
 
    pc.pc->link_condition = CON_PLAYING;
    pc.pc->index = 0;
@@ -543,7 +542,7 @@ int  quit_do_login_new(critter& pc) {
    pc.LEVEL = 1; //level
    pc.setCurRoomNum(NEWBIE_ROOM); //starting room
    pc.PRACS = (pc.WIS / 3); //wis dependent, practices
-   pc.setHP_MAX(pc.HP); //hp_max
+   pc.setHpMax(pc.HP); //hp_max
    pc.MA_MAX = pc.MANA; // mana_max
    pc.MV_MAX = pc.MOV; // mov_max
    pc.CRITTER_TYPE = 0; // 0 is pc, 1 is smob, 2 is mob

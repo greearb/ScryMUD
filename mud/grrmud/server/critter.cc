@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.47 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.47 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: critter.cc,v 1.48 1999/08/20 06:20:05 greear Exp $
+// $Revision: 1.48 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
 
 //
 //ScryMUD Server Code
@@ -2412,7 +2412,7 @@ LanguageE critter::getLanguageChoice() const {
    return English;
 }
 
-void critter::setHP_MAX(int i) {
+void critter::setHpMax(int i) {
    if (i < 0)
       i = 0;
    if (i > 32000)
@@ -2884,12 +2884,12 @@ int critter::doesOwnDoor(door_data& dd) {
    return (ZoneCollection::instance().elementAt(dd.getZoneNum()).isOwnedBy(*this));
 }
 
-const String* critter::getName(critter* viewer) {
+String* critter::getName(critter* viewer) {
    if (!viewer->canDetect(*this)) {
       return &SOMEONE;  //global string
    }
    if (isPc()) { //is a pc
-      const String* tmp = names.getFirstKeyword(viewer->getLanguageChoice());
+      String* tmp = names.getFirstKeyword(viewer->getLanguageChoice());
       if (tmp) {
          return tmp;
       }
@@ -3593,3 +3593,23 @@ void critter::doDecreaseTimedAffecting() {
       }//if
    }//if
 }//doDecreaseTimedAffecting
+
+const char* critter::getRaceName(critter* viewer) {
+   if (viewer) {
+      return get_race_name(RACE);
+   }
+   else {
+      //  TODO:  involve viewer
+      return get_race_name(RACE);
+   }
+}
+
+const char* critter::getClassName(critter* viewer) {
+   if (!viewer) {
+      return get_class_name(CLASS);
+   }
+   else {
+      //TODO:  Incorporate viewer
+      return get_class_name(CLASS);
+   }
+}//class_of_crit

@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.26 1999/08/13 06:32:54 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
+// $Id: battle.cc,v 1.27 1999/08/20 06:20:04 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
 
 //
 //ScryMUD Server Code
@@ -93,10 +93,9 @@ short can_start_battle(critter& targ, critter& pc, short do_msg) {
 
 
 void do_battle() {
-   Cell<room*> rcell;
-   embattled_rooms.head(rcell);
+   SCell<room*> rcell(embattled_rooms);
    room* r_ptr;
-   Cell<critter*> crit_cell;
+   SCell<critter*> crit_cell;
    critter* crit_ptr, *vict_ptr;
    short is_embattled, i;
    
@@ -107,7 +106,7 @@ void do_battle() {
    r_ptr = rcell.next();
    while (r_ptr) {
       is_embattled = FALSE;
-      List<critter*> tmp_list(r_ptr->getCrits());
+      SafeList<critter*> tmp_list(r_ptr->getCrits());
       tmp_list.head(crit_cell);
 
       while ((crit_ptr = crit_cell.next())) {
@@ -158,7 +157,7 @@ void do_battle() {
                if (!crit_ptr->IS_FIGHTING.isEmpty()) { 
                       //if first hit kills, abort
             
-		  vict_ptr = Top(crit_ptr->IS_FIGHTING);
+		  vict_ptr = crit_ptr->getFirstFighting();
 
                   if (mudlog.ofLevel(DBG)) {
                      mudlog << "In do_battle, within for loop, i:  "
@@ -201,13 +200,13 @@ void do_battle() {
                }//if
             }//for		/* now check for dual wield */
 
-            if (!IsEmpty(crit_ptr->IS_FIGHTING) && 
-                crit_ptr->CRIT_FLAGS.get(16) && (crit_ptr->PAUSE <= 0)) {
+            if (crit_ptr->isFighting() && crit_ptr->CRIT_FLAGS.get(16)
+                && (crit_ptr->PAUSE <= 0)) {
                int val = (int)(((float)(get_percent_lrnd(DUAL_WIELD_SKILL_NUM, 
                                                          *crit_ptr)) *
                                 (float)(crit_ptr->DEX) / 10.0));
                if (d(1,100) < d(1, val)) {
-                  vict_ptr = Top(crit_ptr->IS_FIGHTING);
+                  vict_ptr = crit_ptr->getFirstFighting();
 
                   if (vict_ptr->isUsingClient()) {
                      show("<BATTLE>", *vict_ptr);
@@ -302,10 +301,9 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
              agg.setPosn(POS_STAND);
           }//if
 
-          // TODO:  Is this spell different from perm sleep??
-          stat_spell_cell* ss_ptr = is_affected_by(SLEEP_SKILL_NUM, agg);
+          SpellDuration* ss_ptr = agg.isAffectedBy(SLEEP_SKILL_NUM);
           if (ss_ptr) {
-             agg.affected_by.loseData(ss_ptr);
+             agg.remAffectedBy(ss_ptr);
              delete ss_ptr;
           }//if
       }//if
@@ -481,8 +479,8 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    }//else
    
    if (agg.pc && (d(1,10) > 5)) { //1 in 5, !MOB chance of chance
-      if (d(1,200) < 
-          (agg.getLevel() / 3) *
+      if (d(1, 600) < 
+          (agg.getLevel() / 5) *
           (get_percent_lrnd(CRITICAL_STRIKE_SKILL_NUM, agg))) {
          agg.show("You score a critical strike!!\n");
          damage *= 2.0;
@@ -653,7 +651,7 @@ void agg_kills_vict(critter& agg, critter& vict) {
 
 
 void agg_kills_vict(critter& agg, critter& vict, int& show_vict_tags) {
-   Cell<critter*> cll2(vict.IS_FIGHTING);
+   SCell<critter*> cll2(vict.IS_FIGHTING);
    critter *ptr2;
    String buf(100);
 
@@ -665,7 +663,8 @@ void agg_kills_vict(critter& agg, critter& vict, int& show_vict_tags) {
    emote("is dead!", vict, room_list[vict.getCurRoomNum()], TRUE);
 
    while ((ptr2 = cll2.next())) { // others no longer fighting vict.
-      ptr2->IS_FIGHTING.loseData(&vict); 
+      critter* hack = &vict;
+      ptr2->IS_FIGHTING.loseData(hack); 
    }//while
 
    if (agg.mob && agg.mob->proc_data && 
@@ -687,8 +686,9 @@ void agg_kills_vict(critter& agg, critter& vict, int& show_vict_tags) {
       }
    }//if
    
-   agg.ALIGN -= (int)(((float)(vict.ALIGN) / 10.0) *
-                      ((float)(agg.ALIGN) + 1000.0) / 1500.0);
+   float val = ((float)(vict.ALIGN) / 10.0);
+   // TODO: adjust so that the extremes are harder to reach.
+   agg.ALIGN -= (int)(val);
 
    if (agg.ALIGN < -1000)
       agg.ALIGN = -1000;
@@ -839,7 +839,7 @@ int exact_raw_damage(int damage, int damage_type, critter& vict) {
 
 
 void crit_dies(critter& pc) {
-   Cell<critter*> cll2(pc.IS_FIGHTING);
+   SCell<critter*> cll2(pc.IS_FIGHTING);
    critter *ptr2;
 
    if (pc.isMob()) {
@@ -851,7 +851,8 @@ void crit_dies(critter& pc) {
    //log("In crit_dies.\n");
 
    while ((ptr2 = cll2.next())) { // others no longer fighting vict.
-      ptr2->IS_FIGHTING.loseData(&pc); 
+      critter* hack = &pc;
+      ptr2->IS_FIGHTING.loseData(hack); 
    }//while
 
    pc.is_fighting.clear(); //vict no longer fighting others
@@ -860,8 +861,8 @@ void crit_dies(critter& pc) {
 }//crit_dies;
 
 
-void disburse_xp(critter& agg, const critter& vict) {
-   Cell<critter*> cll;
+void disburse_xp(critter& agg, critter& vict) {
+   SCell<critter*> cll;
    critter* crit_ptr;
    int tot_levs = 0;
    long xp_to_be_gained = (vict.EXP/EXP_DIVISOR + 30 - agg.getLevel());
@@ -875,7 +876,7 @@ void disburse_xp(critter& agg, const critter& vict) {
    }
 
    if (!agg.FOLLOWER_OF || (agg.FOLLOWER_OF == &agg)) {
-      if (IsEmpty(agg.GROUPEES)) { //solitary person
+      if (agg.GROUPEES.isEmpty()) { //solitary person
          gain_xp(agg, xp_to_be_gained, TRUE);
       }//if
       else { //leader of a group then
@@ -897,7 +898,7 @@ void disburse_xp(critter& agg, const critter& vict) {
       }//else
    }//if
    else { //following someone
-      if (HaveData(&agg, agg.FOLLOWER_OF->GROUPEES)) { 
+      if (agg.FOLLOWER_OF->GROUPEES.haveData(&agg)) { 
                   //if follower is in group
          agg.FOLLOWER_OF->GROUPEES.head(cll);
          while ((crit_ptr = cll.next())) {
@@ -960,7 +961,7 @@ void gain_level(critter& crit) {
    crit.LEVEL++;
    crit.PRACS += d(2, (int)((float)(crit.INT)/6.0)) + 1;
    crit.MA_MAX += mana_gain;
-   crit.setHP_MAX(crit.getHP_MAX() + hp_gain);
+   crit.setHpMax(crit.getHpMax() + hp_gain);
    crit.MV_MAX += d(1, crit.DEX);
    show("You rise a level.\n", crit);
 }//gain_level
@@ -968,7 +969,7 @@ void gain_level(critter& crit) {
 
 void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
    object *corpse, *gold;
-   Cell<object*> ocell;
+   SCell<object*> ocell;
    object* o_ptr;
    String buf(81);
 
@@ -986,7 +987,7 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
 
    if (vict.temp_crit) {
       //Takes care of shielding and so on.
-      vict.temp_crit->Clear();
+      vict.temp_crit->clear();
    }//if
 
    int nrm = vict.getCurRoomNum();
@@ -994,8 +995,10 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
    room_list[nrm].removeCritter(&vict); //decrement's cur in game if NPC
 
    leave_room_effects(room_list[nrm], vict); //takes care of blocking
-   affected_mobs.loseData(&vict);
-   proc_action_mobs.loseData(&vict);
+   
+   // The destructor should take care of these now!! --Ben (**HOPE**)
+   //affected_mobs.loseData(hack);
+   //proc_action_mobs.loseData(&vict);
 
    vict.doUngroup(1, &NULL_STRING);   //no more part of group
    vict.doBecomeNonPet();             //dead pets make no sense!
@@ -1036,8 +1039,7 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
 
    // create corpse object.
    corpse = obj_to_sobj(obj_list[CORPSE_OBJECT], 
-                        room_list[vict.getCurRoomNum()].getInv(),
-                        vict.getCurRoomNum());
+                        &(room_list[vict.getCurRoomNum()]));
 
    recursive_init_loads(*corpse, 0);
 
@@ -1046,10 +1048,12 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
       corpse->setButcherable(TRUE);
    }
 
-   corpse->bag->time_till_disolve = 10; // in ticks
+   corpse->bag->setTimeTillDisolve(10); //in ticks
+
+   // TODO:  Translation
    Sprintf(buf, "The corpse of %S lies here.",
                 name_of_crit(vict, ~0));
-   corpse->in_room_desc = buf;
+   corpse->addInRoomDesc(buf);
    room_list[vict.getCurRoomNum()].gainInv(corpse);
 
    /* Set the weight to that of the living being. */
@@ -1058,23 +1062,23 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
          /*  gold  */
 
    if (vict.GOLD > 0) {
-      gold = obj_to_sobj(obj_list[GOLD_OBJECT], &(corpse->inv), vict.getCurRoomNum());
+      gold = obj_to_sobj(obj_list[GOLD_OBJECT], corpse);
       
       obj_list[GOLD_OBJECT].incrementCurInGame();
       
       gold->cur_stats[1] = vict.GOLD; //transfer gold
       vict.GOLD = 0;
       
-      Put(gold, corpse->inv);
+      corpse->inv.append(gold);
    }//if
 
          /* eq  */
    for (int i = 0; i<MAX_EQ; i++) {
       if (vict.EQ[i]) {
          remove_eq_effects(*(vict.EQ[i]), vict, TRUE, FALSE, i);
-         if (vict.EQ[i]->IN_LIST)
-            vict.EQ[i]->IN_LIST = &(corpse->inv);
-         Put(vict.EQ[i], corpse->inv);
+         if (vict.EQ[i]->isModified())
+            vict.EQ[i]->setContainer(corpse);
+         corpse->inv.append(vict.EQ[i]);
          vict.EQ[i] = NULL;
       }//if
    }//for
@@ -1083,8 +1087,8 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
    vict.inv.head(ocell);
    while ((o_ptr = ocell.next())) {
       drop_eq_effects(*o_ptr, vict, FALSE);
-      if (o_ptr->IN_LIST) 
-         o_ptr->IN_LIST = &(corpse->inv);
+      if (o_ptr->isModified()) 
+         o_ptr->setContainer(corpse);
       corpse->gainInv(o_ptr);
    }//while
    vict.inv.clear();
@@ -1095,9 +1099,9 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
          if (vict.mob->proc_data->sh_data) {
             vict.PERM_INV.head(ocell);
             while ((o_ptr = ocell.next())) {
-               if (o_ptr->IN_LIST) 
-                  o_ptr->IN_LIST = &(corpse->inv);
-               Put(o_ptr, corpse->inv);
+               if (o_ptr->isModified()) 
+                  o_ptr->setContainer(corpse);
+               corpse->inv.append(o_ptr);
             }//while
             vict.PERM_INV.clear(); //should NEVER be SOBJ's
          }//if
@@ -1118,25 +1122,23 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
             corpse->obj_proc = new obj_spec_data;
          }//if
          object* ptr = corpse->obj_proc->skin_ptr = 
-            obj_to_sobj(obj_list[PC_SKIN_OBJECT], &(corpse->inv),
-                        vict.getCurRoomNum());
+            obj_to_sobj(obj_list[PC_SKIN_OBJECT], corpse);
 
          recursive_init_loads(*ptr, 0);
 
-         ptr->names.append(new String(*(Top(vict.names))));
-         Sprintf(buf, "the tattered skin of %S", Top(vict.names));
-         ptr->short_desc = buf;
+         ptr->addName(*(vict.getFirstName()));
+         Sprintf(buf, "the tattered skin of %S", vict.getName());
+         ptr->addShortDesc(buf);
          Sprintf(buf, "The tattered skin of %S lies here.", 
-                 Top(vict.names));
-         ptr->in_room_desc = buf;
+                 vict.getName());
+         ptr->addInRoomDesc(buf);
          Sprintf(buf,
 "This large piece of %s skin was recently hacked from the corpse of %S.
 You wonder why anyone would want the skin of a %s, but perhaps it is just
 a trophy--a symbol of %S's defeat.\n",
-                 get_race_name(vict.RACE),
-                 name_of_crit(vict, ~0), get_race_name(vict.RACE),
-                 name_of_crit(vict, ~0));
-         ptr->long_desc = buf;
+                 vict.getRaceName(NULL), vict.getName(~0),
+                 vict.getRaceName(NULL), vict.getName(~0));
+         ptr->addLongDesc(buf);
          corpse->obj_proc->obj_spec_data_flags.turn_on(2);
       }//if
    }//else
@@ -1165,43 +1167,34 @@ a trophy--a symbol of %S's defeat.\n",
             }
          }//if we should show tags here...
          
-         Cell<stat_spell_cell*> spcll(vict.affected_by);
-         stat_spell_cell* sp_ptr;
-         while ((sp_ptr = spcll.next())) {
-            rem_effects_crit(sp_ptr->stat_spell, vict, FALSE);
+         Cell<SpellDuration*> sdcll(vict.getAffectedBy());
+         SpellDuration* sd_ptr;
+         while ((sd_ptr = sdcll.next())) {
+            rem_effects_crit(sd_ptr->spell, vict, FALSE);
          }//while
-         clear_ptr_list(vict.affected_by);
+         vict.getAffectedBy().clearAndDestroy();
          
-         vict.mini_affected_by.head(spcll);
-         while ((sp_ptr = spcll.next())) {
-            rem_effects_crit(sp_ptr->stat_spell, vict, FALSE);
+         vict.mini_affected_by.head(sdcll);
+         while ((sd_ptr = sdcll.next())) {
+            rem_effects_crit(sd_ptr->spell, vict, FALSE);
          }//while
-         clear_ptr_list(vict.mini_affected_by);
-         
+         vict.mini_affected_by.clearAndDestroy();
          
          room_list[LOGIN_ROOM].gainCritter(&vict);
-         Sprintf(buf, "%S appears in the room looking quite dead!\n", 
-                 name_of_crit(vict, ~0));
-         buf.Cap();
-         room_list[LOGIN_ROOM].showAllCept(buf, &vict);
-         show("\n\n\n\nYOU ARE DEAD!!!!!!!!!!!\n", vict);
-         show("\nWelcome once again.\n", vict);
-         show("Perhaps this time you'll fare a little better!!\n", vict);
+         room_list[LOGIN_ROOM].showAllCept(CS_APPEARS_DEAD, &vict);
+         vict.show(CS_YOU_DEAD_NL);
+         vict.show(CS_WELCOME_AGAIN);
+         vict.show(CS_FARE_BETTER);
          look(1, &NULL_STRING, vict); //sos ya can see the temple desc, etc.
          vict.save();
       }//if not con-death
       else { //PERM DEATH!!
-         show(
-"You have reached the end of your luck!.  Perhaps your soul will endure longer
-next time.  Please feel free to rejoin the Realm in another mortal coil!\n",
-              vict);
-
-         Sprintf(buf,
-"gasps a final farewell to the Realm in which %s has dwelt for %i years!",
-                 get_he_she(vict), vict.getAge());
-         emote(buf, vict, room_list[nrm], TRUE);
-
-         buf = *(Top(vict.names));
+         vict.show(CS_END_OF_LUCK);
+         room_list[nrm].doEmote(vict, Selectors::instance().CC_all,
+                                Selectors::instance().CC_sleeping,
+                                CS_GASP_FAREWELL, get_he_she(vict),
+                                vict.getAge());
+         buf = *(vict.getFirstName());
          buf.Tolower();
          buf.Prepend("rm ./Pfiles/");
          system(buf);
@@ -1225,7 +1218,7 @@ next time.  Please feel free to rejoin the Realm in another mortal coil!\n",
 
 
 critter* mob_to_smob(critter& mob, const int room_num, int do_sub,
-                     int i_th, const String* name, int see_bit) {
+                     int i_th, const String& name, critter& viewer) {
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In mob_to_smob:  " << *(mob.getName()) << endl;
    }
@@ -1258,7 +1251,7 @@ critter* mob_to_smob(critter& mob, const int room_num, int do_sub,
    crit_ptr->setCurRoomNum(room_num);
 
    if (do_sub) {
-      if (!room_list[room_num].sub_a_4_b(crit_ptr, i_th, *name, see_bit)) {
+      if (!room_list[room_num].sub_a_4_b(crit_ptr, i_th, *name, &viewer)) {
          mudlog << "ERROR: crit_sub_a_4_b failed in mob_to_smob, rm# "
                 << room_num << " i_th: " << i_th << " name: " << *name << endl;
       }//if
@@ -1270,7 +1263,7 @@ critter* mob_to_smob(critter& mob, const int room_num, int do_sub,
       }//if
    }//else
 
-   affected_mobs.gainData(crit_ptr);  //basically a list of smobs
+   affected_mobs.appendUnique(crit_ptr);  //basically a list of smobs
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "mob_to_smob:  returning critter, address:  " << crit_ptr
@@ -1336,7 +1329,7 @@ critter* mob_to_smob(critter& mob, room& rm, int suppress_sub_fail_msg) {
       crit_ptr->incrementCurInGame();
    }//if
    
-   affected_mobs.gainData(crit_ptr);  //basically a list of smobs
+   affected_mobs.appendUnique(crit_ptr);  //basically a list of smobs
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "mob_to_smob:  returning critter, address:  " << crit_ptr
@@ -1347,22 +1340,12 @@ critter* mob_to_smob(critter& mob, room& rm, int suppress_sub_fail_msg) {
 }//mob_to_smob
 
 
-
-object* obj_to_sobj(object& obj, List<object*>* in_list,
-                    int do_sub, int i_th, const String* name, int see_bit, 
-                    room& rm) {
+object* obj_to_sobj(object& obj, Entity* container, int do_sub,
+                    int i_th, const String* name, critter& viewer) {
    //log("In obj_to_sobj.\n");
 
-   if (!name || !in_list) {
-      core_dump("ERROR:  name or in_list NULL in obj_to_sobj.\n");
-   }//if
-
-   if (obj.IN_LIST) {
+   if (obj.isModified()) {
       core_dump("ERROR:  obj_to_sobj called on SOBJ, version 1.\n");
-   }//if
-
-   if (!in_list) {
-      core_dump("ERROR:  in_list is NULL in obj_to_sobj, version 1!!\n");
    }//if
 
    obj.OBJ_FLAGS.turn_on(70); //now it can be/should be reset when pulsed
@@ -1371,11 +1354,11 @@ object* obj_to_sobj(object& obj, List<object*>* in_list,
 
    obj_ptr_log << "OBJ_CR " << obj.getIdNum() << " " << obj_ptr << "\n";
 
-   obj_ptr->IN_LIST = in_list;
-   obj_ptr->setCurRoomNum(rm.getIdNum(), 0);
+   obj_ptr->setContainer(container);
+   obj_ptr->setModified(TRUE);
 
    if (do_sub) {
-      if (!obj_sub_a_4_b(obj_ptr, *in_list, i_th, name, see_bit, rm)) {
+      if (!obj_sub_a_4_b(obj_ptr, container->getInv(), i_th, name, &viewer)) {
          mudlog.log(ERR, "ERROR:  obj_sub_a_4_b failed in obj_to_sobj.\n");
       }//if
    }//if
@@ -1385,7 +1368,7 @@ object* obj_to_sobj(object& obj, List<object*>* in_list,
       //obj_list->incrementCurInGame();
    }
 
-   affected_objects.gainData(obj_ptr);  //basically a list of sobjs
+   affected_objects.appendUnique(obj_ptr);  //basically a list of sobjs
    return obj_ptr;
 }//obj_to_sobj
 
@@ -1409,6 +1392,6 @@ object*  obj_to_sobj(object& obj, Entity* container) {
    obj_ptr->setContainer(container);
    obj_ptr->setModified(TRUE);
 
-   affected_objects.gainData(obj_ptr);  //basically a list of sobjs
+   affected_objects.appendUnique(obj_ptr);  //basically a list of sobjs
    return obj_ptr;
 }//obj_to_sobj

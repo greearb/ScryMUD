@@ -1,5 +1,5 @@
-// $Id: olc2.cc,v 1.13 1999/08/10 07:06:20 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
+// $Id: olc2.cc,v 1.14 1999/08/20 06:20:06 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
 
 //
 //ScryMUD Server Code
@@ -44,18 +44,36 @@
 #include "SkillSpell.h"
 
 
-//TODO:  (Good work, Noah (right??)).
-// A few comments:  Let's let this thing give comments back to some PC
-// in the case of a bad item.  That way they can take steps to re-add
-// the stat correctly.  I propose the following prototype:
-//
 // int normalize_obj(object& obj, bool just_check, critter* pc) {
 //
-//  If pc is !NULL, then send messages to it when possible.
-//  Thanks,
-//  Ben
+//  If pc is !NULL, then send messages to it when possible.  This will
+// allow the PC to find out what's wrong with the object and fix it, or
+// complain about it.
+//
+// Note:  even if just_check is set, certain things (the 1024 vis bit,
+// some of the weapon type and wearable flags, certain quantities if negative)
+// can be altered.  I consider this a feature, but could be convinced to
+// "fix" it if necessary.
+//                                                     - angelbob
+//  Sounds good to me...
+//  Now we need to create some methods to audit and/or fix zones.. --Ben
+//
+#ifdef n_show
+#warning Macro name already defined!  Change n_show in olc2.cc
+#endif
 
-int normalize_obj(object& obj, bool just_check) {
+#define n_show(string, pc)  if(pc) show(string, *pc)
+
+int normalize_obj(object& obj, bool just_check, critter* pc) {
+   //NOTE: Using a String object, and Sprintf will guarantee that
+   // you never overflow (it grows). --Ben
+  char buffer[4096];  // Pick a nice high value, just for safety
+
+  sprintf(buffer,
+	  "Normalizing object:  finding limits by object level %d.\n",
+	  obj.OBJ_LEVEL);
+  n_show(buffer, pc);
+
    if (obj.OBJ_NUM != obj_list[obj.OBJ_NUM].OBJ_NUM) {
       mudlog << "ERROR:  normalize_obj, object numbers not in sync:  "
              << " obj.OBJ_NUM:  " << obj.OBJ_NUM << "  other:  "
@@ -70,12 +88,17 @@ int normalize_obj(object& obj, bool just_check) {
    // If not worn is on, then zero out the other worn flags just in case.
    if (obj.OBJ_FLAGS.get(21)) { 
       for (int i = 22; i<40; i++) {
-         obj.OBJ_FLAGS.turn_off(i);
+	if(obj.OBJ_FLAGS.get(i)) {
+	  sprintf(buffer, "Not_worn is on:  turning off flag %d.\n", i);
+	  n_show(buffer, pc);
+	  obj.OBJ_FLAGS.turn_off(i);
+	} // if
       }//for
    }//if
 
    // Turn on vis bit 1024
    if(!(obj.OBJ_VIS_BIT & 1024)) {
+     n_show("Turning on vis bit 1024.\n", pc);
      obj.OBJ_VIS_BIT = obj.OBJ_VIS_BIT | 1024;
    }
 
@@ -90,6 +113,10 @@ int normalize_obj(object& obj, bool just_check) {
 
    int stat_plus;
    int other_plus;
+   if(obj.OBJ_LEVEL < 0) {
+     obj.OBJ_LEVEL = 0;
+     n_show("You can't have a negative object level.  Making it 0.\n", pc);
+   }
    if(obj.OBJ_LEVEL <= 10) {
      stat_plus = 2;
      other_plus = 20;
@@ -107,14 +134,22 @@ int normalize_obj(object& obj, bool just_check) {
          mudlog << "ERROR: normalize_obj, object level not in <= 40 range:  "
                 << " obj.OBJ_NUM:  " << obj.OBJ_NUM << endl;
       }
-      stat_plus = 0;
-      other_plus = 0;
+      n_show("Illegal object level, using level 1 bounds.\n", pc);
+      if(!just_check) {
+	obj.OBJ_LEVEL = 1;
+      }
+      stat_plus = 2;
+      other_plus = 20;
    }
 
    // If obj is not a weapon, don't let it be any particular kind of weapon
    if(obj.OBJ_FLAGS.get(40)) {
       for (int i = 41; i<49; i++) {
-         obj.OBJ_FLAGS.turn_off(i);
+	if(obj.OBJ_FLAGS.get(i)) {
+	  sprintf(buffer, "Object is not_weapon, turning off flag %d.\n", i);
+	  n_show(buffer, pc);
+	  obj.OBJ_FLAGS.turn_off(i);
+	}
       }//for
       obj.OBJ_FLAGS.turn_off(57);
    }
@@ -122,9 +157,11 @@ int normalize_obj(object& obj, bool just_check) {
    // Figure out how stompy a weapon is
    if(obj.OBJ_DAM_DICE_COUNT < 0) {
      obj.OBJ_DAM_DICE_COUNT = 0;
+     n_show("Weapon can't have negative dice count.  Fixing.\n", pc);
    }
    if(obj.OBJ_DAM_DICE_SIDES < 0) {
      obj.OBJ_DAM_DICE_SIDES = 0;
+     n_show("Weapon can't have negative dice sides.  Fixing.\n", pc);
    }
 
    // TODO:
@@ -132,20 +169,29 @@ int normalize_obj(object& obj, bool just_check) {
    // After all, a 30d1 sword is much better than a 1d30. --Ben
    // NOTE:  there is a d(int cnt, int sides) method...
 
+   // Average for 1 die is (1 + DIE_SIDES)/2...  Add an extra half to the
+   // end before truncate, so we round 1/2 hp up on damage count.
+   int dam_avg = int((float(obj.OBJ_DAM_DICE_COUNT)
+		      * (float(obj.OBJ_DAM_DICE_SIDES) + 0.5)) + 0.5);
+
    int dam_max = obj.OBJ_DAM_DICE_COUNT * obj.OBJ_DAM_DICE_SIDES;
-   // Heh, clever, never could effectively use the ?: syntax!! --BEN
    int bracket = (obj.OBJ_LEVEL % 5) ? (obj.OBJ_LEVEL/5) + 1 : (obj.OBJ_LEVEL/5);
-   int dam_allowed = 6 + 4*bracket;
-   while(dam_max > dam_allowed) {
+   int dam_max_allowed = 6 + 4*bracket;
+   int dam_avg_allowed = 6 + 2*bracket;  // Leave bounds loose for now
+   if((dam_max > dam_max_allowed) || (dam_avg > dam_avg_allowed)) {
+     n_show("Damage average or max too high for object level.\n", pc);
+   }
+   while(!just_check
+	 && ((dam_max > dam_max_allowed) || (dam_avg > dam_avg_allowed))) {
      if(obj.OBJ_DAM_DICE_COUNT > obj.OBJ_DAM_DICE_SIDES) {
        obj.OBJ_DAM_DICE_COUNT--;
      } else {
        obj.OBJ_DAM_DICE_SIDES--;
      }
      dam_max = obj.OBJ_DAM_DICE_COUNT * obj.OBJ_DAM_DICE_SIDES;
+     dam_avg = int((float(obj.OBJ_DAM_DICE_COUNT)
+		    * (float(obj.OBJ_DAM_DICE_SIDES) + 0.5)) + 0.5);
    }
-
-   // TODO:  count good stat affects, limit their number and/or power
 
    Cell<stat_spell_cell*> cll(obj.stat_affects);
    stat_spell_cell* ptr, *tptr;
@@ -153,6 +199,9 @@ int normalize_obj(object& obj, bool just_check) {
    ptr = cll.next();
    int stat_goodies = 0;
    int max_bonus = stat_plus * 2;
+   // is_bonus is the amount of bonus (from max_bonus total) that the
+   // current entry amounts to.  For a bad stat affect, this is zero,
+   // or it can be up to four or five for extremely good affects.
    int is_bonus;
 
    while (ptr) {
@@ -176,15 +225,25 @@ int normalize_obj(object& obj, bool just_check) {
             bd = bound(-2*stat_plus, stat_plus, bd);
 	    bd = bound(-2*stat_plus, max_bonus - stat_goodies, bd);
 	    if(bd > 0) is_bonus = bd;
+	    if(bd != old_bd) {
+	      sprintf(buffer, "Value %d for stat %d disallowed.\n",
+		      old_bd, ss);
+	      n_show(buffer, pc);
+	    }
          }
 	 else if ((ss == 7) || (ss == 8)) {             // To hit, damage
  	    bd = bound(-6, 3, bd);
 	    if(bd > 0) is_bonus = 1;
+	    if(bd != old_bd) {
+	      sprintf(buffer, "Value %d for stat %d disallowed.\n",
+		      old_bd, ss);
+	      n_show(buffer, pc);
+	    }
 	 }
          else if (ss == 9) {            // ac
 	    // TODO:  finish
-	    // Note: armor in multiple categories (heavy/light) should be restricted
-	    // as lightest category, to prevent abuse.
+	    // Note: armor in multiple categories (heavy/light) should be
+	    // restricted as lightest category, to prevent abuse.
 	    if (obj.OBJ_FLAGS.get(23)
 	       || obj.OBJ_FLAGS.get(24)  // neck
 	       || obj.OBJ_FLAGS.get(25)  // cloak (around body)
@@ -197,6 +256,12 @@ int normalize_obj(object& obj, bool just_check) {
 	       ) {
 	      // This is light armor.
 	      bd = bound(-bracket, 2*bracket, bd);
+	      if(bd != old_bd) {
+		sprintf(buffer,
+			"Value %d for light armor disallowed.\n",
+			old_bd);
+		n_show(buffer, pc);
+	      }
 	    } else if (obj.OBJ_FLAGS.get(22)     // head
 		      || obj.OBJ_FLAGS.get(26)  // arms
 		      || obj.OBJ_FLAGS.get(29)  // gloves (hands)
@@ -207,79 +272,128 @@ int normalize_obj(object& obj, bool just_check) {
 		      ) {
 	      // This is medium armor
 	      bd = bound(-3*bracket, 6*bracket, bd);
+	      if(bd != old_bd) {
+		sprintf(buffer,
+			"Value %d for medium armor disallowed.\n",
+			old_bd);
+		n_show(buffer, pc);
+	      }
 	    } else if (obj.OBJ_FLAGS.get(33) || obj.OBJ_FLAGS.get(39)) {
 	      // This is body armor and/or a shield
 	      bd = bound(-5*bracket, 10*bracket, bd);
+	      if(bd != old_bd) {
+		sprintf(buffer,
+			"Value %d for heavy armor disallowed.\n",
+			old_bd);
+		n_show(buffer, pc);
+	      }
 	    } else {
 	      // Don't know what it is :-(
 	      bd = bound(-other_plus, 2*other_plus, bd);
+	      if(bd != old_bd) {
+		sprintf(buffer,
+			"Value %d for unusual armor type disallowed.\n",
+			old_bd);
+		n_show(buffer, pc);
+	      }
 	    }
 	    if (bd < 0)
-               is_bonus = 1; //TODO:  plz use TRUE or FALSE if it's a boolean. --Ben
+               is_bonus = 1;
          }
          else if (ss == 10) {           // attacks
             bd = bound(-1, 2, bd);
 	    bd = bound(-1, max_bonus - stat_goodies, bd);
 	    if(bd > 0) is_bonus = bd;
+	    if(old_bd != bd) {
+	      n_show("Too many attacks added or subtracted!\n", pc);
+	    }
          }
          else if ((ss >= 15) && (ss <= 17)) {
  	    bd = bound(-200*stat_plus, 100*stat_plus, bd);  // HP, mana, move
 	    if(bd > 0) is_bonus = 1;
+	    if(old_bd != bd) {
+	      n_show("Too much current hp/mana/move added or subtracted.\n",
+		     pc);
+	    }
          }
          else if (ss == 18) {           // alignment
 	    bd = bound(-50, 50, bd);    // I'll just leave this as is
          }
-//         else if (ss == 22) {           // practices -- is this meant to be modified?
-//            bd = bound(0, 2, bd);       // Nope, fixed it above in the excludes. --Ben
-//	    bd = bound(0, max_bonus - stat_goodies, bd);
-//	    if(bd > 0) is_bonus = bd;
-//         }
          else if ((ss >= 23) && (ss <= 25)) {  // hp, mana, move maxima
             bd = bound(-30*stat_plus, 15*stat_plus, bd);
 	    if(bd > 0) is_bonus = 1;
+	    if(old_bd != bd) {
+	      n_show("Too much max hp/mana/move added or subtracted.\n", pc);
+	    }
          }
          else if (ss == 27) {           // Damage received
             bd = bound((-other_plus)/3, 2*other_plus/3, bd);
 	    bd = bound(-5*(max_bonus - stat_goodies), 2*other_plus/3, bd);
 	    if(bd < 0) is_bonus = (-bd + 4)/5; // bonus of 1 for each 5%
+	    if(old_bd != bd) {
+	      n_show("Too much dam_received affected.\n", pc);
+	    }
          }
 	 else if (ss == 28) {           // Damage given
             bd = bound((-2*other_plus)/3, other_plus/3, bd);
 	    bd = bound((-other_plus)/3, 5*(max_bonus - stat_goodies), bd);
 	    if(bd > 0) is_bonus = (bd + 4)/5;  // bonus of 1 for each 5%
+	    if(old_bd != bd) {
+	      n_show("Too much dam_given affected.\n", pc);
+	    }
 	 }
          else if ((ss >= 29) && (ss <= 32)) {  // resistances
             bd = bound(-other_plus, 2*other_plus, bd);
 	    if(bd < 0) is_bonus = 1;
+	    if(old_bd != bd) {
+	      sprintf(buffer, "Changed resistance %d by %d.  Disallowed.\n",
+		      ss, old_bd);
+	      n_show(buffer, pc);
+	    }
          }
-         else if ((ss == 35) || (ss == 36)) {  // Bare hand dice, bare hand sides
+         else if ((ss == 35) || (ss == 36)) {  // Bare hand dice,
+	                                       // bare hand sides
             bd = bound(-2*stat_plus, stat_plus, bd);
 	    if(bd > 0) is_bonus = 1;
+	    if(old_bd != bd) {
+	      n_show("Barehand dice/sides affect out of range.\n", pc);
+	    }
          }
          else if ((ss >= 37) && (ss <= 39)) {  // Hp/mana/move regen
             bd = bound(-other_plus, other_plus/2, bd);
 	    if(bd > 0) is_bonus = 1;
+	    if(old_bd != bd) {
+	      n_show("Hp/mana/mov regen out of range.  Disallowed.\n", pc);
+	    }
          }
          else if ((ss >= 100) && (ss <= 102)) { // Hunger, thirst, drugged
-	    bd = bound(-50, 50, bd);            // Dunno what to do with this.  Leave it.
+	    bd = bound(-50, 50, bd);
+	    if(old_bd != bd) {
+	      n_show("Hunger/Thirst/Drug out of range.\n", pc);
+	    }
          }
 
-	 if(just_check) {
-	   if(old_bd != bd) {
-              // TODO:  We need a message saying which thing is out of whack.
-              return 1;  // Object not "normal", flag it
-	   }
-	 } else {
+	 stat_goodies += is_bonus;
+	 if(!just_check) {
 	   ptr->bonus_duration = bd;
-	   stat_goodies += is_bonus;
-	   if((bd == 0) || (stat_goodies > max_bonus)) {
-              // Remove ineffective stat mods, or disallowed ones that are too good
-              // TODO:  Would be good to get a message here too...
-              tptr = ptr;
-              ptr = obj.stat_affects.lose(cll);
-              delete tptr;
-	   }
 	 }
+	 if((bd == 0) || (stat_goodies > max_bonus)) {
+	   // Remove ineffective stat mods, or ones that are too much
+	   if(bd != 0) {
+	     sprintf(buffer,
+		     "Too many (or too high) bonuses, stat %d, amt %d.\n",
+		     ss, old_bd);
+	   } else {
+	     sprintf(buffer, "Empty mod for %d.\n", ss);
+	   }
+	   n_show(buffer, pc);
+	   if(!just_check) {
+	     // Delete that puppy.
+	     tptr = ptr;
+	     ptr = obj.stat_affects.lose(cll);
+	     delete tptr;
+	   }
+	 } // (bd == 0) || (stat_goodies > max_bonus)
 
          if(ptr) ptr = cll.next();
       }//else
@@ -301,6 +415,7 @@ int normalize_obj(object& obj, bool just_check) {
    return 0;
 }//normalize_obj
 
+#undef n_show
 
 
 int normalize_mob(critter& crit) {

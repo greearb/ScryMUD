@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.28 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: object.h,v 1.29 1999/08/20 06:20:06 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
 
 //
 //ScryMUD Server Code
@@ -251,7 +251,6 @@ public:
    object* haveObjNumbered(int i_th, int num, int see_bit, room& rm);
    object* haveObjNamed(int i_th, const String* name, critter* viewer);
 
-   int isNamed(const String& name) const;
    int isLocked() const;
    int isMagLocked() const;
    int isClosed() const;
@@ -270,6 +269,7 @@ public:
    int hasScript() const { return obj_flags.get(76); }
    int isLiquid() const;
    int isCanteen() const;
+   StatBonus* hasStatAffect(int stat_num);
 
    void setModified(int val) { is_modified = val; }
    void setComplete();

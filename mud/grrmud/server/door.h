@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.17 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: door.h,v 1.18 1999/08/20 06:20:05 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
 
 //
 //ScryMUD Server Code
@@ -58,6 +58,8 @@ public:
    String* getDirection();
    virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
+   virtual SafeList<object*>& getInv();
+
    virtual LEtypeE getEntityType() { return LE_DOOR_DATA; }
 
 }; //door_data
@@ -97,7 +99,11 @@ public:
    int read(istream& da_file, int read_all = TRUE);
    virtual String* getName(int c_bit = ~0);
    virtual String* getName(critter* viewer);
-   
+   virtual int nameIsSecret(const String* name);
+   virtual const char* getAbrevDir();
+
+   virtual SafeList<object*>& getInv();
+
    critter* getCritBlocking() const { return crit_blocking; }
    void setCritBlocking(critter* pc) { crit_blocking = pc; }
    int getDestination() const { return destination; }

@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.40 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.40 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: critter.h,v 1.41 1999/08/20 06:20:05 greear Exp $
+// $Revision: 1.41 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
 
 //
 //ScryMUD Server Code
@@ -657,8 +657,8 @@ public:
 
    /** I think the compiler is screwing up, I shouldn't have to declare this here
     * --Ben */
-   virtual const String* getName(int c_bit = ~0) { return Entity::getName(c_bit); }
-   virtual const String* getName(critter* viewer); //overload Entity
+   virtual String* getName(int c_bit = ~0) { return Entity::getName(c_bit); }
+   virtual String* getName(critter* viewer); //overload Entity
    int getCurWeight();
    int getMaxWeight();
 
@@ -728,6 +728,10 @@ public:
    void addInRoomDesc(LString& buf);
    void addShortDesc(String& buf);
    void addShortDesc(LString& buf);
+
+   void setShortDesc(CSentryE desc);
+   void setLongDesc(CSentryE desc);
+
    void appendShortDesc(CSentryE whichun);
    void appendInRoomDesc(CSentryE whichun);
 
@@ -858,7 +862,7 @@ public:
    void setHP(int i);
    void setMana(int i);
    void setMov(int i);
-   void setHP_MAX(int i);
+   void setHpMax(int i);
    void setMode(PcMode val);
    void setImmLevel(int i);
    void setCurRoomNum(int i); //assign in_roomtoo

@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.27 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: misc2.cc,v 1.28 1999/08/20 06:20:06 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
 
 //
 //ScryMUD Server Code
@@ -62,7 +62,7 @@ critter* load_player_shop_owner(int mob_num) {
       
       if (dafile) {
          critter* sk = new critter();
-         sk->Read(dafile, TRUE); //read all inventory.
+         sk->read(dafile, TRUE); //read all inventory.
 
          // Make sure it's labeled as a SMOB
          sk->short_cur_stats[26] = 1; /* make it a SMOB */
@@ -104,7 +104,7 @@ int save_player_shop_owner(critter& pc) {
       ofstream dafile(buf);
       
       if (dafile) {
-         pc.Write(dafile);
+         pc.write(dafile);
          return TRUE;
       }//if
       else {
@@ -197,8 +197,8 @@ void lose_fly(critter& pc, short do_msg = FALSE) {
 
 
 void show_stat_affects(object& obj, critter& pc) {
-   Cell<stat_spell_cell*> cll(obj.stat_affects);
-   stat_spell_cell* ptr;
+   Cell<StatBonus*> cll(obj.stat_affects);
+   StatBonus* ptr;
    String buf(100);
 
    if (obj.stat_affects.isEmpty()) {
@@ -206,149 +206,149 @@ void show_stat_affects(object& obj, critter& pc) {
    }
    
    while ((ptr = cll.next())) {
-      if (ptr->stat_spell == 1) {
-         Sprintf(buf, "Strength[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      if (ptr->stat == 1) {
+         Sprintf(buf, "Strength[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 2) {
-         Sprintf(buf, "Inteligence[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 2) {
+         Sprintf(buf, "Inteligence[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 3) {
-         Sprintf(buf, "Constitution[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 3) {
+         Sprintf(buf, "Constitution[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 4) {
-         Sprintf(buf, "Charisma[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 4) {
+         Sprintf(buf, "Charisma[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 5) {
-         Sprintf(buf, "Wisdom[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 5) {
+         Sprintf(buf, "Wisdom[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 6) {
-         Sprintf(buf, "Dexterity[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 6) {
+         Sprintf(buf, "Dexterity[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 7) {
-         Sprintf(buf, "Hit (chance)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 7) {
+         Sprintf(buf, "Hit (chance)[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 8) {
-         Sprintf(buf, "Damage[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 8) {
+         Sprintf(buf, "Damage[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 9) {
-         Sprintf(buf, "AC (armor)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 9) {
+         Sprintf(buf, "AC (armor)[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 10) {
-         Sprintf(buf, "Attacks[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 10) {
+         Sprintf(buf, "Attacks[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 15) {
-         Sprintf(buf, "HP (current)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 15) {
+         Sprintf(buf, "HP (current)[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 16) {
+      else if (ptr->stat == 16) {
          Sprintf(buf, "Mana (current)[%i]:%P25 %i\n",
-                 ptr->stat_spell, ptr->bonus_duration);
+                 ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 17) {
+      else if (ptr->stat == 17) {
          Sprintf(buf, "Movement (current)[%i]:%P25 %i\n",
-                 ptr->stat_spell, ptr->bonus_duration);
+                 ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 18) {
-         Sprintf(buf, "Alignment[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 18) {
+         Sprintf(buf, "Alignment[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 22) {
-         Sprintf(buf, "Practices[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 22) {
+         Sprintf(buf, "Practices[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 23) {
-         Sprintf(buf, "HP (max)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 23) {
+         Sprintf(buf, "HP (max)[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 24) {
-         Sprintf(buf, "Mana (max)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 24) {
+         Sprintf(buf, "Mana (max)[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 25) {
-         Sprintf(buf, "Movement (max)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 25) {
+         Sprintf(buf, "Movement (max)[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 27) {
+      else if (ptr->stat == 27) {
          Sprintf(buf, "Damage Recieved Modifier[%i]:%P25 %i\n",
-                 ptr->stat_spell, ptr->bonus_duration);
+                 ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 28) {
+      else if (ptr->stat == 28) {
          Sprintf(buf, "Damage Given Modifier[%i]:%P25 %i\n",
-                 ptr->stat_spell, ptr->bonus_duration);
+                 ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 29) {
+      else if (ptr->stat == 29) {
          Sprintf(buf, "Heat Resistance[%i]:%P25 %i\n",
-                 ptr->stat_spell, ptr->bonus_duration);
+                 ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 30) {
+      else if (ptr->stat == 30) {
          Sprintf(buf, "Cold Resistance[%i]:%P25 %i\n",
-                 ptr->stat_spell, ptr->bonus_duration);
+                 ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 31) {
+      else if (ptr->stat == 31) {
          Sprintf(buf, "Electrical Resistance[%i]:%P25 %i\n",
-                 ptr->stat_spell, ptr->bonus_duration);
+                 ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 32) {
-         Sprintf(buf, "Spell Resistance[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 32) {
+         Sprintf(buf, "Spell Resistance[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 35) {
+      else if (ptr->stat == 35) {
          Sprintf(buf, "Bare Hand Dice Count[%i]:%P25 %i\n",
-                 ptr->stat_spell, ptr->bonus_duration);
+                 ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 36) {
+      else if (ptr->stat == 36) {
          Sprintf(buf, "Bare Hand Dice Sides[%i]:%P25 %i\n",
-                 ptr->stat_spell, ptr->bonus_duration);
+                 ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 37) {
+      else if (ptr->stat == 37) {
          Sprintf(buf, "HP Regeneration[%i]:%P25 %i\n",
-                 ptr->stat_spell, ptr->bonus_duration);
+                 ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 38) {
+      else if (ptr->stat == 38) {
          Sprintf(buf, "Mana Regeneration[%i]:%P25 %i\n",
-                 ptr->stat_spell, ptr->bonus_duration);
+                 ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 39) {
+      else if (ptr->stat == 39) {
          Sprintf(buf, "Movement Regeneration[%i]:%P25 %i\n",
-                 ptr->stat_spell, ptr->bonus_duration);
+                 ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 100) {
-         Sprintf(buf, "Hunger[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 100) {
+         Sprintf(buf, "Hunger[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 101) {
-         Sprintf(buf, "Thirst[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 101) {
+         Sprintf(buf, "Thirst[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
-      else if (ptr->stat_spell == 102) {
-         Sprintf(buf, "Drugged[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
+      else if (ptr->stat == 102) {
+         Sprintf(buf, "Drugged[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
          show(buf, pc);
       }//if
       else {
-         Sprintf(buf, "Unknown [%i]:, value: [%i]\n", ptr->stat_spell,
-                 ptr->bonus_duration);
+         Sprintf(buf, "Unknown [%i]:, value: [%i]\n", ptr->stat,
+                 ptr->bonus);
          show(buf, pc);
       }//if
 
@@ -589,45 +589,6 @@ critter* check_for_diversions(critter& pc, char* tests, critter& agg) {
 }//check_for_diversions
 
 
-stat_spell_cell* is_affected_by(int spell_num, critter& pc) {
-  Cell<stat_spell_cell*> cll(pc.affected_by);
-  stat_spell_cell* ptr;
-
-  while ((ptr = cll.next())) {
-    if (ptr->stat_spell == spell_num)
-      return ptr;
-  }//while
-
-  return NULL;
-}//is_affected_by
-
-
-stat_spell_cell* is_affected_by(int spell_num, object& obj) {
-  Cell<stat_spell_cell*> cll(obj.affected_by);
-  stat_spell_cell* ptr;
-
-  while ((ptr = cll.next())) {
-    if (ptr->stat_spell == spell_num)
-      return ptr;
-  }//while
-
-  return NULL;
-}//is_affected_by (obj)
-
-
-stat_spell_cell* has_stat_affect(int stat_num, object& obj) {
-  Cell<stat_spell_cell*> cll(obj.stat_affects);
-  stat_spell_cell* ptr;
-
-  while ((ptr = cll.next())) {
-    if (ptr->stat_spell == stat_num)
-      return ptr;
-  }//while
-
-  return NULL;
-}//has_stat_affect
-
-
 const char* get_opposite_dir(const char* dir) {
    int i = strlen(dir);
 
@@ -657,13 +618,13 @@ const char* get_opposite_dir(const char* dir) {
 
 
 void leave_room_effects(room& rm, critter& pc) {
-   Cell<door*> cll(rm.DOORS);
+   SCell<door*> cll(rm.DOORS);
    door* ptr;
 
    while ((ptr = cll.next())) {
-      if (ptr->crit_blocking == &pc) {
-         ptr->dr_data->door_data_flags.turn_off(14); //no longer blocked
-         ptr->crit_blocking = NULL;
+      if (ptr->getCritBlocking() == &pc) {
+         ptr->setBlocked(FALSE);
+         ptr->setCritBlocking(NULL);
       }//if
    }//while
 
@@ -676,7 +637,6 @@ void leave_room_effects(room& rm, critter& pc) {
 
    String cmd = "exit";
    rm.checkForProc(cmd, NULL_STRING, pc, -1);
-
 }//leave_room_effects
 
 
@@ -688,15 +648,6 @@ void leave_room_effects(room& rm, object& obj) {
    //rm.checkForProc(cmd, NULL_STRING, pc, -1);
 
 }//leave_room_effects (Objects)
-
-
-
-const String* single_obj_name(object& obj, int see_bit) {
-   if (detect(see_bit, obj.OBJ_VIS_BIT))
-      return Top(obj.names);
-   else
-      return &SOMETHING; //global 'someone' String
-}//single_obj_name
 
 
 const char* get_himself_herself(critter& pc) {
@@ -733,7 +684,7 @@ const char* get_him_her(critter& pc) {
 
 
 int is_grouped(critter& crit, critter& pc) {
-   Cell<critter*> cll(pc.GROUPEES);
+   SCell<critter*> cll(pc.GROUPEES);
    critter* ptr;
 
    while ((ptr = cll.next())) {
@@ -790,7 +741,6 @@ int get_race_num(const char* name) {
 }//get race_num
 
 
-
 int get_class_num(const char* name) {
    if (strcasecmp(name, "warrior") == 0) 
       return WARRIOR;
@@ -810,7 +760,6 @@ int get_class_num(const char* name) {
       return BARD;
    return OTHER_CLASS;
 }//get class num
-
 
 
 const char* get_race_name(int num) {
@@ -889,7 +838,7 @@ int min(int i, int j) {
 }
 
 void save_all() {
-  Cell<critter*> cll(pc_list);
+  SCell<critter*> cll(pc_list);
   critter* ptr;
 
   //log("In save_all.\n");
@@ -905,20 +854,6 @@ void save_all() {
   }//while
 
 }//save all
-
-
-say_proc_cell* have_topic_named(List<say_proc_cell*> lst, const String& msg) {
-  Cell<say_proc_cell*> cll(lst);
-  say_proc_cell* ptr;
-
-  while ((ptr = cll.next())) {
-    if (strcasecmp(ptr->topic, msg) == 0) {
-      return ptr;
-    }//if
-  }//while
-
-  return NULL;
-}//have_topic_named
 
 
 void strip_hegemon_tags(String& str) {
@@ -1090,44 +1025,14 @@ void parse_for_max_80(String& str) {
 }//parse_for_max_80()
 
 
-short name_is_secret(const String* name, door& dr) {
-   Cell<String*> cll(dr.dr_data->names);
-   String* ptr;
-   int len = name->Strlen();
-
-   if (len == 0)
-      return FALSE;
-
-   if (dr.destination >= 0) { //if positive, go from top
-      ptr = cll.next();
-      while ((ptr = cll.next())) {
-	 if (*ptr == "#")
-	    break; // didn't find it
-	 if (strncasecmp(*name, *ptr, len) == 0)
-	    return TRUE;
-      }//while
-      return FALSE;
-   }//if
-   else {
-      ptr = cll.prev();
-      while ((ptr = cll.prev())) {
-	 if (*ptr == "#")
-	    break; // didn't find it
-	 if (strncasecmp(*name, *ptr, len) == 0)
-	    return TRUE;
-      }//while
-      return FALSE;
-   }//else
-}//name_is_secret
-
 // May return a NULL!
 String* dir_of_room(room& rm, int dest_rm_num) {
-   Cell<door*> cll(rm.DOORS);
+   SCell<door*> cll(rm.DOORS);
    door* ptr;
 
    while ((ptr = cll.next())) {
-      if (abs(ptr->destination) == abs(dest_rm_num)) {
-	 return direction_of_door(*ptr);
+      if (abs(ptr->getDestination()) == abs(dest_rm_num)) {
+	 return ptr->getDirection();
       }//if
    }//while
 
@@ -1136,13 +1041,13 @@ String* dir_of_room(room& rm, int dest_rm_num) {
 
 
 int get_next_msg_num(object& board) {
-   Cell<object*> cll(board.inv);
+   SCell<object*> cll(board.inv);
    object* ptr;
    int sofar = 0;
    int i;
 
    while ((ptr = cll.next())) {
-      i = atoi(*(ptr->names.peekFront()));
+      i = atoi(*(ptr->getFirstName()));
       if (i > sofar)
 	 sofar = i;
    }//while
@@ -1160,8 +1065,7 @@ String owner_of_zone(int rm_num) {
 
 
 void do_vehicle_moves() {
-   Cell<room*> cll;
-   pulsed_proc_rooms.head(cll); //declared in grrmud.cc 
+   SCell<room*> cll(pulsed_proc_rooms);
    room* rm_ptr;
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In do_vehicle_moves, pulsed_proc_rooms.Size():  "
@@ -1256,10 +1160,10 @@ int mob_can_enter(critter& pc, room& rm, short do_msg) {
 
 
 
-void out_stat_list(const List<stat_spell_cell*>& lst, critter& pc,
+void out_stat_list(const List<StatBonus*>& lst, critter& pc,
                    const BitfieldNames& names) {
-   Cell<stat_spell_cell*> cll(lst);
-   stat_spell_cell* ptr;
+   Cell<StatBonus*> cll(lst);
+   StatBonus* ptr;
    String buf(100);
    String buf2(100);
 
@@ -1269,8 +1173,8 @@ void out_stat_list(const List<stat_spell_cell*>& lst, critter& pc,
    }
 
    while ((ptr = cll.next())) {
-      Sprintf(buf, "(%s %i) ", names.getName(ptr->stat_spell),
-              ptr->bonus_duration);
+      Sprintf(buf, "(%s %i) ", names.getName(ptr->stat),
+              ptr->bonus);
       buf2.Append(buf);
    }//while
    buf2.Append("\n");
@@ -1278,9 +1182,9 @@ void out_stat_list(const List<stat_spell_cell*>& lst, critter& pc,
 }//out_stat_list
 
 
-void out_spell_list(const List<stat_spell_cell*>& lst, critter& pc) {
-   Cell<stat_spell_cell*> cll(lst);
-   stat_spell_cell* ptr;
+void out_spell_list(const List<SpellDuration*>& lst, critter& pc) {
+   Cell<SpellDuration*> cll(lst);
+   SpellDuration* ptr;
    String buf(100);
    String buf2(100);
 
@@ -1291,34 +1195,13 @@ void out_spell_list(const List<stat_spell_cell*>& lst, critter& pc) {
 
    while ((ptr = cll.next())) {
       Sprintf(buf, "(%s %i) ",
-              SSCollection::instance().getNameForNum(ptr->stat_spell),
-              ptr->bonus_duration);
+              SSCollection::instance().getNameForNum(ptr->spell),
+              ptr->duration);
       buf2.Append(buf);
    }//while
    buf2.Append("\n");
    pc.show(buf2);
 }//out_spell_list
-
-
-object* have_obj_numbered(const List<object*>& lst, const int i_th,
-                          const int obj_num, const int see_bit,
-                          const room& rm) {
-   Cell<object*> cll(lst);
-   object* ptr;
-   int count = 0;
-
-   while ((ptr = cll.next())) {
-      if (ptr->OBJ_NUM == obj_num) {
-         if (detect(see_bit, (ptr->OBJ_VIS_BIT | rm.getVisBit()))) { 
-            count++;
-            if (count == i_th) {
-               return ptr;
-            }//if
-         }//if detect
-      }//if obj nums agree
-   }//while
-   return NULL;
-}//have_obj_numbered
 
 
 int get_game_time() {
@@ -1471,7 +1354,7 @@ int get_next_obj() {
 
 int get_next_door() { 
    for (int i = 10; i<NUMBER_OF_DOORS; i++) { 
-      if (!(door_list[i].door_data_flags.get(10))) {
+      if (!(door_list[i].isInUse())) {
          return i;
       }//if
    }//for
@@ -1481,7 +1364,7 @@ int get_next_door() {
 
 int get_next_mob() { 
    for (int i = 10; i<NUMBER_OF_MOBS; i++) { 
-      if (!(mob_list[i].CRIT_FLAGS.get(18))) {
+      if (!(mob_list[i].isInUse())) {
          return i;
       }//if
    }//for
@@ -1562,56 +1445,6 @@ void init_masks() {
 }//init masks
 
 
-String* direction_of_door(const door& drr) {
-   String* ptr = NULL;
-   if (drr.destination < 0)
-      ptr = drr.dr_data->names.peekRear();
-   else
-      ptr = drr.dr_data->names.peekFront();
-
-   if (ptr)
-      return ptr;
-   else
-      return &UNKNOWN;
-}//direction_of_door
-
-
-const char* abbrev_dir_of_door(const door& drr) {
-   String* dir;
-
-   if (drr.destination < 0) 
-      dir = drr.dr_data->names.peekRear();
-   else
-      dir = drr.dr_data->names.peekFront();
-
-   if (dir == NULL) {
-      return "??";
-   }//if
-
-   if (strcasecmp(*dir, "north") == 0) 
-      return "N";
-   else if (strcasecmp(*dir, "northwest") == 0)
-      return "NW";
-   else if (strcasecmp(*dir, "northeast") == 0)
-      return "NE";
-   else if (strcasecmp(*dir, "east") == 0)
-      return "E";
-   else if (strcasecmp(*dir, "south") == 0)
-      return "S";
-   else if (strcasecmp(*dir, "southeast") == 0)
-      return "SE";
-   else if (strcasecmp(*dir, "southwest") == 0)
-      return "SW";
-   else if (strcasecmp(*dir, "west") == 0)
-      return "W";
-   else if (strcasecmp(*dir, "up") == 0)
-      return "U";
-   else if (strcasecmp(*dir, "down") == 0)
-      return "D";
-   else return "??";
-}//abbrev_dir_of_door
-
-
 int obj_count(SafeList<object*>& lst, object& src) {
    int retval = 0;
    SCell<object*> cll(lst);
@@ -1669,7 +1502,7 @@ void clear_obj_list(SafeList<object*>& lst) {
    ptr = cll.next();
    while (ptr) {
       //log("In while loop.\n");
-      if (ptr->in_list) { //if its a SOBJ
+      if (ptr->isModified()) { //if its a SOBJ
          delete ptr;   //delete it for sure
       }//if
       
@@ -1718,14 +1551,9 @@ int critter::doBecomeNonPet() {
       return -1;
    }//if
 
-   MASTER->PETS.loseData(this); //master no longer has pc as pet...
+   critter* hack = this;
+   MASTER->PETS.loseData(hack); //master no longer has pc as pet...
    MASTER = NULL;   // slave of none
 
    return doUngroup(1, &NULL_STRING);
 }//unpet
-
-
-const char* class_of_crit(critter& pc) {
-   return get_class_name(pc.CLASS);
-}//class_of_crit
-

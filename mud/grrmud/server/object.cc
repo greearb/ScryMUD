@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.26 1999/08/16 07:31:24 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
+// $Id: object.cc,v 1.27 1999/08/20 06:20:06 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
 
 //
 //ScryMUD Server Code
@@ -1001,10 +1001,6 @@ int object::isScroll() const {
    return (OBJ_FLAGS.get(53) && obj_proc);
 }
 
-int object::isNamed(const String& name) const {
-   return obj_is_named(*this, name);
-}
-
 int object::isLiquid() const {
    return OBJ_FLAGS.get(60);
 }
@@ -1311,3 +1307,37 @@ int object::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
 
    return 0;
 }//doGoToRoom
+
+
+StatBonus* object::hasStatAffect(int stat_num) {
+   Cell<StatBonus*> cll(stat_affects);
+   StatBonus* ptr;
+
+   while ((ptr = cll.next())) {
+      if (ptr->stat == stat_num)
+         return ptr;
+   }//while
+   return NULL;
+}//has_stat_affect
+
+
+object* object::haveObjNumbered(int i_th, int num, int see_bit, room& rm) {
+   SCell<object*> cll(inv);
+   object* ptr;
+   int count = 0;
+
+   while ((ptr = cll.next())) {
+      if (ptr->OBJ_NUM == num) {
+         if (detect(see_bit, (ptr->getVisBit() | rm.getVisBit()))) { 
+            count++;
+            if (count == i_th) {
+               return ptr;
+            }//if
+         }//if detect
+      }//if obj nums agree
+   }//while
+   return NULL;
+}//have_obj_numbered
+
+
+

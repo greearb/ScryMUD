@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.15 1999/08/16 00:37:07 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
+// $Id: skills.cc,v 1.16 1999/08/20 06:20:06 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
 
 //
 //ScryMUD Server Code
@@ -107,7 +107,7 @@ int track(int i_th, const String* victim, critter& pc) {
              while ((ptr = cll.next())) {
                 if (abs(ptr->getDestination()) == path.peekFront()) {
                    Sprintf(buf, "You sense a trail leading %S.\n", 
-                           direction_of_door(*ptr));
+                           ptr->getDirection());
                    show(buf, pc);
                    return 0;
                 }//if

@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.22 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: classes.h,v 1.23 1999/08/20 06:20:04 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
 
 //
 //ScryMUD Server Code
@@ -191,7 +191,7 @@ public:
    /** First keyword is default 'shortName' for PC's, but for mobiles,
     * we often use the short_desc.
     */
-   virtual const LString* getFirstKeyword(LanguageE preferred_lang);
+   virtual LString* getFirstKeyword(LanguageE preferred_lang);
 
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_KW_COLLECTION; }
@@ -254,18 +254,21 @@ public:
    Entity* getContainer() { return container; }
 
    virtual LStringCollection* getNamesCollection(LanguageE forLang);
+   LKeywordCollection& getNames() { return names; }
 
-   virtual const String* getName(int c_bit = ~0);
-   virtual const String* getFirstName(int c_bit = ~0);
-   virtual const String* getShortName(int c_bit = ~0);
-   virtual const String* getLongName(int c_bit = ~0);
+   virtual String* getName(int c_bit = ~0);
+   virtual String* getFirstName(int c_bit = ~0);
+   virtual String* getLastName(int c_bit = ~0);
+   virtual String* getShortName(int c_bit = ~0);
+   virtual String* getLongName(int c_bit = ~0);
    /**  These will take care of language translation and see-bits. */
-   virtual const String* getName(critter* observer);
-   virtual const String* getFirstName(critter* observer);
-   virtual const String* getShortName(critter* observer);
-   virtual const String* getLongName(critter* observer);
-   virtual const String* getLongDesc(critter* observer);
-   virtual int isNamed(const String& name, critter* viwer);
+   virtual String* getName(critter* observer);
+   virtual String* getFirstName(critter* observer);
+   virtual String* getLastName(critter* observer);
+   virtual String* getShortName(critter* observer);
+   virtual String* getLongName(critter* observer);
+   virtual String* getLongDesc(critter* observer);
+   virtual int isNamed(const String& name, critter* viewer);
    virtual int isNamed(const String& name); //dflt to english (maybe all??)
    virtual int isNamed(const String& name, int do_exact); //dflt to english (maybe all??)
 
@@ -278,7 +281,6 @@ public:
    virtual void addLongDesc(String& new_val);
 
    virtual void appendLongDesc(LanguageE lang, String& buf);
-
 
    /** Takes ownership of memory for new_affect.  This *MUST* prepend,
     * or olc.cc will be broken.
@@ -305,6 +307,8 @@ public:
    virtual void setZoneNum(int z) { zone_num = z; }
    virtual void setIdNum(int i) { id_num = i; }
    virtual void setVisBit(int i) { vis_bit = i; }
+
+   virtual SafeList<object*>& getInv() = 0;
 
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);

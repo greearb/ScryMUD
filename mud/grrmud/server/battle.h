@@ -1,5 +1,5 @@
-// $Id: battle.h,v 1.6 1999/08/13 06:32:54 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
+// $Id: battle.h,v 1.7 1999/08/20 06:20:04 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
 
 //
 //ScryMUD Server Code
@@ -56,9 +56,6 @@ int exact_raw_damage(int damage, int damage_type, critter& pc);
 
 critter* mob_to_smob(critter& mob, room& rm, int do_sub,
                      int i_th, const String* name, critter& viewer);
-critter* mob_to_smob(critter& mob, room& rm,
-                     int supress_sub_fail_msg = FALSE);
-
 critter* mob_to_smob(critter& mob, room& rm,
                      int supress_sub_fail_msg = FALSE);
 

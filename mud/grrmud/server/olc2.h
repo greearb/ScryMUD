@@ -1,5 +1,5 @@
-// $Id: olc2.h,v 1.8 1999/08/10 07:06:20 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
+// $Id: olc2.h,v 1.9 1999/08/20 06:20:06 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
 
 //
 //ScryMUD Server Code
@@ -45,9 +45,9 @@ int create_construction(int rslt, int comp1, int comp2, int comp3, int comp4,
 int save_mob(int i_th, String* mob_name, critter& pc);
 int save_obj(int i_th, String* obj_name, critter& pc);
 
-int normalize_obj(object& obj, bool just_check = false); //make it fit w/in standards as
-                                                         // much as possible, set 1024
-                                                         // vis bit...
+/** make it fit w/in standards as much as possible, set 1024 vis bit... */
+int normalize_obj(object& obj, bool just_check = false, critter* pc = NULL);
+
 int normalize_mob(critter& obj);
 int normalize_room(room& rm);
 int normalize_door(door_data& dr);

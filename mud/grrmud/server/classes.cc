@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.12 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: classes.cc,v 1.13 1999/08/20 06:20:04 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
 
 //
 //ScryMUD Server Code
@@ -76,6 +76,19 @@ String StatBonus::toString() const {
    Sprintf(retval, "stat: %i  bonus: %i", stat, bonus);
    return retval;
 }
+
+SpellDuration* Entity::isAffectedBy(int spell_num) {
+   Cell<SpellDuration*> cll(affected_by);
+   SpellDuration* ptr;
+
+   while ((ptr = cll.next())) {
+      if (ptr->spell == spell_num)
+         return ptr;
+   }//while
+   return NULL;
+}//is_affected_by
+
+
 
 int Entity::affectedByToString(critter* viewer, String& rslt) {
    String buf(100);

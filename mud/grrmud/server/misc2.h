@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.19 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: misc2.h,v 1.20 1999/08/20 06:20:06 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
 
 //
 //ScryMUD Server Code
@@ -78,9 +78,6 @@ int min(int i, int j); //simple find-max function
 
 void save_all();  //pc_list and linkdead_list
 
-String* direction_of_door(const door& dr);
-const char* abbrev_dir_of_door(const door& dr);
-
 void parse_communication(String& str);
 void parse_for_max_80(String& str);
 void strip_hegemon_tags(String& str);
@@ -129,7 +126,7 @@ void out_stat_list(const List<SpellDuration*>& lst, critter& pc,
 void out_spell_list(const List<SpellDuration*>& lst, critter& pc);
 //void critter::doBecomeNonPet();
 const String* single_obj_name(object& obj, int see_bit);
-short name_is_secret(const String* name, door& dr);
+int name_is_secret(const String* name, door& dr);
 
 const char* get_himself_herself(critter& pc);
 const char* get_him_her(critter& pc);

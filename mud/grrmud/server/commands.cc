@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.31 1999/08/16 00:37:06 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
+// $Id: commands.cc,v 1.32 1999/08/20 06:20:05 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
 
 //
 //ScryMUD Server Code
@@ -1275,7 +1275,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
    if ((strcasecmp(*item, "all") == 0) && (!bag->Strlen())) {
               //corresponds to "get all"
       mudlog.log(DBG, "get called like: get all\n");
-      ROOM.getInv()->head(cell);
+      ROOM.getInv().head(cell);
       vict_ptr = cell.next();
       while (vict_ptr) {
          if (detect(pc.SEE_BIT, (vict_ptr->OBJ_VIS_BIT | 
@@ -1287,7 +1287,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
                int deleted_obj;
                gain_eq_effects(*vict_ptr, NULL, pc, -1, TRUE,
                                deleted_obj);
-               vict_ptr = ROOM.getInv()->lose(cell);
+               vict_ptr = ROOM.getInv().lose(cell);
             }//if obj_get_by
             else {
                vict_ptr = cell.next();         
@@ -1371,7 +1371,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
    }//if "get all.waybread bag"
    else if (i == -1) {
      // called as:  get all.gold  (from the room)
-      ROOM.getInv()->head(cell);
+      ROOM.getInv().head(cell);
       vict_ptr = cell.next();
       while (vict_ptr) {
          if (obj_is_named(*vict_ptr, *item)) {
@@ -1382,7 +1382,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
                gain_eq_effects(*vict_ptr, NULL, pc, -1, TRUE,
                                deleted_obj); 
                //gold ect
-               vict_ptr = ROOM.getInv()->lose(cell);
+               vict_ptr = ROOM.getInv().lose(cell);
             }//if obj_get_by
             else
                vict_ptr = cell.next();
@@ -1580,7 +1580,7 @@ int say(const char* message, critter& pc, room& rm) {
       return -1;
    }//if
    else { //good to go
-      SCell<object*> ocll(*(rm.getInv()));
+      SCell<object*> ocll(rm.getInv());
       object* optr;
       while ((optr = ocll.next())) {
          if (optr->obj_proc && optr->obj_proc->w_eye_owner) {
@@ -1694,7 +1694,7 @@ int do_emote(const char* message, CSentryE cs_entry, critter& pc, room& rm,
    msg = message;
    //   pc.drunkifyMsg(msg);
 
-   SCell<object*> ocll(*(rm.getInv()));
+   SCell<object*> ocll(rm.getInv());
    object* optr;
    while ((optr = ocll.next())) {
       if (optr->obj_proc && (crit_ptr = optr->obj_proc->w_eye_owner)) {
@@ -2566,7 +2566,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 	       if (ptr2->mob->proc_data) {
 		 if (ptr2->mob->proc_data->int1 != 0) {
 		   if (strcasecmp(*(door_list[ptr2->INT1].getFirstName()), 
-				  *(direction_of_door(*door_ptr))) == 0) {
+				  *(door_ptr->getDirection())) == 0) {
 		     if ((ptr2->FLAG1.get(3) && (ptr2->CLASS == pc.CLASS)) ||
 			 (ptr2->FLAG1.get(4) && (ptr2->RACE == pc.RACE))) {
 		       break;  //its ok for them to pass

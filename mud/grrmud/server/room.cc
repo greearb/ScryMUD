@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.38 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.38 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: room.cc,v 1.39 1999/08/20 06:20:06 greear Exp $
+// $Revision: 1.39 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
 
 //
 //ScryMUD Server Code
@@ -59,6 +59,10 @@ void KeywordPair::toStringStat(critter* viewer, String& rslt, int idx,
    }
 }//toStringStat
 
+SafeList<object*>& KeywordPair::getInv() {
+   core_dump("KeywordPair::getInv");
+   return dummy_inv;
+}
 
 KeywordPair::~KeywordPair() {
    _cnt--;
@@ -1255,9 +1259,9 @@ void room::purgeCritter(int mob_num, critter& pc) {
 
 
 int room::sub_a_4_b(critter* crit_ptr, int i_th, const String& name,
-                    int see_bit) {
+                    critter* viewer) {
    return crit_sub_a_4_b(crit_ptr, critters, i_th, 
-                         &name, see_bit, *this);
+                         &name, viewer);
 }
 
 int room::sub_a_4_b(critter* a, critter* b, int i_th) {
