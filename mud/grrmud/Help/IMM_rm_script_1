@@ -12,5 +12,5 @@ Example:
 
 
 <color=red>
-See Also:  list_scripts add_mob_script stat_script amsave
+See Also:  list_scripts add_mob_script stat_script amsave rm_room_script
 </color></help>

@@ -24,8 +24,8 @@
 
 
 
-#ifndef CLASSES_INCLUDE
-#define CLASSES_INCLUDE
+#ifndef __CLASSES_INCLUDE
+#define __CLASSES_INCLUDE
 
 
 #include <string2.h>
@@ -41,8 +41,6 @@ enum class_id_enum {
    ROOM_CLASS_ID = 0,
    VEHICLE_CLASS_ID = 1
 };//class_id_enum
-
-
 
 ///************************  stat_cell  ************************///
  

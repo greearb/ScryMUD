@@ -246,6 +246,9 @@ public:
    void open();
    int consumesKey();
 
+   int doGoToRoom(int dest_room, const char* from_dir, door* by_door,
+                  int cur_room);
+
    int getZoneNum() const;
    const String* getShortName() { return getName(); }
    const String* getShortName(int c_bit) { return getName(c_bit); }

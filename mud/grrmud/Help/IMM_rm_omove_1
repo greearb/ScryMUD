@@ -1,0 +1,18 @@
+<help olc rm_omove>
+
+Script command that allows a room to forcefully move an object out
+a certain exit.  Can chose the object by name, or be several
+special features:
+      __RANDOM__        Choose a random object.
+      __TOP__           Choose the first.
+      __BOTTOM__        Chose the last.
+
+usage:  rm_omove <<i_th> [object/selection] <<j_th> [direction]
+
+Example:  rm_omove __RANDOM__ east    // Move a random object east
+Example:  rm_omove 2.sword 2.west     // Move the second sword out the
+                                      // second west exit.
+
+<color=red>
+See Also:  rm_move_all add_mob_script rm_move rm_omove_all neighbor_echo
+</color></help>

@@ -593,6 +593,16 @@ void leave_room_effects(room& rm, critter& pc) {
 }//leave_room_effects
 
 
+void leave_room_effects(room& rm, object& obj) {
+
+   rm.checkLight(FALSE);
+
+   //String cmd = "exit";
+   //rm.checkForProc(cmd, NULL_STRING, pc, -1);
+
+}//leave_room_effects (Objects)
+
+
 
 const String* single_obj_name(object& obj, int see_bit) {
    if (detect(see_bit, obj.OBJ_VIS_BIT))

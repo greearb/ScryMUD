@@ -27,7 +27,7 @@
 #include "misc.h"
 #include "misc2.h"
 #include "const.h"
-
+#include "batl_prc.h"
 
 //*************************************************************//
 ///****************** obj construct data  ********************///
@@ -1010,3 +1010,25 @@ int object::getObjCountByNumber(int onum, int sanity) {
       return count;
    }//if
 }//getObjectCountByNumber
+
+
+int object::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
+                       int cur_room) {
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In object::doGoToRoom, dest_room:  " << dest_room
+             << "  cur_room:  " << cur_room
+             << "  by_door:  " << by_door << endl;
+   }
+
+   room_list[cur_room].removeObject(this);
+
+   leave_room_effects(room_list[cur_room], *this);
+
+   room_list[dest_room].gainObject(this);
+
+   // This can cause us to delete ourselves btw...not very good coding
+   // but..maybe it will work!
+   do_entered_room_procs(*this, by_door, from_dir, room_list[dest_room]);
+
+   return 0;
+}//doGoToRoom

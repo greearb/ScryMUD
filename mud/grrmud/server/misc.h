@@ -20,8 +20,8 @@
 //                                     greearb@agcs.com
 //
 
-#ifndef MiscInclude
-#define MiscInclude
+#ifndef __MiscInclude__
+#define __MiscInclude__
 
 #include <string2.h>
 #include "classes.h"
@@ -41,6 +41,7 @@ extern List<object*> obj_to_be_disolved_list; //grrmud.cc
 extern List<critter*> pulsed_proc_mobs;
 extern List<room*> pulsed_proc_rooms;
 extern List<object*> pulsed_proc_objects;
+extern PtrArray<room> proc_action_rooms;
 
 int bound(int low, int high, int val);
 int  d(const int num_rolls, const int dice_sides); 

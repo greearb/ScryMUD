@@ -32,7 +32,6 @@
 #include "classes.h"
 #include <PtrArray.h>
 #include <KVPair.h>
-//#include "room.h"
 
 class room;
 
@@ -107,7 +106,7 @@ public:
 
 ///********************  Mob Script  ***************************///
  
-class MobScript {
+class GenScript {
 private:
    static int _cnt;
 
@@ -128,66 +127,126 @@ protected:
    int stack_ptr; //points to the next command to be executed.
    int needs_compiling; //internal state information, transient
 
-   void parseBlockFP(int& start_idx, const PtrArray<ScriptCmd>& incomming,
-                     PtrArray<ScriptCmd>& rslts);
+   virtual void parseBlockFP(int& start_idx, const PtrArray<ScriptCmd>& incomming,
+                             PtrArray<ScriptCmd>& rslts);
 
-   void optimizeLabels(const PtrArray<ScriptCmd>& incomming,
-                       PtrArray<ScriptCmd>& rslts);
+   virtual void optimizeLabels(const PtrArray<ScriptCmd>& incomming,
+                               PtrArray<ScriptCmd>& rslts);
 
-   String getNextLabel();
+   virtual String getNextLabel();
 
-   int findOffset(List<KVPair<String, int>*>& lst, const String& str);
+   virtual int findOffset(List<KVPair<String, int>*>& lst, const String& str);
 
 public:
    static char* triggers[];
 
-   MobScript();
-   MobScript(String& trig, int targ, int act, String& discriminator,
+   GenScript();
+   GenScript(String& trig, int targ, int act, String& discriminator,
              int takes_precedence);
-   MobScript(const MobScript& src);
-   ~MobScript();
+   GenScript(const GenScript& src);
+   virtual ~GenScript();
 
-   void clear();
-   void appendCmd(String& cmd);
-   void read(ifstream& da_file);
-   void write(ofstream& da_file) const;
-   int matches(const String& cmd, String& arg1, critter& act,
-               int targ);
-   int matches(const MobScript& src);
-   void generateScript(String& cmd, String& arg1, critter& act,
-                       int targ, room& rm, critter* script_owner);
-   int takesPrecedence() { return takes_precedence; }
-   void compile(); //compile into script assembly...
-   static int validTrigger(const char* trig);
-   static int checkScript(const String& str);
-   void setScript(const String& txt);
-   const String* getTrigger() { return &trigger_cmd; }
-   String toStringBrief(int client_format, int mob_num);
+   virtual void clear();
+   virtual void appendCmd(String& cmd);
+   virtual void read(ifstream& da_file);
+   virtual void write(ofstream& da_file) const;
+   virtual int matches(const String& cmd, String& arg1, critter& act,
+                       int targ);
+   virtual int matches(const GenScript& src);
+   virtual void generateScript(String& cmd, String& arg1, critter& act,
+                               int targ, room& rm, critter* script_owner);
+   virtual int takesPrecedence() { return takes_precedence; }
+   virtual void compile(); //compile into script assembly...
+   virtual void setScript(const String& txt);
+   virtual const String* getTrigger() { return &trigger_cmd; }
+   virtual String toStringBrief(int client_format, int mob_num, entity_type entity);
 
    /** Source code. */
-   String getScript();
+   virtual String getScript();
 
    /** Object code, % substitutions not made yet. */
-   String getCompiledScript();
+   virtual String getCompiledScript();
 
    /**  This gives the compiled, running version.  Think of it
     * as machine code!
     */
-   String getRunningScript();
+   virtual String getRunningScript();
 
-   MobScript& operator=(const MobScript& src);
+   virtual GenScript& operator=(const GenScript& src);
 
-   void doScriptJump(int abs_offset);
-   const ScriptCmd* getNextCommand();
+   virtual void doScriptJump(int abs_offset);
+   virtual const ScriptCmd* getNextCommand();
 
-   void resetStackPtr() { stack_ptr = 0; } //get ready to start 'running'
+   virtual void resetStackPtr() { stack_ptr = 0; } //get ready to start 'running'
 
-   void clean(); // get rid of running commands.
+   virtual void clean(); // get rid of running commands.
 
-   int isInProgress() { return (stack_ptr >= 0); }
+   virtual int isInProgress() { return (stack_ptr >= 0); }
+
+   static int getInstanceCount() { return _cnt; }
+   static int validTrigger(const char* trig);
+   static int checkScript(const String& str);
+};//GenScript
+
+
+class MobScript : public GenScript {
+private:
+   static int _cnt;
+
+protected:
+
+public:
+   MobScript() : GenScript() { _cnt++; };
+   MobScript(String& trig, int targ, int act, String& discriminator,
+             int takes_precedence) : GenScript(trig, targ, act,
+                                               discriminator, takes_precedence) {
+      _cnt++;
+   }
+
+   MobScript(const MobScript& src) : GenScript((GenScript)src) { _cnt++; }
+
+   virtual ~MobScript() { _cnt--; }
+
+   MobScript& operator=(const MobScript& src) {
+      if (this != &src) {
+         *((GenScript*)(this)) = (GenScript)(src);
+      }
+      return *this;
+   }
+
    static int getInstanceCount() { return _cnt; }
    static void parseScriptCommand(ScriptCmd& cmd, critter& owner);
 };//MobScript
+
+
+class RoomScript : public GenScript {
+private:
+   static int _cnt;
+
+protected:
+
+public:
+   RoomScript() : GenScript() { _cnt++; };
+   RoomScript(String& trig, int targ, int act, String& discriminator,
+             int takes_precedence) : GenScript(trig, targ, act,
+                                               discriminator, takes_precedence) {
+      _cnt++;
+   }
+
+   RoomScript(const RoomScript& src) : GenScript((GenScript)src) { _cnt++; }
+
+   virtual ~RoomScript() { _cnt--; }
+
+   RoomScript& operator=(const RoomScript& src) {
+      if (this != &src) {
+         *((GenScript*)(this)) = (GenScript)(src);
+      }//if
+      return *this;
+   }
+
+   static int getInstanceCount() { return _cnt; }
+   static void parseScriptCommand(ScriptCmd& cmd, room& owner);
+};//RoomScript
 
 
 #endif

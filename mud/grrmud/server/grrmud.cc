@@ -115,6 +115,7 @@ List<object*>         affected_objects;
       mob procs, will get a command 
       off of their queues untill queues are empty. */
 PtrArray<critter>        proc_action_mobs;
+PtrArray<room>           proc_action_rooms;
 
 List<critter*>        pulsed_proc_mobs; 
 List<room*>           pulsed_proc_rooms; 
@@ -989,6 +990,33 @@ void game_loop(int s)  {
             else {
                pc_ptr->finishedMobProc();
                proc_action_mobs.set((critter*)NULL, cnt);
+            }
+         }//else
+      }//for
+
+      /* Room action procs */
+      room* rm_ptr;
+      for (int cnt = 0; cnt < proc_action_rooms.getCurLen(); cnt++) {
+         if (!(rm_ptr = proc_action_rooms.elementAt(cnt))) {
+            continue;
+         }//if
+         else {
+            if (rm_ptr->getPause() > 0) {
+               continue;
+            }
+
+            ScriptCmd* tmp_cmd_ptr;
+            // Cast away const'ness, but still use it as if it's const.
+            if ((tmp_cmd_ptr = (ScriptCmd*)(rm_ptr->getNextScriptCmd()))) {
+               cmd_ptr = new ScriptCmd(*tmp_cmd_ptr);
+
+               // rm_ptr is the script owner.
+               RoomScript::parseScriptCommand(*cmd_ptr, *rm_ptr);
+               delete cmd_ptr;
+            }
+            else {
+               rm_ptr->finishedRoomProc();
+               proc_action_rooms.set((room*)NULL, cnt);
             }
          }//else
       }//for

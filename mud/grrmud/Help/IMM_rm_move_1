@@ -1,0 +1,18 @@
+<help olc rm_move>
+
+Script command that allows a room to forcefully move a player out
+a certain exit.  Can chose the player by name, or be several
+special features:
+      __RANDOM__        Choose a random player.
+      __TOP__           Choose the first.
+      __BOTTOM__        Chose the last.
+
+usage:  rm_move <<i_th> [player/selection] <<j_th> [direction]
+
+Example:  rm_move __RANDOM__ east    // Move a random character east
+Example:  rm_move 2.guard 2.west     // Move the second guard out the
+                                     // second west exit.
+
+<color=red>
+See Also:  rm_move_all add_mob_script rm_omove neighbor_echo
+</color></help>

@@ -551,7 +551,7 @@ class HegemonInputFilter extends Object {
             context_mode = MODE_PATH_CELL_STAT_LD;
             valid = true;
          }
-         else if (cmd.equalsIgnoreCase("MSCRIPT_DATA")) {
+         else if (cmd.equalsIgnoreCase("SCRIPT_DATA")) {
             heg_scroll.getProperties().pushContextMode(MODE_MSCRIPT_DATA);
             context_mode = MODE_MSCRIPT_DATA;
             valid = true;
@@ -562,7 +562,7 @@ class HegemonInputFilter extends Object {
             context_mode = heg_scroll.getProperties().getContextMode();
             valid = true;
          }
-         else if (cmd.equalsIgnoreCase("/MSCRIPT_DATA")) {
+         else if (cmd.equalsIgnoreCase("/SCRIPT_DATA")) {
             heg_scroll.getProperties().popContextMode();
             context_mode = heg_scroll.getProperties().getContextMode();
             valid = true;
@@ -702,7 +702,18 @@ class HegemonInputFilter extends Object {
                              (String)(args.elementAt(2)),
                              (String)(args.elementAt(3)),
                              (String)(args.elementAt(4)),
-                             (String)(args.elementAt(5)));
+                             (String)(args.elementAt(5)),
+                             "MOB");
+            valid = true;
+         }//if
+         else if (cmd.equalsIgnoreCase("ROOM_SCRIPT")) {
+            hm.getMobScriptEditor().do_clear();
+            setMobScriptData((String)(args.elementAt(1)),
+                             (String)(args.elementAt(2)),
+                             (String)(args.elementAt(3)),
+                             (String)(args.elementAt(4)),
+                             (String)(args.elementAt(5)),
+                             "ROOM");
             valid = true;
          }//if
       }//if
@@ -711,9 +722,10 @@ class HegemonInputFilter extends Object {
    }//processArgs
 
    void setMobScriptData(String trig, String mnum, String actor_num,
-                         String target_num, String precedence) {
+                         String target_num, String precedence, String entity) {
       hm.getMobScriptEditor().setMobScriptData(trig, mnum, actor_num,
                                                target_num, precedence);
+      hm.getMobScriptEditor().setEntity(entity);
    }
 
    void setMobScriptDiscrim(String discrim) {

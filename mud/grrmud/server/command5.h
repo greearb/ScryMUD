@@ -48,6 +48,10 @@ void list_scripts(int mob_num, critter& pc);
 void stat_script(int mob_num, int script_idx, critter& pc);
 void rem_script(int mob_num, String& trigger, int i_th, critter& pc);
 
+void list_room_scripts(int rm_num, critter& pc);
+void stat_room_script(int rm_num, int script_idx, critter& pc);
+void rem_room_script(int mob_num, String& trigger, int i_th, critter& pc);
+
 void slist(int begin, int howmany, critter& pc);
 void teach(int i_th, const String* name, int prcnt, const String* skill, 
 	   critter& pc);

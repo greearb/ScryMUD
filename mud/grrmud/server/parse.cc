@@ -185,6 +185,11 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
          return 1;
       }
 
+      if (MODE == MODE_ADD_ROOM_SCRIPT) {
+         do_add_room_script(*this);
+         return 1;
+      }
+
       if (MODE == MODE_WRITING_POST) {
          do_post(*this);
          return 1;
@@ -567,6 +572,9 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	 }//if
 	 else if (strncasecmp(str1, "add_mob_script", len1) == 0) { 
             add_mob_script((*this), i, str2, j, str3, k, l);
+         }
+	 else if (strncasecmp(str1, "add_room_script", len1) == 0) { 
+            add_room_script((*this), i, str2, j, str3, k, l);
          }
 	 else if (strncasecmp(str1, "add_oname", len1) == 0) { 
 	    add_oname(i, &str2, (*this));
@@ -1041,6 +1049,9 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	 else if (strncasecmp(str1, "list_scripts", len1) == 0) { 
 	    list_scripts(i, (*this));
 	 }//if
+	 else if (strncasecmp(str1, "list_room_scripts", len1) == 0) { 
+	    list_room_scripts(i, (*this));
+	 }//if
 	 else if (strncasecmp(str1, "list_site_bans", len1) == 0) { 
 	    list_site_bans(*this);
 	 }//if
@@ -1316,11 +1327,14 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	 else if (strncasecmp(str1, "rm_discuss_proc", len1) == 0) { 
 	    rm_discuss_proc(i, (*this));
 	 }//if
-	 else if (strncasecmp(str1, "rm_bow_proc", len1) == 0) { 
+	 else if (strncasecmp(str1, "rm_bow_proc", len1) == 0) {
 	    rm_bow_proc(i, (*this));
 	 }//if
 	 else if (strncasecmp(str1, "rm_curse_proc", len1) == 0) { 
 	    rm_curse_proc(i, (*this));
+	 }//if
+	 else if (strncasecmp(str1, "rm_room_script", len1) == 0) { 
+	    rem_room_script(i, str2, j, (*this));
 	 }//if
 	 else if (strncasecmp(str1, "rm_script", len1) == 0) { 
 	    rem_script(i, str2, j, (*this));
@@ -1753,6 +1767,9 @@ const char* parse_hlp_command(const String& str1) {
 	    return "add_mname";
 	 }//if
 	 else if (strncasecmp(str1, "add_mob_script", len1) == 0) { 
+            return "add_mob_script";
+         }
+	 else if (strncasecmp(str1, "add_room_script", len1) == 0) { 
             return "add_mob_script";
          }
 	 else if (strncasecmp(str1, "add_stat_affect", len1) == 0) { 
@@ -2361,9 +2378,6 @@ const char* parse_hlp_command(const String& str1) {
 	 else if (strncasecmp(str1, "rem_keyword", len1) == 0) { 
 	    return "rm_keyword";
 	 }//if
-	 else if (strncasecmp(str1, "rm_keyword", len1) == 0) { 
-	    return "rm_keyword";
-	 }//if
 	 else if (strncasecmp(str1, "rem_path", len1) == 0) { 
 	    return "rem_path";
 	 }//if
@@ -2381,6 +2395,24 @@ const char* parse_hlp_command(const String& str1) {
 	 }//if
 	 else if (strncasecmp(str1, "rinit", len1) == 0) { 
 	    return "rinit";
+	 }//if
+	 else if (strncasecmp(str1, "rm_keyword", len1) == 0) { 
+	    return "rm_keyword";
+	 }//if
+	 else if (strncasecmp(str1, "rm_move", len1) == 0) { 
+	    return "rm_move";
+	 }//if
+	 else if (strncasecmp(str1, "rm_move_all", len1) == 0) { 
+	    return "rm_move_all";
+	 }//if
+	 else if (strncasecmp(str1, "rm_omove", len1) == 0) { 
+	    return "rm_omove";
+	 }//if
+	 else if (strncasecmp(str1, "rm_omove_all", len1) == 0) { 
+	    return "rm_omove_all";
+	 }//if
+	 else if (strncasecmp(str1, "rm_room_script", len1) == 0) { 
+	    return "rm_room_script";
 	 }//if
 	 else if (strncasecmp(str1, "rocktrolls", len1) == 0) { 
 	    return "rocktroll";
@@ -2526,6 +2558,9 @@ const char* parse_hlp_command(const String& str1) {
 	 }//if
 	 else if (strncasecmp(str1, "stat_path", len1) == 0) { 
 	    return "stat_path";
+	 }//if
+	 else if (strncasecmp(str1, "stat_room_script", len1) == 0) { 
+	    return "stat_room_script";
 	 }//if
 	 else if (strncasecmp(str1, "stat_script", len1) == 0) { 
 	    return "stat_script";

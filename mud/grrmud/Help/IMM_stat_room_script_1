@@ -1,0 +1,16 @@
+<help olc stat_room_script>
+
+This function allows you to list a single script in it's entirety.  The
+client will be able to recognize this and have a menu specially designed to
+help you edit the script.
+
+usage:  stat_room_script [rm_num] [script_index]
+
+Example:
+	stat_room_script 89 0   // view script[0] in room 89
+	stat_room_script 99 5   // view script[5] in room 99
+
+
+<color=red>
+See Also:  list_room_scripts add_room_script rm_room_script stat_script
+</color></help>

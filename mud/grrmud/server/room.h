@@ -34,6 +34,7 @@
 #include <list2.h>
 #include <string2.h>
 #include "classes.h"
+#include "script.h"
 #include "commands.h"
 
 class zone;
@@ -67,6 +68,10 @@ private:
    static int _cnt;
 
 protected:
+   int pause;
+   RoomScript* cur_script;
+   List<RoomScript*> room_proc_scripts;
+
    List<critter*> critters;
 
    int cur_stats[ROOM_CUR_STATS + 1];  
@@ -91,7 +96,8 @@ protected:
            // 25 !vehicle (vehicles can't drive here), 26 cramped (!huge)
 	   // 27 !ranged, 28 need_dive_ability, 29 used_in_track
 	   // 30 can_camp 31 !complete (olc wise) 32 has_keywords
-           // 33 !mob_wander, 34 !foreign_mob_wander
+           // 33 !mob_wander, 34 !foreign_mob_wander, 35 has_proc_script
+
    
 public:
    List<stat_spell_cell*> affected_by;
@@ -117,6 +123,16 @@ public:
    KeywordPair* haveKeyword(int i_th, const String* str);
 
    static int getInstanceCount() { return _cnt; }
+
+   int getPause() const { return pause; }
+   const ScriptCmd* getNextScriptCmd() { return cur_script->getNextCommand(); }
+   void finishedRoomProc();
+   int isInProcNow() { return (cur_script && (cur_script->isInProgress())); }
+   void addProcScript(const String& txt, RoomScript* script_data);
+   void doScriptJump(int abs_offset);
+   void listScripts(critter& pc);
+   RoomScript* getScriptAt(int idx) { return room_proc_scripts.elementAt(idx); }
+   void removeScript(String& trigger, int i_th, critter& pc);
 
    int getVisBit() const { return cur_stats[0]; }
    int getMovCost() const { return cur_stats[1]; }
@@ -200,6 +216,9 @@ public:
    virtual void gainCritter(critter* crit);
    virtual critter* removeCritter(critter* crit);
 
+   virtual void gainObject(object* obj) { gainInv(obj); }
+   virtual object* removeObject(object* obj) { return loseInv(obj); }
+
    virtual void getPetsFor(critter& owner, List<critter*>& rslts);
    virtual int getCritCount(critter& pc);
 
@@ -228,6 +247,30 @@ public:
    static critter* haveCritNamedInZone(zone& zn, const int i_th,
                                        const String* name, const int see_bit,
                                        int& in_room);
+
+
+   /* Found in rm_cmds.cc */
+   /**  Move all in room out some door.  Does no checks, just puts em
+    * through the door, even if it's closed??!!
+    */
+   int move_all(int i_th, const String* dir);
+   int omove_all(int i_th, const String* dir);
+
+   /**  Move all in room out some door.  Does no checks, just puts em
+    * through the door, even if it's closed!!??
+    */
+   int move(int i_th, const String* pc, int j_th, const String* dir);
+   int omove(int i_th, const String* obj, int j_th, const String* dir);
+
+   /** Echo message into the room in this direction */
+   int neighbor_echo(int i_th, const String* dir, const String& buf);
+
+   int tell(int i, const String* name, String& msg);
+   int do_tell(const char* msg, critter& targ); /* room tells targ */
+
+   int com_recho(const String* msg);
+   int com_zecho(const String* msg);
+   int wizchat(const char* message);
 
 }; // class room
 

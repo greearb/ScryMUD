@@ -25,13 +25,12 @@
 //            primarily.
 
 
-int tell(int i, const String* name, String& msg, room& rm);
-void do_tell(room& rm, const char* msg, critter& targ); /* room tells targ */
+/* for now, all command prototypes are found in room.h */
 
-void com_recho(const String* msg, room& rm);
-void com_zecho(const String* msg, room& rm);
-void wizchat(const char* message, room& rm);
+#ifndef __BEN_ROOM_CMDS_H__
+#define __BEN_ROOM_CMDS_H__
 
+// How exciting!!
 
-
+#endif
 

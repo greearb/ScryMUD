@@ -40,6 +40,8 @@ critter* find_weakest(List<critter*>& lst);
 
 void do_entered_room_procs(critter& pc, door* by_dr, const char* from_dir,
                            room& to_rm, int& is_dead);
+void do_entered_room_procs(object& obj, door* by_dr, const char* from_dir,
+                           room& to_rm);
 
 void path_from_a_to_b(int a, int b, List<int>& path); //a,b are room numbers
 void track_to_kill(critter& vict, critter& agg);

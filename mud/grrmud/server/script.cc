@@ -263,12 +263,12 @@ int does_own(critter& pc, int obj1, int obj2, int obj3, int obj4,
 
 
 ///*********************************************************************///
-////*********************** MobScript  ****************************///
+////*********************** GenScript  ****************************///
 ///*********************************************************************///
 
-int MobScript::_cnt = 0;
+int GenScript::_cnt = 0;
 
-MobScript::MobScript() {
+GenScript::GenScript() {
    _cnt++;
    stack_ptr = -1;
    target = -1;
@@ -278,7 +278,7 @@ MobScript::MobScript() {
    next_lbl_num = 0;
 }
 
-MobScript::MobScript(String& trig, int targ, int act, String& discriminator,
+GenScript::GenScript(String& trig, int targ, int act, String& discriminator,
                      int precedence) {
    _cnt++;
    trigger_cmd = trig;
@@ -298,12 +298,12 @@ MobScript::MobScript(String& trig, int targ, int act, String& discriminator,
    takes_precedence = precedence;
 }//Full constructor
 
-MobScript::MobScript(const MobScript& src) {
+GenScript::GenScript(const GenScript& src) {
    _cnt++;
    *this = src;
 }
 
-void MobScript::doScriptJump(int abs_offset) {
+void GenScript::doScriptJump(int abs_offset) {
    if ((abs_offset < compiled_cmds.getCurLen()) &&
        (abs_offset >= 0)) {
       stack_ptr = abs_offset;
@@ -315,14 +315,14 @@ void MobScript::doScriptJump(int abs_offset) {
 }//doScriptJump
 
 
-const ScriptCmd* MobScript::getNextCommand() {
-   //mudlog << "MobScript::getNextCommand, stack_ptr: " << stack_ptr
+const ScriptCmd* GenScript::getNextCommand() {
+   //mudlog << "GenScript::getNextCommand, stack_ptr: " << stack_ptr
    //       << endl << getRunningScript() << endl;
    if (stack_ptr >= 0) {
       int tmp = stack_ptr;
       stack_ptr++;
       if (mudlog.ofLevel(DBG)) {
-         mudlog << "MobScript::getNextCommand, tmp: " << tmp << endl;
+         mudlog << "GenScript::getNextCommand, tmp: " << tmp << endl;
          if (running_cmds[tmp])
             mudlog << " returning: " << running_cmds[tmp]->getCommand() << endl;
       }
@@ -330,7 +330,7 @@ const ScriptCmd* MobScript::getNextCommand() {
    }//if
    else {
       if (mudlog.ofLevel(DBG)) {
-         mudlog << "MobScript::getNextCommand, stack_ptr: " << stack_ptr
+         mudlog << "GenScript::getNextCommand, stack_ptr: " << stack_ptr
                 << " returning NULL" << endl;
       }
       return NULL;
@@ -341,7 +341,7 @@ const ScriptCmd* MobScript::getNextCommand() {
 /**  This txt_ is really a long glob of commands, seperated by
  * semi-colons.
  */
-void MobScript::setScript(const String& txt_) {
+void GenScript::setScript(const String& txt_) {
    mudlog.log(DBG, "In setScript.");
 
    String txt(txt_);
@@ -366,12 +366,12 @@ void MobScript::setScript(const String& txt_) {
 }//addScript
 
 
-MobScript& MobScript::operator=(const MobScript& src) {
+GenScript& GenScript::operator=(const GenScript& src) {
 
    if (this == &src)
       return *this;
 
-   //mudlog.log("In MobScript::operator=");
+   //mudlog.log("In GenScript::operator=");
    trigger_cmd = src.trigger_cmd;
    trig_discriminator = src.trig_discriminator;
    stack_ptr = src.stack_ptr;
@@ -389,13 +389,13 @@ MobScript& MobScript::operator=(const MobScript& src) {
 }//operator=
 
 
-MobScript::~MobScript() {
+GenScript::~GenScript() {
    _cnt--;
    clear();
 }
 
 // Static Class Data
-char* MobScript::triggers[] = {
+char* GenScript::triggers[] = {
    "close", "donate",
    "drop", "eat", "enter", "examine", "exit", "fill", "follow",
    "get", "give", "group",
@@ -405,13 +405,13 @@ char* MobScript::triggers[] = {
 
 
 // Static function, maybe should really check it in the future!
-int MobScript::checkScript(const String& str) {
+int GenScript::checkScript(const String& str) {
    return str.Strlen();
 }
 
 
 // Static function
-int MobScript::validTrigger(const char* trig) {
+int GenScript::validTrigger(const char* trig) {
    int cmp;
    for (int i = 0; triggers[i]; i++) {
       cmp = strcasecmp(triggers[i], trig);
@@ -427,7 +427,8 @@ int MobScript::validTrigger(const char* trig) {
 }//validTrigger
 
 
-String MobScript::toStringBrief(int client_format, int mob_num) {
+String GenScript::toStringBrief(int client_format, int mob_num,
+                                entity_type entity) {
    String buf(100);
    if (client_format) {
       String tmp_d;
@@ -437,8 +438,16 @@ String MobScript::toStringBrief(int client_format, int mob_num) {
          tmp_d = trig_discriminator;
 
       String tmp(100);
-      Sprintf(buf, "<MOB_SCRIPT %S %i %i %i %i>", &trigger_cmd,
-              mob_num, actor, target, takes_precedence);
+
+      if (entity == ENTITY_CRITTER) {
+         Sprintf(buf, "<MOB_SCRIPT %S %i %i %i %i>", &trigger_cmd,
+                 mob_num, actor, target, takes_precedence);
+      }
+      else if (entity == ENTITY_ROOM) {
+         Sprintf(buf, "<ROOM_SCRIPT %S %i %i %i %i>", &trigger_cmd,
+                 mob_num, actor, target, takes_precedence);
+      }
+
       Sprintf(tmp, "<DISCRIM %S>", &tmp_d);
       buf.Append(tmp);
 
@@ -456,7 +465,7 @@ String MobScript::toStringBrief(int client_format, int mob_num) {
 /**  This gives the non-compiled, non-running version.  Think of it
  * as source code!
  */
-String MobScript::getScript() {
+String GenScript::getScript() {
    String buf(1024);
 
    for (int i = 0; i<script_cmds.getCurLen(); i++) {
@@ -475,7 +484,7 @@ String MobScript::getScript() {
 /**  This gives the compiled, non-running version.  Think of it
  * as assembly code!
  */
-String MobScript::getCompiledScript() {
+String GenScript::getCompiledScript() {
    String buf(1024);
    String tmp(100);
 
@@ -496,7 +505,7 @@ String MobScript::getCompiledScript() {
 /**  This gives the compiled, running version.  Think of it
  * as machine code!
  */
-String MobScript::getRunningScript() {
+String GenScript::getRunningScript() {
    String buf(1024);
    String tmp(100);
 
@@ -520,10 +529,10 @@ String MobScript::getRunningScript() {
 
 
 /**  Should these arguments trigger this command? */
-int MobScript::matches(const String& cmd, String& arg1, critter& act,
+int GenScript::matches(const String& cmd, String& arg1, critter& act,
                        int targ) {
    //if (mudlog.ofLevel(DBG)) {
-      //mudlog << "MobScript::Matches(args....)" << endl;
+      //mudlog << "GenScript::Matches(args....)" << endl;
       //mudlog << "Cmd:  " << cmd << "  arg1:  " << arg1 << "  act:  "
       //       <<  *(name_of_crit(act, ~0))
       //       << "  targ:  " << targ << endl;
@@ -811,7 +820,7 @@ int MobScript::matches(const String& cmd, String& arg1, critter& act,
 
 
 // Consider this a weaker == operator (don't compare actuall script)
-int MobScript::matches(const MobScript& src) {
+int GenScript::matches(const GenScript& src) {
    if (strcasecmp(trig_discriminator, src.trig_discriminator) != 0)
       return FALSE;
    if (strcasecmp(trigger_cmd, src.trigger_cmd) != 0)
@@ -822,16 +831,16 @@ int MobScript::matches(const MobScript& src) {
       return FALSE;
 
    return TRUE;
-}//Matches (MobScript)
+}//Matches (GenScript)
 
 
-void MobScript::clean() {
+void GenScript::clean() {
    running_cmds.clearAndDestroy();
    resetStackPtr();
 }
 
 
-void MobScript::clear() {
+void GenScript::clear() {
    trigger_cmd.Clear();
    trig_discriminator.Clear();
 
@@ -846,7 +855,7 @@ void MobScript::clear() {
    next_lbl_num = 0;
 }//clear
 
-
+int MobScript::_cnt = 0;
 void MobScript::parseScriptCommand(ScriptCmd& cmd, critter& owner) {
    // Look at first command and see if it has non-standard actors.
    critter* script_actor = NULL;
@@ -881,7 +890,7 @@ void MobScript::parseScriptCommand(ScriptCmd& cmd, critter& owner) {
 /** compile() must be called after all appends have been
  * completed.  It is most definately DOES MODIFY it's argument str.
  */
-void MobScript::appendCmd(String& str) {
+void GenScript::appendCmd(String& str) {
    str.Strip();
 
    if (str.Strlen() > 0) {
@@ -905,10 +914,10 @@ void MobScript::appendCmd(String& str) {
  * stack_ptr after doing this...  TODO:  Do it here??
  * Also
  */
-void MobScript::generateScript(String& cmd, String& arg1, critter& act,
+void GenScript::generateScript(String& cmd, String& arg1, critter& act,
                                int targ, room& rm, critter* script_owner) {
 
-   //mudlog << "MobScript::generateScript, compiled_cmds.cur_len: "
+   //mudlog << "GenScript::generateScript, compiled_cmds.cur_len: "
    //       << compiled_cmds.getCurLen() << endl;
 
    if (needs_compiling)
@@ -1042,7 +1051,7 @@ void MobScript::generateScript(String& cmd, String& arg1, critter& act,
 }//GenerateScript
 
 
-void MobScript::compile() { //compile into script assembly...
+void GenScript::compile() { //compile into script assembly...
    // The trick will be to turn the normal script into something
    // more easily understood and dealt with by the computer.  For
    // now, we will parse if-then-else statements, and compute labels.
@@ -1051,7 +1060,7 @@ void MobScript::compile() { //compile into script assembly...
    // constructs into label jumps.  Later, will translate label jumps
    // into index jumps.
 
-   //mudlog << "In MobScript::compile" << endl;
+   //mudlog << "In GenScript::compile" << endl;
 
    compiled_cmds.clearAndDestroy();
 
@@ -1080,7 +1089,7 @@ void MobScript::compile() { //compile into script assembly...
 }//compile
 
 
-int MobScript::findOffset(List<KVPair<String, int>*>& lst,
+int GenScript::findOffset(List<KVPair<String, int>*>& lst,
                           const String& str) {
    Cell<KVPair<String, int>*> cll(lst);
    KVPair<String, int>* ptr;
@@ -1095,7 +1104,7 @@ int MobScript::findOffset(List<KVPair<String, int>*>& lst,
    return -1;
 }
 
-void MobScript::optimizeLabels(const PtrArray<ScriptCmd>& incomming,
+void GenScript::optimizeLabels(const PtrArray<ScriptCmd>& incomming,
                                PtrArray<ScriptCmd>& rslts) {
    short eos, tbp; //not really using these...
 
@@ -1177,7 +1186,7 @@ void MobScript::optimizeLabels(const PtrArray<ScriptCmd>& incomming,
 }//optimizeLabels
 
 
-String MobScript::getNextLabel() {
+String GenScript::getNextLabel() {
    String retval(30);
    Sprintf(retval, "LaBeL__%i", next_lbl_num);
    next_lbl_num++;
@@ -1185,7 +1194,7 @@ String MobScript::getNextLabel() {
 }
 
 
-void MobScript::parseBlockFP(int& start_idx,
+void GenScript::parseBlockFP(int& start_idx,
                              const PtrArray<ScriptCmd>& incomming,
                              PtrArray<ScriptCmd>& rslts) {
    short eos, tbp; //not really using these...
@@ -1275,14 +1284,14 @@ void MobScript::parseBlockFP(int& start_idx,
 }//parseBlockFP
 
 
-void MobScript::read(ifstream& da_file) {
+void GenScript::read(ifstream& da_file) {
    char buf[100];
    clear();
-   mudlog.log(DB, "in MobScript::Read()");
+   mudlog.log(DB, "in GenScript::Read()");
 
    if (!da_file) {
       if (mudlog.ofLevel(ERR)) {
-         mudlog << "ERROR:  da_file FALSE in MobScript read." << endl;
+         mudlog << "ERROR:  da_file FALSE in GenScript read." << endl;
       }
       return;
    }
@@ -1341,7 +1350,7 @@ void MobScript::read(ifstream& da_file) {
 }//Read
 
 
-void MobScript::write(ofstream& da_file) const {
+void GenScript::write(ofstream& da_file) const {
    da_file << trigger_cmd << " " << target 
            << " " << actor << " " << takes_precedence 
            << "\t Trigger Command, targ, actor \n";
@@ -1360,4 +1369,10 @@ void MobScript::write(ofstream& da_file) const {
    da_file << output << "\n~\n";
 }//Write
 
+
+int RoomScript::_cnt = 0;
+void RoomScript::parseScriptCommand(ScriptCmd& cmd, room& owner) {
+   String command(cmd.getCommand());
+   owner.processInput(command);
+}//parseScriptCommand
 

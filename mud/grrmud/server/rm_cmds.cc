@@ -31,20 +31,17 @@
 
 
 /* Only works for those in the current room!! */
-int tell(int i, const String* name, String& msg, room& rm) {
-   critter* crit_ptr;
-   int count = 0, z;
-
-   crit_ptr = rm.haveCritNamed(i_th, targ, ~0);
+int room::tell(int i, const String* name, String& msg) {
+   critter* crit_ptr = haveCritNamed(i, name, ~0);
 
    if (crit_ptr) {
-      do_tell(rm, msg, *crit_ptr, TRUE);
-      return;
+      return do_tell(msg, *crit_ptr);
    }//if
+   return -1;
 }//tell
 
 
-void do_tell(room& rm, const char* msg, critter& targ) {
+int room::do_tell(const char* msg, critter& targ) {
 
    String buf(200);
 
@@ -64,13 +61,14 @@ void do_tell(room& rm, const char* msg, critter& targ) {
            &tag, &msg, &untag);
    show(buf, targ);
 
+   return 0;
 }//do_tell
 
 
-void com_recho(const String* msg, room& rm) {
+int room::com_recho(const String* msg) {
    String buf2(100);
 
-   Cell<critter*> cll(rm.getCrits());
+   Cell<critter*> cll(critters);
    critter* ptr;
    
    while ((ptr = cll.next())) {
@@ -83,17 +81,19 @@ void com_recho(const String* msg, room& rm) {
          show("\n", *ptr);
       }
    }//while
-}//com_gecho
+   return 0;
+}//com_recho
    
 
-void com_zecho(const String* msg, room& rm) {
+int room::com_zecho(const String* msg) {
    String buf2(100);
 
    Cell<critter*> cll(pc_list);
    critter* ptr;
+   int znum = getZoneNum();
 
    while ((ptr = cll.next())) {
-      if (ptr->getCurZoneNum() == rm.getZoneNum()) {
+      if (ptr->getCurZoneNum() == znum) {
          if (ptr->isImmort()) {
             Sprintf(buf2, "[ZECHO]  %S", msg);
             show(buf2, *ptr);
@@ -104,10 +104,11 @@ void com_zecho(const String* msg, room& rm) {
          }
       }//while
    }//if
+   return 0;
 }//com_zecho
 
 
-void wizchat(const char* message, room& rm) {
+int room::wizchat(const char* message) {
    Cell<critter*> cell(pc_list);
    critter* crit_ptr;
    String buf(200);
@@ -135,14 +136,156 @@ void wizchat(const char* message, room& rm) {
          }
 
          Sprintf(buf, "%S\n[ROOM %i] wizchats, '%S'\n%S", 
-                       &tag, rm.getIdNum(), &msg, &untag);
-         show(buf, *crit_ptr); 
+                       &tag, getIdNum(), &msg, &untag);
+         crit_ptr->show(buf); 
       }//if
    }//while
+   return 0;
 }//wizchat
 
 
+/**  Move all in room out some door.  Does no checks, just puts em
+ * through the door, even if it's closed??!!
+ */
+int room::move_all(int i_th, const String* dir) {
+   String buf(100);
+   critter* ptr;
+   door* door_ptr = door::findDoor(DOORS, i_th, dir, ~0, *this);
+   if (!door_ptr || !door_ptr->getDestRoom()) {
+      return -1;
+   }
+
+   int dest_rm = door_ptr->getDestRoom()->getIdNum();
+   int is_dead;
+
+   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS)) {
+      while (!critters.isEmpty()) {
+         ptr = critters.peekFront();
+         is_dead = FALSE;
+
+         ptr->doGoToRoom(dest_rm, NULL, NULL, is_dead, getIdNum());
+         
+         if (!is_dead) {
+            look(1, &NULL_STRING, *ptr);
+         }//if
+      }//while
+   }//if
+   return 0;
+}//move_all
 
 
+/**  Move all objects in room out some door.  Does no checks, just puts em
+ * through the door, even if it's closed??!!
+ */
+int room::omove_all(int i_th, const String* dir) {
+   String buf(100);
+   object* ptr;
+   door* door_ptr = door::findDoor(DOORS, i_th, dir, ~0, *this);
+   if (!door_ptr || !door_ptr->getDestRoom()) {
+      return -1;
+   }
+
+   int dest_rm = door_ptr->getDestRoom()->getIdNum();
+
+   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS)) {
+      while (!inv.isEmpty()) {
+         ptr = inv.peekFront();
+         ptr->doGoToRoom(dest_rm, NULL, NULL, getIdNum());
+      }//while
+   }//if
+   return 0;
+}//omove_all
 
 
+int room::move(int i_th, const String* pc, int j_th, const String* dir) {
+   String buf(100);
+   critter* ptr;
+   door* door_ptr = door::findDoor(DOORS, i_th, dir, ~0, *this);
+   if (!door_ptr || !door_ptr->getDestRoom()) {
+      return -1;
+   }
+
+   int dest_rm = door_ptr->getDestRoom()->getIdNum();
+
+   /* deal with some special cases */
+
+   if (*pc == "__RANDOM__") {
+      ptr = critters.elementAt(d(1, doors.size()) - 1);
+   }//if pick a random one
+   else if (*pc == "__TOP__") {
+      ptr = critters.peekFront();
+   }
+   else if (*pc == "__BOTTOM__") {
+      ptr = critters.peekBack();
+   }
+   else {
+      ptr = haveCritNamed(i_th, pc, ~0);
+   }
+
+   if (!ptr) {
+      return -1;
+   }
+
+   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS)) {
+      int is_dead;
+      ptr->doGoToRoom(dest_rm, NULL, NULL, is_dead, getIdNum());
+         
+      if (!is_dead) {
+         look(1, &NULL_STRING, *ptr);
+      }//if
+   }//if
+   return 0;
+}//move
+
+
+int room::omove(int i_th, const String* obj, int j_th, const String* dir) {
+   String buf(100);
+   object* ptr;
+   door* door_ptr = door::findDoor(DOORS, i_th, dir, ~0, *this);
+   if (!door_ptr || !door_ptr->getDestRoom()) {
+      return -1;
+   }
+
+   int dest_rm = door_ptr->getDestRoom()->getIdNum();
+
+   /* deal with some special cases */
+
+   if (*obj == "__RANDOM__") {
+      ptr = inv.elementAt(d(1, doors.size()) - 1);
+   }//if pick a random one
+   else if (*obj == "__TOP__") {
+      ptr = inv.peekFront();
+   }
+   else if (*obj == "__BOTTOM__") {
+      ptr = inv.peekBack();
+   }
+   else {
+      ptr = haveObjNamed(i_th, obj, ~0);
+   }
+
+   if (!ptr) {
+      return -1;
+   }
+
+   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS)) {
+      return ptr->doGoToRoom(dest_rm, NULL, NULL, getIdNum());
+   }//if
+   return -1;
+}//omove
+
+
+/** Echo message into the room in this direction */
+int room::neighbor_echo(int i_th, const String* dir, const String& buf) {
+   door* door_ptr = door::findDoor(DOORS, i_th, dir, ~0, *this);
+   if (!door_ptr) {
+      return -1;
+   }
+
+   room* dest_rm = door_ptr->getDestRoom();
+
+   if (dest_rm) {
+      return dest_rm->com_recho(&buf);
+   }
+
+   return -1;
+}//neighbor_echo

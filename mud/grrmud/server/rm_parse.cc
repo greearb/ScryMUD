@@ -28,31 +28,15 @@
  * of the file.
  */
 
-#include "ar_skll.h"
-#include "cr_skll.h"
-#include "social2.h"
-#include "ez_skll.h"
-#include "dam_skll.h"
 #include "misc.h"
 #include "misc2.h"
-#include "commands.h"
-#include "command2.h"
-#include "command3.h"
-#include "command4.h"
-#include "command5.h"
-#include "spells.h"
-#include "skills.h"
-#include "olc.h"
-#include "olc2.h"
-#include "socials.h"
 #include <fstream.h>
 #include <stdio.h>
 #include "classes.h"
-#include "wep_skll.h"
-#include "parse.h"
+#include "rm_parse.h"
 #include <PtrArray.h>
 #include "script.h"
-
+#include "rm_cmds.h"
 
 
 	     /******************************************/
@@ -105,7 +89,7 @@ int room::processInput(String& input) {
 
    len1 = raw_strings[0].Strlen();
 
-   if (strncasecmp(raw_strings[0], "tell", max(3, len1)) == 0) {
+   if (strncasecmp(raw_strings[0], "tell", max(4, len1)) == 0) {
       buf = input.Get_Command(eos, term_by_period);
       if (buf.Strlen() != 0) {
          if (isnum(buf)) {
@@ -115,45 +99,61 @@ int room::processInput(String& input) {
                str2 = buf;
                buf = input.Get_Rest();
                parse_communication(buf);
-               tell(i, &str2, buf, *this);
+               return this->tell(i, &str2, buf);
             }//if
-            else {
-               return FALSE;
-            }//else
          }//if is number
          else {
             str2 = buf;
             buf = input.Get_Rest();
             parse_communication(buf);
-            tell(1, &str2, buf, *this);
+            return this->tell(1, &str2, buf);
          }//else
       }//if
-      else {
-         return 0;
-      }//else
-      return 1;
+      return -1;
    }//if tell
+
+
+   if (strncasecmp(raw_strings[0], "neighbor_echo", 13) == 0) {
+      buf = input.Get_Command(eos, term_by_period);
+      if (buf.Strlen() != 0) {
+         if (isnum(buf)) {
+            i = atoi(buf);
+            buf = input.Get_Command(eos, term_by_period);
+            if (buf.Strlen() != 0) {
+               str2 = buf;
+               buf = input.Get_Rest();
+               parse_communication(buf);
+               return this->neighbor_echo(i, &str2, buf);
+            }//if
+         }//if is number
+         else {
+            str2 = buf;
+            buf = input.Get_Rest();
+            parse_communication(buf);
+            return this->neighbor_echo(1, &str2, buf);
+         }//else
+      }//if
+
+      return -1;
+   }//if neighbor_echo
 
    
    if (strcasecmp(raw_strings[0], "recho") == 0) {
       buf = input.Get_Rest();
       parse_communication(buf);
-      com_recho(&buf, *this);
-      return 1;
+      return this->com_recho(&buf);
    }//if
 
    if (strcasecmp(raw_strings[0], "zecho") == 0) {
       buf = input.Get_Rest();
       parse_communication(buf);
-      com_zecho(&buf, *this);
-      return 1;
+      return this->com_zecho(&buf);
    }//if
    
    if (strncasecmp(raw_strings[0], "wizchat", max(3, len1)) == 0) {
       buf = input.Get_Rest();
       parse_communication(buf);
-      wizchat(buf, *this);
-      return 1;
+      return this->wizchat(buf);
    }//if auction
 
    mudlog.log(DBG, "Entering the while loop.\n");   
@@ -167,7 +167,6 @@ int room::processInput(String& input) {
       
       //max input is RAW_MAX words/numbers
       if ((count >= (RAW_MAX - 1)) && (!eos)) {
-	 show(PARSE_ERR_MSG);
 	 return 0;
       }//if
    }//while
@@ -231,7 +230,6 @@ int room::processInput(String& input) {
    /********************************************************/
 
    if ((len1 = cooked_strs[0].Strlen()) == 0) {
-      show(PARSE_ERR_MSG);
       return 0;
    }//if
 
@@ -257,11 +255,11 @@ int room::processInput(String& input) {
       case 'K':
       case 'L':
       case 'M':
-         if (strncasecmp(str1, "move", len1) == 0) { 
-	    move(i, &str2, j, &str3, (*this));
+         if (strncasecmp(str1, "rm_move", len1) == 0) { 
+	    return this->move(i, &str2, j, &str3);
 	 }//if
-         else if (strncasecmp(str1, "move_all", len1) == 0) { 
-	    move_all(i, &str2, (*this));
+         else if (strncasecmp(str1, "rm_move_all", len1) == 0) { 
+	    return this->move_all(i, &str2);
 	 }//if
          else {
             return -1;
@@ -270,6 +268,17 @@ int room::processInput(String& input) {
 
       case 'N':
       case 'O':
+         if (strncasecmp(str1, "rm_omove", len1) == 0) { 
+	    return this->omove(i, &str2, j, &str3);
+	 }//if
+         else if (strncasecmp(str1, "rm_omove_all", len1) == 0) { 
+	    return this->omove_all(i, &str2);
+	 }//if
+         else {
+            return -1;
+         }
+         return 0;
+
       case 'P': 
       case 'Q':
       case 'R':

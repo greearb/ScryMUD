@@ -343,7 +343,7 @@ void pause(int rounds, critter& pc) {
 	  
 void list_scripts(int mob_num, critter& pc) {
 
-   if (!pc.pc || !pc.pc->imm_data) {// || pc.IMM_LEVEL < 2) {
+   if (!pc.isImmort()) {
       show("Eh?\n", pc);
       return;
    }//if
@@ -374,7 +374,7 @@ may be seen by using the stat_script [mob_num] [script_index] command.\n\n");
    int idx = 0;
    while ((ptr = cll.next())) {
       found_one = TRUE;
-      tmp = ptr->toStringBrief(FALSE, 0);
+      tmp = ptr->toStringBrief(FALSE, 0, ENTITY_CRITTER);
       Sprintf(buf, "[%i] %S\n", idx, &(tmp));
       pc.show(buf);
       idx++;
@@ -388,6 +388,36 @@ may be seen by using the stat_script [mob_num] [script_index] command.\n\n");
 }//list_scripts
 
 
+void list_room_scripts(int rm_num, critter& pc) {
+
+   if (!pc.isImmort()) {
+      show("Eh?\n", pc);
+      return;
+   }//if
+
+   if (pc.isFrozen()) { //if frozen
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+   
+   if (rm_num == 1) {
+      // Use current room, if player didn't enter anything
+      rm_num = ROOM.getIdNum();
+   }
+
+   if (!check_l_range(rm_num, 1, NUMBER_OF_ROOMS, pc, TRUE))
+      return;
+
+   if (!room_list[rm_num].isInUse()) {
+      show("That Room does not exist.", pc);
+      return;
+   }
+
+   room_list[rm_num].listScripts(pc);
+   
+}//list_room_scripts
+
+
 
 void stat_script(int mob_num, int script_idx, critter& pc) {
 
@@ -396,7 +426,7 @@ void stat_script(int mob_num, int script_idx, critter& pc) {
              << script_idx << endl;
    }
 
-   if (!pc.pc || !pc.pc->imm_data) { // || pc.IMM_LEVEL < 2) {
+   if (!pc.isImmort()) {
       show("Eh?\n", pc);
       return;
    }//if
@@ -416,36 +446,85 @@ void stat_script(int mob_num, int script_idx, critter& pc) {
 
    String buf(500);
  
-   Cell<MobScript*> cll(mob_list[mob_num].mob->mob_proc_scripts);
-   MobScript* ptr;
-   int idx = 0;
-   while ((ptr = cll.next())) {
-      if (idx == script_idx) {
-         buf.Append(ptr->toStringBrief(pc.USING_CLIENT, mob_num));
-         if (pc.USING_CLIENT)
-            buf.Append("\n<MSCRIPT_DATA>");
-         else
-            buf.Append("\n");
-         buf.Append(ptr->getScript());
-         
-         if (pc.USING_CLIENT)
-            buf.Append("</MSCRIPT_DATA>\nCompiled Script:\n");
-         else
-            buf.Append("\nCompiled Script:\n");
-         
-         buf.Append(ptr->getCompiledScript());
-         
-         show(buf, pc);
-         return;
-      }//if
-      idx++;
-   }//while
+   MobScript* ptr = mob_list[mob_num].mob->mob_proc_scripts.elementAt(script_idx);
+   if (ptr) {
+      buf.Append(ptr->toStringBrief(pc.USING_CLIENT, mob_num, ENTITY_CRITTER));
+      if (pc.USING_CLIENT)
+         buf.Append("\n<SCRIPT_DATA>");
+      else
+         buf.Append("\n");
+      buf.Append(ptr->getScript());
+      
+      if (pc.USING_CLIENT)
+         buf.Append("</SCRIPT_DATA>\nCompiled Script:\n");
+      else
+         buf.Append("\nCompiled Script:\n");
+      
+      buf.Append(ptr->getCompiledScript());
+      
+      show(buf, pc);
+      return;
+   }//if
 
    Sprintf(buf, "Mob: %S does not have a script of index: %i",
            mob_list[mob_num].getName(), script_idx);
    show(buf, pc);
    
 }//stat_script
+
+
+void stat_room_script(int rm_num, int script_idx, critter& pc) {
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In stat_room_script:  rm_num:  " << rm_num << " script_idx:  "
+             << script_idx << endl;
+   }
+
+   if (!pc.isImmort()) {
+      show("Eh?\n", pc);
+      return;
+   }//if
+
+   if (pc.isFrozen()) {
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+
+   if (!check_l_range(rm_num, 1, NUMBER_OF_ROOMS, pc, TRUE))
+      return;
+
+   if (!room_list[rm_num].isInUse()) {
+      show("That room does not exist.", pc);
+      return;
+   }
+
+   String buf(500);
+ 
+   RoomScript* ptr = room_list[rm_num].getScriptAt(script_idx);
+   if (ptr) {
+      buf.Append(ptr->toStringBrief(pc.USING_CLIENT, rm_num, ENTITY_ROOM));
+      if (pc.isUsingClient())
+         buf.Append("\n<SCRIPT_DATA>");
+      else
+         buf.Append("\n");
+      buf.Append(ptr->getScript());
+      
+      if (pc.USING_CLIENT)
+         buf.Append("</SCRIPT_DATA>\nCompiled Script:\n");
+      else
+         buf.Append("\nCompiled Script:\n");
+      
+      buf.Append(ptr->getCompiledScript());
+      
+      show(buf, pc);
+      return;
+   }//if
+
+   Sprintf(buf, "Room: %i does not have a script of index: %i",
+           rm_num, script_idx);
+   show(buf, pc);
+   
+}//stat_room_script
 
 
 
@@ -455,7 +534,7 @@ void rem_script(int mob_num, String& trigger, int i_th, critter& pc) {
              << trigger << "  i_th:  " << i_th << endl;
    }
 
-   if (!pc.pc || !pc.pc->imm_data) { //|| pc.IMM_LEVEL < 2) {
+   if (!pc.isImmort()) {
       show("Eh?\n", pc);
       return;
    }//if
@@ -509,6 +588,49 @@ void rem_script(int mob_num, String& trigger, int i_th, critter& pc) {
 
    show("Didn't find that script..\n", pc);
 }//rem_script
+
+
+void rem_room_script(int rm_num, String& trigger, int i_th, critter& pc) {
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In rem_room_script:  rm_num:  " << rm_num << "  trigger:  "
+             << trigger << "  i_th:  " << i_th << endl;
+   }
+
+   if (!pc.isImmort()) {
+      show("Eh?\n", pc);
+      return;
+   }//if
+
+   if (trigger.Strlen() == 0) {
+      show("Which trigger do you want to stat??\n", pc);
+      return;
+   }
+
+   if (pc.isFrozen()) { //if frozen
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+
+   if (rm_num == 1) {
+      rm_num = ROOM.getIdNum();
+   }
+   
+   if (!check_l_range(rm_num, 1, NUMBER_OF_ROOMS, pc, TRUE))
+      return;
+
+   if (!room_list[rm_num].isInUse()) {
+      show("That room does not exist.\n", pc);
+      return;
+   }
+
+   if (!pc.doesOwnRoom(room_list[rm_num])) {
+      show("You don't own that room...\n", pc);
+      return;
+   }
+
+   room_list[rm_num].removeScript(trigger, i_th, pc);
+
+}//rem_room_script
 
 
 void teach(int i_th, const String* name, int prcnt, const String* skill, 
@@ -814,45 +936,45 @@ void using_client(critter& pc) {
 
 
 void itrans(int i_th, const String* targ, int rm_num, critter& pc) {
-  String buf(100);
+   String buf(100);
 
-  if (!pc.pc || !pc.pc->imm_data) {
-    show("Eh??\n", pc);
-    return;
-  }//if
-
-  if (pc.PC_FLAGS.get(0)) { //if frozen
-    show("You are too frozen to do anything.\n", pc);
-    return;
-  }//if
-
-  critter* ptr = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
-
-  if (!ptr) {
-    ptr = have_crit_named(pc_list, i_th, targ, pc.SEE_BIT, ROOM);
-  }//if
-
-  if (!ptr) {
-    show("Who would you like to transport?\n", pc);
-    return;
-  }//if
-
-  if (ptr->isMob()) {
-    ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, targ, pc.SEE_BIT);
-  }//if
-  else if (ptr->pc && ptr->pc->imm_data && 
-	   (ptr->IMM_LEVEL >= pc.IMM_LEVEL)) {
-    show("Whoa, you can't itrans one so powerful.\n", pc);
-    return;
-  }//if
-  
-  if (rm_num == 1) {
-    rm_num = pc.getCurRoomNum(); //default is to trans him TO the player's own room
-  }//if
-  
-  if (check_l_range(rm_num, 0, NUMBER_OF_ROOMS, pc, TRUE)) {
-    do_transport(*ptr, pc, room_list[rm_num]);
-  }//
+   if (!pc.isImmort()) {
+      show("Eh??\n", pc);
+      return;
+   }//if
+   
+   if (pc.isFrozen()) {
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+   
+   critter* ptr = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
+   
+   if (!ptr) {
+      ptr = have_crit_named(pc_list, i_th, targ, pc.SEE_BIT, ROOM);
+   }//if
+   
+   if (!ptr) {
+      show("Who would you like to transport?\n", pc);
+      return;
+   }//if
+   
+   if (ptr->isMob()) {
+      ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, targ, pc.SEE_BIT);
+   }//if
+   else if (ptr->pc && ptr->pc->imm_data && 
+            (ptr->IMM_LEVEL >= pc.IMM_LEVEL)) {
+      show("Whoa, you can't itrans one so powerful.\n", pc);
+      return;
+   }//if
+   
+   if (rm_num == 1) {
+      rm_num = pc.getCurRoomNum(); //default is to trans him TO the player's own room
+   }//if
+   
+   if (check_l_range(rm_num, 0, NUMBER_OF_ROOMS, pc, TRUE)) {
+      do_transport(*ptr, pc, room_list[rm_num]);
+   }//
 }//itrans
 
 

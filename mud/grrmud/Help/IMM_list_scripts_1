@@ -9,5 +9,5 @@ Example:  list_scripts 69              // List scripts for mob 69
 
 
 <color=red>
-See Also:  stat_script add_mob_script rm_script
+See Also:  stat_script add_mob_script rm_script list_room_scripts
 </color></help>

@@ -1158,7 +1158,7 @@ void ch_path_desc(int veh_id, int path_cell_num, critter& pc) {
 void add_mob_script(critter& pc, int mob_num, String& trigger_cmd,
                     int actor_num, String& descriminator, int target_num,
                     int takes_precedence) {
-   if (!pc.pc || !pc.pc->imm_data) {
+   if (!pc.isImmort()) {
      show("Eh??\n", pc);
      return;
    }//if
@@ -1178,7 +1178,7 @@ void add_mob_script(critter& pc, int mob_num, String& trigger_cmd,
       return;
    }//if
 
-   if (!MobScript::validTrigger(trigger_cmd)) {
+   if (!GenScript::validTrigger(trigger_cmd)) {
       show("That is not a valid trigger command.", pc);
       return;
    }
@@ -1203,20 +1203,84 @@ void add_mob_script(critter& pc, int mob_num, String& trigger_cmd,
    show("Enter a script for this mob. If the mob already has a\n", pc);
    show("proc for the specified trigger, then it will be over-written.\n", pc);
    show("Remember to end each statement with a double semicolon,\n", pc);
-   show("Which will be treated as a single semicolon by the parser.\n", pc);
+   show("which will be treated as a single semicolon by the parser.\n", pc);
    show("Use a solitary '~' on a line by itself to end.\n", pc);
 
-   pc.pc->imm_data->tmp_mob_script
+   pc.pc->imm_data->tmp_proc_script
       = new MobScript(trigger_cmd, target_num, actor_num, descriminator,
                       takes_precedence);
-   pc.pc->imm_data->mob_script_buffer.Clear();
-   pc.pc->imm_data->tmp_script_mob_num = mob_num;
+   pc.pc->imm_data->proc_script_buffer.Clear();
+   pc.pc->imm_data->tmp_script_entity_num = mob_num;
 
    pc.pc->imm_data->edit_string 
-      = &(pc.pc->imm_data->mob_script_buffer);
+      = &(pc.pc->imm_data->proc_script_buffer);
 
    pc.setMode(MODE_ADD_MOB_SCRIPT);
 }//add_mob_script
+
+
+void add_room_script(critter& pc, int rm_num, String& trigger_cmd,
+                     int actor_num, String& descriminator, int target_num,
+                     int takes_precedence) {
+   if (!pc.isImmort()) {
+     show("Eh??\n", pc);
+     return;
+   }//if
+  
+   if (!ROOM.isZlocked()) {
+      show("Your zone must be locked to change the room desc.\n", pc);
+      return;
+   }//if
+
+   if ((rm_num < 2) || (rm_num > NUMBER_OF_ROOMS)) {
+      show("That room number is out of range.", pc);
+      return;
+   }
+
+   if (!pc.doesOwnRoom(room_list[rm_num])) {
+      show("You don't own that room.\n", pc);
+      return;
+   }//if
+
+   if (!GenScript::validTrigger(trigger_cmd)) {
+      show("That is not a valid trigger command.", pc);
+      return;
+   }
+
+   // We prepend text to it so it's never a number as far as parsing
+   // is concerned.  It's embarrasing, I know! Can't spell either!
+   if (strncasecmp(descriminator, "DISCRIM_", 8) == 0) {
+      String tmp = (((const char*)(descriminator)) + 8);
+      descriminator = tmp;
+   }
+
+   if (descriminator == "NA") {
+      descriminator.Clear();
+   }
+
+   String buf(200);
+   Sprintf(buf, "Creating a script for room:  %i, trigger -:%S:-, actor:  %i, \ndescriminator -:%S:-, target:  %i, takes_precedence:  %i\n",
+           rm_num, &trigger_cmd, actor_num, &descriminator, target_num,
+           takes_precedence);
+   show(buf, pc);
+
+   show("Enter a script for this room. If the room already has a\n", pc);
+   show("proc for the specified trigger, then it will be over-written.\n", pc);
+   show("Remember to end each statement with a double semicolon,\n", pc);
+   show("which will be treated as a single semicolon by the parser.\n", pc);
+   show("Use a solitary '~' on a line by itself to end.\n", pc);
+
+   pc.pc->imm_data->tmp_proc_script
+      = new RoomScript(trigger_cmd, target_num, actor_num, descriminator,
+                       takes_precedence);
+   pc.pc->imm_data->proc_script_buffer.Clear();
+   pc.pc->imm_data->tmp_script_entity_num = rm_num;
+
+   pc.pc->imm_data->edit_string 
+      = &(pc.pc->imm_data->proc_script_buffer);
+
+   pc.setMode(MODE_ADD_ROOM_SCRIPT);
+}//add_room_script
 
 
 void create_concoction(int rslt, int comp1, int comp2, int comp3, int comp4,
@@ -1639,24 +1703,23 @@ void do_add_mob_script(critter& pc) {
          show("Script completed.\n", pc);
          pc.setMode(MODE_NORMAL);
          parse_for_max_80(*(pc.pc->imm_data->edit_string));
-         mudlog.log(TRC, "parsed for max 80");
-         if (MobScript::checkScript(*(pc.pc->imm_data->edit_string))) {
-            mudlog.log(TRC, "script checked out ok");
+
+         if (GenScript::checkScript(*(pc.pc->imm_data->edit_string))) {
 
             show("It's too hard to check the script, we'll assume you", pc);
             show("\nknow what you're doing.  If not, edit it again!", pc);
 
             // Now, lets add it to the mob already!
             // First, make sure the mob still exists
-            int mob_num = pc.pc->imm_data->tmp_script_mob_num;
-            if (mob_list[mob_num].CRIT_FLAGS.get(18)) {
+            int mob_num = pc.pc->imm_data->tmp_script_entity_num;
+            if (mob_list[mob_num].isInUse()) {
                mudlog.log(TRC, "About to addProcScript");
 
                mob_list[mob_num].
                   addProcScript(*(pc.pc->imm_data->edit_string),
-                                pc.pc->imm_data->tmp_mob_script);
+                                (MobScript*)(pc.pc->imm_data->tmp_proc_script));
                mudlog.log(TRC, "Done with addProcScript");
-               pc.pc->imm_data->tmp_mob_script = NULL;
+               pc.pc->imm_data->tmp_proc_script = NULL;
             }//if
          }//if script checks out ok
          else {
@@ -1665,8 +1728,8 @@ void do_add_mob_script(critter& pc) {
             show("There was an ERROR IN THE SCRIPT.\n", pc);
             show(*(pc.pc->imm_data->edit_string), pc);
 
-            delete pc.pc->imm_data->tmp_mob_script;
-            pc.pc->imm_data->tmp_mob_script = NULL;
+            delete pc.pc->imm_data->tmp_proc_script;
+            pc.pc->imm_data->tmp_proc_script = NULL;
          }
 
          mudlog.log(TRC, "setting edit string to NULL");
@@ -1680,6 +1743,60 @@ void do_add_mob_script(critter& pc) {
       buf = pc.pc->input.Get_Rest();
    }//while
 }//do_add_mob_script
+
+
+void do_add_room_script(critter& pc) {
+   String buf = pc.pc->input.Get_Rest();
+   mudlog.log(TRC, "In do_add_room_script...");
+
+   while (TRUE) {
+      if (buf.Strlen() == 0) {
+         return;
+      }//if
+
+      if (buf == "~") {
+         mudlog.log(TRC, "Script completed...");
+         show("Script completed.\n", pc);
+         pc.setMode(MODE_NORMAL);
+         parse_for_max_80(*(pc.pc->imm_data->edit_string));
+
+         if (GenScript::checkScript(*(pc.pc->imm_data->edit_string))) {
+            show("It's too hard to check the script, we'll assume you", pc);
+            show("\nknow what you're doing.  If not, edit it again!", pc);
+
+            // Now, lets add it to the mob already!
+            // First, make sure the mob still exists
+            int rm_num = pc.pc->imm_data->tmp_script_entity_num;
+            if (room_list[rm_num].isInUse()) {
+               mudlog.log(TRC, "About to addProcScript");
+
+               room_list[rm_num].
+                  addProcScript(*(pc.pc->imm_data->edit_string),
+                                (RoomScript*)(pc.pc->imm_data->tmp_proc_script));
+               pc.pc->imm_data->tmp_proc_script = NULL;
+            }//if
+         }//if script checks out ok
+         else {
+            mudlog.log(TRC, "Script failed check!!!");
+
+            show("There was an ERROR IN THE SCRIPT.\n", pc);
+            show(*(pc.pc->imm_data->edit_string), pc);
+
+            delete pc.pc->imm_data->tmp_proc_script;
+            pc.pc->imm_data->tmp_proc_script = NULL;
+         }
+
+         mudlog.log(TRC, "setting edit string to NULL");
+
+	 pc.pc->imm_data->edit_string = NULL;
+         return;
+      }//if
+
+      *(pc.pc->imm_data->edit_string) += buf;  //append the line to desc
+      *(pc.pc->imm_data->edit_string) += "\n";
+      buf = pc.pc->input.Get_Rest();
+   }//while
+}//do_add_room_script
 
 
 void ch_rname(const String* rname, critter& pc) {

@@ -551,6 +551,40 @@ void room::Read(ifstream& ofile, short read_all) {
    }//while 
    ofile.getline(tmp, 80); //get comments after mobs...
 
+   /* read procs, if we have them. */
+   if (room_flags.get(35)) {
+      //mudlog.log("Mob has proc scripts...");
+      int sent_;
+      RoomScript* ptr;
+
+      ofile >> sent_;
+      ofile.getline(tmp, 80);
+
+      if (mudlog.ofLevel(DB)) {
+         mudlog << "Tmp, after script#: " << sent_ << " -:" << tmp
+                << ":-\n";
+      }
+
+      while (sent_ != -1) {
+         if (mudlog.ofLevel(DB))
+            mudlog << "\nReading script# " << sent_ << endl;
+         if (!ofile) {
+            if (mudlog.ofLevel(ERR)) {
+               mudlog << "ERROR:  mob_data reading script da_file FALSE." << endl;
+            }
+            return;
+         }
+
+         ptr = new RoomScript();
+         ptr->read(ofile);
+         Put(ptr, room_proc_scripts);
+         ofile >> sent_;
+         ofile.getline(tmp, 80);
+         if (mudlog.ofLevel(DB))
+            mudlog << "Got rest of line -:" << tmp << ":-" << endl;
+      }
+   }//if it had proc scripts
+
    ofile.getline(tmp, 80); //get comments at end of room..
 
    // Post processing...
@@ -731,6 +765,20 @@ void room::Write(ofstream& ofile) {
    }//while
    ofile << -1 << "\tmobs\n";
 
+   if (room_flags.get(35)) {
+      Cell<RoomScript*> cll;
+      room_proc_scripts.head(cll);
+      RoomScript* ptr;
+
+      int i = 1;
+      while ((ptr = cll.next())) {
+         ofile << i++ <<  "  Start of a room proc script\n";
+         ptr->write(ofile);
+      }
+      
+      ofile << "-1  End of room proc scripts" << endl;
+   }
+
    ofile << "End of Room\n";
  
    if (was_totally_read) {
@@ -756,6 +804,35 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
          }//if
       }//if
    }//while
+
+   // Now, check for room procs!!
+   Cell<RoomScript*> rcll;
+   RoomScript* rptr;
+         
+   room_proc_scripts.head(rcll);
+
+   while ((rptr = rcll.next())) {
+      //mudlog.log("In while.");
+      //mudlog.log(ptr->toStringBrief(0, 0));
+      if (rptr->matches(cmd, arg1, actor, targ)) {
+         //mudlog.log("Matches..");
+         if (!isInProcNow() || rptr->takesPrecedence()) {
+            //mudlog.log("Not in a proc now.");
+            // Generate a script, talored to the actors....
+            if (cur_script) {
+               cur_script->clean();
+            }//if
+
+            rptr->generateScript(cmd, arg1, actor, targ, *this, NULL);
+            cur_script = rptr;
+
+            // Ok then, lets start the script
+            proc_action_rooms.gainData(this);
+            cur_script->resetStackPtr(); //get ready to start
+            return;
+         }//if
+      }//if
+   }//while
 }//checkForMobAction
 
 
@@ -777,7 +854,8 @@ void room::stat(critter& pc) {
      22 is_total_loaded, 23 is_used, 24 !magic_entry
      25 !vehicle (vehicles can't drive here), 26 cramped (!huge)
      27 !ranged, 28 need_dive_ability, 29 used_in_track, 30 can_camp
-     31 !complete, 32 has_keywords, 33 !mob_wander 34 !foreign_mob_wander\n\n");
+     31 !complete, 32 has_keywords, 33 !mob_wander 34 !foreign_mob_wander
+     35 has_proc_script\n\n");
 
    if (names.peekFront()) {
       show(*(names.peekFront()), pc);
@@ -1278,3 +1356,103 @@ void room::showAllCept(const char* msg, critter* pc) const {
      }//if
    }//while
 }// show_all_cept
+
+void room::finishedRoomProc() {
+   if (cur_script) {
+      cur_script->clean();
+      cur_script = NULL;
+   }
+}//finishedRoomProc
+
+void room::addProcScript(const String& txt, RoomScript* script_data) {
+   //similar to reading it in...
+   //first, see if we are over-writing one...
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In room::addProcScript, txt:  \n" << txt
+             << "\nscript data:  " << script_data->toStringBrief(0, 0, ENTITY_ROOM)
+             << endl;
+   }
+
+   room_flags.turn_on(35);
+
+   Cell<RoomScript*> cll;
+   RoomScript* ptr;
+   room_proc_scripts.head(cll);
+
+   while ((ptr = cll.next())) {
+      if (ptr->matches(*script_data)) {
+         //got a match.
+         mudlog.log("room::addProcScript, they match.");
+         *ptr = *script_data;
+         ptr->setScript(txt);
+         delete script_data;
+         return;
+      }//if
+   }//while
+   
+   mudlog.log(DBG, "About to setScript.");
+   
+   script_data->setScript(txt);
+   mudlog.log(DBG, "done with setScript.");
+
+   if (!script_data) {
+      mudlog.log(ERR, "script_data is NULL, room::addProcScript.");
+      return;
+   }
+
+   room_proc_scripts.append(script_data);
+}//addProcScript
+
+void room::listScripts(critter& pc) {
+   String buf(500);
+   buf.Append("These scripts are defined for this room, the actual scripts
+may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n");
+
+   pc.show(buf);
+
+   String tmp(100);
+   int found_one = FALSE;
+   Cell<RoomScript*> cll(room_proc_scripts);
+   RoomScript* ptr;
+   int idx = 0;
+   while ((ptr = cll.next())) {
+      found_one = TRUE;
+      tmp = ptr->toStringBrief(FALSE, 0, ENTITY_ROOM);
+      Sprintf(buf, "[%i] %S\n", idx, &(tmp));
+      pc.show(buf);
+      idx++;
+   }
+
+   if (!found_one) {
+      buf.Append("No scripts defined for this room.\n");
+      show(buf, pc);
+   }
+}//listScripts
+
+void room::removeScript(String& trigger, int i_th, critter& pc) {
+   int sofar = 1;
+   String buf(500);
+ 
+   Cell<RoomScript*> cll(room_proc_scripts);
+   RoomScript* ptr;
+   ptr = cll.next();
+   while (ptr) {
+      if (strcasecmp(*(ptr->getTrigger()), trigger) == 0) {
+         if (sofar == i_th) {
+            delete ptr;
+            ptr = room_proc_scripts.lose(cll);
+            show("Deleted it...\n", pc);
+            return;
+         }//if
+         else {
+            ptr = cll.next();
+         }
+         sofar++;
+      }//if
+      else {
+         ptr = cll.next();
+      }
+   }//while
+
+   show("Didn't find that script..\n", pc);
+}//removeScript

@@ -1,0 +1,16 @@
+<help olc rm_room_script>
+
+This function allows you to delete a single script.  You will need to
+do an 'asave' in the zone to which the room belongs in order to make the
+changes permanent.
+
+usage:  rm_room_script [rm_num] [trigger_name] <<i_th trigger>
+
+Example:
+	rm_room_script 50 say     // remove that script on room# 50
+	rm_room_script 50 say 3   // remove the third say script
+
+
+<color=red>
+See Also:  list_room_scripts add_room_script stat_room_script asave rm_script
+</color></help>

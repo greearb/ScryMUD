@@ -24,8 +24,8 @@
 /*  Contains all the prototypes for all commands found in command*.cc */
 
 
-#ifndef CommandsInclude
-#define CommandsInclude
+#ifndef __CommandsInclude__
+#define __CommandsInclude__
 
 #include "const.h"
 #include "classes.h"

@@ -1,0 +1,13 @@
+<help olc rm_omove_all>
+
+Script command that allows a room to forcefully move all objects out
+a certain exit.  It does not matter what state the object is in,
+and it does not matter if the exit is closed or not.
+
+usage:  rm_omove_all <<i_th> [direction]
+
+Example:  rm_omove_all east     // Move all objects to the east.
+
+<color=red>
+See Also:  rm_omove rm_move_all add_mob_script neighbor_echo
+</color></help>

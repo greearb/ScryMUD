@@ -53,7 +53,7 @@ immort_data::immort_data() {
    olc_obj = NULL;
    olc_door = NULL;
    edit_string = NULL;
-   tmp_mob_script = NULL;
+   tmp_proc_script = NULL;
 } // constructor
 
 
@@ -67,7 +67,7 @@ immort_data::immort_data(const immort_data& source) {
    olc_door = source.olc_door;
    imm_level = source.imm_level;
    edit_string = source.edit_string;
-   tmp_mob_script = NULL;
+   tmp_proc_script = NULL;
 } // constructor
 
 
@@ -100,8 +100,8 @@ void immort_data::Clear() {
    olc_counter = temp_olc_int = imm_level = 0;
    edit_string = NULL; //clearing it probably not the right solution
 
-   delete tmp_mob_script;
-   tmp_mob_script = NULL;
+   delete tmp_proc_script;
+   tmp_proc_script = NULL;
 
 } // Clear
 
@@ -1055,7 +1055,8 @@ void mob_data::addProcScript(const String& txt, MobScript* script_data) {
    //first, see if we are over-writing one...
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In mob_data::addProcScript, txt:  \n" << txt
-             << "\nscript data:  " << script_data->toStringBrief(0, 0)
+             << "\nscript data:  "
+             << script_data->toStringBrief(0, 0, ENTITY_CRITTER)
              << endl;
    }
 
@@ -2399,7 +2400,7 @@ void critter::checkForProc(String& cmd, String& arg1, critter& actor,
 
       while ((ptr = cll.next())) {
          //mudlog.log("In while.");
-         mudlog.log(ptr->toStringBrief(0, 0));
+         //mudlog.log(ptr->toStringBrief(0, 0));
          if (ptr->matches(cmd, arg1, actor, targ)) {
             //mudlog.log("Matches..");
             if (!mob->isInProcNow() || ptr->takesPrecedence()) {
@@ -2417,8 +2418,8 @@ void critter::checkForProc(String& cmd, String& arg1, critter& actor,
                mob->cur_script->resetStackPtr(); //get ready to start
                return;
             }//if
-         }//while
-      }//if
+         }//if
+      }//while
    }//if
 }//checkForProcAction
 

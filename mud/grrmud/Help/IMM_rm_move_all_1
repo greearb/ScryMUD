@@ -1,0 +1,13 @@
+<help olc rm_move_all>
+
+Script command that allows a room to forcefully move all players out
+a certain exit.  It does not matter what state the player is in,
+and it does not matter if the exit is closed or not.
+
+usage:  rm_move_all <<i_th> [direction]
+
+Example:  rm_move_all east     // Move all players to the east.
+
+<color=red>
+See Also:  rm_move rm_omove rm_omove_all add_mob_script neighbor_echo
+</color></help>

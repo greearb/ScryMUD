@@ -51,7 +51,8 @@ enum PcMode {
    MODE_GO_LINKDEAD_PLEASE = 6, // socket problem only
    MODE_QUIT_ME_PLEASE = 7,         // purposeful quit
    MODE_LOGOFF_NEWBIE_PLEASE = 9,    // pre-login socket problem
-   MODE_LOG_OFF_LINKDEAD_PLEASE = 10 //to deal with chars on the linkdead list
+   MODE_LOG_OFF_LINKDEAD_PLEASE = 10, //to deal with chars on the linkdead list
+   MODE_ADD_ROOM_SCRIPT = 11
 };//PcMode
 
 enum PcPosition {
@@ -106,9 +107,9 @@ public:
    short imm_level;
    
    String* edit_string;
-   MobScript* tmp_mob_script;
-   int tmp_script_mob_num;
-   String mob_script_buffer;
+   GenScript* tmp_proc_script;
+   int tmp_script_entity_num;
+   String proc_script_buffer;
    
    immort_data();				// default constructor
    immort_data(const immort_data& source);   // copy constructor

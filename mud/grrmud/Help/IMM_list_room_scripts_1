@@ -1,0 +1,13 @@
+<help olc list_room_scripts>
+
+List every script that a room has.  It only shows headers, so you have to
+do a stat_room_script command to get a verbose description of each.
+
+usage:  list_room_scripts <<rm_num> 
+
+Example:  list_room_scripts 69       // List scripts for room 69
+Example:  list_room_scripts          // List the scripts for current room
+
+<color=red>
+See Also:  stat_room_script add_room_script rm_room_script list_scripts
+</color></help>

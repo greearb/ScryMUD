@@ -35,24 +35,27 @@ class MobScriptEditor extends Frame {
    LabeledTextField precedence;
    LabeledTextArea script;
    LabeledTextField mob_num;
+   LabeledTextField entity;
+
    Checkbox is_frozen;
    HegemonManager hm;
 
    public MobScriptEditor(HegemonManager h) {
-      super("Mob Script Editor");
+      super("Script Editor");
       hm = h;
-      Log.instance().init("Constructing MobScriptEditor..");
+      Log.instance().init("Constructing ScriptEditor..");
 
       is_frozen = new Checkbox("Is Frozen", false);
       trigger = new LabeledTextField("Trigger Command", "", 20);
+      entity = new LabeledTextField("Entity", "", 10);
       discrim = new LabeledTextField("Optional Discriminator", "NA", 20);
       target = new LabeledTextField("Target #", "", 10);
       actor = new LabeledTextField("Actor #", "", 10);
       precedence = new LabeledTextField("Precedence (0 no, other yes)",
                                         "", 10);
-      script = new LabeledTextArea("Mob Script (double semicolons necessaary)",
+      script = new LabeledTextArea("Script (double semicolons necessaary)",
                                    "", 10, 80);
-      mob_num = new LabeledTextField("Mob # (Script Owner)", "0", 10);
+      mob_num = new LabeledTextField("Entity # (Script Owner)", "0", 10);
 
       int REM = GridBagConstraints.REMAINDER;
       GridBagLayout gridbag = new GridBagLayout();
@@ -63,6 +66,9 @@ class MobScriptEditor extends Frame {
 
       c.gridwidth = 1;
       
+      gridbag.setConstraints(entity, c);
+      add(entity);
+
       gridbag.setConstraints(trigger, c);
       add(trigger);
 
@@ -132,6 +138,13 @@ class MobScriptEditor extends Frame {
       discrim.append(d);
    }
 
+   public void setEntity(String d) {
+      if (isFrozen())
+        return;
+      entity.clear();
+      entity.append(d);
+   }
+
    public void setMobScriptData(String trig, String mnum, String actor_num,
                                 String target_num, String pd) {
       if (isFrozen())
@@ -163,10 +176,24 @@ class MobScriptEditor extends Frame {
 
    public void do_update() {
       is_frozen.setState(false);
+      String cmd = null;
+
+      if (entity.getText().equalsIgnoreCase("ROOM")) {
+         cmd = "add_room_script";
+      }
+      else if (entity.getText().equalsIgnoreCase("MOB")) {
+         cmd = "add_mob_script ";
+      }
+      else {
+         MessageDialog md = new MessageDialog("Update Error",
+                                              "Was neither ROOM nor MOB entity",
+                                              "red", "black");
+         return;
+      }
 
       try {
          // first, the in_room_description
-         hm.getSocketManager().write("add_mob_script " + mob_num.getText()
+         hm.getSocketManager().write(cmd + mob_num.getText()
                                      + " " + trigger.getText() + " "
                                      + actor.getText() + " '"
                                      + "DISCRIM_" + discrim.getText().trim() + "' " 
@@ -178,7 +205,7 @@ class MobScriptEditor extends Frame {
       }//try
       catch (Exception e) {
          MessageDialog md = new MessageDialog("Update Error",
-                                              "Could not update mob script: "
+                                              "Could not update script: "
                                               + e, "red", "black");
       }//catch
       //do_clear();

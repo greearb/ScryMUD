@@ -51,6 +51,7 @@ stat_spell_cell* is_affected_by(int spell_num, object& obj);
 stat_spell_cell* has_stat_affect(int affect_num, object& obj);
 
 void leave_room_effects(room& rm, critter& pc);
+void leave_room_effects(room& rm, object& obj);
 
 int is_grouped(critter& crit, critter& pc);
 

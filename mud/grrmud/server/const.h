@@ -31,6 +31,13 @@
 #include <LogStream.h>
 #include <PtrArray.h>
 
+enum entity_type {
+   ENTITY_CRITTER,
+   ENTITY_ROOM,
+   ENTITY_DOOR,
+   ENTITY_OBJECT
+};// entity_type
+
 extern LogStream mudlog;
 
 extern bitfield Obj_Wear_Flags_Mask;
