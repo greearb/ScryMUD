@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.17 1999/08/29 01:17:16 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
+// $Id: misc.h,v 1.18 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -79,6 +79,7 @@ int  d(const int num_rolls, const int dice_sides);
 
 int obj_sub_a_4_b(object* a, SafeList<object*>& lst, 
                   const int i_th, const String* name, critter* viewer);
+
 int crit_sub_a_4_b(critter* a, SafeList<critter*>& lst, 
                    const int i_th, const String* name, critter* viewer);
 
@@ -100,8 +101,6 @@ void close_files();
 int detect(int see_bit, int vis_bit); //does bit comparison
 
 void show(const char* message, critter& pc);
-void show_all_but_2(critter& A, critter& B, const char* message, 
-                    room& rm); 
 
 /** Show to all PC's flagged to accept extra info. */
 void showExtraInfo(CSentryE msg);
@@ -138,13 +137,13 @@ critter* have_crit_named(SafeList<critter*>& lst, const int i_th,
                          int do_exact = FALSE);
 
 
-object*  have_obj_named(const SafeList<object*>& lst, const int i_th, 
+object*  have_obj_named(SafeList<object*>& lst, const int i_th, 
                         const String* name, const int see_bit,
                         const room& rm);
 
-object*  have_obj_named(const SafeList<object*>& lst, const int i_th, 
+object*  have_obj_named(SafeList<object*>& lst, const int i_th, 
                         const String* name, const int see_bit,
-                        const room& rm, int& count_sofar);
+                        const room& rm, int& count_sofar, LanguageE lang = English);
 
 /** Return the number of instances of an object with that name, as would
  * be found by have_obj_named, in the lst.  Used for finding i_th element
@@ -154,19 +153,16 @@ object*  have_obj_named(const SafeList<object*>& lst, const int i_th,
 int obj_named_count(const SafeList<object*>& lst, const String* name,
                     const int see_bit, const room& rm);
 
-//String* critter::getName(int see_bit);
+/* DEPRECATED, use getName(...) instead. */
 const String* name_of_crit(critter& pc, int see_bit);
-
-String* name_of_door(const door& dr, int see_bit);
-String* name_of_dr_data(const door_data& dr, int see_bit, int dest);
-String* name_of_obj(const object& obj, int see_bit);
+String* name_of_obj(object& obj, int see_bit);
 String* long_name_of_obj(object& obj, int see_bit);
-String* name_of_room(const room& rm, int see_bit);
+
+
 char* get_his_her(const critter& crit);
 char* get_hisself_herself(const critter& crit);
 char* get_he_she(const critter& crit);
 
-int obj_is_named(const object& obj, const String& name);
 int mob_is_named(const critter& pc, const String& name);
 int door_is_named(const door_data& dr, const String& name);
 

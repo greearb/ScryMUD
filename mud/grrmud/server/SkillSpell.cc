@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.15 1999/08/30 06:30:40 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
+// $Id: SkillSpell.cc,v 1.16 1999/09/06 02:24:25 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/09/06 02:24:25 $
 
 //
 //ScryMUD Server Code
@@ -30,6 +30,14 @@
 
 int SpellDuration::_cnt = 0;
 
+String SpellDuration::toString() const {
+   String buf(100);
+   Sprintf(buf, "Spell[%i] %s  Duration: %i\n",
+           spell, SSCollection::instance().getNameForNum(spell),
+           duration);
+   return buf;
+}
+
 ///******************************************************************///
 ///*********************  skill spell  ******************************///
 
@@ -41,13 +49,13 @@ SkillSpell::SkillSpell() : prereqs(0), enables(0) {
    scroll_num = 0;
 }//constructor
 
-SkillSpell::SkillSpell(const SkillSpell& source) : prereqs(0), enables(0) {
+SkillSpell::SkillSpell(SkillSpell& source) : prereqs(0), enables(0) {
    *this = source;
 }//copy constructor
 
 
 //Defining this may help with older compilers (2.7.2) and templates.
-SkillSpell& SkillSpell::operator=(const SkillSpell& source) {
+SkillSpell& SkillSpell::operator=(SkillSpell& source) {
    if (&source != this) {
       ss_num = source.ss_num;
       name = source.name;

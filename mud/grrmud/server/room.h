@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.33 1999/08/27 03:10:04 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
+// $Id: room.h,v 1.34 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.34 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -51,7 +51,7 @@ protected:
 
 public:
    KeywordPair() { _cnt++; }
-   KeywordPair(const KeywordPair& src);
+   KeywordPair(KeywordPair& src);
    ~KeywordPair();
 
    // These don't need changes from Entity at this time.
@@ -69,7 +69,7 @@ public:
    virtual void toStringStat(critter* viewer, String& rslt, int idx,
                              ToStringTypeE st);
 
-   KeywordPair& operator=(const KeywordPair& rhs);
+   KeywordPair& operator=(KeywordPair& rhs);
    
    int getCurRoomNum();
    virtual LEtypeE getEntityType() { return LE_RM_KEYWORD; }
@@ -206,6 +206,11 @@ public:
    virtual void addShortDesc(String& str);
    virtual void addShortDesc(LString& str);
    virtual void addShortDesc(LanguageE l, String& buf);
+   virtual void setShortDesc(CSentryE msg);
+   virtual void appendShortDesc(CSentryE msg);
+   virtual void appendShortDesc(String& msg);
+   virtual void prependShortDesc(CSentryE msg);
+   virtual void prependShortDesc(String& msg);
 
    virtual String* getShortDesc(critter* viewer);
    virtual String* getShortDesc(int cbit = ~0);
@@ -259,7 +264,7 @@ public:
     * foo in the room, into the constant string obtained from msg.  Complicated,
     * but quite useful :)
     */
-   virtual void showAllCept(CSentryE msg, Entity* getNameTarg);
+   virtual void showAllCeptN(CSentryE msg, Entity* getNameTarg);
 
    virtual void recursivelyLoad(); //mobs and objects
 
@@ -322,6 +327,15 @@ public:
                CSelectorColl& denies, CSentryE cs_entry, ...);
    int vDoEmote(critter& pc, CSelectorColl& includes,
                 CSelectorColl& denies, CSentryE cs_entry, va_list argp);
+
+   /** Passes vict.getLongName() into the Sprintf that uses cs_entry.
+    */
+   int doEmoteN(critter& pc, CSelectorColl& includes,
+                CSelectorColl& denies, CSentryE cs_entry, Entity& vict);
+
+   /** Passes vict.getLongName() into the Sprintf that uses cs_entry.
+    */
+   int doEmoteN(critter& pc, CSentryE cs_entry, Entity& vict);
 
    int makeReadyForAreaSpell();
    critter* findNextProcMob();

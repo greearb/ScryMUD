@@ -1,5 +1,5 @@
-// $Id: vehicle.cc,v 1.6 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: vehicle.cc,v 1.7 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -227,14 +227,14 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
    if (!isStealthy()) { //if not stealth
       if (isAtDestination() && tmp_ptr->isOpen() && tmp_ptr->canClose()) {
          if (dr_ptr) {
-            Sprintf(buf, "The %S closes.\n", name_of_door(*dr_ptr, ~0));
+            Sprintf(buf, "The %S closes.\n", dr_ptr->getName());
             showAllCept(buf);
          }
          else {
             mudlog.log(ERR, "ERROR:  dr_ptr is NULL...\n");
          }
          
-         Sprintf(buf, "The %S closes.\n", name_of_door(*tmp_ptr, ~0));
+         Sprintf(buf, "The %S closes.\n", tmp_ptr->getName());
          room_list[in_room].showAllCept(buf);
 
          tmp_ptr->close(); //make it closed
@@ -296,7 +296,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
    if (isAtDestination()) { //in other words, the one its in NOW
       if (!isStealthy() && tmp_ptr->isClosed()) {
          if (dr_ptr) {
-            Sprintf(buf, "The %S opens.\n", name_of_door(*dr_ptr, ~0));
+            Sprintf(buf, "The %S opens.\n", dr_ptr->getName());
             showAllCept(buf);
          }
          else {
@@ -304,7 +304,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
          }
 
          if (tmp_ptr) {
-            Sprintf(buf, "The %S opens.\n", name_of_door(*tmp_ptr, ~0));
+            Sprintf(buf, "The %S opens.\n", tmp_ptr->getName());
             room_list[in_room].showAllCept(buf);
          }
          else {

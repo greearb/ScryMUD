@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.34 1999/08/29 01:17:15 greear Exp $
-// $Revision: 1.34 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
+// $Id: command4.cc,v 1.35 1999/09/06 02:24:26 greear Exp $
+// $Revision: 1.35 $  $Author: greear $ $Date: 1999/09/06 02:24:26 $
 
 //
 //ScryMUD Server Code
@@ -2676,7 +2676,7 @@ int dset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
    else if (strncasecmp(*targ, "vis_bit", len1) == 0) {
       if (check_l_range(new_val, 0, (1 << 30), pc, TRUE)) {
-         ptr->setVisBit(new_val);
+         ptr->getDrData()->setVisBit(new_val);
          flag = TRUE;
       }//if
    }//if

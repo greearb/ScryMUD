@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.44 1999/08/29 01:17:15 greear Exp $
-// $Revision: 1.44 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
+// $Id: command2.cc,v 1.45 1999/09/06 02:24:26 greear Exp $
+// $Revision: 1.45 $  $Author: greear $ $Date: 1999/09/06 02:24:26 $
 
 //
 //ScryMUD Server Code
@@ -163,7 +163,7 @@ int exit(critter& pc) {
                dest = dr_ptr->getDestination();
             if (pc.isImmort()) {
                Sprintf(buf, "%P07%S[%i]:%P27", dr_ptr->getDirection(),
-                       dr_ptr->getIdNum());
+                       dr_ptr->getDrData()->getIdNum());
             }
             else {
                Sprintf(buf, "%P07%S:%P27", dr_ptr->getDirection());
@@ -247,15 +247,14 @@ int lock(int i_th, const String* name, critter& pc) {
       dr_ptr = ROOM.findDoor(i_th, name, pc);
       if (dr_ptr) {
          if (dr_ptr->isSecret()) {
-            if (!name_is_secret(name, *dr_ptr)) {
+            if (!dr_ptr->nameIsSecret(name)) {
                pc.show(CS_NO_SEE_EXIT);
                return -1;
             }//if
          }//if	    
          if (dr_ptr->isClosed()) {
             if (!dr_ptr->canOpen()) {
-               Sprintf(buf, cstr(CS_CANT_BE_LOCKED, pc),
-                       name_of_door(*(dr_ptr), pc.SEE_BIT));
+               Sprintf(buf, cstr(CS_CANT_BE_LOCKED, pc), dr_ptr->getName(&pc));
                show(buf, pc);
             }//if
             else if (dr_ptr->isLocked()) {
@@ -268,12 +267,12 @@ int lock(int i_th, const String* name, critter& pc) {
                   dr_ptr->lock();
 
                   //TODO:  Translation problem
-                  Sprintf(buf, "locks the %S.\n", name_of_door(*dr_ptr, ~0));
+                  Sprintf(buf, "locks the %S.\n", dr_ptr->getName());
                   emote(buf, pc, ROOM, TRUE);
                   
                   String cmd = "lock";
                   ROOM.checkForProc(cmd, NULL_STRING, pc,
-                                    dr_ptr->getIdNum());
+                                    dr_ptr->getDrData()->getIdNum());
                   
                   return 0;
                }//if have key
@@ -339,7 +338,8 @@ int lock(int i_th, const String* name, critter& pc) {
                      emote(buf, pc, ROOM, TRUE);
                      
                      // send message to other side of the door...
-                     dr_ptr->getDestRoom()->showAllCept(CS_SHARP_CLICK, dr_ptr);
+                     dr_ptr->getDestRoom()->showAllCeptN(CS_SHARP_CLICK,
+                                                        dr_ptr->getDrData());
                      
                      String cmd = "lock";
                      ROOM.checkForProc(cmd, NULL_STRING, pc, ob_ptr->OBJ_NUM);
@@ -373,7 +373,7 @@ int unlock(int i_th, const String* name, critter& pc) {
    
       if ((dr_ptr = ROOM.findDoor(i_th, name, pc))) {
          if (dr_ptr->isSecret()) {
-            if (!name_is_secret(name, *dr_ptr)) {
+            if (!dr_ptr->nameIsSecret(name)) {
                pc.show(CS_NO_SEE_EXIT);
                return -1;
             }//if
@@ -381,7 +381,7 @@ int unlock(int i_th, const String* name, critter& pc) {
          if (dr_ptr->isClosed()) {
             if (!dr_ptr->canOpen()) {
                Sprintf(buf, cstr(CS_OPEN_AUTOMAGICALLY, pc),
-                       name_of_door(*(dr_ptr), pc.SEE_BIT));
+                       dr_ptr->getName(&pc));
                show(buf, pc);
             }//if
             else if (dr_ptr->isLocked()) {
@@ -407,8 +407,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                if (key) {
                   if (dr_ptr->consumesKey()) {
                      Sprintf(buf, cstr(CS_UNLOCK_CONSUME, pc),
-                             name_of_door(*dr_ptr, pc.SEE_BIT),
-                             key->getLongName());
+                             dr_ptr->getName(&pc), key->getLongName());
                      if (posn > 0) {
                         pc.EQ[posn] = NULL;
                         remove_eq_effects(*key, pc, FALSE, FALSE, posn);
@@ -425,7 +424,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                   }//if
                   else {
                      Sprintf(buf, cstr(CS_YOU_UNLOCK, pc),
-                             name_of_door(*dr_ptr, pc.SEE_BIT));
+                             dr_ptr->getName(&pc));
                   }
                   show(buf, pc);
                   dr_ptr->unlock();
@@ -435,10 +434,11 @@ int unlock(int i_th, const String* name, critter& pc) {
                   emote(buf, pc, ROOM, TRUE);
        
                   // send message to other side of the door...
-                  dr_ptr->getDestRoom()->showAllCept(CS_FAINT_CLICK, dr_ptr);
+                  dr_ptr->getDestRoom()->showAllCeptN(CS_FAINT_CLICK,
+                                                     dr_ptr->getDrData());
                   
                   String cmd = "unlock";
-                  ROOM.checkForProc(cmd, NULL_STRING, pc, dr_ptr->getIdNum());
+                  ROOM.checkForProc(cmd, NULL_STRING, pc, dr_ptr->getDrData()->getIdNum());
                   
                   return 0;
                }//if
@@ -557,7 +557,7 @@ int open(int i_th, const String* name, critter& pc) {
    
       if ((dr_ptr = ROOM.findDoor(i_th, name, pc))) {
          if (dr_ptr->isSecret()) {
-            if (!name_is_secret(name, *dr_ptr)) {
+            if (!dr_ptr->nameIsSecret(name)) {
                pc.show(CS_NO_SEE_EXIT);
                return -1;
             }//if
@@ -571,25 +571,24 @@ int open(int i_th, const String* name, critter& pc) {
             else if ((dr_ptr->isLocked()) || 
                      (dr_ptr->isMagLocked())) {
                //is locked, mag_locked
-               Sprintf(buf, cstr(CS_IS_LOCKED, pc), name_of_door(*(dr_ptr),
-                                                                 pc.SEE_BIT));
+               Sprintf(buf, cstr(CS_IS_LOCKED, pc), dr_ptr->getName(&pc));
                show(buf, pc);
             }//if
             else {
                dr_ptr->open();
-               Sprintf(buf, cstr(CS_YOU_OPEN, pc), name_of_door(*(dr_ptr),
-                                                                pc.SEE_BIT));
+               Sprintf(buf, cstr(CS_YOU_OPEN, pc), dr_ptr->getName(&pc));
                show(buf, pc);
                
                //TODO:  Translation problem.
-               Sprintf(buf, "opens the %S.\n", name_of_door(*dr_ptr, ~0));
+               Sprintf(buf, "opens the %S.\n", dr_ptr->getName());
                emote(buf, pc, ROOM, TRUE);
                
                // send message to other side of the door...
-               dr_ptr->getDestRoom()->showAllCept(CS_OPENS_QUIETLY, dr_ptr);
+               dr_ptr->getDestRoom()->showAllCeptN(CS_OPENS_QUIETLY,
+                                                  dr_ptr->getDrData());
                
                String cmd = "open";
-               ROOM.checkForProc(cmd, NULL_STRING, pc, dr_ptr->getIdNum());
+               ROOM.checkForProc(cmd, NULL_STRING, pc, dr_ptr->getDrData()->getIdNum());
                
                return 0;
             }//else
@@ -658,7 +657,7 @@ int close(int i_th, const String* name, critter& pc) {
    if (ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       if ((dr_ptr = ROOM.findDoor(i_th, name, pc))) {
          if (dr_ptr->isSecret()) {
-            if (!name_is_secret(name, *dr_ptr)) {
+            if (!dr_ptr->nameIsSecret(name)) {
                pc.show(CS_NO_SEE_EXIT);
                return -1;
             }//if
@@ -671,16 +670,16 @@ int close(int i_th, const String* name, critter& pc) {
                show(buf, pc);
                
                // send message to other side of the door...
-               dr_ptr->getDestRoom()->showAllCept(CS_CLOSES_QUIETLY, dr_ptr);
+               dr_ptr->getDestRoom()->showAllCeptN(CS_CLOSES_QUIETLY,
+                                                  dr_ptr->getDrData());
                
                String cmd = "close";
-               ROOM.checkForProc(cmd, NULL_STRING, pc, dr_ptr->getIdNum());
+               ROOM.checkForProc(cmd, NULL_STRING, pc, dr_ptr->getDrData()->getIdNum());
                
                return 0;
             }//if
             else { 
-               Sprintf(buf, cstr(CS_CANNOT_CLOSE, pc),
-                       name_of_door(*(dr_ptr), pc.SEE_BIT));
+               Sprintf(buf, cstr(CS_CANNOT_CLOSE, pc), dr_ptr->getName(&pc));
                show(buf, pc);
             }//else
          }//if open

@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.33 1999/09/01 06:00:03 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
+// $Id: misc.cc,v 1.34 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.34 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -83,6 +83,67 @@ int removedFromList(SafeList<ContainedObject*>* lst, ContainedObject*& data) {
    data->privRemoveFromContainer(lst); return 0;
 }
 
+int addedToList(SafeList<critter*>* lst, critter*& data) {
+   data->privAddToContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int removedFromList(SafeList<critter*>* lst, critter*& data) {
+   data->privRemoveFromContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int addedToList(SafeList<room*>* lst, room*& data) {
+   data->privAddToContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int removedFromList(SafeList<room*>* lst, room*& data) {
+   data->privRemoveFromContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int addedToList(SafeList<vehicle*>* lst, vehicle*& data) {
+   data->privAddToContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int removedFromList(SafeList<vehicle*>* lst, vehicle*& data) {
+   data->privRemoveFromContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int addedToList(SafeList<door*>* lst, door*& data) {
+   data->privAddToContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int removedFromList(SafeList<door*>* lst, door*& data) {
+   data->privRemoveFromContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int addedToList(SafeList<door_data*>* lst, door_data*& data) {
+   data->privAddToContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int removedFromList(SafeList<door_data*>* lst, door_data*& data) {
+   data->privRemoveFromContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int addedToList(SafeList<KeywordPair*>* lst, KeywordPair*& data) {
+   data->privAddToContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+int removedFromList(SafeList<KeywordPair*>* lst, KeywordPair*& data) {
+   data->privRemoveFromContainer((SafeList<ContainedObject*>*)lst); return 0;
+}
+
+
+/* DEPRECATED, use getName(...) instead. */
+const String* name_of_crit(critter& pc, int see_bit) {
+   return pc.getName(see_bit);
+}
+
+String* name_of_obj(object& obj, int see_bit) {
+   return obj.getName(see_bit);
+}
+
+String* long_name_of_obj(object& obj, int see_bit) {
+   return obj.getLongName(see_bit);
+}
 
 
 /** calculate the ratio between objects casting spell a spell and the
@@ -999,8 +1060,8 @@ void decrease_timed_affecting_doors() {
             mudlog.log(DBG, "Gonna delete a door.\n");
             room_list[dr_ptr->getCurRoomNum()].DOORS.loseData(dr_ptr);
             
-            room_list[dr_ptr->getCurRoomNum()].showAllCept(CS_CLOSES_N_VANISHES,
-                                                           dr_ptr);
+            room_list[dr_ptr->getCurRoomNum()].showAllCeptN(CS_CLOSES_N_VANISHES,
+                                                           dr_ptr->getDrData());
             delete dr_ptr;
             dr_ptr = affected_doors.lose(cell);
             continue;
@@ -1544,13 +1605,11 @@ critter* have_crit_named(SafeList<critter*>& lst, const int i_th,
 
 int crit_sub_a_4_b(critter* a, SafeList<critter*>& lst, 
                    const int i_th, const String* name,
-                   critter& viewer) {
+                   critter* viewer) {
    SCell<critter*> cell(lst);
    critter* crit_ptr;
    int count = 0, ptr_v_bit;
-   int see_bit = viewer.getSeeBit();
-
-   //log("In crit_sub_a_4_b.\n");
+   int see_bit = viewer->getSeeBit();
 
    if (!name || !a) {
       mudlog.log(ERR, "ERROR:  NULL(s) sent to crit_sub_a_4_b.\n");
@@ -1563,9 +1622,9 @@ int crit_sub_a_4_b(critter* a, SafeList<critter*>& lst,
    }//if
 
    while ((crit_ptr = cell.next())) {
-      ptr_v_bit = (crit_ptr->VIS_BIT | viewer.getCurRoom()->getVisBit()); 
+      ptr_v_bit = (crit_ptr->VIS_BIT | viewer->getCurRoom()->getVisBit()); 
       if (detect(see_bit, ptr_v_bit)) {
-         if (crit_ptr->isNamed(*name, &viewer)) {
+         if (crit_ptr->isNamed(*name, viewer)) {
             count++;
             if (count == i_th) {  //found right one
                lst.assign(cell, a);
@@ -1579,13 +1638,11 @@ int crit_sub_a_4_b(critter* a, SafeList<critter*>& lst,
 
 
 int obj_sub_a_4_b(object* a, SafeList<object*>& lst, const int i_th,
-                  const String* name, critter& viewer) {
+                  const String* name, critter* viewer) {
    SCell<object*> cell(lst);
    object* obj_ptr;
    int count = 0, ptr_v_bit;
-   int see_bit = viewer.getSeeBit();
-
-   //log("In obj_sub_a_4_b.\n");
+   int see_bit = viewer->getSeeBit();
 
    if (!name || !a) {
       mudlog.log(ERR, "ERROR:  NULL(s) sent to obj_sub_a_4_b.\n");
@@ -1598,9 +1655,9 @@ int obj_sub_a_4_b(object* a, SafeList<object*>& lst, const int i_th,
    }//if
 
    while ((obj_ptr = cell.next())) {
-      ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | viewer.getCurRoom()->getVisBit()); 
+      ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | viewer->getCurRoom()->getVisBit()); 
       if (detect(see_bit, ptr_v_bit)) {
-         if (obj_ptr->isNamed(*name, &viewer)) {
+         if (obj_ptr->isNamed(*name, viewer)) {
             count++;
             if (count == i_th) {  //found right one
                //obj_ptr = Prev(cell);  //back cell up one
@@ -1614,16 +1671,17 @@ int obj_sub_a_4_b(object* a, SafeList<object*>& lst, const int i_th,
 }//obj_sub_a_4_b 
 
 
-object* have_obj_named(SafeList<object*>& lst, const int i_th,
-                       const String* name, const int see_bit,
-                       const room& rm) {
+object*  have_obj_named(SafeList<object*>& lst, const int i_th, 
+                        const String* name, const int see_bit,
+                        const room& rm) {
    int foo;
    return have_obj_named(lst, i_th, name, see_bit, rm, foo);
 }
 
-object* have_obj_named(SafeList<object*>& lst, const int i_th,
-                       const String* name, const int see_bit,
-                       const room& rm, int& count_sofar) {
+object*  have_obj_named(SafeList<object*>& lst, const int i_th, 
+                        const String* name, const int see_bit,
+                        const room& rm, int& count_sofar, LanguageE lang) {
+
    SCell<object*> cell(lst);
    object* obj_ptr;
    int count = 0, ptr_v_bit;
@@ -1639,7 +1697,7 @@ object* have_obj_named(SafeList<object*>& lst, const int i_th,
    while ((obj_ptr = cell.next())) {
       ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | rm.getVisBit());
       if (detect(see_bit, ptr_v_bit)) {
-         if (obj_ptr->isNamed(*name)) {
+         if (obj_ptr->isNamed(*name, lang)) {
             count++;
             count_sofar++;
             if (count == i_th) {

@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.18 1999/08/20 06:20:05 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
+// $Id: login.cc,v 1.19 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -540,7 +540,7 @@ int  quit_do_login_new(critter& pc) {
    pc.MOV = (100 + pc.DEX/2);    // mov
    pc.ALIGN = 0; //align
    pc.LEVEL = 1; //level
-   pc.setCurRoomNum(NEWBIE_ROOM); //starting room
+   pc.setContainer(&(room_list[NEWBIE_ROOM])); //starting room
    pc.PRACS = (pc.WIS / 3); //wis dependent, practices
    pc.setHpMax(pc.HP); //hp_max
    pc.MA_MAX = pc.MANA; // mana_max
@@ -741,13 +741,13 @@ int  quit_do_login_old(critter& pc) {
 
    
    if (pc.LEVEL < 5) {
-      pc.setCurRoomNum(LOGIN_ROOM);
+      pc.setContainer(room_list.elementAt(LOGIN_ROOM));
    }
    else if (!ROOM.isInUse()) {
-      pc.setCurRoomNum(LOGIN_ROOM);
+      pc.setContainer(room_list.elementAt(LOGIN_ROOM));
    }
    else if (BOOT_TIME > pc.pc->last_login_time) { 
-      pc.setCurRoomNum(LOGIN_ROOM);
+      pc.setContainer(room_list.elementAt(LOGIN_ROOM));
    }//if not logged in since last crash
 
    if (mudlog.ofLevel(DBG)) {

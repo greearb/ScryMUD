@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.28 1999/09/01 06:00:03 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
+// $Id: classes.h,v 1.29 1999/09/06 02:24:25 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/09/06 02:24:25 $
 
 //
 //ScryMUD Server Code
@@ -174,7 +174,11 @@ class LStringCollection : public PtrList<LString>, public Serialized {
 public:
    LStringCollection() : PtrList<LString>() { }
    virtual ~LStringCollection();
-
+   LStringCollection& operator=(LStringCollection& src) {
+      if (&src != this)
+         becomeDeepCopyOf(src);
+      return *this;
+   }
    LString* getString(LanguageE for_lang = English);
    inline LString* getString(critter* viewer);
 
@@ -216,6 +220,13 @@ public:
    KeywordEntry(LanguageE l) : lang(l) { };
    KeywordEntry(KeywordEntry& src) : PtrList<LString>(src), lang(src.lang) { }
    virtual ~KeywordEntry() { clearAndDestroy(); }
+   KeywordEntry& operator=(KeywordEntry& src) {
+      if (&src != this) {
+         becomeDeepCopyOf(src);
+         lang = src.lang;
+      }
+      return *this;
+   }
 
    virtual void toStringStat(critter* viewer, String& rslt);
    virtual int write(ostream& dafile);
@@ -232,7 +243,11 @@ class LKeywordCollection : public PtrList<KeywordEntry>, public Serialized {
 public:
    LKeywordCollection() { }
    virtual ~LKeywordCollection() { clearAndDestroy(); }
-
+   LKeywordCollection& operator=(LKeywordCollection& src) {
+      if (this != &src)
+         becomeDeepCopyOf(src);
+      return *this;
+   }
    /** Will default to english if it has to, and if no entry is found at all,
     * it will return NULL.
     */
@@ -341,10 +356,14 @@ public:
    virtual String* getName(critter* observer);
    virtual String* getFirstName(critter* observer);
    virtual String* getLastName(critter* observer);
+   virtual String* getFirstName(int c_bit, LanguageE lang);
+   virtual String* getLastName(int c_bit, LanguageE lang);
    virtual String* getShortName(critter* observer);
    virtual String* getLongName(critter* observer);
    virtual String* getLongDesc(critter* observer);
+   virtual int isNamed(const String& name, int c_bit, LanguageE lang);
    virtual int isNamed(const String& name, critter* viewer);
+   virtual int isNamed(const String& name, LanguageE lang);
    virtual int isNamed(const String& name); //dflt to english (maybe all??)
    virtual int isNamed(const String& name, int do_exact); //dflt to english (maybe all??)
 
@@ -361,6 +380,7 @@ public:
    virtual void appendLongDesc(LanguageE lang, String& buf);
    virtual void appendLongDesc(LString& buf);
    virtual void appendLongDesc(CSentryE msg);
+   virtual void setLongDesc(CSentryE desc);
 
    /** Return TRUE if it could be removed.  Exact match is needed. */
    virtual int removeName(LanguageE lang, String& name);

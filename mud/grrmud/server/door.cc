@@ -1,5 +1,5 @@
-// $Id: door.cc,v 1.10 1999/08/30 06:30:41 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
+// $Id: door.cc,v 1.11 1999/09/06 02:24:27 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
 
 //
 //ScryMUD Server Code
@@ -49,12 +49,13 @@ door_data::~door_data () {
    _cnt--;
 } //destructor
 
-door_data& door_data::operator= (const door_data& source) {
+door_data& door_data::operator= (door_data& source) {
 
    if (this == &source)
       return *this;
 
-   *((Entity*)(this)) = (Entity)(source);
+   Entity* hack = &source;
+   *((Entity*)(this)) = *hack;
    *((Closable*)(this)) = (Closable)(source);
    
    return *this;
@@ -65,6 +66,11 @@ void door_data::clear() {
    Entity::clear();
    Closable::clear();
 }//clear
+
+SafeList<object*>& door_data::getInv() {
+   ::core_dump("door_data::getInv called.\n");
+   return dummy_inv;
+}
 
 int door_data::read(istream& da_file, int read_all = TRUE) {
    String tmp_str(80);
@@ -161,6 +167,72 @@ int door_data::write(ostream& da_file) {
    return Closable::write(da_file);
 }//Write
 
+String* door_data::getDirection(int dest, int c_bit = ~0, LanguageE lang = English) {
+   KeywordEntry* ls_coll = getNamesCollection(lang);
+
+   if (!ls_coll || ls_coll->isEmpty()) {
+      return &UNKNOWN;
+   }
+   if (!detect(c_bit, getVisBit())) {
+      return &SOMETHING;
+   }//if
+
+   if (dest >= 0) {
+      return getFirstName(c_bit, lang);
+   }//else
+   else {
+      return getLastName(c_bit, lang);
+   }
+}//getDirection
+
+String* door_data::getName(critter* viewer, int dir) {
+   return getName(viewer->getSeeBit(), viewer->getLanguage(), dir);
+}
+
+String* door_data::getName(critter* viewer) {
+   return getName(viewer->getSeeBit(), viewer->getLanguage(), 0);
+}
+
+String* door_data::getName(int c_bit, LanguageE lang, int dest) {
+   KeywordEntry* ls_coll = getNamesCollection(lang);
+
+   if (!ls_coll || ls_coll->isEmpty()) {
+      return &UNKNOWN;
+   }
+
+   Cell<LString*> cell(*ls_coll);
+   String *str, *str2;
+
+   if (!detect(c_bit, getVisBit())) {
+      return &SOMETHING;
+   }//if
+
+   if (dest >= 0) {
+      str = cell.next();
+      str2 = cell.next();
+
+      if (str2)
+	 if (*str2 != "#")
+	    return str2;
+	 else
+	    return str;
+      else  // no specific name, just the direction
+	 return str;
+    }//if
+    else {
+      str = cell.prev();
+      str2 = cell.prev();
+
+      if (str2)
+	 if (*(str2) != "#")
+	    return str2;
+	 else
+	    return str;
+      else  // no specific name, just the direction
+	 return str;
+   }//else
+}//getName(critter* viewer, int direction)...
+
 
 
 //*******************************************************//
@@ -169,7 +241,8 @@ int door_data::write(ostream& da_file) {
 int door::_cnt = 0;
 
 door::door() : dr_data(NULL), destination(0), distance(0),
-               crit_blocking(NULL), ticks_till_disolve(-1) {
+               crit_blocking(NULL), ticks_till_disolve(-1),
+               container(NULL) {
    _cnt++;
 }//door constructor
 
@@ -177,13 +250,48 @@ door::door(door& source) : dr_data(source.dr_data),
                            destination(source.destination),
                            distance(source.distance),
                            crit_blocking(NULL), // Don't copy this. 
-                           ticks_till_disolve(-1) {
+                           ticks_till_disolve(-1),
+                           container(NULL) {
    _cnt++;
 }//door copy constructor
 
 door::~door() {
+   affected_by.clearAndDestroy();
+   container = NULL;
    _cnt--;
 }//destructor
+
+
+SpellDuration* door::isAffectedBy(int spell_num) {
+   Cell<SpellDuration*> cll(affected_by);
+   SpellDuration* ptr;
+
+   while ((ptr = cll.next())) {
+      if (ptr->spell == spell_num)
+         return ptr;
+   }//while
+   return NULL;
+}//is_affected_by
+
+int door::affectedByToString(critter* viewer, String& rslt) {
+   String buf(100);
+   rslt.clear();
+   if (!affected_by.isEmpty()) {
+      rslt.append(cstr(CS_AFFECTED_BY, *viewer));
+      Cell<SpellDuration*> cll(affected_by);
+      SpellDuration* sd_ptr;
+      while ((sd_ptr = cll.next())) {
+         Sprintf(buf, "\t%s.\n", 
+                 (const char*)(SSCollection::instance().getNameForNum(sd_ptr->spell)));
+         rslt.append(buf);
+      }//while
+   }//if
+   else {
+      rslt.append(cstr(CS_NOT_AFFECTED_SPELLS, *viewer));
+   }//else
+   return 0;
+}//affectedByToString
+
 
 int door::getCurRoomNum() {
    if (getContainer()) {
@@ -200,7 +308,8 @@ void door::clear() {
    dr_data = NULL; //do not delete data pointed too, its in static arrays
    crit_blocking = NULL;
    ticks_till_disolve = -1;
-   Entity::clear();
+   affected_by.clearAndDestroy();
+   container = NULL;
 }//Clear()
 
 
@@ -209,7 +318,7 @@ door& door::operator= (door& source) {
    if (this == &source)
       return *this;
    
-   *((Entity*)(this)) = (Entity)(source);
+   affected_by.becomeDeepCopyOf(source.affected_by);
 
    //Shallow copy is preferred here.
    dr_data = source.dr_data;
@@ -218,6 +327,7 @@ door& door::operator= (door& source) {
    distance = source.distance;
    crit_blocking = source.crit_blocking;
    ticks_till_disolve = source.ticks_till_disolve;
+   container = source.container;
    return *this;
 }//operator=
 
@@ -225,7 +335,9 @@ int door::read(istream& da_file, int read_all = TRUE) {
    int data_index;
    int i, tmp;
    String buf(100);
-  
+   
+   clear();
+
    if (!da_file) {
       if (mudlog.ofLevel(ERR)) {
          mudlog << "ERROR:  da_file FALSE in door read." << endl;
@@ -233,7 +345,6 @@ int door::read(istream& da_file, int read_all = TRUE) {
       return -1;
    }
 
-   da_file >> buf;
    if (isnum(buf)) { //if _v2
       data_index = atoi(buf);
       if (!check_l_range(data_index, 0, NUMBER_OF_DOORS, mob_list[0], FALSE)) {
@@ -249,7 +360,6 @@ int door::read(istream& da_file, int read_all = TRUE) {
       /* comment this out for reading original, DB_UPGRADE */
       buf.getLine(da_file, 80);
       da_file >> i;
-      int is_affected = FALSE;
       while (i != -1) { //affected by
          if (!da_file) {
             if (mudlog.ofLevel(ERR)) {
@@ -258,7 +368,6 @@ int door::read(istream& da_file, int read_all = TRUE) {
             return -1;
          }
 
-         is_affected = TRUE;
          da_file >> tmp;
          SpellDuration* sd = new SpellDuration(i, tmp);
          addAffectedBy(sd);
@@ -267,7 +376,6 @@ int door::read(istream& da_file, int read_all = TRUE) {
    }//if _v2
    else {
       MetaTags mt(buf, da_file);
-      Entity::read(da_file, read_all);
 
       da_file >> data_index;
       if (!check_l_range(data_index, 0, NUMBER_OF_DOORS, mob_list[0], FALSE)) {
@@ -279,6 +387,22 @@ int door::read(istream& da_file, int read_all = TRUE) {
       dr_data = &(door_list[data_index]);
       da_file >> destination;
       da_file >> distance;
+      buf.getLine(da_file, 80);
+
+      da_file >> i;
+      while (i != -1) { //affected by
+         if (!da_file) {
+            if (mudlog.ofLevel(ERR)) {
+               mudlog << "ERROR:  da_file FALSE in door read." << endl;
+            }
+            return -1;
+         }
+
+         da_file >> tmp;
+         SpellDuration* sd = new SpellDuration(i, tmp);
+         addAffectedBy(sd);
+         da_file >> i;
+      }//while   
       buf.getLine(da_file, 80);
 
    }//else, _v3
@@ -327,57 +451,20 @@ int door::write(ostream& da_file) {
    MetaTags mt(*this);
    mt.write(da_file);
 
-   Entity::write(da_file);
-
    da_file << dr_data->getIdNum() << " " << destination << " "
            << distance << "dr_data#, dest, dist\n";
+
+   Cell<SpellDuration*> cll(affected_by);
+   SpellDuration* ptr;
+   while ((ptr = cll.next())) {
+      da_file << ptr->spell << " " << ptr->duration << " ";
+   }
+   da_file << "-1  //affected-by\n";
    return 0;
 }//Write()
 
-
-String* door_data::getName(critter* viewer, int dest) {
-   KeywordEntry* ls_coll = getNamesCollection(viewer->getLanguage());
-
-   if (!ls_coll || ls_coll->isEmpty()) {
-      return &UNKNOWN;
-   }
-
-   Cell<LString*> cell(*ls_coll);
-   String *str, *str2;
-
-   if (!detect(viewer->getSeeBit(), getVisBit())) {
-      return &SOMETHING;
-   }//if
-
-   if (dest >= 0) {
-      str = cell.next();
-      str2 = cell.next();
-
-      if (str2)
-	 if (*str2 != "#")
-	    return str2;
-	 else
-	    return str;
-      else  // no specific name, just the direction
-	 return str;
-    }//if
-    else {
-      str = cell.prev();
-      str2 = cell.prev();
-
-      if (str2)
-	 if (*(str2) != "#")
-	    return str2;
-	 else
-	    return str;
-      else  // no specific name, just the direction
-	 return str;
-   }//else
-}//getName(critter* viewer, int direction)...
-       
-
 int door::nameIsSecret(const String* name) {
-   Cell<KeywordEntry*> col_cell(getNames());
+   Cell<KeywordEntry*> col_cell(dr_data->getNames());
    String* ptr;
    int len = name->Strlen();
 
@@ -515,18 +602,6 @@ room* door::getDestRoom() {
 }//getDestRoom
 
 
-SafeList<object*>& door::getInv() {
-   core_dump("door::getInv");
-   return dummy_inv;
-}
-
-
-SafeList<object*>& door_data::getInv() {
-   core_dump("door_data::getInv");
-   return dummy_inv;
-}
-
-
 String* door::getDirection() {
    String* ptr = NULL;
    if (destination < 0)
@@ -575,5 +650,3 @@ const char* door::getAbrevDir() {
       return "D";
    else return "??";
 }//abbrev_dir_of_door
-
-

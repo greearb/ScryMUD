@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.21 1999/09/01 06:00:03 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
+// $Id: door.h,v 1.22 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -45,7 +45,7 @@ private:
 public:
    door_data (); //default constructor
    door_data(const door_data& source);  //copy constructor
-   door_data& operator=(const door_data& source);
+   door_data& operator=(door_data& source);
    virtual ~door_data ();
 
    void clear();
@@ -53,9 +53,12 @@ public:
    int write(ostream& da_file);
    static int getInstanceCount() { return _cnt; }
 
+   virtual String* getName(int c_bit) { return getName(c_bit, English, 0); }
    virtual String* getName(critter* viewer, int dir);
    virtual String* getName(critter* viewer);
-   String* getDirection();
+   virtual String* getName(int c_bit, LanguageE lang, int dest);
+   
+   String* getDirection(int dest, int c_bit = ~0, LanguageE lang = English);
    virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
    virtual SafeList<object*>& getInv();
@@ -72,11 +75,8 @@ class critter;
 
 /** Door is strange in that it contains much of it's information
  * in the door_data class, which may be shared by several doors.
- * For that reason, though door is an Entity, it must over-ride
- * several of Entity's methods, especially those dealing with
- * name and description data.
  */
-class door : virtual public Entity {
+class door : virtual public ContainedObject, virtual public Serialized {
 private:
    static int _cnt;
 
@@ -86,6 +86,8 @@ protected:
    short distance;
    critter* crit_blocking;
    int ticks_till_disolve; //for temp doors
+   PtrList<SpellDuration> affected_by;
+   Entity* container;
 
 public:
    
@@ -94,18 +96,24 @@ public:
    door& operator= (door& source);
    ~door();
 
+   virtual LEtypeE getEntityType() { return LE_DOOR; }
    void clear();
    int write(ostream& da_file);
    int read(istream& da_file, int read_all = TRUE);
-   virtual String* getName(int c_bit = ~0);
-   virtual String* getName(critter* viewer);
+   virtual String* getName(critter* viewer) {
+      return dr_data->getName(viewer, destination);
+   }
+   virtual String* getName(int c_bit = ~0) {
+      return dr_data->getName(c_bit);
+   }
    virtual int nameIsSecret(const String* name);
    virtual const char* getAbrevDir();
 
+   virtual void setContainer(Entity* cont) { container = cont; }
+   Entity* getContainer() { return container; }
+
    virtual door_data* getDrData() { return dr_data; }
    void setDrData(door_data* dr) { dr_data = dr; }
-
-   virtual SafeList<object*>& getInv();
 
    critter* getCritBlocking() const { return crit_blocking; }
    void setCritBlocking(critter* pc) { crit_blocking = pc; }
@@ -113,7 +121,13 @@ public:
    void setDestination(int val) { destination = val; }
    int getDistance() const { return distance; }
    void setDistance(int val) { distance = val; }
-   virtual void gainInv(object* obj) { core_dump("door::gainInv...can't be called."); }
+
+   virtual PtrList<SpellDuration>& getAffectedBy() { return affected_by; }
+
+   virtual SpellDuration* isAffectedBy(int spell_num);
+   virtual int isAffected() { return !(affected_by.isEmpty()); }
+   virtual int affectedByToString(critter* viewer, String& rslt);
+   virtual void addAffectedBy(SpellDuration* ptr) { affected_by.prepend(ptr); }
 
    void setTicksTillDisolve(int val) { ticks_till_disolve = val; }
    int getTicksTillDisolve() const { return ticks_till_disolve; }
@@ -172,10 +186,12 @@ public:
    String* getDirection();
 
    ///******************  Static Functions ***************************///
+   /** Viewer can be null. */
    static door* findDoor(SafePtrList<door> &lst, const int i_th,
                          const String* name, int& count_sofar,
                          critter* viewer);
 
+   /** Viewer can be null. */
    static door* findDoor(SafePtrList<door> &lst, const int i_th,
                          const String* name, critter* viewer);
 

@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.29 1999/08/29 01:17:16 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
+// $Id: misc2.cc,v 1.30 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -1413,9 +1413,9 @@ int obj_count(SafeList<object*>& lst, object& src) {
    return retval;
 }//obj_count
 
-int crit_count(List<critter*>& lst, critter& src) {
+int crit_count(SafeList<critter*>& lst, critter& src) {
    int retval = 0;
-   Cell<critter*> cll(lst);
+   SCell<critter*> cll(lst);
    critter* ptr;
 
    if (!src.mob) {

@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.17 1999/08/29 01:17:17 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/29 01:17:17 $
+// $Id: skills.cc,v 1.18 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -48,8 +48,9 @@ int track(int i_th, const String* victim, critter& pc) {
 
    /* check for miss on skill */
    if ((d(1, get_percent_lrnd(TRACK_SKILL_NUM, pc)) * 4) < d(1,100)) {
+      String my_dir(regular_directions[d(1, 8) - 1]);
       Sprintf(buf, "You sense a trail to the %S.\n", 
-              door_list[d(1,8)].getDirection());
+              &my_dir);
       show(buf, pc);
       return 0;
    }//if
@@ -181,14 +182,13 @@ int do_trip(critter& vict, critter& pc) {
       exact_raw_damage(d(4, 5), NORMAL, vict, pc);
       vict.PAUSE += d(1,3);
 
+      ROOM.doEmoteN(pc, CS_TRIPS_S, vict);
 
-      Sprintf(buf, "trips %S.", name_of_crit(vict, ~0));
-      emote(buf, pc, ROOM, TRUE, &vict);
-      Sprintf(buf, "%S trips you!\n", name_of_crit(pc, vict.SEE_BIT));
+      Sprintf(buf, cstr(CS_TRIPS_YOU, vict), pc.getName(&vict));
       buf.Cap();
-      show(buf, vict);
-      Sprintf(buf, "You trip %S!\n", name_of_crit(vict, pc.SEE_BIT));
-      show(buf, pc);
+      vict.show(buf);
+      Sprintf(buf, cstr(CS_YOU_TRIP, pc), vict.getName(&pc));
+      pc.show(buf);
 
       if (vict.HP < 0) {
 	Sprintf(buf, "breaks %s neck as %s hits the ground!! ***CRACK***\n",
@@ -198,17 +198,15 @@ int do_trip(critter& vict, critter& pc) {
       }//if fatality
    }//if
    else {  //missed
-      Sprintf(buf, "You nimbly dodge %S's attempt to trip you!\n",
-	      name_of_crit(pc, vict.SEE_BIT));
-      show(buf, vict);
+      vict.showN(CS_DODGE_TRIP, pc);
 
       Sprintf(buf, "dodges %S's attempt to trip %s.",
-	      name_of_crit(pc, ~0), get_him_her(vict));
+	      pc.getName(), get_him_her(vict));
       emote(buf, vict, ROOM, TRUE, &pc);
 
-      Sprintf(buf, "%S dodges your attempt to trip %s.\n",
-                 name_of_crit(vict, pc.SEE_BIT), get_him_her(vict));
-      show(buf, pc);
+      Sprintf(buf, cstr(CS_DODGE_TRIP_HIM, pc),
+              vict.getName(&pc), get_him_her(vict));
+      pc.show(buf);
 
       pc.PAUSE += 2; //increment pause_count
    }//else
@@ -268,9 +266,8 @@ int do_steal(object* obj, critter& vict, critter& pc,
          pc.gainInv(obj);
          /* no explicit penalties if you don't get caught! */
          
-         Sprintf(buf, "You successfully lift %S from %S!\n",
-                 long_name_of_obj(*obj, pc.SEE_BIT),
-                 name_of_crit(vict, pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_YOU_STEAL_SUCC, pc),
+                 obj->getLongName(&pc), vict.getName(&pc));
          show(buf, pc);
       }//if an object
       else if (steal_gold) {
@@ -278,30 +275,28 @@ int do_steal(object* obj, critter& vict, critter& pc,
          vict.GOLD -= amt;
          /* no explicit penalties if you don't get caught! */
          
-         Sprintf(buf, "You successfully lift %i coins from %S!\n",
-                 amt, name_of_crit(vict, pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_YOU_STEAL_GOLD, pc),
+                 amt, vict.getName(&pc));
          show(buf, pc);
       }//if
       else { //!gold AND !obj, bad guess!!
-         show(
-            "You snoop around undetected, but don't find what you're looking for!\n",
-	    pc);
+         pc.show(CS_NO_STEAL_TARG);
          return 0;
       }//else
       return 0;
    }//if
    else {  //got caught!!!
       
-      Sprintf(buf, "%S catches you with your hands on %s things!!\n",
-              name_of_crit(vict, pc.SEE_BIT), get_his_her(vict));
+      Sprintf(buf, cstr(CS_CAUGHT_STEALING, pc),
+              vict.getName(&pc), get_his_her(vict));
       show(buf, pc);
       
       Sprintf(buf, "is caught trying to steal from %S.\n",
-              name_of_crit(vict, ~0));
+              vict.getName());
       emote(buf, pc, ROOM, TRUE, &vict);
       
-      Sprintf(buf, "You catch %S with %s hands in your pockets!.\n",
-              name_of_crit(pc, vict.SEE_BIT), get_his_her(pc));
+      Sprintf(buf, cstr(CS_YOU_CATCH_STEALING, vict),
+              pc.getName(&vict), get_his_her(pc));
       show(buf, vict);
       
 
@@ -387,28 +382,23 @@ int do_kick(critter& vict, critter& pc) {
 
       if (vict.HP < 0) {
          Sprintf(buf, "kicks in %S's temple with %s foot!!\n", 
-                 name_of_crit(vict, ~0), get_his_her(pc));
+                 vict.getName(), get_his_her(pc));
          emote(buf, pc, ROOM, TRUE, &vict);
-         Sprintf(buf, 
-                 "You see %S's foot racing straight for your temple...\n",
-                 name_of_crit(pc, vict.SEE_BIT));
+         Sprintf(buf, cstr(CS_KICK_FATALITY, vict), pc.getName(&pc));
          show(buf, vict);
-         Sprintf(buf, 
-                 "You crush %S's temple with your round-house kick!!\n",
-                 name_of_crit(vict, pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_YOU_CRUSH_KICK, pc), vict.getName(&pc));
          show(buf, pc);
          do_fatality = TRUE;
       }//if fatality
       else {
-         Sprintf(buf, "%S kicks you in the chest!\n",
-                 name_of_crit(pc, vict.SEE_BIT));
+         Sprintf(buf, cstr(CS_KICKS_YOU, vict), pc.getName(&vict));
          buf.Cap();
          show(buf, vict);
 
-         Sprintf(buf, "You kick %S.\n", name_of_crit(vict, vict.SEE_BIT));
+         Sprintf(buf, cstr(CS_YOU_KICK, pc), vict.getName(&pc));
          show(buf, pc);
 
-         Sprintf(buf, "kicks %S!\n", name_of_crit(vict, ~0));
+         Sprintf(buf, "kicks %S!\n", vict.getName());
          emote(buf, pc, ROOM, TRUE, &vict);
       }//else
    }//if
@@ -417,13 +407,11 @@ int do_kick(critter& vict, critter& pc) {
               vict.getName());
       emote(buf, pc, ROOM, FALSE, &vict);
 
-      Sprintf(buf, "%S narrowly misses your head with %s foot!\n", 
-	      name_of_crit(pc, vict.SEE_BIT), get_his_her(pc));
+      Sprintf(buf, cstr(CS_KICK_MISS, vict), pc.getName(&vict), get_his_her(pc));
       buf.Cap();
       show(buf, vict);
 
-      Sprintf(buf, "You miss a kick at %S's head.\n",
-              name_of_crit(vict, pc.SEE_BIT));
+      Sprintf(buf, cstr(CS_YOU_MISS_KICK, pc), vict.getName(&pc));
       show(buf, pc);
 
       pc.PAUSE += 2; //increment pause_count
@@ -503,20 +491,19 @@ int do_bash(door& vict, critter& pc) { //bash for doors
       emote(buf, pc, ROOM, TRUE);
    }//if
    else if (d(1, 100) < get_percent_lrnd(BASH_SKILL_NUM, pc)) {
-      Sprintf(buf, "You bust down the %S.\n", name_of_door(vict,
-                pc.SEE_BIT));
+      Sprintf(buf, "You bust down the %S.\n", vict.getName(&pc));
       show(buf, pc);
       vict.open();
       vict.setLockable(FALSE);
-      Sprintf(buf, "busts open the %S!\n", name_of_door(vict, ~0));
+      Sprintf(buf, "busts open the %S!\n", vict.getName());
       emote(buf, pc, ROOM, TRUE);
    }//else
    else {
       Sprintf(buf, "The %S gives a little as you hit it.\n",
-                name_of_door(vict, pc.SEE_BIT));
+              vict.getName(&pc));
       show(buf, pc);
-      Sprintf(buf, "budges %S with %s hit.\n", name_of_door(vict, ~0),
-                get_his_her(pc));
+      Sprintf(buf, "budges %S with %s hit.\n", vict.getName(),
+              get_his_her(pc));
       emote(buf, pc, ROOM, TRUE);
    }//else  
    
@@ -690,12 +677,11 @@ int do_block(door& vict, critter& pc) {
    }//if
 
    if (d(1, 100) < get_percent_lrnd(BLOCK_SKILL_NUM, pc)) {
-      Sprintf(buf, "You start blocking the %S.\n", name_of_door(vict,
-		pc.SEE_BIT));
+      Sprintf(buf, "You start blocking the %S.\n", vict.getName(&pc));
       show(buf, pc);
       vict.setBlocked(TRUE);
       vict.setCritBlocking(&pc);
-      Sprintf(buf, "starts blocking the %S!\n", name_of_door(vict, ~0));
+      Sprintf(buf, "starts blocking the %S!\n", vict.getName());
       emote(buf, pc, ROOM, TRUE);
       return 0;
    }//else

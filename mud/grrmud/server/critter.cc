@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.51 1999/09/01 06:00:03 greear Exp $
-// $Revision: 1.51 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
+// $Id: critter.cc,v 1.52 1999/09/06 02:24:27 greear Exp $
+// $Revision: 1.52 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
 
 //
 //ScryMUD Server Code
@@ -1978,13 +1978,220 @@ int critter::write(ostream& ofile) {
    return 0;
 }//Write....crit
 
+int critter::read(istream& dafile, int read_all) {
+   String buf(100);
+   dafile >> buf;
+   if (strcasecmp(buf, "<META") == 0) {
+      MetaTags mt(buf, dafile);
+      return read_v3(dafile, mt, read_all);
+   }
+   else {
+      return read_v2(dafile, buf, read_all);
+   }
+}//read
 
-int critter::read_v3(istream& ofile, int read_all = TRUE) {
+int critter::read_v2(istream& ofile, String& name, int read_all) {
+   int i, test = TRUE, z;
+   SpellDuration* ss_ptr;
+   char tmp[81];
+   String tmp_str(80);
+
+   clear();
+
+   if (!ofile) {
+      if (mudlog.ofLevel(ERR)) {
+         mudlog << "ERROR:  da_file FALSE in crit read." << endl;
+      }
+      return -1;
+   }
+
+   addName(name);
+
+   test = TRUE;
+   while (test) {
+      if (!ofile) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  da_file FALSE in crit read." << endl;
+         }
+         return -1;
+      }
+
+      ofile >> tmp_str;
+      if (strcmp(tmp_str, "~") == 0) {
+         test = FALSE;
+      }//if
+      else {
+         addName(tmp_str);
+      }//else
+   }//while            
+   ofile.getline(tmp, 80);         
+
+   tmp_str.termedRead(ofile);
+   addShortDesc(tmp_str);
+   tmp_str.termedRead(ofile);
+   addInRoomDesc(tmp_str);
+   tmp_str.termedRead(ofile);
+   addLongDesc(tmp_str);
+
+   crit_flags.read(ofile);
+   crit_flags.turn_on(18); //always in use
+   crit_flags.turn_off(25); // Never been hurled before.
+
+   setComplete(); //if we can read it, it's complete enough!
+
+   for (i = 0; i<MOB_LONG_DATA; i++)
+      ofile >> long_data[i];
+   ofile.getline(tmp, 80);
+
+   for (i = 0; i<MOB_SHORT_CUR_STATS; i++) {
+      ofile >> short_cur_stats[i];
+   }
+   ofile.getline(tmp, 80);
+
+   for (i = 0; i<MOB_CUR_STATS; i++) {
+      ofile >> cur_stats[i];
+   }
+   ofile.getline(tmp, 80);
+
+         	/* EQ, read in item_num, posn */
+   ofile >> i;
+   while (i != -1) {
+      if (!ofile) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  da_file FALSE in crit read." << endl;
+         }
+         return -1;
+      }
+
+      ofile >> z;
+      if (!check_l_range(z, 1, MAX_EQ, mob_list[0], FALSE)) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  wear_posn out of range, crit.Read():  " << z
+                   << " short desc:  " << *(getShortDesc()) << endl;
+         }
+         ofile >> i;
+         continue;
+      }//if
+      if (i == -2) { //gonna load fer sure
+         object* new_obj = new object;
+         ofile.getline(tmp, 80);  //junk message
+         new_obj->read(ofile, TRUE);
+         new_obj->setModified(TRUE);
+         new_obj->setContainer(this);
+
+         eq[z] = new_obj;      //now it wears it
+         affected_objects.append(new_obj);
+ 
+      }//if
+      else {
+         if (obj_list[i].isInUse()) {  //exists?
+            if (read_all || 
+                     ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 
+			100) > d(1,100)) {
+               eq[z] = &(obj_list[i]);      //now it wears it
+            }//if
+         }//
+         else {
+            Sprintf(tmp_str, 
+             "ERROR:  trying to load non-existant obj: %i, 
+              in critter's: %S  eq.\n", i, &short_desc);
+            mudlog.log(ERR, tmp_str);
+         }//else
+      }//else
+      ofile >> i;
+   }//while
+   ofile.getline(tmp, 80);
+
+		/*  Affected By */
+   ofile >> i;
+   while (i != -1) {
+      if (!ofile) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  da_file FALSE in crit read." << endl;
+         }
+         return -1;
+      }
+
+      ss_ptr = new SpellDuration();
+      ss_ptr->spell = i;
+      ofile >> ss_ptr->duration;
+      addAffectedBy(ss_ptr);
+      ofile >> i;
+   }//while
+   ofile.getline(tmp, 80);
+
+		/*  Inventory */
+   ofile >> i;
+   while (i != -1) {
+      if (!ofile) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  da_file FALSE in crit read." << endl;
+         }
+         return -1;
+      }
+
+      if (i == -2) { //gonna load fer sure
+         object* new_obj = new object;
+         ofile.getline(tmp, 80);  //junk message
+         new_obj->read(ofile, TRUE);
+         new_obj->setModified(TRUE);
+         new_obj->setContainer(this);
+
+         inv.append(new_obj);
+         affected_objects.append(new_obj);
+
+      }//if
+      else {
+         if (obj_list[i].OBJ_FLAGS.get(10)) {
+            if (read_all ||
+              ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
+                      d(1,100)) {
+               object* hack = &(obj_list[i]);
+               inv.append(hack);
+            }//if
+         }//if
+         else {
+            if (mudlog.ofLevel(ERR)) {
+               mudlog << "ERROR: trying to load non-existant object: " << i
+                      << " in critter named: " << *(getName()) << endl;
+            }
+         }//else
+      }//else
+      ofile >> i;
+   }//while
+   ofile.getline(tmp, 80);   
+
+      		/*  Do PC, MOB  */
+
+   if (short_cur_stats[26] == 0) { // If its a pc
+      if (!(pc)) {
+         pc = new pc_data;
+      }//if
+      pc->read(ofile);  
+   }//if
+   else { //its a mob
+      if (!(mob)) {
+         mob = new mob_data;
+      }//if
+      mob->read(ofile, read_all); 
+   }//else
+   ofile.getline(tmp, 80);      
+   //mudlog.log(DBG, "Done w/read crit.\n");
+
+   if (!isAffectedBy(BLINDNESS_SKILL_NUM))
+      setSeeBit(getSeeBit() | 1024); //another bletcherous kludge
+   return 0;
+}//read....crit
+
+
+int critter::read_v3(istream& ofile, MetaTags& mt, int read_all = TRUE) {
    int i, z;
    char tmp[81];
    String tmp_str(80);
 
    clear();
+
+   mt.clear(); //we aren't using it right now...
 
    if (!ofile) {
       if (mudlog.ofLevel(ERR)) {
@@ -2191,6 +2398,38 @@ int critter::haveObjNumbered(int cnt, int obj_num) {
    return FALSE;
 }//haveObjectNumbered
 
+/** Viewer may be self, but may not be as well. */
+object* critter::haveObjNamed(int i_th, const String* name, critter* viewer) {
+   int foo = 0;
+   int c_bit = ~0;
+   LanguageE lang = English;
+   room* rm = getCurRoom();
+   if (viewer) {
+      c_bit = viewer->getSeeBit();
+      lang = viewer->getLanguage();
+      rm = viewer->getCurRoom();
+   }
+
+   return ::have_obj_named(inv, i_th, name, c_bit, *(rm), foo, lang);
+}
+
+/** Viewer is self. */
+object* critter::haveObjNamed(int i_th, const String* name) {
+   int foo = 0;
+   return ::have_obj_named(inv, i_th, name, getSeeBit(), *(getCurRoom()),
+                           foo, getLanguage());
+}
+
+void critter::setModified(int val) {
+   if (!isPc()) {
+      if (val) {
+         short_cur_stats[26] = 1;
+      }
+      else {
+         short_cur_stats[26] = 2;
+      }
+   }//if
+}//
 
 void critter::setIdNum(int i) {
    if (mob)
@@ -2437,6 +2676,13 @@ void critter::show(const String* buf) {
 
 void critter::show(String& buf) {
    show((const char*)(buf));
+}
+
+/** Composes Sprintf on msg, with named.getLongName() passed in to it. */
+void critter::showN(CSentryE msg, Entity& named) {
+   String buf(100);
+   Sprintf(buf, cstr(msg, *this), named.getLongName());
+   show(buf);
 }
 
 LanguageE critter::getLanguageChoice() const {
@@ -2911,7 +3157,7 @@ int critter::doesOwnCritter(critter& mobile) {
 }
 
 int critter::doesOwnDoor(door& dr) {
-   return ZoneCollection::instance().elementAt(dr.getZoneNum()).isOwnedBy(*this);
+   return ZoneCollection::instance().elementAt(dr.getDrData()->getZoneNum()).isOwnedBy(*this);
 }
 
 int critter::doesOwnDoor(door_data& dd) {
@@ -3656,6 +3902,13 @@ void critter::addShortDesc(String& new_val) {
 
 void critter::addShortDesc(LanguageE l, String& buf) {
    short_desc.addString(l, buf);
+}
+
+void critter::setShortDesc(CSentryE msg) {
+   for (int i = 0; i<LS_PER_ENTRY; i++) {
+      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
+      short_desc.addLstring(nm);
+   }
 }
 
 void critter::addInRoomDesc(String& new_val) {

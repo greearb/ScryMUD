@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.30 1999/08/29 01:17:15 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
+// $Id: command3.cc,v 1.31 1999/09/06 02:24:26 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 1999/09/06 02:24:26 $
 
 //
 //ScryMUD Server Code
@@ -161,13 +161,6 @@ int use(int i_th, String* wand_name, int j_th, String* target,
               targ = ROOM.haveCritNamed(j_th, target, pc);
            }//else
            
-           if (targ) {
-              if (targ->isMob()) { //if its a MOB
-                 targ = mob_to_smob(*targ, *(pc.getCurRoom()), TRUE, i_th,
-                                    target, pc);
-              }//if
-           }//if
-
            if (!targ) {
               pc.show("Use it on who?\n");
               //targ = &pc;
@@ -185,7 +178,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
            door* dr_ptr;
            if ((dr_ptr = ROOM.findDoor(j_th, target, pc))) {
               if (dr_ptr->isSecret()) {
-                 if (!name_is_secret(target, *dr_ptr)) {
+                 if (!dr_ptr->nameIsSecret(target)) {
                     show("You don't see that exit.\n", pc);
                     return -1;
                  }//if
@@ -424,8 +417,8 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
    for (int i = 9; i<11; i++) {
       if (pc.EQ[i]) { //if holding ANY object
          if (pc.EQ[i]->isScroll()) {
-            if (obj_is_named(*(pc.EQ[i]), *item)) {
-               if (detect(pc.SEE_BIT, 
+            if (pc.EQ[i]->isNamed(*item, &pc)) {
+               if (detect(pc.SEE_BIT,
                           pc.EQ[i]->OBJ_VIS_BIT & ROOM.getVisBit())) {
                   scroll = pc.EQ[i];
                   posn = i;
@@ -522,7 +515,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
            door* dr_ptr;
            if ((dr_ptr = ROOM.findDoor(j_th, vict, pc))) {
               if (dr_ptr->isSecret()) {
-                 if (!name_is_secret(vict, *dr_ptr)) {
+                 if (!dr_ptr->nameIsSecret(vict)) {
                     show("You don't see that exit.\n", pc);
                     return -1;
                  }//if
@@ -1349,15 +1342,16 @@ int flee(critter& pc, int& is_dead) {
             }//while
             pc.IS_FIGHTING.clear();
 
-            	/* we know we have an exit, lets find it */
+            /* we know we have an exit, lets find it */
+            String my_dir(50);
             int sanity = 0;
             while (TRUE) {
                if (sanity++ > 20) {
                   dr_ptr = valid_dr_ptr;
                   break;
                }
-                  
-               if ((dr_ptr = ROOM.findDoor(1, door_list[d(1,10)].getDirection()))) {
+               my_dir = regular_directions[d(1, 10) - 1];
+               if ((dr_ptr = ROOM.findDoor(1, &my_dir))) {
                   if (dr_ptr->isOpen()) {
                      break;  //weee hoooo, found a good one!
                   }//if
@@ -1404,13 +1398,14 @@ int flee(critter& pc, int& is_dead) {
          else {
 
             int sanity = 0;
+            String my_dir(50);
             while (TRUE) {
                if (sanity++ > 20) {
                   dr_ptr = valid_dr_ptr;
                   break;
                }
-
-               if ((dr_ptr = ROOM.findDoor(1, door_list[d(1,10)].getDirection()))) {
+               my_dir = regular_directions[d(1, 10) - 1];
+               if ((dr_ptr = ROOM.findDoor(1, &my_dir))) {
                   if (dr_ptr->isOpen()) {
                      break;  //weee hoooo, found a good one!
                   }//if
@@ -1450,10 +1445,6 @@ int slay(int i_th, const String* vict, critter& pc) {
       return -1;
    }//if
 
-   if (!ptr->isModified()) {
-      ptr = mob_to_smob(*ptr, ROOM, TRUE, i_th, vict, pc);
-   }//if
-
    if (ptr->getImmLevel() > pc.getImmLevel()) {
      show("RESPECT THY ELDERS!!\n", pc);
      pc.setHP(1); //that'll teach em!!
@@ -1466,7 +1457,7 @@ int slay(int i_th, const String* vict, critter& pc) {
    show(buf, *ptr);
    Sprintf(buf, "%S slays %S!\n", name_of_crit(pc, ~0), 
            name_of_crit(*ptr, ~0));
-   show_all_but_2(pc, *ptr, buf, ROOM);
+   ROOM.showAllCept(buf, &pc, ptr);
    
    agg_kills_vict(pc, *ptr);
    return 0;
@@ -2107,7 +2098,7 @@ int do_junk(int do_msg, int i_th, const String* str1,
       obj_ptr = cll.next();
       while(obj_ptr) {
          if (detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
-            if (obj_is_named(*obj_ptr, targ)) {
+            if (obj_ptr->isNamed(targ, &pc)) {
                did_msg = TRUE;
                if (obj_ptr->OBJ_FLAGS.get(5) && !(pc.pc && 
 			pc.pc->imm_data && (pc.IMM_LEVEL > 1))) {

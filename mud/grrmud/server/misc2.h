@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.23 1999/09/01 06:00:03 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
+// $Id: misc2.h,v 1.24 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -119,7 +119,6 @@ void clear_obj_list(SafeList<object*>& lst);
 
 //void critter::doBecomeNonPet();
 const String* single_obj_name(object& obj, int see_bit);
-int name_is_secret(const String* name, door& dr);
 
 const char* get_himself_herself(critter& pc);
 const char* get_him_her(critter& pc);

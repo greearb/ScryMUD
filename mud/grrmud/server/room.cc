@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.40 1999/08/27 03:10:04 greear Exp $
-// $Revision: 1.40 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
+// $Id: room.cc,v 1.41 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.41 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -69,7 +69,7 @@ KeywordPair::~KeywordPair() {
    clear();
 }
 
-KeywordPair::KeywordPair(const KeywordPair& src) {
+KeywordPair::KeywordPair(KeywordPair& src) {
    _cnt++;
    *this = src;
 }
@@ -84,9 +84,10 @@ int KeywordPair::getCurRoomNum() {
    return 0;
 }//getCurRoomNum
 
-KeywordPair& KeywordPair::operator=(const KeywordPair& rhs) {
+KeywordPair& KeywordPair::operator=(KeywordPair& rhs) {
    if (&rhs != this) {
-      *((Entity*)(this)) = (Entity)(rhs);
+      Entity* hack = (Entity*)(&rhs);
+      *((Entity*)(this)) = *hack;
    }//if
 
    return *this;
@@ -213,7 +214,8 @@ room& room::operator=(room& source) {
    //mudlog.log(DBG, "In rm operator= overload.\n");
    clear(); //clear this thing out!!
    
-   *((Entity*)(this)) = (Entity)(source);
+   Entity* hack = &source;
+   *((Entity*)(this)) = *hack;
    *((Scriptable*)(this)) = (Scriptable)(source);
 
    short_desc = source.short_desc;
@@ -452,7 +454,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
       dr_ptr->read(ofile);
       dr_ptr->setContainer(this);
       doors.head(cll);
-      String* dr_name = name_of_door(*dr_ptr, ~0);
+      String* dr_name = dr_ptr->getName();
 
       if (!dr_name) {
          mudlog.log(ERR, "ERROR:  dr_name is NULL.");
@@ -460,7 +462,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
 
       String* walk_name;
       while ((walker = cll.next())) {
-         walk_name = name_of_door(*walker, ~0);
+         walk_name = walker->getName();
          if (*walk_name > *dr_name) {
             doors.insertBefore(cll, dr_ptr);
             did_insert = TRUE;
@@ -1287,7 +1289,7 @@ void room::gainCritter(critter* crit) {
    if (crit->isMob()) {
       crit = mob_to_smob(*crit, *this);
    }//if
-   crit->setCurRoomNum(getRoomNum());
+   crit->setContainer(this);
 }
 
 void room::loseObjectFromGame(object& which_un) {
@@ -1383,7 +1385,6 @@ void room::gainInv(object* obj) {
 }
 
 object* room::loseInv(object* obj) {
-   obj->setCurRoomNum(0, 0);
    return inv.loseData(obj);
 }
 
@@ -1426,9 +1427,21 @@ object* room::haveObject(object* ptr) {
    return NULL;
 }
 
-object* room::haveObjNamed(int i_th, const String* name, int see_bit) {
+object* room::haveObjNamed(int i_th, const String* name, critter& viewer) {
    int foo;
-   return ::have_obj_named(inv, i_th, name, see_bit, *this, foo);
+   return ::have_obj_named(inv, i_th, name, viewer.getSeeBit(),
+                           *this, foo, viewer.getLanguage());
+}
+
+void room::checkForProc(String& cmd, String& arg1, critter& actor,
+                        int targ_num) {
+   Scriptable::checkForProc(cmd, arg1, &actor, targ_num, this, NULL);
+}
+
+
+object* room::haveObjNamed(int i_th, const String* name, int c_bit) {
+   int foo;
+   return ::have_obj_named(inv, i_th, name, c_bit, *this, foo);
 }
 
 object* room::haveAccessibleObjNamed(int i_th, const String* name,
@@ -1488,6 +1501,19 @@ critter* room::findFirstTeacher() {
 }//findFirstTeacher
 
 
+door* room::findDoor(int i_th, const String* direction, critter& viewer, int& sofar) {
+   return door::findDoor(doors, i_th, direction, sofar, &viewer);
+}
+
+door* room::findDoor(int i_th, const String* direction, critter& viewer) {
+   int foo = 0;
+   return door::findDoor(doors, i_th, direction, foo, &viewer);
+}
+
+door* room::findDoor(int i_th, const String* direction) {
+   return door::findDoor(doors, i_th, direction, NULL);
+}
+
 
 void room::showAllCept(CSentryE msg, critter* pc, critter* pc2) {
    SCell<critter*> cell(critters);
@@ -1516,7 +1542,34 @@ void room::showAllCept(CSentryE msg, critter* pc, critter* pc2) {
 }// show_all_cept
 
 
-void room::showAllCept(CSentryE msg, Entity* getNameOf) {
+void room::showAllCept(String& msg, critter* pc, critter* pc2) {
+   SCell<critter*> cell(critters);
+   critter* crit_ptr;
+
+   while ((crit_ptr = cell.next())) { 
+      if ((crit_ptr != pc) && (crit_ptr != pc2)) {  
+	 if (crit_ptr->POS < POS_SLEEP)  
+	    crit_ptr->show(msg);
+      }
+   }//while
+
+   SCell<object*> cll(inv);
+   object* obj;
+
+   while ((obj = cll.next())) {
+     if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
+       if ((crit_ptr != pc) && (crit_ptr != pc2)) {
+	 if (crit_ptr->POS < POS_SLEEP) {
+	   crit_ptr->show("#####");
+	   crit_ptr->show(msg);
+	 }//if
+       }//if
+     }//if
+   }//while
+}// show_all_cept
+
+
+void room::showAllCeptN(CSentryE msg, Entity* getNameOf) {
    SCell<critter*> cell(critters);
    critter* crit_ptr;
    String buf(100);
@@ -1579,7 +1632,7 @@ int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
             if (mudlog.ofLevel(DBG)) {
                mudlog << endl << "buf -:" << buf << ":-" << endl << endl;
             }
-            Sprintf(buf2, "%S %S", pc.getName(ptr->SEE_BIT), &buf);
+            Sprintf(buf2, "%S %S", pc.getName(ptr), &buf);
             buf2.Cap();
             ptr->show(buf2);
          }//if
@@ -1587,3 +1640,103 @@ int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
    }//while
    return 0;
 }//vDoEmote
+
+int room::doEmoteN(critter& pc, CSentryE cs_entry, Entity& vict) {
+   return doEmoteN(pc, Selectors::instance().CC_all,
+                   Selectors::instance().CC_sleeping,
+                   cs_entry, vict);
+}
+
+int room::doEmoteN(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
+                   CSentryE cs_entry, Entity& vict) {
+   SCell<critter*> cll(critters);
+   critter* ptr;
+   String buf(100);
+   String buf2(100);
+
+   while ((ptr = cll.next())) {
+      if (!(denies.matches(ptr, &pc))) {
+         if (mudlog.ofLevel(DBG)) {
+            mudlog << "room::doEmoteN, not denied." << endl;
+         }
+         if (includes.matches(ptr, &pc)) {
+            if (mudlog.ofLevel(DBG)) {
+               mudlog << "room::doEmoteN, includes matched." << endl;
+               mudlog << "cstr of " << (int)(cs_entry) << "-:"
+                      << cstr(cs_entry, *ptr) << ":-" <<  endl;
+            }
+
+            Sprintf(buf, cstr(cs_entry, *ptr), vict.getLongName());
+            if (mudlog.ofLevel(DBG)) {
+               mudlog << endl << "buf -:" << buf << ":-" << endl << endl;
+            }
+            Sprintf(buf2, "%S %S", pc.getName(ptr), &buf);
+            buf2.cap();
+            ptr->show(buf2);
+         }//if
+      }//if
+   }//while
+   return 0;
+}//doEmoteN
+
+
+/** These default to english, makes a copy of incoming data. */
+void room::addShortDesc(String& new_val) {
+   short_desc.addString(English, new_val);
+}
+
+void room::addShortDesc(LanguageE l, String& buf) {
+   short_desc.addString(l, buf);
+}
+
+void room::setShortDesc(CSentryE msg) {
+   for (int i = 0; i<LS_PER_ENTRY; i++) {
+      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
+      short_desc.addLstring(nm);
+   }
+}
+
+void room::appendShortDesc(CSentryE msg) {
+   for (int i = 0; i<LS_PER_ENTRY; i++) {
+      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
+      short_desc.appendString(nm);
+   }
+}
+
+void room::appendShortDesc(String& msg) {
+   short_desc.appendString(English, msg);
+}
+
+void room::prependShortDesc(String& str) {
+   short_desc.prependString(English, str);
+}
+
+void room::prependShortDesc(CSentryE msg) {
+   for (int i = 0; i<LS_PER_ENTRY; i++) {
+      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
+      short_desc.prependString(nm);
+   }
+}
+
+   /** Makes a copy of incoming data. */
+void room::addShortDesc(LString& new_val) {
+   short_desc.addLstring(new_val);
+}
+
+String* room::getShortDesc(critter* observer) {
+   if (detect(observer->getSeeBit(), vis_bit)) {
+      return short_desc.getString(observer->getLanguage());
+   }
+   else {
+      return &UNKNOWN;
+   }
+}
+
+String* room::getShortDesc(int see_bit) {
+   if (detect(see_bit, vis_bit)) {
+      return short_desc.getString(English);
+   }
+   else {
+      return &UNKNOWN;
+   }
+}

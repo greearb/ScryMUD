@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.16 1999/08/19 06:34:35 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/19 06:34:35 $
+// $Id: spells.cc,v 1.17 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -923,7 +923,7 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
             Sprintf(buf, "%S poisons %S.\n", 
                       name_of_crit(agg, ~0), name_of_crit(vict, ~0));
             buf.Cap();
-            show_all_but_2(agg, vict, buf, room_list[agg.getCurRoomNum()]);
+            room_list[agg.getCurRoomNum()].showAllCept(buf, &agg, &vict);
          }//else
       }//if did_hit
       else { //missed

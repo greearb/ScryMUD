@@ -1,5 +1,5 @@
-// $Id: olc.cc,v 1.18 1999/08/30 06:30:41 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
+// $Id: olc.cc,v 1.19 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -2634,33 +2634,6 @@ void finish_olc_door(critter& pc) {
    normalize_door(*(OLC_DOOR));
 
    show("Door creation completed, thanks!! :)\n", pc);
-   String ofile_buf("./World/OLC_DIR/");
-   String temp_buf(*(name_of_crit(pc, ~0)));
-   temp_buf.Tolower();
-
-   String tdir;
-   tdir.Append("mkdir -p ");
-   tdir.Append(ofile_buf);
-   system(tdir);
-
-   ofile_buf += temp_buf;
-   ofile_buf += "/";
-   ofile_buf += *(name_of_dr_data(*OLC_DOOR, ~0, 1));
-   ofile_buf.Append(OLC_DOOR->getIdNum());
-   ofstream ofile(ofile_buf);
-   if (!ofile) {
-      mudlog.log(ERR, "ERROR:  olc_buf, door--not opened correctly:");
-      mudlog.log(ERR, ofile_buf);
-      show("ERROR: olc_buf, door--not opened correctly...\n", pc);
-      OLC_DOOR = NULL;
-      return;
-   }//if
-   else {
-      ofile << OLC_DOOR->getIdNum();
-      ofile << "  // Begin of a Door\n";
-      OLC_DOOR->write(ofile);
-      ofile << "\n" << flush; 
-   }// else
 
    adsave(OLC_DOOR->getZoneNum(), pc);
 
@@ -2709,7 +2682,7 @@ void finish_olc_room(critter& pc) {
    system(tdir);
 
    ofile_buf += "/";
-   ofile_buf += *(name_of_room(*OLC_ROOM, ~0));
+   ofile_buf += *(OLC_ROOM->getName());
    ofile_buf.Append(OLC_ROOM->getRoomNum());
    ofstream ofile(ofile_buf);
    if (!ofile) {
@@ -2753,7 +2726,6 @@ void finish_olc_mob(critter& pc) {
    OLC_MOB->BANK_GOLD = 0;
    OLC_MOB->CRITTER_TYPE = 2;
    OLC_MOB->setCurInGame(1);
-   OLC_MOB->setCurRoomNum(0);
 
    show("Critter creation completed, thanks!! :)\n", pc);
    show("The mob can be found in your present room..\n", pc);

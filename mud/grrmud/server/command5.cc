@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.34 1999/09/01 06:00:03 greear Exp $
-// $Revision: 1.34 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
+// $Id: command5.cc,v 1.35 1999/09/06 02:24:27 greear Exp $
+// $Revision: 1.35 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
 
 //
 //ScryMUD Server Code
@@ -1107,7 +1107,7 @@ int ovnum(int i_th, const String* name, critter& pc) {
       i_th = 0;
 
    for (i = i_th; i<NUMBER_OF_ITEMS; i++) {
-      if (obj_is_named(obj_list[i], *name)) {
+      if (obj_list[i].isNamed(*name)) {
 	 Sprintf(buf, "[%i] %S\n", i, obj_list[i].getShortDesc(&pc));
 	 show(buf, pc);
       }//if

@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.28 1999/09/01 06:00:02 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/09/01 06:00:02 $
+// $Id: battle.cc,v 1.29 1999/09/06 02:24:25 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/09/06 02:24:25 $
 
 //
 //ScryMUD Server Code
@@ -619,7 +619,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    buf = otherbuf;
    buf+= victendbuf;
    buf.Cap();
-   show_all_but_2(agg, vict, buf, room_list[agg.getCurRoomNum()]);
+   room_list[agg.getCurRoomNum()].showAllCept(buf, &agg, &vict);
    
    //  log("Testing for consequences..\n");
    if ((vict.HP <= 0) && ((vict.POS == POS_SIT) || (vict.POS == POS_REST)
@@ -1246,7 +1246,7 @@ critter* mob_to_smob(critter& mob, const int room_num, int do_sub,
       exit(100);
    }//if
 
-   crit_ptr->setCurRoomNum(room_num);
+   crit_ptr->setContainer(&(room_list[room_num]));
 
    if (do_sub) {
       if (!room_list[room_num].sub_a_4_b(crit_ptr, i_th, *name, &viewer)) {
@@ -1272,20 +1272,6 @@ critter* mob_to_smob(critter& mob, const int room_num, int do_sub,
 }//mob_to_smob
 
 
-critter* mob_to_smob(critter& mob, const int room_num,
-                     int suppress_msg) {
-   if ((room_num > NUMBER_OF_ROOMS) || (room_num < 0)) {
-      mudlog.log(ERR, "ERROR:  room_num out of range in mob_to_smob.\n");
-      do_shutdown = TRUE;
-      exit(100);
-   }//if
-
-   return mob_to_smob(mob, room_list[room_num], suppress_msg);
-}
-
-// Must use this one if we are reading in room, because we
-// are using a temporary room to put them in.  Should migrate
-// to this one, as opposed to the one above anyway..safer.
 critter* mob_to_smob(critter& mob, room& rm, int suppress_sub_fail_msg) {
 
    if (mudlog.ofLevel(DBG)) {
@@ -1311,7 +1297,7 @@ critter* mob_to_smob(critter& mob, room& rm, int suppress_sub_fail_msg) {
 
    obj_ptr_log << "CRI_CR " << mob.getIdNum() << " " << crit_ptr << "\n";
 
-   crit_ptr->setCurRoomNum(rm.getIdNum());
+   crit_ptr->setContainer(&rm);
 
    if (!rm.sub_a_4_b(crit_ptr, (critter*)(&mob), 1)) {
       /* note:  create golem and others will fail on this now with no bad

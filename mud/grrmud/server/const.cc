@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.24 1999/08/30 06:30:40 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
+// $Id: const.cc,v 1.25 1999/09/06 02:24:27 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
 
 //
 //ScryMUD Server Code
@@ -51,6 +51,7 @@ const char* regular_directions[] = {
    "southeast",
    "northeast",
    "northwest",
+   "southwest",
    "up",
    "down"
 };

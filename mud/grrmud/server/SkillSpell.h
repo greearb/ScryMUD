@@ -1,5 +1,5 @@
-// $Id: SkillSpell.h,v 1.9 1999/08/29 01:17:15 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
+// $Id: SkillSpell.h,v 1.10 1999/09/06 02:24:25 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/09/06 02:24:25 $
 
 //
 //ScryMUD Server Code
@@ -86,8 +86,8 @@ class SkillSpell : public Serialized {
    List<int> enables;  //spell/skill numbers it enables you to take
 
    SkillSpell();
-   SkillSpell(const SkillSpell& source);
-   SkillSpell& operator=(const SkillSpell& source);
+   SkillSpell(SkillSpell& source);
+   SkillSpell& operator=(SkillSpell& source);
    virtual ~SkillSpell() { }
 
    int read(istream& da_file, int read_all = TRUE);

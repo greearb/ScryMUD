@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.46 1999/09/01 06:00:03 greear Exp $
-// $Revision: 1.46 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
+// $Id: critter.h,v 1.47 1999/09/06 02:24:27 greear Exp $
+// $Revision: 1.47 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
 
 //
 //ScryMUD Server Code
@@ -247,10 +247,12 @@ public:
    int isPlayerRun() const { return shop_data_flags.get(3); }
 
    void clear();
+   // ahh, the joys of pure virtual!!
+   int read(istream& da_file, int read_all = TRUE) {
+      ::core_dump("shop_data::read(...) not supported.\n");
+      return 0; //never get here...but compiler doesn't know that.
+   }
    int read(istream& da_file, int read_all, critter* container);
-
-   // Don't call this, use the above instead!!
-   int read(istream& da_file, int read_all = TRUE);
 
    int write(ostream& da_file);
    virtual LEtypeE getEntityType() { return LE_SHOP_DATA; }
@@ -648,8 +650,8 @@ public:
    virtual ~critter();
    void clear();
    virtual int read(istream& da_file, int read_all = TRUE);
-   virtual int read_v2(istream& da_file, int read_all = TRUE);
-   virtual int read_v3(istream& da_file, int read_all = TRUE);
+   virtual int read_v2(istream& da_file, String& name, int read_all = TRUE);
+   virtual int read_v3(istream& da_file, MetaTags& mt, int read_all = TRUE);
    virtual int write(ostream& da_file);
    critter& operator=(critter& source);
    
@@ -729,7 +731,6 @@ public:
    virtual void addShortDesc(LanguageE l, String& new_val);
 
    virtual void setShortDesc(CSentryE desc);
-   virtual void setLongDesc(CSentryE desc);
 
    virtual void appendShortDesc(CSentryE whichun);
    virtual void appendShortDesc(String& msg);
@@ -742,9 +743,13 @@ public:
    virtual String* getInRoomDesc(critter* observer);
 
    virtual LStringCollection* getInRoomDescColl() { return &in_room_desc; }
-   virtual void setInRoomDescColl(LStringCollection& ldesc);
+   virtual void setInRoomDescColl(LStringCollection& ldesc) {
+      in_room_desc = ldesc;
+   }
    virtual LStringCollection* getShortDescColl() { return &short_desc; }
-   virtual void setShortDescColl(LStringCollection& sdesc);
+   virtual void setShortDescColl(LStringCollection& sdesc) {
+      short_desc = sdesc;
+   }
 
    int haveObjNumbered(int count, int obj_num);
    /** Viewer may be self, but may not be as well. */
@@ -778,6 +783,7 @@ public:
    int getXpToNextLevel() const;
    int getVisBit() const { return cur_stats[0]; }
    int getSeeBit() const { return cur_stats[1]; }
+   void setSeeBit(int val) { cur_stats[1] = val; }
 
    String* getTrackingTarget();
 
@@ -877,7 +883,6 @@ public:
    void setHpMax(int i);
    void setMode(PcMode val);
    void setImmLevel(int i);
-   void setCurRoomNum(int i); //assign in_roomtoo
    void setTrackingTarget(const String& targ_name);
    void setPoofin(const char* pin);
    void setPoofout(const char* pout);
@@ -1013,6 +1018,8 @@ public:
    void show(String& msg);
    void show(LStringCollection& msg, int show_all = FALSE);
    void show(const String* msg);
+   /** Composes Sprintf on msg, with named.getLongName() passed in to it. */
+   void showN(CSentryE msg, Entity& named);
 
    object* loseInv(object* obj); //returns the object removed. (or NULL)
    void loseObjectFromGame(object* obj);

@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.33 1999/08/29 01:17:16 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
+// $Id: commands.cc,v 1.34 1999/09/06 02:24:27 greear Exp $
+// $Revision: 1.34 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
 
 //
 //ScryMUD Server Code
@@ -130,7 +130,7 @@ int drop(int i_th, const String* pre_obj, const String* obj_all,
       while (obj_ptr) {
          if ((detect(pc.SEE_BIT, (obj_ptr->OBJ_VIS_BIT | 
                                   ROOM.getVisBit()))) && 
-             (obj_is_named(*obj_ptr, obj))) {
+             (obj_ptr->isNamed(obj, &pc))) {
             if (obj_drop_by(*obj_ptr, pc)) { 
                ROOM.gainInv(obj_ptr);
                drop_eq_effects(*obj_ptr, pc, TRUE);
@@ -225,7 +225,7 @@ int donate(int i_th, const String* pre_obj, const String* obj_all,
       while (obj_ptr) {
          if ((detect(pc.SEE_BIT, (obj_ptr->OBJ_VIS_BIT | 
                                   ROOM.getVisBit()))) && 
-             (obj_is_named(*obj_ptr, obj))) {
+             (obj_ptr->isNamed(obj, &pc))) {
             if (obj_drop_by(*obj_ptr, pc)) { 
                room_list[DONATE_ROOM].gainInv(obj_ptr);
                donate_eq_effects(*obj_ptr, pc, TRUE);
@@ -504,7 +504,7 @@ int remove(int i_th, const String* obj, critter &pc) {
       if (i_th > 0) { //remove 2.ring
          for (i = 1; i<MAX_EQ; i++) {
             if (pc.EQ[i]) { //wearing there
-               if (obj_is_named(*(pc.EQ[i]), *obj)) { //got one :)
+               if (pc.EQ[i]->isNamed(*obj, &pc)) { //got one :)
                   count++;
                   if (count == i_th) { // found it!!
                      if (obj_remove_by(*(pc.EQ[i]), pc)) { 
@@ -688,11 +688,11 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
       else if ((door_ptr = ROOM.findDoor(i_th - count_sofar, obj, pc,
                                          count_sofar))) {
          show("\n\n", pc);
-         pc.show(door_ptr->getLongDesc(&pc));
+         pc.show(door_ptr->getDrData()->getLongDesc(&pc));
          show("\n", pc);
 
          String cmd = "look";
-         rm.checkForProc(cmd, NULL_STRING, pc, door_ptr->getIdNum());
+         rm.checkForProc(cmd, NULL_STRING, pc, door_ptr->getDrData()->getIdNum());
       }//if
       else if (strncasecmp(*obj, "sky", obj->Strlen()) == 0) {
          if (ROOM.canSeeSky()) {
@@ -1105,7 +1105,7 @@ int put(int i, const String* item, int j, const String* bag,
       while (vict_ptr) {
          if (detect(pc.SEE_BIT, (vict_ptr->OBJ_VIS_BIT | 
                                  ROOM.getVisBit()))) {
-            if (obj_is_named(*vict_ptr, *item)) {
+            if (vict_ptr->isNamed(*item, &pc)) {
                if (vict_ptr != bag_ptr) {
                   found_it = TRUE;
                   if (eq_put_by(*vict_ptr, *bag_ptr, pc, bag_in_inv)) 
@@ -1371,7 +1371,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
       ROOM.getInv().head(cell);
       vict_ptr = cell.next();
       while (vict_ptr) {
-         if (obj_is_named(*vict_ptr, *item)) {
+         if (vict_ptr->isNamed(*item, &pc)) {
             if (obj_get_by(*vict_ptr, pc, TRUE)) {
                found_it = TRUE;
                pc.gainInv(vict_ptr);
@@ -2541,8 +2541,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
          pc.show(CS_MOV_NO_EXIT);
       }//if
       else if (door_ptr->isClosed()) {
-         Sprintf(buf, cstr(CS_MOV_CLOSED, pc), name_of_door(*door_ptr,
-                 pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_MOV_CLOSED, pc), door_ptr->getName(&pc));
          show(buf, pc);
       }//if
       else if (door_ptr->isBlocked() && door_ptr->getCritBlocking() &&

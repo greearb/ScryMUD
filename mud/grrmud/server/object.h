@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.33 1999/09/01 06:00:04 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 1999/09/01 06:00:04 $
+// $Id: object.h,v 1.34 1999/09/06 02:24:28 greear Exp $
+// $Revision: 1.34 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
 
 //
 //ScryMUD Server Code
@@ -304,7 +304,6 @@ public:
 
    int getObjCountByNumber(int onum, int sanity);
 
-   void setCurRoomNum(int i, int sanity);
    int getCurRoomNum();
 
    /* Found in obj_cmds.cc */

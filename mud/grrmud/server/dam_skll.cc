@@ -1,5 +1,5 @@
-// $Id: dam_skll.cc,v 1.7 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: dam_skll.cc,v 1.8 1999/09/06 02:24:27 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
 
 //
 //ScryMUD Server Code
@@ -110,8 +110,8 @@ int do_hurl(critter& vict, critter& pc) {
       vict.PAUSE += d(1,4) + 2;
       pc.PAUSE += d(1,3);
 
-      if ((dptr = ROOM.findDoor(1, door_list[d(1,10)].getDirection())) &&
-     	  dptr->isOpen()) {
+      String my_dir(regular_directions[d(1,10) - 1]);
+      if ((dptr = ROOM.findDoor(1, &my_dir)) && dptr->isOpen()) {
 	 Sprintf(buf, "hurls %S out of the room.\n", name_of_crit(vict, ~0));
 	 emote(buf, pc, ROOM, TRUE, &vict);
 	 Sprintf(buf, "You hurl %s out of the room.\n", get_him_her(vict));

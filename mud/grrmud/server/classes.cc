@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.16 1999/09/01 06:00:02 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/09/01 06:00:02 $
+// $Id: classes.cc,v 1.17 1999/09/06 02:24:25 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/09/06 02:24:25 $
 
 //
 //ScryMUD Server Code
@@ -43,6 +43,11 @@ const char* LstrArray::getHeader(critter* viewer) const {
    return cstr(header, *viewer);
 }
 
+const char* LstrArray::getName(int idx, critter* viewer) const {
+   if ((idx >= 0) && (idx < len))
+      return cstr(names[idx], *viewer);
+   return "";
+}
 
 int MTPair::write(ostream& dafile) {
    dafile << key << "=\"" << val << "\" ";
@@ -617,7 +622,6 @@ SpellDuration* Entity::isAffectedBy(int spell_num) {
 }//is_affected_by
 
 
-
 int Entity::affectedByToString(critter* viewer, String& rslt) {
    String buf(100);
    rslt.clear();
@@ -636,6 +640,7 @@ int Entity::affectedByToString(critter* viewer, String& rslt) {
    }//else
    return 0;
 }//affectedByToString
+
 
 Entity::~Entity() {
    affected_by.clearAndDestroy();
@@ -664,13 +669,27 @@ String* Entity::getFirstName(int c_bit) {
    return Entity::getName(c_bit);
 }
 
-String* Entity::getLastName(int c_bit) {
+String* Entity::getLastName(int c_bit, LanguageE lang) {
    if (detect(c_bit, vis_bit)) {
-      return names.getCollection(English)->peekRear();
+      return names.getCollection(lang)->peekRear();
    }
    else {
       return &SOMEONE;
    }
+}
+
+String* Entity::getFirstName(int c_bit, LanguageE lang) {
+   if (detect(c_bit, vis_bit)) {
+      return names.getCollection(lang)->peekFront();
+   }
+   else {
+      return &SOMEONE;
+   }
+}
+
+
+String* Entity::getLastName(int c_bit) {
+   return getLastName(c_bit, English);
 }
 
 String* Entity::getShortName(int c_bit) {
@@ -696,12 +715,7 @@ String* Entity::getFirstName(critter* observer) {
 }
 
 String* Entity::getLastName(critter* observer) {
-   if (detect(observer->getSeeBit(), vis_bit)) {
-      return names.getCollection(observer->getLanguage())->peekRear();
-   }
-   else {
-      return &SOMEONE;
-   }
+   return getLastName(observer->getSeeBit(), observer->getLanguage());
 }
 
 String* Entity::getShortName(critter* observer) {
@@ -723,8 +737,16 @@ String* Entity::getLongDesc(critter* observer) {
 
 
 int Entity::isNamed(const String& name, critter* viewer) {
-   if (detect(viewer->getSeeBit(), vis_bit)) {
-      KeywordEntry* ptr = names.getCollection(viewer->getLanguage());
+   return isNamed(name, viewer->getSeeBit(), viewer->getLanguage());
+}
+
+int Entity::isNamed(const String& name, LanguageE lang) {
+   return isNamed(name, ~0, lang);
+}
+
+int Entity::isNamed(const String& name, int c_bit, LanguageE lang) {
+   if (detect(c_bit, vis_bit)) {
+      KeywordEntry* ptr = names.getCollection(lang);
       if (ptr) {
          Cell<LString*> cll(*ptr);
          LString* lptr;
@@ -922,3 +944,13 @@ int Entity::read(istream& dafile, int read_all) {
    long_desc.read(dafile);
    return 0;
 }
+
+
+void Entity::setLongDesc(CSentryE msg) {
+   for (int i = 0; i<LS_PER_ENTRY; i++) {
+      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
+      long_desc.addLstring(nm);
+   }
+}
+
+
