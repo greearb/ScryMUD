@@ -1,7 +1,7 @@
 <help general credits>
 
-             ScryMUD is original C++ code and world by Ben  Greear. 
-        However, it has definately been designed with DikuMUD and all
+        ScryMUD is original C++ code and world by Ben Greear. 
+        However, it has definitely been designed with DikuMUD and all
         it's derivatives I've ever played, especially JediMUD, in mind.
 
 	Thanks also goes to our builders, especially
@@ -17,5 +17,5 @@
         Ben Greear
         greear@cyberhighway.net
 <color=red>
-See Also:  http://scry.wanfear.com/ScryMUD/scry.html
+See Also:  http://scrymud.net
 </color></help>
