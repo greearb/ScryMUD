@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.23 1999/08/10 07:06:20 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
+// $Id: object.h,v 1.24 1999/08/12 06:26:05 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
 
 //
 //ScryMUD Server Code
@@ -273,6 +273,9 @@ public:
    int getMaxInGame();
    int getDiceCnt() const { return extras[6]; }
    int getDiceSides() const { return extras[7]; }
+
+   SafeList<object*>& getInv() { return inv; }
+
 
    static int getInstanceCount() { return _cnt; }
 

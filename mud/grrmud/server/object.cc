@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.23 1999/08/10 07:06:20 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
+// $Id: object.cc,v 1.24 1999/08/12 06:26:05 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
 
 //
 //ScryMUD Server Code
@@ -281,9 +281,9 @@ int bag_struct::read(istream& ofile, int read_all = TRUE) {
          setPickable(bf.get(4));
          setMagLockable(bf.get(5));
          setMagLocked(bf.get(6));
-         setIsDestructable(bf.get(7));
-         setIsCorpse(bf.get(8));
-         setIsNoClose(bf.get(9));
+         setDestructable(bf.get(7));
+         setCorpse(bf.get(8));
+         setNoClose(bf.get(9));
          setConsumesKey(bf.get(17));
       }//if
 
@@ -562,7 +562,7 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
       return -1;
    }
 
-   appendName(new String(first_name));
+   addName(new String(first_name));
 
    test = TRUE;
    while (test) {
@@ -578,7 +578,7 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
          test = FALSE;
       }//if
       else {
-         appendName(new String(tmp_str));
+         addName(new String(tmp_str));
       }//else
    }//while            
    ofile.getline(tmp, 80);         

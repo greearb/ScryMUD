@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.13 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: door.h,v 1.14 1999/08/12 06:26:05 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
 
 //
 //ScryMUD Server Code
@@ -53,6 +53,8 @@ public:
    int write(ostream& da_file);
    static int getInstanceCount() { return _cnt; }
 
+   String* getDirection();
+
    virtual LEtypeE getEntityType() { return LE_DOOR_DATA; }
 
 }; //door_data
@@ -91,6 +93,11 @@ public:
    int write(ostream& da_file);
    int read(istream& da_file, int read_all = TRUE);
    
+   critter* getCritBlocking() const { return crit_blocking; }
+   void setCritBlocking(critter* pc) { crit_blocking = pc; }
+   int getDestination() const { return destination; }
+   void setDestination(int val) { destination = val; }
+
    int isOwnedBy(critter& pc);
    int getVisBit() const { if (dr_data) return dr_data->getVisBit(); return 0; }
    int isInUse() const { return (dr_data && dr_data->isInUse()); }
@@ -99,17 +106,21 @@ public:
    int isClosed() const { return dr_data && dr_data->isClosed(); }
    int canOpen() const { return dr_data && dr_data->canOpen(); }
    int isLocked() const { return dr_data && dr_data->isLocked(); }
+   int isBlocked() const { return dr_data && dr_data->isBlocked(); }
    int isMagLocked() const { return dr_data && dr_data->isMagLocked(); }
    int isVehicleExit() const { return dr_data && dr_data->isVehicleExit(); }
    int canClose() const { return canOpen(); }
    int isSecretWhenOpen() const { return dr_data && dr_data->isSecretWhenOpen(); }
    int consumesKey() const { return dr_data && dr_data->consumesKey(); }
-   int isNoPassdoor() const { return (dr_data && dr_data->isNoPassdoor()); }
-
+   int isNoPassdoor() const { return dr_data && dr_data->isNoPassdoor(); }
+   int isDestructable() const { return dr_data && dr_data->isDestructable(); }
    void lock() { if (dr_data) dr_data->lock(); }
    void unlock() { if (dr_data) dr_data->unlock(); }
    void open() { if (dr_data) dr_data->open(); }
    void close() { if (dr_data) dr_data->close(); }
+
+   void setDestructable(int val) { dr_data->setDestructable(val); }
+   void setLockable(int val) { dr_data->setLockable(val); }
 
    int getKeyNum() const {
       if (dr_data) 

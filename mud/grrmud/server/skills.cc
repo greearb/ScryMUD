@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.12 1999/08/10 07:06:20 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
+// $Id: skills.cc,v 1.13 1999/08/12 06:26:05 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
 
 //
 //ScryMUD Server Code
@@ -49,7 +49,7 @@ int track(int i_th, const String* victim, critter& pc) {
    /* check for miss on skill */
    if ((d(1, get_percent_lrnd(TRACK_SKILL_NUM, pc)) * 4) < d(1,100)) {
       Sprintf(buf, "You sense a trail to the %S.\n", 
-              door_list[d(1,8)].names.peekFront());
+              door_list[d(1,8)].getDirection());
       show(buf, pc);
       return 0;
    }//if
@@ -85,7 +85,7 @@ int track(int i_th, const String* victim, critter& pc) {
 	  show("You're already here!\n", pc);
         }//if
 	else {
-	  List<int> path;
+	  List<int> path(0);
 	  path_from_a_to_b(pc.getCurRoomNum(), in_room, path);
 
           /*log("TRACK:  HERE IS PATH.\n");
@@ -101,11 +101,11 @@ int track(int i_th, const String* victim, critter& pc) {
              show("You can't get there from here!\n", pc);
           }//if
 	  else {
-             Cell<door*> cll(ROOM.DOORS);
+             SCell<door*> cll(ROOM.DOORS);
              door* ptr;
              path.popFront(); //get rid of first one
              while ((ptr = cll.next())) {
-                if (abs(ptr->destination) == path.peekFront()) {
+                if (abs(ptr->getDestination()) == path.peekFront()) {
                    Sprintf(buf, "You sense a trail leading %S.\n", 
                            direction_of_door(*ptr));
                    show(buf, pc);
@@ -456,13 +456,13 @@ int bash(int i_th, const String* victim, critter& pc) {
    String buf(100);
 
    if (!victim->Strlen()) {
-      if (!(crit_ptr = Top(pc.IS_FIGHTING))) {
+      if (!(crit_ptr = pc.getFirstFighting())) {
          show("Bash who?\n", pc);
          return -1;
       }//if
    }//if
    else {
-      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc);
    }//if
 
    if (crit_ptr) {
@@ -486,8 +486,7 @@ int bash(int i_th, const String* victim, critter& pc) {
 
       return do_bash(*crit_ptr, pc);
    }//if
-   else if (door* dptr = door::findDoor(ROOM.DOORS, i_th, victim,
-		pc.SEE_BIT, ROOM))
+   else if (door* dptr = ROOM.findDoor(i_th, victim, pc))
       return do_bash(*dptr, pc);
    else
       pc.show(CS_NO_CAN_SEE);
@@ -507,30 +506,29 @@ int do_bash(door& vict, critter& pc) { //bash for doors
       return -1;
    }//if
 
-   if (!vict.dr_data->door_data_flags.get(2)) {
+   if (!vict.isClosed()) {
       show("It isn't even closed.\n", pc);
       return -1;
    }//if
 
-   if (!vict.dr_data->door_data_flags.get(3)) {
+   if (!vict.isLocked()) {
       show("Its not locked, just open it!\n", pc);
       return -1;
    }//if
 
-   if (!vict.dr_data->door_data_flags.get(7)) {
-      show("You nearly break your hand on the door.  It doesn't budge!\n",
-                pc);
+   if (!vict.isDestructable()) {
+      pc.show("You nearly break your hand on the door.  It doesn't budge!\n");
       Sprintf(buf, 
-        "nearly breaks %s hand on the door.  It doesn't budge!",
-         get_his_her(pc));
+              "nearly breaks %s hand on the door.  It doesn't budge!",
+              get_his_her(pc));
       emote(buf, pc, ROOM, TRUE);
    }//if
    else if (d(1, 100) < get_percent_lrnd(BASH_SKILL_NUM, pc)) {
       Sprintf(buf, "You bust down the %S.\n", name_of_door(vict,
                 pc.SEE_BIT));
       show(buf, pc);
-      vict.dr_data->door_data_flags.turn_off(2);
-      vict.dr_data->door_data_flags.turn_off(5);
+      vict.open();
+      vict.setLockable(FALSE);
       Sprintf(buf, "busts open the %S!\n", name_of_door(vict, ~0));
       emote(buf, pc, ROOM, TRUE);
    }//else
@@ -624,13 +622,13 @@ int block(int i_th, const String* victim, critter& pc) {
    String buf(100);
 
    if (!victim->Strlen()) {
-      if (!(crit_ptr = Top(pc.IS_FIGHTING))) {
+      if (!(crit_ptr = pc.getFirstFighting())) {
          show("Block who?\n", pc);
          return -1;
       }//if
    }//if
    else {
-      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc);
    }//if
 
    if (crit_ptr) {
@@ -645,8 +643,7 @@ int block(int i_th, const String* victim, critter& pc) {
 
      return do_block(*crit_ptr, pc);
    }//if
-   else if (door* dptr = door::findDoor(ROOM.DOORS, i_th, victim,
-		pc.SEE_BIT, ROOM))
+   else if (door* dptr = ROOM.findDoor(i_th, victim, pc))
       return do_block(*dptr, pc);
    else
       pc.show(CS_NO_CAN_SEE);
@@ -662,7 +659,7 @@ int do_block(critter& vict, critter& pc) {
       return -1;
    }//if
 
-   if (!HaveData(&vict, pc.IS_FIGHTING)) {
+   if (!pc.isFighting(vict)) {
       return -1;
    }//if
 
@@ -703,12 +700,12 @@ int do_block(door& vict, critter& pc) {
      return -1;
    }//if
 
-   if (!pc.IS_FIGHTING.isEmpty()) {
+   if (pc.isInBattle()) {
      show("You can't block an entrance while fighting.\n", pc);
      return -1;
    }//if
 
-   if (vict.dr_data->door_data_flags.get(14)) {
+   if (vict.isBlocked()) {
      show("Someone is already blocking that door!\n", pc);
      return -1;
    }//if
@@ -717,8 +714,8 @@ int do_block(door& vict, critter& pc) {
       Sprintf(buf, "You start blocking the %S.\n", name_of_door(vict,
 		pc.SEE_BIT));
       show(buf, pc);
-      vict.dr_data->door_data_flags.turn_on(14);
-      vict.crit_blocking = &pc;
+      vict.setBlocked(TRUE);
+      vict.setCritBlocking(&pc);
       Sprintf(buf, "starts blocking the %S!\n", name_of_door(vict, ~0));
       emote(buf, pc, ROOM, TRUE);
       return 0;
@@ -743,10 +740,10 @@ int claw(int i_th, const String* victim, critter& pc) {
    }//if
 
    if (!victim->Strlen()) {
-      crit_ptr = Top(pc.IS_FIGHTING);
+      crit_ptr = pc.getFirstFighting();
    }//if
    else {
-      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc);
    }//if
 
    if (crit_ptr) {
@@ -788,7 +785,7 @@ int do_claw(critter& vict, critter& pc) {
       return -1;
    }//if
 
-   if (!HaveData(&vict, pc.IS_FIGHTING)) {
+   if (!pc.isFighting(&vict)) {
       join_in_battle(pc, vict);
    }//if
 
@@ -850,7 +847,7 @@ int do_claw(critter& vict, critter& pc) {
 int construct(critter& pc, short do_mob = FALSE) {
    String buf(100);
    object* toolbox, *ptr, *item1, *item2, *item3, *item4, *item5;
-   Cell<object*> cll;
+   SCell<object*> cll;
    //   log("In construct.\n");
 
    item1 = item2 = item3 = item4 = item5 = NULL;
@@ -906,7 +903,7 @@ int construct(critter& pc, short do_mob = FALSE) {
       }//if
    }//while
 
-   ptr = Top(toolbox->inv);
+   ptr = toolbox->getInv().peekFront();
 
    if (!ptr->obj_proc) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL obj_proc.\n", 
@@ -927,8 +924,8 @@ int construct(critter& pc, short do_mob = FALSE) {
       if (!(item1 = have_obj_numbered(toolbox->inv, 1, 
                    ptr->COMPONENT_ITEM1, pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM1].short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
+                 obj_list[ptr->COMPONENT_ITEM1].getLongName(pc),
+                 obj_list[ptr->COMPONENT_TARG].getLongName(pc));
          show(buf, pc);
          return -1;
       }//if
@@ -939,8 +936,8 @@ int construct(critter& pc, short do_mob = FALSE) {
       if (!(item2 = have_obj_numbered(toolbox->inv, 1, 
                    ptr->COMPONENT_ITEM2, pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM2].short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
+                 obj_list[ptr->COMPONENT_ITEM2].getLongName(),
+                 obj_list[ptr->COMPONENT_TARG].getLongName());
          show(buf, pc);
          return -1;
       }//if
@@ -951,8 +948,8 @@ int construct(critter& pc, short do_mob = FALSE) {
       if (!(item3 = have_obj_numbered(toolbox->inv, 1, 
                    ptr->COMPONENT_ITEM3, pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM3].short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
+                 obj_list[ptr->COMPONENT_ITEM3].getLongName(pc),
+                 obj_list[ptr->COMPONENT_TARG].getLongName());
          show(buf, pc);
          return -1;
       }//if
@@ -963,8 +960,8 @@ int construct(critter& pc, short do_mob = FALSE) {
       if (!(item4 = have_obj_numbered(toolbox->inv, 1, 
                    ptr->COMPONENT_ITEM4, pc.SEE_BIT, ROOM))) { 
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM4].short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
+                 obj_list[ptr->COMPONENT_ITEM4].getLongName(),
+                 obj_list[ptr->COMPONENT_TARG].getLongName());
          show(buf, pc);
          return -1;
       }//if
@@ -975,8 +972,8 @@ int construct(critter& pc, short do_mob = FALSE) {
       if (!(item5 = have_obj_numbered(toolbox->inv, 1, 
                    ptr->COMPONENT_ITEM5, pc.SEE_BIT, ROOM))) { 
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM5].short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
+                 obj_list[ptr->COMPONENT_ITEM5].getLongName(),
+                 obj_list[ptr->COMPONENT_TARG].getLongName());
          show(buf, pc);
          return -1;
       }//if

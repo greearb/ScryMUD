@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.19 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: const.h,v 1.20 1999/08/12 06:26:05 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
 
 //
 //ScryMUD Server Code
@@ -554,12 +554,12 @@ extern const String ANSI_BWHITE_S;
 #define OBJ_MAX_IN_GAME extras[4]
 #define OBJ_IN_ZONE	cur_stats[3]
 #define CASTS_THESE_SPELLS   obj_proc->casts_these_spells
-#define COMPONENT_ITEM1 construct_data->item1
-#define COMPONENT_ITEM2 construct_data->item2
-#define COMPONENT_ITEM3 construct_data->item3
-#define COMPONENT_ITEM4 construct_data->item4
-#define COMPONENT_ITEM5 construct_data->item5
-#define COMPONENT_TARG  construct_data->target_object
+#define COMPONENT_ITEM1 obj_proc->construct_data->item1
+#define COMPONENT_ITEM2 obj_proc->construct_data->item2
+#define COMPONENT_ITEM3 obj_proc->construct_data->item3
+#define COMPONENT_ITEM4 obj_proc->construct_data->item4
+#define COMPONENT_ITEM5 obj_proc->construct_data->item5
+#define COMPONENT_TARG  obj_proc->construct_data->target_object
 #define OBJ_PRICE	cur_stats[1]
 #define OBJ_FLAGS	obj_flags
 #define OBJ_SPEC_FLAGS	obj_proc->obj_spec_data_flags

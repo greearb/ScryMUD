@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.24 1999/08/10 07:06:20 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
+// $Id: room.h,v 1.25 1999/08/12 06:26:05 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
 
 //
 //ScryMUD Server Code
@@ -228,6 +228,7 @@ public:
    virtual critter* findFirstBanker();
    virtual critter* findFirstShopKeeper();
    virtual critter* findFirstTeacher();
+   virtual door* findDoor(int i_th, const String* victim, critter& viewer);
 
    virtual void gainCritter(critter* crit);
    virtual critter* removeCritter(critter* crit);

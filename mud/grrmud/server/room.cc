@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.34 1999/08/10 07:06:20 greear Exp $
-// $Revision: 1.34 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
+// $Id: room.cc,v 1.35 1999/08/12 06:26:05 greear Exp $
+// $Revision: 1.35 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
 
 //
 //ScryMUD Server Code
@@ -196,12 +196,6 @@ room::~room() {
 
    obj_ptr_log << "RM_DES " << getIdNum() << " " << this << "\n";
 
-   if (!do_shutdown) {
-      affected_rooms.loseData(this);
-      pulsed_proc_rooms.loseData(this);
-      embattled_rooms.loseData(this);
-   }//if
-
    clear();
 }//sub_room deconstructor
 
@@ -337,7 +331,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
       }//if
       else {
          string = new String(tmp_str);
-         appendName(string);
+         addName(string);
       }//else
    }//while            
    ofile.getline(tmp, 80);         
@@ -407,7 +401,8 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
 
    if (!affected_by.isEmpty()) {
       // Also place it on the list of rooms to be checked for loss of spell...
-      affected_rooms.gainData(this);
+      room* _this = this;
+      affected_rooms.appendUnique(_this);
    }//if
 
    if (mudlog.ofLevel(DB)) {
@@ -630,7 +625,8 @@ int room::read_v3(istream& ofile, int read_all = TRUE) {
 
    if (!affected_by.isEmpty()) {
       // Also place it on the list of rooms to be checked for loss of spell...
-      affected_rooms.gainData(this);
+      room* _this = this;
+      affected_rooms.appendUnique(_this);
    }//if
 
    if (mudlog.ofLevel(DB)) {

@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.17 1999/08/10 07:06:17 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
+// $Id: classes.h,v 1.18 1999/08/12 06:26:05 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
 
 //
 //ScryMUD Server Code
@@ -303,8 +303,10 @@ public:
                                   && flags.get(8)); }
    int canLock() const { return flags.get(5); }
 
+   int isDestructable() const { return flags.get(7); }
    int isClosed() const { return flags.get(2); }
    int isLocked() const { return flags.get(3); }
+   int isBlocked() const { return flags.get(14); }
    int isMagLocked() const { return flags.get(6); }
    int isSecret() const { return (flags.get(13) || flags.get(16)); }
    int isInUse() const { return flags.get(10); }
@@ -313,22 +315,24 @@ public:
    int consumesKey() const { return flags.get(17); }
    int isNoPassdoor() const { return flags.get(18); }
 
-   void setComplete() { flags.turn_off(15); }
-   void setNotComplete() { flags.turn_on(15); }
    void close() { flags.turn_on(2); }
    void open() { flags.turn_off(2); }
    void lock() { close(); flags.turn_on(3); }
    void unlock() { flags.turn_off(3); }
    void setFlags(bitfield& flgs) { flags = flgs; }
 
+   void setComplete() { flags.turn_off(15); }
+   void setNotComplete() { flags.turn_on(15); }
+   void setLockable(int val) { flags.set(5, val); }
+   void setBlocked(int val) { flags.set(14, val); }
    void setClosed(int val) { flags.set(2, val); }
    void setLocked(int val) { flags.set(3, val); }
    void setPickable(int val) { flags.set(4, val); }
    void setMagLockable(int val) { flags.set(5, val); }
    void setMagLocked(int val) { flags.set(6, val); }
-   void setIsDestructable(int val) { flags.set(7, val); }
-   void setIsCorpse(int val) { flags.set(19, val); }
-   void setIsNoClose(int val) { flags.set(8, !val); }
+   void setDestructable(int val) { flags.set(7, val); }
+   void setCorpse(int val) { flags.set(19, val); }
+   void setNoClose(int val) { flags.set(8, !val); }
    void setConsumesKey(int val) { flags.set(17, val); }
 
    int getKey() const { return key; }
