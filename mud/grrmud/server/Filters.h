@@ -1,5 +1,5 @@
-// $Id: Filters.h,v 1.1 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.1 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: Filters.h,v 1.2 1999/06/16 06:43:26 greear Exp $
+// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
 
 //
 //ScryMUD Server Code
@@ -58,6 +58,25 @@ public:
       return pc == actor;
    }
    virtual const char* name() { return "SelectAreSame"; }
+};
+
+/** matches when pc is sleeping */
+class SelectIsSleeping : public CritterSelector {
+public:
+   virtual int matches(const critter* pc, const critter* b) {
+      USE_VARS; return pc->isSleeping();
+   }
+   virtual const char* name() { return "SelectIsSleeping"; }
+};
+
+
+/** matches when pc is meditating */
+class SelectIsMeditating : public CritterSelector {
+public:
+   virtual int matches(const critter* pc, const critter* b) {
+      USE_VARS; return pc->isMeditating();
+   }
+   virtual const char* name() { return "SelectIsMeditating"; }
 };
 
 /** matches when pc is an NPC and is possessed. */
@@ -170,7 +189,8 @@ public:
    SelectActorEntryMsgs selectActorEntryMsgs;
    SelectAreSame selectAreSame;
    SelectActorSneakWorked selectActorSneakWorked;
-
+   SelectIsSleeping selectIsSleeping;
+   SelectIsMeditating selectIsMeditating;
 
    CSelectorColl CC_all;
    CSelectorColl CC_mob_entry_allow;

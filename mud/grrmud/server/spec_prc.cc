@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.16 1999/06/08 05:10:45 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
+// $Id: spec_prc.cc,v 1.17 1999/06/16 06:43:27 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 //
 //ScryMUD Server Code
@@ -62,8 +62,11 @@ int do_just_killed_procs(critter& agg) {
 
    if (agg.pc) {  //if do pc things
       if (agg.PC_FLAGS.get(12)) { //autoloot
-         agg.pc->input.Prepend("get all corpse\n");
-         agg.processInput(agg.pc->input, FALSE, TRUE);
+         String all("all");
+         String corpse("corpse");
+         get(1, &all, 1, &corpse, agg, FALSE); //don't show msgs
+         //agg.pc->input.Prepend("get all corpse\n");
+         //agg.processInput(agg.pc->input, FALSE, TRUE);
       }//if
    }//if
 
@@ -71,25 +74,26 @@ int do_just_killed_procs(critter& agg) {
      int bad_ass = agg.mob->getBadAssedness();
      String cmd("get all corpse\n");
      if (bad_ass > 7) {
-       agg.processInput(cmd, FALSE, TRUE);
-       cmd = "wear all\n";
-       agg.processInput(cmd, FALSE, TRUE);
-       cmd = "skin corpse\n";
-       agg.processInput(cmd, FALSE, TRUE);
-       cmd = "wear skin\n";
-       agg.processInput(cmd, FALSE, TRUE);
-       cmd = "growl\n";
-       agg.processInput(cmd, FALSE, TRUE);
+        agg.processInput(cmd, FALSE, TRUE);
+        cmd = "wear all\n";
+        agg.processInput(cmd, FALSE, TRUE);
+        cmd = "skin corpse\n";
+        agg.processInput(cmd, FALSE, TRUE);
+        cmd = "wear skin\n";
+        agg.processInput(cmd, FALSE, TRUE);
+        cmd = "growl\n";
+        agg.processInput(cmd, FALSE, TRUE);
      }//if
      else if (bad_ass > 4) {
-       cmd = "wear all\n";
-       agg.processInput(cmd, FALSE, TRUE);
-       cmd = "laugh\n";
-       agg.processInput(cmd, FALSE, TRUE);
+        agg.processInput(cmd, FALSE, TRUE); //Thanks, Gandolf!!
+        cmd = "wear all\n";
+        agg.processInput(cmd, FALSE, TRUE);
+        cmd = "laugh\n";
+        agg.processInput(cmd, FALSE, TRUE);
      }//if
      else if (bad_ass > 0) {
-       cmd = "laugh\n";
-       agg.processInput(cmd, FALSE, TRUE);
+        cmd = "laugh\n";
+        agg.processInput(cmd, FALSE, TRUE);
      }//if
    }//if do mob things
    return 0;

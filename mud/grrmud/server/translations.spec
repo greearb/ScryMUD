@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.8 1999/06/15 03:32:35 greear Exp $
-# $Revision: 1.8 $  $Author: greear $ $Date: 1999/06/15 03:32:35 $
+# $Id: translations.spec,v 1.9 1999/06/16 06:43:27 greear Exp $
+# $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -172,6 +172,10 @@ CS_DROP_WHAT
 
 CS_OK
 	eng "Ok.\n"
+	~
+
+CS_UNKNOWN
+	eng "UNKNOWN"
 	~
 
 CS_DONT_SEEM_TO_HAVE_THAT
@@ -416,6 +420,38 @@ CS_SIT_FIGHTING
 
 CS_BEYOND_SITTING
 	eng "You're already way beyond sitting!\n"
+	~
+
+CS_STANDING
+	eng "is standing here."
+	~
+
+CS_PRONE
+	eng "is lying prone."
+	~
+
+CS_SITTING
+	eng "is sitting here."
+	~
+
+CS_RESTING
+	eng "is resting here quietly."
+	~
+
+CS_SLEEPING
+	eng "is sleeping here."
+	~
+
+CS_MEDITATING
+	eng "is meditating here."
+	~
+
+CS_STUNNED
+	eng "is lying here barely breathing."
+	~
+
+CS_DEAD
+	eng "is lying here utterly dead!"
 	~
 
 CS_ALREADY_STANDING

@@ -1,5 +1,5 @@
-# $Id: translation2.spec,v 1.3 1999/06/14 06:05:44 greear Exp $
-# $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/14 06:05:44 $
+# $Id: translation2.spec,v 1.4 1999/06/16 06:43:27 greear Exp $
+# $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 # See translations.spec for more information.
 
@@ -67,7 +67,7 @@ CS_MALE
 	~
 
 CS_NEUTER
-	eng "Neuter"
+	eng "Neuter "
 	~
 
 CS_OF_LEVEL
@@ -243,7 +243,7 @@ CS_NOTHING_TO_LOCK
 	~
 
 CS_OPEN_AUTOMAGICALLY
-	eng "The %S will open automatically when its ready.\n"
+	eng "The %S will open automatically when it's ready.\n"
 	~
 
 CS_UNLOCK_CONSUME
@@ -415,7 +415,7 @@ CS_NOT_TRADER
 	~
 
 CS_NO_WANT_BUY
-	eng "I don't wan't to buy anything from you!"
+	eng "I don't want to buy anything from you!"
 	~
 
 CS_NO_PRAC_WIELDING

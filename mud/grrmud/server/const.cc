@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.13 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: const.cc,v 1.14 1999/06/16 06:43:27 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 //
 //ScryMUD Server Code
@@ -598,18 +598,6 @@ const char* Opening_Screen = "<__SCRY__>\n\n\n
 
 
 ///****************  hardcoded global lists ****************///
-char* critter_positions[10] = {
-   "is standing here.",
-   "is lying prone.",
-   "is sitting here.",
-   "is resting here quietly.",
-   "is sleeping here.",
-   "is meditating here.",
-   "is lying here barely breathing.",
-   "is lying here utterly dead!.",
-   "is lying here prone.",
-   NULL
-};// critter_positions
 
 char* critter_conditions[11] = {
    "is in horrible condition.",  // 0 - 10%

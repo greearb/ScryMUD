@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.11 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: object.cc,v 1.12 1999/06/16 06:43:27 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 //
 //ScryMUD Server Code
@@ -845,6 +845,10 @@ int object::isPotion() const {
 
 int object::isScroll() const {
    return (OBJ_FLAGS.get(53) && obj_proc);
+}
+
+int object::isNamed(const String& name) const {
+   return obj_is_named(*this, name);
 }
 
 int object::isLiquid() const {

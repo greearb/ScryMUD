@@ -1,5 +1,5 @@
-// $Id: olc.cc,v 1.12 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: olc.cc,v 1.13 1999/06/16 06:43:27 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 //
 //ScryMUD Server Code
@@ -39,6 +39,7 @@
 #include "olc2.h"
 #include <PtrArray.h>
 #include "vehicle.h"
+#include "load_wld.h"
 
 
 void start_olc(critter& pc) {
@@ -576,7 +577,7 @@ void do_olc(critter& pc) {
          if (string.Strlen() == 0)
             break;	 
 
-	 if (isnum(string)) {
+         if (isnum(string)) {
 	    i = atoi(string);
             if (!check_l_range(i, 0, 32000, pc, TRUE))
                break;
@@ -3130,6 +3131,10 @@ void finish_olc_obj(critter& pc) {
    quit_olc(pc);
    O_COUNT = 0; //reset it for next creation
    pc.gainInv(OLC_OBJ);
+
+   //Fix cur_in_game problem.
+   recursive_init_loads(*(OLC_OBJ), 0);
+
    OLC_OBJ = NULL;
 
    mudlog.log(TRC, "Done w/finish_olc_obj.\n");

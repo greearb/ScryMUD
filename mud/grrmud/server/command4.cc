@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.18 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: command4.cc,v 1.19 1999/06/16 06:43:26 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
 
 //
 //ScryMUD Server Code
@@ -2521,7 +2521,7 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
 
 
 int dset(int i_th, const String* vict, const String* targ, int new_val,
-	  critter& pc) {
+         critter& pc) {
    String buf(50);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {

@@ -1,5 +1,5 @@
-// $Id: command3.h,v 1.6 1999/06/06 19:38:24 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/06 19:38:24 $
+// $Id: command3.h,v 1.7 1999/06/16 06:43:26 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
 
 //
 //ScryMUD Server Code
@@ -87,7 +87,7 @@ int buglist(BugTypeE bt, int i, String& cmd, int j, const String& mod,
 
 int idea(const String& str, critter& pc);
 int bug(String& str, critter& pc);
-int use(int i_th, const String* target, critter& pc); // must be holding
+int use(int i_th, String* wand_name, int j_th, String* target, critter& pc);
 int recite(int i_th, const String* target, int j_th, const String* vict, 
             critter& pc); //can be holding, but no have to
 int quaf(int i_th, const String* potion, critter& pc); //only target user

@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.12 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: const.h,v 1.13 1999/06/16 06:43:27 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 //
 //ScryMUD Server Code
@@ -823,8 +823,6 @@ extern String SOUTHWEST;
 extern String SOUTHEAST;
 extern String UP;
 extern String DOWN;
-
-extern char* critter_positions[10];
 
 extern char* critter_conditions[11];
 

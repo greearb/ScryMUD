@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.9 1999/06/08 05:10:45 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/08 05:10:45 $
+// $Id: spells.cc,v 1.10 1999/06/16 06:43:27 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 //
 //ScryMUD Server Code
@@ -533,13 +533,18 @@ void cast_summon(int i_th, const String* targ, critter& pc) {
    critter* vict = have_crit_named(pc_list, i_th, targ,
                                    pc.SEE_BIT, ROOM);
    if (!vict) {
-     show("You don't see that person!\n", pc);
-     return;
+      show("You don't see that person!\n", pc);
+      return;
    }//if
 
    if (!ok_to_do_action(vict, "KMSNB", spell_num, pc)) {
-     return;
+      return;
    }//if
+
+   if (ROOM.isNoMagEntry()) {
+      pc.show("You can't magically transport someone to this room!\n");
+      return;
+   }
                  /* all checks have been passed, lets do it */
 
    do_cast_summon(*vict, pc, FALSE, 0);  //does no error checking
@@ -559,7 +564,7 @@ void do_cast_summon(critter& vict, critter& pc, int is_canned, int lvl) {
    if (!is_canned)
       lvl = pc.LEVEL;
    
-   if (is_canned || (!(lost_con = lost_concentration(vict, spell_num)) &&
+   if (is_canned || (!(lost_con = lost_concentration(pc, spell_num)) &&
 		     (did_hit = did_spell_hit(pc, SUMMON, vict)))){ 
       do_affects = TRUE;
       if (!is_canned)

@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.20 1999/06/15 03:32:34 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/15 03:32:34 $
+// $Id: commands.cc,v 1.21 1999/06/16 06:43:26 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
 
 //
 //ScryMUD Server Code
@@ -1237,7 +1237,8 @@ int put(int i, const String* item, int j, const String* bag,
 }//put
 
 
-int get(int i, const String* item, int j, const String* bag, critter& pc) {
+int get(int i, const String* item, int j, const String* bag, critter& pc,
+        int do_msg) {
    String buf(100);
    object* bag_ptr;
    object* vict_ptr, *tmp;
@@ -1246,12 +1247,13 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
    short tst = FALSE;
 
    //mudlog.log(DBG, "In get\n");
-   if (!ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+   if (!ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, do_msg)) {
       return -1;
    }
 
    if ((item->Strlen() == 0) && (bag->Strlen() == 0)) {
-      pc.show(CS_GET_WHAT);
+      if (do_msg)
+         pc.show(CS_GET_WHAT);
       return -1;
    }
 
@@ -1286,7 +1288,8 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
          }//else
       }//while
       if (!tst) {
-         pc.show(CS_NO_DETECT_ANYTHING);
+         if (do_msg)
+            pc.show(CS_NO_DETECT_ANYTHING);
          return -1;
       }
       return 0;
@@ -1301,19 +1304,23 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
          bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
       }//if
       if (!bag_ptr) {
-         pc.show(CS_NO_CONTAINER);
+         if (do_msg)
+            pc.show(CS_NO_CONTAINER);
          return -1;
       }//if
       if (!bag_ptr->bag) {
-         pc.show(CS_NOT_CONTAINER);
+         if (do_msg)
+            pc.show(CS_NOT_CONTAINER);
          return -1;
       }//if
       if (bag_ptr->OBJ_FLAGS.get(59)) {
-         pc.show(CS_TRY_EMPTY);
+         if (do_msg)
+            pc.show(CS_TRY_EMPTY);
          return -1;
       }//if
       if (bag_ptr->isClosed()) {
-         pc.show(CS_NOT_OPEN);
+         if (do_msg)
+            pc.show(CS_NOT_OPEN);
          return -1;
       }//if 
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
@@ -1341,7 +1348,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
          else
             vict_ptr = cell.next();
       }//while obj_ptr
-      if (!found_it) {
+      if (!found_it && do_msg) {
          Sprintf(buf, cstr(CS_NO_CONTAIN_OBJ, pc), bag, item);
          show(buf, pc);
       }//if
@@ -1363,7 +1370,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
                vict_ptr = cell.next();
          }//if named right
       }//while obj_ptr
-      if (!found_it) {
+      if (!found_it && do_msg) {
          pc.show(CS_NO_SEE_THAT);
       }//if
    }//if     
@@ -1377,23 +1384,28 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
          bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
       }//if
       if (!bag_ptr) {
-         pc.show(CS_NO_CONTAINER);
+         if (do_msg)
+            pc.show(CS_NO_CONTAINER);
          return -1;
       }//if
       else if (!bag_ptr->bag) {
-         pc.show(CS_NOT_CONTAINER);
+         if (do_msg)
+            pc.show(CS_NOT_CONTAINER);
          return -1;
       }//if
       else if (bag_ptr->isClosed()) {
-         pc.show(CS_NOT_OPEN);
+         if (do_msg)
+            pc.show(CS_NOT_OPEN);
          return -1;
       }//if 
       if (bag_ptr->OBJ_FLAGS.get(59)) {
-         pc.show(CS_TRY_EMPTY);
+         if (do_msg)
+            pc.show(CS_TRY_EMPTY);
          return -1;
       }//if
       if (bag_ptr->isBulletinBoard()) {
-         pc.show(CS_NO_BULLETIN_BOARD);
+         if (do_msg)
+            pc.show(CS_NO_BULLETIN_BOARD);
          return -1;
       }
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
@@ -1427,14 +1439,14 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
                   vict_ptr = cell.next();
             }//
             else {
-               pc.show(CS_NO_SELF_REMOVAL);
+               //pc.show(CS_NO_SELF_REMOVAL);
                vict_ptr = cell.next();
             }//else
          }//if detect
          else 
             vict_ptr = cell.next();         
       }//while
-      if (!tst) {
+      if (!tst && do_msg) {
          Sprintf(buf, cstr(CS_TARG_EMPTY, pc), bag);
          show(buf, pc);
       }//if
@@ -1451,7 +1463,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
             gain_eq_effects(*vict_ptr, obj_list[0], pc, -1, TRUE); //gold ect
          }//if obj_get_by
       }//if
-      else {
+      else if (do_msg) {
          pc.show(CS_NO_SEE_THAT);
       }//else
    }//if
@@ -1469,19 +1481,23 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
          bag_in_inv = FALSE;
       }//if
       if (!bag_ptr) {
-         pc.show(CS_NO_CONTAINER);
+         if (do_msg)
+            pc.show(CS_NO_CONTAINER);
          return -1;
       }//if
       else if (!bag_ptr->bag) {
-         pc.show(CS_NOT_CONTAINER);
+         if (do_msg)
+            pc.show(CS_NOT_CONTAINER);
          return -1;
       }//if
       else if (bag_ptr->isClosed()) {
-         pc.show(CS_NOT_OPEN);
+         if (do_msg)
+            pc.show(CS_NOT_OPEN);
          return -1;
       }//if
       if (bag_ptr->OBJ_FLAGS.get(59)) {
-         pc.show(CS_TRY_EMPTY);
+         if (do_msg)
+            pc.show(CS_TRY_EMPTY);
          return -1;
       }//if
 
@@ -1499,8 +1515,10 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
       }//if
       if (!(vict_ptr = have_obj_named(bag_ptr->inv, i, item, 
                             pc.SEE_BIT, ROOM))) {
-         Sprintf(buf, cstr(CS_NO_CONTAIN_OBJ, pc), bag, item);
-         show(buf, pc);
+         if (do_msg) {
+            Sprintf(buf, cstr(CS_NO_CONTAIN_OBJ, pc), bag, item);
+            show(buf, pc);
+         }
          return -1;
       }//if
       else {
@@ -1512,7 +1530,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
                gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE); 
             }//if
          }//if
-         else {
+         else if (do_msg) {
             pc.show(CS_NO_SELF_REMOVAL);
          }//else
       }//else

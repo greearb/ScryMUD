@@ -1,5 +1,5 @@
-// $Id: Filters.cc,v 1.1 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.1 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: Filters.cc,v 1.2 1999/06/16 06:43:26 greear Exp $
+// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
 
 //
 //ScryMUD Server Code
@@ -106,6 +106,7 @@ Selectors::Selectors()
         // If ANY of these are true, don't show message.
         CC_mob_entry_deny(CSelectorColl::SELECTOR_OR,
                           &selectNPC_Possessed, &selectAreSame,
+                          &selectIsSleeping, &selectIsMeditating,
                           &selectActorSneakWorked) {
 }//Constructor
 

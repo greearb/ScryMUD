@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.10 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: object.h,v 1.11 1999/06/16 06:43:27 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 //
 //ScryMUD Server Code
@@ -252,6 +252,7 @@ public:
    void makeComponent(int targ, int comp1, int comp2, int comp3, int comp4,
                       int comp5, ComponentEnum con_type);
 
+   int isNamed(const String& name) const;
    int isLocked() const;
    int isMagLocked() const;
    int isClosed() const;

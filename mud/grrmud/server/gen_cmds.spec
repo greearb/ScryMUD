@@ -158,8 +158,6 @@ bounce socials ~
 bounce(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 bow socials ~
 bow(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
-concoct ~
-return concoct(pc);
 burp socials ~
 burp(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 butcher ~
@@ -193,6 +191,8 @@ color ansi color ~
 return color((cooked_strs[1]), (cooked_strs[2]), pc);
 consider ~
 return consider(i, &(cooked_strs[1]), pc);
+concoct brew concoct ~
+return concoct(pc);
 cheer socials ~
 cheer(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 chuckle socials ~
@@ -349,10 +349,10 @@ giggle socials ~
 giggle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 give ~
 return give(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
-grin socials ~
-grin(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 group ~
 return group(i, &(cooked_strs[1]), pc);
+grin socials ~
+grin(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 growl socials ~
 growl(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 grumble socials ~
@@ -662,7 +662,7 @@ races *races ~
 NOP
 regeneration *regeneration ~
 NOP
-recho *recho ~
+recho gecho *recho ~
 NOP
 rm_omove *rm_omove ~
 NOP
@@ -853,7 +853,7 @@ return uptime(pc);
 update_cig update_cur_in_game update_cig ~
 return update_cur_in_game(pc); 
 use ~
-return use(i, &(cooked_strs[1]), pc); 
+return use(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc); 
 using_client ~
 return using_client(pc); 
 unpossess *unpossess ~
@@ -936,6 +936,6 @@ zgoto ~
 return zgoto(i, pc); 
 zunlock ~
 return zunlock(i, pc); 
-zecho *zecho ~
+zecho gecho *zecho ~
 NOP
 ~

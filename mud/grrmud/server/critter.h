@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.19 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: critter.h,v 1.20 1999/06/16 06:43:27 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 //
 //ScryMUD Server Code
@@ -65,7 +65,8 @@ enum PcMode {
 };//PcMode
 
 enum PcPosition {
-   POS_STAND,
+   POS_LOW_VAL,
+   POS_STAND = POS_LOW_VAL,
    POS_SIT,
    POS_REST,
    POS_SLEEP,
@@ -846,12 +847,14 @@ public:
    int getPause() const { return short_cur_stats[11]; }
    void setPause(int i) { short_cur_stats[11] = i; }
 
-   int getPosn() const { return bound(POS_STAND, POS_PRONE, short_cur_stats[0]); }
+   int getPosn() const { return short_cur_stats[0]; }
    void setPosn(int i) {
-      if ((i >= POS_STAND) && (i <= POS_PRONE)) {
+      if ((i >= POS_LOW_VAL) && (i < POS_HIGH_VAL)) {
          short_cur_stats[0] = i;
       }
    }//setPosn
+
+   const char* getPosnStr(critter& for_this_pc);
 
    critter* getFirstFighting();
    String& getPoofin();

@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.15 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: misc.cc,v 1.16 1999/06/16 06:43:27 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 //
 //ScryMUD Server Code
@@ -1416,8 +1416,7 @@ void out_crit(const List<critter*>& lst, critter& pc) {  //outs the names
 
             Sprintf(buf, "     %S %S %s\n", 
                     name_of_crit(*crit_ptr, pc.SEE_BIT), 
-                    &(crit_ptr->short_desc), 
-                    critter_positions[crit_ptr->POS]);
+                    &(crit_ptr->short_desc), crit_ptr->getPosnStr(pc));
             buf.Cap();
             if (crit_ptr->VIS_BIT & 2) {
                buf.setCharAt(1, '*');
@@ -1445,12 +1444,12 @@ void out_crit(const List<critter*>& lst, critter& pc) {  //outs the names
             if (pc.shouldShowVnums()) {
                Sprintf(buf, "     [%i]%P11 %S %s\n", crit_ptr->MOB_NUM,
                        name_of_crit(*crit_ptr, pc.SEE_BIT), 
-                       critter_positions[crit_ptr->POS]);
+                       crit_ptr->getPosnStr(pc));
             }
             else {
                Sprintf(buf, "     %S %s\n",
                        name_of_crit(*crit_ptr, pc.SEE_BIT), 
-                       critter_positions[crit_ptr->POS]);
+                       crit_ptr->getPosnStr(pc));
             }
             buf.Cap();
 

@@ -1,5 +1,5 @@
-// $Id: commands.h,v 1.12 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: commands.h,v 1.13 1999/06/16 06:43:27 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 //
 //ScryMUD Server Code
@@ -55,8 +55,8 @@ int cast(const String* spell_name, int j, const String* victim,
          critter& caster, int was_ordered);
 int put(int i, const String* object, int j, const String* bag, critter& 
           putter); 
-int get(int i, const String* object, int j, const String* bag, critter& 
-          getter);
+int get(int i, const String* object, int j, const String* bag,
+        critter& getter, int do_msg = TRUE);
 
 //Does some checking, similar in nature to hit
 int try_hit(critter& vict, critter& pc);

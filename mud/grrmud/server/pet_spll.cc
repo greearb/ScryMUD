@@ -1,5 +1,5 @@
-// $Id: pet_spll.cc,v 1.5 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: pet_spll.cc,v 1.6 1999/06/16 06:43:27 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 //
 //ScryMUD Server Code
@@ -574,7 +574,7 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
 
          Sprintf(buf, "%S %S %s\n", 
                  pc.getShortName(), &(pc.short_desc), 
-                 critter_positions[pc.getPosn()]);
+                 pc.getPosnStr(pc));
          golem->in_room_desc = buf;      
       }//if
       else {
@@ -725,7 +725,7 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
      emote("opens a portal for the minions of Hell!", pc, ROOM, TRUE);
 
      int which_un;
-     int times = d(1, lvl/6);
+     int times = d(1, lvl/6) + 1;
      for (int i = 0; i<times; i++) {
        which_un = d(1,4); //for choices
      
@@ -772,6 +772,8 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
 	 join_in_battle(*golem, pc);
        }//else
      }//for
+     if (!is_canned)
+       pc.MANA -= spell_mana;
    }//if canned or didn't lose concentration
    else { //not canned AND lost concentration
      show(LOST_CONCENTRATION_MSG_SELF, pc);

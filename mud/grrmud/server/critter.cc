@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.25 1999/06/15 04:45:13 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/06/15 04:45:13 $
+// $Id: critter.cc,v 1.26 1999/06/16 06:43:27 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
 
 //
 //ScryMUD Server Code
@@ -1951,6 +1951,31 @@ int critter::doUnShield() {
    }
    return -1;
 }
+
+
+const char* critter::getPosnStr(critter& for_this_pc) {
+   switch (getPosn())
+      {
+      case POS_STAND:
+         return cstr(CS_STANDING, for_this_pc);
+      case POS_SIT:
+         return cstr(CS_SITTING, for_this_pc);
+      case POS_PRONE:
+         return cstr(CS_PRONE, for_this_pc);
+      case POS_REST:
+         return cstr(CS_RESTING, for_this_pc);
+      case POS_SLEEP:
+         return cstr(CS_SLEEPING, for_this_pc);
+      case POS_MED:
+         return cstr(CS_MEDITATING, for_this_pc);
+      case POS_STUN:
+         return cstr(CS_STUNNED, for_this_pc);
+      case POS_DEAD:
+         return cstr(CS_DEAD, for_this_pc);
+      default:
+         return cstr(CS_UNKNOWN, for_this_pc);
+      }//switch
+}//getPosnStr
 
 
 int critter::travelToRoom(int targ_room_num, int num_steps, int& is_dead) {

@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.15 1999/06/15 04:45:13 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/15 04:45:13 $
+// $Id: battle.cc,v 1.16 1999/06/16 06:43:26 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
 
 //
 //ScryMUD Server Code
@@ -615,7 +615,9 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    show_all_but_2(agg, vict, buf, room_list[agg.getCurRoomNum()]);
    
    //  log("Testing for consequences..\n");
-   if ((vict.HP <= 0) && (vict.POS != POS_STUN)) {
+   if ((vict.HP <= 0) && ((vict.POS == POS_SIT) || (vict.POS == POS_REST)
+                          || (vict.POS == POS_PRONE) || (vict.POS == POS_SLEEP)
+                          || (vict.POS == POS_STAND))) {
       vict.setPosn(POS_STUN);
       emote("is stunned.", vict, room_list[vict.getCurRoomNum()], TRUE);
       show("You are stunned!!\n", vict);
@@ -693,7 +695,7 @@ void agg_kills_vict(critter& agg, critter& vict, int& show_vict_tags) {
    }//if
    else if (vict.pc) {
       Sprintf(buf, "  INFO:  %S was killed by %S in room: %i\n",
-              agg.getName(), vict.getName(), vict.getCurRoomNum());
+              vict.getName(), agg.getName(), vict.getCurRoomNum());
       show_all_info(buf);
       vict.pc->died_count++;
    }
@@ -982,6 +984,13 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
 
    vict.doUngroup(1, &NULL_STRING);   //no more part of group
    vict.doBecomeNonPet();             //dead pets make no sense!
+
+   // Get rid of any pets victim may own.
+   critter* pptr;
+   while (!vict.PETS.isEmpty()) {
+      pptr = vict.PETS.popFront();
+      pptr->doBecomeNonPet();
+   }
 
    int ngame;
    if (vict.mob) {

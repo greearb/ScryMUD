@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.22 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: command2.cc,v 1.23 1999/06/16 06:43:26 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
 
 //
 //ScryMUD Server Code
@@ -2415,7 +2415,7 @@ int do_lore(object& obj, critter& pc, int show_extra) {
       show("It is affected by:\n", pc);
       out_spell_list(obj.affected_by, pc);      
 
-      show("It's stat affects are:\n", pc);
+      show("Its stat affects are:\n", pc);
       show_stat_affects(obj, pc);
    }//if
 
