@@ -280,14 +280,39 @@ int do_guard(critter& vict, critter& pc) {
    
    Sprintf(buf, "You start guarding %S.\n", name_of_crit(vict, pc.SEE_BIT));
    show(buf, pc);
-   Sprintf(buf, "starts guarding %S.", name_of_crit(vict, ~0));
-   emote(buf, pc, ROOM, TRUE, &vict);
    Sprintf(buf, "%S starts guarding you.  You feel much safer!!\n", 
            name_of_crit(pc, vict.SEE_BIT));
    vict.show(buf);
    return 0;
 }//do_guard
 
+int unguard(critter& pc) {
+   String buf(100);
+
+   if ( !pc.temp_crit ) {
+      Sprintf(buf, "You aren't guarding anyone.\n");
+      pc.show(buf);
+      return -1;
+   }
+
+   if (!pc.GUARDING) {
+      Sprintf(buf, "You aren't guarding anyone.\n");
+      pc.show(buf);
+      return -1;
+   }
+
+   Sprintf(buf, "You stop guarding %S.\n", name_of_crit(*(pc.GUARDING), pc.SEE_BIT));
+   pc.show(buf);
+
+   Sprintf(buf, "%S stops guarding you.\n", name_of_crit(pc,
+            pc.GUARDING->SEE_BIT));
+   pc.GUARDING->show(buf);
+
+   pc.GUARDING->GUARDED_BY = NULL;
+   pc.GUARDING = NULL;
+
+   return 0;
+}//unguard
 
 int picklock(int i_th, const String* vict, critter& pc) {
    int skill_num = PICKLOCK_SKILL_NUM;

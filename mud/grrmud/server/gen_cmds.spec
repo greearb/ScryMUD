@@ -324,8 +324,6 @@ equipment eq ~
 return show_eq(pc);
 examine ~
 return examine(i, &(cooked_strs[1]), pc);
-exits ~
-return exit(pc);
 eyebrow socials ~
 eyebrow(j, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 # IMM Commands - E
@@ -362,8 +360,11 @@ giggle socials ~
 giggle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 give ~
 return give(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
-go enter go ~
+go enter exit go ~
 is_dead = FALSE; return go(i, &(cooked_strs[1]), pc, is_dead);
+# exits is here so that "exit" can be part of "go" (i.e. vehicles)
+exits ~
+return exit(pc);
 goo socials ~
 goo(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 gossip *channels ~
@@ -393,7 +394,7 @@ gag ~
 return gag(i, &(cooked_strs[1]), pc);
 gain_exp ~
 return scr_gain_exp(i, pc, was_ordered);
-goto ~
+goto cd goto ~
 return _goto(i, &(cooked_strs[1]), pc);
 
 # Mortal Commands - H
@@ -916,6 +917,8 @@ up ~
 return up(pc, *(pc.getCurRoom()), is_dead); 
 ungroup ~
 return pc.doUngroup(i, &(cooked_strs[1])); 
+unguard ~
+return unguard(pc);
 unlock ~
 return unlock(i, &(cooked_strs[1]), pc); 
 unwield remove ~
@@ -950,6 +953,8 @@ return value_rem(i, &(cooked_strs[1]), j, pc);
 value_set ~
 return value_set(i, &(cooked_strs[1]), j, k, l, pc);
 # IMM Commands - V
+verifydoors ~
+return verifydoors(i, pc);
 visible ~
 return visible(pc);
 
@@ -1137,6 +1142,5 @@ NOP
 # Help - Z
 zones *zones ~
 NOP
-
-
 ~
+

@@ -1906,231 +1906,133 @@ int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
    inv.head(cell);
    int id_num;
    int cnt = 0;
-   while ((obj_ptr = cell.next())) {
-            
-      id_num = obj_ptr->getIdNum();
-            
-      if (!obj_ptr->in_list &&
-          (item_counts[id_num] == -1)) { //already done it
-         continue;
-      }
-      
-      if (detect(pc.SEE_BIT, (obj_ptr->OBJ_VIS_BIT | ROOM.getVisBit()))) {
-         if (crit_owner) {
-            price = crit_owner->findItemSalePrice(*obj_ptr, pc);
-         }
-         else if (obj_owner) {
-            price = obj_owner->getDefaultPrice();
-         }
-         else {
-            return -1;
-         }
-      
-         if (price < 0) {
-            continue; //buf = "  NOT FOR SALE NOW.";
-         }//if
 
-         // Build object restrictions string, this is retarded... should have
-         // a method.
-         restrict_buf = NULL_STRING;
 
-         if (obj_ptr->OBJ_FLAGS.get(1))
-            restrict_buf += "Anti-Evil ";
-         if (obj_ptr->OBJ_FLAGS.get(2))
-            restrict_buf += "Anti-Neutral ";
-         if (obj_ptr->OBJ_FLAGS.get(3))
-            restrict_buf += "Anti-Good ";
-         if (obj_ptr->OBJ_FLAGS.get(4))
-            restrict_buf += "Anti-Donate ";
-         if (obj_ptr->OBJ_FLAGS.get(5))
-            restrict_buf += "Anti-Drop ";
-         if (obj_ptr->OBJ_FLAGS.get(6))
-            restrict_buf += "Anti-Remove ";
-         if (obj_ptr->OBJ_FLAGS.get(7))
-            restrict_buf += "Anti-Mortal ";
-         if (obj_ptr->OBJ_FLAGS.get(11))
-            restrict_buf += "Anti-Warrior ";
-         if (obj_ptr->OBJ_FLAGS.get(12))
-            restrict_buf += "Anti-Sage ";
-         if (obj_ptr->OBJ_FLAGS.get(13))
-            restrict_buf += "Anti-Wizard ";
-         if (obj_ptr->OBJ_FLAGS.get(14))
-            restrict_buf += "Anti-Ranger ";
-         if (obj_ptr->OBJ_FLAGS.get(15))
-            restrict_buf += "Anti-Thief ";
-         if (obj_ptr->OBJ_FLAGS.get(16))
-            restrict_buf += "Anti-Alchemist ";
-         if (obj_ptr->OBJ_FLAGS.get(17))
-            restrict_buf += "Anti-Cleric ";
-         if (obj_ptr->OBJ_FLAGS.get(18))
-            restrict_buf += "Anti-Bard ";
-         if (obj_ptr->OBJ_FLAGS.get(20))
-            restrict_buf += "Anti-PC ";
-         // End of object restrictions string building.
+   int done = 0;
 
-         if (pc.shouldShowVnums()) {
-            if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-               Sprintf(buf, " [%i][%i]%P06 %S%P50%i %S", id_num,
-                       obj_ptr->getLevel(),
-                       &(obj_ptr->short_desc), price,
-                       &restrict_buf);
+   // This is to prevent code duplication, I debated just using goto :p
+   while ( done < 2) {
+      while ((obj_ptr = cell.next())) {
+
+         id_num = obj_ptr->getIdNum();
+
+         if (!obj_ptr->in_list &&
+               (item_counts[id_num] == -1)) { //already done it
+            continue;
+         }
+
+         if (detect(pc.SEE_BIT, (obj_ptr->OBJ_VIS_BIT | ROOM.getVisBit()))) {
+            if (crit_owner) {
+               price = crit_owner->findItemSalePrice(*obj_ptr, pc);
+            }
+            else if (obj_owner) {
+               price = obj_ptr->getDefaultPrice();
             }
             else {
-               Sprintf(buf, " [%i][%i]%P06 [*%i]%P12 %S%P50%i %S", id_num,
-                       obj_ptr->getLevel(),
-                       item_counts[id_num], &(obj_ptr->short_desc), price,
-                       &restrict_buf);
+               return -1;
             }
-         }
-         else {
-            cnt++;
-            int hack = cnt;
-            if (hack == 1) {
-               hack = -1;
-            }
-            if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-               Sprintf(buf, "  [%i][%i]%P12 %S%P50%i %S", hack,
-                       obj_ptr->getLevel(),
-                       &(obj_ptr->short_desc),
-                       price,
-                       &restrict_buf);
-            }
-            else {
-               Sprintf(buf, "  [%i][%i] [*%i]%P12 %S%P50%i %S", hack,
-                       obj_ptr->getLevel(),
-                       item_counts[id_num],
-                       &(obj_ptr->short_desc), price,
-                       &restrict_buf);
-            }
-         }
-         
-         item_counts[id_num] = -1;
-         
-         //if ((!obj_wear_by(*obj_ptr, pc, -1, FALSE)) &&
-         //    (!obj_ptr->isFood())) 
-         //   buf.Prepend("**");
-         
-         if (obj_ptr->OBJ_VIS_BIT & 2)  //if invisible
-            buf.Append(" *\n");
-         else 
-            buf.Append("\n");
-         show(buf, pc);
-      }//if detectable
-   }//while
 
-   perm_inv.head(cell);
-   while ((obj_ptr = cell.next())) {
-            
-      id_num = obj_ptr->getIdNum();
-      
-      if (!obj_ptr->in_list &&
-          (item_counts[id_num] == -1)) { //already done it
-         continue;
-      }
-      
-      if (detect(pc.SEE_BIT, (obj_ptr->OBJ_VIS_BIT | ROOM.getVisBit()))) {
-         if (crit_owner) {
-            price = crit_owner->findItemSalePrice(*obj_ptr, pc);
-         }
-         else if (obj_owner) {
-            price = obj_owner->getDefaultPrice();
-         }
-         else {
-            return -1;
-         }
-         
-         if (price < 0) {
-            continue; //buf = "  NOT FOR SALE NOW.";
-         }//if
-         
-         // Build object restrictions string, this is retarded... should have
-         // a method.
-         restrict_buf = NULL_STRING;
+            if (price < 0) {
+               continue; //buf = "  NOT FOR SALE NOW.";
+            }//if
 
-         if (obj_ptr->OBJ_FLAGS.get(1))
-            restrict_buf += "Anti-Evil ";
-         if (obj_ptr->OBJ_FLAGS.get(2))
-            restrict_buf += "Anti-Neutral ";
-         if (obj_ptr->OBJ_FLAGS.get(3))
-            restrict_buf += "Anti-Good ";
-         if (obj_ptr->OBJ_FLAGS.get(4))
-            restrict_buf += "Anti-Donate ";
-         if (obj_ptr->OBJ_FLAGS.get(5))
-            restrict_buf += "Anti-Drop ";
-         if (obj_ptr->OBJ_FLAGS.get(6))
-            restrict_buf += "Anti-Remove ";
-         if (obj_ptr->OBJ_FLAGS.get(7))
-            restrict_buf += "Anti-Mortal ";
-         if (obj_ptr->OBJ_FLAGS.get(11))
-            restrict_buf += "Anti-Warrior ";
-         if (obj_ptr->OBJ_FLAGS.get(12))
-            restrict_buf += "Anti-Sage ";
-         if (obj_ptr->OBJ_FLAGS.get(13))
-            restrict_buf += "Anti-Wizard ";
-         if (obj_ptr->OBJ_FLAGS.get(14))
-            restrict_buf += "Anti-Ranger ";
-         if (obj_ptr->OBJ_FLAGS.get(15))
-            restrict_buf += "Anti-Thief ";
-         if (obj_ptr->OBJ_FLAGS.get(16))
-            restrict_buf += "Anti-Alchemist ";
-         if (obj_ptr->OBJ_FLAGS.get(17))
-            restrict_buf += "Anti-Cleric ";
-         if (obj_ptr->OBJ_FLAGS.get(18))
-            restrict_buf += "Anti-Bard ";
-         if (obj_ptr->OBJ_FLAGS.get(20))
-            restrict_buf += "Anti-PC ";
-         // End of object restrictions string building.
-         
-         if (pc.shouldShowVnums()) {
-            if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-               Sprintf(buf, " [%i][%i]%P06 %S%P50%i %S", id_num,
-                       obj_ptr->getLevel(),
-                       &(obj_ptr->short_desc), price,
-                       &restrict_buf);
+            // Build object restrictions string, this is retarded... should have
+            // a method.
+            restrict_buf = NULL_STRING;
+
+            if (obj_ptr->OBJ_FLAGS.get(1))
+               restrict_buf += "Anti-Evil ";
+            if (obj_ptr->OBJ_FLAGS.get(2))
+               restrict_buf += "Anti-Neutral ";
+            if (obj_ptr->OBJ_FLAGS.get(3))
+               restrict_buf += "Anti-Good ";
+            if (obj_ptr->OBJ_FLAGS.get(4))
+               restrict_buf += "Anti-Donate ";
+            if (obj_ptr->OBJ_FLAGS.get(5))
+               restrict_buf += "Anti-Drop ";
+            if (obj_ptr->OBJ_FLAGS.get(6))
+               restrict_buf += "Anti-Remove ";
+            if (obj_ptr->OBJ_FLAGS.get(7))
+               restrict_buf += "Anti-Mortal ";
+            if (obj_ptr->OBJ_FLAGS.get(11))
+               restrict_buf += "Anti-Warrior ";
+            if (obj_ptr->OBJ_FLAGS.get(12))
+               restrict_buf += "Anti-Sage ";
+            if (obj_ptr->OBJ_FLAGS.get(13))
+               restrict_buf += "Anti-Wizard ";
+            if (obj_ptr->OBJ_FLAGS.get(14))
+               restrict_buf += "Anti-Ranger ";
+            if (obj_ptr->OBJ_FLAGS.get(15))
+               restrict_buf += "Anti-Thief ";
+            if (obj_ptr->OBJ_FLAGS.get(16))
+               restrict_buf += "Anti-Alchemist ";
+            if (obj_ptr->OBJ_FLAGS.get(17))
+               restrict_buf += "Anti-Cleric ";
+            if (obj_ptr->OBJ_FLAGS.get(18))
+               restrict_buf += "Anti-Bard ";
+            if (obj_ptr->OBJ_FLAGS.get(20))
+               restrict_buf += "Anti-PC ";
+            // End of object restrictions string building.
+
+            if (pc.shouldShowVnums()) {
+               if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
+                  Sprintf(buf, " [onum: %i][lvl: %i]%P06 %S%P50%i %S", id_num,
+                        obj_ptr->getLevel(),
+                        &(obj_ptr->short_desc), price,
+                        &restrict_buf);
+               }
+               else {
+                  Sprintf(buf, " [onum: %i][lvl: %i]%P06 [qty: %i]%P12 %S%P50%i %S", id_num,
+                        obj_ptr->getLevel(),
+                        item_counts[id_num], &(obj_ptr->short_desc), price,
+                        &restrict_buf);
+               }
             }
             else {
-               Sprintf(buf, " [%i][%i]%P06 [*%i]%P12 %S%P50%i %S", id_num,
-                       obj_ptr->getLevel(),
-                       item_counts[id_num], &(obj_ptr->short_desc), price,
-                       &restrict_buf);
+               cnt++;
+               int hack = cnt;
+
+               // if this isn't here you can't buy the first item by id. This
+               // is because the parser will set i_th to 1 if you just issue
+               // the "buy" command with no args. Unfortunately this means
+               // that we protect against these accidental purchases in buy()
+               if (hack == 1) {
+                  hack = -1;
+               }
+
+               if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
+                  Sprintf(buf, "  [%i][lvl: %i]%P12 %S%P50%i %S", hack,
+                        obj_ptr->getLevel(),
+                        &(obj_ptr->short_desc),
+                        price,
+                        &restrict_buf);
+               }
+               else {
+                  Sprintf(buf, "  [%i][lvl: %i] [qty: %i]%P12 %S%P50%i %S", hack,
+                        obj_ptr->getLevel(),
+                        item_counts[id_num],
+                        &(obj_ptr->short_desc), price,
+                        &restrict_buf);
+               }
             }
-         }
-         else {
-            cnt++;
-            int hack = cnt;
-            if (hack == 1) {
-               hack = -1;
-            }
-            if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-               Sprintf(buf, "  [%i][%i]%P12 %S%P50%i %S", hack,
-                       obj_ptr->getLevel(),
-                       &(obj_ptr->short_desc),
-                       price,
-                       &restrict_buf);
-            }
-            else {
-               Sprintf(buf, "  [%i][%i] [*%i]%P12 %S%P50%i %S", hack,
-                       obj_ptr->getLevel(),
-                       item_counts[id_num],
-                       &(obj_ptr->short_desc), price,
-                       &restrict_buf);
-            }
-         }
-         
-         item_counts[id_num] = -1;
-         
-         //if ((!obj_wear_by(*obj_ptr, pc, -1, FALSE)) &&
-         //    (!obj_ptr->isFood())) 
-         //   buf.Prepend("**");
-         
-         if (obj_ptr->OBJ_VIS_BIT & 2)  //if invisible
-            buf.Append(" *\n");
-         else 
-            buf.Append("\n");
-         show(buf, pc);
-      }//if detectable
-      
-   }//while
+
+            item_counts[id_num] = -1;
+
+            //if ((!obj_wear_by(*obj_ptr, pc, -1, FALSE)) &&
+            //    (!obj_ptr->isFood())) 
+            //   buf.Prepend("**");
+
+            if (obj_ptr->OBJ_VIS_BIT & 2)  //if invisible
+               buf.Append(" *\n");
+            else 
+               buf.Append("\n");
+            show(buf, pc);
+         }//if detectable
+      }//while
+      done++;
+      perm_inv.head(cell);
+   }//while (done < 2)
+
    return 0;
 }//do_list_merchandise
 

@@ -2,6 +2,7 @@
 
 ServerConfig::ServerConfig() {
    port=4000;
+   hostname="all";
 
    daemonize=0;
    suid=0;
@@ -99,6 +100,9 @@ void ServerConfig::read(char* filename) {
          file >> val;
          if (strcasecmp(key, "port") == 0) {
             port = (int)strtol(val, NULL, 0);
+         }
+         else if (strcasecmp(key, "hostname") == 0) {
+            hostname=val;
          }
          else if (strcasecmp(key, "bootLoadModifier") == 0) {
             bootLoadModifier = (int)strtol(val, NULL, 0);

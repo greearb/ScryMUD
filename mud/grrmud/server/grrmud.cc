@@ -890,8 +890,13 @@ void game_loop(int s)  {
 
          // Will try to pulse the entire MUD ever 20 seconds.
          // We will pulse one-tenth at a time (room wise).
-         if ((pulse % 10) == 0)
+         if ((pulse % 10) == 0) {
            do_pulsed_spec_procs(First_Room, Last_Room);
+         }
+         if ((pulse % 63) == 0) {
+            do_regeneration_pcs();
+            do_regeneration_smobs();
+         }
          if ((pulse % 379) == 0) {
             do_tick(); //takes care of zones too
          }
@@ -1369,7 +1374,7 @@ struct timeval timediff(struct timeval *a, struct timeval *b)  {
 
 int     init_socket(int port)   {
    int  s;
-   char *opt;
+   int so_reuseaddr_opt;
    char hostname[MAX_HOSTNAME+1];
    struct sockaddr_in sa;
    struct hostent *hp;
@@ -1377,17 +1382,22 @@ int     init_socket(int port)   {
    mudlog.log(TRC, "in init_socket\n");
    memset((char*)(&sa), 0, sizeof(struct sockaddr_in ));
 
-   if (gethostname(hostname, MAX_HOSTNAME) < 0) {
-      mudlog << "ERROR: gethostname:  " << strerror(errno) << endl;
-      //strcpy(hostname, "mogul");
-   }//if
-   hp = gethostbyname(hostname);
-   if (hp == NULL) {
-      mudlog << "ERROR:  gethostbyname:  " << strerror(errno) << endl;
-      do_shutdown = TRUE;
-      exit(100);
-   }//if
-   sa.sin_family = hp->h_addrtype;
+   if ( config.hostname == "all" ) {
+      sa.sin_addr.s_addr = htonl(INADDR_ANY);
+      sa.sin_family = AF_INET;
+   } else {
+      hp = gethostbyname(config.hostname);
+      if (hp == NULL) {
+         mudlog << "ERROR:  gethostbyname:  " << strerror(errno) << endl;
+         do_shutdown = TRUE;
+         exit(100);
+      } else {
+         memcpy((void *)&sa.sin_addr, (void *)hp->h_addr_list[0],
+               sizeof(sa.sin_addr));
+         sa.sin_family = hp->h_addrtype;
+      }
+   }
+
    sa.sin_port   = htons(port);
 
    if ((s = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -1396,7 +1406,9 @@ int     init_socket(int port)   {
       exit(100);
    }//if
 
-   if (setsockopt (s, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof (opt))
+   so_reuseaddr_opt = 1;
+   if (setsockopt (s, SOL_SOCKET, SO_REUSEADDR, (void *)&so_reuseaddr_opt,
+            sizeof(so_reuseaddr_opt))
           < 0) {
       mudlog << "ERROR:  setsockopt:  " << strerror(errno) << endl;
       do_shutdown = TRUE;

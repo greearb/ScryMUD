@@ -167,6 +167,7 @@ public:
    void setNotComplete() { room_flags.turn_on(31); }
    
 
+   int isUsed() const { return room_flags.get(23); }
    int isNotComplete() const { return room_flags.get(31); }
    int canCamp() const { return room_flags.get(30); }
    int canSeeSky();

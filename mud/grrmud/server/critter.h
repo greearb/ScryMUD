@@ -1028,7 +1028,7 @@ public:
    int isSleeping() const { return POS == POS_SLEEP; }
    int isStunned() const { return POS == POS_STUN; }
    int isMeditating() const { return POS == POS_MED; }
-   int isPossessed() const { return (!possessed_by); }
+   int isPossessed() const { return (possessed_by > 0); }
    int posnNonTalkative() const { return ((POS > POS_REST) && (POS != POS_PRONE)); }
    int isEdible() const { return mob && MOB_FLAGS.get(5); }
    

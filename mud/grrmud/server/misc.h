@@ -110,7 +110,8 @@ int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
 
 void out_str(const List<String*>& lst, critter& pc); 
 void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE);
-void out_inv(const List<object*>& lst, critter& pc, const short l_type); 
+void out_inv(List<object*>& lst, critter& pc, const short l_type, const
+      int is_board = false); 
          //outs the names object*, formats according to l_type
 
 
@@ -186,6 +187,7 @@ int file_update_objects(int zone_num, short read_all);
 void do_tick();
 void do_mini_tick(); //every round of battle....
 bool isNightTime();
+int verifydoors(int i_th, critter &pc);
 
 String *colorize(const char *input, critter &pc, hilite_type hl_type); 
 

@@ -337,8 +337,8 @@ void do_tick() {
    decrease_timed_affecting_rooms(); //takes care of affected_rooms
 
                    /* do all incrementing */
-   do_regeneration_pcs();  //takes care of all pc's
-   do_regeneration_smobs();  //takes care of affected_mobs list
+   //do_regeneration_pcs();  //takes care of all pc's
+   //do_regeneration_smobs();  //takes care of affected_mobs list
    do_regeneration_objects();  //takes care of affected_objects list
    ZoneCollection::instance().doRegeneration(); //update mobs, objs, rooms if needed
 
@@ -467,6 +467,10 @@ void do_mini_tick() { // decrement pause count ect
 }//do_mini_tick
 
 
+//The /6.0)+1.0) is because I'm having regen occur in about 1/6th the amount
+//of time that it used to. The +1.0 is just so we don't accidently have people
+//that never regen. I'll be watching the effects of this change closely and
+//will most likely adjust the algorithms based on what I discover.
 void do_regeneration_pcs() {
    float adj = 1.0, posn_mod, align_mod = 1.0;
    Cell<critter*> crit_cell;
@@ -474,8 +478,14 @@ void do_regeneration_pcs() {
    critter* crit_ptr;
 
    //log("In do_regeneration_pcs\n");
- 
+
    while ((crit_ptr = crit_cell.next())) {
+
+      //no regen if we're fighting
+      if ( crit_ptr->isFighting() ) {
+         continue;
+      }
+
       if ((crit_ptr->THIRST == 0) || (crit_ptr->HUNGER == 0)) {
          adj = 0.2; // big penalty for being hungry
       }
@@ -499,10 +509,10 @@ void do_regeneration_pcs() {
       
       // if we are affected by remove hope we get no hp
       if ( ! (is_affected_by(REMOVE_HOPE_SKILL_NUM, *crit_ptr)) ) {
-      crit_ptr->HP += (int)((((float)(crit_ptr->CON) + 5.0) / 15.0) * 
+      crit_ptr->HP += (int)((((((float)(crit_ptr->CON) + 5.0) / 15.0) * 
                             (((float)(crit_ptr->HP_MAX)) / 9.0) * 
                             posn_mod * (((float)(crit_ptr->HP_REGEN)) / 100.0)
-                            * adj + 10.0);
+                            * adj + 10.0)/6.0)+1.0);
       }
 
       // if we are affected by remove karma we get no mana
@@ -516,12 +526,12 @@ void do_regeneration_pcs() {
             align_mod = 1/pow(10, (breakeven+crit_ptr->ALIGN)/(1000-breakeven));
          }
       
-         crit_ptr->MANA += (int)(((((float)(crit_ptr->INT)) + 5.0) / 16.0) *
+         crit_ptr->MANA += (int)(((((((float)(crit_ptr->INT)) + 5.0) / 16.0) *
                               posn_mod *
                               (((float)(crit_ptr->MA_MAX)) / 7.0) *
                               (((float)(crit_ptr->MA_REGEN)) / 100.0) *
                               align_mod *
-                              adj + 4.0);
+                              adj + 4.0)/6.0)+1.0);
       }
 
       /* Lose 5 mov points if you're idleing in deep water without a boat or
@@ -532,11 +542,10 @@ void do_regeneration_pcs() {
          // player should die if mov hits 0 
       } else {
          int tmp_mov;
-
-         tmp_mov = (int)(((((float)(crit_ptr->DEX)) + 5.0) / 16.0) *
-               posn_mod * adj *
-               (((float)(crit_ptr->MV_MAX)) / 3.0) * 
-               (((float)(crit_ptr->MV_REGEN)) / 100.0) + 3.0);
+         tmp_mov = (int)(((((((float)(crit_ptr->DEX)) + 5.0) / 16.0) *
+                     posn_mod * adj *
+                     (((float)(crit_ptr->MV_MAX)) / 3.0) * 
+                     (((float)(crit_ptr->MV_REGEN)) / 100.0) + 3.0)/6.0)+1.0);
 
          crit_ptr->MOV += tmp_mov;
       }
@@ -549,8 +558,10 @@ void do_regeneration_pcs() {
       //   }
       //}
 
-      if (crit_ptr->HP > crit_ptr->HP_MAX)
+      if ( (crit_ptr->HP > crit_ptr->HP_MAX) &&
+            ( ! is_affected_by(ABSORB_BLOWS_SKILL_NUM, *crit_ptr) ) ) {
          crit_ptr->HP = crit_ptr->HP_MAX;
+      }
       if (crit_ptr->MANA > crit_ptr->MA_MAX)
          crit_ptr->MANA = crit_ptr->MA_MAX;
       if (crit_ptr->MOV > crit_ptr->MV_MAX)
@@ -589,27 +600,34 @@ void do_regeneration_smobs() {
    //log("In do_regeneration_smobs\n");
 
    while ((crit_ptr = crit_cell.next())) {
+
+      //no regen if we're fighting
+      if ( crit_ptr->isFighting() ) {
+         continue;
+      }
       posn_mod = (2.0 + crit_ptr->POS) / 4.0;
-      
+
       // if we are affected by remove hope we get no hp
       if ( ! (is_affected_by(REMOVE_HOPE_SKILL_NUM, *crit_ptr)) ) {
       crit_ptr->HP +=
-         (int)(((crit_ptr->CON + 5.0) / 15.0) * 
+         (int)(((((crit_ptr->CON + 5.0) / 15.0) * 
                (crit_ptr->HP_MAX / 9.0) * 
-               posn_mod * (crit_ptr->HP_REGEN / 100.0) * adj + 10.0);
+               posn_mod * (crit_ptr->HP_REGEN / 100.0) * adj + 10.0)/6.0)+1.0);
       }
       
       // if we are affected by remove hope we get no mana
       if ( ! (is_affected_by(REMOVE_KARMA_SKILL_NUM, *crit_ptr)) ) {
       crit_ptr->MANA +=
-         (int)(((crit_ptr->INT + 5.0) / 16.0)  * posn_mod *
-               (crit_ptr->MA_MAX / 7.0) * (crit_ptr->MA_REGEN / 100.0) * adj + 4.0);
+         (int)(((((crit_ptr->INT + 5.0) / 16.0)  * posn_mod *
+               (crit_ptr->MA_MAX / 7.0) * (crit_ptr->MA_REGEN / 100.0) * adj +
+               4.0)/6.0)+1.0);
       }
 
       crit_ptr->MOV += 
-         (int)(((crit_ptr->DEX + 5.0) / 16.0) * posn_mod * 
+         (int)(((((crit_ptr->DEX + 5.0) / 16.0) * posn_mod * 
                adj *
-               (crit_ptr->MV_MAX / 2.0) * (crit_ptr->MV_REGEN / 100.0) + 5.0);
+               (crit_ptr->MV_MAX / 2.0) * (crit_ptr->MV_REGEN / 100.0) +
+               5.0)/6.0)+1.0);
       
       if (crit_ptr->HP > crit_ptr->HP_MAX)
          crit_ptr->HP = crit_ptr->HP_MAX;
@@ -1107,6 +1125,45 @@ int file_update_zone(int zone_num, short read_all) {
       //log("About to check if need to load more inv into the room.\n");
       room_ptr->getInv()->head(ocell);
       while ((obj_ptr = ocell.next())) {
+
+         //make sure containers have their initial inventory reload if
+         //necessary.
+         if ( obj_ptr->isContainer() ) {
+            object* ig_room_object;
+            object* orig_object_inv;
+            Cell<object*> ig_room_inv_cell;
+            Cell<object*> orig_inv_cell;
+            int id_we_want = obj_ptr->getIdNum();
+            //don't update more than should load in room, otherwise players
+            //have the potential to mass item dupe/farm.
+            int max_to_update = obj_count(*(room_ptr->getInv()), *obj_ptr);
+
+            obj_ptr->inv.head(orig_inv_cell);
+            room_list[k].getInv()->head(ig_room_inv_cell);
+
+            //look at everything in this room.
+            while ( (ig_room_object = ig_room_inv_cell.next()) &&
+                  (max_to_update--) ) {
+               //if we've found a match for the container
+               if ( ig_room_object->getIdNum() == id_we_want ) {
+                  obj_ptr->inv.head(orig_inv_cell);
+                  //walk the clean ones inventory
+                  while ( ( orig_object_inv = orig_inv_cell.next() ) ) {
+                     //do we need to add something to our in-game?
+                     if ( (obj_count(obj_ptr->inv, *orig_object_inv) >
+                           obj_count(ig_room_object->inv,
+                                 *orig_object_inv )) &&
+                           ( orig_object_inv->getCurInGame() <
+                             orig_object_inv->getMaxInGame()) ) {
+                        ig_room_object->inv.append(orig_object_inv);
+                        recursive_init_loads(
+                              obj_list[orig_object_inv->getIdNum()], 0);
+                     }
+                  }
+               }//match
+            }
+         }//handle containers.
+
          if ((obj_count(*(room_ptr->getInv()), *obj_ptr) >
               obj_count(*(room_list[k].getInv()), *obj_ptr)) &&
              (obj_ptr->getCurInGame()
@@ -2062,23 +2119,77 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all) {
 
 
 
-void out_inv(const List<object*>& lst, critter& pc, 
-             const short type_of_list) {
+void out_inv(List<object*>& lst, critter& pc, 
+             const short type_of_list, int is_board) {
                                //outs the names object*
+
+   List<object*>* lst_ptr = NULL;
+   int lst_idx;
+
+   List<object*> reordered_lst(NULL);
    Cell<object*> cell(lst);
+
+   List<object*> inv_weapons(NULL);
+   List<object*> inv_armor(NULL);
+   List<object*> inv_consumables(NULL);
+   List<object*> inv_containers(NULL);
+   List<object*> inv_potions(NULL);
+   List<object*> inv_scrolls(NULL);
+   List<object*> inv_wands(NULL);
+   List<object*> inv_ammunition(NULL);
+   List<object*> inv_skins(NULL);
+   List<object*> inv_misc(NULL);
+   List<object*> inv_lights(NULL);
+   
+   //when doing obj/crit inventory, PCs walk these lists.
+   List<object*>* inv_lists[] = {
+      &inv_weapons,
+      &inv_armor,
+      &inv_consumables,
+      &inv_containers,
+      &inv_potions,
+      &inv_scrolls,
+      &inv_wands,
+      &inv_ammunition,
+      &inv_lights,
+      &inv_misc,
+      NULL
+   };
+
+   //when doing obj/crit inventory, MOBs walk these lists.
+   List<object*>* mob_inv_lists[] = {
+      &lst,
+      NULL
+   };
+
+   char *inv_names[] = {
+      "[ Weapons ]",
+      "[ Armor ]",
+      "[ Consumables ]",
+      "[ Containers ]",
+      "[ Potions ]",
+      "[ Scrolls ]",
+      "[ Wands ]",
+      "[ Ammunition ]",
+      "[ Lights ]",
+      "[ Misc. ]"
+   };
+
    object*  obj_ptr;
    String buf(100);
+   String qty_str = "";//important to set this? so it's not undef (if mob)
+   static int item_counts[NUMBER_OF_ITEMS + 1];
+   int id_num;
+
+   // stack if it's a player or possesed mob. Never stack bulletin-board
+   // inventory.
+   int stack = ( ( (pc.isPc() ) || (pc.isPossessed() ) ) && (!is_board) );
 
    mudlog.log(TRC, "In out_inv.\n");
 
    if (pc.isUsingClient()) {
       pc.show("<ITEM_LIST>");
    }
-   /* KHAAVREN DELETE ME MARKER 
-   else if (pc.isUsingColor()) {
-      pc.show(*(pc.getObjListColor()));
-   }
-   */
 
    if (IsEmpty(lst) && type_of_list == OBJ_INV) {
       pc.show("        [empty]        \n");
@@ -2086,15 +2197,64 @@ void out_inv(const List<object*>& lst, critter& pc,
          pc.show("</ITEM_LIST>");
       }
 
-   /* KHAAVREN DELETE ME MARKER 
-      else if (pc.isUsingColor()) {
-         pc.show(*(pc.getDefaultColor()));
-      }
-      */
-
       mudlog.log(DBG, "Done with out_inv (empty).\n");
       return;
    }//if
+
+
+   if ( stack ) {
+      //set the counts to zero, then update them all.
+      memset(item_counts, 0, sizeof(int) * (NUMBER_OF_ITEMS + 1));
+      while ( (obj_ptr = cell.next()) ) {
+         item_counts[obj_ptr->getIdNum()]++;
+
+         switch (type_of_list) {
+            case OBJ_INV:
+            case CRIT_INV:
+               if(obj_ptr->isWeapon()) {
+                  inv_weapons.append(obj_ptr);
+               } else if (obj_ptr->isArmor()) {
+                  inv_armor.append(obj_ptr);
+               } else if (obj_ptr->isPotion()) {
+                  inv_potions.append(obj_ptr);
+               } else if (obj_ptr->isFood()) {
+                  inv_consumables.append(obj_ptr);
+               } else if (obj_ptr->isContainer()) {
+                  inv_containers.append(obj_ptr);
+               } else if (obj_ptr->isWand()) {
+                  inv_wands.append(obj_ptr);
+               } else if (obj_ptr->isScroll()) {
+                  inv_scrolls.append(obj_ptr);
+               } else if (obj_ptr->isAmmo()) {
+                  inv_ammunition.append(obj_ptr);
+               } else if (obj_ptr->isLightSource()) {
+                  inv_lights.append(obj_ptr);
+               } else {
+                  inv_misc.append(obj_ptr);
+               }
+         }//switch
+
+      }//while
+
+      //if we're showing categories, we actually need to reorganize the real
+      //inventory so that get #.name works as players expect.
+      switch (type_of_list) {
+         case OBJ_INV:
+         case CRIT_INV:
+            lst_ptr = inv_lists[0];
+            lst_idx = 0;
+            while (lst_ptr) {
+               lst_ptr->head(cell);
+               while ( (obj_ptr = cell.next()) ) {
+                  reordered_lst.append(obj_ptr);
+               }
+               lst_ptr = inv_lists[++lst_idx];
+            }
+            lst = reordered_lst;
+      }//switch
+
+      lst.head(cell);
+   }//if (stack)
 
    switch (type_of_list)
       {
@@ -2102,14 +2262,37 @@ void out_inv(const List<object*>& lst, critter& pc,
          while ((obj_ptr = cell.next())) {
 
             if (detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
+
+               id_num = obj_ptr->getIdNum();
+
+               if ( stack ) {
+                  if (//these objects should not stack. 
+                        (id_num == config.corpseObject) ||
+                        (id_num == config.pcSkinObject) ||
+                        (id_num == config.HeadObject)
+                     ) {
+                     qty_str = "";
+                  } else {
+                     if ( item_counts[id_num] == -1 ) {
+                        //already done it.
+                        continue;
+                     } else if ( item_counts[id_num] > 1 ) {
+                        Sprintf(qty_str, "(%i%s) ", item_counts[id_num], "x");
+                     } else {
+                        qty_str = "";
+                     }
+                     item_counts[id_num] = -1;
+                  }//okay to stack
+               }
+
                if (pc.shouldShowVnums()) {
                   char tmp[50];
                   sprintf(tmp, "%p: ", obj_ptr);
-                  Sprintf(buf, "   %s [%i] %P11 %S", tmp, obj_ptr->OBJ_NUM,
-                          &(obj_ptr->in_room_desc));
+                  Sprintf(buf, "   %s [%i] %P11 %S%S", tmp, id_num,
+                          &qty_str, &(obj_ptr->in_room_desc));
                }
                else {
-                  Sprintf(buf, "\t%S", &(obj_ptr->in_room_desc));
+                  Sprintf(buf, "\t%S%S", &qty_str, &(obj_ptr->in_room_desc));
                }
                buf.Cap();
 
@@ -2138,43 +2321,89 @@ void out_inv(const List<object*>& lst, critter& pc,
          }//while
          break;
       case OBJ_INV: case CRIT_INV:
-         while ((obj_ptr = cell.next())) {
-            if (detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
-               if (pc.shouldShowVnums()) {
-                  char tmp[50];
-                  sprintf(tmp, "%p: ", obj_ptr);
-                  Sprintf(buf, "   %s [%i] %P11 %S", tmp, obj_ptr->OBJ_NUM,
-                          long_name_of_obj(*obj_ptr, ~0));
-               }
-               else {
-                  Sprintf(buf, "\t%S", long_name_of_obj(*obj_ptr, ~0));
-               }
+         
+         if ( stack ) {
+            lst_ptr = inv_lists[0];
+         } else {
+            lst_ptr = mob_inv_lists[0];
+         }
+         lst_idx = 0;
 
-               buf.Cap();
+         while ( lst_ptr ) {
 
-               if (obj_ptr->isHerb()) {
-                  if (d(1, 100) <= 
-                      d(1, 2 * get_percent_lrnd(HERBALISM_SKILL_NUM, pc))) {
-                     buf.Append("(^Gherb^0)");
+            lst_ptr->head(cell);
+
+            if ( stack  ) {
+               if ( (obj_ptr = cell.next()) ) {
+                  Sprintf(buf, "%s\n", inv_names[lst_idx]);
+                  pc.show(buf, HL_OBJ_LIST);
+                  obj_ptr = cell.prev();
+               }
+            }
+
+            while ((obj_ptr = cell.next())) {
+               if (detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
+
+                  id_num = obj_ptr->getIdNum();
+
+                  if ( stack ) {
+                     if (//these objects should not stack. 
+                           (id_num == config.corpseObject) ||
+                           (id_num == config.pcSkinObject) ||
+                           (id_num == config.HeadObject)
+                        ) {
+                        qty_str = "";
+                     } else {
+                        if ( item_counts[id_num] == -1 ) {
+                           //already done it.
+                           continue;
+                        } else if ( item_counts[id_num] > 1 ) {
+                           Sprintf(qty_str, "(%i%s) ", item_counts[id_num], "x");
+                        } else {
+                           qty_str = "";
+                        }
+                        item_counts[id_num] = -1;
+                     }//okay to stack
+                  }
+
+                  if (pc.shouldShowVnums()) {
+                     char tmp[50];
+                     sprintf(tmp, "%p: ", obj_ptr);
+                     Sprintf(buf, "   %s [%i] %P11 %S%S", tmp, id_num,
+                           &qty_str, long_name_of_obj(*obj_ptr, ~0));
+                  }
+                  else {
+                     Sprintf(buf, "\t%S%S", &qty_str,
+                           long_name_of_obj(*obj_ptr, ~0));
+                  }
+
+                  buf.Cap();
+
+                  if (obj_ptr->isHerb()) {
+                     if (d(1, 100) <= 
+                           d(1, 2 * get_percent_lrnd(HERBALISM_SKILL_NUM, pc))) {
+                        buf.Append("(^Gherb^0)");
+                     }//if
                   }//if
-               }//if
 
-               if  (pc.canDetectMagic() &&
-                    (!IsEmpty(obj_ptr->affected_by) ||
-                     !IsEmpty(obj_ptr->stat_affects))) {
+                  if  (pc.canDetectMagic() &&
+                        (!IsEmpty(obj_ptr->affected_by) ||
+                         !IsEmpty(obj_ptr->stat_affects))) {
                      buf.Append("^B{Blue Glow}^0\n");
-		     
-                 
+
+
+                  }//if
+                  else {
+                     buf.Append("\n");
+                  }
+                  if (obj_ptr->OBJ_VIS_BIT & 2) {
+                     buf.Prepend("*");
+                  }//if
+                  pc.show(buf, HL_OBJ_LIST);
                }//if
-	       else {
-	          buf.Append("\n");
-               }
-               if (obj_ptr->OBJ_VIS_BIT & 2) {
-                  buf.Prepend("*");
-               }//if
-               pc.show(buf, HL_OBJ_LIST);
-            }//if
-         }//while
+            }//while
+            lst_ptr = inv_lists[++lst_idx];
+         }// while lst_ptr
          break;
       default:
          mudlog.log(ERROR, "ERROR:  default called in out_inv.\n");
@@ -2184,11 +2413,6 @@ void out_inv(const List<object*>& lst, critter& pc,
    if (pc.isUsingClient()) {
       pc.show("</ITEM_LIST>");
    }
-   /* KHAAVREN DELETE ME MARKER 
-   else if (pc.isUsingColor()) {
-      pc.show(*(pc.getDefaultColor()));
-   }
-   */
 
    mudlog.log(DBG, "Done with out_inv.\n");
 
@@ -2935,3 +3159,79 @@ String *colorize(const char *message, critter &pc, hilite_type hl_type)
    } 
    return(&output);
 }
+
+int verifydoors(int i_th, critter &pc) {
+   Cell<door*> dcell;
+   room* rm_ptr;
+   door* dr_ptr;
+   door* dst_dr_ptr;
+   int cur_rm_num;
+   int chk_rm_num;
+   String buf;
+   int i;
+   int dir_okay = 0;
+   String *dr_dir;
+   String *dst_dir;
+
+   for(i=0;i<NUMBER_OF_ROOMS;i++) {
+      rm_ptr = &room_list[i];
+      if ( (rm_ptr) && (rm_ptr->isUsed()) &&
+            (rm_ptr->getZoneNum() == i_th) ) {
+         cur_rm_num = abs(rm_ptr->getRoomNum());
+         rm_ptr->doors.head(dcell);
+         while ( (dr_ptr = dcell.next()) ) {
+            chk_rm_num = abs(dr_ptr->getDestRnum());
+            dir_okay = false;
+            if (! dr_ptr->getDestRoom()) {
+               Sprintf(buf,
+                     "^c[^B%d^c:^B%d^c] ^N-^w-> ^c[^B%d^c] "
+                     "^R** which is not in use.^0\n",
+                     rm_ptr->getZoneNum(), cur_rm_num, chk_rm_num);
+               pc.show(buf);
+               continue;
+            }
+            if ( ! (dst_dr_ptr = 
+                     dr_ptr->findDoorByDest(dr_ptr->getDestRoom()->doors,
+                        cur_rm_num)) ) {
+               Sprintf(buf, "^c[^B%d^c:^B%d^c] ^N-^w-> ^c[^B%d^c:^B%d^c] "
+                     "^r!--> ^c[^B%d^c:^B%d^c]^0\n"
+                     "^cLHS: ^C%S ^cRHS: ^C%S\n\n^0",
+                     rm_ptr->getZoneNum(), cur_rm_num,
+                     dr_ptr->getDestRoom()->getZoneNum(), chk_rm_num,
+                     rm_ptr->getZoneNum(), cur_rm_num,
+                     &(rm_ptr->short_desc), 
+                     &(dr_ptr->getDestRoom()->short_desc));
+               pc.show(buf);
+               //if it isn't reflexive in any direction.
+            } else { 
+               //if it does have a way back, make sure it's the opposite
+               //direction.
+               dr_dir = dr_ptr->getDirection();
+               dst_dir = dst_dr_ptr->getDirection();
+
+               if ( strncasecmp((const char*)(*dr_dir),
+                        get_opposite_dir((const char*)(*dst_dir)),
+                        strlen((const char*)(*dr_dir))) == 0 ) {
+                  dir_okay = true;
+               }
+
+               if ( ! dir_okay ) {
+                  Sprintf(buf, "^c[^B%d^c:^B%d^c:^B%S^c] ^w<--> "
+                        "^c[^B%d^c:^B%d^c:^B%S^c] "
+                        "^GDirection mismatch.\n"
+                        "^cLHS: ^C%S ^cRHS: ^C%S\n\n^0",
+                        rm_ptr->getZoneNum(), cur_rm_num,
+                        dr_dir,
+                        dr_ptr->getDestRoom()->getZoneNum(), chk_rm_num,
+                        dst_dir,
+                        &(rm_ptr->short_desc), 
+                        &(dr_ptr->getDestRoom()->short_desc));
+                  pc.show(buf);
+
+               }
+            }//doors go opposite directions.
+         }//while there are more doors.
+      }//if it's a valid room.
+   }//while there are more rooms.
+   return(0);
+}//verifydoors()

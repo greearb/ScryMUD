@@ -129,6 +129,7 @@ void vehicle::stat(critter& pc) {
 
 int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
    int dest;
+   int i_th_incr = 0;
    String buf(200);
 
    if (mudlog.ofLevel(DBG)) {
@@ -144,6 +145,20 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
                                       room_list[in_room].getVisBit());
 
    //log("Got exit_dr_ptr.\n");
+
+   //if our vehicle creates a south in room and then tries to go south we end
+   //up self-containing. Now of course one can set i_th in the path, but then
+   //again, this gets ridiculously annoying on very long paths. It's also
+   //highly prone to human error. In the event that we attempt to
+   //self-contain, walk through all the doors (increasingly from i_th as
+   //passed) until we (hopefully) find one that isn't us. In the event that we
+   //fail to locate one, things should work as they did before (see below).
+   //Please note that we only attempt doors in the direction requested.
+   while ( exit_dr_ptr && ( abs(exit_dr_ptr->destination) == getRoomNum() ) ) {
+      exit_dr_ptr = door::findDoor(room_list[in_room].DOORS, i_th+i_th_incr,
+            &exit_direction, see_bit, room_list[in_room].getVisBit());
+      i_th_incr++;
+   }
 
    if (!exit_dr_ptr) {
       mudlog.log(WRN, "WARNING:  destination dr_ptr is NULL in move_room.\n");
@@ -223,7 +238,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
    if (!isStealthy()) { //if not stealth
       if (isAtDestination() && 
           tmp_ptr->dr_data->isOpen() &&
-          tmp_ptr->dr_data->canClose()) {
+          tmp_ptr->dr_data->isCloseable()) {
          if (dr_ptr) {
             Sprintf(buf, "The %S closes.\n", name_of_door(*dr_ptr, ~0));
             showAllCept(buf);
@@ -291,8 +306,30 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
       }
    }//while
 
+   buf = getPassengerMessage();
+   if (buf.Strlen() > 0) {
+      showAllCept(buf);
+   }//if
+
+   if (vehicle_flags.get(7)) { //if can see out
+      critter* cptr;
+      Cell<critter*> ccll(CRITTERS);
+
+      while ((cptr = ccll.next())) {
+         do_look(1, &NULL_STRING, *cptr, room_list[in_room],
+                 TRUE); /* ignore brief */
+      }//while
+   }//if can see out
+
    if (isAtDestination()) { //in other words, the one its in NOW
-      if (!isStealthy() && tmp_ptr->dr_data->isClosed()) {
+
+      //Eventually I'd like this configurable on the vehicle itself. If it's
+      //not here and we have a relatively fast vehicle it's close to
+      //impossible to catch it with the door open.
+      ticks_till_next_stop += 15;
+
+      if (!isStealthy() && tmp_ptr->dr_data->isClosed() &&
+            tmp_ptr->dr_data->isOpenable() ) {
          if (dr_ptr) {
             Sprintf(buf, "The %S opens.\n", name_of_door(*dr_ptr, ~0));
             showAllCept(buf);
@@ -312,21 +349,6 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
       }//if
       tmp_ptr->dr_data->open(); //make it open
    }//if
-
-   buf = getPassengerMessage();
-   if (buf.Strlen() > 0) {
-      showAllCept(buf);
-   }//if
-
-   if (vehicle_flags.get(7)) { //if can see out
-      critter* cptr;
-      Cell<critter*> ccll(CRITTERS);
-
-      while ((cptr = ccll.next())) {
-         do_look(1, &NULL_STRING, *cptr, room_list[in_room],
-                 TRUE); /* ignore brief */
-      }//while
-   }//if can see out
 
    return TRUE;
 

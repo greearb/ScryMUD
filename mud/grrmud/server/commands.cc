@@ -386,7 +386,7 @@ int examine(int i_th, const String* obj, critter& pc) {
          buf.Cap();
          show(buf, pc);
          
-         out_inv(obj_ptr->inv, pc, OBJ_INV);
+         out_inv(obj_ptr->inv, pc, OBJ_INV, obj_ptr->isBulletinBoard());
          
          String cmd = "examine";
          ROOM.checkForProc(cmd, NULL_STRING, pc, obj_ptr->OBJ_NUM);
@@ -2953,7 +2953,8 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
            }//if
          }//while
 
-         if (door_ptr->getTokenNum() != 0) {
+         if ( (door_ptr->getTokenNum() != 0) &&
+               (!room_list[pc.getCurRoomNum()].isVehicle()) ) {
             object* token = NULL;
             int posn = -1;
             

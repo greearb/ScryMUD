@@ -24,6 +24,7 @@ class ServerConfig {
 
       // Network
       int port;
+      String hostname;
 
       // Percent Load Modifiers
       int bootLoadModifier;

@@ -63,6 +63,8 @@ public:
               // 15 !complete 16 secret_when_open_too, 17 consume_key
               // 18 !passdoor
 
+   int isOpenable() const { return(door_data_flags.get(8)); }
+   int isCloseable() const { return(isOpenable()); }
    int isOpen() const { return !(door_data_flags.get(2)); }
    int canClose() const { return canOpen(); }
    int isVehicleExit() const { return door_data_flags.get(12); }
@@ -150,6 +152,7 @@ public:
    int consumesKey() const { return dr_data && dr_data->consumesKey(); }
    int isNoPassdoor() const { return (dr_data && dr_data->isNoPassdoor()); }
    int getIdNum() const { if (dr_data) return dr_data->getIdNum(); return 0; }
+   int getDestRnum() const { return destination; }
 
    void lock() { if (dr_data) dr_data->lock(); }
    void unlock() { if (dr_data) dr_data->unlock(); }

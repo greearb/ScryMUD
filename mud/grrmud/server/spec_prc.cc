@@ -1111,7 +1111,7 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
          mudlog.log(ERROR, "ERROR:  keeper has no proc_data in do_buy_proc.\n");
          return -1;
       }//else
-   }//if
+   }//if (keeper.mob)
    else {
       mudlog.log(ERROR, "ERROR:  keeper's mob is NULL in do_buy_proc.\n");
       return -1;
@@ -1167,60 +1167,38 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
          keeper.inv.head(cell);
          int id_num;
          int cnt = 0;
-         while ((tmp_optr = cell.next())) {
-            
-            id_num = tmp_optr->getIdNum();
-            
-            if (!tmp_optr->in_list &&
-                (item_counts[id_num] == -1)) { //already done it
-               continue;
-            }
-            
-            if (detect(pc.SEE_BIT, (tmp_optr->OBJ_VIS_BIT | ROOM.getVisBit()))) {
-               price = keeper.findItemSalePrice(*tmp_optr, pc);
-               
-               if (price < 0) {
-                  continue; //buf = "  NOT FOR SALE NOW.";
-               }//if
-               
-               cnt++;
-               if (i_th == cnt) {
-                  obj_ptr = tmp_optr;
-                  break;
+         int done = 0;
+         // This is to prevent code duplication, I debated just using goto :p
+         while ( done < 2 ) {
+            while ((tmp_optr = cell.next())) {
+
+               id_num = tmp_optr->getIdNum();
+
+               if (!tmp_optr->in_list &&
+                     (item_counts[id_num] == -1)) { //already done it
+                  continue;
                }
 
-               item_counts[id_num] = -1;               
-            }//if detectable
-         }//while
+               if (detect(pc.SEE_BIT, (tmp_optr->OBJ_VIS_BIT | ROOM.getVisBit()))) {
+                  price = keeper.findItemSalePrice(*tmp_optr, pc);
 
-         keeper.PERM_INV.head(cell);
-         while ((tmp_optr = cell.next())) {
-            
-            id_num = tmp_optr->getIdNum();
-            
-            if (!tmp_optr->in_list &&
-                (item_counts[id_num] == -1)) { //already done it
-               continue;
-            }
-            
-            if (detect(pc.SEE_BIT, (tmp_optr->OBJ_VIS_BIT | ROOM.getVisBit()))) {
-               price = keeper.findItemSalePrice(*tmp_optr, pc);
-               
-               if (price < 0) {
-                  continue; //buf = "  NOT FOR SALE NOW.";
-               }//if
-               
-               cnt++;
-               if (i_th == cnt) {
-                  obj_ptr = tmp_optr;
-                  break;
-               }
+                  if (price < 0) {
+                     continue; //buf = "  NOT FOR SALE NOW.";
+                  }//if
 
-               item_counts[id_num] = -1;
-               
-            }//if detectable
+                  cnt++;
+                  if (i_th == cnt) {
+                     obj_ptr = tmp_optr;
+                     break;
+                  }
 
-         }//while
+                  item_counts[id_num] = -1;               
+               }//if detectable
+            }//while
+            done++;
+            keeper.PERM_INV.head(cell);
+         }//while (done<2)
+
       }//else, tried to get it by index only.
 
       if (!obj_ptr) {
@@ -1300,7 +1278,44 @@ int do_vend_buy(object& vendor, int i_th, const String* item, critter& pc) {
       return -1;
    }//if
 
-   obj_ptr = have_obj_named(vendor.inv, i_th, item, pc.SEE_BIT, ROOM);
+   if (! (obj_ptr = have_obj_named(vendor.inv, i_th, item, pc.SEE_BIT, ROOM)) ) {
+      //maybe they are trying to purchase by inventory index id?
+      Cell<object*> cell(vendor.inv);
+      object* tmp_ptr = NULL;
+      static int item_counts[NUMBER_OF_ITEMS + 1];
+      int cnt;
+      int id_num;
+      cnt = id_num = 0;
+
+      memset(item_counts, 0, sizeof(int) * (NUMBER_OF_ITEMS + 1));
+
+      vendor.inv.head(cell);
+      while ( (tmp_ptr = cell.next()) ) {
+         item_counts[tmp_ptr->getIdNum()]++;
+      }
+
+      vendor.inv.head(cell);
+      while ( (tmp_ptr = cell.next()) ) {
+         id_num = tmp_ptr->getIdNum();
+
+         //already done it
+         if (!tmp_ptr->in_list && (item_counts[id_num] == -1)) {
+            continue;
+         }
+
+         if (detect(pc.SEE_BIT, (tmp_ptr->OBJ_VIS_BIT | ROOM.getVisBit()))) {
+
+            cnt++;
+            if (i_th == cnt) {
+               obj_ptr = tmp_ptr;
+               break;
+            }
+
+            item_counts[id_num] = -1;               
+         }//if detectable
+      }//while
+   }//if we had to dig via index numbers...
+
    if (!obj_ptr) {
       Sprintf(buf, "%S doesn't dispense that.\n",
               long_name_of_obj(vendor, pc.SEE_BIT));

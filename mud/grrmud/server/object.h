@@ -280,12 +280,22 @@ public:
    int isCoins() const { return OBJ_FLAGS.get(55); }
    int isNoDonate() const { return OBJ_FLAGS.get(4); }
    int isHerb() const;
+   int isVendingMachine() const { return obj_flags.get(73); }
    int isPaused() const { return pause > 0; }
    int isModified() const { return (in_list && 1); } //ie is it a SOBJ
    int hasScript() const { return obj_flags.get(76); }
    int isLiquid() const;
    int isCanteen() const;
+   int isContainer() const { return obj_flags.get(54); }
    int isTwoHanded() const;
+   int isWeapon() const { return (obj_flags.get(57) && (! obj_flags.get(40))); }
+   int isNotWeapon() const { return (!isWeapon()); }
+   int isWand() const { return obj_flags.get(51); }
+   int isArmor() const { return obj_flags.get(56); }
+   int isDart() const { return obj_flags.get(48); }
+   int isArrow() const { return obj_flags.get(49); }
+   int isAmmo() const { return ( isArrow() || isDart() ); }
+         
    int isBoat() const { return OBJ_FLAGS.get(62); }
    int isContainer() const { return obj_flags.get(54); }
    int needsResetting() const { return obj_flags.get(70); }

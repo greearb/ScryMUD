@@ -115,6 +115,7 @@ depend:
 clean:
 	rm -f *.o ${GEN_TARGS} BuildInfo.cc parse_gen.cc parse_gen.h
 	rm -f lang_strings.h lang_strings.cc
+	rm -f Subversion-Revision
 	${MAKE} -C ../../lib clean
 
 purge: clean
