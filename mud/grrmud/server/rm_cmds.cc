@@ -57,7 +57,7 @@ int room::do_tell(const char* msg, critter& targ) {
       untag = *(targ.getDefaultColor());
    }
 
-   Sprintf(buf, "%SThe surroundings whisper to you, '%s'\n%S",
+   Sprintf(buf, "%S%s\n%S",
            &tag, msg, &untag);
    show(buf, targ);
 

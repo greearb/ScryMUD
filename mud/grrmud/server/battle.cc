@@ -489,26 +489,50 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
    else if (damage < 11) {
       Sprintf(aggbuf, "You %S %S ", &wmsg, name_of_crit(vict, 
                                                         agg.SEE_BIT));
-      Sprintf(victbuf, "%S %Ss you ", name_of_crit(agg, vict.SEE_BIT), 
-              &wmsg);
-      Sprintf(otherbuf, "%S %Ss %S ", name_of_crit(agg, ~0), &wmsg,
-              name_of_crit(vict, ~0));
+      if (strcmp("slash", wmsg) == 0) {
+         Sprintf(victbuf, "%S slashes you ", name_of_crit(agg, vict.SEE_BIT));
+         Sprintf(otherbuf, "%S slashes %S ", name_of_crit(agg, ~0),
+                 name_of_crit(vict, ~0));
+      }
+      else {
+         Sprintf(victbuf, "%S %Ss you ", name_of_crit(agg, vict.SEE_BIT), 
+                 &wmsg);
+         Sprintf(otherbuf, "%S %Ss %S ", name_of_crit(agg, ~0), &wmsg,
+                 name_of_crit(vict, ~0));
+      }
    }//if
    else if (damage < 15) {
       Sprintf(aggbuf, "You %S %S hard ", &wmsg, name_of_crit(vict, 
                                                              agg.SEE_BIT));
-      Sprintf(victbuf, "%S %Ss you hard ", name_of_crit(agg, 
-                                                        vict.SEE_BIT), &wmsg);
-      Sprintf(otherbuf, "%S %Ss %S hard ", name_of_crit(agg, ~0), &wmsg, 
-              name_of_crit(vict, ~0));
+      if (strcmp("slash", wmsg) == 0) {
+         Sprintf(victbuf, "%S slashes you hard ",
+                 name_of_crit(agg, vict.SEE_BIT));
+         Sprintf(otherbuf, "%S slahses %S hard ", name_of_crit(agg, ~0), 
+                 name_of_crit(vict, ~0));
+      }
+      else {
+         Sprintf(victbuf, "%S %Ss you hard ",
+                 name_of_crit(agg, vict.SEE_BIT), &wmsg);
+         Sprintf(otherbuf, "%S %Ss %S hard ", name_of_crit(agg, ~0), &wmsg, 
+                 name_of_crit(vict, ~0));
+      }
    }//if
    else if (damage < 20) {
       Sprintf(aggbuf, "You %S %S very hard ", &wmsg, 
               name_of_crit(vict, agg.SEE_BIT));
-      Sprintf(victbuf, "%S %Ss you very hard ", 
-              name_of_crit(agg, vict.SEE_BIT), &wmsg);
-      Sprintf(otherbuf, "%S %Ss %S very hard ", name_of_crit(agg, ~0), 
-              &wmsg, name_of_crit(vict, ~0));
+      
+      if (strcmp("slash", wmsg) == 0) {
+         Sprintf(victbuf, "%S slashes you very hard ", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         Sprintf(otherbuf, "%S slashes %S very hard ", name_of_crit(agg, ~0), 
+                 name_of_crit(vict, ~0));
+      }
+      else {
+         Sprintf(victbuf, "%S %Ss you very hard ", 
+                 name_of_crit(agg, vict.SEE_BIT), &wmsg);
+         Sprintf(otherbuf, "%S %Ss %S very hard ", name_of_crit(agg, ~0), 
+                 &wmsg, name_of_crit(vict, ~0));
+      }
    }//if
    else if (damage < 25) {
       Sprintf(aggbuf, "You OBLITERATE %S ", 
@@ -543,6 +567,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
    else {
       if ((agg.RACE == DRAGON) || (agg.RACE == ANIMAL) || 
           (agg.RACE == MONSTER)) {
+         //TODO, this is a bit funky!
          aggendbuf = "\b.\n";
          victendbuf = "\b.\n";
       }//if

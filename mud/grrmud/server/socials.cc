@@ -128,6 +128,51 @@ void sigh(int i_th, const String* vict, critter& pc, room& rm) {
 }//sigh
 
 
+/* by Grock */
+void pout(int i_th, const String* vict, critter& pc, room& rm) {
+   String buf(100);
+   Cell<critter*> cll(rm.getCrits());
+   critter* ptr;
+
+   if (vict->Strlen()) {
+      critter* crit_ptr =
+            rm.haveCritNamed(i_th, vict, pc.SEE_BIT);
+
+      if (!crit_ptr)
+         show(DONT_SEE_PERSON, pc);
+      else if (crit_ptr == &pc) {
+         show("You pout pitifully to yourself.\n", pc);
+         Sprintf(buf, "pouts to %s.\n",
+                 get_himself_herself(pc));
+         emote(buf, pc, ROOM, TRUE);
+      }//if targ and agg is same
+      else {
+         Sprintf(buf, "You poute to %S.\n",
+                 name_of_crit(*crit_ptr, pc.SEE_BIT));
+         show(buf, pc);
+         Sprintf(buf, "%S pouts at you!\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         buf.Cap();
+         show(buf, *crit_ptr);
+
+         while ((ptr = cll.next())) {
+            if ((ptr != &pc) && (ptr != crit_ptr)) {
+               Sprintf(buf, "%S pouts at %S.\n",
+                       name_of_crit(pc, ptr->SEE_BIT),
+                       name_of_crit(*crit_ptr, ptr->SEE_BIT));
+               buf.Cap();
+               show(buf, *ptr);
+            }//if
+         }//while
+      }//else
+   }//if a victim
+   else {
+      show("You pout pitifully.\n", pc);
+      emote("pouts pitifully.\n", pc, ROOM, TRUE);
+   }//else
+}//pout
+
+
 void rofl(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
    Cell<critter*> cll(rm.getCrits());

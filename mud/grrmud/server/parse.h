@@ -30,7 +30,7 @@
 #define RAW_MAX 20
 #define COOKED_MAX 20
 
-const char* parse_hlp_command(const String& str1);
+String parse_hlp_command(const String& str1);
 //int process_input(critter& pc, String& input, short do_sub);
 
 
@@ -57,14 +57,19 @@ public:
       { _cnt++; word.Tolower(); }
    ~CmdSpecifier() { _cnt--; }
 
-   int doesMatch(const CmdSpecifier& src) {
+   // If *this is longer than src, then it will NEVER match.
+   // But, if it is equal or lesser, it may match.
+   int doesSatisfyMatch(const CmdSpecifier& src) const {
+      if (len > src.len) {
+         return 0;
+      }
       return *this == src;
    }
 
-   String toString();
+   String toString() const;
 
-   int operator==(const CmdSpecifier& src) {
-      return (strncasecmp(word, src.word, max(len, src.len)) == 0);
+   int operator==(const CmdSpecifier& src) const {
+      return (strncasecmp(word, src.word, min(len, src.len)) == 0);
    }
    
    int operator<(const CmdSpecifier& src) {
@@ -100,7 +105,8 @@ public:
    void addCmdSpecifierNoCreate(CmdSpecifier* cs);
 
    // can return NULL
-   const CmdSpecifier* findSpecifierFor(const CmdSpecifier* cs);
+   const CmdSpecifier* findSpecifierFor(const CmdSpecifier* cs,
+                                        int cmd_only);
 
    int calculateIndex(char val) {
       //convert to upper, subtract A, then hash

@@ -107,17 +107,21 @@ int GenCmdInput::read(ifstream& dafile) {
 
    // no comments allowed within entries.
    while (tmp != "~") {
+      //cout << "In while loop, tmp -:" << tmp << ":- idx: " << idx << endl;
       aliases[idx] = tmp;
       idx++;
       dafile >> tmp;
    }
 
+   //cout << "Done with while loop, idx: " << idx << endl;
    if (idx > 1) {
       // last one is the help
+      //cout << "Using last one for help.." << endl;
       help = aliases[idx - 1];
-      aliases[idx].Clear();
+      aliases[idx - 1].Clear();
    }
    else if (idx == 1) {
+      //cout << "Using first one for help." << endl;
       help = aliases[0]; //default to the first one is the help too
    }
    else {

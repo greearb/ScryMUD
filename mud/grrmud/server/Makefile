@@ -31,7 +31,7 @@ TARG = grrmud                                 #program to be created
 
 all: ${TARG}
 
-${TARG}: libs $(OBJS)
+${TARG}: libs ${CODE_GEN_TARG} $(OBJS) 
 	$(CCC) $(CCFLAGS) $(LDFLAGS) -o ${TARG} $(OBJS) $(LDLIBS)
 
 ${CODE_GEN_TARG}: libs ${CODE_GEN_OBJS}

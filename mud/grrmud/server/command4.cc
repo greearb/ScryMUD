@@ -404,7 +404,7 @@ int do_post(critter& pc) {
       }//while
       
       if (!ptr) {
-         show("Ack, someone moved the bulitin board.\n", pc);
+         show("Ack, someone moved the bulletin board.\n", pc);
 
 			/* clean up mess */
 	 delete pc.pc->post_msg;
@@ -662,7 +662,7 @@ int _goto(int i_th, const String* name, critter& pc) {
       ROOM.doPoofOut(pc);
    }
    else {
-      emote("dissapears with a popping sound!\n", pc, ROOM, FALSE);
+      emote("disappears with a popping sound!\n", pc, ROOM, FALSE);
    }
 
    //mudlog << "WARNING: about to doGoToRoom: " << i_th << endl;
@@ -839,7 +839,7 @@ int zgoto(int i_th, critter& pc) {
       ROOM.doPoofOut(pc);
    }
    else {
-      emote("dissapears with a popping sound!\n", pc, ROOM, FALSE);
+      emote("disappears with a popping sound!\n", pc, ROOM, FALSE);
    }
 
    int is_dead;
@@ -2669,10 +2669,10 @@ int tog_mflag(int flagnum, const String* flag_type,
    }//if
 
    if (mob_ptr->pc && mob_ptr->pc->imm_data) {
-     if ((mob_ptr->IMM_LEVEL >= pc.IMM_LEVEL) && (&pc != mob_ptr)) {
-       show("You don't have permission to edit this player.\n", pc);
-       return -1;
-     }//if
+      if ((mob_ptr->IMM_LEVEL >= pc.IMM_LEVEL) && (&pc != mob_ptr)) {
+         show("You don't have permission to edit this player.\n", pc);
+         return -1;
+      }//if
    }//if
 
    if (mob_ptr->pc && (pc.IMM_LEVEL < 9)) {
@@ -2687,11 +2687,16 @@ int tog_mflag(int flagnum, const String* flag_type,
                  &(mob_ptr->short_desc));
          show(buf, pc);
       }//if SOBJ
-      else {
+      else if (mob_ptr->isSmob()) {
          Sprintf(buf, "Toggling flag#:  %i on SMOB:  %S.\n", flagnum,
                  &(mob_ptr->short_desc));
          show(buf, pc);
       }//else
+      else if (mob_ptr->isPc()) {
+         Sprintf(buf, "Toggling flag#:  %i on PC:  %S.\n", flagnum,
+                 mob_ptr->getName());
+         show(buf, pc);
+      }
    }//if
    else {
       show("You must specify flagtype as:  'mob_flag' or 'crit_flag'.\n",
@@ -2701,8 +2706,14 @@ int tog_mflag(int flagnum, const String* flag_type,
    
    if (strncasecmp(*flag_type, "mob_flag", 1) == 0) {
       if ((flagnum == 1) || (flagnum == 2) || (flagnum == 5)) {
-         mob_ptr->MOB_FLAGS.flip(flagnum);
-         return 0;
+         if (mob_ptr->isNpc()) {
+            mob_ptr->MOB_FLAGS.flip(flagnum);
+            return 0;
+         }
+         else {
+            pc.show("That is not an NPC.\n");
+            return -1;
+         }
       }//if
       else {
          show("OOPS, you can't toggle that flag.\n", pc);

@@ -56,10 +56,10 @@ CmdCollection cmds_collection;
 
 int CmdSpecifier::_cnt = 0;
 
-String CmdSpecifier::toString() {
+String CmdSpecifier::toString() const {
    String retval(100);
    Sprintf(retval,
-           "CmdSpecifier:  word: %S  help_key: %S  len: %i CmdId: %i",
+           "CmdSpecifier:  word: -:%S:-  help_key: -:%S:-  len: %i CmdId: %i",
            &word, &hlp_key, len, (int)(id));
    return retval;
 }
@@ -97,7 +97,8 @@ void CmdCollection::addCmdSpecifierNoCreate(CmdSpecifier* cs) {
 }
 
 // can return NULL
-const CmdSpecifier* CmdCollection::findSpecifierFor(const CmdSpecifier* cs) {
+const CmdSpecifier* CmdCollection::findSpecifierFor(const CmdSpecifier* cs,
+                                                    int cmd_only) {
    int idx = calculateIndex(cs->getCmd().charAt(0));
    CmdSpecifier* ptr;
 
@@ -107,17 +108,25 @@ const CmdSpecifier* CmdCollection::findSpecifierFor(const CmdSpecifier* cs) {
    }
 
    for (ptr = cmd_specifiers[idx]; ptr != NULL; ptr = ptr->getNext()) {
-      if (*ptr == *cs) {
+      if (cmd_only && (ptr->getId() == ci_HELP_ONLY)) {
+         if (mudlog.ofLevel(DBG)) {
+            mudlog << "Comparing ptr: " << ptr->toString() 
+                   << " was HELP_ONLY, and we are just doing commands!\n";
+         }
+         continue;
+      }
+
+      if (cs->doesSatisfyMatch(*ptr)) {
          if (mudlog.ofLevel(DBG)) {
             mudlog << "Comparing ptr: " << ptr->toString()
-                   << "to cs, was EQUAL." << endl;
+                   << " to cs, was EQUAL." << endl;
          }
          return ptr;
       }//if
       else {
          if (mudlog.ofLevel(DBG)) {
             mudlog << "Comparing ptr: " << ptr->toString() 
-                   << "to cs, was NOT EQUAL." << endl;
+                   << " to cs, was NOT EQUAL." << endl;
          }
       }
    }//for
@@ -287,11 +296,6 @@ int critter::processInput(String& input, short do_sub,
 ///****************************************************************///
 ///*************** non-standard-input-commands  *******************///
 ///****************************************************************///
-#define str1 (cooked_strs[0])
-#define str2 (cooked_strs[1])
-#define str3 (cooked_strs[2])
-#define str4 (cooked_strs[3])
-
 
    len1 = raw_strings[0].Strlen();
 
@@ -302,10 +306,10 @@ int critter::processInput(String& input, short do_sub,
             i = atoi(buf);
             buf = input.Get_Command(eos, term_by_period);
             if (buf.Strlen() != 0) {
-               str2 = buf;
+               (cooked_strs[1]) = buf;
                buf = input.Get_Rest();
                parse_communication(buf);
-               return tell(i, &str2, buf, *this);
+               return tell(i, &(cooked_strs[1]), buf, *this);
             }//if
             else {
                show(PARSE_ERR_MSG);
@@ -313,10 +317,10 @@ int critter::processInput(String& input, short do_sub,
             }//else
          }//if is number
          else {
-            str2 = buf;
+            (cooked_strs[1]) = buf;
             buf = input.Get_Rest();
             parse_communication(buf);
-            return tell(1, &str2, buf, *this);
+            return tell(1, &(cooked_strs[1]), buf, *this);
          }//else
       }//if
       else {
@@ -334,11 +338,11 @@ int critter::processInput(String& input, short do_sub,
             i = atoi(buf);
             buf = input.Get_Command(eos, term_by_period);
             if (buf.Strlen() != 0) {
-               str2 = buf;
+               (cooked_strs[1]) = buf;
                buf = input.Get_Rest();
                buf.Append("\n");
                parse_communication(buf);
-               return com_pecho(i, &str2, &buf, *this);
+               return com_pecho(i, &(cooked_strs[1]), &buf, *this);
             }//if
             else {
                show(PARSE_ERR_MSG);
@@ -346,11 +350,11 @@ int critter::processInput(String& input, short do_sub,
             }//else
          }//if is number
          else {
-            str2 = buf;
+            (cooked_strs[1]) = buf;
             buf = input.Get_Rest();
             parse_communication(buf);
             buf.Append("\n");
-            return com_pecho(1, &str2, &buf, *this);
+            return com_pecho(1, &(cooked_strs[1]), &buf, *this);
          }//else
       }//if
       else {
@@ -591,17 +595,25 @@ int critter::processInput(String& input, short do_sub,
       return -1;
    }//if
 
-   CmdSpecifier cur_cmd(str1, len1);
-   const CmdSpecifier* real_cmd = cmds_collection.findSpecifierFor(&cur_cmd);
+   CmdSpecifier cur_cmd((cooked_strs[0]), len1);
+   const CmdSpecifier* real_cmd = cmds_collection.findSpecifierFor(&cur_cmd,
+                                                                   TRUE);
 
    if (real_cmd) {
-      return exe_cmd_array[(int)(real_cmd->getId())]->
-         execute(cooked_strs[0], cooked_strs[1], cooked_strs[2],
-                 cooked_strs[3], cooked_strs[4],
-                 cooked_ints[1], cooked_ints[2], cooked_ints[3],
-                 cooked_ints[4], cooked_ints[5], cooked_ints[6],
-                 is_dead, *this, c_script_owner, r_script_owner,
-                 cooked_strs, cooked_ints, do_sub);
+      i = (int)(real_cmd->getId());
+      if (exe_cmd_array[i]) {
+         return exe_cmd_array[i]->
+            execute(cooked_strs[0], cooked_strs[1], cooked_strs[2],
+                    cooked_strs[3], cooked_strs[4],
+                    cooked_ints[1], cooked_ints[2], cooked_ints[3],
+                    cooked_ints[4], cooked_ints[5], cooked_ints[6],
+                    is_dead, *this, c_script_owner, r_script_owner,
+                    cooked_strs, cooked_ints, do_sub);
+      }//if we have a command handler.
+      else {
+         show("You may need to be more specific, or maybe there is only\n");
+         show("help for that keyword.\n");
+      }
    }//if
    else {
       if (mudlog.ofLevel(DBG)) {
@@ -615,22 +627,21 @@ int critter::processInput(String& input, short do_sub,
    return -1;
 }// process input
 
-#undef str1
-#undef str2
-#undef str3
-#undef str4
-
-const char* parse_hlp_command(const String& str1) {
-   CmdSpecifier cur_cmd(str1, str1.Strlen());
-   const CmdSpecifier* real_cmd = cmds_collection.findSpecifierFor(&cur_cmd);
-
-   if (real_cmd) {
-      return (const char*)(real_cmd->getHelpKey());
+String parse_hlp_command(const String& topic) {
+   //mudlog << "parse_hlp_command: topic -:" << topic << ":-\n";
+   if (topic.Strlen() > 0) {
+      CmdSpecifier cur_cmd(topic, topic.Strlen());
+      const CmdSpecifier* real_cmd = cmds_collection.findSpecifierFor(&cur_cmd,
+                                                                      FALSE);
+      
+      if (real_cmd) {
+         return real_cmd->getHelpKey();
+      }
+      else if (mudlog.ofLevel(DBG)) {
+         mudlog << "WARNING: (Help) Could not find real_cmd for cmd:  "
+                << cur_cmd.toString() << endl;
+      }
    }
-   else if (mudlog.ofLevel(DBG)) {
-      mudlog << "ERROR: (Help) Could not find real_cmd for cmd:  "
-             << cur_cmd.toString() << endl;
-   } 
-   return NULL;
+   return NULL_STRING;
 }//parse_hlp_command
 

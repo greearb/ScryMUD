@@ -753,8 +753,8 @@ void do_cast_recall(critter& vict, critter& pc, int is_canned, int lvl) {
    
    if (do_affects) {
       show("The world shimmers!\n", vict);
-      emote("grows opaque and dissapears.", vict, room_list[vict.getCurRoomNum()], 
-            TRUE); 
+      emote("grows opaque and disappears.", vict,
+            room_list[vict.getCurRoomNum()], TRUE); 
       
       int is_dead;
       vict.doGoToRoom(RECALL_ROOM, NULL, NULL, is_dead, vict.getCurRoomNum());
@@ -967,9 +967,7 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
       else { //lost concentration
          show(LOST_CONCENTRATION_MSG_SELF, agg);
 
-         Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-         buf.Cap();
-         room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
+         emote(LOST_CONCENTRATION_MSG_OTHER, agg, *(agg.getCurRoom()), TRUE);
  
          agg.MANA -= spell_mana / 2;
          agg.PAUSE += 1; 

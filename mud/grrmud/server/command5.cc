@@ -861,7 +861,7 @@ int do_transport(critter& targ, critter& pc, room& dest) {
    String buf(100);
    
    show("The world tilts and angles bend!\n", targ);
-   emote("shrinks impossibly and dissapears.", targ, 
+   emote("shrinks impossibly and disappears.", targ, 
          room_list[targ.getCurRoomNum()], TRUE); 
    Sprintf(buf, "You transport %S.\n", name_of_crit(targ, pc.SEE_BIT));
    show(buf, pc);
@@ -1841,13 +1841,13 @@ int consider(int i_th, const String* targ, critter& pc) {
    int comp_val = pc.compareTo(*crit);
 
    if (pc.isImmort()) {
-      Sprintf(buf, "Raw compare value: %i (high means target is wimp)",
+      Sprintf(buf, "Raw compare value: %i (high means target is wimp)\n",
               comp_val);
       pc.show(buf);
    }//if
    
    if (comp_val > 100) {
-      Sprintf(buf, "This %s looks like a joke!", get_dude_chic(*crit));
+      Sprintf(buf, "This %s looks like a joke!\n", get_dude_chic(*crit));
       pc.show(buf);
    }
    else if (comp_val > 75) {

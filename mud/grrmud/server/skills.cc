@@ -350,28 +350,28 @@ int kick(int i_th, const String* victim, critter& pc) {
    if (crit_ptr) {
 
       if (crit_ptr == &pc) {
-	show("You kick yourself for your stupidity!\n", pc);
-	Sprintf(buf, "kicks %s.", get_himself_herself(pc));
-	emote(buf, pc, ROOM, TRUE);
-	return 0;
+         show("You kick yourself for your stupidity!\n", pc);
+         Sprintf(buf, "kicks %s.", get_himself_herself(pc));
+         emote(buf, pc, ROOM, TRUE);
+         return 0;
       }//if
 
       if (crit_ptr->isMob()) {
          crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE, i_th, victim,
-                               pc.SEE_BIT);
+                                pc.SEE_BIT);
       }//if
 
       if (!ok_to_do_action(crit_ptr, "SVPF", -1, pc)) {
-	return -1;
+         return -1;
       }//if
 
       if (!(crit_ptr = check_for_diversions(*crit_ptr, "GM", pc)))
-	return -1;
+         return -1;
 
       return do_kick(*crit_ptr, pc);
    }//if
    else {
-     show("Kick who??\n", pc);
+      show("Kick who??\n", pc);
    }//else
    return -1;
 }//kick
@@ -401,7 +401,7 @@ int do_kick(critter& vict, critter& pc) {
       if (vict.HP < 0) {
          Sprintf(buf, "kicks in %S's temple with %s foot!!\n", 
                  name_of_crit(vict, ~0), get_his_her(pc));
-         emote(buf, pc, ROOM, TRUE);
+         emote(buf, pc, ROOM, TRUE, &vict);
          Sprintf(buf, 
                  "You see %S's foot racing straight for your temple...\n",
                  name_of_crit(pc, vict.SEE_BIT));
@@ -422,10 +422,14 @@ int do_kick(critter& vict, critter& pc) {
          show(buf, pc);
 
          Sprintf(buf, "kicks %S!\n", name_of_crit(vict, ~0));
-         emote(buf, pc, ROOM, TRUE);
+         emote(buf, pc, ROOM, TRUE, &vict);
       }//else
    }//if
    else {  //missed
+      Sprintf(buf, "kicks mightily at %S, missing by a foot!\n",
+              vict.getName());
+      emote(buf, pc, ROOM, FALSE, &vict);
+
       Sprintf(buf, "%S narrowly misses your head with %s foot!\n", 
 	      name_of_crit(pc, vict.SEE_BIT), get_his_her(pc));
       buf.Cap();
@@ -589,6 +593,10 @@ int do_bash(critter& vict, critter& pc) {
       }//else
    }//if
    else {  //missed
+      Sprintf(buf, "nearly falls on %s butt trying to hit %S!\n",
+              get_his_her(pc), vict.getName());
+      emote(buf, pc, ROOM, FALSE, &vict);
+
       Sprintf(buf, "%S takes a big swing at you but misses!\n", 
                  name_of_crit(pc, vict.SEE_BIT));
       buf.Cap();

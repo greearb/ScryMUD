@@ -33,34 +33,49 @@
 #  intersperse comments between command definitions
 #
 #  The format is as follows:
-#  [cmd_name] <*>[help_key]
+#  [cmd_name] <cmd_name ...> <*>[help_key] ~
 #  [actual code to call]
 #
 #  The entries below should make it more clear.  Deviate at your
 #  own peril!!
+#
+#  NOTE 1:  a * in front of a help key means that the entry is ONLY
+#           for help.  You must still put in something for the command,
+#           but it will not be put into the code anywhere (I usually
+#           just use NOP.
+#
+#  NOTE 2:  the code for a given command must return an integer.  The
+#           normal syntax is:  0 means everything is OK, < 0 means
+#           an error.
+#
+#  NOTE 3:  The commands/help keys must be terminated with a tilde (~).
+#           It should be possible for them to span multiple lines.
+#           At this time, multi-word commands are not supported.
+#
+#  NOTE 4:  If there is only one command followed by a tilde, then the
+#           command is treated both as a command AND the help key for
+#           that command.  Nice little short-hand...
 
-avintre *avintre ~
-NOP
-anitre *anitre ~
-NOP
+
+# case A
 abilities ~
 return abilities(pc);
 ack socials ~
-ack(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+ack(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 add_kname ~
-return add_kname(i, &str2, pc);
+return add_kname(i, &(cooked_strs[1]), pc);
 adjust_register ~
-return adjust_register(i, &str2, j, pc);
+return adjust_register(i, &(cooked_strs[1]), j, pc);
 add_keyword ~
 return add_keyword(pc);
 add_mname ~
-return add_mname(i, &str2, pc);
+return add_mname(i, &(cooked_strs[1]), pc);
 add_mob_script ~
-return add_mob_script(pc, i, str2, j, str3, k, l);
+return add_mob_script(pc, i, (cooked_strs[1]), j, (cooked_strs[2]), k, l);
 add_room_script add_mob_script ~
-return add_room_script(pc, i, str2, j, str3, k, l);
+return add_room_script(pc, i, (cooked_strs[1]), j, (cooked_strs[2]), k, l);
 add_oname ~
-return add_oname(i, &str2, pc);
+return add_oname(i, &(cooked_strs[1]), pc);
 add_stat_affect ~
 return add_stat_affect(i, j, k, pc);
 add_casts_spell ~
@@ -70,13 +85,13 @@ return addZone(i, pc);
 adlist ~
 return adlist(pc);
 afk socials ~
-afk(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+afk(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 agree socials ~
-agree(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+agree(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 add_perm_inv ~
-return add_perm_inv(i, &str2, j, pc);
+return add_perm_inv(i, &(cooked_strs[1]), j, pc);
 assist ~
-return assist(i, &str2, pc);
+return assist(i, &(cooked_strs[1]), pc);
 asave ~
 return write_zone(i, pc);
 alist zlist zlist ~
@@ -97,60 +112,60 @@ adsave ~
 return adsave(i, pc);
 arlist ~
 return arlist(i, j, pc);
+auction *channels ~
+NOP
+avintre *avintre ~
+NOP
+anitre *anitre ~
+NOP
 
+# case B
 bug typo *bug ~
 NOP
 backstab bs ~
-return backstab(i, &str2, pc);
+return backstab(i, &(cooked_strs[1]), pc);
 bash ~
 return bash(i, &cooked_strs[1], pc);
 beep ~
-return beep(i, &str2, pc);
+return beep(i, &(cooked_strs[1]), pc);
 beckon socials ~
-beckon(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+beckon(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 berserk ~
 return berserk(pc);
 blush socials ~
-blush(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+blush(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 blend ~
 return blend(pc);
 bonk socials ~
-bonk(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+bonk(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 body_slam bodyslam bodyslam ~
-return body_slam(i, &str2, pc);
+return body_slam(i, &(cooked_strs[1]), pc);
 bounce socials ~
-bounce(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+bounce(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 bow socials ~
-bow(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+bow(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 concoct ~
 return concoct(pc);
 burp socials ~
-burp(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+burp(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 butcher ~
-return butcher(i, &str2, pc);
+return butcher(i, &(cooked_strs[1]), pc);
 buy ~
-return buy(i, &str2, j, &str3, pc);
+return buy(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 brief ~
 return brief(pc);
 
-credits *credits ~
-NOP
-commands *commands ~
-NOP
-classes *classes ~
-NOP
-channels gt gc *channels ~
-NOP
+# case C
 cast ~
-return cast(&str2, j, &str3, pc);
+return cast(&(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 cackle socials ~
-cackle(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+cackle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 circle ~
-return circle(i, &str2, pc);
+return circle(i, &(cooked_strs[1]), pc);
 clap socials ~
-clap(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+clap(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 claw ~
-return claw(i, &str2, pc);
+return claw(i, &(cooked_strs[1]), pc);
 clear_keryword ~
 return clear_keyword(i, pc);
 clear_mnames ~
@@ -158,27 +173,27 @@ return clear_mnames(i, pc);
 clear_onames ~
 return clear_onames(i, pc);
 close ~
-return close(i, &str2, pc);
+return close(i, &(cooked_strs[1]), pc);
 color ~
-return color(str2, str3, pc);
+return color((cooked_strs[1]), (cooked_strs[2]), pc);
 consider ~
-return consider(i, &str2, pc);
+return consider(i, &(cooked_strs[1]), pc);
 cheer socials ~
-cheer(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+cheer(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 chuckle socials ~
-chuckle(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+chuckle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 ch_mdesc ~
 return ch_mdesc(i, pc);
 ch_msdesc ~
-return ch_msdesc(i, &str2, pc);
+return ch_msdesc(i, &(cooked_strs[1]), pc);
 ch_mndesc ~
-return ch_mndesc(i, &str2, pc);
+return ch_mndesc(i, &(cooked_strs[1]), pc);
 ch_odesc ~
 return ch_odesc(i, pc);
 ch_ondesc ~
-return ch_ondesc(i, &str2, pc);
+return ch_ondesc(i, &(cooked_strs[1]), pc);
 ch_osdesc ~
-return ch_osdesc(i, &str2, pc);
+return ch_osdesc(i, &(cooked_strs[1]), pc);
 ch_path_desc ~
 return ch_path_desc(i, j, pc);
 ch_rdesc ~
@@ -188,9 +203,9 @@ return ch_kdesc(i, pc);
 ch_ddesc ~
 return ch_ddesc(i, pc);
 ch_rname ~
-return ch_rname(&str2, pc);
+return ch_rname(&(cooked_strs[1]), pc);
 ch_zname ~
-return ch_zname(i, &str2, pc);
+return ch_zname(i, &(cooked_strs[1]), pc);
 construct ~
 return construct(pc);
 create_concoction create_concoct ~
@@ -198,10 +213,57 @@ return create_concoction(i, j, k, l, m, n, pc);
 create_construction create_constrct ~
 return create_construction(i, j, k, l, m, n, pc);
 curse ~
-curse(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+curse(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 curtsey socials ~
-curtsey(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+curtsey(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+credits *credits ~
+NOP
+commands *commands ~
+NOP
+classes *classes ~
+NOP
+channels tell gt gc *channels ~
+NOP
 
+# case D
+down ~
+return down(pc, *(pc.getCurRoom()), is_dead);
+date ~
+return date(pc);
+dance socials ~
+dance(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+describe ~
+return describe(pc);
+delete_door ~
+return delete_door(i, &(cooked_strs[1]), pc);
+discuss ~
+return discuss(&(cooked_strs[1]), j, &(cooked_strs[2]), pc);
+disco socials ~
+disco(j, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+disdain socials ~
+disdain(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+disarm ~
+return disarm(i, &(cooked_strs[1]), pc);
+donate ~
+return donate(i, &(cooked_strs[1]), &(cooked_strs[2]), pc);
+drop ~
+return drop(i, &(cooked_strs[1]), &(cooked_strs[2]), pc);
+drink ~
+return drink(i, &(cooked_strs[1]), pc);
+dset ~
+return dset(i, &(cooked_strs[1]), &(cooked_strs[2]), k, pc);
+door_to ~
+return door_to(i, j, &(cooked_strs[1]), pc);
+dstat ~
+return dstat(i, &(cooked_strs[1]), pc);
+dsys ~
+return dsys(pc);
+dclear ~
+return dclear(i, pc);
+dlist ~
+return dlist(i, j, pc);
+dvnum ~
+return dvnum(i, &(cooked_strs[1]), pc);
 drow *drow ~
 NOP
 dwarves dwarf *dwarf ~
@@ -210,61 +272,24 @@ dragons *dragon ~
 NOP
 darklings *darkling ~
 NOP
-down ~
-return down(pc, *(pc.getCurRoom()), is_dead);
-date ~
-return date(pc);
-dance socials ~
-dance(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
-describe ~
-return describe(pc);
-delete_door ~
-return delete_door(i, &str2, pc);
-discuss ~
-return discuss(&str2, j, &str3, pc);
-disco socials ~
-disco(j, &str2, pc, (*(pc.getCurRoom()))); return 0;
-disdain socials ~
-disdain(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
-disarm ~
-return disarm(i, &str2, pc);
-donate ~
-return donate(i, &str2, &str3, pc);
-drop ~
-return drop(i, &str2, &str3, pc);
-drink ~
-return drink(i, &str2, pc);
-dset ~
-return dset(i, &str2, &str3, k, pc);
-door_to ~
-return door_to(i, j, &str2, pc);
-dstat ~
-return dstat(i, &str2, pc);
-dsys ~
-return dsys(pc);
-dclear ~
-return dclear(i, pc);
-dlist ~
-return dlist(i, j, pc);
-dvnum ~
-return dvnum(i, &str2, pc);
 
+# case E
 east ~
 return east(pc, *(pc.getCurRoom()), is_dead);
 eat ~
-return eat(i, &str2, pc);
+return eat(i, &(cooked_strs[1]), pc);
 earthmeld ~
 return earthmeld(pc);
 equipment ~
 return show_eq(pc);
 empty ~
-return empty(i, &str2, pc);
+return empty(i, &(cooked_strs[1]), pc);
 enslave ~
-return enslave(i, &str2, pc);
+return enslave(i, &(cooked_strs[1]), pc);
 exits ~
 return exit(pc);
 examine ~
-return examine(i, &str2, pc);
+return examine(i, &(cooked_strs[1]), pc);
 elf *elf ~
 NOP
 elves *elves ~
@@ -274,100 +299,118 @@ NOP
 entity *entity ~
 NOP
 
-faerie *faerie ~
-NOP
+# case F
 fill ~
-return fill(i, &str2, j, &str3, pc);
+return fill(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 follow ~
-return follow(i, &str2, pc);
+return follow(i, &(cooked_strs[1]), pc);
 flee ~
 return flee(pc, is_dead);
 flex socials ~
-flex(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+flex(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 flip_door ~
-return flip_door(i, &str2, pc);
+return flip_door(i, &(cooked_strs[1]), pc);
 freeze ~
-return freeze(i, &str2, pc);
-gag ~
-return gag(i, &str2, pc);
-get take get ~
-return get(i, &str2, j, &str3, pc);
-giggle socials ~
-giggle(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
-give ~
-return give(i, &str2, j, &str3, pc);
-grin socials ~
-grin(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
-group ~
-return group(i, &str2, pc);
-growl socials ~
-growl(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
-grumble socials ~
-grumble(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
-grunt socials ~
-grunt(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
-guard ~
-return guard(i, &str2, pc);
-go enter go ~
-is_dead = FALSE; return go(i, &str2, pc, is_dead);
-goto ~
-return _goto(i, &str2, pc);
+return freeze(i, &(cooked_strs[1]), pc);
+force *force ~
+NOP
+force_all *force_all ~
+NOP
+faerie *faerie ~
+NOP
 
+#case G
+gag ~
+return gag(i, &(cooked_strs[1]), pc);
+get take get ~
+return get(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
+giggle socials ~
+giggle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+give ~
+return give(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
+grin socials ~
+grin(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+group ~
+return group(i, &(cooked_strs[1]), pc);
+growl socials ~
+growl(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+grumble socials ~
+grumble(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+grunt socials ~
+grunt(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+guard ~
+return guard(i, &(cooked_strs[1]), pc);
+go enter go ~
+is_dead = FALSE; return go(i, &(cooked_strs[1]), pc, is_dead);
+goto ~
+return _goto(i, &(cooked_strs[1]), pc);
+gecho *gecho ~
+NOP
+gossip *gossip ~
+NOP
+gt *channels ~
+NOP
+gs *channels ~
+NOP
+
+# case H
 hide ~
 return hide(pc);
 hit kill attack murder hit ~
-return hit(i, &str2, pc);
+return hit(i, &(cooked_strs[1]), pc);
 help ~
-return help(i, &str2, pc);
+return help(i, &(cooked_strs[1]), pc);
 hehe socials ~
-hehe(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+hehe(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 hold ~
-return hold(i, &str2, pc);
+return hold(i, &(cooked_strs[1]), pc);
 hop socials ~
-hop(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+hop(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 hmm socials ~
-hmm(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+hmm(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 hug socials ~
-hug(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+hug(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 hum socials ~
-hum(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+hum(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 hurl ~
-return hurl(i, &str2, pc);
+return hurl(i, &(cooked_strs[1]), pc);
 humans *human ~
 NOP
 
-ironclads *ironclad ~
-NOP
+# case I
 inventory ~
 return inventory(pc);
 insane socials ~
-insane(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+insane(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 itch socials ~
-itch(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+itch(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 itrans ~
-return itrans(i, &str2, j, pc);
-junk sacrifice junk ~
-return junk(i, &str2, &str3, pc);
+return itrans(i, &(cooked_strs[1]), j, pc);
+idea *idea ~
+NOP
+ironclads *ironclad ~
+NOP
 
+#case K
+kiss socials ~
+kiss(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+kick ~
+return kick(i, &(cooked_strs[1]), pc);
 keywords *keyword ~
 NOP
-kiss socials ~
-kiss(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
-kick ~
-return kick(i, &str2, pc);
 
 look ~
-return look(i, &str2, pc);
+return look(i, &(cooked_strs[1]), pc);
 lag socials ~
-lag(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+lag(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 laugh socials ~
-laugh(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+laugh(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 label_dummy label: add_mob_script ~
 return -1; //should never get here
 lick socials ~
-lick(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+lick(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 list ~
-return list_merchandise(i, &str2, pc);
+return list_merchandise(i, &(cooked_strs[1]), pc);
 list_paths ~
 return list_paths(i, pc);
 list_scripts ~
@@ -379,26 +422,27 @@ return list_site_bans(pc);
 list_zones ~
 return showZones(pc);
 listen socials ~
-listen(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+listen(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 lock ~
-return lock(i, &str2, pc);
+return lock(i, &(cooked_strs[1]), pc);
 lore ~
-return lore(i, &str2, pc);
+return lore(i, &(cooked_strs[1]), pc);
 log_level ~
 return log_level(i, pc);
 ldwho ~
 return ldwho(pc);
 
+# case M
 make_builder ~
-return make_builder(i, &str2, pc);
+return make_builder(i, &(cooked_strs[1]), pc);
 make_pso ~
-return make_pso(i, &str2, pc);
+return make_pso(i, &(cooked_strs[1]), pc);
 meditate ~
 return meditate(pc);
 mstat ~
-return mstat(i, &str2, pc);
+return mstat(i, &(cooked_strs[1]), pc);
 mclone ~
-return mclone(i, &str2, pc);
+return mclone(i, &(cooked_strs[1]), pc);
 mclear ~
 return mclear(i, pc);
 mreload ~
@@ -406,14 +450,15 @@ return mreload(pc);
 mlist ~
 return  mlist(i, j, pc);
 mload ~
-return mload(i, &str2, pc);
+return mload(i, &(cooked_strs[1]), pc);
 mset ~
-return mset(i, &str2, &str3, k, &str4, pc);
+return mset(i, &(cooked_strs[1]), &(cooked_strs[2]), k, &(cooked_strs[3]), pc);
 muahaha socials ~
-muahaha(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+muahaha(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 mvnum ~
-return mvnum(i, &str2, pc);
+return mvnum(i, &(cooked_strs[1]), pc);
 
+# case N
 north ~
 return north(pc, *(pc.getCurRoom()), is_dead);
 northeast ne northeast ~
@@ -423,95 +468,107 @@ return northwest(pc, *(pc.getCurRoom()), is_dead);
 nogossip ~
 return nogossip(pc);
 nod socials ~
-nod(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
-
-ogrue *ogrue ~
+nod(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+neighbor_echo *add_mob_script ~
 NOP
+
+# case O
 offer ~
-return offer(i, &str2, j, &str3, pc);
+return offer(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 open ~
-return open(i, &str2, pc);
+return open(i, &(cooked_strs[1]), pc);
 opurge ~
-return opurge(i, &str2, pc);
+return opurge(i, &(cooked_strs[1]), pc);
 ostat ~
-return ostat(i, &str2, pc);
+return ostat(i, &(cooked_strs[1]), pc);
 oclone ~
-return oclone(i, &str2, pc);
+return oclone(i, &(cooked_strs[1]), pc);
 oclear ~
 return oclear(i, pc);
 olist ~
 return olist(i, j, pc);
 oload ~
-return oload(i, &str2, pc);
+return oload(i, &(cooked_strs[1]), pc);
 oreload ~
 return oreload(pc);
 oset ~
-return oset(i, &str2, &str3, k, &str4, pc);
+return oset(i, &(cooked_strs[1]), &(cooked_strs[2]), k, &(cooked_strs[3]), pc);
 ovnum ~
-return ovnum(i, &str2, pc);
+return ovnum(i, &(cooked_strs[1]), pc);
 olc ~
 return handle_olc(pc, do_sub);
+order *order ~
+NOP
+ogrue *ogrue ~
+NOP
 
+# case P
 pat socials ~
-pat(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+pat(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 passwd ~
-return passwd(&str2, &str3, &str4, pc);
+return passwd(&(cooked_strs[1]), &(cooked_strs[2]), &(cooked_strs[3]), pc);
 page_break ~
 return page_break(i, pc);
 practice ~
-return practice(&str2, j, &str3, pc);
+return practice(&(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 pay ~
-return pay(i, j, &str2, pc);
+return pay(i, j, &(cooked_strs[1]), pc);
 pause add_mob_script ~
 return pause(i, pc);
 pinch socials ~
-pinch(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+pinch(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 possesss ~
-return possess(i, &str2, pc);
+return possess(i, &(cooked_strs[1]), pc);
 prompt ~
-return prompt(&str2, pc);
+return prompt(&(cooked_strs[1]), pc);
 pft socials ~
-pft(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+pft(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 picklock ~
-return picklock(i, &str2, pc);
+return picklock(i, &(cooked_strs[1]), pc);
 poke socials ~
-poke(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+poke(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 ponder socials ~
-ponder(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+ponder(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 post ~
-return post(&str2, pc);
+return post(&(cooked_strs[1]), pc);
 prone ~
 return prone(pc);
 puke socials ~
-puke(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+puke(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 put ~
-return put(i, &str2, j, &str3, pc);
+return put(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
+pemote *pemote ~
+NOP
+poofin *poofin ~
+NOP
+poofout *poofout ~
+NOP
+pecho *add_mob_script ~
+NOP
+pout *socials ~
+NOP
 
+# case Q
 quaf ~
-return quaf(i, &str2, pc);
+return quaf(i, &(cooked_strs[1]), pc);
 quit logout log_out quit ~
 return log_out(pc);
 
-rocktrolls *rocktroll ~
-NOP
-races *races ~
-NOP
-regeneration *regeneration ~
-NOP
+# case R
 reset_olc ~
 return reset_olc(pc);
 remove ~
-return remove(i, &str2, pc);
+return remove(i, &(cooked_strs[1]), pc);
 rest ~
 return rest(pc);
 recite ~
-return recite(i, &str2, j, &str3, pc);
+return recite(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 read ~
-return read(i, &str2, pc);
+return read(i, &(cooked_strs[1]), pc);
 rem_name rm_name rem_name ~
-return rem_mname(i, &str2, pc);
+return rem_mname(i, &(cooked_strs[1]), pc);
 rem_oname rm_oname rem_oname ~
-return rem_oname(i, &str2, pc);
+return rem_oname(i, &(cooked_strs[1]), pc);
 rem_zone rm_zone rem_zone ~
 return remZone(i, pc);
 rem_path rm_path rem_path ~
@@ -519,23 +576,23 @@ return rem_path(i, j, pc);
 rem_keyword rm_keyword rm_keyword ~
 return rm_keyword(i, pc);
 rem_perm_inv rm_perm_inv rem_perm_inv ~
-return rem_perm_inv(i, &str2, j, &str3, pc);
+return rem_perm_inv(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 rescue ~
-return rescue(i, &str2, pc);
+return rescue(i, &(cooked_strs[1]), pc);
 rezone ~
 return rezone(pc);
 replace_door ~
-return replace_door(i, &str2, pc);
+return replace_door(i, &(cooked_strs[1]), pc);
 rofl socials ~
-rofl(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+rofl(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 rinit ~
 return rinit(i, j, pc);
 roll ~
-if ((i != 1) || (j != 1)) roll(i, j, pc); else roll(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+if ((i != 1) || (j != 1)) roll(i, j, pc); else roll(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 rstat ~
 return rstat(i, pc);
 rset ~
-return rset(&str2, j, pc);
+return rset(&(cooked_strs[1]), j, pc);
 rm_give_proc ~
 return rm_give_proc(i, pc);
 rm_discuss_proc ~
@@ -545,20 +602,39 @@ return rm_bow_proc(i, pc);
 rm_curse_proc ~
 return rm_curse_proc(i, pc);
 rm_room_script rem_room_script rm_room_script ~
-return rem_room_script(i, str2, j, pc);
+return rem_room_script(i, (cooked_strs[1]), j, pc);
 rm_script rem_script rm_script ~
-return rem_script(i, str2, j, pc);
+return rem_script(i, (cooked_strs[1]), j, pc);
 rm_stat_affect rem_stat_affect rm_stat_affect ~
 return rm_stat_affect(i, j, pc);
 rm_casts_spell rem_casts_spell rm_casts_spell ~
 return rm_casts_spell(i, j, pc);
 rclone ~
-return rclone(i, &str2, j, pc);
+return rclone(i, &(cooked_strs[1]), j, pc);
 rlist ~
 return rlist(i, j, pc);
 rclear ~
 return rclear(i, pc);
+reply *reply ~
+NOP
+rocktrolls *rocktroll ~
+NOP
+races *races ~
+NOP
+regeneration *regeneration ~
+NOP
+recho *recho ~
+NOP
+rm_omove *rm_omove ~
+NOP
+rm_omove_all *rm_omove_all ~
+NOP
+rm_move *rm_move ~
+NOP
+rm_move_all *rm_move_all ~
+NOP
 
+# case S
 south ~
 return south(pc, *(pc.getCurRoom()), is_dead);
 southeast se southeast ~
@@ -567,78 +643,80 @@ southwest sw southwest ~
 return southwest(pc, *(pc.getCurRoom()), is_dead);
 save ~
 return ::save(pc);
+sacrifice junk junk ~
+return junk(i, &(cooked_strs[1]), &(cooked_strs[2]), pc);
 scan ~
 return scan(pc);
 set_path ~
-return set_path_dir(i, j, k, &str2, pc);
+return set_path_dir(i, j, k, &(cooked_strs[1]), pc);
 set_ven_stop ~
-return  set_veh_stop(i, j, &str2, pc);
+return  set_veh_stop(i, j, &(cooked_strs[1]), pc);
 set_path_pointer ~
 return set_path_pointer(i, j, pc);
 save_mob ~
-return save_mob(i, &str2, pc);
+return save_mob(i, &(cooked_strs[1]), pc);
 save_obj ~
-return save_obj(i, &str2, pc);
+return save_obj(i, &(cooked_strs[1]), pc);
 score ~
-return score(&str2, pc);
+return score(&(cooked_strs[1]), pc);
 scold socials ~
-scold(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+scold(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 script_jump_true add_mob_proc ~
 return script_jump_true(cooked_strs, cooked_ints, pc, c_script_owner, r_script_owner);
 script_jump_false add_mob_script ~
 return script_jump_false(cooked_strs, cooked_ints, pc, c_script_owner, r_script_owner);
 scream socials ~
-scream(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+scream(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 scratch socials ~
-scratch(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+scratch(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 scribe ~
-return scribe(&str2, pc);
+return scribe(&(cooked_strs[1]), pc);
 see_all ~
 return see_all(pc);
 shield ~
-return shield(i, &str2, pc);
+return shield(i, &(cooked_strs[1]), pc);
 shrug socials ~
-shrug(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+shrug(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 shake socials ~
-shake(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+shake(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 shoot ~
-return shoot(i, &str2, j, &str3, pc);
+return shoot(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 show_zones ~
 return showZones(pc);
 sigh socials ~
-sigh(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+sigh(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 silly socials ~
-silly(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+silly(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 silent_junk add_mob_script ~
-return silent_junk(i, &str2, &str3, pc);
+return silent_junk(i, &(cooked_strs[1]), &(cooked_strs[2]), pc);
 sit ~
 return sit(pc);
 siteban ~
-return siteban(&str2, pc);
+return siteban(&(cooked_strs[1]), pc);
 sell ~
-return sell(i, &str2, j, &str3, pc);
+return sell(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 skin ~
-return skin(i, &str2, pc);
+return skin(i, &(cooked_strs[1]), pc);
 sleep ~
 return sleep(pc);
 slay ~
-return slay(i, &str2, pc);
+return slay(i, &(cooked_strs[1]), pc);
 slist ~
 return slist(i, j, pc);
 smirk socials ~
-smirk(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+smirk(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 snicker socials ~
-snicker(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+snicker(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 sneak ~
 return sneak(pc);
 snoop ~
-return snoop(i, &str2, pc);
+return snoop(i, &(cooked_strs[1]), pc);
 sob socials ~
-sob(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+sob(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 stat_script ~
 return stat_script(i, j, pc);
 splash socials ~
-splash(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+splash(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 stand ~
 return stand(pc);
 stat_keyword ~
@@ -648,71 +726,81 @@ return stat_path(i, j, pc);
 stat_room_script ~
 return stat_room_script(i, j, pc);
 steal ~
-return steal(i, &str2, j, &str3, pc);
+return steal(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 sockets ~
 return sockets(pc);
 suicide ~
-return suicide(&str2, pc);
+return suicide(&(cooked_strs[1]), pc);
 shutdown ~
-return shutdown(&str2, pc);
+return shutdown(&(cooked_strs[1]), pc);
 slap socials ~
-slap(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+slap(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 smile socials ~
-smile(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+smile(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 strut socials ~
-strut(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+strut(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 smob *smob ~
 NOP
 sombri *sombri ~
 NOP
 socials *socials ~
 NOP
+shout *shout ~
+NOP
+self *possess ~
+NOP
+say *say ~
+NOP
 
+# case T
 tail ~
-return tail(i, &str2, pc);
+return tail(i, &(cooked_strs[1]), pc);
 teach ~
-return teach(i, &str2, j, &str3, pc);
+return teach(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 throw ~
-return _throw(i, &str2, j, &str3, pc);
+return _throw(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 thank socials ~
-thank(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+thank(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 time ~
 return time(pc);
 track ~
-return track(i, &str2, pc);
+return track(i, &(cooked_strs[1]), pc);
 twiddle socials ~
-twiddle(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+twiddle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 toggle ~
-return toggle_prompt(&str2, pc);
+return toggle_prompt(&(cooked_strs[1]), pc);
 tog_veh_stop ~
 return tog_veh_stop(i, j, pc);
 total_rezone ~
 return total_rezone(pc);
 tog_mflag ~
-return tog_mflag(i, &str2, j, &str3, pc);
+return tog_mflag(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 tog_oflag ~
-return tog_oflag(i, &str2, j, &str3, pc);
+return tog_oflag(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 tog_rflag ~
 return tog_rflag(i, pc);
 tog_zflag ~
 return tog_zflag(i, pc);
 thaw ~
-return thaw(i, &str2, pc);
+return thaw(i, &(cooked_strs[1]), pc);
 topics *topics ~
 NOP
+title *title ~
+NOP
 
+# case U
 up ~
 return up(pc, *(pc.getCurRoom()), is_dead); 
 unlock ~
-return unlock(i, &str2, pc); 
+return unlock(i, &(cooked_strs[1]), pc); 
 unsiteban ~
-return unsiteban(&str2, pc); 
+return unsiteban(&(cooked_strs[1]), pc); 
 unpost ~
-return unpost(i, &str2, pc); 
+return unpost(i, &(cooked_strs[1]), pc); 
 ungag ~
-return ungag(i, &str2, pc); 
+return ungag(i, &(cooked_strs[1]), pc); 
 ungroup ~
-return pc.doUngroup(i, &str2); 
+return pc.doUngroup(i, &(cooked_strs[1])); 
 unsnoop ~
 return unsnoop(pc); 
 uptime ~
@@ -720,66 +808,83 @@ return uptime(pc);
 update_cig update_cur_in_game update_cig ~
 return update_cur_in_game(pc); 
 use ~
-return use(i, &str2, pc); 
+return use(i, &(cooked_strs[1]), pc); 
 using_client ~
 return using_client(pc); 
 
+# case V
 value_add ~
-return value_add(i, &str2, j, &str3, pc);
+return value_add(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 value_list ~
-return value_list(i, &str2, pc);
+return value_list(i, &(cooked_strs[1]), pc);
 value_set ~
-return value_set(i, &str2, j, k, l, pc);
+return value_set(i, &(cooked_strs[1]), j, k, l, pc);
 value_rem ~
-return value_rem(i, &str2, j, pc);
+return value_rem(i, &(cooked_strs[1]), j, pc);
 visible ~
 return visible(pc);
 
 
+#case W
 west ~
 return west(pc, *(pc.getCurRoom()), is_dead);
 wear ~
-return wear(i, &str2, j, &str3, pc);
+return wear(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 weep socials ~
-weep(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+weep(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 wake ~
 return wake(pc);
 wave socials ~
-wave(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+wave(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 wink socials ~
-wink(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+wink(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 wiggle socials ~
-wiggle(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+wiggle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 whistle socials ~
-whistle(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+whistle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 where ~
-return where(i, &str2, pc);
+return where(i, &(cooked_strs[1]), pc);
 who ~
 return who(pc);
 wield ~
-return wield(i, &str2, pc);
+return wield(i, &(cooked_strs[1]), pc);
 wibble socials ~
-wibble(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+wibble(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 wimpy ~
 return wimpy(i, pc);
+wizchat *channels ~
+NOP
+wc *channels ~
+NOP
 wizinvis ~
 return wizinvis(pc);
 write_world ~
 return write_world(pc);
+
+# case X
+
+
+# case Y
 yawn socials ~
-yawn(i, &str2, pc, (*(pc.getCurRoom()))); return 0;
+yawn(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+yell *yell ~
+NOP
+
+# case Z
 zlock ~
 return zlock(i, pc); 
 zlist ~
 return zlist(i, j, pc); 
 zcreate ~
-return zcreate(i, &str2, j, pc); 
+return zcreate(i, &(cooked_strs[1]), j, pc); 
 zenable ~
-return zenable(i, &str2, pc); 
+return zenable(i, &(cooked_strs[1]), pc); 
 zdisable ~
-return zdisable(i, &str2, pc); 
+return zdisable(i, &(cooked_strs[1]), pc); 
 zgoto ~
 return zgoto(i, pc); 
 zunlock ~
 return zunlock(i, pc); 
+zecho *zecho ~
+NOP
 ~

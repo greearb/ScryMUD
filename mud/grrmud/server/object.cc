@@ -470,7 +470,7 @@ void obj::Write(ofstream& ofile) {
                ofile << endl;
          }//else
       }//while
-   }//if not a bulitin board
+   }//if not a bulletin board
    ofile << -1 << "\tinv\n";
    
    

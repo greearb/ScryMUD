@@ -261,7 +261,7 @@ a -1 terminates.
 63 has_spec_proc_data { flag for scrolls, potions, wands...}
 64 toolbox, 65 cauldron, 66 pen, 67 (DO NOT USE),
 68 (DO NOT USE), 69 parchment (for scribing), 71 (DO NOT USE),
-72 herb, 73 vend_machine, 74 bulitin_board
+72 herb, 73 vend_machine, 74 bulletin_board
 
 ***  If you're making a weapon, please consider flagging a flag between
      41 and 49 inclusive.  This will help determine damage messages.

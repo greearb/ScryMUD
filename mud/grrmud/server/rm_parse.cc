@@ -85,10 +85,6 @@ int room::processInput(String& input) {
 ///****************************************************************///
 ///*************** non-standard-input-commands  *******************///
 ///****************************************************************///
-#define str1 (cooked_strs[0])
-#define str2 (cooked_strs[1])
-#define str3 (cooked_strs[2])
-#define str4 (cooked_strs[3])
 
 
    len1 = raw_strings[0].Strlen();
@@ -100,17 +96,17 @@ int room::processInput(String& input) {
             i = atoi(buf);
             buf = input.Get_Command(eos, term_by_period);
             if (buf.Strlen() != 0) {
-               str2 = buf;
+               (cooked_strs[1]) = buf;
                buf = input.Get_Rest();
                parse_communication(buf);
-               return this->tell(i, &str2, buf);
+               return this->tell(i, &(cooked_strs[1]), buf);
             }//if
          }//if is number
          else {
-            str2 = buf;
+            (cooked_strs[1]) = buf;
             buf = input.Get_Rest();
             parse_communication(buf);
-            return this->tell(1, &str2, buf);
+            return this->tell(1, &(cooked_strs[1]), buf);
          }//else
       }//if
       return -1;
@@ -124,17 +120,17 @@ int room::processInput(String& input) {
             i = atoi(buf);
             buf = input.Get_Command(eos, term_by_period);
             if (buf.Strlen() != 0) {
-               str2 = buf;
+               (cooked_strs[1]) = buf;
                buf = input.Get_Rest();
                parse_communication(buf);
-               return this->neighbor_echo(i, &str2, buf);
+               return this->neighbor_echo(i, &(cooked_strs[1]), buf);
             }//if
          }//if is number
          else {
-            str2 = buf;
+            (cooked_strs[1]) = buf;
             buf = input.Get_Rest();
             parse_communication(buf);
-            return this->neighbor_echo(1, &str2, buf);
+            return this->neighbor_echo(1, &(cooked_strs[1]), buf);
          }//else
       }//if
 
@@ -244,7 +240,7 @@ int room::processInput(String& input) {
    m = cooked_ints[5];
    n = cooked_ints[6];
 
-   switch (toupper(str1[0]))
+   switch (toupper(cooked_strs[0][0]))
       {
       case 'A':
       case 'B':
@@ -261,18 +257,8 @@ int room::processInput(String& input) {
       case 'M':
       case 'N':
       case 'O':
-         if (strncasecmp(str1, "rm_omove", len1) == 0) { 
-	    return this->omove(i, &str2, j, &str3);
-	 }//if
-         else if (strncasecmp(str1, "rm_omove_all", len1) == 0) { 
-	    return this->omove_all(i, &str2);
-	 }//if
-         else {
-            return -1;
-         }
-
       case 'P': 
-         if (strncasecmp(str1, "pause", len1) == 0) { 
+         if (strncasecmp(cooked_strs[0], "pause", len1) == 0) { 
 	    return this->rm_pause(i);
 	 }//if
          else {
@@ -280,11 +266,17 @@ int room::processInput(String& input) {
          }
       case 'Q':
       case 'R':
-         if (strncasecmp(str1, "rm_move", len1) == 0) { 
-	    return this->move(i, &str2, j, &str3);
+         if (strncasecmp(cooked_strs[0], "rm_move", len1) == 0) { 
+	    return this->move(i, &(cooked_strs[1]), j, &(cooked_strs[2]));
 	 }//if
-         else if (strncasecmp(str1, "rm_move_all", len1) == 0) { 
-	    return this->move_all(i, &str2);
+         else if (strncasecmp(cooked_strs[0], "rm_move_all", len1) == 0) { 
+	    return this->move_all(i, &(cooked_strs[1]));
+	 }//if
+         else if (strncasecmp(cooked_strs[0], "rm_omove", len1) == 0) { 
+	    return this->omove(i, &(cooked_strs[1]), j, &(cooked_strs[2]));
+	 }//if
+         else if (strncasecmp(cooked_strs[0], "rm_omove_all", len1) == 0) { 
+	    return this->omove_all(i, &(cooked_strs[1]));
 	 }//if
          else {
             return -1;
@@ -301,10 +293,6 @@ int room::processInput(String& input) {
       default:   
 	 return 0;
    }//switch
-#undef str1
-#undef str2
-#undef str3
-#undef str4
 
-return 0;
+   return 0;
 }// process input

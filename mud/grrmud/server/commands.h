@@ -83,13 +83,13 @@ int examine(int i_th, const String* obj, critter& pc);
 
 //don't show msg to this last one if specified, wraps do_emote
 int emote(const char* msg, critter& pc, room& rm, short show_non_detects,
-	   critter* noshow = NULL);
+          critter* noshow = NULL);
 // Possessive emote, wraps do_emote
 int pemote(const char* msg, critter& pc, room& rm, short show_non_detects,
-            critter* noshow = NULL);
+           critter* noshow = NULL);
 // Worker method.
-int do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
-              int possessive, critter* crit = NULL);
+int do_emote(const char* msg, critter& pc, room& rm, short show_non_detects,
+             int possessive, critter* crit = NULL);
 
 
 ///************************  login functions  ************************///

@@ -1,15 +1,15 @@
 21		Message number
-20 message ~	names
-Message_20 from Grock:  foo
+16 message ~	names
+Message_16 from Grock:  foo
 ~
 A message from Grock lies here.
 ~
 Try 400
 
 ~
-7 -1  -:| bitfield |:-
+10 7 -1  -:| bitfield |:-
 0 0 0 0 0 0 0 0 0 	extras
-0 0 21 0 	cur_stats
+1024 0 21 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -18,8 +18,8 @@ End of Object.
 
 
 2		Message number
-19 message ~	names
-Message_19 from Grock:  test2
+15 message ~	names
+Message_15 from Grock:  test2
 ~
 A message from Grock lies here.
 ~
@@ -37,8 +37,8 @@ End of Object.
 
 
 1		Message number
-18 message ~	names
-Message_18 from Grock:  test
+14 message ~	names
+Message_14 from Grock:  test
 ~
 A message from Grock lies here.
 ~
@@ -55,66 +55,9 @@ End of Object.
 
 
 
-9		Message number
-17 message ~	names
-Message_17 from Dagath New Builders/wanna-be-builders reat this
-~
-A message from Dagath lies here.
-~
-To all:
-   Ok hello all I am Dagath..Head Builder...all builders pretty much will 
-start out using the test area to learn the OLC..after you think you have
-learned enough to start an area then you e-mail me and we will work on getting
-you setup and on the area you are making...my e-mail is Necrosse@aol.com in the
-header/title of the
-e-mail please put Builder..this way i know what its about and i just dont
-delete u:)
-
-~
-10 7 -1  -:| bitfield |:-
-0 0 0 0 0 0 0 0 0 	extras
-1024 0 9 0 	cur_stats
--1	affected_by
--1	inv
--1	stat_affects
-End of Object.
-
-
-
-26		Message number
-16 message ~	names
-Message_16 from Grock:  new help commands
-~
-A message from Grock lies here.
-~
-Help is much more complete now.  I have an entry for every command available.
-(I think.)
- 
-To see a list of imm/builder commands, check out help wizhelp
-To see mortal commands and other help entries, try help topics
- 
-Also, you should be able to paste through ch_rdesc now.  Some flags have
-been added, namely agg_evil, agg_neut, agg_good.  
-Note that few or no mob procs are actually enabled right now.  This should
-change
-soon.
- 
-Enjoy, Grock
-
-~
-10 7 -1  -:| bitfield |:-
-0 0 0 0 0 0 0 0 0 	extras
-1024 0 26 0 	cur_stats
--1	affected_by
--1	inv
--1	stat_affects
-End of Object.
-
-
-
 30		Message number
-15 message ~	names
-Message_15 from Grock:  semicolons
+13 message ~	names
+Message_13 from Grock:  semicolons
 ~
 A message from Grock lies here.
 ~
@@ -140,8 +83,8 @@ End of Object.
 
 
 33		Message number
-14 message ~	names
-Message_14 from Grock:  SPEC_PROCS
+12 message ~	names
+Message_12 from Grock:  SPEC_PROCS
 ~
 A message from Grock lies here.
 ~
@@ -163,8 +106,8 @@ End of Object.
 
 
 34		Message number
-13 message ~	names
-Message_13 from Dagath:  NUMS
+11 message ~	names
+Message_11 from Dagath:  NUMS
 ~
 A message from Dagath lies here.
 ~
@@ -195,8 +138,8 @@ End of Object.
 
 
 37		Message number
-12 message ~	names
-Message_12 from Grock:  TYPO fixing for areas
+10 message ~	names
+Message_10 from Grock:  TYPO fixing for areas
 ~
 A message from Grock lies here.
 ~
@@ -220,8 +163,8 @@ End of Object.
 
 
 39		Message number
-11 message ~	names
-Message_11 from Dagath:  Test
+9 message ~	names
+Message_9 from Dagath:  Test
 ~
 A message from Dagath lies here.
 ~
@@ -244,8 +187,8 @@ End of Object.
 
 
 40		Message number
-10 message ~	names
-Message_10 from Grock:  Link to  your WWW page
+8 message ~	names
+Message_8 from Grock:  Link to  your WWW page
 ~
 A message from Grock lies here.
 ~
@@ -269,8 +212,8 @@ End of Object.
 
 
 41		Message number
-9 message ~	names
-Message_9 from Grock:  socials update
+7 message ~	names
+Message_7 from Grock:  socials update
 ~
 A message from Grock lies here.
 ~
@@ -293,8 +236,8 @@ End of Object.
 
 
 42		Message number
-8 message ~	names
-Message_8 from Grock:  NEW COMMANDS for OLC
+6 message ~	names
+Message_6 from Grock:  NEW COMMANDS for OLC
 ~
 A message from Grock lies here.
 ~
@@ -315,8 +258,8 @@ End of Object.
 
 
 46		Message number
-7 message ~	names
-Message_7 from Grock:  TRY NEW SPELLS
+5 message ~	names
+Message_5 from Grock:  TRY NEW SPELLS
 ~
 A message from Grock lies here.
 ~
@@ -339,8 +282,8 @@ End of Object.
 
 
 47		Message number
-6 message ~	names
-Message_6 from Grock:  spell/skill list is now on the web page
+4 message ~	names
+Message_4 from Grock:  spell/skill list is now on the web page
 ~
 A message from Grock lies here.
 ~
@@ -363,8 +306,8 @@ End of Object.
 
 
 50		Message number
-5 message ~	names
-Message_5 from Grock:  new option in toggle_prompt command
+3 message ~	names
+Message_3 from Grock:  new option in toggle_prompt command
 ~
 A message from Grock lies here.
 ~
@@ -385,8 +328,8 @@ End of Object.
 
 
 56		Message number
-4 message ~	names
-Message_4 from Grock:  FIX FOR STAIRSTEP EFFECT
+2 message ~	names
+Message_2 from Grock:  FIX FOR STAIRSTEP EFFECT
 ~
 A message from Grock lies here.
 ~
@@ -404,48 +347,6 @@ Grock
 10 7 -1  -:| bitfield |:-
 0 0 0 0 0 0 0 0 0 	extras
 1024 0 56 0 	cur_stats
--1	affected_by
--1	inv
--1	stat_affects
-End of Object.
-
-
-
-58		Message number
-3 message ~	names
-Message_3 from Genesis:  total_rezone
-~
-A message from Genesis lies here.
-~
-When I use total_rezone, the mud tends to crash... Just to let you know.
--Genesis
-
-~
-10 7 -1  -:| bitfield |:-
-0 0 0 0 0 0 0 0 0 	extras
-1024 0 58 0 	cur_stats
--1	affected_by
--1	inv
--1	stat_affects
-End of Object.
-
-
-
-62		Message number
-2 message ~	names
-Message_2 from Crazy:  
-~
-A message from Crazy lies here.
-~
-If you have an idea for a social please e-mail Crazy at
-mattc@andyc.carenet.org.  Tell your nick so i give credit to you.  Also tell
-name and different texts
-!
-
-~
-10 7 -1  -:| bitfield |:-
-0 0 0 0 0 0 0 0 0 	extras
-1024 0 62 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects

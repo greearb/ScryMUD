@@ -391,7 +391,7 @@ void do_olc(critter& pc) {
             OLC_OBJ->ob->obj_flags.turn_on(54); //vend machines are containers
          }//if
          if (OLC_OBJ->ob->obj_flags.get(74)) {
-            OLC_OBJ->ob->obj_flags.turn_on(54); //bulitin boards are bags
+            OLC_OBJ->ob->obj_flags.turn_on(54); //bulletin boards are bags
          }//if
          show("These flags are set so far:\n", pc);
          out_field(OLC_OBJ->ob->obj_flags, pc);

@@ -98,14 +98,13 @@ void do_cast_detect_alignment(critter& vict, critter& agg, int is_canned,
      show(buf, agg);
    }//if missed
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
      
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
- 
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -166,14 +165,13 @@ void do_cast_detect_poison(object& vict, critter& agg, int is_canned,
      }//else
    }//if !lost_con
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
      
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
- 
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -250,14 +248,13 @@ void do_cast_detect_invisibility(critter& vict, critter& agg, int is_canned,
      }//else, not already affected
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
-     
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
- 
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
+
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -341,14 +338,13 @@ void do_cast_detect_hidden(critter& vict, critter& agg, int is_canned,
      }//else, not already affected
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
-     
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
- 
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
+
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -434,12 +430,13 @@ void do_cast_bless(critter& vict, critter& agg, int is_canned,
      }//else, not already affected
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);     
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);     
+     
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -538,12 +535,13 @@ void do_cast_pfg(critter& vict, critter& agg, int is_canned,
      }//else, not already affected
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);     
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
+
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -643,12 +641,13 @@ void do_cast_pfe(critter& vict, critter& agg, int is_canned,
      }//else, not already affected
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);     
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);     
+
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -733,14 +732,13 @@ void do_cast_detect_magic(critter& vict, critter& agg, int is_canned,
      }//else, not already affected
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
      
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
  
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -840,9 +838,10 @@ void do_cast_create_water(object& vict, critter& agg, int is_canned,
    }//if did_hit
    else if (lost_con) {//lost concentration 
       show(LOST_CONCENTRATION_MSG_SELF, agg);
-      Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-      buf.Cap();
-      room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
+
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
       if (!is_canned)
          agg.MANA -= spell_mana / 2;
    }//else
@@ -921,12 +920,13 @@ void do_cast_enchant_weapon(object& vict, critter& agg, int is_canned,
      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
+
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -1024,12 +1024,13 @@ void do_cast_enchant_armor(object& vict, critter& agg, int is_canned,
      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
+      
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -1114,12 +1115,13 @@ void do_cast_fire_blade(object& vict, critter& agg, int is_canned,
      }//else, not already affected
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);     
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);     
+      
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -1200,10 +1202,11 @@ void do_cast_frost_blade(object& vict, critter& agg, int is_canned,
      }//else, not already affected
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);     
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
+      show(LOST_CONCENTRATION_MSG_SELF, agg);     
+      
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else
@@ -1291,12 +1294,13 @@ void do_cast_rune_edge(object& vict, critter& agg, int is_canned,
      }//else, not already affected
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);     
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);     
+      
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -1401,11 +1405,10 @@ void do_cast_invisibility(critter& vict, critter& agg, int is_canned,
      }//else, not already affected
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
      
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
  
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
@@ -1455,14 +1458,13 @@ void do_cast_invisibility(object& vict, critter& agg, int is_canned,
      }//else, not already affected
    }//if did_hit
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
      
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
  
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -1517,11 +1519,12 @@ void do_cast_mirror_image(critter& pc, int is_canned, int lvl) {
      pc.mirrors = max(num_mirs, pc.mirrors);
    }//if did_hit
    else { //lost concentration
-     show(LOST_CONCENTRATION_MSG_SELF, pc);
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(pc, ~0));
-     buf.Cap();
-     ROOM.showAllCept(buf, &pc); 
-     pc.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, pc);
+      
+      emote(LOST_CONCENTRATION_MSG_OTHER, pc, ROOM, FALSE);
+
+      if (!is_canned)
+         pc.MANA -= spell_mana / 2;
    }//else
 
    pc.PAUSE++;
@@ -1590,11 +1593,13 @@ void do_cast_cure_serious(critter& vict, critter& agg, int is_canned,
      }//else
    }//if did_hit
    else { //lost concentration
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
-     agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
+
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+      
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
 
    agg.PAUSE++;
@@ -1669,13 +1674,13 @@ void do_cast_cure_critical(critter& vict, critter& agg, int is_canned,
      }//else
    }//if did_hit
    else { //lost concentration
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
 
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
  
-     agg.MANA -= spell_mana / 2;
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
 
    agg.PAUSE++;
@@ -1749,13 +1754,13 @@ void do_cast_heal(critter& vict, critter& agg, int is_canned, int lvl) {
      }//else
    }//if did_hit
    else { //lost concentration
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
 
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
- 
-     agg.MANA -= spell_mana / 2;
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
 
    agg.PAUSE++;
@@ -1833,13 +1838,13 @@ void do_cast_restore(critter& vict, critter& agg, int is_canned, int lvl) {
      }//else
    }//if did_hit
    else { //lost concentration
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
 
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
  
-     agg.MANA -= spell_mana / 2;
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
 
    agg.PAUSE++;
@@ -1978,14 +1983,13 @@ void do_cast_web(critter& vict, critter& agg, int is_canned, int lvl) {
      }//else
    }//else, missed
    else if (lost_con) {//lost concentration 
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
      
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
  
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
@@ -2071,14 +2075,15 @@ void do_cast_entangle(critter& vict, critter& agg, int is_canned,
      agg.PAUSE += 1;   // increment pause_count
    }//else, missed with canned magic   
    else { //lost concentration
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
 
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
- 
-     agg.MANA -= spell_mana / 2;
-     agg.PAUSE += 1; 
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
+
+      agg.PAUSE += 1; 
    }//else
 
    if (do_effects) {
@@ -2189,13 +2194,13 @@ void do_cast_faerie_fire(critter& vict, critter& agg, int is_canned,
        agg.MANA -= spell_mana;
    }//if
    else if (lost_con) {
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
 
-     Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-     buf.Cap();
-     room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
- 
-     agg.MANA -= spell_mana / 2;
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else
    
    if (do_effects) {
@@ -2257,14 +2262,13 @@ void do_cast_calm(critter& agg, int is_canned, int lvl) {
 	agg.PAUSE += 1;   // increment pause_count
       }//if ! lost concentration
       else { //lost concentration
-	show(LOST_CONCENTRATION_MSG_SELF, agg);
+         show(LOST_CONCENTRATION_MSG_SELF, agg);
 
-	Sprintf(buf, LOST_CONCENTRATION_MSG_OTHER, name_of_crit(agg, ~0));
-	buf.Cap();
-	room_list[agg.getCurRoomNum()].showAllCept(buf, &agg);
+         emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+               *(agg.getCurRoom()), FALSE);
  
-	agg.MANA -= spell_mana / 2;
-	agg.PAUSE += 1; 
+         agg.MANA -= spell_mana / 2;
+         agg.PAUSE += 1; 
       }//else
    }//else !canned
 

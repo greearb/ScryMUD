@@ -16,7 +16,7 @@ CORE_FILES = \
 	grrmud/World/SS_DESCS grrmud/World/SKILLS_SPELLS \
 	lib/string2/*.cc lib/string2/*.h lib/string2/Makefile \
 	grrmud/truncate_log License Credits grrmud/startup \
-	include/README lib/Makefile README
+	include/README lib/Makefile README grrmud/server/gen_cmds.spec
 
 MISC_FILES = \
 	grrmud/Boards/board_32 \

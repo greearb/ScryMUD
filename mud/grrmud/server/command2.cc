@@ -1289,9 +1289,14 @@ int help(int i_th, String* command, critter& pc) {
       return -1;
    }//if
 
-   const char* parsed_cmd = parse_hlp_command(*command);
+   String parsed_cmd(parse_hlp_command(*command));
 
-   if (!parsed_cmd) {
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "help:  parsed_cmd -:" << parsed_cmd << ":-  cmd -:"
+             << *command << ":-\n";
+   }
+
+   if (parsed_cmd.Strlen() == 0) {
       // short cut this to look for skill/spell help first
       if (SSCollection::instance().doHelpFor(*command, pc) >= 0) {
          return 0;
@@ -1299,8 +1304,8 @@ int help(int i_th, String* command, critter& pc) {
    }
 
    if (pc.pc->imm_data) {
-      if (parsed_cmd) 
-         Sprintf(cmd, "./Help/IMM_%s_%i", parsed_cmd, i_th);
+      if (parsed_cmd.Strlen()) 
+         Sprintf(cmd, "./Help/IMM_%S_%i", &parsed_cmd, i_th);
       else
          Sprintf(cmd, "./Help/IMM_help_%i", i_th);
 
@@ -1312,8 +1317,8 @@ int help(int i_th, String* command, critter& pc) {
       }//if
    }//if, first check IMM helps for immortal types
 
-   if (parsed_cmd) 
-      Sprintf(cmd, "./Help/%s_%i", parsed_cmd, i_th);
+   if (parsed_cmd.Strlen()) 
+      Sprintf(cmd, "./Help/%S_%i", &parsed_cmd, i_th);
    else                 
       Sprintf(cmd, "./Help/help_%i", i_th);
 
@@ -1323,12 +1328,9 @@ int help(int i_th, String* command, critter& pc) {
    page = get_page(cmd);
 
    if (page.Strlen() > 0) {
-
-      show("Help For Command:  ", pc);
-      show(parsed_cmd, pc);
-      show("\n", pc);
-      
-      show(page, pc);
+      Sprintf(buf, "Help for Command:  %S\n", &parsed_cmd);
+      pc.show(buf);
+      pc.show(page);
       return 0;
    }//if
    else {
@@ -2394,7 +2396,7 @@ int do_ostat(object& obj, critter& pc) {
      59 canteen, 60 liquid, 61 food, 62 boat, 63 has_spec_proc_data,
      64 toolbox, 65 cauldron, 66 pen, 67 construct_component
      68 concoct_component, 69 parchment, 70 needs_resetting
-     71 vid_screen, 72 herb, 73 vend_machine, 74 bulitin_board
+     71 vid_screen, 72 herb, 73 vend_machine, 74 bulletin_board
      75 is_butcherable
 
 Bag Flag Definitions:

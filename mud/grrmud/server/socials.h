@@ -29,6 +29,7 @@
 #include "classes.h"
 #include <string2.h>
 
+void pout(int i_th, const String* vict, critter& pc, room& rm);
 void lag(int i_th, const String* vict, critter& pc, room& rm);
 void sigh(int i_th, const String* vict, critter& pc, room& rm);
 void wink(int i_th, const String* vict, critter& pc, room& rm);

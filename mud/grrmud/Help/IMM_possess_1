@@ -14,6 +14,10 @@ syntax:  possess <<i_th> [mob_name]
 
 example:  possess 2.guard
 
+After possession:
+example:  gos This is the one I'm possessing.
+example:  self gos This is my real character.
+
 <color=red>
 See Also:  order, force, unpossess, snoop
 </color></help>

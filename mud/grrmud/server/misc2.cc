@@ -452,7 +452,7 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
         }//if
      }//if
      else if (chr == 'Z') {
-        if (!aux_rm || aux_rm->isZlocked()) {
+        if (!aux_rm || !aux_rm->isZlocked()) {
            if (do_msg) {
               show("You cannot edit a room that is not locked.\n", pc);
            }//if
