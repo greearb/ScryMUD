@@ -1,5 +1,5 @@
-// $Id: wep_skll.cc,v 1.8 2002/08/19 06:23:07 eroper Exp $
-// $Revision: 1.8 $  $Author: eroper $ $Date: 2002/08/19 06:23:07 $
+// $Id: wep_skll.cc,v 1.9 2002/08/27 21:44:35 eroper Exp $
+// $Revision: 1.9 $  $Author: eroper $ $Date: 2002/08/27 21:44:35 $
 
 //
 //ScryMUD Server Code
@@ -190,6 +190,11 @@ int backstab(int i_th, const String* victim, critter& pc) {
          return -1;
       }//if
 
+      if(!(pc.isHiding())) {
+         pc.show("You must be hiding to backstab.\n") ;
+         return -1;
+      }
+
       if (!(pc.EQ[9] && pc.EQ[9]->OBJ_FLAGS.get(43)) &&
          !(pc.EQ[10] && pc.EQ[10]->OBJ_FLAGS.get(43))) {
             show("You must be holding or wielding a piercing weapon to backstab.\n", pc);
@@ -250,7 +255,9 @@ int do_backstab(critter& vict, critter& pc) {
          return -1;
       }
 
-      exact_raw_damage(((pc.LEVEL / 5 + 1) * wd), NORMAL, vict, pc);
+      exact_raw_damage(((pc.LEVEL / 4 + 1) * wd), NORMAL, vict, pc);
+
+      vict.PAUSE += d(1,2);
 
       if (vict.HP < 0) { //do fatality
          show("You collapse as a blade enters your back!\n", vict);
@@ -276,21 +283,22 @@ int do_backstab(critter& vict, critter& pc) {
       }//else
    }//if hit
    else {  //missed
-      Sprintf(buf, 
-              "You whirl just in time to avoid %S's blade in your back.\n", 
-              name_of_crit(pc, vict.SEE_BIT));
-      show(buf, vict);
 
-      Sprintf(buf, "You nearly cut your finger off trying to backstab %S.\n",
-                 name_of_crit(vict, pc.SEE_BIT));
-      show(buf, pc);
+           pc.PAUSE += d(1,3);
 
-      Sprintf(buf, "avoids %S's attempt to backstab %s.",
-              name_of_crit(pc, ~0), get_him_her(vict));
-      emote(buf, vict, ROOM, TRUE, &pc);
+           Sprintf(buf, 
+                           "You whirl just in time to avoid %S's blade in your back.\n", 
+                           name_of_crit(pc, vict.SEE_BIT));
+           show(buf, vict);
+
+           Sprintf(buf, "You nearly cut your finger off trying to backstab %S.\n",
+                           name_of_crit(vict, pc.SEE_BIT));
+           show(buf, pc);
+
+           Sprintf(buf, "avoids %S's attempt to backstab %s.",
+                           name_of_crit(pc, ~0), get_him_her(vict));
+           emote(buf, vict, ROOM, TRUE, &pc);
    }//else
-
-   pc.PAUSE += d(1,3);
 
    if (do_fatality) {
       agg_kills_vict(&pc, vict);

@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.21 2002/02/19 12:15:15 gingon Exp $
-// $Revision: 1.21 $  $Author: gingon $ $Date: 2002/02/19 12:15:15 $
+// $Id: skills.cc,v 1.22 2002/08/27 21:44:35 eroper Exp $
+// $Revision: 1.22 $  $Author: eroper $ $Date: 2002/08/27 21:44:35 $
 
 //
 //ScryMUD Server Code
@@ -576,6 +576,7 @@ int do_bash(door& vict, critter& pc) { //bash for doors
 int do_bash(critter& vict, critter& pc) {
    String buf(100);
    short do_fatality = FALSE;
+   int wd;
 
    if ((vict.isMob()) || (pc.isMob())) {
       mudlog.log(ERROR, "ERROR:  MOB sent to do_bash.\n");
@@ -588,9 +589,10 @@ int do_bash(critter& vict, critter& pc) {
 
    if (skill_did_hit(pc, BASH_SKILL_NUM, vict)) {
 
-      pc.PAUSE += d(1,3); //increment pause_count
-      exact_raw_damage(d(pc.STR/2, 5) + pc.DEX/2, NORMAL, vict, pc);
-      vict.PAUSE += d(1,3);
+      wd = pc.DAM + d(pc.BH_DICE_COUNT, pc.BH_DICE_SIDES);
+
+      exact_raw_damage( (d(pc.STR/2, 5) + pc.DEX/2)+(wd*2), NORMAL, vict, pc);
+      vict.PAUSE += 1;
 
       if (vict.HP < 0) {
          Sprintf(buf, "crushes the skull of %S with %s fist!!\n", 
@@ -1540,6 +1542,7 @@ short did_spell_hit(const critter& agg, const int spell_type,
 
 short skill_did_hit(critter& agg, int spell_num, critter& vict) {
    int percent_lrnd = 0;
+   int sneak_mod = 1;
 
    if (agg.pc) {
       agg.SKILLS_KNOWN.Find(spell_num, percent_lrnd);
@@ -1553,23 +1556,33 @@ short skill_did_hit(critter& agg, int spell_num, critter& vict) {
          percent_lrnd = 10;
       }
    }//else
-   
+
    if ((spell_num == CONSTRUCT_SKILL_NUM) || (spell_num == BREW_SKILL_NUM))
-     return (d(1, 100) < d(1, (percent_lrnd * 2 + 2 * (agg.DEX + agg.INT))));
+      return (d(1, 100) < d(1, (percent_lrnd * 2 + 2 * (agg.DEX + agg.INT))));
 
    else if ((spell_num == BODYSLAM_SKILL_NUM) ||
-            (spell_num == HURL_SKILL_NUM))
-     return (d(1, vict.CRIT_WT_CARRIED) < d(1, percent_lrnd + agg.STR * 10));
+         (spell_num == HURL_SKILL_NUM))
+      return (d(1, vict.CRIT_WT_CARRIED) < d(1, percent_lrnd + agg.STR * 10));
+
    else if ((spell_num == BACKSTAB_SKILL_NUM) ||
-            (spell_num == CIRCLE_SKILL_NUM)) {
+         (spell_num == CIRCLE_SKILL_NUM)) {
+
+      if ( agg.isSneaking() ) {
+         int sneak_p_lrnd = 0;
+         if (agg.SKILLS_KNOWN.Find(SNEAK_SKILL_NUM, sneak_p_lrnd)) {
+            sneak_mod = (int)(sneak_p_lrnd/4);
+         }
+      }
+
       int rnd1 = d(1, (agg.HIT * 3 + agg.DEX * 5 + agg.LEVEL * 2));
       int rnd2  = d(1, (2 * vict.DEX + vict.LEVEL + max(-vict.AC / 2,  25)));
-      return (((float)(rnd1) * (float)(percent_lrnd) / 100.0) >
-              ((float)(rnd2)));
+      return ( (((float)(rnd1) * (float)(percent_lrnd) / 100.0) + sneak_mod) >
+            ((float)(rnd2)));
    }
+
    else {
-     return (d(1, ((agg.HIT + agg.DEX + 2 * agg.LEVEL) * (percent_lrnd / 4))) >
-             d(1, ((vict.DEX + 2 * vict.LEVEL) * 15)));
+      return (d(1, ((agg.HIT + agg.DEX + 2 * agg.LEVEL) * (percent_lrnd / 4))) >
+            d(1, ((vict.DEX + 2 * vict.LEVEL) * 15)));
    }
 }//skill_did_hit
 
