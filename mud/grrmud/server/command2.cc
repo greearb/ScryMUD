@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.26 1999/06/24 05:22:35 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/06/24 05:22:35 $
+// $Id: command2.cc,v 1.27 1999/06/24 05:55:51 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/06/24 05:55:51 $
 
 //
 //ScryMUD Server Code
@@ -1181,7 +1181,8 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
             if (source_obj->extras[0] < -1) {
                if (mudlog.ofLevel(WRN)) {
                   mudlog << "WARNING: Was an infinite source, < -1: "
-                         << source_obj->extras[0] << endl;
+                         << source_obj->extras[0] << " obj#: " 
+                         << source_obj->getIdNum() << endl;
                }
             }
             else {
