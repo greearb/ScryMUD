@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.9 1999/07/28 05:57:05 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
+// $Id: classes.h,v 1.10 1999/07/29 06:35:08 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/07/29 06:35:08 $
 
 //
 //ScryMUD Server Code
@@ -40,6 +40,30 @@
 
 class critter;  //foward declaration
 
+///************************  StatBonus  ************************///
+ 
+/** A pairing of Stat and Bonus */
+class StatBonus {
+private:
+   static int _cnt;
+
+public:
+   int stat;
+   int bonus;
+   
+   StatBonus() : stat(0), bonus(0) { _cnt++; }
+   StatBonus(int ss, int bd) :
+         stat(ss), bonus(bd) { _cnt++; }
+   StatBonus(const StatBonus& src) :
+         stat(src.stat),
+         bonus(src.bonus) { _cnt++; }
+   ~StatBonus() { _cnt--; }
+
+   String toString() const ;
+
+   static int getInstanceCount() { return _cnt; }
+};//StatBonus
+
 
 class HegemonMarkup {
 public:
@@ -48,7 +72,7 @@ public:
     * inclusion in hegemon markup text.
     */
    static String makeSafeForHegTag(const char* string);
-}; 
+};
 
 /** I'd wrather not do it this way, but I can't find a better solution.
  * So, I'm going to make the LogicalEntity's aware of what kind of object
@@ -64,6 +88,31 @@ enum LEtypeE {
    LE_DOOR,
    LE_UNKNOWN,
    LE_ANY
+};
+
+
+class LString : public String {
+protected:
+   LanguageE lang;
+public:
+   LString(LanguageE language, int len) : String(len), lang(language) { }
+   LanguageE getLanguage() const { return lang; }
+   void setLanguage(LanguageE l) { lang = l; }
+   int isLanguage(LanguageE l) const { return lang == l; }
+};
+
+class LStringCollection : public List<LString*> {
+public:
+   virtual ~LStringCollection();
+   LString& getString(LanguageE for_lang);
+
+   /** This will add the new string to the collection.  If a string with the
+    * same language is already in it, then the old one will be deleted and
+    * replaced by the new one.  The collection takes ownership of the memory
+    * when new_string is passed in, so passing a reference to a stack variable,
+    * for example, is a real bad idea.
+    */
+   void addLstring(LString* new_string);
 };
 
 
@@ -84,6 +133,8 @@ public:
    virtual ContainedObject* remove(ContainedObject* o);
    List<ContainedObject*>& getInv() { return inv; }
    const List<ContainedObject*>& peekInv() const { return inv; }
+   virtual int isEmpty() const { return inv.isEmpty(); }
+   int haveData(ContainedObject* obj) const { return (inv.haveData(obj) || 0); }
 
 private:
    List<ContainedObject*> inv;
@@ -111,6 +162,9 @@ private:
 };//ContainedObject
 
 
+class critter;
+class SpellDuration;
+
 /** This will be the base class for all objects, doors, critters, and rooms.
  */
 class Entity : public ContainedObject {
@@ -119,12 +173,16 @@ protected:
    int vis_bit;
    int id_num;
 
+   List<SpellDuration*> affected_by;
+   LStringCollection names;
+   LStringCollection long_desc;
+
 public:
    Entity() : container(NULL) { }
    virtual ~Entity() { }
 
    virtual LEtypeE getEntityType() const = 0;
-   virtual getEntityCount(LEtypeE type, int id_num, int sanity) = 0;
+   virtual int getEntityCount(LEtypeE type, int id_num, int sanity) = 0;
    virtual void gainObject(Entity* le) = 0;
    virtual Entity* loseObject(Entity* le) = 0;
    /** Returns zero if we can't find anything better. */
@@ -134,7 +192,24 @@ public:
    virtual void setContainer(Entity* cont) { container = cont; }
    Entity* getContainer() { return container; }
 
-   int isEntityType(LEtypeE le);
+   virtual const String* getShortName() { return getName(); }
+   virtual const String* getShortName(int c_bit) { return getName(c_bit); }
+   virtual const String* getName() { return getName(~0); };
+   virtual const String* getName(int c_bit);
+   virtual const String* getLongName() { return getLongName(~0); }
+   virtual const String* getLongName(int c_bit);
+
+   /**  These will take care of language translation and see-bits. */
+   virtual const String* getName(critter* observer);
+   virtual const String* getShortName(critter* observer);
+   virtual const String* getLongName(critter* observer);
+   virtual const String* getLongDesc(critter* observer);
+
+   virtual int isEntityType(LEtypeE le);
+   virtual int isNamed(const String& name) const;
+
+   virtual SpellDuration* isAffectedBy(int spell_num);
+
    int getVisBit() const { return vis_bit; }
    int getIdNum() const { return id_num; }
    void setIdNum(int i) { id_num = i; }
@@ -181,46 +256,6 @@ public:
    void open() { flags.turn_off(2); }
    void lock() { close(); flags.turn_on(3); }
    void unlock() { flags.turn_off(3); }
-};//class Closable
-
-
-class LString : public String {
-protected:
-   LanguageE lang;
-public:
-   LString(LanguageE language, int len) : String(len), lang(language) { }
-   LanguageE getLanguage() const { return lang; }
-   void setLanguage(LanguageE l) { lang = l; }
-};
-
-class LStringCollection : public List<LString*> {
-public:
-   LString& getString(LanguageE for_lang);
-};
-   
-
-///************************  StatBonus  ************************///
- 
-/** A pairing of Stat and Bonus */
-class StatBonus {
-private:
-   static int _cnt;
-
-public:
-   int stat;
-   int bonus;
-   
-   StatBonus() : stat(0), bonus(0) { _cnt++; }
-   StatBonus(int ss, int bd) :
-         stat(ss), bonus(bd) { _cnt++; }
-   StatBonus(const StatBonus& src) :
-         stat(src.stat),
-         bonus_duration(src.bonus) { _cnt++; }
-   ~StatBonus() { _cnt--; }
-
-   String toString() const ;
-
-   static int getInstanceCount() { return _cnt; }
-};//StatBonus
+};//class Closable   
 
 #endif

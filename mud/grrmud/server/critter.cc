@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.36 1999/07/25 20:13:04 greear Exp $
-// $Revision: 1.36 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
+// $Id: critter.cc,v 1.37 1999/07/29 06:35:08 greear Exp $
+// $Revision: 1.37 $  $Author: greear $ $Date: 1999/07/29 06:35:08 $
 
 //
 //ScryMUD Server Code
@@ -3349,19 +3349,6 @@ int critter::isHiding() const {
 
 int critter::hasAI() {
    return (mob && mob->proc_data && FLAG1.get(13));
-}
-
-int critter::getLinesOnPage() {
-   if (pc) {
-      return pc->lines_on_page;
-   }
-   return 40; //default, probably never used
-}
-
-void critter::setLinesOnPage(int lines) {
-   if (pc) {
-      pc->lines_on_page = lines;
-   }
 }
 
 

@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.13 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: misc2.h,v 1.14 1999/07/29 06:35:09 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/07/29 06:35:09 $
 
 //
 //ScryMUD Server Code
@@ -57,10 +57,10 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
                     critter& pc, room* aux_rm = NULL, critter* aux_crit = NULL,
                     int do_msg = TRUE);
 
-stat_spell_cell* is_affected_by(int spell_num, critter& pc);
-stat_spell_cell* is_affected_by(int spell_num, object& obj);
+SpellDuration* is_affected_by(int spell_num, critter& pc);
+SpellDuration* is_affected_by(int spell_num, object& obj);
 
-stat_spell_cell* has_stat_affect(int affect_num, object& obj);
+SpellDuration* has_stat_affect(int affect_num, object& obj);
 
 void leave_room_effects(room& rm, critter& pc);
 void leave_room_effects(room& rm, object& obj);
@@ -127,9 +127,9 @@ void clear_crit_list(List<critter*>& lst);
 void clear_obj_list(List<object*>& lst);
 
 void out_field(const bitfield& field, critter& pc, const BitfieldNames& names);
-void out_stat_list(const List<stat_spell_cell*>& lst, critter& pc,
+void out_stat_list(const List<SpellDuration*>& lst, critter& pc,
                    const BitfieldNames& names);
-void out_spell_list(const List<stat_spell_cell*>& lst, critter& pc);
+void out_spell_list(const List<SpellDuration*>& lst, critter& pc);
 //void critter::doBecomeNonPet();
 const String* single_obj_name(object& obj, int see_bit);
 short name_is_secret(const String* name, door& dr);

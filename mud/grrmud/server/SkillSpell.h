@@ -1,5 +1,5 @@
-// $Id: SkillSpell.h,v 1.6 1999/07/28 05:57:05 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
+// $Id: SkillSpell.h,v 1.7 1999/07/29 06:35:08 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/29 06:35:08 $
 
 //
 //ScryMUD Server Code
@@ -55,7 +55,7 @@ public:
          spell(ss), duration(bd) { _cnt++; }
    SpellDuration(const SpellDuration& src) :
          spell(src.spell),
-         duration_duration(src.duration) { _cnt++; }
+         duration(src.duration) { _cnt++; }
    ~SpellDuration() { _cnt--; }
 
    String toString() const ;

@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.9 1999/07/28 05:57:05 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
+// $Id: door.h,v 1.10 1999/07/29 06:35:09 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/07/29 06:35:09 $
 
 //
 //ScryMUD Server Code
@@ -39,12 +39,11 @@
 class room;
 
 class door_data : public Entity, public Closable {
-protected:
+private:
    static int _cnt;
-   int in_zone; //owner zone
-   List<String*> names; //the direction e, w... will be first 
-   String long_desc;
 
+protected:
+   int in_zone; //owner zone
    int token_num;
    int key_num;
 
@@ -56,7 +55,6 @@ public:
    int getZoneNum() const { return in_zone; }
    int getKeyNum() const { return key_num; }
    int getTokenNum() const { return token_num; }
-   int getVisBit() const { return vis_bit; }
 
    door_data (); //default constructor
    door_data(const door_data& source);  //copy constructor
@@ -74,19 +72,25 @@ public:
 //*********************** door **************************//
  
 class critter;
- 
-class door {
-protected:
+
+/** Door is strange in that it contains much of it's information
+ * in the door_data class, which may be shared by several doors.
+ * For that reason, though door is an Entity, it must over-ride
+ * several of Entity's methods, especially those dealing with
+ * name and description data.
+ */
+class door : Entity {
+private:
    static int _cnt;
 
-public:
+protected:
    door_data* dr_data;  
    int destination;
    short distance;
-   List<stat_spell_cell*> affected_by;
    critter* crit_blocking;
    int ticks_till_disolve; //for temp doors
-   int in_room;
+
+public:
    
    door();
    door(const door& source); //copy constructor

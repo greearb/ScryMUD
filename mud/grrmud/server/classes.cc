@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.6 1999/07/28 05:57:05 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
+// $Id: classes.cc,v 1.7 1999/07/29 06:35:08 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/29 06:35:08 $
 
 //
 //ScryMUD Server Code
@@ -101,7 +101,7 @@ ContainedObject::~ContainedObject() {
 
 
 int Entity::isEntityType(LEtypeE le) {
-   return ((le == LE_ALL) || (getEntityType() == le));
+   return ((le == LE_ANY) || (getEntityType() == le));
 }
 
 

@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.16 1999/07/28 05:57:05 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
+// $Id: room.h,v 1.17 1999/07/29 06:35:09 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/07/29 06:35:09 $
 
 //
 //ScryMUD Server Code
@@ -68,15 +68,12 @@ public:
 };//KeywordPair
 
 
-class room : public LogicalContainer, public Entity {
+class room : public Entity {
 private:
    static int _cnt;
 
 protected:
    int pause;
-   RoomScript* cur_script;             /* currently executing script */
-   List<RoomScript*> pending_scripts;  /* queue holds scripts to be run */
-   List<RoomScript*> room_proc_scripts; /* Scripts this room has. */
 
    ObjectContainer critters;
 
@@ -106,21 +103,18 @@ protected:
 	   // 30 can_camp 31 !complete (olc wise) 32 has_keywords
            // 33 !mob_wander, 34 !foreign_mob_wander, 35 has_proc_script
 
+   
+   LStringCollection short_desc;
+
+   List<door*> doors;   
+   List<KeywordPair*> keywords;
+
    void gainObject_(critter& pc);
    void gainObject_(object& obj);
    void loseObject_(critter& pc);
    void loseObject_(object& obj);
 
 public:
-   List<stat_spell_cell*> affected_by;
-   
-   List<String*> names;
-   String short_desc;
-   String long_desc;
-
-   List<door*> doors;   
-   List<KeywordPair*> keywords;
-
    room();
    room(room& source);
    room(int rm_num);
@@ -139,22 +133,6 @@ public:
 
    int getPause() const { return pause; }
    int decrementPause() { if (pause > 0) pause--; return pause; }
-
-   int insertNewScript(RoomScript* ptr);
-   const ScriptCmd* getNextScriptCmd() { return cur_script->getNextCommand(); }
-   void finishedRoomProc();
-   int isInProcNow() { return (cur_script && (cur_script->isInProgress())); }
-   void addProcScript(const String& txt, RoomScript* script_data);
-   void doScriptJump(int abs_offset);
-   void listScripts(critter& pc);
-   RoomScript* getScriptAt(int idx) { return room_proc_scripts.elementAt(idx); }
-   void removeScript(String& trigger, int i_th, critter& pc);
-
-   /** Attempt to trigger a room script directly.  So far, we support only
-    * pull and push, but more can easily be added.
-    */
-   int attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
-                                   critter& actor);
 
    virtual LEtypeE getEntityType() const { return LE_ROOM; }
 
@@ -206,8 +184,6 @@ public:
    void resetProcMobs();
    void purgeCritter(int mob_num, critter& pc);
 
-   int processInput(String& input); /* for room scripts */
-
    int sub_a_4_b(critter* crit_ptr, int i_th, const String& name,
                  int see_bit);
    int sub_a_4_b(critter* a, critter* b, int i_th);
@@ -225,7 +201,6 @@ public:
    int getZoneNum();
    virtual void stat(critter& pc);
    virtual void checkLight(int do_msgs = FALSE);
-   virtual stat_spell_cell* isAffectedBy(int spell_num);
 
    virtual void normalize(); /* called after OLC to enforce as much state as
                               * possible. */

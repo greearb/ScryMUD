@@ -1,5 +1,5 @@
-// $Id: script.h,v 1.10 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: script.h,v 1.11 1999/07/29 06:35:09 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/29 06:35:09 $
 
 //
 //ScryMUD Server Code
@@ -37,7 +37,7 @@
 #include <KVPair.h>
 
 class room;
-
+class critter;
 
 /**  This will not kill, but can set HP to 1 in worst case. */
 int affect_crit_stat(StatTypeE ste, String& up_down, int i_th,
@@ -310,6 +310,61 @@ public:
    static int getInstanceCount() { return _cnt; }
    static int parseScriptCommand(ScriptCmd& cmd, object& owner);
 };//ObjectScript
+
+
+/**  This will distill all the methods needed to be able to script.  Objects,
+ * rooms, mobs and others may inherit it.
+ */
+class Scriptable {
+protected:
+   List<GenScript*> scripts;
+   GenScript* cur_script; // a pointer into the List of MobScripts.
+   List<GenScript*> pending_scripts;
+   int pause;
+
+public:
+   /** For scripts, the script_targ is always *this.  The script_owner
+    * will be null (for non-script specific stuff) and should be specified
+    * if it relates to scripting of course.
+    */
+   int processInput(String& input, short do_sub, int script_driven, 
+                    critter* c_script_owner = NULL,
+                    room* r_script_owner = NULL, int was_ordered = FALSE);
+   int processInput(String& input);
+   int processInput(String& input, room* rm); /* for object scripts */
+
+
+   /**  Run a command after it has been parsed by processInput.  Also called
+    * from the script_jump method.
+    */
+   int executeCommand(String* cooked_strs, int* cooked_ints,
+                      int sanity, critter* c_script_owner,
+                      room* r_script_owner, int do_sub, int was_ordered);
+
+   void addProcScript(const String& txt, GenScript* script_data);
+   void removeScript(String& trigger, int i_th, critter& pc);
+   void finishedScript();
+
+   int isRunningScript() const { return (cur_script && (cur_script->isInProgress())); }
+
+   const ScriptCmd* getNextScriptCmd() { return cur_script->getNextCommand(); }
+
+   int getPause() const { return pause; }
+   void setPause(int i) { pause = i; }
+
+   void doScriptJump(int abs_index);
+   int insertNewScript(MobScript* script);
+   GenScript* getScriptAt(int idx) { return scripts.elementAt(idx); }
+
+   /** Attempt to trigger a room script directly.  So far, we support only
+    * pull and push, but more can easily be added.
+    */
+   int attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
+                                   critter* actor);
+
+   void listScripts(critter* pc);
+
+};//Scriptable
 
 
 #endif
