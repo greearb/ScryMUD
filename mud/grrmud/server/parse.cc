@@ -1,5 +1,5 @@
-// $Id: parse.cc,v 1.19 1999/06/26 06:14:17 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
+// $Id: parse.cc,v 1.20 1999/08/10 07:06:20 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
 
 //
 //ScryMUD Server Code
@@ -301,7 +301,8 @@ int critter::processInput(String& input, short do_sub, int script_driven,
       }//if
 
 		     /* copy entry to last_input */
-      if ((input.Look_Command() != "!") && do_sub) {
+      if ((input.Look_Command() != "!") && do_sub &&
+          (input.Look_Command().Strlen())) {
 	pc->last_input = input.Get_Rest(FALSE); //get till newline
 	pc->last_input += "\n";
       }//if

@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.11 1999/07/07 06:05:12 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/07 06:05:12 $
+// $Id: skills.cc,v 1.12 1999/08/10 07:06:20 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
 
 //
 //ScryMUD Server Code
@@ -181,7 +181,7 @@ int do_trip(critter& vict, critter& pc) {
    }//if
 
    if (skill_did_hit(pc, TRIP_SKILL_NUM, vict)) {
-
+      pc.setPosn(POS_SIT);
       pc.PAUSE += 2; //increment pause_count
       exact_raw_damage(d(4, 5), NORMAL, vict, pc);
       vict.PAUSE += d(1,3);
@@ -858,7 +858,7 @@ int construct(critter& pc, short do_mob = FALSE) {
    if (!pc.pc && !do_mob) //no ordering pets to do yer dirty-work
       return -1;
 
-   if (!ok_to_do_action(NULL, "mBFPS", 0, pc)) {
+   if (!ok_to_do_action(NULL, "mBFPSK", CONSTRUCT_SKILL_NUM, pc)) {
       return -1;
    }
 
@@ -1062,7 +1062,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
 
    item1 = item2 = item3 = item4 = item5 = NULL;
 
-   if (!ok_to_do_action(NULL, "mBFPS", 0, pc)) {
+   if (!ok_to_do_action(NULL, "mBFPSK", BREW_SKILL_NUM, pc)) {
       return -1;
    }
 
@@ -1450,7 +1450,7 @@ short skill_did_hit(critter& agg, int spell_num, critter& vict) {
    }//else
    
    if ((spell_num == CONSTRUCT_SKILL_NUM) || (spell_num == BREW_SKILL_NUM))
-     return (d(1, 100) < d(1, (percent_lrnd + agg.DEX + agg.INT)));
+     return (d(1, 100) < d(1, (percent_lrnd * 2 + 2 * (agg.DEX + agg.INT))));
 
    else if ((spell_num == BODYSLAM_SKILL_NUM) ||
 	    (spell_num == HURL_SKILL_NUM))

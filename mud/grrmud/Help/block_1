@@ -1,0 +1,16 @@
+<help battle block>
+
+Skilled fighters will be able to completely block an opponent's
+mundane attack.  Because of the defensive nature of this skill, it
+requires that the user give up some of their offensive energy.  It
+is also possible to block a direction so that others may not pass.
+
+Syntax:  block
+Syntax:  block direction
+
+Example:  block       # Used during battle, attempt to block attack.
+Example:  block west  # Block the western exit.
+
+<color = blue>
+See Also:  flee move
+</color></help>

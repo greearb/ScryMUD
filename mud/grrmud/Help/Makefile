@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.7 1999/06/05 23:29:12 greear Exp $
-# $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+# $Id: Makefile,v 1.8 1999/08/10 07:06:16 greear Exp $
+# $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/10 07:06:16 $
 
 
 IMM_FILES=IMM_active_zones_1 \
@@ -164,6 +164,7 @@ balance_1 \
 bash_1 \
 beep_1 \
 berserk_1 \
+block_1 \
 bodyslam_1 \
 brief_1 \
 bug_1 \
@@ -270,6 +271,7 @@ south_1 \
 southeast_1 \
 southwest_1 \
 stand_1 \
+steal_1 \
 suicide_1 \
 tail_1 \
 tell_1 \

@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.33 1999/08/09 06:00:39 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
+// $Id: room.cc,v 1.34 1999/08/10 07:06:20 greear Exp $
+// $Revision: 1.34 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
 
 //
 //ScryMUD Server Code
@@ -35,6 +35,7 @@
 #include "zone.h"
 #include "load_wld.h"
 #include "Filters.h"
+#include "Markup.h"
 
 
 int KeywordPair::_cnt = 0;
@@ -44,13 +45,23 @@ void KeywordPair::show(int idx, critter& pc) {
 
    Sprintf(buf, "Keyword [%i]\n", idx);
 
-   Entity::show(buf, &pc, NULL_STRING);
+   pc.show(buf);
+   Entity::show(&pc);
+}//show
 
-   if (pc.isUsingClient()) {
-      Sprintf(buf, "<KEYWORD %i>", idx);
-      String end("</KEYWORD>");
-      Entity::showClient(buf, &pc, end);
-   }//if
+void KeywordPair::toStringClient(String& rslt, int idx, critter& pc) {
+   String buf(1000);
+
+   Sprintf(rslt, "<KEYWORD %i>", idx);
+   Entity::toStringClient(buf, &pc);
+   rslt.append(buf);
+   rslt.append("</KEYWORD>");
+}
+
+void KeywordPair::showClient(int idx, critter& pc) {
+   String buf(1000);
+   toStringClient(buf, idx, pc);
+   pc.show(buf);
 }//show
       
 
@@ -81,24 +92,6 @@ KeywordPair& KeywordPair::operator=(const KeywordPair& rhs) {
 
    return *this;
 }//operator=
-
-
-KeywordPair* room::haveKeyword(int i_th, const String* name, critter* viewer) {
-   int cnt = 0;
-   SCell<KeywordPair*> cll(keywords);
-   KeywordPair* ptr;
-
-   while ((ptr = cll.next())) {
-      if (ptr->isNamed(*name, viewer)) {
-         cnt++;
-         if (cnt == i_th) {
-            return ptr;
-         }
-      }//if
-   }//while
-
-   return NULL;
-}//haveKeyword
 
 
 int room::_cnt = 0;
@@ -774,7 +767,7 @@ void room::checkLight(int do_msg) {
          setVisBit(vb & ~1);
       }//if
       else {
-         Cell<critter*> cll(critters);
+         SCell<critter*> cll(critters);
          critter* crit_ptr;
          while ((crit_ptr = cll.next())) {
             if (crit_ptr->CRIT_FLAGS.get(1)) { //if using_light source 
@@ -805,46 +798,35 @@ void room::checkLight(int do_msg) {
 }//checkLight
 
 
-void room::Write(ofstream& ofile) {
+int room::write(ostream& ofile) {
    int i, j;
-   Cell<stat_spell_cell*> ss_cell(affected_by);
-   stat_spell_cell* ss_ptr;
-   Cell<String*> n_cell(names);
-   String* n_ptr;
-   Cell<door*> d_cell(doors);
+   SCell<door*> d_cell(doors);
    door* d_ptr;
-   Cell<object*> ob_cell(inv);
+   SCell<object*> ob_cell(inv);
    object* ob_ptr;
-   Cell<critter*> c_cell(critters);
+   SCell<critter*> c_cell(critters);
    critter* c_ptr;
    short was_totally_read = FALSE;
 
    normalize(); //make sure everything jives!
    
-   Entity::write();
-   Scriptable::write();
+   Entity::write(ofile);
+   Scriptable::write(ofile);
 
    if (room_flags.get(22)) { //totaly read flag
       was_totally_read = TRUE;
       room_flags.turn_off(22); // this flag is purely temp, don't write
    }//if
 
-   while ((n_ptr = n_cell.next())) {
-      ofile << *n_ptr << " ";
-   }//while            
-   ofile << "~" << "\tnames\n";
 
-   parse_for_max_80(short_desc);
-   ofile << short_desc << endl << "~" << endl;
-   parse_for_max_80(long_desc);
-   ofile << long_desc << endl << "~" << endl;
+   short_desc.write(ofile);
 
-   room_flags.Write(ofile);
+   room_flags.write(ofile);
 
    //mudlog << "Keywords size:  " << keywords.size() << endl;
    
    if (room_flags.get(32)) { //if has keywords
-      Cell<KeywordPair*> kcll(keywords);
+      SCell<KeywordPair*> kcll(keywords);
       KeywordPair* kptr;
 
       while ((kptr = kcll.next())) {
@@ -863,16 +845,6 @@ void room::Write(ofstream& ofile) {
    }//for
    ofile << "\tcur_stats\n";
 
-		/*  Affected By */
-   while ((ss_ptr = ss_cell.next())) {
-      ofile << ss_ptr->stat_spell << " " << ss_ptr->bonus_duration << " ";
-      if ((i + 1) % 20 == 0)
-         ofile << endl;
-   }//while
-   ofile << -1 << "\taffected_by\n";
-
-
-
 		/*  Inventory */
    
    j = 0;
@@ -888,9 +860,9 @@ void room::Write(ofstream& ofile) {
    
    j = 0;
    while ((d_ptr = d_cell.next())) {
-     if (d_ptr->dr_data->door_data_flags.get(10)) {
+     if (d_ptr->isInUse()) {
        ofile << 1 << " "; //test for next, will read untill -1
-       d_ptr->Write(ofile);
+       d_ptr->write(ofile);
        if (++j > 8) {
          ofile << endl;
          j = 0;
@@ -917,186 +889,8 @@ void room::Write(ofstream& ofile) {
    if (was_totally_read) {
       room_flags.turn_on(22); //make it as it was
    }//if
+   return 0;
 }//Write....sub_room
-
-
-void room::checkForProc(String& cmd, String& arg1, critter& actor,
-                        int targ) {
-   Cell<critter*> cll(critters);
-   critter* ptr;
-   
-   mudlog.log("room::checkForProc.");
-   while ((ptr = cll.next())) {
-      //if (!ptr->pc) { //SMOB (not a PC)
-      //   if (ptr->mob->mob_data_flags.get(17)) { //ok then, it has data
-      //      if (mudlog.ofLevel(DBG)) {
-      //         mudlog << "room::checkForProc, found a mob: " 
-      //                << ptr->getName() << endl;
-      //      }
-
-      // Make sure that the actor is still in the room.
-      if (!critters.haveData(&actor)) {
-         return;
-      }
-
-      // Have to check all, because mob also checks objects that
-      // the mob owns.
-      if (ptr->isMob()) { //if it's a MOB
-         //mudlog.log("Doing mob_to_smob..");
-         ptr = mob_to_smob(*ptr, getRoomNum());
-      }
-
-      ptr->checkForProc(cmd, arg1, actor, targ, *this);
-      //   }//if
-      //}//if
-   }//while
-
-
-   Cell<object*> ocll(inv);
-   object* optr;
-   while ((optr = ocll.next())) {
-
-      // Make sure that the actor is still in the room.
-      if (!critters.haveData(&actor)) {
-         return;
-      }
-
-      if (optr->hasScript()) {
-         if (mudlog.ofLevel(DBG)) {
-            mudlog << "room::checkForProc, found an object: " 
-                   << optr->getName() << endl;
-         }
-         if (!optr->isModified()) {
-            //mudlog.log("Doing obj_to_sobj..");
-            optr = obj_to_sobj(*optr, &inv, getIdNum());
-         }
-         optr->checkForProc(cmd, arg1, actor, targ, *this);
-      }//if
-   }//while
-
-   // Now, check for room procs!!
-   Cell<RoomScript*> rcll;
-   RoomScript* rptr;
-         
-   room_proc_scripts.head(rcll);
-
-   int idx = 0;
-   while ((rptr = rcll.next())) {
-      if (mudlog.ofLevel(DBG)) {
-         mudlog << "room::checkForProc, found room script: " 
-                << rptr->toStringBrief(0, getIdNum(), ENTITY_ROOM, idx) << endl;
-      }
-
-      // Make sure that the actor is still in the room.
-      if (!critters.haveData(&actor)) {
-         return;
-      }
-
-      if (rptr->matches(cmd, arg1, actor, targ)) {
-         mudlog.log("Script matches..\n");
-         if (pending_scripts.size() >= 10) { //only queue 10 scripts
-            return; //do nothing, don't want to get too much backlog.
-         }
-         else {
-            // add it to the pending scripts.
-            mudlog.log("Generating script.\n");
-            rptr->generateScript(cmd, arg1, actor, targ, *this, NULL);
-
-            mudlog.log("Inserting new script.\n");
-            insertNewScript(new RoomScript(*rptr));
-
-            if (cur_script) {
-               mudlog.log("Had a cur_script.\n");
-               if (cur_script->getPrecedence() <
-                   pending_scripts.peekFront()->getPrecedence()) {
-                  
-                  mudlog.log("Junking cur_script because of precedence.\n");
-                  pending_scripts.loseData(cur_script); //take it out of queue
-                  delete cur_script; //junk it!
-                  cur_script = pending_scripts.peekFront();
-                  cur_script->resetStackPtr(); //get ready to start
-               }//if
-               // else, it just goes into the queue
-            }//if we currently have a script.
-            else { //there was none, so grab the first one.
-               mudlog.log("Was no cur_script, taking top of pending stack.\n");
-               cur_script = pending_scripts.peekFront();
-               proc_action_rooms.gainData(this);
-               cur_script->resetStackPtr(); //get ready to start
-            }
-
-            return;
-         }//else
-      }//if matches
-      idx++;
-   }//while
-}//checkForProc
-
-
-
-
-/** Attempt to trigger a room script directly.  So far, we support only
- * pull and push, but more can easily be added.
- */
-int room::attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
-                                      critter& actor) {
-
-   int targ;
-   targ = i_th = -1; //use i_th to quiet the compiler.
-   
-   // Now, check for room procs!!
-   Cell<RoomScript*> rcll;
-   RoomScript* rptr;
-         
-   room_proc_scripts.head(rcll);
-
-   int idx = 0;
-   while ((rptr = rcll.next())) {
-      if (mudlog.ofLevel(DBG)) {
-         mudlog << "room::attemptExecuteUnknownScript, found room script: " 
-                << rptr->toStringBrief(0, getIdNum(), ENTITY_ROOM, idx) << endl;
-      }
-      if (rptr->matches(cmd, arg1, actor, targ)) {
-         mudlog.log("Script matches..\n");
-         if (pending_scripts.size() >= 10) { //only queue 10 scripts
-            actor.show("Please try again in a bit.\n");
-            return 0; //do nothing, don't want to get too much backlog.
-         }
-         else {
-            // add it to the pending scripts.
-            mudlog.log("Generating script.\n");
-            rptr->generateScript(cmd, arg1, actor, targ, *this, NULL);
-
-            mudlog.log("Inserting new script.\n");
-            insertNewScript(new RoomScript(*rptr));
-
-            if (cur_script) {
-               mudlog.log("Had a cur_script.\n");
-               if (cur_script->getPrecedence() <
-                   pending_scripts.peekFront()->getPrecedence()) {
-                  
-                  mudlog.log("Junking cur_script because of precedence.\n");
-                  pending_scripts.loseData(cur_script); //take it out of queue
-                  delete cur_script; //junk it!
-                  cur_script = pending_scripts.peekFront();
-                  cur_script->resetStackPtr(); //get ready to start
-               }//if
-               // else, it just goes into the queue
-            }//if we currently have a script.
-            else { //there was none, so grab the first one.
-               mudlog.log("Was no cur_script, taking top of pending stack.\n");
-               cur_script = pending_scripts.peekFront();
-               proc_action_rooms.gainData(this);
-               cur_script->resetStackPtr(); //get ready to start
-            }
-
-            return 0;
-         }//else
-      }//if matches
-      idx++;
-   }//while
-   return -1; //didn't find anything that matched
-}//attemptExecuteUnknownScript
 
 
 void room::checkForBattle(critter& pc) {
@@ -1126,22 +920,20 @@ int room::getZoneNum() {
    return ZoneCollection::instance().getZoneFor(*this).getIdNum();
 }
 
-void room::stat(critter& pc) {
+
+void room::show(critter& pc) {
+
    String buf2(100);
 
-   if (names.peekFront()) {
-      show(*(names.peekFront()), pc);
-   }//if
-
    Sprintf(buf2, "  Belongs to zone:  %i.\n", getZoneNum());
-   show(buf2, pc);
+   pc.show(buf2);
 
-   show(short_desc, pc);
-   show("\n", pc);
-   show(long_desc, pc);
-   pc.show("\n");
+   Entity::show(&pc);
+   Scriptable::show(&pc);
 
-   Cell<KeywordPair*> cll(keywords);
+   pc.show(short_desc, TRUE);
+
+   SCell<KeywordPair*> cll(keywords);
    KeywordPair* ptr;
    int cnt = 0;
 
@@ -1152,19 +944,49 @@ void room::stat(critter& pc) {
 
    out_field(room_flags, pc, ROOM_FLAGS_NAMES);
 
-   show("\n", pc);
+   pc.show("\n");
    Sprintf(buf2, "v_bit: %i  mv$: %i  r_num: %i  pause: %i\n", 
            getVisBit(), getMovCost(), getRoomNum(), getPause());
-   show(buf2, pc);
+   pc.show(buf2);
 
    Sprintf(buf2, "Number of critters:  %i  Number of Scripts Pending: %i\n\n",
            critters.size(), pending_scripts.size());
-   show(buf2, pc);
+   pc.show(buf2);
 
-   if (room_proc_scripts.size() > 0) {
-      listScripts(pc);
-   }
 }//stat
+
+
+void room::toStringClient(String& rslt, critter& pc) {
+
+   String buf(1000);
+
+   Sprintf(rslt, "<ROOM %i> ", getIdNum());
+
+   Entity::toStringClient(buf, &pc);
+   rslt.append(buf);
+
+   Scriptable::toStringClient(buf, &pc);
+   rslt.append(buf);
+
+   rslt.append("<SHORT_DESC>");
+   short_desc.toStringClient(buf);
+   rslt.append(buf);
+   rslt.append("</SHORT_DESC>");
+
+   SCell<KeywordPair*> cll(keywords);
+   KeywordPair* ptr;
+   int cnt = 0;
+
+   while ((ptr = cll.next())) {
+      ptr->toStringClient(buf, cnt, pc);
+      rslt.append(buf);
+      cnt++;
+   }
+
+   Markup::toString("<ROOM_FLAGS>", room_flags, ROOM_FLAGS_NAMES,
+                    pc, "</ROOM_FLAGS>");
+
+}//toStringClient
 
 
 /* called after OLC to enforce as much state as possible. */
@@ -1184,7 +1006,7 @@ const String* room::getRandomExitDir(critter& pc) {
    int sz = doors.size();
    int idx = d(1, sz);
 
-   Cell<door*> cll(doors);
+   SCell<door*> cll(doors);
    door* ptr;
 
    int cnt = 0;
@@ -1230,7 +1052,7 @@ const String* room::getRandomExitDir(critter& pc) {
    return &UNKNOWN;
 }//getRandomExitDir
 
-int room::isInUse() const {
+int room::isInUse() {
    return (room_flags.get(23) || critters.size());
 }
 
@@ -1245,14 +1067,13 @@ int room::getCritCount(critter& pc) {
 critter* room::haveCritNamedInWorld(const int i_th, const String* name,
                                     const int see_bit, int& rm_num) {
    Cell<String*> char_cell;
-   Cell<critter*> cell;
+   SCell<critter*> cell;
    critter* crit_ptr;
-   int count = 0, len;
-   String *string;
+   int count = 0;
 
    mudlog.log(DBG, "In have_crit_named, for whole room_list");
 
-   if ((len = name->Strlen()) == 0) 
+   if (name->Strlen() == 0) 
       return NULL;
 
    if (i_th <= 0)
@@ -1270,14 +1091,11 @@ critter* room::haveCritNamedInWorld(const int i_th, const String* name,
          room_list[i].critters.head(cell);
          while ((crit_ptr = cell.next())) {
             if (detect(see_bit, crit_ptr->VIS_BIT)) {
-               crit_ptr->names.head(char_cell);
-               while ((string = char_cell.next())) {
-                  if (strncasecmp(*string, *name, len) == 0){ 
-                     count++;
-                     if (count == i_th) {
-                        rm_num = i;
-                        return crit_ptr;
-                     }//if
+               if (crit_ptr->isNamed(*name, NULL)) {
+                  count++;
+                  if (count == i_th) {
+                     rm_num = i;
+                     return crit_ptr;
                   }//if
                }//while
             }//if
@@ -1295,11 +1113,9 @@ critter* room::haveCritNamedInWorld(const int i_th, const String* name,
 critter* room::haveCritNamedInZone(zone& zn, const int i_th,
                                    const String* name, const int see_bit,
                                    int& in_room) {
-   Cell<String*> char_cell;
-   Cell<critter*> cell;
+   SCell<critter*> cell;
    critter* crit_ptr;
    int count = 0, len;
-   String *string;
 
    in_room = 0;
 
@@ -1322,16 +1138,13 @@ critter* room::haveCritNamedInZone(zone& zn, const int i_th,
       room_list[i].critters.head(cell);
       while ((crit_ptr = cell.next())) {
          if (detect(see_bit, crit_ptr->VIS_BIT)) {
-            crit_ptr->names.head(char_cell);
-            while ((string = char_cell.next())) {
-               if (strncasecmp(*string, *name, len) == 0){ 
-                  count++;
-                  if (count == i_th) {
-                     in_room = i;
-                     return crit_ptr;
-                  }//if
+            if (crit_ptr->isNamed(*name, NULL)) {
+               count++;
+               if (count == i_th) {
+                  in_room = i;
+                  return crit_ptr;
                }//if
-            }//while
+            }//if
          }//if
       }//while
    }//for
@@ -1342,7 +1155,7 @@ critter* room::haveCritNamedInZone(zone& zn, const int i_th,
 
 void room::doPoofOut(critter& pc) {
    String buf(100);
-   Cell<critter*> cll(critters);
+   SCell<critter*> cll(critters);
    critter* ptr;
    while ((ptr = cll.next())) {
       if (&pc != ptr) {
@@ -1369,8 +1182,7 @@ int room::doRclear(int new_rm_num) {
          int is_dead;
          crit_ptr->doGoToRoom(new_rm_num, NULL, NULL, is_dead, getIdNum(), 1);
          if (!is_dead) {
-            show("The void has swallowed your previous location!!\n", 
-                 *crit_ptr);
+            crit_ptr->show("The void has swallowed your previous location!!\n");
          }
       }
       else {
@@ -1386,8 +1198,8 @@ int room::doRclear(int new_rm_num) {
 
 int room::doScan(critter& pc) {
    String buf(100);
-   Cell<door*> dcll(doors);
-   Cell<critter*> cll;
+   SCell<door*> dcll(doors);
+   SCell<critter*> cll;
    critter* ptr;
    int a, b;
 
@@ -1424,7 +1236,7 @@ int room::doScan(critter& pc) {
 
 void room::doPoofIn(critter& pc) {
    String buf(100);
-   Cell<critter*> cll(critters);
+   SCell<critter*> cll(critters);
    critter* ptr;
    while ((ptr = cll.next())) {
       if (&pc != ptr) {
@@ -1442,7 +1254,7 @@ void room::doPoofIn(critter& pc) {
 
 
 void room::resetProcMobs() {
-   Cell<critter*> cll(critters);
+   SCell<critter*> cll(critters);
    critter* ptr;
    while ((ptr = cll.next())) {
       //mudlog << "Found a critter:  " << ptr << endl << flush;
@@ -1457,7 +1269,7 @@ void room::resetProcMobs() {
 void room::purgeCritter(int mob_num, critter& pc) {
    int done = FALSE;
    while (!done) {
-      Cell<critter*> cll(critters);
+      SCell<critter*> cll(critters);
       critter* ptr;
 
       done = TRUE;
@@ -1505,16 +1317,16 @@ void room::gainCritter(critter* crit) {
 }
 
 void room::loseObjectFromGame(object& which_un) {
-   Cell<object*> ocll(inv);
+   SCell<object*> ocll(inv);
    object* optr;
-   Cell<critter*> ccll;
+   SCell<critter*> ccll;
    critter* cptr;
 
    int targ_num = which_un.getIdNum();
 
    optr = ocll.next();
    while (optr) {
-      if (optr->IN_LIST && (optr->getIdNum() == targ_num)) { //if SOBJ
+      if (optr->isModified() && (optr->getIdNum() == targ_num)) { //if SOBJ
          delete optr;
          optr = inv.lose(ocll);
       }
@@ -1561,7 +1373,7 @@ critter* room::removeCritter(critter* crit) {
 
 void room::getPetsFor(critter& owner, List<critter*>& rslts) {
    critter* ptr;
-   Cell<critter*> cll(critters);
+   SCell<critter*> cll(critters);
    while ((ptr = cll.next())) {
       if (owner.PETS.haveData(ptr)) {
          rslts.append(ptr);
@@ -1581,7 +1393,7 @@ void room::outInv(critter& pc) {
 void room::gainInv(object* obj) {
    if (obj->obj_flags.get(55)) { //if it's coins
       if (obj->cur_stats[1] == 0) {
-         if (obj->IN_LIST) {
+         if (obj->isModified()) {
             mudlog << "ERROR:  Possible memory leak, gainInv:  obj is SOBJ"
                    << " but has zero coins, obj#" << obj->getIdNum()
                    << " room# " << getIdNum() << endl;
@@ -1591,9 +1403,8 @@ void room::gainInv(object* obj) {
    }//if
          
    inv.prepend(obj);
-   if (obj->IN_LIST) {
-      obj->IN_LIST = &inv;
-      obj->setCurRoomNum(getIdNum(), 0);
+   if (obj->isModified()) {
+      obj->setContainer(this);
    }
 }
 
@@ -1613,11 +1424,18 @@ critter* room::haveCritNamed(int i_th, const String* name, int see_bit) {
 }
 
 critter* room::haveCritNamed(int i_th, const String* name, critter& pc) {
+   int foo;
+   return haveCritNamed(i_th, name, pc, foo);
+}
+
+critter* room::haveCritNamed(int i_th, const String* name, critter& pc,
+                             int& count_sofar) {
    if ((strcasecmp(*name, "me") == 0) ||
        (strcasecmp(*name, "self") == 0)) {
       return &pc;
    }
-   return ::have_crit_named(critters, i_th, name, pc.SEE_BIT, *this);
+   return ::have_crit_named(critters, i_th, name, pc.SEE_BIT,
+                            count_sofar, *this);
 }
 
 critter* room::haveCritter(critter* ptr) {
@@ -1635,11 +1453,27 @@ object* room::haveObject(object* ptr) {
 }
 
 object* room::haveObjNamed(int i_th, const String* name, int see_bit) {
-   return ::have_obj_named(inv, i_th, name, see_bit, *this);
+   int foo;
+   return ::have_obj_named(inv, i_th, name, see_bit, *this, foo);
 }
 
+object* room::haveAccessibleObjNamed(int i_th, const String* name,
+                                     critter& pc, int& count_sofar, int& posn) {
+   object* ptr;
+   ptr = have_obj_named(inv, i_th, name, pc.getSeeBit(), *this, count_sofar);
+   if (!ptr) {
+      ptr = have_obj_named(pc.inv, i_th - count_sofar, name, pc.getSeeBit(), *this,
+                           count_sofar);
+   }
+   if (!ptr) {
+      ptr = pc.findObjInEq(i_th - count_sofar, *name, pc.getSeeBit(), *this,
+                           posn, count_sofar);
+   }
+   return ptr;
+}//haveAccesibleObjNamed
+
 critter* room::findFirstBanker() {
-   Cell<critter*> cell(critters);
+   SCell<critter*> cell(critters);
    critter* crit_ptr;
 
    while ((crit_ptr = cell.next())) { 
@@ -1653,7 +1487,7 @@ critter* room::findFirstBanker() {
 
 
 critter* room::findFirstShopKeeper() {
-   Cell<critter*> cell(critters);
+   SCell<critter*> cell(critters);
    critter* crit_ptr;
 
    while ((crit_ptr = cell.next())) { 
@@ -1667,7 +1501,7 @@ critter* room::findFirstShopKeeper() {
 
 
 critter* room::findFirstTeacher() {
-   Cell<critter*> cell(critters);
+   SCell<critter*> cell(critters);
    critter* crit_ptr;
 
    while ((crit_ptr = cell.next())) { 
@@ -1681,164 +1515,30 @@ critter* room::findFirstTeacher() {
 
 
 
-void room::showAllCept(const char* msg, critter* pc) const {
-   Cell<critter*> cell(critters);
+void room::showAllCept(const char* msg, critter* pc) {
+   SCell<critter*> cell(critters);
    critter* crit_ptr;
 
    while ((crit_ptr = cell.next())) { 
       if (crit_ptr != pc)  
 	 if (crit_ptr->POS < POS_SLEEP)  
-	    show(msg, *crit_ptr);
+	    crit_ptr->show(msg);
    }//while
 
-   Cell<object*> cll(inv);
+   SCell<object*> cll(inv);
    object* obj;
 
    while ((obj = cll.next())) {
      if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
        if (crit_ptr != pc) {
 	 if (crit_ptr->POS < POS_SLEEP) {
-	   show("#####", *crit_ptr);
-	   show(msg, *crit_ptr);
+	   crit_ptr->show("#####");
+	   crit_ptr->show(msg);
 	 }//if
        }//if
      }//if
    }//while
 }// show_all_cept
-
-void room::finishedRoomProc() {
-   if (cur_script) {
-      pending_scripts.loseData(cur_script);
-      delete cur_script;
-   }
-
-   // This could easily end up being NULL, that's OK!
-   cur_script = pending_scripts.peekFront();
-}//finishedRoomProc
-
-void room::addProcScript(const String& txt, RoomScript* script_data) {
-   //similar to reading it in...
-   //first, see if we are over-writing one...
-   if (mudlog.ofLevel(DBG)) {
-      mudlog << "In room::addProcScript, txt:  \n" << txt
-             << "\nscript data:  "
-             << script_data->toStringBrief(0, 0, ENTITY_ROOM, 0) << endl;
-   }
-
-   room_flags.turn_on(35);
-
-   Cell<RoomScript*> cll;
-   RoomScript* ptr;
-   room_proc_scripts.head(cll);
-
-   while ((ptr = cll.next())) {
-      if (ptr->matches(*script_data)) {
-         //got a match.
-         mudlog.log("room::addProcScript, they match.");
-         *ptr = *script_data;
-         ptr->setScript(txt);
-         delete script_data;
-         return;
-      }//if
-   }//while
-   
-   mudlog.log(DBG, "About to setScript.");
-   
-   script_data->setScript(txt);
-   mudlog.log(DBG, "done with setScript.");
-
-   if (!script_data) {
-      mudlog.log(ERR, "script_data is NULL, room::addProcScript.");
-      return;
-   }
-
-   room_proc_scripts.append(script_data);
-}//addProcScript
-
-void room::listScripts(critter& pc) {
-   String buf(500);
-   buf.Append("These scripts are defined for this room, the actual scripts
-may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n");
-
-   pc.show(buf);
-
-   String tmp(100);
-   int found_one = FALSE;
-   Cell<RoomScript*> cll(room_proc_scripts);
-   RoomScript* ptr;
-   int idx = 0;
-   while ((ptr = cll.next())) {
-      found_one = TRUE;
-      tmp = ptr->toStringBrief(FALSE, 0, ENTITY_ROOM, idx);
-      Sprintf(buf, "[%i] %S\n", idx, &(tmp));
-      pc.show(buf);
-      idx++;
-   }
-
-   if (!found_one) {
-      buf.Append("No scripts defined for this room.\n");
-      show(buf, pc);
-   }
-}//listScripts
-
-void room::removeScript(String& trigger, int i_th, critter& pc) {
-   int sofar = 1;
-   String buf(500);
- 
-   Cell<RoomScript*> cll(room_proc_scripts);
-   RoomScript* ptr;
-   ptr = cll.next();
-   while (ptr) {
-      if (strcasecmp(*(ptr->getTrigger()), trigger) == 0) {
-         if (sofar == i_th) {
-            delete ptr;
-            ptr = room_proc_scripts.lose(cll);
-            show("Deleted it...\n", pc);
-            return;
-         }//if
-         else {
-            ptr = cll.next();
-         }
-         sofar++;
-      }//if
-      else {
-         ptr = cll.next();
-      }
-   }//while
-
-   show("Didn't find that script..\n", pc);
-}//removeScript
-
-
-int room::insertNewScript(RoomScript* script) {
-   RoomScript* ptr;
-   Cell<RoomScript*> cll(pending_scripts);
-
-   // Don't append scripts that have a zero precedence, if there
-   // are other scripts in the queue.
-   if ((script->getPrecedence() == 0) && (!pending_scripts.isEmpty())) {
-      delete script;
-      return 0;
-   }
-
-   while ((ptr = cll.next())) {
-      if (ptr->getPrecedence() < script->getPrecedence()) {
-         // Then insert it
-         pending_scripts.insertBefore(cll, script);
-         return 0;
-      }//if
-   }//while
-
-   // If here, then we need to place it at the end.
-   pending_scripts.append(script);
-   return 0;
-}
-
-
-void room::doScriptJump(int abs_offset) {
-   if (cur_script)
-      cur_script->doScriptJump(abs_offset);
-}
 
 
 int room::doEmote(critter& pc, CSelectorColl& includes,
@@ -1853,7 +1553,7 @@ int room::doEmote(critter& pc, CSelectorColl& includes,
 
 int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
                    CSentryE cs_entry, va_list argp) {
-   Cell<critter*> cll(critters);
+   SCell<critter*> cll(critters);
    critter* ptr;
    String buf(100);
    String buf2(100);

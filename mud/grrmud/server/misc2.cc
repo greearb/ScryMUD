@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.25 1999/08/01 08:40:23 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
+// $Id: misc2.cc,v 1.26 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -357,7 +357,8 @@ void show_stat_affects(object& obj, critter& pc) {
 
 
 /** Tests this performs:  A(!animal)
- *                        B(!pc in_battle)  C(owns aux_crit) F(frozen)
+ *                        B(!pc in_battle)  b (! in mob room)
+ *                        C(owns aux_crit) F(frozen)
  *                        G(!gagged) I(is immort) K(know spell), M(has mana), 
  *                        m(!mob, smob ok), N(!magic),
  *                        P(paralyzed), R(owns aux_rm), r(resting or standing)
@@ -459,6 +460,14 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
            return FALSE;
         }//if
      }//if
+     else if (chr == 'b') {
+        if (ROOM.isNoMob()) {
+           if (do_msg) {
+              show("NPC's cannot be here.\n", pc);
+           }//if
+           return FALSE;
+        }//if
+     }//if
      else if (chr == 'N') {
         if (ROOM.isNoMagic()) {
            if (do_msg) {
@@ -508,13 +517,14 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
         }//if
      }//if
      else if (chr == 'V') {
-        if (ROOM.isHaven()) {
+        // Let ppl do whatever they want to themselves!!
+        if (ROOM.isHaven() && (&pc != vict)) {
            if (do_msg) {
               show("Violence is not permitted here.\n", pc);
            }//if
            return FALSE;
         }//if
-        else if (ROOM.isNoPK() && vict && vict->pc) {
+        else if (ROOM.isNoPK() && vict && vict->pc && (&pc != vict)) {
            if (do_msg) {
               show("Player killing is not allowed here.\n", pc);
            }//if
@@ -1403,7 +1413,7 @@ const char* military_to_am(int m_time) {
    else if (m_time == 10)
       return "11 am";
    else if (m_time == 11)
-      return "12 am";
+      return "12 pm";
    else if (m_time == 12)
       return "1 pm";
    else if (m_time == 13)
@@ -1427,7 +1437,7 @@ const char* military_to_am(int m_time) {
    else if (m_time == 22)
       return "11 pm";
    else if (m_time == 23)
-      return "12 pm";
+      return "12 am";
    else {
       mudlog.log(ERR, "ERROR:  m_time out of range, military_to_am.\n");
       return "0 am";

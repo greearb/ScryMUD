@@ -1,5 +1,5 @@
-// $Id: string2.cc,v 1.13 1999/08/03 05:55:34 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/03 05:55:34 $
+// $Id: string2.cc,v 1.14 1999/08/10 07:06:21 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/10 07:06:21 $
 
 //
 //ScryMUD Server Code
@@ -88,7 +88,7 @@ String String::sterilizeForHtml() const {
    return retval;
 }//sterilizeForHtml
 
-void String::Strip() {
+void String::strip() {
    int i;
 
    if (cur_len == 0)
@@ -359,7 +359,7 @@ void String::Report() const {
 }//Report
  
 
-String String::Look_Command(short is_first = 0) const {
+String String::lookCommand(short is_first = 0) const {
    String temp(100);
    int i = 0; 
    char a;
@@ -384,7 +384,7 @@ String String::Look_Command(short is_first = 0) const {
          return temp;
       }
       if (string[i+1] == '\'') {
-         temp.Append(a);
+         temp.append(a);
          i += 2;
          a = string[i];
       }//if
@@ -402,7 +402,7 @@ String String::Look_Command(short is_first = 0) const {
       if (in_quotes) {
          if (a == '\'') {
             if (string[i+1] == '\'') { //escaped the quote
-               temp.Append(a);
+               temp.append(a);
             }//if
             else {
                break; //all done
@@ -415,7 +415,7 @@ String String::Look_Command(short is_first = 0) const {
             break;
          }//if
          else {
-            temp.Append(a);
+            temp.append(a);
          }//else
       }//else
 
@@ -428,7 +428,8 @@ String String::Look_Command(short is_first = 0) const {
 }//look_command
 
 
-String String::Get_Command(short& eos, short& term_by_period, short is_first = 0) {
+String String::getCommand(short& eos, short& term_by_period,
+                          short is_first = 0) {
    String temp(100);
    int i = 0, k = 0;
    eos = term_by_period = FALSE;
@@ -480,7 +481,7 @@ String String::Get_Command(short& eos, short& term_by_period, short is_first = 0
          }//if
          else {
             if ((a == '\'') && (string[i+1] == '\'')) {
-               temp.Append(a);
+               temp.append(a);
                i += 2;
                a = string[i];
             }//if
@@ -549,7 +550,7 @@ String String::Get_Command(short& eos, short& term_by_period, short is_first = 0
 }//get_command
 	 
 
-String String::Get_Rest(short destruct = TRUE) {
+String String::getRest(short destruct = TRUE) {
    String temp(300);
    int i = 0, k = 0;
    char a;
@@ -596,7 +597,7 @@ void String::Refigure_strlen() {
    }//if
 }//Refigure_strlen
 
-int String::Contains(const char ch) const {
+int String::contains(const char ch) const {
    int retval = 0;
    for (int i = 0; i<cur_len; i++) {
       if (string[i] == ch) {
@@ -617,7 +618,7 @@ int String::readToken(char delim, ifstream& dafile, int include_delim) {
    char ch;
    int is_escaped = FALSE;
 
-   Vclear();
+   clear();
 
    // Get to the beginning
    while (dafile) {
@@ -733,7 +734,7 @@ void String::termedRead(istream& da_file) { //reads lines untill it finds
 }//Termed_Read
 
 
-void String::Tolower() {
+void String::toLower() {
    for (int i = 0; i < cur_len; i++) {
       string[i] = tolower(string[i]);
    }//for
@@ -903,12 +904,12 @@ void String::purge() {
 }//Clear      
 
 
-void String::Clear() {
+void String::clear() {
    *this = "\0";
 }//Clear
 
 
-void String::Cap() {
+void String::cap() {
    for (int i = 0; i<cur_len; i++) {
       if (isalpha(string[i])) {
          string[i] = toupper(string[i]);
@@ -917,14 +918,14 @@ void String::Cap() {
    }//for
 }//Cap      
 
-void String::Getline(istream& stream, int max_len) {
+void String::getLine(istream& stream, int max_len) {
    char buf[max_len + 1];
    stream.getline(buf, max_len);
    *this = buf;
 }//Getline      
 
 
-void String::Append(const char* source) {
+void String::append(const char* source) {
    if (!source)
       return;
    int k = strlen(source);
@@ -936,60 +937,60 @@ void String::Append(const char* source) {
     */
    strcat(string + cur_len, source);
    cur_len += k;
-}//Append      
+}//append      
 
 
-void String::Append(const int i) {
+void String::append(const int i) {
    char source[25];
    sprintf(source, "%i", i);
-   this->Append(source);
-}//Append      
+   this->append(source);
+}//append      
 
 void String::appendHex(const long i) {
    char source[25];
    sprintf(source, "%lx", i);
-   this->Append(source);
-}//Append      
+   this->append(source);
+}//append      
 
 
-void String::Append(const char c) {
+void String::append(const char c) {
    char buf[2];
    sprintf(buf, "%c", c);
-   this->Append(buf);
-}//Append      
+   this->append(buf);
+}//append      
 
 
-void String::Append(const String& S) {
+void String::append(const String& S) {
    ensureCapacity(cur_len + S.cur_len);
    strcat(string, S.string);
    cur_len += S.cur_len;
-}//Append      
+}//append      
 
 
-void String::Prepend(const int i) {
+void String::prepend(const int i) {
    char source[25];
    sprintf(source, "%i", i);
-   this->Prepend(source);
-}//Prepend      
+   this->prepend(source);
+}//prepend      
 
 
-void String::Prepend(const long i) {
+void String::prepend(const long i) {
    char source[25];
    sprintf(source, "%d", (int)(i));
-   this->Prepend(source);
-}//Prepend      
+   this->prepend(source);
+}//prepend      
 
 
-void String::Prepend(const char* source) {
+void String::prepend(const char* source) {
    String tmp(*this); //keep a copy handy
    *this = source;
-   this->Append(tmp);
-}//Prepend      
+   this->append(tmp);
+}//prepend      
 
 
-void String::Prepend(const String& source) {
-   this->Prepend(source.string);
-}//Prepend      
+void String::prepend(const String& source) {
+   this->prepend(source.string);
+}//prepend      
 
 
    
@@ -1001,47 +1002,47 @@ String::operator const char*() const {
 
 
 String& String::operator+= (const String &S) {
-   this->Append(S);
+   this->append(S);
    return *this;
 }//+= operator
 
 String& String::operator+= (const char s) {
-   this->Append(s);
+   this->append(s);
    return *this;
 }//+= operator
 
 
 String& String::operator+= (const char* S) {
-   this->Append(S);
+   this->append(S);
    return *this;
 }//+= operator
 
 
 String& String::operator+= (const int i) {
-   this->Append(i);
+   this->append(i);
    return *this;
 }
 
 String& String::operator+= (const long l) {
-   this->Append((int)l); //bah, same thing in a real computer
+   this->append((int)l); //bah, same thing in a real computer
    return *this;
 }
 
 String& String::operator= (const int i) {
    Clear();
-   this->Append(i);
+   this->append(i);
    return *this;
 }
 
 String& String::operator= (const long l) {
    Clear();
-   Append((int)l); //same thing in a real computer, for now at least
+   append((int)l); //same thing in a real computer, for now at least
    return *this;
 }
 
 String& String::operator= (const char c) {
    Clear();
-   Append(c);
+   append(c);
    return *this;
 }
 
@@ -1087,14 +1088,14 @@ char String::operator[] (const unsigned int i) const {
 
 String String::operator+ (const char* S) const {
    String tmp(*this);
-   tmp.Append(S);
+   tmp.append(S);
    return tmp;
 }//assignment operator
 
 
 String String::operator+ (const String& S) const {
    String tmp(*this);
-   tmp.Append(S);
+   tmp.append(S);
    return tmp;
 }//assignment operator
 
@@ -1154,6 +1155,7 @@ void vSprintf(String& targ, const char* string, va_list ap) {
    int s_len;
    char* tmp_chr_str;
    String* tmp_str;
+   void* junk;
 
    targ = "\0"; //initialize targ
 
@@ -1163,18 +1165,18 @@ void vSprintf(String& targ, const char* string, va_list ap) {
          if (string[i] != '%') {
             switch (string[i]) {
                case 'i':    /* int */  
-                  targ.Append(va_arg(ap, int));
+                  targ.append(va_arg(ap, int));
                   break;
                case 'I':    /* ignore */
-                  va_arg(ap, void*);
+                  junk = va_arg(ap, void*);
                   // Do nothing with it!!
                   break;
                case 'd':     /* long, turn it into an int */
-                  targ.Append(va_arg(ap, int));
+                  targ.append(va_arg(ap, int));
                   break;
                case 's':      /* char * */
                   if ((tmp_chr_str = va_arg(ap, char *))) {
-                     targ.Append(tmp_chr_str);
+                     targ.append(tmp_chr_str);
                   }//if
                   break;
                case 'p':    /* pointer */
@@ -1182,7 +1184,7 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                   break;
                case 'S':      /* String */
                   if ((tmp_str = va_arg(ap, String *))) {
-                     targ.Append(*tmp_str);
+                     targ.append(*tmp_str);
                   }//if
                   break;
                case 'P':      /* pad w/spaces */
@@ -1205,7 +1207,7 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                   
                   s_len = targ.Strlen();
                   while (s_len < num) {
-                     targ.Append(" ");  //pad another space
+                     targ.append(" ");  //pad another space
                      s_len++;
                   }//while
                   i--;  //slight hack
@@ -1217,11 +1219,11 @@ void vSprintf(String& targ, const char* string, va_list ap) {
          }//if
          else { //
             i++;
-            targ.Append("%");
+            targ.append("%");
          }//else
       }//if
       else {
-         targ.Append(string[i]);
+         targ.append(string[i]);
          i++;
       }//else
    }//for

@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.13 1999/07/18 23:00:21 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/07/18 23:00:21 $
+// $Id: spells.cc,v 1.14 1999/08/10 07:06:20 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
 
 //
 //ScryMUD Server Code
@@ -56,13 +56,18 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
    String buf(100);
 
    if (spell_num == ARMOR_SKILL_NUM) {  
-     pc.AC += 30;  //increases pc's ac by 30.
+     pc.AC -= ARMOR_EFFECT;
      if (do_msg)
        show("You feel more vulnerable.\n", pc);
    }//if
    else if (spell_num == MAGIC_SHIELD_SKILL_NUM) {
      if (do_msg)
-       show("Your magical shield dissapates.\n", pc);
+       show("Your magical shield dissipates.\n", pc);
+   }//if
+   else if (spell_num == FAERIE_FIRE_SKILL_NUM) {
+     pc.AC -= FAERIE_FIRE_AC_AUGMENTATION;
+     if (do_msg)
+       show("You stop glowing with an eerie purplish glow.\n", pc);
    }//if
    else if (spell_num == POISON_SKILL_NUM) {
      pc.HP_REGEN -= POISON_HP_REGEN_AUGMENTATION;
@@ -86,7 +91,7 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
      if (pc.pc) {
        pc.PC_FLAGS.turn_off(18);
        if (do_msg)
-	 show("You finally work your way out of the web.\n", pc);
+	 show("You can no longer detect magical auras.\n", pc);
      }//if
    }//if
    else if (spell_num == DETECT_HIDDEN_SKILL_NUM) {
@@ -159,15 +164,10 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
      if (do_msg)
        show("Your skin softens.\n", pc);
    }//if
-   else if (spell_num == ARMOR_SKILL_NUM) {
-     pc.AC -= ARMOR_EFFECT;
-     if (do_msg)
-       show("You feel less protected from physical threats.\n", pc);
-   }//if
    else if (spell_num == BLINDNESS_SKILL_NUM) {
      pc.SEE_BIT |= 1024;
      if (do_msg)
-       show("You a vail of darkness is lifted from thine eyes.\n", pc);
+       show("A veil of darkness is lifted from your eyes.\n", pc);
    }//if
    else if (spell_num == ABSORB_BLOWS_SKILL_NUM) {
      if (do_msg)

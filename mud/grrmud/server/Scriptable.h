@@ -1,5 +1,5 @@
-// $Id: Scriptable.h,v 1.1 1999/08/04 06:29:16 greear Exp $
-// $Revision: 1.1 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
+// $Id: Scriptable.h,v 1.2 1999/08/10 07:06:17 greear Exp $
+// $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
 
 //
 //ScryMUD Server Code
@@ -50,6 +50,9 @@ public:
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
    virtual int clear();
+   virtual void toStringClient(String& rslt, critter* pc);
+   virtual void show(critter* pc);
+   virtual void showClient(critter* pc);
 
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_SCRIPT_COLL; }

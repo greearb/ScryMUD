@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.16 1999/07/20 05:05:40 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/07/20 05:05:40 $
+// $Id: login.cc,v 1.17 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -634,6 +634,7 @@ int  quit_do_login_new(critter& pc) {
       case SAGE:
 	 pc.SKILLS_KNOWN.Insert(HERBALISM_SKILL_NUM, 25);
 	 pc.SKILLS_KNOWN.Insert(PHILOSOPHY_SKILL_NUM, 25);
+	 pc.SKILLS_KNOWN.Insert(BLACKSMITHING_SKILL_NUM, 25);
 	 pc.WIS++;
 	 break;
       case WIZARD:

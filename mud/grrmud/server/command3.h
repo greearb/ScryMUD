@@ -1,5 +1,5 @@
-// $Id: command3.h,v 1.8 1999/06/22 05:33:09 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/06/22 05:33:09 $
+// $Id: command3.h,v 1.9 1999/08/10 07:06:18 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
 
 //
 //ScryMUD Server Code
@@ -91,6 +91,6 @@ int bug(String& str, critter& pc);
 int use(int i_th, String* wand_name, int j_th, String* target, critter& pc);
 int recite(int i_th, const String* target, int j_th, const String* vict, 
             critter& pc); //can be holding, but no have to
-int quaf(int i_th, const String* potion, critter& pc); //only target user
+int quaff(int i_th, const String* potion, critter& pc); //only target user
 
 #endif //include

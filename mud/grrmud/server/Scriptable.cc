@@ -1,5 +1,5 @@
-// $Id: Scriptable.cc,v 1.1 1999/08/04 06:29:16 greear Exp $
-// $Revision: 1.1 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
+// $Id: Scriptable.cc,v 1.2 1999/08/10 07:06:17 greear Exp $
+// $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
 
 //
 //ScryMUD Server Code
@@ -340,3 +340,69 @@ int Scriptable::insertNewScript(MobScript* script) {
    pending_scripts.append(script);
    return 0;
 }
+
+
+/** Attempt to trigger a room script directly.  So far, we support only
+ * pull and push, but more can easily be added.
+ */
+int Scriptable::attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
+                                            critter* actor) {
+
+   int targ;
+   targ = i_th = -1; //use i_th to quiet the compiler.
+   
+   // Now, check for room procs!!
+   Cell<RoomScript*> rcll;
+   RoomScript* rptr;
+         
+   room_proc_scripts.head(rcll);
+
+   int idx = 0;
+   while ((rptr = rcll.next())) {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "room::attemptExecuteUnknownScript, found room script: " 
+                << rptr->toStringBrief(0, getIdNum(), ENTITY_ROOM, idx) << endl;
+      }
+      if (rptr->matches(cmd, arg1, actor, targ)) {
+         mudlog.log("Script matches..\n");
+         if (pending_scripts.size() >= 10) { //only queue 10 scripts
+            actor.show("Please try again in a bit.\n");
+            return 0; //do nothing, don't want to get too much backlog.
+         }
+         else {
+            // add it to the pending scripts.
+            mudlog.log("Generating script.\n");
+            rptr->generateScript(cmd, arg1, actor, targ, *this, NULL);
+
+            mudlog.log("Inserting new script.\n");
+            insertNewScript(new RoomScript(*rptr));
+
+            if (cur_script) {
+               mudlog.log("Had a cur_script.\n");
+               if (cur_script->getPrecedence() <
+                   pending_scripts.peekFront()->getPrecedence()) {
+                  
+                  mudlog.log("Junking cur_script because of precedence.\n");
+                  pending_scripts.loseData(cur_script); //take it out of queue
+                  delete cur_script; //junk it!
+                  cur_script = pending_scripts.peekFront();
+                  cur_script->resetStackPtr(); //get ready to start
+               }//if
+               // else, it just goes into the queue
+            }//if we currently have a script.
+            else { //there was none, so grab the first one.
+               mudlog.log("Was no cur_script, taking top of pending stack.\n");
+               cur_script = pending_scripts.peekFront();
+               proc_action_rooms.gainData(this);
+               cur_script->resetStackPtr(); //get ready to start
+            }
+
+            return 0;
+         }//else
+      }//if matches
+      idx++;
+   }//while
+   return -1; //didn't find anything that matched
+}//attemptExecuteUnknownScript
+
+

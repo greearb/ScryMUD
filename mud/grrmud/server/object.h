@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.22 1999/08/04 06:29:17 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/04 06:29:17 $
+// $Id: object.h,v 1.23 1999/08/10 07:06:20 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
 
 //
 //ScryMUD Server Code
@@ -210,7 +210,7 @@ public:
    int getKeyNum();
    int getLevel() const { return extras[8]; }
    int getMaxWeight() const;
-   int getCurWeight() const;
+   int getCurWeight();
    int getEmptyWeight() const { return extras[5]; }
    
    /** ptr will be consumed by this call, ie takes charge of memory. */
@@ -228,17 +228,13 @@ public:
    int getZoneNum() const;
 
    /** These default to english. */
-   void setShortDesc(String& new_val);
-   void setInRoomDesc(String& new_val);
+   void addShortDesc(String& new_val);
+   void addInRoomDesc(String& new_val);
 
-   void setShortDesc(LString& new_val);
-   void setInRoomDesc(LString& new_val);
+   void addShortDesc(LString& new_val);
+   void addInRoomDesc(LString& new_val);
 
    int getDefaultPrice() { return cur_stats[1]; }
-   int getPause() const { return pause; }
-   
-   void setPause(int i) { pause = i; }
-   void decrementPause() { if (pause > 0) pause--; }
 
    void makeComponent(int targ, int comp1, int comp2, int comp3, int comp4,
                       int comp5, ComponentEnum con_type);

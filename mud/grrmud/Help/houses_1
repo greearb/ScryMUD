@@ -1,0 +1,43 @@
+<help general houses>
+A basic house costs 100,000 gold.  This includes three rooms,
+all indoors, as well as a closed door.
+
+Location:
+  Affordable: (Mak'Tor, Dar Thane, along desolate roads): no extra cost.
+  Middle-class area (Jakarta, River City, closer to civilization): +40,000 
+  Garland and the surrounding area: +80,000 gold extra.
+
+Doors:
+  Extra door (two exits from house, must be nearby): +100,000, max of 2
+  Locked door  (comes with one key): 50,000 gold extra.
+  High-quality door (bash-proof): 50,000 gold extra.
+  Higher-quality door (bash and pick-proof):  100,000 gold extra.
+  Highest-quality door: (bash, pick, pass-proof):  150,000 gold extra.
+  Hidden door: 100,000 gold extra.
+
+Additional rooms:
+  50,000 gold per additional room.  The maximum is 10 rooms per house.
+
+Special rooms: (Per Room)
+  Outside: +0,  30,000 gold extra to be able to camp in the room,
+  !MOB (computer critters can't enter) room:  80,000 gold.
+  Haven: (battle not allowed):  200,000 gold.
+  Dark: 30,000 gold.
+  Permanently dark: 50,000 gold.
+  No magic: 75,000 gold.
+  No magical entry (teleport, portal, gate): 50,000 gold.
+  No magical exit (teleport, portal, gate): 50,000 gold.
+  General Keywords (look 'blah'): 20,000 each
+
+Other:
+  Removal of special room characteristics: 10,000 gold per room.
+  A sign outside your house ('look sign'): 75,000 gold.
+  A fountain or other infinite water source: 100,000 gold.
+  Description change: 20,000 gold per room (negotiable).
+
+If you'd like to buy a house, get in contact with an immortal and they'll 
+help you out.
+
+<color=red>
+See Also:  commands topics shops
+</color></help>

@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.23 1999/08/09 06:00:39 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
+// $Id: room.h,v 1.24 1999/08/10 07:06:20 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
 
 //
 //ScryMUD Server Code
@@ -58,7 +58,9 @@ public:
    //void clear();
    //int write(ostream& dafile);
    //int read(istream& dafile, int read_all = TRUE);
+   void toStringClient(String& rslt, int idx, critter& pc);
    void show(int idx, critter& pc);
+   void showClient(int idx, critter& pc);
 
    KeywordPair& operator=(const KeywordPair& rhs);
    
@@ -128,12 +130,6 @@ public:
 
    void listScripts(critter& pc);
 
-   /** Attempt to trigger a room script directly.  So far, we support only
-    * pull and push, but more can easily be added.
-    */
-   int attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
-                                   critter& actor);
-
    int getVisBit() const { return cur_stats[0]; }
    int getMovCost() const { return cur_stats[1]; }
    int getRoomNum() const { return cur_stats[2]; }
@@ -163,7 +159,7 @@ public:
    int isSwamp() const { return room_flags.get(17); }
    int isSmallWater() const { return room_flags.get(15); }
    int isBigWater() const { return room_flags.get(16); }
-   int isInUse() const;
+   int isInUse();
    int isNoVehicle() const { return room_flags.get(25); }
    int needsBoat() const { return room_flags.get(19); }
    int needsClimb() const { return room_flags.get(20); }
@@ -210,14 +206,22 @@ public:
    void checkForBattle(critter& pc_who_is_being_checked_for);
    const String* getRandomExitDir(critter& for_this_pc);
    int getZoneNum();
-   virtual void stat(critter& pc);
+
+   void show(critter& pc);
+   void showClient(critter& pc);
+   void toStringClient(String& rslt, critter& pc);
+
    virtual void checkLight(int do_msgs = FALSE);
 
    virtual void normalize(); /* called after OLC to enforce as much state as
                               * possible. */
    virtual object* haveObjNamed(int i_th, const String* name, int see_bit);
+   virtual object* haveAccessibleObjNamed(int i_th, const String* name, critter& pc,
+                                          int& count_sofar, int& posn);
    virtual critter* haveCritNamed(int i_th, const String* name, int see_bit);
    virtual critter* haveCritNamed(int i_th, const String* name, critter& pc);
+   virtual critter* haveCritNamed(int i_th, const String* name, critter& pc,
+                                  int& count_sofar);
    virtual critter* haveCritter(critter* ptr);
    virtual object* haveObject(object* ptr);
    virtual critter* getLastCritter() { return critters.peekRear(); }
@@ -238,7 +242,7 @@ public:
    virtual void outInv(critter& pc); //show inv to pc (use out_inv method)
    virtual void gainInv(object* obj); //set IN_LIST if needed
    virtual object* loseInv(object* obj);
-   virtual void showAllCept(const char* msg, critter* pc = NULL) const;
+   virtual void showAllCept(const char* msg, critter* pc = NULL);
    virtual void recursivelyLoad(); //mobs and objects
 
    virtual void doPoofOut(critter& pc);

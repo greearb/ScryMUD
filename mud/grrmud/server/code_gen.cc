@@ -1,5 +1,5 @@
-// $Id: code_gen.cc,v 1.10 1999/08/04 06:29:16 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
+// $Id: code_gen.cc,v 1.11 1999/08/10 07:06:17 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
 
 //
 //ScryMUD Server Code
@@ -131,6 +131,7 @@ enum LanguageE {
    English,
    Spanish,
    Portugues,
+   Italian,
    LastLanguage
 };
 */
@@ -142,18 +143,19 @@ enum LanguageE {
    // to the translation.spec file.
    Cell<LVPair*> cll(vals);
    LVPair* ptr;
+   int found_one;
    while ((ptr = cll.next())) {
       slen = ptr->lang.Strlen();
-      if (strncasecmp(ptr->lang, "English", slen) == 0) {
-         translations[0] = ptr->val;
-      }
-      else if (strncasecmp(ptr->lang, "Spanish", slen) == 0) {
-         translations[1] = ptr->val;
-      }
-      else if (strncasecmp(ptr->lang, "Portugues", slen) == 0) {
-         translations[2] = ptr->val;
-      }
-      else {
+      found_one = FALSE;
+      for (int i = 0; i<NUM_LANGUAGES; i++) {
+         if (strncasecmp(ptr->lang, languages[i], slen) == 0) {
+            translations[i] = ptr->val;
+            found_one = TRUE;
+            break;
+         }
+      }//for
+
+      if (!found_one) {
          cerr << "WARNING: Unknown language: -:" << ptr->lang << ":-" << endl;
       }
    }//while
@@ -327,16 +329,17 @@ int code_gen_language(char** argv, int argc) {
 #include <string2.h>
 
 // I expect this may grow.
-enum LanguageE {
-   English,
-   Spanish,
-   Portugues,
-   LastLanguage
-};\n\n";
+enum LanguageE {\n";
+   for (int j = 0; j<NUM_LANGUAGES; j++) {
+      of_h << "   " << languages[j] << "," << endl;
+   }
+   
+   of_h <<"   LastLanguage\n};\n\n";
 
    // If the ENUM above changes, change this 3 to be equal to
    // the number of languages.
-   of_h << "#define LS_PER_ENTRY 3  /* same as LastLanguage */" << endl;
+   of_h << "#define LS_PER_ENTRY " << NUM_LANGUAGES 
+        << "  /* same as LastLanguage */" << endl;
    of_h << "#define LS_ENTRIES " << cnt 
         << " /* Number of Translation groupings */\n\n";
    of_h << "extern const char* language_strings[LS_ENTRIES][LS_PER_ENTRY];\n";

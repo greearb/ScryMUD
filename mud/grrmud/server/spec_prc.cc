@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.23 1999/07/20 05:05:40 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/07/20 05:05:40 $
+// $Id: spec_prc.cc,v 1.24 1999/08/10 07:06:20 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
 
 //
 //ScryMUD Server Code
@@ -687,7 +687,7 @@ int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
          do_cast_haste(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 176: 
-         do_cast_dispell_magic(*targ, pc, TRUE, spell_lvl);
+         do_cast_dispel_magic(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 177: 
          do_cast_strength(*targ, pc, TRUE, spell_lvl);
@@ -723,7 +723,7 @@ int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
          do_cast_remove_curse(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 195: 
-         do_cast_dispell_good(*targ, pc, TRUE, spell_lvl);
+         do_cast_dispel_good(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 197: 
          do_cast_harm(*targ, pc, TRUE, spell_lvl);
@@ -777,7 +777,7 @@ int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
          //do_cast_plague(*targ, pc, TRUE, spell_lvl);
          //return 0;
        case 228: //this is not the error it looks like, see dam_spll.cc
-         do_cast_dispell_good(*targ, pc, TRUE, spell_lvl);
+         do_cast_dispel_good(*targ, pc, TRUE, spell_lvl);
          return 0;
        default:
          Sprintf(buf, 
@@ -871,11 +871,10 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
                         ptr->processInput(wr_all, FALSE, TRUE);
                      }
 
-
                   }//if random chance
                }//if
             }// if scavenge
-            if (ptr->isWanderer() && !ptr->isTracking() &&
+            if (ptr->isWanderer() && !ptr->isTracking() && !ptr->isInProcNow() &&
                 room_list[i].haveCritter(ptr)) {
                if (d(1, 10) > 8) {
                   //log("Doing wander spec_prc.\n");
@@ -1257,10 +1256,15 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
          else {
             recursive_init_loads(*obj_ptr, 0);
          }
-         pc.gainInv(obj_ptr);
+
          Sprintf(buf, "That'll be %i gold coins, here's your %S.", price,
                  name_of_obj(*obj_ptr, pc.SEE_BIT));
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());
+         int del_obj = FALSE;
+         gain_eq_effects(*obj_ptr, NULL, pc, FALSE, FALSE, del_obj);
+         if (!del_obj) {
+            pc.gainInv(obj_ptr);
+         }
 
          if (keeper.isPlayerShopKeeper()) {
             save_player_shop_owner(keeper);
@@ -1305,17 +1309,21 @@ int do_vend_buy(object& vendor, int i_th, const String* item, critter& pc) {
       price = obj_ptr->PRICE;
 
       if (price > pc.GOLD) {
-         show("You don't have enough credits.\n", pc);
+         show("You don't have enough gold.\n", pc);
          return -1;
       }//if
 
          	/* good to go I believe! */
       pc.GOLD -= price;
-      Put(&(obj_list[obj_ptr->OBJ_NUM]), pc.inv); //only dispense OBJ's
+      int del_obj = FALSE;
       recursive_init_loads(*obj_ptr, 0);
-      Sprintf(buf, "You insert %i credits and out pops your %S.", price,
-              name_of_obj(*obj_ptr, pc.SEE_BIT));
+      Sprintf(buf, "You insert %i coins and out pops %S.", price,
+              obj_ptr->getLongName(pc));
       show(buf, pc);
+      gain_eq_effects(obj_list[obj_ptr->OBJ_NUM], NULL, pc, FALSE, FALSE, del_obj);
+      if (!del_obj) {
+         pc.gainInv(&(obj_list[obj_ptr->OBJ_NUM])); //only dispense OBJ's
+      }
       return 0;
    }//else
    return -1;
@@ -1489,9 +1497,6 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
             return -1;
          }//if
 
-         pc.loseInv(obj_ptr);
-         keeper.gainInv(obj_ptr);
-
          Sprintf(buf, "You now have %S.\n", 
 		&(obj_ptr->short_desc));
          show(buf, keeper);
@@ -1500,6 +1505,15 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
 
          pc.GOLD += price;
          keeper.GOLD -= price;
+
+         drop_eq_effects(*obj_ptr, pc, FALSE, FALSE);
+         pc.loseInv(obj_ptr);
+
+         int del_obj = FALSE;
+         gain_eq_effects(*obj_ptr, NULL, pc, FALSE, FALSE, del_obj);
+         if (!del_obj) {
+            pc.gainInv(&(obj_list[obj_ptr->OBJ_NUM])); //only dispense OBJ's
+         }
 
          if (keeper.isPlayerShopKeeper()) {
             save_player_shop_owner(keeper);

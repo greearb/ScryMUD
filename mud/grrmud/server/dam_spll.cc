@@ -1,5 +1,5 @@
-// $Id: dam_spll.cc,v 1.6 1999/07/16 06:12:53 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
+// $Id: dam_spll.cc,v 1.7 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -186,7 +186,7 @@ void cast_holy_word(int i_th, const String* victim, critter& pc) {
 }//cast_holy_word
 
 
-void cast_dispell_evil(int i_th, const String* victim, critter& pc) {
+void cast_dispel_evil(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = DISPEL_EVIL_SKILL_NUM;
 
@@ -208,18 +208,18 @@ void cast_dispell_evil(int i_th, const String* victim, critter& pc) {
      return;
    }//if
    
-   /* dispell good/evil messages and damage are the same */
+   /* dispel good/evil messages and damage are the same */
    if ((pc.ALIGN < -350) || (vict->ALIGN > 350)) {
       show("OOPS!!\n", pc);
-      do_cast_dispell_good(pc, pc, FALSE, 0);
+      do_cast_dispel_good(pc, pc, FALSE, 0);
    }//if
    else
-     do_cast_dispell_good(*vict, pc, FALSE, 0);
+     do_cast_dispel_good(*vict, pc, FALSE, 0);
 
-}//cast_dispell_evil
+}//cast_dispel_evil
 
 
-void do_cast_dispell_good(critter& vict, critter& agg, int is_canned,
+void do_cast_dispel_good(critter& vict, critter& agg, int is_canned,
  		     int lvl) {
    String buf(100);
    short did_hit = TRUE;
@@ -334,10 +334,10 @@ void do_cast_dispell_good(critter& vict, critter& agg, int is_canned,
    if (do_fatality) {
       agg_kills_vict(agg, vict);
    }//if
-}//do_cast_dispell_good
+}//do_cast_dispel_good
  
 
-void cast_dispell_good(int i_th, const String* victim, critter& pc) {
+void cast_dispel_good(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = DISPEL_GOOD_SKILL_NUM;
 
@@ -361,12 +361,12 @@ void cast_dispell_good(int i_th, const String* victim, critter& pc) {
    
    if ((pc.ALIGN > 350) || (vict->ALIGN < -350)) {
      show("OOPS!!\n", pc);
-     do_cast_dispell_good(pc, pc, FALSE, 0);
+     do_cast_dispel_good(pc, pc, FALSE, 0);
    }//if
    else
-     do_cast_dispell_good(*vict, pc, FALSE, 0);
+     do_cast_dispel_good(*vict, pc, FALSE, 0);
 
-}//cast_dispell_good
+}//cast_dispel_good
 
 
 

@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.22 1999/08/04 06:29:17 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/04 06:29:17 $
+// $Id: object.cc,v 1.23 1999/08/10 07:06:20 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
 
 //
 //ScryMUD Server Code
@@ -444,7 +444,7 @@ int object::getCurRoomNum() {
 }//getCurRoomNum
 
 
-int object::getCurWeight() const {
+int object::getCurWeight() {
    if (inv.isEmpty()) {
       return extras[5];
    }
@@ -475,6 +475,7 @@ int object::write(ostream& ofile) {
    SCell<object*> ob_cell;
    object* ob_ptr;
 
+   //TODO
    ofile << "<META> ENTITY=OBJ VERSION=3.0 </META>\n";
 
    Entity::write(ofile);
@@ -550,7 +551,7 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
    char tmp[81];
    String tmp_str(280);
    
-   Clear();  //stop up any memory leaks etc.
+   clear();  //stop up any memory leaks etc.
 
    mudlog.log(DB, "In obj::read.\n");
 
@@ -585,13 +586,13 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
    mudlog.log(DB, "About to do termed read..");
 
    tmp_str.termedRead(ofile);
-   setShortDesc(tmp_str);
+   addShortDesc(tmp_str);
    
    tmp_str.termedRead(ofile);
-   setInRoomDesc(tmp_str);
+   addInRoomDesc(tmp_str);
 
    tmp_str.termedRead(ofile);
-   setLongDesc(tmp_str);
+   addLongDesc(tmp_str);
    
    mudlog.log(DB, "Done with termed read..");
 
@@ -661,7 +662,8 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
                 d(1,100)) {
                mudlog << "INFO:  Loading inventory object: " << i << " on object: "
                       << cur_stats[2] << endl;
-               inv.append(&(obj_list[i]));    //add it to inventory
+               object* ptr = &(obj_list[i]); //compiler issue
+               inv.append(ptr); //add it to inventory
             }//if
             else {
                if (mudlog.ofLevel(DB)) {
@@ -672,7 +674,8 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
             }//else
          }//if
          else { //TODO:  load percentage ignored here....need a fix!
-            inv.append(&(obj_list[i]));    //add it to inventory
+            object* ptr = &(obj_list[i]); //compiler issue
+            inv.append(ptr);     //add it to inventory
          }//if
       }//else
       ofile >> i;
@@ -762,7 +765,7 @@ int object::read_v3(istream& ofile, int read_all) {
    char tmp[81];
    String tmp_str(80);
    
-   Clear();  //stop up any memory leaks etc.
+   clear();  //stop up any memory leaks etc.
 
    mudlog.log(DB, "In obj::read_v3.\n");
 
@@ -817,11 +820,13 @@ int object::read_v3(istream& ofile, int read_all) {
       }//if
       else {
          if (obj_list[i].isInUse()) {
-            if (read_all || ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
+            if (read_all || 
+                ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
                 d(1,100)) {
-               mudlog << "INFO:  Loading inventory object: " << i << " on object: "
-                      << cur_stats[2] << endl;
-               inv.append(&(obj_list[i]));    //add it to inventory
+               mudlog << "INFO:  Loading inventory object: " << i
+                      << " on object: " << cur_stats[2] << endl;
+               object* ptr = &(obj_list[i]); //compiler issue
+               inv.append(ptr); //add it to inventory
             }//if
             else {
                if (mudlog.ofLevel(DB)) {
@@ -832,7 +837,8 @@ int object::read_v3(istream& ofile, int read_all) {
             }//else
          }//if
          else { //TODO:  load percentage ignored here....need a fix!
-            inv.append(&(obj_list[i]));    //add it to inventory
+            object* ptr = &(obj_list[i]); //compiler issue
+            inv.append(ptr); //add it to inventory
          }//if
       }//else
       ofile >> i;

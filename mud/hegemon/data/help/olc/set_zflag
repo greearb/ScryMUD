@@ -1,0 +1,17 @@
+Category:  OLC  Topic:  set_zflag
+
+
+
+Used to set a room flag in every room in your CURRENT zone.
+
+syntax:  set_zflag [flag_num] [on/off]
+
+example:  set_zflag 3 on	Sets flag # 3 in current zone.
+example:  set_zflag 4 off       Clears flag # 4 in current zone.
+
+Bugs:  Some flags are (and should be) restricted from toggling.  As
+       an Imp adds/deletes/changes flags, he/she should check this
+       and similar functions for possible tweaking.
+
+
+See also:  olc, tog_oflag, tog_rflag, tog_mflag, rclone, write_zone

@@ -28,7 +28,8 @@ There is nothing subtle about bash.  This skill is used to bludgeon
 an opponent into a stupor.  It can render the opponent unable to
 perform special attacks or spells, but it also takes alot out of
 the one who bashes, and may also affect their near-term ability to
-fight effectively.
+fight effectively.  This skill can also allow you to break down some
+weaker doors if you don't have the key to unlock them.
 ~
 berserk
 This state of mind allows some advanced warriors to simultaneously
@@ -57,7 +58,8 @@ among other things.
 block
 Skilled fighters will be able to completely block an opponent's
 mundane attack.  Because of the defensive nature of this skill, it
-requires that the user give up some of their offensive energy.
+requires that the user give up some of their offensive energy.  It
+is also possible to block a direction so that others may not pass.
 ~
 bodyslam
 This skill is great for hand to hand combat.  One who uses this
@@ -452,6 +454,10 @@ mirror image
 This spell allows one to appear as several mirror images.  This
 confuses attackers, and they may hit your image (breaking it)
 instead of hitting you.
+~
+necromancy
+This dark art prepares it's practitioners for placing a twisted kind
+of life back into the corpses of the beings formerly known as living.
 ~
 parry
 This skill allows you to turn the attack of an opponent.

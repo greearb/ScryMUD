@@ -1,5 +1,5 @@
-// $Id: olc.cc,v 1.14 1999/06/23 04:16:07 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/23 04:16:07 $
+// $Id: olc.cc,v 1.15 1999/08/10 07:06:20 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
 
 //
 //ScryMUD Server Code
@@ -3120,9 +3120,11 @@ void finish_olc_obj(critter& pc) {
    }//if
    else {
 
-     /* first normalize this puppy as much as possible */
-      normalize_obj(*(OLC_OBJ));
-
+      /* first normalize this puppy as much as possible */
+      if(!(pc.pc && pc.pc->pc_data_flags.get(2)
+	   && pc.pc->imm_data->imm_level >= 9)) {
+	     normalize_obj(*(OLC_OBJ));
+	   }
       ofile << OLC_OBJ->cur_stats[2];
       ofile << "  // Begin of an object\n";
       OLC_OBJ->Write(ofile);

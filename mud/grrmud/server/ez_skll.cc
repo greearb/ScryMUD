@@ -1,5 +1,5 @@
-// $Id: ez_skll.cc,v 1.7 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: ez_skll.cc,v 1.8 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -364,7 +364,7 @@ int do_picklock(object& obj, critter& pc) { //for objects
 int earthmeld(critter& pc) {
    int spell_num = EARTHMELD_SKILL_NUM;
 
-   if (!ok_to_do_action(NULL, "mKNBSFP", spell_num, pc, pc.getCurRoom(),
+   if (!ok_to_do_action(NULL, "mKNBFP", spell_num, pc, pc.getCurRoom(),
                         NULL, TRUE)) {
       return -1;
    }

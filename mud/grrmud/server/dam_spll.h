@@ -1,5 +1,5 @@
-// $Id: dam_spll.h,v 1.2 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: dam_spll.h,v 1.3 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -68,9 +68,9 @@ void do_cast_burning_hands(critter& vict, critter& pc, int is_canned,
 void cast_dark_dart(int i_th, const String* dr, critter& agg);
 void do_cast_dark_dart(critter& vict, critter& pc, int is_canned, int lvl);
 
-void cast_dispell_evil(int i_th, const String* dr, critter& agg);
-void cast_dispell_good(int i_th, const String* dr, critter& agg);
-void do_cast_dispell_good(critter& vict, critter& pc, int is_canned, int lvl);
+void cast_dispel_evil(int i_th, const String* dr, critter& agg);
+void cast_dispel_good(int i_th, const String* dr, critter& agg);
+void do_cast_dispel_good(critter& vict, critter& pc, int is_canned, int lvl);
 
 
 ///********** effects of passive spells (when triggered **********///

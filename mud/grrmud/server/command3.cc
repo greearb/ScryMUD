@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.24 1999/07/22 04:56:14 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/22 04:56:14 $
+// $Id: command3.cc,v 1.25 1999/08/10 07:06:18 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
 
 //
 //ScryMUD Server Code
@@ -180,7 +180,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
         }//case for mob targets
 
         // now for doors
-        case 21: case 181:
+        case 21: case 181: case 6:
         {
            door* dr_ptr;
            if ((dr_ptr = door::findDoor(ROOM.DOORS, i_th, target,
@@ -192,7 +192,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
                  }//if
               }//if
 
-              do_wand_scroll_proc(targ, ptr->stat_spell, pc, 
+              do_wand_scroll_proc(dr_ptr, ptr->stat_spell, pc, 
                                   ptr->bonus_duration);
               do_dec = TRUE;
            }//if
@@ -209,7 +209,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
         case 147: case 149: case 150: case 153: case 200:
         case 210: case 211: case 218:
            // spells requiring room targs, always use current room
-        case 4: case 6: case 14: case 17: case 18: case 20:
+        case 4: case 14: case 17: case 18: case 20:
         case 198: case 215: case 220:
         {
            do_wand_scroll_proc(ptr->stat_spell, pc,
@@ -292,7 +292,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
 }//use
 
 
-int quaf(int i_th, const String* item, critter& pc) { //for wands
+int quaff(int i_th, const String* item, critter& pc) { //for wands
    object* potion = NULL;
    String buf(100);
    int posn = 0;
@@ -366,7 +366,7 @@ int quaf(int i_th, const String* item, critter& pc) { //for wands
         case 147: case 149: case 150: case 153: case 200:
         case 210: case 211: case 218:
            // spells requiring room targs, always use current room
-        case 4: case 6: case 14: case 17: case 18: case 20:
+        case 4: case 14: case 17: case 18: case 20:
         case 159: case 198: case 215: case 220:
         {
            do_wand_scroll_proc(ptr->stat_spell, pc, ptr->bonus_duration);
@@ -376,7 +376,7 @@ int quaf(int i_th, const String* item, critter& pc) { //for wands
 
         default:
         { 
-           mudlog << "ERROR:  found default case in quaf, spell_num: "
+           mudlog << "ERROR:  found default case in quaff, spell_num: "
                   << ptr->stat_spell << "  on object#:  "
                   << potion->getIdNum() << endl;
            pc.show("You call upon forces unavailable at this time!\n");
@@ -387,7 +387,7 @@ int quaf(int i_th, const String* item, critter& pc) { //for wands
 
    if (!found_proc) {
       show("You feel slightly refreshed!\n", pc);
-      Sprintf(buf, "ERROR:  item# %i casts no spells (quaf)\n", 
+      Sprintf(buf, "ERROR:  item# %i casts no spells (quaff)\n", 
 	      potion->OBJ_NUM);
       mudlog.log(ERR, buf);
    }//if
@@ -529,7 +529,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
            break;
         }
         // now for doors
-        case 21: case 181:
+        case 21: case 181: case 6:
         {
            mudlog.dbg("Doors case.\n");
            door* dr_ptr;
@@ -542,7 +542,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
                  }//if
               }//if
 
-              if (do_wand_scroll_proc(targ, ptr->stat_spell, pc,
+              if (do_wand_scroll_proc(dr_ptr, ptr->stat_spell, pc,
                                       ptr->bonus_duration) >= 0) {
                  junk_scroll = TRUE;
               }
@@ -560,7 +560,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         case 147: case 149: case 150: case 153: case 200:
         case 210: case 211: case 218:
            // spells requiring room targs, always use current room
-        case 4: case 6: case 14: case 17: case 18: case 20:
+        case 4: case 14: case 17: case 18: case 20:
         case 198: case 215: case 220:
         {
            mudlog.dbg("No target needed.\n");
@@ -1378,7 +1378,7 @@ int flee(critter& pc, int& is_dead) {
             }//while
             
             show("You try to flee the scene!\n", pc);
-            Sprintf(buf, "tries to flee to the %S!", 
+            Sprintf(buf, "tries to flee %S!", 
                     direction_of_door(*dr_ptr));
             emote(buf, pc, ROOM, FALSE);
 
@@ -1433,7 +1433,7 @@ int flee(critter& pc, int& is_dead) {
             }//while
 
             show("You try to flee the scene!\n", pc);
-            Sprintf(buf, "tries to flee to the %S!", 
+            Sprintf(buf, "tries to flee %S!", 
                     direction_of_door(*dr_ptr));
             emote(buf, pc, ROOM, FALSE);
             move(pc, 1, *(Top(dr_ptr->dr_data->names)), FALSE, ROOM, is_dead);
@@ -1598,7 +1598,7 @@ int critter::doFollow(critter& vict, int do_msg = TRUE) {
       }//if
 
       FOLLOWER_OF = &vict;
-      vict.FOLLOWERS.append(this);
+      vict.FOLLOWERS.gainData(this);
       
       if (do_msg) {
          Sprintf(buf, "%S now follows you.\n", getName(vict.SEE_BIT));
@@ -1671,8 +1671,10 @@ int group(int i_th, const String* vict, critter& pc) {
 
       pc.FOLLOWERS.head(cll);
       while ((ptr = cll.next())) {
- 	 if (ptr->isTailing() || 
-	     (pc.pc && pc.isNoHassle())) {
+ 	 if (ptr->isTailing() || pc.isNoHassle()) {
+            Sprintf(buf, "Attempt to group you by %S failed because you are tailing or !hassle.\n",
+                    ptr->getName());
+            ptr->show(buf);
 	   continue; //fail silently
 	 }//if !hassle or tailing, can't be grouped
 
@@ -1693,12 +1695,21 @@ int group(int i_th, const String* vict, critter& pc) {
          show("That person is not following you.\n", pc);
          return -1;
       }//
+      
+      if (pc.GROUPEES.haveData(ptr)) {
+         Sprintf(buf, "%S is already in your group.\n", ptr->getName());
+         buf.Cap();
+         pc.show(buf);
+         return 0;
+      }
 
       pc.GROUPEES.gainData(&pc);  //make sure self is in
 
       pc.GROUPEES.gainData(ptr);
       show("You are now part of the group.\n", *ptr);
-      show("Ok.\n", pc);
+      Sprintf(buf, "%S joins your group.\n", ptr->getName());
+      buf.Cap();
+      pc.show(buf);
 
       String cmd = "group";
       ROOM.checkForProc(cmd, NULL_STRING, pc, ptr->MOB_NUM);
@@ -1961,7 +1972,16 @@ int enslave(int i_th, const String* vict, critter& pc) {
 int do_tell(critter& pc, const char* message, critter& targ, 
             short show_teller, int targs_room_num) {
 
-   targs_room_num = targs_room_num; // get rid of un-used variable warning 
+   targs_room_num = targs_room_num; // get rid of un-used variable warning
+
+   if (pc.isSleeping() || pc.isParalyzed()) {
+      pc.show("You mutter in your unconcious state...\n");
+      return -1;
+   }
+   else if (targ.isSleeping() || (targ.pc && (targ.getMode() != MODE_NORMAL))) {
+      pc.show("They can't hear you right now.\n");
+      return -1;
+   }
 
    String buf(200);
    String msg;

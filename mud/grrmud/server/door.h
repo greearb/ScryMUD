@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.12 1999/08/09 06:00:39 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
+// $Id: door.h,v 1.13 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -38,33 +38,23 @@
 
 class room;
 
-class door_data : public Entity, public Closable {
+class door_data : virtual public Entity, virtual public Closable {
 private:
    static int _cnt;
 
-protected:
-   int in_zone; //owner zone
-   int token_num;
-   int key_num;
-
 public:
-
-   virtual LEtypeE getEntityType() const { return LE_DOOR_DATA; }
-
-   int isInZone(int zn) { return zn == in_zone; }
-   int getZoneNum() const { return in_zone; }
-   int getKeyNum() const { return key_num; }
-   int getTokenNum() const { return token_num; }
-
    door_data (); //default constructor
    door_data(const door_data& source);  //copy constructor
    door_data& operator=(const door_data& source);
    virtual ~door_data ();
 
-   void Clear();
-   void Read(ifstream& da_file);
-   void Write(ofstream& da_file);
+   void clear();
+   int read(istream& da_file, int read_all = TRUE);
+   int write(ostream& da_file);
    static int getInstanceCount() { return _cnt; }
+
+   virtual LEtypeE getEntityType() { return LE_DOOR_DATA; }
+
 }; //door_data
  
  
@@ -79,7 +69,7 @@ class critter;
  * several of Entity's methods, especially those dealing with
  * name and description data.
  */
-class door : public Entity {
+class door : virtual public Entity {
 private:
    static int _cnt;
 
@@ -103,6 +93,7 @@ public:
    
    int isOwnedBy(critter& pc);
    int getVisBit() const { if (dr_data) return dr_data->getVisBit(); return 0; }
+   int isInUse() const { return (dr_data && dr_data->isInUse()); }
    int isOpen() const { return (dr_data && dr_data->isOpen()); }
    int isSecret() const { return dr_data && dr_data->isSecret(); }
    int isClosed() const { return dr_data && dr_data->isClosed(); }
@@ -122,13 +113,13 @@ public:
 
    int getKeyNum() const {
       if (dr_data) 
-         return dr_data->getKeyNum();
+         return dr_data->getKey();
       return 0;
    }
 
    int getTokenNum() const {
       if (dr_data) 
-         return dr_data->getTokenNum();
+         return dr_data->getToken();
       return 0;
    }
 
@@ -138,15 +129,14 @@ public:
    String* getDirection();
 
    ///******************  Static Functions ***************************///
-   static door* findDoor(const SafeList<door*> &lst, const int i_th,
-                         const String* name, const int see_bit,
-                         const room& rm);
+   static door* findDoor(SafePtrList<door> &lst, const int i_th,
+                         const String* name, int& count_sofar,
+                         critter* viewer);
 
-   static door* findDoor(const SafeList<door*>& lst, const int i_th,
-                         const String* name, const int see_bit,
-                         const int rm_vis_bit);
+   static door* findDoor(SafePtrList<door> &lst, const int i_th,
+                         const String* name, critter* viewer);
 
-   static door* findDoorByDest(const SafeList<door*>& lst, int dest_room);
+   static door* findDoorByDest(SafePtrList<door>& lst, int dest_room);
 
    static int getInstanceCount() { return _cnt; }
 };//struct door   

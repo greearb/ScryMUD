@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.43 1999/08/09 06:00:39 greear Exp $
-// $Revision: 1.43 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
+// $Id: critter.cc,v 1.44 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.44 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -235,7 +235,7 @@ void shop_data::clear() {
    ps_data_list.clearAndDestroy();
 }//Clear
 
-int shop_data::read(istream& da_file, short read_all) {
+int shop_data::read(istream& da_file, int read_all, critter* container) {
    char tmp[100];
    int i;
    String buf(100);
@@ -261,15 +261,20 @@ int shop_data::read(istream& da_file, short read_all) {
          object* new_obj = new object;
          da_file.getline(tmp, 80);  //junk message
          new_obj->read(da_file, read_all);
-         //TODO w_obj->IN_LIST = &(perm_inv); //make sure its a SOBJ
+         new_obj->setContainer(container);
+         new_obj->setModified(TRUE);
+         //TODO:  gainObj??
          perm_inv.append(new_obj);    //add it to inventory
+         affected_objects.append(new_obj);
       }//if
       else {
          if (obj_list[i].isInUse()) {
             if (read_all || 
                 ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
                 d(1,100)) {
-               perm_inv.append(&(obj_list[i]));    //add it to inventory
+               object* ptr = &(obj_list[i]);
+               //TODO: gainObj??
+               perm_inv.append(ptr);    //add it to inventory
             }//if
          }//if
          else {
@@ -1606,8 +1611,9 @@ int critter::travelToRoom(int targ_room_num, int num_steps, int& is_dead) {
             }
          }
 
-         door* dptr = door::findDoor(getCurRoom()->DOORS, 1, dir, ~0,
-                                     *(getCurRoom()));
+         int count_sofar = 0;
+         door* dptr = door::findDoor(getCurRoom()->DOORS, 1, dir,
+                                     count_sofar, NULL);
          
          if (!dptr) {
             if (mudlog.ofLevel(WRN)) {
@@ -1905,7 +1911,8 @@ int critter::read_v3(istream& ofile, int read_all = TRUE) {
             if (read_all ||
               ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
                       d(1,100)) {
-               inv.append(&(obj_list[i]));    //add it to inventory
+               object* ptr = &(obj_list[i]);
+               inv.append(ptr); //TODO: gainObj??
             }//if
          }//if
          else {
@@ -2093,8 +2100,10 @@ void critter::doRemoveFromBattle() {
    if (!IS_FIGHTING.isEmpty()) {
       SCell<critter*> cll(IS_FIGHTING);
       critter* crit_ptr;
+      critter* ptr2;
       while ((crit_ptr = cll.next())) {
-         crit_ptr->IS_FIGHTING.loseData(this);
+         ptr2 = this; //compiler issue
+         crit_ptr->IS_FIGHTING.loseData(ptr2);
       }//while
       IS_FIGHTING.clear();
    }//if
@@ -2664,13 +2673,15 @@ void critter::checkLight(object* obj, int posn) {
 }//checkLight
 
 object* critter::findObjInEq(int i_th, const String& name,
-                             int see_bit, room& rm, int& posn) {
+                             int see_bit, room& rm, int& posn,
+                             int& count_sofar) {
    int count = 0;
    for (int i = 1; i<MAX_EQ; i++) {
       if (EQ[i] && 
           detect(see_bit, rm.getVisBit() | EQ[i]->OBJ_VIS_BIT) &&
          obj_is_named(*(EQ[i]), name)) {
          count++;
+         count_sofar++;
          if (count == i_th) {
             posn = i;
             return EQ[i];
@@ -2840,7 +2851,7 @@ void critter::doHuntProc(int num_steps, int& is_dead) {
    }
 
    critter* targ = have_crit_named(pc_list, 1, getTrackingTarget(),
-                                   ~0, *(getCurRoom()));
+                                   NULL);
 
    // No longer hunt MOBS
    //if (!targ) {
@@ -3104,33 +3115,26 @@ int critter::isOpen(int cmt, int do_msg, critter& pc) const {
    if (mob && mob->proc_data && mob->proc_data->sh_data) {
 
       // 9 AM to 4 PM  (9 - 16)
-      if ((OPEN_TIME <= CLOSE_TIME) &&
-          (cmt >= OPEN_TIME) && (cmt <= CLOSE_TIME)) {
-         return TRUE;
+      
+      if (OPEN_TIME <= CLOSE_TIME) {
+         if ((cmt >= OPEN_TIME) && (cmt <= CLOSE_TIME)) {
+            return TRUE;
+         }
       }
-      // 4 PM to 9 AM (16 - 9)
-      else if ((CLOSE_TIME <= OPEN_TIME) &&
-               (cmt >= OPEN_TIME) || (cmt <= CLOSE_TIME)) {
-         return TRUE;
+      // 4 PM to 9 AM (16(open) - 9(close))
+      else if (CLOSE_TIME <= OPEN_TIME) {
+         if (!((cmt > CLOSE_TIME) && (cmt < OPEN_TIME))) {
+            return TRUE;
+         }
       }
    }//if
 
    if (do_msg) {
       String buf(100);
-      if ((cmt < OPEN_TIME) || (cmt > CLOSE_TIME)) {
-         Sprintf(buf, "Hours are from %s to %s.\n", 
-                 military_to_am(OPEN_TIME),
-                 military_to_am(CLOSE_TIME));
-         pc.show(buf);
-      }//if
-      else {
-         if ((cmt > CLOSE_TIME) && (cmt < OPEN_TIME)) {
-            Sprintf(buf, "Hours are from %s to %s.\n", 
-                    military_to_am(OPEN_TIME),
-                    military_to_am(CLOSE_TIME));
-            pc.show(buf);
-         }//if
-      }//else
+      Sprintf(buf, cstr(CS_HOURS_FROM, pc),
+              military_to_am(OPEN_TIME),
+              military_to_am(CLOSE_TIME));
+      pc.show(buf);
    }
 
    return FALSE;

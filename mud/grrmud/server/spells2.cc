@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.10 1999/07/22 04:56:15 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/07/22 04:56:15 $
+// $Id: spells2.cc,v 1.11 1999/08/10 07:06:21 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/10 07:06:21 $
 
 //
 //ScryMUD Server Code
@@ -650,7 +650,7 @@ void cast_remove_poison(int i_th, const String* victim, critter& pc) {
    vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
-      show("Whom do you wish to put to sleep??\n", pc);
+      show("Whom do you wish to rid of poison??\n", pc);
       return;
    }//if
 
@@ -690,10 +690,10 @@ void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl) {
        agg.MANA -= spell_mana;
 
      if (ptr) {
-       show("Ok.\n", agg);
+        show("They are already asleep!\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/3), 
+       Put(new stat_spell_cell(spell_num, lvl/6 + 1), 
 	   vict.affected_by);
        vict.CRIT_FLAGS.turn_on(15); //is perm_sleeped
        vict.setPosn(POS_SLEEP);
@@ -758,12 +758,12 @@ void cast_sleep(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
    
-   if (!ok_to_do_action(vict, "KMSVN", spell_num, pc)) {
-     return;
+   if (!ok_to_do_action(vict, "BKMSVN", spell_num, pc)) {
+      return;
    }//if
 
    do_cast_sleep(*vict, pc, FALSE, 0);
-}//do_cast_sleep
+}//cast_sleep
 
 
 void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
@@ -1512,7 +1512,7 @@ void cast_haste(int i_th, const String* victim, critter& pc) {
 
 
 
-void do_cast_dispell_magic(critter& vict, critter& agg, int is_canned,
+void do_cast_dispel_magic(critter& vict, critter& agg, int is_canned,
 			   int lvl) {
    String buf(100);
    int spell_num = DISPEL_MAGIC_SKILL_NUM;
@@ -1585,10 +1585,10 @@ void do_cast_dispell_magic(critter& vict, critter& agg, int is_canned,
      }//if
    }//if
    agg.PAUSE += 1;   // increment pause_count
-}//do_cast_dispell_magic
+}//do_cast_dispel_magic
  
 
-void cast_dispell_magic(int i_th, const String* victim, critter& pc) {
+void cast_dispel_magic(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = DISPEL_MAGIC_SKILL_NUM;
 
@@ -1609,8 +1609,8 @@ void cast_dispell_magic(int i_th, const String* victim, critter& pc) {
    }//if
                  /* all checks have been passed, lets do it */
 
-   do_cast_dispell_magic(*vict, pc, FALSE, 0);
-}//do_cast_dispell_magic
+   do_cast_dispel_magic(*vict, pc, FALSE, 0);
+}//do_cast_dispel_magic
 
 
 void do_cast_fireproof(critter& vict, critter& agg, int is_canned, int lvl) {

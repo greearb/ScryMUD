@@ -5,6 +5,14 @@ denizens when asleep, and are at a real disadvantage if they want
 to mess you up! 
 
 Syntax:  sleep
+
+The sleep spell can put a creature into a sleep that they cannot
+awaken from naturally, at least for some time (about 3-15 ticks).
+Battle and a few other things can awaken a person from this forced
+sleep however.
+
+Syntax:  cast sleep <<i_th> [target]
+
 <color=red>
 See Also:  rest, wake, stand, sit, meditate
 </color></help>

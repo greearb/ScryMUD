@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.12 1999/07/23 02:54:29 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/23 02:54:29 $
+// $Id: misc.h,v 1.13 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -41,12 +41,12 @@
 #include "MudStats.h"
 
 extern LazyPtrArray<room> room_list;
-extern List<room*> embattled_rooms; 
-extern List<room*> affected_rooms;
-extern List<object*> obj_to_be_disolved_list; //grrmud.cc
-extern List<critter*> pulsed_proc_mobs;
-extern List<room*> pulsed_proc_rooms;
-extern List<object*> pulsed_proc_objects;
+extern SafeList<room*> embattled_rooms; 
+extern SafeList<room*> affected_rooms;
+extern SafeList<object*> obj_to_be_disolved_list; //grrmud.cc
+extern SafeList<critter*> pulsed_proc_mobs;
+extern SafeList<room*> pulsed_proc_rooms;
+extern SafeList<object*> pulsed_proc_objects;
 extern PtrArray<room> proc_action_rooms;
 extern PtrArray<object> proc_action_objs;
 
@@ -77,7 +77,7 @@ int  d(const int num_rolls, const int dice_sides);
 int obj_sub_a_4_b(object* a, List<object*>& lst, 
                   const int i_th, const String* name, const int see_bit,
                   room& rm);
-int crit_sub_a_4_b(critter* a, List<critter*>& lst, 
+int crit_sub_a_4_b(critter* a, SafeList<critter*>& lst, 
                    const int i_th, const String* name, const int see_bit,
                    room& rm);
 
@@ -108,20 +108,36 @@ int vDoShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
 int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
                List<critter*>& lst, CSentryE cs_entry, ...);
 
-void out_str(const List<String*>& lst, critter& pc); 
-void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE);
-void out_inv(const List<object*>& lst, critter& pc, const short l_type); 
+void out_str(const SafeList<String*>& lst, critter& pc); 
+void out_crit(const SafeList<critter*>& lst, critter& pc, int see_all = FALSE);
+void out_inv(const SafeList<object*>& lst, critter& pc, const short l_type); 
          //outs the names object*, formats according to l_type
 
 
 	 /* searches the given list, lst will not be modified */
-critter* have_crit_named(List<critter*>& lst, const int i_th, 
-         const String* name, const int see_bit, const room& rm,
-	 int do_exact = FALSE); 
+critter* have_crit_named(SafeList<critter*>& lst, const int i_th, 
+                         const String* name, const int see_bit,
+                         const room& rm, int do_exact = FALSE); 
+
+critter* have_crit_named(SafeList<critter*>& lst, const int i_th, 
+                         const String* name, const int see_bit,
+                         int& count_sofar, const room& rm,
+                         int do_exact = FALSE);
+
+/** If viewer is NULL, it will be as if the viewer can see everyting.
+ */
+critter* have_crit_named(SafeList<critter*>& lst, const int i_th, 
+                         const String* name, critter* viewer,
+                         int do_exact = FALSE);
 
 
-object*  have_obj_named(const List<object*>& lst, const int i_th, 
-         const String* name, const int see_bit, const room& rm);
+object*  have_obj_named(const SafeList<object*>& lst, const int i_th, 
+                        const String* name, const int see_bit,
+                        const room& rm);
+
+object*  have_obj_named(const SafeList<object*>& lst, const int i_th, 
+                        const String* name, const int see_bit,
+                        const room& rm, int& count_sofar);
 
 /** Return the number of instances of an object with that name, as would
  * be found by have_obj_named, in the lst.  Used for finding i_th element

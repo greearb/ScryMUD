@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.17 1999/08/04 06:29:16 greear Exp $
-# $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
+# $Id: Makefile,v 1.18 1999/08/10 07:06:17 greear Exp $
+# $Revision: 1.18 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
 
 # makefile template
 include ../../MakeInclude
@@ -16,7 +16,7 @@ AUDIT_TARG = ./audit
 GEN_TARGS = lang_strings.h parse_gen.h lang_strings.cc parse_gen.cc
 
 SRCS  = parse_gen.cc lang_strings.cc classes.cc object.cc critter.cc \
-Filters.cc room.cc door.cc skills.cc command3.cc \
+Filters.cc room.cc door.cc skills.cc command3.cc Markup.cc \
 grrmud.cc commands.cc command2.cc socials.cc spells.cc \
 olc.cc load_wld.cc misc.cc misc2.cc parse.cc battle.cc spec_prc.cc \
 login.cc command4.cc olc2.cc command5.cc batl_prc.cc spells2.cc \
@@ -26,7 +26,7 @@ script.cc SkillSpell.cc zone.cc rm_parse.cc rm_cmds.cc obj_parse.cc \
 obj_cmds.cc BugEntry.cc MudStats.cc Serialized.cc Scriptable.cc
 
 OBJS = parse_gen.o lang_strings.o classes.o object.o critter.o \
-Filters.o room.o door.o skills.o command3.o \
+Filters.o room.o door.o skills.o command3.o Markup.o \
 grrmud.o commands.o command2.o socials.o spells.o olc.o \
 load_wld.o misc.o misc2.o parse.o battle.o spec_prc.o login.o \
 command4.o olc2.o command5.o batl_prc.o spells2.o \

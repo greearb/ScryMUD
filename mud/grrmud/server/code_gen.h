@@ -1,5 +1,5 @@
-// $Id: code_gen.h,v 1.5 1999/08/04 06:29:16 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
+// $Id: code_gen.h,v 1.6 1999/08/10 07:06:17 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
 
 //
 //ScryMUD Server Code
@@ -31,7 +31,20 @@
 #include <list2.h>
 
 #define ALIASES_ARRAY_LEN 50
-#define NUM_LANGUAGES 3
+
+
+/** Only change these two things to add a new language, and of course
+ * the server code may need changes too.
+ */
+#define NUM_LANGUAGES 4
+
+char* languages[NUM_LANGUAGES] = {
+   "English",
+   "Spanish",
+   "Portugues",
+   "Italian"
+};
+
 
 class GenCmdInput {
 public:
@@ -42,7 +55,6 @@ public:
    int read(ifstream& dafile);
    void clear();
    void print();
-
 };
 
 class LVPair {

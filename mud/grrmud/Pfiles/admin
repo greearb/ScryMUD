@@ -1,4 +1,4 @@
-Admin ~	names 192.168.1.3 __LEVEL__ 40
+Admin ~	names 127.0.0.1 __LEVEL__ 40
 the IMP Supreme
 ~
 
@@ -7,14 +7,36 @@ Admin is a fine fellow, always fixing problems for others and making
 problems for you.
 
 ~
-20 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-109877 23986 450 	long_data
-0 30 17 16 12 17 16 1 99 65 1 0 2 3 1 1000 326 500 -112 
+20 18 16 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+109877 28501 450 	long_data
+0 30 17 16 12 17 17 0 99 65 1 0 2 3 1 1000 188 499 -166 
 40 0 0 5 1000 500 500 0 100 100 115 106 105 87 0 0 2 3 100 100 
 100 0 0 0 	shrt_cur_stats
-1024 2047 1 	cur_stats
--1	eq: num, posn
-191 23 -1	affected_by
+1024 2047 6 	cur_stats
+-2 9	 Start of SOBJ
+staff runed ash ~	names
+an ashen staff
+~
+A staff of carved ash lies here.
+~
+This staff, made from the heart wood of an ancient ash split asunder by
+lightning, has been carefully carved with runes of power.  The staff is
+the symbol of the acadamy and the Grand Mage guards it closely, even as
+it guards him or her.
+
+~
+70 63 57 51 42 31 30 15 11 10 1 -1  -:| bitfield |:-
+3 0 50 0 0 5 5 5 4 	extras
+1024 5500 144 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+217 20 -1 spell#, level (casts)
+End of Object.
+
+31 10 99 13 37 15 -1	eq: num, posn
+-1	affected_by
 13 13 13 -2	 Start of SOBJ
 canteen water ~	names
 a canteen
@@ -57,29 +79,7 @@ it guards him or her.
 217 20 -1 spell#, level (casts)
 End of Object.
 
--2	 Start of SOBJ
-staff runed ash ~	names
-an ashen staff
-~
-A staff of carved ash lies here.
-~
-This staff, made from the heart wood of an ancient ash split asunder by
-lightning, has been carefully carved with runes of power.  The staff is
-the symbol of the acadamy and the Grand Mage guards it closely, even as
-it guards him or her.
-
-~
-70 63 57 51 42 31 30 15 11 10 1 -1  -:| bitfield |:-
-3 0 50 0 0 5 5 5 4 	extras
-1024 5500 144 0 	cur_stats
--1	affected_by
--1	inv
--1	stat_affects
-10 -1  -:| bitfield |:-
-217 20 -1 spell#, level (casts)
-End of Object.
-
-99 37 13 13 13 13 13 -2	 Start of SOBJ
+13 13 13 13 13 -2	 Start of SOBJ
 gold coins coin ~	names
 some gold
 ~
@@ -98,12 +98,13 @@ End of Object.
 
 1 4 -1	inv
 bgio24h/ZwWLw	passwd
-26 25 21 19 16 14 11 10 6 2 -1  -:| bitfield |:-
-71 15 15 71 932696946 100		bday, byr, ryr, rday, llt, tto
-18 23 9818 -2 1 34 0 age hgr thr drg pk died qp
-1 100 12 100 13 100 14 1 21 100 25 1 30 1 92 100 94 1 117 1 
-118 25 134 25 147 100 152 100 153 1 165 100 166 100 178 100 179 100 188 100 
-189 1 191 100 193 1 200 1 209 1 220 100 -1	ss_known
+27 26 25 21 19 16 14 11 10 6 2 -1  -:| bitfield |:-
+71 15 15 71 934064809 100		bday, byr, ryr, rday, llt, tto
+18 0 9795 -2 1 34 0 age hgr thr drg pk died qp
+1 100 12 100 13 100 14 1 21 100 25 1 30 1 92 100 94 1 101 100 
+103 1 105 100 107 1 117 1 118 25 134 25 147 100 152 100 153 1 159 100 
+160 1 165 100 166 100 178 100 179 100 188 100 189 1 191 100 193 1 200 1 
+209 1 220 100 -1	ss_known
 %N< %hH %mM %vV >  
 poofin in
 poofin out
@@ -121,5 +122,7 @@ poofin out
 [37m User1 color
 [37m User2 Color
 [37m User3 color
+0 -1 preferred_language
+
 *** end of pc data ***
 	end_of_crit

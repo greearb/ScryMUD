@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.35 1999/08/09 06:00:39 greear Exp $
-// $Revision: 1.35 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
+// $Id: critter.h,v 1.36 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.36 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -245,7 +245,11 @@ public:
    int isPlayerRun() const { return shop_data_flags.get(3); }
 
    void clear();
-   int read(istream& da_file, short read_all);
+   int read(istream& da_file, int read_all, critter* container);
+
+   // Don't call this, use the above instead!!
+   int read(istream& da_file, int read_all = TRUE);
+
    int write(ostream& da_file);
    virtual LEtypeE getEntityType() { return LE_SHOP_DATA; }
 
@@ -668,7 +672,7 @@ public:
                      int targ, room& cur_room);
 
    object* findObjInEq(int i_th, const String& name, int see_bit,
-                       room& rm, int& posn);
+                       room& rm, int& posn, int& count_sofar);
    
    int doLogOffActive();
    int doGoLinkdead();
@@ -757,7 +761,9 @@ public:
    int getMov() const { return short_cur_stats[17]; }
    int getMovMax() const { return short_cur_stats[25]; }
    int getAlignment() const { return short_cur_stats[18]; }
+
    LanguageE getLanguageChoice() const ;
+   LanguageE getLanguage() const { return getLanguageChoice(); }
 
    int getPosn() const { return short_cur_stats[0]; }
    void setPosn(int i) {
@@ -865,6 +871,7 @@ public:
    int isFighting(critter& da_pc) { return is_fighting.haveData(&da_pc); }
 
    int isStanding() const { return POS == POS_STAND; }
+   int isSitting() const { return POS == POS_SIT; }
    int isSleeping() const { return POS == POS_SLEEP; }
    int isStunned() const { return POS == POS_STUN; }
    int isMeditating() const { return POS == POS_MED; }
@@ -923,6 +930,8 @@ public:
 
    void show(const char* msg);
    void show(CSentryE); //Pick language of choice, if available.
+   void show(LString& msg);
+   void show(LStringCollection& msg, int show_all = FALSE);
 
    object* loseInv(object* obj); //returns the object removed. (or NULL)
    void loseObjectFromGame(object* obj);

@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.31 1999/07/23 02:54:29 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/07/23 02:54:29 $
+// $Id: command4.cc,v 1.32 1999/08/10 07:06:18 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
 
 //
 //ScryMUD Server Code
@@ -29,6 +29,7 @@
 #include "command3.h"
 #include "command4.h"
 #include "command5.h"
+#include "olc2.h"   // For normalize_obj
 #include "misc.h"
 #include "misc2.h"
 #include <stdio.h>
@@ -1774,7 +1775,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    if (vict->Strlen() == 0) {
       show("NOTE:  some of these may be restricted from you.\n", pc);
       show("These are your choices, range is in parentheses:\n\n", pc);
-      show("Usage:  mset <<i_th> [mob] [ting_to_set] [new_value]\n", pc);
+      show("Usage:  mset <<i_th> [mob] [thing_to_set] [new_value]\n", pc);
       show("If the new value is a string with spaces, be sure to\n", pc);
       show("put it in single quotes.\n", pc);
 
@@ -2399,7 +2400,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
 
 
 int oset(int i_th, const String* vict, const String* targ, int new_val,
-	  const String* new_val_string, critter& pc) {
+         const String* new_val_string, critter& pc) {
    String buf(50);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -2501,7 +2502,6 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
 
                  ptr->gainInv(&(obj_list[new_val]));
                  obj_list[new_val].incrementCurInGame();
-                 pc.show(CS_OK);
                  flag = TRUE;
               }//if
               else {
@@ -2555,12 +2555,20 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
    else if (strncasecmp(*targ, "dice_sides", len1) == 0) {
       if (check_l_range(new_val, 0, 50, pc, TRUE)) {
          ptr->extras[6] = new_val;
+	 if(!(pc.pc && pc.pc->pc_data_flags.get(2)
+	      && pc.pc->imm_data->imm_level >= 9)) {
+	   normalize_obj(*ptr);
+	 }
          flag = TRUE;
       }//if
    }//if
    else if (strncasecmp(*targ, "dice_count", len1) == 0) {
       if (check_l_range(new_val, 0, 50, pc, TRUE)) {
          ptr->extras[7] = new_val;
+	 if(!(pc.pc && pc.pc->pc_data_flags.get(2)
+	      && pc.pc->imm_data->imm_level >= 9)) {
+	   normalize_obj(*ptr);
+	 }
          flag = TRUE;
       }//if
    }//if
@@ -2573,6 +2581,10 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
    else if (strncasecmp(*targ, "level", len1) == 0) {
       if (check_l_range(new_val, 0, 30, pc, TRUE)) {
          ptr->OBJ_LEVEL = new_val;
+	 if(!(pc.pc && pc.pc->pc_data_flags.get(2)
+	      && pc.pc->imm_data->imm_level >= 9)) {
+	   normalize_obj(*ptr);
+	 }
          flag = TRUE;
       }//if
    }//if

@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.19 1999/07/25 20:13:04 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
+// $Id: const.cc,v 1.20 1999/08/10 07:06:18 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
 
 //
 //ScryMUD Server Code
@@ -673,6 +673,7 @@ Lengua:
         English         (0)
         Espanol         (1)
         Portugues       (2)
+        Italian         (3)
 
         Your choice:
         Selection: "

@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.16 1999/08/09 06:00:39 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
+// $Id: classes.h,v 1.17 1999/08/10 07:06:17 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
 
 //
 //ScryMUD Server Code
@@ -143,6 +143,8 @@ public:
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
 
+   void toStringClient(String& rslt);
+
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_LS_COLLECTION; }
 };
@@ -210,7 +212,7 @@ class SpellDuration;
 
 /** This will be the base class for all objects, doors, critters, and rooms.
  */
-class Entity : public ContainedObject, public Serialized {
+class Entity : virtual public ContainedObject, virtual public Serialized {
 protected:
    Entity* container;
    int vis_bit;
@@ -232,6 +234,8 @@ public:
    virtual void setContainer(Entity* cont) { container = cont; }
    Entity* getContainer() { return container; }
 
+   virtual LStringCollection* getNamesCollection(LanguageE forLang);
+
    virtual const String* getName(int c_bit = ~0);
    virtual const String* getShortName(int c_bit = ~0);
    virtual const String* getLongName(int c_bit = ~0);
@@ -241,28 +245,27 @@ public:
    virtual const String* getLongDesc(critter* observer);
    virtual int isNamed(const String& name, critter* viwer);
    virtual int isNamed(const String& name); //dflt to english (maybe all??)
-   void appendName(String* nm);
-   void appendName(LString* nm);
+   virtual void addName(String* nm);
+   virtual void addName(LString* nm);
 
-   void addLongDesc(LString& new_val);
-   void addLongDesc(String& new_val);
+   virtual void addLongDesc(LString& new_val);
+   virtual void addLongDesc(String& new_val);
 
-   void addAffectedBy(SpellDuration* new_affect);
-
+   virtual void addAffectedBy(SpellDuration* new_affect);
    virtual SpellDuration* isAffectedBy(int spell_num);
+   virtual int isAffected() { return !(affected_by.isEmpty()); }
 
-   int getVisBit() const { return vis_bit; }
-   int getIdNum() const { return id_num; }
+   virtual void toStringClient(String& rslt, critter* pc);
+   virtual void showClient(critter* pc);
+   virtual void show(critter* pc);
+
+   virtual int getVisBit() const { return vis_bit; }
+   virtual int getIdNum() const { return id_num; }
    /** Zone it 'belongs' to. */
-   int getZoneNum() const { return zone_num; }
-   void setZoneNum(int z) { zone_num = z; }
-   void setIdNum(int i) { id_num = i; }
-
-   /** Format for human viewing. */
-   void show(String& preamble, critter* viewer, String& closing);
-   
-   /** Does client markup. */
-   void showClient(String& preamble, critter* viewer, String& closing);
+   virtual int getZoneNum() const { return zone_num; }
+   virtual void setZoneNum(int z) { zone_num = z; }
+   virtual void setIdNum(int i) { id_num = i; }
+   virtual void setVisBit(int i) { vis_bit = i; }
 
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
@@ -287,9 +290,11 @@ protected:
               // 15 !complete, 16 secret_when_open_too, 17 consume_key
               // 18 !passdoor, 19 is_corpse
    int key;
+   int token;
 
 public:
    virtual ~Closable() { }
+   virtual void clear() { flags.clear(); key = 0; }
 
    int isOpen() const { return !(flags.get(2)); }
    int canClose() const { return canOpen(); }
@@ -314,6 +319,7 @@ public:
    void open() { flags.turn_off(2); }
    void lock() { close(); flags.turn_on(3); }
    void unlock() { flags.turn_off(3); }
+   void setFlags(bitfield& flgs) { flags = flgs; }
 
    void setClosed(int val) { flags.set(2, val); }
    void setLocked(int val) { flags.set(3, val); }
@@ -327,6 +333,8 @@ public:
 
    int getKey() const { return key; }
    void setKey(int k) { key = k; }
+   int getToken() const { return token; }
+   void setToken(int k) { token = k; }
 
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);

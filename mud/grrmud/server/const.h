@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.18 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: const.h,v 1.19 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -33,6 +33,9 @@
 #include <string2.h>
 #include <LogStream.h>
 #include <PtrArray.h>
+
+//Foward declarations.
+template <class T> class SafeList;
 
 enum entity_type {
    ENTITY_CRITTER,
@@ -601,7 +604,7 @@ extern class door_data door_list[NUMBER_OF_DOORS +1];
 extern List<class door*>	affected_doors; 
 extern List<critter*>   affected_mobs; /* list those affected*/ 
 extern List<struct object*>    affected_objects; /* ditto for objs */
-extern List<critter*>   pc_list;      //head of pc list  
+extern SafeList<critter*>   pc_list;      //head of pc list  
 extern List<critter*>   linkdead_list;  //holds link dead folks
 extern PtrArray<critter>   proc_action_mobs; //holds mob-proc'ing mobs
 

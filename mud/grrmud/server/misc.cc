@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.26 1999/07/23 02:54:29 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/07/23 02:54:29 $
+// $Id: misc.cc,v 1.27 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -524,14 +524,14 @@ void do_regeneration_smobs() {
       crit_ptr->HP +=
          (int)(((crit_ptr->CON + 5.0) / 15.0) * 
                (crit_ptr->HP_MAX / 9.0) * 
-               posn_mod * (crit_ptr->HP_REGEN / 100.0) * adj + 10);
+               posn_mod * (crit_ptr->HP_REGEN / 100.0) * adj + 10.0);
       crit_ptr->MANA +=
          (int)(((crit_ptr->INT + 5.0) / 16.0)  * posn_mod *
-               (crit_ptr->MA_MAX / 7.0) * (crit_ptr->MA_REGEN / 100.0) * adj + 4);
+               (crit_ptr->MA_MAX / 7.0) * (crit_ptr->MA_REGEN / 100.0) * adj + 4.0);
       crit_ptr->MOV += 
          (int)(((crit_ptr->DEX + 5.0) / 16.0) * posn_mod * 
                adj *
-               (crit_ptr->MV_MAX / 2.0) * (crit_ptr->MV_REGEN / 100.0) + 5);
+               (crit_ptr->MV_MAX / 2.0) * (crit_ptr->MV_REGEN / 100.0) + 5.0);
       
       if (crit_ptr->HP > crit_ptr->HP_MAX)
 	 crit_ptr->HP = crit_ptr->HP_MAX;
@@ -1751,10 +1751,16 @@ void out_inv(const List<object*>& lst, critter& pc,
 
 }//out_inv
 
+critter* have_crit_named(List<critter*>& lst, const int i_th,
+                         const String* name, const int see_bit,
+                         const room& rm, int do_exact = FALSE) {
+   int foo;
+   return have_crit_named(lst, i_th, name, see_bit, foo, rm, do_exact);
+}
 
 critter* have_crit_named(List<critter*>& lst, const int i_th,
-	 const String* name, const int see_bit, const room& rm,
-	 int do_exact = FALSE) {
+                         const String* name, const int see_bit,
+                         int& count_sofar, const room& rm, int do_exact = FALSE) {
    Cell<String*> char_cell;
    Cell<critter*> cell(lst);
    critter* crit_ptr;
@@ -1790,12 +1796,14 @@ critter* have_crit_named(List<critter*>& lst, const int i_th,
    	       if (strcasecmp(*string, *name) == 0) { 
                   matched = TRUE;
 	          count++;
+                  count_sofar++;
 	       }//if
 	    }//if exact
 	    else {
    	       if (strncasecmp(*string, *name, len) == 0) { 
                   matched = TRUE;
 	          count++;
+                  count_sofar++;
 	       }//if
 	    }//else
 	    if (count == i_th) {
@@ -1895,7 +1903,15 @@ int obj_sub_a_4_b(object* a, List<object*>& lst, const int i_th,
 
 
 object* have_obj_named(const List<object*>& lst, const int i_th,
-	const String* name, const int see_bit, const room& rm) {
+                       const String* name, const int see_bit,
+                       const room& rm) {
+   int foo;
+   return have_obj_named(lst, i_th, name, see_bit, rm, foo);
+}
+
+object* have_obj_named(const List<object*>& lst, const int i_th,
+                       const String* name, const int see_bit,
+                       const room& rm, int& count_sofar) {
    Cell<String*> char_cell;
    Cell<object*> cell(lst);
    object* obj_ptr;
@@ -1920,6 +1936,7 @@ object* have_obj_named(const List<object*>& lst, const int i_th,
 	    if (strncasecmp(*string, *name, name->Strlen()) == 0){ 
                matched = TRUE;
 	       count++;
+               count_sofar++;
 	       if (count == i_th) {
 		  return obj_ptr;
 	       }//if

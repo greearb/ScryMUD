@@ -3,6 +3,8 @@
 *** You can abreviate most commands, but be careful that you
     aren't too vague, or you may get a command you do not intend.
 
+RULES:  rules, immrules
+
 MOVEMENT:  East, West, South, North, NW, NE, SE, SW, Up, Down.
            northwest, southwest, go, exits.
 

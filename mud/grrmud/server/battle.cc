@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.24 1999/07/18 20:12:03 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/18 20:12:03 $
+// $Id: battle.cc,v 1.25 1999/08/10 07:06:17 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
 
 //
 //ScryMUD Server Code
@@ -203,10 +203,10 @@ void do_battle() {
 
             if (!IsEmpty(crit_ptr->IS_FIGHTING) && 
                 crit_ptr->CRIT_FLAGS.get(16) && (crit_ptr->PAUSE <= 0)) {
-               if (d(1,100) < d(1, get_percent_lrnd(DUAL_WIELD_SKILL_NUM, 
-                                                    *crit_ptr) + 
-                                crit_ptr->DEX * 6)) {
-                  
+               int val = (int)(((float)(get_percent_lrnd(DUAL_WIELD_SKILL_NUM, 
+                                                         *crit_ptr)) *
+                                (float)(crit_ptr->DEX) / 10.0));
+               if (d(1,100) < d(1, val)) {
                   vict_ptr = Top(crit_ptr->IS_FIGHTING);
 
                   if (vict_ptr->isUsingClient()) {
@@ -309,7 +309,8 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
              delete ss_ptr;
           }//if
       }//if
-      else if (!agg.isParalyzed() && (!agg.PAUSE > 0)) {
+      else if (!agg.isParalyzed() && (agg.PAUSE <= 0)) {
+         agg.emote("stands ready to fight.\n");
          agg.setPosn(POS_STAND); //auto stand if possible
       }//if
    }//if
@@ -356,14 +357,20 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    }//if
 
    td = tp = FALSE;
-   float chance;
-   chance = (float)(d(1, 600)) * (float)agg.DEX / 18.0;
-   if ((chance < 100.0) && (vict.POS != POS_STUN)) {
-      td = (chance < get_percent_lrnd(DODGE_SKILL_NUM, vict, TRUE));
-   }//if
-   if ((!td && vict.EQ[9]) && (vict.POS != POS_STUN)) {
-      chance = (float)(d(1, 800)) * (float)agg.DEX / 18.0;
-      tp = (chance < get_percent_lrnd(PARRY_SKILL_NUM, vict, TRUE));
+   float chance = 0.0;
+   if (vict.getPause() <= 0) {
+      // bigger means less likely to hit, should range from around 1-600
+      chance = (float)(d(1, 600)) * (float)agg.DEX / 18.0;
+      if ((chance < 100.0) && vict.isStanding()) {
+         td = (d(1, get_percent_lrnd(DODGE_SKILL_NUM, vict, TRUE) + vict.DEX * 2) > 50);
+      }//if
+      if ((!td && vict.EQ[9]) && (vict.isStanding() || vict.isSitting())) {
+         // bigger means less likely to hit, should range from around 1-600
+         chance = (float)(d(1, 800)) * (float)agg.DEX / 18.0;
+         if (chance < 100.0) {
+            tp = (d(1, get_percent_lrnd(PARRY_SKILL_NUM, vict, TRUE) + vict.DEX) > 50);
+         }
+      }//if
    }//if
 
    if (td) {
@@ -473,9 +480,11 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       wmsg = "hit"; //bare handed
    }//else
    
-   if (agg.mob && (d(1,10) > 5)) { //1 in 5, !MOB chance of chance
+   if (agg.pc && (d(1,10) > 5)) { //1 in 5, !MOB chance of chance
       if (d(1,200) < 
-          get_percent_lrnd(CRITICAL_STRIKE_SKILL_NUM, agg)) {
+          (agg.getLevel() / 3) *
+          (get_percent_lrnd(CRITICAL_STRIKE_SKILL_NUM, agg))) {
+         agg.show("You score a critical strike!!\n");
          damage *= 2.0;
       }//if
    }//if
@@ -678,7 +687,8 @@ void agg_kills_vict(critter& agg, critter& vict, int& show_vict_tags) {
       }
    }//if
    
-   agg.ALIGN -= ((agg.ALIGN + vict.ALIGN) / 15);
+   agg.ALIGN -= (int)(((float)(vict.ALIGN) / 10.0) *
+                      ((float)(agg.ALIGN) + 1000.0) / 1500.0);
 
    if (agg.ALIGN < -1000)
       agg.ALIGN = -1000;

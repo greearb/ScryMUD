@@ -1,5 +1,5 @@
-// $Id: command2.h,v 1.6 1999/06/28 05:35:27 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/28 05:35:27 $
+// $Id: command2.h,v 1.7 1999/08/10 07:06:18 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
 
 //
 //ScryMUD Server Code
@@ -40,6 +40,7 @@ int language(const String& lang,  critter& pc);
 int abilities(critter& pc); //show's skills can lrn, %lrned
 int score(const String* str2, critter& pc);
 int score_long(critter& pc);
+int do_score_long(critter& targ, critter& pc);
 //int doUngroup(int i_th, const String* vict);
 int exit(critter& pc); //disp exits
 int auto_exit(critter& pc); //disp exits, concisely
@@ -65,6 +66,9 @@ int practice(const String* spell, int j_th, const String* teacher, critter&
               pc); 
 int toggle_prompt(const String* field, critter& pc);
 int list_merchandise(int i_th, const String* keeper, critter& pc);
+int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
+                        critter* crit_owner, object* obj_owner,
+                        critter& pc);
 
 int mstat(int i_th, const String* name, critter& pc); //stat critter
 int do_mstat(critter& targ, critter& pc);

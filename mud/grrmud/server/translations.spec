@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.12 1999/06/28 05:35:27 greear Exp $
-# $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/28 05:35:27 $
+# $Id: translations.spec,v 1.13 1999/08/10 07:06:21 greear Exp $
+# $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/10 07:06:21 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -22,7 +22,7 @@
 # 200 characters per line!!
 #
 # Languages currently supported by the code_generation process are:
-# English, Spanish, and Portugues
+# English, Spanish, Portugues, Italian
 
 # This is used as a kind of NULL enum.  It should never be used
 # where a real CSentry entity is desired.
@@ -1043,8 +1043,8 @@ CS_DO_GET_FROM
         ~
 
 CS_DO_GET_FROM_O
-        eng "%S gets %S from %s %S.\n"
-        spa "%S agarra %S de %s %S.\n"
+        eng "%S gets %S from %S.\n"
+        spa "%S agarra %S de %S.\n"
         ~
 
 CS_DO_GET_YOUR
@@ -1086,6 +1086,30 @@ CS_LESS_DRUGGED
         eng "Some feeling returns to your nose!.\n"
         spa "Algunos pensamientos vuelven a tu nariz!.n"
         ~
+
+CS_EAT_GAIN_HP
+	eng "You feel much healthier!\n"
+	~
+
+CS_EAT_LOSE_HP
+	eng "You feel much less healthy!\n"
+	~
+
+CS_EAT_GAIN_MANA
+	eng "You feel more powerful and focused.\n"
+	~
+
+CS_EAT_LOSE_MANA
+	eng "You feel dazed and confused.\n"
+	~
+
+CS_EAT_GAIN_MOV
+	eng "You feel quick and energetic!\n"
+	~
+
+CS_EAT_LOSE_MOV
+	eng "You feel sluggish.\n"
+	~
 
 CS_YOU_DROP
         eng "You drop %S.\n"
@@ -1143,8 +1167,13 @@ CS_PUTS_IN_OWN
         ~
 
 CS_LEAVES_SPRINTF
-        eng "leaves %s.\n"
-        spa "se marcha al %s.\n"
+        eng "leaves %S.\n"
+        spa "se marcha al %S.\n"
+        ~
+
+CS_LEAVES_NOT_NORMAL_SPRINTF
+        eng "leaves through the %S.\n"
+        spa "se marcha al %S.\n"
         ~
 
 CS_ARRIVED_FROM_SPRINTF

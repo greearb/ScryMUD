@@ -7,6 +7,13 @@ array of keywords in your CURRENT ROOM.  You can then use the ch_kdesc
 and add_kname commands to make it how you want it.  Hegemon has a GUI
 to do all this.
 
+The steps to adding a keyword are like this:
+	add_keyword    # Creates a new (blank) keyword.
+	rstat          # Shows you the keywords in the current room.
+	stat_keyword [keyword number]  # Verbose listing, primes the Hegemon GUI.
+	add_kname, ch_kdesc            # Modifies the keyword.
+	asave          # Save the current zone, with your keywords too!!
+
 usage:  add_keyword
 
 

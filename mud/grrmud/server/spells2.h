@@ -1,5 +1,5 @@
-// $Id: spells2.h,v 1.2 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: spells2.h,v 1.3 1999/08/10 07:06:21 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/08/10 07:06:21 $
 
 //
 //ScryMUD Server Code
@@ -125,8 +125,8 @@ void do_cast_fireproof(critter& vict, critter& agg, int is_canned, int lvl);
 void cast_haste(int i_th, const String* vict, critter& agg);
 void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl);
 
-void cast_dispell_magic(int i_th, const String* vict, critter& agg);
-void do_cast_dispell_magic(critter& vict, critter& agg, int is_canned,
+void cast_dispel_magic(int i_th, const String* vict, critter& agg);
+void do_cast_dispel_magic(critter& vict, critter& agg, int is_canned,
 			   int lvl);
 
 void cast_stone_skin(int i_th, const String* vict, critter& agg);

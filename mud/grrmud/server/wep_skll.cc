@@ -1,5 +1,5 @@
-// $Id: wep_skll.cc,v 1.4 1999/07/07 06:05:12 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/07/07 06:05:12 $
+// $Id: wep_skll.cc,v 1.5 1999/08/10 07:06:21 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/10 07:06:21 $
 
 //
 //ScryMUD Server Code
@@ -282,19 +282,19 @@ int disarm(int i_th, const String* victim, critter& pc) {
 
 int do_disarm(critter& vict, critter& pc) {
    String buf(100);
-   int posn = 10;
+   int posn = 9; //wielded
 
    if ((vict.isMob()) || (pc.isMob())) {
       mudlog.log(ERR, "ERROR:  MOB sent to do_disarm.\n");
       return -1;
    }//if
 
-   if (!HaveData(&vict, pc.IS_FIGHTING)) {
+   if (!pc.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(pc, vict);
    }//if
 
    if (!vict.EQ[posn])
-      posn = 9;
+      posn = 10;
 
    if (!vict.EQ[posn]) {
       Sprintf(buf, "%s isn't wielding anything!\n", get_he_she(vict));
@@ -330,7 +330,7 @@ int do_disarm(critter& vict, critter& pc) {
    }//if
    else {  //missed
       Sprintf(buf, 
-              "You keep a tight hold on your weapon as %S tries to disarm you\n", 
+              "You keep a tight hold on your weapon as %S tries to disarm you.\n", 
               name_of_crit(pc, vict.SEE_BIT));
       show(buf, vict);
       

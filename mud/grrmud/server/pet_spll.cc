@@ -1,5 +1,5 @@
-// $Id: pet_spll.cc,v 1.7 1999/07/16 06:12:53 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
+// $Id: pet_spll.cc,v 1.8 1999/08/10 07:06:20 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
 
 //
 //ScryMUD Server Code
@@ -73,17 +73,24 @@ void do_cast_charm(critter& vict, critter& pc, int is_canned, int lvl) {
    int spell_num = CHARM_SKILL_NUM;
    int spell_mana = get_mana_cost(spell_num);
 
-
    if (!is_canned)
      lvl = pc.LEVEL;
 
    int lost_con = FALSE;
    int did_hit = TRUE;
 
-   if ((vict.LEVEL >= lvl) || (vict.pc && vict.pc->imm_data)) {
-     show("You can't charm one so powerful!\n", pc);
-     return;
+   if ((vict.LEVEL >= lvl) || (vict.isImmort())) {
+      show("You can't charm one so powerful!\n", pc);
+      return;
    }//if
+
+   // Make sure that vict is not already charmed.
+   if (vict.master) {
+      Sprintf(buf, "%S already has a master.\n", vict.getName(pc.SEE_BIT));
+      buf.Cap();
+      pc.show(buf);
+      return;
+   }
 
    if ((is_canned && (did_hit = 
 		      did_spell_hit(vict, COERCION, pc, lvl, TRUE))) ||
@@ -177,10 +184,7 @@ void do_cast_mass_charm(room& rm, critter& pc, int is_canned,
          }//if
      }//if
    }//while
-
 }//do_cast_mass_charm
-
-
 
 
 void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
@@ -209,7 +213,7 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
          return;
       }//if
       
-      pet = mob_to_smob(mob_list[RAISED_CORPSE_NUM], pc.getCurRoomNum());
+      pet = mob_to_smob(mob_list[RAISED_CORPSE_NUM], pc.getCurRoomNum(), TRUE);
       ROOM.gainCritter(pet);
       
       recursive_init_loads(*pet);
@@ -265,8 +269,8 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
 void cast_raise_undead(critter& pc) {
    int spell_num = RAISE_UNDEAD_SKILL_NUM;
 
-   if (!ok_to_do_action(NULL, "KMSNB", spell_num, pc)) {
-     return;
+   if (!ok_to_do_action(NULL, "KMSNBb", spell_num, pc)) {
+      return;
    }//if
 
    do_cast_raise_undead(pc, FALSE, 0);
@@ -306,7 +310,7 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
        return;
      }//if
 
-     golem = mob_to_smob(mob_list[EARTH_GOLEM_NUMBER], pc.getCurRoomNum());
+     golem = mob_to_smob(mob_list[EARTH_GOLEM_NUMBER], pc.getCurRoomNum(), TRUE);
      ROOM.gainCritter(golem);
      recursive_init_loads(*golem);
 
@@ -314,8 +318,8 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
      emote("creates a golem of animated earth!", pc, 
 	   ROOM, TRUE);
 
-     /* not figure out it's strength, and HP */
-     golem->HP = d(4, lvl * 5);
+     /* now figure out it's strength, and HP */
+     golem->HP = d(4, lvl * 3);
      golem->setHP_MAX(golem->HP);
      golem->STR = d(2,2) + (lvl / 2);
      golem->LEVEL = pc.LEVEL;
@@ -339,8 +343,8 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
 void cast_create_golem(critter& pc) {
    int spell_num = CREATE_GOLEM_SKILL_NUM;
 
-   if (!ok_to_do_action(NULL, "KMSNB", spell_num, pc)) {
-     return;
+   if (!ok_to_do_action(NULL, "KMSNBb", spell_num, pc)) {
+      return;
    }//if
 
    do_cast_create_golem(pc, FALSE, 0);
@@ -547,7 +551,7 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
          return;
       }//if
       
-      golem = mob_to_smob(mob_list[ILLUSION_NUMBER], pc.getCurRoomNum());
+      golem = mob_to_smob(mob_list[ILLUSION_NUMBER], pc.getCurRoomNum(), TRUE);
       ROOM.gainCritter(golem);
 
       recursive_init_loads(mob_list[ILLUSION_NUMBER]);
@@ -598,8 +602,8 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
 void cast_illusion(critter& pc) {
    int spell_num = ILLUSION_SKILL_NUM;
 
-   if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
-     return;
+   if (!ok_to_do_action(NULL, "KMSNb", spell_num, pc)) {
+      return;
    }//if
 
    do_cast_illusion(pc, FALSE, 0);
@@ -650,7 +654,7 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
          return;
       }//if
 
-      golem = mob_to_smob(mob_list[which_un], pc.getCurRoomNum());
+      golem = mob_to_smob(mob_list[which_un], pc.getCurRoomNum(), TRUE);
       ROOM.gainCritter(golem);
 
       recursive_init_loads(mob_list[which_un]);
@@ -688,8 +692,8 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
 void cast_conjure_minion(critter& pc) {
    int spell_num = CONJURE_MINION_SKILL_NUM;
 
-   if (!ok_to_do_action(NULL, "KMSNB", spell_num, pc)) {
-     return;
+   if (!ok_to_do_action(NULL, "KMSNBb", spell_num, pc)) {
+      return;
    }//if
 
    do_cast_conjure_minion(pc, FALSE, 0);
@@ -699,8 +703,8 @@ void cast_conjure_minion(critter& pc) {
 void cast_conjure_horde(critter& pc) {
    int spell_num = CONJURE_HORDE_SKILL_NUM;
 
-   if (!ok_to_do_action(NULL, "KMSNB", spell_num, pc)) {
-     return;
+   if (!ok_to_do_action(NULL, "KMSNBb", spell_num, pc)) {
+      return;
    }//if
 
    do_cast_conjure_horde(pc, FALSE, 0);
@@ -758,7 +762,7 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
           return;
        }//if
 
-       golem = mob_to_smob(mob_list[which_un], pc.getCurRoomNum());
+       golem = mob_to_smob(mob_list[which_un], pc.getCurRoomNum(), TRUE);
        ROOM.gainCritter(golem);
        recursive_init_loads(mob_list[which_un]);
 
@@ -790,12 +794,3 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
    }//else lost concentration
    pc.PAUSE += 1; 
 }//do_cast_summon_horde
-
-
-
-
-
-
-
-
-

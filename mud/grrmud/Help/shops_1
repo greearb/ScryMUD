@@ -1,0 +1,29 @@
+<help general shops>
+
+A basic player-run shop costs 250,000 gold.  This includes one room and a 
+level 10 shopkeeper.
+
+Location:
+  Low-population area (Dar Thane, Mak'Tor, etc.): no extra cost.
+  Middle-population area (Jakarta, River City, etc.) 50,000 gold extra.
+  Garland and surrounding area: 100,000 gold extra.
+
+Shopkeeper level:
+  Levels 11 to 20: 15,000 gold per level.
+  Levels 21 to 30: 150,000 gold (level 20) plus 30,000 gold per level.
+
+Other:
+  A back room: 100,000 gold extra (maximum 1).
+  See door prices for houses ('help houses') for back room door prices.
+  No Magic:             +250,000
+  No Computer Critters: +250,000
+  Haven (!battle):      +1,000,000
+
+The front room cannot have a door between it and the street.
+
+If you'd like to buy a shop, get in contact with an immortal and they'll 
+help you out.
+
+<color=red>
+See Also:  commands houses adjust_register value_set value_list
+</color></help>

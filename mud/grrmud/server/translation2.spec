@@ -1,10 +1,13 @@
-# $Id: translation2.spec,v 1.9 1999/07/16 06:12:53 greear Exp $
-# $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
+# $Id: translation2.spec,v 1.10 1999/08/10 07:06:21 greear Exp $
+# $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/10 07:06:21 $
 
 # See translations.spec for more information.
 
 #  These strings are primarily used in command2.cc
 
+CS_IMM_ONLY_ACCESS
+	eng "Only immortals can do that.\n"
+	~
 
 CS_YOU_POSSESSING
 	Eng "You are possessing:  %S\n"
@@ -247,11 +250,11 @@ CS_OPEN_AUTOMAGICALLY
 	~
 
 CS_UNLOCK_CONSUME
-	eng "As you unlock the %S, %S is consumed!\n"
+	eng "As you unlock %S, %S is consumed!\n"
 	~
 
 CS_YOU_UNLOCK
-	eng "You unlock the %S.\n"
+	eng "You unlock %S.\n"
 	~
 
 CS_NOT_LOCKED
@@ -267,7 +270,7 @@ CS_NOTHING_TO_UNLOCK
 	~
 
 CS_IS_LOCKED
-	eng "The %S is locked.\n"
+	eng "%S is locked.\n"
 	~
 
 CS_YOU_OPEN

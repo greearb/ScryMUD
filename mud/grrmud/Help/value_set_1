@@ -15,5 +15,5 @@ Example:        # Set's the sell value to 25, and the buy
 Example:        # value to 12, for index 0.
 
 <color = red>
-See Also:  value_add, value_list, value_rem, adjust_register
+See Also:  value_add value_list value_rem adjust_register shops
 </color></help>

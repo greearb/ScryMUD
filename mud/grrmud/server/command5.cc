@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.28 1999/07/16 06:12:52 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/07/16 06:12:52 $
+// $Id: command5.cc,v 1.29 1999/08/10 07:06:18 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
 
 //
 //ScryMUD Server Code
@@ -718,7 +718,7 @@ int rem_obj_script(int obj_num, String& trigger, int i_th, critter& pc) {
 
 
 int teach(int i_th, const String* name, int prcnt, const String* skill, 
-	   critter& pc) {
+          critter& pc) {
    int skill_num;
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -746,14 +746,14 @@ int teach(int i_th, const String* name, int prcnt, const String* skill,
       return -1;
    }//if
 
-   if (get_percent_lrnd(skill_num, pc) < 0) { //then add it
+   if (get_percent_lrnd(skill_num, pc) <= 0) { //then add it
       ptr->SKILLS_KNOWN.Insert(skill_num, prcnt);
       update_skill(skill_num, pc);
       show("Ok, your teachings were heard!.\n", pc);
       show("You learn of a new skill.\n", *ptr);
    }//if
    else {
-      show("They evidently already know that skill.\n", pc);
+      show("They evidently already know that skill, updating percentage.\n", pc);
       ptr->SKILLS_KNOWN.Insert(skill_num, prcnt); //make sure its at 100
       update_skill(skill_num, pc);
    }//else
@@ -870,8 +870,9 @@ int rem_perm_inv(int j_th, const String* obj_name, int i_th,
          if ((inv_obj = have_obj_named(ptr->PERM_INV, j_th, obj_name, 
                                        pc.SEE_BIT, ROOM))) {
             ptr->PERM_INV.loseData(inv_obj);
-            Sprintf(buf, "%S deleted from %S's permanent (shop) inventory.\n",
-                    long_name_of_obj(*inv_obj, ~0),
+            Sprintf(buf,
+		    "%S [%d] deleted from %S's permanent (shop) inventory.\n",
+                    long_name_of_obj(*inv_obj, ~0), inv_obj->getIdNum(),
                     name_of_crit(*ptr, ~0));
             show(buf, pc);
             if (inv_obj->IN_LIST)
@@ -938,8 +939,8 @@ int beep(int i_th, const String* name, critter& pc) {
       return -1;
    }
 
-   critter* ptr = have_crit_named(pc_list, i_th, name,
-                                  pc.SEE_BIT, ROOM);
+   critter* ptr = ROOM.haveCritNamed(i_th, name, pc);
+
    if (!ptr) {
       show("That person is not logged on.\n", pc);
       return -1;
@@ -1066,6 +1067,12 @@ int itrans(int i_th, const String* targ, int rm_num, critter& pc) {
       show("Whoa, you can't itrans one so powerful.\n", pc);
       return -1;
    }//if
+
+   if (ptr->getLevel() == 0) {
+      pc.show("That thing has a level of zero, which looks buggy.\n");
+      pc.show("Not allowing you to itrans it.\n");
+      return -1;
+   }
    
    if (rm_num == 1) {
       rm_num = pc.getCurRoomNum(); //default is to trans him TO the player's own room
@@ -2198,7 +2205,7 @@ int consider(int i_th, const String* targ, critter& pc) {
 }//consider
 
 
-int dsys(int i, const String& cmd, critter& pc) {
+int dsys(int i, const String& cmd, const String& arg1, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -2212,54 +2219,88 @@ int dsys(int i, const String& cmd, critter& pc) {
    }
 
    if (strncasecmp(cmd, "flags", max(cmd.Strlen(), 1)) == 0) {
+      int do_objs = FALSE;
+      int do_crit = FALSE;
+      int do_door = FALSE;
+      int do_room = FALSE;
+
+      int arg_len;
+      if ((arg_len = arg1.Strlen()) == 0) {
+         do_objs = do_crit = do_door = do_room = TRUE;
+      }
+      else if (strncasecmp(arg1, "objects", arg_len) == 0) {
+         do_objs = TRUE;
+      }
+      else if (strncasecmp(arg1, "critters", arg_len) == 0) {
+         do_crit = TRUE;
+      }
+      else if (strncasecmp(arg1, "doors", arg_len) == 0) {
+         do_door = TRUE;
+      }
+      else if (strncasecmp(arg1, "rooms", arg_len) == 0) {
+         do_room = TRUE;
+      }
+      else {
+         pc.show("We only show flags for: objects, doors, rooms, and critters.\n");
+         return -1;
+      }
+      
       // Show all of our flags that we have FLAG_NAMES for
       pc.show("Flags defined currently:\n");
 
-      pc.show("----------------------->> CRITTER FLAGS <<---------------------\n");
-      CRIT_FLAGS_NAMES.listNames(buf);
-      pc.show(buf);
+      if (do_crit) {
+         pc.show("----------------------->> CRITTER FLAGS <<---------------------\n");
+         CRIT_FLAGS_NAMES.listNames(buf);
+         pc.show(buf);
+         
+         pc.show("\n");
+         MOB_DATA_FLAGS_NAMES.listNames(buf);
+         pc.show(buf);
+         
+         pc.show("\n");
+         MOB_PROC_DATA_FLAGS_NAMES.listNames(buf);
+         pc.show(buf);
+         
+         pc.show("\n");
+         SHOP_DATA_FLAGS_NAMES.listNames(buf);
+         pc.show(buf);
+         
+         pc.show("\n");
+         TEACH_DATA_FLAGS_NAMES.listNames(buf);
+         pc.show(buf);
+         
+         pc.show("\n");
+         PC_DATA_FLAGS_NAMES.listNames(buf);
+         pc.show(buf);
+      }
 
-      pc.show("\n");
-      MOB_DATA_FLAGS_NAMES.listNames(buf);
-      pc.show(buf);
+      if (do_objs) {
+         pc.show("\n----------------------->> OBJECT FLAGS <<---------------------\n");
+         OBJ_FLAGS_NAMES.listNames(buf);
+         pc.show(buf);
+         
+         pc.show("\n");
+         BAG_FLAGS_NAMES.listNames(buf);
+         pc.show(buf);
+         
+         pc.show("\n");
+         OBJ_SPEC_DATA_FLAGS_NAMES.listNames(buf);
+         pc.show(buf);
+      }
 
-      pc.show("\n");
-      MOB_PROC_DATA_FLAGS_NAMES.listNames(buf);
-      pc.show(buf);
+      if (do_door) {
+         pc.show("\n----------------------->> DOOR FLAGS <<---------------------\n");
+         DOOR_DATA_FLAGS_NAMES.listNames(buf);
+         pc.show(buf);
+         pc.show("\n");
+      }
 
-      pc.show("\n");
-      SHOP_DATA_FLAGS_NAMES.listNames(buf);
-      pc.show(buf);
-
-      pc.show("\n");
-      TEACH_DATA_FLAGS_NAMES.listNames(buf);
-      pc.show(buf);
-
-      pc.show("\n");
-      PC_DATA_FLAGS_NAMES.listNames(buf);
-      pc.show(buf);
-
-      pc.show("\n----------------------->> OBJECT FLAGS <<---------------------\n");
-      OBJ_FLAGS_NAMES.listNames(buf);
-      pc.show(buf);
-
-      pc.show("\n");
-      BAG_FLAGS_NAMES.listNames(buf);
-      pc.show(buf);
-
-      pc.show("\n");
-      OBJ_SPEC_DATA_FLAGS_NAMES.listNames(buf);
-      pc.show(buf);
-
-      pc.show("\n----------------------->> DOOR FLAGS <<---------------------\n");
-      DOOR_DATA_FLAGS_NAMES.listNames(buf);
-      pc.show(buf);
-      pc.show("\n");
-
-      pc.show("\n----------------------->> ROOM FLAGS <<---------------------\n");
-      ROOM_FLAGS_NAMES.listNames(buf);
-      pc.show(buf);
-      pc.show("\n");
+      if (do_room) {
+         pc.show("\n----------------------->> ROOM FLAGS <<---------------------\n");
+         ROOM_FLAGS_NAMES.listNames(buf);
+         pc.show(buf);
+         pc.show("\n");
+      }
 
       return 0;
    }

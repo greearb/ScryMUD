@@ -1,0 +1,12 @@
+<help battle steal>
+
+This skill allows one to attempt to relieve a creature of it's
+possessions.  Of course, this can greatly upset them!
+
+Syntax:  steal <<i_th> [thing] <<j_th> [victim]
+
+Example:  steal 2.sword guard  # steal the second sword from a guard.
+
+<color = blue>
+See Also:  flee
+</color></help>

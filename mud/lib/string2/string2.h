@@ -1,5 +1,5 @@
-// $Id: string2.h,v 1.13 1999/08/03 05:55:34 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/03 05:55:34 $
+// $Id: string2.h,v 1.14 1999/08/10 07:06:22 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/10 07:06:22 $
 
 //
 //ScryMUD Server Code
@@ -118,30 +118,49 @@ public:
    void setCharAt(int idx, const char val);
 
    /** Doesn't release memory, but virtually clears out the data. */
-   void Clear();
-   void Vclear() { Clear(); } //Same as Clear now.. (Deprecated)
-   void clear() { Clear(); } //Should migrate to lower-case cmds some day.
+   void Clear() { clear(); }
+   void clear(); //Should migrate to lower-case cmds some day.
 
    /** Releases all the memory it can. */
    void purge();
 
-   void Prepend(const int source);
-   void Prepend(const long source);
-   void Prepend(const char* source);
-   void Prepend(const String& source);
-   void Append(const int source);
-   void Append(const long source);
-   void Append(const char* source);
-   void Append(const String& source);
-   void Append(const char source);
+   void prepend(const int source);
+   void Prepend(const int source) { prepend(source); }
+
+   void prepend(const long source);
+   void Prepend(const long source) { prepend(source); }
+
+   void prepend(const char* source);
+   void Prepend(const char* source) { prepend(source); }
+
+   void prepend(const String& source);
+   void Prepend(const String& source) { prepend(source); }
+
+   void append(const int source);
+   void Append(const int source) { append(source); }
+
+   void append(const long source);
+   void Append(const long source) { append(source); }
+
+   void append(const char* source);
+   void Append(const char* source) { append(source); }
+
+   void append(const String& source);
+   void Append(const String& source) { append(source); }
+
+   void append(const char source);
+   void Append(const char source) { append(source); }
+
    void appendHex(const long l);
-   void Getline(istream& stream, int max_len);
-   void getLine(istream& stream, int max_len) {
-      Getline(stream, max_len);
-   }
-   void Cap();
-   void Tolower(); //makes total string lowercase
-   void toLower() { Tolower(); } //makes total string lowercase
+   void Getline(istream& stream, int max_len) { getLine(stream, max_len); }
+   void getLine(istream& stream, int max_len);
+
+   void cap();
+   void Cap() { cap(); }
+
+   void Tolower() { toLower(); }
+   void toLower(); //makes total string lowercase
+
    void toUpper(); //makes total string lowercase
    int  Strlen() const;
    void Report() const; //logs vital stats, for debugging.
@@ -161,14 +180,18 @@ public:
    int readToken(char delim, ifstream& dafile, int include_delim);
 
    void termedRead(istream& da_file);
-   int Contains(const char ch) const;
+   int contains(const char ch) const;
+   int Contains(const char ch) const { return contains(ch); }
+
    void  Refigure_strlen();			//bletcherous hack!
    void parse_show(short posn);  //specific to ScryMUD program
    void InsertAfter(char a, int posn);
    void InsertBefore(char a, int posn);
    void insertAfter(int i, const char* str);
 
-   void Strip(); //take spaces off of front and back
+   void strip(); //take spaces off of front and back
+   void Strip() { strip(); }
+
    void dropFromEnd(int num_chards); //drop a few off the end of the string
    String sterilizeForHtml() const;
 
@@ -176,7 +199,10 @@ public:
     * grabs first word or number deliminated
     * by space, a '.' or null char
     */
-   String Get_Command(short& eos, short& term_by_period, short is_first = 0);
+   String Get_Command(short& eos, short& term_by_period, short is_first = 0) {
+      return getCommand(eos, term_by_period, is_first);
+   }
+   String getCommand(short& eos, short& term_by_period, short is_first = 0);
 
    /** Grabs first token deliminated by a space, period, or null character.*/
    String getToken() {
@@ -184,12 +210,17 @@ public:
       return Get_Command(eos, tbp);
    }
 
-   String Get_Rest(short destruct = TRUE);	//grabs phrase, deliminated 
-   //by a newline or null char
+   /** grabs phrase, deliminated by a newline or null char */
+   String getRest(short destruct = TRUE);
+   String Get_Rest(short destruct = TRUE) { return getRest(destruct); }
    
-   String Look_Command(short is_first = 0) const; //grabs first word or number deliminated
-				//by space, a '.' or null char, does not 
-				//delete it from the string.
+   /** grabs first word or number deliminated by space, a '.'
+    * or null char, does not delete it from the string.
+    */
+   String lookCommand(short is_first = 0) const;
+   String Look_Command(short is_first = 0) const {
+      return lookCommand(is_first);
+   }
 
    //grabs everything untill that character is found.  It removes all that
    // from the string, so successive calls iterate through it...

@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.9 1999/07/07 06:05:11 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/07 06:05:11 $
+// $Id: batl_prc.cc,v 1.10 1999/08/10 07:06:17 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
 
 //
 //ScryMUD Server Code
@@ -254,7 +254,7 @@ void do_battle_proc(critter& pc) {
 	    }//else
 	  }//if
 	  else if (chance > 5) {
-	    do_cast_dispell_magic(*primary_targ, pc, FALSE, 0);
+	    do_cast_dispel_magic(*primary_targ, pc, FALSE, 0);
 	  }//else
 	  else if (chance > 3) {
 	    do_cast_calm(pc, FALSE, 0);

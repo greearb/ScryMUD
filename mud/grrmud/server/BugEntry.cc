@@ -1,5 +1,5 @@
-// $Id: BugEntry.cc,v 1.9 1999/06/16 06:43:26 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
+// $Id: BugEntry.cc,v 1.10 1999/08/10 07:06:17 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
 
 //
 //ScryMUD Server Code
@@ -21,6 +21,7 @@
 //
 // To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
 //                                     greearb@agcs.com
+// Meaningless test comment added by angelbob: 7/26/99
 //
 
 #include "BugEntry.h"

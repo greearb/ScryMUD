@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.29 1999/07/25 20:13:04 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/07/25 20:13:04 $
+// $Id: commands.cc,v 1.30 1999/08/10 07:06:18 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
 
 //
 //ScryMUD Server Code
@@ -554,6 +554,8 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
    short flag = FALSE;
 
 
+   int count_sofar = 0;
+   int posn = 0;
 
 //    int cnt;
 //    if ( !pc.isMob() && ((cnt = rm.CRITTERS.dataCount(&pc)) > 1)) {
@@ -625,24 +627,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
       show("\n", pc);
    }//if
    else {                        /* look <thing> */
-      obj_ptr = rm.haveObjNamed(i_th, obj, pc.SEE_BIT);
-      if (!obj_ptr) {  //check in pc's inventory then
-         obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT, rm);
-      }//if
-      if (!obj_ptr) {
-         int jnk_posn = 0; //not used, but have to have it.
-         obj_ptr = pc.findObjInEq(i_th, *obj, pc.SEE_BIT, rm, jnk_posn);
-      }
-      if (obj_ptr) { //so it was in rooms inv, or pc's inv
-         show("\n\n", pc);
-         show((obj_ptr->long_desc), pc);
-         show("\n", pc);
-
-         String cmd = "look";
-         rm.checkForProc(cmd, NULL_STRING, pc, obj_ptr->OBJ_NUM);
-      }//if
-      else if ((crit_ptr = rm.haveCritNamed(i_th, obj, pc))) {
-
+      if ((crit_ptr = rm.haveCritNamed(i_th, obj, pc, count_sofar))) {
          show("\n\n", pc);
          show((crit_ptr->long_desc), pc);
 
@@ -693,13 +678,23 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
          String cmd = "look";
          rm.checkForProc(cmd, NULL_STRING, pc, crit_ptr->MOB_NUM);
       }//if
-      else if ((kwd_ptr = rm.haveKeyword(i_th, obj))) {
+      else if ((obj_ptr = rm.haveAccessibleObjNamed(i_th - count_sofar, obj, pc,
+                                                    posn, count_sofar))) {
+         show("\n\n", pc);
+         show((obj_ptr->long_desc), pc);
+         show("\n", pc);
+         
+         String cmd = "look";
+         rm.checkForProc(cmd, NULL_STRING, pc, obj_ptr->OBJ_NUM);
+      }
+      else if ((kwd_ptr = rm.haveKeyword(i_th - count_sofar, obj, count_sofar))) {
          pc.show("\n\n");
          pc.show(kwd_ptr->desc);
          pc.show("\n");
       }
       else if ((door_ptr = 
-           door::findDoor(rm.doors, i_th, obj, pc.SEE_BIT, rm))) {
+           door::findDoor(rm.doors, i_th - count_sofar, obj, pc.SEE_BIT,
+                          rm, count_sofar))) {
          show("\n\n", pc);
          show(door_ptr->dr_data->long_desc, pc);
          show("\n", pc);
@@ -931,12 +926,12 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
       cast_detect_magic(j_th, victim, pc);
    else if (strncasecmp(*spell, "detect poison", len) == 0) 
       cast_detect_poison(j_th, victim, pc);
-   else if (strncasecmp(*spell, "dispell evil", len) == 0) 
-      cast_dispell_evil(j_th, victim, pc);
-   else if (strncasecmp(*spell, "dispell good", len) == 0) 
-      cast_dispell_good(j_th, victim, pc);
-   else if (strncasecmp(*spell, "dispell magic", len) == 0) 
-      cast_dispell_magic(j_th, victim, pc);
+   else if (strncasecmp(*spell, "dispel evil", len) == 0) 
+      cast_dispel_evil(j_th, victim, pc);
+   else if (strncasecmp(*spell, "dispel good", len) == 0) 
+      cast_dispel_good(j_th, victim, pc);
+   else if (strncasecmp(*spell, "dispel magic", len) == 0) 
+      cast_dispel_magic(j_th, victim, pc);
    else if (strncasecmp(*spell, "distortion wall", len) == 0) 
       cast_distortion_wall(j_th, victim, pc);
    else if (strncasecmp(*spell, "divine protection", len) == 0) 
@@ -1622,7 +1617,7 @@ int say(const char* message, critter& pc, room& rm) {
 
       while ((crit_ptr = cell.next())) {
          if (crit_ptr != &pc) { 
-            if (crit_ptr->IS_SAY) { //if channel say is on
+            if (crit_ptr->IS_SAY && !crit_ptr->isSleeping()) { //if channel say is on
                if (crit_ptr->pc) {
 
                   if (crit_ptr->pc && crit_ptr->USING_CLIENT) {
@@ -2663,9 +2658,25 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 	    pc.PAUSE += door_ptr->distance;
 
          //Sprintf(buf, "leaves %s.\n", direction);
-         rm.doEmote(pc, Selectors::instance().CC_mob_entry_allow, 
-                    Selectors::instance().CC_mob_entry_deny,
-                    CS_LEAVES_SPRINTF, direction);
+         String dname = *(door_ptr->getDirection());
+         int is_normal_dir = FALSE;
+         for (int i = 1; i<= 10; i++) {
+            if (strcasecmp(dname, *(door_list[i].names.peekFront())) == 0) {
+               is_normal_dir = TRUE;
+               break;
+            }//if
+         }
+
+         if (is_normal_dir) {
+            rm.doEmote(pc, Selectors::instance().CC_mob_entry_allow, 
+                       Selectors::instance().CC_mob_entry_deny,
+                       CS_LEAVES_SPRINTF, &dname);
+         }
+         else {
+            rm.doEmote(pc, Selectors::instance().CC_mob_entry_allow, 
+                       Selectors::instance().CC_mob_entry_deny,
+                       CS_LEAVES_NOT_NORMAL_SPRINTF, &dname);
+         }
 
          if (!pc.isMob()) {
             pc.MOV -= rm.getMovCost();
@@ -3275,8 +3286,8 @@ int gain_eq_effects(object& obj, object* bag, critter& pc,
             if (crit_ptr != &pc) {
                Sprintf(buf, cstr(CS_DO_GET_FROM_O, *crit_ptr),
                        pc.getName(crit_ptr->SEE_BIT),
-                       obj.getLongName(crit_ptr->SEE_BIT), 
-                       get_his_her(pc), bag->getShortName(crit_ptr->SEE_BIT));
+                       obj.getLongName(*crit_ptr), 
+                       bag->getLongName(*crit_ptr));
                buf.Cap();
                show(buf, *crit_ptr);
             }//if
@@ -3441,7 +3452,7 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
                pc.THIRST = 0;
             if ((st_ptr->bonus_duration > 0) && (do_msg)) 
                pc.show(CS_LESS_THIRSTY);
-            else if (do_msg)
+	    else if ((st_ptr->bonus_duration < 0) && (do_msg))
                pc.show(CS_MORE_THIRSTY);
             break;
          case HUNGER_ID: //hunger
@@ -3450,7 +3461,7 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
                pc.HUNGER = 0;
             if ((st_ptr->bonus_duration > 0) && (do_msg))
                pc.show(CS_LESS_HUNGRY);
-            else if (do_msg)
+	    else if ((st_ptr->bonus_duration < 0) && (do_msg))
                pc.show(CS_MORE_HUNGRY);
             break;
          case DRUGGED_ID: //drugged
@@ -3459,9 +3470,30 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
                pc.DRUGGED = 0;
             if ((st_ptr->bonus_duration > 0) && (do_msg)) 
                pc.show(CS_MORE_DRUGGED);
-            else if (do_msg)
+	    else if ((st_ptr->bonus_duration < 0) && (do_msg))
                pc.show(CS_LESS_DRUGGED);
             break;
+         case 15: // current HP
+	    pc.HP += d(1, st_ptr->bonus_duration);
+	    if ((st_ptr->bonus_duration > 0) && (do_msg))
+	      pc.show(CS_EAT_GAIN_HP);
+	    else if ((st_ptr->bonus_duration < 0) && (do_msg))
+	      pc.show(CS_EAT_LOSE_HP);
+	    break;
+         case 16: // current MANA
+	    pc.MANA += d(1, st_ptr->bonus_duration);
+	    if ((st_ptr->bonus_duration > 0) && (do_msg))
+	      pc.show(CS_EAT_GAIN_MANA);
+	    else if ((st_ptr->bonus_duration < 0) && (do_msg))
+	      pc.show(CS_EAT_LOSE_MANA);
+	    break;
+         case 17: // current MOV
+	    pc.MOV += d(1, st_ptr->bonus_duration);
+	    if ((st_ptr->bonus_duration > 0) && (do_msg))
+	      pc.show(CS_EAT_GAIN_MOV);
+	    else if ((st_ptr->bonus_duration < 0) && (do_msg))
+	      pc.show(CS_EAT_LOSE_MOV);
+	    break;
 
          default:
             continue;

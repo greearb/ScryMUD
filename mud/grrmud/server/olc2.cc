@@ -1,5 +1,5 @@
-// $Id: olc2.cc,v 1.12 1999/07/18 05:10:17 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/18 05:10:17 $
+// $Id: olc2.cc,v 1.13 1999/08/10 07:06:20 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
 
 //
 //ScryMUD Server Code
@@ -44,76 +44,244 @@
 #include "SkillSpell.h"
 
 
-int normalize_obj(object& obj) {
+//TODO:  (Good work, Noah (right??)).
+// A few comments:  Let's let this thing give comments back to some PC
+// in the case of a bad item.  That way they can take steps to re-add
+// the stat correctly.  I propose the following prototype:
+//
+// int normalize_obj(object& obj, bool just_check, critter* pc) {
+//
+//  If pc is !NULL, then send messages to it when possible.
+//  Thanks,
+//  Ben
+
+int normalize_obj(object& obj, bool just_check) {
    if (obj.OBJ_NUM != obj_list[obj.OBJ_NUM].OBJ_NUM) {
       mudlog << "ERROR:  normalize_obj, object numbers not in sync:  "
              << " obj.OBJ_NUM:  " << obj.OBJ_NUM << "  other:  "
              << obj_list[obj.OBJ_NUM].OBJ_NUM << endl;
    }//if
 
+   // TODO:  check charges, recharges, %load, CIG, max_in_game,
+   //        weight(?), price (?)
+   // TODO:  check in_room_desc for lack of period, and short_desc for starting
+   //        capital letter.
+
+   // If not worn is on, then zero out the other worn flags just in case.
+   if (obj.OBJ_FLAGS.get(21)) { 
+      for (int i = 22; i<40; i++) {
+         obj.OBJ_FLAGS.turn_off(i);
+      }//for
+   }//if
+
+   // Turn on vis bit 1024
+   if(!(obj.OBJ_VIS_BIT & 1024)) {
+     obj.OBJ_VIS_BIT = obj.OBJ_VIS_BIT | 1024;
+   }
+
+   if (!obj.bag) {
+      if (obj.inv.size() != 0) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "ERROR:  normalize_obj, object with inventory is not bag:  "
+                   << " obj.OBJ_NUM:  " << obj.OBJ_NUM << endl;
+         }
+      }
+   }
+
+   int stat_plus;
+   int other_plus;
+   if(obj.OBJ_LEVEL <= 10) {
+     stat_plus = 2;
+     other_plus = 20;
+   } else if (obj.OBJ_LEVEL <= 20) {
+     stat_plus = 3;
+     other_plus = 50;
+   } else if (obj.OBJ_LEVEL <= 30) {
+     stat_plus = 4;
+     other_plus = 75;
+   } else if (obj.OBJ_LEVEL <= 40) {
+     stat_plus = 5;
+     other_plus = 100;
+   } else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "ERROR: normalize_obj, object level not in <= 40 range:  "
+                << " obj.OBJ_NUM:  " << obj.OBJ_NUM << endl;
+      }
+      stat_plus = 0;
+      other_plus = 0;
+   }
+
+   // If obj is not a weapon, don't let it be any particular kind of weapon
+   if(obj.OBJ_FLAGS.get(40)) {
+      for (int i = 41; i<49; i++) {
+         obj.OBJ_FLAGS.turn_off(i);
+      }//for
+      obj.OBJ_FLAGS.turn_off(57);
+   }
+
+   // Figure out how stompy a weapon is
+   if(obj.OBJ_DAM_DICE_COUNT < 0) {
+     obj.OBJ_DAM_DICE_COUNT = 0;
+   }
+   if(obj.OBJ_DAM_DICE_SIDES < 0) {
+     obj.OBJ_DAM_DICE_SIDES = 0;
+   }
+
+   // TODO:
+   // Actually, average damage might be a better thing to count.
+   // After all, a 30d1 sword is much better than a 1d30. --Ben
+   // NOTE:  there is a d(int cnt, int sides) method...
+
+   int dam_max = obj.OBJ_DAM_DICE_COUNT * obj.OBJ_DAM_DICE_SIDES;
+   // Heh, clever, never could effectively use the ?: syntax!! --BEN
+   int bracket = (obj.OBJ_LEVEL % 5) ? (obj.OBJ_LEVEL/5) + 1 : (obj.OBJ_LEVEL/5);
+   int dam_allowed = 6 + 4*bracket;
+   while(dam_max > dam_allowed) {
+     if(obj.OBJ_DAM_DICE_COUNT > obj.OBJ_DAM_DICE_SIDES) {
+       obj.OBJ_DAM_DICE_COUNT--;
+     } else {
+       obj.OBJ_DAM_DICE_SIDES--;
+     }
+     dam_max = obj.OBJ_DAM_DICE_COUNT * obj.OBJ_DAM_DICE_SIDES;
+   }
+
+   // TODO:  count good stat affects, limit their number and/or power
+
    Cell<stat_spell_cell*> cll(obj.stat_affects);
    stat_spell_cell* ptr, *tptr;
-   int ss, bd;
+   int ss, bd, old_bd;
    ptr = cll.next();
+   int stat_goodies = 0;
+   int max_bonus = stat_plus * 2;
+   int is_bonus;
 
    while (ptr) {
+      is_bonus = 0;
       ss = ptr->stat_spell;
-      if ((ss == 12) || (ss == 13) || (ss == 14) ||
-          ((ss >= 0) && (ss <= 6)) || (ss == 11) ||
-          (ss == 19) || (ss == 21) || 
-          (ss == 20) || (ss == 26) || (ss == 33) ||
-          (ss == 34) || (ss == 40) || (ss <= 0) ||
+      if ((ss == 12) || (ss == 13) || (ss == 14) ||  // Sex, class, race
+          (ss == 11) || (ss == 0) ||                 // pause count, position
+          (ss == 19) || (ss == 20) || (ss == 21) ||  // level, hometown, wimpy
+          (ss == 22) || (ss == 26) || (ss == 33) ||  // pracs, mob type, religion
+          (ss == 34) || (ss == 40) ||                // zone#, guild
+          (ss < 0) ||                                // illegal (negative)
           ((ss >= MOB_SHORT_CUR_STATS) && (ss != 100) &&
-           (ss != 101) && (ss != 102))) {
+           (ss != 101) && (ss != 102))) {            // illegal (not hunger/thirst/drug)
          tptr = ptr;
          ptr = obj.stat_affects.lose(cll);
          delete tptr;
       }//if
       else {
-         bd = ptr->bonus_duration;
-         if ((ss >= 1) && (ss <= 8)) {
-            bd = bound(-4, 4, bd);
+         old_bd = bd = ptr->bonus_duration;
+         if ((ss >= 1) && (ss <= 6)) {  // stats
+            bd = bound(-2*stat_plus, stat_plus, bd);
+	    bd = bound(-2*stat_plus, max_bonus - stat_goodies, bd);
+	    if(bd > 0) is_bonus = bd;
          }
-         else if (ss == 9) { //ac
-            bd = bound(-60, 60, bd);
+	 else if ((ss == 7) || (ss == 8)) {             // To hit, damage
+ 	    bd = bound(-6, 3, bd);
+	    if(bd > 0) is_bonus = 1;
+	 }
+         else if (ss == 9) {            // ac
+	    // TODO:  finish
+	    // Note: armor in multiple categories (heavy/light) should be restricted
+	    // as lightest category, to prevent abuse.
+	    if (obj.OBJ_FLAGS.get(23)
+	       || obj.OBJ_FLAGS.get(24)  // neck
+	       || obj.OBJ_FLAGS.get(25)  // cloak (around body)
+	       || obj.OBJ_FLAGS.get(27)
+	       || obj.OBJ_FLAGS.get(28)  // bracelets (wrists)
+	       || obj.OBJ_FLAGS.get(32)  // light source
+	       || obj.OBJ_FLAGS.get(34)  // belt
+	       || obj.OBJ_FLAGS.get(37)
+	       || obj.OBJ_FLAGS.get(38)  // fingers
+	       ) {
+	      // This is light armor.
+	      bd = bound(-bracket, 2*bracket, bd);
+	    } else if (obj.OBJ_FLAGS.get(22)     // head
+		      || obj.OBJ_FLAGS.get(26)  // arms
+		      || obj.OBJ_FLAGS.get(29)  // gloves (hands)
+		      || obj.OBJ_FLAGS.get(30)  // wielded
+		      || obj.OBJ_FLAGS.get(31)  // held
+		      || obj.OBJ_FLAGS.get(35)  // legs
+		      || obj.OBJ_FLAGS.get(36)  // boots (feet)
+		      ) {
+	      // This is medium armor
+	      bd = bound(-3*bracket, 6*bracket, bd);
+	    } else if (obj.OBJ_FLAGS.get(33) || obj.OBJ_FLAGS.get(39)) {
+	      // This is body armor and/or a shield
+	      bd = bound(-5*bracket, 10*bracket, bd);
+	    } else {
+	      // Don't know what it is :-(
+	      bd = bound(-other_plus, 2*other_plus, bd);
+	    }
+	    if (bd < 0)
+               is_bonus = 1; //TODO:  plz use TRUE or FALSE if it's a boolean. --Ben
          }
-         else if (ss == 10) { //attacks
+         else if (ss == 10) {           // attacks
             bd = bound(-1, 2, bd);
-         }
-         else if (ss == 12) { //pause
-            bd = bound(-10, 10, bd);
+	    bd = bound(-1, max_bonus - stat_goodies, bd);
+	    if(bd > 0) is_bonus = bd;
          }
          else if ((ss >= 15) && (ss <= 17)) {
-            bd = bound(-500, 500, bd);
+ 	    bd = bound(-200*stat_plus, 100*stat_plus, bd);  // HP, mana, move
+	    if(bd > 0) is_bonus = 1;
          }
-         else if (ss == 18) {
-            bd = bound(-50, 50, bd);
+         else if (ss == 18) {           // alignment
+	    bd = bound(-50, 50, bd);    // I'll just leave this as is
          }
-         else if (ss == 22) {
-            bd = bound(0, 2, bd);
+//         else if (ss == 22) {           // practices -- is this meant to be modified?
+//            bd = bound(0, 2, bd);       // Nope, fixed it above in the excludes. --Ben
+//	    bd = bound(0, max_bonus - stat_goodies, bd);
+//	    if(bd > 0) is_bonus = bd;
+//         }
+         else if ((ss >= 23) && (ss <= 25)) {  // hp, mana, move maxima
+            bd = bound(-30*stat_plus, 15*stat_plus, bd);
+	    if(bd > 0) is_bonus = 1;
          }
-         else if ((ss >= 23) && (ss <= 25)) {
-            bd = bound(-60, 60, bd);
+         else if (ss == 27) {           // Damage received
+            bd = bound((-other_plus)/3, 2*other_plus/3, bd);
+	    bd = bound(-5*(max_bonus - stat_goodies), 2*other_plus/3, bd);
+	    if(bd < 0) is_bonus = (-bd + 4)/5; // bonus of 1 for each 5%
          }
-         else if ((ss == 27) || (ss == 28)) {
-            bd = bound(-30, 30, bd);
+	 else if (ss == 28) {           // Damage given
+            bd = bound((-2*other_plus)/3, other_plus/3, bd);
+	    bd = bound((-other_plus)/3, 5*(max_bonus - stat_goodies), bd);
+	    if(bd > 0) is_bonus = (bd + 4)/5;  // bonus of 1 for each 5%
+	 }
+         else if ((ss >= 29) && (ss <= 32)) {  // resistances
+            bd = bound(-other_plus, 2*other_plus, bd);
+	    if(bd < 0) is_bonus = 1;
          }
-         else if ((ss >= 27) && (ss <= 32)) {
-            bd = bound(-60, 60, bd);
+         else if ((ss == 35) || (ss == 36)) {  // Bare hand dice, bare hand sides
+            bd = bound(-2*stat_plus, stat_plus, bd);
+	    if(bd > 0) is_bonus = 1;
          }
-         else if ((ss == 35) || (ss == 36)) {
-            bd = bound(-5, 5, bd);
+         else if ((ss >= 37) && (ss <= 39)) {  // Hp/mana/move regen
+            bd = bound(-other_plus, other_plus/2, bd);
+	    if(bd > 0) is_bonus = 1;
          }
-         else if ((ss >= 37) && (ss <= 39)) {
-            bd = bound(-50, 50, bd);
-         }
-         else if ((ss >= 100) && (ss <= 102)) {
-            bd = bound(-50, 50, bd);
+         else if ((ss >= 100) && (ss <= 102)) { // Hunger, thirst, drugged
+	    bd = bound(-50, 50, bd);            // Dunno what to do with this.  Leave it.
          }
 
-         ptr->bonus_duration = bd;
+	 if(just_check) {
+	   if(old_bd != bd) {
+              // TODO:  We need a message saying which thing is out of whack.
+              return 1;  // Object not "normal", flag it
+	   }
+	 } else {
+	   ptr->bonus_duration = bd;
+	   stat_goodies += is_bonus;
+	   if((bd == 0) || (stat_goodies > max_bonus)) {
+              // Remove ineffective stat mods, or disallowed ones that are too good
+              // TODO:  Would be good to get a message here too...
+              tptr = ptr;
+              ptr = obj.stat_affects.lose(cll);
+              delete tptr;
+	   }
+	 }
 
-         ptr = cll.next();
+         if(ptr) ptr = cll.next();
       }//else
    }//while
 
@@ -122,20 +290,13 @@ int normalize_obj(object& obj) {
       delete (obj.stat_affects.popBack());
    }
 
-   // If it can 'disolve', then it must not be wearable, because it
+   // If it can 'dissolve', then it must not be wearable, because it
    // makes a real mess when a corpse disolves and you are holding it!!
    // It could be made to work, but not worth the trouble IMHO. --BEN
    if (obj.getIdNum() == CORPSE_OBJECT) {
       // Make sure it can't be worn.
       obj.OBJ_FLAGS.turn_on(21);
    }
-
-   // If not worn is on, then zero out the other worn flags just in case.
-   if (obj.OBJ_FLAGS.get(21)) { 
-      for (int i = 22; i<40; i++) {
-         obj.OBJ_FLAGS.turn_off(i);
-      }//for
-   }//if
 
    return 0;
 }//normalize_obj
@@ -432,7 +593,10 @@ int add_stat_affect(int onum, int stat_num, int val, critter& pc) {
    }//if
 
    obj_ptr->stat_affects.append(new stat_spell_cell(stat_num, val));
-   normalize_obj(*obj_ptr);
+   if(!(pc.pc && pc.pc->pc_data_flags.get(2)
+	&& pc.pc->imm_data->imm_level >= 9)) {
+     normalize_obj(*obj_ptr);
+   }
    pc.show("Was added..now normalizing object to weed out bad values...\n");
    pc.show("Don't forget to aosave.\n");
    return 0;

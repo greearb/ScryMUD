@@ -1,5 +1,5 @@
-// $Id: command5.h,v 1.12 1999/07/16 06:12:53 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
+// $Id: command5.h,v 1.13 1999/08/10 07:06:18 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
 
 //
 //ScryMUD Server Code
@@ -98,7 +98,7 @@ int do_amsave(int zone);
 int adsave(int zone, critter& pc);
 int do_adsave(int zone);
 
-int dsys(int i, const String& cmd, critter& pc);
+int dsys(int i, const String& cmd, const String& arg1, critter& pc);
 
 int amlist(int zone, int how_many, critter& pc);
 int make_builder(int i_th, const String* name, critter& pc);

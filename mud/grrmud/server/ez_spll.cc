@@ -1,5 +1,5 @@
-// $Id: ez_spll.cc,v 1.13 1999/07/22 04:56:15 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/07/22 04:56:15 $
+// $Id: ez_spll.cc,v 1.14 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -818,7 +818,7 @@ void do_cast_detect_magic(critter& vict, critter& agg, int is_canned,
        agg.MANA -= spell_mana;
 
      if ((sp = is_affected_by(spell_num, vict))) {
-       show("Ok.\n", agg);
+        show("Ok, extending protection.\n", agg);
      }//if
      else {
        if (&vict == &agg) {

@@ -283,7 +283,7 @@ return door_to(i, j, &(cooked_strs[1]), pc);
 dstat ~
 return dstat(i, &(cooked_strs[1]), pc);
 dsys ~
-return dsys(i, cooked_strs[1], pc);
+return dsys(i, cooked_strs[1], cooked_strs[2], pc);
 dclear ~
 return dclear(i, pc);
 dlist ~
@@ -402,6 +402,9 @@ hurl ~
 return hurl(i, &(cooked_strs[1]), pc);
 humans *human ~
 NOP
+houses *houses ~
+NOP
+
 
 # case I
 inventory ~
@@ -425,6 +428,8 @@ itch(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 itrans ~
 return itrans(i, &(cooked_strs[1]), j, pc);
 ironclads *ironclad ~
+NOP
+immrules *immrules ~
 NOP
 
 #case K
@@ -595,8 +600,8 @@ pout *socials ~
 NOP
 
 # case Q
-quaf ~
-return quaf(i, &(cooked_strs[1]), pc);
+quaff ~
+return quaff(i, &(cooked_strs[1]), pc);
 quit logout log_out quit ~
 return log_out(pc);
 
@@ -678,6 +683,8 @@ NOP
 rm_move rm_transport *rm_move ~
 NOP
 rm_move_all rm_transport_all *rm_move_all ~
+NOP
+rules *rules ~
 NOP
 
 # case S
@@ -803,6 +810,9 @@ say talk *say ~
 NOP
 skills *skills ~
 NOP
+shops *shops ~
+NOP
+
 
 # case T
 tail ~
@@ -945,7 +955,8 @@ zgoto ~
 return zgoto(i, pc); 
 zunlock ~
 return zunlock(i, pc); 
-
+zones *zones ~
+NOP
 
 # Help Only, these mess up the parser if they
 # are higher...

@@ -9,5 +9,5 @@ commands that move you:  north, east, west, south, ne, se, sw,
                          nw, up, down
 	Special:  go   (see help on go)
 <color=red>
-See also:  go, exits
+See also:  go exits block
 </color></help>

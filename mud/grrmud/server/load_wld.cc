@@ -1,5 +1,5 @@
-// $Id: load_wld.cc,v 1.6 1999/07/18 21:16:18 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/18 21:16:18 $
+// $Id: load_wld.cc,v 1.7 1999/08/10 07:06:19 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
 
 //
 //ScryMUD Server Code
@@ -576,7 +576,7 @@ void load_objects(int for_zone) {
       mudlog.log(DBG, buf);
      
       obj_list[k].Read(rfile, FALSE);
-      normalize_obj(obj_list[k]); //make it normal as possible
+      //normalize_obj(obj_list[k]); //make it normal as possible
       obj_list[k].OBJ_FLAGS.turn_off(70);   //doesn't need resetting
       obj_list[k].OBJ_IN_ZONE = for_zone;
 
