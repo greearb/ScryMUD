@@ -1,5 +1,5 @@
-// $Id: MobScriptEditor.java,v 1.9 1999/06/05 23:29:12 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+// $Id: MobScriptEditor.java,v 1.10 1999/06/26 06:14:16 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/26 06:14:16 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -46,7 +46,8 @@ class MobScriptEditor extends Frame {
                     "examine", "exit", "fill", "follow",
                     "get", "give", "group", "hit", "junk", "list", "lock",
                     "look", "meditate", "nod", "open", "order",
-                    "pay", "prone", "remove", "rest", "say", "shake",
+                    "pay", "prone", "pull", "push", "put", "remove", "rest",
+                    "say", "shake",
                     "shoot", "sit", "slap", "sleep", "stand", "tell",
                     "throw", "ungroup", "unlock", "wake", "wear", "wield",
                     "yell" };

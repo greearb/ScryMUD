@@ -955,6 +955,8 @@ NOP
 # are higher...
 classes sage wizard ranger thief alchemist cleric bard *classes ~
 NOP
+script_cmds push pull *script_cmds ~
+NOP
 
 
 ~

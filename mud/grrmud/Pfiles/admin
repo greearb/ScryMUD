@@ -12,7 +12,7 @@ problems for you.
 0 17 17 16 12 17 16 0 99 65 1 0 2 3 1 1000 500 500 -54 
 40 0 0 5 1000 500 500 0 100 100 115 106 105 87 0 0 2 3 100 100 
 100 0 0 0 	shrt_cur_stats
-1024 2046 1 	cur_stats
+1024 2046 11 	cur_stats
 -2 9	 Start of SOBJ
 staff runed ash ~	names
 an ashen staff
@@ -81,9 +81,9 @@ End of Object.
 
 -1	inv
 bgio24h/ZwWLw	passwd
-26 25 21 19 16 14 11 10 6 2 -1  -:| bitfield |:-
-71 15 15 71 930271657 100		bday, byr, ryr, rday, llt, tto
-18 9990 9990 -2 1 34 0 age hgr thr drg pk died qp
+26 25 21 19 16 14 11 6 5 2 -1  -:| bitfield |:-
+71 15 15 71 930373491 100		bday, byr, ryr, rday, llt, tto
+18 9983 9983 -2 1 34 0 age hgr thr drg pk died qp
 1 100 12 100 13 100 14 1 25 1 30 1 92 100 94 1 117 1 118 25 
 134 25 147 100 165 100 178 100 188 100 189 1 200 1 220 100 -1	ss_known
 %N< %hH %mM %vV >  

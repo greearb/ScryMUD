@@ -1,0 +1,19 @@
+<help general script_cmds>
+
+These commands are only valid in rooms that have special
+scripts written to handle them.  It is likely it won't be
+entirely obvious how or where to use them, but builders are
+encouraged to give enough clues to allow the thoughtful player
+to figure it out.
+
+Commands Supported:  pull, push
+
+Syntax:  CMD [keyword]
+
+Example:  push button
+	  pull finger
+	  pull 'iron lever'
+
+<color=red>
+See Also:  look, examine, add_mob_script
+</color></help>

@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.11 1999/06/20 02:01:43 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/20 02:01:43 $
+// $Id: SkillSpell.cc,v 1.12 1999/06/26 06:14:16 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/26 06:14:16 $
 
 //
 //ScryMUD Server Code
@@ -310,7 +310,9 @@ int SSCollection::doHelpFor(const String& key, critter& pc) {
       Sprintf(buf, "Help for Skill/Spell:  %S\n\n", &key);
       pc.show(buf);
       pc.show(getSSDesc(idx));
-      pc.show("\n\n");
+      Sprintf(buf, "\n\nMana: %i  Difficulty: %i/100\n",
+              getSS(idx).getManaCost(), getSS(idx).getDifficulty());
+      pc.show(buf);
       return 0;
    }
    return -1;
@@ -450,6 +452,46 @@ you must first gain all the prerequisites for a skill or spell before you
 can learn it. Thus, we can determine the range of skills and spells a person
 can learn by limiting the prerequisites we give them upon login for the
 first time.<P>";
+
+   //Lets make an index!!
+   SortedPtrList<String*> lst;
+   for (int i = 0; i<NUMBER_OF_SKILL_SPELLS; i++) {
+      if (ss_list[i].getIdNum() != 0) {
+         lst.insertSorted(&(ss_list[i].getName()));
+      }//if
+   }//for
+
+   retval.Append("<center><table width=80 border=3>
+<caption align=top><strong>ScryMUD Skills and Spells</strong></caption><h4>\n\n");
+
+   Cell<String*> cll(lst);
+   String* ptr;
+   int cnt = 0;
+   while ((ptr = cll.next())) {
+      if (cnt == 0) {
+         retval.Append("<tr>\n");
+      }
+      retval.Append("<td nowrap><A href = \"#");
+      retval.Append(*ptr);
+      retval.Append("\">");
+      retval.Append(*ptr);
+      retval.Append("</a></td>\n");
+      if (cnt == 5) {
+         retval.Append("</tr>\n");
+         cnt = 0;
+      }
+      else {
+         cnt++;
+      }
+
+   }//while
+
+   if (cnt != 0) {
+      retval.Append("</tr>\n");
+   }
+
+   retval.Append("</table></center><P>\n\n");
+
 
    for (int i = 0; i<NUMBER_OF_SKILL_SPELLS; i++) {
       if (ss_list[i].getIdNum() != 0) {

@@ -236,7 +236,7 @@ comes from a crystal suspended from the ceiling, well out of your reach.
 There is a large oak desk in the center of the room.  It is quite neat
 with only a pen and some blank paper on it.
 ~
-23 21 5 -1  -:| bitfield |:-
+35 23 21 5 -1  -:| bitfield |:-
 1024 1 11 11 	cur_stats
 -1	affected_by
 -1	inv
@@ -244,6 +244,14 @@ with only a pen and some blank paper on it.
 -1	door Affected_Bye
 -1	door#, dest
 -1	mobs
+1  Start of a room proc script
+pull -1 -1 0	 Trigger Command, targ, actor 
+ table 
+ pause 1;
+ tell %M The table doesn't budge an inch!;
+
+~
+-1  End of room proc scripts
 End of Room
 12		Room Number
 Stairs_Temple ~	names

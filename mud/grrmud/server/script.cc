@@ -1,5 +1,5 @@
-// $Id: script.cc,v 1.13 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: script.cc,v 1.14 1999/06/26 06:14:17 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
 
 //
 //ScryMUD Server Code
@@ -585,8 +585,8 @@ char* GenScript::triggers[] = {
    "drop", "eat", "enter", "examine", "exit", "fill", "follow",
    "get", "give", "group",
    "hit", "junk", "list", "lock", "look", "meditate", "nod",
-   "open", "order", "pay", "prone", "put", 
-   "remove", "rest", "say", "shake", "shoot", "sit", "sleep", "stand",
+   "open", "order", "pay", "prone", "pull", "push", "put", 
+   "remove", "rest", "say", "shake", "shoot", "sit", "slap", "sleep", "stand",
    "tell", "throw", "ungroup", "unlock", "wake", "wear",
    "wield", "yell", NULL };
 
@@ -726,9 +726,9 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
       mudlog << "GenScript::Matches(args....)" << endl;
       mudlog << "Cmd:  " << cmd << "  arg1 -:" << arg1 << ":- act:  "
              <<  *(name_of_crit(act, ~0))
-             << "  targ:  " << targ << "obj_actor_num: "
+             << "  targ:  " << targ << " obj_actor_num: "
              << obj_actor_num << endl;
-      //mudlog << "this:  " << toStringBrief(0, 0) << endl;
+      mudlog << "this:  " << toStringBrief(0, 0, ENTITY_ROOM, 0) << endl;
    }
 
    if (strcasecmp(cmd, trigger_cmd) == 0) {
@@ -772,6 +772,16 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
                      }
                      return FALSE;
                   }//if
+               }//if
+            }
+            else if ((strcasecmp(cmd, "pull") == 0) || 
+                     (strcasecmp(cmd, "push") == 0)) {
+               if (!strstr(trig_discriminator, arg1)) {
+                  if (mudlog.ofLevel(DBG)) {
+                     mudlog << "Returning false, put, descrim wrong."
+                            << endl;
+                  }
+                  return FALSE;
                }//if
             }
 

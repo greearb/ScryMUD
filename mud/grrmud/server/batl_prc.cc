@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.6 1999/06/20 02:01:43 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/20 02:01:43 $
+// $Id: batl_prc.cc,v 1.7 1999/06/26 06:14:16 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/26 06:14:16 $
 
 //
 //ScryMUD Server Code
@@ -105,7 +105,6 @@ void do_entered_room_procs(object& obj, door* dr, const char* from_dir,
       rm.checkLight();
    }
 }//do_entered_room_procs (objects)
-
 
 
 void do_battle_proc(critter& pc) {

@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.12 1999/06/15 04:45:13 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/15 04:45:13 $
+// $Id: room.h,v 1.13 1999/06/26 06:14:17 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
 
 //
 //ScryMUD Server Code
@@ -145,6 +145,12 @@ public:
    void listScripts(critter& pc);
    RoomScript* getScriptAt(int idx) { return room_proc_scripts.elementAt(idx); }
    void removeScript(String& trigger, int i_th, critter& pc);
+
+   /** Attempt to trigger a room script directly.  So far, we support only
+    * pull and push, but more can easily be added.
+    */
+   int attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
+                                   critter& actor);
 
    int getVisBit() const { return cur_stats[0]; }
    int getMovCost() const { return cur_stats[1]; }

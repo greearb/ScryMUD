@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.28 1999/06/25 04:02:54 greear Exp $
-// $Revision: 1.28 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
+// $Id: command2.cc,v 1.29 1999/06/26 06:14:16 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 1999/06/26 06:14:16 $
 
 //
 //ScryMUD Server Code
@@ -774,11 +774,11 @@ int open(int i_th, const String* name, critter& pc) {
                show(buf, pc);
                
                //TODO:  Translation problem.
-               Sprintf(buf, "opens the %S.\n", name_of_door(*dr_ptr, 0));
+               Sprintf(buf, "opens the %S.\n", name_of_door(*dr_ptr, ~0));
                emote(buf, pc, ROOM, TRUE);
                
                // send message to other side of the door...
-               Sprintf(buf, "%S opens quietly.\n", name_of_door(*dr_ptr, 0));
+               Sprintf(buf, "%S opens quietly.\n", name_of_door(*dr_ptr, ~0));
                show_all(buf, *(dr_ptr->getDestRoom()));
                
                String cmd = "open";

@@ -1,5 +1,5 @@
-// $Id: PtrArray.h,v 1.4 1999/06/05 23:29:16 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:16 $
+// $Id: PtrArray.h,v 1.5 1999/06/26 06:14:17 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
 
 //
 //ScryMUD Server Code
@@ -66,59 +66,63 @@ public:
 
    virtual ~PtrArrayBase();
 
-   // Deep copy.
-   // Virtually does a clearAndDestroy on Self!!!!!!
+   /** Deep copy.
+    * Virtually does a clearAndDestroy on Self!!!!!!
+    */
    virtual void becomeDeepCopyOf(const PtrArrayBase<T>& src);
 
-   // NOTE:  Returns NULL if out of bounds or value is NULL.
+   /** NOTE:  Returns NULL if out of bounds or value is NULL. */
    virtual T* elementAt(int i);
 
-   // NOTE:  Returns NULL if out of bounds or value is NULL.
+   /** NOTE:  Returns NULL if out of bounds or value is NULL. */
    virtual const T* constElementAt(int i) const;
 
-   // does NOT delete pointers
+   /** does NOT delete pointers */
    virtual void clear();
 
    /** Deletes any data pointed to by internal pointers. */
    virtual void clearAndDestroy();
 
-   // we won't allow it to grow shorter!
+   /** we won't allow it to grow shorter! */
    virtual void ensureCapacity(int i);
 
-   // max len before we have to grow the array.
+   /** max len before we have to grow the array. */
    virtual int getMaxLen() const;
 
-   // maximum element asigned a value.  This may or may not be true,
-   // depending on how you use the class.  (It is meant to be used
-   // with append()
+   /** maximum element asigned a value.  This may or may not be true,
+    * depending on how you use the class.  (It is meant to be used
+    * with append()
+    */
    virtual int getCurLen() const;
 
-   // return TRUE if it worked..false otherwise
+   /** return TRUE if it worked..false otherwise */
    virtual int setAndDestroy(T* val, int posn);
 
    virtual int set(T* val, int posn);
 
-   // Make a copy of the incomming object.
+   /** Make a copy of the incomming object. */
    virtual int appendDeepCopy(T& val);
 
-   // Just copy the pointer, not the real object.
+   /** Just copy the pointer, not the real object. */
    virtual int appendShallowCopy(T* val);
 
-   //  This copies the data from the incomming src, NOT just a shallow copy.
-   //  Does not copy NULL's over, ie it packs the src when appending it.
+   /**  This copies the data from the incomming src, NOT just a shallow copy.
+    *  Does not copy NULL's over, ie it packs the src when appending it.
+    */
    virtual int appendDeepCopy(const PtrArrayBase<T>& src);
 
-   // If it's not already in the array,
-   // find the first open slot and dump it in...
+   /** If it's not already in the array,
+    * find the first open slot and dump it in...
+    */
    virtual int gainData(T* val);
 
-   // Return TRUE if val is in the array, false otherwise.
+   /** Return TRUE if val is in the array, false otherwise. */
    virtual int haveData(const T* val);
 
-   // Find the first instance and delete it.
+   /** Find the first instance and delete it. */
    virtual int loseData(const T* val);
 
-   //  This just copies the pointers of the src array.
+   /**  This just copies the pointers of the src array. */
    virtual int appendShallowCopy(const PtrArrayBase<T>& src);
 
 };//PtrArrayBase<class T>
@@ -183,6 +187,8 @@ public:
 };//LazyPtrArray<class T>
 
 
+/** This is a growable array of objects.
+ */
 template <class T> class ObjArray {
 private:
    int _cnt;

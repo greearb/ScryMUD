@@ -1,5 +1,5 @@
-// $Id: parse.cc,v 1.18 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: parse.cc,v 1.19 1999/06/26 06:14:17 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
 
 //
 //ScryMUD Server Code
@@ -665,12 +665,21 @@ int critter::executeCommand(String* cooked_strs, int* cooked_ints,
       }
    }//if
    else {
-      if (mudlog.ofLevel(DBG)) {
-         mudlog << "ERROR:  Could not find real_cmd for cmd:  "
-                << cur_cmd.toString() << endl;
+      int retval = getCurRoom()->attemptExecuteUnknownScript(cooked_strs[0],
+                                                             cooked_ints[1],
+                                                             cooked_strs[1],
+                                                             *this);
+      if (retval >= 0) {
+         return retval;
       }
-      show(PARSE_ERR_MSG);
-      return -1;
+      else {
+         if (mudlog.ofLevel(DBG)) {
+            mudlog << "ERROR:  Could not find real_cmd for cmd:  "
+                   << cur_cmd.toString() << endl;
+         }
+         show(PARSE_ERR_MSG);
+         return -1;
+      }
    }//switch
 
    return -1;

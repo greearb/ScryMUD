@@ -225,7 +225,8 @@ obj_move:       Force one player to exit in a certain direction.
 neighbor_echo:  Echo a message to a neighboring room (like after a move).
 obj_omove_all:  Force all objects to exit in a certain direction.
 obj_omove:      Force one object to exit in a certain direction.
-
+pull:           Triggered by: pull [descriminator], see help for pull.
+push:           Triggered by: push [descriminator], see help for push.
 
 <color=red>
 See Also:  olc amsave mstat rm_script list_scripts stat_script affect_hp

@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.22 1999/06/25 04:07:52 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/25 04:07:52 $
+// $Id: command5.cc,v 1.23 1999/06/26 06:14:17 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
 
 //
 //ScryMUD Server Code
@@ -945,23 +945,29 @@ int beep(int i_th, const String* name, critter& pc) {
       return -1;
    }//if
 
-   if (ptr->isUsingClient()) {
-      ptr->show("<BEEP>"); //hegemon tag
+   if (ptr->MODE == MODE_NORMAL) {
+      if (ptr->isUsingClient()) {
+         ptr->show("<BEEP>"); //hegemon tag
+      }
+      else {
+         buf[0] = 7; //beep
+         buf[1] = 7;
+         buf[2] = 7;
+         buf[3] = 0; //terminate it
+         show(buf, *ptr);
+      }
+
+      Sprintf(buf2, "%S beeps you.\n", name_of_crit(pc, ptr->SEE_BIT));
+      ptr->show(buf2);
+      ptr->PAUSE += 1; //slow down spammers....
+
+      show("Done...\n", pc);
+      return 0;
    }
    else {
-      buf[0] = 7; //beep
-      buf[1] = 7;
-      buf[2] = 7;
-      buf[3] = 0; //terminate it
-      show(buf, *ptr);
+      pc.show("That person is not able to be beeped right now.\n");
+      return -1;
    }
-
-   Sprintf(buf2, "%S beeps you.\n", name_of_crit(pc, ptr->SEE_BIT));
-   ptr->show(buf2);
-   ptr->PAUSE += 1; //slow down spammers....
-
-   show("Done...\n", pc);
-   return 0;
 }//beep
 
 

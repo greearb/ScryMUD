@@ -1,5 +1,5 @@
-// $Id: list2.h,v 1.6 1999/06/05 23:29:16 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/05 23:29:16 $
+// $Id: list2.h,v 1.7 1999/06/26 06:14:17 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
 
 //
 //ScryMUD Server Code
@@ -97,7 +97,7 @@ protected:
       }
    };//Node
 
-   void handleLosingCell(Cell<T>& cll) {
+   virtual void handleLosingCell(Cell<T>& cll) {
       for (int i = 0; i<NUMBER_OF_CONCURENT_CELLS; i++) {
          if (cll_list[i] && (cll_list[i]->node == cll.node) &&
             (cll_list[i] != &cll)) {
@@ -107,7 +107,7 @@ protected:
       }//for
    }//handleLosingCell
 
-   int handleRemoveCell(const Cell<T>& cll) {
+   virtual int handleRemoveCell(const Cell<T>& cll) {
       for (int i = 0; i<NUMBER_OF_CONCURENT_CELLS; i++) {
          if (cll_list[i] == &cll) {
             cll_list[i] = NULL;
@@ -123,7 +123,7 @@ protected:
    }//handleRemoveCell      
 
 
-   int handleAddCell(Cell<T>& cll) {
+   virtual int handleAddCell(Cell<T>& cll) {
       for (int i = 0; i<NUMBER_OF_CONCURENT_CELLS; i++) {
          if (cll_list[i] == NULL) {
             cll_list[i] = &cll;
@@ -247,7 +247,7 @@ public:
    } //destructor 
 
    
-   List<T> &operator= (const List &L) {
+   virtual List<T> &operator= (const List &L) {
  
       if (this != &L) { // Don't copy yourself
          this->clear();       
@@ -268,7 +268,7 @@ public:
 
    /*  CLEAR--   removes every node in a List (except the header node
        of course), DOES NOT delete data pointed to */
-   void clear() {
+   virtual void clear() {
       Cell<T> cll(*this);
       T ptr = cll.next();
       while (ptr) {
@@ -282,7 +282,7 @@ public:
       sz = 0;
    }// clear
 
-   String toString() const {
+   virtual String toString() const {
       String retval(200);
       String tmp(50);
 
@@ -297,7 +297,7 @@ public:
 
    /*  LOSEDATA  finds and cuts the node with the specified data in it out 
        of the list.  Only cuts ONE instance, not multiple, if they exist. */
-   T loseData (const T& data) {
+   virtual T loseData (const T& data) {
       Cell<T> cell(*this);
       T ldata;
 
@@ -321,7 +321,7 @@ public:
    /* If it doesn't find the target data, it will insert anyway 
       (at the end).  It returns FALSE if no substitution was made,
       TRUE otherwise.  Does not delete what it replaced. */
-   int substituteData(const T& targ, const T& source, int j) {
+   virtual int substituteData(const T& targ, const T& source, int j) {
       Cell<T> cell(*this);
       T ldata;
       int count = 0;
@@ -340,7 +340,7 @@ public:
    }//SubstituteData   
 
 
-   int haveData (const T& data) const {
+   virtual int haveData (const T& data) const {
       Cell<T> cell(*this);
       T ldata;
       
@@ -352,7 +352,7 @@ public:
       return FALSE;
    }//HaveData   
 
-   int dataCount(const T& data) const {
+   virtual int dataCount(const T& data) const {
       Cell<T> cell(*this);
       T ldata;
       int retval = 0;
@@ -365,29 +365,29 @@ public:
       return retval;
    }//DataCount
  
-   void pushFront(const T& data) {
+   virtual void pushFront(const T& data) {
       prepend(data);
    }
 
-   void prepend(const T& data) {
+   virtual void prepend(const T& data) {
       Cell<T> cell(*this);
       Assert((int)data);
       cell.insertAfter(data);
       sz++;
    }//push
  
-   void pushBack(const T& data) {
+   virtual void pushBack(const T& data) {
       append(data);
    }
 
-   void append(const T& data) {
+   virtual void append(const T& data) {
       Cell<T> C(*this);
       Assert((int)data);
       C.insertBefore(data);
       sz++;
    }//put
 
-   void gainData(const T& data) {
+   virtual void gainData(const T& data) {
       if (!haveData(data)) {
          append(data);
       }//if
@@ -397,7 +397,7 @@ public:
    /*  PULL--
        Returns the item contained at the BEGINNING of the list, it
        DOES delete the item from the list.  */
-   T popFront() {
+   virtual T popFront() {
       Cell<T> cll(*this);
       T ret = cll.next();
    
@@ -412,7 +412,7 @@ public:
 /*  DRAG--
     Returns the item contained at the END of the list, it
     DOES delete the item from the list.  */
-   T popBack() {
+   virtual T popBack() {
       Cell<T> cll(*this);
       T ret = cll.prev();
       if (ret) {
@@ -424,7 +424,7 @@ public:
    }//Drag
 
 
-   int insertAt(int posn, T& val) {
+   virtual int insertAt(int posn, T& val) {
       Cell<T> cll(*this);
       int i = 0;
 
@@ -445,7 +445,7 @@ public:
       return TRUE;
    }//insertAt
 
-   T removeAt(int posn) {
+   virtual T removeAt(int posn) {
       Cell<T> cll(*this);
       int i = 0;
 
@@ -465,7 +465,7 @@ public:
       return (T)(0);
    }//removeAt
 
-   T elementAt(int index) const {
+   virtual T elementAt(int index) const {
       Cell<T> cll(*this);
       int i = 0;
 
@@ -485,21 +485,21 @@ public:
    /*  FRONT--
        Returns the item contained at the BEGINNING of the list, it
        DOES NOT delete the item from the list.  */
-   T peekRear() const {
+   virtual T peekRear() const {
       return header->prev->item; 
    }//
 
-   T peekBack() const {
+   virtual T peekBack() const {
       return peekRear();
    }//
 
-   T peekFront() const {
+   virtual T peekFront() const {
       return header->next->item; 
    }//top
  
 
    /*  HEAD--  Make cll point to the head of the list. */
-   void head(Cell<T>& cll) {
+   virtual void head(Cell<T>& cll) {
       if (cll.isInList(this)) {
          cll.node = header;
       }
@@ -511,25 +511,25 @@ public:
       }//else
    }//head
 
-   int assign(Cell<T>& cll, const T& data) {
+   virtual int assign(Cell<T>& cll, const T& data) {
       Assert(cll.isInList(this));
       cll.assign(data);
       return TRUE;
    }//Assign
 
-   void insertBefore(Cell<T>& cll, const T& data) {
+   virtual void insertBefore(Cell<T>& cll, const T& data) {
       Assert(cll.isInList(this));
       sz++;
       cll.insertBefore(data);
    }//insertBefore
 
-   void insertAfter(Cell<T>& cll, const T& data) {
+   virtual void insertAfter(Cell<T>& cll, const T& data) {
       Assert(cll.isInList(this));
       sz++;
       cll.insertAfter(data);
    }//insertBefore
 
-   T lose(Cell<T>& cll) {
+   virtual T lose(Cell<T>& cll) {
       if (cll.node != header) {
          Assert(cll.isInList(this));
          handleLosingCell(cll);
@@ -543,13 +543,13 @@ public:
       }//else
    }//insertBefore
 
-   int isEmpty() const {
+   virtual int isEmpty() const {
       Assert((int)header);
       return (header->next == header);
    }//IsEmpty
 
    /*  size--  Returns the number of cells contained in a List.  */
-   int size() const {
+   virtual int size() const {
       class List<T>::Node* node_ptr = header->next;
       int count = 0;
    
@@ -566,7 +566,7 @@ public:
       return count;
    }//sz
 
-   int Assert(const int boolean_val) const {
+   virtual int Assert(const int boolean_val) const {
       if (!boolean_val)
          ::core_dump((const char*)("List2.h"));
       return TRUE;
@@ -635,7 +635,7 @@ protected:
    List<T>::Node *node;
    List<T>* in_lst;
 
-   void insertBefore (const T& data) {
+   virtual void insertBefore (const T& data) {
       Assert((int)node);
       List<T>::Node *N = new List<T>::Node; 
       if (!N) {
@@ -649,7 +649,7 @@ protected:
       node->prev = N;
    }// insert before
 
-   assign(const T& data) {
+   virtual int assign(const T& data) {
       Assert(node && data);
       node->item = data;
       return TRUE;
@@ -657,7 +657,7 @@ protected:
 
 
    /*  INSTERT_AFTER-- Insert an item into a list after a given cell. */
-   void insertAfter(const T& data) {
+   virtual void insertAfter(const T& data) {
       Assert((int)node);
       List<T>::Node *N = new List<T>::Node; 
       N->item = data;
@@ -671,7 +671,7 @@ protected:
        returns what the new cell contains.  Can only be called by
        List<>, and that takes care of keeping other Cell<> iterators
        cleaned up. */
-   T lose() {
+   virtual T lose() {
       class List<T>::Node* node_ptr = node;    
       
       node->prev->next = node->next;
@@ -683,7 +683,7 @@ protected:
       return node->item;
    }// Lose
 
-   void removeFromLst() {
+   virtual void removeFromLst() {
       in_lst = NULL;
    }
 
@@ -704,7 +704,7 @@ public:
       clear(); //this is important, allows the list to clean *this up.
    }//destructor
 
-   void clear() {
+   virtual void clear() {
       if (in_lst) {
          in_lst->handleRemoveCell(*this);
          in_lst = NULL;
@@ -746,5 +746,46 @@ public:
    int isInList(List<T>* lst) const { return (in_lst == lst); }
 
 };
+
+
+template <class T> class SortedPtrList : public List<T> {
+public:
+   SortedPtrList() : List<T>() { }
+   SortedPtrList(const List<T> &L) : List<T>(L) { }
+   SortedPtrList(const T &Nil) : List<T>(Nil) { }
+
+   void insertSorted(T val) {
+      Cell<T> cll(*this);
+      T ptr;
+      while ((ptr = cll.next())) {
+         if (*val < *ptr) {
+            insertBefore(cll, val);
+            return;
+         }//if
+      }//while
+      insertBefore(cll, val);
+   }//insertSorted
+};//SortedPtrList
+
+
+template <class T> class SortedValList : public List<T> {
+public:
+   SortedValList() : List<T>() { }
+   SortedValList(const List<T> &L) : List<T>(L) { }
+   SortedValList(const T &Nil) : List<T>(Nil) { }
+
+   void insertSorted(T& val) {
+      Cell<T> cll(*this);
+      T ptr;
+      while ((ptr = cll.next())) {
+         if (val < ptr) {
+            insertBefore(cll, val);
+            return;
+         }//if
+      }//while
+      insertBefore(cll, val);
+   }//insertSorted
+};//SortedValList
+
 
 #endif
