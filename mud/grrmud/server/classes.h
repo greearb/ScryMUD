@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.18 1999/08/12 06:26:05 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
+// $Id: classes.h,v 1.19 1999/08/13 06:32:54 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
 
 //
 //ScryMUD Server Code
@@ -242,6 +242,7 @@ public:
    /**  These will take care of language translation and see-bits. */
    virtual const String* getName(critter* observer);
    virtual const String* getShortName(critter* observer);
+   virtual const String* getLongName(critter* observer);
    virtual const String* getLongDesc(critter* observer);
    virtual int isNamed(const String& name, critter* viwer);
    virtual int isNamed(const String& name); //dflt to english (maybe all??)

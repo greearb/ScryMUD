@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.44 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.44 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: critter.cc,v 1.45 1999/08/13 06:32:54 greear Exp $
+// $Revision: 1.45 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
 
 //
 //ScryMUD Server Code
@@ -1981,6 +1981,7 @@ int critter::haveObjNumbered(int cnt, int obj_num) {
 
    while ((ptr = cll.next())) {
       count += ptr->getObjCountByNumber(obj_num, 0);
+
       if (ptr->getIdNum() == obj_num) {
          count++;
       }//if obj nums agree
@@ -1993,6 +1994,7 @@ int critter::haveObjNumbered(int cnt, int obj_num) {
    for (int i = 0; i<MAX_EQ; i++) {
       if ((ptr = eq[i])) {
          count += ptr->getObjCountByNumber(obj_num, 0);
+
          if (ptr->OBJ_NUM == obj_num) {
             count++;
          }//if obj nums agree
@@ -3156,7 +3158,7 @@ int critter::doDropCoins(int cnt) {
       show(buf);
 
       object* gold;
-      gold = obj_to_sobj(obj_list[GOLD_OBJECT], getCurRoom(), getCurRoomNum());
+      gold = obj_to_sobj(obj_list[GOLD_OBJECT], getCurRoom());
       
       obj_list[GOLD_OBJECT].incrementCurInGame();
       

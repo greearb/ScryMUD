@@ -1,5 +1,5 @@
-// $Id: battle.h,v 1.5 1999/08/04 06:29:16 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
+// $Id: battle.h,v 1.6 1999/08/13 06:32:54 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
 
 //
 //ScryMUD Server Code
@@ -54,18 +54,17 @@ int exact_raw_damage(int damage, int damage_type, critter& pc,
                      critter& agg);
 int exact_raw_damage(int damage, int damage_type, critter& pc);
 
-critter* mob_to_smob(critter& mob, const int room_num, int do_sub,
-                     int i_th, const String* name, int see_bit);
-critter* mob_to_smob(critter& mob, const int room_num,
+critter* mob_to_smob(critter& mob, room& rm, int do_sub,
+                     int i_th, const String* name, critter& viewer);
+critter* mob_to_smob(critter& mob, room& rm,
                      int supress_sub_fail_msg = FALSE);
 
-// Use this one when you can, as opposed to the one above.
 critter* mob_to_smob(critter& mob, room& rm,
                      int supress_sub_fail_msg = FALSE);
 
 object*  obj_to_sobj(object& obj, Entity* container, int do_sub,
-                     int i_th, const String* name, int see_bit, room& rm);
-object*  obj_to_sobj(object& obj, Entity* container, int rm_num);
+                     int i_th, const String* name, critter& viewer);
+object*  obj_to_sobj(object& obj, Entity* container);
 
 
 #endif

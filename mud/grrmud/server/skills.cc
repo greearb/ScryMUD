@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.13 1999/08/12 06:26:05 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
+// $Id: skills.cc,v 1.14 1999/08/13 06:32:54 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
 
 //
 //ScryMUD Server Code
@@ -785,7 +785,7 @@ int do_claw(critter& vict, critter& pc) {
       return -1;
    }//if
 
-   if (!pc.isFighting(&vict)) {
+   if (!pc.isFighting(vict)) {
       join_in_battle(pc, vict);
    }//if
 
@@ -921,11 +921,11 @@ int construct(critter& pc, short do_mob = FALSE) {
                   /* check for all components available */
    if (check_l_range(ptr->COMPONENT_ITEM1, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item1 = have_obj_numbered(toolbox->inv, 1, 
-                   ptr->COMPONENT_ITEM1, pc.SEE_BIT, ROOM))) {
+      if (!(item1 = toolbox->haveObjNumbered(1, ptr->COMPONENT_ITEM1,
+                                             pc.getSeeBit(), ROOM))) {
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 obj_list[ptr->COMPONENT_ITEM1].getLongName(pc),
-                 obj_list[ptr->COMPONENT_TARG].getLongName(pc));
+                 obj_list[ptr->COMPONENT_ITEM1].getLongName(&pc),
+                 obj_list[ptr->COMPONENT_TARG].getLongName(&pc));
          show(buf, pc);
          return -1;
       }//if
@@ -933,11 +933,11 @@ int construct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM2, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item2 = have_obj_numbered(toolbox->inv, 1, 
-                   ptr->COMPONENT_ITEM2, pc.SEE_BIT, ROOM))) {
+      if (!(item2 = toolbox->haveObjNumbered(1, ptr->COMPONENT_ITEM2,
+                                            pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 obj_list[ptr->COMPONENT_ITEM2].getLongName(),
-                 obj_list[ptr->COMPONENT_TARG].getLongName());
+                 obj_list[ptr->COMPONENT_ITEM2].getLongName(&pc),
+                 obj_list[ptr->COMPONENT_TARG].getLongName(&pc));
          show(buf, pc);
          return -1;
       }//if
@@ -945,11 +945,11 @@ int construct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM3, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item3 = have_obj_numbered(toolbox->inv, 1, 
-                   ptr->COMPONENT_ITEM3, pc.SEE_BIT, ROOM))) {
+      if (!(item3 = toolbox->haveObjNumbered(1, ptr->COMPONENT_ITEM3,
+                                             pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 obj_list[ptr->COMPONENT_ITEM3].getLongName(pc),
-                 obj_list[ptr->COMPONENT_TARG].getLongName());
+                 obj_list[ptr->COMPONENT_ITEM3].getLongName(&pc),
+                 obj_list[ptr->COMPONENT_TARG].getLongName(&pc));
          show(buf, pc);
          return -1;
       }//if
@@ -957,11 +957,11 @@ int construct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM4, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item4 = have_obj_numbered(toolbox->inv, 1, 
-                   ptr->COMPONENT_ITEM4, pc.SEE_BIT, ROOM))) { 
+      if (!(item4 = toolbox->haveObjNumbered(1, ptr->COMPONENT_ITEM4,
+                                            pc.SEE_BIT, ROOM))) { 
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 obj_list[ptr->COMPONENT_ITEM4].getLongName(),
-                 obj_list[ptr->COMPONENT_TARG].getLongName());
+                 obj_list[ptr->COMPONENT_ITEM4].getLongName(&pc),
+                 obj_list[ptr->COMPONENT_TARG].getLongName(&pc));
          show(buf, pc);
          return -1;
       }//if
@@ -969,11 +969,11 @@ int construct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM5, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item5 = have_obj_numbered(toolbox->inv, 1, 
-                   ptr->COMPONENT_ITEM5, pc.SEE_BIT, ROOM))) { 
+      if (!(item5 = toolbox->haveObjNumbered(1, ptr->COMPONENT_ITEM5,
+                                             pc.SEE_BIT, ROOM))) { 
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 obj_list[ptr->COMPONENT_ITEM5].getLongName(),
-                 obj_list[ptr->COMPONENT_TARG].getLongName());
+                 obj_list[ptr->COMPONENT_ITEM5].getLongName(&pc),
+                 obj_list[ptr->COMPONENT_TARG].getLongName(&pc));
          show(buf, pc);
          return -1;
       }//if
@@ -985,7 +985,7 @@ int construct(critter& pc, short do_mob = FALSE) {
       toolbox->loseInv(item1);
       drop_eq_effects(*item1, pc, FALSE, FALSE);
       recursive_init_unload(*item1, 0);
-      if (item1->IN_LIST) {
+      if (item1->isModified()) {
          delete item1;
          item1 = NULL;
       }//if
@@ -995,7 +995,7 @@ int construct(critter& pc, short do_mob = FALSE) {
       toolbox->loseInv(item2);
       drop_eq_effects(*item2, pc, FALSE, FALSE);
       recursive_init_unload(*item2, 0);
-      if (item2->IN_LIST) {
+      if (item2->isModified()) {
          delete item2;
          item2 = NULL;
       }//if
@@ -1005,7 +1005,7 @@ int construct(critter& pc, short do_mob = FALSE) {
       toolbox->loseInv(item3);
       drop_eq_effects(*item3, pc, FALSE, FALSE);
       recursive_init_unload(*item3, 0);
-      if (item3->IN_LIST) {
+      if (item3->isModified()) {
          delete item3;
          item3 = NULL;
       }//if
@@ -1015,7 +1015,7 @@ int construct(critter& pc, short do_mob = FALSE) {
       toolbox->loseInv(item4);
       drop_eq_effects(*item4, pc, FALSE, FALSE);
       recursive_init_unload(*item4, 0);
-      if (item4->IN_LIST) {
+      if (item4->isModified()) {
          delete item4;
          item4 = NULL;
       }//if
@@ -1025,7 +1025,7 @@ int construct(critter& pc, short do_mob = FALSE) {
       toolbox->loseInv(item5);
       drop_eq_effects(*item5, pc, FALSE, FALSE);
       recursive_init_unload(*item5, 0);
-      if (item5->IN_LIST) {
+      if (item5->isModified()) {
          delete item5;
          item5 = NULL;
       }//if
@@ -1051,7 +1051,7 @@ int construct(critter& pc, short do_mob = FALSE) {
 int concoct(critter& pc, short do_mob = FALSE) {
    String buf(100);
    object* cauldron, *ptr, *item1, *item2, *item3, *item4, *item5;
-   Cell<object*> cll;
+   SCell<object*> cll;
    //   log("In concoct.\n");
 
    if (!pc.pc && !do_mob) //no ordering pets to do yer dirty-work
@@ -1078,7 +1078,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
       return -1;
    }//if
 
-   if (IsEmpty(cauldron->inv)) {
+   if (cauldron->getInv().isEmpty()) {
       show("You need ingredients in your cauldron to brew with!\n", 
            pc);
       return -1;
@@ -1107,11 +1107,11 @@ int concoct(critter& pc, short do_mob = FALSE) {
       }//if
    }//while
 
-   ptr = Top(cauldron->inv);
+   ptr = cauldron->getInv().peekFront();
 
    if (!ptr->obj_proc) {
-      Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL obj_proc.\n", 
-             &( ptr->short_desc));
+      Sprintf(buf, "ERROR:  Object# %i is COMPONENT w/NULL obj_proc.\n", 
+             ptr->getIdNum());
       mudlog.log(ERR, buf);
       return -1;
    }//if
@@ -1125,11 +1125,11 @@ int concoct(critter& pc, short do_mob = FALSE) {
                   /* check for all components available */
    if (check_l_range(ptr->COMPONENT_ITEM1, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item1 = have_obj_numbered(cauldron->inv, 1, 
-                   ptr->COMPONENT_ITEM1, pc.SEE_BIT, ROOM))) {
+      if (!(item1 = cauldron->haveObjNumbered(1, ptr->COMPONENT_ITEM1,
+                                              pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to brew %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM1].short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
+                 obj_list[ptr->COMPONENT_ITEM1].getLongName(&pc),
+                 obj_list[ptr->COMPONENT_TARG].getLongName(&pc));
          show(buf, pc);
          return -1;
       }//if
@@ -1137,11 +1137,11 @@ int concoct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM2, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item2 = have_obj_numbered(cauldron->inv, 1, 
-                   ptr->COMPONENT_ITEM2, pc.SEE_BIT, ROOM))) {
+      if (!(item2 = cauldron->haveObjNumbered(1, ptr->COMPONENT_ITEM2,
+                                              pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to brew %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM2].short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
+                 obj_list[ptr->COMPONENT_ITEM2].getLongName(&pc),
+                 obj_list[ptr->COMPONENT_TARG].getLongName(&pc));
          show(buf, pc);
          return -1;
       }//if
@@ -1149,11 +1149,11 @@ int concoct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM3, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item3 = have_obj_numbered(cauldron->inv, 1, 
-                   ptr->COMPONENT_ITEM3, pc.SEE_BIT, ROOM))) {
+      if (!(item3 = cauldron->haveObjNumbered(1, ptr->COMPONENT_ITEM3,
+                                              pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to brew %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM3].short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
+                 obj_list[ptr->COMPONENT_ITEM3].getLongName(&pc),
+                 obj_list[ptr->COMPONENT_TARG].getLongName(&pc));
          show(buf, pc);
          return -1;
       }//if
@@ -1161,11 +1161,11 @@ int concoct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM4, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item4 = have_obj_numbered(cauldron->inv, 1, 
-                   ptr->COMPONENT_ITEM4, pc.SEE_BIT, ROOM))) { 
+      if (!(item4 = cauldron->haveObjNumbered(1, ptr->COMPONENT_ITEM4,
+                                              pc.SEE_BIT, ROOM))) { 
          Sprintf(buf, "You need %S in order to brew %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM4].short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
+                 obj_list[ptr->COMPONENT_ITEM4].getLongName(&pc),
+                 obj_list[ptr->COMPONENT_TARG].getLongName(&pc));
          show(buf, pc);
          return -1;
       }//if
@@ -1173,11 +1173,11 @@ int concoct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM5, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item5 = have_obj_numbered(cauldron->inv, 1, 
-                   ptr->COMPONENT_ITEM5, pc.SEE_BIT, ROOM))) { 
+      if (!(item5 = cauldron->haveObjNumbered(1, ptr->COMPONENT_ITEM5,
+                                              pc.SEE_BIT, ROOM))) { 
          Sprintf(buf, "You need %S in order to brew %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM5].short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
+                 obj_list[ptr->COMPONENT_ITEM5].getLongName(&pc),
+                 obj_list[ptr->COMPONENT_TARG].getLongName(&pc));
          show(buf, pc);
          return -1;
       }//if
@@ -1189,7 +1189,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
       cauldron->loseInv(item1);
       drop_eq_effects(*item1, pc, FALSE);
       recursive_init_unload(*item1, 0);
-      if (item1->IN_LIST) {
+      if (item1->isModified()) {
          delete item1;
          item1 = NULL;
       }//if
@@ -1199,7 +1199,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
       cauldron->loseInv(item2);
       drop_eq_effects(*item2, pc, FALSE);
       recursive_init_unload(*item2, 0);
-      if (item2->IN_LIST) {
+      if (item2->isModified()) {
          delete item2;
          item2 = NULL;
       }//if
@@ -1209,7 +1209,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
       cauldron->loseInv(item3);
       drop_eq_effects(*item3, pc, FALSE);
       recursive_init_unload(*item3, 0);
-      if (item3->IN_LIST) {
+      if (item3->isModified()) {
          delete item3;
          item3 = NULL;
       }//if
@@ -1219,7 +1219,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
       cauldron->loseInv(item4);
       drop_eq_effects(*item4, pc, FALSE);
       recursive_init_unload(*item4, 0);
-      if (item4->IN_LIST) {
+      if (item4->isModified()) {
          delete item4;
          item4 = NULL;
       }//if
@@ -1229,7 +1229,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
       cauldron->loseInv(item5);
       drop_eq_effects(*item5, pc, FALSE);
       recursive_init_unload(*item5, 0);
-      if (item5->IN_LIST) {
+      if (item5->isModified()) {
          delete item5;
          item5 = NULL;
       }//if
@@ -1330,7 +1330,7 @@ int scribe(const String* spell, critter& pc, short do_mob = FALSE) {
       if ((scroll_num = SSCollection::instance().getSS(spell_num).getScrollNum()) != -1) {
 
          recursive_init_unload(*(pc.EQ[10]), 0);
-         if (pc.EQ[10]->IN_LIST) 
+         if (pc.EQ[10]->isModified()) 
             delete pc.EQ[10];
          remove_eq_effects(*(pc.EQ[10]), pc, FALSE, FALSE, 10);
          pc.EQ[10] = NULL; //no more parchment
@@ -1354,7 +1354,7 @@ int scribe(const String* spell, critter& pc, short do_mob = FALSE) {
          show(" bursts into flame.\nThis spell just doesn't take to paper", 
               pc);
          show(" very well!\n", pc);
-         if (pc.EQ[10]->IN_LIST) 
+         if (pc.EQ[10]->isModified()) 
             delete pc.EQ[10];
          pc.EQ[10] = NULL; //no more parchment
       }//else
@@ -1363,7 +1363,7 @@ int scribe(const String* spell, critter& pc, short do_mob = FALSE) {
       show("You suddenly lose your train of thought, and as you mark", pc);
       show(" through that last line, you know the parchment is useless.\n",
            pc);
-      if (pc.EQ[10]->IN_LIST) 
+      if (pc.EQ[10]->isModified()) 
          delete pc.EQ[10];
       pc.EQ[10] = NULL; //no more parchment
       pc.PAUSE += 4;

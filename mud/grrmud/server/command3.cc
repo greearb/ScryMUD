@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.25 1999/08/10 07:06:18 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
+// $Id: command3.cc,v 1.26 1999/08/13 06:32:54 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
 
 //
 //ScryMUD Server Code
@@ -117,8 +117,8 @@ int use(int i_th, String* wand_name, int j_th, String* target,
       return -1;
    }
       
-   if (!wand->IN_LIST) {
-      pc.EQ[i] = wand = obj_to_sobj(*(pc.EQ[i]), &(pc.inv), pc.getCurRoomNum());
+   if (!wand->isModified()) {
+      pc.EQ[i] = wand = obj_to_sobj(*(pc.EQ[i]), &pc);
    }//if
 
                 /* wand is ready, check for target */
@@ -129,8 +129,8 @@ int use(int i_th, String* wand_name, int j_th, String* target,
 
    short found_proc = TRUE;
    short do_dec = FALSE;
-   Cell<stat_spell_cell*> cll(wand->obj_proc->casts_these_spells);
-   stat_spell_cell* ptr;
+   Cell<SpellDuration*> cll(wand->obj_proc->casts_these_spells);
+   SpellDuration* ptr;
 
    // Take care of case where they didn't specify a wand.
    if (target->Strlen() == 0) {
@@ -138,7 +138,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
    }
 
    while ((ptr = cll.next())) {
-      switch (ptr->stat_spell)
+      switch (ptr->spell)
         {
            //First, those requiring a MOB for target
         case 1: case 10: case 11: case 30:
@@ -155,16 +155,16 @@ int use(int i_th, String* wand_name, int j_th, String* target,
         {
            found_proc = TRUE;
            if (target->Strlen() == 0) {
-              targ = Top(pc.IS_FIGHTING);
+              targ = pc.getFirstFighting();
            }//if
            else {
-              targ = ROOM.haveCritNamed(i_th, target, pc.SEE_BIT);
+              targ = ROOM.haveCritNamed(i_th, target, pc);
            }//else
            
            if (targ) {
               if (targ->isMob()) { //if its a MOB
-                 targ = mob_to_smob(*targ, pc.getCurRoomNum(), TRUE, i_th,
-                                    target, pc.SEE_BIT);
+                 targ = mob_to_smob(*targ, *(pc.getCurRoom()), TRUE, i_th,
+                                    target, pc);
               }//if
            }//if
 
@@ -174,7 +174,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
            }
            else {
               do_dec = TRUE;
-              do_wand_scroll_proc(targ, ptr->stat_spell, pc, ptr->bonus_duration);
+              do_wand_scroll_proc(targ, ptr->spell, pc, ptr->duration);
            }
           break;
         }//case for mob targets
@@ -183,8 +183,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
         case 21: case 181: case 6:
         {
            door* dr_ptr;
-           if ((dr_ptr = door::findDoor(ROOM.DOORS, i_th, target,
-                                        pc.SEE_BIT, ROOM))) {
+           if ((dr_ptr = ROOM.findDoor(i_th, target, pc))) {
               if (dr_ptr->isSecret()) {
                  if (!name_is_secret(target, *dr_ptr)) {
                     show("You don't see that exit.\n", pc);
@@ -192,8 +191,8 @@ int use(int i_th, String* wand_name, int j_th, String* target,
                  }//if
               }//if
 
-              do_wand_scroll_proc(dr_ptr, ptr->stat_spell, pc, 
-                                  ptr->bonus_duration);
+              do_wand_scroll_proc(dr_ptr, ptr->spell, pc, 
+                                  ptr->duration);
               do_dec = TRUE;
            }//if
            else {
@@ -212,22 +211,21 @@ int use(int i_th, String* wand_name, int j_th, String* target,
         case 4: case 14: case 17: case 18: case 20:
         case 198: case 215: case 220:
         {
-           do_wand_scroll_proc(ptr->stat_spell, pc,
-                               ptr->bonus_duration);
+           do_wand_scroll_proc(ptr->spell, pc,
+                               ptr->duration);
            do_dec = TRUE;
            break;
         }//case
 
         case 159:        //special case, gate spell (portal too?)
         {
-           targ = have_crit_named(pc_list, i_th, target, pc.SEE_BIT,
-                                  ROOM);
+           targ = have_crit_named(pc_list, i_th, target, &pc);
            if (!targ) {
               show("That person isn't logged on.\n", pc);
            }//if
            else {
-              do_wand_scroll_proc(targ, ptr->stat_spell, pc,
-                                  ptr->bonus_duration);
+              do_wand_scroll_proc(targ, ptr->spell, pc,
+                                  ptr->duration);
               do_dec = TRUE;
            }
            break;
@@ -239,20 +237,19 @@ int use(int i_th, String* wand_name, int j_th, String* target,
         case 186: case 196: case 213:
         {
            object* ob_ptr;
-           ob_ptr = have_obj_named(pc.inv, i_th, target,
-                                   pc.SEE_BIT, ROOM);
+           ob_ptr = pc.haveObjNamed(i_th, target);
            if (ob_ptr) {
-              if (!ob_ptr->IN_LIST) {
-                 ob_ptr = obj_to_sobj(*ob_ptr, &(pc.inv), TRUE,
-                                      i_th, target, pc.SEE_BIT, ROOM);
+              if (!ob_ptr->isModified()) {
+                 ob_ptr = obj_to_sobj(*ob_ptr, &pc, TRUE,
+                                      i_th, target, pc);
               }
            }
            else {
-              ob_ptr = ROOM.haveObjNamed(i_th, target, pc.SEE_BIT);
+              ob_ptr = ROOM.haveObjNamed(i_th, target, pc);
               
-              if (ob_ptr && !ob_ptr->IN_LIST) {
-                 ob_ptr = obj_to_sobj(*ob_ptr, ROOM.getInv(), TRUE,
-                                      i_th, target, pc.SEE_BIT, ROOM);
+              if (ob_ptr && !ob_ptr->isModified()) {
+                 ob_ptr = obj_to_sobj(*ob_ptr, &ROOM, TRUE,
+                                      i_th, target, pc);
               }
            }//else
            
@@ -260,8 +257,8 @@ int use(int i_th, String* wand_name, int j_th, String* target,
               pc.show("Which object shall the scroll be used on?\n");
            }
            else {
-              do_wand_scroll_proc(ob_ptr, ptr->stat_spell, pc,
-                                  ptr->bonus_duration);
+              do_wand_scroll_proc(ob_ptr, ptr->spell, pc,
+                                  ptr->duration);
               do_dec = TRUE;
            }
 
@@ -271,7 +268,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
         default:
         { 
            mudlog << "ERROR:  found default case in use (wand), spell_num: "
-                  << ptr->stat_spell << "  on object#:  "
+                  << ptr->spell << "  on object#:  "
                   << wand->getIdNum() << endl;
            pc.show("You call upon forces unavailable at this time!\n");
            found_proc = FALSE;
@@ -318,8 +315,7 @@ int quaff(int i_th, const String* item, critter& pc) { //for wands
       }//for
    }//if
    else {
-      potion = have_obj_named(pc.inv, i_th, item, pc.SEE_BIT, 
-                              ROOM);
+      potion = pc.haveObjNamed(i_th, item);
    }//if         
 
    if (!potion) {
@@ -337,11 +333,11 @@ int quaff(int i_th, const String* item, critter& pc) { //for wands
    show(buf, pc);
 
    short found_proc = TRUE;
-   Cell<stat_spell_cell*> cll(potion->CASTS_THESE_SPELLS);
-   stat_spell_cell* ptr;
+   Cell<SpellDuration*> cll(potion->CASTS_THESE_SPELLS);
+   SpellDuration* ptr;
 
    while ((ptr = cll.next())) {
-      switch (ptr->stat_spell)
+      switch (ptr->spell)
         {
            //First, those requiring a MOB for target
         case 1: case 10: case 11: case 30:
@@ -356,7 +352,7 @@ int quaff(int i_th, const String* item, critter& pc) { //for wands
         case 221: case 222: case 224: case 225: case 226:
         case 227: case 228:
         {
-           do_wand_scroll_proc(&pc, ptr->stat_spell, pc, ptr->bonus_duration);
+           do_wand_scroll_proc(&pc, ptr->spell, pc, ptr->duration);
            break;
         }//case for mob targets
 
@@ -369,7 +365,7 @@ int quaff(int i_th, const String* item, critter& pc) { //for wands
         case 4: case 14: case 17: case 18: case 20:
         case 159: case 198: case 215: case 220:
         {
-           do_wand_scroll_proc(ptr->stat_spell, pc, ptr->bonus_duration);
+           do_wand_scroll_proc(ptr->spell, pc, ptr->duration);
 
            break;
         }//case
@@ -377,7 +373,7 @@ int quaff(int i_th, const String* item, critter& pc) { //for wands
         default:
         { 
            mudlog << "ERROR:  found default case in quaff, spell_num: "
-                  << ptr->stat_spell << "  on object#:  "
+                  << ptr->spell << "  on object#:  "
                   << potion->getIdNum() << endl;
            pc.show("You call upon forces unavailable at this time!\n");
            found_proc = FALSE;
@@ -393,14 +389,14 @@ int quaff(int i_th, const String* item, critter& pc) { //for wands
    }//if
 
    if (posn) {
-      if (pc.EQ[posn]->IN_LIST) { //if a SOBJ
+      if (pc.EQ[posn]->isModified()) { //if a SOBJ
          delete pc.EQ[posn];
       }//if
       pc.EQ[posn] = NULL;
    }//if
    else {
       pc.loseInv(potion);
-      if (potion->IN_LIST) {
+      if (potion->isModified()) {
          delete potion;
          potion = NULL;
       }//if
@@ -427,8 +423,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
 
    for (int i = 9; i<11; i++) {
       if (pc.EQ[i]) { //if holding ANY object
-         if (pc.EQ[i]->OBJ_FLAGS.get(53) &&
-             pc.EQ[i]->obj_proc) { //if a scroll
+         if (pc.EQ[i]->isScroll()) {
             if (obj_is_named(*(pc.EQ[i]), *item)) {
                if (detect(pc.SEE_BIT, 
                           pc.EQ[i]->OBJ_VIS_BIT & ROOM.getVisBit())) {
@@ -463,14 +458,14 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
    show(buf, pc);
 
    short found_proc = TRUE;
-   Cell<stat_spell_cell*> cll(scroll->CASTS_THESE_SPELLS);
-   stat_spell_cell* ptr;
+   Cell<SpellDuration*> cll(scroll->CASTS_THESE_SPELLS);
+   SpellDuration* ptr;
 
    while ((ptr = cll.next())) {
       if (mudlog.ofLevel(DBG)) {
          mudlog << "In while loop, spell: " << ptr->toString() << endl;
       }
-      switch (ptr->stat_spell)
+      switch (ptr->spell)
         {
            //First, those requiring a MOB for target
         case 1: case 10: case 11: case 30:
@@ -488,24 +483,24 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
            mudlog.dbg("Requires mob for target.\n");
            found_proc = TRUE;
            if (vict->Strlen() == 0) {
-              targ = Top(pc.IS_FIGHTING);
+              targ = pc.getFirstFighting();
            }//if
            else {
-              targ = ROOM.haveCritNamed(j_th, vict, pc.SEE_BIT);
+              targ = ROOM.haveCritNamed(j_th, vict, pc);
            }//else
            
            if (targ) {
               if (targ->isMob()) { //if its a MOB
-                 targ = mob_to_smob(*targ, pc.getCurRoomNum(), TRUE, i_th,
-                                    vict, pc.SEE_BIT);
+                 targ = mob_to_smob(*targ, *(pc.getCurRoom()), TRUE, i_th,
+                                    vict, pc);
               }//if
            }//if
 
            if (!targ) {
               targ = &pc;
            }
-           if (do_wand_scroll_proc(targ, ptr->stat_spell, pc,
-                                   ptr->bonus_duration) >= 0) {
+           if (do_wand_scroll_proc(targ, ptr->spell, pc,
+                                   ptr->duration) >= 0) {
               junk_scroll = TRUE;
            }
 
@@ -515,14 +510,13 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         case 159:        //special case, gate spell (portal too?)
         {
            mudlog.dbg("gate/portal case.\n");
-           targ = have_crit_named(pc_list, i_th, vict, pc.SEE_BIT,
-                                  ROOM);
+           targ = have_crit_named(pc_list, i_th, vict, &pc);
            if (!targ) {
               show("That person isn't logged on.\n", pc);
            }//if
            else {
-              if (do_wand_scroll_proc(targ, ptr->stat_spell, pc,
-                                      ptr->bonus_duration) >= 0) {
+              if (do_wand_scroll_proc(targ, ptr->spell, pc,
+                                      ptr->duration) >= 0) {
                 junk_scroll = TRUE;
               }
            }
@@ -533,8 +527,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         {
            mudlog.dbg("Doors case.\n");
            door* dr_ptr;
-           if ((dr_ptr = door::findDoor(ROOM.DOORS, i_th, vict,
-                                        pc.SEE_BIT, ROOM))) {
+           if ((dr_ptr = ROOM.findDoor(i_th, vict, pc))) {
               if (dr_ptr->isSecret()) {
                  if (!name_is_secret(vict, *dr_ptr)) {
                     show("You don't see that exit.\n", pc);
@@ -542,8 +535,8 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
                  }//if
               }//if
 
-              if (do_wand_scroll_proc(dr_ptr, ptr->stat_spell, pc,
-                                      ptr->bonus_duration) >= 0) {
+              if (do_wand_scroll_proc(dr_ptr, ptr->spell, pc,
+                                      ptr->duration) >= 0) {
                  junk_scroll = TRUE;
               }
            }//if
@@ -564,8 +557,8 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         case 198: case 215: case 220:
         {
            mudlog.dbg("No target needed.\n");
-           if (do_wand_scroll_proc(ptr->stat_spell, pc,
-                                   ptr->bonus_duration) >= 0) {
+           if (do_wand_scroll_proc(ptr->spell, pc,
+                                   ptr->duration) >= 0) {
               junk_scroll = TRUE;
            }
 
@@ -579,20 +572,19 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         {
            mudlog.dbg("Object for target...\n");
            object* ob_ptr;
-           ob_ptr = have_obj_named(pc.inv, i_th, vict,
-                                   pc.SEE_BIT, ROOM);
+           ob_ptr = pc.haveObjNamed(i_th, vict);
            if (ob_ptr) {
-              if (!ob_ptr->IN_LIST) {
-                 ob_ptr = obj_to_sobj(*ob_ptr, &(pc.inv), TRUE,
-                                      i_th, vict, pc.SEE_BIT, ROOM);
+              if (!ob_ptr->isModified()) {
+                 ob_ptr = obj_to_sobj(*ob_ptr, &pc, TRUE,
+                                      i_th, vict, pc);
               }
            }
            else {
-              ob_ptr = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);
+              ob_ptr = ROOM.haveObjNamed(i_th, vict, pc);
               
-              if (ob_ptr && !ob_ptr->IN_LIST) {
-                 ob_ptr = obj_to_sobj(*ob_ptr, ROOM.getInv(), TRUE,
-                                      i_th, vict, pc.SEE_BIT, ROOM);
+              if (ob_ptr && !ob_ptr->isModified()) {
+                 ob_ptr = obj_to_sobj(*ob_ptr, &ROOM, TRUE,
+                                      i_th, vict, pc);
               }
            }//else
 
@@ -600,8 +592,8 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
               pc.show("Which object shall the scroll be used on?\n");
            }
            else {
-              if (do_wand_scroll_proc(ob_ptr, ptr->stat_spell, pc,
-                                      ptr->bonus_duration) >= 0) {
+              if (do_wand_scroll_proc(ob_ptr, ptr->spell, pc,
+                                      ptr->duration) >= 0) {
                  junk_scroll = TRUE;
               }
            }
@@ -612,7 +604,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
         default:
         { 
            mudlog << "ERROR:  found default case in recite, spell_num: "
-                  << ptr->stat_spell << "  on object#:  "
+                  << ptr->spell << "  on object#:  "
                   << scroll->getIdNum() << endl;
            pc.show("You call upon forces unavailable at this time!\n");
            found_proc = FALSE;
@@ -630,7 +622,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
    if (junk_scroll) {
       if (posn) {
          recursive_init_unload(obj_list[pc.EQ[posn]->OBJ_NUM], 0);
-         if (pc.EQ[posn]->IN_LIST) { //if a SOBJ
+         if (pc.EQ[posn]->isModified()) { //if a SOBJ
             delete pc.EQ[posn];
          }//if
          pc.EQ[posn] = NULL;
@@ -638,7 +630,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
       else {
          pc.loseInv(scroll);
          recursive_init_unload(*scroll, 0);
-         if (scroll->IN_LIST) {
+         if (scroll->isModified()) {
             delete scroll;
          }//if
       }//else
@@ -962,12 +954,13 @@ int oclone(int i_th, const String* item, critter& pc) {
          return -1;
       }//if
       obj_list[new_obj] = obj_list[obj_ptr->OBJ_NUM];
-      Sprintf(buf, "CLONE OF:  %S.", Top(obj_ptr->names));
-      obj_list[new_obj].in_room_desc = buf;
-      obj_list[new_obj].short_desc = buf;
-      obj_list[new_obj].OBJ_NUM = new_obj;
-      obj_list[new_obj].cur_stats[3] = ROOM.getZoneNum();
-      obj_list[new_obj].IN_LIST = NULL;
+      Sprintf(buf, "CLONE OF:  %S.", obj_ptr->getShortName());
+      obj_list[new_obj].addInRoomDesc(buf);
+      obj_list[new_obj].addShortDesc(buf);
+      obj_list[new_obj].setIdNum(new_obj);
+      obj_list[new_obj].setInZone(ROOM.getZoneNum());
+      obj_list[new_obj].setModified(false);
+      obj_list[new_obj].setContainer(NULL);
       pc.gainInv(&(obj_list[new_obj]));
    }//else
    show("Okay, CLONE of object now in your inventory.\n", pc);
@@ -1083,8 +1076,8 @@ int rclone(int src_room, const String* direction, int dist, critter& pc) {
    // We coppied over it when assigning it...
    new_rm->setRoomNum(new_room_num);
 
-   clear_ptr_list(new_rm->doors);  //don't want to start w/any doors
-   clear_ptr_list(new_rm->keywords);  //or keywords
+   new_rm.getDoors().clearAndDestroy();
+   new_rm.getKeywords().clearAndDestroy();
 
    if (mudlog.ofLevel(DBG))
       mudlog << "Rclone:  New room num, before door_to:  "

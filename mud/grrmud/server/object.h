@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.24 1999/08/12 06:26:05 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
+// $Id: object.h,v 1.25 1999/08/13 06:32:54 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
 
 //
 //ScryMUD Server Code
@@ -238,6 +238,8 @@ public:
 
    void makeComponent(int targ, int comp1, int comp2, int comp3, int comp4,
                       int comp5, ComponentEnum con_type);
+
+   object* haveObjNumbered(int i_th, int num, int see_bit, room& rm);
 
    int isNamed(const String& name) const;
    int isLocked() const;

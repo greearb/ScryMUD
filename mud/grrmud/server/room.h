@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.25 1999/08/12 06:26:05 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
+// $Id: room.h,v 1.26 1999/08/13 06:32:54 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
 
 //
 //ScryMUD Server Code
@@ -216,6 +216,7 @@ public:
    virtual void normalize(); /* called after OLC to enforce as much state as
                               * possible. */
    virtual object* haveObjNamed(int i_th, const String* name, int see_bit);
+   virtual object* haveObjNamed(int i_th, const String* name, critter& pc);
    virtual object* haveAccessibleObjNamed(int i_th, const String* name, critter& pc,
                                           int& count_sofar, int& posn);
    virtual critter* haveCritNamed(int i_th, const String* name, int see_bit);

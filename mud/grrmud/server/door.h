@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.14 1999/08/12 06:26:05 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/12 06:26:05 $
+// $Id: door.h,v 1.15 1999/08/13 06:32:54 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
 
 //
 //ScryMUD Server Code
@@ -121,6 +121,7 @@ public:
 
    void setDestructable(int val) { dr_data->setDestructable(val); }
    void setLockable(int val) { dr_data->setLockable(val); }
+   void setBlocked(int val) { dr_data->setBlocked(val); }
 
    int getKeyNum() const {
       if (dr_data) 

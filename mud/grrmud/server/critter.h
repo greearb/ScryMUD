@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.36 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.36 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: critter.h,v 1.37 1999/08/13 06:32:54 greear Exp $
+// $Revision: 1.37 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
 
 //
 //ScryMUD Server Code
@@ -711,6 +711,7 @@ public:
    int isInBattle() { return !(is_fighting.isEmpty()); }
 
    int haveObjNumbered(int count, int obj_num);
+   object* haveObjNamed(int i_th, const String* name);
 
    /** If return is > 0, self is more powerful, if less than 0,
     * b is more powerful...  The larger/smaller the value, the more

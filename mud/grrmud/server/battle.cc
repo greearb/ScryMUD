@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.25 1999/08/10 07:06:17 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
+// $Id: battle.cc,v 1.26 1999/08/13 06:32:54 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/13 06:32:54 $
 
 //
 //ScryMUD Server Code
@@ -1390,18 +1390,14 @@ object* obj_to_sobj(object& obj, List<object*>* in_list,
 }//obj_to_sobj
 
 
-object*  obj_to_sobj(object& obj, List<object*>* in_list, int rm_num) {
+object*  obj_to_sobj(object& obj, Entity* container) {
    //log("In obj_to_sobj, part two.\n");
 
 /* WARNING:  this function does NO SUBSTITUTION, you must do it 
              explicitly in the calling code. */
 
-   if (obj.IN_LIST) {
+   if (obj.isModified()) {
       core_dump("ERROR:  obj_to_sobj called on SOBJ, version 2.\n");
-   }//if
-
-   if (!in_list) {
-      core_dump("ERROR:  in_list is NULL in obj_to_sobj, version 2!!\n");
    }//if
 
    obj.OBJ_FLAGS.turn_on(70); //now it can be/should be reset when pulsed
@@ -1410,8 +1406,8 @@ object*  obj_to_sobj(object& obj, List<object*>* in_list, int rm_num) {
    
    obj_ptr_log << "OBJ_CR " << obj.getIdNum() << " " << obj_ptr << "\n";
    
-   obj_ptr->IN_LIST = in_list;
-   obj_ptr->setCurRoomNum(rm_num, 0);
+   obj_ptr->setContainer(container);
+   obj_ptr->setModified(TRUE);
 
    affected_objects.gainData(obj_ptr);  //basically a list of sobjs
    return obj_ptr;
