@@ -443,7 +443,7 @@ int auto_exit(critter& pc) { //more brief than the previous
                   buf.Append("(closed)");
                }
                buf.Append(" ");
-            }//if
+            }//if immort
             else {
                Sprintf(buf, "%s", abbrev_dir_of_door(*dr_ptr));
                if ( dr_ptr->isClosed() ) {
