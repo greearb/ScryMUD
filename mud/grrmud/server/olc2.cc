@@ -1810,7 +1810,7 @@ void ch_mndesc(int which_un, const String* rname, critter& pc) {
 void add_mname(int which_un, const String* name, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
+   if (!pc.isImmort()) {
       show("Eh?\n", pc);
       return;
    }//if
@@ -1820,7 +1820,7 @@ void add_mname(int which_un, const String* name, critter& pc) {
       return;
    }//if
 
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
+   if (pc.isFrozen()) {
       show("You are too frozen to do anything.\n", pc);
       return;
    }//if
@@ -1828,9 +1828,9 @@ void add_mname(int which_un, const String* name, critter& pc) {
    if (!check_l_range(which_un, 2, NUMBER_OF_MOBS, pc, TRUE))
      return;
 
-   if (!mob_list[which_un].CRIT_FLAGS.get(18)) {
-     show("That critter hasn't been created yet.\n", pc);
-     return;
+   if (!mob_list[which_un].isInUse()) {
+      show("That critter hasn't been created yet.\n", pc);
+      return;
    }//if
 
    if (!pc.doesOwnCritter(mob_list[which_un])) {
@@ -1844,10 +1844,42 @@ void add_mname(int which_un, const String* name, critter& pc) {
 }//add_mname
 
 
+void clear_mnames(int which_un, critter& pc) {
+   String buf(100);
+
+   if (!pc.isImmort()) {
+      show("Eh?\n", pc);
+      return;
+   }//if
+
+   if (pc.isFrozen()) {
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+
+   if (!check_l_range(which_un, 2, NUMBER_OF_MOBS, pc, TRUE))
+     return;
+
+   if (!mob_list[which_un].isInUse()) {
+      show("That critter hasn't been created yet.\n", pc);
+      return;
+   }//if
+
+   if (!pc.doesOwnCritter(mob_list[which_un])) {
+      show("You do not own this critter.\n", pc);
+      return;
+   }//if
+
+   clear_ptr_list(mob_list[which_un].names); //all gone!
+
+   show("Cleared the names from the critter.\n", pc);
+}//clear_mnames
+
+
 void add_oname(int which_un, const String* name, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
+   if (!pc.isImmort()) {
       show("Eh?\n", pc);
       return;
    }//if
@@ -1857,7 +1889,7 @@ void add_oname(int which_un, const String* name, critter& pc) {
       return;
    }//if
 
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
+   if (pc.isFrozen()) {
       show("You are too frozen to do anything.\n", pc);
       return;
    }//if
@@ -1865,7 +1897,7 @@ void add_oname(int which_un, const String* name, critter& pc) {
    if (!check_l_range(which_un, 2, NUMBER_OF_ITEMS, pc, TRUE))
      return;
 
-   if (!obj_list[which_un].OBJ_FLAGS.get(10)) {
+   if (!obj_list[which_un].isInUse()) {
      show("That object hasn't been created yet.\n", pc);
      return;
    }//if
@@ -1879,6 +1911,38 @@ void add_oname(int which_un, const String* name, critter& pc) {
 
    show("Added a name to the object.\n", pc);
 }//add_oname
+
+
+void clear_onames(int which_un, critter& pc) {
+   String buf(100);
+
+   if (!pc.isImmort()) {
+      show("Eh?\n", pc);
+      return;
+   }//if
+
+   if (pc.isFrozen()) {
+      show("You are too frozen to do anything.\n", pc);
+      return;
+   }//if
+
+   if (!check_l_range(which_un, 2, NUMBER_OF_ITEMS, pc, TRUE))
+     return;
+
+   if (!obj_list[which_un].isInUse()) {
+      show("That object hasn't been created yet.\n", pc);
+      return;
+   }//if
+
+   if (!pc.doesOwnObject(obj_list[which_un])) {
+      show("You do not own this object.\n", pc);
+      return;
+   }//if
+
+   clear_ptr_list(obj_list[which_un].ob->names); //all gone!
+
+   show("Cleared the names from the object.\n", pc);
+}//clear_onames
 
 
 void rem_oname(int which_un, const String* name, critter& pc) {

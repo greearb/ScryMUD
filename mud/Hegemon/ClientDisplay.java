@@ -32,6 +32,7 @@ class ClientDisplay extends Frame {
    HegemonManager hm; //keep track of all our different objects
    HelpFrame hf;
    ColorChoicesFrame ccf;
+   LogFrame log_frame;
 
    OlEditor oe; //for quick description changes
    PathCellEditor pe;
@@ -39,14 +40,13 @@ class ClientDisplay extends Frame {
    KeywordEditor ke;
 
    CommandHistory cmd_history;
-   boolean ctrl_down = false;
 
    MenuBar menubar;
    Menu file_m, connections_m, olc_m, help_m, actions_m, aliases_m;
    Menu colors_m, options_m;
    
    HegemonDisplay output_field;
-   TextArea input_field;
+   InputArea input_field;
 
    /* MENU items:  need a handle to enable/disable them. */
    MenuItem action_turn_off_mi;
@@ -86,15 +86,25 @@ class ClientDisplay extends Frame {
       ke = hm.getKeywordEditor();
       ke.setLocation(360, 65);
 
+      log_frame = new LogFrame(this, hm);
+
       ///*******************  File Menu  *****************************///
       
       MenuItem quit_action;
+      MenuItem logging_action;
+
       file_m = new Menu("File");
       file_m.add((quit_action = new MenuItem("Quit")));
+      file_m.add((logging_action = new MenuItem("Logging")));
       
       quit_action.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             quit();
+         }});
+
+      logging_action.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            showLoggingFrame();
          }});
       
       
@@ -339,55 +349,7 @@ class ClientDisplay extends Frame {
       ///*******************  IO fields ********************///
       output_field = new HegemonDisplay(hm);
       
-      input_field = new TextArea("", 5, 80,
-                                 TextArea.SCROLLBARS_VERTICAL_ONLY);
-      input_field.setBackground(new Color(255, 255, 215));
-
-      input_field.setEnabled(true);
-      input_field.requestFocus();
-      input_field.addKeyListener(new KeyAdapter() {
-         public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-               String str = input_field.getText().trim();
-               send(str + "\n");
-               //here
-               output_field.getScroll().append(str + "\n");
-               if (cmd_history != null) {
-                  cmd_history.append(str + "\n");
-               }
-               input_field.setText("");
-            }//if
-            else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
-               ctrl_down = true;
-            }//if
-            else if (e.getKeyCode() == KeyEvent.VK_PAGE_UP) {
-               output_field.do_page_up_adjustment();
-            }
-            else if (e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
-               output_field.do_page_down_adjustment();
-            }
-            else if (ctrl_down) {
-               if (e.getKeyCode() == KeyEvent.VK_P) {
-                  input_field.setText(cmd_history.getPreviousCmd());
-               }//if
-               else if (e.getKeyCode() == KeyEvent.VK_N) {
-                  input_field.setText(cmd_history.getNextCmd());
-               }//else
-            }//if
-
-            super.keyPressed(e);
-         }//keyPressed
-
-         public void keyReleased(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
-               ctrl_down = false;
-            }//if
-
-            super.keyReleased(e);
-         }//keyReleased
-
-         });
-   
+      input_field = new InputArea(this, hm);
 
       ///*********************  Layout  ****************************///
       
@@ -412,6 +374,7 @@ class ClientDisplay extends Frame {
       add(input_field);
       
       this.pack();
+      setSize(650, 600);
    }//constructor
 
    void do_open_connection() {
@@ -420,6 +383,10 @@ class ClientDisplay extends Frame {
 
    void do_select_connection() {
       hm.showConnection();
+   }
+
+   void showLoggingFrame() {
+      log_frame.show();
    }
    
    void do_actions() {
@@ -483,7 +450,7 @@ class ClientDisplay extends Frame {
          hm.getSocketManager().write("olc\n");
       }
       catch (Exception e) {
-         Log.it("enterOLC:  " + e);
+         Log.instance().err("enterOLC:  " + e);
       }
    }
 
@@ -543,12 +510,12 @@ class ClientDisplay extends Frame {
    }
 
    void doMSEditor() {
-      Log.it("Making MobScript editor visible..");
+      //Log.instance().dbg("Making MobScript editor visible..");
       mse.setVisible(true);
    }
 
    void doKEditor() {
-      Log.it("Making Keyword editor visible..");
+      //Log.it("Making Keyword editor visible..");
       ke.setVisible(true);
    }
 
@@ -566,7 +533,11 @@ class ClientDisplay extends Frame {
    }
 
    public void giveFocus() {
-      input_field.requestFocus();
+      input_field.getTA().requestFocus();
+   }
+
+   public final InputArea getInputField() {
+      return input_field;
    }
 
    public void do_show_cmd_history() {

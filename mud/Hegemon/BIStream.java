@@ -67,7 +67,7 @@ class BIStream extends BufferedInputStream {
          return Integer.parseInt(readToken());
       }
       catch (NumberFormatException e) {
-         Log.it("ERROR:  in BIStream readInt:  " + e);
+         Log.instance().wrn("ERROR:  in BIStream readInt:  " + e);
          throw (new IOException("ERROR:  BIStream.readInt:  number format"
                                 + " was wrong."));
       }//catch

@@ -39,6 +39,12 @@ class OLCObject extends Frame {
       hm = h;
       parent = par;
       
+      addWindowListener (new WindowAdapter () {
+         public void windowClosing (WindowEvent e) {
+            dispose();
+         }});
+
+
       cb_listener = new ObjCBListener(this);
       
       setLayout (cl = new CardLayout());

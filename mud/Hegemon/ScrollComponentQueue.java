@@ -118,7 +118,7 @@ class ScrollComponentQueue implements ScrollComponentCollection {
             tmp_retval.addElement(sc);
          }
          else {
-            Log.it("ERROR:  sc is NULL, idx:  " + my_idx);
+            Log.instance().err("ERROR:  sc is NULL, idx:  " + my_idx);
          }
 
          if (height_sofar >= total_height) {
@@ -173,7 +173,7 @@ class ScrollComponentQueue implements ScrollComponentCollection {
             retval.addElement(sc);
          }
          else {
-            Log.it("ERROR: getVector(),  sc is NULL, idx:  " + my_idx);
+            Log.instance().err("ERROR: getVector(),  sc is NULL, idx:  " + my_idx);
          }
 
          if (height_sofar >= total_height) {
@@ -194,7 +194,7 @@ class ScrollComponentQueue implements ScrollComponentCollection {
             this.pull();
          }
          catch (Exception e) {
-            Log.it(toString() + e);
+            Log.instance().err(toString() + e);
          }
       }
 

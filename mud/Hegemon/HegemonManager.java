@@ -60,21 +60,21 @@ class HegemonManager extends Object {
             URL url = new URL(prop_file);
             InputStream ips = url.openStream();
             if (ips == null) {
-               Log.it("ERROR:  could not get InputStream from url.");
+               Log.instance().err("ERROR:  could not get InputStream from url.");
             }
             else {
-               Log.it("Found input stream, going to load properties... ");
+               Log.instance().trc("Found input stream, going to load properties... ");
                props.load(ips);
-               Log.it("Loaded properties..");
+               Log.instance().trc("Loaded properties..");
             }
          }
       }
       catch (Exception e) {
          new MessageDialog("Error reading properties file.", e.toString(),
                            "red", "black");
-         Log.it("HegemonManager, trying to load hegemon.properties file:  " 
-                + e);
-         Log.it("Properties file:  " + prop_file);
+         Log.instance().trc("HegemonManager, loading hegemon.properties file: " 
+                            + e);
+         Log.instance().trc("Properties file:  " + prop_file);
       }
 
       IS_APPLET = is_applet;
@@ -94,7 +94,6 @@ class HegemonManager extends Object {
                                color_mgr, this);
   
       client_display = new ClientDisplay(this);
-      client_display.setSize(600, 600);
       client_display.show();
       scroll = client_display.getHegemonScroll();
 

@@ -275,7 +275,7 @@ class HegemonInputFilter extends Object {
          heg_scroll.append(txt);
       }
       else {
-         Log.it("ERROR:  default case in dispenseText.");
+         Log.instance().err("ERROR:  default case in dispenseText.");
       }
    }//dispenseText
 
@@ -286,7 +286,7 @@ class HegemonInputFilter extends Object {
     else returns false. */
    
    private final boolean processTag(String tag) {
-      //Log.it("in processTag, tag:  -:" + tag + ":-");
+      Log.instance().dbg("in processTag, tag:  -:" + tag + ":-");
       
       int idx;
       int last_idx = 0;
@@ -316,7 +316,8 @@ class HegemonInputFilter extends Object {
       boolean valid = false;
       
       String cmd = (String)(args.elementAt(0));
-      //Log.it("\nin processArgs(), COMMAND:  -:" + cmd + ":-\n");
+      Log.instance().dbg("\nin processArgs(), COMMAND:  -:" + cmd 
+                         + ":- len: " + len + "\n");
 
       //First of all, lets deal with variable length ones (puke!)
       if (cmd.equalsIgnoreCase("DISCRIM")) {
@@ -340,6 +341,19 @@ class HegemonInputFilter extends Object {
          hm.getKeywordEditor().setNames(buf.toString());
          return true;
       }
+      else if (cmd.equalsIgnoreCase("NAMES")) {
+         StringBuffer buf = new StringBuffer(100);
+         // the rest are names
+         for (int i = 1; i<len; i++) {
+            buf.append((String)(args.elementAt(i)) + " ");
+         }
+         hm.getOlEditor().setNames(buf.toString());
+         return true;
+      }//else
+      else if (cmd.equalsIgnoreCase("EXITS")) {
+         hm.getClientDisplay().getInputField().getExitNavigator().setDirs(args);
+         return true;
+      }//else
 
       /* now our large switch of different commands... */
       if (len == 1) {
@@ -625,7 +639,7 @@ class HegemonInputFilter extends Object {
                valid = true;
             }
             catch (Exception e) {
-               Log.it(e.toString());
+               Log.instance().err(e.toString());
                valid = true;
             }
          }

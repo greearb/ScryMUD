@@ -87,7 +87,7 @@ public class SocketManager {
          
 
    public void signalWriterDeath() {
-      Log.it("In signalWriterDeath().");
+      Log.instance().init("In signalWriterDeath().");
       writer = null;
       hm.getScroll().append("\n\n#### LOST CONNECTION on Write!\n");
       hm.getScroll().getPar().paintScroll();
@@ -97,14 +97,14 @@ public class SocketManager {
    }//
    
    public void signalReaderDeath() {
-      Log.it("In signalReaderDeath().");
+      Log.instance().init("In signalReaderDeath().");
       try {
          if (reader.getDis() != null)
            reader.getDis().close();
          sock.close();
       }
       catch (IOException e) {
-         Log.it("signalReaderDeath:  " + e);
+         Log.instance().err("signalReaderDeath:  " + e);
       }
 
       reader = null;

@@ -23,18 +23,20 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.*;
 
 // This allows for some quick editing of already-created objects,
 // mobs, and rooms.  It auto-captures the info for easy editing...
 
 class OlEditor extends Frame {
+   LabeledTextField names;
    LabeledTextArea long_desc;
    LabeledTextField short_desc;
    LabeledTextField in_room_desc;
    LabeledTextField obj_name;
-   LabeledTextField frozen_field;
    LabeledTextField obj_num_field;
    LabeledTextField type_field;
+   Checkbox is_frozen;
    
    int object_number;
 
@@ -43,7 +45,6 @@ class OlEditor extends Frame {
    static public int OBJ = 1;
    static public int ROOM = 2;
 
-   boolean is_frozen;
    HegemonManager hm;
    
    public OlEditor(HegemonManager h) {
@@ -52,14 +53,14 @@ class OlEditor extends Frame {
 
       object_number = -1;
       obj_type = -1;
-      is_frozen = false;
 
-      type_field = new LabeledTextField("Object Type", "", 20);
-      frozen_field = new LabeledTextField("Frozen Status", "UN_FROZEN", 20);
-      obj_num_field = new LabeledTextField("Number", "", 8);
+      names = new LabeledTextField("Names", "", 40);
+      type_field = new LabeledTextField("Object Type", "", 12);
+      obj_num_field = new LabeledTextField("Number", "", 6);
       long_desc = new LabeledTextArea("Long Description", "", 10, 80);
       short_desc = new LabeledTextField("Short Description", "", 50);
       in_room_desc = new LabeledTextField("In Room Description", "", 80);
+      is_frozen = new Checkbox("Is Frozen", false);
 
       int REM = GridBagConstraints.REMAINDER;
       GridBagLayout gridbag = new GridBagLayout();
@@ -76,10 +77,13 @@ class OlEditor extends Frame {
       gridbag.setConstraints(type_field, c);
       add(type_field);
 
+      gridbag.setConstraints(names, c);
+      add(names);
+
       c.gridwidth = REM;
 
-      gridbag.setConstraints(frozen_field, c);
-      add(frozen_field);
+      gridbag.setConstraints(is_frozen, c);
+      add(is_frozen);
 
       gridbag.setConstraints(short_desc, c);
       add(short_desc);
@@ -107,7 +111,7 @@ class OlEditor extends Frame {
    }//constructor
 
    public boolean isFrozen() {
-      return is_frozen;
+      return is_frozen.getState();
    }
    
    public void do_close() {
@@ -119,31 +123,20 @@ class OlEditor extends Frame {
         hm.getHelpFrame().show("client" + System.getProperty("file.separator")
                                + "oleditor");
       else {
-         Log.it("Trying to show: client/oleditor");
+         Log.instance().dbg("Trying to show: client/oleditor");
          hm.getHelpFrame().show("client/oleditor");
       }
    }//doHelp
    
-   public void do_freeze() {
-      if (is_frozen) {
-         is_frozen = false;
-         frozen_field.setText("UN_FROZEN");
-      }
-      else {
-         is_frozen = true;
-         frozen_field.setText("FROZEN");
-      }
-   }
-   
    public void setObjNum(int obj_num) {
-      if (is_frozen)
+      if (is_frozen.getState())
          return;
       obj_num_field.setText(Integer.toString(obj_num));
       object_number = obj_num;
    }
 
    public void setObjType(int object_type) {
-      if (is_frozen)
+      if (is_frozen.getState())
          return;
       if (object_type == ROOM)
         type_field.setText("Room");
@@ -156,35 +149,43 @@ class OlEditor extends Frame {
       obj_type = object_type;
    }
 
+   public void setNames(String str) {
+      Log.instance().dbg("setNames: " + str);
+      if (is_frozen.getState())
+        return;
+      names.setText(str);
+   }//setNames
+
    public void appendLongDesc(String str) {
-      if (is_frozen)
+      if (is_frozen.getState())
          return;
       long_desc.append(str);
    }
 
    public void appendShortDesc(String str) {
-      if (is_frozen)
+      if (is_frozen.getState())
          return;
       short_desc.append(str);
    }
 
    public void appendInRoomDesc(String str) {
-      if (is_frozen)
+      if (is_frozen.getState())
          return;
       in_room_desc.append(str);
    }
    
    public void do_clear() {
+      names.clear();
       long_desc.clear();
       short_desc.clear();
       in_room_desc.clear();
       object_number = -1;
       obj_type = -1;
-      is_frozen = false;
+      is_frozen.setState(false);
    }//
 
    public void do_update() {
-      is_frozen = false;
+      is_frozen.setState(false);
       hm.getClientDisplay().giveFocus();
       // first, figure out which type of object we're dealing with
       if ((object_number >= 0) || (obj_type == ROOM)) {
@@ -192,6 +193,14 @@ class OlEditor extends Frame {
             // then we're good to go
             try {
                // first, the in_room_description
+               hm.getSocketManager().write("clear_mnames " + object_number
+                                           + "\n");
+               StringTokenizer tok = new StringTokenizer(names.getText());
+               while (tok.hasMoreElements()) {
+                  hm.getSocketManager().write("add_mname " + object_number
+                                              + tok.nextToken());
+               }//while
+
                hm.getSocketManager().write("ch_mndesc " + object_number
                                            + " '" + in_room_desc.getText()
                                            + "'\n");
@@ -213,6 +222,15 @@ class OlEditor extends Frame {
          }//if
          else if (obj_type == OBJ) {
             try {
+
+               hm.getSocketManager().write("clear_onames " + object_number
+                                           + "\n");
+               StringTokenizer tok = new StringTokenizer(names.getText());
+               while (tok.hasMoreElements()) {
+                  hm.getSocketManager().write("add_oname " + object_number
+                                              + tok.nextToken());
+               }//while
+
                // first, the in_room_description
                hm.getSocketManager().write("ch_ondesc " + object_number
                                            + " '" + in_room_desc.getText()
@@ -271,7 +289,6 @@ class OEButtons extends Panel {
       super();
       parent = par;
 
-      Button freeze_b = new Button("Freeze/Unfreeze");
       Button cancel_b = new Button("Cancel");
       Button update_b = new Button("Update");
       Button done_b = new Button("Done");
@@ -280,11 +297,6 @@ class OEButtons extends Panel {
       done_b.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             parent.do_close();
-         }});
-
-      freeze_b.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            parent.do_freeze();
          }});
 
       cancel_b.addActionListener(new ActionListener() {
@@ -306,7 +318,6 @@ class OEButtons extends Panel {
       FlowLayout fl = new FlowLayout();
       setLayout(fl);
 
-      add(freeze_b);
       add(update_b);
       add(cancel_b);
       add(done_b);

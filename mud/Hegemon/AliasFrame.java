@@ -39,7 +39,7 @@ class AliasFrame extends Frame {
          readObject();
       }
       catch (IOException e) {
-         Log.it("AliasFrame():  " + e);
+         Log.instance().err("AliasFrame():  " + e);
       }
 
       aliases.addActionListener(new ActionListener() {
@@ -56,12 +56,12 @@ class AliasFrame extends Frame {
 
    public void addAlias(Alias act) {
       aliases.addItem(act.toString());
-      Log.it("Writing out aliases.");
+      //Log.it("Writing out aliases.");
       try {
          writeObject();
       }
       catch (IOException e) {
-         Log.it("addAlias:  " + e);
+         Log.instance().err("addAlias:  " + e);
       }
       alias_list = updateAliases();
    }
@@ -76,12 +76,12 @@ class AliasFrame extends Frame {
    
    public void addAlias(String glom) {
       aliases.addItem(glom);
-      Log.it("Writing out aliases.");
+      //Log.it("Writing out aliases.");
       try {
          writeObject();
       }
       catch (IOException e) {
-         Log.it("addAlias:  " + e);
+         Log.instance().err("addAlias:  " + e);
       }
       alias_list = updateAliases();
    }
@@ -138,7 +138,7 @@ class AliasFrame extends Frame {
             alias_list = updateAliases();
          }
          catch (Exception e) {
-            Log.it("do_delete:  " + e);
+            Log.instance().err("do_delete:  " + e);
          }
       }
       else {
@@ -216,7 +216,7 @@ class AliasFrame extends Frame {
          }//while
       }//try
       catch (Exception e) {
-         Log.it("in AliasFrame.readObject():  " + e);
+         Log.instance().err("in AliasFrame.readObject():  " + e);
       }
    }//readObject
 }//AliasFrame

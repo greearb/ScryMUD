@@ -40,7 +40,7 @@ class Alias extends Object {
          idx++;
       }
       else {
-         Log.it("ERROR:  glom is bad:  Action constructor");
+         Log.instance().err("ERROR:  glom is bad:  Action constructor");
          return;
       }
 

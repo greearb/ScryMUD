@@ -51,7 +51,7 @@ class Queue extends Object {
       int my_idx = tail_idx;
       Object[] retval = new Object[my_len];
 
-      Log.it("Queue: In getArray(), my_len:  " + my_len);
+      Log.instance().dbg("Queue: In getArray(), my_len:  " + my_len);
       for (int i = 0; i < my_len; i++) {
          retval[i] = vect[my_idx = getNextIdx(my_idx)];
       }//for
@@ -90,7 +90,7 @@ class Queue extends Object {
             pull();
          }
          catch (Exception e) {
-            Log.it("Queue::keepNewest, cnt:  " + cnt + "  " + e);
+            Log.instance().err("Queue::keepNewest, cnt:  " + cnt + "  " + e);
          }//catch
       }//for
    }//keepNewest

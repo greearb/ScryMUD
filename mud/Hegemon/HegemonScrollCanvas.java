@@ -80,7 +80,7 @@ class HegemonScrollCanvas extends Canvas {
 
       //Log.it("Actually painting...");
       if (text_components == null) {
-         Log.it("text_components g is NULL.");
+         Log.instance().dbg("text_components g is NULL.");
          return;
       }//if
       

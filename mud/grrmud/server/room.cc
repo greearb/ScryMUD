@@ -838,12 +838,14 @@ const String* room::getRandomExitDir(critter& pc) {
    while ((ptr = cll.next())) {
       cnt++;
       if (cnt == idx) {
-         if (!(ptr->getDestRoom()->isNoWanderForeignMob() &&
-              (pc.getNativeZoneNum() != ptr->getDestRoom()->getZoneNum()))) { 
-            if (!(ptr->getDestRoom()->isNoWanderMob() &&
-                  pc.isNpc()) &&
-                mob_can_enter(pc, *(ptr->getDestRoom()), FALSE)) {
-               return ptr->getDirection();
+         if (ptr->getDestRoom()) {
+            if (!(ptr->getDestRoom()->isNoWanderForeignMob() &&
+                  (pc.getNativeZoneNum() != ptr->getDestRoom()->getZoneNum()))) { 
+               if (!(ptr->getDestRoom()->isNoWanderMob() &&
+                     pc.isNpc()) &&
+                   mob_can_enter(pc, *(ptr->getDestRoom()), FALSE)) {
+                  return ptr->getDirection();
+               }//if
             }//if
          }//if
       }//if
@@ -860,12 +862,14 @@ const String* room::getRandomExitDir(critter& pc) {
    doors.head(cll);
 
    while ((ptr = cll.next())) {
-      if (!(ptr->getDestRoom()->isNoWanderForeignMob() &&
-            (pc.getNativeZoneNum() != ptr->getDestRoom()->getZoneNum()))) { 
-         if (!(ptr->getDestRoom()->isNoWanderMob() && 
-               !pc.isPc()) &&
-             mob_can_enter(pc, *(ptr->getDestRoom()), FALSE)) {
-            return ptr->getDirection();
+      if (ptr->getDestRoom()) {
+         if (!(ptr->getDestRoom()->isNoWanderForeignMob() &&
+               (pc.getNativeZoneNum() != ptr->getDestRoom()->getZoneNum()))) { 
+            if (!(ptr->getDestRoom()->isNoWanderMob() && 
+                  !pc.isPc()) &&
+                mob_can_enter(pc, *(ptr->getDestRoom()), FALSE)) {
+               return ptr->getDirection();
+            }//if
          }//if
       }//if
    }//while
@@ -994,7 +998,7 @@ void room::doPoofOut(critter& pc) {
    while ((ptr = cll.next())) {
       if (&pc != ptr) {
          if (ptr->isImmort() && (ptr->IMM_LEVEL >= pc.IMM_LEVEL)) {
-            Sprintf(buf, "[%S] %S\n", pc.getName(), &(pc.getPoofout()));
+            Sprintf(buf, "[OUT: %S] %S\n", pc.getName(), &(pc.getPoofout()));
          }
          else {
             Sprintf(buf, "%S\n", &(pc.getPoofout()));
@@ -1009,7 +1013,7 @@ void room::doRclear(int new_rm_num) {
    critter* crit_ptr;
 
    while (!critters.isEmpty()) {
-      crit_ptr = critters.popFront();
+      crit_ptr = critters.peekFront();
 
       if ((crit_ptr->isPc()) || crit_ptr->isSmob()) {
          //mudlog << "Was a SMOB or PC." << endl;
@@ -1020,6 +1024,10 @@ void room::doRclear(int new_rm_num) {
                  *crit_ptr);
          }
       }
+      else {
+         //just remove the pointer...
+         removeCritter(crit_ptr);
+      }//else
    }//while
 
    Clear();  //clear out the room pc WAS in!!
@@ -1061,7 +1069,7 @@ void room::doPoofIn(critter& pc) {
    while ((ptr = cll.next())) {
       if (&pc != ptr) {
          if (ptr->isImmort() && (ptr->IMM_LEVEL >= pc.IMM_LEVEL)) {
-            Sprintf(buf, "[%S] %S\n", pc.getName(), &(pc.getPoofin()));
+            Sprintf(buf, "[IN: %S] %S\n", pc.getName(), &(pc.getPoofin()));
          }
          else {
             Sprintf(buf, "%S\n", &(pc.getPoofin()));

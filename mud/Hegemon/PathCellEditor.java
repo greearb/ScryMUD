@@ -113,7 +113,7 @@ class PathCellEditor extends Frame {
         hm.getHelpFrame().show("client" + System.getProperty("file.separator")
                                + "pceditor");
       else {
-         Log.it("Trying to show: client/pceditor");
+         Log.instance().dbg("Trying to show: client/pceditor");
          hm.getHelpFrame().show("client/pceditor");
       }
    }//doHelp

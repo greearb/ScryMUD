@@ -88,7 +88,7 @@ class KeywordEditor extends Frame {
         hm.getHelpFrame().show("client" + System.getProperty("file.separator")
                                + "keditor");
       else {
-         Log.it("Trying to show: client/keditor");
+         Log.instance().dbg("Trying to show: client/keditor");
          hm.getHelpFrame().show("client/keditor");
       }
    }//doHelp

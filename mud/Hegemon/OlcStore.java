@@ -109,8 +109,8 @@ class OlcStore extends Object {
            signalBuf(); //let it know we can ship tmp_buf to the writer...
         }
         catch (Exception e) {
-           Log.it(e + ":  which_case is:  " + which_case);
-           e.printStackTrace();
+           Log.instance().err(e + ":  which_case:  " + which_case);
+           //e.printStackTrace();
         }
      }
   }//processCase
@@ -346,8 +346,8 @@ class OlcStore extends Object {
         }//switch on the case number
      }//try
      catch (NullPointerException e) {
-        Log.it("OlcStore.getText():  " + e +
-               "/nProbably typed OLC from command line.");
+        Log.instance().wrn("OlcStore.getText():  " + e +
+                           "/nProbably typed OLC from command line.");
         new MessageDialog("SUGGESTION", "It looks like you tried to enter olc"
                           + " from the command line, instead of the GUI.\n"
                           + "This is NOT suggested, so please exit olc:\n"
@@ -405,7 +405,7 @@ class ODialog extends Frame {
        parent.signalBuf();
     }
     catch (Exception e) {
-       Log.it(e + ":  In exit_olc.");
+       Log.instance().err(e + ":  In exit_olc.");
     }
     /* don't dispose it, maybe they just want help */
   }

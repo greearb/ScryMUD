@@ -75,7 +75,8 @@ class Context extends Object {
        case 13:
          return BACKGROUND;
        default:
-         Log.it("ERROR:  in getContext:  unknown context number:  " + num);
+         Log.instance().err("ERROR:  in getContext:  unknown context number:  "
+                            + num);
          return NONE;
       }
    }

@@ -56,7 +56,7 @@ class SocketReader extends Thread {
          dis = new DataInputStream (parent.getSock().getInputStream ());
       }
       catch (Exception e) {
-         Log.it("DataInputStream():  " + e);
+         Log.instance().err("DataInputStream():  " + e);
          parent.signalReaderDeath();
          return;
       }
@@ -78,7 +78,7 @@ class SocketReader extends Thread {
                        len = 9998;
 
                      if (dis.read(buf, 1, len) == -1) {
-                        Log.it("SocketReader:  read failed.");
+                        Log.instance().err("SocketReader:  read failed.");
                         break;  //end of file, socket closed
                      }//if
                      str = new String(buf, 0, len + 1);
@@ -93,18 +93,17 @@ class SocketReader extends Thread {
                  len = 9999;
                
                if (dis.read(buf, 0, len) == -1) {
-                  Log.it("SocketReader:  read failed.");
+                  Log.instance().err("SocketReader:  read failed.");
                   break;  //end of file, socket closed
                }//if
                
                str = new String(buf, 0, len);
             }//else
             
-            System.out.println("From MUD:  " + str);
-            System.out.flush();
+            Log.instance().io("From MUD -:" + str + ":-");
          }//try to get input
          catch (IOException e) {
-            Log.it("SocketReader, getting input:  " + e);
+            Log.instance().err("SocketReader, getting input:  " + e);
             break;
          }
 
@@ -112,7 +111,7 @@ class SocketReader extends Thread {
 
       }//while
       parent.signalReaderDeath();
-      Log.it("Done with while loop:  Server closed connection");
+      Log.instance().inf("Done with while loop:  Server closed connection");
    }//run
 
    public void setOutput(HegemonScroll dc) {
@@ -129,7 +128,7 @@ class SocketReader extends Thread {
            dis.close ();
       }
       catch (IOException e) {
-         Log.it("Error in finalize:  " + e);
+         Log.instance().err("Error in finalize:  " + e);
       }
    }
    

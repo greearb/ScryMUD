@@ -41,12 +41,14 @@ HegemonScroll.class \
 HegemonManager.class \
 HostAddr.class \
 HostDialog.class \
+InputArea.class \
 KeywordEditor.class \
 LabeledCheckBoxGlob.class \
 LabeledTextArea.class \
 LabeledTextBoxGlob.class \
 LabeledTextField.class \
 Log.class \
+LogFrame.class \
 MessageDialog.class \
 MobScriptEditor.class \
 NumCheckbox.class \

@@ -39,7 +39,7 @@ class ActionFrame extends Frame {
          readObject();
       }
       catch (IOException e) {
-         Log.it("ActionFrame():  " + e);
+         Log.instance().err("ActionFrame():  " + e);
       }
 
       actions.addActionListener(new ActionListener() {
@@ -68,9 +68,9 @@ class ActionFrame extends Frame {
          writeObject();
       }
       catch (IOException e) {
-         Log.it("addAction  " + e);
+         Log.instance().err("addAction  " + e);
       }
-      Log.it("updating action_list");
+      //Log.trc("updating action_list");
       action_list = updateActions();
    }
 
@@ -80,9 +80,9 @@ class ActionFrame extends Frame {
          writeObject();
       }
       catch (IOException e) {
-         Log.it("addAction  " + e);
+         Log.instance().err("addAction  " + e);
       }
-      Log.it("updating action_list");
+      //Log.it("updating action_list");
       action_list = updateActions();
    }
 
@@ -101,7 +101,7 @@ class ActionFrame extends Frame {
       Action retval[] = new Action[len];
       
       for (int i = 0; i<len; i++) {
-         Log.it("Adding action:  " + items[i]);
+         //Log.dbg("Adding action:  " + items[i]);
          retval[i] = new Action(items[i]);
       }
       return retval;
@@ -139,7 +139,7 @@ class ActionFrame extends Frame {
             action_list = updateActions();
          }
          catch (Exception e) {
-            Log.it("do_delete:  " + e);
+            Log.instance().err("do_delete:  " + e);
          }
       }
       else {
@@ -185,7 +185,7 @@ class ActionFrame extends Frame {
       int len = entries.length;
       try {
          for (int i = 0; i<len; i++) {
-            Log.it("Writing:  " + entries[i]);
+            //Log.dbg("Writing:  " + entries[i]);
             ostream.write(entries[i]);
             ostream.write("\n~\n");
          }//for
@@ -221,7 +221,7 @@ class ActionFrame extends Frame {
          }//while
       }//try
       catch (IOException e) {
-         Log.it("in ActionFrame.readObject():  " + e);
+         Log.instance().err("in ActionFrame.readObject():  " + e);
       }
    }//readObject
 }//ActionFrame

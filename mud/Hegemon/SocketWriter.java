@@ -78,14 +78,14 @@ class SocketWriter extends Object {
    public void send (String str) {
       try {
          /* TODO:  Add alias parsing here */
-         Log.it("====> Before alias substitution:  -:" + str + ":-");
+         Log.instance().io("====> Before alias substitution:  -:" + str + ":-");
          str = substituteAliases(hm.getAliasManager().getAliases(), str, 0);
-         Log.it("====> After alias substitution:  -:" + str + ":-");
+         Log.instance().io("====> After alias substitution:  -:" + str + ":-");
          
          dos.writeBytes(str);
       }
       catch (IOException e) {
-         System.err.println ("Writer: " + e);
+         Log.instance().err("Writer: " + e);
          parent.signalWriterDeath();
       }//catch
    }//send
@@ -95,7 +95,7 @@ class SocketWriter extends Object {
          dos.flush();
       }
       catch (Exception e) {
-         Log.it("Flush:  " + e);
+         Log.instance().err("Flush:  " + e);
       }
    }
 
@@ -105,7 +105,7 @@ class SocketWriter extends Object {
            dos.close ();
       }
       catch (IOException e) {
-         Log.it("Error in finalize:  " + e);
+         Log.instance().err("Error in finalize:  " + e);
       }
    }
    

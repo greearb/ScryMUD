@@ -65,7 +65,7 @@ class ColorSelectionManager extends Frame {
          readObject();
       }
       catch (IOException e) {
-         Log.it("WARNING:  ColorSelectionManager():  " + e);
+         Log.instance().wrn("WARNING:  ColorSelectionManager():  " + e);
       }
 
       int REM = GridBagConstraints.REMAINDER;
@@ -184,7 +184,7 @@ class ColorSelectionManager extends Frame {
          writeObject();
       }
       catch (IOException e) {
-         Log.it("ERROR: trying to write out ColorSelections:  " + e);
+         Log.instance().err("ERROR: trying to write out ColorSelections:  " + e);
       }
    }//do_close
 
@@ -260,7 +260,7 @@ class ColorSelectionManager extends Frame {
       catch (Exception e) {
          new MessageDialog("Error reading color selections file.",
                            e.toString(), "red", "black");
-         Log.it("in ColorSelectionManager.readObject():  " + e);
+         Log.instance().err("in ColorSelectionManager.readObject():  " + e);
          e.printStackTrace();
       }
    }//readObject

@@ -61,7 +61,7 @@ class HegemonDisplayProperties extends Object {
       dflt_font = font = new Font("Dialog", Font.PLAIN, 12);
       if (font == null) {
          dflt_font = font = new Font("curier", Font.PLAIN, 12);
-         Log.it("ERROR:  couldn't get a default font, trying Dialog font.\n");
+         Log.instance().err("ERROR:  couldn't get a default font, trying Dialog font.\n");
       }//if
 
       if (gr != null) {
@@ -75,7 +75,7 @@ class HegemonDisplayProperties extends Object {
          color = dflt_color = new Color(0, 0, 0);
       }
       
-      Log.it("Other Color:  " + color);
+      //Log.instance().dbg("Other Color:  " + color);
       text_size = new Integer(4);
       mode = MODE_PRE;
 
@@ -94,7 +94,7 @@ class HegemonDisplayProperties extends Object {
    // Reset things to an initial state...
    public void reset() {
 
-      Log.it("Resetting the Properties..");
+      //Log.it("Resetting the Properties..");
       
       fonts = new Stack();
       colors = new Stack();
@@ -104,8 +104,8 @@ class HegemonDisplayProperties extends Object {
       
       dflt_font = font = new Font("Dialog", Font.PLAIN, 12);
       if (font == null) {
-         dflt_font = font = new Font("curier", Font.PLAIN, 12);
-         Log.it("ERROR:  couldn't get a default font, trying Dialog font.\n");
+         dflt_font = font = new Font("courier", Font.PLAIN, 12);
+         Log.instance().err("ERROR:  couldn't get Dialog font, trying courier.\n");
       }//if
 
       if (hm != null) {
@@ -115,7 +115,7 @@ class HegemonDisplayProperties extends Object {
          color = dflt_color = new Color(0, 0, 0);
       }
       
-      Log.it("OtherColor:  " + color);
+      //Log.it("OtherColor:  " + color);
       text_size = new Integer(4);
       mode = MODE_PRE;
       
@@ -252,7 +252,7 @@ class HegemonDisplayProperties extends Object {
    }//popTab
 
    public void pushFont(Font f) {
-      Log.it("DisplayProperties.pushFont:  " + font.getName());
+      Log.instance().dbg("DisplayProperties.pushFont:  " + font.getName());
       if (fonts.size() < 50) {
          fonts.push(f);
       }

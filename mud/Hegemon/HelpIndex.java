@@ -44,11 +44,16 @@ class HelpIndex extends Frame {
       hf = help_frame;
       category = cat.toLowerCase();
       
+      addWindowListener (new WindowAdapter () {
+         public void windowClosing (WindowEvent e) {
+            setVisible(false);
+         }});
+
       try {
          readObject();
       }
       catch (IOException e) {
-         Log.it("HelpIndex():  " + e);
+         Log.instance().err("HelpIndex():  " + e);
       }
 
       topics.addActionListener(new ActionListener() {
@@ -171,7 +176,7 @@ class HelpIndex extends Frame {
             writeObject();
          }
          catch (IOException e) {
-            Log.it("ERROR: saveHelpTopic, writeObject:  " + e);
+            Log.instance().err("ERROR: saveHelpTopic, writeObject:  " + e);
          }
 
          BOStream ostream =
@@ -241,7 +246,7 @@ class HelpIndex extends Frame {
       String base_dir = hm.getProperties().getProperty("HelpFileBaseDir");
 
       if (fl == null) {
-         Log.it("WARNING:  getProperty(\"HelpTopicsFile\") returned NULL.");
+         Log.instance().wrn("WARNING:  getProperty(\"HelpTopicsFile\") returned NULL.");
          fl = "scry_topics_list";
       }
 
@@ -271,8 +276,8 @@ class HelpIndex extends Frame {
          }//while
       }//try
       catch (IOException e) {
-         Log.it("Trying to read HelpIndex from file:\n" + abs_file_name);
-         Log.it("ERROR:  in HelpIndex.readObject():  " + e);
+         Log.instance().err("Trying to read HelpIndex from file:\n" + abs_file_name);
+         Log.instance().err("ERROR:  in HelpIndex.readObject():  " + e);
       }
    }//readObject
 }//HelpFrame

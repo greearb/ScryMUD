@@ -41,7 +41,7 @@ class MobScriptEditor extends Frame {
    public MobScriptEditor(HegemonManager h) {
       super("Mob Script Editor");
       hm = h;
-      Log.it("Constructing MobScriptEditor..");
+      Log.instance().init("Constructing MobScriptEditor..");
 
       is_frozen = new Checkbox("Is Frozen", false);
       trigger = new LabeledTextField("Trigger Command", "", 20);
@@ -120,7 +120,7 @@ class MobScriptEditor extends Frame {
         hm.getHelpFrame().show("client" + System.getProperty("file.separator")
                                + "script_editor");
       else {
-         Log.it("Trying to show: client/script_editor");
+         Log.instance().dbg("Trying to show: client/script_editor");
          hm.getHelpFrame().show("client/script_editor");
       }
    }//doHelp

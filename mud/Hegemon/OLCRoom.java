@@ -39,6 +39,11 @@ class OLCRoom extends Frame {
       super("Create a new Room");
       hm = h;
       
+      addWindowListener (new WindowAdapter () {
+         public void windowClosing (WindowEvent e) {
+            dispose();
+         }});
+
       parent = par;
 
       cb_listener = new RoomCBListener(this);

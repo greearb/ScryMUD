@@ -39,7 +39,7 @@ class ConnectionManager extends Frame {
          readObject();
       }
       catch (IOException e) {
-         Log.it("ConnectionManager:  " + e);
+         Log.instance().err("ConnectionManager:  " + e);
       }
       
       setLayout(new BorderLayout());
@@ -58,7 +58,7 @@ class ConnectionManager extends Frame {
          writeObject();
       }
       catch (IOException e) {
-         Log.it("addHost:  " + e);
+         Log.instance().err("addHost:  " + e);
       }
    }
    
@@ -112,7 +112,7 @@ class ConnectionManager extends Frame {
             writeObject();
          }
          catch (IOException e) {
-            Log.it("ERROR:  could not write out Servers file: " + e);
+            Log.instance().err("ERROR:  could not write out Servers file: " + e);
          }
       }
       else {
@@ -197,7 +197,7 @@ class ConnectionManager extends Frame {
          }//while
       }//try
       catch (Exception e) {
-         Log.it("in ConnectionManager.readObject():  " + e);
+         Log.instance().err("in ConnectionManager.readObject():  " + e);
       }
    }//readObject
 

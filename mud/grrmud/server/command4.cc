@@ -62,7 +62,7 @@ void title(const String* tit, critter& pc) {
 
 
 void poofin(String* pin, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
+   if (!pc.isImmort()) {
       pc.show("Eh?");
       return;
    }
@@ -84,7 +84,7 @@ void poofin(String* pin, critter& pc) {
 
 
 void poofout(String* pin, critter& pc) {
-   if (!pc.pc || !pc.pc->imm_data) {
+   if (!pc.isImmort()) {
       pc.show("Eh?");
       return;
    }

@@ -58,7 +58,7 @@ class HostAddr {
          port = Integer.parseInt((glom.substring(newidx, len)).trim());
       }
       catch (Exception e) {
-         Log.it("ERROR:  malformed glom:  HostAddr:  " + e);
+         Log.instance().err("ERROR:  malformed glom:  HostAddr:  " + e);
          MessageDialog md = new MessageDialog("Host Address Error",
                                               e.toString(), "red", "black");
       }

@@ -84,7 +84,7 @@ class ContextColorPair extends Panel {
          b = Integer.parseInt(blue.getText());
       }
       catch (Exception e) {
-         Log.it("In ModifyCallback:  " + e);
+         Log.instance().err("In ModifyCallback:  " + e);
          return;
       }
       
@@ -112,12 +112,18 @@ class ContextColorPair extends Panel {
          setBackground(new Color(255, 255, 255));
 
       if (context == Context.BACKGROUND) {
-         if (h == null)
-            Log.it("ERROR:  h is null in ContextColorPair.");
-         if (h.getScroll() == null)
-            Log.it("ERROR: h.getScroll() is nu..");
-         h.getScroll().setBackground(color);
-      }
+         if (h == null) {
+            Log.instance().err("ERROR:  h is null in ContextColorPair.");
+         }
+         else {
+            if (h.getScroll() == null) {
+               Log.instance().err("ERROR: h.getScroll() is null");
+            }
+            else {
+               h.getScroll().setBackground(color);
+            }
+         }
+      }//if
 
       repaint(1000);
    }//modifyCallback

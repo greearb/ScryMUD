@@ -118,7 +118,7 @@ class TextSegment extends Object {
 
       FontMetrics fm = prop.getFontMetrics();
       if (fm == null) {
-         Log.it("TextSegment(): fm was null");
+         Log.instance().dbg("TextSegment(): fm was null");
          /* gotta guestimate it then */
          int sz = font.getSize();
          width = ((sz >> 1) * text.length + 1);

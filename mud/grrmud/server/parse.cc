@@ -693,6 +693,12 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	 else if (strncasecmp(str1, "clear_keyword", len1) == 0) { 
 	    clear_keyword(i, (*this));
 	 }//if
+	 else if (strncasecmp(str1, "clear_mnames", len1) == 0) { 
+	    clear_mnames(i, (*this));
+	 }//if
+	 else if (strncasecmp(str1, "clear_onames", len1) == 0) { 
+	    clear_onames(i, (*this));
+	 }//if
 	 else if (strncasecmp(str1, "close", len1) == 0) { 
 	    close(i, &str2, (*this));
 	 }//if
@@ -1846,6 +1852,12 @@ const char* parse_hlp_command(const String& str1) {
 	 }//if
 	 else if (strncasecmp(str1, "clear_keyword", len1) == 0) { 
 	    return "clear_keyword";
+	 }//if
+	 else if (strncasecmp(str1, "clear_mnames", len1) == 0) { 
+	    return "clear_mnames";
+	 }//if
+	 else if (strncasecmp(str1, "clear_onames", len1) == 0) { 
+	    return "clear_onames";
 	 }//if
 	 else if (strncasecmp(str1, "close", len1) == 0) { 
 	    return "close";

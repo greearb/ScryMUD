@@ -115,7 +115,7 @@ class HegemonScroll extends Panel {
       //Log.it("In HegemonScroll.paint(Graphics g)");
       
       if ((g != null) && (props.getGraphics() == null)) {
-         Log.it("Setting graphics in the Properties.");
+         Log.instance().dbg("Setting graphics in the Properties.");
          props.setGraphics(g);
       }
       
@@ -153,7 +153,7 @@ class HegemonScroll extends Panel {
          components.push(sc);
       }
       catch (Exception e) {
-         Log.it("addComponent:  Trying to push: " + e);
+         Log.instance().err("addComponent:  Trying to push: " + e);
       }
    }//addComponent
    
@@ -319,7 +319,7 @@ class HegemonScroll extends Panel {
          props.pushColor(c);
       }
       catch (ColorNameException e) {
-         Log.it(e.toString());
+         Log.instance().err(e.toString());
       }
    }//pushColor(String)
    
@@ -329,14 +329,14 @@ class HegemonScroll extends Panel {
    }//pushColor(Color)
    
    public synchronized void pushFont(String fnt_name) {
-      Log.it("in pushFont, font_name:  " + fnt_name);
+      Log.instance().dbg("in pushFont, font_name:  " + fnt_name);
       Font f = Font.getFont(fnt_name, null);
       if (f != null) {
-         Log.it("Found a valid font.");
+         Log.instance().dbg("Found a valid font.");
          props.pushFont(f);
       }//if
       else {
-         Log.it("Font not found.");
+         Log.instance().dbg("Font not found.");
       }
    }//setFont
 

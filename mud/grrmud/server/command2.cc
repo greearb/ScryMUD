@@ -381,12 +381,15 @@ void auto_exit(critter& pc) { //more brief than the previous
    Cell<door*> cll(ROOM.DOORS);
    door* dr_ptr;
    String buf(81);
+   String reg_disp(100);
+   String client_disp(100);
    int dest;
 
    /* this function is called by 'look' btw. */
    /* assumes the person is standing, it just entered a room... */
 
-   show("Visible exits:  ", pc);
+   client_disp = "< EXITS ";
+   reg_disp = "Visible exits:  ";
    while ((dr_ptr = cll.next())) {
       if (detect(pc.SEE_BIT, dr_ptr->dr_data->vis_bit)) {
          if (!((dr_ptr->isClosed() && dr_ptr->isSecret()) ||
@@ -399,11 +402,23 @@ void auto_exit(critter& pc) { //more brief than the previous
             else {
                Sprintf(buf, "%s ", abbrev_dir_of_door(*dr_ptr));
             }//else
-            show(buf, pc);
+            reg_disp.Append(buf);
+
+            if (pc.USING_CLIENT) {
+               client_disp.Append(abbrev_dir_of_door(*dr_ptr));
+               client_disp.Append(" ");
+            }//if
          }//if its open, don't show closed exits
       }//if detect
    }//while
-   show("\n", pc);
+   client_disp.Append(">");
+   reg_disp.Append("\n");
+   
+   pc.show(reg_disp);
+   
+   if (pc.USING_CLIENT) {
+      pc.show(client_disp);
+   }
 }//auto_exits()
 
 
@@ -2103,6 +2118,7 @@ void mstat(int i_th, const String* name, critter& pc) {
 
 void do_mstat(critter& targ, critter& pc) {
    String buf2(100);
+   String buf(100);
    critter* crit_ptr = &targ; //to reduce my typing :P
    mudlog.log(TRC, "In do_mstat.\n");
 
@@ -2125,12 +2141,23 @@ MOB FLAGS Definitions:
       return;
    }//if
    else {
+
       Cell<String*> cll(crit_ptr->names);
       String* ptr;
+      buf2 = "";
       while ((ptr = cll.next())) {
-	 show(*ptr, pc);
-	 show(" ", pc);
+         buf2 += *ptr;
+         buf2 += " ";
       }//while
+
+      if (!pc.USING_CLIENT || crit_ptr->pc) {
+         pc.show(buf2);
+      }//if
+      else { //then show tags...
+         Sprintf(buf, "<NAMES %S>\n", &buf2);
+         pc.show(buf2); //output that they can read
+         pc.show(buf); //output the client deals with
+      }//else
 
       if (!pc.USING_CLIENT || crit_ptr->pc) {
          show("\n", pc);
@@ -2215,8 +2242,19 @@ MOB FLAGS Definitions:
 
 
       if (crit_ptr->pc) {
-         show("Player Character:\n", pc);
-         Sprintf(buf2, "\tDescriptor:  %i,  Host:  %S.\n", 
+         show("PC Flags definitions:      
+     0 frozen, 1 gagged, 2 has_imm_data, 3 cloaked, 4 tank_graph,
+     5 using_client, 6 auto_exit, 7 !hassle, 8 brief, 9 autosplit, 
+     10 do_prompt, 11 is_builder, 12 autoloot, 13 olc_redo 
+     14 extra_info, 15 cr_behind, 16 do_carriage_return
+     17 is_blocking_door, 18 can_det_magic, 19 detect_inventory
+     20 show_vnums, 21 has_poofin_poofout_msg, 22 page_output
+     23 in_page_break_mode, 24 !wizchat, 25 has_colors, 26 use_color", pc);
+
+         show("\n\n  PC_FLAGS: ", pc);
+         out_field(crit_ptr->pc->pc_data_flags, pc);
+
+         Sprintf(buf2, "\n\tDescriptor:  %i,  Host:  %S.\n", 
              crit_ptr->pc->descriptor, &crit_ptr->pc->host);
          show(buf2, pc);
          Sprintf(buf2, "\tLink cond:  %i,  Mode:  %i,  Index:  %i.\n",
@@ -2478,6 +2516,7 @@ void do_lore(object& obj, critter& pc) {
 
 void do_ostat(object& obj, critter& pc) {
    String buf2(100);
+   String buf(100);
    object* obj_ptr = &obj;  //to save me typing more!!
    int i, k;
 
@@ -2513,12 +2552,22 @@ Bag Flag Definitions:
       return;
    }//if
    else {
-      Cell<String*> cll(obj.ob->names);
+      Cell<String*> cll(obj_ptr->ob->names);
       String* ptr;
+      buf2 = "";
       while ((ptr = cll.next())) {
-	 show(*ptr, pc);
-	 show(" ", pc);
+         buf2 += *ptr;
+         buf2 += " ";
       }//while
+
+      if (!pc.USING_CLIENT) {
+         pc.show(buf2);
+      }//if
+      else { //then show tags...
+         Sprintf(buf, "<NAMES %S>\n", &buf2);
+         pc.show(buf2); //output that they can read
+         pc.show(buf); //output the client deals with
+      }//else
 
       if (!pc.USING_CLIENT) {
          show("\n", pc);

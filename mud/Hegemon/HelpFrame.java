@@ -54,8 +54,15 @@ class HelpFrame extends Frame {
       super(title);
 
       hm = h;
+
       if (hm == null)
-         Log.it("ERROR:  hm is NULL in HelpFrame constructor.");
+         Log.instance().err("ERROR:  hm is NULL in HelpFrame constructor.");
+
+      addWindowListener (new WindowAdapter () {
+         public void windowClosing (WindowEvent e) {
+            setVisible(false);
+         }});
+
       
       base_dir = base_directory; //of our help pages
       hd = new HegemonDisplay(hm);
@@ -189,7 +196,7 @@ class HelpFrame extends Frame {
    }
 
    public void paint(Graphics g) {
-      Log.it("TRACE:  Painting HelpFrame.");
+      //Log.it("TRACE:  Painting HelpFrame.");
 
       super.paint(g);
    }//paint
@@ -225,18 +232,18 @@ class HelpFrame extends Frame {
            client_index.saveHelpTopic("Client",
                                     help_topic, help_text.toString());
          else {
-            Log.it("ERROR:  bad help_category in saveHelpText:  "
-                   + help_category);
+            Log.instance().err("ERROR:  bad help_category in saveHelpText:  "
+                               + help_category);
          }
       }//if
       else {
-         Log.it("ERROR:  help_category is NULL in saveHelpText.");
+         Log.instance().err("ERROR:  help_category is NULL in saveHelpText.");
       }//else
    }//saveHelpText
    
    
    public void show(String file_name) {
-      Log.it("TRACE:  HelpFrame.show(" + file_name + ")");
+      Log.instance().trc("TRACE:  HelpFrame.show(" + file_name + ")");
       
       byte[] buffer = new byte[4097];
       int amt_read;

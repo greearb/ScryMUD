@@ -57,6 +57,7 @@ rclear
 rclone
 rem_mname
 rem_oname
+rem_perm_inv
 replace_door
 reset_olc
 rezone

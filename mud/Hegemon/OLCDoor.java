@@ -40,6 +40,11 @@ class OLCDoor extends Frame {
       super("Create a Door.");
       hm = h;
       
+      addWindowListener (new WindowAdapter () {
+         public void windowClosing (WindowEvent e) {
+            dispose();
+         }});
+
       int REM = GridBagConstraints.REMAINDER;
       parent = par;
       boxes = new LabeledCheckBoxGlob("Door Flags", 3, 4);

@@ -3,7 +3,7 @@
 This function allows you to add a stat affect to an object.
 You will need to do an 'aosave' in the zone to which the object
 belongs in order to make the changes permanent.  The stat numbers
-are (currently).  The game does a sanity check, so some of these 
+are below.  The game does a sanity check, so some of these 
 cannot be added, even though the command will look like it worked.
 
     0 position   {0 stand, 1 sit, 2 rest, 3 sleep, 4 med,
@@ -28,12 +28,12 @@ cannot be added, even though the command will look like it worked.
     37 hp_regen, 38 mana_regen, 39 mov_regen
     40 guild, 41 NULL, 42 NULL
 
-usage:  add_stat_affect [mob_num] [stat_to_add] [stat_modifier]
+usage:  add_stat_affect [obj_num] [stat_to_add] [stat_modifier]
 
 Example:
-	add_stat_affect 65 7 5     // remove stat affecting stat 7 from mob 65
+	add_stat_affect 65 7 5     // add stat 7 with affect 5 to mob 65
 
 
 <color=red>
-See Also:  add_stat_affect, ostat
+See Also:  rm_stat_affect, ostat
 </color></help>

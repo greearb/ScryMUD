@@ -97,6 +97,9 @@ void add_mob_script(critter& pc, int mob_num, String& trigger_cmd,
 void do_add_mob_script(critter& pc);
 
 
+void clear_mnames(int obj_num, critter& pc);
+void clear_onames(int obj_num, critter& pc);
+
 void add_oname(int obj_num, const String* name, critter& pc);
 void add_mname(int mob_num, const String* name, critter& pc);
 void rem_oname(int obj_num, const String* name, critter& pc);

@@ -55,7 +55,7 @@ class MessageDialog extends Frame {
        msg.setForeground(ColorUtils.getColor(fg_color));
     }
     catch (ColorNameException e) {
-       Log.it("In MessageDialog constructor:  " + e);
+       Log.instance().err("In MessageDialog constructor:  " + e);
     }
   }//constructor
 
