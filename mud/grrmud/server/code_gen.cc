@@ -1,5 +1,5 @@
-// $Id: code_gen.cc,v 1.9 1999/06/28 05:35:27 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/28 05:35:27 $
+// $Id: code_gen.cc,v 1.10 1999/08/04 06:29:16 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
 
 //
 //ScryMUD Server Code
@@ -74,17 +74,13 @@ int core_dump(const char* msg) {
 
 LanguageEntry::LanguageEntry(const LanguageEntry& src)
       : enum_name(src.enum_name) {
-   Cell<LVPair*> cll(src.vals);
-   LVPair* ptr;
-   while ((ptr = cll.next())) {
-      vals.append(new LVPair(*ptr));
-   }
+   vals.becomeDeepCopyOf(src.vals);
 }//copy constructor
 
 
 void LanguageEntry::clear() {
    enum_name = "";
-   clear_ptr_list(vals);
+   vals.clearAndDestroy();
 }//clear
 
 int LanguageEntry::read(ifstream& dafile) {

@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.10 1999/07/29 06:35:09 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/07/29 06:35:09 $
+// $Id: door.h,v 1.11 1999/08/04 06:29:17 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/04 06:29:17 $
 
 //
 //ScryMUD Server Code
@@ -93,14 +93,15 @@ protected:
 public:
    
    door();
-   door(const door& source); //copy constructor
-   door& operator= (const door& source);
+   door(door& source); //copy constructor
+   door& operator= (door& source);
    ~door();
 
-   void Clear();
-   void Write(ofstream& da_file);
-   void Read(ifstream& da_file);
-
+   void clear();
+   int write(ostream& da_file);
+   int read(istream& da_file, int read_all = TRUE);
+   
+   int isOwnedBy(critter& pc);
    int getVisBit() const { if (dr_data) return dr_data->getVisBit(); return 0; }
    int isOpen() const { return (dr_data && dr_data->isOpen()); }
    int isSecret() const { return dr_data && dr_data->isSecret(); }
@@ -135,15 +136,15 @@ public:
    String* getDirection();
 
    ///******************  Static Functions ***************************///
-   static door* findDoor(const List<door*> &lst, const int i_th,
+   static door* findDoor(const SafeList<door*> &lst, const int i_th,
                          const String* name, const int see_bit,
                          const room& rm);
 
-   static door* findDoor(const List<door*>& lst, const int i_th,
+   static door* findDoor(const SafeList<door*>& lst, const int i_th,
                          const String* name, const int see_bit,
                          const int rm_vis_bit);
 
-   static door* findDoorByDest(const List<door*>& lst, int dest_room);
+   static door* findDoorByDest(const SafeList<door*>& lst, int dest_room);
 
    static int getInstanceCount() { return _cnt; }
 };//struct door   

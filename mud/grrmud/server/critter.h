@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.32 1999/08/03 05:55:32 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/03 05:55:32 $
+// $Id: critter.h,v 1.33 1999/08/04 06:29:16 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
 
 //
 //ScryMUD Server Code
@@ -102,9 +102,7 @@ public:
 };//temp_crit_data
 
 
-class MobScript;
-
-class immort_data {
+class immort_data : public Serialized {
 protected:
    static int _cnt;
 
@@ -115,7 +113,7 @@ public:
    room* olc_room;
    door_data* olc_door;
    object* olc_obj;
-   List<String*> tmplist;
+   PtrList<String> tmplist;
    short imm_level;
    
    String* edit_string;
@@ -125,11 +123,13 @@ public:
    
    immort_data();				// default constructor
    immort_data(const immort_data& source);   // copy constructor
-   ~immort_data();
+   virtual ~immort_data();
 
-   void read(istream& dafile);
-   void write(ostream& dafile);
+   int read(istream& dafile, int read_all = TRUE);
+   int write(ostream& dafile);
    void clear();
+   virtual LEtypeE getEntityType() { return LE_IMM_DATA; }
+
    static int getInstanceCount() { return _cnt; }
 };//immort_data
 
@@ -137,7 +137,7 @@ public:
 
 ///********************** teacher_data  **************************///
 
-class teacher_data {
+class teacher_data : public Serialized {
 protected:
    static int _cnt;
 
@@ -148,20 +148,22 @@ public:
    
    teacher_data(); //constructor
    teacher_data(const teacher_data& source); // copy constructor
-   ~teacher_data() { _cnt--; }
+   virtual ~teacher_data() { _cnt--; }
 
    int togTeachFlag(int flag) {
       teach_data_flags.flip(flag);
       return 0;
    }
 
-   void read(ifstream& da_file);
-   void write(ofstream& da_file) const;
+   int read(istream& da_file, int read_all = TRUE);
+   int write(ostream& da_file);
+   void clear() { teach_data_flags.clear(); }
+   virtual LEtypeE getEntityType() { return LE_TEACHER_DATA; }
    static int getInstanceCount() { return _cnt; }
 }; //teacher_data
 
 
-class PlayerShopData {
+class PlayerShopData : public Serialized {
 private:
    static int _cnt;
 
@@ -187,7 +189,7 @@ public:
 
    // No need to do an operator-equal now.
 
-   ~PlayerShopData() { _cnt--; }
+   virtual ~PlayerShopData() { _cnt--; }
 
    int getObjNum() const { return object_num; }
    void setObjNum(int i) {
@@ -207,16 +209,15 @@ public:
    void clear() { object_num = buy_price = sell_price = 0; }
 
    // Returns false when there are no more, object_num otherwise.
-   int read(istream& da_file);
-      
-   void write(ostream& da_file) const ;
-
+   int read(istream& da_file, int read_all = TRUE);      
+   int write(ostream& da_file);
+   virtual LEtypeE getEntityType() { return LE_PLAYER_SHOP_DATA; }
 }; // PlayerShopData
 
 
 ///*********************  shop_data  ***********************///
 
-class shop_data {
+class shop_data : public Serialized {
 private:
    static int _cnt;
 
@@ -237,15 +238,16 @@ public:
 
 
    shop_data();
-   shop_data(const shop_data& source);  //copy constructor
-   ~shop_data();
+   shop_data(shop_data& source);  //copy constructor
+   virtual ~shop_data();
+   shop_data& operator=(shop_data& src);
 
    int isPlayerRun() const { return shop_data_flags.get(3); }
 
    void clear();
-   void read(istream& da_file, short read_all);
-   void write(ostream& da_file) const ;
-   shop_data& operator=(const shop_data& src);
+   int read(istream& da_file, short read_all);
+   int write(ostream& da_file);
+   virtual LEtypeE getEntityType() { return LE_SHOP_DATA; }
 
    static int getInstanceCount() { return _cnt; }
 
@@ -294,73 +296,12 @@ public:
 
 
 
-///**********************  say_proc_cell  ****************************///
-///**  This is used to hold data for different topics in        *******///
-///**  action_proc_data class.                                  *******///
-///********************************************************************///
-
-class say_proc_cell {
-protected:
-   static int _cnt;
-
-public:
-   String topic;
-   String msg;        //msg to who is trying to discuss
-   String skill_name; //skill to be taught upon this discussion
-   int obj_num;       //to be given upon this discussion
-   int trans_to_room; //number of room to be trans'd to upon this discussion
-   
-   say_proc_cell();
-   say_proc_cell(const say_proc_cell& source);
-   ~say_proc_cell() { _cnt--; }
-   // say_proc_cell& operator=(const say_proc_cell& source);
-   
-   void clear();
-   void read(ifstream& da_file);
-   void write(ofstream& da_file);
-   static int getInstanceCount() { return _cnt; }
-};//say_proc_cell
-
-
-
-///**********************  action_proc_data  ****************************///
-///**  This holds data for procs that are triggered by some action.  ****///
-///**  For example, bow, curse, give, say...                         ****///
-///**********************************************************************///
-
-class action_proc_data {
-protected:
-   static int _cnt;
-
-public:
-
-   int test_num;                 //used with give
-   String correct_msg;           //msg shown to pc upon correct gift/action
-   String skill_name;            //skill to be taught upon a correct gift
-   int obj_num;                  //to be given upon a correct gift
-   int trans_to_room;            //room# to be trans'd to upon correct gift
-   
-   String wrong_gift_msg;
-   
-   action_proc_data();
-   action_proc_data(const action_proc_data& source);
-   action_proc_data& operator=(const action_proc_data& source); //op overload
-   ~action_proc_data();
-   
-   void clear();
-   void read(ifstream& da_file);
-   void write(ofstream& da_file);
-   static int getInstanceCount() { return _cnt; }
-};//action_proc_data
-
-
-
 ///*************************************************************///
 ///***                   spec data                         *****///
 ///***  Holds special info and procedures for NPC players  *****///
 ///*************************************************************///
 
-class spec_data {
+class spec_data : public Serialized {
 protected:
    short skill_violence;
    short benevolence;
@@ -384,11 +325,12 @@ public:
    
    spec_data();
    spec_data(const spec_data& source);   //copy constructor
-   ~spec_data();
+   virtual ~spec_data();
 
-   void vlear();
-   void tead(istream& da_file, short read_all);
-   void write(ostream& da_file);
+   void clear();
+   int read(istream& da_file, int read_all = TRUE);
+   int write(ostream& da_file);
+   virtual LEtypeE getEntityType() { return LE_MOB_PROC_DATA; }
    spec_data& operator=(const spec_data& source);
 
    static int getInstanceCount() { return _cnt; }
@@ -457,7 +399,7 @@ public:
 
    mob_data();
    mob_data(mob_data& source);  //copy constructor
-   ~mob_data();
+   virtual ~mob_data();
 
    int getCurInGame() { return cur_in_game; }
    int setCurInGame(int i) { cur_in_game = i; return cur_in_game; }
@@ -486,18 +428,14 @@ public:
 
    int isSentinel() const;
    int hasProcData() const { return mob_data_flags.get(0); } 
-   int hasMobScript() const { return mob_data_flags.get(17); }
-   int isRunningScript() const { return cur_script != 0; }
+   int hasMobScript() const { return mob_data_flags.get(17); } //TODO, take it out??
    int isNoHoming() const { return mob_data_flags.get(8); }
 
    void clear();
    mob_data& operator= (mob_data& source);
-   void write(ostream& ofile);
-   void read(istream& ofile, int read_all = TRUE);
-   int isInProcNow() { return (cur_script && (cur_script->isInProgress())); }
-   void addProcScript(const String& txt, MobScript* script_data);
-   void finishedMobProc();
-   void doScriptJump(int abs_offset);
+   int write(ostream& ofile);
+   int read(istream& ofile, int read_all = TRUE);
+   virtual LEtypeE getEntityType() { return LE_MOB_DATA; }
    static int getInstanceCount() { return _cnt; }
 
    int togShopFlag(int flag) {
@@ -593,16 +531,16 @@ public:
    String bug_comment;
 
    pc_data();
-   pc_data(const pc_data& source);  //copy constructor
-   ~pc_data();
-
-   pc_data& operator= (const pc_data& source);
+   pc_data(pc_data& source);  //copy constructor
+   virtual ~pc_data();
+   pc_data& operator= (pc_data& source);
 
    int canBeBeeped() const { return (!(pc_data_flags.get(29))); }
 
-   void Clear();
-   void Write(ofstream& ofile);
-   void Read(ifstream& ofile);
+   void clear();
+   int write(ostream& ofile);
+   int read(istream& ofile, int read_all = TRUE);
+   virtual LEtypeE getEntityType() { return LE_PC_DATA; }
    static int getInstanceCount() { return _cnt; }
 };//class pc_data
 
@@ -614,8 +552,8 @@ protected:
    static int _cnt;
 
 public:
-   LStringContainer short_desc;
-   LStringContainer in_room_desc;
+   LStringCollection short_desc;
+   LStringCollection in_room_desc;
    
    bitfield crit_flags;
    // 0 can_see_inv, 1 using_light_src, 2 NULL, 3 is_flying,           
@@ -686,19 +624,19 @@ public:
    temp_crit_data* temp_crit;
    int mirrors;
    critter* possessing; //ptr to who we are possessing
-   critter* possessed_by; //ptr to who is possessing us
-   
+   critter* possessed_by; //ptr to who is possessing us   
 
    critter();
    critter(critter& source); //copy constructor
-   ~critter();
+   virtual ~critter();
    void clear();
-   critter& operator= (critter& source);
+   virtual int read(istream& da_file, int read_all = TRUE);
+   virtual int write(ostream& da_file);
+   critter& operator=(critter& source);
    
+   virtual const String* getName(critter* viewer); //overload Entity
    int getCurWeight();
    int getMaxWeight();
-   void read(istream& da_file, short read_all);
-   void write(ostream& da_file);
 
    /** For scripts, the script_targ is always *this.  The script_owner
     * will be null (for non-script specific stuff) and should be specified
@@ -760,7 +698,6 @@ public:
    int doesOwnDoor(door_data& dd);
 
    int isCloaked() { return (pc && PC_FLAGS.get(3)); }
-   int isInProcNow() { return (mob && mob->isInProcNow()); }
    int isInBattle() { return !(is_fighting.isEmpty()); }
 
    int haveObjNumbered(int count, int obj_num);
@@ -776,7 +713,6 @@ public:
    int isSessile() const { return mob && mob->mob_data_flags.get(7); }
    
    void doHuntProc(int steps, int& is_dead); //found in batl_prc.cc
-   void finishedMobProc() { if (mob) mob->finishedMobProc();}
    int getIdNum() const;
    int getImmLevel();
    int getHomeRoom() { if (mob) return mob->home_room; return 0; }
@@ -794,12 +730,6 @@ public:
    int getSeeBit() const { return cur_stats[1]; }
    String* getTrackingTarget();
 
-   const String* getName() const { return getName(~0); }
-   const String* getName(int see_bit) const ;
-   const String* getLongName() const { return getName(); }
-   const String* getLongName(int see_bit) const { return getName(see_bit); }
-   const String* getShortName() const { return getShortName(~0); }
-   const String* getShortName(int see_bit) const ;
    int doBecomeNonPet(); //misc2.cc
    int doUngroup(int i_th, const String* vict); //command2.cc
    int doFollow(critter& pc, int do_msgs = TRUE);
@@ -822,16 +752,6 @@ public:
    int getMovMax() const { return short_cur_stats[25]; }
    int getAlignment() const { return short_cur_stats[18]; }
    LanguageE getLanguageChoice() const ;
-
-   const ScriptCmd* getNextScriptCmd() {
-      if (mob) {
-         return mob->cur_script->getNextCommand();
-      }
-      return NULL;
-   }
-
-   int getPause() const { return short_cur_stats[11]; }
-   void setPause(int i) { short_cur_stats[11] = i; }
 
    int getPosn() const { return short_cur_stats[0]; }
    void setPosn(int i) {
@@ -913,7 +833,6 @@ public:
    String* getBackGroundColor();
    String* getBattleColor();
 
-   int isNamed(const String& str) const ;
    int isGagged();
    int isFrozen();
    int isImmort();

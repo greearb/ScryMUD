@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.40 1999/08/03 05:55:32 greear Exp $
-// $Revision: 1.40 $  $Author: greear $ $Date: 1999/08/03 05:55:32 $
+// $Id: critter.cc,v 1.41 1999/08/04 06:29:16 greear Exp $
+// $Revision: 1.41 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
 
 //
 //ScryMUD Server Code
@@ -77,27 +77,27 @@ immort_data::immort_data(const immort_data& source) {
 
 immort_data::~immort_data() {
    _cnt--;
-   Clear();
+   clear();
 }//deconstructor
    
-void immort_data::Clear() {
+void immort_data::clear() {
    if (olc_mob) {
-      olc_mob->Clear();
+      olc_mob->clear();
       olc_mob = NULL;
    }//if
    
    if (olc_room) {
-      olc_room->Clear();
+      olc_room->clear();
       olc_room = NULL;
    }//if
    
    if (olc_obj) {
-      olc_obj->Clear();
+      olc_obj->clear();
       olc_obj = NULL;
    }//if
    
    if (olc_door) {
-      olc_door->Clear();
+      olc_door->clear();
       olc_door = NULL;
    }//if
    tmplist.clearAndDestroy();
@@ -110,16 +110,18 @@ void immort_data::Clear() {
 } // Clear
 
 
-void immort_data::Read(ifstream& dafile) {
+int immort_data::read(istream& dafile, int read_all = TRUE) {
    char buf[82];
 
    dafile >> imm_level;
 
    dafile.getline(buf, 80); //junk end of line
+   return 0;
 }//Read
 
-void immort_data::Write(ofstream& dafile) {
+int immort_data::write(ostream& dafile) {
    dafile << imm_level << "\tImm level\n";
+   return 0;
 }//Write
 
 
@@ -137,12 +139,12 @@ teacher_data::teacher_data(const teacher_data& source) {
    teach_data_flags = source.teach_data_flags;
 }//constructor
 
-void teacher_data::Read(ifstream& da_file) {
-   teach_data_flags.Read(da_file);
+int teacher_data::read(istream& da_file, int read_all = TRUE) {
+   return teach_data_flags.read(da_file);
 }//Read
 
-void teacher_data::Write(ofstream& da_file) const {
-   teach_data_flags.Write(da_file);
+int teacher_data::write(ostream& da_file) {
+   return teach_data_flags.write(da_file);
 }//Write
 
 //****************************************************************//
@@ -150,7 +152,7 @@ void teacher_data::Write(ofstream& da_file) const {
 
 int PlayerShopData::_cnt = 0; // Instance Count
 
-int PlayerShopData::read(ifstream& da_file) {
+int PlayerShopData::read(istream& da_file, int read_all = TRUE) {
    int sentinel;
    char tmp[81];
 
@@ -168,9 +170,10 @@ int PlayerShopData::read(ifstream& da_file) {
    }//else
 }//read
       
-void PlayerShopData::write(ofstream& da_file) const {
+int PlayerShopData::write(ostream& da_file) {
    da_file << 1 << " " << object_num << " "
            << sell_price << " " << buy_price << " PlayerShopData \n";
+   return 0;
 }//write
 
 
@@ -181,19 +184,19 @@ void PlayerShopData::write(ofstream& da_file) const {
 
 int shop_data::_cnt = 0;
 
-shop_data::shop_data() {
+shop_data::shop_data() : perm_inv(NULL) {
    _cnt++;
    markup = buy_percentage = open_time = close_time = 0;
 }//constructor;
 
-shop_data::shop_data(shop_data& source) {
+shop_data::shop_data(shop_data& source) : perm_inv(NULL) {
    _cnt++;
    *this = source;
 }//constructor;
 
 shop_data::~shop_data() {
    _cnt--;
-   Clear();
+   clear();
 }
 
 shop_data& shop_data::operator=(shop_data& source) {
@@ -201,20 +204,18 @@ shop_data& shop_data::operator=(shop_data& source) {
    if (this == &source)
       return *this;
 
-   Clear();
+   clear();
 
    markup = source.markup;
    buy_percentage = source.buy_percentage;
    open_time = source.open_time;
    close_time = source.close_time;
 
-   ContainedObject* ptr;
-   Cell<ContainedObject*> cll(source.perm_inv.getInv());
+   SCell<object*> cll(source.perm_inv);
    object* optr;
-   while ((ptr = cll.next())) {
-      optr = (object*)(ptr);
+   while ((optr = cll.next())) {
       if (!optr->isModified()) {
-         perm_inv.append(ptr);
+         perm_inv.append(optr);
       }//if
    }//while
 
@@ -227,30 +228,31 @@ shop_data& shop_data::operator=(shop_data& source) {
    return *this;
 }//operator=;
 
-void shop_data::Clear() {
+void shop_data::clear() {
    markup = buy_percentage = close_time = open_time = 0;
    perm_inv.clear();
-   shop_data_flags.Clear();
+   shop_data_flags.clear();
    ps_data_list.clearAndDestroy();
 }//Clear
 
-void shop_data::Read(ifstream& da_file, short read_all) {
-   // TODO
-
-   Clear();
+int shop_data::read(istream& da_file, short read_all) {
+   char tmp[100];
+   int i;
+   String buf(100);
+   clear();
 
    if (!da_file) {
       if (mudlog.ofLevel(ERR)) {
          mudlog << "ERROR:  da_file FALSE in shop_data read." << endl;
       }
-      return;
+      return -1;
    }
 
 
    da_file >> markup >> buy_percentage >> open_time >> close_time;
    da_file.getline(tmp, 80);
    
-   shop_data_flags.Read(da_file);
+   shop_data_flags.read(da_file);
    
    /*  Inventory */
    da_file >> i;
@@ -258,7 +260,7 @@ void shop_data::Read(ifstream& da_file, short read_all) {
       if (i == -2) { //assume its gonna load fer sure
          object* new_obj = new object;
          da_file.getline(tmp, 80);  //junk message
-         new_obj->Read(da_file, read_all);
+         new_obj->read(da_file, read_all);
          //TODO w_obj->IN_LIST = &(perm_inv); //make sure its a SOBJ
          perm_inv.append(new_obj);    //add it to inventory
       }//if
@@ -297,26 +299,26 @@ void shop_data::Read(ifstream& da_file, short read_all) {
 
    }//if is a Player Run Shopkeeper
 
-
+   return 0;
 }//Read
 
 
-void shop_data::Write(ofstream& da_file) const {
-   Cell<object*> ob_cell(perm_inv);
+int shop_data::write(ostream& da_file) {
+   SCell<object*> ob_cell(perm_inv);
    object* ob_ptr;
    int i = 0;
    
    da_file << " " << markup << " " << buy_percentage << " " 
            << open_time << " " << close_time 
            << "\tshop_data shorts\n";
-   shop_data_flags.Write(da_file);
+   shop_data_flags.write(da_file);
    
    /*  Inventory */
    i = 0;
    while ((ob_ptr = ob_cell.next())) {
-      if (ob_ptr->IN_LIST) {
+      if (ob_ptr->isModified()) {
          da_file << -2 << "\t Start of SOBJ\n";
-         ob_ptr->Write(da_file);
+         ob_ptr->write(da_file);
       }//if
       else {
          if (obj_list[ob_ptr->OBJ_NUM].OBJ_FLAGS.get(10)) {
@@ -343,7 +345,9 @@ void shop_data::Write(ofstream& da_file) const {
          da_file << manager << "  Manager\n";
       }
    }//if
-
+   if (da_file)
+      return 0;
+   return -1;
 }//Write
 
 
@@ -489,12 +493,12 @@ temp_proc_data::temp_proc_data(const temp_proc_data& source) {
 
 temp_proc_data::~temp_proc_data() {
    _cnt--;
-   clear_ptr_list(hunting);
+   hunting.clearAndDestroy();
 }//destructor
 
 void temp_proc_data::Clear() {
-   clear_ptr_list(hunting);
-   tracking.Clear();
+   hunting.clearAndDestroy();
+   tracking.clear();
 }//clear
 
 temp_proc_data& temp_proc_data::operator= (const temp_proc_data& source) {
@@ -515,169 +519,6 @@ temp_proc_data& temp_proc_data::operator= (const temp_proc_data& source) {
    return *this;
 }//operator= overload
 
-
-///*******************************************************************///
-///**********************  say proc cell  ***************************///
-
-int say_proc_cell::_cnt = 0;
-
-say_proc_cell::say_proc_cell() {
-   _cnt++;
-   obj_num = 0; //one to be given
-   trans_to_room = 0;
-}//constructor
-
-say_proc_cell::say_proc_cell(const say_proc_cell& source) {
-   _cnt++;
-   *this = source;
-}//copy constructor
-
-void say_proc_cell::Clear() {
-   topic.Clear();
-   msg.Clear();
-   skill_name.Clear();
-   obj_num = 0;
-   trans_to_room = 0;
-}//Clear  
-
-void say_proc_cell::Read(ifstream& da_file) {
-   char buf[82];
-
-   if (!da_file) {
-      if (mudlog.ofLevel(ERR)) {
-         mudlog << "ERROR:  da_file FALSE in say_proc_cell read." << endl;
-      }
-      return;
-   }
-
-   
-   da_file.getline(buf, 80);         
-   topic = buf;
-   
-   msg.Termed_Read(da_file);
-   
-   da_file.getline(buf, 80);
-   skill_name = buf;
-
-   da_file >> obj_num >> trans_to_room;
-   da_file.getline(buf, 80);
-}//read()
-
-
-void say_proc_cell::Write(ofstream& da_file) {
-
-   da_file << topic << endl;
-
-   parse_for_max_80(msg);
-   da_file << msg << endl << "~" << endl;
-   
-   da_file << skill_name << endl;
-   da_file << obj_num << " " << trans_to_room << "\t end of say_proc_cell\n";
-}//write()
-
-  
-
-///*******************************************************************///
-///**********************  action proc data  ***************************///
-
-int action_proc_data::_cnt = 0;
-
-action_proc_data::action_proc_data() {
-   _cnt++;
-   test_num = 0;
-   obj_num = 0; //one to be given
-   trans_to_room = 0;
-}//constructor
-
-action_proc_data::action_proc_data(const action_proc_data& source) {
-   _cnt++;
-   *this = source;
-}//copy constructor
-
-
-action_proc_data::~action_proc_data() {
-   _cnt--;
-}//destructor
-
-
-action_proc_data& action_proc_data::operator=(const action_proc_data& source) {
-
-   if (this == &source)
-      return *this;
-
-   test_num = source.test_num;
-   correct_msg = source.correct_msg;
-   skill_name = source.skill_name;
-   obj_num = source.obj_num;
-   trans_to_room = source.trans_to_room;
-   wrong_gift_msg = source.wrong_gift_msg;
-
-   return *this;
-}//operator = overload
-
-
-void action_proc_data::Clear() {
-   test_num = 0;
-   correct_msg.Clear();
-   skill_name.Clear();
-   obj_num = 0;
-   trans_to_room = 0;
-   wrong_gift_msg.Clear();
-}//Clear  
-
-void action_proc_data::Read(ifstream& da_file) {
-   char buf[82];
-
-   if (!da_file) {
-      if (mudlog.ofLevel(ERR)) {
-         mudlog << "ERROR:  da_file FALSE in action_proc_data read." << endl;
-      }
-      return;
-   }
-
-
-   //mudlog.log(DBG, "Reading action_proc.\n");
-   da_file >> test_num; 
-   da_file.getline(buf, 80);         
-
-   //mudlog.log(DBG, "got test_num.\n");
-   correct_msg.Termed_Read(da_file);
-
-   //mudlog.log(DBG, "got correct_msg:");
-   //mudlog.log(DBG, correct_msg);
-   
-   da_file.getline(buf, 80);
-   skill_name = buf;
-
-   //mudlog.log(DBG, "Got skillname: ");
-   //mudlog.log(DBG, skill_name);
-
-   da_file >> obj_num >> trans_to_room;
-   da_file.getline(buf, 80);         
-
-   //mudlog.log(DBG, "Getting wrong_gift_msg:");
-   wrong_gift_msg.Termed_Read(da_file);
-   da_file.getline(buf, 80);      
-   //mudlog.log(DBG, wrong_gift_msg);   
-}//read()
-
-
-void action_proc_data::Write(ofstream& da_file){
-
-   da_file << test_num << "\t test_num, valid for give_proc mostly\n";
-
-   parse_for_max_80(correct_msg);
-   da_file << correct_msg << endl << "~" << endl;
-
-   da_file << skill_name << endl;
-
-   da_file << obj_num << " " << trans_to_room << "\tobj_num, trans_room#\n";
-
-   parse_for_max_80(wrong_gift_msg);
-   da_file << wrong_gift_msg << endl << "~" << endl;
-   da_file << "end action_proc_data\n";
-}//write()
-
   
 //************************************************************//
 ///********************* spec data  *************************///
@@ -692,9 +533,6 @@ spec_data::spec_data() {
    sh_data = NULL;
    teach_data = NULL;
    temp_proc = NULL;
-   give_proc = NULL;
-   bow_proc = NULL;
-   curse_proc = NULL;
 }//constructor
 
 
@@ -703,9 +541,6 @@ spec_data::spec_data(const spec_data& source) {
    sh_data = NULL;
    teach_data = NULL;
    temp_proc = NULL;
-   give_proc = NULL;
-   bow_proc = NULL;
-   curse_proc = NULL;
    *this = source;  //overloaded =
 }//constructor
 
@@ -717,36 +552,17 @@ spec_data::~spec_data() {
    teach_data = NULL;
    delete temp_proc;
    temp_proc = NULL;
-   delete give_proc;
-   give_proc = NULL;
-   delete bow_proc;
-   bow_proc = NULL;
-   delete curse_proc;
-   curse_proc = NULL;
-
-   clear_ptr_list(topics);
 }//destructor
 
-void spec_data::Clear() {
+void spec_data::clear() {
    delete sh_data;
    sh_data = NULL;
    delete teach_data;
    teach_data = NULL;
    delete temp_proc;
    temp_proc = NULL;
-   delete give_proc;
-   give_proc = NULL;
-   delete bow_proc;
-   bow_proc = NULL;
-   delete curse_proc;
-   curse_proc = NULL;
-   
-   flag1.Clear();
+   flag1.clear();
    int1 = 0;
-   clear_ptr_list(topics);
-   wrong_align_msg.Clear();
-   wrong_class_msg.Clear();
-   wrong_race_msg.Clear();
    skill_violence = benevolence = defensiveness = bad_assedness =
       social_awareness = 0;
 }//Clear
@@ -768,7 +584,7 @@ spec_data& spec_data::operator=(const spec_data& source) {
    if (this == &source)
       return *this;
 
-   Clear();
+   clear();
    flag1 = source.flag1;
    int1 = source.int1;
    if (source.sh_data)
@@ -777,22 +593,7 @@ spec_data& spec_data::operator=(const spec_data& source) {
       teach_data = new teacher_data(*(source.teach_data));
    if (source.temp_proc)
       temp_proc = new temp_proc_data(*(source.temp_proc));
-   if (source.give_proc)
-      give_proc = new action_proc_data(*(source.give_proc));
-   if (source.bow_proc)
-      bow_proc = new action_proc_data(*(source.bow_proc));
-   if (source.curse_proc)
-      curse_proc = new action_proc_data(*(source.curse_proc));
 
-   Cell<say_proc_cell*> cll(source.topics);
-   say_proc_cell* ptr;
-   while ((ptr = cll.next())) {
-     topics.append(new say_proc_cell(*ptr));
-   }//while
-
-   wrong_align_msg = source.wrong_align_msg;
-   wrong_class_msg = source.wrong_class_msg;
-   wrong_race_msg = source.wrong_race_msg;
    skill_violence = source.skill_violence;
    benevolence = source.benevolence;
    defensiveness = source.defensiveness;
@@ -803,20 +604,19 @@ spec_data& spec_data::operator=(const spec_data& source) {
 }//op = overload
 
 
-void spec_data::Read(ifstream& da_file, short read_all) {
+int spec_data::read(istream& da_file, int read_all = TRUE) {
    char tmp[81];
-   int test;
   
-   Clear();
+   clear();
 
    if (!da_file) {
       if (mudlog.ofLevel(ERR)) {
          mudlog << "ERROR:  da_file FALSE in spec_data read." << endl;
       }
-      return;
+      return -1;
    }
 
-   flag1.Read(da_file);
+   flag1.read(da_file);
    
    flag1.turn_off(12); //hack, get rid of this flag
   
@@ -825,113 +625,61 @@ void spec_data::Read(ifstream& da_file, short read_all) {
 
    if (flag1.get(1)) {  // shopkeeper
       sh_data = new shop_data;
-      sh_data->Read(da_file, read_all);
+      sh_data->read(da_file, read_all);
    }//if
 
    if (flag1.get(2)) {  // teacher
       teach_data = new teacher_data;
-      teach_data->Read(da_file);
+      teach_data->read(da_file);
    }//if
 
-   if (flag1.get(5)) { //give_proc
-      give_proc = new action_proc_data;
-      give_proc->Read(da_file);
-   }//if
-
-   if (flag1.get(7)) { //bow_proc
-      bow_proc = new action_proc_data;
-      bow_proc->Read(da_file);
-   }//if
-
-   if (flag1.get(8)) { //curse_proc
-      curse_proc = new action_proc_data;
-      curse_proc->Read(da_file);
-   }//if
-
-   if (flag1.get(6)) { //say_proc
-      da_file >> test;
-      da_file.getline(tmp, 80);
-      say_proc_cell* ptr;
-      while (test != -1) {
-         ptr = new say_proc_cell;
-         ptr->Read(da_file);
-         topics.append(ptr);
-         da_file >> test;
-         da_file.getline(tmp, 80);
-      }//while
-   }//if
-
-   if (flag1.get(5) || flag1.get(6) || flag1.get(7) || flag1.get(8)) {
-      // then assume messages are there, ignore otherwise
-      wrong_align_msg.Termed_Read(da_file);
-      wrong_class_msg.Termed_Read(da_file);
-      wrong_race_msg.Termed_Read(da_file);
-   }//if
+   if (flag1.get(5) || flag1.get(7) || flag1.get(8) || flag1.get(6)) {
+      cerr << "ERROR:  action and say procs are no longer supported, you must"
+           << "hand edit them out of the mobs which have them..sorry for the"
+           << "inconvenience!!" << endl;
+      mudlog << "ERROR:  action and say procs are no longer supported, you must"
+             << "hand edit them out of the mobs which have them..sorry for the"
+             << "inconvenience!!" << endl;
+      exit(25);
+   }
 
    if (flag1.get(13)) { //if HAS_MOB_AI
       da_file >> skill_violence >> benevolence >> defensiveness
               >>  bad_assedness >> social_awareness;
       da_file.getline(tmp, 80);      
    }//if
+
+   if (da_file)
+      return 0;
+   return -1;
+
 }//Read
 
 
-void spec_data::Write(ofstream& da_file){
+int spec_data::write(ostream& da_file){
 
    if (skill_violence || benevolence || defensiveness || bad_assedness) {
       flag1.turn_on(13); //make sure
    }//if
 
-   flag1.Write(da_file);
+   flag1.write(da_file);
    da_file << int1 << "\tint1, above bitfield started spec_data\n";
   
    if (flag1.get(1)) {  // shopkeeper
       if (!sh_data) {
          mudlog.log(ERR, "ERROR:  trying to write sh_data, but it's NULL\n");
-         return;
+         return -1;
       }//if
-      sh_data->Write(da_file);
+      sh_data->write(da_file);
    }//if
 
    if (flag1.get(2)) {  // teacher
       if (!teach_data) {
          mudlog.log(ERR, 
                     "ERROR:  trying to write teach_data, but it's NULL\n");
-         return; 
+         return -1; 
       }//if
-      teach_data->Write(da_file);
-   }//if
-
-   if (flag1.get(5)) { //give_proc
-      give_proc->Write(da_file);
-   }//if
-
-   if (flag1.get(7)) { //bow_proc
-      bow_proc->Write(da_file);
-   }//if
-
-   if (flag1.get(8)) { //curse_proc
-      curse_proc->Write(da_file);
-   }//if
-
-   if (flag1.get(6)) { //say_proc
-      Cell<say_proc_cell*> cll(topics);
-      say_proc_cell* ptr;
-
-      while ((ptr = cll.next())) {
-         da_file << "1    here starts a valid say_proc_cell.\n";
-         ptr->Write(da_file);
-      }//while
-      da_file << "-1    end of say_proc_cells\n";
-   }//if
-
-   if (flag1.get(5) || flag1.get(6) || flag1.get(7) || flag1.get(8)) {
-      parse_for_max_80(wrong_align_msg);
-      da_file << wrong_align_msg << "\n~\n";
-      parse_for_max_80(wrong_class_msg);
-      da_file << wrong_class_msg << "\n~\n";
-      parse_for_max_80(wrong_race_msg);
-      da_file << wrong_race_msg << "\n~\n";
+      teach_data->write(da_file);
    }//if
 
    if (flag1.get(13)) {
@@ -940,6 +688,9 @@ void spec_data::Write(ofstream& da_file){
               << social_awareness
               << "  sk_viol, benev, def, bad_assed, soc_aware\n";
    }//if
+   if (da_file)
+      return 0;
+   return -1;
 }//Write
 
 
@@ -1017,7 +768,6 @@ mob_data::mob_data() {
    _cnt++;
    mob_num = tmp_num = cur_in_game = max_in_game = 0;
    proc_data = NULL;
-   cur_script = NULL;
    skin_num = 0;
    home_room = 0;
 }//constructor
@@ -1025,90 +775,31 @@ mob_data::mob_data() {
 mob_data::mob_data(mob_data& source) {
    _cnt++;
    proc_data = NULL;
-   cur_script = NULL;
    *this = source;
 }//constructor
 
 mob_data::~mob_data() {
    _cnt--;
    delete proc_data; //if doesn't exist, then its NULL, still no prob :)
-   clear_ptr_list(mob_proc_scripts);
    proc_data = NULL;
-   
-   cur_script = NULL; //it was held in the mob_proc_scripts
 }//destructor
  
-void mob_data::Clear() {
+void mob_data::clear() {
    mob_num = tmp_num = cur_in_game = max_in_game = 0;
    delete proc_data;
    proc_data = NULL;
-   mob_data_flags.Clear();
+   mob_data_flags.clear();
    skin_num = 0;
-   clear_ptr_list(mob_proc_scripts);
-   clear_ptr_list(pending_scripts);
-
-   cur_script = NULL; //its held in the mob_proc_scripts
    home_room = 0;
 
 }//Clear, mob_data
-
-void mob_data::finishedMobProc() {
-   if (cur_script) {
-      pending_scripts.loseData(cur_script);
-      delete cur_script;
-   }
-
-   cur_script = pending_scripts.peekFront();
-}//finishedMobProc
-
-
-void mob_data::addProcScript(const String& txt, MobScript* script_data) {
-   //similar to reading it in...
-   //first, see if we are over-writing one...
-   if (mudlog.ofLevel(DBG)) {
-      mudlog << "In mob_data::addProcScript, txt:  \n" << txt
-             << "\nscript data:  "
-             << script_data->toStringBrief(0, 0, ENTITY_CRITTER, 0)
-             << endl;
-   }
-
-   mob_data_flags.turn_on(17); //now it has procs for sure!!
-
-   Cell<MobScript*> cll;
-   MobScript* ptr;
-   mob_proc_scripts.head(cll);
-
-   while ((ptr = cll.next())) {
-      if (ptr->matches(*script_data)) {
-         //got a match.
-         mudlog.log("mob_data::addProcScript, they match.");
-         *ptr = *script_data;
-         ptr->setScript(txt);
-         delete script_data;
-         return;
-      }//if
-   }//while
-   
-   mudlog.log(DBG, "About to setScript.");
-   
-   script_data->setScript(txt);
-   mudlog.log(DBG, "done with setScript.");
-
-   if (!script_data) {
-      mudlog.log(ERR, "script_data is NULL, mob_data::addProcScript.");
-      return;
-   }
-
-   mob_proc_scripts.append(script_data);
-}//addProcScript
-
 
 mob_data& mob_data::operator= (mob_data& source) {
 
    if (this == &source)
       return *this;
 
-   Clear();
+   clear();
 
    mob_num = source.mob_num;
    tmp_num = source.tmp_num;      
@@ -1121,68 +812,41 @@ mob_data& mob_data::operator= (mob_data& source) {
    skin_num = source.skin_num;
    home_room = source.home_room;
    
-   Cell<MobScript*> cll;
-   source.mob_proc_scripts.head(cll);
-   MobScript* ptr;
-   
-   while ((ptr = cll.next())) {
-      Put(new MobScript(*ptr), mob_proc_scripts);
-   }
-   
    return *this;
 }//mob_data operator=
 
 
-void mob_data::Write(ofstream& ofile) {
+int mob_data::write(ostream& ofile) {
    
    ofile << " " << mob_num << " " << tmp_num << " " 
          << max_in_game << "\tmob#, tmp_num, max_n_game\n";
    
-   mob_data_flags.Write(ofile);
+   mob_data_flags.write(ofile);
    
    if (mob_data_flags.get(0)) { //does it have spec_data?
       if (!(proc_data)) {
          mudlog.log(ERR, "ERROR:  told to write proc_data, but is NULL!\n");
-         return;
+         return -1;
       }//if
-      proc_data->Write(ofile);
+      proc_data->write(ofile);
    }//if
    if (mob_data_flags.get(16)) {
       ofile << skin_num << "	skin number\n";
    }//if
-
-   if (mob_data_flags.get(17)) {
-      Cell<MobScript*> cll;
-      mob_proc_scripts.head(cll);
-      MobScript* ptr;
-
-      int i = 1;
-      while ((ptr = cll.next())) {
-         ofile << i++ <<  "  Start of a mob proc script\n";
-         ptr->write(ofile);
-      }
-      
-      ofile << "-1  End of mob proc scripts" << endl;
-   }
+   return 0;
 }//Write()
 
 
-void mob_data::doScriptJump(int abs_offset) {
-   if (cur_script)
-      cur_script->doScriptJump(abs_offset);
-}
-
-
-void mob_data::Read(ifstream& ofile, short read_all) {
+int mob_data::read(istream& ofile, int read_all = TRUE) {
    char tmp[81];
    
-   Clear();
+   clear();
    
    if (!ofile) {
       if (mudlog.ofLevel(ERR)) {
          mudlog << "ERROR:  da_file FALSE in mob_data read." << endl;
       }
-      return;
+      return -1;
    }
 
    ofile >> mob_num >> tmp_num >> max_in_game;
@@ -1193,7 +857,7 @@ void mob_data::Read(ifstream& ofile, short read_all) {
    
    tmp_num = 0; //since it isn't used..should be zero
    
-   mob_data_flags.Read(ofile);
+   mob_data_flags.read(ofile);
    
    // not currently used.
    mob_data_flags.turn_off(9);
@@ -1206,46 +870,14 @@ void mob_data::Read(ifstream& ofile, short read_all) {
    
    if (mob_data_flags.get(0)) { //does it have spec_data?
       proc_data = new spec_data;
-      proc_data->Read(ofile, read_all);
+      proc_data->read(ofile, read_all);
    }//if
    
    if (mob_data_flags.get(16)) {
       ofile >> skin_num;
       ofile.getline(tmp, 80);
    }//if
-   
-   if (mob_data_flags.get(17)) {
-      //mudlog.log("Mob has proc scripts...");
-      int sent_;
-      MobScript* ptr;
-
-      ofile >> sent_;
-      ofile.getline(tmp, 80);
-
-      if (mudlog.ofLevel(DB))
-         mudlog << "Tmp, after script#: " << sent_ << " -:" << tmp
-                << ":-\n";
-
-      while (sent_ != -1) {
-         if (mudlog.ofLevel(DB))
-            mudlog << "\nReading script# " << sent_ << endl;
-         if (!ofile) {
-            if (mudlog.ofLevel(ERR)) {
-               mudlog << "ERROR:  mob_data reading script da_file FALSE." << endl;
-            }
-            return;
-         }
-
-         ptr = new MobScript();
-         ptr->read(ofile);
-         Put(ptr, mob_proc_scripts);
-         ofile >> sent_;
-         ofile.getline(tmp, 80);
-         if (mudlog.ofLevel(DB))
-            mudlog << "Got rest of line -:" << tmp << ":-" << endl;
-      }
-   }//if using mob proc scripts
-   
+   return 0;
 }//Read()
 
 
@@ -1342,10 +974,10 @@ pc_data::pc_data() {
    snooping = NULL;
    imm_data = NULL;
    w_eye_obj = NULL;
-   Clear();
+   clear();
 }//constructor
 
-pc_data::pc_data(const pc_data& source) {
+pc_data::pc_data(pc_data& source) {
    _cnt++;
    post_msg = NULL;
    snoop_by = NULL;
@@ -1371,7 +1003,7 @@ pc_data::~pc_data() {
    }//if
 }//destructor
  
-void pc_data::Clear() {
+void pc_data::clear() {
    delete post_msg;
    post_msg = NULL;
    password.Clear();
@@ -1388,11 +1020,11 @@ void pc_data::Clear() {
    imm_data = NULL;
    snoop_by = NULL;
    snooping = NULL;
-   pc_data_flags.Clear();
+   pc_data_flags.clear();
    skills_spells_known.Clear();
-   prompt.Clear();
-   poofout.Clear();
-   poofin.Clear();
+   prompt.clear();
+   poofout.clear();
+   poofin.clear();
    
    gos_str = ANSI_BLACK;
    say_str = ANSI_BLACK;
@@ -1425,12 +1057,12 @@ void pc_data::Clear() {
 }//Clear, pc_data
 
 
-pc_data& pc_data::operator=(const pc_data& source) {
+pc_data& pc_data::operator=(pc_data& source) {
 
    if (this == &source)
       return *this;
    
-   Clear();
+   clear();
    
    password = source.password;
    input = source.input;
@@ -1486,12 +1118,12 @@ pc_data& pc_data::operator=(const pc_data& source) {
 }//operator=, pc_data
 
 
-void pc_data::Write(ofstream& ofile) {
+int pc_data::write(ostream& ofile) {
    int i;
    
    ofile << password << "\tpasswd\n";
    
-   pc_data_flags.Write(ofile);
+   pc_data_flags.write(ofile);
    
    if (pc_data_flags.get(22)) {
       ofile << lines_on_page << " ";
@@ -1534,7 +1166,7 @@ void pc_data::Write(ofstream& ofile) {
 
    if (pc_data_flags.get(2) || pc_data_flags.get(11)) {  //has imm_data
       if (imm_data) {
-         imm_data->Write(ofile);
+         imm_data->write(ofile);
       }//if
       else {
          mudlog.log(ERR, "ERROR:  flagged imm, but no imm_data file!\n");
@@ -1562,26 +1194,27 @@ void pc_data::Write(ofstream& ofile) {
    }
 
    ofile << "*** end of pc data ***\n";
+   return 0;
 }//Write()       
 
 
-void pc_data::read(ifstream& ofile) {
+int pc_data::read(istream& ofile, int read_all = TRUE) {
    int i;
    char tmp[81];
    
-   Clear();
+   clear();
 
    if (!ofile) {
       if (mudlog.ofLevel(ERR)) {
          mudlog << "ERROR:  da_file FALSE in pc_data read." << endl;
       }
-      return;
+      return -1;
    }
    
    ofile >> password;
    ofile.getline(tmp, 80);
    
-   pc_data_flags.Read(ofile);
+   pc_data_flags.read(ofile);
 
    pc_data_flags.turn_off(23); //don't log in with page break on
    
@@ -1605,7 +1238,7 @@ void pc_data::read(ifstream& ofile) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in pc_data read." << endl;
          }
-         return;
+         return -1;
       }
       ofile >> tmp_int;
       skills_spells_known.Insert(i, tmp_int);
@@ -1629,7 +1262,7 @@ void pc_data::read(ifstream& ofile) {
    
    if (pc_data_flags.get(2))	 {
       imm_data = new immort_data;
-      imm_data->Read(ofile);
+      imm_data->read(ofile);
    }//if
 
    if (pc_data_flags.get(25)) {
@@ -1681,6 +1314,7 @@ void pc_data::read(ifstream& ofile) {
    }
 
    ofile.getline(tmp, 80); //grabs extra line/comment
+   return 0;
 }//Read()       
 
 
@@ -1689,7 +1323,8 @@ void pc_data::read(ifstream& ofile) {
 
 int critter::_cnt = 0;
 
-critter::critter() {
+critter::critter() : inv(NULL), pets(NULL), followers(NULL), groupees(NULL),
+                     is_fighting(NULL) {
 //   if (mudlog.ofLevel(DBG)) {
 //      mudlog << "MEMORY:  creating crit:  " << this << endl;
 //   }
@@ -1702,11 +1337,12 @@ critter::critter() {
    possessed_by = NULL;
    possessing = NULL;
    temp_crit = NULL;
-   Clear();
+   clear();
 } // crit constructor
 
 
-critter::critter(critter& source) {
+critter::critter(critter& source) : inv(NULL), pets(NULL), followers(NULL), groupees(NULL),
+                                    is_fighting(NULL)  {
 //   if (mudlog.ofLevel(DBG)) {
 //      mudlog << "MEMORY:  copy constructing crit:  " << this << endl;
 //   }
@@ -1734,43 +1370,7 @@ critter::~critter() {
       core_dump("ERROR:  trying to delete a MOB before shutdown.\n");
    }//if
 
-   if (! do_shutdown) {
-
-      /* Eventually, could take these checks out. --BEN */
-
-      if (affected_mobs.haveData(this)) {
-         mudlog << "ERROR:  deleting critter, but it's in affected_mobs: "
-                << this << "  mob num:  " << *(names.peekFront()) << endl;
-      }//if
-      if (affected_mobs.haveData(this)) {
-         mudlog << "ERROR:  deleting critter, but it's in affected_mobs: "
-                << this << "  mob num:  " << *(names.peekFront()) << endl;
-      }//if
-      if (linkdead_list.haveData(this)) {
-         mudlog << "ERROR:  deleting critter, but it's in linkdead_list: "
-                << this << "  mob num:  " << *(names.peekFront()) << endl;
-      }//if
-      if (pc_list.haveData(this)) {
-         mudlog << "ERROR:  deleting critter, but it's in pc_list: "
-                << this << "  mob num:  " << *(names.peekFront()) << endl;
-      }//if
-      if (pulsed_proc_mobs.haveData(this)) {
-         mudlog << "ERROR:  deleting critter, but it's in pulsed_proc_mobs: "
-                << this << "  mob num:  " << *(names.peekFront()) << endl;
-      }//if
-      if (proc_action_mobs.haveData(this)) {
-         mudlog << "ERROR:  deleting critter, but it's in proc_action_mobs: "
-                << this << "  mob num:  " << *(names.peekFront()) << endl;
-      }//if
-      if (room_list[IN_ROOM].haveCritter(this)) {
-         mudlog << "ERROR:  deleting critter, but it's in ROOM::CRITTERS: "
-                << this << "  mob num:  " << *(names.peekFront())
-                << "  room num:  " << IN_ROOM << endl;
-      }//if
-
-   }//if
-
-   Clear();
+   clear();
 }//destructor
 
 
@@ -1779,25 +1379,16 @@ critter& critter::operator=(critter& source) { //automagically makes SMOB
    if (this == &source)
       return *this;
 
-   Cell<stat_spell_cell*> cell;
-   stat_spell_cell *tmp_stat, *tmp_stat2;
-   Cell<object*> cll;
+   SCell<object*> cll;
    object* obj_ptr;
    int i;
 
       //mudlog.log(DBG, "In crit operator= overload.\n");
 
-   Clear();		
-
-   Cell<String*> scll(source.names);
-   String* sptr;
-   while ((sptr = scll.next())) {
-      Put((new String(*sptr)), names);
-   }//while
+   clear();
 
    short_desc = source.short_desc;
    in_room_desc = source.in_room_desc;
-   long_desc = source.long_desc;
 
    if (source.pc) {
       pc = new pc_data(*(source.pc));
@@ -1817,13 +1408,13 @@ critter& critter::operator=(critter& source) { //automagically makes SMOB
 
    for (i = 0; i<MAX_EQ; i++) {
       if (source.eq[i]) {
-         if (!(source.eq[i]->IN_LIST)) { //don't need multiple ptrs to SOBJ's
-	   eq[i] = source.eq[i];
+         if (!(source.eq[i]->isModified())) { //don't need multiple ptrs to SOBJ's
+            eq[i] = source.eq[i];
          }//if
 	 else {
-	   eq[i] = new object(*(source.eq[i]));
-	   if (eq[i]) // if had the memory
-	     eq[i]->IN_LIST = &(this->inv);
+            eq[i] = new object(*(source.eq[i]));
+            if (eq[i]) // if had the memory
+               eq[i]->setContainer(this);
 	 }//else
       }//if
       else {
@@ -1831,24 +1422,12 @@ critter& critter::operator=(critter& source) { //automagically makes SMOB
       }//else
    }//for
 
-   source.affected_by.head(cell);
-   while ((tmp_stat = cell.next())) {
-      tmp_stat2 = new stat_spell_cell;
-      *tmp_stat2 = *tmp_stat; //shallow copy should work 
-      affected_by.append(tmp_stat2);
-   }//while
-
-   source.mini_affected_by.head(cell);
-   while ((tmp_stat = cell.next())) {
-      tmp_stat2 = new stat_spell_cell;
-      *tmp_stat2 = *tmp_stat; //shallow copy should work 
-      Put(tmp_stat2, mini_affected_by);
-   }//while
+   mini_affected_by.becomeDeepCopyOf(source.mini_affected_by);
    
    source.inv.head(cll);
    while ((obj_ptr = cll.next())) {
-      if (!obj_ptr->IN_LIST) { //no multiple ptrs to SOBJ's
-         Put(obj_ptr, inv);
+      if (!obj_ptr->isModified()) { //no multiple ptrs to SOBJ's
+         inv.append(obj_ptr);
       }//if
    }//while
 
@@ -1878,17 +1457,15 @@ critter& critter::operator=(critter& source) { //automagically makes SMOB
 }//crit::operator= overload
 
 
-void critter::Clear() {
+void critter::clear() {
    int i;
    critter* ptr;
 
-   //mudlog.log(DBG, "In crit Clear().\n");
-   clear_ptr_list(names);
-   short_desc.Clear();
-   in_room_desc.Clear();
-   long_desc.Clear();
+   //mudlog.log(DBG, "In crit clear().\n");
+   short_desc.clear();
+   in_room_desc.clear();
 
-   crit_flags.Clear();
+   crit_flags.clear();
 
    delete pc;
    delete mob;
@@ -1907,8 +1484,7 @@ void critter::Clear() {
 
    short_cur_stats[26] = 2; // slight hack, default it to MOB
 
-   clear_ptr_list(affected_by);
-   clear_ptr_list(mini_affected_by);
+   mini_affected_by.clearAndDestroy();
    clear_obj_list(inv);
    follower_of = master = NULL;
 
@@ -1924,7 +1500,7 @@ void critter::Clear() {
       ptr = followers.popFront();
 
       if (mudlog.ofLevel(ERR)) {
-         mudlog << "ERROR:  followers not empty in Clear, for mob: "
+         mudlog << "ERROR:  followers not empty in clear, for mob: "
                 << *(getName()) << " follower: " << *(ptr->getName()) << endl;
       }//if
 
@@ -1943,7 +1519,7 @@ void critter::Clear() {
    }
 
    //mudlog.log(DBG, "Done w/clear.\n");
-}//crit Clear
+}//crit clear
 
 
 int critter::doUnShield() {
@@ -1980,7 +1556,7 @@ const char* critter::getPosnStr(critter& for_this_pc) {
 
 
 int critter::travelToRoom(int targ_room_num, int num_steps, int& is_dead) {
-   List<int> path;
+   List<int> path(0);
 
    if (!isStanding()) {
       //Try to get up...
@@ -2011,7 +1587,7 @@ int critter::travelToRoom(int targ_room_num, int num_steps, int& is_dead) {
 
       int iter = min(path.size(), num_steps);
 
-      for (int i = 0; ((i < iter) && (IsEmpty(IS_FIGHTING))); i++) {
+      for (int i = 0; ((i < iter) && (!isFighting())); i++) {
          int next_room = path.popFront();
          String* dir = dir_of_room(*(getCurRoom()), next_room);
 
@@ -2090,7 +1666,7 @@ int critter::getNakedWeight() const {
 
 
 int critter::getCurWeight() {// of inv...eq not taken into account here
-   Cell<object*> cll(inv);
+   SCell<object*> cll(inv);
    object* tmp_obj;
    int retval = 0;
    while ((tmp_obj = cll.next())) {
@@ -2117,59 +1693,21 @@ int critter::getCurRoomNum() {
 }
 
 void critter::checkForBattle(room& rm) {
-
-   List<critter*> tmp_crits(rm.getCrits()); //just do shallow copy
-   Cell<critter*> cll(tmp_crits);
-
-   critter* ptr;
-   while ((ptr = cll.next())) {
-      if (!rm.haveCritter(this)) {
-         return;
-      }
-      if (rm.haveCritter(ptr)) {
-         if (ptr->doesRemember(*this) && ptr->canDetect(*this)) {
-            say("There you are!!", *ptr, *(ptr->getCurRoom()));
-            try_hit(*this, *ptr);
-         }//if
-      }//if
-
-      if (!rm.haveCritter(this)) {
-         return;
-      }
-      if (rm.haveCritter(ptr)) { //make sure we're still there
-         if (doesRemember(*ptr) && canDetect(*ptr)) {
-            say("I've found you now!!", *this, *(getCurRoom()));
-            try_hit(*ptr, *this);
-         }//if
-      }//if
-   }//while
-}//checkForBattle
+   rm.checkForBattle(*this);
+}
 
 int critter::canDetect(const critter& other) const {
    return detect(getSeeBit(), other.getVisBit());
 }
 
 
-void critter::Write(ofstream& ofile) {
+int critter::write(ostream& ofile) {
    int i, num_written;
-   Cell<stat_spell_cell*> ss_cell;
-   stat_spell_cell* ss_ptr;
-   Cell<object*> ob_cell;
+   SCell<object*> ob_cell;
    object* ob_ptr;
-   Cell<String*> st_cell(names);
-   String* st_ptr;
    String tmp_str(100);
 
-   int len = 0;
-   while ((st_ptr = st_cell.next())) {
-      len += st_ptr->Strlen();
-      if (len > 79) {
-	 ofile << endl;
-	 len = 0;
-      }//if
-      ofile << *st_ptr << " ";
-   }//while
-   ofile << "~" << "\tnames";
+   //TODO:  Write out super-classes.
 
    if (pc) {
       ofile << " " << pc->host << " __LEVEL__ " << getLevel();
@@ -2177,14 +1715,10 @@ void critter::Write(ofstream& ofile) {
 
    ofile << "\n";
 
-   parse_for_max_80(short_desc);
-   ofile << (short_desc) << endl << "~" << endl;
-   parse_for_max_80(in_room_desc);
-   ofile << (in_room_desc) << endl << "~" << endl;
-   parse_for_max_80(long_desc);
-   ofile << (long_desc) << endl << "~" << endl;
+   short_desc.write(ofile);
+   in_room_desc.write(ofile);
 
-   crit_flags.Write(ofile);
+   crit_flags.write(ofile);
 
    for (i = 0; i<MOB_LONG_DATA; i++)
       ofile << long_data[i] << " ";
@@ -2205,37 +1739,27 @@ void critter::Write(ofstream& ofile) {
    num_written = 0;
    for (i = 0; i < MAX_EQ; i++) {
       if (eq[i]) {
-         if (!eq[i]->IN_LIST) {
+         if (!eq[i]->isModified()) {
             ofile << eq[i]->OBJ_NUM << " " << i << " ";
             if ((++num_written % 20) == 0)
                ofile << endl;
          }//if
          else { //then its a SOBJ
             ofile << -2 << " " << i << "\t Start of SOBJ\n";
-            eq[i]->Write(ofile);
+            eq[i]->write(ofile);
          }//else
       }//if
    }//for
    ofile << -1 << "\teq: num, posn\n";
-
-		/*  Affected By */
-   num_written = 0;
-   affected_by.head(ss_cell);
-   while ((ss_ptr = ss_cell.next())) {
-      ofile << ss_ptr->stat_spell << " " << ss_ptr->bonus_duration << " ";
-      if ((++num_written % 20) == 0)
-         ofile << endl;
-   }//while
-   ofile << -1 << "\taffected_by\n";
 
 		/*  Inventory */
    
    num_written = 0;
    inv.head(ob_cell);
    while ((ob_ptr = ob_cell.next())) {
-      if (ob_ptr->IN_LIST) {
+      if (ob_ptr->isModified()) {
          ofile << -2 << "\t Start of SOBJ\n";
-         ob_ptr->Write(ofile);
+         ob_ptr->write(ofile);
       }//if
       else {
          ofile << ob_ptr->OBJ_NUM << " ";
@@ -2250,62 +1774,40 @@ void critter::Write(ofstream& ofile) {
    if (short_cur_stats[26] == 0) { // If its a pc
       if (!pc) {
          mudlog.log(ERR, "ERROR: trying to write out pc_data when pc is NULL.\n");
-         return;
+         return -1;
       }//if
-      pc->Write(ofile);  //write it out
+      pc->write(ofile);  //write it out
    }//if
    else { //its a mob/smob
       if (!mob) {
          mudlog.log(ERR, "ERROR: trying to write out mob_data when mob is NULL.\n");
-         return;
+         return -1;
       }//if
-      mob->Write(ofile); //write it out
+      mob->write(ofile); //write it out
    }//else
    ofile << "\tend_of_crit\n";  //done
+   return 0;
 }//Write....crit
 
 
-void critter::Read(ifstream& ofile, short read_all) {
-   int i, test = TRUE, z;
-   stat_spell_cell* ss_ptr;
+int critter::read(istream& ofile, int read_all = TRUE) {
+   int i, z;
    char tmp[81];
    String tmp_str(80);
-   String* string;
 
-   Clear();
+   clear();
 
    if (!ofile) {
       if (mudlog.ofLevel(ERR)) {
          mudlog << "ERROR:  da_file FALSE in crit read." << endl;
       }
-      return;
+      return -1;
    }
 
-   test = TRUE;
-   while (test) {
-      if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in crit read." << endl;
-         }
-         return;
-      }
+   short_desc.read(ofile);
+   in_room_desc.read(ofile);
 
-      ofile >> tmp_str;
-      if (strcmp(tmp_str, "~") == 0) {
-         test = FALSE;
-      }//if
-      else {
-         string = new String(tmp_str);
-         Put(string, names);
-      }//else
-   }//while            
-   ofile.getline(tmp, 80);         
-
-   short_desc.Termed_Read(ofile);
-   in_room_desc.Termed_Read(ofile);
-   long_desc.Termed_Read(ofile);
-
-   crit_flags.Read(ofile);
+   crit_flags.read(ofile);
    crit_flags.turn_on(18); //always in use
    crit_flags.turn_off(25); // Never been hurled before.
 
@@ -2332,14 +1834,14 @@ void critter::Read(ifstream& ofile, short read_all) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in crit read." << endl;
          }
-         return;
+         return -1;
       }
 
       ofile >> z;
       if (!check_l_range(z, 1, MAX_EQ, mob_list[0], FALSE)) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  wear_posn out of range, crit.Read():  " << z
-                   << " short desc:  " << short_desc << endl;
+                   << " short desc:  " << *(getName()) << endl;
          }
          ofile >> i;
          continue;
@@ -2347,8 +1849,9 @@ void critter::Read(ifstream& ofile, short read_all) {
       if (i == -2) { //gonna load fer sure
          object* new_obj = new object;
          ofile.getline(tmp, 80);  //junk message
-         new_obj->Read(ofile, TRUE);
-         new_obj->IN_LIST = &(inv); //make sure its a SOBJ
+         new_obj->read(ofile, TRUE);
+         new_obj->setContainer(this);
+         new_obj->setModified(true);
 
          eq[z] = new_obj;      //now it wears it
          affected_objects.append(new_obj);
@@ -2364,29 +1867,11 @@ void critter::Read(ifstream& ofile, short read_all) {
          }//
          else {
             Sprintf(tmp_str, 
-             "ERROR:  trying to load non-existant obj: %i, 
+                    "ERROR:  trying to load non-existant obj: %i, 
               in critter's: %S  eq.\n", i, &short_desc);
             mudlog.log(ERR, tmp_str);
          }//else
       }//else
-      ofile >> i;
-   }//while
-   ofile.getline(tmp, 80);
-
-		/*  Affected By */
-   ofile >> i;
-   while (i != -1) {
-      if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in crit read." << endl;
-         }
-         return;
-      }
-
-      ss_ptr = new stat_spell_cell;
-      ss_ptr->stat_spell = i;
-      ofile >> ss_ptr->bonus_duration;
-      Put(ss_ptr, affected_by);
       ofile >> i;
    }//while
    ofile.getline(tmp, 80);
@@ -2398,25 +1883,26 @@ void critter::Read(ifstream& ofile, short read_all) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in crit read." << endl;
          }
-         return;
+         return -1;
       }
 
       if (i == -2) { //gonna load fer sure
          object* new_obj = new object;
          ofile.getline(tmp, 80);  //junk message
-         new_obj->Read(ofile, TRUE);
-         new_obj->IN_LIST = &(inv); //make sure its a SOBJ
+         new_obj->read(ofile, TRUE);
+         new_obj->setContainer(this);
+         new_obj->setModified(TRUE);
 
-         Put(new_obj, inv);    //add it to inventory
+         inv.append(new_obj);
          affected_objects.append(new_obj);
 
       }//if
       else {
-         if (obj_list[i].OBJ_FLAGS.get(10)) {
+         if (obj_list[i].isInUse()) {
             if (read_all ||
               ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
                       d(1,100)) {
-               Put(&(obj_list[i]), inv);    //add it to inventory
+               inv.append(&(obj_list[i]));    //add it to inventory
             }//if
          }//if
          else {
@@ -2436,13 +1922,13 @@ void critter::Read(ifstream& ofile, short read_all) {
       if (!(pc)) {
          pc = new pc_data;
       }//if
-      pc->Read(ofile);  
+      pc->read(ofile);  
    }//if
    else { //its a mob
       if (!(mob)) {
          mob = new mob_data;
       }//if
-      mob->Read(ofile, read_all); 
+      mob->read(ofile, read_all); 
    }//else
    ofile.getline(tmp, 80);      
    //mudlog.log(DBG, "Done w/read crit.\n");
@@ -2450,6 +1936,7 @@ void critter::Read(ifstream& ofile, short read_all) {
    if (!is_affected_by(BLINDNESS_SKILL_NUM, *this))
       SEE_BIT |= 1024; //another bletcherous kludge
 
+   return 0;
 }//Read....crit
 
 void critter::notifyHasBeenHurled() {
@@ -2470,7 +1957,7 @@ int critter::canBeHurled() {
 }
 
 int critter::haveObjNumbered(int cnt, int obj_num) {
-   Cell<object*> cll(inv);
+   SCell<object*> cll(inv);
    object* ptr;
    int count = 0;
 
@@ -2539,84 +2026,6 @@ int critter::getIdNum() const {
 }
 
 
-// NOTE:  The script owner is *this.  It is likely, but not necessary
-// that targ is also *this.  Looks through all the objects the critter
-// is wearing.
-void critter::checkForProc(String& cmd, String& arg1, critter& actor,
-                           int targ, room& rm) {
-   if (mudlog.ofLevel(DBG)) {
-      mudlog << "In critter::checkForProc, this#: " << getIdNum()
-             << " actor#: " << actor.getIdNum() << " cmd -:"
-             << cmd << ":- arg1 -:" << arg1 << ":-  targ: "
-             << targ << " room#: " << rm.getIdNum() << endl;
-   }
-
-   if (mob) {
-      if (mudlog.ofLevel(DBG)) {
-         mudlog << "Was a mob, mob#:  " << MOB_NUM << endl;
-      }
-
-      Cell<MobScript*> cll;
-      MobScript* ptr;
-         
-      mob->mob_proc_scripts.head(cll);
-
-      while ((ptr = cll.next())) {
-         //mudlog.log("In while.");
-         //mudlog.log(ptr->toStringBrief(0, 0));
-         if (ptr->matches(cmd, arg1, actor, targ)) {
-            //mudlog.log("Matches..");
-            if (mob->pending_scripts.size() >= 10) { //only queue 10 scripts
-               break; //do nothing, don't want to get too much backlog.
-            }
-            else {
-               // add it to the pending scripts.
-               ptr->generateScript(cmd, arg1, actor, targ, rm, this);
-               insertNewScript(new MobScript(*ptr));
-
-               if (mob->cur_script) {
-                  if (mob->cur_script->getPrecedence() <
-                      mob->pending_scripts.peekFront()->getPrecedence()) {
-                  
-                     mob->pending_scripts.loseData(mob->cur_script); //take it out of queue
-                     delete mob->cur_script; //junk it!
-                     mob->cur_script = mob->pending_scripts.peekFront();
-                     mob->cur_script->resetStackPtr(); //get ready to start
-                  }//if
-                  // else, it just goes into the queue
-               }//if we currently have a script.
-               else { //there was none, so grab the first one.
-                  mob->cur_script = mob->pending_scripts.peekFront();
-                  proc_action_mobs.gainData(this);
-                  mob->cur_script->resetStackPtr(); //get ready to start
-               }
-
-               break;
-            }//else
-         }//if matches
-      }//while
-   }//if
-
-   // Look through all objects the person is using.
-   for (int i = 1; i < MAX_EQ; i++) {
-      if (mudlog.ofLevel(DBG2)) {
-         mudlog << "Critter [" << getIdNum() << "] " << *(getName())
-                << ":  Checking EQ[" << i << "] == " << EQ[i] << ", in rm: "
-                << rm.getIdNum() << endl;
-      }
-      if (EQ[i] && (EQ[i]->hasScript())) {
-         if (mudlog.ofLevel(DBG2)) 
-            mudlog << "Found an object with a script: EQ[" << i << "]\n";
-         // make it modified, if it is not already so.
-         if (!(EQ[i]->isModified())) {
-            EQ[i] = obj_to_sobj(*(EQ[i]), &inv, rm.getIdNum());
-         }
-         EQ[i]->checkForProc(cmd, arg1, actor, targ, rm);
-      }//if
-   }//for
-}//checkForProcAction
-
-
 void critter::trackToKill(critter& vict, int& is_dead) {
    if ((isMob()) || (vict.isMob())) {
       mudlog.log(ERR, "ERROR:  MOB's in trackToKill.\n");
@@ -2637,7 +2046,7 @@ void critter::trackToKill(critter& vict, int& is_dead) {
    if (isSentinel())
       return;
 
-   setTrackingTarget(*(vict.getShortName()));
+   setTrackingTarget(*(vict.getShortName(this)));
    
    doHuntProc(5, is_dead);
 }//track_to_kill
@@ -2679,7 +2088,7 @@ int critter::isSentinel() const {
 
 void critter::doRemoveFromBattle() {
    if (!IS_FIGHTING.isEmpty()) {
-      Cell<critter*> cll(IS_FIGHTING);
+      SCell<critter*> cll(IS_FIGHTING);
       critter* crit_ptr;
       while ((crit_ptr = cll.next())) {
          crit_ptr->IS_FIGHTING.loseData(this);
@@ -2717,7 +2126,7 @@ void critter::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
 
 
 void critter::breakEarthMeld() {
-   stat_spell_cell* sp;
+   SpellDuration* sp;
    if ((sp = is_affected_by(EARTHMELD_SKILL_NUM, *this))) {
       show("Your meld with the earth has been severed.\n");
       affected_by.loseData(sp);
@@ -2725,21 +2134,6 @@ void critter::breakEarthMeld() {
    }//if
 }//breakEarthMeld
 
-
-int critter::isNamed(const String& name) const {
-   Cell<String*> char_cell(names);
-   String *string;
-
-   if (name.Strlen() == 0)
-      return FALSE;
-
-   while ((string = char_cell.next())) {
-      if (strcasecmp(*string, name) == 0) {
-	 return TRUE;
-      }//if
-   }//while
-   return FALSE;
-}//mob_is_named 
 
 object* critter::loseInv(object* obj) {
    return inv.loseData(obj);
@@ -2755,19 +2149,19 @@ void critter::loseObjectFromGame(object* obj) {
    for (int i =1; i<MAX_EQ; i++) {
       if (EQ[i] && (EQ[i]->getIdNum() == obj->getIdNum())) {
          remove_eq_effects(*obj, *this, FALSE, FALSE, i);
-         if (EQ[i]->IN_LIST) {
+         if (EQ[i]->isModified()) {
             delete EQ[i];
          }
          EQ[i] = NULL;
       }//if
    }//for
 
-   Cell<object*> cll(inv);
+   SCell<object*> cll(inv);
    object* ptr;
    ptr = cll.next();
    while (ptr) {
       if (ptr->getIdNum() == obj->getIdNum()) {
-         if (ptr->IN_LIST) {
+         if (ptr->isModified()) {
             delete ptr;
          }
          ptr = inv.lose(cll);
@@ -2781,9 +2175,8 @@ void critter::loseObjectFromGame(object* obj) {
 
 void critter::gainInv(object* obj) {
    inv.prepend(obj);
-   if (obj->IN_LIST) {
-      obj->IN_LIST = &inv;
-      obj->setCurRoomNum(getCurRoomNum(), 0);
+   if (obj->isModified()) {
+      obj->setContainer(this);
    }
 }
 
@@ -2946,17 +2339,6 @@ critter* critter::getFirstFighting() {
    return IS_FIGHTING.peekFront();
 }
 
-int object::getCurRoomNum() const {
-   if (getContainer()) {
-      return getContainer()->getCurRoomNum();
-   }
-   if (mudlog.ofLevel(WRN)) {
-      mudlog << "WARNING:  object::getCurRoomNum failed, obj# " << getIdNum()
-             << endl;
-   }
-   return 0;
-}//getCurRoomNum
-
 
 int critter::getCurZoneNum() {
    return getCurRoom()->getZoneNum();
@@ -2986,49 +2368,6 @@ int critter::getImmLevel() {
 
    return 0;
 }
-
-void critter::setCurRoomNum(int i) {
-   if (i < 0)
-      i = 0;
-   if (i >= NUMBER_OF_ROOMS)
-      i = 0;
-
-   IN_ROOM = i;
-
-   // The first time we are placed in a room, lets remember it
-   // so we can get home once we've tracked down anybody that is
-   // bothering us!!
-   if (mob && (mob->home_room == 0)) {
-      mob->home_room = i;
-   }
-
-   // So now I want to know the current room for all Objects that
-   // may be scripting.  If they are scripting, then we know they
-   // have an IN_LIST (ie they are a SOBJ (more antiquity)).
-   
-   // First, check all equipment.  Remember to check inside containers
-   // too.
-
-   for (int z = 1; z < MAX_EQ; z++) {
-      if (EQ[z] && EQ[z]->isModified()) {
-         EQ[z]->setCurRoomNum(i, 0); //will recurse if needed
-      }
-   }
-
-   Cell<object*> cll(inv);
-   object* ptr;
-   
-   while ((ptr = cll.next())) {
-      if (ptr->isModified()) {
-         ptr->setCurRoomNum(i, 0); //is recursive if needed
-      }
-   }//while
-}//setCurRoomNum
-
-void critter::addProcScript(const String& txt, MobScript* script_data) {
-   if (mob)
-      mob->addProcScript(txt, script_data);
-}//addProcScript
 
 
 /** If return is > 0, self is more powerful, if less than 0,
@@ -3196,19 +2535,19 @@ int critter::doesOwnCritter(critter& mobile) {
 }
 
 int critter::doesOwnDoor(door& dr) {
-   return (dr.dr_data && doesOwnDoor(*dr.dr_data));
+   return (dr.isOwnedBy(*this));
 }
 
 int critter::doesOwnDoor(door_data& dd) {
    return (ZoneCollection::instance().elementAt(dd.getZoneNum()).isOwnedBy(*this));
 }
 
-const String* critter::getName(int see_bit) const {
-   if (!detect(see_bit, VIS_BIT)) {
+const String* critter::getName(critter* viewer) {
+   if (!viewer->canDetect(*this)) {
       return &SOMEONE;  //global string
    }
    if (isPc()) { //is a pc
-      const String* tmp = names.peekFront();
+      const String* tmp = names.getFirstName(viewer->getLanguageChoice());
       if (tmp) {
          return tmp;
       }
@@ -3219,21 +2558,7 @@ const String* critter::getName(int see_bit) const {
    else {
       return &(short_desc);
    }//else
-}//name_of_crit
-
-const String* critter::getShortName(int see_bit) const {
-   if (!detect(see_bit, VIS_BIT)) {
-      return &SOMEONE;  //global string
-   }
-
-   const String* tmp = names.peekFront();
-   if (tmp) {
-      return tmp;
-   }
-   else {
-      return &SOMEONE;
-   }
-}//getShortName
+}//getName
 
 
 // return current value of cur_in_game after operation
@@ -3456,13 +2781,6 @@ int critter::getXpToNextLevel() const {
 }//getXpToNextLevel
 
 
-
-void critter::doScriptJump(int abs_index) {
-   if (mob)
-      mob->doScriptJump(abs_index);
-}
-
-
 void critter::remember(critter& targ) {
 
    if (isPc() || targ.isNpc())
@@ -3653,7 +2971,8 @@ void critter::transferShopDataTo(critter& sink) {
       return;
    }
 
-   clear_ptr_list(sink.mob->proc_data->sh_data->ps_data_list);
+   // Yeesh, what a dereference :)
+   sink.mob->proc_data->sh_data->ps_data_list.clearAndDestroy();
 
    Cell<PlayerShopData*> cll(mob->proc_data->sh_data->ps_data_list);
    PlayerShopData* ptr;
@@ -3830,8 +3149,7 @@ int critter::doDropCoins(int cnt) {
       show(buf);
 
       object* gold;
-      gold = obj_to_sobj(obj_list[GOLD_OBJECT], getCurRoom()->getInv(),
-                         getCurRoomNum());
+      gold = obj_to_sobj(obj_list[GOLD_OBJECT], getCurRoom(), getCurRoomNum());
       
       obj_list[GOLD_OBJECT].incrementCurInGame();
       

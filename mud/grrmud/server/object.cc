@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.21 1999/08/03 05:55:32 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/03 05:55:32 $
+// $Id: object.cc,v 1.22 1999/08/04 06:29:17 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/04 06:29:17 $
 
 //
 //ScryMUD Server Code
@@ -66,7 +66,7 @@ void obj_construct_data::read(istream& da_file, int read_all = TRUE) {
    da_file.getline(buf, 99);
 }//Read
 
-void obj_construct_data::write(ostream& da_file) const {
+void obj_construct_data::write(ostream& da_file) {
    da_file << target_object << " " << item1 << " " << item2 << " "
            << item3 << " " << item4 << " " << item5;
    da_file << "\t target object, companions\n";
@@ -133,7 +133,7 @@ obj_spec_data& obj_spec_data::operator=(const obj_spec_data& source) {
 }// operator= overload
 
 void obj_spec_data::clear() {
-   obj_spec_data_flags.Clear();
+   obj_spec_data_flags.clear();
    delete construct_data;
    construct_data = NULL;
    
@@ -352,7 +352,7 @@ object::~object() {
       ::core_dump("Deleting un-modified object.");
    }//if
 
-   Clear();
+   clear();
 }//destructor
 
 
@@ -370,7 +370,7 @@ object& object::operator= (object& source) {
       ::core_dump("object::operator=, !modified, and is in use.");
    }//if
    
-   Clear();
+   clear();
    
    short_desc = source.short_desc;
    in_room_desc = source.in_room_desc;
@@ -412,14 +412,14 @@ object& object::operator= (object& source) {
 }//operator= overload
 	    
 
-void object::Clear() {
+void object::clear() {
    Entity::clear();
    Scriptable::clear();
 
    short_desc.clear();
    in_room_desc.clear();
    
-   obj_flags.Clear();
+   obj_flags.clear();
    
    delete bag;
    bag = NULL;
@@ -430,6 +430,18 @@ void object::Clear() {
    delete obj_proc;
    obj_proc = NULL;
 }//Clear
+
+
+int object::getCurRoomNum() {
+   if (getContainer()) {
+      return getContainer()->getCurRoomNum();
+   }
+   if (mudlog.ofLevel(WRN)) {
+      mudlog << "WARNING:  object::getCurRoomNum failed, obj# " << getIdNum()
+             << endl;
+   }
+   return 0;
+}//getCurRoomNum
 
 
 int object::getCurWeight() const {

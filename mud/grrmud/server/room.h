@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.20 1999/08/03 05:55:33 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/03 05:55:33 $
+// $Id: room.h,v 1.21 1999/08/04 06:29:17 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/04 06:29:17 $
 
 //
 //ScryMUD Server Code
@@ -40,6 +40,7 @@
 #include "script.h"
 #include "commands.h"
 #include "lang_strings.h"
+#include "Scriptable.h"
 
 class zone;
 class CSelectorColl;
@@ -105,7 +106,7 @@ public:
    LStringCollection short_desc;
 
    SafeList<door*> doors;   
-   List<KeywordPair*> keywords;
+   PtrList<KeywordPair> keywords;
 
    room();
    room(room& source);
@@ -191,7 +192,7 @@ public:
 
    virtual int isVehicle() { return FALSE; }
 
-   virtual void Clear();
+   virtual void clear();
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
    /** Stuff used to generate meta data. */
@@ -199,7 +200,7 @@ public:
 
    virtual void checkForProc(String& cmd, String& arg1, critter& actor,
                              int targ);
-
+   void checkForBattle(critter& pc_who_is_being_checked_for);
    const String* getRandomExitDir(critter& for_this_pc);
    int getZoneNum();
    virtual void stat(critter& pc);

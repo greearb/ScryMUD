@@ -1,5 +1,5 @@
-// $Id: code_gen.h,v 1.4 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: code_gen.h,v 1.5 1999/08/04 06:29:16 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
 
 //
 //ScryMUD Server Code
@@ -58,7 +58,7 @@ private:
 
 protected:
    String enum_name;
-   List<LVPair*> vals;
+   PtrList<LVPair> vals;
 
 public:
    LanguageEntry() {;}

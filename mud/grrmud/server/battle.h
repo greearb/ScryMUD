@@ -1,5 +1,5 @@
-// $Id: battle.h,v 1.4 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: battle.h,v 1.5 1999/08/04 06:29:16 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
 
 //
 //ScryMUD Server Code
@@ -63,9 +63,9 @@ critter* mob_to_smob(critter& mob, const int room_num,
 critter* mob_to_smob(critter& mob, room& rm,
                      int supress_sub_fail_msg = FALSE);
 
-object*  obj_to_sobj(object& obj, List<object*>* in_list, int do_sub,
+object*  obj_to_sobj(object& obj, Entity* container, int do_sub,
                      int i_th, const String* name, int see_bit, room& rm);
-object*  obj_to_sobj(object& obj, List<object*>* in_list, int rm_num);
+object*  obj_to_sobj(object& obj, Entity* container, int rm_num);
 
 
 #endif

@@ -1,5 +1,5 @@
-// $Id: bitfield.cc,v 1.8 1999/08/03 05:55:33 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/03 05:55:33 $
+// $Id: bitfield.cc,v 1.9 1999/08/04 06:29:17 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/04 06:29:17 $
 
 //
 //ScryMUD Server Code
@@ -133,9 +133,9 @@ int bitfield::Assert(int boolean_val, const char* msg) {
    return TRUE;
 }
 
-void bitfield::Clear() {
+void bitfield::clear() {
    off_all();
-}//Clear()
+}//lear()
 
 
 int figure_len(int max_flag) {
@@ -152,7 +152,7 @@ int bitfield::read(istream& ifile) {
    int flag;
    char buf[81];
 
-   Clear();
+   clear();
    ifile >> flag;
 
    if (!ifile) {
@@ -172,13 +172,14 @@ int bitfield::read(istream& ifile) {
 }//Read
 
 
-void bitfield::write(ostream& ofile) const {
+int bitfield::write(ostream& ofile) const {
    for (int i = max_bit(); i >= 0; i--) {
       if (get(i)) {
          ofile << i << " ";
       }//if
    }//for
    ofile << -1 << "  -:| bitfield |:-\n";
+   return 0;
 }//Write
 
 

@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.21 1999/08/03 05:55:33 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/03 05:55:33 $
+// $Id: object.h,v 1.22 1999/08/04 06:29:17 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/04 06:29:17 $
 
 //
 //ScryMUD Server Code
@@ -33,6 +33,7 @@
 #include <string2.h>
 #include "classes.h"
 #include "critter.h"
+#include "Scriptable.h"
 
 class object;
  
@@ -66,7 +67,7 @@ public:
 
    //void Clear();
    void read(istream& da_file, int read_all = TRUE);
-   void write(ostream& da_file) const;
+   void write(ostream& da_file);
    static int getInstanceCount() { return _cnt; }
 }; //obj_construct_data
 
@@ -194,7 +195,7 @@ public:
    ~object();                     //destructor
    object& operator= (object& source);
 
-   void Clear();
+   void clear();
    int read(istream& da_file, int read_all = TRUE);
    int write(ostream& da_file);
    int read_v3(istream& da_file, int read_all);

@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.30 1999/08/01 08:40:23 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
+// $Id: room.cc,v 1.31 1999/08/04 06:29:17 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/04 06:29:17 $
 
 //
 //ScryMUD Server Code
@@ -960,6 +960,9 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
    }//while
 }//checkForProc
 
+
+
+
 /** Attempt to trigger a room script directly.  So far, we support only
  * pull and push, but more can easily be added.
  */
@@ -1022,6 +1025,29 @@ int room::attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
    }//while
    return -1; //didn't find anything that matched
 }//attemptExecuteUnknownScript
+
+
+void room::checkForBattle(critter& pc) {
+   SCell<critter*> cll(critters);
+
+   critter* ptr;
+   while ((ptr = cll.next())) {
+      if (ptr->doesRemember(pc) && ptr->canDetect(pc)) {
+         say("There you are!!", *ptr, *(ptr->getCurRoom()));
+         try_hit(pc, *ptr);
+      }//if
+
+      if (!haveCritter(&pc)) {
+         return;
+      }
+      if (haveCritter(ptr)) { //make sure we're still there
+         if (pc.doesRemember(*ptr) && pc.canDetect(*ptr)) {
+            say("I've found you now!!", pc, *this);
+            try_hit(*ptr, pc);
+         }//if
+      }//if
+   }//while
+}//checkForBattle
 
 
 int room::getZoneNum() {

@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.13 1999/08/03 05:55:32 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/03 05:55:32 $
+// $Id: classes.h,v 1.14 1999/08/04 06:29:16 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/04 06:29:16 $
 
 //
 //ScryMUD Server Code
@@ -36,6 +36,7 @@
 #include <list2.h>
 #include <SafeList.h>
 #include "lang_strings.h"
+#include "Serialized.h"
 
 
 class critter;  //foward declaration
@@ -73,47 +74,6 @@ public:
     * inclusion in hegemon markup text.
     */
    static String makeSafeForHegTag(const char* string);
-};
-
-/** I'd wrather not do it this way, but I can't find a better solution.
- * So, I'm going to make the LogicalEntity's aware of what kind of object
- * they are.
- *
- * NOTE:  It is extremely important to assign numbers to these, as they will
- * be written into the database/world files, and should not change values
- * with the code.
- */
-enum LEtypeE {
-   LE_ENTITY = 0,
-   LE_CRITTER = 1,
-   LE_OBJECT = 2,
-   LE_BAG_OBJ = 3,
-   LE_ROOM = 4,
-   LE_VEHICLE = 5,
-   LE_DOOR_DATA = 6,
-   LE_DOOR = 7,
-   LE_OSCRIPT = 8,
-   LE_RSCRIPT = 9,
-   LE_MSCRIPT = 10,
-   LE_LS_COLLECTION = 11,
-   LE_SCRIPT_COLL = 12,
-   LE_CLOSABLE = 13,
-   LE_OBJ_PROC = 14,
-   LE_UNKNOWN = 0xFFFFFFE,
-   LE_ANY = 0xFFFFFFF
-};
-
-class Serialized {
-protected:
-   
-public:
-   virtual int write(ostream& dafile) = 0;
-   virtual int read(istream& dafile, int read_all = TRUE) = 0;
-
-   /** Stuff used to generate meta data. */
-   virtual LEtypeE getEntityType() = 0;
-   virtual const char* getVersion() { return "3.0"; }
-   virtual String getOptionalMetaTags() { String r; return r; } //ie blank
 };
 
 class MTPair {
@@ -239,10 +199,11 @@ public:
    Entity* getContainer() { return container; }
 
    virtual const String* getName(int c_bit = ~0);
+   virtual const String* getShortName(int c_bit = ~0);
    virtual const String* getLongName(int c_bit = ~0);
    /**  These will take care of language translation and see-bits. */
    virtual const String* getName(critter* observer);
-   virtual const String* getLongName(critter* observer);
+   virtual const String* getShortName(critter* observer);
    virtual const String* getLongDesc(critter* observer);
    virtual int isNamed(const String& name) const;
    void appendName(String* nm);
