@@ -1,5 +1,5 @@
-# $Id: translation2.spec,v 1.13 2001/03/29 03:02:36 eroper Exp $
-# $Revision: 1.13 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
+# $Id: translation2.spec,v 1.14 2002/02/07 08:04:01 eroper Exp $
+# $Revision: 1.14 $  $Author: eroper $ $Date: 2002/02/07 08:04:01 $
 
 # See translations.spec for more information.
 
@@ -123,45 +123,45 @@ CS_OF_LEVEL
 	~
 
 CS_SC_GOLD
-	eng "GOLD %P15[%i]%P27 EXPERIENCE %P40[%i]%P50 AGE %P63[%i]\n"
-	ser "ZLATO %P15[%i]%P27 ISKUSTVO %P40[%i]%P50 GODINA %P63[%i]\n"
-	ger "GOLD %P15[%i]%P27 ERFAHRUNG %P40[%i]%P50 ALTER %P63[%i]\n"
+	eng "^yGOLD %P15^y[^Y%i^y]%P27 ^yEXPERIENCE %P40^Y[^B%i^Y]%P50 ^yAGE %P63^Y[^c%i^Y]\n"
+	ser "^yZLATO %P15^y[^Y%i^y]%P27 ^yISKUSTVO %P40^Y[^B%i^Y]%P50 ^yGODINA %P63^Y[^c%i^Y]\n"
+	ger "^yGOLD %P15^y[^Y%i^y]%P27 ^yERFAHRUNG %P40^Y[^B%i^Y]%P50 ^yALTER %P63^Y[^c%i^Y]\n"
 	~
 
 CS_SC_HP
-	eng "HP %P15[%i/%i]%P27 MANA %P40[%i/%i]%P50 MOVE %P63[%i/%i]\n"
-	ser "HP %P15[%i/%i]%P27 MANA %P40[%i/%i]%P50 MOVE %P63[%i/%i]\n"
-	ger "HP %P15[%i/%i]%P27 MANA %P40[%i/%i]%P50 MOVE %P63[%i/%i]\n"
+	eng "^yHP %P15^Y[^C%i^W/^c%i^Y]%P27 ^yMANA %P40^Y[^C%i^W/^c%i^Y]%P50 ^yMOVE %P63^Y[^C%i^W/^c%i^Y]\n"
+	ser "^yHP %P15^Y[^C%i^W/^c%i^Y]%P27 ^yMANA %P40^Y[^C%i^W/^c%i^Y]%P50 ^yMOVE %P63^Y[^C%i^W/^c%i^Y]\n"
+	ger "^yHP %P15^Y[^C%i^W/^c%i^Y]%P27 ^yMANA %P40^Y[^C%i^W/^c%i^Y]%P50 ^yMOVE %P63^Y[^C%i^W/^c%i^Y]\n"
 	~
 
 CS_SC_HPR
-	eng "HP_REGEN %P15[%i]%P27 MANA_REGEN %P40[%i]%P50 MOVE_REGEN%P63[%i]\n"
-	ser "HP_REGEN %P15[%i]%P27 MANA_REGEN %P40[%i]%P50 MOVE_REGEN%P63[%i]\n"
-	ger "HP_REGEN %P15[%i]%P27 MANA_REGEN %P40[%i]%P50 MOVE_REGEN%P63[%i]\n"
+	eng "^yHP_REGEN %P15^Y[^c%i^Y]%P27 ^yMANA_REGEN %P40^Y[^c%i^Y]%P50 ^yMOVE_REGEN%P63^Y[^c%i^Y]\n"
+	ser "^yHP_REGEN %P15^Y[^c%i^Y]%P27 ^yMANA_REGEN %P40^Y[^c%i^Y]%P50 ^yMOVE_REGEN%P63^Y[^c%i^Y]\n"
+	ger "^yHP_REGEN %P15^Y[^c%i^Y]%P27 ^yMANA_REGEN %P40^Y[^c%i^Y]%P50 ^yMOVE_REGEN%P63^Y[^c%i^Y]\n"
 	~
 
 CS_SC_ALIGN
-	eng "ALIGNMENT %P15[%i]%P27 PRACTICES %P40[%i]%P50 WEIGHT%P63[%i/%i]\n"
-	ser "ALIGNMENT %P15[%i]%P27 PRACTICES %P40[%i]%P50 WEIGHT%P63[%i/%i]\n"
-	ger "ALIGNMENT %P15[%i]%P27 PRACTICES %P40[%i]%P50 GEWICHT%P63[%i/%i]\n"
+	eng "^yALIGNMENT %P15^Y[^C%i^Y]%P27 ^yPRACTICES %P40^Y[^C%i^Y]%P50 ^yWEIGHT%P63^Y[^C%i^W/^c%i^Y]\n"
+	ser "^yALIGNMENT %P15^Y[^C%i^Y]%P27 ^yPRACTICES %P40^Y[^C%i^Y]%P50 ^yWEIGHT%P63^Y[^C%i^W/^c%i^Y]\n"
+	ger "^yALIGNMENT %P15^Y[^C%i^Y]%P27 ^yPRACTICES %P40^Y[^C%i^Y]%P50 ^yGEWICHT%P63^Y[^C%i^W/^c%i^Y]\n"
 	~
 
 CS_SC_RES
-	eng "\nResistances:  AC [%i]  HEAT [%i]  COLD [%i]  ELECTRICAL [%i]  SPELL [%i]\n"
-	ser "\nOtpornost: AC [%i]  TOPLOTA [%i]  HLADNOCA [%i]  ELEKTRIKA [%i] CAROLIJE [%i]\n"
-	ger "\nWiderstände:  AC [%i]  HITZE [%i]  KÄLTE [%i]  ELEKTRISCH [%i]  MAGIE [%i]\n"
+	eng "\n^WResistances^w:  ^MAC ^m[^M%i^m]  ^RHEAT ^r[^R%i^r]  ^BCOLD ^b[^B%i^b]  ^GELECTRICAL ^g[^G%i^g]  ^WSPELL ^w[^W%i^w]\n"
+	ser "\n^WOtpornost^w: ^MAC ^m[^M%i^m]  ^RTOPLOTA ^r[^R%i^r]  ^BHLADNOCA ^b[^B%i^b]  ^GELEKTRIKA ^g[^G%i^g] ^WCAROLIJE ^w[^W%i^w]\n"
+	ger "\n^WWiderstände^w:  AC [%i]  ^RHITZE [%i]  ^BKÄLTE [%i]  ^GELEKTRISCH [%i]  ^WMAGIE [%i]\n"
 	~
 
 CS_SC_EXP
-	eng "Experience to Next Level [%i]   Weight of gold [%i]  Wimpy [%i]\n"
-	ser "Iskustvo do sledeceg nivoa [%i]   Tezina zlata [%i]  Slabic [$i]\n"
-	ger "Erfahrung bis zur nächsten Stufe [%i]  Gewicht an Gold [%i]  Wimpy [%i]\n"
+	eng "^gExperience to Next Level ^g[^G%i^g]   ^yWeight of gold ^y[^Y%i^y]  ^rWimpy ^r[^R%i^r]\n"
+	ser "^gIskustvo do sledeceg nivoa ^g[^G%i^g]   ^yTezina zlata ^y[^Y%i^y]  ^rSlabic ^r[^R%i^r]\n"
+	ger "^gErfahrung bis zur nächsten Stufe ^g[^G%i^g]  ^yGewicht an Gold ^y[^Y%i^y]  ^rWimpy ^r[^R%i^r]\n"
 	~
 
 CS_SC_DAM
-	eng "Damage to you Modifier: [%i/100]  Damage to foes: [%i/100].\n"
-	ser "Steta  Modifier:  [%i/100]  Steta foes: [%i/100].\n"
-	ger "Modifikator Schaden Selbst: [%i/100]  Schaden Gegner: [%i/100].\n"
+	eng "^rDamage to you Modifier: [^R%i^w/^r100]  ^bDamage to foes: [^B%i^w/^b100].\n"
+	ser "^rSteta  Modifier:  [^R%i^w/^r100]  ^bSteta foes: [^B%i^w/^b100].\n"
+	ger "^rModifikator Schaden Selbst: [^R%i^w/^r100]  ^bSchaden Gegner: [^B%i^w/^b100].\n"
 	~
 
 CS_YOU_HUNGRY
