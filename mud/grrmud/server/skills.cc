@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.20 2001/10/03 07:23:03 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
+// $Id: skills.cc,v 1.21 2002/02/19 12:15:15 gingon Exp $
+// $Revision: 1.21 $  $Author: gingon $ $Date: 2002/02/19 12:15:15 $
 
 //
 //ScryMUD Server Code
@@ -38,6 +38,7 @@
 #include <PtrArray.h>
 #include "load_wld.h"
 #include "SkillSpell.h"
+#include "spells2.h"
 
 
 int track(int i_th, const String* victim, critter& pc) {
@@ -144,9 +145,7 @@ int trip(int i_th, const String* victim, critter& pc) {
    else {
       crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
    }//if
-
-   if (crit_ptr) {
-
+  if(crit_ptr) { 
       if (crit_ptr == &pc) {
         show("You trip over your own two feet!\n", pc);
         return 0;
@@ -186,6 +185,22 @@ int do_trip(critter& vict, critter& pc) {
    if (!pc.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(pc, vict);
    }//if
+   if (vict.isFlying()) {
+      Sprintf(buf,"%S floats above your attempt to trip %s!\n", 
+              name_of_crit(vict, pc.SEE_BIT), get_him_her(vict));
+      pc.show(buf);
+      Sprintf(buf, "You float above %S's attempt to trip you!\n",
+              name_of_crit(pc, vict.SEE_BIT ));
+      vict.show(buf);
+      Sprintf(buf, "floats above %S's attempt to trip %s!\n",
+             name_of_crit(pc, ~0), get_him_her(vict));
+
+      emote(buf,vict, ROOM, TRUE, &pc);
+         
+      pc.PAUSE+=1; 
+      return 0;
+   }
+
 
    if (skill_did_hit(pc, TRIP_SKILL_NUM, vict)) {
       pc.PAUSE += 2; //increment pause_count
@@ -790,6 +805,7 @@ int claw(int i_th, const String* victim, critter& pc) {
 int do_claw(critter& vict, critter& pc) {
    String buf(100);
    short do_fatality = FALSE;
+   short did_blind= FALSE;
 
    mudlog.log(TRC, "In do_claw.\n");
 
@@ -805,6 +821,11 @@ int do_claw(critter& vict, critter& pc) {
    pc.PAUSE += d(1,3); //increment pause_count
 
    if (skill_did_hit(pc, CLAW_SKILL_NUM, vict)) {
+
+      if(d(1,100) < 10+pc.DEX)
+      {
+         did_blind = TRUE;
+      }
 
       exact_raw_damage((d(pc.STR/2, 5) + pc.LEVEL), NORMAL, vict);
 
@@ -825,23 +846,57 @@ int do_claw(critter& vict, critter& pc) {
          do_fatality = TRUE;
       }//if fatality
       else {
-         Sprintf(buf, 
-                "%S's %s leave bloody streaks across your body!\n",
-                 name_of_crit(pc, vict.SEE_BIT),
-                 (pc.RACE == AVIAN ? "deadly talons" : "fingers" ));
-         buf.Cap();
-         show(buf, vict);
+         if(!did_blind) {
+            Sprintf(buf, 
+                   "%S's %s leave bloody streaks across your body!\n",
+                    name_of_crit(pc, vict.SEE_BIT),
+                    (pc.RACE == AVIAN ? "deadly talons" : "fingers" ));
+            buf.Cap();
+            show(buf, vict);
 
-         Sprintf(buf, 
-                 "Your %s leave bloody streaks across %S's body!\n", 
-                 (pc.RACE == AVIAN ? "deadly talons" : "fingers"),
-                 vict.getName(pc));
-         show(buf, pc);
+            Sprintf(buf, 
+                    "Your %s leave bloody streaks across %S's body!\n", 
+                    (pc.RACE == AVIAN ? "deadly talons" : "fingers"),
+                  vict.getName(pc));
+            show(buf, pc);
+   
+            Sprintf(buf, "claws %S with %s %s!\n",
+                    name_of_crit(vict,~0), get_his_her(pc),
+                    (pc.RACE == AVIAN ? "dedly talons" : "curled hand"));
+            emote(buf, pc, ROOM, TRUE);
+         } else { //did blind target
+         
+            Sprintf(buf, 
+                   "%S gouges your eyes with his %s!\n",
+                    name_of_crit(pc, vict.SEE_BIT),
+                    (pc.RACE == AVIAN ? "deadly talons" : "fingers" ));
+            buf.Cap();
+            show(buf, vict);
 
-         Sprintf(buf, "claws %S with %s %s!\n",
-                 name_of_crit(vict,~0), get_his_her(pc),
-                 (pc.RACE == AVIAN ? "dedly talons" : "curled hand"));
-         emote(buf, pc, ROOM, TRUE);
+            Sprintf(buf, 
+                    "You gouge %S's eyes!\n", 
+                    vict.getName(pc));
+            show(buf, pc);
+   
+            Sprintf(buf, "gouges %S's eyes with his %s %s!\n",
+                    name_of_crit(vict,~0), get_his_her(pc),
+                    (pc.RACE == AVIAN ? "deadly talons" : "curled hand"));
+            emote(buf, pc, ROOM, TRUE);
+            
+
+            stat_spell_cell* ptr = is_affected_by(BLINDNESS_SKILL_NUM, vict);
+            if (ptr) {
+               ptr->bonus_duration += 2;//doesn't increase much after
+                                        //the first hit 
+            } else {
+               Put(new stat_spell_cell(BLINDNESS_SKILL_NUM, pc.LEVEL/10 + 1), 
+                   vict.affected_by);
+               vict.SEE_BIT &= ~(1024); //turn off the flag
+            }
+           
+            
+         }//end did blind target
+          
       }//else
    }//if
    else {  //missed
