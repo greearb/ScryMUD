@@ -368,14 +368,14 @@ goo socials ~
 goo(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 gossip *channels ~
 NOP
+group ~
+return group(i, &(cooked_strs[1]), pc);
 greet socials ~
 greet(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 grin socials ~
 grin(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 groan socials ~
 groan(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
-group ~
-return group(i, &(cooked_strs[1]), pc);
 growl socials ~
 growl(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 grunt socials ~
