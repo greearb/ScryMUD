@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.13 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: command3.cc,v 1.14 1999/06/06 19:38:24 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/06 19:38:24 $
 
 //
 //ScryMUD Server Code
@@ -632,7 +632,7 @@ int idea(const String& str, critter& pc) {
    return 0;
 }//idea
 
-int bug(const String& str, critter& pc) {
+int bug(String& str, critter& pc) {
    String buf(300);
 
    if (!pc.isPc()) {
@@ -643,6 +643,8 @@ int bug(const String& str, critter& pc) {
       show("Usage:  bug <text of bug description>.\n", pc);
       return -1;
    }//if
+
+   parse_for_max_80(str);
 
    Sprintf(buf, "%S %S, room %i:  %S\n\n", &(getCurTime()), name_of_crit(pc, ~0),
            pc.getCurRoomNum(), &str);

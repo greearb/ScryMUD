@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.14 1999/06/06 18:15:42 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/06 18:15:42 $
+// $Id: spec_prc.cc,v 1.15 1999/06/06 19:38:24 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/06 19:38:24 $
 
 //
 //ScryMUD Server Code
@@ -844,7 +844,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
                         ptr = mob_to_smob(*ptr, i);
                      }//if
 
-                     int attempted = d(1, sz);
+                     int attempted = d(1, sz) - 1; //translate to zero-based!
                      obj_ptr = room_list[i].getInv()->elementAt(attempted);
  
                      if (!obj_ptr) {

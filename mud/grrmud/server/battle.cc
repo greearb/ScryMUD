@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.12 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: battle.cc,v 1.13 1999/06/06 19:38:24 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/06 19:38:24 $
 
 //
 //ScryMUD Server Code
@@ -186,7 +186,7 @@ void do_battle() {
 		  }//if not a mirror
 
                   // NOTE:  vict_ptr could be deleted at this point!!
-                  if (vict_ptr && show_vict_tags) {
+                  if (vict_ptr && r_ptr->haveCritter(vict_ptr)) {
                      //Vict CANNOT be deleted at this point..or you're screwed!
                      if (vict_ptr->isUsingClient()) {
                         show("</BATTLE>", *vict_ptr);

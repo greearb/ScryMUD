@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.21 1999/06/06 18:15:42 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/06 18:15:42 $
+// $Id: critter.cc,v 1.22 1999/06/06 19:38:24 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/06 19:38:24 $
 
 //
 //ScryMUD Server Code
@@ -3784,7 +3784,7 @@ int critter::doDropCoins(int cnt) {
       show(buf);
 
       object* gold;
-      gold = obj_to_sobj(obj_list[GOLD_OBJECT], getCurRoom()->peekInv(),
+      gold = obj_to_sobj(obj_list[GOLD_OBJECT], getCurRoom()->getInv(),
                          getCurRoomNum());
       
       obj_list[GOLD_OBJECT].incrementCurInGame();
@@ -3793,5 +3793,6 @@ int critter::doDropCoins(int cnt) {
       GOLD -= cnt;
       
       getCurRoom()->gainObject(gold);
+      return 0;
    }//all is well
 }//doDropCoins
