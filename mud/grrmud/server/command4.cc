@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.41 2001/06/10 21:49:07 justin Exp $
-// $Revision: 1.41 $  $Author: justin $ $Date: 2001/06/10 21:49:07 $
+// $Id: command4.cc,v 1.42 2001/06/24 05:45:55 greear Exp $
+// $Revision: 1.42 $  $Author: greear $ $Date: 2001/06/24 05:45:55 $
 
 //
 //ScryMUD Server Code
@@ -1302,11 +1302,11 @@ int write_zone(int znum, critter& pc) {
 
 int do_write_zone(int znum) {
    switch (config.useMySQL) {
-      #ifdef USEMYSQL
+#ifdef USEMYSQL
       case true:
          return do_db_write_zone(znum);
       break;
-      #endif;
+#endif
       case false:
          return do_file_write_zone(znum);
       break;

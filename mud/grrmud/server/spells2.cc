@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.16 2001/06/10 23:01:25 justin Exp $
-// $Revision: 1.16 $  $Author: justin $ $Date: 2001/06/10 23:01:25 $
+// $Id: spells2.cc,v 1.17 2001/06/24 05:45:55 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 2001/06/24 05:45:55 $
 
 //
 //ScryMUD Server Code
@@ -41,7 +41,7 @@
 #include "spells2.h"
 #include <PtrArray.h>
 #include "zone.h"
-
+#include "socials.h"
 
 
 void do_cast_locate(const String* targ, critter& agg, int is_canned,
@@ -2543,6 +2543,11 @@ void do_locate_object(critter &crit, const String* targ, critter& pc,
 void cast_sober(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = SOBER_SKILL_NUM;
+
+   if (!pc.isPc()) {
+      mutter(1, &NULL_STRING, pc, ROOM);
+      return;
+   }
 
    vict = ROOM.haveCritNamed(i_th, victim, pc);
 
