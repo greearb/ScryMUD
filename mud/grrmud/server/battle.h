@@ -67,5 +67,7 @@ object*  obj_to_sobj(object& obj, PtrList<object>* in_list, int do_sub,
                      int i_th, const String* name, int see_bit, room& rm);
 object*  obj_to_sobj(object& obj, PtrList<object>* in_list, int rm_num);
 
+void damage_magic_shields(float damage, critter& vict);
+
 
 #endif

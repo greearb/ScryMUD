@@ -224,9 +224,10 @@ void MobSpell::onCast(critter& vict, critter& pc, int is_canned, int lvl) {
    
    
    victim = check_for_diversions(vict, diversions, pc);
-   if (victim->isMob()) { // is this really needed here? couldn't it be put in exact_raw_damage? seems a better place for it
-       victim = mob_to_smob(*victim, victim->getCurRoomNum(), TRUE);
-   }//if
+ //  if (victim->isMob()) { // is this really needed here? couldn't it be put in exact_raw_damage? seems a better place for it
+ //      victim = mob_to_smob(*victim, victim->getCurRoomNum(), TRUE);
+  // }//if
+   victim->makeSmob();//auto converts to smob if needed
    agg = &pc;
    if(doCastEffects()){
       doSpellEffects();

@@ -5348,3 +5348,223 @@ int critter::doPutCoins(int cnt, object* bag) {
       return 0;
    }//all is well
 }//doPutCoins
+
+
+critter* critter::makeSmob(int suppress_sub_fail_msg) {
+   room* rm = getCurRoom();
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In mob_to_smob:  " << getName() << endl;
+   }
+
+   /*  This function DOES DO SUBSTITUTION itself, calling code need not worry
+       about it. */
+
+   
+   
+   if (isSmob()) {
+	   //already an smob, so return this
+      mudlog.log(DBG, "ERROR:  mob_to_smob called on nonMOB.\n");
+	  return this;
+   }//if
+
+   if (isPc()) {
+      mudlog.log(DBG, "ERROR:  mob has pc_data in mob_to_smob.\n");
+	  //we can return a pc here, since they can be modified safely(more or less)
+	  return this;
+   }//if
+
+   MOB_FLAGS.turn_on(4); //now it can be/should be reset when pulsed
+
+   critter* crit_ptr = new critter(*this);
+
+   obj_ptr_log << "CRI_CR " << getIdNum() << " " << crit_ptr << "\n";
+
+   crit_ptr->setCurRoomNum(rm->getIdNum());
+
+   if (!rm->sub_a_4_b(crit_ptr, this, 1)) {
+      /* note:  create golem and others will fail on this now with no bad
+         effects, so this error message has been commented out. */
+      if (!suppress_sub_fail_msg) {
+         mudlog << "ERROR:  SubstituteData failed in mob_to_smob, mob#: "
+                << crit_ptr->getIdNum() << "  name: " << *(crit_ptr->getName())
+                << " room# " << rm->getIdNum() << endl;
+      }//if
+
+      // If couldn't substitute, then we need to increment it's
+      // CUR_IN_GAME
+      crit_ptr->incrementCurInGame();
+   }//if
+   
+   affected_mobs.gainData(crit_ptr);  //basically a list of smobs
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "mob_to_smob:  returning critter, address:  " << crit_ptr
+             << endl;
+   }
+   crit_ptr->mob->setTicksOld(0);
+
+   return crit_ptr;
+}
+
+int critter::takeDamage(int damage, int type, critter& agg) {
+
+	//this is NOT the same as the one in battle.cc
+	//a bug with earthmeld was fixed, it used agg's pl, not vict 
+	//but there may be a reason for that that i am unaware of
+	//note to self: add crit.damageMagicShields so we don't rely on
+	// the one in battle.cc
+
+   int armor_value = 100;
+   float dam = (float)damage;
+   
+   switch (type) {
+    case FIRE: case D_BREATH:
+      armor_value = HEAT_RESIS;
+      break;
+    case ICE:
+      armor_value = COLD_RESIS;
+      break;
+    case ELECTRICITY:
+      armor_value = ELEC_RESIS;
+      break;
+   }//switch
+   
+   armor_value += 100;
+   if (armor_value < 0) {
+      armor_value = 0;
+   }//if
+
+   // Special damages add an additional 10% owie at the 1:1 ratio.
+   switch(type) {
+      case FIRE:
+      case D_BREATH:
+      case ICE:
+      case ELECTRICITY:
+         dam += ( dam*0.10 );
+         break;
+   }
+
+   dam = dam * ((float)armor_value/200.0);
+   
+   damage_magic_shields(dam, *this);
+
+   dam = (dam * (((float)getDamRecMod())/100.0) * 
+          ((float)(agg.DAM_GIV_MOD)/100.0));
+
+   int pl;
+   if (agg.pc && 
+       (pl = get_percent_lrnd(ENHANCED_DAMAGE_SKILL_NUM, agg)) > 0) {
+       // between 0.5% at 1%lrnd to 50% at 100%lrnd extra damage MAX
+      dam += ( dam * ( ((float)d(1, (pl/2)+1))/100) ); 
+      // old method dam += (float)(d(1, pl/20));
+   }//if
+   
+   if ((agg.ALIGN < -350) && is_affected_by(PFE_SKILL_NUM, *this)) {
+      dam -= (float)(d(1, 10));
+      if (dam < 0)
+        dam = 0;
+   }//if
+   
+   if ((agg.ALIGN > 350) &&is_affected_by(PFG_SKILL_NUM, *this)) {
+      dam -= (float)(d(1, 10));
+      if (dam < 0)
+        dam = 0;
+   }//if
+   
+   if (is_affected_by(ABSORB_BLOWS_SKILL_NUM, *this)) {
+      MANA -= (short)dam;
+      if (MANA < 0) {
+         dam *= 2;
+         MANA = 0;
+      }//if
+      else {
+         dam = -(dam/1.5);
+      }//else
+   }//if
+
+   if (is_affected_by(EARTHMELD_SKILL_NUM, *this)) {
+      if ((pl = get_percent_lrnd(EARTHMELD_SKILL_NUM, *this)) > d(1,115)) {
+         dam *= (100.0 - ((float)(pl))/7.0) / 100.0;
+      }//if
+   }//if
+   
+   // Gonna make low level mobs a little weaker across the board to
+   // help out the newbies!
+   if (agg.isNPC() && (agg.getLevel() < 10)) {
+      dam *= 0.75;
+   }
+
+   if (isImmort() && isNoHassle()
+       && getImmLevel() >= agg.getImmLevel()) {
+      dam = 0.0;
+      if (mudlog.ofLevel(INF)) {
+         mudlog << "INFO:  setting damage to zero because of !hassle.\n"
+                << endl;
+      }//if
+   }//if
+
+   // Special checks for Flesh-to-Stone
+   if (is_affected_by(FLESH_TO_STONE_SKILL_NUM, *this)) {
+      if (dam > 3.0) {
+         dam = 3.0;
+      }
+   }
+
+   if (is_affected_by(FLESH_TO_STONE_SKILL_NUM, agg)) {
+      // Just in case someone lets some damage slip through...
+      if (dam > 5.0) {
+         dam = 5.0;
+      }
+   }
+
+  HP -= (int)(dam);
+  return (int)dam;
+}//exact_raw_damage
+
+
+int critter::takeDamage(int damage, int type) {
+
+	//this is NOT the same as the one in battle.cc
+	//a bug with earthmeld was fixed, it used agg's pl, not vict 
+	//but there may be a reason for that that i am unaware of
+	//note to self: add crit.damageMagicShields so we don't rely on
+	// the one in battle.cc
+
+   int armor_value = 100;
+   float dam = (float)damage;
+   
+   switch (type) {
+    case FIRE: case D_BREATH:
+      armor_value = HEAT_RESIS;
+      break;
+    case ICE:
+      armor_value = COLD_RESIS;
+      break;
+    case ELECTRICITY:
+      armor_value = ELEC_RESIS;
+      break;
+   }//switch
+   
+   armor_value += 100;
+   if (armor_value < 0) {
+      armor_value = 0;
+   }//if
+
+   // Special damages add an additional 10% owie at the 1:1 ratio.
+   switch(type) {
+      case FIRE:
+      case D_BREATH:
+      case ICE:
+      case ELECTRICITY:
+         dam += ( dam*0.10 );
+         break;
+   }
+
+   dam = dam * ((float)armor_value/200.0);
+   
+   damage_magic_shields(dam, *this);
+
+   dam *= (((float)getDamRecMod())/100.0);
+   HP -= (int)(dam);
+   return (int)dam;
+}

@@ -2178,8 +2178,6 @@ door* get_target_door(int i_th, const String* target, critter& pc) {
 room* get_target_room(critter& pc){
     //no error checking, mobs should always be in a room
     room* rm = room_list.elementAt(pc.getCurRoomNum());
-    rm->makeReadyForAreaSpell();// not techinically part of targeting, but putting it here removes redundancy in other areas
-
     return rm;
     
 }

@@ -36,6 +36,7 @@
 #include "room.h"
 #include "const.h"
 #include "lang_strings.h"
+#include "battle.h"
 
 ///********************  temp crit data  *****************************///
 
@@ -1129,7 +1130,12 @@ public:
    void checkLight(object* obj = NULL, int posn = -1);
    void drunkifyMsg(String& msg);
    void checkForBattle(room& rm);
+
    static int getInstanceCount() { return _cnt; }
+
+   critter* makeSmob(int suppress_sub_fail_msg = 0);
+   int takeDamage(int adamage, int type, critter &agg);
+   int takeDamage(int damage, int type);
 };//class critter
  
 
