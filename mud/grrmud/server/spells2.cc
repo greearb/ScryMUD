@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.28 2002/08/22 07:49:05 eroper Exp $
-// $Revision: 1.28 $  $Author: eroper $ $Date: 2002/08/22 07:49:05 $
+// $Id: spells2.cc,v 1.29 2002/08/26 05:37:12 eroper Exp $
+// $Revision: 1.29 $  $Author: eroper $ $Date: 2002/08/26 05:37:12 $
 
 //
 //ScryMUD Server Code
@@ -920,23 +920,23 @@ void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
           ptr->bonus_duration += lvl / 2;
 
           if (ptr->bonus_duration > 40) {
-             if (vict.pc) {
-                if (vict.STR > 20) {
+             if (agg.pc) {
+                if (agg.STR > 20) {
                    if (d(1,7) == 5) { //ouch, lost some CON!!
-                      vict.show("Oops...somehow you think that spell might have backfired!!\n");
-                      vict.STR--;
+                      agg.show("Oops...somehow you think that spell might have backfired!!\n");
+                      agg.STR--;
                    }
                 }//if
-                else if (vict.DEX > 20) {
+                else if (agg.DEX > 20) {
                    if (d(1,7) == 7) { //ouch, lost some CON!!
-                      vict.show("Oops...somehow you think that spell might have backfired!!\n");
-                      vict.DEX--;
+                      agg.show("Oops...somehow you think that spell might have backfired!!\n");
+                      agg.DEX--;
                    }
                 }//if
-                else if (vict.CON > 20) {
+                else if (agg.CON > 20) {
                    if (d(1,7) == 7) { //ouch, lost some DAMCON!!
-                      vict.show("Oops...somehow you think that spell might have backfired!!\n");
-                      vict.CON--;
+                      agg.show("Oops...somehow you think that spell might have backfired!!\n");
+                      agg.CON--;
                    }
                 }//if
              }
@@ -1618,15 +1618,15 @@ void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
         agg.MANA -= spell_mana;
 
         if (d(1,13) == 13) { //ouch, lost some CON!!
-           if (vict.pc) {
-              if (vict.ATTACKS >= 3) {
-                 vict.ATTACKS--;
-                 vict.show("You fall too your knees in pain..feeling momentarily lost in your limbs!\n");
-                 vict.ATTACKS--;
+           if (agg.pc) {
+              if (agg.ATTACKS >= 3) {
+                 agg.ATTACKS--;
+                 agg.show("You fall too your knees in pain..feeling momentarily lost in your limbs!\n");
+                 agg.ATTACKS--;
               }
               else {
-                 vict.show("As you cast the spell you feel it tear something from your very soul!\n");
-                 vict.CON--;
+                 agg.show("As you cast the spell you feel it tear something from your very soul!\n");
+                 agg.CON--;
               }
            }
         }//if
@@ -1693,7 +1693,7 @@ void cast_haste(int i_th, const String* victim, critter& pc) {
    }//if
                  /* all checks have been passed, lets do it */
 
-   do_cast_haste(*vict, pc, FALSE, 0);
+   do_cast_haste(*vict, pc, FALSE, 1);
 }//do_cast_haste
 
 
