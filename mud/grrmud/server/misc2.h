@@ -128,7 +128,6 @@ void out_field(const bitfield& field, critter& pc);
 void out_stat_spell_list(const List<stat_spell_cell*>& lst, critter& pc);
 //void critter::doBecomeNonPet();
 const String* single_obj_name(object& obj, int see_bit);
-void do_pc_prompt(critter& pc);
 short name_is_secret(const String* name, door& dr);
 
 const char* get_himself_herself(critter& pc);

@@ -47,6 +47,7 @@ class SocketReader extends Thread {
    public void run () {
       int c;
       int len;
+      int real_len;
       String str;
       hif = new HegemonInputFilter(hm.getOlcStore(), parent.getWriter(),
                                    hm.getActions(), hm, hm.getScroll(),
@@ -77,11 +78,11 @@ class SocketReader extends Thread {
                      if (len > 9998) //don't want to overflow buffer
                        len = 9998;
 
-                     if (dis.read(buf, 1, len) == -1) {
+                     if ((real_len = dis.read(buf, 1, len)) == -1) {
                         Log.instance().err("SocketReader:  read failed.");
                         break;  //end of file, socket closed
                      }//if
-                     str = new String(buf, 0, len + 1);
+                     str = new String(buf, 0, real_len + 1);
                   }
                   else {
                      str = new String(buf, 0, 1);

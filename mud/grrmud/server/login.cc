@@ -28,6 +28,7 @@
 #include "spells.h"
 #include "skills.h"
 #include "command2.h"
+#include "command5.h"
 #include "load_wld.h"
 #include <time.h>
 #include <PtrArray.h>
@@ -85,6 +86,12 @@ void critter::doLogin() {
          {
          case 0:  /* get the name.. */
             string = pc->input.Get_Command(eos, term_by_period);
+
+            if (string == "__HEGEMON__") {
+               using_client(*this);
+               show("Detected Hegemon Client\n");
+               break;
+            }
             
             if (mudlog.ofLevel(DBG)) {
                mudlog << "TRACE:  in do_login, got name -:" << string << ":-"
@@ -254,7 +261,14 @@ void critter::doLogin() {
                int tmp_int = pc->descriptor;
                int tmp_index = pc->index;
                tmp_host = pc->host;
+               int using_hegemon = isUsingClient();
+
                Read(rfile, TRUE);
+               setNoClient(); //turn off by default
+
+               if (using_hegemon) {
+                  using_client(*this);
+               }
                
                pc->descriptor = tmp_int;
                pc->host = tmp_host;
@@ -316,7 +330,9 @@ void critter::doLogin() {
                      //should just clean up its mess...
                      setMode(MODE_LOGOFF_NEWBIE_PLEASE);
                      
-                     old_ptr->show("<ENGAGE_HEGEMON>\n");
+                     if (!old_ptr->isUsingClient()) {
+                        old_ptr->show("<ENGAGE_HEGEMON>\n");
+                     }
                      look(1, &NULL_STRING, *old_ptr); //autolook
                      
                      if (was_link_dead) {
@@ -573,7 +589,14 @@ int  quit_do_login_new(critter& pc) {
    String temp_str;
    emote("has entered the game.", pc, ROOM, TRUE);
    room_list[pc.getCurRoomNum()].gainCritter(&pc);
-   pc.show("<ENGAGE_HEGEMON>\n");
+   if (!pc.isUsingClient()) {
+      pc.show("<ENGAGE_HEGEMON>\n");
+   }
+   else {
+      pc.show("You're prompt is on by default, but as Hegemon displays
+bar graphs anyway, you may wish to change your prompt.  I suggest the
+command:  prompt %N\n");
+   }
    show("Welcome to the Game.\n\n", pc);
    look(1, &NULL_STRING, pc); //autolook
    show("\r\nIf your screen is 'stair-stepped', type:  toggle carriage\n",
@@ -614,7 +637,7 @@ int  quit_do_login_old(critter& pc) {
 
    // Turn off, if they are using Hegemon, it will be automatically
    // turned back on.
-   pc.setNoClient();
+   //pc.setNoClient();
 
    //if (pc.USING_CLIENT) {
    //   show("\n</PRE>\n", pc);
@@ -632,7 +655,10 @@ int  quit_do_login_old(critter& pc) {
 
    emote("has entered the game.", pc, ROOM, TRUE);
    ROOM.gainCritter(&pc);
-   pc.show("<ENGAGE_HEGEMON>\n");
+   
+   if (!pc.isUsingClient()) {
+      pc.show("<ENGAGE_HEGEMON>\n");
+   }
 
    if (pc.isUsingColor()) {
       pc.show(*(pc.getBackGroundColor()));

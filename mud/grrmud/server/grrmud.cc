@@ -965,7 +965,7 @@ void game_loop(int s)  {
          }//if in MODE_NORMAL
       }//while
 
-	//log("Doing output.\n");
+      //log("Doing output.\n");
 				    /* output */
       pc_list.head(pc_cell);
       while ((pc_ptr = pc_cell.next())) {

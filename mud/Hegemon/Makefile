@@ -21,6 +21,7 @@ ActionFrame.class \
 Alias.class \
 AliasDialog.class \
 AliasFrame.class \
+BuildInfo.class \
 BIStream.class \
 BOStream.class \
 ClientDisplay.class \
@@ -75,32 +76,93 @@ SocketReader.class \
 SocketWriter.class \
 StringUtils.class
 
-release: $(OBJS) ../hegemon/data/help/hegemon.bml
+
+SRCS=hegemon.java \
+Action.java \
+ActionDialog.java \
+ActionFrame.java \
+Alias.java \
+AliasDialog.java \
+AliasFrame.java \
+BIStream.java \
+BOStream.java \
+ClientDisplay.java \
+ColorChoicesFrame.java \
+ColorNameException.java \
+ColorSelectionManager.java \
+ColorUtils.java \
+CommandHistory.java \
+ContextColorPair.java \
+Context.java \
+ConnectionManager.java \
+HegemonDisplay.java \
+HegemonDisplayProperties.java \
+HegemonInputFilter.java \
+HelpFrame.java \
+HelpIndex.java \
+ScrollComponentGraph.java \
+ScrollComponentVector.java \
+HegemonScrollCanvas.java \
+HegemonScroll.java \
+HegemonManager.java \
+HostAddr.java \
+HostDialog.java \
+InputArea.java \
+KeywordEditor.java \
+LabeledCheckBoxGlob.java \
+LabeledChoice.java \
+LabeledTextArea.java \
+LabeledTextBoxGlob.java \
+LabeledTextField.java \
+Log.java \
+LogFrame.java \
+MessageDialog.java \
+MobScriptEditor.java \
+NumCheckbox.java \
+NumTextBox.java \
+OLCDoor.java \
+OLCMob.java \
+OLCObject.java \
+OLCRoom.java \
+OlEditor.java \
+OlcStore.java \
+PathCellEditor.java \
+PsoEditor.java \
+Queue.java \
+ScrollComponentQueue.java \
+ScrollComponent.java \
+ScrollComponentText.java \
+ScrollComponentNewline.java \
+SocketManager.java \
+SocketReader.java \
+SocketWriter.java \
+StringUtils.java
+
+
+release:  $(OBJS)
 	rm -f ../hegemon/*.class
 	cp *.class ../hegemon/
 
-../hegemon/data/help/hegemon.bml: $(OBJS) Makefile ../hegemon/data/help/hegemon.ORIG
-	echo "<color red>" > ../hegemon/data/help/hegemon.bml
-	echo "Built on: `date`" >> ../hegemon/data/help/hegemon.bml
-	echo "By: `whoami`" >> ../hegemon/data/help/hegemon.bml
-	echo "On machine: `uname -mrspn`" >> ../hegemon/data/help/hegemon.bml
-	echo "</color><color blue>" >> ../hegemon/data/help/hegemon.bml
 
-	cat ../hegemon/data/help/hegemon.ORIG >> ../hegemon/data/help/hegemon.bml
-
+BuildInfo.java: $(SRCS) Makefile BuildInfo.prefix BuildInfo.suffix
+	cat BuildInfo.prefix > BuildInfo.java
+	echo "\"Built on:   `date` \\n\" +" >> BuildInfo.java
+	echo "\"By:         `whoami` \\n\" +" >> BuildInfo.java
+	echo "\"On machine: `uname -mrspn` \\n\" +" >> BuildInfo.java
+	cat BuildInfo.suffix >> BuildInfo.java
 
 all: tar jar release
 
 
-tar: $(OBJS) ../hegemon/data/help/hegemon.bml
+tar: $(OBJS)
 	rm -f heg.tar
 	rm -f heg.tar.gz
 	tar -cvf heg.tar *.class
 	gzip heg.tar
 
-jar: $(OBJS) ../hegemon/data/help/hegemon.bml
+jar: $(OBJS)
 	rm -f heg.jar
 	${JAR} -cvf heg.jar *.class
 
 clean: 
-	rm -f *.class ../hegemon/data/help/hegemon.bml
+	rm -f *.class

@@ -26,6 +26,9 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 
+/**  This manages the fonts and colors for different types of
+ * input.  Fully customizable by the end user.
+ */
 class ColorSelectionManager extends Frame {
    HegemonManager hm = null;
    
@@ -42,10 +45,18 @@ class ColorSelectionManager extends Frame {
    ContextColorPair other;
    ContextColorPair say;
    ContextColorPair back_ground;
+   ContextColorPair input;
 
+   ScrollPane sp;
    
    public ColorSelectionManager(HegemonManager h) {
       super("Color Selection Manager");
+
+      addWindowListener (new WindowAdapter () {
+         public void windowClosing (WindowEvent e) {
+            do_close();
+         }});
+
       hm = h;
       door_list = new ContextColorPair(Context.DOOR_LIST, hm);
       mob_list = new ContextColorPair(Context.MOB_LIST, hm);
@@ -60,6 +71,7 @@ class ColorSelectionManager extends Frame {
       other = new ContextColorPair(Context.OTHER, hm);
       say = new ContextColorPair(Context.SAY, hm);
       back_ground = new ContextColorPair(Context.BACKGROUND, hm);
+      input = new ContextColorPair(Context.INPUT, hm);
 
       try {
          readObject();
@@ -68,64 +80,75 @@ class ColorSelectionManager extends Frame {
          Log.instance().wrn("WARNING:  ColorSelectionManager():  " + e);
       }
 
+      sp = new ScrollPane();
+      Panel p = new Panel();
+      
       int REM = GridBagConstraints.REMAINDER;
       GridBagLayout gridbag = new GridBagLayout();
       GridBagConstraints c = new GridBagConstraints();
-      setLayout(gridbag);
+      p.setLayout(gridbag);
 
       c.fill = GridBagConstraints.BOTH;
       c.weightx = c.weighty = 0.0;
             
-      c.gridwidth = 1;
+      c.gridwidth = REM;
       gridbag.setConstraints(door_list, c);
-      add(door_list);
-      c.gridwidth = REM;
+      p.add(door_list);
+      //c.gridwidth = REM;
       gridbag.setConstraints(mob_list, c);
-      add(mob_list);
+      p.add(mob_list);
 
-      c.gridwidth = 1;
+      //c.gridwidth = 1;
       gridbag.setConstraints(item_list, c);
-      add(item_list);
-      c.gridwidth = REM;
+      p.add(item_list);
+      //c.gridwidth = REM;
       gridbag.setConstraints(rm_desc, c);
-      add(rm_desc);
+      p.add(rm_desc);
 
-      c.gridwidth = 1;
+      //c.gridwidth = 1;
       gridbag.setConstraints(gossip, c);
-      add(gossip);
-      c.gridwidth = REM;
+      p.add(gossip);
+      //c.gridwidth = REM;
       gridbag.setConstraints(tell, c);
-      add(tell);
+      p.add(tell);
 
-      c.gridwidth = 1;
+      //c.gridwidth = 1;
       gridbag.setConstraints(yell, c);
-      add(yell);
-      c.gridwidth = REM;
+      p.add(yell);
+      //c.gridwidth = REM;
       gridbag.setConstraints(auction, c);
-      add(auction);
+      p.add(auction);
 
-      c.gridwidth = 1;
+      //c.gridwidth = 1;
       gridbag.setConstraints(battle, c);
-      add(battle);
-      c.gridwidth = REM;
+      p.add(battle);
+      //c.gridwidth = REM;
       gridbag.setConstraints(rm_short_desc, c);
-      add(rm_short_desc);
+      p.add(rm_short_desc);
 
-      c.gridwidth = 1;
+      //c.gridwidth = 1;
       gridbag.setConstraints(other, c);
-      add(other);
-      c.gridwidth = REM;
+      p.add(other);
+      //c.gridwidth = REM;
       gridbag.setConstraints(say, c);
-      add(say);
+      p.add(say);
 
-      c.gridwidth = REM;
+      //c.gridwidth = REM;
       gridbag.setConstraints(back_ground, c);
-      add(back_ground);
+      p.add(back_ground);
+
+      gridbag.setConstraints(input, c);
+      p.add(input);
 
       CSButtons cs_buttons = new CSButtons(this);
       gridbag.setConstraints(cs_buttons, c);
-      add(cs_buttons);
-      
+      p.add(cs_buttons);
+
+      sp.add(p);
+      sp.setSize(650, 475);
+      add(sp);
+      sp.setScrollPosition(0, 0);
+
       pack();
    }//constructor
 
@@ -181,6 +204,63 @@ class ColorSelectionManager extends Frame {
       return back_ground.getColor();
    }
 
+   public final Color getInputSelection() {
+      return input.getColor();
+   }
+
+
+   public final Font getDoorListFont() {
+      return door_list.getFont();
+   }
+
+   public final Font getMobListFont() {
+      return mob_list.getFont();
+   }
+
+   public final Font getItemListFont() {
+      return item_list.getFont();
+   }
+
+   public final Font getRoomDescFont() {
+      return rm_desc.getFont();
+   }
+
+   public final Font getRoomShortDescFont() {
+      return rm_short_desc.getFont();
+   }
+
+   public final Font getGossipFont() {
+      return gossip.getFont();
+   }
+   
+   public final Font getTellFont() {
+      return tell.getFont();
+   }
+   
+   public final Font getYellFont() {
+      return yell.getFont();
+   }
+   
+   public final Font getAuctionFont() {
+      return auction.getFont();
+   }
+   
+   public final Font getBattleFont() {
+      return battle.getFont();
+   }
+   
+   public final Font getOtherFont() {
+      return other.getFont();
+   }
+
+   public final Font getSayFont() {
+      return say.getFont();
+   }
+
+   public final Font getInputFont() {
+      return input.getFont();
+   }
+
    
    public void do_close() {
       setVisible(false);
@@ -218,6 +298,7 @@ class ColorSelectionManager extends Frame {
          other.writeObject(ostream);
          say.writeObject(ostream);
          back_ground.writeObject(ostream);
+         input.writeObject(ostream);
       }//try
       catch (Exception e) {
          MessageDialog md =
@@ -245,7 +326,6 @@ class ColorSelectionManager extends Frame {
       if (istream == null)
          return;
       
-      /* read tokens, if not -1 then read a ContextColorPair */
       try {
          door_list.readObject(istream);
          mob_list.readObject(istream);
@@ -260,6 +340,7 @@ class ColorSelectionManager extends Frame {
          other.readObject(istream);
          say.readObject(istream);
          back_ground.readObject(istream);
+         input.readObject(istream);
       }//try
       catch (Exception e) {
          new MessageDialog("Error reading color selections file.",

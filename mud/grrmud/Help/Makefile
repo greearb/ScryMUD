@@ -55,6 +55,8 @@ IMM_keyword_1 \
 IMM_ldwho_1 \
 IMM_list_paths_1 \
 IMM_list_scripts_1 \
+IMM_list_obj_scripts_1 \
+IMM_list_room_scripts_1 \
 IMM_list_site_bans_1 \
 IMM_log_level_1 \
 IMM_make_builder_1 \
@@ -96,6 +98,8 @@ IMM_rm_curse_proc_1 \
 IMM_rm_discuss_proc_1 \
 IMM_rm_give_proc_1 \
 IMM_rm_keyword_1 \
+IMM_rm_obj_script_1 \
+IMM_rm_room_script_1 \
 IMM_rm_script_1 \
 IMM_rm_stat_affect_1 \
 IMM_rset_1 \
@@ -116,7 +120,9 @@ IMM_snoop_1 \
 IMM_sockets_1 \
 IMM_stat_keyword_1 \
 IMM_stat_path_1 \
+IMM_stat_room_script_1 \
 IMM_stat_script_1 \
+IMM_stat_obj_script_1 \
 IMM_teach_1 \
 IMM_thaw_1 \
 IMM_tog_mflag_1 \

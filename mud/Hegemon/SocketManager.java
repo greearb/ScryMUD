@@ -47,7 +47,7 @@ public class SocketManager {
          reader.setPriority (6);
          reader.start ();
          h.getClientDisplay().setTitle("Hegemon Client:  Connected to: "
-                                       + str + " port: " + port);         
+                                       + str + " port: " + port);
       }
       catch (IOException e) {
          System.err.println ("Constructing SocketManager:  " + e);

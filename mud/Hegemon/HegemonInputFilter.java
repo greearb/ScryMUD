@@ -375,59 +375,80 @@ class HegemonInputFilter extends Object {
             Color c = color_mgr.getBattleSelection();
             if (c != null)
               heg_scroll.pushColor(c);
+            Font f = color_mgr.getBattleFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("/BATTLE")) {
             if (color_mgr.getBattleSelection() != null) 
               heg_scroll.getProperties().popColor();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/FONT")) {
-            heg_scroll.getProperties().popFont();
+            if (color_mgr.getBattleFont() != null)
+              heg_scroll.getProperties().popFont();
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("TELL")) {
             Color c = color_mgr.getTellSelection();
             if (c != null)
               heg_scroll.pushColor(c);
+            Font f = color_mgr.getTellFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("/TELL")) {
             if (color_mgr.getGossipSelection() != null) 
               heg_scroll.getProperties().popColor();
+            if (color_mgr.getTellFont() != null)
+              heg_scroll.getProperties().popFont();
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("DOOR_LIST")) {
             Color c = color_mgr.getDoorListSelection();
             if (c != null)
               heg_scroll.pushColor(c);
+            Font f = color_mgr.getDoorListFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("/DOOR_LIST")) {
             if (color_mgr.getDoorListSelection() != null) 
               heg_scroll.getProperties().popColor();
+            if (color_mgr.getDoorListFont() != null)
+              heg_scroll.getProperties().popFont();
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("MOB_LIST")) {
             Color c = color_mgr.getMobListSelection();
             if (c != null)
               heg_scroll.pushColor(c);
+            Font f = color_mgr.getMobListFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("/MOB_LIST")) {
             if (color_mgr.getMobListSelection() != null) 
               heg_scroll.getProperties().popColor();
+            if (color_mgr.getMobListFont() != null)
+              heg_scroll.getProperties().popFont();
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("ITEM_LIST")) {
             Color c = color_mgr.getItemListSelection();
             if (c != null)
               heg_scroll.pushColor(c);
+            Font f = color_mgr.getItemListFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("/ITEM_LIST")) {
             if (color_mgr.getItemListSelection() != null) 
               heg_scroll.getProperties().popColor();
+            if (color_mgr.getItemListFont() != null)
+              heg_scroll.getProperties().popFont();
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("RM_DESC")) {
@@ -436,6 +457,9 @@ class HegemonInputFilter extends Object {
             context_mode = MODE_STAT_LD;
             if (c != null)
               heg_scroll.pushColor(c);
+            Font f = color_mgr.getRoomDescFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("/RM_DESC")) {
@@ -443,6 +467,8 @@ class HegemonInputFilter extends Object {
             context_mode = heg_scroll.getProperties().getContextMode();
             if (color_mgr.getRoomDescSelection() != null) 
               heg_scroll.getProperties().popColor();
+            if (color_mgr.getRoomDescFont() != null)
+              heg_scroll.getProperties().popFont();
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("/RM_SHORT_DESC")) {
@@ -450,50 +476,72 @@ class HegemonInputFilter extends Object {
             context_mode = heg_scroll.getProperties().getContextMode();
             if (color_mgr.getRoomShortDescSelection() != null) 
               heg_scroll.getProperties().popColor();
+            if (color_mgr.getRoomShortDescFont() != null)
+              heg_scroll.getProperties().popFont();
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("GOSSIP")) {
             Color c = color_mgr.getGossipSelection();
             if (c != null)
               heg_scroll.pushColor(c);
+            Font f = color_mgr.getGossipFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("/GOSSIP")) {
             if (color_mgr.getGossipSelection() != null) 
               heg_scroll.getProperties().popColor();
+            if (color_mgr.getGossipFont() != null)
+              heg_scroll.getProperties().popFont();
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("SAY")) {
             Color c = color_mgr.getSaySelection();
             if (c != null)
               heg_scroll.pushColor(c);
+            Font f = color_mgr.getSayFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("/SAY")) {
             if (color_mgr.getSaySelection() != null) 
               heg_scroll.getProperties().popColor();
+            if (color_mgr.getSayFont() != null)
+              heg_scroll.getProperties().popFont();
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("YELL")) {
             Color c = color_mgr.getYellSelection();
             if (c != null)
               heg_scroll.pushColor(c);
+            Font f = color_mgr.getYellFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("/YELL")) {
             if (color_mgr.getYellSelection() != null) 
               heg_scroll.getProperties().popColor();
+            if (color_mgr.getYellFont() != null)
+              heg_scroll.getProperties().popFont();
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("AUCTION")) {
             Color c = color_mgr.getAuctionSelection();
             if (c != null)
               heg_scroll.pushColor(c);
+            Font f = color_mgr.getAuctionFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("/AUCTION")) {
             if (color_mgr.getAuctionSelection() != null) 
               heg_scroll.getProperties().popColor();
+            if (color_mgr.getAuctionFont() != null)
+              heg_scroll.getProperties().popFont();
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("TAB")) {
@@ -595,10 +643,6 @@ class HegemonInputFilter extends Object {
             Color c = color_mgr.getRoomShortDescSelection();
             if (c != null)
               heg_scroll.pushColor(c);
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("FONT")) {
-            heg_scroll.pushFont((String)(args.elementAt(1)));
             valid = true;
          }
          else if (cmd.equalsIgnoreCase("COLOR")) {

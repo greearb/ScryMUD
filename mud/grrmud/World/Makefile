@@ -49,5 +49,5 @@ archive:
 	gzip wrld.${CUR_DATE}.tar
 
 new_db: archive
-	rm -f ${MUD_HOME}/grrmud/World/wrld.new.tar.gz
-	mv wrld.${CUR_DATE}.tar.gz ${MUD_HOME}/grrmud/World/wrld.new.tar.gz
+	rm -f ../wrld.new.tar.gz
+	mv wrld.${CUR_DATE}.tar.gz ../wrld.new.tar.gz

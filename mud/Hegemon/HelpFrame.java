@@ -176,6 +176,10 @@ class HelpFrame extends Frame {
       hd.getScroll().append(str);
    }
 
+   public void showString(String str) {
+      help_filter.filter(str);
+   }
+
    public void appendAndCache(String str) {
       hd.getScroll().append(str);
       help_text.append(str);
@@ -241,6 +245,10 @@ class HelpFrame extends Frame {
       }//else
    }//saveHelpText
    
+   public void clear() {
+      hd.clear();
+      hd.noAutoScroll();
+   }
    
    public void show(String file_name) {
       Log.instance().trc("TRACE:  HelpFrame.show(" + file_name + ")");
@@ -248,8 +256,9 @@ class HelpFrame extends Frame {
       byte[] buffer = new byte[4097];
       int amt_read;
       String str;
-      hd.clear();
-      hd.noAutoScroll();
+
+      clear();
+
       FileInputStream istream = null;
 
       try {

@@ -440,17 +440,19 @@ class HegemonScroll extends Panel {
       props.pushColor(c);
    }//pushColor(Color)
    
-   public synchronized void pushFont(String fnt_name) {
-      Log.instance().dbg("in pushFont, font_name:  " + fnt_name);
-      Font f = Font.getFont(fnt_name, null);
+   public synchronized void pushFont(Font f) {
       if (f != null) {
-         Log.instance().dbg("Found a valid font.");
          props.pushFont(f);
       }//if
-      else {
-         Log.instance().dbg("Font not found.");
-      }
    }//setFont
+
+   public synchronized void popColor() {
+      props.popColor();
+   }
+
+   public synchronized void popFont() {
+      props.popFont();
+   }
 
    public void drawNewline() {
       addComponent(new ScrollComponentNewline(vert_spacing * 4,

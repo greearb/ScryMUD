@@ -162,8 +162,6 @@ class HegemonDisplay extends Panel {
    public void noAutoScroll() {
       auto_scroll = false;
    }
-      
-
    
    public void paint(Graphics g) {
       //Log.it("HegemonDisplay.paint()");

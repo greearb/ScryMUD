@@ -8,9 +8,9 @@ problems for you.
 
 ~
 18 16 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-2975 68457 0 	long_data
-0 17 17 16 12 17 16 1 1 65 1 0 2 3 1 1000 1000 108 -138 
-40 0 0 5 1000 1000 108 0 100 100 115 106 105 87 0 0 2 3 100 100 
+2975 65917 0 	long_data
+2 17 17 16 12 17 16 1 1 65 1 0 2 3 1 75 500 500 -189 
+40 0 0 5 75 500 500 0 100 100 115 106 105 87 0 0 2 3 100 100 
 100 0 0 0 	shrt_cur_stats
 1024 2047 1 	cur_stats
 -2 9	 Start of SOBJ
@@ -41,15 +41,15 @@ wield 190 -1 0	 Trigger Command, targ, actor
 -1  End of object proc scripts
 End of Object.
 
--1	eq: num, posn
+295 10 -1	eq: num, posn
 -1	affected_by
-400 295 -1	inv
+400 -1	inv
 bgio24h/ZwWLw	passwd
-26 25 19 16 14 11 7 6 5 2 -1  -:| bitfield |:-
-71 15 15 71 921812976 100		bday, byr, ryr, rday, llt, tto
-18 5613 5613 -2 0 0 0 age hgr thr drg pk died qp
+26 25 19 16 14 11 10 6 5 2 -1  -:| bitfield |:-
+71 15 15 71 923885283 100		bday, byr, ryr, rday, llt, tto
+18 5407 5407 -2 0 0 0 age hgr thr drg pk died qp
 117 1 118 25 134 25 -1	ss_known
-%N<%hH %mM %vV >
+%N
 10	Imm level
 [36m Gos color
 [35m Say color

@@ -740,6 +740,11 @@ public:
    String* getInput() { return &(pc->input); }
    int getHP() { return short_cur_stats[15]; }
    int getHP_MAX() { return short_cur_stats[23]; }
+   int getMana() { return short_cur_stats[16]; }
+   int getManaMax() { return short_cur_stats[24]; }
+   int getMov() { return short_cur_stats[17]; }
+   int getMovMax() { return short_cur_stats[25]; }
+   
    const ScriptCmd* getNextScriptCmd() {
       if (mob)
          return mob->cur_script->getNextCommand();

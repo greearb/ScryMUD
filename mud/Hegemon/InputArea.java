@@ -51,7 +51,23 @@ public class InputArea extends Panel {
                String str = input_field.getText().trim();
                cd.send(str + "\n");
 
-               cd.getHegemonScroll().append(str + "\n");
+               Font f = hm.getColorSelectionMgr().getInputFont();
+               Color c =  hm.getColorSelectionMgr().getInputSelection();
+               if (f != null) {
+                  cd.getHegemonScroll().pushFont(f);
+               }
+               if (c != null) {
+                  cd.getHegemonScroll().pushColor(c);
+               }
+               cd.getHegemonScroll().append(" >>" + str + "\n");
+
+               if (f != null) {
+                  cd.getHegemonScroll().popFont();
+               }
+               if (c != null) {
+                  cd.getHegemonScroll().popColor();
+               }
+                  
                if (hm.getCommandHistory() != null) {
                   hm.getCommandHistory().append(str + "\n");
                }
@@ -73,6 +89,9 @@ public class InputArea extends Panel {
                else if (e.getKeyCode() == KeyEvent.VK_N) {
                   input_field.setText(hm.getCommandHistory().getNextCmd());
                }//else
+               else if (e.getKeyCode() == KeyEvent.VK_K) {
+                  input_field.setText(""); //kill
+               }
             }//if
             else {
                super.keyPressed(e);

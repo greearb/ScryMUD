@@ -2717,29 +2717,29 @@ void critter::doPrompt() {
          i++;
          if (PROMPT_STRING[i] != '%') {
             switch (PROMPT_STRING[i]) {
-               case 'N':    /* newline */  
-                  targ.Append("\n");
-                  break;
-               case 'h':    /* cur hp */  
-                  targ.Append(HP);
-                  break;
-               case 'H':     /* max hp */
-                  targ.Append(HP_MAX);
-                  break;
-               case 'v':    /* cur mov */  
-                  targ.Append(MOV);
-                  break;
-               case 'V':     /* max mov */
-                  targ.Append(MV_MAX);
-                  break;
-               case 'm':    /* cur mana */  
-                  targ.Append(MANA);
-                  break;
-               case 'M':     /* max mana */
-                  targ.Append(MA_MAX);
-                  break;
-               default:
-                  targ.Append(PROMPT_STRING[i]);
+             case 'N':    /* newline */  
+               targ.Append("\n");
+               break;
+             case 'h':    /* cur hp */  
+               targ.Append(HP);
+               break;
+             case 'H':     /* max hp */
+               targ.Append(HP_MAX);
+               break;
+             case 'v':    /* cur mov */  
+               targ.Append(MOV);
+               break;
+             case 'V':     /* max mov */
+               targ.Append(MV_MAX);
+               break;
+             case 'm':    /* cur mana */  
+               targ.Append(MANA);
+               break;
+             case 'M':     /* max mana */
+               targ.Append(MA_MAX);
+               break;
+             default:
+               targ.Append(PROMPT_STRING[i]);
             }//switch
             i++;
          }//if
@@ -2755,6 +2755,15 @@ void critter::doPrompt() {
    }//for
    targ.Append(pc->input);
    show(targ);
+
+   if (isUsingClient()) {
+      // HP, HP-MAX, MANA, MANA-MAX, MOV, MOV-MAX
+      Sprintf(targ, "<PROMPT %i %i %i %i %i %i>",
+              getHP(), getHP_MAX(), getMana(), getManaMax(),
+              getMov(), getMovMax());
+      show(targ);
+   }
+
 }//doPrompt
 
 critter* critter::getFirstFighting() {

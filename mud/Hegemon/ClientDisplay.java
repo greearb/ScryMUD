@@ -66,7 +66,7 @@ class ClientDisplay extends Frame {
       hf = hm.getHelpFrame();
       hf.setLocation(325, 110);
 
-      ccf = new ColorChoicesFrame("Color Choices");
+      ccf = new ColorChoicesFrame("Color & Font Choices");
 
       cmd_history = hm.getCommandHistory();
       cmd_history.setLocation(200, 50);
@@ -112,7 +112,7 @@ class ClientDisplay extends Frame {
             showLoggingFrame();
          }});
       
-      file_m.add((color_view_mi = new MenuItem("Modify Colors")));
+      file_m.add((color_view_mi = new MenuItem("Colors & Fonts")));
 
       color_view_mi.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
@@ -526,7 +526,8 @@ class ClientDisplay extends Frame {
 
    void doHegemonHelp() {
       hf.setVisible(true);
-      hf.show("hegemon.bml");
+      hf.clear();
+      hf.showString(BuildInfo.getBuildInfo());
    }
    
    void doViewColors() {

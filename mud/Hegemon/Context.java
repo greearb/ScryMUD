@@ -42,6 +42,7 @@ class Context extends Object {
    public final static Context OTHER = new Context(11, "Other");
    public final static Context SAY = new Context(12, "Say");
    public final static Context BACKGROUND = new Context(13, "Background");
+   public final static Context INPUT = new Context(14, "Input");
 
    /** this is just a big ole switch statement */
    public static Context getContext(int num) {
@@ -74,6 +75,8 @@ class Context extends Object {
          return SAY;
        case 13:
          return BACKGROUND;
+       case 14:
+         return INPUT;
        default:
          Log.instance().err("ERROR:  in getContext:  unknown context number:  "
                             + num);

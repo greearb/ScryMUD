@@ -28,7 +28,11 @@ class ColorChoicesFrame extends Frame {
    
    public ColorChoicesFrame(String str) {
       super(str);
-      
+
+      addWindowListener (new WindowAdapter () {
+         public void windowClosing (WindowEvent e) {
+            do_close();
+         }});
 
       Menu file_m = new Menu("File");
       MenuBar menubar = new MenuBar();
@@ -43,17 +47,20 @@ class ColorChoicesFrame extends Frame {
       file_m.add(done_mi);
       menubar.add(file_m);
 
+      ScrollPane sp = new ScrollPane();
+      Panel p = new Panel();
+
       int REM = GridBagConstraints.REMAINDER;
       GridBagLayout gridbag = new GridBagLayout();
       GridBagConstraints c = new GridBagConstraints();
-      setLayout(gridbag);
+      p.setLayout(gridbag);
 
       c.fill = GridBagConstraints.BOTH;
       c.weightx = c.weighty = 0.0;
             
       c.gridwidth = 1;
 
-      setBackground(new Color(0, 0, 0));
+      p.setBackground(new Color(0, 0, 0));
 
       int sofar = 0;
       for (int i = 0; i<255; i += 40) {
@@ -68,7 +75,7 @@ class ColorChoicesFrame extends Frame {
                   b.setForeground(new Color(255, 255, 255));
 
 
-               if (++sofar > 10) {
+               if (++sofar > 6) {
                   c.gridwidth = REM;
                   sofar = 0;
                }
@@ -76,12 +83,15 @@ class ColorChoicesFrame extends Frame {
                   c.gridwidth = 1;
 
                gridbag.setConstraints(b, c);
-               add(b);
+               p.add(b);
             }//for
          }//for
       }//for
-      pack();
 
+      sp.add(p);
+      sp.setSize(700, 400);
+      add(sp);
+      pack();
    }//constructor
 
    void do_close() {
