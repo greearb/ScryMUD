@@ -1,5 +1,5 @@
-// $Id: olc2.cc,v 1.17 2001/03/29 03:02:33 eroper Exp $
-// $Revision: 1.17 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
+// $Id: olc2.cc,v 1.18 2001/11/20 02:16:12 justin Exp $
+// $Revision: 1.18 $  $Author: justin $ $Date: 2001/11/20 02:16:12 $
 
 //
 //ScryMUD Server Code
@@ -1424,11 +1424,6 @@ int add_room_script(critter& pc, int rm_num, String& trigger_cmd,
       show("You don't own that room.\n", pc);
       return -1;
    }//if
-
-   if (!GenScript::validTrigger(trigger_cmd)) {
-      show("That is not a valid trigger command.", pc);
-      return -1;
-   }
 
    // We prepend text to it so it's never a number as far as parsing
    // is concerned.  It's embarrasing, I know! Can't spell either!
