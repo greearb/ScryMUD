@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.27 2002/08/19 06:23:07 eroper Exp $
-// $Revision: 1.27 $  $Author: eroper $ $Date: 2002/08/19 06:23:07 $
+// $Id: spells2.cc,v 1.28 2002/08/22 07:49:05 eroper Exp $
+// $Revision: 1.28 $  $Author: eroper $ $Date: 2002/08/22 07:49:05 $
 
 //
 //ScryMUD Server Code
@@ -913,32 +913,33 @@ void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
 
      stat_spell_cell* ptr = is_affected_by(spell_num, vict);
      
-     if (!is_canned)
+     if (!is_canned) {
        agg.MANA -= spell_mana;
 
-     if (ptr) {
-       ptr->bonus_duration += lvl / 2;
+       if (ptr) {
+          ptr->bonus_duration += lvl / 2;
 
-       if (ptr->bonus_duration > 40) {
-          if (vict.pc) {
-             if (vict.STR > 20) {
-                if (d(1,7) == 5) { //ouch, lost some CON!!
-                   vict.show("Oops...somehow you think that spell might have backfired!!\n");
-                   vict.STR--;
-                }
-             }//if
-             else if (vict.DEX > 20) {
-                if (d(1,7) == 7) { //ouch, lost some CON!!
-                   vict.show("Oops...somehow you think that spell might have backfired!!\n");
-                   vict.DEX--;
-                }
-             }//if
-             else if (vict.CON > 20) {
-                if (d(1,7) == 7) { //ouch, lost some DAMCON!!
-                   vict.show("Oops...somehow you think that spell might have backfired!!\n");
-                   vict.CON--;
-                }
-             }//if
+          if (ptr->bonus_duration > 40) {
+             if (vict.pc) {
+                if (vict.STR > 20) {
+                   if (d(1,7) == 5) { //ouch, lost some CON!!
+                      vict.show("Oops...somehow you think that spell might have backfired!!\n");
+                      vict.STR--;
+                   }
+                }//if
+                else if (vict.DEX > 20) {
+                   if (d(1,7) == 7) { //ouch, lost some CON!!
+                      vict.show("Oops...somehow you think that spell might have backfired!!\n");
+                      vict.DEX--;
+                   }
+                }//if
+                else if (vict.CON > 20) {
+                   if (d(1,7) == 7) { //ouch, lost some DAMCON!!
+                      vict.show("Oops...somehow you think that spell might have backfired!!\n");
+                      vict.CON--;
+                   }
+                }//if
+             }
           }
        }
 
@@ -1613,22 +1614,23 @@ void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
      stat_spell_cell* ptr = is_affected_by(spell_num, vict);
 
-     if (!is_canned)
-       agg.MANA -= spell_mana;
-     
-     if (d(1,13) == 13) { //ouch, lost some CON!!
-        if (vict.pc) {
-           if (vict.ATTACKS >= 3) {
-              vict.ATTACKS--;
-              vict.show("You fall too your knees in pain..feeling momentarily lost in your limbs!\n");
-              vict.ATTACKS--;
+     if (!is_canned) {
+        agg.MANA -= spell_mana;
+
+        if (d(1,13) == 13) { //ouch, lost some CON!!
+           if (vict.pc) {
+              if (vict.ATTACKS >= 3) {
+                 vict.ATTACKS--;
+                 vict.show("You fall too your knees in pain..feeling momentarily lost in your limbs!\n");
+                 vict.ATTACKS--;
+              }
+              else {
+                 vict.show("As you cast the spell you feel it tear something from your very soul!\n");
+                 vict.CON--;
+              }
            }
-           else {
-              vict.show("As you cast the spell you feel it tear something from your very soul!\n");
-              vict.CON--;
-           }
-        }
-     }//if
+        }//if
+     }
 
      if (ptr) {
         ptr->bonus_duration += lvl/4 + 2;
