@@ -15,9 +15,9 @@ You see someone who is quite normal.
 -1	affected_by
 -1	inv
 bgio24h/ZwWLw	passwd
-26 25 19 16 14 11 10 7 6 2 -1  -:| bitfield |:-
-71 15 15 71 913615058 100		bday, byr, ryr, rday, llt, tto
-18 9860 9860 -2 0 0 0 age hgr thr drg pk died qp
+26 25 19 16 14 11 7 6 5 2 -1  -:| bitfield |:-
+71 15 15 71 913697435 100		bday, byr, ryr, rday, llt, tto
+18 9660 9660 -2 0 0 0 age hgr thr drg pk died qp
 118 25 134 25 -1	ss_known
 %N<%hH %mM %vV >
 10	Imm level

@@ -2142,23 +2142,6 @@ MOB FLAGS Definitions:
    }//if
    else {
 
-      Cell<String*> cll(crit_ptr->names);
-      String* ptr;
-      buf2 = "";
-      while ((ptr = cll.next())) {
-         buf2 += *ptr;
-         buf2 += " ";
-      }//while
-
-      if (!pc.USING_CLIENT || crit_ptr->pc) {
-         pc.show(buf2);
-      }//if
-      else { //then show tags...
-         Sprintf(buf, "<NAMES %S>\n", &buf2);
-         pc.show(buf2); //output that they can read
-         pc.show(buf); //output the client deals with
-      }//else
-
       if (!pc.USING_CLIENT || crit_ptr->pc) {
          show("\n", pc);
          show((crit_ptr->short_desc), pc);
@@ -2177,6 +2160,24 @@ MOB FLAGS Definitions:
          show("</STAT>\n<STAT_ND>", pc);
          show((crit_ptr->in_room_desc), pc);
          show("</STAT>", pc);
+      }//else
+
+      Cell<String*> cll(crit_ptr->names);
+      String* ptr;
+      buf2 = "";
+      while ((ptr = cll.next())) {
+         buf2 += *ptr;
+         buf2 += " ";
+      }//while
+
+      if (!pc.USING_CLIENT || crit_ptr->pc) {
+         Sprintf(buf, "\nNames (Keywords): %S", buf2);
+         pc.show(buf);
+      }//if
+      else { //then show tags...
+         Sprintf(buf, "<NAMES %S>\n", &buf2);
+         pc.show(buf2); //output that they can read
+         pc.show(buf); //output the client deals with
       }//else
 
       show("\nCRIT_FLAGS: ", pc);
@@ -2367,7 +2368,7 @@ void ostat(int i_th, const String* name, critter& pc) {
    object* obj_ptr;
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
+   if (!pc.isImmort()) {
       show("Eh??\n", pc);
       return;
    }//if
@@ -2552,23 +2553,6 @@ Bag Flag Definitions:
       return;
    }//if
    else {
-      Cell<String*> cll(obj_ptr->ob->names);
-      String* ptr;
-      buf2 = "";
-      while ((ptr = cll.next())) {
-         buf2 += *ptr;
-         buf2 += " ";
-      }//while
-
-      if (!pc.USING_CLIENT) {
-         pc.show(buf2);
-      }//if
-      else { //then show tags...
-         Sprintf(buf, "<NAMES %S>\n", &buf2);
-         pc.show(buf2); //output that they can read
-         pc.show(buf); //output the client deals with
-      }//else
-
       if (!pc.USING_CLIENT) {
          show("\n", pc);
          show((obj_ptr->ob->short_desc), pc);
@@ -2588,6 +2572,24 @@ Bag Flag Definitions:
          show((obj_ptr->ob->in_room_desc), pc);
          show("</STAT>", pc);
       }
+
+      Cell<String*> cll(obj_ptr->ob->names);
+      String* ptr;
+      buf2 = "";
+      while ((ptr = cll.next())) {
+         buf2 += *ptr;
+         buf2 += " ";
+      }//while
+
+      if (!pc.USING_CLIENT) {
+         Sprintf(buf, "\nNames (Keywords): %S", buf2);
+         pc.show(buf);
+      }//if
+      else { //then show tags...
+         Sprintf(buf, "<NAMES %S>\n", &buf2);
+         pc.show(buf2); //output that they can read
+         pc.show(buf); //output the client deals with
+      }//else
 
       Sprintf(buf2, "\nBelongs to zone:  %i.\n", obj_ptr->OBJ_IN_ZONE);
       show(buf2, pc);

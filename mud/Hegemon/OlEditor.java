@@ -151,8 +151,9 @@ class OlEditor extends Frame {
 
    public void setNames(String str) {
       Log.instance().dbg("setNames: " + str);
-      if (is_frozen.getState())
-        return;
+      if (is_frozen.getState()) {
+         return;
+      }
       names.setText(str);
    }//setNames
 
@@ -198,7 +199,7 @@ class OlEditor extends Frame {
                StringTokenizer tok = new StringTokenizer(names.getText());
                while (tok.hasMoreElements()) {
                   hm.getSocketManager().write("add_mname " + object_number
-                                              + tok.nextToken());
+                                              + " " + tok.nextToken() + "\n");
                }//while
 
                hm.getSocketManager().write("ch_mndesc " + object_number
@@ -227,8 +228,8 @@ class OlEditor extends Frame {
                                            + "\n");
                StringTokenizer tok = new StringTokenizer(names.getText());
                while (tok.hasMoreElements()) {
-                  hm.getSocketManager().write("add_oname " + object_number
-                                              + tok.nextToken());
+                  hm.getSocketManager().write("add_oname " + object_number + " "
+                                              + tok.nextToken() + "\n");
                }//while
 
                // first, the in_room_description

@@ -49,7 +49,8 @@ class HegemonManager extends Object {
       super();
 
       mother_class = heg;
-      
+      Log.instance().setLevel(Log.ERROR | Log.WARNING | Log.INFO);
+
       props = new Properties();
       /* props are kept in:  $HOME/hegemon/hegemon.properties */
       try {
