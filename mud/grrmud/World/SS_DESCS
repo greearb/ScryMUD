@@ -627,6 +627,62 @@ tail
 This skill allows sneaky people to follow a creature without them
 realizing it.  It should be used in conjunction with sneak.
 ~
+sober
+Allows a magic user to extract drugs from someone and absorb them into
+themselves.  This leaves the person sober.  The magic user can also cast
+this spell upon themselves to remove a drunken state.
+
+SYNTAX : cast sober <victim>
+~
+remove poison
+Allows a wizard to extract poison from a victim's body and cease there
+pain.
+
+SYNTAX: cast 'remove poison' <victim>
+~
+rust
+Allows a necromancer to rust and thereby weaken his/her opponents armor.
+
+SYNTAX: cast 'rust' <victim>
+~
+disfavor
+Allows the necromancer to lessen his/her opponents resistances to certain
+types of attack by disfavoring them in the eyes of the living deities.
+
+SYNTAX: cast 'disfavor' <victim>
+~
+remove soul
+Allows the necromancer to remove a portion of the victims soul making them
+very prone to magical attack.
+
+SYNTAX: cast 'remove soul' <victim>
+~
+sanctum of the victim
+This powerful spell allows the necromancer to curse an opponent with an
+inability to sustain in combat.
+
+SYNTAX: cast 'sanctum of the victim' <victim>
+~
+remove hope
+By removing all hope of survival from ones opponent, the skillful necromancer
+may use this spell to stop any natural recovery of life.
+
+SYNTAX: cast 'remove hope' <victim>
+~
+remove karma
+Unfortunately for the necromancer, mages tend to have the upper hand in
+combat. For this reason the evil powers that be provided necromancers with a
+way to prevent mages from drawing on the magical forces.
+
+SYNTAX: cast 'remove karma' <victim>
+~
+fear
+Necromancers have the unique ability to strike fear into the hearts of the
+living, so much so in fact that often times the victim can not so much as
+move.
+
+SYNTAX: cast 'fear' <victim>
+~
 
 tammuz
 The exclusive, and often dangerous meeting place of adventurers who have
@@ -806,17 +862,4 @@ any walls or closed doors that may bar vision into the next room.
  
 SYNTAX :
 type : birdseye direction in which you wish to scan
-~
-sober
-Allows a magic user to extract drugs from someone and absorb them into
-themselves.  This leaves the person sober.  The magic user can also cast
-this spell upon themselves to remove a drunken state.
-
-SYNTAX : cast sober <victim>
-~
-remove poison
-Allows a wizard to extract poison from a victim's body and cease there
-pain.
-
-SYNTAX: cast 'remove poison' <victim>
 ~
