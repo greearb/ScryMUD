@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.40 2001/10/03 07:23:03 greear Exp $
-// $Revision: 1.40 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
+// $Id: commands.cc,v 1.41 2001/10/30 04:35:06 justin Exp $
+// $Revision: 1.41 $  $Author: justin $ $Date: 2001/10/30 04:35:06 $
 
 //
 //ScryMUD Server Code
@@ -1613,7 +1613,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
             vict_ptr = cell.next();         
       }//while
       if (!tst && do_msg) {
-         Sprintf(buf, cstr(CS_TARG_EMPTY, pc), bag);
+         Sprintf(buf, cstr(CS_TARG_EMPTY, pc), bag_ptr->getName(pc.SEE_BIT));
          show(buf, pc);
       }//if
       tst = FALSE;
@@ -3749,6 +3749,9 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
               pc.show(CS_EAT_GAIN_HP);
             else if ((st_ptr->bonus_duration < 0) && (do_msg))
               pc.show(CS_EAT_LOSE_HP);
+
+            // Poor bastard!
+            if (pc.HP < 0) agg_kills_vict(NULL, pc);
             break;
          case 16: // current MANA
             pc.MANA += d(1, st_ptr->bonus_duration);
@@ -3756,6 +3759,8 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
               pc.show(CS_EAT_GAIN_MANA);
             else if ((st_ptr->bonus_duration < 0) && (do_msg))
               pc.show(CS_EAT_LOSE_MANA);
+
+            if (pc.MANA < 0) pc.MANA = 0;
             break;
          case 17: // current MOV
             pc.MOV += d(1, st_ptr->bonus_duration);
@@ -3763,6 +3768,8 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
               pc.show(CS_EAT_GAIN_MOV);
             else if ((st_ptr->bonus_duration < 0) && (do_msg))
               pc.show(CS_EAT_LOSE_MOV);
+
+            if (pc.MOV < 0) pc.MOV = 0;
             break;
 
          default:
