@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.43 2001/07/07 20:45:14 justin Exp $
-// $Revision: 1.43 $  $Author: justin $ $Date: 2001/07/07 20:45:14 $
+// $Id: command4.cc,v 1.44 2001/07/19 02:21:23 justin Exp $
+// $Revision: 1.44 $  $Author: justin $ $Date: 2001/07/19 02:21:23 $
 
 //
 //ScryMUD Server Code
@@ -299,6 +299,7 @@ int passwd(const String* old, const String* new1, const String* new2,
 
 int unpost(int i_th, const String* post, critter& pc) {
    String buf(100);
+   String tempname;
 
    if (!ok_to_do_action(NULL, "FPSB", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
@@ -338,7 +339,9 @@ int unpost(int i_th, const String* post, critter& pc) {
       if (iptr == msg)
          break;
    }//for
-   Sprintf(buf, "message_%i from %S:", i, pc.getName());
+   tempname = String(*(pc.getName()));
+   tempname.Strip();
+   Sprintf(buf, "message_%i from %S:", i-1, &tempname);
    if (pc.getImmLevel() < 8 && strncmp(msg->short_desc, buf, buf.Strlen())!=0) {
       pc.show("It wouldn't be right to take someone else's message down.\n");
       return -1;
