@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.37 2002/08/28 06:32:30 eroper Exp $
-// $Revision: 1.37 $  $Author: eroper $ $Date: 2002/08/28 06:32:30 $
+// $Id: object.cc,v 1.38 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.38 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -1763,7 +1763,7 @@ void object::doScriptJump(int abs_offset) {
 // NOTE:  The script owner is *this.  It is likely, but not necessary
 // that targ is also *this
 void object::checkForProc(String& cmd, String& arg1, critter& actor,
-                          int targ, room& rm, int sanity = 0) {
+                          int targ, room& rm, int sanity) {
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In object::checkForProc, size of scripts: "
              << obj_proc_scripts.size() << endl;

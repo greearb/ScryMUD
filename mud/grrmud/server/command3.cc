@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.38 2002/01/28 23:43:26 eroper Exp $
-// $Revision: 1.38 $  $Author: eroper $ $Date: 2002/01/28 23:43:26 $
+// $Id: command3.cc,v 1.39 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.39 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -1753,7 +1753,7 @@ int date(critter& pc) {
 }//date
 
 
-int tail(int i_th, const String* vict, critter& pc, int do_smob = FALSE) {
+int tail(int i_th, const String* vict, critter& pc, int do_smob) {
    String buf(100);
    critter* ptr;
 
@@ -1795,7 +1795,7 @@ int tail(int i_th, const String* vict, critter& pc, int do_smob = FALSE) {
 }//tail
 
   
-int follow(int i_th, const String* vict, critter& pc, int do_msg = TRUE) {
+int follow(int i_th, const String* vict, critter& pc, int do_msg) {
    critter* ptr;
    String buf(100);
 
@@ -1820,7 +1820,7 @@ int follow(int i_th, const String* vict, critter& pc, int do_msg = TRUE) {
 
 
 /* pc follows vict */
-int critter::doFollow(critter& vict, int do_msg = TRUE) {
+int critter::doFollow(critter& vict, int do_msg) {
    String buf(100);
    
    if (vict.isMob() || isMob()) {

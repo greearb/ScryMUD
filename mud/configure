@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
-# $Id: configure,v 1.3 2002/02/22 22:51:40 gingon Exp $
-# $Revision: 1.3 $  $Author: gingon $ $Date: 2002/02/22 22:51:40 $
+# $Id: configure,v 1.4 2003/02/25 04:14:43 greear Exp $
+# $Revision: 1.4 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 open(OFILE, ">MakeInclude") or die("Can't open MakeInclude\n");
 
@@ -29,25 +29,36 @@ print OFILE "MUD_HOME=$pwd\n";
 my $ver = `g++ --version`;
 chomp($ver);
 my @ver = split /\./, $ver;
-if (@ver[0] >= 2 && @ver[1] >= 95) {
-  print "Don't need guiding-decls, g++ (version: $ver) is greater than 2.95\n";
-  print OFILE "GUIDING_DECLS = \n";
-  print OFILE "BG_NEW_GCC_TEMPLATES = -D_BG_TEMPLATE_HACK\n\n";
-}
-else {
-  print "Need guiding-decls, g++ (version: $ver) is not greater than 2.95\n";
-  print OFILE "GUIDING_DECLS = -fguiding-decls\n";
-  print OFILE "BG_NEW_GCC_TEMPLATES = \n\n";
+if ($ver[0] =~ /g\+\+ \(GCC\) (\d+)/) {
+  $ver[0] = $1;
 }
 
-if (@ver[0] >= 3) {
-  print "Don't need -fhuge-templates, g++ (version $ver) is greater than 3.0.0\n";
-  print OFILE "HUGE_OBJECTS = \n";
+print "g++ version: " . $ver[0] . " " . $ver[1] . "\n";
+
+if ($ver[0] == 2) {
+  if ($ver[1] >= 95) {
+    print "Don't need guiding-decls, g++ (version: $ver) is greater than 2.95\n";
+    print OFILE "GUIDING_DECLS = \n";
+    print OFILE "BG_NEW_GCC_TEMPLATES = -D_BG_TEMPLATE_HACK\n\n";
   }
-else {
+  else {
+    print "Need guiding-decls, g++ (version: $ver) is not greater than 2.95\n";
+    print OFILE "GUIDING_DECLS = -fguiding-decls\n";
+    print OFILE "BG_NEW_GCC_TEMPLATES = \n\n";
+  }
+
   print "Need -fhuge-objects, g++ (version $ver) is less than 3.0\n";
   print OFILE "HUGE_OBJECTS = -fhuge-objects\n";
 }
+
+
+if ($ver[0] == 3) {
+  print "Version >= 3, no hacks needed.\n";
+  print OFILE "HUGE_OBJECTS = \n";
+  print OFILE "GUIDING_DECLS = \n";
+  print OFILE "BG_NEW_GCC_TEMPLATES = -D_BG_TEMPLATE_HACK\n\n";
+}
+
 close(OFILE);
 
 `cat MakeInclude.bh >> MakeInclude`;

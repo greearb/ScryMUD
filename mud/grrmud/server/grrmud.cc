@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.44 2002/02/07 19:32:09 eroper Exp $
-// $Revision: 1.44 $  $Author: eroper $ $Date: 2002/02/07 19:32:09 $
+// $Id: grrmud.cc,v 1.45 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.45 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -483,9 +483,9 @@ void sig_term_handler(int signo) {
       mudlog << flush;
       char buf[100];
       sprintf(buf, "%s.CRASH.%i", mudlog.getFileName(), getpid());
-      mudlog.flushToFile(buf);
+      mudlog.cpFileTo(buf);
       sprintf(buf, "%s.CRASH.%i", obj_ptr_log.getFileName(), getpid());
-      obj_ptr_log.flushToFile(buf);
+      obj_ptr_log.cpFileTo(buf);
       abort();
       //do_shutdown = TRUE;
    }
@@ -495,9 +495,9 @@ void sig_term_handler(int signo) {
       mudlog << flush;
       char buf[100];
       sprintf(buf, "%s.CRASH.%i", mudlog.getFileName(), getpid());
-      mudlog.flushToFile(buf);
+      mudlog.cpFileTo(buf);
       sprintf(buf, "%s.CRASH.%i", obj_ptr_log.getFileName(), getpid());
-      obj_ptr_log.flushToFile(buf);
+      obj_ptr_log.cpFileTo(buf);
       abort();
       //do_shutdown = TRUE;
    }
@@ -551,7 +551,7 @@ int main(int argc, char** argv) {
    signal(SIGSEGV, (&sig_term_handler));
    signal(SIGSEGV, (&sig_term_handler));
 
-   set_new_handler(scry_new_handler);
+   std::set_new_handler(scry_new_handler);
 
    String buf(50);
 
@@ -893,7 +893,7 @@ void game_loop(int s)  {
          // trim the log files to the last 1000 lines, start adding from there.
          if (((pulse + 1) % 10000) == 0) {
             //mudlog << "WARNING:  About to truncate.\n" << endl;
-            mudlog.truncate();
+            mudlog.rollFile();
          }
       }//if
       

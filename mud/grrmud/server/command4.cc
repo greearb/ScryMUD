@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.50 2002/09/14 00:54:40 eroper Exp $
-// $Revision: 1.50 $  $Author: eroper $ $Date: 2002/09/14 00:54:40 $
+// $Id: command4.cc,v 1.51 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.51 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -483,8 +483,8 @@ int do_post(critter& pc) {
 
 
          Sprintf(buf, "./Boards/board_%i", ptr->OBJ_NUM);
-         ifstream ifile(buf, ios::nocreate);
-              if (!ifile) {
+         ifstream ifile(buf);
+         if (!ifile) {
             mudlog.log(INF, "CHECK:  creating new board file.\n");
             String buf2(100);
             Sprintf(buf2, "cp ./World/DEFAULT_OBJECTS ./Boards/board_%i",
@@ -1189,7 +1189,7 @@ int door_to(int room_num, int dist, const String* direction, critter& pc) {
 
 
 int do_door_to(room& cur_room, room& targ_room, int distance, critter&
-                pc, const String* direction, int is_gate = FALSE) {
+                pc, const String* direction, int is_gate) {
    String buf(100);
    int i;
 

@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.57 2002/09/08 02:00:15 eroper Exp $
-// $Revision: 1.57 $  $Author: eroper $ $Date: 2002/09/08 02:00:15 $
+// $Id: misc.cc,v 1.58 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.58 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -1717,7 +1717,7 @@ void add_spell_affecting_obj(int spell, int duration, object& vict) {
 }//gain spell_affected_by    
 
 
-void show(const char* message, critter& pc, hilite_type hl_type = HL_DEF) {
+void show(const char* message, critter& pc, hilite_type hl_type) {
    //log(message);
 
    String *output;
@@ -1763,7 +1763,7 @@ void show_all(const char* msg, const room& rm) {
 
 
 void show_all_but_2(critter& A, critter& B, const char* msg,
-                    room& rm, hilite_type hl_type = HL_DEF) {
+                    room& rm, hilite_type hl_type) {
    Cell<critter*> cell(rm.getCrits());
    critter* crit_ptr;
 
@@ -1860,7 +1860,7 @@ void out_str(const List<String*>& lst, critter& pc) {
 
 
 /** Can over-ride the VIS/SEE bit stuff if you set see_all to true. */
-void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
+void out_crit(const List<critter*>& lst, critter& pc, int see_all) {
    Cell<critter*> cell(lst);
    Cell<stat_spell_cell*> cell2;
    stat_spell_cell* sp;
@@ -2174,14 +2174,14 @@ void out_inv(const List<object*>& lst, critter& pc,
 
 critter* have_crit_named(List<critter*>& lst, const int i_th,
                          const String* name, const int see_bit,
-                         const room& rm, int do_exact = FALSE) {
+                         const room& rm, int do_exact) {
    int foo = 0;
    return have_crit_named(lst, i_th, name, see_bit, foo, rm, do_exact);
 }
 
 critter* have_crit_named(List<critter*>& lst, const int i_th,
                          const String* name, const int see_bit,
-                         int& count_sofar, const room& rm, int do_exact = FALSE) {
+                         int& count_sofar, const room& rm, int do_exact) {
    Cell<String*> char_cell;
    Cell<critter*> cell(lst);
    critter* crit_ptr;

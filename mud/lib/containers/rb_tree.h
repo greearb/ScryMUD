@@ -1,5 +1,5 @@
-// $Id: rb_tree.h,v 1.3 2001/03/29 03:02:38 eroper Exp $
-// $Revision: 1.3 $  $Author: eroper $ $Date: 2001/03/29 03:02:38 $
+// $Id: rb_tree.h,v 1.4 2003/02/25 04:14:44 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 2003/02/25 04:14:44 $
 
 //
 //ScryMUD Server Code
@@ -35,15 +35,16 @@
 
 template <class K, class V> class Tree;
 template <class T> int TreeCompare (const T &, const T &);
-   //
-   // TreeCompare is the default key comparison function
+//
+// TreeCompare is the default key comparison function
+
+
+enum Palette {Red, Black};
 
 
 template <class K, class V> class TreeNode
 {
-   friend class Tree<K,V>;
-   enum Palette {Red, Black};
-   
+   friend class Tree<K,V>;   
    // Fields
    //
    Palette   Color;

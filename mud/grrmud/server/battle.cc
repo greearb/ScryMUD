@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.53 2002/09/14 00:55:05 eroper Exp $
-// $Revision: 1.53 $  $Author: eroper $ $Date: 2002/09/14 00:55:05 $
+// $Id: battle.cc,v 1.54 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.54 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -742,7 +742,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
 
 // Convenience method for when we don't care about dealing
 // with tags.
-void agg_kills_vict(critter* agg, critter& vict, int do_msg = TRUE) {
+void agg_kills_vict(critter* agg, critter& vict, int do_msg) {
    int show_vict_tags = FALSE;
    agg_kills_vict(agg, vict, show_vict_tags, do_msg);
 }

@@ -1,5 +1,5 @@
-// $Id: rb_tree.cc,v 1.3 2001/03/29 03:02:38 eroper Exp $
-// $Revision: 1.3 $  $Author: eroper $ $Date: 2001/03/29 03:02:38 $
+// $Id: rb_tree.cc,v 1.4 2003/02/25 04:14:44 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 2003/02/25 04:14:44 $
 
 //
 //ScryMUD Server Code
@@ -33,9 +33,9 @@
 #define True  1
 #define False 0
 
-#define Red(K,V)     TreeNode<K,V>::Red
-#define Black(K,V)   TreeNode<K,V>::Black
-#define Palette(K,V) TreeNode<K,V>::Palette
+//#define Red(K,V)     TreeNode<K,V>::Red
+//#define Black(K,V)   TreeNode<K,V>::Black
+//#define Palette(K,V) TreeNode<K,V>::Palette
 
 //void log(const char*); //Ben's Standard log function
 
@@ -138,7 +138,7 @@ template <class K, class V> void Tree<K,V>::Insert
    (const K &Y, const V &X)
 {
    Root = Insert1(Y, X, Root);
-   Root->Color = Black(K,V);
+   Root->Color = Black;
 }
 
 // Insert1 -- Recursive helper function of Insert.
@@ -148,7 +148,7 @@ template <class K, class V> TreeNode<K,V> *Tree<K,V>::Insert1
 {
    if (!N)
    {
-      TreeNode<K,V> *M = new TreeNode<K,V> (Red(K,V), (TreeNode<K,V> *)0, 
+      TreeNode<K,V> *M = new TreeNode<K,V> (Red, (TreeNode<K,V> *)0, 
                                            (TreeNode<K,V> *)0, Y, X);
       if (!M) {
 	 //log("ERROR:  (rb_tree) No memory left");
@@ -177,12 +177,12 @@ template <class K, class V> TreeNode<K,V> *Tree<K,V>::Insert1
 template <class K, class V> TreeNode<K,V> *Tree<K,V>::InsertRebalance
    (TreeNode<K,V> *N, const K &Key)
 {
-   if (N && N->Color == Black(K,V))
+   if (N && N->Color == Black)
       if ((*Compare)(Key, N->Key) < 0) // Cases 1-4
       {
          register TreeNode<K,V> *M = N->Left;
-         if (M && M->Color == Red(K,V))
-            if (N->Right && N->Right->Color == Red(K,V)) // Cases 1,3
+         if (M && M->Color == Red)
+            if (N->Right && N->Right->Color == Red) // Cases 1,3
             {
                FlipBoth(N);
                return N;
@@ -200,8 +200,8 @@ template <class K, class V> TreeNode<K,V> *Tree<K,V>::InsertRebalance
       else // Cases 5-8
       {
          register TreeNode<K,V> *M = N->Right;
-         if (M && M->Color == Red(K,V))
-            if (N->Left && N->Left->Color == Red(K,V)) // Cases 5,7
+         if (M && M->Color == Red)
+            if (N->Left && N->Left->Color == Red) // Cases 5,7
             {
                FlipBoth(N);
                return N;
@@ -232,7 +232,7 @@ template <class K, class V> void Tree<K,V>::Delete (register const K &Y)
    Root = Delete1(Y, Root, Defect);
 
    if (Root)
-      Root->Color = Black(K,V);
+      Root->Color = Black;
 }
 
 // Delete1 -- Recursive helper function of Delete
@@ -290,9 +290,9 @@ template <class K, class V> TreeNode<K,V> *Tree<K,V>::Delete2
 template <class K, class V> inline TreeNode<K,V> *Tree<K,V>::DeleteBasis
    (register TreeNode<K,V> *N, register TreeNode<K,V> *M, short &Defect)
 {
-   if (N->Color == Red(K,V))
+   if (N->Color == Red)
       Defect = False;
-   else if (!M || M->Color == Black(K,V))
+   else if (!M || M->Color == Black)
       Defect = True;
    else
    {
@@ -311,7 +311,7 @@ template <class K, class V> TreeNode<K,V> *Tree<K,V>::DeleteRebalance
 {
    if (Defect)
    {
-      if (M && M->Color == Red(K,V)) // Case 0
+      if (M && M->Color == Red) // Case 0
       {
          Flip(M);
          Defect = False;
@@ -319,7 +319,7 @@ template <class K, class V> TreeNode<K,V> *Tree<K,V>::DeleteRebalance
       else if (M == N->Left) // Cases 1-4
       {
          register TreeNode<K,V> *S = N->Right;
-         if (S->Color == Red(K,V)) // Case 1
+         if (S->Color == Red) // Case 1
          {
             FlipRight(N);
             N = RotateLeft(N);
@@ -328,15 +328,15 @@ template <class K, class V> TreeNode<K,V> *Tree<K,V>::DeleteRebalance
                // This call will encounter one of cases 2-4, and within
                // two steps, set Defect to False
          }
-         else if ((!S->Left  || S->Left->Color  == Black(K,V)) &&
-                  (!S->Right || S->Right->Color == Black(K,V))) // Case 2
+         else if ((!S->Left  || S->Left->Color  == Black) &&
+                  (!S->Right || S->Right->Color == Black)) // Case 2
          {
             Flip(S);
             Defect = True;
          }
          else // Cases 3,4
          {
-            if (S->Left && S->Left->Color == Red(K,V)) // Case 3
+            if (S->Left && S->Left->Color == Red) // Case 3
             {
                N->Right = RotateRight(N->Right);
                FlipRight(N->Right);
@@ -350,7 +350,7 @@ template <class K, class V> TreeNode<K,V> *Tree<K,V>::DeleteRebalance
       else // Cases 5-8
       {
          register TreeNode<K,V> *S = N->Left;
-         if (S->Color == Red(K,V)) // Case 5
+         if (S->Color == Red) // Case 5
          {
             FlipLeft(N);
             N = RotateRight(N);
@@ -359,15 +359,15 @@ template <class K, class V> TreeNode<K,V> *Tree<K,V>::DeleteRebalance
                // This call will encounter one of cases 6-8, and within
                // two steps, set Defect to False
          }
-         else if ((!S->Right || S->Right->Color == Black(K,V)) &&
-                  (!S->Left  || S->Left->Color  == Black(K,V))) // Case 6
+         else if ((!S->Right || S->Right->Color == Black) &&
+                  (!S->Left  || S->Left->Color  == Black)) // Case 6
          {
             Flip(S);
             Defect = True;
          }
          else // Cases 7,8
          {
-            if (S->Right && S->Right->Color == Red(K,V)) // Case 7
+            if (S->Right && S->Right->Color == Red) // Case 7
             {
                N->Left = RotateLeft(N->Left);
                FlipLeft(N->Left);
@@ -402,7 +402,7 @@ template <class T> inline int TreeCompare (const T &X, const T &Y)
 template <class K, class V> inline void Tree<K,V>::Flip
    (register TreeNode<K,V> *N)
 {
-   N->Color = (N->Color == Red(K,V)) ? Black(K,V) : Red(K,V);
+   N->Color = (N->Color == Red) ? Black : Red;
 }
 
 
@@ -413,7 +413,7 @@ template <class K, class V> inline void Tree<K,V>::Flip
 template <class K, class V> inline void Tree<K,V>::FlipLeft
    (register TreeNode<K,V> *N)
 {
-   Palette(K,V) C = N->Color;
+   Palette C = N->Color;
    N->Color = N->Left->Color;
    N->Left->Color = C;
 }
@@ -426,7 +426,7 @@ template <class K, class V> inline void Tree<K,V>::FlipLeft
 template <class K, class V> inline void Tree<K,V>::FlipRight
    (register TreeNode<K,V> *N)
 {
-   Palette(K,V) C = N->Color;
+   Palette C = N->Color;
    N->Color = N->Right->Color;
    N->Right->Color = C;
 }
@@ -439,7 +439,7 @@ template <class K, class V> inline void Tree<K,V>::FlipRight
 template <class K, class V> inline void Tree<K,V>::FlipBoth
    (register TreeNode<K,V> *N)
 {
-   Palette(K,V) C = N->Color;
+   Palette C = N->Color;
    N->Color = N->Left->Color;
    N->Left->Color = C;
    N->Right->Color = C;

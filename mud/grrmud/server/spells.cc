@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.26 2002/03/01 14:55:52 gingon Exp $
-// $Revision: 1.26 $  $Author: gingon $ $Date: 2002/03/01 14:55:52 $
+// $Id: spells.cc,v 1.27 2003/02/25 04:14:44 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 2003/02/25 04:14:44 $
 
 //
 //ScryMUD Server Code
@@ -194,17 +194,16 @@ void Spell::doFailureNoTarget() {
 }
 
 void Spell::setupSpell(int spelln, int spellp, char* act, char* spell_name, char* divers,  
-   char* no_target,
-   char lost_con[] = "obviously forgot part of the spell.\n"){
+                       char* no_target, char lost_con[]){
 
-    spell_num = spelln;
-	//spell_mana = spellm;
-	pause = spellp;
-	name = spell_name;
-	msg_no_target = no_target;
-	msg_lost_con = lost_con;
-	actions = act;
-	diversions = divers;
+   spell_num = spelln;
+   //spell_mana = spellm;
+   pause = spellp;
+   name = spell_name;
+   msg_no_target = no_target;
+   msg_lost_con = lost_con;
+   actions = act;
+   diversions = divers;
 }
 
 /// end of Spell functions, on to the target specific classes
@@ -216,7 +215,7 @@ void Spell::setupSpell(int spelln, int spellp, char* act, char* spell_name, char
     return TRUE;
 }*/
 
-void MobSpell::onCast(critter& vict, critter& pc, int is_canned = FALSE, int lvl = 0) {
+void MobSpell::onCast(critter& vict, critter& pc, int is_canned, int lvl) {
 
    if(is_canned){
       canned = TRUE;
@@ -235,8 +234,7 @@ void MobSpell::onCast(critter& vict, critter& pc, int is_canned = FALSE, int lvl
    
 } 
 
-void MobSpell::onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
-                  int lvl = 0){
+void MobSpell::onCast(int i_th, const String* vict, critter& pc, int is_canned, int lvl) {
    
    if(is_canned) {
       canned = TRUE;

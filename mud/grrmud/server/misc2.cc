@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.39 2002/03/01 14:55:52 gingon Exp $
-// $Revision: 1.39 $  $Author: gingon $ $Date: 2002/03/01 14:55:52 $
+// $Id: misc2.cc,v 1.40 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.40 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -290,7 +290,7 @@ short a_will_help_b_against_c(critter& a, critter& b, critter& c) {
 }//a_helps_b_against_c
 
   
-void lose_fly(critter& pc, short do_msg = FALSE) {
+void lose_fly(critter& pc, short do_msg) {
   int is_dead;
   if (do_msg) {
     show("You glance down just in time to see the ground rushing up to meet you.\n", pc);
@@ -306,7 +306,7 @@ void lose_fly(critter& pc, short do_msg = FALSE) {
     look(1, &NULL_STRING, pc, TRUE);
 }//lose_fly
 
-void unpetrify(critter& pc, short do_msg = FALSE) {
+void unpetrify(critter& pc, short do_msg) {
   if (do_msg)
     show("Your skin returns to its origional rubbery texture.\n", pc);
   pc.CRIT_FLAGS.turn_off(14);
@@ -486,8 +486,8 @@ void show_stat_affects(object& obj, critter& pc) {
  *  Case matters.
  */
 int ok_to_do_action(critter* vict, const char* flags, int spell_num,
-                    critter& pc, room* aux_rm = NULL, critter* aux_crit = NULL,
-                    int do_msg = TRUE) {
+                    critter& pc, room* aux_rm, critter* aux_crit,
+                    int do_msg) {
   String buf(100);
   int len = strlen(flags);  
   char chr;
@@ -1320,7 +1320,7 @@ void do_vehicle_moves() {
 }//do_vehicle_moves()
 
 
-int mob_can_enter(critter& pc, room& rm, short do_msg, int check_no_wander = FALSE) {
+int mob_can_enter(critter& pc, room& rm, short do_msg, int check_no_wander) {
    int retval = FALSE;
 
    if (!rm.isInUse()) { //if not used
@@ -1641,7 +1641,7 @@ int get_next_mob() {
 }//get_next_obj()
 
 
-int get_percent_lrnd(int skill_num, const critter& pc, short automatic = FALSE) {
+int get_percent_lrnd(int skill_num, const critter& pc, short automatic) {
    if (!pc.pc) {
       if (automatic && pc.mob && pc.mob->proc_data) {
          if (pc.FLAG1.get(12)) { //evasive maneuvers flag

@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.45 2002/01/05 01:42:38 eroper Exp $
-// $Revision: 1.45 $  $Author: eroper $ $Date: 2002/01/05 01:42:38 $
+// $Id: room.cc,v 1.46 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.46 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -2815,7 +2815,7 @@ int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
    return 0;
 }//vDoEmote
 
-int room::getVisBit(bool lightAdjust = false) const {
+int room::getVisBit(bool lightAdjust) const {
    int vb = cur_stats[0];
    if (lightAdjust) {
       if (isPermDark()) {

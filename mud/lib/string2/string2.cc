@@ -1,12 +1,11 @@
-// $Id: string2.cc,v 1.19 2002/01/14 21:32:58 eroper Exp $
-// $Revision: 1.19 $  $Author: eroper $ $Date: 2002/01/14 21:32:58 $
+// $Id: string2.cc,v 1.20 2003/02/25 04:14:44 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 2003/02/25 04:14:44 $
 
 //
-//ScryMUD Server Code
-//Copyright (C) 1998  Ben Greear
+//Copyright (C) 1998-2001  Ben Greear
 //
 //This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
+//modify it under the terms of the GNU Library General Public License
 //as published by the Free Software Foundation; either version 2
 //of the License, or (at your option) any later version.
 //
@@ -15,12 +14,11 @@
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 //
-//You should have received a copy of the GNU General Public License
+//You should have received a copy of the GNU Library General Public License
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
-//                                     greearb@agcs.com
+// To contact the Author, Ben Greear:  greearb@candelatech.com
 //
 
 ///**********************  string2.cc  ***************************///
@@ -32,6 +30,9 @@
 #include <errno.h>
 #include <signal.h>
 #include <string.h>
+#include <netinet/in.h>
+
+
 
 extern int core_dump(const char* msg); //misc2.cc
 
@@ -41,6 +42,67 @@ extern int core_dump(const char* msg); //misc2.cc
 LogStream* String::logfile = NULL;
 int String::string_cnt = 0;
 int String::total_bytes = 0;
+
+
+/* TODO:  Someday put this in a better place... */
+struct Counter64u toCounter64u(unsigned long long cnt) {
+   struct Counter64u retval;
+   retval.lo = (cnt & 0xFFFFFFFF);
+   retval.hi = (cnt >> 32) & 0xFFFFFFFF;
+   return retval;
+}
+
+unsigned long long toUint64(const Counter64u& cnt) {
+   unsigned long long retval = cnt.hi;
+   retval = ((retval << 32) & (0xFFFFFFFF00000000LL));
+   retval |= (cnt.lo & 0xFFFFFFFF);
+   return retval;
+}
+
+
+/* TODO:  Someday put this in a better place... */
+struct Counter64s toCounter64s(long long cnt) {
+   struct Counter64s retval;
+   retval.lo = (cnt & 0xFFFFFFFF);
+   retval.hi = (cnt >> 32) & 0xFFFFFFFF;
+   return retval;
+}
+
+long long toInt64(const Counter64s& cnt) {
+   long long retval = cnt.hi;
+   retval = ((retval << 32) & (0xFFFFFFFF00000000LL));
+   retval |= (cnt.lo & 0xFFFFFFFF);
+   return retval;
+}
+
+
+int makeNBO(struct Counter64u& pld) {
+   pld.hi = htonl(pld.hi);
+   pld.lo = htonl(pld.lo);
+   return 0;
+}
+
+
+int makeHBO(struct Counter64u& pld) {
+   pld.hi = ntohl(pld.hi);
+   pld.lo = ntohl(pld.lo);
+   return 0;
+}
+
+int makeNBO(struct Counter64s& pld) {
+   pld.hi = htonl(pld.hi);
+   pld.lo = htonl(pld.lo);
+   return 0;
+}
+
+
+int makeHBO(struct Counter64s& pld) {
+   pld.hi = ntohl(pld.hi);
+   pld.lo = ntohl(pld.lo);
+   return 0;
+}
+
+
 
 // return a value that should be pretty unique.
 // This is basically lame, do some research if you want a real
@@ -88,7 +150,7 @@ String String::sterilizeForHtml() const {
    return retval;
 }//sterilizeForHtml
 
-void String::Strip() {
+void String::strip() {
    int i;
 
    if (cur_len == 0)
@@ -99,25 +161,29 @@ void String::Strip() {
          break;
    }
    
+   //cout << "Strip1: i: " << i << " cur_len: " << cur_len << endl;
    if (i == cur_len) {
       Clear();
       return;
    }
    
+   //cout << "Strip2: i: " << i << " cur_len: " << cur_len << endl;
    int end;
-   for (end = cur_len - 1; end >= i; end--) {
-      if (!isspace(string[end]))
+   for (end = cur_len; end > i; end--) {
+      if (!isspace(string[end - 1]))
          break;
    }//for
 
+   //cout << "Strip3: i: " << i << " cur_len: " << cur_len << " end: " << end << endl;
    if (end <= i) {
       Clear();
       return;
    }
 
+   //cout << "Strip4: i: " << i << " cur_len: " << cur_len << " end: " << end << endl;
    char buf[cur_len + 1];
-   memcpy(buf, string + i, (end - i) + 1);
-   buf[(end - i) + 1] = 0;
+   memcpy(buf, string + i, (end - i));
+   buf[(end - i)] = 0;
 
    *this = buf;
 }//Strip
@@ -153,10 +219,11 @@ void String::insertAfter(int i, const char* str) {
 }//insertAfter
 
 void String::ensureCapacity(int max_length) {
-   //LOGFILE << "In ensure Capacity...  max_length:  "
+   //LOGFILE << "In ensureCapacity...  max_length:  "
    //        << max_length << "  max_len:  " << max_len
    //        << endl << flush;
    if (max_len < max_length) {
+      //cout << "Growing string: " << this << " max_length: " << max_length << endl;
       char* tmp = string;
       string = new char[max_length + max_len + 1];
       total_bytes += max_length; //keep our static statistics
@@ -359,7 +426,7 @@ void String::Report() const {
 }//Report
  
 
-String String::Look_Command(short is_first = 0) const {
+String String::lookCommand(short is_first) const {
    String temp(100);
    int i = 0; 
    char a;
@@ -384,7 +451,7 @@ String String::Look_Command(short is_first = 0) const {
          return temp;
       }
       if (string[i+1] == '\'') {
-         temp.Append(a);
+         temp.append(a);
          i += 2;
          a = string[i];
       }//if
@@ -402,7 +469,7 @@ String String::Look_Command(short is_first = 0) const {
       if (in_quotes) {
          if (a == '\'') {
             if (string[i+1] == '\'') { //escaped the quote
-               temp.Append(a);
+               temp.append(a);
             }//if
             else {
                break; //all done
@@ -415,7 +482,7 @@ String String::Look_Command(short is_first = 0) const {
             break;
          }//if
          else {
-            temp.Append(a);
+            temp.append(a);
          }//else
       }//else
 
@@ -428,7 +495,8 @@ String String::Look_Command(short is_first = 0) const {
 }//look_command
 
 
-String String::Get_Command(short& eos, short& term_by_period, short is_first = 0) {
+String String::getCommand(short& eos, short& term_by_period,
+                          short is_first, short ignore_period) {
    String temp(100);
    int i = 0, k = 0;
    eos = term_by_period = FALSE;
@@ -438,7 +506,7 @@ String String::Get_Command(short& eos, short& term_by_period, short is_first = 0
    //LOGFILE << "In Get_command -:" << *this << ":-" << endl;
 
    a = string[i];
-   while ((isspace(a)) || (a == '.')) {
+   while ((isspace(a)) || (!ignore_period && (a == '.'))) {
       i++;
       a = string[i];
    }//while
@@ -480,12 +548,12 @@ String String::Get_Command(short& eos, short& term_by_period, short is_first = 0
          }//if
          else {
             if ((a == '\'') && (string[i+1] == '\'')) {
-               temp.Append(a);
+               temp.append(a);
                i += 2;
                a = string[i];
             }//if
             
-            while (!(isspace(a) || a == '.' || !a)) {
+            while (!(isspace(a) || (!ignore_period && (a == '.')) || !a)) {
                temp += a;
                i++;
                a = string[i];
@@ -548,8 +616,10 @@ String String::Get_Command(short& eos, short& term_by_period, short is_first = 0
    return temp;
 }//get_command
 	 
-
-String String::Get_Rest(short destruct = TRUE) {
+/* If destruct is TRUE, then the returned String will be removed
+ * from the beginning of this string.
+ */
+String String::getRest(short destruct) {
    String temp(300);
    int i = 0, k = 0;
    char a;
@@ -596,7 +666,7 @@ void String::Refigure_strlen() {
    }//if
 }//Refigure_strlen
 
-int String::Contains(const char ch) const {
+int String::contains(const char ch) const {
    int retval = 0;
    for (int i = 0; i<cur_len; i++) {
       if (string[i] == ch) {
@@ -608,16 +678,52 @@ int String::Contains(const char ch) const {
 }
 
 
+/**  Reads in bytes untill it gets to the dlm.  It does NOT include the
+ * delimiter.  A backslash escapes the delimiter.
+ */
+void String::readUntil(char delim, istream& dafile) {
+   int is_escaped = FALSE;
+   char ch;
+   clear();
+   // Get to the beginning
+   while (dafile) {
+      dafile.get(ch);
+      if (ch == '\\') {
+         if (is_escaped) {
+            is_escaped = FALSE;
+            this->append(ch);
+         }
+         else {
+            is_escaped = TRUE;
+         }
+      }
+      else if (ch == delim) {
+         if (is_escaped) {
+            is_escaped = FALSE;
+            this->append(ch);
+         }
+         else {
+            return;
+         }
+      }
+      else {
+         is_escaped = FALSE;
+         this->append(ch);
+      }
+   }//while
+}//readUntil
+
+
 /** Reads untill it finds the delim, and then reads untill
  * it finds another.  Escape the delim with a \ (backslash).
  * This is not too efficient, as it reads one character at
  * a time, btw.
  */
-int String::readToken(char delim, ifstream& dafile, int include_delim) {
+int String::readToken(char delim, istream& dafile, int include_delim) {
    char ch;
    int is_escaped = FALSE;
 
-   Vclear();
+   clear();
 
    // Get to the beginning
    while (dafile) {
@@ -689,17 +795,14 @@ int String::readToken(char delim, ifstream& dafile, int include_delim) {
 }//readToken
 
 
-void String::Termed_Read(ifstream& da_file) { //reads lines untill it finds
+void String::termedRead(istream& da_file) { //reads lines untill it finds
 					      // a line containing only "~"
    char buf[182];
    short test;
 
    *this = "";  
 
-   if (!da_file) {
-      LOGFILE.log(WRN, "WARNING:  String::Termed_Read, da_file is null\n");
-      return;
-   }
+   Assert(da_file && 1, "WARNING:  String::Termed_Read, da_file is null\n"); 
 
    da_file.getline(buf, 180);
 
@@ -733,7 +836,7 @@ void String::Termed_Read(ifstream& da_file) { //reads lines untill it finds
 }//Termed_Read
 
 
-void String::Tolower() {
+void String::toLower() {
    for (int i = 0; i < cur_len; i++) {
       string[i] = tolower(string[i]);
    }//for
@@ -746,57 +849,9 @@ void String::toUpper() {
 }//Tolower
 
 
-int String::Strlen() const {
-   return cur_len;
+unsigned int String::Strlen() const {
+   return (unsigned int)(cur_len);
 }//Strlen
-
-int String::ColStrlen() const {
-   int          retval = 0;
-   char         *i;
-   char         *colstrWhich;
-   const char   *validFGColorCodes = "0nrgybmcwNRGYBMCW";
-   const char   *validBGColorCodes = "0nrgybmcw";
-   const char   *col_comp_ptr;
-
-   // Walk the string
-   for ( i = string; *i; i++ ) {
-
-      // possible color code
-      if ( *i == '^' || *i == '&' ) {
-
-         i++;
-
-         // this happens if ^ or & is the last character in a string.
-         if (! *i) {
-            break;
-         }
-
-         if ( *i == '^' || *i == '&' ) {
-            retval++;
-            continue;
-         }
-
-         if ( *(i-1) == '^' ) {
-            colstrWhich = (char *)validFGColorCodes;
-         } else if ( *(i-1) == '&' ) {
-            colstrWhich = (char *)validBGColorCodes;
-         }
-
-         // walk until we match or run out of valid color codes.
-         for ( col_comp_ptr = colstrWhich;
-               *col_comp_ptr && *col_comp_ptr != *i; col_comp_ptr++ );
-
-         // if we didn't match we have a literal ^& and a literal following
-         // character.
-         if ( ! (*col_comp_ptr == *i) ) {
-            retval += 2;
-         }
-      } else {
-         retval++;
-      }
-   } // for()
-   return(retval);
-}//ColStrlen()
 
 
 int String::Write(const int desc, const int max_to_write) {
@@ -816,11 +871,16 @@ int String::Write(const int desc, const int max_to_write) {
       this_round = write(desc, (string + sofar), 
                          max_to_write - sofar);
       if (this_round < 0) { //some error happened
-         perror("String.Write() err");
-         LOGFILE.log(ERROR, "ERROR:  String.Write() err.\n");
-         string[0] = '\0';
-         cur_len = 0;
-         return -1;
+         if (errno == EAGAIN) {
+            break; //done
+         }
+         else {
+            perror("String.Write() err");
+            LOGFILE << "ERROR:  String.Write() err: " << errno << ": " << strerror(errno) << endl;
+            string[0] = '\0';
+            cur_len = 0;
+            return -1;
+         }
       }//if
       else if (this_round == 0) {
          string[0] = '\0';
@@ -828,18 +888,23 @@ int String::Write(const int desc, const int max_to_write) {
          return sofar;
       }//if
       else if ((sofar += this_round) >= max_to_write) {
-         if (max_to_write == cur_len) { //wrote it all
-            string[0] = '\0';
-            cur_len = 0;
-         }
-         else {
-            // These can overlap, the +1 is for the null terminator.
-            memmove(string, string + sofar, (cur_len - sofar + 1));
-            cur_len = strlen(string);
-         }//else
-         return sofar;
-      }//if
+         break; //done
+      }
    } while (TRUE);
+
+
+   if (sofar == cur_len) { //wrote it all
+      string[0] = '\0';
+      cur_len = 0;
+   }
+   else {
+      // These can overlap, the +1 is for the null terminator.
+      memmove(string, string + sofar, (cur_len - sofar + 1));
+      cur_len = strlen(string);
+   }//else
+
+   return sofar;
+
 }//Write (to a descriptor)
 
 
@@ -860,11 +925,6 @@ int String::Read(const int desc, const int max_to_read) {
    //log(*this);
 
    do {
-
-      if ((max_to_read - (begin + sofar) - 1) == 0) {
-         break; //Done
-      }
-
       this_round = read(desc, (string + sofar + begin), 
                         max_to_read - (begin + sofar) - 1);
       
@@ -956,12 +1016,12 @@ void String::purge() {
 }//Clear      
 
 
-void String::Clear() {
+void String::clear() {
    *this = "\0";
 }//Clear
 
 
-void String::Cap() {
+void String::cap() {
    for (int i = 0; i<cur_len; i++) {
       if (isalpha(string[i])) {
          string[i] = toupper(string[i]);
@@ -970,14 +1030,34 @@ void String::Cap() {
    }//for
 }//Cap      
 
-void String::Getline(istream& stream, int max_len) {
+void String::getLine(istream& stream, int max_len) {
    char buf[max_len + 1];
    stream.getline(buf, max_len);
    *this = buf;
 }//Getline      
 
 
-void String::Append(const char* source) {
+/** Makes 9 look like: 1001 */
+void String::appendAsBinary(const unsigned long num) {
+   int i;
+   for (i = 31; i>=0; i--) {
+      if (num & (1<<i)) {
+         break;
+      }
+   }
+
+   for (; i>=0; i--) {
+      if (num & (1<<i)) {
+         append("1");
+      }
+      else {
+         append("0");
+      }
+   }
+}
+
+
+void String::append(const char* source) {
    if (!source)
       return;
    int k = strlen(source);
@@ -989,60 +1069,120 @@ void String::Append(const char* source) {
     */
    strcat(string + cur_len, source);
    cur_len += k;
-}//Append      
+}//append      
 
 
-void String::Append(const int i) {
+void String::append(const int i) {
    char source[25];
    sprintf(source, "%i", i);
-   this->Append(source);
-}//Append      
+   this->append(source);
+}//append
 
-void String::appendHex(const long i) {
+void String::append(const unsigned int i) {
    char source[25];
-   sprintf(source, "%lx", i);
-   this->Append(source);
-}//Append      
+   sprintf(source, "%u", i);
+   this->append(source);
+}//append
+
+void String::append(const long i) {
+   char source[25];
+   sprintf(source, "%li", i);
+   this->append(source);
+}//append      
 
 
-void String::Append(const char c) {
+void String::append(const unsigned long i) {
+   char source[25];
+   sprintf(source, "%lu", i);
+   this->append(source);
+}//append      
+
+
+void String::append(const unsigned long long i) {
+   char source[45];
+   sprintf(source, "%llu", i);
+   this->append(source);
+}//append      
+
+
+void String::append(const long long i) {
+   char source[45];
+   sprintf(source, "%lli", i);
+   this->append(source);
+}//append      
+
+
+void String::appendHex(const unsigned long i) {
+   char source[25];
+   sprintf(source, "%x", (unsigned int)(i));
+   this->append(source);
+}//append      
+
+
+void String::append(const char c) {
    char buf[2];
    sprintf(buf, "%c", c);
-   this->Append(buf);
-}//Append      
+   this->append(buf);
+}//append      
+
+void String::append(const unsigned char c) {
+   char buf[2];
+   sprintf(buf, "%c", c);
+   this->append(buf);
+}//append      
 
 
-void String::Append(const String& S) {
-   ensureCapacity(cur_len + S.cur_len);
-   strcat(string, S.string);
-   cur_len += S.cur_len;
-}//Append      
+void String::append(const float f, int rem) {
+   append((double)(f), rem);
+}//append      
 
 
-void String::Prepend(const int i) {
+void String::append(const double d, int rem) {
+   char buf[40];
+   char args[20];
+   sprintf(args, "%%.%if", rem);
+   sprintf(buf, args, d);
+   this->append(buf);
+}//append      
+
+
+void String::append(const String& S) {
+   if (&S != this) {
+      ensureCapacity(cur_len + S.cur_len);
+      strcat(string, S.string);
+      cur_len += S.cur_len;
+   }
+   else {
+      String tmp(S);
+      append(tmp);
+   }
+}//append      
+
+
+void String::prepend(const int i) {
    char source[25];
    sprintf(source, "%i", i);
-   this->Prepend(source);
-}//Prepend      
+   this->prepend(source);
+}//prepend      
 
 
-void String::Prepend(const long i) {
+void String::prepend(const long i) {
    char source[25];
    sprintf(source, "%d", (int)(i));
-   this->Prepend(source);
-}//Prepend      
+   this->prepend(source);
+}//prepend      
 
 
-void String::Prepend(const char* source) {
+void String::prepend(const char* source) {
    String tmp(*this); //keep a copy handy
    *this = source;
-   this->Append(tmp);
-}//Prepend      
+   this->append(tmp);
+}//prepend      
 
 
-void String::Prepend(const String& source) {
-   this->Prepend(source.string);
-}//Prepend      
+void String::prepend(const String& source) {
+   this->prepend(source.string);
+}//prepend      
 
 
    
@@ -1054,47 +1194,101 @@ String::operator const char*() const {
 
 
 String& String::operator+= (const String &S) {
-   this->Append(S);
+   this->append(S);
+   return *this;
+}//+= operator
+
+String& String::operator+= (const float f) {
+   this->append(f);
+   return *this;
+}//+= operator
+
+String& String::operator+= (const double d) {
+   this->append(d);
    return *this;
 }//+= operator
 
 String& String::operator+= (const char s) {
-   this->Append(s);
+   this->append(s);
    return *this;
 }//+= operator
 
 
 String& String::operator+= (const char* S) {
-   this->Append(S);
+   this->append(S);
    return *this;
 }//+= operator
 
 
 String& String::operator+= (const int i) {
-   this->Append(i);
+   this->append(i);
+   return *this;
+}
+
+String& String::operator+= (const unsigned int i) {
+   this->append((unsigned long)(i));
    return *this;
 }
 
 String& String::operator+= (const long l) {
-   this->Append((int)l); //bah, same thing in a real computer
+   this->append((int)l); //bah, same thing in a real computer
+   return *this;
+}
+
+String& String::operator+= (const unsigned long l) {
+   this->append(l);
+   return *this;
+}
+
+String& String::operator+= (const unsigned long long l) {
+   this->append(l);
+   return *this;
+}
+
+String& String::operator+= (const long long l) {
+   this->append(l);
    return *this;
 }
 
 String& String::operator= (const int i) {
    Clear();
-   this->Append(i);
+   this->append(i);
+   return *this;
+}
+
+String& String::operator= (const unsigned int i) {
+   Clear();
+   this->append((unsigned long)(i));
    return *this;
 }
 
 String& String::operator= (const long l) {
    Clear();
-   Append((int)l); //same thing in a real computer, for now at least
+   append(l);
+   return *this;
+}
+
+String& String::operator= (const unsigned long l) {
+   Clear();
+   append(l); //same thing in a real computer, for now at least
+   return *this;
+}
+
+String& String::operator= (const long long l) {
+   Clear();
+   append(l);
+   return *this;
+}
+
+String& String::operator= (const unsigned long long l) {
+   Clear();
+   append(l);
    return *this;
 }
 
 String& String::operator= (const char c) {
    Clear();
-   Append(c);
+   append(c);
    return *this;
 }
 
@@ -1137,17 +1331,35 @@ char String::operator[] (const unsigned int i) const {
 
 }//[] operator
 
+char String::operator[] (const int i) const {
+   Assert((i >= 0) && ((int)(i) < max_len), "ERROR:  index to high, String::operator[]\n");
+
+   return string[i];
+
+}//[] operator
+
+//Friend
+String operator+(const char* lhs, const String& rhs) {
+   String tmp(lhs);
+   tmp.append(rhs);
+   return tmp;
+}
 
 String String::operator+ (const char* S) const {
    String tmp(*this);
-   tmp.Append(S);
+   tmp.append(S);
    return tmp;
 }//assignment operator
 
+String String::operator+ (const char S) const {
+   String tmp(*this);
+   tmp.append(S);
+   return tmp;
+}//assignment operator
 
 String String::operator+ (const String& S) const {
    String tmp(*this);
-   tmp.Append(S);
+   tmp.append(S);
    return tmp;
 }//assignment operator
 
@@ -1207,27 +1419,50 @@ void vSprintf(String& targ, const char* string, va_list ap) {
    int s_len;
    char* tmp_chr_str;
    String* tmp_str;
+   void* junk;
+   char ch_buf[50];
+   Counter64u* c64u;
+   unsigned long long* i64u;
 
-   targ = "\0"; //initialize targ
+   //Counter64s* c64s;
+   int tmpi;
+
+   targ = ""; //initialize targ
 
    for (i = 0; string[i]; ) {
       if (string[i] == '%') {
          i++;
          if (string[i] != '%') {
+            //cerr << __PRETTY_FUNCTION__ << ": string[" << i << "]: " << (char)(string[i]) << endl;
             switch (string[i]) {
+               // Only handle signed counter-64 at this time. --Ben
+               case 'U':
+                  c64u = (Counter64u*)(va_arg(ap, void*));
+                  if (c64u) {
+                     sprintf(ch_buf, "%llu", toUint64(*c64u));
+                     targ.append(ch_buf);
+                  }
+                  break;
                case 'i':    /* int */  
-                  targ.Append(va_arg(ap, int));
+                  targ.append(va_arg(ap, int));
+                  break;
+               case 'u':    /* unsigned int32 */  
+                  targ.append(va_arg(ap, unsigned long));
                   break;
                case 'I':    /* ignore */
-                  (void)va_arg(ap, void*);
+                  junk = va_arg(ap, void*);
                   // Do nothing with it!!
                   break;
+               case 'L': /* uint64 */
+                  i64u = (unsigned long long*)(va_arg(ap, void*));
+                  targ.append(*i64u);
+                  break;
                case 'd':     /* long, turn it into an int */
-                  targ.Append(va_arg(ap, int));
+                  targ.append(va_arg(ap, int));
                   break;
                case 's':      /* char * */
                   if ((tmp_chr_str = va_arg(ap, char *))) {
-                     targ.Append(tmp_chr_str);
+                     targ.append(tmp_chr_str);
                   }//if
                   break;
                case 'p':    /* pointer */
@@ -1235,7 +1470,7 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                   break;
                case 'S':      /* String */
                   if ((tmp_str = va_arg(ap, String *))) {
-                     targ.Append(*tmp_str);
+                     targ.append(*tmp_str);
                   }//if
                   break;
                case 'P':      /* pad w/spaces */
@@ -1246,51 +1481,56 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                         num += (int)(string[i+1]) - 48;
                      }//if
                      else {
-                        LOGFILE.log(ERROR, 
-                                    "ERROR:  Sprintf, case 'P', first not an int\n");
+                        LOGFILE.log(ERROR, "ERROR:  Sprintf, case 'P', first not an int\n");
                      }
                   }//if two digits
                   else {
-                     LOGFILE.log(ERROR,
-                                 "ERROR:  Sprintf, case 'P', second not an int\n");
+                     LOGFILE.log(ERROR, "ERROR:  Sprintf, case 'P', second not an int\n");
                   }
                   i += 2; //now pointing to next valid letter
                   
-                  s_len = targ.ColStrlen();
+                  s_len = targ.Strlen();
                   while (s_len < num) {
-                     targ.Append(" ");  //pad another space
+                     targ.append(" ");  //pad another space
                      s_len++;
                   }//while
                   i--;  //slight hack
                   break;
+               case 'x':
+                  tmpi = va_arg(ap, int);
+                  sprintf(ch_buf, "0x%lX", (unsigned long)(tmpi));
+                  targ.append(ch_buf);
+                  break;
                default:
-                  targ.Assert(FALSE, "ERROR: default called in Sprintf.\n");
+                  sprintf(ch_buf, "ERROR: default (%c) called in Sprintf.\n",
+                          string[i]);
+                  targ.Assert(FALSE, ch_buf);
             }//switch
             i++;
          }//if
          else { //
             i++;
-            targ.Append("%");
+            targ.append("%");
          }//else
       }//if
       else {
-         targ.Append(string[i]);
+         targ.append(string[i]);
          i++;
       }//else
    }//for
 }//vSprintf
 
-		/* WARNING:  this will fail if input is > 99 chars. */
-
+/* WARNING:  this will fail if input is > 299 chars. */
 istream& operator>> (istream& stream, String& str) {
-   char buf[100];
+   char buf[300];
    stream >> buf;
    str = buf;
    return stream;
 }//write_out operator
 
-
+/** Let the char* operator just turn it into a char* 
 ostream& operator<< (ostream& stream, const String& str) {
    stream << str.string;
    return stream;
 }//write_out operator
+*/

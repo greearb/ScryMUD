@@ -1,5 +1,5 @@
-// $Id: script.cc,v 1.25 2002/03/02 19:30:09 gingon Exp $
-// $Revision: 1.25 $  $Author: gingon $ $Date: 2002/03/02 19:30:09 $
+// $Id: script.cc,v 1.26 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -104,7 +104,7 @@ int align_greater_than(int val, critter& pc){
 
 
 //gives pc amount in xp 
-int scr_gain_exp(int amount, critter& pc, int was_ordered = FALSE){
+int scr_gain_exp(int amount, critter& pc, int was_ordered){
    if (was_ordered){
       return -1;
    }else {
@@ -121,7 +121,7 @@ int scr_gain_exp(int amount, critter& pc, int was_ordered = FALSE){
 /**  This will not kill, but can set HP to 1 in worst case. */
 int affect_crit_stat(StatTypeE ste, String& up_down, int i_th,
                      String* victim, int dice_cnt, int dice_sides,
-                     room* rm, critter* caller = NULL) {
+                     room* rm, critter* caller) {
 
    critter* crit_ptr;
    String buf(100);
@@ -180,7 +180,7 @@ int affect_crit_stat(StatTypeE ste, String& up_down, int i_th,
 
 
 /** Exact some damage. */
-int exact_damage(int dice_cnt, int dice_sides, String& msg, critter& pc, int was_ordered = FALSE) {
+int exact_damage(int dice_cnt, int dice_sides, String& msg, critter& pc, int was_ordered) {
    
    if (pc.isMob()) {
       mudlog << "ERROR:  MOB sent to exact_damage, should be pc or SMOB.\n";
@@ -797,7 +797,7 @@ String GenScript::getRunningScript() {
 
 /**  Should these arguments trigger this command? */
 int GenScript::matches(const String& cmd, String& arg1, critter& act,
-                       int targ, int obj_actor_num = -1) {
+                       int targ, int obj_actor_num) {
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "GenScript::Matches(args....)" << endl;
@@ -1249,7 +1249,7 @@ void GenScript::appendCmd(String& str) {
  */
 void GenScript::generateScript(String& cmd, String& arg1, critter& act,
                                int targ, room& rm, critter* script_owner,
-                               object* object_owner = NULL) {
+                               object* object_owner) {
 
    //mudlog << "GenScript::generateScript, compiled_cmds.cur_len: "
    //       << compiled_cmds.getCurLen() << endl;

@@ -1,12 +1,11 @@
-// $Id: LogStream.h,v 1.9 2001/03/29 03:02:38 eroper Exp $
-// $Revision: 1.9 $  $Author: eroper $ $Date: 2001/03/29 03:02:38 $
+// $Id: LogStream.h,v 1.10 2003/02/25 04:14:44 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 2003/02/25 04:14:44 $
 
 //
-//ScryMUD Server Code
-//Copyright (C) 1998  Ben Greear
+//Copyright (C) 2001  Ben Greear
 //
 //This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
+//modify it under the terms of the GNU Library General Public License
 //as published by the Free Software Foundation; either version 2
 //of the License, or (at your option) any later version.
 //
@@ -15,13 +14,16 @@
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 //
-//You should have received a copy of the GNU General Public License
+//You should have received a copy of the GNU Library General Public License
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
-//                                     greearb@agcs.com
+// To contact the Author, Ben Greear:  greearb@candelatech.com
 //
+
+//  This class has the ability to buffer logs in RAM for efficiency,
+//  roll logs after a certain amount of usage, and it's verbosity
+//  level can be adjusted on the fly.
 
 #include <strstream.h>
 #include <iostream.h>
@@ -33,7 +35,7 @@
 #ifndef LOG_STREAM_INCLUDE
 #define LOG_STREAM_INCLUDE
 
-#define LOG_STREAM_BUF_SIZE 200000  /* 200 kilobytes storage */
+#define LOG_STREAM_BUF_SIZE 20000  /* 20 kilobytes storage */
 
 
 enum LogLevelEnum {
@@ -43,6 +45,7 @@ enum LogLevelEnum {
    INF = 8,   //info
    TRC = 16,  //function trace
    DBG = 32,  //debug
+   SEC = 64,  // log security violations
    LSEC = 64,  // log security violations
    DB = 128,  // READ or WRITE from the world files
    XMT = 256, // Output from MUD to characters
@@ -50,6 +53,10 @@ enum LogLevelEnum {
    SCRIPT = 1024, //Scripting specific stuff
    PARSE = 2048, //PARSE specific
    DBG2 = 4096,  //More verbose than debug even..
+   LIO = 8192,   // other IO (From cards)
+   OUT1 = (1 << 14), // Should print stuff to stdout, dbg level 1
+   LL_PROF = (1 << 15), // Profiling information.
+   CUST1 = (1 << 16), // Customer-viewable stuff (latency, for example)
    ALL = ~(0) // all
 };//enum
 
@@ -57,54 +64,85 @@ class LogStream;
 
 typedef LogStream& (*__ls_manip)(LogStream&);
 
-class LogStream : public ostrstream {
+LogStream& endl(LogStream& lstr);
+
+class LogStream : public ofstream {
 protected:
-   char buf[LOG_STREAM_BUF_SIZE];
    char* filename;
    int log_level;
    int file_action;
+   int max_logfile_sz; // allowed on disk
+   int sofar; // amt bytes written since last file-roll
+
 public:
    enum actionE {
-      APPEND = 0,
-      OVERWRITE = 1
+      APPEND = 1,
+      OVERWRITE = 2
    };
 
-   LogStream(const char* fname, int lvl, actionE fileAction)
-         : ostrstream(buf, LOG_STREAM_BUF_SIZE),
-           log_level(lvl), file_action(fileAction)
-      { filename = strdup(fname); }
+   LogStream(const char* fname, int lvl, int fileAction, int max_logfile_size)
+         : log_level(lvl), file_action(fileAction), max_logfile_sz(max_logfile_size), sofar(0) {
+      filename = NULL;
+      setFileName(fname);
+   }//constructor
 
    LogStream(const char* fname, int lvl)
-         : ostrstream(buf, LOG_STREAM_BUF_SIZE),
-           log_level(lvl), file_action(OVERWRITE)
-      { filename = strdup(fname); }
+         : log_level(lvl), file_action(OVERWRITE), max_logfile_sz(100000), sofar(0) {
+      filename = NULL;
+      setFileName(fname);
+   }//constructor
 
    ~LogStream() { 
-      flushToFile(filename);
-      free(filename);
-   }
+      flush();
+      if (filename)
+         free(filename);
+   }//destructor
 
    const char* getFileName() const { return filename; }
 
-   int flushToFile(const char* fname) {
-      *((ostrstream*)this) << ends;
-      // Allow some outside filtering...
-      if (file_action == OVERWRITE) {
-         ofstream ofile(fname);
-         ofile << str();
-         ofile.close();
+   void setFileName(const char* fname) {
+      if (fname && filename && (strcmp(fname, filename) == 0)) {
+         return;
+      }
 
-         char buf[200];
-         sprintf(buf, "truncate_log %s", fname);
+      if (filename) {
+         free(filename);
+         filename = NULL;
+      }
+
+      close();
+
+      if (fname) {
+         filename = strdup(fname);
+         if (file_action & OVERWRITE) {
+            open(filename);
+         }
+         else {
+            open(filename, ios::app);
+         }
+         //cout << "Opening log-str -:" << filename << ":-\n";
+
+         *(this) << "Log stream opened, name: " << filename << endl;
+      }
+   }//setFileName
+
+   int rollFile() {
+      sofar = 0;
+      if (file_action & OVERWRITE) {
+         close();
+         char buf[strlen(filename) * 2 + 100];
+         sprintf(buf, "mv -f %s %s.old", filename, filename);
          system(buf);
+         open(filename);
       }
-      else if (file_action == APPEND) {
-         ofstream ofile(fname, ios::app);
-         ofile << str();
-         ofile.close();
-      }
+      return 0;
+   }
 
-      seekp(0); //Reset the streambuf
+   int cpFileTo(char* new_fname) {
+      flush();
+      char buf[strlen(filename) + strlen(new_fname) + 100];
+      sprintf(buf, "cp %s %s", filename, new_fname);
+      system(buf);
       return 0;
    }
 
@@ -118,38 +156,93 @@ public:
    }
 
    LogStream& operator<< (const char* msg) {
-      *((ostrstream*)this) << msg; 
-      if (pcount() > ((float)(LOG_STREAM_BUF_SIZE) * 0.95)) {
-         flushToFile(filename);
+      *((ofstream*)this) << msg;
+      sofar += strlen(msg);
+      if (sofar > max_logfile_sz) {
+         rollFile();
       }//if
       return *this;
    }//operator overload      
 
    LogStream& operator<< (const void* ptr) { 
-      *((ostrstream*)this) << ptr;
+      *((ofstream*)this) << ptr;
+      sofar += 4; //guess how long it might be...
       return *this;
    }
 
+   LogStream& operator<< (short int i) { 
+      *((ofstream*)this) << i;
+      sofar += 4; //guess how long it might be...
+      return *this;
+   }
+
+   LogStream& operator<< (unsigned char i) { 
+      *((ofstream*)this) << i;
+      sofar += 1; //guess how long it might be...
+      return *this;
+   }
+
+   LogStream& operator<< (char i) { 
+      *((ofstream*)this) << i;
+      sofar += 1; //guess how long it might be...
+      return *this;
+   }
+
+   LogStream& operator<< (unsigned short int i) { 
+      *((ofstream*)this) << i;
+      sofar += 4; //guess how long it might be...
+      return *this;
+   }
+      
    LogStream& operator<< (int i) { 
-      *((ostrstream*)this) << i;
+      *((ofstream*)this) << i;
+      sofar += 4; //guess how long it might be...
+      return *this;
+   }
+
+   LogStream& operator<< (unsigned int i) { 
+      *((ofstream*)this) << i;
+      sofar += 4; //guess how long it might be...
+      return *this;
+   }
+
+   LogStream& operator<< (unsigned long int i) { 
+      *((ofstream*)this) << i;
+      sofar += 4; //guess how long it might be...
+      return *this;
+   }
+
+   LogStream& operator<< (long int i) { 
+      *((ofstream*)this) << i;
+      sofar += 4; //guess how long it might be...
+      return *this;
+   }
+
+   LogStream& operator<< (unsigned long long int i) { 
+      *((ofstream*)this) << i;
+      sofar += 4; //guess how long it might be...
+      return *this;
+   }
+
+   LogStream& operator<< (long long int i) { 
+      *((ofstream*)this) << i;
+      sofar += 4; //guess how long it might be...
+      return *this;
+   }
+
+   LogStream& operator<< (double d) { 
+      *((ofstream*)this) << d;
+      sofar += 8; //guess how long it might be...
+      return *this;
+   }
+
+   LogStream& operator<< (float d) { 
+      *((ofstream*)this) << d;
+      sofar += 8; //guess how long it might be...
       return *this;
    }
 
    int ofLevel(LogLevelEnum i) { return ((int)(i) & log_level); }
-
-   int truncate() {
-      return 1;
-/*
-      char buf[200];
-      close();
-
-      sprintf(buf, "truncate_log %s", filename);
-      system(buf);
-
-      open(filename, ios::app); //open and append
-      return 1;
-*/
-   }//int
 
    int getLevel() { return log_level; }
    void setLevel(int i) { log_level = i; }
@@ -170,7 +263,9 @@ public:
 
 
 inline LogStream& endl(LogStream& lstr) {
-   return lstr << (const char*)("\n");
+   lstr << (const char*)("\n");
+   lstr.flush();
+   return lstr;
 }
 
 inline LogStream& nl(LogStream& lstr) {
@@ -185,7 +280,7 @@ inline LogStream& flush(LogStream& lstr) {
 inline void LogStream::log(int lvl, const char* msg) {
    if ((int)(lvl) & log_level) {
       (*this) << msg;
-      (*this) << nl;
+      (*this) << "\n";
       flush();
    }
 }//log

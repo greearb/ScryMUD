@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.49 2002/01/03 00:02:36 eroper Exp $
-// $Revision: 1.49 $  $Author: eroper $ $Date: 2002/01/03 00:02:36 $
+// $Id: command2.cc,v 1.50 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.50 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -2625,7 +2625,7 @@ int ostat(int i_th, const String* name, critter& pc) {
 }//ostat
 
 
-int lore(int i_th, const String* name, critter& pc, int show_extra = FALSE) {
+int lore(int i_th, const String* name, critter& pc, int show_extra) {
    object* obj_ptr;
    String buf(100);
 

@@ -1,5 +1,5 @@
-// $Id: olc.cc,v 1.21 2001/03/29 03:02:33 eroper Exp $
-// $Revision: 1.21 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
+// $Id: olc.cc,v 1.22 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -1018,7 +1018,7 @@ void do_olc(critter& pc) {
                if (z > 14) { //only way to get out!
                   O_COUNT = 23; //move on to next
                   is_done = TRUE;
-                  pc.pc->input.Vclear();
+                  pc.pc->input.clear();
                   break;
                }//if
             }//if
@@ -1053,7 +1053,7 @@ void do_olc(critter& pc) {
                if (z > 29) { //only way to get out!
                   O_COUNT = 24; //move on to next
                   is_done = TRUE;
-                  pc.pc->input.Vclear();
+                  pc.pc->input.clear();
                   break;
                }//if
             }//if
@@ -1096,7 +1096,7 @@ void do_olc(critter& pc) {
                   OLC_MOB->setNativeZoneNum(i); //doesn't matter WHAT they enter!
 
                   O_COUNT = 25; //move on to next
-                  pc.pc->input.Vclear();
+                  pc.pc->input.clear();
                   is_done = TRUE;
                   break;
                }//if

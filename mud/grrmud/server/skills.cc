@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.23 2002/08/29 21:30:52 eroper Exp $
-// $Revision: 1.23 $  $Author: eroper $ $Date: 2002/08/29 21:30:52 $
+// $Id: skills.cc,v 1.24 2003/02/25 04:14:44 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 2003/02/25 04:14:44 $
 
 //
 //ScryMUD Server Code
@@ -288,7 +288,7 @@ int steal(int i_th, const String* obj, int j_th, const String* victim,
 
 
 int do_steal(object* obj, critter& vict, critter& pc, 
-              short steal_gold = FALSE) {
+              short steal_gold) {
    String buf(100);
    int amt;
 
@@ -921,7 +921,7 @@ int do_claw(critter& vict, critter& pc) {
 }//do_claw()
 
 
-int construct(critter& pc, short do_mob = FALSE) {
+int construct(critter& pc, short do_mob) {
    String buf(100);
    object* toolbox, *ptr, *item1, *item2, *item3, *item4, *item5;
    Cell<object*> cll;
@@ -1129,7 +1129,7 @@ int construct(critter& pc, short do_mob = FALSE) {
 
 
 
-int concoct(critter& pc, short do_mob = FALSE) {
+int concoct(critter& pc, short do_mob) {
    String buf(100);
    object* cauldron, *ptr, *item1, *item2, *item3, *item4, *item5;
    Cell<object*> cll;
@@ -1336,7 +1336,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
 }//concoct()
 
 
-int scribe(const String* spell, critter& pc, short do_mob = FALSE) {
+int scribe(const String* spell, critter& pc, short do_mob) {
    String buf(100);
    object* pen, *parchment; 
    int spell_num;
@@ -1464,8 +1464,8 @@ int scribe(const String* spell, critter& pc, short do_mob = FALSE) {
 
 
 short did_spell_hit(const critter& agg, const int spell_type,
-                    const critter& vict, int lvl = -1, 
-                    short is_canned = FALSE) {
+                    const critter& vict, int lvl, 
+                    short is_canned) {
 
   int j = 100;
   switch (spell_type)
@@ -1589,7 +1589,7 @@ short skill_did_hit(critter& agg, int spell_num, critter& vict) {
 }//skill_did_hit
 
 
-int sneak(critter& pc, int smob_too = FALSE) {
+int sneak(critter& pc, int smob_too) {
    String buf(100);
    
    if (pc.isMob())
@@ -1622,7 +1622,7 @@ int sneak(critter& pc, int smob_too = FALSE) {
 }//sneak
 
 
-int hide(critter& pc, int smob_too = FALSE) {
+int hide(critter& pc, int smob_too) {
    String buf(100);
 
    if (pc.isMob())
@@ -1654,7 +1654,7 @@ int hide(critter& pc, int smob_too = FALSE) {
 }//hide
 
 /*  Basically, just hide for rangers. */
-int blend(critter& pc, int smob_too = FALSE) {
+int blend(critter& pc, int smob_too) {
    String buf(100);
 
    if (pc.isMob())

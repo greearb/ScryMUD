@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.47 2002/09/08 02:00:15 eroper Exp $
-// $Revision: 1.47 $  $Author: eroper $ $Date: 2002/09/08 02:00:15 $
+// $Id: command5.cc,v 1.48 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.48 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -362,7 +362,7 @@ See 'help color' for more information.\n";
 }//color
 
 
-int pause(int rounds, critter& pc, int was_ordered = FALSE) {
+int pause(int rounds, critter& pc, int was_ordered) {
   if (pc.isMob())
     return -1; //no MOB's allowed!!
 
@@ -2370,7 +2370,7 @@ int dsys(int i, const String& cmd, const String& arg1, critter& pc) {
    }
 
    if (strncasecmp(cmd, "dump_logs", max(cmd.Strlen(), 1)) == 0) {
-      mudlog.flushToFile("./log/onDemand.log");
+      mudlog.cpFileTo("./log/onDemand.log");
       pc.show("Dumped to ./log/onDemand.log\n");
       return 0;
    }
@@ -3214,7 +3214,7 @@ int do_throw(critter& targ, critter& pc) {
 }//do_throw
 
 
-int did_shot_hit(critter& targ, critter& pc, int throwing = FALSE) {
+int did_shot_hit(critter& targ, critter& pc, int throwing) {
    float pc_roll;
    float targ_roll;
 

@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.73 2002/09/22 03:30:54 eroper Exp $
-// $Revision: 1.73 $  $Author: eroper $ $Date: 2002/09/22 03:30:54 $
+// $Id: critter.cc,v 1.74 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.74 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -3903,11 +3903,11 @@ void critter::setMov(int i) {
    MOV = i;
 }
 
-void critter::show(const char* msg, hilite_type hl_type = HL_DEF) {
+void critter::show(const char* msg, hilite_type hl_type) {
    ::show(msg, *this, hl_type);
 }
 
-void critter::show(CSentryE which_string, hilite_type hl_type = HL_DEF) {
+void critter::show(CSentryE which_string, hilite_type hl_type) {
    show(CSHandler::getString(which_string, getLanguageChoice()), hl_type);
 }
 
@@ -4018,7 +4018,7 @@ void critter::doPrompt() {
    String reg_disp;
    int dest;
 
-   int i;
+   unsigned int i;
    String targ(200);
    // Conversion buf for longs, NOTE: update append() method --Khaav
    String conv_buf(20); 

@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.56 2002/09/14 00:54:40 eroper Exp $
-// $Revision: 1.56 $  $Author: eroper $ $Date: 2002/09/14 00:54:40 $
+// $Id: commands.cc,v 1.57 2003/02/25 04:14:43 greear Exp $
+// $Revision: 1.57 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
 
 //
 //ScryMUD Server Code
@@ -641,7 +641,7 @@ int remove(int i_th, const String* obj, critter &pc) {
 
       
 int look(int i_th, const String* obj, critter &pc,
-         int ignore_brief = FALSE) {
+         int ignore_brief) {
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In look, i_th: " << i_th << " obj -:" << *obj
@@ -1878,27 +1878,27 @@ int gemote(const char* message, critter& pc) {
 
 
 int pemote(const char* message, critter& pc, room& rm, short show_non_detects,
-           critter* crit = NULL) {
+           critter* crit) {
    return do_emote(message, CS_NONE, pc, rm, show_non_detects,
                    EMOTE_POSSESSIVE, crit);
 }
 
 int emote(const char* message, critter& pc, room& rm, short show_non_detects,
-          critter* crit = NULL) {
+          critter* crit) {
    return do_emote(message, CS_NONE, pc, rm, show_non_detects,
                    EMOTE_NON_POSSESSIVE, crit);
 }
 
 
 int emote(CSentryE cs_entry, critter& pc, room& rm, short show_non_detects,
-          critter* crit = NULL) {
+          critter* crit) {
    return do_emote("", cs_entry, pc, rm, show_non_detects,
                    EMOTE_NON_POSSESSIVE, crit);
 }
 
 
 int do_emote(const char* message, CSentryE cs_entry, critter& pc, room& rm, 
-             short show_non_detects, int possessive, critter* crit = NULL) {
+             short show_non_detects, int possessive, critter* crit) {
    List<critter*> tmp_lst(rm.getCrits());
    Cell<critter*> cell(tmp_lst);
    critter* crit_ptr;
@@ -2838,7 +2838,7 @@ int cmd_split(int amount, critter& pc) {
 
 /** Returns < 0 on error */
 int move(critter& pc, int i_th, const char* direction, short do_followers, 
-         room& rm, int& is_dead, int check_no_wander = FALSE) {
+         room& rm, int& is_dead, int check_no_wander) {
    Cell<critter*> cell;
    critter* ptr2;
    door* door_ptr;   
@@ -3968,7 +3968,7 @@ int remove_eq_effects(object& obj, critter& pc, short from_corpse,
 }//remove_eq_effects
 
 
-int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk = FALSE) {
+int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk) {
    String buf(100);
    List<critter*> tmp_lst(ROOM.getCrits());
    Cell<critter*> cell(tmp_lst);
