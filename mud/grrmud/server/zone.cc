@@ -826,9 +826,20 @@ String zone::createMapFile() {
             end_rm->z());
       retval.append(tmp_buf);
       if (
-            ( abs((start_rm->x()-end_rm->x())) != path_ptr->distance() ) ||
-            ( abs((start_rm->y()-end_rm->y())) != path_ptr->distance() ) ||
-            ( abs((start_rm->z()-end_rm->z())) != path_ptr->distance() )
+            (
+             ( abs((start_rm->x()-end_rm->x())) != path_ptr->distance() ) &&
+             ( abs((start_rm->x()-end_rm->x())) != 0 ) 
+            ) ||
+
+            (
+             ( abs((start_rm->y()-end_rm->y())) != path_ptr->distance() ) &&
+             ( abs((start_rm->y()-end_rm->y())) != 0 ) 
+            ) ||
+
+            (
+             ( abs((start_rm->z()-end_rm->z())) != path_ptr->distance() ) &&
+             ( abs((start_rm->z()-end_rm->z())) != 0 )
+            )
          ) {
          retval.append(" stretched");
       }

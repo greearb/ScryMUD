@@ -3087,6 +3087,22 @@ int tog_oflag(int flagnum, const String* flag_type,
       if (flagnum != 8 && flagnum != 9 && flagnum != 10 && flagnum != 63
           && flagnum != 70 && flagnum != 73 && flagnum != 74) {
          obj_ptr->OBJ_FLAGS.flip(flagnum);
+
+         //Special handling for certain flags.
+         switch (flagnum) {
+            case 54: //container
+               if ( ! obj_ptr->isContainer() ) {
+                  // was a container, now it's not.
+                  obj_ptr->inv.clearAndDestroy();
+                  delete obj_ptr->bag;
+                  obj_ptr->bag = NULL;
+               } else {
+                  // make it a container
+                  obj_ptr->bag = new bag_struct;
+               }//else
+               break; //case 54
+         }//switch(flagnum)
+
          return 0;
       }//if
       else {
