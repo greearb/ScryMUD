@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.42 2002/01/03 19:31:10 eroper Exp $
-// $Revision: 1.42 $  $Author: eroper $ $Date: 2002/01/03 19:31:10 $
+// $Id: commands.cc,v 1.43 2002/01/05 02:10:06 eroper Exp $
+// $Revision: 1.43 $  $Author: eroper $ $Date: 2002/01/05 02:10:06 $
 
 //
 //ScryMUD Server Code
@@ -689,12 +689,16 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
          else {
             pc.show("<RM_SHORT_DESC 0>");
          }
-      } else if (pc.isUsingColor()) {
+      }
+      
+      /* KHAAVREN DELETE MARKER
+      else if (pc.isUsingColor()) {
            show(*(pc.getRoomColor()), pc);
       }
+      */
 
       
-      show(rm.short_desc, pc);
+      show(rm.short_desc, pc, HL_ROOM);
 
       
 
