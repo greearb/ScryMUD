@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.48 2001/03/29 03:02:28 eroper Exp $
-// $Revision: 1.48 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
+// $Id: command2.cc,v 1.49 2002/01/03 00:02:36 eroper Exp $
+// $Revision: 1.49 $  $Author: eroper $ $Date: 2002/01/03 00:02:36 $
 
 //
 //ScryMUD Server Code
@@ -1877,6 +1877,7 @@ int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
    Cell<object*> cell(inv);
    int price;
    String buf(100);
+   String restrict_buf(100);
 
    static int item_counts[NUMBER_OF_ITEMS + 1];
          
@@ -1920,15 +1921,57 @@ int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
          if (price < 0) {
             continue; //buf = "  NOT FOR SALE NOW.";
          }//if
-         
+
+         // Build object restrictions string, this is retarded... should have
+         // a method.
+         restrict_buf = NULL_STRING;
+
+         if (obj_ptr->OBJ_FLAGS.get(1))
+            restrict_buf += "Anti-Evil ";
+         if (obj_ptr->OBJ_FLAGS.get(2))
+            restrict_buf += "Anti-Neutral ";
+         if (obj_ptr->OBJ_FLAGS.get(3))
+            restrict_buf += "Anti-Good ";
+         if (obj_ptr->OBJ_FLAGS.get(4))
+            restrict_buf += "Anti-Donate ";
+         if (obj_ptr->OBJ_FLAGS.get(5))
+            restrict_buf += "Anti-Drop ";
+         if (obj_ptr->OBJ_FLAGS.get(6))
+            restrict_buf += "Anti-Remove ";
+         if (obj_ptr->OBJ_FLAGS.get(7))
+            restrict_buf += "Anti-Mortal ";
+         if (obj_ptr->OBJ_FLAGS.get(11))
+            restrict_buf += "Anti-Warrior ";
+         if (obj_ptr->OBJ_FLAGS.get(12))
+            restrict_buf += "Anti-Sage ";
+         if (obj_ptr->OBJ_FLAGS.get(13))
+            restrict_buf += "Anti-Wizard ";
+         if (obj_ptr->OBJ_FLAGS.get(14))
+            restrict_buf += "Anti-Ranger ";
+         if (obj_ptr->OBJ_FLAGS.get(15))
+            restrict_buf += "Anti-Thief ";
+         if (obj_ptr->OBJ_FLAGS.get(16))
+            restrict_buf += "Anti-Alchemist ";
+         if (obj_ptr->OBJ_FLAGS.get(17))
+            restrict_buf += "Anti-Cleric ";
+         if (obj_ptr->OBJ_FLAGS.get(18))
+            restrict_buf += "Anti-Bard ";
+         if (obj_ptr->OBJ_FLAGS.get(20))
+            restrict_buf += "Anti-PC ";
+         // End of object restrictions string building.
+
          if (pc.shouldShowVnums()) {
             if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-               Sprintf(buf, " [%i]%P06 %S%P50%i", id_num,
-                       &(obj_ptr->short_desc), price);
+               Sprintf(buf, " [%i][%i]%P06 %S%P50%i %S", id_num,
+                       obj_ptr->getLevel(),
+                       &(obj_ptr->short_desc), price,
+                       &restrict_buf);
             }
             else {
-               Sprintf(buf, " [%i]%P06 [*%i]%P12 %S%P50%i", id_num,
-                       item_counts[id_num], &(obj_ptr->short_desc), price);
+               Sprintf(buf, " [%i][%i]%P06 [*%i]%P12 %S%P50%i %S", id_num,
+                       obj_ptr->getLevel(),
+                       item_counts[id_num], &(obj_ptr->short_desc), price,
+                       &restrict_buf);
             }
          }
          else {
@@ -1938,12 +1981,18 @@ int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
                hack = -1;
             }
             if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-               Sprintf(buf, "  [%i]%P12 %S%P50%i", hack, &(obj_ptr->short_desc),
-                       price);
+               Sprintf(buf, "  [%i][%i]%P12 %S%P50%i %S", hack,
+                       obj_ptr->getLevel(),
+                       &(obj_ptr->short_desc),
+                       price,
+                       &restrict_buf);
             }
             else {
-               Sprintf(buf, "  [%i] [*%i]%P12 %S%P50%i", hack, item_counts[id_num],
-                       &(obj_ptr->short_desc), price);
+               Sprintf(buf, "  [%i][%i] [*%i]%P12 %S%P50%i %S", hack,
+                       obj_ptr->getLevel(),
+                       item_counts[id_num],
+                       &(obj_ptr->short_desc), price,
+                       &restrict_buf);
             }
          }
          
@@ -1986,14 +2035,56 @@ int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
             continue; //buf = "  NOT FOR SALE NOW.";
          }//if
          
+         // Build object restrictions string, this is retarded... should have
+         // a method.
+         restrict_buf = NULL_STRING;
+
+         if (obj_ptr->OBJ_FLAGS.get(1))
+            restrict_buf += "Anti-Evil ";
+         if (obj_ptr->OBJ_FLAGS.get(2))
+            restrict_buf += "Anti-Neutral ";
+         if (obj_ptr->OBJ_FLAGS.get(3))
+            restrict_buf += "Anti-Good ";
+         if (obj_ptr->OBJ_FLAGS.get(4))
+            restrict_buf += "Anti-Donate ";
+         if (obj_ptr->OBJ_FLAGS.get(5))
+            restrict_buf += "Anti-Drop ";
+         if (obj_ptr->OBJ_FLAGS.get(6))
+            restrict_buf += "Anti-Remove ";
+         if (obj_ptr->OBJ_FLAGS.get(7))
+            restrict_buf += "Anti-Mortal ";
+         if (obj_ptr->OBJ_FLAGS.get(11))
+            restrict_buf += "Anti-Warrior ";
+         if (obj_ptr->OBJ_FLAGS.get(12))
+            restrict_buf += "Anti-Sage ";
+         if (obj_ptr->OBJ_FLAGS.get(13))
+            restrict_buf += "Anti-Wizard ";
+         if (obj_ptr->OBJ_FLAGS.get(14))
+            restrict_buf += "Anti-Ranger ";
+         if (obj_ptr->OBJ_FLAGS.get(15))
+            restrict_buf += "Anti-Thief ";
+         if (obj_ptr->OBJ_FLAGS.get(16))
+            restrict_buf += "Anti-Alchemist ";
+         if (obj_ptr->OBJ_FLAGS.get(17))
+            restrict_buf += "Anti-Cleric ";
+         if (obj_ptr->OBJ_FLAGS.get(18))
+            restrict_buf += "Anti-Bard ";
+         if (obj_ptr->OBJ_FLAGS.get(20))
+            restrict_buf += "Anti-PC ";
+         // End of object restrictions string building.
+         
          if (pc.shouldShowVnums()) {
             if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-               Sprintf(buf, " [%i]%P06 %S%P50%i", id_num,
-                       &(obj_ptr->short_desc), price);
+               Sprintf(buf, " [%i][%i]%P06 %S%P50%i %S", id_num,
+                       obj_ptr->getLevel(),
+                       &(obj_ptr->short_desc), price,
+                       &restrict_buf);
             }
             else {
-               Sprintf(buf, " [%i]%P06 [*%i]%P12 %S%P50%i", id_num,
-                       item_counts[id_num], &(obj_ptr->short_desc), price);
+               Sprintf(buf, " [%i][%i]%P06 [*%i]%P12 %S%P50%i %S", id_num,
+                       obj_ptr->getLevel(),
+                       item_counts[id_num], &(obj_ptr->short_desc), price,
+                       &restrict_buf);
             }
          }
          else {
@@ -2003,12 +2094,18 @@ int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
                hack = -1;
             }
             if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-               Sprintf(buf, "  [%i]%P12 %S%P50%i", hack, &(obj_ptr->short_desc),
-                       price);
+               Sprintf(buf, "  [%i][%i]%P12 %S%P50%i %S", hack,
+                       obj_ptr->getLevel(),
+                       &(obj_ptr->short_desc),
+                       price,
+                       &restrict_buf);
             }
             else {
-               Sprintf(buf, "  [%i] [*%i]%P12 %S%P50%i", hack, item_counts[id_num],
-                       &(obj_ptr->short_desc), price);
+               Sprintf(buf, "  [%i][%i] [*%i]%P12 %S%P50%i %S", hack,
+                       obj_ptr->getLevel(),
+                       item_counts[id_num],
+                       &(obj_ptr->short_desc), price,
+                       &restrict_buf);
             }
          }
          
