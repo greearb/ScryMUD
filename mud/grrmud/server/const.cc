@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.33 2002/01/08 04:57:20 eroper Exp $
-// $Revision: 1.33 $  $Author: eroper $ $Date: 2002/01/08 04:57:20 $
+// $Id: const.cc,v 1.34 2002/01/08 05:36:55 eroper Exp $
+// $Revision: 1.34 $  $Author: eroper $ $Date: 2002/01/08 05:36:55 $
 
 //
 //ScryMUD Server Code
@@ -637,7 +637,7 @@ char* login_prompts[] = {
         Darkling        (4)                 (104)
         Dwarf           (7)                 (107)
         Ogrue           (9)                 (109)
-        Elf             (11                 (111)
+        Elf             (11)                (111)
 
         Your choice: ",
       
