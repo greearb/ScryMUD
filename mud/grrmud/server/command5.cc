@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.38 2001/03/29 03:02:29 eroper Exp $
-// $Revision: 1.38 $  $Author: eroper $ $Date: 2001/03/29 03:02:29 $
+// $Id: command5.cc,v 1.39 2001/06/10 20:20:56 greear Exp $
+// $Revision: 1.39 $  $Author: greear $ $Date: 2001/06/10 20:20:56 $
 
 //
 //ScryMUD Server Code
@@ -1663,6 +1663,7 @@ int make_builder(int i_th, const String* name, critter& pc) {
       return -1;
    }//if
 
+   ptr->PC_FLAGS.turn_on(24); //wizchat
    if (ptr->pc->imm_data) {
       ptr->PC_FLAGS.turn_on(11);  // is builder
    }//if

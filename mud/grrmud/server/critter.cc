@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.61 2001/06/10 19:00:46 justin Exp $
-// $Revision: 1.61 $  $Author: justin $ $Date: 2001/06/10 19:00:46 $
+// $Id: critter.cc,v 1.62 2001/06/10 20:20:56 greear Exp $
+// $Revision: 1.62 $  $Author: greear $ $Date: 2001/06/10 20:20:56 $
 
 //
 //ScryMUD Server Code
@@ -429,7 +429,7 @@ void shop_data::valueList(int i_th, const String* targ, critter& keeper,
               targ, keeper.GOLD);
    }
    else {
-      Sprintf(client, "<VALUE_LIST %i %S ??> ", i_th, targ);
+      Sprintf(client, "<VALUE_LIST %i %S ?> ", i_th, targ);
       Sprintf(normal, "Value listing for %i.%S:\n", i_th, targ);
    }
 

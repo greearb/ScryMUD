@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.28 2001/06/10 18:05:15 justin Exp $
-// $Revision: 1.28 $  $Author: justin $ $Date: 2001/06/10 18:05:15 $
+// $Id: const.cc,v 1.29 2001/06/10 20:20:56 greear Exp $
+// $Revision: 1.29 $  $Author: greear $ $Date: 2001/06/10 20:20:56 $
 
 //
 //ScryMUD Server Code
@@ -209,7 +209,7 @@ const char* c_names[] = {
    "shout",
    "say",
    "tell",
-   "wiznet",
+   "NULL",
    "is_paralyzed",
    "is_perm_sleeped",
    "is_dual_wielding",
@@ -274,7 +274,7 @@ const char* pcd_names[] = {
    "has_poofin_poofout_msg",//21
    "page_output",//22
    "in_page_break_mode",//23
-   "!wizchat",//24
+   "wizchat",//24
    "has_colors",//25
    "use_color", //26
    "has_language_choice", //27
@@ -816,7 +816,7 @@ Example:
 a -1 terminates.
 
 [3] is_flying, [5] can_climb, [6] gos, [7] yell, [8] gratz, [9] auc,
-[10] shout, [11] say, [12] tell, [13] wiznet, [17] is_sneak, 
+[10] shout, [11] say, [12] tell, [13] NULL, [17] is_sneak, 
 [19] can_dive, [22] is_hide
 ",
 
@@ -1253,7 +1253,7 @@ I'd banish your petulant soul to the nine rings of Hell!!' \n",
 TERMINATE with a ~ on a LINE BY ITSELF!
 
 Example:  The wizzard laughs and says, 'Why would I want to talk to one of
-your profession??'\n",
+your profession?'\n",
 
 /* 77 proc_data: wrong_race_msg  */
 "\nPlease enter the message you would like a player of the wrong race 

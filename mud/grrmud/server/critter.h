@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.53 2001/04/14 22:47:56 greear Exp $
-// $Revision: 1.53 $  $Author: greear $ $Date: 2001/04/14 22:47:56 $
+// $Id: critter.h,v 1.54 2001/06/10 20:20:57 greear Exp $
+// $Revision: 1.54 $  $Author: greear $ $Date: 2001/06/10 20:20:57 $
 
 //
 //ScryMUD Server Code
@@ -562,7 +562,7 @@ public:
       // 14 extra_info, 15 cr_behind, 16 do_carriage_return
       // 17 is_blocking_door, 18 can_det_magic, 19 detect_inventory
       // 20 show_vnums, 21 has_poofin_poofout_msg, 22 page_output
-      // 23 in_page_break_mode, 24 !wizchat, 25 has_colors, 26 use_color
+      // 23 in_page_break_mode, 24 wizchat, 25 has_colors, 26 use_color
       // 27 has_language_choice, 28 !show_mob_entry, 29 no_beep,
       // 30 is_remort, 31 has_sacrificed, 32 is_roleplaying,
       // 33 is_afk, 34 gold_only
@@ -653,7 +653,7 @@ public:
    // 0 can_see_inv, 1 using_light_src, 2 NULL, 3 is_flying,           
    // 4 have_boat, 5 can_climb,
    // 6 gos, 7 yell, 8 gratz, 9 auc, 
-   // 10 shout, 11 say, 12 tell, 13 wiznet, 14 is_paralyzed,
+   // 10 shout, 11 say, 12 tell, 13 NULL, 14 is_paralyzed,
    // 15 is_perm_sleeped, 16 is_dual_wielding, 17 is_sneak,
    // 18 in_use, 19 can_dive, 20 spell_tested_yet, 21 is_blocked,
    // 22 is_hide, 23 is_tailing 24 !complete, 25 already_hurled
