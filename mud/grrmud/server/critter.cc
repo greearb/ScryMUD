@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.60 2001/03/29 10:19:50 eroper Exp $
-// $Revision: 1.60 $  $Author: eroper $ $Date: 2001/03/29 10:19:50 $
+// $Id: critter.cc,v 1.61 2001/06/10 19:00:46 justin Exp $
+// $Revision: 1.61 $  $Author: justin $ $Date: 2001/06/10 19:00:46 $
 
 //
 //ScryMUD Server Code
@@ -3977,6 +3977,13 @@ void critter::doPrompt() {
       return;
    }
 
+   // for visible exits
+   Cell<door*> cll(getCurRoom()->doors);
+   door* dr_ptr;
+   String buf;
+   String reg_disp;
+   int dest;
+
    int i;
    String targ(200);
    // Conversion buf for longs, NOTE: update append() method --Khaav
@@ -4051,6 +4058,29 @@ void critter::doPrompt() {
                } if ( isInvis() ) {
                   targ.Append("(inv)");
                }
+               break;
+            case 'R':     /* name of the current room */
+               targ.Append(getCurRoom()->short_desc);
+               break;
+            case 'E':     /* visible exits */
+               while ((dr_ptr = cll.next())) {
+                  if (detect(SEE_BIT, dr_ptr->dr_data->vis_bit)) {
+                     if (!((dr_ptr->isClosed() && dr_ptr->isSecret()) ||
+                           dr_ptr->isSecretWhenOpen())) {
+                        dest = abs(dr_ptr->destination);
+                        if (isImmort()) { //if immortal, show extra info
+                           Sprintf(buf, "%s[%i] ", abbrev_dir_of_door(*dr_ptr),
+                                   dest);
+                        }//if
+                        else {
+                           Sprintf(buf, "%s ", abbrev_dir_of_door(*dr_ptr));
+                        }//else
+                        reg_disp.Append(buf);
+                     }//if its open, don't show closed exits
+                  }//if detect
+               }//while
+               reg_disp.Strip();
+               targ.Append(reg_disp);
                break;
              default:
                targ.Append(PROMPT_STRING[i]);
