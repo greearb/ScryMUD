@@ -265,6 +265,12 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
              << "  posn of weapon:  " << posn_of_weapon << endl;
    }
 
+   if (agg.isParalyzed()) {
+      agg.emote("is paralyzed, unable to fight back!");
+      agg.show("You are paralyzed, unable to move a muscle!\n");
+      return;
+   }//if
+
    /* its cheaper to set than test, then set if needed */
    agg.CRIT_FLAGS.turn_off(17); //no sneak
    agg.CRIT_FLAGS.turn_off(22); //no hide
@@ -283,7 +289,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
              delete ss_ptr;
           }//if
       }//if
-      else if (!agg.CRIT_FLAGS.get(14) && (!agg.PAUSE > 0)) {
+      else if (!agg.isParalyzed() && (!agg.PAUSE > 0)) {
          agg.POS = POS_STAND; //auto stand if possible
       }//if
    }//if

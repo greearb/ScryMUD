@@ -2568,6 +2568,9 @@ const char* parse_hlp_command(const String& str1) {
 	 else if (strncasecmp(str1, "tog_veh_stop", len1) == 0) { 
 	    return "tog_veh_stop";
 	 }//if
+	 else if (strncasecmp(str1, "tog_zflag", len1) == 0) { 
+	    return "tog_zflag";
+	 }//if
 	 else if (strncasecmp(str1, "topics", len1) == 0) { 
 	    return "topics";
 	 }//if

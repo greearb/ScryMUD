@@ -269,6 +269,7 @@ public:
    int isLit() const;
    int isBulletinBoard() const;
    int isScroll() const; 
+   int isHerb() const;
 
    void setComplete();
    void setIncomplete();

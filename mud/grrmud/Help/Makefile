@@ -58,6 +58,7 @@ IMM_list_scripts_1 \
 IMM_list_site_bans_1 \
 IMM_log_level_1 \
 IMM_make_builder_1 \
+IMM_make_pso_1 \
 IMM_mclear_1 \
 IMM_mclone_1 \
 IMM_mlist_1 \
@@ -146,6 +147,7 @@ IMM_zunlock_1
 
 
 MORT_FILES=abilities_1 \
+adjust_register_1 \
 anitre_1 \
 assist_1 \
 backstab_1 \
@@ -268,6 +270,10 @@ ungroup_1 \
 unlock_1 \
 up_1 \
 use_1 \
+value_add_1 \
+value_list_1 \
+value_rem_1 \
+value_set_1 \
 wake_1 \
 wear_1 \
 west_1 \
@@ -315,3 +321,7 @@ topics_1: ${MORT_FILES}
 clean:
 	rm -f imm_help.html
 	rm -f mort_help.html
+
+purge: clean
+	rm -f IMM_wizhelp_1
+	rm -f topics_1

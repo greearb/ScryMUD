@@ -422,7 +422,7 @@ class ObjPanel2 extends Panel {
       //desc_flags.addBox(new NumCheckbox("conct cmp", false, 68));
       desc_flags.addBox(new NumCheckbox("parchment", false, 69));
       //desc_flags.addBox(new NumCheckbox("vid scrn", false, 71));
-      //desc_flags.addBox(new NumCheckbox("speaker", false, 72));
+      desc_flags.addBox(new NumCheckbox("herb", false, 72));
       desc_flags.addBox(new NumCheckbox("vend mach.", false, 73));
       desc_flags.addBox(new NumCheckbox("bul. board", false, 74));
       desc_flags.addBox(new NumCheckbox("butcherable", false, 75));

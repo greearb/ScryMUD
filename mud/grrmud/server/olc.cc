@@ -339,8 +339,14 @@ void do_olc(critter& pc) {
                   O_COUNT = 7; //move on to next
                   break;
                }//if
-               if (check_l_range(i, 0, 250, pc, TRUE))
-                  OLC_OBJ->OBJ_FLAGS.flip(i);
+               if (check_l_range(i, 0, 250, pc, TRUE)) {
+                  if ((i == 10) || (i == 70) || (i == 71)) {
+                     pc.show("Can't set that flag.");
+                  }//if
+                  else {
+                     OLC_OBJ->OBJ_FLAGS.flip(i);
+                  }
+               }//if
 	    }//if
 	    else {
                show("Need a number here.\n", pc);
@@ -350,7 +356,7 @@ void do_olc(critter& pc) {
      
          OLC_OBJ->OBJ_FLAGS.turn_off(67); //no components here
          OLC_OBJ->OBJ_FLAGS.turn_off(68); //no concoction here
-         OLC_OBJ->OBJ_FLAGS.turn_off(72); //not used
+         //OLC_OBJ->OBJ_FLAGS.turn_off(72); //not used
 
          if (OLC_OBJ->ob->obj_flags.get(59)) {
             OLC_OBJ->ob->obj_flags.turn_on(54); //canteens are containers

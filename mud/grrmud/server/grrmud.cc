@@ -534,7 +534,8 @@ void run_the_game(int port) {
       write_all_zones();
 
       // Write out un-directed graphs for all zones.
-      ZoneCollection::instance().createNeatoFiles();
+      // This is currently broken. --Ben
+      //ZoneCollection::instance().createNeatoFiles();
 
       ofstream ps_dot_script("./World/ss_ps.dot");
       ofstream gif_dot_script("./World/ss_gif.dot");

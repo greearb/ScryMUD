@@ -1473,15 +1473,24 @@ void out_inv(const List<object*>& lst, critter& pc,
                }
                buf.Cap();
 
+               if (obj_ptr->isHerb()) {
+                  if (d(1, 100) <= 
+                      d(1, 2 * get_percent_lrnd(HERBALISM_SKILL_NUM, pc))) {
+                     buf.Append("(herb)");
+                  }//if
+               }//if
+
                if (pc.canDetectMagic() &&
                    (!IsEmpty(obj_ptr->ob->affected_by) ||
                     !IsEmpty(obj_ptr->ob->stat_affects))) {
                   buf.Append(" {Blue Glow}\n");
                }//if
-               else
+               else {
                   buf.Append("\n");
+               }
+
                if (obj_ptr->OBJ_VIS_BIT & 2) {
-                  show("*", pc);
+                  buf.Prepend("*");
                }//if
 
                show(buf, pc);
@@ -1505,15 +1514,24 @@ void out_inv(const List<object*>& lst, critter& pc,
 
                buf.Cap();
 
+               if (obj_ptr->isHerb()) {
+                  if (d(1, 100) <= 
+                      d(1, 2 * get_percent_lrnd(HERBALISM_SKILL_NUM, pc))) {
+                     buf.Append("(herb)");
+                  }//if
+               }//if
+
                if  (pc.canDetectMagic() &&
                     (!IsEmpty(obj_ptr->ob->affected_by) ||
                      !IsEmpty(obj_ptr->ob->stat_affects))) {
                   buf.Append(" {Blue Glow}\n");
                }//if
-               else
+               else {
                   buf.Append("\n");
+               }
+
                if (obj_ptr->OBJ_VIS_BIT & 2) {
-                  show("*", pc);
+                  buf.Prepend("*");
                }//if
                show(buf, pc);
             }//if

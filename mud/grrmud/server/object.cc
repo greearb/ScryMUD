@@ -808,6 +808,12 @@ int object::isScroll() const {
    return (ob && OBJ_FLAGS.get(53) && ob->obj_proc);
 }
 
+int object::isHerb() const {
+   return (ob && OBJ_FLAGS.get(72));
+}
+
+
+
 int object::isInUse() const {
    return (ob && OBJ_FLAGS.get(10));
 }

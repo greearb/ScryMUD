@@ -25,6 +25,8 @@ all: dist
 ss.ps: ss_ps.dot
 	dot -Tps -o ss.ps ss_ps.dot
 
+#  You get ss_gif.dot when you run ScryMUD with the option
+#  CONVERT_WORLD_FROM_DEV set to non-zero.
 ss.gif: ss_gif.dot
 	dot -Tgif -o ss.gif ss_gif.dot
 

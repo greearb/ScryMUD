@@ -177,6 +177,10 @@ void critter::doLogin() {
                if (j == HUMAN || j == ANITRE || j == DARKLING ||
                    j == DWARF || j == OGRUE || j == ELF || j == SOMBRIAN) {
                   RACE = j;
+                  if (mudlog.ofLevel(DBG)) {
+                     mudlog << "New character, setting race to: " << j
+                            << endl;
+                  }//if
                   quit_do_login_new(*this); //completed it correctly
                }//if
                else { //get help?
@@ -397,7 +401,7 @@ void  quit_do_login_new(critter& pc) {
    pc.AC = d(8,20) - 2;  //average of 80 I think
    pc.ATTACKS = 1;
    pc.PAUSE = 0;
-   pc.RACE = 1; //race, only human for now
+   //pc.RACE = 1; //race, only human for now
    pc.HP = (15 + d(3,9) + pc.CON/2); // hp
    pc.MANA = (100 + pc.WIS/2);    // mana
    pc.MOV = (100 + pc.DEX/2);    // mov
