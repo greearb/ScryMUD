@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.51 2002/02/20 12:57:25 gingon Exp $
-// $Revision: 1.51 $  $Author: gingon $ $Date: 2002/02/20 12:57:25 $
+// $Id: commands.cc,v 1.52 2002/03/10 21:45:12 justin Exp $
+// $Revision: 1.52 $  $Author: justin $ $Date: 2002/03/10 21:45:12 $
 
 //
 //ScryMUD Server Code
@@ -2875,26 +2875,28 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
                  pc.SEE_BIT));
          show(buf, pc);
       }//if
-      else if (door_ptr->dr_data->door_data_flags.get(14) &&
-               door_ptr->crit_blocking &&
-               (door_ptr->crit_blocking != &pc)) {
-               
-         if(!(door_ptr->crit_blocking->isParalyzed() ||
-            door_ptr->crit_blocking->isStunned() ||
-            door_ptr->crit_blocking->isMeditating() || 
-            door_ptr->crit_blocking->isSleeping())) {//can block
-         
-            if(!door_ptr->crit_blocking->isStanding()){
-               stand(*(door_ptr->crit_blocking));//stand when sitting to block critter
-            }
-            Sprintf(buf, cstr(CS_MOV_BLOCKED, pc),
-                    name_of_door(*door_ptr, pc.SEE_BIT),
-                    name_of_crit(*(door_ptr->crit_blocking), pc.SEE_BIT));
-            show(buf, pc);
-            return -1;//no need to do anything further
-         }//end can block
-      }//else
-      if (mob_can_enter(pc, room_list[dest], TRUE, check_no_wander)) {
+      else if (mob_can_enter(pc, room_list[dest], TRUE, check_no_wander)) {
+         // Check for a blocking critter who's paying attention
+         if (door_ptr->dr_data->door_data_flags.get(14) &&
+                  door_ptr->crit_blocking &&
+                  (door_ptr->crit_blocking != &pc)) {
+                  
+            if(!(door_ptr->crit_blocking->isParalyzed() ||
+               door_ptr->crit_blocking->isStunned() ||
+               door_ptr->crit_blocking->isMeditating() || 
+               door_ptr->crit_blocking->isSleeping())) {//can block
+            
+               if(!door_ptr->crit_blocking->isStanding()){
+                  stand(*(door_ptr->crit_blocking));//stand when sitting to block critter
+               }
+               Sprintf(buf, cstr(CS_MOV_BLOCKED, pc),
+                       name_of_door(*door_ptr, pc.SEE_BIT),
+                       name_of_crit(*(door_ptr->crit_blocking), pc.SEE_BIT));
+               show(buf, pc);
+               return -1;//no need to do anything further
+            }//end can block
+         }//else
+
          //mudlog << "In move(), about to make a tmp_lst.\n" << flush;
          List<critter*> tmp_lst(rm.getCrits());
          //mudlog << "In move(), made tmp_lst.\n" << flush;
