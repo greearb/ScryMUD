@@ -1,0 +1,25 @@
+<help mldsearch>
+
+mob long description search
+
+This function allows you to search for mobs with long descriptions
+matching a perl compatible regular expression.
+
+
+Syntax:  mldsearch 'pattern'
+
+Modifiers: All modifiers should be enclosed in (? ):
+(?i) case insensitive matching.
+(?m) multi-line matching. (changes meaning of $ anchor to eoln)
+
+Examples:
+
+To find all mobs with "anitre" or "Anitre" in their description.
+mldsearch '(?i)anitre'
+
+To find all mobs whose description ends with darkling.
+mldsearch 'darkling$'
+
+<color=red>
+See Also:  osdsearch oldsearch msdsearch
+</color></help>

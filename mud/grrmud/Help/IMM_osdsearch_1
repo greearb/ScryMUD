@@ -1,0 +1,26 @@
+<help osdsearch>
+
+object short description search
+
+This function allows you to search for objects with short descriptions
+matching a perl compatible regular expression.
+
+
+Syntax:  osdsearch 'pattern'
+
+Modifiers: All modifiers should be enclosed in (? ):
+(?i) case insensitive matching.
+(?m) multi-line matching. (changes meaning of $ anchor to eoln)
+
+Examples:
+
+To find all objects with "sword" or "dagger" in their description.
+osdsearch 'sword|dagger'    
+
+To find all objects with a case insensitive match for "sword" followed by
+anything followed by "sorrows"
+osdsearch '(?i)sword.*sorrows'
+
+<color=red>
+See Also:  oldsearch msdsearch mldsearch
+</color></help>

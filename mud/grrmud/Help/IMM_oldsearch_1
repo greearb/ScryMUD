@@ -1,0 +1,26 @@
+<help oldsearch>
+
+object long description search
+
+This function allows you to search for objects with long descriptions
+matching a perl compatible regular expression.
+
+
+Syntax:  oldsearch 'pattern'
+
+Modifiers: All modifiers should be enclosed in (? ):
+(?i) case insensitive matching.
+(?m) multi-line matching. (changes meaning of $ anchor to eoln)
+
+Examples:
+
+To find all objects with "sword" or "dagger" in their description.
+oldsearch 'sword|dagger'    
+
+To find all objects with a case insensitive match for "sword" followed by
+anything followed by "sorrows"
+oldsearch '(?i)sword.*sorrows'
+
+<color=red>
+See Also:  osdsearch msdsearch mldsearch
+</color></help>
