@@ -17,10 +17,10 @@ Fore Ground                Back Ground
 ^^g green                   &&g green
 ^^y yellow                  &&y yellow
 
-fore ground colors can me made "bright" by capitalizing their letter. This
+foreground colors can me made "bright" by capitalizing their letter. This
 will however not work on background colors.
 
-You can combinefore ground and background colors by listing the back ground
+You can combine foreground and background colors by listing the background
 color first: &&b^^W will give you bright white text on a blue background.
 
 You can use these colors anywhere you can enter text: your prompt, say, tell,
