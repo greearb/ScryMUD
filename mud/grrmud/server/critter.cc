@@ -4314,7 +4314,22 @@ void critter::doPrompt() {
    } else {
       targ.Append("< AFK > ");
    }
-   targ.Append(pc->input);
+
+   // Instead of spamming out all the pending commands, be nice about it
+   {
+      String tmp;
+      int i;
+
+      tmp.Clear();
+      for(i=0;i<pc->input.Strlen();i++) {
+         if ( pc->input.charAt(i) == '\n' ) {
+            tmp.append(";");
+         } else {
+            tmp.append(pc->input.charAt(i));
+         } // else
+      } // for
+      targ.Append(tmp);
+   }
 
    if (! isUsingClient()) {
       targ.Append(go_ahead_str);
