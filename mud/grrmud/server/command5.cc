@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.48 2003/02/25 04:14:43 greear Exp $
-// $Revision: 1.48 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
+// $Id: command5.cc,v 1.49 2004/07/05 23:06:35 eroper Exp $
+// $Revision: 1.49 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
 
 //
 //ScryMUD Server Code
@@ -225,8 +225,8 @@ int color(String& var, String& val_rough, critter& pc) {
 
    int ln;
    const char* usage =
-"USAGE:  color [text_type] [color]
-See 'help color' for more information.\n";
+      "USAGE:  color [text_type] [color]\n"
+      "See 'help color' for more information.\n";
 
    if (pc.isPc()) {
       ln = max(var.Strlen(), 3);
@@ -399,8 +399,8 @@ int list_scripts(int mob_num, critter& pc) {
       return -1;
    }
 
-   pc.show("These scripts are defined for this mob,  the actual scripts
-may be seen by using the stat_script [mob_num] [script_index] command.\n\n");
+   pc.show("These scripts are defined for this mob,  the actual scripts\n"
+         "may be seen by using the stat_script [mob_num] [script_index] command.\n\n");
 
    return do_list_scripts(mob_list[mob_num], pc);
 }
@@ -2477,12 +2477,12 @@ int dsys(int i, const String& cmd, const String& arg1, critter& pc) {
       return 0;
    }
 
-   Sprintf(buf, "ScryMUD version: %s
-Built on:        %s
-On Machine:      %s
-By:              %s\n\n",
-           BuildInfo::getVersion(), BuildInfo::getBuildDate(),
-           BuildInfo::getBuildMachine(), BuildInfo::getBuilder());
+   Sprintf(buf, "ScryMUD version: %s\n"
+         "Built on:        %s\n"
+         "On Machine:      %s\n"
+         "By:              %s\n\n",
+         BuildInfo::getVersion(), BuildInfo::getBuildDate(),
+         BuildInfo::getBuildMachine(), BuildInfo::getBuilder());
    pc.show(buf);
 
    Sprintf(buf, "Listening on port: %i\n", config.port);

@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.23 2003/05/05 22:04:00 eroper Exp $
-// $Revision: 1.23 $  $Author: eroper $ $Date: 2003/05/05 22:04:00 $
+// $Id: classes.cc,v 1.24 2004/07/05 23:06:35 eroper Exp $
+// $Revision: 1.24 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
 
 //
 //ScryMUD Server Code
@@ -104,26 +104,26 @@ void CmdLineInfo::init(int argc, char** argv) {
          }
          case 'h':
          case 'u': {
-            cout << "ScryMUD Usage:
--l --log_level   bitfield (add up the integer values listed below)
-                                                DIS = 1,   //disasters
-                                                ERR = 2,   //errors
-                                                WRN = 4,   //warnings
-                                                INF = 8,   //info
-                                                TRC = 16,  //function trace
-                                                DBG = 32,  //debug
-                                                SEC = 64,  // log security violations
-                                                DB = 128,  // READ or WRITE to NVDS
-                                                XMT = 256, // Server to client comm.
-                                                INP = 512, // Input from clients.
-                                                SCRIPT = 1024, //Scripting specific
-                                                PARSE = 2048, //PARSE specific
-                                                DBG2 = 4096,  //More verbose than debug.
-                                                ALL = 65535 = ~(0)  // all
--p --port                    Specify server port
--v --version                 Print out build/version information.
--h --help                    Print this message.
--u --usage                   Print this message.\n\n";
+                      cout << "ScryMUD Usage:\n"
+                         "-l --log_level   bitfield (add up the integer values listed below)\n"
+                         "                                                DIS = 1,   //disasters\n"
+                         "                                                ERR = 2,   //errors\n"
+                         "                                                WRN = 4,   //warnings\n"
+                         "                                                INF = 8,   //info\n"
+                         "                                                TRC = 16,  //function trace\n"
+                         "                                                DBG = 32,  //debug\n"
+                         "                                                SEC = 64,  // log security violations\n"
+                         "                                                DB = 128,  // READ or WRITE to NVDS\n"
+                         "                                                XMT = 256, // Server to client comm.\n"
+                         "                                                INP = 512, // Input from clients.\n"
+                         "                                                SCRIPT = 1024, //Scripting specific\n"
+                         "                                                PARSE = 2048, //PARSE specific\n"
+                         "                                                DBG2 = 4096,  //More verbose than debug.\n"
+                         "                                                ALL = 65535 = ~(0)  // all\n"
+                         "-p --port                    Specify server port\n"
+                         "-v --version                 Print out build/version information.\n"
+                         "-h --help                    Print this message.\n"
+                         "-u --usage                   Print this message.\n\n";
             do_shutdown = TRUE;
             exit(0);
             break;

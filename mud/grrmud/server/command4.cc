@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.51 2003/02/25 04:14:43 greear Exp $
-// $Revision: 1.51 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
+// $Id: command4.cc,v 1.52 2004/07/05 23:06:35 eroper Exp $
+// $Revision: 1.52 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
 
 //
 //ScryMUD Server Code
@@ -2829,13 +2829,13 @@ int dset(int i_th, const String* vict, const String* targ, int new_val,
    if (vict->Strlen() == 0) {
       show("NOTE:  some of these may be restricted from you.\n", pc);
       show("These are your choices, range is in parentheses:\n", pc);
-      show("toggle_flag:
-
-0 open exit, basically no door, 1 is_mag_lockable, 2 is_closed, 3 is_locked,
-4 is_pickable, 5 is_lockable, 6 mag_locked (spell only can open it),
-7 is_destructable, 8 is_closeable, 9 is_flippable, 
-11 is_unopenable (other than normal reasons)
-12 is_vehicle_exit, 13 is_secret, 14 is_blocked, 16 hidden_when_open.\n\n", pc);
+      show("toggle_flag:\n"
+            "\n"
+            "0 open exit, basically no door, 1 is_mag_lockable, 2 is_closed, 3 is_locked,\n"
+            "4 is_pickable, 5 is_lockable, 6 mag_locked (spell only can open it),\n"
+            "7 is_destructable, 8 is_closeable, 9 is_flippable, \n"
+            "11 is_unopenable (other than normal reasons)\n"
+            "12 is_vehicle_exit, 13 is_secret, 14 is_blocked, 16 hidden_when_open.\n\n", pc);
 
       show("vis_bit (web page has definitions)\n", pc);
       show("key_num (0, MAX_ITEM_NUM)\n", pc);

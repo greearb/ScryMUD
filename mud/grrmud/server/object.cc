@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.38 2003/02/25 04:14:43 greear Exp $
-// $Revision: 1.38 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
+// $Id: object.cc,v 1.39 2004/07/05 23:06:35 eroper Exp $
+// $Revision: 1.39 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
 
 //
 //ScryMUD Server Code
@@ -1677,8 +1677,8 @@ void object::addProcScript(const String& txt, ObjectScript* script_data) {
 
 void object::listScripts(critter& pc) {
    String buf(500);
-   buf.Append("These scripts are defined for this object, the actual scripts
-may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n");
+   buf.Append("These scripts are defined for this object, the actual scripts\n"
+         "may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n");
 
    pc.show(buf);
 

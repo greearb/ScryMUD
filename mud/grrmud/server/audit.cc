@@ -1,5 +1,5 @@
-// $Id: audit.cc,v 1.1 1999/07/18 00:59:22 greear Exp $
-// $Revision: 1.1 $  $Author: greear $ $Date: 1999/07/18 00:59:22 $
+// $Id: audit.cc,v 1.2 2004/07/05 23:06:35 eroper Exp $
+// $Revision: 1.2 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
 
 //
 //ScryMUD Server Code
@@ -43,10 +43,10 @@
 #include <stdlib.h>
 
 
-char* usage = "audit [file] [type] [arg1 arg2 ...]
-Supported types:
-    OBJ [address in hex: eg. 0xAABBccDd]
-";
+char* usage = "audit [file] [type] [arg1 arg2 ...]\n"
+"Supported types:\n"
+"    OBJ [address in hex: eg. 0xAABBccDd]\n"
+"\n";
 
 int core_dump(const char* msg) {
    cerr << "Dumping core on purpose: " << msg << endl;

@@ -1,5 +1,5 @@
-// $Id: olc2.cc,v 1.18 2001/11/20 02:16:12 justin Exp $
-// $Revision: 1.18 $  $Author: justin $ $Date: 2001/11/20 02:16:12 $
+// $Id: olc2.cc,v 1.19 2004/07/05 23:06:35 eroper Exp $
+// $Revision: 1.19 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
 
 //
 //ScryMUD Server Code
@@ -961,10 +961,10 @@ int add_proc(int mnum, critter& pc) {
    pc.PC_FLAGS.turn_on(13);
    OLC_MOB->setNotComplete();
 
-   show("You now have the ability to somewhat change this mob.  Be careful
-that you don't add a proc that is ALREADY THERE.  This will result in 
-strange things.  It should NOT be fatal however, so you can just remove
-the proc later with the appropriate command(s).\n", pc);
+   show("You now have the ability to somewhat change this mob.  Be careful\n"
+         "that you don't add a proc that is ALREADY THERE.  This will result in \n"
+         "strange things.  It should NOT be fatal however, so you can just remove\n"
+         "the proc later with the appropriate command(s).\n", pc);
    pc.setMode(MODE_OLC);
    return 0;
 }//add_proc
@@ -979,8 +979,8 @@ int reset_olc(critter& pc) {
 
   
    if (pc.PC_FLAGS.get(13)) {
-      show("You must complete your current project.  You are in a special 
-case of OLC.\n", pc);
+      show("You must complete your current project.  You are in a special\n"
+            "case of OLC.\n", pc);
       return -1;
    }//if
    //log("About to delete.\n");
@@ -1760,8 +1760,8 @@ int save_obj(int i_th, String* obj_name, critter& pc) {
    obj_list[vict->OBJ_NUM] = *vict; //operator overload!!
    obj_list[vict->OBJ_NUM].IN_LIST = NULL;
 
-   show("OK, object as been saved as is.  
-        Aosave will make the changes permanent.\n", pc);
+   show("OK, object as been saved as is.\n"
+         "Aosave will make the changes permanent.\n", pc);
    return 0;
 }//obj_save
 

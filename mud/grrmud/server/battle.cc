@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.55 2003/05/08 00:25:16 eroper Exp $
-// $Revision: 1.55 $  $Author: eroper $ $Date: 2003/05/08 00:25:16 $
+// $Id: battle.cc,v 1.56 2004/07/05 23:06:35 eroper Exp $
+// $Revision: 1.56 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
 
 //
 //ScryMUD Server Code
@@ -1398,15 +1398,15 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
          Sprintf(buf, "the tattered skin of %S", Top(vict.names));
          ptr->short_desc = buf;
          Sprintf(buf, "The tattered skin of %S lies here.", 
-                 Top(vict.names));
+               Top(vict.names));
          ptr->in_room_desc = buf;
          Sprintf(buf,
-"This large piece of %s skin was recently hacked from the corpse of %S.
-You wonder why anyone would want the skin of a %s, but perhaps it is just
-a trophy--a symbol of %S's defeat.\n",
-                 get_race_name(vict.RACE),
-                 name_of_crit(vict, ~0), get_race_name(vict.RACE),
-                 name_of_crit(vict, ~0));
+               "This large piece of %s skin was recently hacked from the corpse of %S.\n"
+               "You wonder why anyone would want the skin of a %s, but perhaps it is just\n"
+               "a trophy--a symbol of %S's defeat.\n",
+               get_race_name(vict.RACE),
+               name_of_crit(vict, ~0), get_race_name(vict.RACE),
+               name_of_crit(vict, ~0));
          ptr->long_desc = buf;
          corpse->obj_proc->obj_spec_data_flags.turn_on(2);
       }//if

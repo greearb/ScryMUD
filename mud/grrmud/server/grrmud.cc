@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.45 2003/02/25 04:14:43 greear Exp $
-// $Revision: 1.45 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
+// $Id: grrmud.cc,v 1.46 2004/07/05 23:06:35 eroper Exp $
+// $Revision: 1.46 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
 
 //
 //ScryMUD Server Code
@@ -569,15 +569,15 @@ int main(int argc, char** argv) {
    cout << "On machine:      " << BuildInfo::getBuildMachine() << endl;
    cout << "By:              " << BuildInfo::getBuilder() << endl << endl;
 
-   cout << "Welcome to SryMUD server by Ben Greear.
-This server and it's accompanying client, Hegemon, is distributed
-under the GNU General Public License (GPL).  See the License file
-for more information.
-
-Be sure to check the log files in the ./log directory if you have
-any strange occurances.
-
---Ben Greear (greear@cyberhighway.net, greearb@agcs.com)\n\n";
+   cout << "Welcome to SryMUD server by Ben Greear.\n"
+      "This server and it's accompanying client, Hegemon, is distributed\n"
+      "under the GNU General Public License (GPL).  See the License file\n"
+      "for more information.\n"
+      "\n"
+      "Be sure to check the log files in the ./log directory if you have\n"
+      "any strange occurances.\n"
+      "\n"
+      "--Ben Greear (greear@cyberhighway.net, greearb@agcs.com)\n\n";
 
    srand(time(0));
 

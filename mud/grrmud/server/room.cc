@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.46 2003/02/25 04:14:43 greear Exp $
-// $Revision: 1.46 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
+// $Id: room.cc,v 1.47 2004/07/05 23:06:35 eroper Exp $
+// $Revision: 1.47 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
 
 //
 //ScryMUD Server Code
@@ -2688,8 +2688,8 @@ void room::addProcScript(const String& txt, RoomScript* script_data) {
 
 void room::listScripts(critter& pc) {
    String buf(500);
-   buf.Append("These scripts are defined for this room, the actual scripts
-may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n");
+   buf.Append("These scripts are defined for this room, the actual scripts\n"
+         "may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n");
 
    pc.show(buf);
 

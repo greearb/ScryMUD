@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.37 2003/05/06 00:54:37 eroper Exp $
-// $Revision: 1.37 $  $Author: eroper $ $Date: 2003/05/06 00:54:37 $
+// $Id: const.cc,v 1.38 2004/07/05 23:06:35 eroper Exp $
+// $Revision: 1.38 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
 
 //
 //ScryMUD Server Code
@@ -605,60 +605,60 @@ long levels[45] = {
 
 char* login_prompts[] = {
    "\nEnter thy name:  ",
-                        /* for new players */
-   
+   /* for new players */
+
    //"\n\x9B\x4D\x31\x32\x68\nChoose a Password:  ", 
    //"\n\x9B\x4D\x31\x32\x68\nEnter your password again for verification:  ",
    "\nChoose a Password (Will be Echoed):  ", 
-   "\nEnter your password again for verification:  ",
-   "(M)ale, (F)emale, or (N)euter:  ",
-   "\n\nSelection of Classes: \n
-   Your class may affect your stats and will have an influence on
-   the skills you are able to acquire.
-        Warrior               (1)        
-        Sage                  (2)
-        Wizard                (3)
-        Ranger                (4)
-        Thief                 (5)
-        Cleric                (7)
-        Bard                  (8)
-        Necromancer           (9)
+      "\nEnter your password again for verification:  ",
+      "(M)ale, (F)emale, or (N)euter:  ",
+      "\n\nSelection of Classes: \n\n"
+         "   Your class may affect your stats and will have an influence on\n"
+         "   the skills you are able to acquire.\n"
+         "        Warrior               (1)        \n"
+         "        Sage                  (2)\n"
+         "        Wizard                (3)\n"
+         "        Ranger                (4)\n"
+         "        Thief                 (5)\n"
+         "        Cleric                (7)\n"
+         "        Bard                  (8)\n"
+         "        Necromancer           (9)\n"
+         "\n"
+         "   Enter 'help' or (0) for descriptions of the classes.\n"
+         "\n"
+         "   Your choice is:  ",
+      /* for non-new players */
 
-   Enter 'help' or (0) for descriptions of the classes.
+      //"\n\x9B\x31\x32\x68\nEnter your password:  ",
+      "\nEnter your password (Will be echoed):  ",
 
-   Your choice is:  ",
-                                        /* for non-new players */
+         "\nChoose your Race, or you can choose help on the races.\n"
+            "\n"
+            "                        Race                Help on Race\n"
+            "        Human           (1)                 (101)\n"
+            "        Anitre          (2)                 (102)\n"
+            "        Darkling        (4)                 (104)\n"
+            "        Dwarf           (7)                 (107)\n"
+            "        Ogrue           (9)                 (109)\n"
+            "        Elf             (11)                (111)\n"
+            "\n"
+            "        Your choice: ",
 
-   //"\n\x9B\x31\x32\x68\nEnter your password:  ",
-   "\nEnter your password (Will be echoed):  ",
-   
-   "\nChoose your Race, or you can choose help on the races.
-
-                        Race                Help on Race
-        Human           (1)                 (101)
-        Anitre          (2)                 (102)
-        Darkling        (4)                 (104)
-        Dwarf           (7)                 (107)
-        Ogrue           (9)                 (109)
-        Elf             (11)                (111)
-
-        Your choice: ",
-      
-      /* case 6 */
-      "
-Choose your preferred language:
-Lengua:
-
-        English         (0)
-        Espanol         (1)
-        Portugues       (2)
-        Italian         (3)
-        Serbian         (4)
-        German          (5)
-        Polish          (6)
-
-        Your choice:
-        Selection: "
+         /* case 6 */
+         "\n"
+            "Choose your preferred language:\n"
+            "Lengua:\n"
+            "\n"
+            "        English         (0)\n"
+            "        Espanol         (1)\n"
+            "        Portugues       (2)\n"
+            "        Italian         (3)\n"
+            "        Serbian         (4)\n"
+            "        German          (5)\n"
+            "        Polish          (6)\n"
+            "\n"
+            "        Your choice:\n"
+            "        Selection: "
 
 }; //login_prompts
 
@@ -669,620 +669,619 @@ Lengua:
                          /* data for OLC */
 
 char* olc_prompts[] = {
-/* 0 */
-"\n\nWhich do you wish to create: \n
-(1)object, (2)critter, (3)room, (4)door, (5)quit, (6)vehicle\n",
-                
-/* 1 */                /* here is output for the object. */
-"\nInput the object_num:  
-If you don't know, guess, the system will suggest one.\n",
-
-/* 2 */
-"\nInput a name, one word, '~', by itself, terminates.
-Example:  garland rose ~\n",
-
-/* 3 */
-"\nInput the short description.
-Example:  a garland\n",
-
-/* 4 */
-"\nInput the in_room_description, do capitalize:
-Example:  A short sword sits here rusting.\n",
-
-/* 5 */
-"\nInput the long description, '~', ON LINE BY ITSELF, terminates:
-Example:
-    You see a sparsely descripted object lying here.
-~\n", 
-
-/* 6 */
-"\nTime to set obj_flags.  The number of the flag will toggle it,
-a -1 terminates.
-
-0 no_rest,  1 !evil, 2 !neutral, 3 !good, 4 !donate, 5 !drop, 6 !remove, 
-7 !mortal, 8 !imm, 9 !demi, 10 !god, 11 !Warrior, 12 !sage, 13 !wizard, 
-14 !ranger, 15 !thief, 16 !alchemist, 17 !cleric, 18 !bard, 19 !mob, 20 !pc
-
-21 not worn, 22 head, 23 neck, 24 neck, 25 around body, 26 arms, 27 wrist1,
-28 wrist2, 29 hands, 30 wielded, 31 held, 32 light, 33 body, 34 belt,
-35 legs, 36 feet, 37 finger1, 38 finger2, 39 shield,
-
-40 not a weapon, 41 slash, 42 smash, 43 pierce, 44 whip, 45 needs_ammo,
-46 dart_thrower, 47 bow, 48 dart, 49 arrow, 50 junk, 51 wand, 52 potion,
-53 scroll, 54 container, 55 coins, 56 armor, 57 weapon, 58 light_source,
-59 canteen, 60 liquid, 61 food, 62 boat, 
-63 has_spec_proc_data { flag for scrolls, potions, wands...}
-64 toolbox, 65 cauldron, 66 pen, 67 (DO NOT USE),
-68 (DO NOT USE), 69 parchment (for scribing), 71 (DO NOT USE),
-72 herb, 73 vend_machine, 74 bulletin_board, 75 is_butcherable,
-76 has_obj_script, 77 is_two_handed 78 !necromancer
-
-
-***  If you're making a weapon, please consider flagging a flag between
-     41 and 49 inclusive.  This will help determine damage messages.
-***  Remember to flag 63 if you want spec procs. ***\n",
-
-/* 7 */
-"\nEnter all these extras at once please:
-                
-(1)charges or light_count,         (2)times rechargeable (wands), 
-(3)load percentage,                (4)max_in_game, 
-(5)weight(lbs),                 (6)dice_sides, 
-(7)dice_count,                        (8)level
-Example:  0 0 25 15 5 3 2 5
-
-WARNING:  if you make the object too powerful it will be deleted.
-7d4 is the max, and most should fall well under that.\n",
-
-/* 8 */
-"\nEnter all these cur_stats at once please:
-
-vis_bit (To calculate add flags up:
-        {2 invis, 4 hidden, 8 god_invis1},
-price,  (for comparison:  a good sword 4d4 should be around 3k)\n",
-
-/* 9 */
-"\nReading in bag_specific information.  First, the bag_flags.
-The number of the flag will toggle it, a -1 terminates.
-
-0 NULL, 1 NULL, 2 is_closed, 3 is_locked, 4 is_pickable, 5 is_mag_lockable,
-6 is_mag_locked, 7 is_destructable, 8 is_corpse (probably shouldn't use)
-9 is_NON_closeable, 10 player_owned, 17 consumes_key\n",
-
-/* 10 */
-"\nEnter all of these bag data at once please:
-
-(1)key number (zero if no key),                
-(2)maximum weight(lbs) NOTE: this is ITSELF plus its INVENTORY
-(3)percentage weight (normal is 100),        
-(4)time till it disolves, (probably should make this -1)\n",
-
-/* 11 */
-"\nEnter any spells the item is to be Affected By:
-spell number, followed by duration; -1 for duration is permanent.
-A -1 for spell number terminates.  None in yet, choose -1.\n",
-
-/* 12 */
-"\nEnter the item's inventory, all at once, but ONLY IF ITS A CONTAINER:
-A -1 will terminate.  Also, make sure the item exists!  'olist' can help
-you figure out which you want to use.
-Example:  1 6 5 -1\n",
-
-/* 13 */
-"\nNow for the Stat Affects:
-stat number, followed by the change; A -1 for stat number terminates.
-Example:  2 3 -1
-Here are the stats you can fiddle with:
-
-1 str, 2 int, 3 con, 4 cha, 5 wis, 6 dex, 7 hit, 8 dam, 9 ac, 10 attacks,
-11 pause_count, 15 hp, 16 mana, 17 mov, 18 align, 19 level, 23 hp_max,
-24 mana_max, 25 mov_max, 27 damage_received_modifier, 28 damage_given_modifier,
-29 heat_resis, 30 cold_resis, 31 elect_resis, 32 spell_resis, 35 bare_hand_dice_count, 
-36 bare_hand_dice_sides, 37 hp_regen, 38 mana_regen, 39 mov_regen,
-100 hunger, 101 thirst, 102 drugged.
-
-WARNING:  Once again, moderation is needed, if it is too extreme it will be
-          deleted.  This is NOT a twink MUD!\n",
-
-/* 14 */ 
-"\nTime to set obj_proc_flags.  The number of the flag will toggle it,
-a -1 terminates.
-
-0 consume_teleport, 1 (DO NOT USE, cannot be set here)
-2 has_skin, 3 consume_poison, 11 has_head
-
-Other spells that it can CAST will be specified later.\n",
-
-/* more obj prompts below */
-
-//*********************************************************************//
-///***********************  critter prompts  *************************///
-//*********************************************************************//
-
-/* 15 */                /* here is output for the object. */
-"\nInput the critter number:  
-If you don't know which one, try one, the game will suggest another if 
-its bad.\n",
-
-/* 16 */
-"\nInput a name, one word, '~', by itself, terminates.
-Example: guard portal ~\n",
-
-/* 17 */
-"\nInput the short description.
-Example:  a portal guard\n",
-
-/* 18 */
-"\nInput the in_room_description, do capitalize:
-Example:  A portal guard leans against the door.\n",
-
-/* 19 */
-"\nInput the long description, '~', ON LINE BY ITSELF, terminates:
-Example:  
-        You see a vague person standing here.
-~\n", 
-
-/* 20 */
-"\nTime to set crit_flags.  The number of the flag will toggle it,
-a -1 terminates.
-
-[3] is_flying, [5] can_climb, [6] gos, [7] yell, [8] gratz, [9] auc,
-[10] shout, [11] say, [12] tell, [13] NULL, [17] is_sneak, 
-[19] can_dive, [22] is_hide
-",
-
-/* 21 */ // long data
-"\nEnter all these data at once please:
-                
-(1)gold                 (2)exp worth (lev 15 mob ~= 4k, lev 20 ~= 10k)
-(3)bank_gold (Zero is normal)
-
-Example:  566 2225 0\n",
-
-/* 22 */ //first 15 short_cur_stats
-"\nEnter all 15 of these short_cur_stats at once please:
-
-(1)position  {0 stand, 1 sit, 2 rest, 3 sleep, 4 med, 5 stun, 6 dead, 7 prone}
-(2)str, (3)int, (4)con, (5)cha, (6)wis, (7)dex, (8)hit, (9)dam, (10)ac,
-(11)attacks per round, (12)pause_count {0 is good}, 
-(13)sex {0 female, 1 male, 2 neuter}
-(14)class, {1 Warrior, 2 Sage, 3 Wizard, 4 Ranger, 5 Thief, 6 Alchemist, 
-          {7 Cleric, 8 Bard, 9 Necromancer}
-(15)race, {1 human, 2 anitre, 3 avintre, 4 darkling, 5 drow,
-           6 dragon, 7 dwarf, 8 ironclad, 9 ogrue, 10 rocktroll,
-           11 elf, 12 faerie, 13 entity, 14 sombrian, 15 undead,
-           16 animal, 17 monster}\n",
-
-/* 23, second 15 short_cur_stats */
-"\nEnter all 15 of these short_cur_stats at once please:
-
-(1)hp, (2)mana, (3)mov, (4)align, (5)level, 
-(6) hometowns: which zone# is the mob from??}
-(7)wimpy (8)practices, (9)hp_max, (10)mana_max, (11)mov_max, 
-(12)type_of_mob: {2 mob}, (13)damage_received_modifier (100 is normal),
-(14)damage_given_modifier (100 is normal), (15)heat_resis\n",
-
-/* 24, rest of short_cur_stats */
-"\nEnter all of these short_cur_stats at once please:
-
- {0 is very resistant, 100 not very resistant }
-
-(1)cold_resis, (2)elect_resis, (3)spell_resis
-(4)religion { 0 none, 1 fire, 2 ice, 3 air, 4 earth, 5 beast, 6 blade }
-(5)NULL, (6)bare_hand_dice_count, (7)bare_hand_dice_sides, (8)hp_regen, 
-(9)mana_regen, (10)mov_regen, (11)NULL, (12)naked_weight, (13)fall_to (enter zero),
-
-Remember, you should enter zero's for NULL fields, they may one day
-be defined and zero will be default.\n",
-
-/* 25, cur_stats */
-"\n(1)vis_bit: add these up:
-             {1 dark, 2 invis, 4 hidden, 8 god_invis1}
-(2)see_bit:  add these up:
-             {0 normal, 1 dark, 2 invis, 4 hidden,
-              8 god_invis1, 16 god_invis2, 32 detect_link_dead}
-(3)in_room:  0 is just fine here.\n",
-
-/* 26 eq */
-"\nEnter eq in (item#, posn) pairs.  Negative one terms.
-Example:  8 1 -1     Make sure item exists btw.
-
-Positions: 1 head, 2 neck, 3 neck, 4 around body, 5 arms, 6 wrist, 7 wrist,
-8 hands, 9 wielded, 10 held, 11 light, 12 body, 13 belt, 14 legs,
-15 feet, 16 finger, 17 finger, 18 shield. DO NOT USE ZERO.\n",
-
-/* 27 affected by */
-"\nEnter any spells the mob is to be Affected By:
-spell number, followed by duration; -1 for duration is permanent.
-A -1 for spell number terminates.
-
-NOTE:  Check slist for a list of spells.\n",
-
-/* 28 inventory */
-"\nEnter the mob's inventory, all at once is fine.
-A -1 will terminate.  Also, make sure the item exists!
-Example:  1 6 5 -1\n",
-
-/* 29 mob_data: max_in_game, skin_num*/
-"\nEnter the max number of these mobs to be loaded in the game 
-simultaneously AND the object number of the skin, if it has one.  If
-it does not have a skin, enter a zero
-
-Example:  4 0\n",
-
-/* 30 mob_data flags */ 
-"\nTime to set mob_data_flags.  The number of the flag will toggle it,
-a -1 terminates.
-
-0 has_proc_data, (teacher, shopkeeper, discuss, bow, curse, give procs,
-                  PERSONALITY),
-1 scavenge, 2 wander, 5 edible_corpse, 6 is_banker, 7 is_sessile,
-8 !homing, 10 !victim_flee, 16 has_skin. \n",
-
-/* 31 spec_data: int1 */
-"\nIf mob is to be a sentinel, give direction guarding:
-{1 east, 2 west, 3 north, 4 south, 5 southeast, 6 northeast, 7 northwest,
- 8 southwest, 9 up, 10 down}
-
-The mob will not let anyone pass through the door guarded.  You can specify
-it to let certain classes/races past with the next bitfield.
-
-If it is not a sentinel, enter zero.
-
-So you should enter:
-[1] sentinal direction
-  These next 4 range in value from -10 to 10, they specify the mobs BEHAVIOR!
-[2] skill_violence (how often should the mob use skills, -10 never, 10 always)
-[3] benevolence (-10 very aggressive, 10 very peaceful)
-[4] defensiveness (-10 must hurt others, 10 maximum self preservation)
-[5] bad_assedness (-10 super wimp, 10 Snake Pliskin)
-[6] social_awareness (-10 who cares, 10 I'll save the world!)
-
-NOTE:  Zero is default value for all (but you must enter SOMETHING).\n",
-
-/* 32 proc_data: proc_data_flags */
-"\nTime to set proc_data flags.  The number of the flag will toggle it,
-a -1 terminates.  You don't have to set any flags if you don't want to.
-
-1 is_shopkeeper, 2 is_teacher,
-3 let_same_class_pass, 4 let_same_race_pass (these are used with sentinels),
-5 has_mob_give_proc, 6 has_mob_say_proc (discuss), 7 has_mob_bow_proc,
-8 has_mob_curse_proc, 9 do_procs_with_same_race_only, 10 same_align,
-11 same_class\n",
-
-/* 33 shopkeeper, markup, buy% */
-"\nEnter all these at once:
-(1)markup_percentage                 (2)buy_percentage
-(For example:  50 would be half, 200 would be twice.)
-(3) open_time                (4)close_time                (military)\n",
-
-/* 34 shopkeeper:  shop_data_flags */
-/* NOTE:  Don't reuse the first 3, were buy, sell, list procs */
-"\nTime to set shop_data flags.  The number of the flag will toggle it,
-a -1 terminates.  Choose at least one buy, sell, and offer proc.  More
-may be defined later, for now your choice is easy!
-
-Choose what type of eq it trades in:
-46 dart_thrower, 47 bow, 48 dart, 49 arrow,
-50 junk, 51 wands, 52 potions, 53 scrolls, 54 containers,
-56 armor, 57 weapons, 58 lights, 59 canteens, 61 foods, 62 boats,
-64 toolbox, 65 cauldron, 66 pen, 67 construct_component,
-68 concoct_component, 69 parchment(blank for scribing).
-
-Note:  You can choose more than one.\n",
-
-/* 35 shopkeeper:  perm_inv */
-"\nNow enter any items (numbers) that the shopkeeper will ALWAYS be selling.
-A negative one terminates.
-Example:  8 -1\n",
-
-/* 36 teacher:  teach_data_flags */
-"\nTime to set teach_data flags.  The number of the flag will toggle it,
-a -1 terminates.  Choose what classes it will teach to:
-
-1 Warrior, 2 Sage, 3 Wizard, 4 Ranger, 5 Thief, 6 Alchemist, 7 Cleric, 8 Bard, 9 Necromancer
-
-Note:  You can choose more than one.\n",
-
-/***********************************************************************/
-/*  37 THIS IS AN OBJECT PROMPT FOR COMPONENTS */
-/* Should no longer be used btw. */
-"\nEnter the these construct data:
-
-(1) target_object (what it can be constructed into)
-(2) item1 (these items are fellow components, zero is NULL value)
-(3) item2      (4) item3      (5) item4     (6) item5.\n",
-
-
-//**********************************************************************//
-//**************************  room prompts  ****************************//
-//**********************************************************************//
-
-/* 38 */        
-"\nInput the room number (enter 1 for next available room):  ",
-
-/* 39 */
-"\nInput a name, one word, '~' terminates.  Note:  This will rarely be seen.
-Example: temple ~\n",
-
-/* 40 */
-"\nInput the short description, you SHOULD capitalize:
-Example:  The temple of Garland\n",
-
-/* 41 */
-"\nInput the long description, '~', ON LINE BY ITSELF, terminates:
-Example:  You see a non-descript room.\n", 
-
-/* 42 */
-"\nTime to set room_flags.  The number of the flag will toggle it,
-a -1 terminates.
-
-0 no_rest, 1 !imm, 2 !god, 3 is_perm_dark, 4 weather, 5 !ranged_communication, 6 !mag_exit,
-7 is_haven, 8 !pk, 9 !magic, 10 !mob, 11 !potions, 12 !staffs, 13 !mort
-14 normally_dark, 15 river/small lake, 16 ocean/big lake, 17 swamp,
-18 need_fly, 19 need_boat, 20 need_climb, 24 !magic_entry,
-25 !vehicles (vehicles can't drive here), 26 is_cramped (!HUGE),
-27 !ranged combat, 28 need_dive_ability, 30 can_camp 33 !mob_wander,
-34 !foreign_mob_wander\n",
-
-/* 43 */ // cur_stats data
-"\nEnter all these data at once please:
-                
-(1)vis_bit {0 NORMAL, 1 dark, 2 invis, 4 hidden, 8 god_invis1,
-            16 god_invis2}
-(2)movement cost(in movement points)\n",
-
-/* 44 affected by */
-"\nEnter any spells the room is to be Affected By:
-spell number, followed by duration; -1 for duration is permanent.
-A -1 for spell number terminates.  Probably want to just enter -1.\n",
- 
-/* 45 inventory */
-"\nEnter the room's inventory, all at once is fine.
-A -1 will terminate.  Also, make sure the item exists!
-Example:  1 6 5 -1\n",
-
-/* 46  direction */
-"\nEnter the distance, and the direction of the exit TO this new room.
-Do not abbreviate, example:  0 north or 2 northwest or 1 up...
-
-NOTE:  distance is a unit of battle rounds.  This lasts about 2 seconds.
-For each distance unit you give, the mover will be paused for this amount
-of time, just as the skill 'bash' works on this and other muds.\n",
-
-
-//**********************************************************************//
-//**************************  door prompts  ****************************//
-//**********************************************************************//
-
-/* 47 */        
-"\nInput the door number:  ",
-
-/* 48 */
-"\nInput door names, following the example, '~' terminates
-Example: east    door oak      #      oak door   west    ~
-         ^^^^    ^^^^^^^^      ^      ^^^^^^^^   ^^^^
-         dir     names     separater    names    opposite side's dir\n",
-
-/* 49 */
-"\nInput the long description, '~', ON LINE BY ITSELF,  terminates:
-Example:  You see a non-descript door.\n", 
-
-/* 50 */
-"\nTime to set door_flags.  The number of the flag will toggle it,
-a -1 terminates.
-
-1 mag_lockable, 2 is_closed, 3 is_locked, 4 is_pickable, 5 is_lockable,
-6 mag_locked, 7 is_destructable, 8 is_closeable, 
-11 !open (by pc or mob, used for vehicle doors),
-12 is_exit_from_vehicle (to the outside), 13 is_secret
-16 secret_when_open_too, 17 consumes_key, 18 !passdoor\n",
-
-/* 51 vis_bit, token_num, key_num */
-"\nInput all of these at once please:
-
-Add these up to get the door's vis_bit:
-(1)vis_bit {0 NULL, 1 dark, 2 invis, 4 hidden, 8 god_invis1,
-            16 god_invis2}
-(2) token_number (zero if no token needed, for vehicle doors mostly)
-(3) key_number   (zero if no key needed)\n",
-
-/* 52 vehicle::route */
-"Please enter the flags for this vehicle.  Entering the number of the
-flag toggles it.  When complete, enter -1.
-
-0 is_self_guided, 1 is_stealthy (arrival un-announced), 2 unlimited_fuel,
-3 can_fly, 4 can_climb, 5 can_float, 6 can_dive,
-7 can_see_out (show room descs to passengers) 
-\n",
-
-/* 53 fuel, time_between_stops, cur_fuel, max_fuel */
-"\nEnter all these at once please:
-NOTE:  Consider fuel units to be equal to movement points in size.
-NOTE:  For unlimited fuel, you should toggle the appropriate flag (2).
-
-(1) time_between_stops   (in mini_ticks/battle rounds, how fast it moves, 5-10)
-(2) current fuel         (What the vehicle starts out with.)
-(3) max_fuel             (What is the maximum amount of fuel it can hold.)\n",
-
-/* 54 vehicle::number, */
-"\nInput the vehicle number:  ",
-
-/* 55 proc_data:  give_proc */
-"\nPlease enter the object number that should TRIGGER this proc when given to
-the mob.  Example:  55.  
-Note that this object should be created already as usual.\n",
-
-/* 56 proc_data:  say_proc (discuss) */
-"\nPlease input the topic for this conversation.  For example, if you won't
-this discussion to be triggered upon a 'discuss history <this_mob>', you would
-enter 'history' here.  The quotes are NOT NEEDED.  Remember:  only an
-exact match (case insensitive of course) will allow the discussion to take
-place, so you will probably want to keep it simple.
-
-Example:  history\n",
-
-/* 57 proc_data:  bow_proc */
-"\nPlease enter the message the person is to see when they bow to this mob.
-TERMINATE with a ~ on a LINE BY ITSELF!
-Example, for some priest:  
-
-The priest tells you 'You're attitude is encouraging, you should go discuss
-the brotherhood with the abbot in Elden Noir.'\n",
-
-/* 58 proc_data:  curse_proc:  message */
-
-"\nPlease enter the message you would like shown to the person who will
-'curse' this mob.  TERMINATE with a ~ on a LINE BY ITSELF!
-Example, for some priest:
-
-The priest scowls and says, 'Perhaps THIS will teach you to respect the powers
-of good!'
-
-The priest may then transport the person somewhere...Hell perhaps??\n",
-
-/* 59 spec_data:  say proc, response */
-"\nNow enter the response to this topic of discussion.  
-TERMINATE with a ~ on a LINE BY ITSELF!
-For example, for a priest and \'brotherhood\' for a topic:
-
-The abbot tells you, \'So you wish to join our brotherhood eh?  Consider
-yourself an accolyte, but if you truly wish to gain favor, bring me a root of
-the Golden Seal plant for my healing potions.  It grows in poplar shaded
-groves in the mountains to the east.\'
-
-Perhaps this priest will also have a give proc for the herb...\n",
-
-/* 60 proc_data:  give_proc correct_msg */
-"\nPlease enter the message to be shown upon a CORRECT gift.
-TERMINATE with a ~ on a LINE BY ITSELF!
-Example for an abbot:  
-
-The abbot smiles and says, \'Thanks, because of your worthy quest I will tell
-you something of the lore of herbs.\'
-
-Then perhaps the abbot will teach a skill/spell 'herb lore' or something.\n",
-
-/* 61 proc_data:  bow_proc skill_name */
-"\nIf you wish to have the mob give the player a skill/spell, enter that here.
-Example:  begging
-   
-Perhaps a skill an old begger would give a kind soul?
-If you don\'t want anything, please enter NA or na for not applicable.\n",
-
-
-/* 62 proc_data:  curse_proc skill_name */
-"\nIf you wish to have the mob give the player a skill/spell, enter that here.
-Example:  ancient tongues
-
-Perhaps a skill a crusty old geezer would give a young upstart that shows
-courage, if not tact.  Then perhaps the geezer would transport him to some
-evil place?
-If you don't want anything, please enter NA or na for not applicable.\n",
-
-/* 63 proc_data:  say_proc skill_name */
-"\nIf you wish to have the mob give the player a skill/spell, enter that here.
-Example:  history   
-
-Perhaps a skill a sage would give to a serious student?
-If you don\'t want anything, please enter NA or na for not applicable.\n",
-
-/* 64 proc_data:  give_proc skill_name */
-"\nIf you wish to have the mob give the player a skill/spell, enter that here.
-
-Example:  herb lore
-
-If you don\'t want anything, please enter NA or na for not applicable.\n",
-
-/* 65 proc_data:  bow_proc, obj_num */
-"\nPlease enter the number of the object the mob is to give to who ever
-bows to him/her.  If you don\'t want anything to be given, enter ZERO (0).
-Example:  82 \n",
-
-/* 66 proc_data:  curse_proc, obj_num */
-"\nPlease enter the number of the object the mob is to give to who ever
-curses him/her.  If you don\'t want anything to be given, enter ZERO (0).
-Example:  66 \n",
-
-/* 67 proc_data:  say_proc, obj_num */
-"\nPlease enter the number of the object the mob is to give to who ever
-discusses this topic.  If you don\'t want anything to be given, enter ZERO (0).
-Example:  0 \n",
-
-/* 68 proc_data:  give_proc, obj_num */
-"\nPlease enter the number of the object the mob is to give to who ever
-gives the RIGHT gift.  If you don\'t want anything to be given, enter ZERO (0).
-Example:  24 \n",
-
-/* 69 proc_data:  bow_proc, trans_to_room */
-"\nPlease enter the number of the room the mob is to transport the person who 
-bows to him/her to.  
-If you don\'t want the person transported anywhere, enter ZERO (0).
-Example:  0 \n",
-
-/* 70 proc_data:  curse_proc, trans_to_room */
-"\nPlease enter the number of the room the mob is transport the person who 
-curses him/her to.  
-If you don\'t want the person transported anywhere, enter ZERO (0).
-Example:  666 \n",
-
-/* 71 proc_data: say_proc, trans_to_room */
-"\nPlease enter the number of the room which the mob is to transport the
-person who discusses the given topic.  
-If you don\'t want the person transported anywhere, enter ZERO (0).
-Example:  1492 \n",
-
-/* 72 proc_data: give_proc, trans_to_room */
-"\nPlease enter the number of the room which the mob is transport the person
-to who gives the CORRECT gift.  
-If you don\'t want the person transported anywhere, enter ZERO (0).
-Example:  1492 \n",
-
-/* 73 proc_data:  say_proc, prompt for another? */
-"\nWould you like to add another discussion topic?  Yes(1) No(0)
-Example:  0 \n",
-
-/* 74 proc_data:  give_proc, wrong_gift_msg */
-"\nPlease enter the message you would like the player to see if he/she gives
-a wrong item to this mob.  
-TERMINATE with a ~ on a LINE BY ITSELF!
-
-Example:  Thanks, but what I really need is a silver dragon scale. \n",
-
-
-/* 75 proc_data: wrong_align_msg  */
-"\nPlease enter the message you would like a player of the wrong alignment 
-(as specified by flags set earlier (or not set)) to see.
-TERMINATE with a ~ on a LINE BY ITSELF!
-
-Example:  The priest frowns and tells you, 'If I wasn't a peaceful man
-I'd banish your petulant soul to the nine rings of Hell!!' \n",
-
-/* 76 proc_data: wrong_class_msg  */
-"\nPlease enter the message you would like a player of the wrong class 
-(as specified by flags set earlier (or not set)) to see.
-TERMINATE with a ~ on a LINE BY ITSELF!
-
-Example:  The wizzard laughs and says, 'Why would I want to talk to one of
-your profession?'\n",
-
-/* 77 proc_data: wrong_race_msg  */
-"\nPlease enter the message you would like a player of the wrong race 
-(as specified by flags set earlier (or not set)) to see.
-TERMINATE with a ~ on a LINE BY ITSELF!
-
-Example:  The dwarf laughs and says, 'You kind are not welcome in our
-hallowed tunnels.'\n",
-
-/* 78 obj_spec_proc:  skin_num  */
-"\nPlease enter the number of the object that is to be the skin.\n\n",
-
-/* 79 casts_these_spells */
-"\nNow enter the level of the spell it will cast, and the spell number it
-will cast.  You can find the spell_numbers via the 'slist' command.
-A negative one (-1) terminates.  (LEVEL SPELL_NUM) pairs, level first.
-
-Example: 30 10 -1  /* This would make it cast a level 30 'web' spell. */\n"
+   /* 0 */
+   "\n\nWhich do you wish to create: \n\n"
+      "(1)object, (2)critter, (3)room, (4)door, (5)quit, (6)vehicle\n",
+
+   /* 1 */                /* here is output for the object. */
+   "\nInput the object_num:  \n"
+      "If you don't know, guess, the system will suggest one.\n",
+
+   /* 2 */
+   "\nInput a name, one word, '~', by itself, terminates.\n"
+      "Example:  garland rose ~\n",
+
+   /* 3 */
+   "\nInput the short description.\n"
+      "Example:  a garland\n",
+
+   /* 4 */
+   "\nInput the in_room_description, do capitalize:\n"
+      "Example:  A short sword sits here rusting.\n",
+
+   /* 5 */
+   "\nInput the long description, '~', ON LINE BY ITSELF, terminates:\n"
+      "Example:\n"
+      "    You see a sparsely descripted object lying here.\n"
+      "~\n", 
+
+   /* 6 */
+   "\nTime to set obj_flags.  The number of the flag will toggle it,\n"
+      "a -1 terminates.\n"
+      "\n"
+      "0 no_rest,  1 !evil, 2 !neutral, 3 !good, 4 !donate, 5 !drop, 6 !remove, \n"
+      "7 !mortal, 8 !imm, 9 !demi, 10 !god, 11 !Warrior, 12 !sage, 13 !wizard, \n"
+      "14 !ranger, 15 !thief, 16 !alchemist, 17 !cleric, 18 !bard, 19 !mob, 20 !pc\n"
+      "\n"
+      "21 not worn, 22 head, 23 neck, 24 neck, 25 around body, 26 arms, 27 wrist1,\n"
+      "28 wrist2, 29 hands, 30 wielded, 31 held, 32 light, 33 body, 34 belt,\n"
+      "35 legs, 36 feet, 37 finger1, 38 finger2, 39 shield,\n"
+      "\n"
+      "40 not a weapon, 41 slash, 42 smash, 43 pierce, 44 whip, 45 needs_ammo,\n"
+      "46 dart_thrower, 47 bow, 48 dart, 49 arrow, 50 junk, 51 wand, 52 potion,\n"
+      "53 scroll, 54 container, 55 coins, 56 armor, 57 weapon, 58 light_source,\n"
+      "59 canteen, 60 liquid, 61 food, 62 boat, \n"
+      "63 has_spec_proc_data { flag for scrolls, potions, wands...}\n"
+      "64 toolbox, 65 cauldron, 66 pen, 67 (DO NOT USE),\n"
+      "68 (DO NOT USE), 69 parchment (for scribing), 71 (DO NOT USE),\n"
+      "72 herb, 73 vend_machine, 74 bulletin_board, 75 is_butcherable,\n"
+      "76 has_obj_script, 77 is_two_handed 78 !necromancer\n"
+      "\n"
+      "\n"
+      "***  If you're making a weapon, please consider flagging a flag between\n"
+      "     41 and 49 inclusive.  This will help determine damage messages.\n"
+      "***  Remember to flag 63 if you want spec procs. ***\n",
+
+   /* 7 */
+   "\nEnter all these extras at once please:\n"
+      "                \n"
+      "(1)charges or light_count,         (2)times rechargeable (wands), \n"
+      "(3)load percentage,                (4)max_in_game, \n"
+      "(5)weight(lbs),                 (6)dice_sides, \n"
+      "(7)dice_count,                        (8)level\n"
+      "Example:  0 0 25 15 5 3 2 5\n"
+      "\n"
+      "WARNING:  if you make the object too powerful it will be deleted.\n"
+      "7d4 is the max, and most should fall well under that.\n",
+
+   /* 8 */
+   "\nEnter all these cur_stats at once please:\n"
+      "\n"
+      "vis_bit (To calculate add flags up:\n"
+      "        {2 invis, 4 hidden, 8 god_invis1},\n"
+      "price,  (for comparison:  a good sword 4d4 should be around 3k)\n",
+
+   /* 9 */
+   "\nReading in bag_specific information.  First, the bag_flags.\n"
+      "The number of the flag will toggle it, a -1 terminates.\n"
+      "\n"
+      "0 NULL, 1 NULL, 2 is_closed, 3 is_locked, 4 is_pickable, 5 is_mag_lockable,\n"
+      "6 is_mag_locked, 7 is_destructable, 8 is_corpse (probably shouldn't use)\n"
+      "9 is_NON_closeable, 10 player_owned, 17 consumes_key\n",
+
+   /* 10 */
+   "\nEnter all of these bag data at once please:\n"
+      "\n"
+      "(1)key number (zero if no key),                \n"
+      "(2)maximum weight(lbs) NOTE: this is ITSELF plus its INVENTORY\n"
+      "(3)percentage weight (normal is 100),        \n"
+      "(4)time till it disolves, (probably should make this -1)\n",
+
+   /* 11 */
+   "\nEnter any spells the item is to be Affected By:\n"
+      "spell number, followed by duration; -1 for duration is permanent.\n"
+      "A -1 for spell number terminates.  None in yet, choose -1.\n",
+
+   /* 12 */
+   "\nEnter the item's inventory, all at once, but ONLY IF ITS A CONTAINER:\n"
+      "A -1 will terminate.  Also, make sure the item exists!  'olist' can help\n"
+      "you figure out which you want to use.\n"
+      "Example:  1 6 5 -1\n",
+
+   /* 13 */
+   "\nNow for the Stat Affects:\n"
+      "stat number, followed by the change; A -1 for stat number terminates.\n"
+      "Example:  2 3 -1\n"
+      "Here are the stats you can fiddle with:\n"
+      "\n"
+      "1 str, 2 int, 3 con, 4 cha, 5 wis, 6 dex, 7 hit, 8 dam, 9 ac, 10 attacks,\n"
+      "11 pause_count, 15 hp, 16 mana, 17 mov, 18 align, 19 level, 23 hp_max,\n"
+      "24 mana_max, 25 mov_max, 27 damage_received_modifier, 28 damage_given_modifier,\n"
+      "29 heat_resis, 30 cold_resis, 31 elect_resis, 32 spell_resis, 35 bare_hand_dice_count, \n"
+      "36 bare_hand_dice_sides, 37 hp_regen, 38 mana_regen, 39 mov_regen,\n"
+      "100 hunger, 101 thirst, 102 drugged.\n"
+      "\n"
+      "WARNING:  Once again, moderation is needed, if it is too extreme it will be\n"
+      "          deleted.  This is NOT a twink MUD!\n",
+
+   /* 14 */ 
+   "\nTime to set obj_proc_flags.  The number of the flag will toggle it,\n"
+      "a -1 terminates.\n"
+      "\n"
+      "0 consume_teleport, 1 (DO NOT USE, cannot be set here)\n"
+      "2 has_skin, 3 consume_poison, 11 has_head\n"
+      "\n"
+      "Other spells that it can CAST will be specified later.\n",
+
+   /* more obj prompts below */
+
+   //*********************************************************************//
+   ///***********************  critter prompts  *************************///
+   //*********************************************************************//
+
+   /* 15 */                /* here is output for the object. */
+   "\nInput the critter number:  \n"
+      "If you don't know which one, try one, the game will suggest another if \n"
+      "its bad.\n",
+
+   /* 16 */
+   "\nInput a name, one word, '~', by itself, terminates.\n"
+      "Example: guard portal ~\n",
+
+   /* 17 */
+   "\nInput the short description.\n"
+      "Example:  a portal guard\n",
+
+   /* 18 */
+   "\nInput the in_room_description, do capitalize:\n"
+      "Example:  A portal guard leans against the door.\n",
+
+   /* 19 */
+   "\nInput the long description, '~', ON LINE BY ITSELF, terminates:\n"
+      "Example:  \n"
+      "        You see a vague person standing here.\n"
+      "~\n", 
+
+   /* 20 */
+   "\nTime to set crit_flags.  The number of the flag will toggle it,\n"
+      "a -1 terminates.\n"
+      "\n"
+      "[3] is_flying, [5] can_climb, [6] gos, [7] yell, [8] gratz, [9] auc,\n"
+      "[10] shout, [11] say, [12] tell, [13] NULL, [17] is_sneak, \n"
+      "[19] can_dive, [22] is_hide\n",
+
+   /* 21 */ // long data
+   "\nEnter all these data at once please:\n"
+      "                \n"
+      "(1)gold                 (2)exp worth (lev 15 mob ~= 4k, lev 20 ~= 10k)\n"
+      "(3)bank_gold (Zero is normal)\n"
+      "\n"
+      "Example:  566 2225 0\n",
+
+   /* 22 */ //first 15 short_cur_stats
+   "\nEnter all 15 of these short_cur_stats at once please:\n"
+      "\n"
+      "(1)position  {0 stand, 1 sit, 2 rest, 3 sleep, 4 med, 5 stun, 6 dead, 7 prone}\n"
+      "(2)str, (3)int, (4)con, (5)cha, (6)wis, (7)dex, (8)hit, (9)dam, (10)ac,\n"
+      "(11)attacks per round, (12)pause_count {0 is good}, \n"
+      "(13)sex {0 female, 1 male, 2 neuter}\n"
+      "(14)class, {1 Warrior, 2 Sage, 3 Wizard, 4 Ranger, 5 Thief, 6 Alchemist, \n"
+      "          {7 Cleric, 8 Bard, 9 Necromancer}\n"
+      "(15)race, {1 human, 2 anitre, 3 avintre, 4 darkling, 5 drow,\n"
+      "           6 dragon, 7 dwarf, 8 ironclad, 9 ogrue, 10 rocktroll,\n"
+      "           11 elf, 12 faerie, 13 entity, 14 sombrian, 15 undead,\n"
+      "           16 animal, 17 monster}\n",
+
+   /* 23, second 15 short_cur_stats */
+   "\nEnter all 15 of these short_cur_stats at once please:\n"
+      "\n"
+      "(1)hp, (2)mana, (3)mov, (4)align, (5)level, \n"
+      "(6) hometowns: which zone# is the mob from??}\n"
+      "(7)wimpy (8)practices, (9)hp_max, (10)mana_max, (11)mov_max, \n"
+      "(12)type_of_mob: {2 mob}, (13)damage_received_modifier (100 is normal),\n"
+      "(14)damage_given_modifier (100 is normal), (15)heat_resis\n",
+
+   /* 24, rest of short_cur_stats */
+   "\nEnter all of these short_cur_stats at once please:\n"
+      "\n"
+      " {0 is very resistant, 100 not very resistant }\n"
+      "\n"
+      "(1)cold_resis, (2)elect_resis, (3)spell_resis\n"
+      "(4)religion { 0 none, 1 fire, 2 ice, 3 air, 4 earth, 5 beast, 6 blade }\n"
+      "(5)NULL, (6)bare_hand_dice_count, (7)bare_hand_dice_sides, (8)hp_regen, \n"
+      "(9)mana_regen, (10)mov_regen, (11)NULL, (12)naked_weight, (13)fall_to (enter zero),\n"
+      "\n"
+      "Remember, you should enter zero's for NULL fields, they may one day\n"
+      "be defined and zero will be default.\n",
+
+   /* 25, cur_stats */
+   "\n(1)vis_bit: add these up:\n"
+      "             {1 dark, 2 invis, 4 hidden, 8 god_invis1}\n"
+      "(2)see_bit:  add these up:\n"
+      "             {0 normal, 1 dark, 2 invis, 4 hidden,\n"
+      "              8 god_invis1, 16 god_invis2, 32 detect_link_dead}\n"
+      "(3)in_room:  0 is just fine here.\n",
+
+   /* 26 eq */
+   "\nEnter eq in (item#, posn) pairs.  Negative one terms.\n"
+      "Example:  8 1 -1     Make sure item exists btw.\n"
+      "\n"
+      "Positions: 1 head, 2 neck, 3 neck, 4 around body, 5 arms, 6 wrist, 7 wrist,\n"
+      "8 hands, 9 wielded, 10 held, 11 light, 12 body, 13 belt, 14 legs,\n"
+      "15 feet, 16 finger, 17 finger, 18 shield. DO NOT USE ZERO.\n",
+
+   /* 27 affected by */
+   "\nEnter any spells the mob is to be Affected By:\n"
+      "spell number, followed by duration; -1 for duration is permanent.\n"
+      "A -1 for spell number terminates.\n"
+      "\n"
+      "NOTE:  Check slist for a list of spells.\n",
+
+   /* 28 inventory */
+   "\nEnter the mob's inventory, all at once is fine.\n"
+      "A -1 will terminate.  Also, make sure the item exists!\n"
+      "Example:  1 6 5 -1\n",
+
+   /* 29 mob_data: max_in_game, skin_num*/
+   "\nEnter the max number of these mobs to be loaded in the game \n"
+      "simultaneously AND the object number of the skin, if it has one.  If\n"
+      "it does not have a skin, enter a zero\n"
+      "\n"
+      "Example:  4 0\n",
+
+   /* 30 mob_data flags */ 
+   "\nTime to set mob_data_flags.  The number of the flag will toggle it,\n"
+      "a -1 terminates.\n"
+      "\n"
+      "0 has_proc_data, (teacher, shopkeeper, discuss, bow, curse, give procs,\n"
+      "                  PERSONALITY),\n"
+      "1 scavenge, 2 wander, 5 edible_corpse, 6 is_banker, 7 is_sessile,\n"
+      "8 !homing, 10 !victim_flee, 16 has_skin. \n",
+
+   /* 31 spec_data: int1 */
+   "\nIf mob is to be a sentinel, give direction guarding:\n"
+      "{1 east, 2 west, 3 north, 4 south, 5 southeast, 6 northeast, 7 northwest,\n"
+      " 8 southwest, 9 up, 10 down}\n"
+      "\n"
+      "The mob will not let anyone pass through the door guarded.  You can specify\n"
+      "it to let certain classes/races past with the next bitfield.\n"
+      "\n"
+      "If it is not a sentinel, enter zero.\n"
+      "\n"
+      "So you should enter:\n"
+      "[1] sentinal direction\n"
+      "  These next 4 range in value from -10 to 10, they specify the mobs BEHAVIOR!\n"
+      "[2] skill_violence (how often should the mob use skills, -10 never, 10 always)\n"
+      "[3] benevolence (-10 very aggressive, 10 very peaceful)\n"
+      "[4] defensiveness (-10 must hurt others, 10 maximum self preservation)\n"
+      "[5] bad_assedness (-10 super wimp, 10 Snake Pliskin)\n"
+      "[6] social_awareness (-10 who cares, 10 I'll save the world!)\n"
+      "\n"
+      "NOTE:  Zero is default value for all (but you must enter SOMETHING).\n",
+
+   /* 32 proc_data: proc_data_flags */
+   "\nTime to set proc_data flags.  The number of the flag will toggle it,\n"
+      "a -1 terminates.  You don't have to set any flags if you don't want to.\n"
+      "\n"
+      "1 is_shopkeeper, 2 is_teacher,\n"
+      "3 let_same_class_pass, 4 let_same_race_pass (these are used with sentinels),\n"
+      "5 has_mob_give_proc, 6 has_mob_say_proc (discuss), 7 has_mob_bow_proc,\n"
+      "8 has_mob_curse_proc, 9 do_procs_with_same_race_only, 10 same_align,\n"
+      "11 same_class\n",
+
+   /* 33 shopkeeper, markup, buy% */
+   "\nEnter all these at once:\n"
+      "(1)markup_percentage                 (2)buy_percentage\n"
+      "(For example:  50 would be half, 200 would be twice.)\n"
+      "(3) open_time                (4)close_time                (military)\n",
+
+   /* 34 shopkeeper:  shop_data_flags */
+   /* NOTE:  Don't reuse the first 3, were buy, sell, list procs */
+   "\nTime to set shop_data flags.  The number of the flag will toggle it,\n"
+      "a -1 terminates.  Choose at least one buy, sell, and offer proc.  More\n"
+      "may be defined later, for now your choice is easy!\n"
+      "\n"
+      "Choose what type of eq it trades in:\n"
+      "46 dart_thrower, 47 bow, 48 dart, 49 arrow,\n"
+      "50 junk, 51 wands, 52 potions, 53 scrolls, 54 containers,\n"
+      "56 armor, 57 weapons, 58 lights, 59 canteens, 61 foods, 62 boats,\n"
+      "64 toolbox, 65 cauldron, 66 pen, 67 construct_component,\n"
+      "68 concoct_component, 69 parchment(blank for scribing).\n"
+      "\n"
+      "Note:  You can choose more than one.\n",
+
+   /* 35 shopkeeper:  perm_inv */
+   "\nNow enter any items (numbers) that the shopkeeper will ALWAYS be selling.\n"
+      "A negative one terminates.\n"
+      "Example:  8 -1\n",
+
+   /* 36 teacher:  teach_data_flags */
+   "\nTime to set teach_data flags.  The number of the flag will toggle it,\n"
+      "a -1 terminates.  Choose what classes it will teach to:\n"
+      "\n"
+      "1 Warrior, 2 Sage, 3 Wizard, 4 Ranger, 5 Thief, 6 Alchemist, 7 Cleric, 8 Bard, 9 Necromancer\n"
+      "\n"
+      "Note:  You can choose more than one.\n",
+
+   /***********************************************************************/
+   /*  37 THIS IS AN OBJECT PROMPT FOR COMPONENTS */
+   /* Should no longer be used btw. */
+   "\nEnter the these construct data:\n"
+                                      "\n"
+                                         "(1) target_object (what it can be constructed into)\n"
+                                         "(2) item1 (these items are fellow components, zero is NULL value)\n"
+                                         "(3) item2      (4) item3      (5) item4     (6) item5.\n",
+
+
+                                      //**********************************************************************//
+                                      //**************************  room prompts  ****************************//
+                                      //**********************************************************************//
+
+                                      /* 38 */        
+                                      "\nInput the room number (enter 1 for next available room):  ",
+
+                                         /* 39 */
+                                         "\nInput a name, one word, '~' terminates.  Note:  This will rarely be seen.\n"
+                                            "Example: temple ~\n",
+
+                                         /* 40 */
+                                         "\nInput the short description, you SHOULD capitalize:\n"
+                                            "Example:  The temple of Garland\n",
+
+                                         /* 41 */
+                                         "\nInput the long description, '~', ON LINE BY ITSELF, terminates:\n"
+                                            "Example:  You see a non-descript room.\n", 
+
+                                         /* 42 */
+                                         "\nTime to set room_flags.  The number of the flag will toggle it,\n"
+                                            "a -1 terminates.\n"
+                                            "\n"
+                                            "0 no_rest, 1 !imm, 2 !god, 3 is_perm_dark, 4 weather, 5 !ranged_communication, 6 !mag_exit,\n"
+                                            "7 is_haven, 8 !pk, 9 !magic, 10 !mob, 11 !potions, 12 !staffs, 13 !mort\n"
+                                            "14 normally_dark, 15 river/small lake, 16 ocean/big lake, 17 swamp,\n"
+                                            "18 need_fly, 19 need_boat, 20 need_climb, 24 !magic_entry,\n"
+                                            "25 !vehicles (vehicles can't drive here), 26 is_cramped (!HUGE),\n"
+                                            "27 !ranged combat, 28 need_dive_ability, 30 can_camp 33 !mob_wander,\n"
+                                            "34 !foreign_mob_wander\n",
+
+                                         /* 43 */ // cur_stats data
+                                         "\nEnter all these data at once please:\n"
+                                            "                \n"
+                                            "(1)vis_bit {0 NORMAL, 1 dark, 2 invis, 4 hidden, 8 god_invis1,\n"
+                                            "            16 god_invis2}\n"
+                                            "(2)movement cost(in movement points)\n",
+
+                                         /* 44 affected by */
+                                         "\nEnter any spells the room is to be Affected By:\n"
+                                            "spell number, followed by duration; -1 for duration is permanent.\n"
+                                            "A -1 for spell number terminates.  Probably want to just enter -1.\n",
+
+                                         /* 45 inventory */
+                                         "\nEnter the room's inventory, all at once is fine.\n"
+                                            "A -1 will terminate.  Also, make sure the item exists!\n"
+                                            "Example:  1 6 5 -1\n",
+
+                                         /* 46  direction */
+                                         "\nEnter the distance, and the direction of the exit TO this new room.\n"
+                                            "Do not abbreviate, example:  0 north or 2 northwest or 1 up...\n"
+                                            "\n"
+                                            "NOTE:  distance is a unit of battle rounds.  This lasts about 2 seconds.\n"
+                                            "For each distance unit you give, the mover will be paused for this amount\n"
+                                            "of time, just as the skill 'bash' works on this and other muds.\n",
+
+
+                                         //**********************************************************************//
+                                         //**************************  door prompts  ****************************//
+                                         //**********************************************************************//
+
+                                         /* 47 */        
+                                         "\nInput the door number:  ",
+
+                                         /* 48 */
+                                         "\nInput door names, following the example, '~' terminates\n"
+                                            "Example: east    door oak      #      oak door   west    ~\n"
+                                            "         ^^^^    ^^^^^^^^      ^      ^^^^^^^^   ^^^^\n"
+                                            "         dir     names     separater    names    opposite side's dir\n",
+
+                                         /* 49 */
+                                         "\nInput the long description, '~', ON LINE BY ITSELF,  terminates:\n"
+                                            "Example:  You see a non-descript door.\n", 
+
+                                         /* 50 */
+                                         "\nTime to set door_flags.  The number of the flag will toggle it,\n"
+                                            "a -1 terminates.\n"
+                                            "\n"
+                                            "1 mag_lockable, 2 is_closed, 3 is_locked, 4 is_pickable, 5 is_lockable,\n"
+                                            "6 mag_locked, 7 is_destructable, 8 is_closeable, \n"
+                                            "11 !open (by pc or mob, used for vehicle doors),\n"
+                                            "12 is_exit_from_vehicle (to the outside), 13 is_secret\n"
+                                            "16 secret_when_open_too, 17 consumes_key, 18 !passdoor\n",
+
+                                         /* 51 vis_bit, token_num, key_num */
+                                         "\nInput all of these at once please:\n"
+                                            "\n"
+                                            "Add these up to get the door's vis_bit:\n"
+                                            "(1)vis_bit {0 NULL, 1 dark, 2 invis, 4 hidden, 8 god_invis1,\n"
+                                            "            16 god_invis2}\n"
+                                            "(2) token_number (zero if no token needed, for vehicle doors mostly)\n"
+                                            "(3) key_number   (zero if no key needed)\n",
+
+                                         /* 52 vehicle::route */
+                                         "Please enter the flags for this vehicle.  Entering the number of the\n"
+                                            "flag toggles it.  When complete, enter -1.\n"
+                                            "\n"
+                                            "0 is_self_guided, 1 is_stealthy (arrival un-announced), 2 unlimited_fuel,\n"
+                                            "3 can_fly, 4 can_climb, 5 can_float, 6 can_dive,\n"
+                                            "7 can_see_out (show room descs to passengers) \n"
+                                            "\n",
+
+                                         /* 53 fuel, time_between_stops, cur_fuel, max_fuel */
+                                         "\nEnter all these at once please:\n"
+                                            "NOTE:  Consider fuel units to be equal to movement points in size.\n"
+                                            "NOTE:  For unlimited fuel, you should toggle the appropriate flag (2).\n"
+                                            "\n"
+                                            "(1) time_between_stops   (in mini_ticks/battle rounds, how fast it moves, 5-10)\n"
+                                            "(2) current fuel         (What the vehicle starts out with.)\n"
+                                            "(3) max_fuel             (What is the maximum amount of fuel it can hold.)\n",
+
+                                         /* 54 vehicle::number, */
+                                         "\nInput the vehicle number:  ",
+
+                                         /* 55 proc_data:  give_proc */
+                                         "\nPlease enter the object number that should TRIGGER this proc when given to\n"
+                                            "the mob.  Example:  55.  \n"
+                                            "Note that this object should be created already as usual.\n",
+
+                                         /* 56 proc_data:  say_proc (discuss) */
+                                         "\nPlease input the topic for this conversation.  For example, if you won't\n"
+                                            "this discussion to be triggered upon a 'discuss history <this_mob>', you would\n"
+                                            "enter 'history' here.  The quotes are NOT NEEDED.  Remember:  only an\n"
+                                            "exact match (case insensitive of course) will allow the discussion to take\n"
+                                            "place, so you will probably want to keep it simple.\n"
+                                            "\n"
+                                            "Example:  history\n",
+
+                                         /* 57 proc_data:  bow_proc */
+                                         "\nPlease enter the message the person is to see when they bow to this mob.\n"
+                                            "TERMINATE with a ~ on a LINE BY ITSELF!\n"
+                                            "Example, for some priest:  \n"
+                                            "\n"
+                                            "The priest tells you 'You're attitude is encouraging, you should go discuss\n"
+                                            "the brotherhood with the abbot in Elden Noir.'\n",
+
+                                         /* 58 proc_data:  curse_proc:  message */
+
+                                         "\nPlease enter the message you would like shown to the person who will\n"
+                                            "'curse' this mob.  TERMINATE with a ~ on a LINE BY ITSELF!\n"
+                                            "Example, for some priest:\n"
+                                            "\n"
+                                            "The priest scowls and says, 'Perhaps THIS will teach you to respect the powers\n"
+                                            "of good!'\n"
+                                            "\n"
+                                            "The priest may then transport the person somewhere...Hell perhaps??\n",
+
+                                         /* 59 spec_data:  say proc, response */
+                                         "\nNow enter the response to this topic of discussion.  \n"
+                                            "TERMINATE with a ~ on a LINE BY ITSELF!\n"
+                                            "For example, for a priest and \'brotherhood\' for a topic:\n"
+                                            "\n"
+                                            "The abbot tells you, \'So you wish to join our brotherhood eh?  Consider\n"
+                                            "yourself an accolyte, but if you truly wish to gain favor, bring me a root of\n"
+                                            "the Golden Seal plant for my healing potions.  It grows in poplar shaded\n"
+                                            "groves in the mountains to the east.\'\n"
+                                            "\n"
+                                            "Perhaps this priest will also have a give proc for the herb...\n",
+
+                                         /* 60 proc_data:  give_proc correct_msg */
+                                         "\nPlease enter the message to be shown upon a CORRECT gift.\n"
+                                            "TERMINATE with a ~ on a LINE BY ITSELF!\n"
+                                            "Example for an abbot:  \n"
+                                            "\n"
+                                            "The abbot smiles and says, \'Thanks, because of your worthy quest I will tell\n"
+                                            "you something of the lore of herbs.\'\n"
+                                            "\n"
+                                            "Then perhaps the abbot will teach a skill/spell 'herb lore' or something.\n",
+
+                                         /* 61 proc_data:  bow_proc skill_name */
+                                         "\nIf you wish to have the mob give the player a skill/spell, enter that here.\n"
+                                            "Example:  begging\n"
+                                            "   \n"
+                                            "Perhaps a skill an old begger would give a kind soul?\n"
+                                            "If you don\'t want anything, please enter NA or na for not applicable.\n",
+
+
+                                         /* 62 proc_data:  curse_proc skill_name */
+                                         "\nIf you wish to have the mob give the player a skill/spell, enter that here.\n"
+                                            "Example:  ancient tongues\n"
+                                            "\n"
+                                            "Perhaps a skill a crusty old geezer would give a young upstart that shows\n"
+                                            "courage, if not tact.  Then perhaps the geezer would transport him to some\n"
+                                            "evil place?\n"
+                                            "If you don't want anything, please enter NA or na for not applicable.\n",
+
+                                         /* 63 proc_data:  say_proc skill_name */
+                                         "\nIf you wish to have the mob give the player a skill/spell, enter that here.\n"
+                                            "Example:  history   \n"
+                                            "\n"
+                                            "Perhaps a skill a sage would give to a serious student?\n"
+                                            "If you don\'t want anything, please enter NA or na for not applicable.\n",
+
+                                         /* 64 proc_data:  give_proc skill_name */
+                                         "\nIf you wish to have the mob give the player a skill/spell, enter that here.\n"
+                                            "\n"
+                                            "Example:  herb lore\n"
+                                            "\n"
+                                            "If you don\'t want anything, please enter NA or na for not applicable.\n",
+
+                                         /* 65 proc_data:  bow_proc, obj_num */
+                                         "\nPlease enter the number of the object the mob is to give to who ever\n"
+                                            "bows to him/her.  If you don\'t want anything to be given, enter ZERO (0).\n"
+                                            "Example:  82 \n",
+
+                                         /* 66 proc_data:  curse_proc, obj_num */
+                                         "\nPlease enter the number of the object the mob is to give to who ever\n"
+                                            "curses him/her.  If you don\'t want anything to be given, enter ZERO (0).\n"
+                                            "Example:  66 \n",
+
+                                         /* 67 proc_data:  say_proc, obj_num */
+                                         "\nPlease enter the number of the object the mob is to give to who ever\n"
+                                            "discusses this topic.  If you don\'t want anything to be given, enter ZERO (0).\n"
+                                            "Example:  0 \n",
+
+                                         /* 68 proc_data:  give_proc, obj_num */
+                                         "\nPlease enter the number of the object the mob is to give to who ever\n"
+                                            "gives the RIGHT gift.  If you don\'t want anything to be given, enter ZERO (0).\n"
+                                            "Example:  24 \n",
+
+                                         /* 69 proc_data:  bow_proc, trans_to_room */
+                                         "\nPlease enter the number of the room the mob is to transport the person who \n"
+                                            "bows to him/her to.  \n"
+                                            "If you don\'t want the person transported anywhere, enter ZERO (0).\n"
+                                            "Example:  0 \n",
+
+                                         /* 70 proc_data:  curse_proc, trans_to_room */
+                                         "\nPlease enter the number of the room the mob is transport the person who \n"
+                                            "curses him/her to. \n" 
+                                            "If you don\'t want the person transported anywhere, enter ZERO (0).\n"
+                                            "Example:  666 \n",
+
+                                         /* 71 proc_data: say_proc, trans_to_room */
+                                         "\nPlease enter the number of the room which the mob is to transport the\n"
+                                            "person who discusses the given topic.  \n"
+                                            "If you don\'t want the person transported anywhere, enter ZERO (0).\n"
+                                            "Example:  1492 \n",
+
+                                         /* 72 proc_data: give_proc, trans_to_room */
+                                         "\nPlease enter the number of the room which the mob is transport the person\n"
+                                            "to who gives the CORRECT gift.  \n"
+                                            "If you don\'t want the person transported anywhere, enter ZERO (0).\n"
+                                            "Example:  1492 \n",
+
+                                         /* 73 proc_data:  say_proc, prompt for another? */
+                                         "\nWould you like to add another discussion topic?  Yes(1) No(0)\n"
+                                            "Example:  0 \n",
+
+                                         /* 74 proc_data:  give_proc, wrong_gift_msg */
+                                         "\nPlease enter the message you would like the player to see if he/she gives\n"
+                                            "a wrong item to this mob.  \n"
+                                            "TERMINATE with a ~ on a LINE BY ITSELF!\n"
+                                            "\n"
+                                            "Example:  Thanks, but what I really need is a silver dragon scale. \n",
+
+
+                                         /* 75 proc_data: wrong_align_msg  */
+                                         "\nPlease enter the message you would like a player of the wrong alignment \n"
+                                            "(as specified by flags set earlier (or not set)) to see.\n"
+                                            "TERMINATE with a ~ on a LINE BY ITSELF!\n"
+                                            "\n"
+                                            "Example:  The priest frowns and tells you, 'If I wasn't a peaceful man\n"
+                                            "I'd banish your petulant soul to the nine rings of Hell!!' \n",
+
+                                         /* 76 proc_data: wrong_class_msg  */
+                                         "\nPlease enter the message you would like a player of the wrong class \n"
+                                            "(as specified by flags set earlier (or not set)) to see.\n"
+                                            "TERMINATE with a ~ on a LINE BY ITSELF!\n"
+                                            "\n"
+                                            "Example:  The wizzard laughs and says, 'Why would I want to talk to one of\n"
+                                            "your profession?'\n",
+
+                                         /* 77 proc_data: wrong_race_msg  */
+                                         "\nPlease enter the message you would like a player of the wrong race \n"
+                                            "(as specified by flags set earlier (or not set)) to see.\n"
+                                            "TERMINATE with a ~ on a LINE BY ITSELF!\n"
+                                            "\n"
+                                            "Example:  The dwarf laughs and says, 'You kind are not welcome in our\n"
+                                            "hallowed tunnels.'\n",
+
+                                         /* 78 obj_spec_proc:  skin_num  */
+                                         "\nPlease enter the number of the object that is to be the skin.\n\n",
+
+                                         /* 79 casts_these_spells */
+                                         "\nNow enter the level of the spell it will cast, and the spell number it\n"
+                                            "will cast.  You can find the spell_numbers via the 'slist' command.\n"
+                                            "A negative one (-1) terminates.  (LEVEL SPELL_NUM) pairs, level first.\n"
+                                            "\n"
+                                            "Example: 30 10 -1  /* This would make it cast a level 30 'web' spell. */\n"
 
 
 }; //olc prompts

@@ -23,7 +23,8 @@
 #include <iostream.h>
 #include <stdlib.h>
 #include <string2.h>
-#include <strstream.h>
+
+#include <sstream>
 
 #ifndef FALSE
 #define FALSE 0
@@ -116,7 +117,7 @@ String filter_line(char* line) {
       if (line[8] == ':')
          strt = 9;
 
-      istrstream ss(line + strt);
+      my_sstream ss(line + strt);
       while (ss) {
          ss >> tmp;
          if (strlen(tmp) == 0) {
@@ -218,23 +219,23 @@ int main(int argc, char** argv) {
    else {
       ofstream targ_file(argv[1]);
       if (!targ_file) {
-         cout << "Can't open targ file." << endl;
-         cout << USAGE << endl;
+	 cout << "Can't open targ file." << endl;
+	 cout << USAGE << endl;
       }
       else {
-         //First, lets create the top portion of the HTML output file.
-         targ_file << "
-<html>
-<title>ScryMUD Help</title>
-<BODY TEXT=\"#3366AA\" BGCOLOR=\"#FFFFFF\" LINK=\"#AA7700\" VLINK=\"#AA7700\" ALINK=\"#FF0000\">
-<P>
-<h2><center> Help on commands for ScryMUD </center><P>
-" << endl;
-         // Now, a list of all topics available...
-         targ_file << "
-<center>
-<table width=80 border=3>
-<caption align=top><strong>Help Topics</strong></caption><h4>" << endl;
+	 //First, lets create the top portion of the HTML output file.
+	 targ_file << 
+	    "<html>\n"
+	    "<title>ScryMUD Help</title>\n"
+	    "<BODY TEXT=\"#3366AA\" BGCOLOR=\"#FFFFFF\" LINK=\"#AA7700\" VLINK=\"#AA7700\" ALINK=\"#FF0000\">\n"
+	    "<P>\n"
+	    "<h2><center> Help on commands for ScryMUD </center><P>\n"
+	    << endl;
+	 // Now, a list of all topics available...
+	 targ_file << 
+	    "<center>\n"
+	    "<table width=80 border=3>\n"
+	    "<caption align=top><strong>Help Topics</strong></caption><h4>" << endl;
 
          for (int i = 2; i<argc; i++) {
             //grab each name

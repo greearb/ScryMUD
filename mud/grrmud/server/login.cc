@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.25 2003/05/05 19:54:19 eroper Exp $
-// $Revision: 1.25 $  $Author: eroper $ $Date: 2003/05/05 19:54:19 $
+// $Id: login.cc,v 1.26 2004/07/05 23:06:35 eroper Exp $
+// $Revision: 1.26 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
 
 //
 //ScryMUD Server Code
@@ -863,14 +863,14 @@ int  quit_do_login_new(critter& pc) {
       pc.show(CTAG_ENGAGE_CLIENT(HEGEMON));
    }
    else {
-      pc.show("You're prompt is on by default, but as Hegemon displays
-bar graphs anyway, you may wish to change your prompt.  I suggest the
-command:  prompt %N\n");
+      pc.show("You're prompt is on by default, but as Hegemon displays\n"
+            "bar graphs anyway, you may wish to change your prompt.  I suggest the\n"
+            "command:  prompt %N\n");
    }
    show("Welcome to the Game.\n\n", pc);
    look(1, &NULL_STRING, pc); //autolook
    show("\r\nIf your screen is 'stair-stepped', type:  toggle carriage\n",
-        pc);
+         pc);
 
    // set the base stats info
    pc.BASE_STR = pc.STR;

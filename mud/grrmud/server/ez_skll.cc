@@ -1,5 +1,5 @@
-// $Id: ez_skll.cc,v 1.13 2002/01/15 06:27:18 eroper Exp $
-// $Revision: 1.13 $  $Author: eroper $ $Date: 2002/01/15 06:27:18 $
+// $Id: ez_skll.cc,v 1.14 2004/07/05 23:06:35 eroper Exp $
+// $Revision: 1.14 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
 
 //
 //ScryMUD Server Code
@@ -404,10 +404,10 @@ int do_earthmeld(critter& pc) {
          return 0;
       }//if
       else {
-         pc.show("You entwine yourself in the powers of nature, binding
- yourself to the earth's embrace.\n");
+         pc.show("You entwine yourself in the powers of nature, binding\n"
+               "yourself to the earth's embrace.\n");
       }//else
-      
+
       /* it lasts untill mana runs out, or the player moves */
       pc.affected_by.pushFront(new stat_spell_cell(spell_num, -1));
       return 0;
