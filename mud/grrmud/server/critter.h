@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.57 2002/01/08 04:57:21 eroper Exp $
-// $Revision: 1.57 $  $Author: eroper $ $Date: 2002/01/08 04:57:21 $
+// $Id: critter.h,v 1.58 2002/01/26 20:40:59 eroper Exp $
+// $Revision: 1.58 $  $Author: eroper $ $Date: 2002/01/26 20:40:59 $
 
 //
 //ScryMUD Server Code
@@ -946,6 +946,8 @@ public:
    int isInvis() const;
    int isHungry() { return (HUNGER == 0); }
    int isThirsty() { return (THIRST == 0); }
+   int isGettingHungry() { return (HUNGER <= 10 && HUNGER >= 0); }
+   int isGettingThirsty() { return (THIRST <= 10 && THIRST >= 0); }
    int isDrugged() { return (DRUGGED > 0); }
    int isRolePlaying() { return pc && PC_FLAGS.get(32); }
    int isAFK() { return pc && PC_FLAGS.get(33); }

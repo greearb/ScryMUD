@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.68 2002/01/05 03:21:43 eroper Exp $
-// $Revision: 1.68 $  $Author: eroper $ $Date: 2002/01/05 03:21:43 $
+// $Id: critter.cc,v 1.69 2002/01/26 20:40:59 eroper Exp $
+// $Revision: 1.69 $  $Author: eroper $ $Date: 2002/01/26 20:40:59 $
 
 //
 //ScryMUD Server Code
@@ -4064,9 +4064,9 @@ void critter::doPrompt() {
                targ.Append(conv_buf);
                break;
              case '1':     /* medical conditions */
-               if ( isHungry() ) {
+               if ( isGettingHungry() ) {
                   targ.Append("(hun)");
-               } if ( isThirsty() ) {
+               } if ( isGettingThirsty() ) {
                   targ.Append("(thi)");
                } if ( isDrugged() ) {
                   targ.Append("(dru)");
