@@ -1,5 +1,5 @@
-// $Id: ez_spll.h,v 1.2 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: ez_spll.h,v 1.3 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -64,6 +64,10 @@ void do_cast_enchant_armor(object& targ, critter& pc, int is_canned, int lvl);
 void cast_detect_magic(int i_th, const String* dr, critter& agg);
 void do_cast_detect_magic(critter& targ, critter& pc, int is_canned,
  			  int lvl);
+
+void cast_infravision(int i_th, const String* targ, critter& pc);
+void do_cast_infravision(critter& targ, critter& pc, int is_canned,
+                         int lvl);
 
 void cast_detect_hidden(int i_th, const String* dr, critter& agg);
 void do_cast_detect_hidden(critter& targ, critter& pc, int is_canned,

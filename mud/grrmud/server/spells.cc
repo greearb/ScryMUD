@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.10 1999/06/16 06:43:27 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+// $Id: spells.cc,v 1.11 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -90,9 +90,14 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
      }//if
    }//if
    else if (spell_num == DETECT_HIDDEN_SKILL_NUM) {
-     pc.VIS_BIT &= ~(4);
+     pc.SEE_BIT &= ~(4);
      if (do_msg)
        show("You no longer detect hidden things.\n", pc);
+   }//if
+   else if (spell_num == INFRAVISION_SKILL_NUM) {
+     pc.SEE_BIT &= ~(1);
+     if (do_msg)
+       show("You can no longer see in the dark.\n", pc);
    }//if
    else if (spell_num == DETECT_INVISIBILITY_SKILL_NUM) {
      pc.SEE_BIT &= ~(2);

@@ -1,9 +1,18 @@
 <help general list>
 
 This command lists all that is for sale by a certain shopkeeper.
+The numbers in brackets to the left can be used in place of names
+when buying stuff.  For example, if you saw this:
+
+<<33H 109M 107V >  list
+These items are for sale:
+  [1]        a scroll of armor                    8300
+  [2]        a scroll of teleportation            8430
+
+You could buy 2, or you could buy 2.scroll, both will be the
+scroll of teleportation.
 
 Syntax:  list <<<<i_th> [shopkeeper]>
 
-<color=red>
-See Also:  offer, buy, sell
+<color=red>See Also:  offer, buy, sell
 </color></help>

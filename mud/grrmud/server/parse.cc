@@ -1,5 +1,5 @@
-// $Id: parse.cc,v 1.17 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: parse.cc,v 1.18 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -551,7 +551,7 @@ int critter::processInput(String& input, short do_sub, int script_driven,
    while (!eos) { //if more than one command to get...
       raw_strings[count] = input.Get_Command(eos, term_by_period);
       if (term_by_period && (strcasecmp(raw_strings[count], "all") == 0)) {
-         raw_strings[count] == "-1";
+         raw_strings[count] = "-1";
       }//if
       count++;
       

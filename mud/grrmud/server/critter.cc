@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.26 1999/06/16 06:43:27 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+// $Id: critter.cc,v 1.27 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -3805,7 +3805,7 @@ int critter::getFieldValue(const char* field) const {
 }
 
 /** Only valid for shop owners. */
-int critter::isOpen(int cmt) const {
+int critter::isOpen(int cmt, int do_msg, critter& pc) const {
    if (mob && mob->proc_data && mob->proc_data->sh_data) {
 
       // 9 AM to 4 PM  (9 - 16)
@@ -3819,6 +3819,25 @@ int critter::isOpen(int cmt) const {
          return TRUE;
       }
    }//if
+
+   if (do_msg) {
+      String buf(100);
+      if ((cmt < OPEN_TIME) || (cmt > CLOSE_TIME)) {
+         Sprintf(buf, "Hours are from %s to %s.\n", 
+                 military_to_am(OPEN_TIME),
+                 military_to_am(CLOSE_TIME));
+         pc.show(buf);
+      }//if
+      else {
+         if ((cmt > CLOSE_TIME) && (cmt < OPEN_TIME)) {
+            Sprintf(buf, "Hours are from %s to %s.\n", 
+                    military_to_am(OPEN_TIME),
+                    military_to_am(CLOSE_TIME));
+            pc.show(buf);
+         }//if
+      }//else
+   }
+
    return FALSE;
 }//isOpen
 

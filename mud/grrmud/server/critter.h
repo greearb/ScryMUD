@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.20 1999/06/16 06:43:27 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+// $Id: critter.h,v 1.21 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -974,7 +974,7 @@ public:
    int isCharmed() { return master != NULL; }
    int isWanderer() { return mob && MOB_FLAGS.get(2); }
    int isBanker() { return mob && MOB_FLAGS.get(6); }
-   int isOpen(int cur_military_time) const;
+   int isOpen(int cur_military_time, int do_msg, critter& pc) const;
 
    int isTeacher();
    int isShopKeeper();

@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.21 1999/06/15 03:32:34 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/15 03:32:34 $
+// $Id: misc2.cc,v 1.22 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -200,6 +200,10 @@ void show_stat_affects(object& obj, critter& pc) {
    Cell<stat_spell_cell*> cll(obj.stat_affects);
    stat_spell_cell* ptr;
    String buf(100);
+
+   if (obj.stat_affects.isEmpty()) {
+      pc.show("NONE\n");
+   }
    
    while ((ptr = cll.next())) {
       if (ptr->stat_spell == 1) {
@@ -906,6 +910,59 @@ say_proc_cell* have_topic_named(List<say_proc_cell*> lst, const String& msg) {
   return NULL;
 }//have_topic_named
 
+
+void strip_hegemon_tags(String& str) {
+   // If we find a tag, delete it.  Maybe do more interesting things
+   // later.
+   int len = str.Strlen();
+   String retval(len);
+   char ch;
+   int in_tag = false;
+   int prev_was_lt = false;
+
+   for (int i = 0; i<len; i++) {
+      ch = str[i];
+      if (ch == '<') {
+         if (in_tag) {
+            continue;
+         }
+         else {
+            if (prev_was_lt) {
+               prev_was_lt = FALSE;
+               retval += ch;
+            }
+            else {
+               prev_was_lt = TRUE;
+            }
+         }//else
+      }//if
+      else {
+         if (prev_was_lt) {
+            in_tag = TRUE;
+         }
+
+         if (ch == '>') {
+            prev_was_lt = FALSE;
+            if (in_tag) {
+               in_tag = FALSE;
+            }
+            else {
+               retval += ch;
+            }
+         }
+         else {
+            prev_was_lt = FALSE;
+            if (in_tag) {
+               continue;
+            }
+            else {
+               retval += ch;
+            }
+         }//else
+      }//else
+   }//for
+   str = retval;
+}//strip_hegemon_tags
 
 
 void parse_communication(String& str) {

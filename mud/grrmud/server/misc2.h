@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.12 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: misc2.h,v 1.13 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -83,6 +83,7 @@ const char* abbrev_dir_of_door(const door& dr);
 
 void parse_communication(String& str);
 void parse_for_max_80(String& str);
+void strip_hegemon_tags(String& str);
 
 String* dir_of_room(room& rm, int dest_room);
 int get_next_msg_num(object& board);

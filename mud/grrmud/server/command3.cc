@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.16 1999/06/16 06:43:26 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
+// $Id: command3.cc,v 1.17 1999/06/20 02:01:43 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/20 02:01:43 $
 
 //
 //ScryMUD Server Code
@@ -2276,7 +2276,7 @@ int who(critter& pc) {
          can_detect = FALSE;
       }
 
-      if (ptr->isCloaked() && !can_detect) {
+      if (ptr->isCloaked() && !can_detect && (ptr != &pc)) {
          class_str = "Cloaked";
          lvl_str = "??";
       }

@@ -4,13 +4,24 @@ This is how you attempt to buy things from a shopkeeper.  There must be
 a shopkeeper present in your room in order for this to work.  You can
 also buy things from a vending machine like this.
 
+The numbers in brackets to the left (when seen in list)can be used
+in place of names when buying stuff.  For example, if you saw this:
+
+<<33H 109M 107V >  list
+These items are for sale:
+  [1]        a scroll of armor                    8300
+  [2]        a scroll of teleportation            8430
+
+You could buy 2, or you could buy 2.scroll, both will be the
+scroll of teleportation.
+
 Syntax:  buy <<i_th> [item] <<<<j_th> [shopkeeper/machine]>
 
 Example:  buy waybread
 	  buy waybread baker
 	  buy 3.sword 2.blacksmith
 	  buy ticket machine
-<color=red>
-See Also:  list, offer, sell
+
+<color=red>See Also:  list, offer, sell
 </color></help>
 

@@ -1,5 +1,5 @@
-// $Id: social2.cc,v 1.4 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: social2.cc,v 1.5 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -1539,7 +1539,7 @@ void scold(int i_th, const String* vict, critter& pc, room& rm) {
          show("You twitch in your sleep.\n", pc);
       else if (crit_ptr == &pc) {
          show("You scold yourself.\n", pc);
-         Sprintf(buf, "scolds %sf.\n", get_hisself_herself(pc));
+         Sprintf(buf, "scolds %s.\n", get_hisself_herself(pc));
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {

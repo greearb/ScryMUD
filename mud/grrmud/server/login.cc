@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.11 1999/06/18 06:52:38 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
+// $Id: login.cc,v 1.12 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -243,11 +243,22 @@ void critter::doLogin() {
                   default:
                      return;
                   }//switch
-                  help(1, &string, *this);
+                  help(1, &string, &NULL_STRING, *this);
                }//else
             }//if
             else {
-               help(1, &string, *this);
+               int slen = string.Strlen();
+               if ((strncasecmp(string, "human", slen) == 0) ||
+                   (strncasecmp(string, "anitre", slen) == 0) ||
+                   (strncasecmp(string, "darkling", slen) == 0) ||
+                   (strncasecmp(string, "dwarf", slen) == 0) ||
+                   (strncasecmp(string, "ogrue", slen) == 0) ||
+                   (strncasecmp(string, "elf", slen) == 0)) {
+                  help(1, &string, &NULL_STRING, *this);
+               }
+               else {
+                  show("Please enter the a correct number.\n");
+               }
             }
             break;
             
@@ -290,7 +301,7 @@ void critter::doLogin() {
 
             if (j == 0) {
                String classes("classes");
-               help(1, &classes, *this);
+               help(1, &classes, &NULL_STRING, *this);
             }
             else {
                if (check_l_range(j, 1, 8, *this, FALSE) && j != 6) {

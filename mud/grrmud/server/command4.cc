@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.19 1999/06/16 06:43:26 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
+// $Id: command4.cc,v 1.20 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -1475,6 +1475,11 @@ int olist(int start, int end, critter& pc) {
 int zlist(int start, int end, critter& pc) {
    if (!ok_to_do_action(NULL, "IF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
+   }
+
+   // Change default to zero.
+   if (start == 1) {
+      start = 0;
    }
 
    if (end == 1) {

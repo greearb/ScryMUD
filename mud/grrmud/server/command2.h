@@ -1,5 +1,5 @@
-// $Id: command2.h,v 1.4 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: command2.h,v 1.5 1999/06/20 02:01:43 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/20 02:01:43 $
 
 //
 //ScryMUD Server Code
@@ -53,7 +53,7 @@ int drink(int i_th, const String* name, critter& pc);
 int fill(int i_th, const String* targ, int j_th, const String* source, 
           critter& pc);
 int empty(int i_th, const String* name, critter& pc);
-int help(int i_th, String* command, critter& pc);
+int help(int i_th, String* command, String* mort, critter& pc);
 int buy(int i_th, const String* item, int j_th, const String* keeper,
          critter& pc);
 int offer(int i_th, const String* item, int j_th, const String* keeper,

@@ -1,5 +1,5 @@
-// $Id: ez_spll.cc,v 1.8 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: ez_spll.cc,v 1.9 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -274,14 +274,114 @@ void do_cast_detect_invisibility(critter& vict, critter& agg, int is_canned,
 }//do_cast_detect_invisibility
 
 
+void cast_infravision(int i_th, const String* victim, critter& pc) {
+   critter* vict = NULL;
+   int spell_num = INFRAVISION_SKILL_NUM;
+
+   if (victim->Strlen()) {
+      if (!(vict = ROOM.haveCritNamed(i_th, victim, pc))) {
+         show("You don't see that person.\n", pc);
+         return;
+      }//if
+   }
+   else {
+      vict = &pc;
+   }
+
+   if (vict->isMob()) {
+     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+			victim, pc.SEE_BIT);
+   }//if
+
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
+     return;
+   }//if
+
+   do_cast_infravision(*vict, pc, FALSE, 0);  //does no error checking
+
+}//cast_infravision
+
+
+void do_cast_infravision(critter& vict, critter& agg, int is_canned, 
+                         int lvl) {
+   stat_spell_cell* sp = NULL;
+   String buf(100);
+   short do_effects = FALSE;
+   int spell_num = INFRAVISION_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num);
+ 
+
+   if (!is_canned)
+      lvl = agg.LEVEL;
+
+   short lost_con = TRUE;
+
+   if (is_canned || (!(lost_con = lost_concentration(agg, spell_num)))) {
+     do_effects = TRUE;
+
+     if (!is_canned)
+       agg.MANA -= spell_mana;
+
+     if ((sp = is_affected_by(spell_num, vict))) {
+        agg.show(CS_OK);
+     }//if
+     else {
+       if (&vict == &agg) {
+	 show("You can now see in the dark.\n",
+	      vict);
+	 emote("can now see in the dark.", agg,
+	       room_list[agg.getCurRoomNum()], TRUE); 
+       }//if
+       else {
+	 Sprintf(buf, "You allow %S to see in the dark.\n", 
+		 name_of_crit(vict, agg.SEE_BIT));
+	 show(buf, agg);
+	 Sprintf(buf, "%S allows you to see in the dark.\n", 
+		 name_of_crit(agg, vict.SEE_BIT));
+	 buf.Cap();
+	 show(buf, vict);
+	 Sprintf(buf, "allows %S to see in the dark.", 
+		 name_of_crit(vict, ~0));
+	 emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE, &vict);
+       }//else
+     }//else, not already affected
+   }//if did_hit
+   else if (lost_con) {//lost concentration 
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
+
+      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
+            *(agg.getCurRoom()), FALSE);
+
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
+   }//else
+   
+   agg.PAUSE++;
+
+   if (do_effects) {
+     if (sp)
+       sp->bonus_duration += lvl/2;
+     else
+       Put(new stat_spell_cell(spell_num, lvl/2),
+	   vict.affected_by);
+     vict.SEE_BIT |= 1;  //can now see in the dark
+   }//if
+}//do_cast_infravision
+
+
 void cast_detect_hidden(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = DETECT_HIDDEN_SKILL_NUM;
 
-   if (!(vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT))) {
-      show("You don't see that person.\n", pc);
-      return;
-   }//if
+   if (victim->Strlen()) {
+      if (!(vict = ROOM.haveCritNamed(i_th, victim, pc))) {
+         show("You don't see that person.\n", pc);
+         return;
+      }//if
+   }
+   else {
+      vict = &pc;
+   }
 
    if (vict->isMob()) {
        vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
@@ -677,10 +777,15 @@ void cast_detect_magic(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = DETECT_MAGIC_SKILL_NUM;
 
-   if (!(vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT))) {
-      show("You don't see that person.\n", pc);
-      return;
-   }//if
+   if (victim->Strlen()) {
+      if (!(vict = ROOM.haveCritNamed(i_th, victim, pc))) {
+         show("You don't see that person.\n", pc);
+         return;
+      }//if
+   }
+   else {
+      vict = &pc;
+   }
 
    if (!vict->pc) {
       show("Ok.\n", pc); //mobs don't need det_magic

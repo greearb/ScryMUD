@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.13 1999/06/16 06:43:27 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+// $Id: const.h,v 1.14 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -224,6 +224,7 @@ int
    IDENTIFY_SKILL_NUM,
    ILLUMINATE_SKILL_NUM,
    ILLUSION_SKILL_NUM,
+   INFRAVISION_SKILL_NUM,
    INVISIBILITY_SKILL_NUM,
    KICK_SKILL_NUM,
    LEADERSHIP_SKILL_NUM,

@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.21 1999/06/16 06:43:26 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
+// $Id: commands.cc,v 1.22 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -960,6 +960,8 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
       cast_illuminate(pc);
    else if (strncasecmp(*spell, "illusion", len) == 0) 
       cast_illusion(pc);
+   else if (strncasecmp(*spell, "infravision", len) == 0) 
+      cast_infravision(j_th, victim, pc);
    else if (strncasecmp(*spell, "invisibility", len) == 0) 
       cast_invisibility(j_th, victim, pc);
    else if (strncasecmp(*spell, "locate", len) == 0) 
@@ -1258,8 +1260,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
    }
 
 
-   if ((strncasecmp(*item, "all", item->Strlen()) == 0) && 
-                   (!bag->Strlen())) {
+   if ((strcasecmp(*item, "all") == 0) && (!bag->Strlen())) {
               //corresponds to "get all"
       mudlog.log(DBG, "get called like: get all\n");
       ROOM.getInv()->head(cell);
@@ -1338,15 +1339,21 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
       bag_ptr->inv.head(cell);
       vict_ptr = cell.next();
       while (vict_ptr) {
-         if (obj_get_by(*vict_ptr, pc, TRUE)) {
-            found_it = TRUE;
-            pc.gainInv(vict_ptr);
-            gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE); 
-                           //gold ect
-            vict_ptr = bag_ptr->inv.lose(cell);
-         }//if obj_get_by
-         else
+         if (vict_ptr->isNamed(*item)) {
+            if (obj_get_by(*vict_ptr, pc, TRUE)) {
+               found_it = TRUE;
+               pc.gainInv(vict_ptr);
+               gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE); 
+               //gold ect
+               vict_ptr = bag_ptr->inv.lose(cell);
+            }//if obj_get_by
+            else {
+               vict_ptr = cell.next();
+            }
+         }//if
+         else {
             vict_ptr = cell.next();
+         }
       }//while obj_ptr
       if (!found_it && do_msg) {
          Sprintf(buf, cstr(CS_NO_CONTAIN_OBJ, pc), bag, item);

@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.19 1999/06/06 18:15:42 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/06 18:15:42 $
+// $Id: grrmud.cc,v 1.20 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -266,6 +266,7 @@ int
    IDENTIFY_SKILL_NUM,
    ILLUMINATE_SKILL_NUM,
    ILLUSION_SKILL_NUM,
+   INFRAVISION_SKILL_NUM,
    INVISIBILITY_SKILL_NUM,
    KICK_SKILL_NUM,
    LEADERSHIP_SKILL_NUM,

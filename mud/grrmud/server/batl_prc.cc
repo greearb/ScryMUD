@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.5 1999/06/06 18:15:42 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/06 18:15:42 $
+// $Id: batl_prc.cc,v 1.6 1999/06/20 02:01:43 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/20 02:01:43 $
 
 //
 //ScryMUD Server Code
@@ -118,6 +118,9 @@ void do_battle_proc(critter& pc) {
 
   // Animals won't do spec procs now. (a kicking snake looks funny!)
   if (pc.isAnimal())
+     return;
+
+  if (pc.isStunned())
      return;
 
   String buf(100);

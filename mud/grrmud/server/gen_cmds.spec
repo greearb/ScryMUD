@@ -343,10 +343,10 @@ faerie *faerie ~
 NOP
 
 #case G
-gag ~
-return gag(i, &(cooked_strs[1]), pc);
 get take get ~
 return get(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
+gag ~
+return gag(i, &(cooked_strs[1]), pc);
 giggle socials ~
 giggle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 give ~
@@ -382,10 +382,10 @@ return hide(pc);
 hit kill attack murder hit ~
 return hit(i, &(cooked_strs[1]), pc);
 help man help ~
-return help(i, &(cooked_strs[1]), pc);
+return help(i, &(cooked_strs[1]), &(cooked_strs[2]), pc);
 hehe socials ~
 hehe(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
-hold ~
+hold grab hold ~
 return hold(i, &(cooked_strs[1]), pc);
 hop socials ~
 hop(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;

@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.18 1999/06/18 06:52:38 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
+// $Id: spec_prc.cc,v 1.19 1999/06/20 02:01:44 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
 
 //
 //ScryMUD Server Code
@@ -1110,30 +1110,12 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
       return -1;
    }//if
 
-   int cur_time;
-
    // Only support one buy proc at this time, and probably forever!
    if (prc_num == 0) { //buy proc_0
       //log("Doing buy proc_0.\n");
-      if (!keeper.isOpen(get_game_time())) {
-         if ((cur_time < keeper.OPEN_TIME) || (cur_time > keeper.CLOSE_TIME)) {
-            Sprintf(buf, "Hours are from %s to %s.\n", 
-                    military_to_am(keeper.OPEN_TIME),
-                    military_to_am(keeper.CLOSE_TIME));
-            show(buf, pc);
-            return -1;
-         }//if
-      }//if
-      else {
-         if ((cur_time > keeper.CLOSE_TIME) &&
-             (cur_time < keeper.OPEN_TIME)) {
-            Sprintf(buf, "Hours are from %s to %s.\n", 
-                    military_to_am(keeper.OPEN_TIME),
-                    military_to_am(keeper.CLOSE_TIME));
-            show(buf, pc);
-            return -1;
-         }//if
-      }//else
+      if (!keeper.isOpen(get_game_time(), TRUE, pc)) {
+         return -1;
+      }
 
       //log("Looking for obj ptr...k\n");
       object* tmp_optr = NULL;
@@ -1376,11 +1358,7 @@ int do_offer_proc(int prc_num, critter& keeper, int i_th,
 
    if (prc_num == 2) { //offer proc_0
       //log("Doing offer proc_2.\n");
-      if (!keeper.isOpen(get_game_time())) {
-         Sprintf(buf, "Hours are from %s to %s.\n", 
-                 military_to_am(keeper.OPEN_TIME),
-                 military_to_am(keeper.CLOSE_TIME));
-         show(buf, pc);
+      if (!keeper.isOpen(get_game_time(), TRUE, pc)) {
          return -1;
       }//if
 
@@ -1410,13 +1388,6 @@ int do_offer_proc(int prc_num, critter& keeper, int i_th,
 
          if (price < 0) {
             do_tell(keeper, "I don't buy that type of stuff.", pc,
-                    FALSE, pc.getCurRoomNum());
-            return -1;
-         }//if
-
-         //log("Found price.\n");
-         if (price > keeper.GOLD) {
-            do_tell(keeper, "I'm fresh out of money, perhaps later.", pc,
                     FALSE, pc.getCurRoomNum());
             return -1;
          }//if
@@ -1475,13 +1446,9 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
 
    if (prc_num == 1) { //sell proc_1
       //log("Doing sell proc_1.\n");
-      if (!keeper.isOpen(get_game_time())) {
-         Sprintf(buf, "Hours are from %s to %s.\n", 
-                 military_to_am(keeper.OPEN_TIME),
-                 military_to_am(keeper.CLOSE_TIME));
-         show(buf, pc);
+      if (!keeper.isOpen(get_game_time(), TRUE, pc)) {
          return -1;
-      }//if
+      }
 
       //log("Looking for obj ptr...\n");
       obj_ptr = have_obj_named(pc.inv, i_th, item, pc.SEE_BIT,

@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.24 1999/06/18 06:52:38 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
+// $Id: command2.cc,v 1.25 1999/06/20 02:01:43 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/06/20 02:01:43 $
 
 //
 //ScryMUD Server Code
@@ -1285,7 +1285,7 @@ int empty(int i_th, const String* canteen, critter& pc) {
 }//empty()
 
 
-int help(int i_th, String* command, critter& pc) {
+int help(int i_th, String* command, String* mort, critter& pc) {
    String buf(100);
    String cmd(50);
    String page;
@@ -1298,7 +1298,7 @@ int help(int i_th, String* command, critter& pc) {
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "help:  parsed_cmd -:" << parsed_cmd << ":-  cmd -:"
-             << *command << ":-\n";
+             << *command << ":- mort: " << *mort << "\n";
    }
 
    if (parsed_cmd.Strlen() == 0) {
@@ -1308,7 +1308,7 @@ int help(int i_th, String* command, critter& pc) {
       }
    }
 
-   if (pc.pc->imm_data) {
+   if (pc.pc->imm_data && (strcasecmp(*mort, "mortal") != 0)) {
       if (parsed_cmd.Strlen()) 
          Sprintf(cmd, "./Help/IMM_%S_%i", &parsed_cmd, i_th);
       else
@@ -1317,8 +1317,15 @@ int help(int i_th, String* command, critter& pc) {
       page = get_page(cmd);
 
       if (page.Strlen() > 0) {
-         show(page, pc);
-         return 0;
+         if (!pc.isUsingClient()) {
+            strip_hegemon_tags(page);
+            pc.show(page);
+            return 0;
+         }
+         else {
+            show(page, pc);
+            return 0;
+         }
       }//if
    }//if, first check IMM helps for immortal types
 
@@ -1335,7 +1342,13 @@ int help(int i_th, String* command, critter& pc) {
    if (page.Strlen() > 0) {
       Sprintf(buf, cstr(CS_HELP_FOR_CMD, pc), &parsed_cmd);
       pc.show(buf);
-      pc.show(page);
+      if (!pc.isUsingClient()) {
+         strip_hegemon_tags(page);
+         pc.show(page);
+      }
+      else {
+         pc.show(page);
+      }
       return 0;
    }//if
    else {
@@ -2316,10 +2329,12 @@ int lore(int i_th, const String* name, critter& pc, int show_extra = FALSE) {
 int do_lore(object& obj, critter& pc, int show_extra) {
    String buf(100);
 
-   show((obj.short_desc), pc);
-   show("\n", pc);
-   show((obj.long_desc), pc);
-   show("\n", pc);
+   buf = obj.short_desc;
+   buf.Cap();
+   pc.show(buf);
+   pc.show("\n");
+   pc.show(obj.long_desc);
+   pc.show("\n");
   
    buf = NULL_STRING;
 
@@ -2414,11 +2429,21 @@ int do_lore(object& obj, critter& pc, int show_extra) {
 
    // Take care of stat affects.
    if (show_extra) {
-      show("It is affected by:\n", pc);
-      out_spell_list(obj.affected_by, pc);      
+      if (!obj.affected_by.isEmpty()) {
+         show("It is affected by:\n", pc);
+         out_spell_list(obj.affected_by, pc);      
+      }
 
-      show("Its stat affects are:\n", pc);
-      show_stat_affects(obj, pc);
+      if (!obj.stat_affects.isEmpty()) {
+         show("Its stat affects are:\n", pc);
+         show_stat_affects(obj, pc);
+      }
+
+      if (!obj.CASTS_THESE_SPELLS.isEmpty()) {
+         pc.show("Casts these spells:\n");
+         out_spell_list(obj.CASTS_THESE_SPELLS, pc);
+         pc.show("\n");
+      }//if
    }//if
 
    return 0;

@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.10 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: SkillSpell.cc,v 1.11 1999/06/20 02:01:43 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/20 02:01:43 $
 
 //
 //ScryMUD Server Code
@@ -733,6 +733,8 @@ void SSCollection::read() {
             ILLUSION_SKILL_NUM = i;
          else if (strcasecmp("invisibility", getSS(i).getName()) == 0)
             INVISIBILITY_SKILL_NUM = i;
+         else if (strcasecmp("infravision", getSS(i).getName()) == 0)
+            INFRAVISION_SKILL_NUM = i;
          else if (strcasecmp("kick", getSS(i).getName()) == 0)
             KICK_SKILL_NUM = i;
          else if (strcasecmp("leadership", getSS(i).getName()) == 0)

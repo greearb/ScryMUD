@@ -25,13 +25,11 @@ Sample commands:
 To see a list of all mortal commands, try: help topics,
 For immortals, try: help wizhelp
 
-<color=red>
-See Also:  commands, socials
-</color>
-To get help on a topic enter:  help <<term_you_want_help_with>
+<color=red>See Also:  commands, socials</color>
+
+To get help on a topic enter:  help <<term_you_want_help_with> <<'mortal'>
 
 NOTE:  For a friendlier environment check out Hegemon, our Java Client!
 
 http://scry.WANfear.com
-
 </help>
