@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.62 2001/06/10 20:20:56 greear Exp $
-// $Revision: 1.62 $  $Author: greear $ $Date: 2001/06/10 20:20:56 $
+// $Id: critter.cc,v 1.63 2001/06/11 02:19:15 justin Exp $
+// $Revision: 1.63 $  $Author: justin $ $Date: 2001/06/11 02:19:15 $
 
 //
 //ScryMUD Server Code
@@ -2259,8 +2259,15 @@ void critter::checkForBattle(room& rm) {
       }
       if (rm.haveCritter(ptr)) {
          if (ptr->doesRemember(*this) && ptr->canDetect(*this)) {
-            say("There you are!!", *ptr, *(ptr->getCurRoom()));
-            try_hit(*this, *ptr);
+            if (ptr->HP >= (ptr->WIMPY*2 < ptr->HP_MAX*.75?ptr->WIMPY*2:ptr->HP_MAX*.75)) {
+               say("There you are!!", *ptr, *(ptr->getCurRoom()));
+               try_hit(*this, *ptr);
+            }
+            else {
+               int i = FALSE;
+               say("No, stay away!!", *ptr, *(ptr->getCurRoom()));
+               flee_to_safety(*ptr, i);
+            }
          }//if
       }//if
 
@@ -2269,8 +2276,15 @@ void critter::checkForBattle(room& rm) {
       }
       if (rm.haveCritter(ptr)) { //make sure we're still there
          if (doesRemember(*ptr) && canDetect(*ptr)) {
-            say("I've found you now!!", *this, *(getCurRoom()));
-            try_hit(*ptr, *this);
+            if (HP >= (WIMPY*2 < HP_MAX*.75?WIMPY*2:HP_MAX*.75)) {
+               say("I've found you now!!", *this, *(getCurRoom()));
+               try_hit(*ptr, *this);
+            }
+            else {
+               int i = FALSE;
+               say("No, stay away!!", *this, *(getCurRoom()));
+               flee_to_safety(*this, i);
+            }
          }//if
       }//if
    }//while
@@ -4705,6 +4719,11 @@ void critter::doHuntProc(int num_steps, int& is_dead) {
       mudlog.log(ERROR, "ERROR:  bad pc sent to do_hunt_proc.\n");
       return;
    }//if
+
+   // Let critters rest a bit before they hunt
+   if (HP <= ((WIMPY * 2 < HP_MAX * .75) ? (WIMPY*2) : (HP_MAX*.75))) {
+      return;
+   }
 
    // If yer sessile, then you can't hunt!
    if (isSessile()) {
