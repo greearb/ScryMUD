@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.23 1999/08/20 06:20:04 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
+// $Id: classes.h,v 1.24 1999/08/22 07:16:19 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/22 07:16:19 $
 
 //
 //ScryMUD Server Code
@@ -143,8 +143,8 @@ public:
    LStringCollection() : PtrList<LString>() { }
    virtual ~LStringCollection();
 
-   LString& getString(LanguageE for_lang);
-   LString& getString(critter* viewer); //just call the one above.
+   LString* getString(LanguageE for_lang);
+   LString* getString(critter* viewer); //just call the one above.
 
    /** This will add the new string to the collection.  If a string with the
     * same language is already in it, then the old one will be deleted and
@@ -152,7 +152,7 @@ public:
     * when new_string is passed in, so passing a reference to a stack variable,
     * for example, is a real bad idea.
     */
-   void addLstring(LString* new_string);
+   void addLstring(LString& new_string);
 
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
@@ -163,9 +163,13 @@ public:
    virtual void toStringStat(const char* pre, const char* post, 
                              critter* viewer, String& rslt);
 
+   virtual void appendString(LanguageE lang, String& buf);
+   virtual void appendString(LString& ls);
+
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_LS_COLLECTION; }
-};
+};//LStringCollection
+
 
 /** This will be a list of single words, like names (keywords) for an
  * object.  The LStringCollection above is more general in that it
@@ -185,6 +189,9 @@ public:
     */
    void addLstring(LString* new_string);
 
+   /** Clear all keywords of this language type. */
+   void clearLanguage(LanguageE lang);
+
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
 
@@ -195,7 +202,7 @@ public:
 
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_KW_COLLECTION; }
-};
+}; //LKeywordCollection
 
 
 /** Keeps a list of what contains it so it can clean up easily upon
@@ -256,6 +263,8 @@ public:
    virtual LStringCollection* getNamesCollection(LanguageE forLang);
    LKeywordCollection& getNames() { return names; }
 
+   virtual LStringCollection* getLongDescColl() { return &long_desc; }
+
    virtual String* getName(int c_bit = ~0);
    virtual String* getFirstName(int c_bit = ~0);
    virtual String* getLastName(int c_bit = ~0);
@@ -275,12 +284,19 @@ public:
    /** Makes copy of incoming data. */
    virtual void addName(String& nm);
    virtual void addName(LString& nm);
+   virtual void addName(CSentryE nms);
+   virtual void addName(LanguageE lang, String& nm);
 
    /** Makes copy of incoming data. */
    virtual void addLongDesc(LString& new_val);
    virtual void addLongDesc(String& new_val);
 
    virtual void appendLongDesc(LanguageE lang, String& buf);
+   virtual void appendLongDesc(LString& buf);
+   virtual void appendLongDesc(CSentryE msg);
+
+   /** Return TRUE if it could be removed.  Exact match is needed. */
+   virtual int removeName(LanguageE lang, String& name);
 
    /** Takes ownership of memory for new_affect.  This *MUST* prepend,
     * or olc.cc will be broken.
@@ -304,6 +320,8 @@ public:
    virtual int getIdNum() const { return id_num; }
    /** Zone it 'belongs' to. */
    virtual int getZoneNum() const { return zone_num; }
+   virtual int belongsToZone(int znum) const { return znum == zone_num; }
+
    virtual void setZoneNum(int z) { zone_num = z; }
    virtual void setIdNum(int i) { id_num = i; }
    virtual void setVisBit(int i) { vis_bit = i; }
@@ -339,7 +357,11 @@ public:
    virtual ~Closable() { }
    virtual void clear() { flags.clear(); key = 0; }
 
-   virtual void flipFlag(int flg);
+   /** Returns TRUE if we could flip it, false otherwise.  We will not let
+    * you flip some flags here, though they can be explicitly set through
+    * other methods.
+    */
+   virtual int flipFlag(int flg);
    virtual bitfield& getFlags() { return flags; }
 
    int isOpen() const { return !(flags.get(2)); }
@@ -360,6 +382,7 @@ public:
    int isSecretWhenOpen()  const { return flags.get(16); }
    int consumesKey() const { return flags.get(17); }
    int isNoPassdoor() const { return flags.get(18); }
+   int isFlippable() const { return flags.get(9); }
 
    void close() { flags.turn_on(2); }
    void open() { flags.turn_off(2); }
@@ -385,9 +408,9 @@ public:
    void setFlippable(int val) { flags.set(9, val); }
 
    int getKey() const { return key; }
-   void setKey(int k) { key = k; }
+   int setKey(int k) { key = k; return TRUE; }
    int getToken() const { return token; }
-   void setToken(int k) { token = k; }
+   int setToken(int k) { token = k; return TRUE; }
 
    virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
    virtual int write(ostream& dafile);

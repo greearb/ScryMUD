@@ -1,5 +1,5 @@
-// $Id: vehicle.h,v 1.4 1999/07/28 05:57:05 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
+// $Id: vehicle.h,v 1.5 1999/08/22 07:16:20 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
 
 //
 //ScryMUD Server Code
@@ -36,8 +36,8 @@
 
 class PathCell {
 private:
-   String desc;
-   String dir_to_next;
+   LStringCollection desc;
+   LString dir_to_next;
    int i_th_dir;
    int is_destination;
    static int _cnt;
@@ -51,9 +51,9 @@ public:
 
    static int getInstanceCount() { return _cnt; }
 
-   void setDesc(String& description) { desc = description; }
-   String& getDesc() { return desc; }
-   String* getDescPtr() { return &desc; }
+   void setDesc(LString& description) { desc.addLstring(description); }
+   String* getDesc(critter* viewer) { return desc.getString(viewer); }
+   LStringCollection* getDescColl() { return &desc; }
 
    void setDir(int i_th, const String& dir) { i_th_dir = i_th; dir_to_next = dir; }
    String& getDir() { return dir_to_next; }

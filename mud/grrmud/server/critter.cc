@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.48 1999/08/20 06:20:05 greear Exp $
-// $Revision: 1.48 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
+// $Id: critter.cc,v 1.49 1999/08/22 07:16:20 greear Exp $
+// $Revision: 1.49 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
 
 //
 //ScryMUD Server Code
@@ -2889,7 +2889,7 @@ String* critter::getName(critter* viewer) {
       return &SOMEONE;  //global string
    }
    if (isPc()) { //is a pc
-      String* tmp = names.getFirstKeyword(viewer->getLanguageChoice());
+      String* tmp = names.getFirstKeyword(viewer->getLanguage());
       if (tmp) {
          return tmp;
       }
@@ -2898,7 +2898,7 @@ String* critter::getName(critter* viewer) {
       }
    }//if
    else {
-      return &(short_desc.getString(viewer));
+      return short_desc.getString(viewer);
    }//else
 }//getName
 

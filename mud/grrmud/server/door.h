@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.18 1999/08/20 06:20:05 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
+// $Id: door.h,v 1.19 1999/08/22 07:16:20 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
 
 //
 //ScryMUD Server Code
@@ -102,6 +102,9 @@ public:
    virtual int nameIsSecret(const String* name);
    virtual const char* getAbrevDir();
 
+   virtual door_data* getDrData() { return dr_data; }
+   void setDrData(door_data* dr) { dr_data = dr; }
+
    virtual SafeList<object*>& getInv();
 
    critter* getCritBlocking() const { return crit_blocking; }
@@ -132,6 +135,10 @@ public:
    int consumesKey() const { return dr_data && dr_data->consumesKey(); }
    int isNoPassdoor() const { return dr_data && dr_data->isNoPassdoor(); }
    int isDestructable() const { return dr_data && dr_data->isDestructable(); }
+   int isFlippable() const { return dr_data && dr_data->isFlippable(); }
+
+   virtual int flipFlag(int fnum) { return dr_data && dr_data->flipFlag(fnum); }
+
    void lock() { if (dr_data) dr_data->lock(); }
    void unlock() { if (dr_data) dr_data->unlock(); }
    void open() { if (dr_data) dr_data->open(); }
@@ -142,6 +149,9 @@ public:
    void setBlocked(int val) { dr_data->setBlocked(val); }
 
    virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
+
+   int setKey(int nkey) { return dr_data && dr_data->setKey(nkey); }
+   int setToken(int nkey) { return dr_data && dr_data->setToken(nkey); }
 
    int getKeyNum() const {
       if (dr_data) 

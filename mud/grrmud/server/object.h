@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.29 1999/08/20 06:20:06 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
+// $Id: object.h,v 1.30 1999/08/22 07:16:20 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
 
 //
 //ScryMUD Server Code
@@ -233,15 +233,23 @@ public:
    int getZoneNum() const;
 
    /** These default to english, makes a copy of incoming data. */
-   void addShortDesc(String& new_val);
-   void addInRoomDesc(String& new_val);
+   virtual void addShortDesc(String& new_val);
+   virtual void addShortDesc(LanguageE l, String& buf);
+   virtual void addInRoomDesc(String& new_val);
+   virtual void addInRoomDesc(LanguageE l, String& new_val);
 
-   void appendShortDesc(CSentryE whichun);
-   void appendInRoomDesc(CSentryE whichun);
+   virtual void appendShortDesc(CSentryE whichun);
+   virtual void appendShortDesc(String& str);
+   virtual void prependShortDesc(String& str);
+
+   virtual void appendInRoomDesc(CSentryE whichun);
 
    /** Makes a copy of incoming data. */
    void addShortDesc(LString& new_val);
    void addInRoomDesc(LString& new_val);
+
+   String* getShortDesc(critter* viewer);
+   String* getShortDesc(int see_bit = ~0);
 
    int getDefaultPrice() { return cur_stats[1]; }
 

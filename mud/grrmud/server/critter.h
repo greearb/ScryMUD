@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.41 1999/08/20 06:20:05 greear Exp $
-// $Revision: 1.41 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
+// $Id: critter.h,v 1.42 1999/08/22 07:16:20 greear Exp $
+// $Revision: 1.42 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
 
 //
 //ScryMUD Server Code
@@ -117,10 +117,10 @@ public:
    PtrList<String> tmplist;
    short imm_level;
    
-   String* edit_string;
+   LStringCollection* edit_string;
    GenScript* tmp_proc_script;
    int tmp_script_entity_num;
-   String proc_script_buffer;
+   LStringCollection proc_script_buffer;
    
    immort_data();				// default constructor
    immort_data(const immort_data& source);   // copy constructor
@@ -724,16 +724,19 @@ public:
    int isCloaked() { return (pc && PC_FLAGS.get(3)); }
    int isInBattle() { return !(is_fighting.isEmpty()); }
 
-   void addInRoomDesc(String& buf);
-   void addInRoomDesc(LString& buf);
-   void addShortDesc(String& buf);
-   void addShortDesc(LString& buf);
+   virtual void addInRoomDesc(String& buf);
+   virtual void addInRoomDesc(LString& buf);
+   virtual void addInRoomDesc(LanguageE l, String& new_val);
 
-   void setShortDesc(CSentryE desc);
-   void setLongDesc(CSentryE desc);
+   virtual void addShortDesc(String& buf);
+   virtual void addShortDesc(LString& buf);
+   virtual void addShortDesc(LanguageE l, String& new_val);
 
-   void appendShortDesc(CSentryE whichun);
-   void appendInRoomDesc(CSentryE whichun);
+   virtual void setShortDesc(CSentryE desc);
+   virtual void setLongDesc(CSentryE desc);
+
+   virtual void appendShortDesc(CSentryE whichun);
+   virtual void appendInRoomDesc(CSentryE whichun);
 
    int haveObjNumbered(int count, int obj_num);
    /** Viewer may be self, but may not be as well. */

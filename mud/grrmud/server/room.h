@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.30 1999/08/20 06:20:06 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
+// $Id: room.h,v 1.31 1999/08/22 07:16:20 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
 
 //
 //ScryMUD Server Code
@@ -204,8 +204,10 @@ public:
    virtual int read(istream& dafile, int read_all = TRUE);
    virtual int read_v2(istream& dafile, int read_all, String& firstName);
    virtual int read_v3(istream& dafile, int read_all = TRUE);
+
    virtual void addShortDesc(String& str);
    virtual void addShortDesc(LString& str);
+   virtual void addShortDesc(LanguageE l, String& buf);
 
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_ROOM; }

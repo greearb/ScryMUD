@@ -1,5 +1,5 @@
-# $Id: translation_olc.spec,v 1.1 1999/08/16 07:31:25 greear Exp $
-# $Revision: 1.1 $  $Author: greear $ $Date: 1999/08/16 07:31:25 $
+# $Id: translation_olc.spec,v 1.2 1999/08/22 07:16:20 greear Exp $
+# $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -41,4 +41,14 @@ of a change for most of you though.
 [[press enter to continue]]\n\n"
 	~
 
+CS_NAME_NOT_FOUND
+	eng "That entity does not have that name (keyword).\n"
+	~
 
+CS_NAME_REMOVED
+	eng "The name (keyword) was removed from that entity.\n"
+	~
+
+CS_NAME_ADDED
+	eng "Name added.\n"
+	~

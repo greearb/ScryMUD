@@ -1,5 +1,5 @@
-// $Id: command4.h,v 1.6 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: command4.h,v 1.7 1999/08/22 07:16:20 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
 
 //
 //ScryMUD Server Code
@@ -53,13 +53,13 @@ int possess(int i_th, const String* vict, critter& pc);
 
 int unpost(int i_th, const String* post, critter& pc);
 int write_board(object& obj);
-int title(const String* tit, critter& pc);
+int title(String* tit, critter& pc);
 int poofin(String* tit, critter& pc);
 int poofout(String* tit, critter& pc);
 int oreload(critter& pc);
 int mreload(critter& pc);
 int read(int i_th, const String* post, int j_th, const String* board, critter& pc);
-int post(const String* title, critter& pc);
+int post(String* title, critter& pc);
 int do_post(critter& pc);
 int log_out(critter& pc);
 int go(int i_th, const String* direction, critter& pc, int& is_dead);

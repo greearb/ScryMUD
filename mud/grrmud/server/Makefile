@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.21 1999/08/20 06:20:04 greear Exp $
-# $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
+# $Id: Makefile,v 1.22 1999/08/22 07:16:19 greear Exp $
+# $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/22 07:16:19 $
 
 # makefile template
 include ../../MakeInclude
@@ -39,7 +39,7 @@ Scriptable.o BuildInfo.o
 GEN_SPEC = gen_cmds.spec
 LANG_SPEC = translations.spec translation2.spec translation_olc.spec \
 translations_classes.spec translation_misc.spec translation_spell.spec \
-translation_battle.spec
+translation_battle.spec translation4.spec
 
 
 TARG = grrmud                                 #program to be created

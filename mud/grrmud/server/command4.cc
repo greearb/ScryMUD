@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.32 1999/08/10 07:06:18 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
+// $Id: command4.cc,v 1.33 1999/08/22 07:16:19 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 1999/08/22 07:16:19 $
 
 //
 //ScryMUD Server Code
@@ -46,7 +46,7 @@
 
 
 int do_gecho(const char* msg) {
-   Cell<critter*> cll(pc_list);
+   SCell<critter*> cll(pc_list);
    critter* ptr;
 
    while ((ptr = cll.next())) {
@@ -56,13 +56,14 @@ int do_gecho(const char* msg) {
 }//do_gecho
 
 
-int title(const String* tit, critter& pc) {
-   if (tit->Strlen() > 79) {
-      show("Your title must be less than 80 characters.\n", pc);
+int title(String* titl, critter& pc) {
+   if (titl->Strlen() > 79) {
+      pc.show(CS_TITLE_80_ONLY);
       return -1;
    }//if
-   (pc.short_desc) = *tit;
-   show("Title changed.\n", pc);
+   
+   pc.addShortDesc(*titl);
+   pc.show(CS_TITLE_CHANGED);
    return 0;
 }//title
 
@@ -144,7 +145,7 @@ int mreload(critter& pc) {
 int read(int i_th, const String* post, int j_th, const String* board, critter& pc) {
    String buf(100);
 
-   Cell<object*> cll(*(ROOM.getInv()));
+   SCell<object*> cll(ROOM.getInv());
    object* ptr;
    
    if (board->Strlen() == 0) {
@@ -177,9 +178,9 @@ int read(int i_th, const String* post, int j_th, const String* board, critter& p
       return -1;
    }//if
 
-   show(msg->short_desc, pc);
-   show("\n\n", pc);
-   show(msg->long_desc, pc);
+   pc.show(msg->getShortDesc(&pc));
+   pc.show("\n\n");
+   pc.show(msg->getLongDesc(&pc));
    return 0;
 }//read
 
@@ -294,7 +295,7 @@ int unpost(int i_th, const String* post, critter& pc) {
       return -1;
    }
 
-   Cell<object*> cll(*(ROOM.getInv()));
+   SCell<object*> cll(ROOM.getInv());
    object* ptr;
 
    while ((ptr = cll.next())) {
@@ -333,13 +334,13 @@ int unpost(int i_th, const String* post, critter& pc) {
    int i = 1;
    ptr->inv.head(cll);
    while ((msg = cll.next())) {
-      clear_ptr_list(msg->names);
+      msg->getNames().clearAndDestroy();
       Sprintf(buf, "%i", i);
-      Put(new String(buf), msg->names);
-      msg->names.append(new String("message"));
-      buf = msg->short_desc.Get_Command(eos, term_by_period);
+      msg->addName(buf);
+      msg->addName(CS_MESSAGE);
+      buf = msg->getShortDesc()->Get_Command(eos, term_by_period);
       Sprintf(buf, "Message_%i", i);
-      msg->short_desc.Prepend(buf);
+      msg->prependShortDesc(buf);
       i++;
    }//while
 
@@ -359,12 +360,12 @@ int write_board(object& obj) {
       return -1;
    }//if
 
-   Cell<object*> cll(obj.inv);
+   SCell<object*> cll(obj.inv);
    object* ptr;
 
    while ((ptr = cll.prev())) {
       ifile << ptr->OBJ_NUM << "\t\tMessage number\n";
-      ptr->Write(ifile);
+      ptr->write(ifile);
       ifile << "\n\n";
    }//while
 
@@ -373,17 +374,16 @@ int write_board(object& obj) {
 }//write_board
 
 
-int post(const String* title, critter& pc) {
+int post(String* title, critter& pc) {
    if (!ok_to_do_action(NULL, "mFPSG", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
    
    object* ptr;
-   Cell<object*> cll(*(ROOM.getInv()));
+   SCell<object*> cll(ROOM.getInv());
    while ((ptr = cll.next())) {
       if (ptr->OBJ_FLAGS.get(74)) {
          break;
-
       }//if
    }//while
 
@@ -393,10 +393,9 @@ int post(const String* title, critter& pc) {
    }//if
 
 
-   show("Enter your message to be posted.\n", pc);
-   show("Use a solitary '~' on a line by itself to end.\n", pc);
+   pc.show(CS_ENTER_MSG_POST);
    pc.pc->post_msg = new object;
-   pc.pc->post_msg->short_desc = *title;
+   pc.pc->post_msg->addShortDesc(*title);
    pc.setMode(MODE_WRITING_POST); 
    return 0;
 }//post
@@ -413,7 +412,7 @@ int do_post(critter& pc) {
    if (buf == "~") {
       show("Your message has been posted.\n", pc);
 
-      Cell<object*> cll(*(ROOM.getInv()));
+      SCell<object*> cll(ROOM.getInv());
       object* ptr;
       while ((ptr = cll.next())) {
          if (ptr->OBJ_FLAGS.get(74)) {
@@ -429,26 +428,24 @@ int do_post(critter& pc) {
          pc.pc->post_msg = NULL;
       }//if
       else {		/* good to go, save to disk */
-         pc.pc->post_msg->in_list = &(ptr->inv);  //make it SOBJ
+         pc.pc->post_msg->setContainer(ptr);
+         pc.pc->post_msg->setModified(TRUE);
 	 pc.pc->post_msg->OBJ_FLAGS.turn_on(7); //!mort
 	 int i = get_next_msg_num(*ptr);
 	 pc.pc->post_msg->OBJ_NUM = i;
 
-         String* name = new String(20);
-	 Sprintf(*name, "%i", i);
-         Put(name, (pc.pc->post_msg->names));
+	 Sprintf(buf, "%i", i);
+         pc.pc->post_msg->addName(buf);
          Sprintf(buf, "message_%i", i);
-         name = new String(buf);
-         pc.pc->post_msg->names.append(name);
+         pc.pc->post_msg->addName(buf);
 
-	 String tmp_desc((pc.pc->post_msg->short_desc));
-   	 Sprintf((pc.pc->post_msg->short_desc),
-		 "message_%i from %S:  ", i, name_of_crit(pc, ~0));
-         pc.pc->post_msg->short_desc.Append(tmp_desc);
+	 String tmp_desc(*(pc.pc->post_msg->getShortDesc(~0)));
+   	 Sprintf(buf, "message_%i from %S:  ", i, pc.getName());
+         pc.pc->post_msg->addShortDesc(buf);
+         pc.pc->post_msg->appendShortDesc(tmp_desc);
 
-   	 Sprintf((pc.pc->post_msg->in_room_desc),
-		 "A message from %S lies here.", name_of_crit(pc, ~0));
-
+   	 Sprintf(buf, "A message from %S lies here.", pc.getName());
+         pc.pc->post_msg->addInRoomDesc(buf);
 
 	 Sprintf(buf, "./Boards/board_%i", ptr->OBJ_NUM);
 	 ifstream ifile(buf, ios::nocreate);
@@ -465,17 +462,17 @@ int do_post(critter& pc) {
 
 	 ofstream da_msg("./Boards/TMP_MSG");
 	 da_msg << i << "\tmessage number\n";
-	 pc.pc->post_msg->Write(da_msg);
+	 pc.pc->post_msg->write(da_msg);
 	 da_msg << endl << endl << flush;
 	    
 	 Sprintf(buf, "cat ./Boards/board_%i >> ./Boards/TMP_MSG",
 	         ptr->OBJ_NUM); //append it
 	 system(buf);
 	 Sprintf(buf, "mv -f ./Boards/TMP_MSG ./Boards/board_%i", 
-		    ptr->OBJ_NUM); //move it back to right name
+                 ptr->OBJ_NUM); //move it back to right name
 	 system(buf);
 
-         Put(pc.pc->post_msg, ptr->inv);
+         ptr->gainInv(pc.pc->post_msg);
 	 pc.pc->post_msg = NULL;
       }//else
 
@@ -483,8 +480,9 @@ int do_post(critter& pc) {
       return 0;
    }//if
 
-   (pc.pc->post_msg->long_desc) += buf;
-   (pc.pc->post_msg->long_desc) += "\n";
+   LString ls(pc.getLanguage(), buf);
+   ls.append("\n");
+   pc.pc->post_msg->appendLongDesc(ls);
    return 0;
 }//do_post
 
@@ -499,7 +497,7 @@ int log_out(critter& pc) {
    if (!pc.pc)
       return -1;
 
-   if (!IsEmpty(pc.IS_FIGHTING)) {
+   if (pc.isFighting()) {
       show("You must stop fighting first.\n", pc);
       return -1;
    }//if
@@ -603,11 +601,6 @@ int possess(int i_th, const String* vict, critter& pc) {
       return -1;
    }
    else {
-      if (ptr->isMob()) {
-         ptr = mob_to_smob(*ptr,  pc.getCurRoomNum(), TRUE, i_th,
-                           vict, pc.SEE_BIT);
-      }//if
-
       pc.possessing = ptr;
       ptr->possessed_by = &pc;
       String buf(100);
@@ -701,7 +694,7 @@ int _goto(int i_th, const String* name, critter& pc) {
 
 
 int where(int i_th, const String* name, critter& pc) {
-   Cell<critter*> cll;
+   SCell<critter*> cll;
    critter* ptr = NULL;
    String buf(100);
 
@@ -731,7 +724,7 @@ int where(int i_th, const String* name, critter& pc) {
          int end = ZoneCollection::instance().elementAt(pc.getCurZoneNum()).getEndRoomNum();
          for (int i = start; i<= end; i++) {
             if (room_list.elementAtNoCreate(i)) {
-               Cell<critter*> ccll(room_list[i].getCrits());
+               SCell<critter*> ccll(room_list[i].getCrits());
                while ((ptr = ccll.next())) {
                   if (!ptr->isPc()) {
                      Sprintf(buf, "[Room %i] %P11[%i]%P20%S.\n",
@@ -750,7 +743,7 @@ int where(int i_th, const String* name, critter& pc) {
    else {
       if (pc.isImmort()) {
          if (strcasecmp(*name, "pcs") == 0) {
-            Cell<critter*> ccll(pc_list);
+            SCell<critter*> ccll(pc_list);
             critter* ptr;
             while ((ptr = ccll.next())) {
                Sprintf(buf, "[Room %i] %P11[PC]%P20%S.\n",
@@ -764,7 +757,7 @@ int where(int i_th, const String* name, critter& pc) {
          int end = ZoneCollection::instance().elementAt(pc.getCurZoneNum()).getEndRoomNum();
             for (int i = start; i<= end; i++) {
                if (room_list.elementAtNoCreate(i)) {
-                  Cell<object*> ocll(*(room_list[i].getInv()));
+                  SCell<object*> ocll(room_list[i].getInv());
                   object* optr;
                   while ((optr = ocll.next())) {
                      Sprintf(buf, "[Room %i] %P11[%i]%P20%S.\n",
@@ -946,7 +939,7 @@ int oclear(int i_th, critter& pc) {
         pc);
    show("these changes permanent, you will have to do an 'aosave'.\n", pc);
 
-   Cell<critter*> ccll;
+   SCell<critter*> ccll;
    critter* cptr;
    for (int i = 0; i<NUMBER_OF_ROOMS; i++) {
       if (room_list.elementAtNoCreate(i)) {
@@ -959,7 +952,7 @@ int oclear(int i_th, critter& pc) {
       cptr->loseObjectFromGame(&(obj_list[i_th]));
    }//while
 
-   obj_list[i_th].Clear();  //clear out the object
+   obj_list[i_th].clear();  //clear out the object
    return 0;
 }// oclear
 
@@ -988,7 +981,7 @@ int mclear(int i_th, critter& pc) {
       room_list[i].purgeCritter(i_th, pc);
    }//for
 
-   mob_list[i_th].Clear();  //clear out the mob
+   mob_list[i_th].clear();  //clear out the mob
 
    return 0;
 }// mclear
@@ -1015,16 +1008,16 @@ int dclear(int i_th, critter& pc) {
         pc);
    show("these changes permanent, you will have to do an 'adsave'.\n", pc);
 
-   door_list[i_th].Clear();  //clear out the mob
+   door_list[i_th].clear();  //clear out the mob
 
-   Cell<door*> cll;
+   SCell<door*> cll;
    door* ptr;
    for (int i = 0; i<NUMBER_OF_ROOMS; i++) {
       if (room_list.elementAtNoCreate(i)) {
          room_list[i].DOORS.head(cll);
          ptr = cll.next();
          while (ptr) {
-            if (ptr->dr_data == &door_list[i_th])  {
+            if (ptr->getDrData() == &door_list[i_th])  {
                delete ptr;
                ptr = room_list[i].DOORS.lose(cll);
             }//if
@@ -1047,7 +1040,7 @@ int brief(critter& pc) {
 int num_of_generic_door(const String* direction) {
    String* tmp_name;
    for (int i = 1; i <= 10; i++) {
-      tmp_name = Top(door_list[i].names);
+      tmp_name = door_list[i].getFirstName();
       if (strcasecmp(*direction, *tmp_name) == 0)
          return i;
    }//for
@@ -1061,18 +1054,18 @@ int flip_door(int i_th, const String* name, critter& pc) {
       return -1;
    }
 
-   door* dr_ptr = door::findDoor(ROOM.DOORS, i_th, name, pc.SEE_BIT, ROOM);
+   door* dr_ptr = ROOM.findDoor(i_th, name, pc);
    if (!dr_ptr) {
       show("That door doesn't seem to exist.\n", pc);
       return -1;
    }//if
 
-   if (!dr_ptr->dr_data->door_data_flags.get(9)) {
+   if (!dr_ptr->isFlippable()) {
       show("That door is flagged !FLIP.\n", pc);
       return -1;
    }//if
 
-   dr_ptr->destination = (-(dr_ptr->destination));
+   dr_ptr->setDestination(-(dr_ptr->getDestination()));
    show("The door has been flipped.\n", pc);
    return 0;
 }//flip_door
@@ -1143,19 +1136,20 @@ int do_door_to(room& cur_room, room& targ_room, int distance, critter&
    }//else
 
    door* new_door = new door;
-   new_door->dr_data = &(door_list[i]);
-   new_door->destination = targ_room.getRoomNum();
-   new_door->distance = distance;
-   new_door->in_room = cur_room.getRoomNum();
+   new_door->setDrData(&(door_list[i]));
+   new_door->setDestination(targ_room.getRoomNum());
+   new_door->setDistance(distance);
+   new_door->setContainer(&cur_room);
    if (is_gate) {
-      new_door->ticks_till_disolve = pc.LEVEL/8 + 1;
+      new_door->setTicksTillDisolve(pc.LEVEL/8 + 1);
       obj_ptr_log << "NOTE " << cur_room.getIdNum() << " " << &cur_room
                   << "Adding to affected_rooms bcause of gate." << endl;
-      affected_rooms.gainData(&cur_room);
+      room* hack = &cur_room;
+      affected_rooms.appendUnique(hack);
    }//if
-   Put(new_door, cur_room.doors);
+   cur_room.doors.append(new_door);
    if (!is_gate)
-     show("OK, doors added (its reflexive now)\n", pc);
+      show("OK, doors added (its reflexive now)\n", pc);
    return 0;
 }//do_door_to
 
@@ -1169,18 +1163,18 @@ int replace_door(int nd_num, const String* direction, critter& pc) {
    if (!check_l_range(nd_num, 0, NUMBER_OF_DOORS, pc, TRUE))
       return -1;
 
-   if (IsEmpty(door_list[nd_num].names)) {
+   if (!door_list[nd_num].isInUse()) {
       show("That door doesn't exist yet.\n", pc);
       return -1;
    }//if
    
-   door* dr_ptr = door::findDoor(ROOM.DOORS, 1, direction, ~0, ROOM);
+   door* dr_ptr = ROOM.findDoor(1, direction, pc);
    if (!dr_ptr) {
       show("That door doesn't seem to exist.\n", pc);
       return -1;
    }//if
 
-   dr_ptr->dr_data = &(door_list[nd_num]); //essentially add new door
+   dr_ptr->setDrData(&(door_list[nd_num])); //essentially add new door
    return 0;
 }//replace_door
 
@@ -1190,8 +1184,7 @@ int delete_door(int i_th, const String* direction, critter& pc) {
       return -1;
    }
 
-   door* dr_ptr = 
-         door::findDoor(ROOM.DOORS, i_th, direction, pc.SEE_BIT, ROOM);
+   door* dr_ptr = ROOM.findDoor(i_th, direction, pc);
    if (!dr_ptr) {
       show("That door doesn't seem to exist.\n", pc);
       return -1;
@@ -1269,14 +1262,14 @@ int do_write_zone(int znum) {
    for (j = ZoneCollection::instance().elementAt(znum).getBeginRoomNum();
         j <= ZoneCollection::instance().elementAt(znum).getEndRoomNum();
         j++) {
-      if (!IsEmpty(room_list[j].names)) {
+      if (room_list[j].isInUse()) {
          if (room_list[j].isVehicle()) {
             rfile << (j | 0x01000000) << "\t\tVehicle number\n";
          }
          else {
             rfile << j << "\t\tRoom Number\n";
          }
-         room_list[j].Write(rfile);
+         room_list[j].write(rfile);
       }//if
    }//for
    rfile << "\n\n" << -1 << "\t\tEND OF FILE MARKER\n" << flush;
@@ -1390,11 +1383,7 @@ int give(int i_th, const String* obj, int j_th, const String* target,
       return -1;
    }//if
 
-   if (targ->isMob())
-      targ = mob_to_smob(*targ, pc.getCurRoomNum(), TRUE, j_th, target, pc.SEE_BIT);
-
    		/* assume have valid item and targ */
-
    return do_give(*targ, pc, *item);
 
 }//give()
@@ -1411,8 +1400,8 @@ int do_give(critter& targ, critter& pc, object& obj) {
       return -1;
    }//if
 
-   if (obj.IN_LIST)
-      obj.IN_LIST = &(targ.inv);
+   if (obj.isModified())
+      obj.setContainer(&targ);
 
    targ.gainInv(&obj);
 
@@ -1420,7 +1409,7 @@ int do_give(critter& targ, critter& pc, object& obj) {
       harmless. */
    pc.loseInv(&obj);
 
-   Cell<critter*> cll(ROOM.getCrits());
+   SCell<critter*> cll(ROOM.getCrits());
    critter* crit_ptr;
    while ((crit_ptr = cll.next())) {
       if ((crit_ptr != &targ) && (crit_ptr != &pc)) {
@@ -1581,7 +1570,7 @@ int rlist(int start, int end, critter& pc) {
    }//if
 
    for (int i = start; i<= end; i++) {
-      if (!IsEmpty(room_list[i].names)) {
+      if (room_list[i].isInUse()) {
          Sprintf(buf, "\t%i\t%S\n", i, &(room_list[i].short_desc));
          show(buf, pc);
       }//if
@@ -1616,8 +1605,8 @@ int dlist(int start, int end, critter& pc) {
    }//if
 
    for (int i = start; i<= end; i++) {
-      if (!IsEmpty(door_list[i].names)) {
-         Sprintf(buf, "\t%i\t%S\n", i, &(door_list[i].long_desc));
+      if (door_list[i].isInUse()) {
+         Sprintf(buf, "\t%i\t%S\n", i, door_list[i].getLongDesc(&pc));
          show(buf, pc);
       }//if
       else {
@@ -1642,8 +1631,8 @@ int adlist(critter& pc) {
    pc.show(buf);
 
    for (int i = 0; i<NUMBER_OF_DOORS; i++) {
-      if (door_list[i].isInUse() && door_list[i].isInZone(zone_num)) {
-         Sprintf(buf, "       %i%P14%S\n", i, &(door_list[i].long_desc));
+      if (door_list[i].isInUse() && door_list[i].belongsToZone(zone_num)) {
+         Sprintf(buf, "       %i%P14%S\n", i, door_list[i].getLongDesc(&pc));
          show(buf, pc);
       }//if
    }//for
@@ -2018,8 +2007,9 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
    else if (strncasecmp(*targ, "mob_name", len1) == 0) {
       if (!ptr->isPc()) {
-         clear_ptr_list(ptr->names);
-         ptr->names.append(new String(*new_val_string));
+         ptr->getNames().clearLanguage(pc.getLanguage());
+         LString ls(pc.getLanguage(), *new_val_string);
+         ptr->addName(ls);
          flag = TRUE;
       }//if
       else {
@@ -2028,7 +2018,8 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
    else if (strncasecmp(*targ, "short_desc", len1) == 0) {
       if (!ptr->isPc()) {
-         ptr->short_desc = *new_val_string;
+         LString ls(pc.getLanguage(), *new_val_string);
+         ptr->addShortDesc(ls);
          flag = TRUE;
       }//if
       else {
@@ -2037,7 +2028,8 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
    else if (strncasecmp(*targ, "in_room_desc", len1) == 0) {
       if (!ptr->isPc()) {
-         ptr->in_room_desc = *new_val_string;
+         LString ls(pc.getLanguage(), *new_val_string);
+         ptr->addInRoomDesc(ls);
          flag = TRUE;
       }//if
       else {
@@ -2334,7 +2326,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
    else if (strncasecmp(*targ, "hp_max", max(len1, 4)) == 0) {
      if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
-       ptr->setHP_MAX(new_val);
+       ptr->setHpMax(new_val);
        flag = TRUE;
      }//if
    }//if
@@ -2467,25 +2459,25 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
    if (ptr->bag) { //thingies for bags
       if (strncasecmp(*targ, "key_num", len1) == 0) {
 	if (check_l_range(new_val, 0, NUMBER_OF_ITEMS, pc, TRUE)) {
-	  ptr->bag->key_num = new_val;
+	  ptr->bag->setKey(new_val);
 	  flag = TRUE;
 	}//if
       }//if
       else if (strncasecmp(*targ, "max_weight", len1) == 0) {
 	if (check_l_range(new_val, 0, 9999, pc, TRUE)) {
-	  ptr->bag->max_weight = new_val;
+	  ptr->bag->setMaxWeight(new_val);
           flag = TRUE;
 	}//if
       }//if
       else if (strncasecmp(*targ, "percentage_weight", len1) == 0) {
 	if (check_l_range(new_val, 1, 1000, pc, TRUE)) {
-	  ptr->bag->percentage_weight = new_val;
+	  ptr->bag->setPercentWeight(new_val);
 	  flag = TRUE;
 	}//if
       }//if
       else if (strncasecmp(*targ, "time_till_disolve", len1) == 0) {
 	if (check_l_range(new_val, 0, 500, pc, TRUE)) {
-	  ptr->bag->time_till_disolve = new_val;
+	  ptr->bag->setTimeTillDisolve(new_val);
 	  flag = TRUE;
 	}//if
       }//if
@@ -2493,7 +2485,7 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
 	if (check_l_range(new_val, 1, Cur_Max_Obj_Num, pc, TRUE)) {
            if (obj_list[new_val].isInUse() && obj_list[new_val].isLiquid()) {
               if (ptr->isCanteen()) {
-                 Cell<object*> cll(ptr->inv);
+                 SCell<object*> cll(ptr->inv);
                  object* optr;
                  while ((optr = cll.next())) {
                     recursive_init_unload(*optr, 0);
@@ -2522,16 +2514,19 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
       }//if
    }//if
    else if (strncasecmp(*targ, "obj_name", len1) == 0) {
-      clear_ptr_list(ptr->names);
-      ptr->names.append(new String(*new_val_string));
+      ptr->getNames().clearLanguage(pc.getLanguage());
+      LString ls(pc.getLanguage(), *new_val_string);
+      ptr->addName(ls);
       flag = TRUE;
    }//if
    else if (strncasecmp(*targ, "short_desc", len1) == 0) {
-      ptr->short_desc = *new_val_string;
+      LString ls(pc.getLanguage(), *new_val_string);
+      ptr->addShortDesc(ls);
       flag = TRUE;
    }//if
    else if (strncasecmp(*targ, "in_room_desc", len1) == 0) {
-      ptr->in_room_desc = *new_val_string;
+      LString ls(pc.getLanguage(), *new_val_string);
+      ptr->addInRoomDesc(ls);
       flag = TRUE;
    }//if
    else if (strncasecmp(*targ, "percent_load", len1) == 0) {
@@ -2633,7 +2628,7 @@ int dset(int i_th, const String* vict, const String* targ, int new_val,
       return 0;
    }//if
 
-   door* ptr = door::findDoor(ROOM.DOORS, i_th, vict, pc.SEE_BIT, ROOM);
+   door* ptr = ROOM.findDoor(i_th, vict, pc);
    if (!ptr) {
       show("You don't see that door.\n", pc);
       return -1;
@@ -2656,7 +2651,7 @@ int dset(int i_th, const String* vict, const String* targ, int new_val,
 
    if (strncasecmp(*targ, "distance", len1) == 0) {
      if (check_l_range(new_val, 0, 15, pc, TRUE)) {
-       ptr->distance = new_val;
+       ptr->setDistance(new_val);
        flag = TRUE;
      }//if
    }//if
@@ -2673,28 +2668,27 @@ int dset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
 
    if (strncasecmp(*targ, "toggle_flag", len1) == 0) {
-     if (check_l_range(new_val, 0, 20, pc, TRUE)) {
-       if ((new_val != 10) && (new_val != 14)) {
-	 ptr->dr_data->door_data_flags.flip(new_val);
-	 flag = TRUE;
-       }//if
-     }//if
+      if (check_l_range(new_val, 0, 20, pc, TRUE)) {
+         if (ptr->flipFlag(new_val)) {
+            flag = TRUE;
+         }//if
+      }//if
    }//if
    else if (strncasecmp(*targ, "vis_bit", len1) == 0) {
-     if (check_l_range(new_val, 0, (1 << 30), pc, TRUE)) {
-       ptr->dr_data->vis_bit = new_val;
-       flag = TRUE;
-     }//if
+      if (check_l_range(new_val, 0, (1 << 30), pc, TRUE)) {
+         ptr->setVisBit(new_val);
+         flag = TRUE;
+      }//if
    }//if
    else if (strncasecmp(*targ, "key_num", len1) == 0) {
      if (check_l_range(new_val, 0, NUMBER_OF_ITEMS, pc, TRUE)) {
-       ptr->dr_data->key_num = new_val;
+       ptr->setKey(new_val);
        flag = TRUE;
      }//if
    }//if
    else if (strncasecmp(*targ, "token_num", len1) == 0) {
      if (check_l_range(new_val, 0, NUMBER_OF_ITEMS, pc, TRUE)) {
-       ptr->dr_data->token_num = new_val;
+       ptr->setToken(new_val);
        flag = TRUE;
      }//if
    }//if
@@ -2758,9 +2752,9 @@ int tog_oflag(int flagnum, const String* flag_type,
    if ((strncasecmp(*flag_type, "obj_flag", 1) == 0) ||
        (strncasecmp(*flag_type, "bag_flag", 1) == 0) ||
       (strncasecmp(*flag_type, "spec_flag", 1) == 0)) {
-      if (obj_ptr->IN_LIST) {
-         Sprintf(buf, "Toggling obj_flag#:  %i on SOBJ:  %S.\n", flagnum, 
-                 &(obj_ptr->short_desc));
+      if (obj_ptr->isModified()) {
+         Sprintf(buf, "Toggling obj_flag#:  %i on MODIFIED OBJECT:  %S.\n", flagnum, 
+                 obj_ptr->getShortDesc(&pc));
          show(buf, pc);
       }//if SOBJ
       else {
@@ -2792,8 +2786,7 @@ int tog_oflag(int flagnum, const String* flag_type,
          show("Doh, thats not a bag!!\n", pc);
          return -1;
       }//if
-      if (flagnum != 8) {
-         obj_ptr->bag->bag_flags.flip(flagnum);
+      if (obj_ptr->bag->flipFlag(flagnum)) {
          return 0;
       }//if
       else {
