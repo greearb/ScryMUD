@@ -512,6 +512,8 @@ mutter(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 # IMM Commands - M
 make_builder ~
 return make_builder(i, &(cooked_strs[1]), pc);
+make_maps ~
+return make_maps(pc);
 make_pso ~
 return make_pso(i, &(cooked_strs[1]), pc);
 mclear ~

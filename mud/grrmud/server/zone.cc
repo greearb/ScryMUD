@@ -32,6 +32,7 @@
 #include "misc2.h"
 #include "command4.h"
 #include "command5.h"
+#include "mapper.h"
 
 
 int ZoneList::_cnt = 0; //instance count
@@ -407,6 +408,19 @@ void ZoneCollection::createNeatoFiles() {
    }//for
 }//createNeatoFiles
 
+void ZoneCollection::createMapFiles() {
+   String buf(100);
+
+   for (int i = 0; i<NUMBER_OF_ZONES; i++) {
+      if (zone_list[i].isInUse()) {
+         Sprintf(buf, "./World/zone_%i.map", i);
+         ofstream ofile(buf);
+         ofile << "zone " << i << " " << (const char*)(zone_list[i].getName())
+            << endl;
+         ofile << zone_list[i].createMapFile();
+      }//if
+   }//for
+}//createMapFiles
 
 void ZoneCollection::createNewZone(critter& pc, int num_ticks, int num_rooms,
                                    const String& name) {
@@ -557,6 +571,291 @@ String zone::createNeatoMapFile() {
    return retval;
 }//createNeatoFile
 
+String zone::createMapFile() {
+   String retval(10000);
+   String tmp_buf(1000);
+   Cell<door *> cll;
+   door* ptr;
+   int tmp, tmp_rm;
+   int counter;
+   String buf(100);
+   String *dr_dir;
+   int distance;
+
+   int start_room = begin_room_num;
+   int zone = room_list[start_room].getZoneNum();
+
+   // special start rooms for weird zones
+   switch (zone) {
+      case 0:
+         start_room = 22;
+         break;
+      case 29:
+         start_room = 2724;
+         break;
+      case 46:
+         start_room = 4480;
+   }
+
+   Tree2<int> tree(start_room);
+   Tree2Cell<int> par(tree);
+   Tree2Cell<int> par2;
+   Tree2Cell<int> tcll;
+
+   List<path*> path_list(NULL);
+   Cell<path*> path_cll(path_list);
+   List<zonepath*> zpath_list(NULL);
+   Cell<zonepath*> zpath_cll(zpath_list);
+   Cell<maproom*> mrl_cll;
+
+   /* used so that we only walk up/down *after* fully exploring the current
+    * z-layer. This guarantees that up/down connections are correct as far as
+    * start/end rooms on each z-layer. Essentially this forces any skewing to
+    * be done to paths between rooms on the same z-layer rather than causing
+    * vertical collisions into the wrong area (connection room) of a different
+    * z-layer. These same z-layer distance skews/stretches are then easy to
+    * detect and fix due to the config-distance vs. map distance warning
+    * flags. Essentially we won't push these room numbers onto our BFS tree
+    * until we have exausted all same z-layer breadths.
+    */
+   List<int> vertical_rooms(0);
+   vertical_rooms.clear();
+   Cell<int> vr_cll;
+
+   maproom *cur_maproom;
+   maproom new_maproom;
+   maprooms my_rlist;
+
+   path* path_ptr = NULL;
+   zonepath* zpath_ptr = NULL;
+
+   new_maproom.num(start_room);
+   new_maproom.x(0);
+   new_maproom.y(0);
+   new_maproom.z(0);
+   new_maproom.zone(room_list[new_maproom.num()].getZoneNum());
+   new_maproom.placeholder(false);
+   my_rlist.gain(new_maproom);
+   room_list[new_maproom.num()].setFlag(29, TRUE);
+
+   while ( par ) {
+      room_list[par.Data()].DOORS.head(cll);
+      cur_maproom = my_rlist.byNum(par.Data());
+
+      while ( ( ptr = cll.next() ) ) {
+         tmp_rm = abs(ptr->destination);
+         new_maproom.num(tmp_rm);
+         new_maproom.zone(room_list[new_maproom.num()].getZoneNum());
+         new_maproom.placeholder(false);
+         new_maproom.collided(false);
+         new_maproom.water(false);
+         new_maproom.deepwater(false);
+         dr_dir = ptr->getDirection();
+         distance = ptr->distance + 1;
+
+         if ( 
+               (strcmp((const char*)(*dr_dir), "northeast") == 0) ||
+               (strcmp((const char*)(*dr_dir), "northwest") == 0) ||
+               (strcmp((const char*)(*dr_dir), "southeast") == 0) ||
+               (strcmp((const char*)(*dr_dir), "southwest") == 0) ||
+               (strcmp((const char*)(*dr_dir), "north") == 0) ||
+               (strcmp((const char*)(*dr_dir), "south") == 0) ||
+               (strcmp((const char*)(*dr_dir), "east") == 0) ||
+               (strcmp((const char*)(*dr_dir), "west") == 0) ||
+               (strcmp((const char*)(*dr_dir), "up") == 0) ||
+               (strcmp((const char*)(*dr_dir), "down") == 0)
+            ) {
+            if ( 
+                  (new_maproom.zone() == zone) || 
+                  (new_maproom.zone() == 17) || //garland shops & houses
+                  (new_maproom.zone() == 22)    //more garland shops & houses
+               )  {
+               // next room is in the current zone. even if it's been
+               //added to the bfs we do this or we don't get all paths
+               path_ptr = new path;
+               path_ptr->start(cur_maproom->num());
+               path_ptr->end(new_maproom.num());
+               path_ptr->distance(distance);
+               path_list.append(path_ptr);
+               path_ptr = NULL;
+            } else {
+               // next room is in a different zone
+               zpath_ptr = new zonepath;
+               zpath_ptr->start(cur_maproom->num());
+               zpath_ptr->end(new_maproom.num());
+               zpath_ptr->distance(distance);
+               zpath_ptr->zone(new_maproom.zone());
+               zpath_list.append(zpath_ptr);
+               zpath_ptr = NULL;
+            }
+         }//valid direction
+
+         if ( !room_list[tmp_rm].getFlag(29) ) {
+
+            //place the room on a grid point.
+            if (strcmp((const char *)(*dr_dir), "northeast") == 0) {
+               my_rlist.placeroom(*cur_maproom, new_maproom,
+                     maprooms::NORTHEAST, distance);
+            } else if (strcmp((const char *)(*dr_dir), "southeast") == 0) {
+               my_rlist.placeroom(*cur_maproom, new_maproom,
+                     maprooms::SOUTHEAST, distance);
+            } else if (strcmp((const char *)(*dr_dir), "southwest") == 0) {
+               my_rlist.placeroom(*cur_maproom, new_maproom,
+                     maprooms::SOUTHWEST, distance);
+            } else if (strcmp((const char *)(*dr_dir), "northwest") == 0) {
+               my_rlist.placeroom(*cur_maproom, new_maproom,
+                     maprooms::NORTHWEST, distance);
+            } else if (strcmp((const char *)(*dr_dir), "north") == 0) {
+               my_rlist.placeroom(*cur_maproom, new_maproom,
+                     maprooms::NORTH, distance);
+            } else if (strcmp((const char *)(*dr_dir), "south") == 0) {
+               my_rlist.placeroom(*cur_maproom, new_maproom,
+                     maprooms::SOUTH, distance);
+            } else if (strcmp((const char *)(*dr_dir), "east") == 0) {
+               my_rlist.placeroom(*cur_maproom, new_maproom,
+                     maprooms::EAST, distance);
+            } else if (strcmp((const char *)(*dr_dir), "west") == 0) {
+               my_rlist.placeroom(*cur_maproom, new_maproom,
+                     maprooms::WEST, distance);
+            } else if (strcmp((const char *)(*dr_dir), "up") == 0) {
+               my_rlist.placeroom(*cur_maproom, new_maproom,
+                     maprooms::UP, distance);
+            } else if (strcmp((const char *)(*dr_dir), "down") == 0) {
+               my_rlist.placeroom(*cur_maproom, new_maproom,
+                     maprooms::DOWN, distance);
+            } else {
+               continue;
+            }
+
+            tmp_buf.clear();
+
+            //note any interesting characteristics about this new room.
+            if ( room_list[new_maproom.num()].isSmallWater() ) {
+               new_maproom.water(true);
+            }
+            if ( room_list[new_maproom.num()].isBigWater() ) {
+               new_maproom.deepwater(true);
+            }
+
+            if ( 
+                  (new_maproom.zone() == zone) || 
+                  (new_maproom.zone() == 17) || //garland shops & houses
+                  (new_maproom.zone() == 22)    //more garland shops & houses
+               ) {
+
+
+               /* if it's not a z-layer direction, add it to our tree,
+                * otherwise delay it until this z-layer is done
+                */
+               if (
+                     (! strcmp((const char *)(*dr_dir), "up") == 0 ) &&
+                     (! strcmp((const char *)(*dr_dir), "down") == 0 ) 
+                  ) {
+                  par.Push_Child(tmp_rm);
+               } else {
+                  vertical_rooms.append(tmp_rm);
+               }
+
+               room_list[tmp_rm].setFlag(29, TRUE);
+            } else {
+               new_maproom.placeholder(true);
+            }
+
+            my_rlist.gain(new_maproom);
+
+         }//room isn't in list
+      }//doors left
+      par2 = par;
+      par.Next_Breadth();
+
+      /* if the current z-layer is depleted, push the vertical rooms that
+       * we've been queuing onto our tree
+       */
+      if ( (!par) && (!IsEmpty(vertical_rooms)) ) {
+         vertical_rooms.head(vr_cll);
+         while ( (tmp = vr_cll.next()) ) {
+            par2.Push_Child(tmp);
+         }
+         vertical_rooms.clear();
+         par = par2;
+         par.Next_Breadth();
+      }
+
+   }//while par
+   tcll.Head(tree);
+   while ( tcll ) {
+      counter = tcll.Next_Breadth();
+      room_list[counter].setFlag(29, FALSE);
+   }//while
+
+   //get rid of unused z-layers caused by distance>0 doors going up and down.
+   my_rlist.compress_zlayers();
+
+   my_rlist.getList()->head(mrl_cll);
+   while ( (cur_maproom = mrl_cll.next()) ) {
+      if ( cur_maproom->placeholder() ) {
+         continue;
+      }
+      Sprintf(tmp_buf, "room %d %d %d %d",
+            cur_maproom->num(),
+            cur_maproom->x(),
+            cur_maproom->y(),
+            cur_maproom->z());
+      retval.append(tmp_buf);
+      if ( cur_maproom->collided() ) {
+         retval.append(" collided");
+      }
+      retval.append("\n");
+   }//while
+
+   maproom *start_rm;
+   maproom *end_rm;
+
+   path_list.head(path_cll);
+   while( (path_ptr = path_cll.next()) ) {
+      start_rm = my_rlist.byNum(path_ptr->start());
+      end_rm = my_rlist.byNum(path_ptr->end());
+      Sprintf(tmp_buf, "path %d-%d %d %d %d %d %d %d",
+            path_ptr->start(),
+            path_ptr->end(),
+            start_rm->x(),
+            start_rm->y(),
+            start_rm->z(),
+            end_rm->x(),
+            end_rm->y(),
+            end_rm->z());
+      retval.append(tmp_buf);
+      if (
+            ( abs((start_rm->x()-end_rm->x())) != path_ptr->distance() ) ||
+            ( abs((start_rm->y()-end_rm->y())) != path_ptr->distance() ) ||
+            ( abs((start_rm->z()-end_rm->z())) != path_ptr->distance() )
+         ) {
+         retval.append(" stretched");
+      }
+      retval.append("\n");
+      delete path_ptr;
+   }
+
+   zpath_list.head(zpath_cll);
+   while( (zpath_ptr = zpath_cll.next()) ) {
+      start_rm = my_rlist.byNum(zpath_ptr->start());
+      end_rm = my_rlist.byNum(zpath_ptr->end());
+      Sprintf(tmp_buf, "zonepath %d %d-%d %d %d %d %d %d %d\n",
+            zpath_ptr->zone(),
+            zpath_ptr->start(),
+            zpath_ptr->end(),
+            start_rm->x(),
+            start_rm->y(),
+            start_rm->z(),
+            end_rm->x(),
+            end_rm->y(),
+            end_rm->z());
+      retval.append(tmp_buf);
+      delete zpath_ptr;
+
+   }
+   return retval;
+}//createMapFile
 
 void zone::spaceToNewlines(String& str) {
    for (int i = 0; i<str.Strlen(); i++) {

@@ -51,7 +51,6 @@
 #include "Filters.h"
 #include "clients.h"
 
-
 int inventory(critter& pc) {
    String buf(100);
    
@@ -4172,3 +4171,18 @@ int eq_put_by(object& vict, object& bag, critter& pc, short bag_in_inv) {
 
    return TRUE;
 }//eq_put_by
+
+int make_maps(critter& pc) {
+   if (ok_to_do_action(NULL, "I", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+
+      if (pc.getImmLevel() <= 8) {
+         pc.show("You must be level IMM-9 or greater.\n");
+         return -1;
+      }
+
+      ZoneCollection::instance().createMapFiles();
+      return 0;
+   } 
+   return -1;
+}//make_maps
+

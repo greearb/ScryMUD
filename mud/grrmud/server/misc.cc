@@ -3173,6 +3173,10 @@ int verifydoors(int i_th, critter &pc) {
    String *dr_dir;
    String *dst_dir;
 
+   if (! ok_to_do_action(NULL, "I", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
    for(i=0;i<NUMBER_OF_ROOMS;i++) {
       rm_ptr = &room_list[i];
       if ( (rm_ptr) && (rm_ptr->isUsed()) &&
@@ -3204,6 +3208,24 @@ int verifydoors(int i_th, critter &pc) {
                pc.show(buf);
                //if it isn't reflexive in any direction.
             } else { 
+               //there's a way back
+
+               //warn us if the distances aren't the same in both directions
+               if ( dr_ptr->distance != dst_dr_ptr->distance ) {
+                  Sprintf(buf, "^c[^B%d^c:^B%d^c:^B%S^c] ^m(^M%d^m)"
+                        "^w--> <--"
+                        "^m(^M%d^m) ^c[^B%d^c:^B%d^c:^B%S^c]"
+                        " ^GDistance mismatch.\n"
+                        "^cLHS: ^C%S ^cRHS: ^C%S\n\n^0",
+                        rm_ptr->getZoneNum(), cur_rm_num, dr_dir,
+                        dr_ptr->distance, dst_dr_ptr->distance,
+                        dr_ptr->getDestRoom()->getZoneNum(),
+                        chk_rm_num, dst_dir, &(rm_ptr->short_desc),
+                        &(dr_ptr->getDestRoom()->short_desc));
+                  pc.show(buf);
+
+               }
+
                //if it does have a way back, make sure it's the opposite
                //direction.
                dr_dir = dr_ptr->getDirection();

@@ -651,6 +651,7 @@ void run_the_game(int port) {
 
    ZoneList::instance().readSelf();
    ZoneList::instance().execute(); //modify zones as needed
+   // ZoneCollection::instance().createMapFiles();
 
    // Read in the bug and idea list.
    bl_bugs.read();

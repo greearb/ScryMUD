@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <PtrArray.h>
 #include <string2.h>
+#include <tree2.h>
 #include <list2.h>
 #include <bitfield.h>
 #include "const.h"
@@ -121,6 +122,7 @@ public:
    int getEndRoomNum() const { return end_room_num; }
    int getIdNum() const { return zone_num; }
    int isInUse() const { return end_room_num > 0; }
+   const String &getName() { return zone_name; }
 
    void resetTicksTillRegen() { ticks_till_regen = ticks_in_regen_cycle; }
    void decrementTicksTillRegen() { ticks_till_regen--; }
@@ -153,6 +155,7 @@ public:
     * create a horribly complex looking graph of the zone!
     */
    String createNeatoMapFile(); 
+   String createMapFile();
 
 
    int isTotallyLoaded();
@@ -201,6 +204,7 @@ public:
                       const String& name);
 
    void createNeatoFiles();
+   void createMapFiles();
 
    zone& getZoneFor(room& rm);
    zone& elementAt(int i);

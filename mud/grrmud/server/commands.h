@@ -147,5 +147,6 @@ int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk = FALS
 int donate_eq_effects(object& obj, critter& pc, short do_msg);
 int consume_eq_effects(object& obj, critter& pc, short do_msg);
 
+int make_maps(critter& pc);
 
 #endif //include
