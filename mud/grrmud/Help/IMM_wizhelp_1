@@ -23,19 +23,19 @@ oreload          oset             ostat            ovnum
 possess          rclear           rclone           rem_mname        
 rem_path         rem_perm_inv     rem_zone         replace_door     
 rezone           rinit            rlist            rm_bow_proc      
-rm_curse_proc    rm_discuss_proc  rm_give_proc     rm_keyword       
-rm_move_all      rm_obj_script    rm_omove         rm_omove_all     
-rm_script        rm_stat_affect   rset             rstat            
-save_obj         see_all          set_path_dir     set_path_pointer 
-set_zflag        shutdown         siteban          slay             
-smob             snoop            sockets          stat_keyword     
-stat_path        stat_room_script stat_script      teach            
-tog_mflag        tog_oflag        tog_rflag        tog_veh_stop     
-ungag            unpossess        unpost           unsiteban        
-update_CIG       update_cig       uptime           visible          
-wizinvis         write_world      write_zone       zcreate          
-zenable          zgoto            zlist            zlock            
-
+rm_comm          rm_curse_proc    rm_discuss_proc  rm_give_proc     
+rm_move          rm_move_all      rm_obj_script    rm_omove         
+rm_room_script   rm_script        rm_stat_affect   rset             
+save_mob         save_obj         see_all          set_path_dir     
+set_veh_stop     set_zflag        shutdown         siteban          
+slist            smob             snoop            sockets          
+stat_obj_script  stat_path        stat_room_script stat_script      
+thaw             tog_mflag        tog_oflag        tog_rflag        
+total_rezone     ungag            unpossess        unpost           
+unsnoop          update_CIG       update_cig       uptime           
+wizhelp          wizinvis         write_world      write_zone       
+zdisable         zenable          zgoto            zlist            
+zunlock          
 
 <color=red>
 See Also:  commands, topics
