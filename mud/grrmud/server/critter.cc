@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.74 2003/02/25 04:14:43 greear Exp $
-// $Revision: 1.74 $  $Author: greear $ $Date: 2003/02/25 04:14:43 $
+// $Id: critter.cc,v 1.75 2003/05/05 19:54:19 eroper Exp $
+// $Revision: 1.75 $  $Author: eroper $ $Date: 2003/05/05 19:54:19 $
 
 //
 //ScryMUD Server Code
@@ -1362,6 +1362,8 @@ pc_data::~pc_data() {
 }//destructor
  
 void pc_data::Clear() {
+   int i;
+
    if (post_msg) {
       delete post_msg;
       post_msg = NULL;
@@ -1427,6 +1429,16 @@ void pc_data::Clear() {
    // Volatile members (not saved to disk).
    bug_num = 0;
    bug_comment.Clear();
+
+   // Base stats
+   for (i = 0; i<PC_BASE_STATS; i++) {
+      short_base_stats[i] = 0;
+   }
+
+   // Clear wanted_in[] data
+   for ( i = 0; i<NUMBER_OF_ZONES+1; i++ ) {
+      wanted_in[i] = 0;
+   }
 
 }//Clear, pc_data
 
@@ -1495,7 +1507,7 @@ pc_data& pc_data::operator=(const pc_data& source) {
 
 
 void pc_data::Write(ofstream& ofile) {
-   int i;
+   int i, ii;
    
    ofile << password << "\tpasswd\n";
    
@@ -1567,9 +1579,29 @@ void pc_data::Write(ofstream& ofile) {
    }//if
 
    if (pc_data_flags.get(27)) {
-      ofile << (int)(preferred_language) << " -1 preferred_language\n" << endl;
+      ofile << (int)(preferred_language) << " -1 preferred_language\n";
    }
 
+   for (i = 0; i<PC_BASE_STATS; i++) {
+      if ((i + 1) % 20 == 0)
+         ofile << endl;
+      ofile << short_base_stats[i] << " ";
+   }//for
+   ofile << "\tshrt_base_stats\n";
+
+   // store wanted_in[] information
+   ii = 0;
+   for (i = 0; i < NUMBER_OF_ZONES+1; i++) {
+      if ( wanted_in[i] ) {
+         if ( ((ii++)+1) % 20 == 0) {
+            ofile << endl;
+         }
+         ofile << i << " ";
+      }
+   }//for
+   ofile << "-1 \twanted in\n";
+   
+   ofile << endl;
    ofile << "*** end of pc data ***\n";
 }//Write()       
 
@@ -1694,6 +1726,20 @@ void pc_data::Read(ifstream& ofile) {
       preferred_language = (LanguageE)(t);
       ofile.getline(tmp, 80);
    }
+
+   // Read in base stats, used to prevent nerfing, etc.
+   for (i = 0; i<PC_BASE_STATS; i++) {
+      ofile >> short_base_stats[i];
+   }
+   ofile.getline(tmp, 80);
+
+   // Read in wanted_in information
+   ofile >> i;
+   while (i != -1) {
+      wanted_in[i] = 1;
+      ofile >> i;
+   }
+   ofile.getline(tmp, 80);
 
    ofile.getline(tmp, 80); //grabs extra line/comment
 }//Read()       

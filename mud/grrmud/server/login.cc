@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.24 2002/01/12 20:56:13 eroper Exp $
-// $Revision: 1.24 $  $Author: eroper $ $Date: 2002/01/12 20:56:13 $
+// $Id: login.cc,v 1.25 2003/05/05 19:54:19 eroper Exp $
+// $Revision: 1.25 $  $Author: eroper $ $Date: 2003/05/05 19:54:19 $
 
 //
 //ScryMUD Server Code
@@ -871,6 +871,32 @@ command:  prompt %N\n");
    look(1, &NULL_STRING, pc); //autolook
    show("\r\nIf your screen is 'stair-stepped', type:  toggle carriage\n",
         pc);
+
+   // set the base stats info
+   pc.BASE_STR = pc.STR;
+   pc.BASE_INT = pc.INT;
+   pc.BASE_CON = pc.CON;
+   pc.BASE_CHA = pc.CHA;
+   pc.BASE_WIS = pc.WIS;
+   pc.BASE_DEX = pc.DEX;
+   pc.BASE_HIT = pc.HIT;
+   pc.BASE_DAM = pc.DAM;
+   pc.BASE_AC = pc.AC;
+   pc.BASE_ATTACKS = pc.ATTACKS;
+   pc.BASE_HP_MAX = pc.HP_MAX;
+   pc.BASE_MA_MAX = pc.MA_MAX;
+   pc.BASE_MV_MAX = pc.MV_MAX;
+   pc.BASE_DAM_REC_MOD = pc.DAM_REC_MOD;
+   pc.BASE_DAM_GIV_MOD = pc.DAM_GIV_MOD;
+   pc.BASE_HEAT_RESIS = pc.HEAT_RESIS;
+   pc.BASE_COLD_RESIS = pc.COLD_RESIS;
+   pc.BASE_ELEC_RESIS = pc.ELEC_RESIS;
+   pc.BASE_SPEL_RESIS = pc.SPEL_RESIS;
+   pc.BASE_BHDC = pc.short_cur_stats[35];
+   pc.BASE_BHDS = pc.short_cur_stats[36];
+   pc.BASE_HP_REGEN = pc.HP_REGEN;
+   pc.BASE_MA_REGEN = pc.MA_REGEN;
+   pc.BASE_MV_REGEN = pc.MV_REGEN;
 
    pc.save(); //make sure they have a Pfile
 

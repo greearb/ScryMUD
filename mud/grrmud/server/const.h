@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.36 2002/08/13 08:57:53 eroper Exp $
-// $Revision: 1.36 $  $Author: eroper $ $Date: 2002/08/13 08:57:53 $
+// $Id: const.h,v 1.37 2003/05/05 19:54:19 eroper Exp $
+// $Revision: 1.37 $  $Author: eroper $ $Date: 2003/05/05 19:54:19 $
 
 //
 //ScryMUD Server Code
@@ -1347,6 +1347,7 @@ extern const String ANSI_BWHITE_S;
 #define OBJ_CUR_STATS                        4
 #define MOB_LONG_DATA                        3
 #define MOB_SHORT_CUR_STATS                43
+#define PC_BASE_STATS                      24                  
 #define MOB_CUR_STATS                        3
 #define ROOM_CUR_STATS                        4
 
@@ -1670,6 +1671,30 @@ extern const char* HUH_MSG;
 #define MV_REGEN            short_cur_stats[39] 
 #define GUILD                 short_cur_stats[40]
 
+#define BASE_STR                pc->short_base_stats[0]
+#define BASE_INT                pc->short_base_stats[1]
+#define BASE_CON                pc->short_base_stats[2]
+#define BASE_CHA                pc->short_base_stats[3]
+#define BASE_WIS                pc->short_base_stats[4]
+#define BASE_DEX                pc->short_base_stats[5]
+#define BASE_HIT                pc->short_base_stats[6]
+#define BASE_DAM                pc->short_base_stats[7]
+#define BASE_AC                 pc->short_base_stats[8]
+#define BASE_ATTACKS            pc->short_base_stats[9]
+#define BASE_HP_MAX             pc->short_base_stats[10]
+#define BASE_MA_MAX             pc->short_base_stats[11]
+#define BASE_MV_MAX             pc->short_base_stats[12]
+#define BASE_DAM_REC_MOD        pc->short_base_stats[13]
+#define BASE_DAM_GIV_MOD        pc->short_base_stats[14]
+#define BASE_HEAT_RESIS         pc->short_base_stats[15]
+#define BASE_COLD_RESIS         pc->short_base_stats[16]
+#define BASE_ELEC_RESIS         pc->short_base_stats[17]
+#define BASE_SPEL_RESIS         pc->short_base_stats[18]
+#define BASE_BHDC               pc->short_base_stats[19]
+#define BASE_BHDS               pc->short_base_stats[20]
+#define BASE_HP_REGEN           pc->short_base_stats[21]
+#define BASE_MA_REGEN           pc->short_base_stats[22]
+#define BASE_MV_REGEN           pc->short_base_stats[23]
 
 //   SPEC_PROCS
 
