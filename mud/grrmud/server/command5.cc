@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.39 2001/06/10 20:20:56 greear Exp $
-// $Revision: 1.39 $  $Author: greear $ $Date: 2001/06/10 20:20:56 $
+// $Id: command5.cc,v 1.40 2001/08/20 05:30:06 greear Exp $
+// $Revision: 1.40 $  $Author: greear $ $Date: 2001/08/20 05:30:06 $
 
 //
 //ScryMUD Server Code
@@ -975,7 +975,7 @@ int beep(int i_th, const String* name, critter& pc) {
 
       Sprintf(buf2, "%S beeps you.\n", name_of_crit(pc, ptr->SEE_BIT));
       ptr->show(buf2);
-      ptr->PAUSE += 1; //slow down spammers....
+      pc.PAUSE += 1; //slow down spammers....
 
       show("Done...\n", pc);
       return 0;
