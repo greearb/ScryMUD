@@ -360,6 +360,8 @@ return enslave(i, &(cooked_strs[1]), pc);
 exact_damage ~
 return exact_damage(i, j, cooked_strs[1], pc, was_ordered);
 # Socials - E
+eyebrow socials ~
+eyebrow(j, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 # Help - E
 elf *elf ~
 NOP
