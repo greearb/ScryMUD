@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.30 1999/07/20 05:05:40 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/07/20 05:05:40 $
+// $Id: command4.cc,v 1.31 1999/07/23 02:54:29 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 1999/07/23 02:54:29 $
 
 //
 //ScryMUD Server Code
@@ -116,8 +116,12 @@ int oreload(critter& pc) {
       return -1;
    }
 
-   update_objects(ROOM.getZoneNum(), TRUE);
-   show("Objects in your current zone have been reloaded.\n", pc);
+   if (update_objects(ROOM.getZoneNum(), TRUE) >= 0) {
+      show("Objects in your current zone have been reloaded.\n", pc);
+   }
+   else {
+      pc.show("ERROR:  There was an error, probably out of disk space (VERY BAD).\n");
+   }
    return 0;
 }//oreload
 
@@ -126,8 +130,12 @@ int mreload(critter& pc) {
    if (!ok_to_do_action(NULL, "IFR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
-   update_critters(ROOM.getZoneNum(), TRUE);
-   show("Critters in your current zone have been reloaded.\n", pc);
+   if (update_critters(ROOM.getZoneNum(), TRUE) >= 0) {
+      show("Critters in your current zone have been reloaded.\n", pc);
+   }
+   else {
+      pc.show("ERROR:  There was an error, probably out of disk space (VERY BAD).\n");
+   }
    return 0;
 }//mreload
 

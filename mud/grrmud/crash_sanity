@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ $# > 5 ]; then
+        rm -f $5
+fi

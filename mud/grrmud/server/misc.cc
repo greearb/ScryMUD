@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.25 1999/07/18 23:00:21 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/07/18 23:00:21 $
+// $Id: misc.cc,v 1.26 1999/07/23 02:54:29 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/07/23 02:54:29 $
 
 //
 //ScryMUD Server Code
@@ -558,7 +558,7 @@ void do_regeneration_objects() {
 }//do_regeneration_objects
 
 
-void update_critters(int zone_num, short read_all) {
+int update_critters(int zone_num, short read_all) {
    Cell<object*> ocell;
    critter tmp_mob;
    int k, i;
@@ -576,7 +576,7 @@ void update_critters(int zone_num, short read_all) {
       system(buf);
       mudlog.log(ERR, "WARNING:  created CRITTER_FILE in update_critters");
       tmp_mob.CRITTER_TYPE = 1; //make it a SMOB, so destructor fires correctly
-      return;
+      return 0;
    }//if
 
    mobfile >> k;
@@ -587,9 +587,12 @@ void update_critters(int zone_num, short read_all) {
       mudlog.log(DBG, buf);
 
       if (!mobfile) {
-         mudlog << "ERROR:  mobfile is not valid, misc.cc" << endl;
-         break;
-      }
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR: error reading critters for zone: " << zone_num
+                   << " trying to read mob# " << k << endl;
+         }//if
+         return -1;
+      }//if
 
       tmp_mob.Read(mobfile, read_all);
 
@@ -628,10 +631,11 @@ void update_critters(int zone_num, short read_all) {
    //log("Done w/update critters.\n");
 
    tmp_mob.CRITTER_TYPE = 1; //make it a SMOB, so destructor fires correctly
+   return 0;
 }//update_critters
 
 
-void update_objects(int zone_num, short read_all) {
+int update_objects(int zone_num, short read_all) {
    Cell<object*> ocell;
    int k;
    object temp_obj;
@@ -649,7 +653,7 @@ void update_objects(int zone_num, short read_all) {
       mudlog.log(ERR, "WARNING:  created new OBJECT_FILE in update_objects");
       temp_obj.IN_LIST = room_list[0].getInv(); //hack to let destructor fire
                                                 //happily, turn it into a SOBJ
-      return;
+      return 0;
    }//if
 
    objfile >> k;
@@ -661,6 +665,14 @@ void update_objects(int zone_num, short read_all) {
       }
 
       temp_obj.Read(objfile, read_all);
+
+      if (!objfile) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR: error reading objects for zone: " << zone_num
+                   << " trying to read obj# " << k << endl;
+         }//if
+         return -1;
+      }//if
 
       if (obj_list[k].OBJ_FLAGS.get(70)) {
 
@@ -683,11 +695,12 @@ void update_objects(int zone_num, short read_all) {
    temp_obj.IN_LIST = room_list[0].getInv(); //hack to let destructor fire
                                              //happily, turn it into a SOBJ
    //log("Done w/update objects.\n");
+   return 0;
 }//update_objects
 
 
 
-void update_zone(int zone_num, short read_all) {
+int update_zone(int zone_num, short read_all) {
    int k = 0;
    room tmp_room;
    vehicle tmp_veh;
@@ -706,7 +719,7 @@ void update_zone(int zone_num, short read_all) {
    if (ZoneCollection::instance().elementAt(zone_num).isLocked() &&
        (read_all == FALSE)) { //if locked and an automatic update
       //log("Locked, returning...\n");
-      return; //don't do anything
+      return 0; //don't do anything
    }//if
       
                  /* this gossip is temporary */
@@ -720,13 +733,21 @@ void update_zone(int zone_num, short read_all) {
       system(buf);
       mudlog.log(ERR, "WARNING: zone file created in update_zone.");
       mudlog.log(ERR, buf);
-      return;
+      return 0;
    }//if
 
    rfile >> k;
    rfile.getline(temp_str, 80); //junk line
    while (k != -1) {
       room* room_ptr;
+
+      if (!rfile) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR: error reading rooms for zone: " << zone_num
+                   << " trying to read room# " << k << endl;
+         }//if
+         return -1;
+      }//if
 
       if (k & 0x01000000) { //it's a vehicle
          k = (k & ~(0x01000000));
@@ -805,6 +826,7 @@ void update_zone(int zone_num, short read_all) {
    }//while, the big loop, reads in a whole zone
    tmp_room.Clear();
    tmp_veh.Clear();
+   return 0;
 }//update_zone
 
 

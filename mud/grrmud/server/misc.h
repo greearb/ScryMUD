@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.11 1999/07/18 00:59:23 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
+// $Id: misc.h,v 1.12 1999/07/23 02:54:29 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/23 02:54:29 $
 
 //
 //ScryMUD Server Code
@@ -164,9 +164,9 @@ void do_regeneration_smobs();
 void do_regeneration_objects();
 void do_regeneration_rooms();
 void do_regeneration_zones();
-void update_zone(int i_th, short total_read);
-void update_critters(int i_th, short read_all);
-void update_objects(int i_th, short read_all);
+int update_zone(int i_th, short total_read);
+int update_critters(int i_th, short read_all);
+int update_objects(int i_th, short read_all);
 void do_tick();
 void do_mini_tick(); //every round of battle....
 

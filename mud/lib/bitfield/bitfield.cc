@@ -1,5 +1,5 @@
-// $Id: bitfield.cc,v 1.5 1999/07/18 00:59:23 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
+// $Id: bitfield.cc,v 1.6 1999/07/23 02:54:29 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/23 02:54:29 $
 
 //
 //ScryMUD Server Code
@@ -148,21 +148,27 @@ int bitfield::max_bit() const {
 }//max_bit
 
 
-void bitfield::Read(ifstream& ifile) {
+int bitfield::Read(ifstream& ifile) {
    int flag;
    char buf[81];
- 
+
    Clear();
    ifile >> flag;
+
+   if (!ifile) {
+      return -1;
+   }
+
    while (flag != -1) {
       turn_on(flag);
       ifile >> flag;
       
       if (!ifile) {
-         Assert(0, "bitfield::Read");
+         return -1;
       }
    }//while
    ifile.getline(buf,80);  //read rest of line
+   return 0;
 }//Read
 
 

@@ -2,6 +2,8 @@
 
 LOG_FILE=$1
 
+echo -n "In truncate_log.."
+
 if [ $# = "0" ]
 then
    echo "Called as: $*"
@@ -18,6 +20,8 @@ then
 	echo -n "***************  " >> ./log/ERROR.lg
 	date >> log/ERROR.lg
 	cat /tmp/ERROR.lg >> ./log/ERROR.lg
+	tail -3000 ./log/ERROR.lg > /tmp/ERROR.lg.tmp
+	mv /tmp/ERROR.lg.tmp ./log/ERROR.lg
     fi
 
     grep WARN ${LOG_FILE} > /tmp/WARN.lg
@@ -26,7 +30,13 @@ then
 	echo -n "******************  " >> ./log/WARN.lg
 	date >> ./log/WARN.lg
 	cat /tmp/WARN.lg >> ./log/WARN.lg
+	tail -3000 ./log/WARN.lg > /tmp/ERROR.lg.tmp
+	mv /tmp/ERROR.lg.tmp ./log/WARN.lg
     fi
+
+    #  Get rid of crash files if there are too many
+    ls -t ./log/logfile*CRASH* | xargs crash_sanity
+    ls -t ./log/obj_ptr*CRASH* | xargs crash_sanity
 
     exit 0
 
@@ -38,3 +48,5 @@ else
 
    exit 1
 fi
+
+echo "...  Done with truncate log."
