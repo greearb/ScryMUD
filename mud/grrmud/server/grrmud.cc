@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.46 2004/07/05 23:06:35 eroper Exp $
-// $Revision: 1.46 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
+// $Id: grrmud.cc,v 1.47 2004/07/09 04:55:22 eroper Exp $
+// $Revision: 1.47 $  $Author: eroper $ $Date: 2004/07/09 04:55:22 $
 
 //
 //ScryMUD Server Code
@@ -77,6 +77,8 @@
 #include "ServerConfig.h"
 #include "spells.h"
 #include <new>
+
+#include "telnet.h"
 
 #define MAX_HOSTNAME    256
 
@@ -518,51 +520,11 @@ int main(int argc, char** argv) {
    //String::setLogFile(&mudlog);
    extra_memory = (char*)(malloc(20000));
 
-   signal(SIGTERM, (&sig_term_handler));
-   //signal(SIGABRT, (&sig_term_handler));
-   signal(SIGALRM, (&sig_term_handler));
-   signal(SIGFPE, (&sig_term_handler));
-   signal(SIGHUP, (&sig_term_handler));
-   signal(SIGILL, (&sig_term_handler));
-   signal(SIGINT, (&sig_term_handler));
-   signal(SIGIO, (&sig_term_handler));
-   //signal(SIGIOT, (&sig_term_handler));
-   signal(SIGPIPE, (&sig_term_handler));
-   //signal(SIGPOLL, (&sig_term_handler));
-   signal(SIGPROF, (&sig_term_handler));
-   signal(SIGQUIT, (&sig_term_handler));
-   signal(SIGSTOP, (&sig_term_handler));
-   //signal(SIGSYS, (&sig_term_handler));
-   signal(SIGTERM, (&sig_term_handler));
-   
-   // This is like: ctrl-z, no need to catch it.
-   //signal(SIGTRAP, (&sig_term_handler));
-
-   signal(SIGTSTP, (&sig_term_handler));
-   signal(SIGTTIN, (&sig_term_handler));
-   signal(SIGTTOU, (&sig_term_handler));
-   signal(SIGUSR1, (&sig_term_handler));
-   signal(SIGUSR2, (&sig_term_handler));
-   signal(SIGVTALRM, (&sig_term_handler));
-   signal(SIGXCPU, (&sig_term_handler));
-   signal(SIGXFSZ, (&sig_term_handler));
-
-   /* Trap a few beasties, but only once!! */
-   signal(SIGSEGV, (&sig_term_handler));
-   signal(SIGSEGV, (&sig_term_handler));
-
-   std::set_new_handler(scry_new_handler);
-
    String buf(50);
 
    room_list.ensureCapacity(NUMBER_OF_ROOMS + 1);
 
    BOOT_TIME = time(NULL);
-
-   Sprintf(buf, "echo \"%i\" > GRRMUD.PID", getpid());
-   system("rm -f GRRMUD.PID");
-   system(buf);
-   system("chmod a+r GRRMUD.PID");
 
    cout << "ScryMUD version: " << BuildInfo::getVersion() << endl;
    cout << "Built on:        " << BuildInfo::getBuildDate() << endl;
@@ -583,8 +545,33 @@ int main(int argc, char** argv) {
 
    config.read("grrmud.cfg");
    config.readDynamic("dynamic.cfg");
-
    CmdLineInfo::init(argc, argv);
+
+   // Daemonize if we're supposed to.
+   if ( config.daemonize ) {
+      pid_t     pid;
+      if ( ( pid = fork() ) == -1 ) {
+         cout << "Couldn't Fork. Quitting." << endl;
+         exit(-1);
+      } 
+      if ( pid > 0 ) {
+         // Kill the parent
+         do_shutdown = TRUE;
+         return(0);
+      }
+      // The child
+      setsid();
+      close(STDIN_FILENO);
+      close(STDOUT_FILENO);
+      close(STDERR_FILENO);
+   } else {
+   } // config.daemonize
+
+   // Write out our PID to grrmud.pid
+   std::ofstream pid_file("grrmud.pid");
+   pid_file << getpid();
+   pid_file.close();
+   pid_file.clear();
 
    #ifdef USEMYSQL
    if (config.useMySQL) {
@@ -606,6 +593,15 @@ int main(int argc, char** argv) {
    initCmdsArray();
 
    readSiteBanned();
+
+   // setup signal handling AFTER we (potentially) daemonize
+   signal(SIGTERM, (&sig_term_handler));
+   signal(SIGIO, (&sig_term_handler));
+   signal(SIGPIPE, (&sig_term_handler));
+   signal(SIGQUIT, (&sig_term_handler));
+   /* Trap a few beasties, but only once!! */
+   signal(SIGSEGV, (&sig_term_handler));
+   std::set_new_handler(scry_new_handler);
 
    // Drop into our endless loop.
    run_the_game(config.port);
@@ -633,6 +629,18 @@ void run_the_game(int port) {
       mudlog << "Opening mother connection.\n";
 
    mother_desc = s = init_socket(port);
+
+   // If configured to do so, drop permissions as soon as we open the socket.
+   if ( config.suid ) {
+      if ( setgid(config.suid_group) == -1 ) {
+         cout << "Couldn't setgid. Quitting." << endl;
+         exit(-1);
+      }
+      if ( setuid(config.suid_user) == -1 ) {
+         cout << "Couldn't setuid. Quitting." << endl;
+         exit(-1);
+      }
+   }
    
    system("rm -f .reboot"); //if it crashes in this next bit stay down,
                          //the world files are corrupt probably
@@ -691,6 +699,7 @@ void run_the_game(int port) {
 
 
    init_masks();   //set all the masks for miscelaneous bitfields
+
 
    mudlog.log(DBG, "Entering game loop.\n");
 
@@ -990,6 +999,64 @@ void game_loop(int s)  {
          if ((pc_ptr->MODE != MODE_GO_LINKDEAD_PLEASE) && 
              (pc_ptr->MODE != MODE_LOGOFF_NEWBIE_PLEASE) &&
              (pc_ptr->MODE != MODE_QUIT_ME_PLEASE)) {
+
+            /* Yes I need a better place for this, it has to happen before
+             * snooping and has to be able to put crap in the output buffer
+             */
+            {
+               String tmp;
+               int i;
+               int imax;
+               unsigned char telnet_cmd;
+
+               // Process telnet protocol commands
+
+               /* window size negotinations:
+                * (client) IAC WILL NAWS
+                * (server) IAC DO NAWS
+                * (client) IAC SB NAWS WIDTH[1] WIDTH[0] HEIGHT[1] HEIGHT[0] IAC SE
+                *                      < 16 bit value >   < 16 bit value >    
+                * For now though, I'm going to be lazy ;)
+                * (client) IAC WILL NAWS
+                * (server) IAC DON'T NAWS
+                */
+
+               imax = pc_ptr->getInput()->Strlen();
+               tmp.Clear();
+               for(i=0;i<imax;i++) {
+                  if ( pc_ptr->getInput()->charAt(i) == (char)IAC ) {
+                     if ( i+1 < imax )
+                        telnet_cmd = pc_ptr->getInput()->charAt(++i);
+
+                     switch ( telnet_cmd ) {
+                        case WILL:
+                           if ( i+1 < imax ) {
+                              telnet_cmd = pc_ptr->getInput()->charAt(++i);
+                              switch ( telnet_cmd ) {
+                                 /*
+                                    case TELOPT_NAWS:
+                                    pc_ptr->pc->output.append((char)IAC);
+                                    pc_ptr->pc->output.append((char)DO);
+                                    pc_ptr->pc->output.append((char)telnet_cmd);
+                                    break;
+                                    */
+                                 default:
+                                    pc_ptr->pc->output.append((char)IAC);
+                                    pc_ptr->pc->output.append((char)DONT);
+                                    pc_ptr->pc->output.append((char)telnet_cmd);
+                              }
+                           }
+                           break;
+                     }
+                  } //if telnet cmd
+                  else {
+                     tmp.append(pc_ptr->getInput()->charAt(i));
+                  }
+               } //for
+               pc_ptr->getInput()->Clear();
+               pc_ptr->getInput()->append(tmp);
+            } // telnet parser
+
             len = pc_ptr->getInput()->Strlen();
             if (len && ((pc_ptr->getInput()->charAt(len - 1) == '\n') ||
                         pc_ptr->getInput()->Contains('\n')) || (len >= MAX_INPUT_LEN)) {

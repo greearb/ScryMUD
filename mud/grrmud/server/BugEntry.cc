@@ -1,5 +1,5 @@
-// $Id: BugEntry.cc,v 1.13 2004/07/05 23:06:35 eroper Exp $
-// $Revision: 1.13 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
+// $Id: BugEntry.cc,v 1.14 2004/07/09 04:55:22 eroper Exp $
+// $Revision: 1.14 $  $Author: eroper $ $Date: 2004/07/09 04:55:22 $
 
 //
 //ScryMUD Server Code
@@ -632,6 +632,7 @@ int BugCollection::writeHtml() {
 
       dafile << flush;
       dafile.close();
+      dafile.clear();
 
       String cmd(50);
       Sprintf(cmd, "./mv_logs.bash %S", &tmp_name);

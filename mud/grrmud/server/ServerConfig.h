@@ -4,7 +4,8 @@
 #include <string.h>
 #include <string2.h>
 #include <stdlib.h>
-
+#include <sys/types.h>
+#include <unistd.h>
 
 class ServerConfig {
    public:
@@ -14,6 +15,12 @@ class ServerConfig {
 
       void write(char* filename);
       void writeDynamic(char* filename);
+
+      // chroot+daemonize
+      int daemonize;
+      int suid;
+      uid_t suid_user;
+      gid_t suid_group;
 
       // Network
       int port;

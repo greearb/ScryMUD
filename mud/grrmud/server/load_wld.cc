@@ -1,5 +1,5 @@
-// $Id: load_wld.cc,v 1.10 2001/03/29 03:02:32 eroper Exp $
-// $Revision: 1.10 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
+// $Id: load_wld.cc,v 1.11 2004/07/09 04:55:22 eroper Exp $
+// $Revision: 1.11 $  $Author: eroper $ $Date: 2004/07/09 04:55:22 $
 
 //
 //ScryMUD Server Code
@@ -216,10 +216,10 @@ void load_wld() {
    load_boards();  //add messages to all the boards
    load_skill_spells();  //skill/spell DB info
 
-   cout << "Max_Obj# is:  " << Cur_Max_Obj_Num << endl;
-   cout << "Max_Door# is:  " << Cur_Max_Door_Num << endl;
-   cout << "Max_Crit# is:  " << Cur_Max_Crit_Num << endl;
-   cout << "Max_Room# is:  " << Cur_Max_Room_Num << endl;
+   mudlog << "Max_Obj# is:  " << Cur_Max_Obj_Num << endl;
+   mudlog << "Max_Door# is:  " << Cur_Max_Door_Num << endl;
+   mudlog << "Max_Crit# is:  " << Cur_Max_Crit_Num << endl;
+   mudlog << "Max_Room# is:  " << Cur_Max_Room_Num << endl;
    
    init_loads(); /* calculate how many of each item is in game.
                   *these values are stored in the CUR_IN_GAME fields
@@ -252,7 +252,7 @@ void load_wld() {
 
    init_casting_objs(); //Initialize the SkillSpell list
 
-   cout << "The world has been constructed at least somewhat successfully!"
+   mudlog << "The world has been constructed at least somewhat successfully!"
         << endl;
 
    //write_all_zones(); //this used for updating the WORLD DB

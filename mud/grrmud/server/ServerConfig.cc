@@ -2,6 +2,11 @@
 
 ServerConfig::ServerConfig() {
    port=4000;
+
+   daemonize=0;
+   suid=0;
+   suid_user=0;
+   suid_group=0;
    
    bootLoadModifier=300;
    regularLoadModifier=100;
@@ -270,14 +275,31 @@ void ServerConfig::read(char* filename) {
             mySQLport = (int)strtol(val, NULL, 0);
          }
          else if (strcasecmp(key, "useViolenceTimer") == 0) {
-            cout << "Found useViolenceTimer.\n";
             if (strcasecmp(val, "true") == 0) {
                useViolenceTimer=true;
-               cout << "Using useViolenceTimer.\n";
             } else if (strcasecmp(val, "false") == 0) {
                useViolenceTimer=false;
-               cout << "NOT Using useViolenceTimer.\n";
             }
+         } // useViolenceTimer
+         else if (strcasecmp(key, "daemonize") == 0) {
+            if (strcasecmp(val, "true") == 0) {
+               daemonize=true;
+            } else if (strcasecmp(val, "false") == 0) {
+               daemonize=false;
+            }
+         } // daemonize
+         else if (strcasecmp(key, "suid") == 0) {
+            if (strcasecmp(val, "true") == 0) {
+               suid=true;
+            } else if (strcasecmp(val, "false") == 0) {
+               suid=false;
+            }
+         } // suid
+         else if (strcasecmp(key, "suidUser") == 0) {
+            suid_user = (int)strtol(val, NULL, 0);
+         }
+         else if (strcasecmp(key, "suidGroup") == 0) {
+            suid_group = (int)strtol(val, NULL, 0);
          }
       }
    }
@@ -402,6 +424,20 @@ void ServerConfig::write(char* filename) {
    else {
       file << "useViolenceTimer false\n";
    }
+   if (daemonize) {
+      file << "daemonize true\n";
+   }
+   else {
+      file << "daemonize false\n";
+   }
+   if (suid) {
+      file << "suid true\n";
+   }
+   else {
+      file << "suid false\n";
+   }
+   file << "suidUser" << suid_user << '\n';
+   file << "suidGroup" << suid_group << '\n';
 
    file << "maxRedundantDonates " << maxRedundantDonates << '\n';
 
