@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.21 1999/07/16 06:12:52 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/07/16 06:12:52 $
+// $Id: command3.cc,v 1.22 1999/07/18 05:10:17 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/07/18 05:10:17 $
 
 //
 //ScryMUD Server Code
@@ -2333,7 +2333,7 @@ int sockets(critter& pc) {
    show("Verbose list of players:\n", pc);
 
    while ((ptr = cll.next())) {
-      Sprintf(buf, "%S(%i)%P15 %S%P35% S\n", name_of_crit(*ptr, pc.SEE_BIT),
+      Sprintf(buf, "%S(%i)%P15 %S%P35 %S\n", name_of_crit(*ptr, pc.SEE_BIT),
               ptr->LEVEL, &(ptr->pc->host), &(ptr->short_desc));
       pc.show(buf);
    }//while

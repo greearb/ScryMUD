@@ -1,5 +1,5 @@
-// $Id: olc2.cc,v 1.11 1999/07/18 04:16:42 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/18 04:16:42 $
+// $Id: olc2.cc,v 1.12 1999/07/18 05:10:17 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/18 05:10:17 $
 
 //
 //ScryMUD Server Code
@@ -131,8 +131,8 @@ int normalize_obj(object& obj) {
    }
 
    // If not worn is on, then zero out the other worn flags just in case.
-   if (obj.OBJ_FLAGS.get(22)) { 
-      for (int i = 23; i<40; i++) {
+   if (obj.OBJ_FLAGS.get(21)) { 
+      for (int i = 22; i<40; i++) {
          obj.OBJ_FLAGS.turn_off(i);
       }//for
    }//if
