@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.52 2002/02/25 19:35:25 gingon Exp $
-// $Revision: 1.52 $  $Author: gingon $ $Date: 2002/02/25 19:35:25 $
+// $Id: misc.cc,v 1.53 2002/03/03 20:16:53 gingon Exp $
+// $Revision: 1.53 $  $Author: gingon $ $Date: 2002/03/03 20:16:53 $
 
 //
 //ScryMUD Server Code
@@ -44,7 +44,7 @@
 #include "skills.h"
 #include <time.h>
 #include "Filters.h"
-
+#include <math.h>
 
 
 /** calculate the ratio between objects casting spell a spell and the
@@ -482,13 +482,20 @@ void do_regeneration_pcs() {
       // if we are a necromancer we have to stay evil or we don't regen mana
       // poo-poo.
       if ( crit_ptr->isNecromancer() && crit_ptr->getLevel() >= 5 &&
-              (crit_ptr->getAlignment() > (crit_ptr->getLevel()*20*-1)) ) {
+              (crit_ptr->getAlignment() > (crit_ptr->getLevel()*15*-1)) ) {
           crit_ptr->show("You are not evil enough for your deity.\n", HL_DEF);
-
       }
-      // if we are affected by remove hope we get no mana
+      // if we are affected by remove karma we get no mana
       else if ( ! (is_affected_by(REMOVE_KARMA_SKILL_NUM, *crit_ptr)) ) {
-      crit_ptr->MANA += (int)(((((float)(crit_ptr->INT)) + 5.0) / 16.0) *
+
+         if(crit_ptr->isNecromancer()){
+      
+            int zero_point = crit_ptr->LEVEL*15*-1;
+            adj *= (1.73123*log((float)1+((crit_ptr->ALIGN - zero_point) / 
+                   (-1000 - zero_point))));
+         }
+      
+         crit_ptr->MANA += (int)(((((float)(crit_ptr->INT)) + 5.0) / 16.0) *
                               posn_mod *
                               (((float)(crit_ptr->MA_MAX)) / 7.0) *
                               (((float)(crit_ptr->MA_REGEN)) / 100.0) *
