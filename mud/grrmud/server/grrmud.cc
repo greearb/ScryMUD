@@ -1376,7 +1376,6 @@ struct timeval timediff(struct timeval *a, struct timeval *b)  {
 int     init_socket(int port)   {
    int  s;
    int so_reuseaddr_opt;
-   char hostname[MAX_HOSTNAME+1];
    struct sockaddr_in sa;
    struct hostent *hp;
 

@@ -2994,3 +2994,56 @@ void pet(int i_th, const String* vict, critter& pc, room& rm) {
       emote("pets something that's not there.\n", pc, rm, TRUE);
    }//else
 }//pet
+
+void tap(int i_th, const String* vict, critter& pc, room& rm) {
+   String buf(100);
+   Cell<critter*> cll(rm.getCrits());
+   critter* ptr;
+
+   if (pc.POS == POS_SLEEP) {
+      Sprintf(buf,"zzzz... zzz...\n");
+      pc.show(buf);
+      return;
+   }
+
+   if (vict->Strlen()) {
+      critter* crit_ptr = 
+           rm.haveCritNamed(i_th, vict, pc);
+
+      if (!crit_ptr) 
+         show("You don't see that person.\n", pc);
+      else if (crit_ptr == &pc) {
+         show("You tap yourself on the shoulder"
+               " but all it does is confuse you.\n", pc);
+         Sprintf(buf, "taps %s on the should and then spins around in cricles"
+               " trying to catch up to %s.\n", get_himself_herself(pc),
+               get_himself_herself(pc));
+         emote(buf, pc, rm, TRUE);
+      }//if targ and agg is same
+      else {
+         Sprintf(buf, "You walk up to %S and tap them on the shoulder.\n",
+                 name_of_crit(*crit_ptr, pc.SEE_BIT));
+         show(buf, pc);
+         Sprintf(buf, "%S walks up behind you and taps you on the shoulder.\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         buf.Cap();
+         show(buf, *crit_ptr);
+
+         while ((ptr = cll.next())) {
+            if ((ptr != &pc) && (ptr != crit_ptr)) {
+               Sprintf(buf, "%S walks up behind %S and taps them on the"
+                     " shoulder.\n", name_of_crit(pc, ptr->SEE_BIT), 
+                     name_of_crit(*crit_ptr, ptr->SEE_BIT));
+               buf.Cap();
+               show(buf, *ptr);
+            }//if
+         }//while
+      }//else
+   }//if a victim
+   else {      //change these next two lines
+      show("You tap your foot on the ground as you grow impatient.\n", pc);
+      Sprintf(buf, "taps his foot loudly on the ground with an impatient"
+            " look on %s face.\n", get_his_her(pc));
+      pc.emote(buf);
+   }//else
+}//tap

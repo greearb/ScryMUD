@@ -96,5 +96,6 @@ void eyebrow(int i_th, const String* vict, critter& pc, room& rm);
 void whimper(int i_th, const String* vict, critter& pc, room& rm);
 void duck(int i_th, const String* vict, critter& pc, room& rm);
 void pet(int i_th, const String* vict, critter& pc, room& rm);
+void tap(int i_th, const String* vict, critter& pc, room& rm);
 
 #endif

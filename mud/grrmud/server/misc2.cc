@@ -2093,7 +2093,7 @@ String transform(const String &input,
       const PtrList<String> &fragpats, const PtrList<String> &fragreps) {
    String output;
    char lastalpha = 'a';
-   for (int i = 0; i < input.Strlen(); i++) {
+   for (unsigned int i = 0; i < input.Strlen(); i++) {
       // On a symbol, or in the middle of a word
       if (!isalnum(input[i]) || (i > 0 && isalnum(input[i-1]))) {
          Cell<String*> patcll(fragpats);
@@ -2105,7 +2105,7 @@ String transform(const String &input,
             if (input.Strlen() >= pat->Strlen() + i &&
                   strncasecmp(((const char*)input)+i, *pat, pat->Strlen()) == 0) {
                // output.Append(*rep);
-               for (int j=0; j < rep->Strlen(); j++) {
+               for (unsigned int j=0; j < rep->Strlen(); j++) {
                   if (j < pat->Strlen() && isalnum(input[i+j])) lastalpha = input[i+j];
                   output.Append(icharswap(lastalpha, (*rep)[j]));
                }
@@ -2129,7 +2129,7 @@ String transform(const String &input,
                      !isalnum(input[pat->Strlen() + i ])) &&
                   strncasecmp(((const char*)input)+i, *pat, pat->Strlen()) == 0) {
                // output.Append(*rep);
-               for (int j=0; j < rep->Strlen(); j++) {
+               for (unsigned int j=0; j < rep->Strlen(); j++) {
                   if (j < pat->Strlen() && isalnum(input[i+j])) lastalpha = input[i+j];
                   output.Append(icharswap(lastalpha, (*rep)[j]));
                }
@@ -2147,7 +2147,7 @@ String transform(const String &input,
                if (input.Strlen() >= pat->Strlen() + i &&
                      strncasecmp(((const char*)input)+i, *pat, pat->Strlen()) == 0) {
                   // output.Append(*rep);
-                  for (int j=0; j < rep->Strlen(); j++) {
+                  for (unsigned int j=0; j < rep->Strlen(); j++) {
                      if (j < pat->Strlen() && isalnum(input[i+j])) lastalpha = input[i+j];
                      output.Append(icharswap(lastalpha, (*rep)[j]));
                   }
