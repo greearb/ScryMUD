@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.70 2002/02/09 21:50:49 eroper Exp $
-// $Revision: 1.70 $  $Author: eroper $ $Date: 2002/02/09 21:50:49 $
+// $Id: critter.cc,v 1.71 2002/08/15 05:01:16 eroper Exp $
+// $Revision: 1.71 $  $Author: eroper $ $Date: 2002/08/15 05:01:16 $
 
 //
 //ScryMUD Server Code
@@ -26,6 +26,7 @@
 //***********************************************************//
 //************************  mob data  **********************///
 
+#include <arpa/telnet.h>
 #include "script.h"
 #include "critter.h"
 #include "misc.h"
@@ -3999,6 +4000,13 @@ void critter::doPrompt() {
       return;
    }
 
+   char go_ahead_str[] =
+   {
+           (char) IAC,
+           (char) GA,
+           (char) 0
+   };
+
    // for visible exits
    Cell<door*> cll(getCurRoom()->doors);
    door* dr_ptr;
@@ -4128,6 +4136,11 @@ void critter::doPrompt() {
       }//else
    }//for
    targ.Append(pc->input);
+
+   if (! isUsingClient()) {
+      targ.Append(go_ahead_str);
+   }
+
    show(targ);
 
    if (isUsingClient()) {
