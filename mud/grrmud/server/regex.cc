@@ -49,7 +49,7 @@ regex *regex::operator=(String &new_pat) {
    if (re == NULL) {
       Sprintf(err_msg, "REGEX compilation failed at %d: %s\n",
             err_offset, err);
-      delete err;
+      free((void*)err);
       return NULL;
    }
    pattern = new_pat;
