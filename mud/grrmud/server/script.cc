@@ -1,5 +1,5 @@
-// $Id: script.cc,v 1.23 2001/03/29 03:02:34 eroper Exp $
-// $Revision: 1.23 $  $Author: eroper $ $Date: 2001/03/29 03:02:34 $
+// $Id: script.cc,v 1.24 2001/04/21 07:15:29 eroper Exp $
+// $Revision: 1.24 $  $Author: eroper $ $Date: 2001/04/21 07:15:29 $
 
 //
 //ScryMUD Server Code
@@ -599,8 +599,8 @@ char* GenScript::triggers[] = {
    "hit", "insert", "junk", "list", "lock", "look", "meditate", "nod",
    "open", "order", "pay", "pick", "prone", "pull", "push", "put", 
    "remove", "rest", "say", "shake", "shoot", "sit", "slap", "sleep", "stand",
-   "tell", "throw", "turn", "twist", "ungroup", "unlock", "wake", "wear",
-   "wield", "yell", NULL };
+   "tail", "tell", "throw", "turn", "twist", "ungroup", "unlock", "wake",
+   "wear", "wield", "yell", NULL };
 
 
 // Static function, maybe should really check it in the future!
