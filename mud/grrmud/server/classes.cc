@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.19 1999/09/07 07:00:26 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
+// $Id: classes.cc,v 1.20 1999/09/08 06:11:36 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/09/08 06:11:36 $
 
 //
 //ScryMUD Server Code
@@ -312,8 +312,9 @@ void LStringCollection::addLstring(LString& new_string) {
 void LStringCollection::toStringStat(const char* pre, const char* post, 
                                      critter* viewer, String& rslt) {
    LString* ptr = NULL;
-   String buf(100);
-   
+   String buf(100);   
+   rslt.clear();
+
    LanguageE lang = English;
    if (viewer)
       lang = viewer->getLanguage();

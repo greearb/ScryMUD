@@ -1,5 +1,5 @@
-// $Id: Scriptable.cc,v 1.7 1999/09/07 07:00:26 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
+// $Id: Scriptable.cc,v 1.8 1999/09/08 06:11:36 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/09/08 06:11:36 $
 
 //
 //ScryMUD Server Code
@@ -167,8 +167,7 @@ void Scriptable::toStringStat(critter* viewer, String& rslt) {
    }
 
    if (!found_one) {
-      buf.Append("No scripts defined for this object.\n");
-      rslt.append(buf);
+      rslt.append("No scripts defined for this entity.\n");
    }
 }//toStringStat
 

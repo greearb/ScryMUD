@@ -1,5 +1,5 @@
-// $Id: Markup.cc,v 1.3 1999/09/07 07:00:26 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
+// $Id: Markup.cc,v 1.4 1999/09/08 06:11:36 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/09/08 06:11:36 $
 
 //
 //ScryMUD Server Code
@@ -83,13 +83,13 @@ void Markup::toString(const char* pre, const bitfield& flags,
    else {
       rslt = pre;
       
-      rslt.append("<BITFIELD>");
+      rslt.append("<BITFIELD> ");
 
       String val(100);
       for (int i = 0; i <= k; i++) {
          if (flags.get(i)) {
             val = makeSafeForHegTag(flag_names.getName(i, pc));
-            Sprintf(tmp, "%i=\"%S\",  ", i, &val);
+            Sprintf(tmp, "%i=\"%S\" ", i, &val);
             if ((sofar + tmp.Strlen()) > 100) {
                rslt += "\n";
                sofar = tmp.Strlen();

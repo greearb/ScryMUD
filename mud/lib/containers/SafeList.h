@@ -1,5 +1,5 @@
-// $Id: SafeList.h,v 1.3 1999/08/09 06:00:40 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/08/09 06:00:40 $
+// $Id: SafeList.h,v 1.4 1999/09/08 06:11:37 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/09/08 06:11:37 $
 
 //
 //ScryMUD Server Code
@@ -211,7 +211,7 @@ public:
       SCell<T> cell(*this);
       T ldata;
 
-      Assert(data != getNil());
+      Assert(data != getNil(), (const char*)"loseData, data == getNil()");
 
       ldata = cell.next();
       while (ldata != getNil()) {
@@ -235,7 +235,7 @@ public:
       SCell<T> cell(*this);
       T ldata;
 
-      Assert(data != getNil());
+      Assert(data != getNil(), (const char*)"privRemoveObject__, data == getNil()");
 
       ldata = cell.next();
       while (ldata != getNil()) {
@@ -247,7 +247,8 @@ public:
          }//if
          ldata = cell.next();
       }//while
-      Assert(0);
+      
+      Assert(0, (const char*)"privRemoveObject__, could not find data.");
       return getNil(); //never get here.
    }//privRemoveObject__
 
@@ -302,14 +303,14 @@ public:
  
    virtual void prepend(T& data) {
       SCell<T> cell(*this);
-      Assert(data != getNil());
+      Assert(data != getNil(), (const char*)"prepend, data == getNil()");
       cell.insertAfter(data);
       sz++;
    }//push
  
    virtual void append(T& data) {
       SCell<T> C(*this);
-      Assert(data != getNil());
+      Assert(data != getNil(), (const char*)"append, data == getNil()");
       C.insertBefore(data);
       sz++;
    }//put
@@ -352,7 +353,7 @@ public:
       SCell<T> cll(*this);
       int i = 0;
 
-      Assert(val != getNil());
+      Assert(val != getNil(), (const char*)"insertAt, val == getNil()");
 
       sz++;
       T ptr;
@@ -432,26 +433,26 @@ public:
    }//head
 
    virtual int assign(SCell<T>& cll, T& data) {
-      Assert(cll.isInSafeList(this));
+      Assert(cll.isInSafeList(this), (const char*)"assign, cll not in safeList");
       cll.assign(data);
       return TRUE;
    }//Assign
 
    virtual void insertBefore(SCell<T>& cll, T& data) {
-      Assert(cll.isInSafeList(this));
+      Assert(cll.isInSafeList(this), (const char*)"insertBefore, cll not in safeList");
       sz++;
       cll.insertBefore(data);
    }//insertBefore
 
    virtual void insertAfter(SCell<T>& cll, T& data) {
-      Assert(cll.isInSafeList(this));
+      Assert(cll.isInSafeList(this), (const char*)"insertAfter, cll not in safeList");
       sz++;
       cll.insertAfter(data);
    }//insertBefore
 
    virtual T lose(SCell<T>& cll) {
       if (cll.node != header) {
-         Assert(cll.isInSafeList(this));
+         Assert(cll.isInSafeList(this), (const char*)"lose, cll not in safeList");
          handleLosingSCell(cll);
          sz--;
          return cll.lose();
@@ -459,13 +460,14 @@ public:
       else {
          mudlog << "ERROR:  Trying to lose header, this: " << this
                 << " SCell<T>: " << (void*)(&cll) << endl;
-         Assert(0); //Dump core, need to debug this.
+         //Dump core, need to debug this.
+         Assert(0, (const char*)"lose, trying to lose header!!");
          return getNil(); //never get here.
       }//else
    }//insertBefore
 
    virtual int isEmpty() const {
-      Assert((int)header);
+      Assert((int)header, (const char*)"isEmpty, header NULL");
       return (header->next == header);
    }//IsEmpty
 
@@ -487,9 +489,9 @@ public:
       return count;
    }//sz
 
-   virtual int Assert(const int boolean_val) const {
+   virtual int Assert(const int boolean_val, const char* msg) const {
       if (!boolean_val)
-         ::core_dump((const char*)("SafeList2.h"));
+         ::core_dump(msg);
       return TRUE;
    }
 };
@@ -524,7 +526,7 @@ protected:
    SafeList<T>* in_lst;
 
    virtual void insertBefore (T& data) {
-      Assert((int)node);
+      Assert((int)node, (const char*)"insertBefore, node NULL");
       SafeList<T>::Node *N = new SafeList<T>::Node; 
       N->item = data;
       N->prev = node->prev;
@@ -535,7 +537,7 @@ protected:
    }// insert before
 
    virtual int assign(T& data) {
-      Assert(node && data);
+      Assert((int)node, (const char*)"assign, node NULL");
       removedFromList(in_lst, node->item);
       node->item = data;
       addedToList(in_lst, data);
@@ -545,7 +547,7 @@ protected:
 
    /**  INSTERT_AFTER-- Insert an item into a list after a given cell. */
    virtual void insertAfter(T& data) {
-      Assert((int)node);
+      Assert((int)node, (const char*)"insertAfter, node NULL");
       SafeList<T>::Node *N = new SafeList<T>::Node; 
       N->item = data;
       N->prev = node;
@@ -600,9 +602,9 @@ public:
       }//if
    }
 
-   int Assert(const int boolean_val) const {
+   int Assert(const int boolean_val, const char* msg) const {
       if (!boolean_val) {
-         ::core_dump("SCell<T>");
+         ::core_dump(msg);
          return FALSE;
       }
       else

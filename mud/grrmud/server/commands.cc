@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.36 1999/09/07 07:00:26 greear Exp $
-// $Revision: 1.36 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
+// $Id: commands.cc,v 1.37 1999/09/08 06:11:36 greear Exp $
+// $Revision: 1.37 $  $Author: greear $ $Date: 1999/09/08 06:11:36 $
 
 //
 //ScryMUD Server Code
@@ -599,7 +599,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
       }
 
       pc.show(rm.getShortDesc(&pc));
-      if (pc.USING_CLIENT) 
+      if (pc.USING_CLIENT)
          show("</RM_SHORT_DESC>\n", pc);
       else
          show("\n", pc);
@@ -2631,9 +2631,9 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 	    pc.PAUSE += door_ptr->getDistance();
 
          //Sprintf(buf, "leaves %s.\n", direction);
-         String dname = *(door_ptr->getDirection());
+         String dname(*(door_ptr->getDirection()));
          int is_normal_dir = FALSE;
-         for (int i = 1; i<= 10; i++) {
+         for (int i = 0; i< 10; i++) {
             if (strcasecmp(dname, regular_directions[i]) == 0) {
                is_normal_dir = TRUE;
                break;

@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.32 1999/09/07 07:00:27 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
+// $Id: object.cc,v 1.33 1999/09/08 06:11:36 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 1999/09/08 06:11:36 $
 
 //
 //ScryMUD Server Code
@@ -415,7 +415,7 @@ object::~object() {
       ::core_dump("Deleting un-modified object.");
    }//if
 
-   clear();
+   object::clear();
 }//destructor
 
 

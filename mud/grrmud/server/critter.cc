@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.54 1999/09/07 07:00:26 greear Exp $
-// $Revision: 1.54 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
+// $Id: critter.cc,v 1.55 1999/09/08 06:11:36 greear Exp $
+// $Revision: 1.55 $  $Author: greear $ $Date: 1999/09/08 06:11:36 $
 
 //
 //ScryMUD Server Code
@@ -2992,8 +2992,6 @@ void critter::doPrompt() {
       }//else
    }//for
    targ.Append(pc->input);
-   show(targ);
-
    if (isUsingClient()) {
       // HP, HP-MAX, MANA, MANA-MAX, MOV, MOV-MAX
       Sprintf(targ, "<PROMPT %i %i %i %i %i %i> ", // the trailing space is important.
@@ -3001,7 +2999,11 @@ void critter::doPrompt() {
               getMov(), getMovMax());
       show(targ);
    }
+   else if (isUsingColor()) {
+      show(*(getDefaultColor()));
+   }
 
+   show(targ);
 }//doPrompt
 
 critter* critter::getFirstFighting() {

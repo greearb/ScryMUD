@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.35 1999/09/07 07:00:27 greear Exp $
-// $Revision: 1.35 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
+// $Id: misc.cc,v 1.36 1999/09/08 06:11:36 greear Exp $
+// $Revision: 1.36 $  $Author: greear $ $Date: 1999/09/08 06:11:36 $
 
 //
 //ScryMUD Server Code
@@ -1446,18 +1446,20 @@ void do_out_obj_list(SafeList<object*>& lst, critter& pc,
       rslt.clear();
    }
 
-   if (lst.isEmpty() && type_of_list == OBJ_INV) {
+   if (lst.isEmpty()) {
+      if (type_of_list == OBJ_INV) {
+         rslt.append("	[empty]	\n");
+      }//if
+
       if (pc.isUsingClient()) {
          rslt.append("</ITEM_LIST>");
       }
-      else {
-         rslt.append("	[empty]	\n");
-         
+      else {   
          if (pc.isUsingColor()) {
             rslt.append(*(pc.getDefaultColor()));
          }
-         return;
       }
+      return;
    }//if
 
    while ((obj_ptr = cell.next())) {
@@ -1539,10 +1541,10 @@ void do_out_obj_list(SafeList<object*>& lst, critter& pc,
    }//while
 
    if (pc.isUsingClient()) {
-      show("</ITEM_LIST>", pc);
+      rslt.append("</ITEM_LIST>");
    }
    else if (pc.isUsingColor()) {
-      pc.show(*(pc.getDefaultColor()));
+      rslt.append(*(pc.getDefaultColor()));
    }
 
    mudlog.log(DBG, "Done with out_inv.\n");

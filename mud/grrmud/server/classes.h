@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.31 1999/09/07 07:00:26 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
+// $Id: classes.h,v 1.32 1999/09/08 06:11:36 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/09/08 06:11:36 $
 
 //
 //ScryMUD Server Code
@@ -403,7 +403,7 @@ public:
    virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
    virtual int getVisBit() const { return vis_bit; }
-   virtual int isInvisible() const { return getVisBit() | 2; }
+   virtual int isInvisible() const { return getVisBit() & 2; }
 
    virtual int getIdNum() const { return id_num; }
    /** Zone it 'belongs' to. */
