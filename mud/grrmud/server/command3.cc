@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.32 2001/03/29 03:02:29 eroper Exp $
-// $Revision: 1.32 $  $Author: eroper $ $Date: 2001/03/29 03:02:29 $
+// $Id: command3.cc,v 1.33 2001/04/01 06:16:50 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 2001/04/01 06:16:50 $
 
 //
 //ScryMUD Server Code
@@ -1428,6 +1428,7 @@ int mclone(int i_th, const String* item, critter& pc) {
    mob_list[new_num].short_desc = buf;
    mob_list[new_num].setIdNum(new_num);
    mob_list[new_num].setNativeZoneNum(ROOM.getZoneNum());
+   mob_list[new_num].setHomeTown(ROOM.getZoneNum()); //this may be more correct
    mob_list[new_num].CRITTER_TYPE = 2;
    ROOM.gainCritter(&(mob_list[new_num]));
    show("Okay, critter CLONED, its now in your room.\n", pc);

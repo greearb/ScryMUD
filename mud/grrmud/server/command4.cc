@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.38 2001/03/29 03:02:29 eroper Exp $
-// $Revision: 1.38 $  $Author: eroper $ $Date: 2001/03/29 03:02:29 $
+// $Id: command4.cc,v 1.39 2001/04/01 06:16:51 greear Exp $
+// $Revision: 1.39 $  $Author: greear $ $Date: 2001/04/01 06:16:51 $
 
 //
 //ScryMUD Server Code
@@ -1963,7 +1963,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       show("Language (0 English, 1 Spanish, 2 Portugues)\n", pc);
       show("home_room (0 - MAX_ROOMS)   password(3 char mininum)\n", pc);
       show("manager (of store)          ticks_old(0, 500)", pc);
-      show("ticks_till_freedom (0 - 500000)\n", pc);
+      show("ticks_till_freedom (0 - 500000)  home_town(0, max_zones)\n", pc);
       return 0;
    }//if
 
@@ -2178,6 +2178,12 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    else if (strncasecmp(*targ, "wimpy", len1) == 0) {
      if (check_l_range(new_val, 0, 99999, pc, TRUE)) {
         ptr->setWimpy(new_val);
+        flag = TRUE;
+     }//if
+   }//if
+   else if (strncasecmp(*targ, "home_town", len1) == 0) {
+     if (check_l_range(new_val, 0, NUMBER_OF_ZONES, pc, TRUE)) {
+        ptr->setHomeTown(new_val);
         flag = TRUE;
      }//if
    }//if
