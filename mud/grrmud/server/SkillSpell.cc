@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.22 2003/05/08 23:22:07 eroper Exp $
-// $Revision: 1.22 $  $Author: eroper $ $Date: 2003/05/08 23:22:07 $
+// $Id: SkillSpell.cc,v 1.23 2003/05/09 00:09:36 eroper Exp $
+// $Revision: 1.23 $  $Author: eroper $ $Date: 2003/05/09 00:09:36 $
 
 //
 //ScryMUD Server Code
@@ -28,6 +28,7 @@
 
 #include "object.h"
 #include "misc.h"
+#include "misc2.h"
 //these are required for the new spell classes
 #include "dam_spll.h"
 
@@ -403,6 +404,7 @@ int SSCollection::getNumForName(const String& name) {
 String SSCollection::generatePsDotScript() {
    String retval(5000);
    String buf(200);
+   char restrictions;
 
    retval = "digraph ss_graph {\n\tpage=\"8.5,11\";\n\tsize=\"64,30\";\n";
    retval += "\t//orientation=landscape;\n";
@@ -411,6 +413,29 @@ String SSCollection::generatePsDotScript() {
       if (ss_list[i].getIdNum() != 0) {
          Cell<int> cll(ss_list[i].enables);
          int val = 0;
+
+         Sprintf(buf, "\t\"%S\" [label=\"%S", &(ss_list[i].getName()),
+               &(ss_list[i].getName()));
+         retval.Append(buf);
+         restrictions = FALSE;
+         for(int ii=0;ii<NUMBER_OF_CLASSES;ii++) {
+            if ( ss_list[i].restrictions[ii] ) {
+               restrictions = TRUE;
+            }
+         }
+         if ( restrictions ) {
+            Sprintf(buf, "\\nlimit: ");
+            retval.Append(buf);
+            for(int ii=0;ii<NUMBER_OF_CLASSES;ii++) {
+               if (! ss_list[i].restrictions[ii] ) {
+                  Sprintf(buf, "%s ", get_class_name(ii));
+                  retval.Append(buf);
+               }
+            }
+         }
+         Sprintf(buf, "\"];\n");
+         retval.Append(buf);
+
          while ((val = cll.next())) {
             Sprintf(buf, "\t\"%S\" -> \"%S\";\n", &(ss_list[i].getName()),
                     &(getSS(val).getName()));
@@ -436,6 +461,7 @@ String SSCollection::generatePsDotScript() {
 String SSCollection::generateGifDotScript() {
    String retval(5000);
    String buf(200);
+   char restrictions;
 
    retval = "digraph ss_graph {\n\tpage=\"80,80\";\n\tsize=\"80,80\";\n";
    retval += "\t//orientation=landscape;\n";
@@ -444,6 +470,29 @@ String SSCollection::generateGifDotScript() {
       if (ss_list[i].getIdNum() != 0) {
          Cell<int> cll(ss_list[i].enables);
          int val = 0;
+
+         Sprintf(buf, "\t\"%S\" [label=\"%S", &(ss_list[i].getName()),
+               &(ss_list[i].getName()));
+         retval.Append(buf);
+         restrictions = FALSE;
+         for(int ii=0;ii<NUMBER_OF_CLASSES;ii++) {
+            if ( ss_list[i].restrictions[ii] ) {
+               restrictions = TRUE;
+            }
+         }
+         if ( restrictions ) {
+            Sprintf(buf, "\\nlimit: ");
+            retval.Append(buf);
+            for(int ii=0;ii<NUMBER_OF_CLASSES;ii++) {
+               if (! ss_list[i].restrictions[ii] ) {
+                  Sprintf(buf, "%s ", get_class_name(ii));
+                  retval.Append(buf);
+               }
+            }
+         }
+         Sprintf(buf, "\"];\n");
+         retval.Append(buf);
+
          while ((val = cll.next())) {
             Sprintf(buf, "\t\"%S\" -> \"%S\";\n", &(ss_list[i].getName()),
                     &(getSS(val).getName()));
