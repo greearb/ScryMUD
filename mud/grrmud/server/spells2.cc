@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.21 2001/10/27 02:17:29 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
+// $Id: spells2.cc,v 1.22 2001/10/27 18:03:59 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 2001/10/27 18:03:59 $
 
 //
 //ScryMUD Server Code
@@ -920,18 +920,20 @@ void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
        ptr->bonus_duration += lvl / 2;
 
        if (ptr->bonus_duration > 40) {
-          if (agg.STR > 20) {
-             if (d(1,13) == 13) { //ouch, lost some CON!!
-                agg.show("Oops...somehow you think that spell might have backfired!!\n");
-                agg.STR--;
-             }
-          }//if
-          else if (agg.DEX > 20) {
-             if (d(1,13) == 13) { //ouch, lost some CON!!
-                agg.show("Oops...somehow you think that spell might have backfired!!\n");
-                agg.DEX--;
-             }
-          }//if
+          if (vict.pc) {
+             if (vict.STR > 20) {
+                if (d(1,13) == 13) { //ouch, lost some CON!!
+                   vict.show("Oops...somehow you think that spell might have backfired!!\n");
+                   vict.STR--;
+                }
+             }//if
+             else if (vict.DEX > 20) {
+                if (d(1,13) == 13) { //ouch, lost some CON!!
+                   vict.show("Oops...somehow you think that spell might have backfired!!\n");
+                   vict.DEX--;
+                }
+             }//if
+          }
        }
 
        show("Ok.\n", agg);
@@ -1588,52 +1590,54 @@ void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
        agg.MANA -= spell_mana;
      
      if (d(1,13) == 13) { //ouch, lost some CON!!
-        if (agg.ATTACKS >= 3) {
-           agg.ATTACKS--;
-           agg.show("You fall too your knees in pain..feeling momentarily lost in your limbs!\n");
-           agg.ATTACKS--;
-        }
-        else {
-           agg.show("As you cast the spell you feel it tear something from your very soul!\n");
-           agg.CON--;
+        if (vict.pc) {
+           if (vict.ATTACKS >= 3) {
+              vict.ATTACKS--;
+              vict.show("You fall too your knees in pain..feeling momentarily lost in your limbs!\n");
+              vict.ATTACKS--;
+           }
+           else {
+              vict.show("As you cast the spell you feel it tear something from your very soul!\n");
+              vict.CON--;
+           }
         }
      }//if
 
      if (ptr) {
-       ptr->bonus_duration += lvl/4 + 2;
-       show("Ok.\n", agg);
+        ptr->bonus_duration += lvl/4 + 2;
+        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/4 + 4), 
-           vict.affected_by);
-       vict.ATTACKS++;
-
-       if (&vict == &agg) {
-         show("Your reflexes are taken to a whole new level!\n", 
-              agg);
-         emote("moves with a quickness quite unlike before!\n", agg,
-               room_list[agg.getCurRoomNum()], TRUE);
-       }//if
-       else {
-         Sprintf(buf, "You hasten %S's movement.\n", 
-                 name_of_crit(vict, agg.SEE_BIT));
-         show(buf, agg);
-         Sprintf(buf, "%S hastens your movements!\n", 
-                 name_of_crit(agg, vict.SEE_BIT));
-         buf.Cap();
-         show(buf, vict);
-         Sprintf(buf, "hastens %S's movements!",
-                 name_of_crit(vict, ~0));
-         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-       }//else
+        Put(new stat_spell_cell(spell_num, lvl/4 + 4), 
+            vict.affected_by);
+        vict.ATTACKS++;
+        
+        if (&vict == &agg) {
+           show("Your reflexes are taken to a whole new level!\n", 
+                agg);
+           emote("moves with a quickness quite unlike before!\n", agg,
+                 room_list[agg.getCurRoomNum()], TRUE);
+        }//if
+        else {
+           Sprintf(buf, "You hasten %S's movement.\n", 
+                   name_of_crit(vict, agg.SEE_BIT));
+           show(buf, agg);
+           Sprintf(buf, "%S hastens your movements!\n", 
+                   name_of_crit(agg, vict.SEE_BIT));
+           buf.Cap();
+           show(buf, vict);
+           Sprintf(buf, "hastens %S's movements!",
+                   name_of_crit(vict, ~0));
+           emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+        }//else
      }//else
    }//if worked
    else { //not canned && LOST concentration
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
-     emote("obviously forgot part of the spell!", agg, 
-           room_list[agg.getCurRoomNum()], TRUE);
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
+      emote("obviously forgot part of the spell!", agg, 
+            room_list[agg.getCurRoomNum()], TRUE);
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else lost concentration
    agg.PAUSE += 1;   // increment pause_count
 }//do_cast_haste
