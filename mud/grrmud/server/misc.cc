@@ -1946,7 +1946,10 @@ void out_vehicles(const List<door*>& lst, critter& pc) {
    
    while ( (door_ptr = cell.next()) ) {
       room_ptr = door_ptr->getDestRoom();
-      if ( room_ptr->isVehicle() &&
+      if ( 
+            (room_ptr) &&
+            (room_ptr->isInUse()) &&
+            (room_ptr->isVehicle()) &&
             (room_ptr != pc.getCurRoom()) //dont show us our own veh.
          ) {
          veh_ptr = static_cast<vehicle*>(room_ptr);
