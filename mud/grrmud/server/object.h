@@ -285,6 +285,7 @@ public:
    int isCanteen() const;
    int isTwoHanded() const;
    int isBoat() const { return OBJ_FLAGS.get(62); }
+   int isContainer() const { return obj_flags.get(54); }
 
    void setComplete();
    void setIncomplete();

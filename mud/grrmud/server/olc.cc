@@ -480,7 +480,7 @@ void do_olc(critter& pc) {
          OLC_OBJ->OBJ_IN_ZONE = ROOM.getZoneNum();
 
                         /* check if we should do bag next */
-         if (OLC_OBJ->obj_flags.get(54)) {
+         if (OLC_OBJ->isContainer()) {
             O_COUNT = 9; //read in a bag
          }//if
          else {
