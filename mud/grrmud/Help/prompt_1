@@ -18,6 +18,7 @@ prompt with special letter combinations as follows:
 %g      gold on hand            %G      gold in bank
 %1      medical conditions      %2      visibility conditions
 %R      room name               %E      visible exits
+%w	weight being carried	%W	max weight
 %%      a '%' symbol            %N      Newline
 
 Note on medical conditions:

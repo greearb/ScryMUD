@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.67 2002/01/05 01:42:37 eroper Exp $
-// $Revision: 1.67 $  $Author: eroper $ $Date: 2002/01/05 01:42:37 $
+// $Id: critter.cc,v 1.68 2002/01/05 03:21:43 eroper Exp $
+// $Revision: 1.68 $  $Author: eroper $ $Date: 2002/01/05 03:21:43 $
 
 //
 //ScryMUD Server Code
@@ -4103,6 +4103,14 @@ void critter::doPrompt() {
                }//while
                reg_disp.Strip();
                targ.Append(reg_disp);
+               break;
+            case 'w':   /* weight currently being carried */
+               Sprintf(conv_buf, "%i", CRIT_WT_CARRIED);
+               targ.Append(conv_buf);
+               break;
+            case 'W':   /* weight currently being carried */
+               Sprintf(conv_buf, "%i", CRIT_MAX_WT_CARRY);
+               targ.Append(conv_buf);
                break;
              default:
                targ.Append(PROMPT_STRING[i]);
