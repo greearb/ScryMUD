@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.31 2002/01/04 00:30:23 eroper Exp $
-// $Revision: 1.31 $  $Author: eroper $ $Date: 2002/01/04 00:30:23 $
+// $Id: const.h,v 1.32 2002/01/05 01:42:37 eroper Exp $
+// $Revision: 1.32 $  $Author: eroper $ $Date: 2002/01/05 01:42:37 $
 
 //
 //ScryMUD Server Code
@@ -413,6 +413,24 @@ enum ComparisonTypeE {
 enum BugTypeE {
    BT_IDEAS,
    BT_BUGS
+};
+
+/* Used by critter:show() to be passed on to colorize() */
+enum hilite_type {
+   HL_GOSSIP,
+   HL_SAY,
+   HL_YELL,
+   HL_TELL,
+   HL_DESC,
+   HL_OBJ_LIST,
+   HL_MOB_LIST,
+   HL_DEF,
+   HL_BAK,
+   HL_BATTLE,
+   HL_USR1,
+   HL_USR2,
+   HL_USR3,
+   HL_ROOM
 };
 
 extern ServerConfig config;

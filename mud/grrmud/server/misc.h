@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.22 2002/01/04 02:21:24 eroper Exp $
-// $Revision: 1.22 $  $Author: eroper $ $Date: 2002/01/04 02:21:24 $
+// $Id: misc.h,v 1.23 2002/01/05 01:42:38 eroper Exp $
+// $Revision: 1.23 $  $Author: eroper $ $Date: 2002/01/05 01:42:38 $
 
 //
 //ScryMUD Server Code
@@ -98,7 +98,7 @@ void close_files();
 
 int detect(int see_bit, int vis_bit); //does bit comparison
 
-void show(const char* message, critter& pc);
+void show(const char* message, critter& pc, hilite_type hl_type = HL_DEF);
 void show_all_but_2(critter& A, critter& B, const char* message, 
                     room& rm); 
 void show_all(const char* msg, const room& rm);
@@ -187,7 +187,7 @@ void do_tick();
 void do_mini_tick(); //every round of battle....
 bool isNightTime();
 
-String *colorize(const char *input, critter &pc); 
+String *colorize(const char *input, critter &pc, hilite_type hl_type); 
 
 
 #endif 

@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.44 2001/03/29 03:02:33 eroper Exp $
-// $Revision: 1.44 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
+// $Id: room.cc,v 1.45 2002/01/05 01:42:38 eroper Exp $
+// $Revision: 1.45 $  $Author: eroper $ $Date: 2002/01/05 01:42:38 $
 
 //
 //ScryMUD Server Code
@@ -1918,15 +1918,15 @@ void room::stat(critter& pc) {
    String buf2(100);
 
    if (names.peekFront()) {
-      show(*(names.peekFront()), pc);
+      pc.show(*(names.peekFront()));
    }//if
 
    Sprintf(buf2, "  Belongs to zone:  %i.\n", getZoneNum());
-   show(buf2, pc);
+   pc.show(buf2);
 
-   show(short_desc, pc);
-   show("\n", pc);
-   show(long_desc, pc);
+   pc.show(short_desc);
+   pc.show("\n");
+   pc.show(long_desc);
    pc.show("\n");
 
    Cell<KeywordPair*> cll(keywords);
@@ -1940,14 +1940,14 @@ void room::stat(critter& pc) {
 
    out_field(room_flags, pc, ROOM_FLAGS_NAMES);
 
-   show("\n", pc);
+   pc.show("\n");
    Sprintf(buf2, "v_bit: %i  mv$: %i  r_num: %i  pause: %i  fall_to: %i\n", 
            getVisBit(), getMovCost(), getRoomNum(), getPause(), getFallTo());
-   show(buf2, pc);
+   pc.show(buf2);
 
    Sprintf(buf2, "Number of critters:  %i  Number of Scripts Pending: %i\n\n",
            critters.size(), pending_scripts.size());
-   show(buf2, pc);
+   pc.show(buf2);
 
    if (room_proc_scripts.size() > 0) {
       listScripts(pc);
@@ -2178,8 +2178,7 @@ int room::doRclear(int new_rm_num) {
          int is_dead;
          crit_ptr->doGoToRoom(new_rm_num, NULL, NULL, is_dead, getIdNum(), 1);
          if (!is_dead) {
-            show("The void has swallowed your previous location!!\n", 
-                 *crit_ptr);
+            crit_ptr->show("The void has swallowed your previous location!!\n");
          }
       }
       else {
@@ -2620,7 +2619,7 @@ void room::showAllCept(const char* msg, critter* pc) const {
    while ((crit_ptr = cell.next())) { 
       if (crit_ptr != pc)  
          if (crit_ptr->POS < POS_SLEEP)  
-            show(msg, *crit_ptr);
+            crit_ptr->show(msg);
    }//while
 
    Cell<object*> cll(inv);
@@ -2630,8 +2629,8 @@ void room::showAllCept(const char* msg, critter* pc) const {
      if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
        if (crit_ptr != pc) {
          if (crit_ptr->POS < POS_SLEEP) {
-           show("#####", *crit_ptr);
-           show(msg, *crit_ptr);
+           crit_ptr->show("#####");
+           crit_ptr->show(msg);
          }//if
        }//if
      }//if
@@ -2709,7 +2708,7 @@ may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n")
 
    if (!found_one) {
       buf.Append("No scripts defined for this room.\n");
-      show(buf, pc);
+      pc.show(buf);
    }
 }//listScripts
 
@@ -2725,7 +2724,7 @@ void room::removeScript(String& trigger, int i_th, critter& pc) {
          if (sofar == i_th) {
             delete ptr;
             ptr = room_proc_scripts.lose(cll);
-            show("Deleted it...\n", pc);
+            pc.show("Deleted it...\n");
             return;
          }//if
          else {
@@ -2738,7 +2737,7 @@ void room::removeScript(String& trigger, int i_th, critter& pc) {
       }
    }//while
 
-   show("Didn't find that script..\n", pc);
+   pc.show("Didn't find that script..\n");
 }//removeScript
 
 

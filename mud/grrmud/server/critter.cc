@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.66 2002/01/03 19:31:11 eroper Exp $
-// $Revision: 1.66 $  $Author: eroper $ $Date: 2002/01/03 19:31:11 $
+// $Id: critter.cc,v 1.67 2002/01/05 01:42:37 eroper Exp $
+// $Revision: 1.67 $  $Author: eroper $ $Date: 2002/01/05 01:42:37 $
 
 //
 //ScryMUD Server Code
@@ -3898,12 +3898,12 @@ void critter::setMov(int i) {
    MOV = i;
 }
 
-void critter::show(const char* msg) {
-   ::show(msg, *this);
+void critter::show(const char* msg, hilite_type hl_type = HL_DEF) {
+   ::show(msg, *this, hl_type);
 }
 
-void critter::show(CSentryE which_string) {
-   show(CSHandler::getString(which_string, getLanguageChoice()));
+void critter::show(CSentryE which_string, hilite_type hl_type = HL_DEF) {
+   show(CSHandler::getString(which_string, getLanguageChoice()), hl_type);
 }
 
 LanguageE critter::getLanguageChoice() const {

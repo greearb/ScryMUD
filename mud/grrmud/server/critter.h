@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.55 2002/01/03 19:31:11 eroper Exp $
-// $Revision: 1.55 $  $Author: eroper $ $Date: 2002/01/03 19:31:11 $
+// $Id: critter.h,v 1.56 2002/01/05 01:42:38 eroper Exp $
+// $Revision: 1.56 $  $Author: eroper $ $Date: 2002/01/05 01:42:38 $
 
 //
 //ScryMUD Server Code
@@ -1067,8 +1067,8 @@ public:
    void releasePageBreak() { if (pc) PC_FLAGS.turn_off(23); }
    int isInPageBreak() const { return (pc && PC_FLAGS.get(23)); }
 
-   void show(const char* msg);
-   void show(CSentryE); //Pick language of choice, if available.
+   void show(const char* msg, hilite_type hl_type = HL_DEF);
+   void show(CSentryE, hilite_type hl_type = HL_DEF); //Pick language of choice, if available.
 
    object* loseInv(object* obj); //returns the object removed. (or NULL)
    void loseObjectFromGame(object* obj);

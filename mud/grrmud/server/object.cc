@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.35 2001/10/15 22:11:32 eroper Exp $
-// $Revision: 1.35 $  $Author: eroper $ $Date: 2001/10/15 22:11:32 $
+// $Id: object.cc,v 1.36 2002/01/05 01:42:38 eroper Exp $
+// $Revision: 1.36 $  $Author: eroper $ $Date: 2002/01/05 01:42:38 $
 
 //
 //ScryMUD Server Code
@@ -1677,7 +1677,7 @@ may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n")
 
    if (!found_one) {
       buf.Append("No scripts defined for this object.\n");
-      show(buf, pc);
+      pc.show(buf);
    }
 }//listScripts
 
@@ -1693,7 +1693,7 @@ void object::removeScript(String& trigger, int i_th, critter& pc) {
          if (sofar == i_th) {
             delete ptr;
             ptr = obj_proc_scripts.lose(cll);
-            show("Deleted it...\n", pc);
+            pc.show("Deleted it...\n");
             return;
          }//if
          else {
@@ -1706,7 +1706,7 @@ void object::removeScript(String& trigger, int i_th, critter& pc) {
       }
    }//while
 
-   show("Didn't find that script..\n", pc);
+   pc.show("Didn't find that script..\n");
 }//removeScript
 
 

@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.40 2002/01/04 02:21:23 eroper Exp $
-// $Revision: 1.40 $  $Author: eroper $ $Date: 2002/01/04 02:21:23 $
+// $Id: misc.cc,v 1.41 2002/01/05 01:42:38 eroper Exp $
+// $Revision: 1.41 $  $Author: eroper $ $Date: 2002/01/05 01:42:38 $
 
 //
 //ScryMUD Server Code
@@ -127,7 +127,7 @@ short check_l_range(long i, long l, long h, critter& pc, short disp,
             pc.show(buf);
          }
          else 
-            show("The number is too low.\n", pc);
+            pc.show("The number is too low.\n");
          return FALSE;
       }//if
       return FALSE;
@@ -139,7 +139,7 @@ short check_l_range(long i, long l, long h, critter& pc, short disp,
             pc.show(buf);
          }
          else
-            show("The number is too high.\n", pc);
+            pc.show("The number is too high.\n");
          return FALSE;
       }//if
       return FALSE;
@@ -1169,11 +1169,11 @@ void decrease_timed_affecting_pcs() {  //will decrease all
 
          if (crit_ptr->MODE == MODE_NORMAL) {
             if (crit_ptr->HUNGER == 0)
-                     show("You are famished.\n", *crit_ptr);
+                     crit_ptr->show("You are famished.\n");
             if (crit_ptr->THIRST == 0)
-               show("You are thirsty.\n", *crit_ptr);
+               crit_ptr->show("You are thirsty.\n");
             if (crit_ptr->DRUGGED == 0) {
-               show("You no longer feel drugged.\n", *crit_ptr);
+               crit_ptr->show("You no longer feel drugged.\n");
                crit_ptr->DRUGGED = -1;
             }//if
          }//if
@@ -1188,7 +1188,7 @@ void decrease_timed_affecting_pcs() {  //will decrease all
                Sprintf(buf, "%S flickers.\n", 
                        long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
-               show(buf, *crit_ptr);
+               crit_ptr->show(buf);
             }//if
          }//if
 
@@ -1199,7 +1199,7 @@ void decrease_timed_affecting_pcs() {  //will decrease all
                Sprintf(buf, "%S dims and glows its last.\n", 
                        long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
-               show(buf, *crit_ptr);
+               crit_ptr->show(buf);
                crit_ptr->crit_flags.turn_off(USING_LIGHT_SOURCE);
                room_list[crit_ptr->getCurRoomNum()].checkLight(FALSE);
                crit_ptr->EQ[11]->short_desc += "(OUT)";
@@ -1255,11 +1255,11 @@ void decrease_timed_affecting_lds() {
 
          if (crit_ptr->MODE == MODE_NORMAL) {
             if (crit_ptr->HUNGER == 0)
-                     show("You are famished.\n", *crit_ptr);
+                     crit_ptr->show("You are famished.\n");
             if (crit_ptr->THIRST == 0)
-               show("You are thirsty.\n", *crit_ptr);
+               crit_ptr->show("You are thirsty.\n");
             if (crit_ptr->DRUGGED == 0) {
-               show("You no longer feel drugged.\n", *crit_ptr);
+               crit_ptr->show("You no longer feel drugged.\n");
                crit_ptr->DRUGGED = -1;
             }//if
          }//if
@@ -1274,7 +1274,7 @@ void decrease_timed_affecting_lds() {
                Sprintf(buf, "%S flickers.\n", 
                     long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
-               show(buf, *crit_ptr);
+               crit_ptr->show(buf);
             }//if
          }//if
 
@@ -1285,7 +1285,7 @@ void decrease_timed_affecting_lds() {
                Sprintf(buf, "%S dims and glows its last.\n", 
                     long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
-               show(buf, *crit_ptr);
+               crit_ptr->show(buf);
                crit_ptr->crit_flags.turn_off(USING_LIGHT_SOURCE);
                room_list[crit_ptr->getCurRoomNum()].checkLight(FALSE);
             }//if
@@ -1668,7 +1668,7 @@ void add_spell_affecting_obj(int spell, int duration, object& vict) {
 }//gain spell_affected_by    
 
 
-void show(const char* message, critter& pc) {
+void show(const char* message, critter& pc, hilite_type hl_type = HL_DEF) {
    //log(message);
 
    String *output;
@@ -1698,11 +1698,11 @@ void show(const char* message, critter& pc) {
          return;
 
       // This is commented out because it's not fully functional as of yet.
-      // output = colorize(message, pc);
+      output = colorize(message, pc, hl_type);
 
       if (pc.pc->output.Strlen() < OUTPUT_MAX_LEN) {
-         pc.pc->output.Append(message);
-         // pc.pc->output.Append(*output);
+         //pc.pc->output.Append(message);
+         pc.pc->output.Append(*output);
       }//if
    }//if
 }//show 
@@ -1722,7 +1722,7 @@ void show_all_but_2(critter& A, critter& B, const char* msg,
    while ((crit_ptr = cell.next()))  { 
       if ((crit_ptr != &A) && (crit_ptr != &B)) 
          if (crit_ptr->POS < POS_SLEEP)  
-            show(msg, *crit_ptr);
+            crit_ptr->show(msg);
    }//while
 
    Cell<object*> cll(*(rm.getInv()));
@@ -1731,8 +1731,8 @@ void show_all_but_2(critter& A, critter& B, const char* msg,
    while ((obj = cll.next())) {
      if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
        if (crit_ptr->POS < POS_SLEEP) {
-         show("#####", *crit_ptr);
-         show(msg, *crit_ptr);
+         crit_ptr->show("#####");
+         crit_ptr->show(msg);
        }//if
      }//if
    }//while
@@ -1785,7 +1785,7 @@ void show_all(const char* msg) {
 
    while ((crit_ptr = cell.next()))  { 
       if (crit_ptr->pc && crit_ptr->PC_FLAGS.get(14)) {
-         show(msg, *crit_ptr);
+         crit_ptr->show(msg);
       }//if
    }//while
 }//show_all_info
@@ -1799,12 +1799,12 @@ void out_str(const List<String*>& lst, critter& pc) {
 
    if (pc.pc) {
       if (IsEmpty(lst)) {
-         show("You see nothing special.\n", pc);
+         pc.show("You see nothing special.\n");
          return;
       }//if
       while ((string = cell.next())) {
-         show(*string, pc);
-         show("\n", pc);
+         pc.show(*string);
+         pc.show("\n");
       }//while
    }//if
 }//out_str
@@ -1826,10 +1826,13 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
    }
 
    if (pc.isUsingClient())
-      show("<MOB_LIST>", pc);
+      pc.show("<MOB_LIST>");
+
+   /* KHAAVREN DELETE ME MARKER 
    else if (pc.isUsingColor()) {
       pc.show(*(pc.getMobListColor()));
    }
+   */
 
    while ((crit_ptr = cell.next())) {
       if (mudlog.ofLevel(DBG)) {
@@ -1867,14 +1870,14 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
                buf.setCharAt(1, '*');
             }//if
             
-            show(buf, pc);
+            pc.show(buf, HL_MOB_LIST);
             crit_ptr->affected_by.head(cell2);
             while ((sp = cell2.next())) {
                if (sp->stat_spell == SANCTUARY_SKILL_NUM) {
                   Sprintf(buf, "\t\t%s glows brightly.\n", 
                           get_he_she(*crit_ptr));
                   buf.Cap();
-                  show(buf, pc);
+                  pc.show(buf, HL_MOB_LIST);
                   break; //cause there are no others to display now
                }//if
             }//while
@@ -1914,7 +1917,7 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
             if (crit_ptr->VIS_BIT & 2) {
                buf.setCharAt(1, '*');
             }//if
-            show(buf, pc);
+            pc.show(buf, HL_MOB_LIST);
             
             crit_ptr->affected_by.head(cell2);
             while ((sp = cell2.next())) {
@@ -1922,7 +1925,7 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
                   Sprintf(buf, "\t\t%s glows brightly.\n", 
                           get_he_she(*crit_ptr));
                   buf.Cap();
-                  show(buf, pc);
+                  pc.show(buf, HL_MOB_LIST);
                   break;
                }//if
             }//while
@@ -1957,7 +1960,7 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
                buf.setCharAt(1, '*');
             }//if
             buf.Cap();
-            show(buf, pc);
+            pc.show(buf, HL_MOB_LIST);
             
             crit_ptr->affected_by.head(cell2);
             while ((sp = cell2.next())) {
@@ -1965,7 +1968,7 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
                   Sprintf(buf, "\t\t%s glows brightly.\n", 
                           get_he_she(*crit_ptr));
                   buf.Cap();
-                  show(buf, pc);
+                  pc.show(buf, HL_MOB_LIST);
                   break;
                }//if
             }//while
@@ -1977,11 +1980,13 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
       }//if
    }//while
    if (pc.USING_CLIENT) {
-      show("</MOB_LIST>", pc);
+      pc.show("</MOB_LIST>");
    }
+   /* KHAAVREN DELETE ME MARKER 
    else if (pc.isUsingColor()) {
       pc.show(*(pc.getDefaultColor()));
    }
+   */
 }//out_crit
 
 
@@ -1996,20 +2001,25 @@ void out_inv(const List<object*>& lst, critter& pc,
    mudlog.log(TRC, "In out_inv.\n");
 
    if (pc.isUsingClient()) {
-      show("<ITEM_LIST>", pc);
+      pc.show("<ITEM_LIST>");
    }
+   /* KHAAVREN DELETE ME MARKER 
    else if (pc.isUsingColor()) {
       pc.show(*(pc.getObjListColor()));
    }
-   
+   */
+
    if (IsEmpty(lst) && type_of_list == OBJ_INV) {
-      show("        [empty]        \n", pc);
+      pc.show("        [empty]        \n");
       if (pc.isUsingClient()) {
-         show("</ITEM_LIST>", pc);
+         pc.show("</ITEM_LIST>");
       }
+
+   /* KHAAVREN DELETE ME MARKER 
       else if (pc.isUsingColor()) {
          pc.show(*(pc.getDefaultColor()));
       }
+      */
 
       mudlog.log(DBG, "Done with out_inv (empty).\n");
       return;
@@ -2052,7 +2062,7 @@ void out_inv(const List<object*>& lst, critter& pc,
                   buf.Prepend("*");
                }//if
 
-               show(buf, pc);
+               pc.show(buf, HL_OBJ_LIST);
             }//if
          }//while
          break;
@@ -2090,7 +2100,7 @@ void out_inv(const List<object*>& lst, critter& pc,
                if (obj_ptr->OBJ_VIS_BIT & 2) {
                   buf.Prepend("*");
                }//if
-               show(buf, pc);
+               pc.show(buf, HL_OBJ_LIST);
             }//if
          }//while
          break;
@@ -2100,11 +2110,13 @@ void out_inv(const List<object*>& lst, critter& pc,
       }//switch type_of_list
 
    if (pc.isUsingClient()) {
-      show("</ITEM_LIST>", pc);
+      pc.show("</ITEM_LIST>");
    }
+   /* KHAAVREN DELETE ME MARKER 
    else if (pc.isUsingColor()) {
       pc.show(*(pc.getDefaultColor()));
    }
+   */
 
    mudlog.log(DBG, "Done with out_inv.\n");
 
@@ -2517,7 +2529,7 @@ bool isNightTime() {
       return false;
 }
 
-String *colorize(const char *message, critter &pc)
+String *colorize(const char *message, critter &pc, hilite_type hl_type)
 {
 
    static String output;
@@ -2534,8 +2546,64 @@ String *colorize(const char *message, critter &pc)
             dont_reset = TRUE;
          }
 
-         if ( *i == '\n' && ( ! dont_reset ) ) {
+        /* To prevent bleeding we reset to the default color for the output
+         * type at the encounter of every newline or ^0 &0 reset. Okay this
+         * conditional is very confusing so I'll simplify it verbally here. If
+         * we envounter a newline, OR if we have a color change code AND a 0
+         * which means reset we need to do this. We also need to do this the
+         * prior to any other processing hence an even ickier logic.
+         */
+         if ( ( *i == '\n' && ( ! dont_reset ) )
+               || (
+                  ( ( *i == '^' ) || ( *i == '&' ) )
+                  &&
+                  ( *(i+1) == '0' ) )  
+               || i == message
+            ) {
+
             output.Append(ANSI_NORMAL);
+
+            switch (hl_type) {
+               case HL_GOSSIP:
+                  output.Append(*(pc.getGossipColor()));
+                  break;
+               case HL_SAY:
+                  output.Append(*(pc.getSayColor()));
+                  break;
+               case HL_YELL:
+                  output.Append(*(pc.getYellColor()));
+                  break;
+               case HL_TELL:
+                  output.Append(*(pc.getTellColor()));
+                  break;
+               case HL_DESC:
+                  output.Append(*(pc.getDescColor()));
+                  break;
+               case HL_OBJ_LIST:
+                  output.Append(*(pc.getObjListColor()));
+                  break;
+               case HL_MOB_LIST:
+                  output.Append(*(pc.getMobListColor()));
+                  break;
+               case HL_DEF:
+                  output.Append(*(pc.getDefaultColor()));
+                  break;
+               case HL_BAK:
+                  output.Append(*(pc.getBackGroundColor()));
+                  break;
+               case HL_BATTLE:
+                  output.Append(*(pc.getBattleColor()));
+                  break;
+               case HL_USR1:
+                  break;
+               case HL_USR2:
+                  break;
+               case HL_USR3:
+                  break;
+               case HL_ROOM:
+                  output.Append(*(pc.getRoomColor()));
+                  break;
+            }
          }
 
          if ( *i == '^' ) {
@@ -2545,7 +2613,6 @@ String *colorize(const char *message, critter &pc)
             }
             switch (*i) {
                case '0':
-                  output.Append(ANSI_NORMAL);
                   break;
 
                case 'n':
@@ -2668,7 +2735,6 @@ String *colorize(const char *message, critter &pc)
             }
             switch (*i) {
                case '0':
-                  output.Append(ANSI_NORMAL);
                   break;
                case 'n':
                   output.Append(ESC_SEQ);
