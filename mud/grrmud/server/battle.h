@@ -1,5 +1,5 @@
-// $Id: battle.h,v 1.8 1999/09/06 02:24:25 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/09/06 02:24:25 $
+// $Id: battle.h,v 1.9 1999/09/06 07:12:50 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/09/06 07:12:50 $
 
 //
 //ScryMUD Server Code
@@ -44,7 +44,7 @@ void agg_kills_vict(critter& agg, critter& vict,
                     int& show_vict_tags);  //death of a critter
 void crit_dies(critter& pc); //indirect deaths
 
-void disburse_xp(critter& agg, const critter& vict);
+void disburse_xp(critter& agg, critter& vict);
 void dead_crit_to_corpse(critter& vict, int& show_vict_tags);
 void gain_xp(critter& crit, const long xp, const short do_output); 
 void gain_level(critter& crit);

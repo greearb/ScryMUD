@@ -1,5 +1,5 @@
-// $Id: pet_spll.cc,v 1.10 1999/08/29 01:17:17 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/29 01:17:17 $
+// $Id: pet_spll.cc,v 1.11 1999/09/06 07:12:52 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
 
 //
 //ScryMUD Server Code
@@ -196,8 +196,7 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
    object* corpse = NULL;
    critter* pet = NULL;
 
-   if (!(corpse = have_obj_numbered(ROOM.getInv(), 1, CORPSE_OBJECT,
-				    pc))) {
+   if (!(corpse = ROOM.getObjNumbered(1, CORPSE_OBJECT, pc))) {
       show("You need a corpse in order to animate it!\n", pc);
       return;
    }//if

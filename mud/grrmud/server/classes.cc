@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.17 1999/09/06 02:24:25 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/09/06 02:24:25 $
+// $Id: classes.cc,v 1.18 1999/09/06 07:12:50 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/09/06 07:12:50 $
 
 //
 //ScryMUD Server Code
@@ -39,6 +39,15 @@
 #include "lang_strings.h"
 
 
+int LstrArray::_cnt = 0;
+
+LstrArray::LstrArray(int length, const CSentryE* _names,
+                     const CSentryE col_name) 
+      : len(length), names(_names), header(col_name) {
+   _cnt++;
+}
+
+
 const char* LstrArray::getHeader(critter* viewer) const {
    return cstr(header, *viewer);
 }
@@ -48,6 +57,30 @@ const char* LstrArray::getName(int idx, critter* viewer) const {
       return cstr(names[idx], *viewer);
    return "";
 }
+
+/** put names into the buf for display */
+void LstrArray::listNames(String& buf, critter* viewer) const {
+   String tmp(200);
+
+   buf = getHeader(viewer);
+   buf += cstr(CS_DEFINED, *viewer);
+   int sofar = 0;
+
+   for (int i = 0; i<len; i++) {
+      Sprintf(tmp, "[%i] %s, ", i, getName(i, viewer));
+      if ((sofar + tmp.Strlen()) > 80) {
+         buf += "\n\t";
+         sofar = tmp.Strlen();
+      }
+      else {
+         sofar += tmp.Strlen();
+      }
+      buf += tmp;
+   }
+   buf += "\n";
+}//listNames
+
+
 
 int MTPair::write(ostream& dafile) {
    dafile << key << "=\"" << val << "\" ";

@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.41 1999/09/06 02:24:28 greear Exp $
-// $Revision: 1.41 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
+// $Id: room.cc,v 1.42 1999/09/06 07:12:52 greear Exp $
+// $Revision: 1.42 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
 
 //
 //ScryMUD Server Code
@@ -164,6 +164,36 @@ critter* room::findNextProcMob() {
    return NULL;
 }//findNextProcMob
 
+KeywordPair* room::haveKeyword(int i_th, const String* name,
+                               critter* viewer, int& sofar) {
+   
+   SCell<KeywordPair*> cell(keywords);
+   KeywordPair* ptr;
+   int count = 0, ptr_v_bit;
+   int c_bit = ~0;
+   LanguageE lang = English;
+   if (viewer) {
+      c_bit = viewer->getSeeBit();
+      lang = viewer->getLanguage();
+   }
+
+   if (name->Strlen() == 0) 
+      return NULL;
+
+   while ((ptr = cell.next())) {
+      ptr_v_bit = (ptr->getVisBit() | getVisBit());
+      if (detect(c_bit, ptr_v_bit)) {
+         if (ptr->isNamed(*name, lang)) {
+            count++;
+            sofar++;
+            if (count == i_th) {
+               return ptr;
+            }//if
+         }//if
+      }//if
+   }//while
+   return NULL;
+}
 
 
 void room::recursivelyLoad() { //mobs and objects
@@ -1740,3 +1770,50 @@ String* room::getShortDesc(int see_bit) {
       return &UNKNOWN;
    }
 }
+
+
+int room::haveMinObj(int cnt, int obj_num) {
+   SCell<object*> cll(inv);
+   object* ptr;
+   int count = 0;
+
+   if (cnt == 0)
+      return FALSE;
+
+   while ((ptr = cll.next())) {
+      count += ptr->getObjCountByNumber(obj_num, 0);
+
+      if (ptr->getIdNum() == obj_num) {
+         count++;
+      }//if obj nums agree
+
+      if (count >= cnt) {
+         return TRUE;
+      }//if
+   }//while
+
+   return FALSE;
+}//haveObjNumbered
+
+
+object* room::getObjNumbered(int cnt, int obj_num, critter& viewer) {
+   SCell<object*> cll(inv);
+   object* ptr;
+   int count = 0;
+
+   if (cnt == 0)
+      return NULL;
+
+   while ((ptr = cll.next())) {
+      if (viewer.canDetect(*ptr)) {
+         if (ptr->getIdNum() == obj_num) {
+            count++;
+            if (count == cnt) {
+               return ptr;
+            }//if
+         }//if obj nums agree
+      }
+   }//while
+
+   return NULL;
+}//getObjNumbered

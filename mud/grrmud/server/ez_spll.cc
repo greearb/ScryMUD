@@ -1,5 +1,5 @@
-// $Id: ez_spll.cc,v 1.16 1999/09/01 06:00:03 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
+// $Id: ez_spll.cc,v 1.17 1999/09/06 07:12:52 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
 
 //
 //ScryMUD Server Code
@@ -1022,8 +1022,8 @@ void do_cast_enchant_weapon(object& vict, critter& agg, int is_canned,
      }//for
 
      /* now increment HIT and DAM affects */
-     StatBonus* dm_ptr = has_stat_affect(8, vict);
-     StatBonus* ht_ptr = has_stat_affect(7, vict);
+     StatBonus* dm_ptr = vict.haveStatAffect(8);
+     StatBonus* ht_ptr = vict.haveStatAffect(7);
 
      for (i = 0; i<4; i++) {
         if (d(1,2) == 2) {
@@ -1114,8 +1114,8 @@ void do_cast_enchant_armor(object& vict, critter& agg, int is_canned,
    agg.incrementPause();
 
    if (do_effects) {
-      StatBonus* ac_ptr = has_stat_affect(9, vict);
-      StatBonus* spll_ptr = has_stat_affect(32, vict);
+      StatBonus* ac_ptr = vict.hasStatAffect(9);
+      StatBonus* spll_ptr = vict.hasStatAffect(32);
 
      /* first do AC decrementation */
       if (!ac_ptr)

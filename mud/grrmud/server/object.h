@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.34 1999/09/06 02:24:28 greear Exp $
-// $Revision: 1.34 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
+// $Id: object.h,v 1.35 1999/09/06 07:12:52 greear Exp $
+// $Revision: 1.35 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
 
 //
 //ScryMUD Server Code
@@ -305,6 +305,7 @@ public:
    int getObjCountByNumber(int onum, int sanity);
 
    int getCurRoomNum();
+   room* getCurRoom();
 
    /* Found in obj_cmds.cc */
    /**  Move all in room out some door.  Does no checks, just puts em
@@ -329,6 +330,8 @@ public:
    int com_zecho(const String* msg, room& rm);
    int wizchat(const char* message, room& rm);
    int obj_pause(int ticks);
+
+   StatBonus* haveStatAffect(int stat_num);
 
    virtual int processInput(String& input, room& rm); /* for object scripts */
 

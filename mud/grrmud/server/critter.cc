@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.52 1999/09/06 02:24:27 greear Exp $
-// $Revision: 1.52 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
+// $Id: critter.cc,v 1.53 1999/09/06 07:12:51 greear Exp $
+// $Revision: 1.53 $  $Author: greear $ $Date: 1999/09/06 07:12:51 $
 
 //
 //ScryMUD Server Code
@@ -1885,7 +1885,7 @@ void critter::checkForBattle(room& rm) {
    rm.checkForBattle(*this);
 }
 
-int critter::canDetect(const critter& other) const {
+int critter::canDetect(const Entity& other) const {
    return detect(getSeeBit(), other.getVisBit());
 }
 
@@ -2356,13 +2356,36 @@ int critter::canBeHurled() {
    return !(CRIT_FLAGS.get(25));
 }
 
-int critter::haveObjNumbered(int cnt, int obj_num) {
+object* critter::getObjNumbered(int cnt, int obj_num) {
+   SCell<object*> cll(inv);
+   object* ptr;
+   int count = 0;
+
+   if (cnt == 0)
+      return NULL;
+
+   while ((ptr = cll.next())) {
+      if (canDetect(*ptr)) {
+         if (ptr->getIdNum() == obj_num) {
+            count++;
+            if (count == cnt) {
+               return ptr;
+            }//if
+         }//if obj nums agree
+      }
+   }//while
+
+   return NULL;
+}//getObjNumbered
+
+
+int critter::haveMinObj(int cnt, int obj_num) {
    SCell<object*> cll(inv);
    object* ptr;
    int count = 0;
 
    if (mudlog.ofLevel(DBG)) {
-      mudlog << "haveObjNumbered: cnt: " << cnt << " obj_num: " 
+      mudlog << "haveMinObj: cnt: " << cnt << " obj_num: " 
              << obj_num << endl;
    }
 
@@ -3580,6 +3603,20 @@ int critter::findItemBuyPrice(object& item, critter& pc) {
 
    return price;
 }//findItemBuyPrice
+
+int critter::getLinesOnPage() {
+   if (pc) {
+      return pc->lines_on_page;
+   }
+   return 5000;
+}
+
+
+void critter::setLinesOnPage(int i) {
+   if (pc) {
+      pc->lines_on_page = i;
+   }
+}
 
 
 void critter::transferShopDataTo(critter& sink) {

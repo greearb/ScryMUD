@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.24 1999/08/30 06:30:41 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
+// $Id: const.h,v 1.25 1999/09/06 07:12:51 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/09/06 07:12:51 $
 
 //
 //ScryMUD Server Code
@@ -65,7 +65,6 @@ extern const LstrArray SHOP_DATA_FLAGS_NAMES;
 extern const LstrArray TEACH_DATA_FLAGS_NAMES;
 extern const LstrArray PC_DATA_FLAGS_NAMES;
 extern const LstrArray CRIT_FLAGS_NAMES;
-extern const LstrArray DOOR_DATA_FLAGS_NAMES;
 extern const LstrArray VEHICLE_FLAGS_NAMES;
 extern const LstrArray ROOM_FLAGS_NAMES;
 extern const LstrArray OBJ_FLAGS_NAMES;
@@ -601,7 +600,6 @@ extern SafeList<critter*>   affected_mobs; /* list those affected*/
 extern SafeList<struct object*>    affected_objects; /* ditto for objs */
 extern SafeList<critter*>   pc_list;      //head of pc list  
 extern SafeList<critter*>   linkdead_list;  //holds link dead folks
-extern PtrArray<critter>   proc_action_mobs; //holds mob-proc'ing mobs
 
 
 extern const char* CensoredStrings[];

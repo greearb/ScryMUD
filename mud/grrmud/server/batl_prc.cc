@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.12 1999/09/01 06:00:02 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/09/01 06:00:02 $
+// $Id: batl_prc.cc,v 1.13 1999/09/06 07:12:50 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/09/06 07:12:50 $
 
 //
 //ScryMUD Server Code
@@ -784,10 +784,10 @@ void alert_room_proc(int rm_num, int alert_type, critter& targ,
 }//alert_room_proc
 
 
-critter* find_weakest(List<critter*>& lst) {
-   Cell<critter*> cll(lst);
+critter* find_weakest(SafeList<critter*>& lst) {
+   SCell<critter*> cll(lst);
    critter* ptr;
-   critter* weakest = Top(lst);
+   critter* weakest = lst.peekFront();
    
    while ((ptr = cll.next())) {
       if (ptr == weakest)

@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.35 1999/09/06 02:24:26 greear Exp $
-// $Revision: 1.35 $  $Author: greear $ $Date: 1999/09/06 02:24:26 $
+// $Id: command4.cc,v 1.36 1999/09/06 07:12:50 greear Exp $
+// $Revision: 1.36 $  $Author: greear $ $Date: 1999/09/06 07:12:50 $
 
 //
 //ScryMUD Server Code
@@ -1437,7 +1437,6 @@ int do_give(critter& targ, critter& pc, object& obj) {
    gain_eq_effects(obj, NULL, targ, -1, FALSE, deleted_obj); //don't do msgs
 
    if (!deleted_obj) {
-      do_domob_give_proc(targ, pc, obj); //this can recurse but twice I believe
       
       String cmd = "give";
       String obj_num;

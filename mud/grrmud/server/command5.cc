@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.35 1999/09/06 02:24:27 greear Exp $
-// $Revision: 1.35 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
+// $Id: command5.cc,v 1.36 1999/09/06 07:12:51 greear Exp $
+// $Revision: 1.36 $  $Author: greear $ $Date: 1999/09/06 07:12:51 $
 
 //
 //ScryMUD Server Code
@@ -1085,7 +1085,7 @@ int mvnum(int i_th, const String* name, critter& pc) {
       i_th = 0;
 
    for (i = i_th; i<NUMBER_OF_MOBS; i++) {
-      if (mob_is_named(mob_list[i], *name)) {
+      if (mob_list[i].isNamed(*name, &pc)) {
 	 Sprintf(buf, "[%i] %S\n", i, mob_list[i].getShortDesc(&pc));
 	 show(buf, pc);
       }//if
@@ -1129,7 +1129,7 @@ int dvnum(int i_th, const String* name, critter& pc) {
       i_th = 0;
 
    for (i = i_th; i<NUMBER_OF_DOORS; i++) {
-      if (door_is_named(door_list[i], *name)) {
+      if (door_list[i].isNamed(*name, &pc)) {
 	 Sprintf(buf, "[%i] %S\n", i, door_list[i].getLongDesc(&pc));
 	 show(buf, pc);
       }//if
@@ -2156,7 +2156,7 @@ int dsys(int i, const String& cmd, const String& arg1, critter& pc) {
 
       if (do_door) {
          pc.show("\n----------------------->> DOOR FLAGS <<---------------------\n");
-         DOOR_DATA_FLAGS_NAMES.listNames(buf, &pc);
+         CLOSABLE_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
          pc.show("\n");
       }
@@ -2250,8 +2250,8 @@ By:              %s\n\n",
            affected_rooms.size(), affected_objects.size());
    pc.show(buf);
 
-   Sprintf(buf, "\tproc_action_mobs: %i \t pulsed_proc_mobs: %i\n",
-           proc_action_mobs.getCurLen(), pulsed_proc_mobs.size());
+   Sprintf(buf, "\tNULL: %i \t pulsed_proc_mobs: %i\n",
+           0, pulsed_proc_mobs.size());
    pc.show(buf);
 
    Sprintf(buf, "\tpulsed_proc_rooms: %i \t pulsed_proc_objects: %i\n",

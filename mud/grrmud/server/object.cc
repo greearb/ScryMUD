@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.30 1999/09/01 06:00:03 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
+// $Id: object.cc,v 1.31 1999/09/06 07:12:52 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
 
 //
 //ScryMUD Server Code
@@ -496,6 +496,9 @@ void object::addStatAffect(StatBonus* ptr) {
    stat_affects.prepend(ptr);
 }
 
+room* object::getCurRoom() {
+   return &(room_list[getCurRoomNum()]);
+}
 
 int object::getCurRoomNum() {
    if (getContainer()) {
@@ -1434,3 +1437,27 @@ String* object::getInRoomDesc(critter* observer) {
       return &UNKNOWN;
    }
 }
+
+object* object::haveObjNamed(int i_th, const String* name, critter* viewer) {
+   int foo = 0;
+   int c_bit = ~0;
+   LanguageE lang = English;
+   if (viewer) {
+      c_bit = viewer->getSeeBit();
+      lang = viewer->getLanguage();
+   }
+   return ::have_obj_named(inv, i_th, name, c_bit, *(getCurRoom()),
+                           foo, lang);
+}
+
+StatBonus* object::haveStatAffect(int stat_num) {
+   Cell<StatBonus*> cll(stat_affects);
+   StatBonus* ptr;
+
+   while ((ptr = cll.next())) {
+      if (ptr->stat == stat_num)
+         return ptr;
+   }//while
+   return NULL;
+}//is_affected_by
+

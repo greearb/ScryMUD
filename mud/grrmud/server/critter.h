@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.47 1999/09/06 02:24:27 greear Exp $
-// $Revision: 1.47 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
+// $Id: critter.h,v 1.48 1999/09/06 07:12:51 greear Exp $
+// $Revision: 1.48 $  $Author: greear $ $Date: 1999/09/06 07:12:51 $
 
 //
 //ScryMUD Server Code
@@ -751,7 +751,16 @@ public:
       short_desc = sdesc;
    }
 
-   int haveObjNumbered(int count, int obj_num);
+   /** Returns TRUE if room contains in it's inventory (and inventory's inv),
+    * at least cnt objects numbered obj_num.
+    */
+   int haveMinObj(int cnt, int obj_num);
+
+   /** Returns the i_th object of VNUM obj_num.  It must be in the
+    * player's inventory.
+    */
+   object* getObjNumbered(int i_th, int obj_num);
+
    /** Viewer may be self, but may not be as well. */
    object* haveObjNamed(int i_th, const String* name, critter* viewer);
    /** Viewer is self. */
@@ -895,7 +904,7 @@ public:
    int shouldDoPrompt() { return PC_FLAGS.get(10); }
    int shouldDoTank() { return PC_FLAGS.get(4); }
    int canDetectMagic() { return (mob || (pc && PC_FLAGS.get(18))); }
-   int canDetect(const critter& other) const;
+   int canDetect(const Entity& other) const;
    int canDive() const { return CRIT_FLAGS.get(19); }
    int isUsingClient() const ;
    int isUsingColor();
@@ -1014,7 +1023,7 @@ public:
 
    void show(const char* msg);
    void show(CSentryE); //Pick language of choice, if available.
-   void show(LString& msg);
+   void show(LString& msg) { show((String)(msg)); }
    void show(String& msg);
    void show(LStringCollection& msg, int show_all = FALSE);
    void show(const String* msg);

@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.34 1999/09/06 02:24:28 greear Exp $
-// $Revision: 1.34 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
+// $Id: room.h,v 1.35 1999/09/06 07:12:52 greear Exp $
+// $Revision: 1.35 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
 
 //
 //ScryMUD Server Code
@@ -243,6 +243,14 @@ public:
    virtual door* findDoor(int i_th, const String* direction, critter& viewer, int& sofar);
    virtual door* findDoor(int i_th, const String* direction, critter& viewer);
    virtual door* findDoor(int i_th, const String* direction);
+
+   /** Returns TRUE if room contains in it's inventory (and inventory's inv),
+    * at least cnt objects numbered obj_num.
+    */
+   int haveMinObj(int cnt, int obj_num);
+
+   object* getObjNumbered(int cnt, int obj_num, critter& viewer);
+
 
    virtual void gainCritter(critter* crit);
    virtual critter* removeCritter(critter* crit);

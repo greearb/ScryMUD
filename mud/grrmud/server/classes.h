@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.29 1999/09/06 02:24:25 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/09/06 02:24:25 $
+// $Id: classes.h,v 1.30 1999/09/06 07:12:50 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/09/06 07:12:50 $
 
 //
 //ScryMUD Server Code
@@ -146,7 +146,7 @@ public:
 class LstrArray {
 protected:
    int len;
-   CSentryE* names;
+   const CSentryE* names;
    CSentryE header;
    static int _cnt;
 public:
@@ -154,9 +154,7 @@ public:
     */
    LstrArray(int length, const CSentryE* names, const CSentryE col_name);
    
-   ~LstrArray() {
-      _cnt--;
-   }
+   ~LstrArray() { _cnt--; }
 
    int getLength() const { return len; }
    const CSentryE* getNames() const { return (const CSentryE*)names; }

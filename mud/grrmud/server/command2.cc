@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.45 1999/09/06 02:24:26 greear Exp $
-// $Revision: 1.45 $  $Author: greear $ $Date: 1999/09/06 02:24:26 $
+// $Id: command2.cc,v 1.46 1999/09/06 07:12:50 greear Exp $
+// $Revision: 1.46 $  $Author: greear $ $Date: 1999/09/06 07:12:50 $
 
 //
 //ScryMUD Server Code
@@ -261,7 +261,7 @@ int lock(int i_th, const String* name, critter& pc) {
                pc.show(CS_ALREADY_LOCKED);
             }//if
             else { //lock it
-               if (pc.haveObjNumbered(1, dr_ptr->getKeyNum())) {
+               if (pc.getObjNumbered(1, dr_ptr->getKeyNum())) {
                   Sprintf(buf, cstr(CS_YOU_LOCK, pc), dr_ptr->getName(&pc));
                   show(buf, pc);
                   dr_ptr->lock();
@@ -273,7 +273,6 @@ int lock(int i_th, const String* name, critter& pc) {
                   String cmd = "lock";
                   ROOM.checkForProc(cmd, NULL_STRING, pc,
                                     dr_ptr->getDrData()->getIdNum());
-                  
                   return 0;
                }//if have key
                else {
@@ -315,7 +314,7 @@ int lock(int i_th, const String* name, critter& pc) {
                else {
                   object* key = NULL;
                   int posn = -1;
-                  key = have_obj_numbered(pc.inv, 1, ob_ptr->getKeyNum(), pc);
+                  key = pc.getObjNumbered(1, ob_ptr->getKeyNum());
                   if (!key) {
                      for (int i = 1; i<MAX_EQ; i++) {
                         if (pc.EQ[i] && 
@@ -392,7 +391,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                //       << dr_ptr->getKeyNum() << endl;
                //mudlog << "Current room:  " << pc.getCurRoomNum() << endl;
                
-               key = have_obj_numbered(pc.inv, 1, dr_ptr->getKeyNum(), pc);
+               key = pc.getObjNumbered(1, dr_ptr->getKeyNum());
                if (!key) {
                   for (int i = 1; i<MAX_EQ; i++) {
                      if (pc.EQ[i] && 
@@ -479,8 +478,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                   object* key = NULL;
                   int posn = -1;
                   
-                  key = have_obj_numbered(pc.inv, 1, ob_ptr->getKeyNum(),
-                                          pc);
+                  key = pc.getObjNumbered(1, ob_ptr->getKeyNum());
                   if (!key) {
                      for (int i = 1; i<MAX_EQ; i++) {
                         if (pc.EQ[i] && 

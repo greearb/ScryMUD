@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.24 1999/09/06 02:24:28 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
+// $Id: misc2.h,v 1.25 1999/09/06 07:12:52 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
 
 //
 //ScryMUD Server Code
@@ -57,8 +57,6 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
                     critter& pc, room* aux_rm = NULL, critter* aux_crit = NULL,
                     int do_msg = TRUE);
 
-StatBonus* has_stat_affect(int affect_num, object& obj);
-
 void leave_room_effects(room& rm, critter& pc);
 void leave_room_effects(room& rm, object& obj);
 
@@ -85,9 +83,6 @@ String owner_of_zone(int rm_num);
 short zone_is_total_loaded(int znum);
 short zone_is_locked(int znum);
 
-
-object* have_obj_numbered(const SafeList<object*>& lst, const int i_th,
-                          const int obj_num, critter& viewer);
 
 const String* next_mov_dir(room& car);
 short is_car_at_dest(room& car);
@@ -118,7 +113,6 @@ void clear_crit_list(SafeList<critter*>& lst);
 void clear_obj_list(SafeList<object*>& lst);
 
 //void critter::doBecomeNonPet();
-const String* single_obj_name(object& obj, int see_bit);
 
 const char* get_himself_herself(critter& pc);
 const char* get_him_her(critter& pc);

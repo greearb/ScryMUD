@@ -1,5 +1,5 @@
-// $Id: script.cc,v 1.21 1999/09/01 06:00:04 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/09/01 06:00:04 $
+// $Id: script.cc,v 1.22 1999/09/06 07:12:52 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
 
 //
 //ScryMUD Server Code
@@ -412,15 +412,12 @@ int script_jump(int on_test, String* cooked_strs, int* cooked_ints,
       obj6 = 0;
    }
 
-   if ((obj1 <= 1) || (pc.haveObjNumbered(count1, obj1))) {
-      if ((obj2 <= 1) || (pc.haveObjNumbered(count2, obj2))) {
-         if ((obj3 <= 1) || (pc.haveObjNumbered(count3, obj3))) {
-            if ((obj4 <= 1) || 
-                (pc.haveObjNumbered(count4, obj4))) {
-               if ((obj5 <= 1) ||
-                   (pc.haveObjNumbered(count5, obj5))) {
-                  if ((obj6 <= 1) ||
-                      (pc.haveObjNumbered(count6, obj6))) {
+   if ((obj1 <= 1) || (pc.haveMinObj(count1, obj1))) {
+      if ((obj2 <= 1) || (pc.haveMinObj(count2, obj2))) {
+         if ((obj3 <= 1) || (pc.haveMinObj(count3, obj3))) {
+            if ((obj4 <= 1) || (pc.haveMinObj(count4, obj4))) {
+               if ((obj5 <= 1) || (pc.haveMinObj(count5, obj5))) {
+                  if ((obj6 <= 1) || (pc.haveMinObj(count6, obj6))) {
                      if (mudlog.ofLevel(SCRIPT)) {
                         mudlog << "Returning TRUE" << endl;
                      }

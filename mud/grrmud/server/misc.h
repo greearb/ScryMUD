@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.18 1999/09/06 02:24:28 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
+// $Id: misc.h,v 1.19 1999/09/06 07:12:52 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
 
 //
 //ScryMUD Server Code
@@ -150,7 +150,7 @@ object*  have_obj_named(SafeList<object*>& lst, const int i_th,
  * in two lists that look like one list to the user.  
  * (ie list_merchandise, buy)
  */
-int obj_named_count(const SafeList<object*>& lst, const String* name,
+int obj_named_count(SafeList<object*>& lst, const String* name,
                     const int see_bit, const room& rm);
 
 /* DEPRECATED, use getName(...) instead. */
@@ -162,9 +162,6 @@ String* long_name_of_obj(object& obj, int see_bit);
 char* get_his_her(const critter& crit);
 char* get_hisself_herself(const critter& crit);
 char* get_he_she(const critter& crit);
-
-int mob_is_named(const critter& pc, const String& name);
-int door_is_named(const door_data& dr, const String& name);
 
 short is_banned(const String& hostname);
 short is_newbie_banned(const String& ip);

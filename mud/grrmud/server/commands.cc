@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.34 1999/09/06 02:24:27 greear Exp $
-// $Revision: 1.34 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
+// $Id: commands.cc,v 1.35 1999/09/06 07:12:51 greear Exp $
+// $Revision: 1.35 $  $Author: greear $ $Date: 1999/09/06 07:12:51 $
 
 //
 //ScryMUD Server Code
@@ -2586,8 +2586,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
             object* token = NULL;
             int posn = -1;
             
-	    token = have_obj_numbered(pc.inv, 1, door_ptr->getTokenNum(),
-                                      pc);
+	    token = pc.getObjNumbered(1, door_ptr->getTokenNum());
             if (!token) {
                for (int i = 1; i<MAX_EQ; i++) {
                   if (pc.EQ[i] && 
@@ -2889,8 +2888,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
 
    if ((obj.OBJ_FLAGS.get(1)) && (pc.ALIGN < -350)) {
       if (do_msg) {
-  	 Sprintf(buf, cstr(CS_TOO_EVIL, pc), single_obj_name(obj, 
-              pc.SEE_BIT));
+  	 Sprintf(buf, cstr(CS_TOO_EVIL, pc), obj.getShortName(&pc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, pc too evil.\n");
@@ -2900,7 +2898,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
                                    350))) {
       if (do_msg) {
          Sprintf(buf, cstr(CS_TOO_NEUTRAL, pc),
-	 single_obj_name(obj, pc.SEE_BIT));
+                 obj.getShortName(&pc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, pc to neutral.\n");
@@ -2909,7 +2907,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(3)) && (pc.ALIGN > 350)) {
       if (do_msg) {
          Sprintf(buf, cstr(CS_TOO_GOOD, pc),
-                 single_obj_name(obj, pc.SEE_BIT));
+                 obj.getShortName(&pc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, pc to good.\n");

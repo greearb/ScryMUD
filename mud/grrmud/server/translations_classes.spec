@@ -1,5 +1,5 @@
-# $Id: translations_classes.spec,v 1.2 1999/08/25 06:35:12 greear Exp $
-# $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+# $Id: translations_classes.spec,v 1.3 1999/09/06 07:12:52 greear Exp $
+# $Revision: 1.3 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
 
 # The syntax is as follows:
 # ENUM_NAME LANGUAGE "TEXT" LANGUAGE "TEXT" ... ~
@@ -59,5 +59,9 @@ CS_NO_TRAVEL_FLY
 
 CS_NO_TRAVEL_ZLOCKED
 	eng "That direction has been locked to vehicles.\n"
+	~
+
+CS_DEFINED
+	eng " (DEFINED)\n\t"
 	~
 

@@ -1,5 +1,5 @@
-// $Id: spec_prc.h,v 1.4 1999/06/25 04:02:55 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/25 04:02:55 $
+// $Id: spec_prc.h,v 1.5 1999/09/06 07:12:52 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
 
 //
 //ScryMUD Server Code
@@ -56,18 +56,4 @@ int do_wand_scroll_proc(object* vict, int proc_num, critter& pc,
 int do_shot_proc(critter& targ, critter& pc, short did_hit,
                   int& is_targ_dead); //assumes SMOB
 
-int do_domob_give_proc(critter& targ, critter& pc, object& obj);
-int do_domob_say_proc(critter& targ, critter& pc, const String& msg);
-int do_domob_bow_proc(critter& targ, critter& pc);
-int do_domob_curse_proc(critter& targ, critter& pc);
-
-int pass_domob_checks(critter& mob, critter& pc);
-
 #endif
-
-
-
-
-
-
-

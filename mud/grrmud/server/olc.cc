@@ -1,5 +1,5 @@
-// $Id: olc.cc,v 1.19 1999/09/06 02:24:28 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
+// $Id: olc.cc,v 1.20 1999/09/06 07:12:52 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
 
 //
 //ScryMUD Server Code
@@ -2219,7 +2219,7 @@ void do_olc(critter& pc) {
       show("These flags are set so far:\n", pc);
       if (OLC_DOOR->isVehicleExit())
          OLC_DOOR->setUnOpenable(TRUE);
-      Markup::toString(NULL, OLC_DOOR->getFlags(), DOOR_DATA_FLAGS_NAMES, &pc,
+      Markup::toString(NULL, OLC_DOOR->getFlags(), CLOSABLE_FLAGS_NAMES, &pc,
                        NULL, buf);
       pc.show(buf);
       break;
