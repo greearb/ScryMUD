@@ -572,11 +572,11 @@ void critter::doLogin() {
                            mplayers.Append("[");
                            mplayers.Append(ptr->pc->host);
                            mplayers.Append("], ");
-                        }
-                     }
+                        }//if
+                     }//while
                      if (show) {
                         mplayers.dropFromEnd(2);
-                        mplayers.Append(".");
+                        mplayers.Append(".\n");
                         pc_list.head(cll);
                         while((ptr = cll.next())) {
                            if (ptr->isImmort()) {
