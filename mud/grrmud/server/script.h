@@ -1,5 +1,5 @@
-// $Id: script.h,v 1.18 2001/03/29 03:02:34 eroper Exp $
-// $Revision: 1.18 $  $Author: eroper $ $Date: 2001/03/29 03:02:34 $
+// $Id: script.h,v 1.19 2002/03/02 19:30:09 gingon Exp $
+// $Revision: 1.19 $  $Author: gingon $ $Date: 2002/03/02 19:30:09 $
 
 //
 //ScryMUD Server Code
@@ -39,6 +39,11 @@
 class room;
 
 
+int scr_gain_exp(int amount, critter& pc, int was_ordered = FALSE);
+int always_pay(int amount, int i_th, const String* targ, critter& pc, 
+               int was_ordered);
+
+
 /**  This will not kill, but can set HP to 1 in worst case. */
 int affect_crit_stat(StatTypeE ste, String& up_down, int i_th,
                      String* victim, int dice_cnt, int dice_sides,
@@ -69,6 +74,10 @@ int script_jump(int on_test, String* cooked_strs, int* cooked_ints,
 /** used in mob scripts primarily, test to see if the mob owns
  * all of the items listed here.  Can be in inventory or eq.
  */
+int align_greater_than(int val, critter& pc);
+int align_less_than(int val, critter& pc);
+
+ 
 int does_own(critter& pc, int obj1, int obj2, int obj3, int obj4,
              int obj5, int obj6);
 

@@ -1,5 +1,5 @@
-// $Id: script.cc,v 1.24 2001/04/21 07:15:29 eroper Exp $
-// $Revision: 1.24 $  $Author: eroper $ $Date: 2001/04/21 07:15:29 $
+// $Id: script.cc,v 1.25 2002/03/02 19:30:09 gingon Exp $
+// $Revision: 1.25 $  $Author: gingon $ $Date: 2002/03/02 19:30:09 $
 
 //
 //ScryMUD Server Code
@@ -52,6 +52,71 @@
 // initialize static variable.
 int ScriptCmd::_cnt = 0;
 
+//always pays target amount, wether or not pc haws that amount
+int always_pay(int amount, int i_th, const String* targ, critter& pc, 
+               int was_ordered){
+   String buf(100);
+   critter* targptr = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
+   if(!targptr){
+      if (mudlog.ofLevel(SCRIPT)) {
+         mudlog << "In always_pay, invalid target ptr: critter: "
+                << *(pc.getName()) << " amount: " << amount << " target name: " 
+                << targ << " target pointer: " << (int)targptr << "\n";
+      }//if
+      return -1;
+    }
+     
+
+   if (was_ordered){
+      return -1;
+   }else {
+      if(pc.isNpc() || (pc.pc && pc.pc->imm_data)) {
+         targptr->GOLD += amount;
+         Sprintf(buf, "You are pleasantly suprised as %S pays you %i.\n",
+                 name_of_crit(pc, targptr->SEE_BIT), amount);
+         show(buf, *targptr);
+
+         String cmd = "pay";
+         String amt;
+         amt.Append(amount);
+
+         ROOM.checkForProc(cmd, amt, pc, targptr->MOB_NUM);
+         return 0;
+       }
+       pc.show("Eh??\n");
+   }
+   return -1;
+}
+
+int align_less_than(int val, critter& pc){
+  if(pc.ALIGN < val){
+     return TRUE;
+  }
+  return FALSE;
+}
+
+int align_greater_than(int val, critter& pc){
+   if(pc.ALIGN > val){
+      return TRUE;
+   }   
+   return FALSE;
+}   
+
+
+//gives pc amount in xp 
+int scr_gain_exp(int amount, critter& pc, int was_ordered = FALSE){
+   if (was_ordered){
+      return -1;
+   }else {
+      if(pc.isNpc() || (pc.pc && pc.pc->imm_data)) {
+         gain_xp(pc, amount, TRUE);
+         return 0;
+      }
+      pc.show("Eh??");
+   }
+   return -1;
+}
+   
 
 /**  This will not kill, but can set HP to 1 in worst case. */
 int affect_crit_stat(StatTypeE ste, String& up_down, int i_th,

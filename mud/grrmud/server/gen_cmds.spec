@@ -115,8 +115,14 @@ affect_mana ~
 return affect_crit_stat(STAT_MANA, cooked_strs[2], i, &(cooked_strs[1]), j, k, pc.getCurRoom(), &pc);
 affect_mov ~
 return affect_crit_stat(STAT_MOV, cooked_strs[2], i, &(cooked_strs[1]), j, k, pc.getCurRoom(), &pc);
+align_greater_than ~
+return align_greater_than(i, pc);
+align_less_than ~
+return align_less_than(i, pc);
 alist zlist zlist ~
-return zlist(i, j, pc); 
+return zlist(i, j, pc);
+always_pay ~
+return always_pay(i, j, &(cooked_strs[1]), pc, was_ordered);
 amlist ~
 return amlist(i, j, pc);
 amsave ~
@@ -381,6 +387,8 @@ return guard(i, &(cooked_strs[1]), pc);
 # IMM Commands - G
 gag ~
 return gag(i, &(cooked_strs[1]), pc);
+gain_exp ~
+return scr_gain_exp(i, pc, was_ordered);
 goto ~
 return _goto(i, &(cooked_strs[1]), pc);
 
