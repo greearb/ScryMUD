@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.25 2002/01/08 08:05:31 eroper Exp $
-// $Revision: 1.25 $  $Author: eroper $ $Date: 2002/01/08 08:05:31 $
+// $Id: spells2.cc,v 1.26 2002/02/07 08:51:49 eroper Exp $
+// $Revision: 1.26 $  $Author: eroper $ $Date: 2002/02/07 08:51:49 $
 
 //
 //ScryMUD Server Code
@@ -2972,7 +2972,7 @@ void cast_remove_hope(int i_th, const String *victim, critter &pc)
    vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
-      pc.show("Who do you to psychologically destroy?", HL_DEF);
+      pc.show("Who do you want to psychologically destroy?", HL_DEF);
       return;
    }
 

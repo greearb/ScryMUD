@@ -726,10 +726,10 @@ say talk *say ~
 NOP
 scan ~
 return scan(pc);
-scold socials ~
-scold(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 score ~
 return score(&(cooked_strs[1]), pc);
+scold socials ~
+scold(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 scratch socials ~
 scratch(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 scream socials ~

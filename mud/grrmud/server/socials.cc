@@ -1,5 +1,5 @@
-// $Id: socials.cc,v 1.9 2001/11/13 04:37:09 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 2001/11/13 04:37:09 $
+// $Id: socials.cc,v 1.10 2002/02/07 08:51:49 eroper Exp $
+// $Revision: 1.10 $  $Author: eroper $ $Date: 2002/02/07 08:51:49 $
 
 //
 //ScryMUD Server Code
@@ -187,7 +187,7 @@ void point(int i_th, const String* vict, critter& pc, room& rm) {
       else if (pc.POS > POS_SIT)
          show("You are not in a position to do that.\n", pc);
       else if (crit_ptr == &pc) {
-         show("You grin at yourself.\n", pc);
+         show("You point at yourself.\n", pc);
          Sprintf(buf, "points accusingly at %s.\n", get_hisself_herself(pc));
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
