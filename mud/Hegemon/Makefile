@@ -185,21 +185,23 @@ distrib_linux: $(JAR_FILE)
 	mkdir $(DIST_DIR)
 	cp -r data $(DIST_DIR)
 	cp $(JAR_FILE) $(DIST_DIR)/
-	cp -r $(HOME)/btbits_jre/jre1.3.0_02_linux $(DIST_DIR)/jre
+	cp -r $(HOME)/btbits_jre/jre1.3.1_02_linux $(DIST_DIR)/jre
 	cp runheg.bash $(DIST_DIR)
 	tar -cvzf $(DIST_DIR)_Linux.tar.gz  $(DIST_DIR)
-	mv -f $(DIST_DIR)_Linux.tar.gz $(HOME)/dev/downloads
+	mkdir -p $(HOME)/dev/downloads
+	mv -f $(DIST_DIR)_Linux.tar.gz $(HOME)/dev/downloads/
 
 distrib_dos: $(JAR_FILE) 
 	rm -fr $(DIST_DIR)
 	mkdir $(DIST_DIR)
 	cp -r data $(DIST_DIR)
 	cp $(JAR_FILE) $(DIST_DIR)/
-	cp -r $(HOME)/btbits_jre/jre_1.3_dos $(DIST_DIR)/jre
+	cp -r $(HOME)/btbits_jre/jre1.3.1_02_dos $(DIST_DIR)/jre
 	cp runheg.bat $(DIST_DIR)
 	zip $(DIST_DIR)_WIN32.zip -r $(DIST_DIR)
 	cat unzipsfx.exe $(DIST_DIR)_WIN32.zip > $(DIST_DIR)_WIN32.zip.exe
 	zip -A $(DIST_DIR)_WIN32.zip.exe
+	mkdir -p $(HOME)/dev/downloads
 	mv -f $(DIST_DIR)_WIN32.zip.exe $(HOME)/dev/downloads/
 
 distrib_no_jre: $(JAR_FILE) 
@@ -208,6 +210,7 @@ distrib_no_jre: $(JAR_FILE)
 	cp -r data $(DIST_DIR)
 	cp $(JAR_FILE) $(DIST_DIR)/
 	zip $(DIST_DIR)_NO_JRE.zip -r $(DIST_DIR)
+	mkdir -p $(HOME)/dev/downloads
 	mv -f $(DIST_DIR)_NO_JRE.zip $(HOME)/dev/downloads/
 
 # Jar target

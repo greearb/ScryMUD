@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.13 2001/04/07 22:31:54 greear Exp $
-# $Revision: 1.13 $  $Author: greear $ $Date: 2001/04/07 22:31:54 $
+# $Id: Makefile,v 1.14 2002/08/26 06:52:21 greear Exp $
+# $Revision: 1.14 $  $Author: greear $ $Date: 2002/08/26 06:52:21 $
 
 #  Makefile for Hegemon and ScryMUD
 
@@ -40,7 +40,7 @@ MISC_FILES = \
 #NOTE:  if you are installing for the first time, you will probably want
 #       to use the install target, example:  make install
 
-all: scry_dist_all hegemon
+all: scry_dist_all hegemon_gui
 
 
 # This will create a tarbal of everything one would need to
@@ -129,7 +129,7 @@ build_help_filter:
 ########  Hegemon (Java Client) Related rules ####################
 ##################################################################
 
-hegemon:
+hegemon_gui:
 	make -C Hegemon distrib
 
 
