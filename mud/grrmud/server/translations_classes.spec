@@ -1,5 +1,5 @@
-# $Id: translations_classes.spec,v 1.1 1999/08/19 06:34:36 greear Exp $
-# $Revision: 1.1 $  $Author: greear $ $Date: 1999/08/19 06:34:36 $
+# $Id: translations_classes.spec,v 1.2 1999/08/25 06:35:12 greear Exp $
+# $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 # The syntax is as follows:
 # ENUM_NAME LANGUAGE "TEXT" LANGUAGE "TEXT" ... ~
@@ -31,5 +31,33 @@ CS_ROOM_BECOMES_LIGHT
 
 CS_ROOM_BECOMES_DARK
 	eng "The room becomes dark.\n"
+	~
+
+CS_ROOM_DOESNT_EXIST
+	eng "That room doesn't really exist!!\n"
+	~
+
+CS_NO_VEHICLES_ALLOWED
+	eng "Vehicles cannot travel there.\n"
+	~
+
+CS_NO_TRAVEL_WATER
+	eng "This vehicle can't travel on water.\n"
+	~
+
+CS_NO_TRAVEL_CLIMB
+	eng "This vehicle can't climb.\n"
+	~
+
+CS_NO_TRAVEL_DIVE
+	eng "This vehicle can't dive.\n"
+	~
+
+CS_NO_TRAVEL_FLY
+	eng "This vehicle can't fly.\n"
+	~
+
+CS_NO_TRAVEL_ZLOCKED
+	eng "That direction has been locked to vehicles.\n"
 	~
 

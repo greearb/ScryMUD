@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.29 1999/08/10 07:06:18 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
+// $Id: command5.cc,v 1.30 1999/08/25 06:35:11 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
 
 //
 //ScryMUD Server Code
@@ -46,6 +46,7 @@
 #include "script.h"
 #include "olc.h"
 #include "BuildInfo.h"
+#include "vehicle.h"
 
 int update_cur_in_game(critter& pc) {
    if (pc.isImmort() && (pc.IMM_LEVEL >= 9)) {
@@ -371,32 +372,6 @@ may be seen by using the stat_script [mob_num] [script_index] command.\n\n");
    return do_list_scripts(mob_list[mob_num], pc);
 }
 
-int do_list_scripts(critter& targ, critter& pc) {
-   if (!targ.mob)
-      return -1;
-   
-   String buf(500);
-   String tmp(100);
-   int found_one = FALSE;
-   Cell<MobScript*> cll(targ.mob->mob_proc_scripts);
-   MobScript* ptr;
-   int idx = 0;
-   while ((ptr = cll.next())) {
-      found_one = TRUE;
-      tmp = ptr->toStringBrief(FALSE, 0, ENTITY_CRITTER, idx);
-      Sprintf(buf, "[%i] %S\n", idx, &(tmp));
-      pc.show(buf);
-      idx++;
-   }
-
-   if (!found_one) {
-      buf.Append("No scripts defined for this mob.\n");
-      show(buf, pc);
-      return -1;
-   }
-   return 0;
-}//list_scripts
-
 
 int list_room_scripts(int rm_num, critter& pc) {
 
@@ -417,7 +392,7 @@ int list_room_scripts(int rm_num, critter& pc) {
       return -1;
    }
 
-   room_list[rm_num].listScripts(pc);
+   room_list[rm_num].listScripts(LE_ROOM, &pc);
    return 0;
 }//list_room_scripts
 
@@ -436,13 +411,13 @@ int list_obj_scripts(int obj_num, critter& pc) {
       return -1;
    }
 
-   obj_list[obj_num].listScripts(pc);
+   obj_list[obj_num].listScripts(LE_OBJECT, &pc);
    return 0;
 }//list_obj_scripts
 
 
 
-int stat_script(int mob_num, int script_idx, critter& pc) {
+int stat_mob_script(int mob_num, int script_idx, critter& pc) {
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In stat_script:  mob_num:  " << mob_num << " script_idx:  "
@@ -461,34 +436,9 @@ int stat_script(int mob_num, int script_idx, critter& pc) {
       return -1;
    }
 
-   String buf(500);
- 
-   MobScript* ptr = mob_list[mob_num].mob->mob_proc_scripts.elementAt(script_idx);
-   if (ptr) {
-      buf.Append(ptr->toStringBrief(pc.USING_CLIENT, mob_num,
-                                    ENTITY_CRITTER, script_idx));
-      if (pc.USING_CLIENT)
-         buf.Append("\n<SCRIPT_DATA>");
-      else
-         buf.Append("\n");
-      buf.Append(ptr->getScript());
-      
-      if (pc.USING_CLIENT)
-         buf.Append("</SCRIPT_DATA>\nCompiled Script:\n");
-      else
-         buf.Append("\nCompiled Script:\n");
-      
-      buf.Append(ptr->getCompiledScript());
-      
-      show(buf, pc);
-      return 0;
-   }//if
-
-   Sprintf(buf, "Mob: %S does not have a script of index: %i",
-           mob_list[mob_num].getName(), script_idx);
-   show(buf, pc);
+   mob_list[mob_num].listScripts(LE_CRITTER, &pc);
    return -1;
-}//stat_script
+}//stat_mob_script
 
 
 int stat_room_script(int rm_num, int script_idx, critter& pc) {
@@ -510,32 +460,7 @@ int stat_room_script(int rm_num, int script_idx, critter& pc) {
       return -1;
    }
 
-   String buf(500);
- 
-   RoomScript* ptr = room_list[rm_num].getScriptAt(script_idx);
-   if (ptr) {
-      buf.Append(ptr->toStringBrief(pc.USING_CLIENT, rm_num, ENTITY_ROOM,
-                                    script_idx));
-      if (pc.isUsingClient())
-         buf.Append("\n<SCRIPT_DATA>");
-      else
-         buf.Append("\n");
-      buf.Append(ptr->getScript());
-      
-      if (pc.USING_CLIENT)
-         buf.Append("</SCRIPT_DATA>\nCompiled Script:\n");
-      else
-         buf.Append("\nCompiled Script:\n");
-      
-      buf.Append(ptr->getCompiledScript());
-      
-      show(buf, pc);
-      return 0;
-   }//if
-
-   Sprintf(buf, "Room: %i does not have a script of index: %i",
-           rm_num, script_idx);
-   show(buf, pc);
+   room_list[rm_num].listScripts(LE_ROOM, &pc);
    return -1;
 }//stat_room_script
 
@@ -559,38 +484,12 @@ int stat_obj_script(int obj_num, int script_idx, critter& pc) {
       return -1;
    }
 
-   String buf(500);
- 
-   ObjectScript* ptr = obj_list[obj_num].getScriptAt(script_idx);
-   if (ptr) {
-      buf.Append(ptr->toStringBrief(pc.USING_CLIENT, obj_num, ENTITY_OBJECT,
-                                    script_idx));
-      if (pc.isUsingClient())
-         buf.Append("\n<SCRIPT_DATA>");
-      else
-         buf.Append("\n");
-      buf.Append(ptr->getScript());
-      
-      if (pc.USING_CLIENT)
-         buf.Append("</SCRIPT_DATA>\nCompiled Script:\n");
-      else
-         buf.Append("\nCompiled Script:\n");
-      
-      buf.Append(ptr->getCompiledScript());
-      
-      show(buf, pc);
-      return 0;
-   }//if
-
-   Sprintf(buf, "Object: %i does not have a script of index: %i",
-           obj_num, script_idx);
-   show(buf, pc);
+   obj_list[obj_num].listScripts(LE_OBJECT, &pc);
    return -1;
 }//stat_obj_script
 
 
-
-int rem_script(int mob_num, String& trigger, int i_th, critter& pc) {
+int rem_mob_script(int mob_num, String& trigger, int i_th, critter& pc) {
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In rem_script:  mob_num:  " << mob_num << "  trigger:  "
              << trigger << "  i_th:  " << i_th << endl;
@@ -618,33 +517,8 @@ int rem_script(int mob_num, String& trigger, int i_th, critter& pc) {
       return -1;
    }
 
-   int sofar = 1;
-   String buf(500);
- 
-   Cell<MobScript*> cll(mob_list[mob_num].mob->mob_proc_scripts);
-   MobScript* ptr;
-   ptr = cll.next();
-   while (ptr) {
-      if (strcasecmp(*(ptr->getTrigger()), trigger) == 0) {
-         if (sofar == i_th) {
-            delete ptr;
-            ptr = mob_list[mob_num].mob->mob_proc_scripts.lose(cll);
-            show("Deleted it...\n", pc);
-            return 0;
-         }//if
-         else {
-            ptr = cll.next();
-         }
-         sofar++;
-      }//if
-      else {
-         ptr = cll.next();
-      }
-   }//while
-
-   show("Didn't find that script..\n", pc);
-   return -1;
-}//rem_script
+   return mob_list[mob_num].removeScript(trigger, i_th, pc);
+}//rem_mob_script
 
 
 int rem_room_script(int rm_num, String& trigger, int i_th, critter& pc) {
@@ -795,10 +669,10 @@ int add_perm_inv(int obj_num, int i_th, const String* name,
       if (ptr->mob && ptr->mob->proc_data && 
           ptr->mob->proc_data->sh_data) {
          /* is a shopkeeper */
-         ptr->PERM_INV.append(&(obj_list[obj_num]));
+         object* hack = &(obj_list[obj_num]);
+         ptr->PERM_INV.append(hack);
          Sprintf(buf, "%S added to %S's permanent (shop) inventory.\n",
-                 long_name_of_obj(obj_list[obj_num], ~0),
-                 name_of_crit(*ptr, ~0));
+                 obj_list[obj_num].getLongName(&pc), ptr->getName(&pc));
          show(buf, pc);
          return 0;
       }//if
@@ -875,7 +749,7 @@ int rem_perm_inv(int j_th, const String* obj_name, int i_th,
                     long_name_of_obj(*inv_obj, ~0), inv_obj->getIdNum(),
                     name_of_crit(*ptr, ~0));
             show(buf, pc);
-            if (inv_obj->IN_LIST)
+            if (inv_obj->isModified())
                delete inv_obj;
             return 0;
          }//if
@@ -892,7 +766,7 @@ int rem_perm_inv(int j_th, const String* obj_name, int i_th,
                     long_name_of_obj(*inv_obj, ~0),
                     name_of_crit(*ptr, ~0));
             show(buf, pc);
-            if (inv_obj->IN_LIST)
+            if (inv_obj->isModified())
                delete inv_obj;
             return 0;
          }//if
@@ -916,7 +790,7 @@ int rem_perm_inv(int j_th, const String* obj_name, int i_th,
                     long_name_of_obj(*inv_obj, ~0),
                     name_of_obj(*optr, ~0));
             show(buf, pc);
-            if (inv_obj->IN_LIST)
+            if (inv_obj->isModified())
                delete inv_obj;
             return 0;
          }//if
@@ -999,7 +873,7 @@ int opurge(int i_th, const String* name, critter& pc) {
       }
 
       show("Ok, object purged from room.\n", pc);
-      if (obj->IN_LIST) {
+      if (obj->isModified()) {
 	delete obj;
       }//if
       return 0;
@@ -1059,11 +933,7 @@ int itrans(int i_th, const String* targ, int rm_num, critter& pc) {
       return -1;
    }//if
    
-   if (ptr->isMob()) {
-      ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, targ, pc.SEE_BIT);
-   }//if
-   else if (ptr->pc && ptr->pc->imm_data && 
-            (ptr->IMM_LEVEL >= pc.IMM_LEVEL)) {
+   if (ptr->getImmLevel() >= pc.IMM_LEVEL) {
       show("Whoa, you can't itrans one so powerful.\n", pc);
       return -1;
    }//if
@@ -1083,50 +953,6 @@ int itrans(int i_th, const String* targ, int rm_num, critter& pc) {
    }//
    return -1;
 }//itrans
-
-
-
-int discuss(const String* topic, int i_th, const String* targ, critter& pc) {
-   String buf(100);
-
-   if (!ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
-      return -1;
-   }
-
-   critter* ptr = ROOM.haveCritNamed(i_th, targ, pc.SEE_BIT);
-
-   if (!ptr) {
-      show("With whom would you like to discuss?\n", pc);
-   }//if
-   else if (topic->Strlen() == 0) {
-      show("What would you like to discuss?\n", pc);
-   }//if
-   else if (pc.POS > POS_REST) {
-      show("You are too relaxed.\n", pc);
-   }//if
-   else if (!IsEmpty(pc.IS_FIGHTING)) {
-      show("You find it hard to have a decent conversation while fighting!\n",
-           pc);
-   }//if
-   else { //looks like we're good to go
-      if (ptr->mob && !ptr->pc) {
-         if (ptr->mob->proc_data) {
-            if (!IsEmpty(ptr->mob->proc_data->topics)) { //then do it
-               if (ptr->isMob()) {
-                  ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, targ, pc.SEE_BIT);
-               }//if
-               return do_domob_say_proc(*ptr, pc, *topic);
-            }//if
-         }//if
-      }//if
-      if (ptr->pc) {
-         Sprintf(buf, "%S wishes to discuss %S with you.\n", 
-                 name_of_crit(pc, ptr->SEE_BIT), topic);
-         show(buf, *ptr);
-      }//if
-   }//else
-   return -1;
-}//discuss
 
 
 int suicide(const String* passwd,  critter& pc) {
@@ -1182,11 +1008,6 @@ int pay(int amount, int i_th, const String* targ,  critter& pc) {
       return -1;
    }//if
    
-   if (ptr->isMob()) {
-      ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th,
-                        targ, pc.SEE_BIT);
-   }//if
-
    ptr->GOLD += amount;
    pc.GOLD -= amount;
    
@@ -1264,7 +1085,7 @@ int dvnum(int i_th, const String* name, critter& pc) {
 
    for (i = i_th; i<NUMBER_OF_DOORS; i++) {
       if (door_is_named(door_list[i], *name)) {
-	 Sprintf(buf, "[%i] %S\n", i, &(door_list[i].long_desc));
+	 Sprintf(buf, "[%i] %S\n", i, door_list[i].getLongDesc(&pc));
 	 show(buf, pc);
       }//if
    }//for
@@ -1454,7 +1275,7 @@ int do_aosave(int zone) {
       if (obj_list[i].OBJ_FLAGS.get(10)) { //in use
          if (obj_list[i].OBJ_IN_ZONE == zone) {
             ofile << i << "\t Start of Object\n";
-            obj_list[i].Write(ofile);
+            obj_list[i].write(ofile);
             ofile << endl;
          }//if
       }//if
@@ -1533,7 +1354,7 @@ int do_amsave(int zone) {
          if (mob_list[i].isInUse()) {
             if (mob_list[i].getNativeZoneNum() == zone) {
                ofile << i << "\tStart of Mob\n";
-               mob_list[i].Write(ofile);
+               mob_list[i].write(ofile);
                ofile << endl;
             }//if
          }//if
@@ -1589,10 +1410,10 @@ int do_adsave(int zone) {
    }//if
 
    for (int i = 0; i < NUMBER_OF_DOORS; i++) {
-      if (door_list[i].door_data_flags.get(10)) { //if in use
-         if (door_list[i].in_zone == zone) {
+      if (door_list[i].isInUse()) {
+         if (door_list[i].getZoneNum() == zone) {
             ofile << i << "\tStart of Door Data\n";
-            door_list[i].Write(ofile);
+            door_list[i].write(ofile);
             ofile << endl;
          }//if
       }//if
@@ -2328,13 +2149,13 @@ By:              %s\n\n",
            String::string_cnt, String::total_bytes);
    pc.show(buf);
    Sprintf(buf, "[%i]%P10 List<> %P30[%i] %P42 List<> Node \n",
-           pc.names.getListCnt(), pc.names.getNodeCnt());
+           List<object*>::getListCnt(), List<object*>::getNodeCnt());
    pc.show(buf);
    Sprintf(buf, "[%i]%P10 ZoneList %P30[%i] %P42 List<> Cell\n",
-           ZoneList::getInstanceCount(), pc.names.getCellCnt());
+           ZoneList::getInstanceCount(), List<object*>::getCellCnt());
    pc.show(buf);
-   Sprintf(buf, "[%i]%P10 zone %P30[%i] %P42 stat_spell_cell\n",
-           zone::getInstanceCount(), stat_spell_cell::getInstanceCount());
+   Sprintf(buf, "[%i]%P10 zone %P30[%i] %P42 SpellDuration\n",
+           zone::getInstanceCount(), SpellDuration::getInstanceCount());
    pc.show(buf);
    Sprintf(buf, "[%i]%P10 PathCell %P30[%i] %P42 teacher_data.\n",
            PathCell::getInstanceCount(), teacher_data::getInstanceCount());
@@ -2346,9 +2167,8 @@ By:              %s\n\n",
    Sprintf(buf, "[%i]%P10 shop_data %P30[%i] %P42 temp_proc_data\n",
            shop_data::getInstanceCount(), temp_proc_data::getInstanceCount());
    pc.show(buf);
-   Sprintf(buf, "[%i]%P10 say_proc_cell %P30[%i] %P42 action_proc_data\n",
-           say_proc_cell::getInstanceCount(),
-           action_proc_data::getInstanceCount());
+   Sprintf(buf, "[%i]%P10 StatBonus %P30[%i] %P42 NULL\n",
+           StatBonus::getInstanceCount());
    pc.show(buf);
    Sprintf(buf, "[%i]%P10 spec_data %P30[%i] %P42 mob_data\n",
            spec_data::getInstanceCount(), mob_data::getInstanceCount());
@@ -2393,8 +2213,8 @@ By:              %s\n\n",
            pulsed_proc_rooms.size(), pulsed_proc_objects.size());
    pc.show(buf);
 
-   Sprintf(buf, "\tproc_action_rooms: %i \t proc_action_objs: %i\n",
-           proc_action_rooms.getCurLen(), proc_action_objs.getCurLen());
+   Sprintf(buf, "\tscripting_entites: %i: %i \t NULL\n",
+           scripting_entities.getCurLen());
    pc.show(buf);
 
    return 0;
@@ -2480,7 +2300,7 @@ int com_gecho(const String* msg, critter& pc) {
       return -1;
    }//if
 
-   Cell<critter*> cll(pc_list);
+   SCell<critter*> cll(pc_list);
    critter* ptr;
 
    while ((ptr = cll.next())) {
@@ -2514,7 +2334,7 @@ int com_recho(const String* msg, critter& pc) {
          return -1;
       }//if
       
-      Cell<critter*> cll(ROOM.getCrits());
+      SCell<critter*> cll(ROOM.getCrits());
       critter* ptr;
       
       while ((ptr = cll.next())) {
@@ -2595,7 +2415,7 @@ int com_zecho(const String* msg, critter& pc) {
       return -1;
    }//if
 
-   Cell<critter*> cll(pc_list);
+   SCell<critter*> cll(pc_list);
    critter* ptr;
 
    while ((ptr = cll.next())) {
@@ -2661,7 +2481,7 @@ int shoot(int i_th, const String* dir, int j_th, const String* mob,
 
 			/* check for exit */
 
-   dptr = door::findDoor(ROOM.DOORS, i_th, dir, pc.SEE_BIT, ROOM);
+   dptr = ROOM.findDoor(i_th, dir, pc);
    if (!dptr) {
       show("You can't find an exit in that direction.\n", pc);
       return -1;
@@ -2675,17 +2495,12 @@ int shoot(int i_th, const String* dir, int j_th, const String* mob,
 		/* have door, its open */
 		   /* check for targ */
 
-   dest = abs(dptr->destination);
+   dest = abs(dptr->getDestination());
    targ = room_list[dest].haveCritNamed(j_th, mob, pc.SEE_BIT);   
 
    if (!targ) {
       show("You can't find your target.\n", pc);
       return -1;
-   }//if
-
-   if (targ->isMob()) { //its a SMOB
-      targ = mob_to_smob(*targ, dest, TRUE, j_th, mob, 
-	     pc.SEE_BIT | room_list[dest].getVisBit());
    }//if
 
    if (!(targ = check_for_diversions(*targ, "GSM", pc)))
@@ -2698,7 +2513,7 @@ int shoot(int i_th, const String* dir, int j_th, const String* mob,
 
 int do_shoot(critter& targ, critter& pc) {
    String buf(100);
-   Cell<object*> cll;
+   SCell<object*> cll;
    object* ammo = NULL;
    int targ_is_dead = FALSE;
 
@@ -2764,7 +2579,7 @@ int do_shoot(critter& targ, critter& pc) {
 	 emote("shoots and misses.", pc, ROOM, TRUE);
 	 Sprintf(buf, "%S comes whistling by your head!\n", &lproj_name);
          buf.Cap();
-	 show_all(buf, room_list[targ.getCurRoomNum()]);
+         targ.getCurRoom()->showAllCept(buf);
 
          String cmd = "shoot";
          ROOM.checkForProc(cmd, NULL_STRING, pc, targ.MOB_NUM);
@@ -2816,7 +2631,7 @@ int do_shoot(critter& targ, critter& pc) {
    }// if can start battle
 
    if (ammo) {
-      if (ammo->IN_LIST) {
+      if (ammo->isModified()) {
          delete ammo;
       }//if
    }//if
@@ -2840,7 +2655,7 @@ int _throw(int i_th, const String* dir, int j_th, const String* mob,
 
 			/* check for exit */
 
-   dptr = door::findDoor(ROOM.DOORS, i_th, dir, pc.SEE_BIT, ROOM);
+   dptr = ROOM.findDoor(i_th, dir, pc);
    if (!dptr) {
       show("You can't find an exit in that direction.\n", pc);
       return -1;
@@ -2854,17 +2669,12 @@ int _throw(int i_th, const String* dir, int j_th, const String* mob,
 		/* have door, its open */
 		   /* check for targ */
 
-   dest = abs(dptr->destination);
-   targ = room_list[dest].haveCritNamed(j_th, mob, pc.SEE_BIT);   
+   dest = abs(dptr->getDestination());
+   targ = room_list[dest].haveCritNamed(j_th, mob, pc);   
 
    if (!targ) {
       show("You can't find your target.\n", pc);
       return -1;
-   }//if
-
-   if (targ->isMob()) { //its a SMOB
-      targ = mob_to_smob(*targ, dest, TRUE, j_th, mob, 
-	     pc.SEE_BIT | room_list[dest].getVisBit());
    }//if
 
    if (!(targ = check_for_diversions(*targ, "GSM", pc)))
@@ -2911,7 +2721,7 @@ int do_throw(critter& targ, critter& pc) {
             Sprintf(buf, "%S comes whistling by your head!\n", 
                     long_name_of_obj(*(pc.EQ[posn]), ~0));
             buf.Cap();
-            show_all(buf, room_list[targ.getCurRoomNum()]);
+            targ.getCurRoom()->showAllCept(buf);
             room_list[targ.getCurRoomNum()].gainInv(pc.EQ[posn]);
             
             String cmd = "throw";
@@ -3234,7 +3044,8 @@ int describe(critter& pc) {
    show("You may now paste descs up to 2k, ';' acts as a newline btw.\n",
 	pc);
 
-   pc.long_desc.Clear();
+   LString ls(pc.getLanguage(), "");
+   pc.addLongDesc(ls); //clear it
    pc.setMode(MODE_CH_DESC);
    return 0;
 }//describe

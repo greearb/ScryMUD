@@ -1,5 +1,5 @@
-// $Id: vehicle.h,v 1.5 1999/08/22 07:16:20 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
+// $Id: vehicle.h,v 1.6 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -34,7 +34,7 @@
 
 ///***********************  PathCell  *****************************///
 
-class PathCell {
+class PathCell : public Serialized {
 private:
    LStringCollection desc;
    LString dir_to_next;
@@ -44,10 +44,10 @@ private:
    PathCell(const PathCell& src);
 
 public:
-   PathCell(String& description, String& direction_to_next, int is_dest);
+   PathCell(LString& description, String& direction_to_next, int is_dest);
    PathCell();
 
-   ~PathCell() { _cnt--; }
+   virtual ~PathCell() { _cnt--; }
 
    static int getInstanceCount() { return _cnt; }
 
@@ -63,11 +63,13 @@ public:
    int isDest();
 
    //need the veh_num and cell_num to display appropriately.
-   void stat(int veh_num, int cell_num, critter& pc);
+   void toStringStat(int veh_num, int cell_num, critter& pc, String& buf,
+                     ToStringTypeE st);
+   virtual LEtypeE getEntityType() { return LE_PATH_CELL; }
 
-   void Clear();
-   void Read(ifstream& da_file);
-   void Write(ofstream& da_file);
+   void clear();
+   int read(istream& da_file, int read_all = TRUE);
+   int write(ostream& da_file);
 };//PathCell
 
 
@@ -80,7 +82,7 @@ protected:
     */
 
    Cell<PathCell*> cll; //this will iterate around and around
-   List<PathCell*> path_cells;
+   PtrList<PathCell> path_cells;
    int ticks_till_next_stop;
    int in_room; //the room the vehicle is currently in
    int cur_fuel;
@@ -131,7 +133,7 @@ public:
    void setMaxFuel(int i) { max_fuel = i; }
    void setTicksBetweenStops(int i) { ticks_between_stops = i; }
 
-   String getPassengerMessage();
+   String& getPassengerMessage(critter* viewer);
    String getExitDirection();
    int getExitNum();
 
@@ -140,17 +142,15 @@ public:
    int move(); //figure direction and call other move function
 
    door* findNextExit(); //for non-self-guided vehicles
-   int canEnter(const room* dest, int do_msg) const;
-   virtual void stat(critter& pc);
+   int canEnter(room* dest, int do_msg);
+   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
-   virtual void Clear();
-   virtual void Read(ifstream& da_file, short read_all);
-   virtual void Write(ofstream& da_file);
+   virtual void clear();
+   virtual int read(istream& da_file, short read_all);
+   virtual int write(ostream& da_file);
 
    virtual void normalize(); /* called after OLC to enforce as much state as
                               * possible. */
-
-
 };//vehicle
 
 #endif

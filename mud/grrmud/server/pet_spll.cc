@@ -1,5 +1,5 @@
-// $Id: pet_spll.cc,v 1.8 1999/08/10 07:06:20 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/10 07:06:20 $
+// $Id: pet_spll.cc,v 1.9 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -55,11 +55,6 @@ void cast_charm(int i_th, const String* vict, critter& pc) {
       return;
    }//if
 
-   if (ptr->isMob()) {
-      ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, vict,
-                        pc.SEE_BIT);
-   }//if
-
    if (!ok_to_do_action(ptr, "KMSNV", spell_num, pc)) {
      return;
    }//if
@@ -102,7 +97,8 @@ void do_cast_charm(critter& vict, critter& pc, int is_canned, int lvl) {
            pc.MANA -= spell_mana;
 
          /* now it follows and is a pet of the person */
-         Put(&vict, pc.PETS);
+         critter* hack = &vict;
+         pc.getPets().append(hack);
          vict.MASTER = &pc;
          
          Sprintf(buf, "You charm %S into following you!\n",
@@ -172,8 +168,8 @@ void do_cast_mass_charm(room& rm, critter& pc, int is_canned,
 
    critter* ptr;
    
-   List<critter*> tmp_lst(rm.getCrits());
-   Cell<critter*> cll(tmp_lst);
+   SafeList<critter*> tmp_lst(rm.getCrits());
+   SCell<critter*> cll(tmp_lst);
 
    while ((ptr = cll.next())) {
       if (ptr != &pc) {
@@ -200,8 +196,8 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
    object* corpse = NULL;
    critter* pet = NULL;
 
-   if (!(corpse = have_obj_numbered(*(ROOM.getInv()), 1, CORPSE_OBJECT,
-				    pc.SEE_BIT, ROOM))) {
+   if (!(corpse = have_obj_numbered(ROOM.getInv(), 1, CORPSE_OBJECT,
+				    pc))) {
       show("You need a corpse in order to animate it!\n", pc);
       return;
    }//if
@@ -213,7 +209,7 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
          return;
       }//if
       
-      pet = mob_to_smob(mob_list[RAISED_CORPSE_NUM], pc.getCurRoomNum(), TRUE);
+      pet = mob_to_smob(mob_list[RAISED_CORPSE_NUM], ROOM, TRUE);
       ROOM.gainCritter(pet);
       
       recursive_init_loads(*pet);
@@ -224,7 +220,7 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
       ROOM.loseInv(corpse);
       corpse->decrementCurInGame(); //no recursive unload, stuff transferred
 
-      if (corpse->IN_LIST) { //this should be true in most cases btw
+      if (corpse->isModified()) { //this should be true in most cases btw
          delete corpse;
       }//if
       corpse = NULL; //completely shed of it
@@ -244,13 +240,13 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
       
       /* not figure out it's strength, and HP */
       pet->HP = d(4, lvl * 4);
-      pet->setHP_MAX(pet->HP);
+      pet->setHpMax(pet->HP);
       pet->STR = d(2,2) + (lvl / 2);
       pet->LEVEL = pc.LEVEL;
       pet->ALIGN = pc.ALIGN;
       
       /* now it follows and is a pet of the person */
-      Put(pet, pc.PETS);
+      pc.getPets().append(pet);
       pet->MASTER = &pc;
 
       pet->doFollow(pc); // golem starts following caster     
@@ -310,7 +306,7 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
        return;
      }//if
 
-     golem = mob_to_smob(mob_list[EARTH_GOLEM_NUMBER], pc.getCurRoomNum(), TRUE);
+     golem = mob_to_smob(mob_list[EARTH_GOLEM_NUMBER], ROOM, TRUE);
      ROOM.gainCritter(golem);
      recursive_init_loads(*golem);
 
@@ -320,12 +316,12 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
 
      /* now figure out it's strength, and HP */
      golem->HP = d(4, lvl * 3);
-     golem->setHP_MAX(golem->HP);
+     golem->setHpMax(golem->HP);
      golem->STR = d(2,2) + (lvl / 2);
      golem->LEVEL = pc.LEVEL;
 
      /* now it follows and is a pet of the person */
-     Put(golem, pc.PETS);
+     pc.getPets().append(golem);
      golem->MASTER = &pc;
 
      golem->doFollow(pc); // golem starts following caster     
@@ -551,7 +547,7 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
          return;
       }//if
       
-      golem = mob_to_smob(mob_list[ILLUSION_NUMBER], pc.getCurRoomNum(), TRUE);
+      golem = mob_to_smob(mob_list[ILLUSION_NUMBER], ROOM, TRUE);
       ROOM.gainCritter(golem);
 
       recursive_init_loads(mob_list[ILLUSION_NUMBER]);
@@ -562,7 +558,7 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       
       /* now figure out it's strength, and HP */
       golem->HP = 1;
-      golem->setHP_MAX(1);
+      golem->setHpMax(1);
       golem->STR = 1;
       golem->LEVEL = pc.LEVEL;
       golem->setPosn(pc.getPosn());
@@ -571,23 +567,22 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       golem->RACE = pc.RACE;
       golem->ALIGN = pc.ALIGN;
       
-      golem->names.prepend(new String(*(Top(pc.names)))); 
+      golem->setNames(pc.getNames());
       if (pc.pc) {
          Sprintf(buf, "%S %S", name_of_crit(pc, ~0), &(pc.short_desc));
-         golem->short_desc = buf;
+         golem->addShortDesc(pc.getLanguage(), buf);
 
          Sprintf(buf, "%S %S %s\n", 
                  pc.getShortName(), &(pc.short_desc), 
                  pc.getPosnStr(pc));
-         golem->in_room_desc = buf;      
+         golem->addInRoomDesc(pc.getLanguage(), buf);
       }//if
       else {
-         golem->short_desc = pc.short_desc;
-         golem->in_room_desc = pc.in_room_desc;
+         golem->setShortDescColl(*(pc.getShortDescColl()));
+         golem->setInRoomDescColl(*(pc.getInRoomDescColl()));
       }//
-
       
-      golem->long_desc = pc.long_desc;
+      golem->setLongDescColl(*(pc.getLongDescColl()));
    }//if canned or didn't lose concentration
    else { //not canned AND lost concentration
       show(LOST_CONCENTRATION_MSG_SELF, pc);
@@ -654,7 +649,7 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
          return;
       }//if
 
-      golem = mob_to_smob(mob_list[which_un], pc.getCurRoomNum(), TRUE);
+      golem = mob_to_smob(mob_list[which_un], ROOM, TRUE);
       ROOM.gainCritter(golem);
 
       recursive_init_loads(mob_list[which_un]);
@@ -665,7 +660,7 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
      if (pc.PETS.size() < (pc.CHA/4 + 1) && 
 	 (d(1, pc.CHA * 10 + lvl * 4) > (d(1, golem->LEVEL * 4)))) {
        /* now it follows and is a pet of the person */
-       Put(golem, pc.PETS);
+       pc.getPets().append(golem);
        golem->MASTER = &pc;       
        golem->doFollow(pc); // golem starts following caster     
      }//if it worked
@@ -762,14 +757,14 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
           return;
        }//if
 
-       golem = mob_to_smob(mob_list[which_un], pc.getCurRoomNum(), TRUE);
+       golem = mob_to_smob(mob_list[which_un], ROOM, TRUE);
        ROOM.gainCritter(golem);
        recursive_init_loads(mob_list[which_un]);
 
        if (pc.PETS.size() < (pc.CHA/4 + 1) && 
 	   (d(1, pc.CHA * 10 + lvl * 4) > (d(1, golem->LEVEL * 2)))) {
 	 /* now it follows and is a pet of the person */
-	 Put(golem, pc.PETS);
+	 pc.getPets().append(golem);
 	 golem->MASTER = &pc;       
 	 golem->doFollow(pc); // golem starts following caster     
        }//if it worked

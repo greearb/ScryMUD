@@ -1,5 +1,5 @@
-// $Id: command5.h,v 1.13 1999/08/10 07:06:18 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
+// $Id: command5.h,v 1.14 1999/08/25 06:35:11 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
 
 //
 //ScryMUD Server Code
@@ -78,7 +78,6 @@ int beep(int i_th, const String* name, critter& pc);
 int opurge(int i_th, const String* name, critter& pc);
 int do_transport(critter& targ, critter& pc, room& dest);
 int itrans(int i_th, const String* targ, int rm_num, critter& pc);
-int discuss(const String* topic, int i_th, const String* targ, critter& pc);
 int suicide(const String* passwd,  critter& pc);
 int pay(int amount, int i_th, const String* targ,  critter& pc);
 int mvnum(int i_th, const String* name, critter& pc);

@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.11 1999/08/10 07:06:21 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/10 07:06:21 $
+// $Id: spells2.cc,v 1.12 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -81,18 +81,18 @@ void do_cast_locate(const String* targ, critter& agg, int is_canned,
          begin = ZoneCollection::instance().elementAt(zon).getBeginRoomNum();
       }
 
-      Cell<critter*> ccll;
+      SCell<critter*> ccll;
       critter* ptr;
-      Cell<object*> ocll;
+      SCell<object*> ocll;
       for (int i = begin; i<= end; i++) {
          // TODO:  Optimize this..move it into room class so we don't have
          // to make coppies of the list! --BEN
-         List<critter*> tmp_crits(room_list[i].getCrits());
+         SafeList<critter*> tmp_crits(room_list[i].getCrits());
          tmp_crits.head(ccll);
          while ((ptr = ccll.next())) {
             do_locate_object(*ptr, targ, agg, i, 0, lvl);
          }//while
-         room_list[i].getInv()->head(ocll);
+         room_list[i].getInv().head(ocll);
          while ((ptr = ccll.next())) {
             do_locate_object(*ptr, targ, agg, i, 0, lvl);
          }//while
@@ -238,15 +238,14 @@ void cast_recharge(int i_th, const String* victim, critter& pc) {
    object* vict = NULL;
    int spell_num = RECHARGE_SKILL_NUM;
 
-   if (!(vict = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT, 
-			       ROOM))) {
+   if (!(vict = pc.haveObjNamed(i_th, victim))) {
       show("Recharge what??\n", pc);
       return;
    }//if
 
-   if (!vict->IN_LIST) {
-     vict = obj_to_sobj(*vict, &(pc.inv), TRUE, i_th, victim, 
-			   pc.SEE_BIT, ROOM);
+   if (!vict->isModified()) {
+     vict = obj_to_sobj(*vict, &(pc), TRUE, i_th, victim, 
+                        pc);
    }//if
 
 
@@ -341,7 +340,7 @@ void do_cast_bind_wound(critter& vict, critter& agg, int is_canned,
    if (!is_canned)
      lvl = agg.LEVEL;
 
-   stat_spell_cell* ptr;
+   SpellDuration* ptr;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
      ptr = is_affected_by(spell_num, vict);
@@ -351,31 +350,30 @@ void do_cast_bind_wound(critter& vict, critter& agg, int is_canned,
 
      if (ptr) {
        show("Ok.\n", agg);
-       ptr->bonus_duration += lvl/2;
+       ptr->duration += lvl/2;
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-	   vict.affected_by);
-       vict.HP_REGEN += BIND_WOUND_EFFECT;
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
+        vict.HP_REGEN += BIND_WOUND_EFFECT;
 
-       if (&vict == &agg) {
-	 show("You wrap your wounds in magical bandages.\n", vict);
-	 Sprintf(buf, "wraps %s wounds in magical bandages.", 
-		 get_his_her(vict));
-	 emote(buf, vict, room_list[vict.getCurRoomNum()], TRUE);
-       }//if
-       else {
-	 Sprintf(buf, "You wrap %S's wounds in magical bandages.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S wraps your wounds in magical bandages.\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "wraps %S's wounds with magical bandages.",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-       }//else
+        if (&vict == &agg) {
+           show("You wrap your wounds in magical bandages.\n", vict);
+           Sprintf(buf, "wraps %s wounds in magical bandages.", 
+                   get_his_her(vict));
+           emote(buf, vict, room_list[vict.getCurRoomNum()], TRUE);
+        }//if
+        else {
+           Sprintf(buf, "You wrap %S's wounds in magical bandages.\n", 
+                   name_of_crit(vict, agg.SEE_BIT));
+           show(buf, agg);
+           Sprintf(buf, "%S wraps your wounds in magical bandages.\n", 
+                   name_of_crit(agg, vict.SEE_BIT));
+           buf.Cap();
+           show(buf, vict);
+           Sprintf(buf, "wraps %S's wounds with magical bandages.",
+                   name_of_crit(vict, ~0));
+           emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+        }//else
      }//else
    }//if it worked
    else { //not canned AND lost concentration
@@ -400,12 +398,6 @@ void cast_bind_wound(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-               /* got a victim, now check for mob/smob */
-   if (vict->isMob()) {
-     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			victim, pc.SEE_BIT);
-   }//if
-
    if (!ok_to_do_action(vict, "KMSNB", spell_num, pc)) {
      return;
    }//if
@@ -427,7 +419,7 @@ void do_cast_shadows_blessing(critter& vict, critter& agg, int is_canned,
    if (!is_canned)
      lvl = agg.LEVEL;
 
-   stat_spell_cell* ptr;
+   SpellDuration* ptr;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
      ptr = is_affected_by(spell_num, vict);
@@ -437,11 +429,10 @@ void do_cast_shadows_blessing(critter& vict, critter& agg, int is_canned,
 
      if (ptr) {
        show("Ok.\n", agg);
-       ptr->bonus_duration += lvl/2;
+       ptr->duration += lvl/2;
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
        vict.AC += SHADOWS_BLESSING_EFFECT;
 
        if (&vict == &agg) {
@@ -486,12 +477,6 @@ void cast_shadows_blessing(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-               /* got a victim, now check for mob/smob */
-   if (vict->isMob()) {
-     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			victim, pc.SEE_BIT);
-   }//if
-
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -515,8 +500,7 @@ void do_cast_cure_blind(critter& vict, critter& agg,
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
 
      int pnum;
-     stat_spell_cell* ptr = is_affected_by((pnum = BLINDNESS_SKILL_NUM),
-					   vict);
+     SpellDuration* ptr = vict.isAffectedBy((pnum = BLINDNESS_SKILL_NUM));
      
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -526,7 +510,7 @@ void do_cast_cure_blind(critter& vict, critter& agg,
      }//if
      else {
        rem_effects_crit(pnum, vict, FALSE); //no longer affected by blindness
-       vict.affected_by.loseData(ptr);
+       vict.getAffectedBy().loseData(ptr);
 
        if (&vict == &agg) {
 	 show("You can see again!\n", agg);
@@ -571,11 +555,6 @@ void cast_cure_blind(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -598,8 +577,7 @@ void do_cast_remove_poison(critter& vict, critter& agg,
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
 
      int pnum;
-     stat_spell_cell* ptr = is_affected_by((pnum = POISON_SKILL_NUM),
-					   vict);
+     SpellDuration* ptr = vict.isAffectedBy((pnum = POISON_SKILL_NUM));
      
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -609,7 +587,7 @@ void do_cast_remove_poison(critter& vict, critter& agg,
      }//if
      else {
        rem_effects_crit(pnum, vict, FALSE); //no longer affected by poison
-       vict.affected_by.loseData(ptr);
+       vict.getAffectedBy().loseData(ptr);
 
        if (&vict == &agg) {
 	 show("You cure yourself!\n", agg);
@@ -654,11 +632,6 @@ void cast_remove_poison(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -684,7 +657,7 @@ void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl) {
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -693,8 +666,7 @@ void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl) {
         show("They are already asleep!\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/6 + 1), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl/6 + 1));
        vict.CRIT_FLAGS.turn_on(15); //is perm_sleeped
        vict.setPosn(POS_SLEEP);
 
@@ -753,11 +725,6 @@ void cast_sleep(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "BKMSVN", spell_num, pc)) {
       return;
    }//if
@@ -778,18 +745,17 @@ void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
 
      if (ptr) {
-       ptr->bonus_duration += lvl / 2;
+       ptr->duration += lvl / 2;
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl));
        vict.STR += STRENGTH_EFFECT;
 
        if (&vict == &agg) {
@@ -831,11 +797,6 @@ void cast_strength(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -855,7 +816,7 @@ void do_cast_remove_curse(critter& vict, critter& agg, int is_canned,
    if (!is_canned)
      lvl = agg.LEVEL;
 
-   stat_spell_cell* ptr = is_affected_by(CURSE_SKILL_NUM, vict);  
+   SpellDuration* ptr = is_affected_by(CURSE_SKILL_NUM, vict);  
    if (!ptr) {
      Sprintf(buf, "%S isn't cursed.\n", name_of_crit(vict, agg.SEE_BIT));
      show(buf, agg);
@@ -869,7 +830,7 @@ void do_cast_remove_curse(critter& vict, critter& agg, int is_canned,
 
 
      rem_effects_crit(CURSE_SKILL_NUM, vict, TRUE);
-     vict.affected_by.loseData(ptr); //might be redundant
+     vict.getAffectedBy().loseData(ptr); //might be redundant
 
      if (&vict == &agg) {
        show("You feel a curse lifted from your body!\n", agg);
@@ -913,7 +874,7 @@ void do_cast_remove_curse(object& vict, critter& agg, int is_canned,
    if (!is_canned)
      lvl = agg.LEVEL;
 
-   stat_spell_cell* ptr = is_affected_by(CURSE_SKILL_NUM, vict);  
+   SpellDuration* ptr = is_affected_by(CURSE_SKILL_NUM, vict);  
    if (!ptr) {
      Sprintf(buf, "%S isn't cursed.\n", name_of_obj(vict, agg.SEE_BIT));
      show(buf, agg);
@@ -926,7 +887,7 @@ void do_cast_remove_curse(object& vict, critter& agg, int is_canned,
        agg.MANA -= spell_mana;
 
      rem_effects_obj(CURSE_SKILL_NUM, vict);
-     vict.affected_by.loseData(ptr); //might be redundant
+     vict.getAffectedBy().loseData(ptr); //might be redundant
 
      Sprintf(buf, "You lift a curse from %S!\n", 
 	     long_name_of_obj(vict, agg.SEE_BIT));
@@ -958,34 +919,28 @@ void cast_remove_curse(int i_th, const String* victim, critter& pc) {
    vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
-     obj = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT, ROOM);
+     obj = pc.haveObjNamed(i_th, victim);
      if (obj) {
-       if (!obj->IN_LIST) {
-	 obj = obj_to_sobj(*obj, &(pc.inv), TRUE, i_th, victim,
-			   pc.SEE_BIT, ROOM);
+       if (!obj->isModified()) {
+	 obj = obj_to_sobj(*obj, &(pc), TRUE, i_th, victim, pc);
        }//if
      }//if
      else {
-       obj = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
+       obj = ROOM.haveObjNamed(i_th, victim, pc);
        if (obj) {
-	 if (!obj->IN_LIST) {
-	   obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, victim,
-			     pc.SEE_BIT, ROOM);
+	 if (!obj->isModified()) {
+            obj = obj_to_sobj(*obj, &(ROOM), TRUE, i_th, victim, pc);
 	 }//if
        }//if
        else {
-	 show("Remove curse from what??\n", pc);
-	 return;
+          show("Remove curse from what??\n", pc);
+          return;
        }//else
      }//else
      /* if here then have a valid object */
      do_cast_remove_curse(*obj, pc, FALSE, 0);
    }//if
    else {
-     if (vict->isMob()) {
-       vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			  victim, pc.SEE_BIT);
-     }//if
      do_cast_remove_curse(*vict, pc, FALSE, 0);
    }//else
 }//cast_remove_curse
@@ -999,19 +954,17 @@ void cast_curse(int i_th, const String* victim, critter& pc) {
    vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
-     obj = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT, ROOM);
+     obj = pc.haveObjNamed(i_th, victim);
      if (obj) {
-       if (!obj->IN_LIST) {
-	 obj = obj_to_sobj(*obj, &(pc.inv), TRUE, i_th, victim,
-			   pc.SEE_BIT, ROOM);
+       if (!obj->isModified()) {
+	 obj = obj_to_sobj(*obj, &(pc), TRUE, i_th, victim, pc);
        }//if
      }//if
      else {
-       obj = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
+       obj = ROOM.haveObjNamed(i_th, victim, pc);
        if (obj) {
-	 if (!obj->IN_LIST) {
-	   obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, victim,
-			     pc.SEE_BIT, ROOM);
+	 if (!obj->isModified()) {
+	   obj = obj_to_sobj(*obj, &(ROOM), TRUE, i_th, victim, pc);
 	 }//if
        }//if
        else {
@@ -1026,10 +979,6 @@ void cast_curse(int i_th, const String* victim, critter& pc) {
      do_cast_curse(*obj, pc, FALSE, 0);
    }//if
    else {
-     if (vict->isMob()) {
-       vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			  victim, pc.SEE_BIT);
-     }//if
      if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
        return;
      }//if
@@ -1054,18 +1003,17 @@ void do_cast_curse(critter& vict, critter& agg, int is_canned, int lvl) {
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
 
      if (ptr) {
-       ptr->bonus_duration += lvl / 3;
+       ptr->duration += lvl / 3;
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2 + 5), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl/2 + 5));
        vict.STR += CURSE_STR_EFFECT;
        vict.MA_REGEN += CURSE_MA_REGEN_EFFECT;
 
@@ -1121,18 +1069,17 @@ void do_cast_curse(object& vict, critter& agg, int is_canned, int lvl) {
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
 
      if (ptr) {
-       ptr->bonus_duration += lvl / 3;
+       ptr->duration += lvl / 3;
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2 + 5), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl/2 + 5));
        vict.OBJ_FLAGS.turn_on(5); //no_drop
 
        Sprintf(buf, "You lay a curse on %S!\n", 
@@ -1171,18 +1118,17 @@ void do_cast_blindness(critter& vict, critter& agg, int is_canned, int lvl) {
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
 
      if (ptr) {
-       ptr->bonus_duration += lvl / 3;
+       ptr->duration += lvl / 3;
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl/2));
        vict.SEE_BIT &= ~(1024); //turn off the flag
 
        if (&vict == &agg) {
@@ -1236,11 +1182,6 @@ void cast_blindness(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSVN", spell_num, pc)) {
      return;
    }//if
@@ -1265,18 +1206,17 @@ void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl) {
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
 
      if (ptr) {
-       ptr->bonus_duration += lvl / 3;
+       ptr->duration += lvl / 3;
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl/2));
        vict.STR += WEAKEN_EFFECT;
 
        if (&vict == &agg) {
@@ -1330,11 +1270,6 @@ void cast_weaken(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSVN", spell_num, pc)) {
      return;
    }//if
@@ -1355,18 +1290,17 @@ void do_cast_fly(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->bonus_duration += lvl/3;
+       ptr->duration += lvl/3;
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2 + 5), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl/2 + 5));
        vict.CRIT_FLAGS.turn_on(3);
 
        if (&vict == &agg) {
@@ -1409,11 +1343,6 @@ void cast_fly(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1434,7 +1363,7 @@ void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1447,12 +1376,11 @@ void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
      }//if
 
      if (ptr) {
-       ptr->bonus_duration += lvl/4 + 2;
+       ptr->duration += lvl/4 + 2;
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/4 + 4), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl/4 + 4));
        vict.ATTACKS++;
 
        if (&vict == &agg) {
@@ -1497,11 +1425,6 @@ void cast_haste(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1528,14 +1451,14 @@ void do_cast_dispel_magic(critter& vict, critter& agg, int is_canned,
      do_join_in_battle = TRUE;
 
      int mana_count = 0;
-     Cell<stat_spell_cell*> cll(vict.affected_by);
-     stat_spell_cell* ptr;
+     Cell<SpellDuration*> cll(vict.getAffectedBy());
+     SpellDuration* ptr;
 
      while ((ptr = cll.next())) {
-       mana_count += get_mana_cost(ptr->stat_spell);
-       rem_effects_crit(ptr->stat_spell, vict, TRUE);
+       mana_count += get_mana_cost(ptr->spell);
+       rem_effects_crit(ptr->spell, vict, TRUE);
      }//while
-     clear_ptr_list(vict.affected_by);
+     vict.getAffectedBy().clearAndDestroy();
      
      if ((agg.pc) && (agg.MANA < mana_count * 2) && d(1,4) == 4) {
        show(
@@ -1580,11 +1503,11 @@ void do_cast_dispel_magic(critter& vict, critter& agg, int is_canned,
    }//else lost concentration
 
    if (do_join_in_battle) {
-     if (!HaveData(&agg, vict.IS_FIGHTING)) {
+     if (!vict.isFighting(agg)) {
        join_in_battle(vict, agg);
      }//if
    }//if
-   agg.PAUSE += 1;   // increment pause_count
+   agg.incrementPause(1);
 }//do_cast_dispel_magic
  
 
@@ -1599,11 +1522,6 @@ void cast_dispel_magic(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KSNV", spell_num, pc)) {
      return;
    }//if
@@ -1624,18 +1542,17 @@ void do_cast_fireproof(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->bonus_duration += lvl/2 +5;
+       ptr->duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
        vict.HEAT_RESIS += FIRE_PROOF_EFFECT;
 
        if (&vict == &agg) {
@@ -1678,11 +1595,6 @@ void cast_fireproof(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1705,18 +1617,17 @@ void do_cast_magic_shield(critter& vict, critter& agg, int is_canned,
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->bonus_duration += lvl/2;
+       ptr->duration += lvl/2;
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl));
 
        if (&vict == &agg) {
 	 show("A magical shield forms around you!\n", 
@@ -1758,11 +1669,6 @@ void cast_magic_shield(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1784,21 +1690,20 @@ void do_cast_sanctuary(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->bonus_duration += lvl/2 +5;
+       ptr->duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
      else if (vict.DAM_REC_MOD <= 70) {
        show("You can protect them no better!\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
        vict.DAM_REC_MOD += SANCTUARY_EFFECT_DRM;
 
        if (&vict == &agg) {
@@ -1841,11 +1746,6 @@ void cast_sanctuary(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1867,18 +1767,17 @@ void do_cast_prismatic_globe(critter& vict, critter& agg, int is_canned,
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->bonus_duration += lvl/2;
+       ptr->duration += lvl/2;
        show("You strengthen the globe.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
        vict.AC += PRISMATIC_GLOBE_EFFECT_AC;
        vict.MOV += PRISMATIC_GLOBE_EFFECT_MOV;
 
@@ -1922,11 +1821,6 @@ void cast_prismatic_globe(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1948,21 +1842,20 @@ void do_cast_stone_skin(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->bonus_duration += lvl/2 +5;
+       ptr->duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
      else if (vict.DAM_REC_MOD <= 40) {
        show("You can protect them no better!\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
        vict.DAM_REC_MOD += STONE_SKIN_EFFECT_DRM;
        vict.DEX += STONE_SKIN_EFFECT_DEX;
 
@@ -2006,11 +1899,6 @@ void cast_stone_skin(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -2031,13 +1919,13 @@ void do_cast_armor(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->bonus_duration += lvl/2 +5;
+       ptr->duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
      else if ((ptr = is_affected_by(DIVINE_PROTECTION_SKILL_NUM,
@@ -2046,8 +1934,7 @@ void do_cast_armor(critter& vict, critter& agg, int is_canned, int lvl) {
             agg); //can't be affected by both at once
      }//if divine_protection already
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
 
        vict.AC += ARMOR_EFFECT;
 
@@ -2093,11 +1980,6 @@ void cast_armor(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -2120,18 +2002,17 @@ void do_cast_absorb_blows(critter& vict, critter& agg, int is_canned,
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->bonus_duration += lvl/2;
+       ptr->duration += lvl/2;
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl));
 
        if (&vict == &agg) {
 	 show(
@@ -2191,21 +2072,20 @@ void do_cast_divine_protection(critter& vict, critter& agg, int is_canned,
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     SpellDuration* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->bonus_duration += lvl/2 +5;
+       ptr->duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
      else if ((ptr = is_affected_by(ARMOR_SKILL_NUM, vict))) {
        show("Ok.\n", agg); //can't be affected by both at once
      }//if armored already
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-	   vict.affected_by);
+        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
        vict.AC += DIVINE_PROTECTION_EFFECT;
 
        if (&vict == &agg) {
@@ -2248,11 +2128,6 @@ void cast_divine_protection(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
-   if (vict->isMob()) {
-     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-			victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -2271,8 +2146,8 @@ void do_locate_object(object &obj, const String* targ, critter& pc,
       return;
   }//if
 
-   if (!IsEmpty(obj.inv)) {
-      Cell<object*> cll(obj.inv);
+   if (!obj.getInv().isEmpty()) {
+      SCell<object*> cll(obj.inv);
       object* ptr;
       while ((ptr = cll.next())) {
          do_locate_object(*ptr, targ, pc, rm_num, sanity + 1, lvl);
@@ -2311,8 +2186,8 @@ void do_locate_object(critter &crit, const String* targ, critter& pc,
       return;
    }//if
    
-   if (!IsEmpty(crit.inv)) {
-      Cell<object*> cll(crit.inv);
+   if (!crit.getInv().isEmpty()) {
+      SCell<object*> cll(crit.inv);
       object* ptr;
       while ((ptr = cll.next())) {
          do_locate_object(*ptr, targ, pc, rm_num, sanity + 1, lvl);

@@ -1,5 +1,5 @@
-// $Id: ez_skll.cc,v 1.8 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: ez_skll.cc,v 1.9 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -70,7 +70,7 @@ int do_rescue(critter& vict, critter& pc) {
     return -1;
   }//if
 
-  if (IsEmpty(vict.IS_FIGHTING)) {
+  if (!vict.isFighting()) {
      Sprintf(buf, "%s isn't fighting anyone!\n", get_his_her(vict));
      buf.Cap();
      show(buf, pc);
@@ -85,13 +85,15 @@ int do_rescue(critter& vict, critter& pc) {
   /*  good to go as far as I can tell */
 
   if (skill_did_hit(pc, RESCUE_SKILL_NUM, vict)) {
-     Cell<critter*> cll(vict.IS_FIGHTING);
+     SCell<critter*> cll(vict.IS_FIGHTING);
      critter* ptr;
 
      while ((ptr = cll.next())) {
-        ptr->IS_FIGHTING.loseData(&vict); //rescued no longer in target list
-        ptr->IS_FIGHTING.gainData(&pc);   //rescuer in target list
-        pc.IS_FIGHTING.gainData(ptr);   //attacker in rescuer's list
+        critter* hack = &vict;
+        ptr->IS_FIGHTING.loseData(hack); //rescued no longer in target list
+        hack = &pc;
+        ptr->IS_FIGHTING.appendUnique(hack);   //rescuer in target list
+        pc.IS_FIGHTING.appendUnique(ptr);   //attacker in rescuer's list
      }//while
      /* all are attacking the rescue-er now */
 
@@ -141,10 +143,6 @@ int shield(int i_th, const String* vict, critter& pc, int was_ordered) {
    if (!ptr) {
      show("Shield who??\n", pc);
      return -1;
-   }//if
-
-   if (ptr->isMob()) {
-      ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, vict, pc.SEE_BIT);
    }//if
 
    return do_shield(*ptr, pc); 
@@ -226,10 +224,6 @@ int guard(int i_th, const String* vict, critter& pc) {
      return -1;
    }//if
 
-   if (ptr->isMob()) {
-      ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, vict, pc.SEE_BIT);
-   }//if
-
    return do_guard(*ptr, pc); 
 }//guard
 
@@ -290,16 +284,26 @@ int picklock(int i_th, const String* vict, critter& pc) {
       return -1;
    }
 
-   dr = door::findDoor(ROOM.DOORS, i_th, vict, pc.SEE_BIT, ROOM); 
+   dr = ROOM.findDoor(i_th, vict, pc);
    if (!dr) {
-      obj = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT, ROOM);
+      obj = pc.haveObjNamed(i_th, vict);
       if (!obj) {
-         obj = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);
+         obj = ROOM.haveObjNamed(i_th, vict, pc);
+         if (obj && !obj->isModified()) {
+            obj = obj_to_sobj(*obj, &ROOM, TRUE, i_th, vict, pc);
+         }
       }//if
+      else {
+         if (!obj->isModified()) {
+            obj = obj_to_sobj(*obj, &pc, TRUE, i_th, vict, pc);
+         }
+      }
+
       if (!obj) {
          show("You don't see that here.\n", pc); 
          return -1;
       }//if
+            
       return do_picklock(*obj, pc);
    }//if
 
@@ -310,16 +314,16 @@ int picklock(int i_th, const String* vict, critter& pc) {
 int do_picklock(door& dr, critter& pc) {
 
    if (skill_did_hit(pc, PICKLOCK_SKILL_NUM, pc)) {
-      if (!dr.dr_data->door_data_flags.get(2))
+      if (!dr.isClosed())
          show("It isn't even closed.\n", pc);
-      else if (!dr.dr_data->door_data_flags.get(3))
+      else if (!dr.isLocked())
          show("It isn't locked!!\n", pc);
-      else if (!dr.dr_data->door_data_flags.get(4))
+      else if (!dr.isPickable())
          show("It can't be opened so easily.\n", pc);
       else { //good to go
          show("You skillfully pick the lock.\n", pc);
          emote("skillfully picks the lock.", pc, ROOM, TRUE);
-         dr.dr_data->door_data_flags.turn_off(3); //no longer locked
+         dr.setLocked(FALSE);
          return 0;
       }//else
    }//if it worked
@@ -336,18 +340,18 @@ int do_picklock(door& dr, critter& pc) {
 int do_picklock(object& obj, critter& pc) { //for objects
 
    if (skill_did_hit(pc, PICKLOCK_SKILL_NUM, pc)) {
-      if (!obj.bag)
+      if (!obj.getBag())
 	 show("That is not a container.\n", pc);
-      else if (!obj.BAG_FLAGS.get(2))
+      else if (!obj.getBag()->isClosed())
          show("It isn't even closed.\n", pc);
-      else if (!obj.BAG_FLAGS.get(3))
+      else if (!obj.getBag()->isLocked())
          show("It isn't locked!!\n", pc);
-      else if (!obj.BAG_FLAGS.get(4))
+      else if (!obj.getBag()->isPickable())
          show("It can't be opened so easily.\n", pc);
       else { //good to go
          show("You skillfully pick the lock.\n", pc);
          emote("skillfully picks the lock.", pc, ROOM, TRUE);
-         obj.BAG_FLAGS.turn_off(3); //no longer locked
+         obj.getBag()->setLocked(FALSE);
          return 0;
       }//else
    }//if it worked
@@ -374,12 +378,12 @@ int earthmeld(critter& pc) {
 
 
 int do_earthmeld(critter& pc) {
-   stat_spell_cell* sp = NULL;
+   SpellDuration* sp = NULL;
    int spell_num = EARTHMELD_SKILL_NUM; 
 
    // Check for a forrest room. 
    if (ROOM.canCamp()) {
-      if ((sp = is_affected_by(spell_num, pc))) {
+      if ((sp = pc.isAffectedBy(spell_num))) {
          pc.breakEarthMeld();
          return 0;
       }//if
@@ -389,7 +393,7 @@ int do_earthmeld(critter& pc) {
       }//else
       
       /* it lasts untill mana runs out, or the player moves */
-      pc.affected_by.pushFront(new stat_spell_cell(spell_num, -1));
+      pc.addAffectedBy(new SpellDuration(spell_num, -1));
       return 0;
    }//if
    else {

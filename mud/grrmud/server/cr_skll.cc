@@ -1,5 +1,5 @@
-// $Id: cr_skll.cc,v 1.4 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: cr_skll.cc,v 1.5 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -48,23 +48,21 @@ int skin(int i_th, const String* vict, critter& pc) {
    }//if     
 
    int in_rm = FALSE;
-   obj = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT, ROOM);
+   obj = pc.haveObjNamed(i_th, vict);
    if (!obj) {
       in_rm = TRUE;
-      obj = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);
+      obj = ROOM.haveObjNamed(i_th, vict, pc);
    }//if
    if (!obj) {
       show("You don't see that here.\n", pc); 
       return -1;
    }//if
 
-   if (!obj->IN_LIST) {
+   if (!obj->isModified()) {
       if (in_rm) 
-	 obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, vict,
-			   pc.SEE_BIT, ROOM);
+	 obj = obj_to_sobj(*obj, &(ROOM), TRUE, i_th, vict, pc);
       else
-	 obj = obj_to_sobj(*obj, &(pc.inv), TRUE, i_th, vict,
-			   pc.SEE_BIT, ROOM);
+	 obj = obj_to_sobj(*obj, &(pc), TRUE, i_th, vict, pc);
    }//if
 
    return do_skin(*obj, pc); 
@@ -104,7 +102,7 @@ int do_skin(object& obj, critter& pc) {
       obj.obj_proc->obj_spec_data_flags.turn_off(2);
       obj.obj_proc->skin_ptr->decrementCurInGame();
 
-      if (obj.obj_proc->skin_ptr->IN_LIST) {
+      if (obj.obj_proc->skin_ptr->isModified()) {
 	delete obj.obj_proc->skin_ptr;
       }//if
       obj.obj_proc->skin_ptr = NULL;
@@ -130,10 +128,10 @@ int butcher(int i_th, const String* vict, critter& pc) {
    }//if     
 
    int in_rm = FALSE;
-   obj = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT, ROOM);
+   obj = pc.haveObjNamed(i_th, vict);
    if (!obj) {
       in_rm = TRUE;
-      obj = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);
+      obj = ROOM.haveObjNamed(i_th, vict, pc);
    }//if
    if (!obj) {
       show("You don't see that here.\n", pc); 
@@ -145,13 +143,11 @@ int butcher(int i_th, const String* vict, critter& pc) {
       return -1;
    }//if
 
-   if (!obj->IN_LIST) {
+   if (!obj->isModified()) {
       if (in_rm) 
-	 obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, vict,
-			   pc.SEE_BIT, ROOM);
+	 obj = obj_to_sobj(*obj, &(ROOM), TRUE, i_th, vict, pc);
       else
-	 obj = obj_to_sobj(*obj, &(pc.inv), TRUE, i_th, vict,
-			   pc.SEE_BIT, ROOM);
+	 obj = obj_to_sobj(*obj, &(pc), TRUE, i_th, vict, pc);
    }//if
 
    return do_butcher(*obj, pc); 

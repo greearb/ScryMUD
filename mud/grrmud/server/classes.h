@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.24 1999/08/22 07:16:19 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/22 07:16:19 $
+// $Id: classes.h,v 1.25 1999/08/25 06:35:11 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
 
 //
 //ScryMUD Server Code
@@ -152,7 +152,8 @@ public:
     * when new_string is passed in, so passing a reference to a stack variable,
     * for example, is a real bad idea.
     */
-   void addLstring(LString& new_string);
+   virtual void addLstring(LString& new_string);
+   virtual void addString(LanguageE lang, String& buf);
 
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
@@ -261,9 +262,12 @@ public:
    Entity* getContainer() { return container; }
 
    virtual LStringCollection* getNamesCollection(LanguageE forLang);
+
    LKeywordCollection& getNames() { return names; }
+   virtual void setNames(LKeywordCollection& incoming_names);
 
    virtual LStringCollection* getLongDescColl() { return &long_desc; }
+   virtual void setLongDescColl(LStringCollection& ldesc);
 
    virtual String* getName(int c_bit = ~0);
    virtual String* getFirstName(int c_bit = ~0);
@@ -383,6 +387,7 @@ public:
    int consumesKey() const { return flags.get(17); }
    int isNoPassdoor() const { return flags.get(18); }
    int isFlippable() const { return flags.get(9); }
+   int isPickable() const { return flags.get(4); }
 
    void close() { flags.turn_on(2); }
    void open() { flags.turn_off(2); }

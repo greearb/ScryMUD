@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.19 1999/08/22 07:16:20 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
+// $Id: door.h,v 1.20 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -136,6 +136,7 @@ public:
    int isNoPassdoor() const { return dr_data && dr_data->isNoPassdoor(); }
    int isDestructable() const { return dr_data && dr_data->isDestructable(); }
    int isFlippable() const { return dr_data && dr_data->isFlippable(); }
+   int isPickable() const { return dr_data && dr_data->isPickable(); }
 
    virtual int flipFlag(int fnum) { return dr_data && dr_data->flipFlag(fnum); }
 
@@ -147,6 +148,7 @@ public:
    void setDestructable(int val) { dr_data->setDestructable(val); }
    void setLockable(int val) { dr_data->setLockable(val); }
    void setBlocked(int val) { dr_data->setBlocked(val); }
+   void setLocked(int val) { dr_data->setLocked(val); }
 
    virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 

@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.31 1999/08/22 07:16:20 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
+// $Id: room.h,v 1.32 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -135,8 +135,6 @@ public:
    const SafeList<object*>* peekInv() { return &inv; }
    SafeList<object*>& getInv() { return inv; }
 
-   void listScripts(critter& pc);
-
    SafePtrList<door>& getDoors() { return doors; }
    SafePtrList<KeywordPair>& getKeywords() { return keywords; }
    int getVisBit() const { return cur_stats[0]; }
@@ -209,6 +207,9 @@ public:
    virtual void addShortDesc(LString& str);
    virtual void addShortDesc(LanguageE l, String& buf);
 
+   virtual String* getShortDesc(critter* viewer);
+   virtual String* getShortDesc(int cbit = ~0);
+
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_ROOM; }
 
@@ -254,6 +255,7 @@ public:
    virtual void gainInv(object* obj); //set IN_LIST if needed
    virtual object* loseInv(object* obj);
    virtual void showAllCept(CSentryE msg, critter* pc = NULL, critter* pc2 = NULL);
+   virtual void showAllCept(String& msg, critter* pc = NULL, critter* pc2 = NULL);
 
    /** Substitutes the result of getNameTarg->getName(foo), for all critters
     * foo in the room, into the constant string obtained from msg.  Complicated,

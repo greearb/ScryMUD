@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.42 1999/08/22 07:16:20 greear Exp $
-// $Revision: 1.42 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
+// $Id: critter.h,v 1.43 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.43 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -737,6 +737,11 @@ public:
 
    virtual void appendShortDesc(CSentryE whichun);
    virtual void appendInRoomDesc(CSentryE whichun);
+
+   virtual LStringCollection* getInRoomDescColl() { return &in_room_desc; }
+   virtual void setInRoomDescColl(LStringCollection& ldesc);
+   virtual LStringCollection* getShortDescColl() { return &short_desc; }
+   virtual void setShortDescColl(LStringCollection& sdesc);
 
    int haveObjNumbered(int count, int obj_num);
    /** Viewer may be self, but may not be as well. */

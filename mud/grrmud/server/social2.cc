@@ -1,5 +1,5 @@
-// $Id: social2.cc,v 1.5 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: social2.cc,v 1.6 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -39,12 +39,12 @@
 /*Coded By GROCK*/
 void smirk(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -85,12 +85,12 @@ void smirk(int i_th, const String* vict, critter& pc, room& rm) {
 /*Coded By GROCK*/
 void beckon(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -131,12 +131,12 @@ void beckon(int i_th, const String* vict, critter& pc, room& rm) {
 /*Coded By GROCK*/
 void sob(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -177,7 +177,7 @@ void sob(int i_th, const String* vict, critter& pc, room& rm) {
 /*Coded By GROCK*/
 void splash(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (!(rm.isSmallWater() || rm.isBigWater() ||
@@ -188,7 +188,7 @@ void splash(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -229,12 +229,12 @@ void splash(int i_th, const String* vict, critter& pc, room& rm) {
 /*Coded By GROCK*/
 void pat(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -276,12 +276,12 @@ void pat(int i_th, const String* vict, critter& pc, room& rm) {
 /*Coded By GROCK*/
 void itch(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -324,12 +324,12 @@ void itch(int i_th, const String* vict, critter& pc, room& rm) {
 /*Coded By GROCK*/
 void wiggle(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -375,12 +375,12 @@ void wiggle(int i_th, const String* vict, critter& pc, room& rm) {
 /*Coded By GROCK*/
 void agree(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -421,12 +421,12 @@ void agree(int i_th, const String* vict, critter& pc, room& rm) {
 /*Coded By Crazy*/
 void blush(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -467,12 +467,12 @@ void blush(int i_th, const String* vict, critter& pc, room& rm) {
 /* by crazy */
 void kiss(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -524,12 +524,12 @@ void afk(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void giggle(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -570,12 +570,12 @@ void giggle(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void shrug(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -617,12 +617,12 @@ void shrug(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void wibble(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -665,12 +665,12 @@ void wibble(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void yawn(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -712,12 +712,12 @@ void yawn(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void bonk(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -758,12 +758,12 @@ void bonk(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void pft(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -805,12 +805,12 @@ void pft(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void clap(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -851,13 +851,13 @@ void clap(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void shake(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
    critter* targ = NULL;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -909,12 +909,12 @@ void shake(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void groan(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -956,12 +956,12 @@ void groan(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void hmm(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1001,12 +1001,12 @@ void hmm(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void hum(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1048,12 +1048,12 @@ void hum(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void grumble(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1095,12 +1095,12 @@ void grumble(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void listen(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1142,12 +1142,12 @@ void listen(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void pinch(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1189,12 +1189,12 @@ void pinch(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void roll(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1237,12 +1237,12 @@ void roll(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void strut(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1283,12 +1283,12 @@ void strut(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void whistle(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1330,12 +1330,12 @@ void whistle(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void slap(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr = NULL;
    critter* crit_ptr = NULL;
 
    if (vict->Strlen()) {
-      crit_ptr = ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+      crit_ptr = ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1386,12 +1386,12 @@ void slap(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void muahaha(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1432,12 +1432,12 @@ void muahaha(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void hehe(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1480,12 +1480,12 @@ void hehe(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void silly(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1526,12 +1526,12 @@ void silly(int i_th, const String* vict, critter& pc, room& rm) {
 /* Made by Shamu */
 void scold(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1572,11 +1572,11 @@ void scold(int i_th, const String* vict, critter& pc, room& rm) {
 /* Coded by Crazy */
 void twiddle(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
-   Cell<critter*> cll(rm.getCrits());
+   SCell<critter*> cll(rm.getCrits());
    critter* ptr;
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           ROOM.haveCritNamed(i_th, vict, pc);
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
       else if (pc.POS > POS_SIT)

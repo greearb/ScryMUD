@@ -1,5 +1,5 @@
-// $Id: Scriptable.h,v 1.5 1999/08/20 06:20:04 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
+// $Id: Scriptable.h,v 1.6 1999/08/25 06:35:11 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
 
 //
 //ScryMUD Server Code
@@ -81,13 +81,15 @@ public:
    virtual void addProcScript(const String& txt, GenScript* script_data);
    /** Does not make a copy of the incoming pointer, it now owns that memory. */
    virtual void addProcScript(GenScript* ptr);
-   virtual void removeScript(String& trigger, int i_th, critter& pc);
+   virtual int removeScript(String& trigger, int i_th, critter& pc);
    virtual void finishedScript();
    virtual int isRunningScript() const { return (cur_script && (cur_script->isInProgress())); }
    virtual const ScriptCmd* getNextScriptCmd() { return cur_script->getNextCommand(); }
    virtual int getPause() const { return pause; }
    virtual void setPause(int i) { pause = i; }
-   virtual void decrementPause() { if (pause > 0) pause--; }
+   virtual int decrementPause(int by_what = 1) { if (pause > 0) pause -= by_what; return pause; }
+   virtual int incrementPause(int by_what = 1) { pause += by_what; return pause; }
+
    virtual void doScriptJump(int abs_index);
    virtual int insertNewScript(GenScript* original);
    virtual GenScript* getScriptAt(int idx) { return scripts.elementAt(idx); }
@@ -98,7 +100,7 @@ public:
    virtual int attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
                                            critter* actor);
 
-   virtual void listScripts(critter* pc);
+   virtual void listScripts(LEtypeE type, critter* pc);
 };//Scriptable
 
 

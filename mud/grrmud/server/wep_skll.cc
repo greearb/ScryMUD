@@ -1,5 +1,5 @@
-// $Id: wep_skll.cc,v 1.5 1999/08/10 07:06:21 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/10 07:06:21 $
+// $Id: wep_skll.cc,v 1.6 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -42,9 +42,9 @@ int circle(int i_th, const String* victim, critter& pc) {
    String buf(100);
 
    if (victim->Strlen() == 0)
-      crit_ptr = Top(pc.IS_FIGHTING);
+      crit_ptr = pc.getFirstFighting();
    else
-      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (crit_ptr) {
 
@@ -52,7 +52,7 @@ int circle(int i_th, const String* victim, critter& pc) {
          return -1;
       }
 
-      if (!HaveData(crit_ptr, pc.IS_FIGHTING)) {
+      if (!pc.isFighting(*crit_ptr)) {
 	 show("You must be fighting a person to circle him.\n", pc);
 	 return -1;
       }//if
@@ -139,7 +139,7 @@ int backstab(int i_th, const String* victim, critter& pc) {
    critter* crit_ptr;
    String buf(100);
 
-   crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   crit_ptr = ROOM.haveCritNamed(i_th, victim, pc);
    
    if (crit_ptr) {
       if (!ok_to_do_action(crit_ptr, "mBSVFP", 0, pc, pc.getCurRoom(), NULL,
@@ -157,15 +157,10 @@ int backstab(int i_th, const String* victim, critter& pc) {
 	 return -1;
       }//if
 
-      if (crit_ptr->isMob()) {
-         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE, i_th, victim,
-                                pc.SEE_BIT);
-      }//if
-
       if (!(crit_ptr = check_for_diversions(*crit_ptr, "GM", pc)))
          return -1;
 
-      if (!IsEmpty(crit_ptr->IS_FIGHTING)) {
+      if (crit_ptr->isFighting()) {
 	 show("The element of supprise has been lost.\n", pc);
          return do_hit(*crit_ptr, pc);
       }//if
@@ -188,7 +183,7 @@ int do_backstab(critter& vict, critter& pc) {
       return -1;
    }//if
 
-   if (!HaveData(&vict, pc.IS_FIGHTING)) {
+   if (!pc.isFighting(vict)) {
       join_in_battle(pc, vict);
    }//if
 
@@ -250,7 +245,7 @@ int disarm(int i_th, const String* victim, critter& pc) {
    critter* crit_ptr;
    String buf(100);
 
-   crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+   crit_ptr = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (crit_ptr) {
       if (!ok_to_do_action(crit_ptr, "mSVFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -261,12 +256,6 @@ int disarm(int i_th, const String* victim, critter& pc) {
          show("You slap your wrist and feel stupid!!\n", pc);
          return -1;
       }//if
-
-      if (crit_ptr->isMob()) {
-         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE, i_th, victim,
-                                pc.SEE_BIT);
-      }//if
-
 
       if (!(crit_ptr = check_for_diversions(*crit_ptr, "GSMgos", pc)))
          return -1;
@@ -289,7 +278,7 @@ int do_disarm(critter& vict, critter& pc) {
       return -1;
    }//if
 
-   if (!pc.IS_FIGHTING.haveData(&vict)) {
+   if (!pc.isFighting(vict)) {
       join_in_battle(pc, vict);
    }//if
 

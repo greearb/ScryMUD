@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.10 1999/08/10 07:06:17 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
+// $Id: batl_prc.cc,v 1.11 1999/08/25 06:35:11 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
 
 //
 //ScryMUD Server Code
@@ -62,23 +62,20 @@ void do_entered_room_procs(critter& pc, door* dr, const char* from_dir,
    }
 
    String buf(100);
-   Cell<stat_spell_cell*> cll;
-   stat_spell_cell* ptr;
+   Cell<SpellDuration*> cll;
+   SpellDuration* ptr;
    critter* crit = &pc;
 
    is_dead = FALSE;
    /* check for a firewall spell */
 
    if (dr) {
-      dr->affected_by.head(cll);
+      dr->getAffectedBy().head(cll);
       while ((ptr = cll.next())) {
-         if (crit->isMob()) { //assume they will be affected!
-            crit = mob_to_smob(*crit, rm.getRoomNum());
-         }//if
-         if (ptr->stat_spell == FIREWALL_SKILL_NUM) {
+         if (ptr->spell == FIREWALL_SKILL_NUM) {
             do_firewall_effects(*crit, is_dead);
          }
-         else if (ptr->stat_spell == DISTORTION_WALL_SKILL_NUM) {
+         else if (ptr->spell == DISTORTION_WALL_SKILL_NUM) {
             // Increment sanity here because this may re-curse through
             // this method again. --BEN
             do_distortion_wall_effects(*crit, is_dead, sanity + 1);
@@ -148,7 +145,7 @@ void do_battle_proc(critter& pc) {
     violence = defense = 0;
   }//else
 
-  critter* primary_targ = Top(pc.IS_FIGHTING);
+  critter* primary_targ = pc.getFirstFighting();
 
   if (!primary_targ)
     return; //why are we here??
@@ -163,7 +160,7 @@ void do_battle_proc(critter& pc) {
       if (violence > 7) { //lets kill the weaklings/clerics!
 	if ((chance > 7) && (!is_tank(pc)) && pc.EQ[9] && 
 	    pc.EQ[9]->OBJ_FLAGS.get(43)) {
-	  critter* weakest = find_weakest(pc.IS_FIGHTING);
+	  critter* weakest = find_weakest(pc.getIsFighting());
 	  do_circle(*weakest, pc);
 	}//if
 	else if (chance > 5) {
@@ -172,7 +169,7 @@ void do_battle_proc(critter& pc) {
       }//if very violent
       else if (violence > 3) {
 	if (chance > 8) {
-	  critter* weakest = find_weakest(pc.IS_FIGHTING);
+	  critter* weakest = find_weakest(pc.getIsFighting());
 	  do_bash(*weakest, pc);
 	}//if
 	else if (chance > 5) {
@@ -194,7 +191,7 @@ void do_battle_proc(critter& pc) {
       if (defense <= 0) {
 	if (violence > 8) { //lets kill the weaklings/clerics!
 	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.IS_FIGHTING);
+	    critter* weakest = find_weakest(pc.getIsFighting());
 	    do_cast_fireball(*weakest, pc, FALSE, 0);
 	  }//if
 	  else if (chance > 6) {
@@ -217,7 +214,7 @@ void do_battle_proc(critter& pc) {
 	}//if very violent
 	else if (violence > 3) {
 	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.IS_FIGHTING);
+	    critter* weakest = find_weakest(pc.getIsFighting());
 	    do_cast_rainbow(*weakest, pc, FALSE, 0);
 	  }//if
 	  else if (chance > 6) {
@@ -248,7 +245,7 @@ void do_battle_proc(critter& pc) {
 	      do_cast_sanctuary(pc, pc, FALSE, 0);
 	    }//if
 	    else {
-	      if ((pc.HP + 300) < pc.HP_MAX) {
+	      if ((pc.HP + 300) < pc.getHpMax()) {
 		do_cast_restore(pc, pc, FALSE, 0);
 	      }//if
 	    }//else
@@ -270,10 +267,10 @@ void do_battle_proc(critter& pc) {
 	}//if very violent
 	else if (violence > 3) {
 	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.IS_FIGHTING);
+	    critter* weakest = find_weakest(pc.getIsFighting());
 	    do_cast_blindness(*weakest, pc, FALSE, 0);
 	  }//if
-	  else if ((chance > 6) && ((pc.HP + 300) < pc.HP_MAX)) {
+	  else if ((chance > 6) && ((pc.HP + 300) < pc.getHpMax())) {
 	    if (cls == CLERIC) {
 	      do_cast_restore(pc, pc, FALSE, 0);
 	    }//if
@@ -281,12 +278,12 @@ void do_battle_proc(critter& pc) {
 	      do_cast_teleport(pc, pc, FALSE, 0);
 	    }//else
 	  }//if
-	  else if ((chance > 4) && ((pc.HP + 100) < pc.HP_MAX)) {
+	  else if ((chance > 4) && ((pc.HP + 100) < pc.getHpMax())) {
 	    do_cast_harm(*primary_targ, pc, FALSE, 0);
 	  }//if
 	}//if not so violent
 	else if (violence >= 0) {
-	  if ((chance > 7) && ((pc.HP + 300) < pc.HP_MAX)) {
+	  if ((chance > 7) && ((pc.HP + 300) < pc.getHpMax())) {
 	    do_cast_restore(pc, pc, FALSE, 0);
 	  }//if
 	  else if (chance > 4) {
@@ -300,7 +297,7 @@ void do_battle_proc(critter& pc) {
       if (violence > 7) { //lets kill the weaklings/clerics!
 	chance = d(1, 10); //expand this for more cases	    
 	if (chance > 7) {
-	  critter* weakest = find_weakest(pc.IS_FIGHTING);
+	  critter* weakest = find_weakest(pc.getIsFighting());
 	  do_body_slam(*weakest, pc);
 	}//if
 	else if ((chance > 5) && (pc.MOV > 0)) {
@@ -321,7 +318,7 @@ void do_battle_proc(critter& pc) {
       else if (violence > 3) {
 	chance = d(1, 10); //expand this for more cases	    
 	if (chance > 8) {
-	  critter* weakest = find_weakest(pc.IS_FIGHTING);
+	  critter* weakest = find_weakest(pc.getIsFighting());
 	  do_bash(*weakest, pc);
 	}//if
 	else if ((chance > 6) && (pc.MOV > 0)) {
@@ -352,7 +349,7 @@ void do_battle_proc(critter& pc) {
       if (violence > 7) { //lets kill the weaklings/clerics!
 	if ((chance > 7) && (!is_tank(pc)) && pc.EQ[9] && 
 	    pc.EQ[9]->OBJ_FLAGS.get(43)) {
-	  critter* weakest = find_weakest(pc.IS_FIGHTING);
+	  critter* weakest = find_weakest(pc.getIsFighting());
 	  do_circle(*weakest, pc);
 	}//if
 	else if (chance > 5) {
@@ -361,7 +358,7 @@ void do_battle_proc(critter& pc) {
       }//if very violent
       else if (violence > 3) {
 	if (chance > 8) {
-	  critter* weakest = find_weakest(pc.IS_FIGHTING);
+	  critter* weakest = find_weakest(pc.getIsFighting());
 	  do_bash(*weakest, pc);
 	}//if
 	else if (chance > 5) {
@@ -382,7 +379,7 @@ void do_battle_proc(critter& pc) {
       if (defense <= 0) {
 	if (violence > 8) { //lets kill the weaklings/clerics!
 	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.IS_FIGHTING);
+	    critter* weakest = find_weakest(pc.getIsFighting());
 	    do_cast_rainbow(*weakest, pc, FALSE, 0);
 	  }//if
 	  else if (chance > 6) {
@@ -405,7 +402,7 @@ void do_battle_proc(critter& pc) {
 	}//if very violent
 	else if (violence > 3) {
 	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.IS_FIGHTING);
+	    critter* weakest = find_weakest(pc.getIsFighting());
 	    do_cast_rainbow(*weakest, pc, FALSE, 0);
 	  }//if
 	  else if (chance > 6) {
@@ -436,7 +433,7 @@ void do_battle_proc(critter& pc) {
 	      do_cast_armor(pc, pc, FALSE, 0);
 	    }//if
 	    else {
-	      if ((pc.HP + 100) < pc.HP_MAX) {
+	      if ((pc.HP + 100) < pc.getHpMax()) {
 		do_cast_heal(pc, pc, FALSE, 0);
 	      }//if
 	    }//else
@@ -457,10 +454,10 @@ void do_battle_proc(critter& pc) {
 	}//if very violent
 	else if (violence > 3) {
 	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.IS_FIGHTING);
+	    critter* weakest = find_weakest(pc.getIsFighting());
 	    do_cast_blindness(*weakest, pc, FALSE, 0);
 	  }//if
-	  else if ((chance > 6) && ((pc.HP + 100) < pc.HP_MAX)) {
+	  else if ((chance > 6) && ((pc.HP + 100) < pc.getHpMax())) {
 	    if (cls == CLERIC) {
 	      do_cast_heal(pc, pc, FALSE, 0);
 	    }//if
@@ -473,7 +470,7 @@ void do_battle_proc(critter& pc) {
 	  }//if
 	}//if not so violent
 	else if (violence >= 0) {
-	  if ((chance > 7) && ((pc.HP + 100) < pc.HP_MAX)) {
+	  if ((chance > 7) && ((pc.HP + 100) < pc.getHpMax())) {
 	    do_cast_heal(pc, pc, FALSE, 0);
 	  }//if
 	  else if (chance > 4) {
@@ -487,7 +484,7 @@ void do_battle_proc(critter& pc) {
       if (violence > 7) { //lets kill the weaklings/clerics!
 	chance = d(1, 10); //expand this for more cases	    
 	if (chance > 7) {
-	  critter* weakest = find_weakest(pc.IS_FIGHTING);
+	  critter* weakest = find_weakest(pc.getIsFighting());
 	  do_bash(*weakest, pc);
 	}//if
 	else if ((chance > 5) && (pc.MOV > 0)) {
@@ -505,7 +502,7 @@ void do_battle_proc(critter& pc) {
       else if (violence > 3) {
 	chance = d(1, 10); //expand this for more cases	    
 	if (chance > 8) {
-	  critter* weakest = find_weakest(pc.IS_FIGHTING);
+	  critter* weakest = find_weakest(pc.getIsFighting());
 	  do_bash(*weakest, pc);
 	}//if
 	else if (chance > 6) {
@@ -528,7 +525,7 @@ void do_battle_proc(critter& pc) {
       if (violence > 7) { //lets kill the weaklings/clerics!
 	if ((chance > 7) && (!is_tank(pc)) && pc.EQ[9] && 
 	    pc.EQ[9]->OBJ_FLAGS.get(43)) {
-	  critter* weakest = find_weakest(pc.IS_FIGHTING);
+	  critter* weakest = find_weakest(pc.getIsFighting());
 	  do_kick(*weakest, pc);
 	}//if
       }//if very violent
@@ -544,7 +541,7 @@ void do_battle_proc(critter& pc) {
       if (defense <= 0) {
 	if (violence > 8) { //lets kill the weaklings/clerics!
 	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.IS_FIGHTING);
+	    critter* weakest = find_weakest(pc.getIsFighting());
 	    do_cast_dark_dart(*weakest, pc, FALSE, 0);
 	  }//if
 	  else if (chance > 6) {
@@ -553,7 +550,7 @@ void do_battle_proc(critter& pc) {
 	}//if very violent
 	else if (violence > 3) {
 	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.IS_FIGHTING);
+	    critter* weakest = find_weakest(pc.getIsFighting());
 	    do_cast_burning_hands(*weakest, pc, FALSE, 0);
 	  }//if
 	  else if (chance > 4) {
@@ -586,7 +583,7 @@ void do_battle_proc(critter& pc) {
 	  }//if
 	}//if not so violent
 	else if (violence >= 0) {
-	  if ((chance > 9) && ((pc.HP + 10) < pc.HP_MAX)) {
+	  if ((chance > 9) && ((pc.HP + 10) < pc.getHpMax())) {
 	    do_cast_cure_serious(pc, pc, FALSE, 0);
 	  }//if
 	}//if not so violent
@@ -596,7 +593,7 @@ void do_battle_proc(critter& pc) {
       /* bards, warriors, rangers and all others */
       if (violence > 7) { //lets kill the weaklings/clerics!
 	if (chance > 8) {
-	  critter* weakest = find_weakest(pc.IS_FIGHTING);
+	  critter* weakest = find_weakest(pc.getIsFighting());
 	  do_kick(*weakest, pc);
 	}//if
 	else if (chance > 5) {
@@ -615,7 +612,7 @@ void do_battle_proc(critter& pc) {
 
 /* path is empty upon failure, otherwise holds path */
 void path_from_a_to_b(int start_room, int targ_room, List<int>& path) {
-   Cell<door*> cll;
+   SCell<door*> cll;
    door* ptr;
    int counter = 0;
    int tmp_rm;
@@ -660,7 +657,7 @@ void path_from_a_to_b(int start_room, int targ_room, List<int>& path) {
 
       room_list[par.Data()].DOORS.head(cll);
       while ((ptr = cll.next())) {
-         tmp_rm = abs(ptr->destination);
+         tmp_rm = abs(ptr->getDestination());
 
 	 if (!room_list[tmp_rm].getFlag(29)) {//not already in a path
 
@@ -710,25 +707,22 @@ void path_from_a_to_b(int start_room, int targ_room, List<int>& path) {
 
 
 void a_summons_help_against_b(critter& vict, critter& pc) {
-   List<critter*> tmp_lst;
+   SafeList<critter*> tmp_lst(NULL);
    if (!vict.mob)
       return;
 
    /* first check room that C is in */
-   Cell<critter*> cll(ROOM.getCrits());
+   SCell<critter*> cll(ROOM.getCrits());
    critter* ptr;
 
    while ((ptr = cll.next())) {
       if (a_will_help_b_against_c(*ptr, vict, pc)) {
-         Put(ptr, tmp_lst);
+         tmp_lst.append(ptr);
       }//if
    }//while
    
    tmp_lst.head(cll);
    while ((ptr = cll.next())) {
-      if (ptr->isMob()) {
-         ptr = mob_to_smob(*ptr, pc.getCurRoomNum());
-      }//if
       do_hit(pc, *ptr);
    }//while
    
@@ -736,13 +730,13 @@ void a_summons_help_against_b(critter& vict, critter& pc) {
    
    int cur_room = vict.getCurRoomNum();
    int targ_room;
-   Cell<door*> dcll(room_list[cur_room].DOORS);
+   SCell<door*> dcll(room_list[cur_room].DOORS);
    door* dptr;
    while ((dptr = dcll.next())) {
       if (door::findDoorByDest(room_list[(targ_room = 
-                                          abs(dptr->destination))].DOORS,
+                                          abs(dptr->getDestination()))].DOORS,
                                cur_room)) {
-         List<critter*> room_crits(room_list[targ_room].getCrits());
+         SafeList<critter*> room_crits(room_list[targ_room].getCrits());
          room_crits.head(cll);
          while ((ptr = cll.next())) {
             if (a_will_help_b_against_c(*ptr, vict, pc)) {
@@ -752,9 +746,6 @@ void a_summons_help_against_b(critter& vict, critter& pc) {
          
          tmp_lst.head(cll);
          while ((ptr = cll.next())) {
-            if (ptr->isMob()) {
-               ptr = mob_to_smob(*ptr, targ_room);
-            }//if
             int is_dead = FALSE;
             ptr->trackToKill(pc, is_dead);
          }//while
@@ -767,8 +758,8 @@ void a_summons_help_against_b(critter& vict, critter& pc) {
 /* called when a projectile comes through room, usually from throw or shoot. */
 void alert_room_proc(int rm_num, int alert_type, critter& targ,
 		     critter& agg) {
-   List<critter*> tmp_lst(room_list[rm_num].getCrits());
-   Cell<critter*> cll(tmp_lst);
+   SafeList<critter*> tmp_lst(room_list[rm_num].getCrits());
+   SCell<critter*> cll(tmp_lst);
    critter* ptr;
    String buf(100);
 
@@ -810,16 +801,17 @@ critter* find_weakest(List<critter*>& lst) {
   
 
 short is_tank(critter& pc) {
-  if (IsEmpty(pc.IS_FIGHTING))
-    return FALSE;
+  if (!pc.isFighting()) {
+     return FALSE;
+  }
 
-  Cell<critter*> cll(pc.IS_FIGHTING);
+  SCell<critter*> cll(pc.getIsFighting());
   critter* ptr;
 
   while ((ptr = cll.next())) {
-    if (Top(ptr->IS_FIGHTING) == &pc) {
-      return TRUE;
-    }//if
+     if (ptr->getIsFighting().peekFront() == &pc) {
+        return TRUE;
+     }//if
   }//while
 
   return FALSE;

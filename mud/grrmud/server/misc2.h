@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.20 1999/08/20 06:20:06 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
+// $Id: misc2.h,v 1.21 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -60,7 +60,7 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
 SpellDuration* is_affected_by(int spell_num, critter& pc);
 SpellDuration* is_affected_by(int spell_num, object& obj);
 
-SpellDuration* has_stat_affect(int affect_num, object& obj);
+StatBonus* has_stat_affect(int affect_num, object& obj);
 
 void leave_room_effects(room& rm, critter& pc);
 void leave_room_effects(room& rm, object& obj);

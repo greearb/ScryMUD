@@ -1,5 +1,5 @@
-// $Id: rm_spll.cc,v 1.4 1999/07/12 01:16:51 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/07/12 01:16:51 $
+// $Id: rm_spll.cc,v 1.5 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -98,7 +98,7 @@ void do_cast_portal(room& rm, critter& agg, int is_canned,
       show("A shimmering portal opens before you!\n", agg); 
       emote("opens a shimmering portal to...somewhere!", agg, 
 	    room_list[agg.getCurRoomNum()], TRUE);
-      show_all("A portal opens up before you!!\n", rm); 
+      rm.showAllCept(CS_PORTAL_OPENS_BEFORE_YOU);
    }//if canned
    else {//lost con
      show(LOST_CONCENTRATION_MSG_SELF, agg);
@@ -218,7 +218,7 @@ void cast_distortion_wall(int i_th, const String* dr, critter& pc) {
       return;
    }//if
 
-   dptr = door::findDoor(ROOM.DOORS, i_th, dr, pc.SEE_BIT, ROOM);
+   dptr = ROOM.findDoor(i_th, dr, pc);
    if (!dptr) {
       show("You don't see that door.\n", pc);
       return;
@@ -267,35 +267,32 @@ void do_cast_distortion_wall(door& dr, critter& agg, int is_canned,
    }//else !canned
 
    if (do_effects) {
-      door* dptr = door::findDoorByDest(room_list[abs(dr.destination)].DOORS, 
+      door* dptr = door::findDoorByDest(room_list[abs(dr.getDestination())].DOORS, 
                                         agg.getCurRoomNum());
       if (!dptr) {
 	 return;
       }//if
-      stat_spell_cell* sp;
-      Cell<stat_spell_cell*> cll(dptr->affected_by);
-      while ((sp = cll.next())) {
-         if (sp->stat_spell == spell_num) {
-            sp->bonus_duration += (int)((float)(lvl) / 4.0);
-            return;
-         }//if
-      }//while
-      Put(new stat_spell_cell(spell_num, lvl/3), dptr->affected_by);
-      affected_doors.gainData(dptr); //add to global aff'd list
 
-      dr.affected_by.head(cll);
-      while ((sp = cll.next())) {
-         if (sp->stat_spell == spell_num) {
-            sp->bonus_duration += (int)((float)(lvl) / 4.0);
-            return;
-         }//if
-      }//while
-      Put(new stat_spell_cell(spell_num, lvl/3), dr.affected_by);
-      affected_doors.gainData(&dr); //add to global aff'd list
+      SpellDuration* sp = dptr->isAffectedBy(spell_num);
+      if (sp) {
+         sp->duration += (int)((float)(lvl) / 4.0);
+      }//if
+      else {
+         dptr->addAffectedBy(new SpellDuration(spell_num, lvl/3));
+         affected_doors.appendUnique(dptr); //add to global aff'd list
+      }
+
+      sp = dr.isAffectedBy(spell_num);
+      if (sp) {
+         sp->duration += (int)((float)(lvl) / 4.0);
+      }//if
+      else {
+         dr.addAffectedBy(new SpellDuration(spell_num, lvl/3));
+         door* hack;
+         affected_doors.appendUnique(hack); //add to global aff'd list
+      }
    }//if
 }//do_cast_distortion_wall
-
-
 
 
 void cast_firewall(critter& pc) {
@@ -357,56 +354,42 @@ void do_cast_firewall(room& rm, critter& agg, int is_canned,
    }//else !canned
 
    if (do_effects) {
-      stat_spell_cell* sp;
+      SpellDuration* sp;
 
-      short already_there;
-      Cell<door*> d_cll(rm.DOORS);
+      SCell<door*> d_cll(rm.DOORS);
       door* d_ptr;
       while ((d_ptr = d_cll.next())) {
 	 d_ptr = 
-            door::findDoorByDest(room_list[abs(d_ptr->destination)].DOORS,
+            door::findDoorByDest(room_list[abs(d_ptr->getDestination())].DOORS,
                                  rm.getRoomNum());
 	 if (!d_ptr) { 
 	    continue;
 	 }//if
-         already_there = FALSE;
-         Cell<stat_spell_cell*> cll(d_ptr->affected_by);
-         while ((sp = cll.next())) {
-            if (sp->stat_spell == spell_num) {
-               sp->bonus_duration += (int)((float)(lvl) / 4.0);
-               already_there = TRUE;
-	       break;
-            }//if
-         }//while
-	 if (!already_there) {
-	    Put(new stat_spell_cell(spell_num, lvl/3),
-		d_ptr->affected_by);
+         sp = d_ptr->isAffectedBy(spell_num);
+         if (sp) {
+            sp->duration += (int)((float)(lvl) / 4.0);
+         }//if
+         else {
+            d_ptr->addAffectedBy(new SpellDuration(spell_num, lvl/3));
+            affected_doors.appendUnique(d_ptr); //add to global aff'd list
 	 }//if
-         affected_doors.gainData(d_ptr); //add to global aff'd list
       }//while
    }//if
 
    if (do_effects) { //for doors leading out
-      stat_spell_cell* sp;
+      SpellDuration* sp;
 
-      short already_there;
-      Cell<door*> d_cll(rm.DOORS);
+      SCell<door*> d_cll(rm.DOORS);
       door* d_ptr;
       while ((d_ptr = d_cll.next())) {
-         already_there = FALSE;
-         Cell<stat_spell_cell*> cll(d_ptr->affected_by);
-         while ((sp = cll.next())) {
-            if (sp->stat_spell == spell_num) {
-               sp->bonus_duration += (int)((float)(lvl) / 4.0);
-               already_there = TRUE;
-	       break;
-            }//if
-         }//while
-	 if (!already_there) {
-	    Put(new stat_spell_cell(spell_num, lvl/3),
-		d_ptr->affected_by);
+         sp = d_ptr->isAffectedBy(spell_num);
+         if (sp) {
+            sp->duration += (int)((float)(lvl) / 4.0);
+         }//if
+         else {
+            d_ptr->addAffectedBy(new SpellDuration(spell_num, lvl/3));
+            affected_doors.appendUnique(d_ptr); //add to global aff'd list
 	 }//if
-         affected_doors.gainData(d_ptr); //add to global aff'd list
       }//while
    }//if
 }//do_cast_firewall

@@ -1,5 +1,5 @@
-// $Id: dam_spll.cc,v 1.7 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: dam_spll.cc,v 1.8 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -150,7 +150,7 @@ void do_cast_holy_word(critter& vict, critter& agg, int is_canned,
    agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.isFighting(vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -165,17 +165,12 @@ void cast_holy_word(int i_th, const String* victim, critter& pc) {
    int spell_num = HOLY_WORD_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
+      vict = pc.getFirstFighting();
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to destroy??\n", pc);
       return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
    }//if
 
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
@@ -191,17 +186,12 @@ void cast_dispel_evil(int i_th, const String* victim, critter& pc) {
    int spell_num = DISPEL_EVIL_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
+      vict = pc.getFirstFighting();
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to harm??\n", pc);
       return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
    }//if
 
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
@@ -327,7 +317,7 @@ void do_cast_dispel_good(critter& vict, critter& agg, int is_canned,
    agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.isFighting(vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -342,17 +332,12 @@ void cast_dispel_good(int i_th, const String* victim, critter& pc) {
    int spell_num = DISPEL_GOOD_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
+      vict = pc.getFirstFighting();
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to harm??\n", pc);
       return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
    }//if
 
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
@@ -488,7 +473,7 @@ void do_cast_harm(critter& vict, critter& agg, int is_canned,
    agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.isFighting(vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -503,17 +488,12 @@ void cast_harm(int i_th, const String* victim, critter& pc) {
    int spell_num = HARM_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
+      vict = pc.getFirstFighting();
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to harm??\n", pc);
       return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
    }//if
 
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
@@ -639,7 +619,7 @@ void do_cast_cause_critical(critter& vict, critter& agg, int is_canned,
    agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.isFighting(vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -654,17 +634,12 @@ void cast_cause_critical(int i_th, const String* victim, critter& pc) {
    int spell_num = CAUSE_CRITICAL_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
+      vict = pc.getFirstFighting();
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to hurt??\n", pc);
       return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
    }//if
 
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
@@ -793,7 +768,7 @@ void do_cast_cause_sickness(critter& vict, critter& agg, int is_canned,
    agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.isFighting(vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -808,17 +783,12 @@ void cast_cause_sickness(int i_th, const String* victim, critter& pc) {
    int spell_num = CAUSE_SICKNESS_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
+      vict = pc.getFirstFighting();
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to harm??\n", pc);
       return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
    }//if
 
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
@@ -945,7 +915,7 @@ void do_cast_lightning(critter& vict, critter& agg, int is_canned,
    agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.isFighting(vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -960,17 +930,12 @@ void cast_lightning(int i_th, const String* victim, critter& pc) {
    int spell_num = LIGHTNING_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
+      vict = pc.getFirstFighting();
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to fry??\n", pc);
       return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
    }//if
 
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
@@ -1100,7 +1065,7 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
    agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.isFighting(vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -1115,17 +1080,12 @@ void cast_dark_dart(int i_th, const String* victim, critter& pc) {
    int spell_num = DOD_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
+      vict = pc.getFirstFighting();
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to blast??\n", pc);
       return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
    }//if
 
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
@@ -1255,7 +1215,7 @@ void do_cast_shocking_grasp(critter& vict, critter& agg, int is_canned,
    agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.isFighting(vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -1270,17 +1230,12 @@ void cast_shocking_grasp(int i_th, const String* victim, critter& pc) {
    int spell_num = SHOCKING_GRASP_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
+      vict = pc.getFirstFighting();
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to blast??\n", pc);
       return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
    }//if
 
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
@@ -1405,7 +1360,7 @@ void do_cast_rainbow(critter& vict, critter& agg, int is_canned,
    }//else
    agg.PAUSE += 1; 
 
-   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
+   if (do_join_in_battle && !agg.isFighting(vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -1420,17 +1375,12 @@ void cast_rainbow(int i_th, const String* victim, critter& pc) {
    int spell_num = RAINBOW_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
+      vict = pc.getFirstFighting();
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to blast??\n", pc);
       return;
-   }//if
-   
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
    }//if
    
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
@@ -1556,7 +1506,7 @@ void do_cast_burning_hands(critter& vict, critter& agg, int is_canned,
    }//else
    agg.PAUSE += 1; 
 
-   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
+   if (do_join_in_battle && !agg.isFighting(vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -1571,19 +1521,14 @@ void cast_burning_hands(int i_th, const String* victim, critter& pc) {
    int spell_num = BURNING_HANDS_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
+      vict = pc.getFirstFighting();
    else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to blast??\n", pc);
       return;
    }//if
 
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-   
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if

@@ -1,5 +1,5 @@
-// $Id: Scriptable.cc,v 1.2 1999/08/10 07:06:17 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
+// $Id: Scriptable.cc,v 1.3 1999/08/25 06:35:11 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
 
 //
 //ScryMUD Server Code
@@ -78,10 +78,6 @@ void Scriptable::addProcScript(const String& txt, GenScript* script_data) {
 
 void Scriptable::listScripts(LEtypeE type, critter& pc) {
    String buf(500);
-   buf.Append("These scripts are defined for this object, the actual scripts
-may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n");
-
-   pc.show(buf);
 
    String tmp(100);
    int found_one = FALSE;
@@ -102,7 +98,7 @@ may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n")
    }
 }//listScripts
 
-void Scriptable::removeScript(String& trigger, int i_th, critter& pc) {
+int Scriptable::removeScript(String& trigger, int i_th, critter& pc) {
    int sofar = 1;
    String buf(500);
  
@@ -115,7 +111,7 @@ void Scriptable::removeScript(String& trigger, int i_th, critter& pc) {
             delete ptr;
             ptr = obj_proc_scripts.lose(cll);
             show("Deleted it...\n", pc);
-            return;
+            return 0;
          }//if
          else {
             ptr = cll.next();
@@ -128,6 +124,7 @@ void Scriptable::removeScript(String& trigger, int i_th, critter& pc) {
    }//while
 
    show("Didn't find that script..\n", pc);
+   return -1;
 }//removeScript
 
 

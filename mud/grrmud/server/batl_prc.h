@@ -1,5 +1,5 @@
-// $Id: batl_prc.h,v 1.5 1999/07/05 22:32:06 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/07/05 22:32:06 $
+// $Id: batl_prc.h,v 1.6 1999/08/25 06:35:11 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
 
 //
 //ScryMUD Server Code
@@ -39,7 +39,7 @@
 #define PROJECTILE_DEATH		0	//mode for alert_room_proc
 
 short is_tank(critter& pc);
-critter* find_weakest(List<critter*>& lst);
+critter* find_weakest(SafeList<critter*>& lst);
 
 void do_battle_proc(critter& pc);
 

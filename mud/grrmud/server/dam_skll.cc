@@ -1,5 +1,5 @@
-// $Id: dam_skll.cc,v 1.6 1999/07/05 22:32:07 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
+// $Id: dam_skll.cc,v 1.7 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -42,10 +42,10 @@ int hurl(int i_th, const String* victim, critter& pc) {
    String buf(100);
 
    if (!victim->Strlen()) {
-      crit_ptr = Top(pc.IS_FIGHTING);
+      crit_ptr = pc.getFirstFighting();
    }//if
    else {
-      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc);
    }//if
 
    if (!ok_to_do_action(crit_ptr, "mSVFP", 0, pc,
@@ -67,11 +67,6 @@ int hurl(int i_th, const String* victim, critter& pc) {
          return -1;
       }//if
 
-      if (crit_ptr->isMob()) {
-         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE,
-                                i_th, victim, pc.SEE_BIT);
-      }//if
-
       return do_hurl(*crit_ptr, pc);
    }//if
    else {
@@ -90,7 +85,7 @@ int do_hurl(critter& vict, critter& pc) {
       return -1;
    }//if
 
-   if (!HaveData(&vict, pc.IS_FIGHTING)) {
+   if (!pc.isFighting(vict)) {
       join_in_battle(pc, vict);
    }//if
 
@@ -104,7 +99,7 @@ int do_hurl(critter& vict, critter& pc) {
       show(buf, vict);
 
       Sprintf(buf, "You lift %S over your head.\n",
-	      name_of_crit(vict, pc.SEE_BIT));
+	      vict.getName(&pc));
       show(buf, pc);
 
 			/* affects */
@@ -115,9 +110,8 @@ int do_hurl(critter& vict, critter& pc) {
       vict.PAUSE += d(1,4) + 2;
       pc.PAUSE += d(1,3);
 
-      if ((dptr = door::findDoor(ROOM.DOORS, 1, 
-                                 Top(door_list[d(1,10)].names), ~0, ROOM)) && 
-     	  !(dptr->dr_data->door_data_flags.get(2))) {
+      if ((dptr = ROOM.findDoor(1, door_list[d(1,10)].getDirection())) &&
+     	  dptr->isOpen()) {
 	 Sprintf(buf, "hurls %S out of the room.\n", name_of_crit(vict, ~0));
 	 emote(buf, pc, ROOM, TRUE, &vict);
 	 Sprintf(buf, "You hurl %s out of the room.\n", get_him_her(vict));
@@ -128,10 +122,10 @@ int do_hurl(critter& vict, critter& pc) {
 	 show(buf, vict);
 
 	 emote("is hurtled into the room.\n", vict,
-               room_list[abs(dptr->destination)], TRUE);
+               room_list[abs(dptr->getDestination())], TRUE);
 
          door* opposite_door = 
-            door::findDoorByDest(room_list[abs(dptr->destination)].doors,
+            door::findDoorByDest(room_list[abs(dptr->getDestination())].doors,
                                  pc.getCurRoomNum());
          String from_dir(30);
          int is_custom = FALSE;
@@ -148,14 +142,14 @@ int do_hurl(critter& vict, critter& pc) {
          }//if
 
          int is_dead;
-         vict.doGoToRoom(abs(dptr->destination), from_dir, dptr, is_dead,
+         vict.doGoToRoom(abs(dptr->getDestination()), from_dir, dptr, is_dead,
                          vict.getCurRoomNum(), 1);
          
          if (is_dead) {
             return 0;
          }
 
-         exact_raw_damage(d(8, pc.STR) * (dptr->distance + 1), NORMAL,
+         exact_raw_damage(d(8, pc.STR) * (dptr->getDistance() + 1), NORMAL,
                           vict, pc);
          
       }//if hurled into another room
@@ -190,7 +184,7 @@ int do_hurl(critter& vict, critter& pc) {
       show(buf, vict);
 
       Sprintf(buf, "You fail to lift %S over your head!\n",
-                 name_of_crit(vict, pc.SEE_BIT));
+              vict.getName(&pc));
       show(buf, pc);
 
       Sprintf(buf, "fails to lift %S over %s head.\n",
@@ -211,10 +205,10 @@ int body_slam(int i_th, const String* victim, critter& pc) {
    String buf(100);
 
    if (!victim->Strlen()) {
-      crit_ptr = Top(pc.IS_FIGHTING);
+      crit_ptr = pc.getFirstFighting();
    }//if
    else {
-      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
+      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc);
    }//if
 
    if (crit_ptr) { 
@@ -226,11 +220,6 @@ int body_slam(int i_th, const String* victim, critter& pc) {
       if (crit_ptr == &pc) {
          show("You shouldn't be slamming yourself..\n", pc);
          return -1;
-      }//if
-
-      if (crit_ptr->isMob()) {
-         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE, i_th, victim,
-                               pc.SEE_BIT);
       }//if
 
       return do_body_slam(*crit_ptr, pc);
@@ -251,8 +240,7 @@ int do_body_slam(critter& vict, critter& pc) {
       return -1;
    }//if
 
-   if (!HaveData(&vict, pc.IS_FIGHTING)) {
-      mudlog.log(DBG, "Calling join_in_battle in do_body_slam..\n");
+   if (!pc.isFighting(vict)) {
       join_in_battle(pc, vict);
    }//if
 
@@ -269,7 +257,7 @@ int do_body_slam(critter& vict, critter& pc) {
 	      name_of_crit(pc, vict.SEE_BIT), get_his_her(pc));
       show(buf, vict);
       Sprintf(buf, "You lift %S over your head with a mighty heave!\n",
-	      name_of_crit(vict, pc.SEE_BIT));
+	      vict.getName(&pc));
       show(buf, pc);
 
       if (vict.HP < 0) {
@@ -280,7 +268,7 @@ int do_body_slam(critter& vict, critter& pc) {
 
          Sprintf(buf, 
 	         "You crush %S into the ground, %s moves no more\n",
-        	 name_of_crit(vict, pc.SEE_BIT), get_he_she(vict));
+        	 vict.getName(&pc), get_he_she(vict));
          show(buf, pc);
          do_fatality = TRUE;
       }//if fatality
@@ -306,7 +294,7 @@ int do_body_slam(critter& vict, critter& pc) {
       show(buf, vict);
 
       Sprintf(buf, "You fail to lift %S over your head!\n",
-                 name_of_crit(vict, pc.SEE_BIT));
+                 vict.getName(&pc));
       show(buf, pc);
 
       Sprintf(buf, "fails to lift %S over %s head.\n",

@@ -1,5 +1,5 @@
-// $Id: ar_skll.cc,v 1.5 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: ar_skll.cc,v 1.6 1999/08/25 06:35:11 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
 
 //
 //ScryMUD Server Code
@@ -73,21 +73,18 @@ int do_berserk(critter& pc) {
       while ((ptr = ROOM.findNextSpellCritter())) {
          if (ptr != &pc) {
             if (ptr->mob || 
-                 (ptr->pc && HaveData(ptr, pc.IS_FIGHTING))) {
+                 (ptr->pc && pc.isFighting(*ptr))) {
 
                if (ptr->pc && ptr->PC_FLAGS.get(7)) { //if !hassle
                   continue;
                }//if
                
-               if (ptr->isMob()) {
-                  ptr = mob_to_smob(*ptr, pc.getCurRoomNum());
-               }//if
                flag = TRUE;
                ptr = check_for_diversions(*ptr, "MB", pc);
                if (!ptr) { //mirror was hit probably
                   continue;
                }//if
-               if (!HaveData(ptr, pc.IS_FIGHTING)) {
+               if (!pc.isFighting(*ptr)) {
                   join_in_battle(pc, *ptr);
                }//if
 

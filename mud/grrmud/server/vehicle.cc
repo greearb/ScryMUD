@@ -1,5 +1,5 @@
-// $Id: vehicle.cc,v 1.5 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: vehicle.cc,v 1.6 1999/08/25 06:35:12 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
 
 //
 //ScryMUD Server Code
@@ -32,6 +32,7 @@
 #include "misc.h"
 #include "misc2.h"
 #include "commands.h"
+#include "Markup.h"
 
 vehicle::vehicle() {
    path_cells.head(cll);
@@ -51,46 +52,46 @@ vehicle::vehicle(int num) : room(num) {
 
 
 vehicle::~vehicle() {
-   clear_ptr_list(path_cells);
+   path_cells.clearAndDestroy();
 }
 
-int vehicle::canEnter(const room* dest_room, int do_msg) const {
+int vehicle::canEnter(room* dest_room, int do_msg) {
    int retval = FALSE;
    String buf(100);
 
    if (!(hasUnlimitedFuel() || (cur_fuel > 0))) {
       if (do_msg) {
-         Sprintf(buf, "%S is out of fuel.\n", &(short_desc));
+         Sprintf(buf, "%S is out of fuel.\n", getShortDesc());
          showAllCept(buf);
       }//if
    }//if
    else if (!dest_room->isInUse()) { //if not used
       if (do_msg)
-         showAllCept("That room doesn't really exist!!\n");
+         showAllCept(CS_ROOM_DOESNT_EXIST);
    }//if
    else if (dest_room->isNoVehicle()) { //!vehicle
       if (do_msg)
-         showAllCept("Vehicles cannot travel there.\n");
+         showAllCept(CS_NO_VEHICLES_ALLOWED);
    }//if
    else if (dest_room->needsBoat() && !(canFloat() || canFly())) {
       if (do_msg)
-         showAllCept("This vehicle can't travel on water.\n");
+         showAllCept(CS_NO_TRAVEL_WATER);
    }//if
    else if ((dest_room->needsClimb()) && (!(canClimb() || canFly()))) {
       if (do_msg)
-         showAllCept("This vehicle can't climb.\n");
+         showAllCept(CS_NO_TRAVEL_CLIMB);
    }//if
    else if ((dest_room->needsDive()) && (!canDive())) {
       if (do_msg)
-         showAllCept("This vehicle can't dive.\n");
+         showAllCept(CS_NO_TRAVEL_DIVE);
    }//if
    else if ((dest_room->needsFly()) && (!canFly())) {
       if (do_msg)
-         showAllCept("This vehicle can't fly.\n");
+         showAllCept(CS_NO_TRAVEL_FLY);
    }//if
    else if (dest_room->isZlocked()) { //is zlocked
       if (do_msg)
-         showAllCept("That direction has been locked to vehicles.\n");
+         showAllCept(CS_NO_TRAVEL_ZLOCKED);
    }//if
    else
       retval = TRUE;
@@ -111,21 +112,26 @@ int vehicle::move() {
    return move(~0, getExitNum(), getExitDirection());
 }
 
-void vehicle::stat(critter& pc) {
-   room::stat(pc);
-   show("\n\t\t\tIS A VEHICLE\nVehicle flags:\n", pc);
-   out_field(vehicle_flags, pc, VEHICLE_FLAGS_NAMES);
+void vehicle::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
+   String buf(1000);
 
-   String buf(200);
+   room::toStringStat(viewer, buf, st);
+   rslt.append(buf);
 
-   Sprintf(buf, "ticks_till_next_stop:  %i, in_room:  %i, cur_fuel:  %i\n",
-           ticks_till_next_stop, in_room, cur_fuel);
-   show(buf, pc);
+   if (viewer->isImmort()) {
+      rslt.append("\n\t\t\tIS A VEHICLE\nVehicle flags:\n");
+      Markup::toString("", vehicle_flags, VEHICLE_FLAGS_NAMES, viewer, "", buf);
+      rslt.append(buf);
 
-   Sprintf(buf, "Max fuel:  %i, ticks_between_stops:  %i\n",
-           max_fuel, ticks_between_stops);
-   show(buf, pc);
-}//stat
+      Sprintf(buf, "ticks_till_next_stop:  %i, in_room:  %i, cur_fuel:  %i\n",
+              ticks_till_next_stop, in_room, cur_fuel);
+      rslt.append(buf);
+
+      Sprintf(buf, "Max fuel:  %i, ticks_between_stops:  %i\n",
+              max_fuel, ticks_between_stops);
+      rslt.append(buf);
+   }
+}//toStringStat
 
 int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
    int dest;
@@ -139,9 +145,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
 
    ticks_till_next_stop = ticks_between_stops;
 
-   door* exit_dr_ptr = door::findDoor(room_list[in_room].DOORS, i_th,
-                                      &exit_direction, see_bit,
-                                      room_list[in_room].getVisBit());
+   door* exit_dr_ptr = room_list[in_room].findDoor(i_th, &exit_direction);
 
    //log("Got exit_dr_ptr.\n");
 
@@ -152,7 +156,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
       return FALSE;
    }//if
 
-   dest = abs(exit_dr_ptr->destination);
+   dest = abs(exit_dr_ptr->getDestination());
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "got dest:  " << dest << endl;
@@ -164,7 +168,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
       return FALSE;
    }//if
 
-   ticks_till_next_stop += exit_dr_ptr->distance;
+   ticks_till_next_stop += exit_dr_ptr->getDistance();
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "Passed tests, looking for doors to vehicle, size list:  "
@@ -174,16 +178,16 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
    /* passed all tests, lets move it!! */
 
    /* delete door(s) TO the car */
-   Cell<door*> dcll(room_list[in_room].DOORS);
+   SCell<door*> dcll(room_list[in_room].DOORS);
    door* tmp_ptr = NULL;
 
    door* dr_ptr = dcll.next();
    while (dr_ptr) {
       if (mudlog.ofLevel(DBG)) {
-         mudlog << "Comparing dest:  " << abs(dr_ptr->destination)
+         mudlog << "Comparing dest:  " << abs(dr_ptr->getDestination())
                 << "  and this room num:  " << getRoomNum() << endl;
       }
-      if (abs(dr_ptr->destination) == getRoomNum()) {
+      if (abs(dr_ptr->getDestination()) == getRoomNum()) {
          //mudlog.log(DBG, "They were equal.\n");
          tmp_ptr = dr_ptr;
          dr_ptr = room_list[in_room].DOORS.lose(dcll);
@@ -202,7 +206,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
       return FALSE;
    }//if
 
-   if (!tmp_ptr->dr_data) {
+   if (!tmp_ptr->getDrData()) {
       mudlog.log(ERR, "ERROR:  dr_data is null.\n");
       return FALSE;
    }//if
@@ -213,7 +217,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
    // lets find the door from the train to the outside.
    DOORS.head(dcll); //head of vehicle doors
    while ((dr_ptr = dcll.next())) {
-      if (dr_ptr->dr_data == tmp_ptr->dr_data) {
+      if (dr_ptr->getDrData() == tmp_ptr->getDrData()) {
          break;
       }
    }//while
@@ -221,9 +225,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
 
    /* show messages to room, the one BEFORE the move */
    if (!isStealthy()) { //if not stealth
-      if (isAtDestination() && 
-          tmp_ptr->dr_data->isOpen() &&
-          tmp_ptr->dr_data->canClose()) {
+      if (isAtDestination() && tmp_ptr->isOpen() && tmp_ptr->canClose()) {
          if (dr_ptr) {
             Sprintf(buf, "The %S closes.\n", name_of_door(*dr_ptr, ~0));
             showAllCept(buf);
@@ -235,7 +237,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
          Sprintf(buf, "The %S closes.\n", name_of_door(*tmp_ptr, ~0));
          room_list[in_room].showAllCept(buf);
 
-         tmp_ptr->dr_data->close(); //make it closed
+         tmp_ptr->close(); //make it closed
       }//if
 
       Sprintf(buf, "%S leaves towards the %S.\n", &(short_desc),
@@ -252,11 +254,11 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
 
    DOORS.head(dcll); //list of doors to/from vehicle
    while ((dr_ptr = dcll.next())) {
-      if (abs(dr_ptr->destination) == abs(in_room)) { //if is_vehicle_exit
-         if (dr_ptr->destination < 0)
-            dr_ptr->destination = -(abs(dest));
+      if (abs(dr_ptr->getDestination()) == abs(in_room)) { //if is_vehicle_exit
+         if (dr_ptr->getDestination() < 0)
+            dr_ptr->setDestination(-(abs(dest)));
          else
-            dr_ptr->destination = abs(dest); 
+            dr_ptr->setDestination(abs(dest)); 
          break; 
       }//if
    }//while
@@ -286,13 +288,13 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
    // lets find the door from the train to the outside.
    DOORS.head(dcll); //head of vehicle doors
    while ((dr_ptr = dcll.next())) {
-      if (dr_ptr->dr_data == tmp_ptr->dr_data) {
+      if (dr_ptr->getDrData() == tmp_ptr->getDrData()) {
          break;
       }
    }//while
 
    if (isAtDestination()) { //in other words, the one its in NOW
-      if (!isStealthy() && tmp_ptr->dr_data->isClosed()) {
+      if (!isStealthy() && tmp_ptr->isClosed()) {
          if (dr_ptr) {
             Sprintf(buf, "The %S opens.\n", name_of_door(*dr_ptr, ~0));
             showAllCept(buf);
@@ -310,17 +312,18 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
          }
 
       }//if
-      tmp_ptr->dr_data->open(); //make it open
+      tmp_ptr->open(); //make it open
    }//if
 
-   buf = getPassengerMessage();
-   if (buf.Strlen() > 0) {
-      showAllCept(buf);
-   }//if
+   // TODO:  Must break this out per passenger....
+   //buf = getPassengerMessage();
+   //if (buf.Strlen() > 0) {
+   //   showAllCept(buf);
+   //}//if
 
    if (vehicle_flags.get(7)) { //if can see out
       critter* cptr;
-      Cell<critter*> ccll(CRITTERS);
+      SCell<critter*> ccll(CRITTERS);
 
       while ((cptr = ccll.next())) {
          do_look(1, &NULL_STRING, *cptr, room_list[in_room],
@@ -358,10 +361,10 @@ void vehicle::advancePathIterator() {
 }
 
 
-String vehicle::getPassengerMessage() {
+String& vehicle::getPassengerMessage(critter* viewer) {
    PathCell* ptr = cll.item();
    if (ptr)
-      return ptr->getDesc();
+      return *(ptr->getDesc(viewer));
    else
       return UNKNOWN_DESC;
 }
@@ -384,10 +387,10 @@ int vehicle::getExitNum() {
 }
 
 
-void vehicle::Clear() {
-   room::Clear();
-   vehicle_flags.Clear();
-   clear_ptr_list(path_cells);
+void vehicle::clear() {
+   room::clear();
+   vehicle_flags.clear();
+   path_cells.clearAndDestroy();
    path_cells.head(cll);
    ticks_till_next_stop = in_room = cur_fuel = max_fuel = 0;
    ticks_between_stops = 0;
@@ -399,9 +402,11 @@ void vehicle::showPaths(critter& pc) {
    Cell<PathCell*> cell(path_cells);
    PathCell* ptr;
    int i = 0;
+   String buf(500);
 
    while ((ptr = cell.next())) {
-      ptr->stat(getRoomNum(), i, pc);
+      ptr->toStringStat(getRoomNum(), i, pc, buf, ST_ALL);
+      pc.show(buf);
       pc.show("\n");
       i++;
    }
@@ -442,15 +447,14 @@ void vehicle::setPathPointer(int index) {
 }//setPathPointer
    
 
-void vehicle::Read(ifstream& da_file, short read_all) {
-   Clear();
-   room::Read(da_file, read_all);
-
+int vehicle::read(istream& da_file, short read_all) {
+   vehicle::clear();
+   room::read(da_file, read_all);
 
    char tmp[81];
    //now, read in vehicle specific stuff...
 
-   vehicle_flags.Read(da_file);
+   vehicle_flags.read(da_file);
 
    da_file.getline(tmp, 80);
 
@@ -458,10 +462,17 @@ void vehicle::Read(ifstream& da_file, short read_all) {
    PathCell* ptr;
    da_file >> sentinel;
    da_file.getline(tmp, 80);
-   while ((sentinel != -1) && da_file) {
+   while (sentinel != -1) {
+      if (!da_file) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR: da_file bad in vehicle::read()\n" << endl;
+         }
+         return -1;
+      }
+
       ptr = new PathCell();
-      ptr->Read(da_file);
-      Put(ptr, path_cells);
+      ptr->read(da_file);
+      path_cells.append(ptr);
 
       da_file >> sentinel;
       da_file.getline(tmp, 80);
@@ -475,12 +486,13 @@ void vehicle::Read(ifstream& da_file, short read_all) {
    da_file >> ticks_between_stops;
       
    da_file.getline(tmp, 80);
-}//Read
+   return 0;
+}//read
 
 
-void vehicle::Write(ofstream& da_file) {
-   room::Write(da_file);
-   vehicle_flags.Write(da_file);
+int vehicle::write(ostream& da_file) {
+   room::write(da_file);
+   vehicle_flags.write(da_file);
 
    da_file << endl;
 
@@ -488,7 +500,7 @@ void vehicle::Write(ofstream& da_file) {
    PathCell* ptr;
    while ((ptr = pcell.next())) {
       da_file << "1  Beginning of PathCell\n";
-      ptr->Write(da_file);
+      ptr->write(da_file);
    }
 
    da_file << "-1 End of PathCells..\n";
@@ -496,6 +508,7 @@ void vehicle::Write(ofstream& da_file) {
    da_file << ticks_till_next_stop << " " << in_room << " " << cur_fuel 
            << " " << max_fuel << " " << ticks_between_stops
            << "  End of Vehicle" << endl;
+   return 0;
 }//write
 
 void vehicle::normalize() {
@@ -506,10 +519,10 @@ void vehicle::normalize() {
 
 int PathCell::_cnt = 0;
 
-PathCell::PathCell(String& description, String& direction_to_next,
+PathCell::PathCell(LString& description, String& direction_to_next,
                    int is_dest) {
    _cnt++;
-   desc = description;
+   desc.addLstring(description);
    dir_to_next = direction_to_next;
    is_destination = is_dest;
 }
@@ -519,41 +532,57 @@ PathCell::PathCell() {
    _cnt++;
    dir_to_next = "NOWHERE";
    is_destination = 0;
-   desc = "GENERIC_DESC";
+   LString ls(English, "GENERIC_DESC");
+   desc.addLstring(ls);
    i_th_dir = 1;
 }//constructor
 
 
-void PathCell::Clear() {
-   desc.Clear();
-   dir_to_next.Clear();
+void PathCell::clear() {
+   desc.clear();
+   dir_to_next.clear();
    is_destination = i_th_dir = 0;
 }
 
-void PathCell::Read(ifstream& da_file) {
+int PathCell::read(istream& da_file, int read_all = TRUE) {
    char tmp[81];
+   String buf(100);
 
-   desc.Termed_Read(da_file); //description
+   da_file >> buf;
+   if (strcasecmp(buf, "<META") == 0) { //then do v3 style read
+      MetaTags mt(buf, da_file);
+      desc.read(da_file);
+      da_file >> is_destination >> i_th_dir >> dir_to_next;
+      da_file.getline(tmp, 80);
+   }
+   else { //v02 read
+      buf.termedRead(da_file);
+      desc.addString(English, buf);
 
-//   mudlog << "PathCell:  got desc:  -:" << desc << ":-" << endl;
+      //   mudlog << "PathCell:  got desc:  -:" << desc << ":-" << endl;
 
-   da_file >> is_destination >> i_th_dir >> dir_to_next;
+      da_file >> is_destination >> i_th_dir >> dir_to_next;
 
-//   mudlog << "Is_dest:  " << is_destination << "  i_th:  " << i_th_dir
-//          << "  dir:  " << dir_to_next << endl;
+      //   mudlog << "Is_dest:  " << is_destination << "  i_th:  " << i_th_dir
+      //          << "  dir:  " << dir_to_next << endl;
 
-   da_file.getline(tmp, 80);
+      da_file.getline(tmp, 80);
+   }
+   return 0;
 //   mudlog << "Junk:  -:" << tmp << ":-" << endl;
-}//Read
+}//read
 
 
-void PathCell::Write(ofstream& da_file) {
-   parse_for_max_80(desc);
-   da_file << desc << "\n~\n";
+int PathCell::write(ostream& da_file) {
+   MetaTags mt(*this);
+   mt.write(da_file);
+
+   desc.write(da_file);
 
    da_file << is_destination << " " << i_th_dir << " " << dir_to_next 
            << " is_dest, i_th, dir, End of PathCell..\n";
-}//Write
+   return 0;
+}//write
 
 
 void PathCell::setIsDest(int i) {
@@ -568,39 +597,41 @@ int PathCell::isDest() {
 }
 
 
-void PathCell::stat(int veh_num, int path_cell_num, critter& pc) {
-   String buf(1000);
+void PathCell::toStringStat(int veh_num, int path_cell_num, critter& pc,
+                            String& rslt, ToStringTypeE st) {
+   String buf(500);
 
-   if (pc.isPc()) {
-      if (pc.isUsingClient()) {
-         Sprintf(buf, "<PSTAT %i %i>", veh_num, path_cell_num);
-         pc.show(buf);
+   if (pc.isUsingClient()) {
+      Sprintf(rslt, "<PSTAT %i %i>", veh_num, path_cell_num);
 
-         pc.show(" <PSTAT_LD>");
-         pc.show(desc);
-         pc.show("</STAT> ");
+      desc.toStringStat("<DESC>", "</DESC>", &pc, buf);
+      rslt.append(buf);
 
-         Sprintf(buf, "<PATH_DIR %i %S> ", i_th_dir, &dir_to_next);
-         pc.show(buf);
+      Sprintf(buf, "<PATH_DIR %i %S> ", i_th_dir, &dir_to_next);
+      rslt.append(buf);
          
+      Sprintf(buf, "<PATH_IS_DEST %i> </PSTAT>", is_destination);
+      rslt.append(buf);
+   }
+   else {
+      if ((st == ST_ALL) || (pc.isImmort())) {
+         Sprintf(buf, "Path Cell [%i] for vehicle [%i].  Desc:\n",
+                 path_cell_num, veh_num);
+         rslt.append(buf);
 
-         Sprintf(buf, "<PATH_IS_DEST %i> ", is_destination);
-         pc.show(buf);
-      }
+         desc.toStringStat("", "", &pc, buf);
+         rslt.append(buf);
 
-      Sprintf(buf, "Path Cell [%i] for vehicle [%i].  Desc:\n",
-              path_cell_num, veh_num);
-      pc.show(buf);
-      pc.show(desc);
-      Sprintf(buf, "Direction:  i_th: %i  dir: %S\n", i_th_dir,
-              &dir_to_next);
-      pc.show(buf);
+         Sprintf(buf, "Direction:  i_th: %i  dir: %S\n", i_th_dir,
+                 &dir_to_next);
+         rslt.append(buf);
       
-      if (is_destination) {
-         pc.show("It IS a DESTINATION.\n");
-      }
-      else {
-         pc.show("It is NOT a destination.\n");
+         if (is_destination) {
+            pc.show("It IS a DESTINATION.\n");
+         }
+         else {
+            pc.show("It is NOT a destination.\n");
+         }
       }
    }//if it's a pc
 }//stat
