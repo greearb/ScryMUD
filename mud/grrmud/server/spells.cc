@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.29 2003/05/08 23:22:07 eroper Exp $
-// $Revision: 1.29 $  $Author: eroper $ $Date: 2003/05/08 23:22:07 $
+// $Id: spells.cc,v 1.30 2004/07/09 08:56:14 eroper Exp $
+// $Revision: 1.30 $  $Author: eroper $ $Date: 2004/07/09 08:56:14 $
 
 //
 //ScryMUD Server Code
@@ -330,7 +330,7 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
      pc.MA_REGEN -= POISON_MA_REGEN_AUGMENTATION;
      pc.MV_REGEN -= POISON_MV_REGEN_AUGMENTATION;
      if (do_msg)
-       show("Your bowels no longer scream in pain!", pc);
+       show("Your bowels no longer scream in pain!\n", pc);
    }//if
    else if (spell_num == WEB_SKILL_NUM) {
      pc.MV_REGEN -= WEB_MV_REGEN_AUGMENTATION;
