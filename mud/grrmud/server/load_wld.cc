@@ -1,5 +1,5 @@
-// $Id: load_wld.cc,v 1.7 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: load_wld.cc,v 1.8 1999/08/16 07:31:24 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
 
 //
 //ScryMUD Server Code
@@ -45,7 +45,7 @@ void recursive_init_loads(object& obj, int depth) {
       return;
    }
 
-   Cell<object*> cll(obj.inv);
+   SCell<object*> cll(obj.inv);
    object* ptr;
    while ((ptr = cll.next())) {
       recursive_init_loads(*ptr, ++depth);
@@ -62,7 +62,7 @@ void recursive_init_loads(critter& mob) {
          recursive_init_loads(*(mob.EQ[i]), 0);
    }//for
 
-   Cell<object*> cll(mob.inv);
+   SCell<object*> cll(mob.inv);
    object* ptr;
    while ((ptr = cll.next())) {
       recursive_init_loads(*ptr, 0);
@@ -80,7 +80,7 @@ void recursive_init_unload(object& obj, int depth) {
       return;
    }
 
-   Cell<object*> cll(obj.inv);
+   SCell<object*> cll(obj.inv);
    object* ptr;
    while ((ptr = cll.next())) {
       recursive_init_unload(*ptr, ++depth);
@@ -97,7 +97,7 @@ void recursive_init_unload(critter& mob) {
 	 recursive_init_unload(*(mob.EQ[i]), 0);
    }//for
 
-   Cell<object*> cll(mob.inv);
+   SCell<object*> cll(mob.inv);
    object* ptr;
    while ((ptr = cll.next())) {
       recursive_init_unload(*ptr, 0);
@@ -359,10 +359,10 @@ void init_casting_objs() {
    for (int i = 0; i<NUMBER_OF_ITEMS; i++) {
       if (obj_list[i].isInUse()) {
          if (obj_list[i].obj_proc) {
-            Cell<stat_spell_cell*> cll(obj_list[i].obj_proc->casts_these_spells);
-            stat_spell_cell* ptr;
+            Cell<SpellDuration*> cll(obj_list[i].obj_proc->casts_these_spells);
+            SpellDuration* ptr;
             while ((ptr = cll.next())) {
-               SSCollection::instance().getSS(ptr->stat_spell).addNewCaster(i);
+               SSCollection::instance().getSS(ptr->spell).addNewCaster(i);
             }//while
          }//if could cast spells
       }//if in use
@@ -394,7 +394,7 @@ void write_all_zones() {
               else {
                  rfile << j <<"\t\tRoom Number\n";
               }
-              room_list[j].Write(rfile);
+              room_list[j].write(rfile);
 	   }//if
 	 }//for
 	 rfile << "\n\n" << -1 << "\t\tEND OF FILE MARKER\n" << flush;
@@ -450,11 +450,12 @@ void load_zone(int zone_num) {
          if (mudlog.ofLevel(DB))
             mudlog << "Reading a vehicle number:  " << k << endl;
          vehicle* tmp_v = new vehicle;
-         pulsed_proc_rooms.gainData(tmp_v);
+         room* hack = tmp_v;
+         pulsed_proc_rooms.appendUnique(hack);
          room_list.set(tmp_v, k);
       }
 
-      room_list[k].Read(rfile, FALSE);
+      room_list[k].read(rfile, FALSE);
       room_list[k].setRoomNum(k); //just in case
 
       rfile >> k;
@@ -505,7 +506,7 @@ void load_boards() {
 	       sprintf(buf, "Reading message Number %i.\n", k);
 	       mudlog.log(DBG, buf);
 	       new_obj = new object;
-	       new_obj->Read(rfile, FALSE);
+	       new_obj->read(rfile, FALSE);
 /*
                 cout << "Names:  ";
                 Cell<String*> nmcll(new_obj->ob->names);
@@ -514,7 +515,7 @@ void load_boards() {
                    cout << *ssptr << " ";
                 }
 */
-               Cell<object*> sort_cll(obj_list[i].inv);
+               SCell<object*> sort_cll(obj_list[i].inv);
                object* tmp_optr;
                int inserted = FALSE;
                while ((tmp_optr = sort_cll.next())) {
@@ -522,8 +523,8 @@ void load_boards() {
                   //     << atoi(*(tmp_optr->ob->names.peekBack()))
                   //     << " " << *(new_obj->ob->names.peekFront()) << " "
                   //     << atoi(*(new_obj->ob->names.peekFront())) << endl;
-                  if (atoi(*(tmp_optr->names.peekFront())) > 
-                      (atoi(*(new_obj->names.peekFront())))) {
+                  if (atoi(*(tmp_optr->getShortName(~0))) > 
+                      atoi(*(new_obj->getShortName(~0)))) {
                      inserted = TRUE;
                      obj_list[i].inv.insertBefore(sort_cll, new_obj);
                      break;
@@ -533,7 +534,8 @@ void load_boards() {
                   obj_list[i].inv.append(new_obj);
                }
 
-	       new_obj->in_list = &(obj_list[i].inv); //make it SOBJ	    
+	       new_obj->setModified(TRUE);
+               new_obj->setContainer(&(obj_list[i]));
        	       rfile >> k;
       	       rfile.getline(buf, 80);
    	    }//while, the big loop, reads in a whole room
@@ -575,10 +577,10 @@ void load_objects(int for_zone) {
       sprintf(buf, "Reading Item Number %i.\n", k);
       mudlog.log(DBG, buf);
      
-      obj_list[k].Read(rfile, FALSE);
+      obj_list[k].read(rfile, FALSE);
       //normalize_obj(obj_list[k]); //make it normal as possible
       obj_list[k].OBJ_FLAGS.turn_off(70);   //doesn't need resetting
-      obj_list[k].OBJ_IN_ZONE = for_zone;
+      obj_list[k].setZoneNum(for_zone);
 
       rfile >> k;
       rfile.getline(buf, 80);
@@ -619,7 +621,7 @@ void load_critters(int for_zone) {
       if (k > Cur_Max_Crit_Num)
          Cur_Max_Crit_Num = k;
 
-      mob_list[k].Read(rfile, FALSE);
+      mob_list[k].read(rfile, FALSE);
       if (mob_list[k].mob) {
          mob_list[k].MOB_FLAGS.turn_off(4); //init to !need_resetting
       }//if
@@ -660,7 +662,7 @@ void load_doors(int for_zone) {
       if (k > Cur_Max_Door_Num)
          Cur_Max_Door_Num = k;
     
-      door_list[k].Read(rfile);
+      door_list[k].read(rfile);
 
       rfile >> k;
       rfile.getline(temp_str, 80);

@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.25 1999/08/16 00:37:07 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
+// $Id: object.cc,v 1.26 1999/08/16 07:31:24 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
 
 //
 //ScryMUD Server Code
@@ -621,7 +621,7 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
       return -1;
    }
 
-   addName(new String(first_name));
+   addName(first_name);
 
    test = TRUE;
    while (test) {
@@ -637,7 +637,7 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
          test = FALSE;
       }//if
       else {
-         addName(new String(tmp_str));
+         addName(tmp_str);
       }//else
    }//while            
    ofile.getline(tmp, 80);         

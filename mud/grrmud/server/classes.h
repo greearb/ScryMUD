@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.20 1999/08/16 00:37:06 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
+// $Id: classes.h,v 1.21 1999/08/16 07:31:24 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
 
 //
 //ScryMUD Server Code
@@ -265,13 +265,25 @@ public:
    virtual const String* getLongDesc(critter* observer);
    virtual int isNamed(const String& name, critter* viwer);
    virtual int isNamed(const String& name); //dflt to english (maybe all??)
-   virtual void addName(String* nm);
-   virtual void addName(LString* nm);
 
+   /** Makes copy of incoming data. */
+   virtual void addName(String& nm);
+   virtual void addName(LString& nm);
+
+   /** Makes copy of incoming data. */
    virtual void addLongDesc(LString& new_val);
    virtual void addLongDesc(String& new_val);
 
+   virtual void appendLongDesc(LanguageE lang, String& buf);
+
+
+   /** Takes ownership of memory for new_affect.  This *MUST* prepend,
+    * or olc.cc will be broken.
+    */
    virtual void addAffectedBy(SpellDuration* new_affect);
+
+   virtual PtrList<SpellDuration>& getAffectedBy() { return affected_by; }
+
    virtual SpellDuration* isAffectedBy(int spell_num);
    virtual int isAffected() { return !(affected_by.isEmpty()); }
    virtual int affectedByToString(critter* viewer, String& rslt);
@@ -318,9 +330,11 @@ public:
    virtual ~Closable() { }
    virtual void clear() { flags.clear(); key = 0; }
 
+   virtual void flipFlag(int flg);
+   virtual bitfield& getFlags() { return flags; }
+
    int isOpen() const { return !(flags.get(2)); }
    int canClose() const { return canOpen(); }
-   int isVehicleExit() const { return flags.get(12); }
    int canOpen() const { return (!flags.get(11) 
                                   && flags.get(8)); }
    int canLock() const { return flags.get(5); }
@@ -330,6 +344,7 @@ public:
    int isLocked() const { return flags.get(3); }
    int isBlocked() const { return flags.get(14); }
    int isMagLocked() const { return flags.get(6); }
+   int isVehicleExit() const { return flags.get(12); }
    int isSecret() const { return (flags.get(13) || flags.get(16)); }
    int isInUse() const { return flags.get(10); }
    int isNotComplete() const { return flags.get(15); }
@@ -346,6 +361,7 @@ public:
    void setComplete() { flags.turn_off(15); }
    void setNotComplete() { flags.turn_on(15); }
    void setLockable(int val) { flags.set(5, val); }
+   void setUnOpenable(int val) { flags.set(11, val); }
    void setBlocked(int val) { flags.set(14, val); }
    void setClosed(int val) { flags.set(2, val); }
    void setLocked(int val) { flags.set(3, val); }
@@ -356,6 +372,8 @@ public:
    void setCorpse(int val) { flags.set(19, val); }
    void setNoClose(int val) { flags.set(8, !val); }
    void setConsumesKey(int val) { flags.set(17, val); }
+   void setInUse(int val) { flags.set(10, val); }
+   void setFlippable(int val) { flags.set(9, val); }
 
    int getKey() const { return key; }
    void setKey(int k) { key = k; }

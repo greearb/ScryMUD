@@ -1,5 +1,5 @@
-// $Id: Scriptable.h,v 1.3 1999/08/16 00:37:06 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
+// $Id: Scriptable.h,v 1.4 1999/08/16 07:31:24 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
 
 //
 //ScryMUD Server Code
@@ -66,39 +66,39 @@ public:
     * will be null (for non-script specific stuff) and should be specified
     * if it relates to scripting of course.
     */
-   int processInput(String& input, short do_sub, int script_driven, 
-                    critter* c_script_owner = NULL,
-                    room* r_script_owner = NULL, int was_ordered = FALSE);
-   int processInput(String& input);
-   int processInput(String& input, room* rm); /* for object scripts */
+   virtual int processInput(String& input, short do_sub, int script_driven, 
+                            critter* c_script_owner = NULL,
+                            room* r_script_owner = NULL, int was_ordered = FALSE);
+   virtual int processInput(String& input);
+   virtual int processInput(String& input, room* rm); /* for object scripts */
 
    /**  Run a command after it has been parsed by processInput.  Also called
     * from the script_jump method.
     */
-   int executeCommand(String* cooked_strs, int* cooked_ints,
-                      int sanity, critter* c_script_owner,
-                      room* r_script_owner, int do_sub, int was_ordered);
-   void addProcScript(const String& txt, GenScript* script_data);
+   virtual int executeCommand(String* cooked_strs, int* cooked_ints,
+                              int sanity, critter* c_script_owner,
+                              room* r_script_owner, int do_sub, int was_ordered);
+   virtual void addProcScript(const String& txt, GenScript* script_data);
    /** Does not make a copy of the incoming pointer, it now owns that memory. */
-   void addProcScript(GenScript* ptr);
-   void removeScript(String& trigger, int i_th, critter& pc);
-   void finishedScript();
-   int isRunningScript() const { return (cur_script && (cur_script->isInProgress())); }
-   const ScriptCmd* getNextScriptCmd() { return cur_script->getNextCommand(); }
-   int getPause() const { return pause; }
-   void setPause(int i) { pause = i; }
-   void decrementPause() { if (pause > 0) pause--; }
-   void doScriptJump(int abs_index);
+   virtual void addProcScript(GenScript* ptr);
+   virtual void removeScript(String& trigger, int i_th, critter& pc);
+   virtual void finishedScript();
+   virtual int isRunningScript() const { return (cur_script && (cur_script->isInProgress())); }
+   virtual const ScriptCmd* getNextScriptCmd() { return cur_script->getNextCommand(); }
+   virtual int getPause() const { return pause; }
+   virtual void setPause(int i) { pause = i; }
+   virtual void decrementPause() { if (pause > 0) pause--; }
+   virtual void doScriptJump(int abs_index);
    virtual int insertNewScript(GenScript* original);
-   GenScript* getScriptAt(int idx) { return scripts.elementAt(idx); }
+   virtual GenScript* getScriptAt(int idx) { return scripts.elementAt(idx); }
 
    /** Attempt to trigger a room script directly.  So far, we support only
     * pull and push, but more can easily be added.
     */
-   int attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
+   virtual int attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
                                    critter* actor);
 
-   void listScripts(critter* pc);
+   virtual void listScripts(critter* pc);
 };//Scriptable
 
 

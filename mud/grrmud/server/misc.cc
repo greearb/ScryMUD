@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.27 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: misc.cc,v 1.28 1999/08/16 07:31:24 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
 
 //
 //ScryMUD Server Code
@@ -112,7 +112,7 @@ void critter::save() {
       return;
    }//if
 
-   Write(ofile);
+   write(ofile);
 }//save_pc
 
 
@@ -253,12 +253,16 @@ void join_in_battle(critter& agg, critter& vict) {
    }//if
 
    //ensure only one copy (that's what gainData does)
+   room* hack;
    if (agg.getCurRoomNum() == vict.getCurRoomNum()) {
-      embattled_rooms.gainData(&(room_list[agg.getCurRoomNum()]));
+      hack = &(room_list[agg.getCurRoomNum()]);
+      embattled_rooms.appendUnique(hack);
    }
    else {
-      embattled_rooms.gainData(&(room_list[agg.getCurRoomNum()]));
-      embattled_rooms.gainData(&(room_list[vict.getCurRoomNum()]));
+      hack = &(room_list[agg.getCurRoomNum()]);
+      embattled_rooms.appendUnique(hack);
+      hack = &(room_list[vict.getCurRoomNum()]);
+      embattled_rooms.appendUnique(hack);
    }
 
 		/* make sure agg hits first */
@@ -272,9 +276,10 @@ void join_in_battle(critter& agg, critter& vict) {
                 << "  getCurRoomNum():  " << agg.getCurRoomNum() << endl;
       }
    }
-
-   Put(&vict, agg.IS_FIGHTING);
-   Put(&agg, vict.IS_FIGHTING);
+   critter* chack = &vict;
+   agg.getIsFighting().append(hack);
+   chack = &agg;
+   vict.getIsFighting().append(chack);
 
    //Some mobs will remember....
    if (vict.isNpc()) {
@@ -340,11 +345,10 @@ void do_tick() {
 
 
 void do_mini_tick() { // decrement pause count ect
-   Cell<critter*> cll;
-   pc_list.head(cll);
+   SCell<critter*> cll(pc_list);
    critter* crit_ptr;
-   Cell<stat_spell_cell*> scell;
-   stat_spell_cell* sc_ptr;
+   Cell<SpellDuration*> scell;
+   SpellDuration* sd_ptr;
 
    do_vehicle_moves();  //in misc2.cc
 
@@ -356,7 +360,7 @@ void do_mini_tick() { // decrement pause count ect
       }
 
       /* Take care of round-by-round affects on other spells/skills. */
-      if ((sc_ptr = is_affected_by(EARTHMELD_SKILL_NUM, *crit_ptr))) {
+      if ((sd_ptr = crit_ptr->isAffectedBy(EARTHMELD_SKILL_NUM))) {
          if (crit_ptr->isFighting()) {
             crit_ptr->MANA -= EARTHMELD_BATTLE_MANA_COST;
          }
@@ -370,20 +374,20 @@ void do_mini_tick() { // decrement pause count ect
       }//if
 
       // Take care of other things...
-      if (crit_ptr->PAUSE > 0) {
-	 crit_ptr->PAUSE--;
+      if (crit_ptr->getPause() > 0) {
+	 crit_ptr->decrementPause();
       }//
       crit_ptr->MINI_AFFECTED_BY.head(scell);
-      sc_ptr = scell.next();
-      while (sc_ptr) {
-         sc_ptr->bonus_duration--;
-         if (sc_ptr->bonus_duration == 0) {
-            rem_effects_crit(sc_ptr->stat_spell, *crit_ptr, TRUE);
-            delete sc_ptr;
-            sc_ptr = crit_ptr->MINI_AFFECTED_BY.lose(scell);
+      sd_ptr = scell.next();
+      while (sd_ptr) {
+         sd_ptr->duration--;
+         if (sd_ptr->duration == 0) {
+            rem_effects_crit(sd_ptr->spell, *crit_ptr, TRUE);
+            delete sd_ptr;
+            sd_ptr = crit_ptr->MINI_AFFECTED_BY.lose(scell);
          }//if
          else
-            sc_ptr = scell.next();
+            sd_ptr = scell.next();
       }//while
    }//while
 
@@ -399,16 +403,16 @@ void do_mini_tick() { // decrement pause count ect
 	 crit_ptr->PAUSE--;
 
       crit_ptr->MINI_AFFECTED_BY.head(scell);
-      sc_ptr = scell.next();
-      while (sc_ptr) {
-         sc_ptr->bonus_duration--;
-         if (sc_ptr->bonus_duration == 0) {
-            rem_effects_crit(sc_ptr->stat_spell, *crit_ptr, TRUE);
-            delete sc_ptr;
-            sc_ptr = crit_ptr->MINI_AFFECTED_BY.lose(scell);
+      sd_ptr = scell.next();
+      while (sd_ptr) {
+         sd_ptr->duration--;
+         if (sd_ptr->duration == 0) {
+            rem_effects_crit(sd_ptr->spell, *crit_ptr, TRUE);
+            delete sd_ptr;
+            sd_ptr = crit_ptr->MINI_AFFECTED_BY.lose(scell);
          }//if
          else
-            sc_ptr = scell.next();
+            sd_ptr = scell.next();
       }//while
    }//while
 

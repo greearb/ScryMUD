@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.38 1999/08/16 00:37:06 greear Exp $
-// $Revision: 1.38 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
+// $Id: critter.h,v 1.39 1999/08/16 07:31:24 greear Exp $
+// $Revision: 1.39 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
 
 //
 //ScryMUD Server Code
@@ -590,7 +590,7 @@ public:
    // 0 position   {0 stand, 1 sit, 2 rest, 3 sleep, 4 med,
    //               5 stun, 6 dead, 7 prone}
    // 1 str, 2 int, 3 con, 4 cha, 5 wis,
-   // 6 dex, 7 hit, 8 dam, 9 ac, 10 attacks, 11 pause_count
+   // 6 dex, 7 hit, 8 dam, 9 ac, 10 attacks, 11 pause_count (DEPRECATED)
    // 12 sex {0 female, 1 male, 2 neuter}
    // 13 class, {1 warrior, 2 sage, 3 wizard, 4 ranger, 5 thief,
    //            6 alchemist, 7 cleric, 8 bard}

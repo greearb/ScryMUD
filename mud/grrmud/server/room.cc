@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.36 1999/08/16 00:37:07 greear Exp $
-// $Revision: 1.36 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
+// $Id: room.cc,v 1.37 1999/08/16 07:31:25 greear Exp $
+// $Revision: 1.37 $  $Author: greear $ $Date: 1999/08/16 07:31:25 $
 
 //
 //ScryMUD Server Code
@@ -297,7 +297,6 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
    int i, test = TRUE;
    char tmp[81];
    String tmp_str(80);
-   String* string;
    door* dr_ptr;
 
    if (mudlog.ofLevel(DB)) {
@@ -325,8 +324,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
          test = FALSE;
       }//if
       else {
-         string = new String(tmp_str);
-         addName(string);
+         addName(tmp_str);
       }//else
    }//while            
    ofile.getline(tmp, 80);         

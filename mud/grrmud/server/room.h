@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.27 1999/08/16 00:37:07 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
+// $Id: room.h,v 1.28 1999/08/16 07:31:25 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/08/16 07:31:25 $
 
 //
 //ScryMUD Server Code
@@ -80,8 +80,6 @@ private:
    static int _cnt;
 
 protected:
-   int pause;
-
    SafeList<critter*> critters;
 
    SafeList<object*> inv;

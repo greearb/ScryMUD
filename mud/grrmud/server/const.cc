@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.21 1999/08/16 00:37:06 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
+// $Id: const.cc,v 1.22 1999/08/16 07:31:24 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
 
 //
 //ScryMUD Server Code
@@ -1137,170 +1137,73 @@ NOTE:  For unlimited fuel, you should toggle the appropriate flag (2).
 "\nInput the vehicle number:  ",
 
 /* 55 proc_data:  give_proc */
-"\nPlease enter the object number that should TRIGGER this proc when given to
-the mob.  Example:  55.  
-Note that this object should be created already as usual.\n",
+"NULL, error if you see this!!",
 
 /* 56 proc_data:  say_proc (discuss) */
-"\nPlease input the topic for this conversation.  For example, if you won't
-this discussion to be triggered upon a 'discuss history <this_mob>', you would
-enter 'history' here.  The quotes are NOT NEEDED.  Remember:  only an
-exact match (case insensitive of course) will allow the discussion to take
-place, so you will probably want to keep it simple.
-
-Example:  history\n",
+"NULL, error if you see this!!",
 
 /* 57 proc_data:  bow_proc */
-"\nPlease enter the message the person is to see when they bow to this mob.
-TERMINATE with a ~ on a LINE BY ITSELF!
-Example, for some priest:  
-
-The priest tells you 'You're attitude is encouraging, you should go discuss
-the brotherhood with the abbot in Elden Noir.'\n",
+"NULL, error if you see this!!",
 
 /* 58 proc_data:  curse_proc:  message */
-
-"\nPlease enter the message you would like shown to the person who will
-'curse' this mob.  TERMINATE with a ~ on a LINE BY ITSELF!
-Example, for some priest:
-
-The priest scowls and says, 'Perhaps THIS will teach you to respect the powers
-of good!'
-
-The priest may then transport the person somewhere...Hell perhaps??\n",
+"NULL, error if you see this!!",
 
 /* 59 spec_data:  say proc, response */
-"\nNow enter the response to this topic of discussion.  
-TERMINATE with a ~ on a LINE BY ITSELF!
-For example, for a priest and \'brotherhood\' for a topic:
-
-The abbot tells you, \'So you wish to join our brotherhood eh?  Consider
-yourself an accolyte, but if you truly wish to gain favor, bring me a root of
-the Golden Seal plant for my healing potions.  It grows in poplar shaded
-groves in the mountains to the east.\'
-
-Perhaps this priest will also have a give proc for the herb...\n",
+"NULL, error if you see this!!",
 
 /* 60 proc_data:  give_proc correct_msg */
-"\nPlease enter the message to be shown upon a CORRECT gift.
-TERMINATE with a ~ on a LINE BY ITSELF!
-Example for an abbot:  
-
-The abbot smiles and says, \'Thanks, because of your worthy quest I will tell
-you something of the lore of herbs.\'
-
-Then perhaps the abbot will teach a skill/spell 'herb lore' or something.\n",
+"NULL, error if you see this!!",
 
 /* 61 proc_data:  bow_proc skill_name */
-"\nIf you wish to have the mob give the player a skill/spell, enter that here.
-Example:  begging
-   
-Perhaps a skill an old begger would give a kind soul?
-If you don\'t want anything, please enter NA or na for not applicable.\n",
-
+"NULL, error if you see this!!",
 
 /* 62 proc_data:  curse_proc skill_name */
-"\nIf you wish to have the mob give the player a skill/spell, enter that here.
-Example:  ancient tongues
-
-Perhaps a skill a crusty old geezer would give a young upstart that shows
-courage, if not tact.  Then perhaps the geezer would transport him to some
-evil place?
-If you don't want anything, please enter NA or na for not applicable.\n",
+"NULL, error if you see this!!",
 
 /* 63 proc_data:  say_proc skill_name */
-"\nIf you wish to have the mob give the player a skill/spell, enter that here.
-Example:  history   
-
-Perhaps a skill a sage would give to a serious student?
-If you don\'t want anything, please enter NA or na for not applicable.\n",
+"NULL, error if you see this!!",
 
 /* 64 proc_data:  give_proc skill_name */
-"\nIf you wish to have the mob give the player a skill/spell, enter that here.
-
-Example:  herb lore
-
-If you don\'t want anything, please enter NA or na for not applicable.\n",
+"NULL, error if you see this!!",
 
 /* 65 proc_data:  bow_proc, obj_num */
-"\nPlease enter the number of the object the mob is to give to who ever
-bows to him/her.  If you don\'t want anything to be given, enter ZERO (0).
-Example:  82 \n",
+"NULL, error if you see this!!",
 
 /* 66 proc_data:  curse_proc, obj_num */
-"\nPlease enter the number of the object the mob is to give to who ever
-curses him/her.  If you don\'t want anything to be given, enter ZERO (0).
-Example:  66 \n",
+"NULL, error if you see this!!",
 
 /* 67 proc_data:  say_proc, obj_num */
-"\nPlease enter the number of the object the mob is to give to who ever
-discusses this topic.  If you don\'t want anything to be given, enter ZERO (0).
-Example:  0 \n",
+"NULL, error if you see this!!",
 
 /* 68 proc_data:  give_proc, obj_num */
-"\nPlease enter the number of the object the mob is to give to who ever
-gives the RIGHT gift.  If you don\'t want anything to be given, enter ZERO (0).
-Example:  24 \n",
+"NULL, error if you see this!!",
 
 /* 69 proc_data:  bow_proc, trans_to_room */
-"\nPlease enter the number of the room the mob is to transport the person who 
-bows to him/her to.  
-If you don\'t want the person transported anywhere, enter ZERO (0).
-Example:  0 \n",
+"NULL, error if you see this!!",
 
 /* 70 proc_data:  curse_proc, trans_to_room */
-"\nPlease enter the number of the room the mob is transport the person who 
-curses him/her to.  
-If you don\'t want the person transported anywhere, enter ZERO (0).
-Example:  666 \n",
+"NULL, error if you see this!!",
 
 /* 71 proc_data: say_proc, trans_to_room */
-"\nPlease enter the number of the room which the mob is to transport the
-person who discusses the given topic.  
-If you don\'t want the person transported anywhere, enter ZERO (0).
-Example:  1492 \n",
+"NULL, error if you see this!!",
 
 /* 72 proc_data: give_proc, trans_to_room */
-"\nPlease enter the number of the room which the mob is transport the person
-to who gives the CORRECT gift.  
-If you don\'t want the person transported anywhere, enter ZERO (0).
-Example:  1492 \n",
+"NULL, error if you see this!!",
 
 /* 73 proc_data:  say_proc, prompt for another? */
-"\nWould you like to add another discussion topic?  Yes(1) No(0)
-Example:  0 \n",
+"NULL, error if you see this!!",
 
 /* 74 proc_data:  give_proc, wrong_gift_msg */
-"\nPlease enter the message you would like the player to see if he/she gives
-a wrong item to this mob.  
-TERMINATE with a ~ on a LINE BY ITSELF!
-
-Example:  Thanks, but what I really need is a silver dragon scale. \n",
-
+"NULL, error if you see this!!",
 
 /* 75 proc_data: wrong_align_msg  */
-"\nPlease enter the message you would like a player of the wrong alignment 
-(as specified by flags set earlier (or not set)) to see.
-TERMINATE with a ~ on a LINE BY ITSELF!
-
-Example:  The priest frowns and tells you, 'If I wasn't a peaceful man
-I'd banish your petulant soul to the nine rings of Hell!!' \n",
+"NULL, error if you see this!!",
 
 /* 76 proc_data: wrong_class_msg  */
-"\nPlease enter the message you would like a player of the wrong class 
-(as specified by flags set earlier (or not set)) to see.
-TERMINATE with a ~ on a LINE BY ITSELF!
-
-Example:  The wizzard laughs and says, 'Why would I want to talk to one of
-your profession??'\n",
+"NULL, error if you see this!!",
 
 /* 77 proc_data: wrong_race_msg  */
-"\nPlease enter the message you would like a player of the wrong race 
-(as specified by flags set earlier (or not set)) to see.
-TERMINATE with a ~ on a LINE BY ITSELF!
-
-Example:  The dwarf laughs and says, 'You kind are not welcome in our
-hallowed tunnels.'\n",
+"NULL, error if you see this!!",
 
 /* 78 obj_spec_proc:  skin_num  */
 "\nPlease enter the number of the object that is to be the skin.\n\n",

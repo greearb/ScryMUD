@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.26 1999/08/16 00:37:07 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
+// $Id: object.h,v 1.27 1999/08/16 07:31:24 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
 
 //
 //ScryMUD Server Code
@@ -231,10 +231,11 @@ public:
 
    int getZoneNum() const;
 
-   /** These default to english. */
+   /** These default to english, makes a copy of incoming data. */
    void addShortDesc(String& new_val);
    void addInRoomDesc(String& new_val);
 
+   /** Makes a copy of incoming data. */
    void addShortDesc(LString& new_val);
    void addInRoomDesc(LString& new_val);
 
@@ -261,7 +262,6 @@ public:
    int isCoins() const { return OBJ_FLAGS.get(55); }
    int isWeapon() const { return obj_flags.get(57); }
    int isHerb() const;
-   int isPaused() const { return pause > 0; }
    int isModified() const { return is_modified; }
    int hasScript() const { return obj_flags.get(76); }
    int isLiquid() const;

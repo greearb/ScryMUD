@@ -1,5 +1,5 @@
-// $Id: door.cc,v 1.6 1999/08/16 00:37:07 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/16 00:37:07 $
+// $Id: door.cc,v 1.7 1999/08/16 07:31:24 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
 
 //
 //ScryMUD Server Code
@@ -80,7 +80,6 @@ int door_data::read(istream& da_file, int read_all = TRUE) {
    if (isnum(tmp_str)) { // _v2 read
       setVisBit(atoi(tmp_str) | 1024);
 
-      String* string;
       int test;
       int key_num;
       int door_num;
@@ -116,8 +115,7 @@ int door_data::read(istream& da_file, int read_all = TRUE) {
             test = FALSE;
          }//if
          else {
-            string = new String(tmp_str);
-            addName(string);
+            addName(tmp_str);
          }//else
       }//while            
       tmp_str.getLine(da_file, 80);
