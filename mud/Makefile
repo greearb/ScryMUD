@@ -40,7 +40,7 @@ MISC_FILES = \
 #NOTE:  if you are installing for the first time, you will probably want
 #       to use the install target, example:  make install
 
-all: scry_dist_all hegemon_gui
+all: scry_dist_all
 
 
 # This will create a tarbal of everything one would need to
@@ -122,37 +122,8 @@ build_html_pages: build_help_filter
 build_help_filter:
 	${MAKE} -C ./grrmud/help_filter all
 
-
-
-
-##################################################################
-########  Hegemon (Java Client) Related rules ####################
-##################################################################
-
-hegemon_gui:
-	make -C Hegemon distrib
-
-
-hegemon_applet:  hegemon_update
-	rm -f heg_applet$(HEGEMON_VERSION).tar.gz
-	rm -fr heg_applet        #clean out the directory
-	mkdir heg_applet
-	cp Hegemon/heg.jar heg_applet/
-	cp Hegemon/hegemon.html heg_applet/
-	cp Hegemon/hegemon_local.html heg_applet/
-	cp Hegemon/local_applet.properties heg_applet/
-	cp Hegemon/scry.gif heg_applet/
-	cp Hegemon/applet.properties heg_applet/hegemon.properties
-	cp -r hegemon/data heg_applet/data
-	tar -cvf heg_applet$(HEGEMON_VERSION).tar heg_applet/*
-	gzip heg_applet$(HEGEMON_VERSION).tar
-
 clean:
 	${MAKE} -C grrmud/server clean
-	rm -f hegemon$(HEGEMON_VERSION).tar.gz
-	rm -f hegemon$(HEGEMON_VERSION).src.tar.gz
-	rm -f hegemon$(HEGEMON_VERSION).zip
-	rm -f heg_applet$(HEGEMON_VERSION).tar.gz
 	rm -f scry_dist*
 	rm -f scry_core$(SCRY_VERSION).tar
 
