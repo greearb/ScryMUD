@@ -1623,6 +1623,7 @@ void thaw(int i_th, const String* targ, critter& pc) {
    crit->PC_FLAGS.turn_off(0);
 }//thaw
 
+
 void value_set(int i_th, const String* targ, int val_idx,
                int sell_val, int buy_val, critter& pc) {
    String buf(100);
@@ -1646,6 +1647,7 @@ void value_set(int i_th, const String* targ, int val_idx,
    if (crit->isPlayerShopKeeper()) {
       if (crit->isManagedBy(pc)) {
          crit->valueSet(val_idx, sell_val, buy_val, pc); //will do msgs
+         save_player_shop_owner(*crit);
       }//if
       else {
          pc.show("You are not the manager of this shopkeeper.\n");
@@ -1655,6 +1657,7 @@ void value_set(int i_th, const String* targ, int val_idx,
       pc.show("That is not a player-run shopkeeper.\n");
    }//else
 }//value_set
+
 
 void value_list(int i_th, const String* targ, critter& pc) {
    String buf(100);
@@ -1715,6 +1718,7 @@ void value_add(int i_th, const String* targ, int j_th,
    if (crit->isPlayerShopKeeper()) {
       if (crit->isManagedBy(pc)) {
          crit->valueAdd(*obj_ptr, pc); //will do msgs
+         save_player_shop_owner(*crit);
       }//if
       else {
          pc.show("You are not the manager of this shopkeeper.\n");
@@ -1770,6 +1774,7 @@ void adjust_register(int i_th, const String* targ, int new_balance,
                // and take some from the shopkeeper
                crit->GOLD = new_balance;
                pc.show(buf);
+               save_player_shop_owner(*crit);
             }//if
             else {
                // gonna give some to the shopkeeper
@@ -1782,6 +1787,7 @@ void adjust_register(int i_th, const String* targ, int new_balance,
                           (new_balance - crit->GOLD));
                   crit->GOLD = new_balance;
                   pc.show(buf);
+                  save_player_shop_owner(*crit);
                }//else
             }//else
          }//else
@@ -1818,6 +1824,7 @@ void value_rem(int i_th, const String* targ, int val_idx, critter& pc) {
    if (crit->isPlayerShopKeeper()) {
       if (crit->isManagedBy(pc)) {
          crit->valueRem(val_idx, pc); //will do msgs
+         save_player_shop_owner(*crit);
       }//if
       else {
          pc.show("You are not the manager of this shopkeeper.\n");

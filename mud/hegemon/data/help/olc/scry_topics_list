@@ -35,6 +35,7 @@ dvnum
 flip_door
 list_paths
 list_scripts
+make_pso
 mclear
 mclone
 mlist

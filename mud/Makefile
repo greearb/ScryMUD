@@ -20,7 +20,7 @@ CORE_FILES = \
 
 MISC_FILES = \
 	grrmud/Boards/board_32 \
-	grrmud/Pfiles/admin \
+	grrmud/Pfiles/admin grrmud/PlayerShops \
 	grrmud/grrmud.ini grrmud/shutdown_msg grrmud/startup
 
 

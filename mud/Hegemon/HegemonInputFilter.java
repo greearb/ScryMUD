@@ -354,6 +354,19 @@ class HegemonInputFilter extends Object {
          hm.getClientDisplay().getInputField().getExitNavigator().setDirs(args);
          return true;
       }//else
+      else if (cmd.equalsIgnoreCase("VALUE_INAME")) {
+         Log.instance().dbg("Was VALUE_INAME..\n");
+         StringBuffer buf = new StringBuffer(100);
+         // First is the index...
+
+         // the rest are it's name
+         for (int i = 2; i<len; i++) {
+            buf.append((String)(args.elementAt(i)) + " ");
+         }
+         hm.getPsoEditor().setName((String)(args.elementAt(1)), 
+                                   buf.toString());
+         return true;
+      }//if
 
       /* now our large switch of different commands... */
       if (len == 1) {
@@ -664,7 +677,24 @@ class HegemonInputFilter extends Object {
                                           (String)(args.elementAt(2)));
             valid = true;
          }
-      }//if
+      }//if len == 3
+      else if (len == 4) {
+         if (cmd.equalsIgnoreCase("VALUE_LIST")) {
+            hm.getPsoEditor().setList((String)(args.elementAt(1)), // i_th
+                                      (String)(args.elementAt(2)), // name
+                                      (String)(args.elementAt(3))); // gold
+            valid = true;
+         }//if
+      }//if len == 4
+      else if (len == 5) {
+         if (cmd.equalsIgnoreCase("VALUE_ITEM")) {
+            hm.getPsoEditor().setItem((String)(args.elementAt(1)), // idx
+                                      (String)(args.elementAt(2)), // obj#
+                                      (String)(args.elementAt(3)), // $sell
+                                      (String)(args.elementAt(4))); // $buy
+            valid = true;
+         }//if
+      }//if len == 5
       else if (len == 6) {
          if (cmd.equalsIgnoreCase("MOB_SCRIPT")) {
             hm.getMobScriptEditor().do_clear();

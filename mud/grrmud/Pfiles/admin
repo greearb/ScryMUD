@@ -3,21 +3,23 @@ the IMP Supreme
 ~
 
 ~
-You see someone who is quite normal.
+Admin is a fine fellow, always fixing problems for others and making
+problems for you.
+
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-3000 1 0 	long_data
-0 17 17 16 12 17 16 0 0 65 1 0 2 3 1 1000 1000 108 0 
+2876 65941 0 	long_data
+0 17 17 16 12 17 16 0 0 65 1 0 2 3 1 1000 1000 108 -82 
 40 0 0 5 1000 1000 108 0 100 100 115 106 105 87 0 0 2 3 100 100 
 100 0 0 0 	shrt_cur_stats
-1024 1024 1 	cur_stats
+1024 2047 1 	cur_stats
 -1	eq: num, posn
 -1	affected_by
--1	inv
+400 295 -1	inv
 bgio24h/ZwWLw	passwd
-26 25 19 16 14 11 10 7 6 5 2 -1  -:| bitfield |:-
-71 15 15 71 913697435 100		bday, byr, ryr, rday, llt, tto
-18 9655 9655 -2 0 0 0 age hgr thr drg pk died qp
+26 25 19 16 14 11 10 7 6 2 -1  -:| bitfield |:-
+71 15 15 71 915332557 100		bday, byr, ryr, rday, llt, tto
+18 9422 9422 -2 0 0 0 age hgr thr drg pk died qp
 118 25 134 25 -1	ss_known
 %N<%hH %mM %vV >
 10	Imm level

@@ -275,6 +275,10 @@ int
  */
 
 
+//#define ANSI_ECHO_ON  "\n\x1B\x4D\x31\x32\x6C"
+#define ANSI_ECHO_ON    ""
+
+
 #ifndef OLD_ANSI
 
 #define BEEP_CHAR     '\a'
@@ -320,6 +324,7 @@ int
 #define ESC_CHAR      '\033'
 
 #define ANSI_NORMAL   "\033[0m"
+
 
 #define ANSI_HILITE   "\033[1m"
 #define ANSI_INVERSE  "\033[7m"

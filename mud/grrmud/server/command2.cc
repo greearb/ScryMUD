@@ -1887,18 +1887,14 @@ void list_merchandise(int i_th, const String* keeper, critter& pc) {
       Cell<object*> cell(crit_ptr->inv);
       while ((obj_ptr = cell.next())) {
          if (detect(pc.SEE_BIT, (obj_ptr->OBJ_VIS_BIT | ROOM.getVisBit()))) {
-            price = (int)(crit_ptr->MARKUP/100.0 * obj_ptr->OBJ_PRICE);
+            price = crit_ptr->findItemBuyPrice(*obj_ptr, pc);
 
-            if (pc.getHomeTown() != crit_ptr->getHomeTown()) 
-               price = (int)(((float)(price))  * OUT_OF_TOWN_MODIFIER);
-
-	    if (pc.pc && (d(1, 100) <
-		get_percent_lrnd(COMMERCE_SKILL_NUM, pc))) {
-	       price = (int)((float)price * COMMERCE_SKILL_EFFECT_BUY);
-  	    }//if
+            if (price < 0) {
+               continue; //buf = "  NOT FOR SALE NOW.";
+            }//if
 
             Sprintf(buf, "  %S%P50%i", &(obj_ptr->ob->short_desc),
-			price);
+                    price);
       
             //if ((!obj_wear_by(*obj_ptr, pc, -1, FALSE)) &&
             //    (!obj_ptr->isFood())) 

@@ -42,7 +42,8 @@ class HegemonManager extends Object {
    KeywordEditor k_editor;
    CommandHistory cmd_history;
    hegemon mother_class;
-   
+   PsoEditor pso_editor; //player-run shop keeper editor
+
    public static boolean IS_APPLET;
    
    public HegemonManager(String prop_file, boolean is_applet, hegemon heg) {
@@ -82,6 +83,7 @@ class HegemonManager extends Object {
       
       cmd_history = new CommandHistory(this);
       path_editor = new PathCellEditor(this);
+      pso_editor = new PsoEditor(this);
       olc_editor = new OlEditor(this);
       ms_editor = new MobScriptEditor(this);
       k_editor = new KeywordEditor(this);
@@ -106,6 +108,10 @@ class HegemonManager extends Object {
 
    public final CommandHistory getCommandHistory() {
       return cmd_history;
+   }
+
+   public final PsoEditor getPsoEditor() {
+      return pso_editor;
    }
    
    public final OlEditor getOlEditor() {

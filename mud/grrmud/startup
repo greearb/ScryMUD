@@ -16,6 +16,11 @@ if [ ! -f ./World/critters_0 ]; then
     cd ..
 fi
 
+#  Make sure this directory exists...
+if [ ! -d ./PlayerShops ]; then
+    mkdir ./PlayerShops
+fi
+
 while ( : ) do
 
     #  Don't let us use more than 20 MEG, if we do, it's probably a

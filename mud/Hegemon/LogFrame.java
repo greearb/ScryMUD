@@ -106,7 +106,7 @@ public class LogFrame extends Frame {
       int new_level = 0;
 
       if (err.getState()) {
-         new_level |= Log.DEBUG;
+         new_level |= Log.ERROR;
       }
       if (wrn.getState()) {
          new_level |= Log.WARNING;

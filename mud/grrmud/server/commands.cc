@@ -1664,12 +1664,12 @@ void say(const char* message, critter& pc, room& rm) {
 }//say
 
 
-void emote(const char* message, critter& pc, room& rm, short show_non_detects,
+void pemote(const char* message, critter& pc, room& rm, short show_non_detects,
 	   critter* crit = NULL) {
    do_emote(message, pc, rm, show_non_detects, EMOTE_POSSESSIVE, crit);
 }
 
-void pemote(const char* message, critter& pc, room& rm, short show_non_detects,
+void emote(const char* message, critter& pc, room& rm, short show_non_detects,
             critter* crit = NULL) {
    do_emote(message, pc, rm, show_non_detects, EMOTE_NON_POSSESSIVE, crit);
 }

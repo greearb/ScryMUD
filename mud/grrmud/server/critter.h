@@ -231,7 +231,7 @@ public:
 
    void valueRem(int idx, critter& manager);
    void valueAdd(object& obj, critter& manager);
-   void valueList(int i_th, const String* targ, critter& manager);
+   void valueList(int i_th, const String* targ, critter& keeper, critter& manager);
    void valueSet(int val_idx, int sell_val, int buy_val, critter& manager);
 
    int isPlayerShopKeeper() { return shop_data_flags.get(3); }
@@ -711,7 +711,7 @@ public:
 
    const String* getName() const { return getName(~0); }
    const String* getName(int see_bit) const ;
-   const String* getShortName() const { return getName(~0); }
+   const String* getShortName() const { return getShortName(~0); }
    const String* getShortName(int see_bit) const ;
    void doBecomeNonPet(); //misc2.cc
    void doUngroup(int i_th, const String* vict); //command2.cc

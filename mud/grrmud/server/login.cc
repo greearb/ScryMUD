@@ -32,6 +32,7 @@
 #include <time.h>
 #include <PtrArray.h>
 #include <unistd.h>
+#include "const.h"
 
 extern List<critter*> new_pc_list;
 
@@ -126,6 +127,7 @@ void critter::doLogin() {
             //         log("All done w/case 0.\n");
             break;
          case 1:  //password for new player
+            show(ANSI_ECHO_ON); //echo ON
             string = pc->input.Get_Command(eos, term_by_period);
             j = string.Strlen();
             if (j > 29) {
@@ -143,6 +145,7 @@ void critter::doLogin() {
             break;
             
          case 2:  //recheck password for new player
+            show(ANSI_ECHO_ON); //echo ON
             string = pc->input.Get_Command(eos, term_by_period);
             if (pc->password == string) {
                pc->password = crypt((const char*)(pc->password), "bg");
@@ -222,6 +225,7 @@ void critter::doLogin() {
             break;
             
          case 5: //password for non-new players.
+            show(ANSI_ECHO_ON); //echo ON
             mudlog.log(DBG, "in case 5\n");
             if (TRUE) { //needs to be inside a block to shut g++ up!!
                string = pc->input.Get_Command(eos, term_by_period);

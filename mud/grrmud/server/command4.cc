@@ -2032,6 +2032,7 @@ void mset(int i_th, const String* vict, const String* targ, int new_val,
 	}//if
       }//if
       else if (strncasecmp(*targ, "manager", len1) == 0) {
+         flag = TRUE;
          if (pc.getImmLevel() >= 9) {
             if (ptr->isPlayerShopKeeper()) {
                ptr->mob->proc_data->sh_data->manager = *new_val_string;

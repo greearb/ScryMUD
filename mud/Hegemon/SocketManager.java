@@ -35,15 +35,19 @@ public class SocketManager {
    public SocketManager(String str, int port, HegemonManager h) {
       hm = h;
       try {
-         new MessageDialog("ATTEMPTING CONNECTION:",
-                           "Host:  " + str + "  port:  " + port,
-                           "green", "black");
+         h.getClientDisplay().setTitle("Hegemon Client:  Attempting Connection to: "
+                                       + str + " port: " + port);
+         //new MessageDialog("ATTEMPTING CONNECTION:",
+         //                  "Host:  " + str + "  port:  " + port,
+         //                  "green", "black");
 
          sock = new Socket (str, port);
          reader = new SocketReader (this, h);
          writer = new SocketWriter (this, h);
          reader.setPriority (6);
          reader.start ();
+         h.getClientDisplay().setTitle("Hegemon Client:  Connected to: "
+                                       + str + " port: " + port);         
       }
       catch (IOException e) {
          System.err.println ("Constructing SocketManager:  " + e);
@@ -92,6 +96,7 @@ public class SocketManager {
       hm.getScroll().append("\n\n#### LOST CONNECTION on Write!\n");
       hm.getScroll().getPar().paintScroll();
       hm.getScroll().getProperties().reset();
+      hm.getClientDisplay().setTitle("Hegemon Client:  Not Connected");
       new MessageDialog("LOST CONNECTION", "Cannot write to socket.",
                         "black", "red");
    }//
@@ -111,6 +116,7 @@ public class SocketManager {
       hm.getScroll().append("\n\n#### LOST CONNECTION!\n");
       hm.getScroll().getPar().paintScroll();
       hm.getScroll().getProperties().reset();
+      hm.getClientDisplay().setTitle("Hegemon Client:  Not Connected");
       new MessageDialog("LOST CONNECTION", "Cannot read from socket.",
                         "black", "red");
    }//

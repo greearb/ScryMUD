@@ -112,7 +112,7 @@ class HegemonScroll extends Panel {
    
 
    public void paint(Graphics g) {
-      //Log.it("In HegemonScroll.paint(Graphics g)");
+      Log.instance().trc("In HegemonScroll.paint(Graphics g)");
       
       if ((g != null) && (props.getGraphics() == null)) {
          Log.instance().dbg("Setting graphics in the Properties.");

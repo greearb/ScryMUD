@@ -1507,6 +1507,7 @@ void make_pso(int i_th, const String* shop_keeper, critter& pc) {
    // Ok, do the work...
    
    crit_ptr->mob->proc_data->sh_data->makePSO();
+   mob_list[crit_ptr->getIdNum()].mob->proc_data->sh_data->makePSO();
 
    save_player_shop_owner(*crit_ptr);
 

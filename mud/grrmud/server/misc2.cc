@@ -52,7 +52,7 @@ critter* load_player_shop_owner(int mob_num) {
 
    if (mob_list[mob_num].isInUse()) {
       // Find the file name of our shopkeeper.
-      Sprintf(buf, "./PlayerShops/%S_%i", mob_list[mob_num].getName(),
+      Sprintf(buf, "./PlayerShops/%S_%i", mob_list[mob_num].getShortName(),
               mob_num);
 
       ifstream dafile(buf);
@@ -95,7 +95,7 @@ int save_player_shop_owner(critter& pc) {
 
    if (mob_list[pc.getIdNum()].isInUse()) {
       // Find the file name of our shopkeeper.
-      Sprintf(buf, "./PlayerShops/%S_%i", mob_list[pc.getIdNum()].getName(),
+      Sprintf(buf, "./PlayerShops/%S_%i", mob_list[pc.getIdNum()].getShortName(),
               pc.getIdNum());
 
       ofstream dafile(buf);
@@ -580,7 +580,7 @@ void leave_room_effects(room& rm, critter& pc) {
       }//if
    }//while
 
-   pc.PC_FLAGS.turn_off(22); //no longer hiding or melding
+   pc.CRIT_FLAGS.turn_off(22); //no longer hiding or melding
 
    if (pc.pc) {
       pc.PC_FLAGS.turn_off(17);

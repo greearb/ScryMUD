@@ -61,7 +61,8 @@ public:
    int isOpen() const { return !(door_data_flags.get(2)); }
    int canClose() const { return canOpen(); }
    int isVehicleExit() const { return door_data_flags.get(12); }
-   int canOpen() const { return !(door_data_flags.get(11) && door_data_flags.get(8)); }
+   int canOpen() const { return !((door_data_flags.get(11)) 
+                                  && door_data_flags.get(8)); }
    int isClosed() const { return door_data_flags.get(2); }
    int isLocked() const { return door_data_flags.get(3); }
    int isMagLocked() const { return door_data_flags.get(6); }

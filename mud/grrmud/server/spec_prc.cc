@@ -1395,7 +1395,7 @@ void do_sell_proc(int prc_num, critter& keeper, int i_th,
          Sprintf(buf, "You now have %S.\n", 
 		&(obj_ptr->ob->short_desc));
          show(buf, keeper);
-         Sprintf(buf, "Here's %i coins.\n", price);
+         Sprintf(buf, "Here's %i coins.", price);
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());
 
          pc.GOLD += price;

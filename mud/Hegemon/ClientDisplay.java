@@ -42,8 +42,7 @@ class ClientDisplay extends Frame {
    CommandHistory cmd_history;
 
    MenuBar menubar;
-   Menu file_m, connections_m, olc_m, help_m, actions_m, aliases_m;
-   Menu colors_m, options_m;
+   Menu file_m, connections_m, olc_m, controls_m, help_m;
    
    HegemonDisplay output_field;
    InputArea input_field;
@@ -92,11 +91,17 @@ class ClientDisplay extends Frame {
       
       MenuItem quit_action;
       MenuItem logging_action;
+      MenuItem color_view_mi, color_choices_mi;
+      MenuItem action_edit_mi;
+      MenuItem alias_edit_mi;
+      MenuItem cmd_history_mi;
 
       file_m = new Menu("File");
       file_m.add((quit_action = new MenuItem("Quit")));
       file_m.add((logging_action = new MenuItem("Logging")));
       
+      file_m.addSeparator();
+
       quit_action.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             quit();
@@ -105,6 +110,71 @@ class ClientDisplay extends Frame {
       logging_action.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             showLoggingFrame();
+         }});
+      
+      file_m.add((color_view_mi = new MenuItem("Modify Colors")));
+
+      color_view_mi.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            doViewColors();
+         }});
+
+      file_m.add((color_choices_mi = new MenuItem("Color Choices")));
+
+      color_choices_mi.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            doViewChoices();
+         }});
+
+      file_m.addSeparator();
+      
+      file_m.add((action_edit_mi = new MenuItem("Edit Actions")));
+      file_m.add((action_turn_on_mi = new MenuItem("Enable Actions")));
+      file_m.add((action_turn_off_mi = new MenuItem("Disable Actions")));
+      
+      action_turn_on_mi.setEnabled(false); //they start out ON already
+      
+      action_edit_mi.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            do_actions();
+         }});
+      action_turn_on_mi.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            do_actions_enable();
+         }});
+      action_turn_off_mi.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            do_actions_disable();
+         }});
+      
+      
+      file_m.addSeparator();
+      file_m.add((alias_edit_mi = new MenuItem("Edit Aliases")));
+      file_m.add((alias_turn_on_mi = new MenuItem("Enable Aliases")));
+      file_m.add((alias_turn_off_mi = new MenuItem("Disable Aliases")));
+      
+      alias_turn_on_mi.setEnabled(false); //they start out ON already
+      
+
+      alias_edit_mi.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            do_aliases();
+         }});
+      alias_turn_on_mi.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            do_alias_enable();
+         }});
+      alias_turn_off_mi.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            do_alias_disable();
+         }});
+      
+      file_m.addSeparator();
+      file_m.add((cmd_history_mi = new MenuItem("Command History")));
+
+      cmd_history_mi.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            do_show_cmd_history();
          }});
       
       
@@ -225,56 +295,6 @@ class ClientDisplay extends Frame {
 
       
       
-      ///*************************  Actions Menu  ********************///
-      
-      MenuItem action_edit_mi;
-      
-      actions_m = new Menu("Actions");
-      actions_m.add((action_edit_mi = new MenuItem("Edit")));
-      actions_m.add((action_turn_on_mi = new MenuItem("Enable")));
-      actions_m.add((action_turn_off_mi = new MenuItem("Disable")));
-      
-      action_turn_on_mi.setEnabled(false); //they start out ON already
-      
-      action_edit_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            do_actions();
-         }});
-      action_turn_on_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            do_actions_enable();
-         }});
-      action_turn_off_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            do_actions_disable();
-         }});
-      
-      
-      ///*************************  Aliases Menu  ********************///
-      
-      MenuItem alias_edit_mi;
-      aliases_m = new Menu("Aliases");
-      aliases_m.add((alias_edit_mi = new MenuItem("Edit")));
-      aliases_m.add((alias_turn_on_mi = new MenuItem("Enable")));
-      aliases_m.add((alias_turn_off_mi = new MenuItem("Disable")));
-      
-      alias_turn_on_mi.setEnabled(false); //they start out ON already
-      
-
-      alias_edit_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            do_aliases();
-         }});
-      alias_turn_on_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            do_alias_enable();
-         }});
-      alias_turn_off_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            do_alias_disable();
-         }});
-      
-      
       ///*************************  Help Menu  ********************///
       
       help_m = new Menu("Help");
@@ -299,36 +319,19 @@ class ClientDisplay extends Frame {
          }});
 
 
-      ///*************************  Color Menu  ********************///
+
+      ///*************************  Controls Menu  ********************///
       
-      MenuItem color_view_mi, color_choices_mi;
-      colors_m = new Menu("Colors");
-      colors_m.add((color_view_mi = new MenuItem("Modify")));
+      MenuItem pso_mi;
+      controls_m = new Menu("Controls");
 
-      color_view_mi.addActionListener(new ActionListener() {
+      controls_m.add((pso_mi = new MenuItem("Player-Run Stores")));
+
+      pso_mi.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            doViewColors();
-         }});
-
-      colors_m.add((color_choices_mi = new MenuItem("View Choices")));
-
-      color_choices_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            doViewChoices();
+            do_show_pso_editor();
          }});
       
-
-
-      ///*************************  Options Menu  ********************///
-      
-      MenuItem cmd_history_mi;
-      options_m = new Menu("Options");
-      options_m.add((cmd_history_mi = new MenuItem("Command History")));
-      
-      cmd_history_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            do_show_cmd_history();
-         }});
       
       
 
@@ -340,10 +343,7 @@ class ClientDisplay extends Frame {
       menubar.add(file_m);
       menubar.add(connections_m);
       menubar.add(olc_m);
-      menubar.add(actions_m);
-      menubar.add(aliases_m);
-      menubar.add(colors_m);
-      menubar.add(options_m);
+      menubar.add(controls_m);
       menubar.add(help_m);
       
       ///*******************  IO fields ********************///
@@ -542,6 +542,10 @@ class ClientDisplay extends Frame {
 
    public void do_show_cmd_history() {
       cmd_history.setVisible(true);
+   }
+
+   public void do_show_pso_editor() {
+      hm.getPsoEditor().setVisible(true);
    }
 
    public void send(String str) {

@@ -60,6 +60,7 @@ OLCRoom.class \
 OlEditor.class \
 OlcStore.class \
 PathCellEditor.class \
+PsoEditor.class \
 Queue.class \
 ScrollComponentQueue.class \
 ScrollComponent.class \

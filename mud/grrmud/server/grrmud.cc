@@ -495,8 +495,9 @@ any strange occurances.
    if (grr_reboot >= 1) {
       system("touch .reboot");
    }//if
-   else
+   else {
       system("rm -f .reboot");
+   }
 
    do_shutdown = TRUE;
    return (grr_reboot);

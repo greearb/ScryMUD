@@ -72,10 +72,16 @@ class HegemonScrollCanvas extends Canvas {
    }
    
    public void paint(Graphics g) {
-      //Log.it("In HegemonScrollCanvas.paint(Graphics g)");
+      Log.instance().trc("In HegemonScrollCanvas.paint(Graphics g)");
       if (!do_paint) {
          do_paint = true;
          return;
+      }
+
+      if ((g != null) && 
+          (display.getScroll().getProperties().getGraphics() == null)) {
+         Log.instance().dbg("HegemonScrollCanvas:  Setting graphics in the Properties.");
+         display.getScroll().getProperties().setGraphics(g);
       }
 
       //Log.it("Actually painting...");

@@ -356,8 +356,9 @@ void do_regeneration_pcs() {
    //log("In do_regeneration_pcs\n");
  
    while ((crit_ptr = crit_cell.next())) {
-      if ((crit_ptr->THIRST == 0) || (crit_ptr->HUNGER == 0)) 
-	 adj = 0.5;
+      if ((crit_ptr->THIRST == 0) || (crit_ptr->HUNGER == 0)) {
+	 adj = 0.2; // big penalty for being hungry
+      }
 
       if ((crit_ptr->POS > POS_SIT) &&
 	  room_list[crit_ptr->getCurRoomNum()].canCamp()) {

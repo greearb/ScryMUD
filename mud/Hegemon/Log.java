@@ -82,6 +82,7 @@ class Log extends Object {
    }//io
 
    public void setLevel(int lvl) {
+      output("Changing Logging level to: " + lvl + "\n");
       flags = lvl;
    }
 

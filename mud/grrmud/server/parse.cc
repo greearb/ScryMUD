@@ -1607,16 +1607,16 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	    using_client((*this)); 
 	 }//if
 	 else if (strncasecmp(str1, "value_add", len1) == 0) { 
-	    value_add(i, &str1, j, &str2, (*this));
+	    value_add(i, &str2, j, &str3, (*this));
 	 }//if
 	 else if (strncasecmp(str1, "value_list", len1) == 0) { 
-	    value_list(i, &str1, (*this));
+	    value_list(i, &str2, (*this));
 	 }//if
 	 else if (strncasecmp(str1, "value_set", len1) == 0) { 
-	    value_set(i, &str1, j, k, l, *this);
+	    value_set(i, &str2, j, k, l, *this);
 	 }//if
 	 else if (strncasecmp(str1, "value_rem", len1) == 0) { 
-	    value_rem(i, &str1, j, *this);
+	    value_rem(i, &str2, j, *this);
 	 }//if
 	 else if (strncasecmp(str1, "visible", len1) == 0) { 
 	    visible((*this));

@@ -337,7 +337,12 @@ void shop_data::Write(ofstream& da_file) const {
       }
       da_file << "-1  End of PlayerShopData list\n";
 
-      da_file << manager << "  Manager\n";
+      if (manager.Strlen() == 0) {
+         da_file << "Grock" << "  Manager\n"; //default value...
+      }
+      else {
+         da_file << manager << "  Manager\n";
+      }
    }//if
 
 }//Write
@@ -403,7 +408,8 @@ PlayerShopData* shop_data::getPsdFor(object& obj) {
 }//getPsdFor
 
 
-void shop_data::valueList(int i_th, const String* targ, critter& manager) {
+void shop_data::valueList(int i_th, const String* targ, critter& keeper, 
+                          critter& manager) {
    String normal(500);
    String client(500);
    String buf(100);
@@ -412,20 +418,35 @@ void shop_data::valueList(int i_th, const String* targ, critter& manager) {
    Cell<PlayerShopData*> cll(ps_data_list);
    PlayerShopData* ptr;
 
-   Sprintf(client, "<VALUD_LIST %i %S> ", i_th, targ);
+   if (keeper.isManagedBy(manager)) {
+      Sprintf(client, "<VALUE_LIST %i %S %i> ", i_th, targ, keeper.GOLD);
+      Sprintf(normal, "Value listing for %i.%S, register:  %i\n", i_th,
+              targ, keeper.GOLD);
+   }
+   else {
+      Sprintf(client, "<VALUE_LIST %i %S ??> ", i_th, targ);
+      Sprintf(normal, "Value listing for %i.%S:\n", i_th, targ);
+   }
+
+
    while ((ptr = cll.next())) {
       if (manager.isUsingClient()) {
-         Sprintf(buf, "<VALUE_ITEM %i %S %i %i> ", idx,
-                 obj_list[ptr->getObjNum()].getName(),
-                 ptr->getSellPrice(),
+         Sprintf(buf, "<VALUE_ITEM %i %i %i %i> ", idx,
+                 ptr->getObjNum(), ptr->getSellPrice(),
                  ptr->getBuyPrice());
          client.Append(buf);
+
+         Sprintf(buf, "<VALUE_INAME %i %S> ", idx,
+                 obj_list[ptr->getObjNum()].getLongName());
+         client.Append(buf);
+
       }//if
       
-      Sprintf(buf, "    [%i] %S %P25 %i %P35 %i\n", idx,
-              obj_list[ptr->getObjNum()].getName(),
+      Sprintf(buf, "    [%i]  Sell: %i %P20 Buy: %i %P30 Item: %S(%i)\n", idx,
               ptr->getSellPrice(),
-              ptr->getBuyPrice());
+              ptr->getBuyPrice(),
+              obj_list[ptr->getObjNum()].getLongName(),
+              ptr->getObjNum());
       normal.Append(buf);
       idx++;
    }//while
@@ -3384,7 +3405,7 @@ void critter::valueList(int i_th, const String* targ, critter& manager) {
       return;
    }
 
-   mob->proc_data->sh_data->valueList(i_th, targ, manager);
+   mob->proc_data->sh_data->valueList(i_th, targ, *this, manager);
 }//valueList
 
 void critter::valueSet(int val_idx, int sell_val, int buy_val,

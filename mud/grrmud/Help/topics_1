@@ -2,33 +2,34 @@
 
 Here is a list of all mortal help topics.
 
-abilities        anitre           assist           backstab         
-beep             berserk          bodyslam         brief            
-butcher          buy              cast             channels         
-claw             close            color            commands         
-consider         construct        credits          curse            
-date             disarm           discuss          donate           
-drink            drop             dwarf            east             
-elf              emote            empty            eq               
-exit             exits            fill             flee             
-get              give             go               group            
-help             hit              hold             human            
-idea             inventory        ironclad         junk             
-lock             look             meditate         move             
-north            northeast        northwest        offer            
-open             order            page_break       passwd           
-picklock         post             practice         prompt           
-put              quaf             quit             races            
-recite           regeneration     remove           reply            
-roll             save             say              scan             
-scribe           sell             shield           shoot            
-sit              skin             sleep            sneak            
-sombre           south            southeast        southwest        
-suicide          tail             tell             theme            
-time             title            toggle           topics           
-ungroup          unlock           up               use              
-wear             west             where            who              
-wimpy            wizlist          
+abilities        adjust_register  anitre           assist           
+bash             beep             berserk          bodyslam         
+bug              butcher          buy              cast             
+circle           claw             close            color            
+concoct          consider         construct        credits          
+darkling         date             describe         disarm           
+donate           down             drink            drop             
+east             eat              elf              emote            
+eq               examine          exit             exits            
+flee             follow           get              give             
+group            guard            help             hit              
+human            hurl             idea             inventory        
+junk             list             lock             look             
+move             nogossip         north            northeast        
+offer            ogrue            open             order            
+passwd           pay              pemote           picklock         
+practice         prompt           prone            put              
+quit             races            read             recite           
+remove           reply            rest             roll             
+say              scan             score            scribe           
+shield           shoot            shout            sit              
+sleep            sneak            socials          sombre           
+southeast        southwest        stand            suicide          
+tell             theme            throw            time             
+toggle           topics           track            ungroup          
+up               use              value_add        value_list       
+value_set        wake             wear             west             
+who              wield            wimpy            wizlist          
 
 <color=red>
 See Also:  commands, wizhelp

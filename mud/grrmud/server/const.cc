@@ -173,6 +173,8 @@ char* login_prompts[] = {
    "\nEnter thy name:  ",
 			/* for new players */
    
+   //"\n\x9B\x4D\x31\x32\x68\nChoose a Password:  ", 
+   //"\n\x9B\x4D\x31\x32\x68\nEnter your password again for verification:  ",
    "\nChoose a Password:  ", 
    "\nEnter your password again for verification:  ",
    "(M)ale, (F)emale, or (N)euter:  ",
@@ -190,10 +192,10 @@ char* login_prompts[] = {
    Your choice is:  ",
 					/* for non-new players */
 
-   "\n\x1B\x31\x32\x68\nEnter your password:  ",
-   //"\nEnter your password:  ",
+   //"\n\x9B\x31\x32\x68\nEnter your password:  ",
+   "\nEnter your password:  ",
    
-   "\n\x1B\x31\x32\x6C\nChoose your Race, or you can choose help on the races.
+   "\nChoose your Race, or you can choose help on the races.
 
 		        Race		Help on Race
 	Human		(1)			(101)

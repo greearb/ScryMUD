@@ -34,7 +34,19 @@ class ConnectionManager extends Frame {
       super("Connection Manager");
       hosts = new List(10, false);
       hm = h;
-      
+
+      hosts.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            do_done();
+            hm.openConnection();
+         }});
+
+      addWindowListener (new WindowAdapter () {
+         public void windowClosing (WindowEvent e) {
+            do_done();
+         }});
+
+
       try {
          readObject();
       }
@@ -63,9 +75,9 @@ class ConnectionManager extends Frame {
    }
    
    public void createConnection() {
-    HostDialog hd = new HostDialog(this, new HostAddr());
-    hd.show();
-  }
+      HostDialog hd = new HostDialog(this, new HostAddr());
+      hd.show();
+   }
 
    private String getSelected() {
       return hosts.getSelectedItem(); //can be null
@@ -127,7 +139,7 @@ class ConnectionManager extends Frame {
       createConnection();
    }
 
-   public void do_close() {
+   public void do_done() {
       setVisible(false);
    }
 
@@ -218,7 +230,7 @@ class CMButtons extends Panel {
 
       done_b.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            parent.do_close();
+            parent.do_done();
          }});
 
       edit_b.addActionListener(new ActionListener() {
