@@ -4,17 +4,30 @@ This command allows you to view and change your color settings.  It
 does not enable/disable the use of ANSI color however:  That is
 done through the toggle command. (toggle 'ansi color')
 
-The valid COLORs are as follows:
+The valid color codes are as follows:
 
 Fore Ground                Back Ground
-FG_BLACK                    BG_BLACK
-FG_RED                      BG_RED
-FG_GREEN                    BG_GREEN
-FG_YELLOW                   BG_YELLOW
-FG_BLUE                     BG_BLUE
-FG_MAGENTA                  BG_MAGENTA
-FG_CYAN                     BG_CYAN
-FG_WHITE                    BG_WHITE
+^^0 reset to default        &&0 reset to default
+^^w white                   &&w white
+^^n black                   &&n black
+^^c cyan                    &&c cyan
+^^m magenta                 &&m magenta
+^^b blue                    &&b blue
+^^r red                     &&r red
+^^g green                   &&g green
+^^y yellow                  &&y yellow
+
+fore ground colors can me made "bright" by capitalizing their letter. This
+will however not work on background colors.
+
+You can combinefore ground and background colors by listing the back ground
+color first: &&b^^W will give you bright white text on a blue background.
+
+You can use these colors anywhere you can enter text: your prompt, say, tell,
+yell, gossip, emote, descriptions, etc.
+
+If you wish to display a literal ^^ or && you can escape it with itself, i.e. ^^^^
+or &&&&.
 
 The different text types that you can color are as follows:
 
