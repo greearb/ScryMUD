@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.44 2002/08/28 03:01:13 eroper Exp $
-// $Revision: 1.44 $  $Author: eroper $ $Date: 2002/08/28 03:01:13 $
+// $Id: battle.cc,v 1.45 2002/08/28 04:22:59 eroper Exp $
+// $Revision: 1.45 $  $Author: eroper $ $Date: 2002/08/28 04:22:59 $
 
 //
 //ScryMUD Server Code
@@ -882,7 +882,9 @@ int exact_raw_damage(int damage, int damage_type, critter& vict, critter& agg) {
    int pl;
    if (agg.pc && 
        (pl = get_percent_lrnd(ENHANCED_DAMAGE_SKILL_NUM, agg)) > 0) {
-      dam += (float)(d(1, pl/20));
+       // between 0.5% at 1%lrnd to 50% at 100%lrnd extra damage MAX
+      dam += ( dam * ( ((float)d(1, pl/2))/100) );
+      // old method dam += (float)(d(1, pl/20));
    }//if
    
    if ((agg.ALIGN < -350) && is_affected_by(PFE_SKILL_NUM, vict)) {
