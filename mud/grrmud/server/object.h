@@ -297,6 +297,11 @@ public:
    int isDart() const { return obj_flags.get(48); }
    int isArrow() const { return obj_flags.get(49); }
    int isAmmo() const { return ( isArrow() || isDart() ); }
+   int isSlash() const { return obj_flags.get(41); }
+   int isSmash() const { return obj_flags.get(42); }
+   int isPierce() const { return obj_flags.get(43); }
+   int isWhip() const { return obj_flags.get(44); }
+   int isBow() const { return obj_flags.get(47); }
          
    int isBoat() const { return OBJ_FLAGS.get(62); }
    int needsResetting() const { return obj_flags.get(70); }

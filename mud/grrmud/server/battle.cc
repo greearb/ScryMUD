@@ -355,7 +355,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       }//if
    }//if
 
-   if (agg.CRIT_FLAGS.get(21)) { //if blocked
+   if (agg.isBlocked()) { //if blocked
       agg.CRIT_FLAGS.turn_off(21);
       return;
    }//if
@@ -367,12 +367,24 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    if (posn_of_weapon == 10) { //if doing dual_wield
       if (!agg.eq[posn_of_weapon])
          return;
-      else if (!(agg.eq[posn_of_weapon]->OBJ_FLAGS.get(57)))
+      else if (!(agg.eq[posn_of_weapon]->isWeapon()))
          return;
    }//if
 
-   int j = (vict.getDEX(TRUE) * 3) - (vict.AC / 10) + vict.LEVEL + (agg.POS * 5);
-   i = (agg.getDEX(TRUE) * 3) + (agg.HIT * 2) + agg.LEVEL + (vict.POS * 5);
+   //how hard am I to hit?
+   int j = (
+         (vict.getDEX(TRUE) * 3)
+         - (vict.AC / 10)
+         + vict.LEVEL
+         + (agg.POS * 5)
+         );
+
+   //how good am I at hitting you?
+   i = (
+         (agg.getDEX(TRUE) * 3) 
+         + (agg.getHIT(true, agg.eq[posn_of_weapon]) * 2)
+         + agg.LEVEL + (vict.POS * 5)
+       );
 
    if ((!vict.isStunned() && (d(1, j) > d(1, i))) ||
        (agg.POS == POS_STUN)) {  //missed, stunned

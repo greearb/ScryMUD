@@ -2290,8 +2290,12 @@ int do_mstat(critter& targ, critter& pc) {
       show(buf2, pc);
   
       Sprintf(buf2,
-              "hit: %i  dam: %i  ac: %i  atks: %i  sex: %i\n",
-              crit_ptr->HIT, crit_ptr->DAM, crit_ptr->AC, crit_ptr->ATTACKS, 
+              "hit: %i(%i)  dam: %i  ac: %i  atks: %i  sex: %i\n",
+              crit_ptr->getHIT(true, crit_ptr->EQ[9]),
+              crit_ptr->getHIT(false),
+              crit_ptr->DAM,
+              crit_ptr->AC,
+              crit_ptr->ATTACKS, 
               crit_ptr->SEX);
       show(buf2, pc);
 

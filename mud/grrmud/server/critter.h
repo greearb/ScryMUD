@@ -874,6 +874,8 @@ public:
    int getCHA(bool include_modifiers);
    int getBHDC(bool include_modifiers);
    int getBHDS(bool include_modifiers);
+   int getHIT(bool include_modifiers) { return getHIT(include_modifiers, NULL); }
+   int getHIT(bool include_modifiers, object *weapon);
    int getDAM(bool include_modifiers);
    int getMana() const { return short_cur_stats[16]; }
    int getManaMax() const { return short_cur_stats[24]; }
@@ -1003,6 +1005,7 @@ public:
    int isFrozen();
    int isImmort() const;
    int isFlying();
+   int isBlocked() { return CRIT_FLAGS.get(21); }
    int isTailing() { return CRIT_FLAGS.get(23); }
    int isDualWielding() { return crit_flags.get(16); }
    int canClimb();
