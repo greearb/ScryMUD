@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.48 2002/08/28 07:23:29 eroper Exp $
-// $Revision: 1.48 $  $Author: eroper $ $Date: 2002/08/28 07:23:29 $
+// $Id: battle.cc,v 1.49 2002/08/28 19:30:21 eroper Exp $
+// $Revision: 1.49 $  $Author: eroper $ $Date: 2002/08/28 19:30:21 $
 
 //
 //ScryMUD Server Code
@@ -1343,32 +1343,16 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
 
       ptr->names.append(new String(*(Top(vict.names))));
 
-      if (vict.pc) {
-      Sprintf(buf, "the severed head of %S",
-            Top(vict.names));
-      } else {
       Sprintf(buf, "the severed head of %S",
             vict.getName());
-      }
       ptr->short_desc = buf;
 
-
-      if (vict.pc) {
-      Sprintf(buf, "The severed head of %S lies here rotting.",
-            Top(vict.names));
-      } else {
       Sprintf(buf, "The severed head of %S lies here rotting.",
             vict.getName());
-      }
       ptr->in_room_desc = buf;
 
-      if (vict.pc) {
-      Sprintf(buf, "This is the severed and rotting head of %S.",
-            Top(vict.names));
-      } else {
       Sprintf(buf, "This is the severed and rotting head of %S.",
             vict.getName());
-      }
       ptr->long_desc = buf;
 
       corpse->obj_proc->obj_spec_data_flags.turn_on(11);
