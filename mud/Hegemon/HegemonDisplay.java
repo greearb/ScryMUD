@@ -62,7 +62,7 @@ class HegemonDisplay extends JPanel {
         view_y = 0;
         
         this.setLayout(new BorderLayout(0,0));
-        //this.add("Center", scroll);
+        this.add("Center", scroll);
         //this.add("South", hbar);
         this.add("East", vbar);
     }//constructor

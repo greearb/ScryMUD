@@ -47,12 +47,15 @@ class HegemonScroll extends JPanel {
    int left_x;
    int top_y;
    boolean auto_scroll;
+   //TODO Are hp/mana/mov the only non_scrollables? Maybe they should be in their own panel?
    Vector non_scrollables; /* vector of objects which are not
                               intended to scroll with the rest of
                               the text.
                            */
 
    //TODO Use JProgressBars instead for hp/mana/mov?
+   //Then ScrollComponentGraph can be removed, and we just have to deal with
+   //how to scroll text, etc.
    ScrollComponentGraph hp;
    ScrollComponentGraph mana;
    ScrollComponentGraph mov;

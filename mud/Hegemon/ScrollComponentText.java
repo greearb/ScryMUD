@@ -26,7 +26,10 @@
 import java.util.*;
 import java.awt.*;
 
-/** Scroll component dealy. Outdated. */
+/**
+ * Class that holds a chunk of scrolling strings. They get drawn in order,
+ * so only consequtive strings can belong to the same ScrollComponentText.
+ */
 class ScrollComponentText extends ScrollComponent {
     Vector segments;
     int width;
@@ -36,6 +39,11 @@ class ScrollComponentText extends ScrollComponent {
         return vert_spacing;
     }
     
+    /**
+     * Overridden method returns a human-readable debugging description.
+     *
+     * @return String value of this instance
+     */
     public String toString() {
         StringBuffer sb = new StringBuffer(100);
         int len = segments.size();
@@ -48,6 +56,15 @@ class ScrollComponentText extends ScrollComponent {
         return sb.toString();
     }//toString
     
+    /**
+     * Creates a new ScrollComponentText.
+     *
+     * TODO: What does vertical_spacing control?
+     * TODO: What does HegemonDisplayProperties do for this class?
+     *
+     * @param vertical_spacing integer value of vertical spacing
+     * @param props HegemonDisplayProperties instance
+     */
     public ScrollComponentText(int vertical_spacing,
             HegemonDisplayProperties props) {
         super(vertical_spacing);
@@ -56,6 +73,13 @@ class ScrollComponentText extends ScrollComponent {
         segments = new Vector(5); /* holds a list of text segments */
     }//constructor
     
+    /**
+     * Method to add another string to the Vector of strings in this
+     * ScrollComponentText.
+     *
+     * @param str String to be added
+     * @param props HegemonDisplayProperties instance for this String
+     */
     public void addString(String str, HegemonDisplayProperties props) {
         TextSegment ts;
         char[] buf = new char[str.length()];
@@ -65,6 +89,13 @@ class ScrollComponentText extends ScrollComponent {
         width += ts.getWidth();
     }//addString
     
+    /**
+     * Method that adds a character array (much like addString, but not with
+     * a String object), to the Vector in this ScrollComponentText.
+     *
+     * @param buf Character array with String to be added
+     * @param props HegemonDisplayProperties instance
+     */
     public void addString(char[] buf, HegemonDisplayProperties props) {
         TextSegment ts;
         segments.addElement(ts = new TextSegment(buf, props));
@@ -72,6 +103,16 @@ class ScrollComponentText extends ScrollComponent {
         width += ts.getWidth();
     }
     
+    //TODO inclusive/exclusive start and end?
+    /**
+     * Shortcut method to add a subset from start to end of a character
+     * array to this class's Vector.
+     *
+     * @param bug Character array with String to be added
+     * @param start integer start index
+     * @param end integer end index
+     * @param props HegemonDisplayProperties instance
+     */
     public void addChars(char[] buf, int start, int end,
             HegemonDisplayProperties props) {
         StringBuffer sb = new StringBuffer(end-start);
@@ -79,7 +120,14 @@ class ScrollComponentText extends ScrollComponent {
         this.addString(sb.toString(), props);
     }
     
-    
+    /**
+     * Paint method to draw this segment if it's enabled. Gives the painting
+     * of the TextSegment (see class below) to do for itself.
+     *
+     * @param g Graphics object
+     * @param x coordinate for drawing
+     * @param y coordinate for drawing
+     */
     public void paint(Graphics g, int x, int y) {
         if (enabled) {
             int len = segments.size();
@@ -102,7 +150,8 @@ class ScrollComponentText extends ScrollComponent {
 
 /** A text segment is a string with uniform properties.  For example, the
  * color, and font are all the same.  Also, a text segment should never
- * take more than one line to display. */
+ * take more than one line to display. 
+ */
 class TextSegment extends Object {
     Font font;
     Color color;
@@ -110,16 +159,20 @@ class TextSegment extends Object {
     int width;
     int ascent;
     int descent;
-    
+ 
+    /**
+     * Creates a new instance of TextSegment.
+     *
+     * @param txt Character array to be displayed
+     * @param prop HegemonDisplayProperties object
+     */
     public TextSegment(char[] txt, HegemonDisplayProperties prop) {
         //Log.it("TextSegment constructor: txt -:" + txt + ":-");
         font = prop.getFont();
         color = prop.getColor();
-        //Log.it("Color:  " + color);
-        
-        
+        //Log.it("Color:  " + color); 
         text = txt;
-        
+        //TODO I think getFontMetrics() is deprecated. Look into this class.
         FontMetrics fm = prop.getFontMetrics();
         if (fm == null) {
             Log.instance().dbg("TextSegment(): fm was null");
@@ -141,6 +194,14 @@ class TextSegment extends Object {
         return ("TextSegment:  -:" + text + ":-");
     }
     
+    /**
+     * Draws the actual char[] with color and font from this instance and a 
+     * given location.
+     *
+     * @param g Graphics object
+     * @param x coordinate for drawing
+     * @param y coordinate for drawing
+     */
     public void draw(Graphics g, int x, int y) {
         //      Log.it("TextSegment: draw, text -:" + text + ":-" + " Font: " + font);
         g.setFont(font);
