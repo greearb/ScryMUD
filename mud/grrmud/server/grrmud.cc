@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.41 2002/02/07 03:59:08 eroper Exp $
-// $Revision: 1.41 $  $Author: eroper $ $Date: 2002/02/07 03:59:08 $
+// $Id: grrmud.cc,v 1.42 2002/02/07 05:28:33 eroper Exp $
+// $Revision: 1.42 $  $Author: eroper $ $Date: 2002/02/07 05:28:33 $
 
 //
 //ScryMUD Server Code
@@ -1075,10 +1075,23 @@ void game_loop(int s)  {
                         prompt += "\n^WVict^0: ";
                         
                         // Colorized victim graph
-                        if (victim->getHP() >
+                        // we have a random 30% skew when you yourself are <
+                        // 50% health.
+                        int victim_hp;
+                       
+                        if ( tank->getHP() <
+                                (int)((float)tank->getHP_MAX()/2.0) ) {
+                           int random_skew = (int)((float)85+d(1,30)/100.0);
+                           victim_hp = (int)((float)victim->getHP()*((float)
+                                       random_skew/100.0));
+                        } else {
+                            victim_hp = victim->getHP();
+                        }
+
+                        if (victim_hp >
                               (int)((float)(victim->getHP_MAX())*0.70)) {
                            prompt += "^g";
-                        } else if (victim->getHP() >
+                        } else if (victim_hp >
                               (int)((float)(victim->getHP_MAX())*0.30)) {
                            prompt += "^Y";
                         } else {
@@ -1086,7 +1099,7 @@ void game_loop(int s)  {
                         }
 
                         num_of_stars = (int)(((float)
-                                                  (victim->getHP())/
+                                                  (victim_hp)/
                                                   (float)(victim->getHP_MAX())) *
                                                  40.0);
                         for (i = 0; i < num_of_stars; i++) {
