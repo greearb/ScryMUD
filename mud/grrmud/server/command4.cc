@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.29 1999/07/18 23:00:20 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/07/18 23:00:20 $
+// $Id: command4.cc,v 1.30 1999/07/20 05:05:40 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/07/20 05:05:40 $
 
 //
 //ScryMUD Server Code
@@ -873,7 +873,7 @@ int rclear(int i_th, critter& pc) {
 
    mudlog.log(TRC, "In rclear.\n");
 
-   if (!ok_to_do_action(NULL, "BIFR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+   if (!ok_to_do_action(NULL, "BIF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
    

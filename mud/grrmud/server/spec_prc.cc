@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.22 1999/07/18 00:59:23 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
+// $Id: spec_prc.cc,v 1.23 1999/07/20 05:05:40 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/07/20 05:05:40 $
 
 //
 //ScryMUD Server Code
@@ -867,7 +867,10 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
                      Sprintf(gtobj, "get %S\n", Top(obj_ptr->names));
  
                      ptr->processInput(gtobj, FALSE, TRUE);
-                     ptr->processInput(wr_all, FALSE, TRUE);
+                     if (!ptr->isAnimal() && !ptr->isMonster()) {
+                        ptr->processInput(wr_all, FALSE, TRUE);
+                     }
+
 
                   }//if random chance
                }//if

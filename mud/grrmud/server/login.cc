@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.15 1999/07/07 06:05:12 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/07/07 06:05:12 $
+// $Id: login.cc,v 1.16 1999/07/20 05:05:40 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/07/20 05:05:40 $
 
 //
 //ScryMUD Server Code
@@ -173,6 +173,9 @@ void critter::doLogin() {
                mudlog.log(INF, "Logging off, password too short.\n");
                setMode(MODE_LOGOFF_NEWBIE_PLEASE);
             }//if
+            else if (isnum(string)) {
+               show("\nYour password must have at least one letter.\n");
+            }
             else {
                pc->password = string;
                pc->index = 2; //go re-enter password

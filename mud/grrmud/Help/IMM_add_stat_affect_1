@@ -31,7 +31,7 @@ cannot be added, even though the command will look like it worked.
 usage:  add_stat_affect [obj_num] [stat_to_add] [stat_modifier]
 
 Example:
-	add_stat_affect 65 7 5     // add stat 7 with affect 5 to mob 65
+	add_stat_affect 65 7 5     // add stat 7 with affect 5 to obj 65
 
 
 <color=red>

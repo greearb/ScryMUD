@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.22 1999/07/18 05:10:17 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/07/18 05:10:17 $
+// $Id: command3.cc,v 1.23 1999/07/20 05:05:40 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/07/20 05:05:40 $
 
 //
 //ScryMUD Server Code
@@ -323,7 +323,7 @@ int quaf(int i_th, const String* item, critter& pc) { //for wands
    }//if         
 
    if (!potion) {
-      show("Quaf what?\n", pc);
+      show("Quaff what?\n", pc);
       return -1;
    }//if
 
@@ -332,7 +332,7 @@ int quaf(int i_th, const String* item, critter& pc) { //for wands
       return -1;
    }//if
 
-   Sprintf(buf, "You quaf %S.\n",
+   Sprintf(buf, "You quaff %S.\n",
            long_name_of_obj(*potion, pc.SEE_BIT));
    show(buf, pc);
 
