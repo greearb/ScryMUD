@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.26 1999/07/12 07:14:31 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/07/12 07:14:31 $
+// $Id: command5.cc,v 1.27 1999/07/16 02:10:55 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/07/16 02:10:55 $
 
 //
 //ScryMUD Server Code
@@ -2203,6 +2203,12 @@ int dsys(int i, const String& cmd, critter& pc) {
 
    if (!ok_to_do_action(NULL, "IF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
+   }
+
+   if (strncasecmp(cmd, "dump_logs", max(cmd.Strlen(), 1)) == 0) {
+      mudlog.flushToFile("./log/onDemand.log");
+      pc.show("Dumped to ./log/onDemand.log\n");
+      return 0;
    }
 
    if (strncasecmp(cmd, "flags", max(cmd.Strlen(), 1)) == 0) {

@@ -1,5 +1,5 @@
-// $Id: LogStream.h,v 1.5 1999/06/24 05:22:36 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/24 05:22:36 $
+// $Id: LogStream.h,v 1.6 1999/07/16 02:10:56 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/16 02:10:56 $
 
 //
 //ScryMUD Server Code
@@ -23,6 +23,7 @@
 //                                     greearb@agcs.com
 //
 
+#include <strstream.h>
 #include <iostream.h>
 #include <fstream.h>
 #include <stdlib.h>
@@ -32,6 +33,7 @@
 #ifndef LOG_STREAM_INCLUDE
 #define LOG_STREAM_INCLUDE
 
+#define LOG_STREAM_BUF_SIZE 50000  /* 50 kilobytes storage */
 
 
 enum LogLevelEnum {
@@ -51,21 +53,67 @@ enum LogLevelEnum {
    ALL = ~(0) // all
 };//enum
 
+class LogStream;
 
-class LogStream : public ofstream {
-private:
+typedef LogStream& (*__ls_manip)(LogStream&);
+
+class LogStream : public ostrstream {
+protected:
+   char buf[LOG_STREAM_BUF_SIZE];
    char* filename;
    int log_level;
 
 public:
-   LogStream(const char* fname, int lvl) : ofstream(fname),
+   LogStream(const char* fname, int lvl) : ostrstream(buf, LOG_STREAM_BUF_SIZE),
       log_level(lvl) { filename = strdup(fname); }
 
-   ~LogStream() { flush(); free(filename); }
+   ~LogStream() { 
+      flushToFile(filename);
+      free(filename);
+   }
+
+   const char* getFileName() const { return filename; }
+
+   int flushToFile(const char* fname) {
+      *((ostrstream*)this) << ends;
+      ofstream ofile(fname);
+      ofile << str() << flush();
+      seekp(0); //TODO:  This reset's it, no?
+      return 0;
+   }
+
+   /** The idea is that the << (const char*) method will be called
+    * very often.  So, I'm going to over-ride it, and do a check on
+    * our buffer usage.  If it's more than 90%, then dump I'm going
+    * to flush it and reset myself to the beginning of the buffer.
+    */
+   LogStream& operator<< (char* msg) {
+      return (*this) << (const char*)msg; 
+   }
+
+   LogStream& operator<< (const char* msg) {
+      *((ostrstream*)this) << msg; 
+      if (pcount() > ((float)(LOG_STREAM_BUF_SIZE) * 0.9)) {
+         flushToFile(filename);
+      }//if
+      return *this;
+   }//operator overload      
+
+   LogStream& operator<< (const void* ptr) { 
+      *((ostrstream*)this) << ptr;
+      return *this;
+   }
+
+   LogStream& operator<< (int i) { 
+      *((ostrstream*)this) << i;
+      return *this;
+   }
 
    int ofLevel(LogLevelEnum i) { return ((int)(i) & log_level); }
 
    int truncate() {
+      return 1;
+/*
       char buf[200];
       close();
 
@@ -74,17 +122,13 @@ public:
 
       open(filename, ios::app); //open and append
       return 1;
+*/
    }//int
 
    int getLevel() { return log_level; }
    void setLevel(int i) { log_level = i; }
 
-   void log(int lvl, const char* msg) {
-      if ((int)(lvl) & log_level) {
-         (*this) << msg << endl;
-         flush();
-      }
-   }
+   void log(int lvl, const char* msg);
 
    void dbg(const char* msg) {
       log(DBG, msg);
@@ -94,6 +138,30 @@ public:
       log(DBG, msg);
    }
 
+   LogStream& operator<<(__ls_manip func) { return (*func)(*this); }
+
 };//LogStream
+
+
+inline LogStream& endl(LogStream& lstr) {
+   return lstr << (const char*)("\n");
+}
+
+inline LogStream& nl(LogStream& lstr) {
+   return lstr << (const char*)("\n");
+}
+
+inline LogStream& flush(LogStream& lstr) {
+   lstr.flush();
+   return lstr;
+}
+
+inline void LogStream::log(int lvl, const char* msg) {
+   if ((int)(lvl) & log_level) {
+      (*this) << msg;
+      (*this) << nl;
+      flush();
+   }
+}//log
 
 #endif

@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.23 1999/07/05 22:32:08 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/07/05 22:32:08 $
+// $Id: room.cc,v 1.24 1999/07/16 02:10:56 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/16 02:10:56 $
 
 //
 //ScryMUD Server Code
@@ -863,12 +863,18 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
       //                << ptr->getName() << endl;
       //      }
 
+      // Make sure that the actor is still in the room.
+      if (!critters.haveData(&actor)) {
+         return;
+      }
+
       // Have to check all, because mob also checks objects that
       // the mob owns.
       if (ptr->isMob()) { //if it's a MOB
          //mudlog.log("Doing mob_to_smob..");
          ptr = mob_to_smob(*ptr, getRoomNum());
       }
+
       ptr->checkForProc(cmd, arg1, actor, targ, *this);
       //   }//if
       //}//if
@@ -878,7 +884,13 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
    Cell<object*> ocll(inv);
    object* optr;
    while ((optr = ocll.next())) {
-      if (optr->obj_flags.get(76)) {
+
+      // Make sure that the actor is still in the room.
+      if (!critters.haveData(&actor)) {
+         return;
+      }
+
+      if (optr->hasScript()) {
          if (mudlog.ofLevel(DBG)) {
             mudlog << "room::checkForProc, found an object: " 
                    << optr->getName() << endl;
@@ -903,6 +915,12 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
          mudlog << "room::checkForProc, found room script: " 
                 << rptr->toStringBrief(0, getIdNum(), ENTITY_ROOM, idx) << endl;
       }
+
+      // Make sure that the actor is still in the room.
+      if (!critters.haveData(&actor)) {
+         return;
+      }
+
       if (rptr->matches(cmd, arg1, actor, targ)) {
          mudlog.log("Script matches..\n");
          if (pending_scripts.size() >= 10) { //only queue 10 scripts

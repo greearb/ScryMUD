@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.22 1999/06/24 05:22:36 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/24 05:22:36 $
+// $Id: grrmud.cc,v 1.23 1999/07/16 02:10:56 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/07/16 02:10:56 $
 
 //
 //ScryMUD Server Code
@@ -357,7 +357,14 @@ int
 //hopefully trap the TERM signal and exit gracefully
 void sig_term_handler(int signo) { 
    //reestablish signal handler
-   signal(signo, (&sig_term_handler));
+   if ((signo != SIGSEGV) && (signo != SIGBUS)) {
+      cerr << "Got signal: " << signo << " NOT setting to default handler." << endl;
+      signal(signo, (&sig_term_handler));
+   }
+   else {
+      cerr << "Got signal: " << signo << " setting to default handler." << endl;
+      signal(signo, SIG_DFL);
+   }
 
    if (signo == SIGTERM) {
       mudlog << "Got SIGTERM, shutting down.\n";
@@ -433,6 +440,26 @@ void sig_term_handler(int signo) {
       mudlog << flush;
       do_shutdown = TRUE;
    }
+   else if (signo == SIGSEGV) {
+      if (mudlog.ofLevel(DIS))
+         mudlog << "Got SIGSEGV, shutting down..!!\n";
+      mudlog << flush;
+      char buf[100];
+      sprintf(buf, "%s.CRASH.%i", mudlog.getFileName(), getpid());
+      mudlog.flushToFile(buf);
+      core_dump("SIGSEGV");
+      //do_shutdown = TRUE;
+   }
+   else if (signo == SIGBUS) {
+      if (mudlog.ofLevel(DIS))
+         mudlog << "Got SIGBUS, shutting down..!!\n";
+      mudlog << flush;
+      char buf[100];
+      sprintf(buf, "%s.CRASH.%i", mudlog.getFileName(), getpid());
+      mudlog.flushToFile(buf);
+      core_dump("SIGBUS");
+      //do_shutdown = TRUE;
+   }
    else {
       mudlog << "Got unknown SIGNAL:  " << signo 
              << " shutting down..." << endl;
@@ -478,7 +505,11 @@ int main() {
    signal(SIGVTALRM, (&sig_term_handler));
    signal(SIGXCPU, (&sig_term_handler));
    signal(SIGXFSZ, (&sig_term_handler));
-   
+
+   /* Trap a few beasties, but only once!! */
+   signal(SIGSEGV, (&sig_term_handler));
+   signal(SIGSEGV, (&sig_term_handler));
+
    String buf(50);
 
    room_list.ensureCapacity(NUMBER_OF_ROOMS + 1);
