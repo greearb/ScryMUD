@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.58 2001/03/29 07:05:35 greear Exp $
-// $Revision: 1.58 $  $Author: greear $ $Date: 2001/03/29 07:05:35 $
+// $Id: critter.cc,v 1.59 2001/03/29 09:50:34 eroper Exp $
+// $Revision: 1.59 $  $Author: eroper $ $Date: 2001/03/29 09:50:34 $
 
 //
 //ScryMUD Server Code
@@ -3979,6 +3979,8 @@ void critter::doPrompt() {
 
    int i;
    String targ(200);
+   // Conversion buf for longs, NOTE: update append() method --Khaav
+   String conv_buf(20); 
    int source_len = PROMPT_STRING.Strlen();
 
    for (i = 0; i < source_len; ) {
@@ -4009,6 +4011,46 @@ void critter::doPrompt() {
                break;
              case 'M':     /* max mana */
                targ.Append(MA_MAX);
+               break;
+             case 'a':     /* align */
+               targ.Append(ALIGN);
+               break;
+             case 'p':     /* pracs */
+               targ.Append(PRACS);
+               break;
+             case 'x':     /* xp */
+               Sprintf(conv_buf, "%i", EXP);
+               targ.Append(conv_buf);
+               break;
+             case 'X':     /* xp to level */
+               Sprintf(conv_buf, "%i", getXpToNextLevel());
+               targ.Append(conv_buf);
+               break;
+             case 'g':     /* gold */
+               Sprintf(conv_buf, "%i", GOLD);
+               targ.Append(conv_buf);
+               break;
+             case 'G':     /* bank gold */
+               Sprintf(conv_buf, "%i", BANK_GOLD);
+               targ.Append(conv_buf);
+               break;
+             case '1':     /* medical conditions */
+               if (HUNGER == 0) {
+                  targ.Append("(hun)");
+               } if (THIRST == 0) {
+                  targ.Append("(thi)");
+               } if (DRUGGED > 0) {
+                  targ.Append("(dru)");
+               }
+               break;
+             case '2':     /* visibility conditions */
+               if ( isSneaking() ) {
+                  targ.Append("(snk)");
+               } if ( isHiding() ) {
+                  targ.Append("(hid)");
+               } if ( cur_stats[0] & 2 ) { //if invisible
+                  targ.Append("(inv)");
+               }
                break;
              default:
                targ.Append(PROMPT_STRING[i]);

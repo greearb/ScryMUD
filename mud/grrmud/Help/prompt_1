@@ -13,8 +13,19 @@ prompt with special letter combinations as follows:
 %h	current hit points	%H	maximum hit points
 %v	current mov points	%V	maximum mov points
 %m	current mana points	%M	maximum mana points
-%%      a '%' symbol
-%N      Newline
+%a      alignment               %p      practices
+%x      experience points       %X      experience to level
+%g      gold on hand            %G      gold in bank
+%1      medical conditions      %2      Visibility conditions
+%%      a '%' symbol            %N      Newline
+
+Note on medical conditions:
+(hun)   Hungry                  (thi)   Thirsty
+(dru)   Drugged
+
+Note on visibility conditions:
+(snk)   Sneaking                (hid)   Hiding
+(inv)   Invisible
 
 
 If you imput NORMAL as your prompt string you are set to the
