@@ -1,5 +1,5 @@
-// $Id: command5.h,v 1.18 2002/03/01 17:28:16 gingon Exp $
-// $Revision: 1.18 $  $Author: gingon $ $Date: 2002/03/01 17:28:16 $
+// $Id: command5.h,v 1.19 2002/08/23 21:46:47 gingon Exp $
+// $Revision: 1.19 $  $Author: gingon $ $Date: 2002/08/23 21:46:47 $
 
 //
 //ScryMUD Server Code
@@ -34,6 +34,8 @@
 #include "classes.h"
 
 
+
+int test(critter& pc);
 
 int withdraw(int i_th, const String& coins, int j_th,
              const String& banker, critter& pc);

@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.41 2002/02/09 21:50:49 eroper Exp $
-// $Revision: 1.41 $  $Author: eroper $ $Date: 2002/02/09 21:50:49 $
+// $Id: battle.cc,v 1.42 2002/08/23 21:46:47 gingon Exp $
+// $Revision: 1.42 $  $Author: gingon $ $Date: 2002/08/23 21:46:47 $
 
 //
 //ScryMUD Server Code
@@ -150,9 +150,9 @@ void do_battle() {
                atks = 1;
 
              /* check for second attack */
-            if ((crit_ptr->isPc()) && (crit_ptr->PAUSE < 1)
+            if ((crit_ptr->isPc())
                 && (d(1,100) < d(1, (get_percent_lrnd(SECOND_ATTACK_SKILL_NUM, *(crit_ptr)) + 
-                                     crit_ptr->LEVEL) * (int)((float)(crit_ptr->DEX) / 9.0)))) {
+                                     crit_ptr->LEVEL) * (int)((float)(crit_ptr->DEX) / 9.0))-(crit_ptr->PAUSE*60)) ) {
                atks++;
             }
 
@@ -206,11 +206,11 @@ void do_battle() {
                }//if
             }//for                /* now check for dual wield */
 
-            if (crit_ptr->isFighting() && crit_ptr->isDualWielding() && (crit_ptr->PAUSE <= 0)) {
+            if (crit_ptr->isFighting() && crit_ptr->isDualWielding()) {
                int val = (int)(((float)(get_percent_lrnd(DUAL_WIELD_SKILL_NUM, 
                                                          *crit_ptr)) *
                                 (float)(crit_ptr->DEX) / 10.0));
-               if (d(1,100) < d(1, val)) {
+               if (d(1,100) < d(1, val)-(crit_ptr->PAUSE*50) ) {
                   vict_ptr = Top(crit_ptr->IS_FIGHTING);
 
                   if (vict_ptr->isUsingClient()) {

@@ -859,6 +859,8 @@ tail ~
 return tail(i, &(cooked_strs[1]), pc);
 tango socials ~
 tango(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+test ~
+test(pc);
 thank socials ~
 thank(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 thpppt socials ~

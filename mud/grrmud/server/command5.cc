@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.44 2002/03/01 17:28:15 gingon Exp $
-// $Revision: 1.44 $  $Author: gingon $ $Date: 2002/03/01 17:28:15 $
+// $Id: command5.cc,v 1.45 2002/08/23 21:46:47 gingon Exp $
+// $Revision: 1.45 $  $Author: gingon $ $Date: 2002/08/23 21:46:47 $
 
 //
 //ScryMUD Server Code
@@ -49,6 +49,17 @@
 #include "clients.h"
 #include "vehicle.h"
 
+int test(critter& pc) {
+   String buf;
+  
+   int success = 0;
+   for(int i=0;i<10000;i++){
+     if( d(1,100) < d(1,200) ){ success++;}
+   }
+   Sprintf(buf, "Success: %d.\n", success);
+   pc.show(buf);
+   return 0;
+}
 
 int update_cur_in_game(critter& pc) {
    if (pc.isImmort() && (pc.IMM_LEVEL >= 9)) {
