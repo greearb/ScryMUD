@@ -23,17 +23,20 @@ ${IDX_BLDR}: $(IDX_OBJS)
 	cp ${IDX_BLDR} $(TOOL_BIN_DIR)
 
 
-$(HTML_OBJS): %.o: %.C %.h
+$(HTML_OBJS): %.o: %.C %.h libs
 	@echo " "
 	@echo "Making $<"
 	$(CC) $(CCFLAGS) \
 	-c $<
 
-$(IDX_OBJS): %.o: %.C %.h
+$(IDX_OBJS): %.o: %.C %.h libs
 	@echo " "
 	@echo "Making $<"
 	$(CC) $(CCFLAGS) \
 	-c $<
+
+libs:
+	${MAKE} -C ${MUD_HOME}/lib all
 
 clean:
 	rm -f *.o
