@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.37 1999/07/18 04:22:13 greear Exp $
-// $Revision: 1.37 $  $Author: greear $ $Date: 1999/07/18 04:22:13 $
+// $Id: command2.cc,v 1.38 1999/07/18 04:33:45 greear Exp $
+// $Revision: 1.38 $  $Author: greear $ $Date: 1999/07/18 04:33:45 $
 
 //
 //ScryMUD Server Code
@@ -1262,16 +1262,16 @@ int empty(int i_th, const String* canteen, critter& pc) {
             obj_ptr = obj2;
          }//if
 
-         if (!(obj_ptr->inv.isEmpty())) {
-            Cell<object*> cll(obj_ptr->inv);
-            object* ptr;      
-            while ((ptr = obj_ptr->inv.lose(cll))) {
-               recursive_init_unload(*ptr, 0);
+         object* ptr;
+         while (!(obj_ptr->inv.isEmpty())) {
+            ptr = obj_ptr->inv.popFront();
+            recursive_init_unload(*ptr, 0);
+            if (ptr->IN_LIST) {
                if (ptr->IN_LIST) {
                   delete ptr;
                }
-            }//while
-         }
+            }//if
+         }//while
 
          obj_ptr->extras[0] = 0; //no charges
          Sprintf(buf, cstr(CS_YOU_EMPTY, pc), obj_ptr->getShortName());
