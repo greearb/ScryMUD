@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.30 2002/01/03 19:31:11 eroper Exp $
-// $Revision: 1.30 $  $Author: eroper $ $Date: 2002/01/03 19:31:11 $
+// $Id: const.h,v 1.31 2002/01/04 00:30:23 eroper Exp $
+// $Revision: 1.31 $  $Author: eroper $ $Date: 2002/01/04 00:30:23 $
 
 //
 //ScryMUD Server Code
@@ -1206,6 +1206,16 @@ int
 #define ANSI_CYAN        "\x1B[36m"
 #define ANSI_WHITE        "\x1B[37m"
 
+/* Foreground colors w/o escape or terminator */
+#define BB_ANSI_BLACK        "30"
+#define BB_ANSI_RED          "31"
+#define BB_ANSI_GREEN        "32"
+#define BB_ANSI_YELLOW       "33"
+#define BB_ANSI_BLUE         "34"
+#define BB_ANSI_MAGENTA      "35"
+#define BB_ANSI_CYAN         "36"
+#define BB_ANSI_WHITE        "37"
+
 /* Background colors */
 
 #define ANSI_BBLACK        "\x1B[40m"
@@ -1216,6 +1226,24 @@ int
 #define ANSI_BMAGENTA        "\x1B[45m"
 #define ANSI_BCYAN        "\x1B[46m"
 #define ANSI_BWHITE        "\x1B[47m"
+
+/* Background colors w/o escape or terminator */
+#define BB_ANSI_BBLACK       "40"
+#define BB_ANSI_BRED         "41"
+#define BB_ANSI_BGREEN       "42"
+#define BB_ANSI_BYELLOW      "43"
+#define BB_ANSI_BBLUE        "44"
+#define BB_ANSI_BMAGENTA     "45"
+#define BB_ANSI_BCYAN        "46"
+#define BB_ANSI_BWHITE       "47"
+
+/* Other BB (Building Block) Components */
+#define BB_ANSI_NORMAL       "0"
+#define BB_ANSI_HILITE       "1"
+#define BB_ANSI_SEPERATE     ";"
+#define ESC_SEQ              "\x1B["
+#define END_ESC              "m"
+
 
 #else
 
