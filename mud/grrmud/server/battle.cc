@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.38 2002/01/29 01:27:58 eroper Exp $
-// $Revision: 1.38 $  $Author: eroper $ $Date: 2002/01/29 01:27:58 $
+// $Id: battle.cc,v 1.39 2002/01/29 02:15:28 eroper Exp $
+// $Revision: 1.39 $  $Author: eroper $ $Date: 2002/01/29 02:15:28 $
 
 //
 //ScryMUD Server Code
@@ -1149,8 +1149,10 @@ void gain_level(critter& crit) {
       case WARRIOR:
       case RANGER:
       case THIEF:
-      case BARD:
          hp_gain += d(2, crit.CON/2);
+         break;
+      case BARD:
+         hp_gain += d(3, crit.CON/2);
          break;
       case SAGE:
       case WIZARD:
