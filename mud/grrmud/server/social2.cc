@@ -3031,9 +3031,10 @@ void tap(int i_th, const String* vict, critter& pc, room& rm) {
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S walks up behind %S and taps them on the"
+               Sprintf(buf, "%S walks up behind %S and taps %s on the"
                      " shoulder.\n", name_of_crit(pc, ptr->SEE_BIT), 
-                     name_of_crit(*crit_ptr, ptr->SEE_BIT));
+                     name_of_crit(*crit_ptr, ptr->SEE_BIT),
+                     get_him_her(*crit_ptr));
                buf.Cap();
                show(buf, *ptr);
             }//if
