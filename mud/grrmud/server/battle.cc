@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.18 1999/06/25 04:02:54 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
+// $Id: battle.cc,v 1.19 1999/06/25 04:43:52 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/25 04:43:52 $
 
 //
 //ScryMUD Server Code
@@ -44,6 +44,7 @@
 #include "load_wld.h"
 #include "const.h"
 #include "Filters.h"
+#include "batl_proc.h"
 
 
 short can_start_battle(critter& targ, critter& pc, short do_msg) {
