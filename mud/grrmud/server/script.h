@@ -162,7 +162,8 @@ public:
    virtual void compile(); //compile into script assembly...
    virtual void setScript(const String& txt);
    virtual const String* getTrigger() { return &trigger_cmd; }
-   virtual String toStringBrief(int client_format, int mob_num, entity_type entity);
+   virtual String toStringBrief(int client_format, int mob_num,
+                                entity_type entity, int idx);
 
    /** Source code. */
    virtual String getScript();

@@ -37,13 +37,14 @@ class MobScriptEditor extends Frame {
    LabeledTextField mob_num;
    LabeledChoice entity;
    LabeledChoice discrim_choice;
+   LabeledTextField script_idx;
 
    String[] cmds = {"close", "donate", "drop", "eat", "enter",
                     "examine", "exit", "fill", "follow",
                     "get", "give", "group", "hit", "list", "lock",
-                    "look", "meditate", "open", "order",
-                    "pay", "prone", "remove", "rest", "say", "shoot",
-                    "sit", "sleep", "stand", "tell",
+                    "look", "meditate", "nod", "open", "order",
+                    "pay", "prone", "remove", "rest", "say", "shake",
+                    "shoot", "sit", "sleep", "stand", "tell",
                     "throw", "ungroup", "unlock", "wake", "wear",
                     "yell" };
    
@@ -71,6 +72,8 @@ class MobScriptEditor extends Frame {
                                    "", 10, 80);
       mob_num = new LabeledTextField("Entity # (Script Owner)", "0", 10);
       discrim_choice = new LabeledChoice("Special Descrim.");
+      script_idx = new LabeledTextField("Script Index", "", 10);
+
       oeb = new MSButtons(this);
 
       entity.c.add("ROOM");
@@ -130,10 +133,13 @@ class MobScriptEditor extends Frame {
       gridbag.setConstraints(target, c);
       add(target);
       
+      gridbag.setConstraints(script_idx, c);
+      add(script_idx);
+
       c.gridwidth = REM;
       gridbag.setConstraints(discrim, c);
       add(discrim);
-      
+
       gridbag.setConstraints(script, c);
       add(script);
 
@@ -185,15 +191,16 @@ class MobScriptEditor extends Frame {
    }
 
    public void setMobScriptData(String trig, String mnum, String actor_num,
-                                String target_num, String pd) {
+                                String target_num, String pd, String script_index) {
       if (isFrozen())
-        return;
+         return;
 
       mob_num.append(mnum);
       trigger.c.select(trig);
       actor.append(actor_num);
       target.append(target_num);
       precedence.c.select(pd);
+      script_idx.append(script_index);
    }
 
    public void appendScript(String str) {
@@ -211,7 +218,44 @@ class MobScriptEditor extends Frame {
       precedence.c.select("0");
       script.clear();
       mob_num.clear();
+      script_idx.clear();
    }//
+
+   /**  Read the script from the MUD.  Same as typing stat_script with
+    *  the appropriate arguments.
+    */
+   public void do_refresh() {
+      oeb.setFrozen(false);
+      String cmd = null;
+
+      if (entity.getText().equalsIgnoreCase("ROOM")) {
+         cmd = "stat_room_script ";
+      }
+      else if (entity.getText().equalsIgnoreCase("MOB")) {
+         cmd = "stat_script ";
+      }
+
+      else {
+         MessageDialog md = new MessageDialog("Refresh Error",
+                                              "Was neither ROOM nor MOB entity",
+                                              "red", "black");
+         return;
+      }
+
+      try {
+         // first, the in_room_description
+         hm.getSocketManager().write(cmd + mob_num.getText()
+                                     + " " + script_idx.getText() + "\n");
+         
+      }//try
+      catch (Exception e) {
+         MessageDialog md = new MessageDialog("Refresh Error",
+                                              "Could not refresh script: "
+                                              + e, "red", "black");
+      }//catch
+      //do_clear();
+   }//doRefresh
+
 
    public void do_update() {
       oeb.setFrozen(false);
@@ -267,9 +311,10 @@ class MSButtons extends Panel {
 
       Button clear_b = new Button("Clear");
       Button cancel_b = new Button("Cancel");
-      Button update_b = new Button("Update");
+      Button commit_b = new Button("Commit");
       Button done_b = new Button("Done");
       Button help_b = new Button("Help");
+      Button refresh_b = new Button("Refresh");
 
       done_b.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
@@ -304,16 +349,22 @@ class MSButtons extends Panel {
             parent.do_help();
          }});
 
-      update_b.addActionListener(new ActionListener() {
+      commit_b.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             parent.do_update();
+         }});
+
+      refresh_b.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            parent.do_refresh();
          }});
 
       FlowLayout fl = new FlowLayout();
       setLayout(fl);
 
       add(freeze_b);
-      add(update_b);
+      add(refresh_b);
+      add(commit_b);
       add(cancel_b);
       add(clear_b);
       add(done_b);

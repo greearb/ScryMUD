@@ -826,10 +826,11 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
          
    room_proc_scripts.head(rcll);
 
+   int idx = 0;
    while ((rptr = rcll.next())) {
       if (mudlog.ofLevel(DBG)) {
          mudlog << "room::checkForProc, found room script: " 
-                << rptr->toStringBrief(0, getIdNum(), ENTITY_ROOM) << endl;
+                << rptr->toStringBrief(0, getIdNum(), ENTITY_ROOM, idx) << endl;
       }
       if (rptr->matches(cmd, arg1, actor, targ)) {
          mudlog.log("Script matches..\n");
@@ -867,6 +868,7 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
             return;
          }//else
       }//if matches
+      idx++;
    }//while
 }//checkForMobAction
 
@@ -1414,8 +1416,8 @@ void room::addProcScript(const String& txt, RoomScript* script_data) {
    //first, see if we are over-writing one...
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In room::addProcScript, txt:  \n" << txt
-             << "\nscript data:  " << script_data->toStringBrief(0, 0, ENTITY_ROOM)
-             << endl;
+             << "\nscript data:  "
+             << script_data->toStringBrief(0, 0, ENTITY_ROOM, 0) << endl;
    }
 
    room_flags.turn_on(35);
@@ -1462,7 +1464,7 @@ may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n")
    int idx = 0;
    while ((ptr = cll.next())) {
       found_one = TRUE;
-      tmp = ptr->toStringBrief(FALSE, 0, ENTITY_ROOM);
+      tmp = ptr->toStringBrief(FALSE, 0, ENTITY_ROOM, idx);
       Sprintf(buf, "[%i] %S\n", idx, &(tmp));
       pc.show(buf);
       idx++;

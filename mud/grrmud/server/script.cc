@@ -425,8 +425,9 @@ char* GenScript::triggers[] = {
    "close", "donate",
    "drop", "eat", "enter", "examine", "exit", "fill", "follow",
    "get", "give", "group",
-   "hit", "list", "lock", "look", "meditate", "open", "order", "pay", "prone",
-   "remove", "rest", "say", "shoot", "sit", "sleep", "stand",
+   "hit", "list", "lock", "look", "meditate", "nod",
+   "open", "order", "pay", "prone",
+   "remove", "rest", "say", "shake", "shoot", "sit", "sleep", "stand",
    "tell", "throw", "ungroup", "unlock", "wake", "wear", "yell", NULL };
 
 
@@ -454,7 +455,7 @@ int GenScript::validTrigger(const char* trig) {
 
 
 String GenScript::toStringBrief(int client_format, int mob_num,
-                                entity_type entity) {
+                                entity_type entity, int idx) {
    String buf(100);
    if (client_format) {
       String tmp_d;
@@ -466,12 +467,12 @@ String GenScript::toStringBrief(int client_format, int mob_num,
       String tmp(100);
 
       if (entity == ENTITY_CRITTER) {
-         Sprintf(buf, "<MOB_SCRIPT %S %i %i %i %i>", &trigger_cmd,
-                 mob_num, actor, target, precedence);
+         Sprintf(buf, "<MOB_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
+                 mob_num, actor, target, precedence, idx);
       }
       else if (entity == ENTITY_ROOM) {
-         Sprintf(buf, "<ROOM_SCRIPT %S %i %i %i %i>", &trigger_cmd,
-                 mob_num, actor, target, precedence);
+         Sprintf(buf, "<ROOM_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
+                 mob_num, actor, target, precedence, idx);
       }
 
       Sprintf(tmp, "<DISCRIM %S>", &tmp_d);

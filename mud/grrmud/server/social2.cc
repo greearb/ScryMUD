@@ -850,6 +850,7 @@ void shake(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
    Cell<critter*> cll(rm.getCrits());
    critter* ptr;
+   critter* targ = NULL;
 
    if (vict->Strlen()) {
       critter* crit_ptr =
@@ -860,12 +861,14 @@ void shake(int i_th, const String* vict, critter& pc, room& rm) {
       else if (pc.POS > POS_SIT)
          show("You would probably want to be standing to do that.\n", pc);
       else if (crit_ptr == &pc) {
+         targ = &pc;
          show("You shake your head in denial.\n", pc);
          Sprintf(buf, "shakes %s head in denial.!\n",
 		get_hisself_herself(pc));
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
+         targ = crit_ptr;
          Sprintf(buf, "You shake your head in denial at %S.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
@@ -877,8 +880,8 @@ void shake(int i_th, const String* vict, critter& pc, room& rm) {
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
                Sprintf(buf, "%S shakes his head in denial at %S.\n",
-                 name_of_crit(pc, ptr->SEE_BIT),
-                 name_of_crit(*crit_ptr, ptr->SEE_BIT));
+                       name_of_crit(pc, ptr->SEE_BIT),
+                       name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
                show(buf, *ptr);
             }//if
@@ -889,6 +892,14 @@ void shake(int i_th, const String* vict, critter& pc, room& rm) {
       show("You shake your head in denial.\n", pc);
       emote("shakes his head in denial.", pc, rm, TRUE);
    }//else
+
+   String cmd = "shake";
+   if (targ) {
+      rm.checkForProc(cmd, NULL_STRING, pc, targ->getIdNum());
+   }
+   else {
+      rm.checkForProc(cmd, NULL_STRING, pc, 0);
+   }
 }//shake
 
 

@@ -696,7 +696,7 @@ class HegemonInputFilter extends Object {
             valid = true;
          }//if
       }//if len == 5
-      else if (len == 6) {
+      else if (len == 7) {
          if (cmd.equalsIgnoreCase("MOB_SCRIPT")) {
             hm.getMobScriptEditor().do_clear();
             setMobScriptData((String)(args.elementAt(1)),
@@ -704,7 +704,8 @@ class HegemonInputFilter extends Object {
                              (String)(args.elementAt(3)),
                              (String)(args.elementAt(4)),
                              (String)(args.elementAt(5)),
-                             "MOB");
+                             "MOB",
+                             (String)(args.elementAt(6)));
             valid = true;
          }//if
          else if (cmd.equalsIgnoreCase("ROOM_SCRIPT")) {
@@ -714,7 +715,8 @@ class HegemonInputFilter extends Object {
                              (String)(args.elementAt(3)),
                              (String)(args.elementAt(4)),
                              (String)(args.elementAt(5)),
-                             "ROOM");
+                             "ROOM",
+                             (String)(args.elementAt(6)));
             valid = true;
          }//if
       }//if
@@ -723,9 +725,10 @@ class HegemonInputFilter extends Object {
    }//processArgs
 
    void setMobScriptData(String trig, String mnum, String actor_num,
-                         String target_num, String precedence, String entity) {
+                         String target_num, String precedence, String entity,
+                         String script_idx) {
       hm.getMobScriptEditor().setMobScriptData(trig, mnum, actor_num,
-                                               target_num, precedence);
+                                               target_num, precedence, script_idx);
       hm.getMobScriptEditor().setEntity(entity);
    }
 

@@ -375,7 +375,7 @@ may be seen by using the stat_script [mob_num] [script_index] command.\n\n");
    int idx = 0;
    while ((ptr = cll.next())) {
       found_one = TRUE;
-      tmp = ptr->toStringBrief(FALSE, 0, ENTITY_CRITTER);
+      tmp = ptr->toStringBrief(FALSE, 0, ENTITY_CRITTER, idx);
       Sprintf(buf, "[%i] %S\n", idx, &(tmp));
       pc.show(buf);
       idx++;
@@ -438,7 +438,8 @@ int stat_script(int mob_num, int script_idx, critter& pc) {
  
    MobScript* ptr = mob_list[mob_num].mob->mob_proc_scripts.elementAt(script_idx);
    if (ptr) {
-      buf.Append(ptr->toStringBrief(pc.USING_CLIENT, mob_num, ENTITY_CRITTER));
+      buf.Append(ptr->toStringBrief(pc.USING_CLIENT, mob_num,
+                                    ENTITY_CRITTER, script_idx));
       if (pc.USING_CLIENT)
          buf.Append("\n<SCRIPT_DATA>");
       else
@@ -486,7 +487,8 @@ int stat_room_script(int rm_num, int script_idx, critter& pc) {
  
    RoomScript* ptr = room_list[rm_num].getScriptAt(script_idx);
    if (ptr) {
-      buf.Append(ptr->toStringBrief(pc.USING_CLIENT, rm_num, ENTITY_ROOM));
+      buf.Append(ptr->toStringBrief(pc.USING_CLIENT, rm_num, ENTITY_ROOM,
+                                    script_idx));
       if (pc.isUsingClient())
          buf.Append("\n<SCRIPT_DATA>");
       else

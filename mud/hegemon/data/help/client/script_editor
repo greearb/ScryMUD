@@ -12,10 +12,40 @@ List_scripts allows you to see a brief listing of every script on a
 particular mob. 
 
 	If you wish to make changes, then edit the text fields and
-press the UPDATE button.  Watch your main screen to see if there
+press the Commit button.  Watch your main screen to see if there
 are any errors.  Possible errors include:  You don't own the mob
 in question.
 
+Precedence:  If the precedence is greater than zero, then the script
+	will be placed in a queue where the highest numbered precedence
+	will be executed first.  This is useful if you want the mob to
+	be able to remember to start another script while it is in the
+	middle of running another.
+
+Refresh:  Loads the script from the MUD.  Same as entering:
+	stat_script, or stat_room_script on the command line.
+
+Freeze:  Keeps the script from being automatically updated if you
+	stat another script.
+
+Script Index:  This is used during a 'refresh'.  It is not needed,
+	and will actually be ignored when just editing a script.
+
+Special Descrim:  Descriminators may have different meanings for
+	different triggers, but these are a few that can apply
+	anytime.  See 'help add_mob_script' for more information.
+	These descriminators have the meaning "ONLY", in other words,
+	if you chose FEM (for female), then the script would only fire
+	for FEMALE actors.
+
+Entity#:  That is the ID of the ROOM or MOB which 'owns' this
+	script.
+
+Actor:  The entity causing the trigger event.  -1 means ANY.
+
+Target:  Many trigger commands have targets associated.  If so, then
+	this field may be the specific ID number of the MOB that can
+	trigger this script. -1 means ANY.
 
 NOTE:  all this can (and is) done with plain old MUD commands, check out
 	the help topics under OLC (see the help screen) for more

@@ -1511,6 +1511,7 @@ void nod(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
    Cell<critter*> cll(rm.getCrits());
    critter* ptr;
+   critter* targ = NULL;
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
@@ -1524,8 +1525,10 @@ void nod(int i_th, const String* vict, critter& pc, room& rm) {
          show("You nod to yourself.\n", pc);
          Sprintf(buf, "nods to %s.\n", get_hisself_herself(pc));
          emote(buf, pc, rm, TRUE);
+         targ = &pc;
       }//if targ and agg is same
       else {
+         targ = crit_ptr;
          Sprintf(buf, "You nod your head in agreement with %S.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
@@ -1548,7 +1551,16 @@ void nod(int i_th, const String* vict, critter& pc, room& rm) {
    else {      
       show("You nod your head in agreement.\n", pc);
       emote("nods in agreement!!", pc, rm, TRUE);
+      targ = NULL;
    }//else
+
+   String cmd = "nod";
+   if (targ) {
+      rm.checkForProc(cmd, NULL_STRING, pc, targ->getIdNum());
+   }
+   else {
+      rm.checkForProc(cmd, NULL_STRING, pc, 0);
+   }
 }//nod
 
 void grin(int i_th, const String* vict, critter& pc, room& rm) {

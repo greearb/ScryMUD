@@ -1059,7 +1059,7 @@ void mob_data::addProcScript(const String& txt, MobScript* script_data) {
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In mob_data::addProcScript, txt:  \n" << txt
              << "\nscript data:  "
-             << script_data->toStringBrief(0, 0, ENTITY_CRITTER)
+             << script_data->toStringBrief(0, 0, ENTITY_CRITTER, 0)
              << endl;
    }
 

@@ -494,7 +494,7 @@ any strange occurances.
    readSiteBanned();
 
    // By default, turn off logging specific to the DATABASE.
-   //mudlog.setLevel(79);
+   mudlog.setLevel(ERR | DIS | WRN | SEC);
 
    // Drop into our endless loop.
    run_the_game(DFLT_PORT);

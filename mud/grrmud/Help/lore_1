@@ -1,0 +1,13 @@
+<help general lore>
+
+This skill can give you some brief information on an item.
+It is not as powerful as a spell of identification, but it
+doesn't cost much either!
+
+Syntax:  lore <<i_th> [object]
+
+Example:  lore sword
+
+<color=red>
+See Also:  identify, look, examine, read
+</color></help>
