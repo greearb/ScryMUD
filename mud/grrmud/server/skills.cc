@@ -1544,7 +1544,6 @@ short did_spell_hit(const critter& agg, const int spell_type,
 
 short skill_did_hit(critter& agg, int spell_num, critter& vict) {
    int percent_lrnd = 0;
-   int sneak_mod = 1;
 
    if (agg.pc) {
       agg.SKILLS_KNOWN.Find(spell_num, percent_lrnd);
@@ -1568,17 +1567,16 @@ short skill_did_hit(critter& agg, int spell_num, critter& vict) {
 
    else if ((spell_num == BACKSTAB_SKILL_NUM) ||
          (spell_num == CIRCLE_SKILL_NUM)) {
-
-      if ( agg.isSneaking() ) {
-         int sneak_p_lrnd = 0;
-         if (agg.SKILLS_KNOWN.Find(SNEAK_SKILL_NUM, sneak_p_lrnd)) {
-            sneak_mod = (int)(sneak_p_lrnd/4);
-         }
-      }
+      int backstab_bonus = -5; //base chance modifier
+			 //max bonus is 41 with max skills, 21 points without invis, max is 16 points higher than old system
+			//by itself, each skill gives a small bonus(enough to offset the initial penalty plus a little)
+  	  if(agg.isSneaking()) backstab_bonus += get_percent_lrnd(SNEAK_SKILL_NUM, agg)/5;
+      if(agg.isHiding()) backstab_bonus += get_percent_lrnd(HIDE_SKILL_NUM, agg)/6; //harder to hit something if you can't move around
+      if(agg.isInvis()) backstab_bonus += 15;
 
       int rnd1 = d(1, (agg.HIT * 3 + agg.DEX * 5 + agg.LEVEL * 2));
       int rnd2  = d(1, (2 * vict.DEX + vict.LEVEL + max(-vict.AC / 2,  25)));
-      return ( (((float)(rnd1) * (float)(percent_lrnd) / 100.0) + sneak_mod) >
+      return ( (((float)(rnd1) * (float)(percent_lrnd) / 100.0) + backstab_bonus) >
             ((float)(rnd2)));
    }
 
