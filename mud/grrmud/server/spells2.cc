@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.22 2001/10/27 18:03:59 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 2001/10/27 18:03:59 $
+// $Id: spells2.cc,v 1.23 2001/11/13 04:37:09 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 2001/11/13 04:37:09 $
 
 //
 //ScryMUD Server Code
@@ -922,15 +922,21 @@ void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
        if (ptr->bonus_duration > 40) {
           if (vict.pc) {
              if (vict.STR > 20) {
-                if (d(1,13) == 13) { //ouch, lost some CON!!
+                if (d(1,7) == 5) { //ouch, lost some CON!!
                    vict.show("Oops...somehow you think that spell might have backfired!!\n");
                    vict.STR--;
                 }
              }//if
              else if (vict.DEX > 20) {
-                if (d(1,13) == 13) { //ouch, lost some CON!!
+                if (d(1,7) == 7) { //ouch, lost some CON!!
                    vict.show("Oops...somehow you think that spell might have backfired!!\n");
                    vict.DEX--;
+                }
+             }//if
+             else if (vict.CON > 20) {
+                if (d(1,7) == 7) { //ouch, lost some DAMCON!!
+                   vict.show("Oops...somehow you think that spell might have backfired!!\n");
+                   vict.CON--;
                 }
              }//if
           }
@@ -1425,9 +1431,30 @@ void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl) {
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2), 
-           vict.affected_by);
+       Put(new stat_spell_cell(spell_num, lvl/2), vict.affected_by);
        vict.STR += WEAKEN_EFFECT;
+
+       if (vict.pc) {
+          if (vict.STR > 20) {
+             if (d(1,13) == 5) { //ouch, lost some CON!!
+                vict.show("You feel even worse than normal!\n");
+                vict.STR--;
+             }
+          }//if
+          else if (vict.DEX > 20) {
+             if (d(1,13) == 7) { //ouch, lost some CON!!
+                vict.show("You feel even worse than normal!\n");
+                vict.DEX--;
+             }
+          }//if
+          else if (vict.CON > 20) {
+             if (d(1,13) == 7) { //ouch, lost some DAMCON!!
+                vict.show("You feel even worse than normal!\n");
+                vict.CON--;
+             }
+          }//if
+       }
+
 
        if (&vict == &agg) {
          show("You feel weaker!\n", agg);

@@ -1,5 +1,5 @@
-// $Id: social2.h,v 1.3 2001/03/29 03:02:34 eroper Exp $
-// $Revision: 1.3 $  $Author: eroper $ $Date: 2001/03/29 03:02:34 $
+// $Id: social2.h,v 1.4 2001/11/13 04:37:09 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 2001/11/13 04:37:09 $
 
 //
 //ScryMUD Server Code
@@ -37,6 +37,7 @@
 
 
 
+void tango(int i_th, const String* vict, critter& pc, room& rm);
 void shake(int i_th, const String* vict, critter& pc, room& rm);
 void groan(int i_th, const String* vict, critter& pc, room& rm);
 void beckon(int i_th, const String* vict, critter& pc, room& rm);

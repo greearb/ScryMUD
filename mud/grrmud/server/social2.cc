@@ -1,5 +1,5 @@
-// $Id: social2.cc,v 1.7 2001/03/29 03:02:34 eroper Exp $
-// $Revision: 1.7 $  $Author: eroper $ $Date: 2001/03/29 03:02:34 $
+// $Id: social2.cc,v 1.8 2001/11/13 04:37:09 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 2001/11/13 04:37:09 $
 
 //
 //ScryMUD Server Code
@@ -36,6 +36,51 @@
 #include "social2.h"
 
 
+// Offered by Kadann
+void tango(int i_th, const String* vict, critter& pc, room& rm) {
+   String buf(100);
+   Cell<critter*> cll(rm.getCrits());
+   critter* ptr;
+   
+   if (vict->Strlen()) {
+      critter* crit_ptr = rm.haveCritNamed(i_th, vict, pc);
+      
+      if (!crit_ptr)
+         show("You don't see that person.\n", pc);
+      else if (pc.POS > POS_SIT)
+         show("You are not in a position to do that.\n", pc);
+      else if (crit_ptr == &pc) {
+         show("You bite down on a rose cutting your tongue!\n", pc);
+         Sprintf(buf, "pricks %s tongue on a rose thorn!\n", get_his_her(pc));
+         emote(buf, pc, rm, TRUE);
+      }//if targ and agg is same
+      else {
+         Sprintf(buf, "You hand %S a rose, and embrace the dance of love with %S.\n",
+                 name_of_crit(*crit_ptr, pc.SEE_BIT), name_of_crit(*crit_ptr, pc.SEE_BIT));
+         show(buf, pc);
+         Sprintf(buf, "%S hands you a rose... you instintively bite down on it as you embrace the dance of love.\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         buf.Cap();
+         show(buf, *crit_ptr);
+         
+         while ((ptr = cll.next())) {
+            if ((ptr != &pc) && (ptr != crit_ptr)) {
+               Sprintf(buf, "%S grins at %S.\n",
+                       name_of_crit(pc, ptr->SEE_BIT),
+                       name_of_crit(*crit_ptr, ptr->SEE_BIT));
+               buf.Cap();
+               show(buf, *ptr);
+            }//if
+         }//while
+      }//else
+   }//if a victim
+   else {
+      show("You dance the tango with an imaginary friend!\n", pc);
+      emote("dances around the room like a wierdo...with a rose...", pc, rm, TRUE);
+   }//else
+}//tango
+
+
 /*Coded By GROCK*/
 void smirk(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
@@ -48,8 +93,7 @@ void smirk(int i_th, const String* vict, critter& pc, room& rm) {
    }
 
    if (vict->Strlen()) {
-      critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+      critter* crit_ptr = rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -97,8 +141,7 @@ void beckon(int i_th, const String* vict, critter& pc, room& rm) {
    }
 
    if (vict->Strlen()) {
-      critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+      critter* crit_ptr = rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -146,8 +189,7 @@ void sob(int i_th, const String* vict, critter& pc, room& rm) {
    }
 
    if (vict->Strlen()) {
-      critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+      critter* crit_ptr = rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -202,7 +244,7 @@ void splash(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -253,7 +295,7 @@ void pat(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -305,7 +347,7 @@ void itch(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -358,7 +400,7 @@ void wiggle(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -412,7 +454,7 @@ void agree(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -456,7 +498,7 @@ void blush(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -510,7 +552,7 @@ void kiss(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -572,7 +614,7 @@ void giggle(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -623,7 +665,7 @@ void shrug(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -670,7 +712,7 @@ void wibble(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -718,7 +760,7 @@ void yawn(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -770,7 +812,7 @@ void bonk(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -821,7 +863,7 @@ void pft(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -873,7 +915,7 @@ void clap(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -924,7 +966,7 @@ void shake(int i_th, const String* vict, critter& pc, room& rm) {
    }
 
    if (vict->Strlen()) {
-      critter* crit_ptr = ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+      critter* crit_ptr = rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) {
          show("You don't see that person.\n", pc);
@@ -987,7 +1029,7 @@ void groan(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1037,7 +1079,7 @@ void hmm(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1085,7 +1127,7 @@ void hum(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1130,7 +1172,7 @@ void grumble(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1182,7 +1224,7 @@ void listen(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1232,7 +1274,7 @@ void pinch(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1282,7 +1324,7 @@ void roll(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1338,7 +1380,7 @@ void strut(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1389,7 +1431,7 @@ void whistle(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1434,7 +1476,7 @@ void slap(int i_th, const String* vict, critter& pc, room& rm) {
    critter* crit_ptr = NULL;
 
    if (vict->Strlen()) {
-      crit_ptr = ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+      crit_ptr = rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1495,7 +1537,7 @@ void muahaha(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1544,7 +1586,7 @@ void hehe(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1595,7 +1637,7 @@ void silly(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1643,7 +1685,7 @@ void scold(int i_th, const String* vict, critter& pc, room& rm) {
    }
    if (vict->Strlen()) {
       critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1686,14 +1728,14 @@ void twiddle(int i_th, const String* vict, critter& pc, room& rm) {
    critter* ptr;
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
       else if (pc.POS > POS_SIT)
          show("You are not in a position to do that.\n", pc);
       else if (crit_ptr == &pc) {
          show("You twiddle your thumbs.\n", pc); 
-         Sprintf(buf, "Twiddles %s thumbs.\n", 
+         Sprintf(buf, "twiddles %s thumbs.\n", 
                  get_his_her(pc)); 
          emote(buf, pc, rm, TRUE);
       }
@@ -1742,7 +1784,7 @@ void peck(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -1794,7 +1836,7 @@ void trout(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -1846,7 +1888,7 @@ void tremble(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -1898,7 +1940,7 @@ void goo(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -1950,7 +1992,7 @@ void smooch(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2002,7 +2044,7 @@ void swoon(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2054,7 +2096,7 @@ void twirl(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2110,7 +2152,7 @@ void tickle(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2162,7 +2204,7 @@ void battlecry(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2215,7 +2257,7 @@ void loser(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2281,7 +2323,7 @@ void nestle(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2333,7 +2375,7 @@ void sweatdrop(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2392,7 +2434,7 @@ void shudder(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2445,7 +2487,7 @@ void cower(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2498,7 +2540,7 @@ void climb(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2550,7 +2592,7 @@ void shock(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2604,7 +2646,7 @@ void wiggletoes(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
@@ -2660,7 +2702,7 @@ void stare(int i_th, const String* vict, critter& pc, room& rm) {
 
    if (vict->Strlen()) {
       critter* crit_ptr = 
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+           rm.haveCritNamed(i_th, vict, pc);
 
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);

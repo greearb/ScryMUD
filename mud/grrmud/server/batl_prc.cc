@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.15 2001/10/27 02:17:29 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
+// $Id: batl_prc.cc,v 1.16 2001/11/13 04:37:09 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 2001/11/13 04:37:09 $
 
 //
 //ScryMUD Server Code
@@ -163,7 +163,7 @@ void do_battle_proc(critter& pc) {
 
   chance = d(1, 10); //expand this for more cases            
 
-  if (lvl > 30) {
+  if (lvl > 25) {
      if (chance > 5) {
         if (pc.IS_FIGHTING.size() > 6) {
            if (violence > 4) {
@@ -255,7 +255,7 @@ void do_battle_proc(critter& pc) {
             do_cast_fireball(*primary_targ, pc, FALSE, 0);
           }//if
           else if (chance > 4) {
-            do_cast_rainbow(*primary_targ, pc, FALSE, 0);
+            do_cast_weaken(*primary_targ, pc, FALSE, 0);
           }//if
         }//if not so violent
       }//if more offensive

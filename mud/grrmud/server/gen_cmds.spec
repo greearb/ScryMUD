@@ -900,6 +900,8 @@ swoon(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 # case T
 tail ~
 return tail(i, &(cooked_strs[1]), pc);
+tango socials ~
+tango(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 teach ~
 return teach(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 throw ~
