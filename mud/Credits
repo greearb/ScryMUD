@@ -7,8 +7,8 @@ by the good folks at BlackDown organization.
 
 ScryMUD (the c++ MUD server) was written from scratch by Ben Greear.
 It was developed on the same platform, and it's predecessor (p60, Slackware
-'96).  I used g++ to compile of course.  I have been working on Scry since
-1995.  It was written from scratch, but the UI was heavily influenced
+'96).  I used g++ to compile of course.  I have been working on Scry for over
+three years.  It was written from scratch, but the UI was heavily influenced
 by DikuMUDs, especially JediMUD, which I played for a number of years (was
 known as Grock if it rings a bell..)
 
@@ -20,21 +20,25 @@ http://scry.wanfear.com
 This software is released under the GPL in the hope that others will find
 it useful and possibly contribute code to make it better.
 
+
 Head Coder:
-	Ben Greear
+        Ben Greear, aka Grock
 
 Head Builder:
-	Shamu
+        Brian Towne, aka Shamu
 
 We have a few new folks joining the project.
-	Angelbob:     Keeper of the stable server release.
-	Khaavren:     Database dude & other things.
-	Aasen:        Database design & stuff.
-        Loki:         Been adding quite a lot of new features and skills/spells.
-        Ron Yaketta:  Added a new class and some fork code to do DNS lookup off the
+        Angelbob:     Keeper of the stable server release.
+        Khaavren:     Database dude & other things.
+        Aasen:        Database design & stuff.
+        Justin Piper: Been adding quite a lot of new features and skills/spells.
+        Ron Yacketta: Added a new class and some fork code to do DNS lookup off the
                       main thread.
+	Andrew Gibson: Added features related to scripting, and various other things.
+	Gingon:       Coder of new spells & other stuff.
 
 If you have any questions, write me at:  greearb@candelatech.com
+
 
 Sincerely,
 Ben Greear

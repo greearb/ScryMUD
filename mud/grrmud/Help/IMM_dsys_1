@@ -13,6 +13,7 @@ Syntax:  dsys             # Shows memory usage and debugging info.
 Syntax:  dsys flags [for-entity]     # Shows the flags defined.
 Syntax:  dsys dump_logs   # Force a flush of the logging system, this
 	                  # will produce a ./log/onDemand.log file.
+Syntax:  dsys debug_proc_action_mobs   # prints out some debug info
 
 <color=red>
 See Also:  who, sockets, ldwho, uptime, mset, oset, dset, rset

@@ -1,0 +1,321 @@
+12	Start of Mob
+cheetah bobcat ~	names
+a bobcat
+~
+A ferocious bobcat strides along in front of you.
+~
+The bobcat has sharp teeth and large paws with massive claws.  It looks like it
+could make quite a cut!
+
+~
+18 -1  -:| bitfield |:-
+0 60000 0 	long_data
+0 9 1 1 1 1 20 2 3 70 1 0 1 1 16 70 1 300 0 
+5 40 15 0 70 1 300 2 100 100 80 80 80 80 0 40 2 4 50 50 
+50 5 80 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 12 0 6	mob#, tmp_num, max_n_game
+16 5 4 2 -1  -:| bitfield |:-
+754        skin number
+	end_of_crit
+
+14	Start of Mob
+crow ~	names
+a large crow
+~
+A large crow is perched on a branch, facing away and unaware of your presence.
+~
+It looks just about like any other crow.  It's big and black, and has a sharp
+beak.
+
+~
+18 -1  -:| bitfield |:-
+0 500 0 	long_data
+0 1 1 1 1 1 1 1 1 0 4 0 1 1 16 1 1 1 0 
+1 40 0 0 1 1 1 2 100 1 100 100 100 100 0 40 1 1 0 5 
+5 5 2 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 14 0 4	mob#, tmp_num, max_n_game
+5 4 -1  -:| bitfield |:-
+	end_of_crit
+
+23	Start of Mob
+ogrue child ~	names
+an ogrue child
+~
+A large Ogrue child stands here.
+~
+He is only a child, but he is pretty large and he looks like he could put up a
+fight!
+
+~
+18 -1  -:| bitfield |:-
+25 80000 0 	long_data
+0 12 6 10 10 10 10 2 4 60 1 0 1 1 9 150 100 200 -100 
+5 40 0 0 150 100 200 2 100 95 70 70 60 70 0 40 2 4 30 30 
+30 5 120 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 23 0 2	mob#, tmp_num, max_n_game
+4 2 0 -1  -:| bitfield |:-
+13 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+0 0 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+92	Start of Mob
+bear cub ~	names
+a bear cub
+~
+A bear cub wanders around, looking for its mother.
+~
+It is small, but its claws are razor-sharp.  It could probably make quite a
+cut!
+
+~
+18 -1  -:| bitfield |:-
+0 13000 0 	long_data
+0 4 3 3 3 3 12 2 1 70 1 0 1 1 16 25 1 100 100 
+2 40 27 0 25 1 100 2 100 100 80 80 80 80 0 40 2 3 10 10 
+10 5 50 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 92 0 6	mob#, tmp_num, max_n_game
+16 5 4 2 -1  -:| bitfield |:-
+760        skin number
+	end_of_crit
+
+150	Start of Mob
+bat ~	names
+a bat
+~
+A bat flies around overhead.
+~
+It looks about like any other bat.  It's black, it's got wide wings, and it
+shrieks like the devil.
+
+~
+21 18 2 -1  -:| bitfield |:-
+0 500 0 	long_data
+0 1 1 1 1 1 1 1 1 100 1 0 1 1 16 1 1 1 0 
+1 40 0 0 1 1 1 2 100 50 100 100 100 100 0 40 1 1 0 5 
+5 5 2 0 	shrt_cur_stats
+1024 1056 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 150 0 50	mob#, tmp_num, max_n_game
+17 -1  -:| bitfield |:-
+1  Start of a mob proc script
+enter 0 -1 0	 Trigger Command, targ, actor 
+
+ emote shrieks.;
+ attack %M;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+167	Start of Mob
+Dex ~	names
+Dex
+~
+Dex the store keeper stands here.
+~
+A rough looking man with a thick black beard.  He wears a checkered red shirt,
+with suspenders holding up his jeans.  He smiles as you look at him.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+65 200000 0 	long_data
+0 20 14 15 14 14 16 2 1 60 1 0 1 1 1 350 100 100 50 
+11 1 0 0 350 100 100 2 100 100 80 80 100 90 0 40 2 2 100 100 
+100 5 0 0 	shrt_cur_stats
+1024 1032 4171 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 167 0 1	mob#, tmp_num, max_n_game
+4 0 -1  -:| bitfield |:-
+13 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 200 75 8 21	shop_data shorts
+59 57 56 2 1 0 -1  -:| bitfield |:-
+11 68 360 328 329 -1  End of perm_inv
+0 0 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+209	Start of Mob
+Kendre ~	names
+Kendre
+~
+Kendre, Tyro's trainer, stands here.
+~
+Kendre is an old, thin human man.  He has long white hair and a white raggedy
+beard.  He wears torn and worn-out clothes, and he looks almost like a bum.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+75 200000 0 	long_data
+0 15 14 15 14 14 14 4 4 60 1 0 1 1 1 300 200 200 50 
+10 1 0 0 300 200 100 2 100 100 80 80 100 90 0 40 2 2 10 100 
+100 5 0 0 	shrt_cur_stats
+1024 1032 4087 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 209 0 1	mob#, tmp_num, max_n_game
+4 0 -1  -:| bitfield |:-
+13 2 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+8 7 6 5 4 3 2 1 -1  -:| bitfield |:-
+0 0 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+268	Start of Mob
+fox small ~	names
+a small fox
+~
+A small fox prowls around.
+~
+It is not much more than knee-high, but it looks like it has quite a bite!
+
+~
+18 -1  -:| bitfield |:-
+0 4000 0 	long_data
+0 3 1 1 1 1 15 1 1 80 1 0 1 1 16 13 1 120 0 
+1 40 0 0 13 1 120 2 100 100 90 70 90 90 0 40 2 2 10 10 
+10 5 4 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 268 0 8	mob#, tmp_num, max_n_game
+16 4 2 -1  -:| bitfield |:-
+747        skin number
+	end_of_crit
+
+304	Start of Mob
+bear cub bearcub ~	names
+a bear cub
+~
+A small bear cub is scratching at the dirt.
+~
+The bear cub may be small but it looks like it has razor-sharp claws!
+
+~
+18 -1  -:| bitfield |:-
+0 10000 0 	long_data
+0 5 1 1 1 1 12 1 2 70 1 0 1 1 16 20 1 100 0 
+1 40 0 0 25 1 100 2 100 100 80 70 90 90 0 40 2 2 100 100 
+100 5 20 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 304 0 8	mob#, tmp_num, max_n_game
+16 5 4 2 -1  -:| bitfield |:-
+760        skin number
+	end_of_crit
+
+306	Start of Mob
+bear ~	names
+a large bear
+~
+A large bear walks around, unconcerned by your presence.
+~
+This bear is very large, almost the size of a small man when standing on its
+hindmost paws.  It looks like it could rip the skin right off of an
+unsuspecting victim!
+
+~
+18 -1  -:| bitfield |:-
+0 60000 0 	long_data
+0 7 1 1 1 1 1 2 2 80 2 0 0 1 16 65 1 200 0 
+4 40 15 0 65 1 200 2 100 100 60 60 90 90 0 40 2 4 50 50 
+50 5 120 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 306 0 6	mob#, tmp_num, max_n_game
+17 16 5 4 2 -1  -:| bitfield |:-
+760        skin number
+1  Start of a mob proc script
+hit 304 -1 0	 Trigger Command, targ, actor 
+
+ growl %M
+pause 1
+kill %M;
+
+~
+2  Start of a mob proc script
+hit 92 -1 0	 Trigger Command, targ, actor 
+
+ growl %M
+pause 1
+kill %M;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+307	Start of Mob
+wolf ~	names
+a wolf
+~
+An agile wolf scurries around quickly through the undergrowth.
+~
+The wolf isn't too big, but its agility would make it a formidable opponent.
+
+~
+18 -1  -:| bitfield |:-
+0 42500 0 	long_data
+0 6 1 1 1 1 20 2 1 70 1 0 1 1 16 55 1 200 0 
+3 40 15 0 55 1 200 2 100 100 7 70 70 70 0 40 2 3 50 50 
+50 5 30 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 307 0 6	mob#, tmp_num, max_n_game
+16 5 4 2 -1  -:| bitfield |:-
+746        skin number
+	end_of_crit
+
+308	Start of Mob
+rabbit ~	names
+a small rabbit
+~
+A small rabbit hops around.
+~
+The rabbit is small and white, and it twitches its nose as it sniffs around for
+food.
+
+~
+18 -1  -:| bitfield |:-
+0 500 0 	long_data
+0 1 1 1 1 1 1 1 1 100 1 0 2 1 16 1 1 100 500 
+1 40 0 0 1 1 100 2 100 1 100 100 100 100 0 40 1 1 0 5 
+5 5 3 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 308 0 4	mob#, tmp_num, max_n_game
+16 5 4 2 -1  -:| bitfield |:-
+761        skin number
+	end_of_crit
+
+
+-1 END OF MOB FILE

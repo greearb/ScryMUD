@@ -1,5 +1,5 @@
-// $Id: command4.h,v 1.7 1999/08/22 07:16:20 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
+// $Id: command4.h,v 1.8 2001/03/29 03:02:29 eroper Exp $
+// $Revision: 1.8 $  $Author: eroper $ $Date: 2001/03/29 03:02:29 $
 
 //
 //ScryMUD Server Code
@@ -53,13 +53,13 @@ int possess(int i_th, const String* vict, critter& pc);
 
 int unpost(int i_th, const String* post, critter& pc);
 int write_board(object& obj);
-int title(String* tit, critter& pc);
+int title(const String* tit, critter& pc);
 int poofin(String* tit, critter& pc);
 int poofout(String* tit, critter& pc);
 int oreload(critter& pc);
 int mreload(critter& pc);
 int read(int i_th, const String* post, int j_th, const String* board, critter& pc);
-int post(String* title, critter& pc);
+int post(const String* title, critter& pc);
 int do_post(critter& pc);
 int log_out(critter& pc);
 int go(int i_th, const String* direction, critter& pc, int& is_dead);
@@ -77,13 +77,14 @@ int olist(int start, int end, critter& pc);
 int mlist(int start, int end, critter& pc);
 int rlist(int start, int end, critter& pc);
 int dlist(int start, int end, critter& pc);
-int adlist(critter& pc);
+int adlist(int znum, critter& pc);
 int zlist(int start, int end, critter& pc);
 
 //loop through all rooms in zone.
 int set_zflag(int flagnum, const String* on_off, critter& pc);
 
 int tog_rflag(int flagnum, critter& pc);
+int tog_vflag(int flagnum, critter& pc);
 int tog_oflag(int flagnum, const String* flag_type, 
                int i_th, const String* obj, critter& pc); 
 int tog_mflag(int flagnum, const String* flag_type, 
@@ -91,11 +92,11 @@ int tog_mflag(int flagnum, const String* flag_type,
 
 int rset(const String* targ, int new_value, critter& pc);
 int mset(int i_th, const String* vict, const String* targ, 
-	  int new_value, const String* new_string_val, critter& pc);
+          int new_value, const String* new_string_val, critter& pc);
 int oset(int i_th, const String* vict, const String* targ,
-	  int new_value, const String* new_val_string, critter& pc);
+          int new_value, const String* new_val_string, critter& pc);
 int dset(int i_th, const String* vict, const String* targ,
-	  int new_value, critter& pc);
+          int new_value, critter& pc);
 
 int give(int i_th, const String* obj, int i_th, const String* targ,
                critter& pc);  //does checks, mob_to_smob
@@ -107,6 +108,10 @@ int zunlock(int zone_num, critter& pc);
 
 int write_zone(int zone_num, critter& pc); //writes zone pc is in..if locked
 int do_write_zone(int znum);
+#ifdef USEMYSQL
+int do_db_write_zone(int znum);
+#endif
+int do_file_write_zone(int znum);
 
 int replace_door(int new_door_num, const String* direction, critter& pc);
 int delete_door(int i_th, const String* door, critter& pc);

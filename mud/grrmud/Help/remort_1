@@ -1,0 +1,25 @@
+<help general remort>
+
+This command, used by a high level immort, may transform a mortal of
+a certain race/class to a different race/class.  The player will start
+over with all skills/spells intact, but will have their HP, MANA, and
+MOV reset to a lower level.  They will be given the base spells for
+their new class if that is needed.
+
+The immortal may also grant a TOTAL of +3 to one or more stats:
+STR, CHA, INT, CON, DEX, WIS.  That will have to be done through
+the mset command.
+
+NOTE:  The player must have sacrificed prior to the remort (the code
+will check.)  The player must also have an empty inventory, and not
+be wearing anything.
+
+NOTE:  Mortals can only re-mort into a different class.  Remorts that
+are ready to re-mort again may choose to change both class and race.
+It is not necessary that they mortal change either or class.
+
+syntax:  remort <<i_th> [player] [new_race] [new_class]
+
+<color=red>
+See Also:  sacrifice, mset
+</color></help>

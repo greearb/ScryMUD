@@ -2,7 +2,11 @@
 
 Lists all players currently playing.  If you wouldn't have the ability
 to see them, in their current room, then they will just show up as 
-Someone.  
+Someone.
+
+If the level has IMM in it, it is an immortal.  If it has RMT in it,
+then it is a Remort, someone who has gone all the way to level 30 and
+then started over, at least once.
 
 Syntax:  who
 

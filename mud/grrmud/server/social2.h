@@ -1,5 +1,5 @@
-// $Id: social2.h,v 1.2 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: social2.h,v 1.3 2001/03/29 03:02:34 eroper Exp $
+// $Revision: 1.3 $  $Author: eroper $ $Date: 2001/03/29 03:02:34 $
 
 //
 //ScryMUD Server Code
@@ -38,6 +38,7 @@
 
 
 void shake(int i_th, const String* vict, critter& pc, room& rm);
+void groan(int i_th, const String* vict, critter& pc, room& rm);
 void beckon(int i_th, const String* vict, critter& pc, room& rm);
 void sob(int i_th, const String* vict, critter& pc, room& rm);
 void smirk(int i_th, const String* vict, critter& pc, room& rm);
@@ -71,5 +72,23 @@ void wibble(int i_th, const String* vict, critter& pc, room& rm);
 void yawn(int i_th, const String* vict, critter& pc, room& rm);
 void bonk(int i_th, const String* vict, critter& pc, room& rm);
 void pft(int i_th, const String* vict, critter& pc, room& rm);
+void peck(int i_th, const String* vict, critter& pc, room& rm);
+void trout(int i_th, const String* vict, critter& pc, room& rm);
+void tremble(int i_th, const String* vict, critter& pc, room& rm);
+void goo(int i_th, const String* vict, critter& pc, room& rm);
+void smooch(int i_th, const String* vict, critter& pc, room& rm);
+void swoon(int i_th, const String* vict, critter& pc, room& rm);
+void twirl(int i_th, const String* vict, critter& pc, room& rm);
+void tickle(int i_th, const String* vict, critter& pc, room& rm);
+void battlecry(int i_th, const String* vict, critter& pc, room& rm);
+void loser(int i_th, const String* vict, critter& pc, room& rm);
+void nestle(int i_th, const String* vict, critter& pc, room& rm);
+void sweatdrop(int i_th, const String* vict, critter& pc, room& rm);
+void shudder(int i_th, const String* vict, critter& pc, room& rm);
+void cower(int i_th, const String* vict, critter& pc, room& rm);
+void climb(int i_th, const String* vict, critter& pc, room& rm);
+void shock(int i_th, const String* vict, critter& pc, room& rm);
+void wiggletoes(int i_th, const String* vict, critter& pc, room& rm);
+void stare(int i_th, const String* vict, critter& pc, room& rm);
 
 #endif

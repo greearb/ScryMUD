@@ -1,0 +1,12 @@
+<help general split>
+
+This transfers some of your money to the other people in your group that
+are in the same room as yourself.
+
+Syntax:  split [amount]
+
+Example:  split 50
+
+<color=red>
+See Also:  give pay
+</color></help>

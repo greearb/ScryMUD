@@ -1,5 +1,5 @@
-// $Id: script.h,v 1.17 1999/09/01 06:00:04 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/09/01 06:00:04 $
+// $Id: script.h,v 1.18 2001/03/29 03:02:34 eroper Exp $
+// $Revision: 1.18 $  $Author: eroper $ $Date: 2001/03/29 03:02:34 $
 
 //
 //ScryMUD Server Code
@@ -35,11 +35,9 @@
 #include "classes.h"
 #include <PtrArray.h>
 #include <KVPair.h>
-#include "Serialized.h"
-
 
 class room;
-class critter;
+
 
 /**  This will not kill, but can set HP to 1 in worst case. */
 int affect_crit_stat(StatTypeE ste, String& up_down, int i_th,
@@ -114,7 +112,10 @@ int stop_script(critter& pc);
 int wander(critter& pc);
 
 /** Exact some damage. */
-int exact_damage(int dice_cnt, int dice_sides, String& msg, critter& pc);
+int exact_damage(int dice_cnt, int dice_sides, String& msg, critter& pc, int was_ordered = FALSE);
+
+int chance(int cnt, int sides, int val);
+
 
 class ScriptCmd {
 private:
@@ -179,20 +180,23 @@ public:
    GenScript(const GenScript& src);
    virtual ~GenScript();
 
+   virtual int getStackPointer() { return stack_ptr; }
    virtual void clear();
    virtual void appendCmd(String& cmd);
-   virtual void read(istream& da_file);
-   virtual void write(ostream& da_file) const;
+   virtual void read(ifstream& da_file);
+   virtual void write(ofstream& da_file) const;
    virtual int matches(const String& cmd, String& arg1, critter& act,
                        int targ, int obj_actor_num = -1);
    virtual int matches(const GenScript& src);
    virtual void generateScript(String& cmd, String& arg1, critter& act,
-                               int targ, room& rm, Entity* script_owner);
+                               int targ, room& rm, critter* script_owner,
+                               object* object_owner = NULL);
    virtual int getPrecedence() { return precedence; }
    virtual void compile(); //compile into script assembly...
    virtual void setScript(const String& txt);
    virtual const String* getTrigger() { return &trigger_cmd; }
-   virtual String toStringBrief(int client_format, int idx);
+   virtual String toStringBrief(int client_format, int mob_num,
+                                entity_type entity, int idx);
 
    /** Source code. */
    virtual String getScript();
@@ -219,11 +223,97 @@ public:
    static int getInstanceCount() { return _cnt; }
    static int validTrigger(const char* trig);
    static int checkScript(const String& str);
-
-   static int parseMobScriptCommand(ScriptCmd& cmd, critter& owner);
-   static int parseRoomScriptCommand(ScriptCmd& cmd, room& owner);
-   static int parseObjScriptCommand(ScriptCmd& cmd, object& owner);
-
 };//GenScript
+
+
+class MobScript : public GenScript {
+private:
+   static int _cnt;
+
+protected:
+
+public:
+   MobScript() : GenScript() { _cnt++; };
+   MobScript(String& trig, int targ, int act, String& discriminator,
+             int precedence) : GenScript(trig, targ, act,
+                                         discriminator, precedence) {
+      _cnt++;
+   }
+
+   MobScript(const MobScript& src) : GenScript((GenScript)src) { _cnt++; }
+
+   virtual ~MobScript() { _cnt--; }
+
+   MobScript& operator=(const MobScript& src) {
+      if (this != &src) {
+         *((GenScript*)(this)) = (GenScript)(src);
+      }
+      return *this;
+   }
+
+   static int getInstanceCount() { return _cnt; }
+   static int parseScriptCommand(ScriptCmd& cmd, critter& owner, int& obj_was_deleted);
+};//MobScript
+
+
+class RoomScript : public GenScript {
+private:
+   static int _cnt;
+
+protected:
+
+public:
+   RoomScript() : GenScript() { _cnt++; };
+   RoomScript(String& trig, int targ, int act, String& discriminator,
+             int precedence) : GenScript(trig, targ, act,
+                                         discriminator, precedence) {
+      _cnt++;
+   }
+
+   RoomScript(const RoomScript& src) : GenScript((GenScript)src) { _cnt++; }
+
+   virtual ~RoomScript() { _cnt--; }
+
+   RoomScript& operator=(const RoomScript& src) {
+      if (this != &src) {
+         *((GenScript*)(this)) = (GenScript)(src);
+      }//if
+      return *this;
+   }
+
+   static int getInstanceCount() { return _cnt; }
+   static int parseScriptCommand(ScriptCmd& cmd, room& owner, int& obj_was_deleted);
+};//RoomScript
+
+
+class ObjectScript : public GenScript {
+private:
+   static int _cnt;
+
+protected:
+
+public:
+   ObjectScript() : GenScript() { _cnt++; };
+   ObjectScript(String& trig, int targ, int act, String& discriminator,
+             int precedence) : GenScript(trig, targ, act,
+                                         discriminator, precedence) {
+      _cnt++;
+   }
+
+   ObjectScript(const ObjectScript& src) : GenScript((GenScript)src) { _cnt++; }
+
+   virtual ~ObjectScript() { _cnt--; }
+
+   ObjectScript& operator=(const ObjectScript& src) {
+      if (this != &src) {
+         *((GenScript*)(this)) = (GenScript)(src);
+      }//if
+      return *this;
+   }
+
+   static int getInstanceCount() { return _cnt; }
+   static int parseScriptCommand(ScriptCmd& cmd, object& owner, int& obj_was_deleted);
+};//ObjectScript
+
 
 #endif

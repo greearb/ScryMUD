@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.26 1999/09/11 06:12:16 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/09/11 06:12:16 $
+// $Id: const.cc,v 1.27 2001/03/29 03:02:30 eroper Exp $
+// $Revision: 1.27 $  $Author: eroper $ $Date: 2001/03/29 03:02:30 $
 
 //
 //ScryMUD Server Code
@@ -43,456 +43,468 @@ const char* CensoredStrings[] = {
    NULL  /* don't forget this!! */
 };
 
-const char* regular_directions[] = {
-   "east",
-   "west",
-   "north",
-   "south",
-   "southeast",
-   "northeast",
-   "northwest",
-   "southwest",
-   "up",
-   "down"
+const char* osd_names[] = {
+   "consume_teleport", 
+   "has_construct_data",
+   "has_skin",
+   "consume_poison",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "casts_spells"
 };
+const BitfieldNames OBJ_SPEC_DATA_FLAGS_NAMES(sizeof(osd_names)/sizeof(const char*),
+                                              osd_names, "Obj Spec Data Flags:");
 
-CSentryE osd_names[] = {
-   CS_CONSUME_TELEPORT_F,
-   CS_CONSTR_DATA_F,
-   CS_HAS_SKIN_F,
-   CS_CONSUME_POISON_F,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_CASTS_SPELLS_F
+const char* bf_names[] = { 
+   "NULL",
+   "NULL",
+   "is_closed",
+   "is_locked",
+   "is_pickable",
+   "is_mag_lockable",
+   "is_mag_locked",
+   "is_destructable {fireball may open it till reset}",
+   "is_corpse",
+   "!close",
+   "player owned",//10
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "consume_key"//17
 };
-const LstrArray OBJ_SPEC_DATA_FLAGS_NAMES(sizeof(osd_names)/sizeof(CSentryE),
-                                              osd_names, CS_OBJ_SPEC_DATA_FLAGS);
+const BitfieldNames BAG_FLAGS_NAMES(sizeof(bf_names)/sizeof(const char*),
+                                    bf_names, "Bag Flags:");
 
-CSentryE bf_names[] = { 
-   CS_OPEN_EXIT_F,
-   CS_MAG_LOCKABLE_F,
-   CS_IS_CLOSED_F,
-   CS_IS_LOCKED_F,
-   CS_IS_PICKABLE_F,
-   CS_IS_LOCKED_F, // 5
-   CS_IS_MAG_LOCKED_F,
-   CS_IS_DESTRUCTABLE_F, //7
-   CS_IS_CLOSABLE_F, //8
-   CS_IS_FLIPPABLE_F,
-   CS_IS_IN_USE_F, //10
-   CS_IS_NO_OPEN_F,
-   CS_IS_VEHICLE_EXIT_F, //12
-   CS_IS_SECRET_F,
-   CS_IS_BLOCKED_F,
-   CS_IS_NOT_COMPLETE_F,
-   CS_SECRET_WHEN_OPEN_F,
-   CS_CONSUME_KEY_F,
-   CS_NO_PASSDOOR_F,
-   CS_IS_CORPSE_F
+const char* sd_names[] = {
+   "buy_0",//0
+   "sell_0",//1
+   "offer_0",//2
+   "Player-run shopkeeper",//3
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",//10
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",//20
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",//30
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NULL",
+   "NON weapon",//40
+   "slash",
+   "smash",
+   "pierce",
+   "whip", 
+   "needs_ammo",
+   "dart_thrower",
+   "bow", 
+   "dart",
+   "arrow",
+   "junk", //50
+   "wand",
+   "potion",
+   "scroll",
+   "container",
+   "coins",//55
+   "armor",
+   "weapon",
+   "light_source",
+   "canteen",
+   "liquid",//60
+   "food",
+   "boat",
+   "has_spec_proc_data",
+   "toolbox",
+   "cauldron",//65
+   "pen", 
+   "construct_component",
+   "concoct_component",
+   "parchment", //69
+   "NULL",
+   "NULL",
+   "herb", //72
+   "vend_machine"//73
 };
-const LstrArray CLOSABLE_FLAGS_NAMES(sizeof(bf_names)/sizeof(CSentryE),
-                                     bf_names, CS_CONTAINER_FLAGS);
+const BitfieldNames SHOP_DATA_FLAGS_NAMES(sizeof(sd_names)/sizeof(const char*),
+                                          sd_names, "Shop Data Flags (Trades):");
 
-CSentryE sd_names[] = {
-   CS_BUY_ZERO_F,
-   CS_SELL_ZERO_F,
-   CS_OFFER_ZERO_F,
-   CS_PLAYER_RUN_SHOPKEEPER_F, //3
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,//10
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,//20
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,//30
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NON_WEAPON_F,
-   CS_SLASH_F,
-   CS_SMASH_F,
-   CS_PIERCE_F,
-   CS_WHIP_F,
-   CS_NEEDS_AMMO_F,
-   CS_DART_THROWER_F,
-   CS_BOW_F,
-   CS_DART_F,
-   CS_ARROW_F,
-   CS_JUNK_F, //50
-   CS_WAND_F,
-   CS_POTION_F,
-   CS_SCROLL_F,
-   CS_CONTAINER_F,
-   CS_COINS_F,//55
-   CS_ARMOR_F,
-   CS_WEAPON_F,
-   CS_LIGHT_SOURCE_F,
-   CS_CANTEEN_F,
-   CS_LIQUID_F,//60
-   CS_FOOD_F,
-   CS_BOAT_F,
-   CS_NULL,
-   CS_TOOLBOX_F,
-   CS_CAULDRON_F,//65
-   CS_PEN_F,
-   CS_CONSTR_COMP_F,
-   CS_CONCOCT_COMP_F,
-   CS_PARCHMENT_F,
-   CS_NULL,
-   CS_NULL,
-   CS_HERB_F, //72
-   CS_VEND_MACHINE_F//73
+const char* td_names[] = {
+   "NULL",
+   "Warrior",
+   "Sage",
+   "Wizard",
+   "Ranger",
+   "Thief",
+   "Alchemist",
+   "Cleric",
+   "Bard"
 };
-const LstrArray SHOP_DATA_FLAGS_NAMES(sizeof(sd_names)/sizeof(CSentryE),
-                                      sd_names, CS_SHOP_DATA_FLAGS);
-
-CSentryE class_names[] = {
-   CS_NULL,
-   CS_WARRIOR,
-   CS_SAGE,
-   CS_WIZARD,
-   CS_RANGER,
-   CS_THIEF,
-   CS_ALCHEMIST,
-   CS_CLERIC,
-   CS_BARD
-};
-const LstrArray TEACH_DATA_FLAGS_NAMES(sizeof(class_names)/sizeof(CSentryE),
-                                       class_names, CS_TEACH_DATA_FLAGS);
+const BitfieldNames TEACH_DATA_FLAGS_NAMES(sizeof(td_names)/sizeof(const char*),
+                                           td_names, "Teach Data Flags:");
 
 /** FLAG1 */
-CSentryE mp_names[] = {
-   CS_NULL,
-   CS_SHOPKEEPER_F,
-   CS_TEACHER_F,
-   CS_SAME_CLASS_PASS_F,
-   CS_LET_SAME_RACE_PASS_F,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_NULL,
-   CS_HAS_AI_F,
+const char* mp_names[] = {
+   "NULL",
+   "shopkeeper",
+   "teacher",
+   "let_same_class_pass",
+   "let_same_race_pass",
+   "has_mob_give_proc",
+   "has_mob_say_proc",
+   "has_mob_bow_proc",
+   "has_mob_curse_proc",
+   "proc_with_same_race", 
+   "proc_with_same_align",
+   "proc_with_same_class",
+   "NULL",
+   "has_AI"
 };
-const LstrArray MOB_PROC_DATA_FLAGS_NAMES(sizeof(mp_names)/sizeof(CSentryE),
-                                          mp_names, CS_MOB_PROC_FLAGS);
+const BitfieldNames MOB_PROC_DATA_FLAGS_NAMES(sizeof(mp_names)/sizeof(const char*),
+                                              mp_names, "Mob Proc Flags:");
 
-CSentryE c_names[] = {
-   CS_CAN_SEE_INV_F,
-   CS_USING_LIGHT_SRC_F,
-   CS_NULL,
-   CS_IS_FLYING_F,
-   CS_HAVE_BOAT_F,
-   CS_CAN_CLIMB_F,
-   CS_GOS_F,
-   CS_YELL_F,
-   CS_GRATZ_F,
-   CS_AUC_F,
-   CS_SHOUT_F,
-   CS_SAY_F,
-   CS_TELL_F,
-   CS_WIZNET_F,
-   CS_PARALYZED_F,
-   CS_PERM_SLEEPED_F,
-   CS_DUAL_WIELDING_F,
-   CS_IS_SNEAK_F,
-   CS_IS_IN_USE_F,
-   CS_CAN_DIVE_F,
-   CS_SPELL_TESTED_YET_F,
-   CS_IS_BLOCKED_F,
-   CS_IS_HIDING_F,
-   CS_IS_TAILING_F,
-   CS_IS_NOT_COMPLETE_F,
-   CS_ALREADY_HURLED_F
+const char* c_names[] = {
+   "can_see_inv",
+   "using_light_src",
+   "NULL",
+   "is_flying",           
+   "have_boat",
+   "can_climb",
+   "gos",
+   "yell",
+   "gratz",
+   "auc", 
+   "shout",
+   "say",
+   "tell",
+   "wiznet",
+   "is_paralyzed",
+   "is_perm_sleeped",
+   "is_dual_wielding",
+   "is_sneak",
+   "in_use",
+   "can_dive",
+   "spell_tested_yet",
+   "is_blocked",
+   "is_hide",
+   "is_tailing",
+   "!complete",
+   "already_hurled"
 };
-const LstrArray CRIT_FLAGS_NAMES(sizeof(c_names)/sizeof(CSentryE),
-                                 c_names, CS_CRIT_FLAGS);
+const BitfieldNames CRIT_FLAGS_NAMES(sizeof(c_names)/sizeof(const char*),
+                                     c_names, "Critter Flags:");
 
-CSentryE md_names[] = {
-   CS_HAS_PROC_DATA_F,
-   CS_SCAVENGE_F,
-   CS_WANDER_F,
-   CS_SHOULD_DO_PROCS_F,
-   CS_NEEDS_RESETTING_F, //4
-   CS_EDIBLE_CORPSE_F,
-   CS_IS_BANKER_F,
-   CS_IS_SESSILE_F, //7
-   CS_IS_NO_HOMING_F, //8
-   CS_NULL, //9
-   CS_NULL, //10
-   CS_NULL, //11
-   CS_NULL, //12
-   CS_NULL, //13
-   CS_NULL, //14
-   CS_NULL, //15
-   CS_HAS_SKIN_F,
-   CS_HAS_SCRIPT_F, /*17*/
+const char* md_names[] = {
+   "has_proc_data", //0
+   "scavenge", //1
+   "wander", //2
+   "should_do_procs", //3
+   "need_resetting", //4
+   "edible_corpse", //5
+   "is_banker", //6,
+   "is_sessile", //7
+   "!homing", //8
+   "disolvable", //9
+   "!victim_flee", //10
+   "NULL", //11
+   "NULL", //12
+   "NULL", //13
+   "NULL", //14
+   "NULL", //15
+   "has_skin", //16
+   "has_mob_script" /*17*/
 };
-const LstrArray MOB_DATA_FLAGS_NAMES(sizeof(md_names)/sizeof(CSentryE),
-                                     md_names, CS_MOB_DATA_FLAGS);
+const BitfieldNames MOB_DATA_FLAGS_NAMES(sizeof(md_names)/sizeof(const char*),
+                                         md_names, "Mob Data Flags:");
 
-CSentryE pcd_names[] = {
-   CS_FROZEN_F,
-   CS_GAGGED_F,
-   CS_HAS_IMM_DATA_F,
-   CS_CLOAKED_F,
-   CS_TANK_GRAPH_F,
-   CS_USING_CLIENT_F,
-   CS_AUTO_EXIT_F,
-   CS_NO_HASSLE_F,
-   CS_BRIEF_F,//8
-   CS_AUTOSPLIT_F,
-   CS_DO_PROMPT_F,//10
-   CS_IS_BUILDER_F,
-   CS_AUTOLOOT_F,//12
-   CS_OLC_REDO_F,
-   CS_EXTRA_INFO_F,//14
-   CS_CR_BEHIND_F,
-   CS_DO_CR_F,
-   CS_IS_BLOCKING_DOOR_F,
-   CS_CAN_DET_MAGIC_F,
-   CS_DET_INV_F,
-   CS_SHOW_VNUMS_F,//20
-   CS_HAS_POOF_MSGS_F,
-   CS_PAGE_OUTPUT_F,//22
-   CS_PB_MODE_F,
-   CS_NO_WIZCHAT_F,
-   CS_HAS_COLORS_F,//25
-   CS_USE_COLOR_F,
-   CS_HAS_LANG_CHOICE_F,
-   CS_NO_SHOW_NPC_ENTRY_F,
-   CS_NO_BEEP_F,
-   CS_SHOW_DBG_F
+const char* pcd_names[] = {
+   "frozen",//0
+   "gagged",//1
+   "has_imm_data", //2
+   "cloaked",//3
+   "tank_graph",//4
+   "using_client",//5
+   "auto_exit",//6
+   "!hassle",//7
+   "brief",//8
+   "autosplit",//9 
+   "do_prompt",//10
+   "is_builder",//11
+   "autoloot",//12
+   "olc_redo",//13
+   "extra_info",//14
+   "cr_behind",//15
+   "do_carriage_return",//16
+   "is_blocking_door",//17
+   "can_det_magic",//18
+   "detect_inventory",//19
+   "show_vnums",//20
+   "has_poofin_poofout_msg",//21
+   "page_output",//22
+   "in_page_break_mode",//23
+   "!wizchat",//24
+   "has_colors",//25
+   "use_color", //26
+   "has_language_choice", //27
+   "!show_NPC_entry",
+   "no_beep", //29
+   "is_remort", //30
+   "has_sacrificed", //31
+   "is_roleplaying", //32
+   "is_afk", //33
+   "gold_only", //34
 };
-const LstrArray PC_DATA_FLAGS_NAMES(sizeof(pcd_names)/sizeof(CSentryE),
-                                    pcd_names, CS_PC_DATA_FLAGS);
+const BitfieldNames PC_DATA_FLAGS_NAMES(sizeof(pcd_names)/sizeof(const char*),
+                                        pcd_names, "PC Data Flags:");
 
-
-CSentryE v_names[] = {
-   CS_IS_SELF_GUIDED_F,
-   CS_STEALTHY_F,
-   CS_UNLIMITED_FUEL_F,
-   CS_IS_FLYING_F,
-   CS_CAN_CLIMB_F,
-   CS_CAN_FLOAT_F,
-   CS_CAN_DIVE_F,
-   CS_CAN_SEE_OUT_F,
+const char* d_names[] = {
+   "open exit basically no door",//0
+   "is_mag_lockable",//1
+   "is_closed",//2
+   "is_locked",//3
+   "is_pckabl",//4
+   "is_lockable", //5
+   "mag_locked (spell only can open it)",//6
+   "is_destructable",//7
+   "is_closeable",//8
+   "is_flippable",//9
+   "in_use",//10
+   "is_unopenable (by players, auto only)",//11
+   "is_vehicle_exit",//12
+   "is_secret",//13
+   "is_blocked",//14
+   "!complete",//15
+   "secret_when_open_too",//16
+   "consume_key",//17
+   "!passdoor"//18
 };
-const LstrArray VEHICLE_FLAGS_NAMES(sizeof(v_names)/sizeof(CSentryE),
-                                    v_names, CS_VEH_FLAGS);
+const BitfieldNames DOOR_DATA_FLAGS_NAMES(sizeof(d_names)/sizeof(const char*),
+                                          d_names, "Door Data Flags:");
+
+const char* v_names[] = {
+   "is_self_guided",
+   "is_stealthy",
+   "unlimited_fuel",
+   "can_fly",
+   "can_climb", 
+   "can_float",
+   "can_dive",
+   "can_see_out (show room descs to passengers)"
+};
+const BitfieldNames VEHICLE_FLAGS_NAMES(sizeof(v_names)/sizeof(const char*),
+                                        v_names, "Vehicle Flags:");
     
-CSentryE r_names[] = {
-   CS_NO_REST_F,
-   CS_NO_IMM_F,//1
-   CS_NO_GOD_F,//2
-   CS_IS_PERM_DARK_F,//3
-   CS_HAS_WEATHER_F,
-   CS_NO_SHOUT_F,//5
-   CS_NO_MAG_EXIT_F,
-   CS_HAVEN_F,
-   CS_NO_PK_F, //8
-   CS_NO_MAGIC_F,
-   CS_ANTI_NPC_F,//10
-   CS_ANTI_POTION_F,
-   CS_ANTI_STAFF_F,
-   CS_ANTI_MORT_F,
-   CS_NORMAL_DARK_F,
-   CS_RIVER_LAKE_F,
-   CS_OCEAN_LAKE_F,
-   CS_SWAMP_F, //17
-   CS_NEED_FLY_F,//18
-   CS_NEED_BOAT_F,
-   CS_NEED_CLIMB_F,
-   CS_ZLOCKED_F,
-   CS_TOT_LOADED_F,
-   CS_IS_IN_USE_F,
-   CS_NO_MAG_ENTRY_F,//24
-   CS_NO_VEH_F,
-   CS_CRAMPED_F,
-   CS_NO_RANGED_F,
-   CS_NEED_DIVE_F,
-   CS_USED_IN_TRACK_F,
-   CS_CAN_CAMP_F,//30
-   CS_IS_NOT_COMPLETE_F,
-   CS_HAS_KEYWORDS_F,
-   CS_NO_MOB_WANDER_F,
-   CS_NO_FOREIGN_MOB_WANDER_F,
-   CS_HAS_SCRIPT_F//35
+const char* r_names[] = {
+   "no_rest",//0
+   "!imm",//1
+   "!god",//2
+   "is_perm_dark",//3
+   "weather",//4
+   "!ranged_comm",//5
+   "!mag_exit",//6
+   "is_haven", //7
+   "!PK", //8
+   "!magic", //9
+   "!mob",//10
+   "!potions",//11
+   "!staffs",//12
+   "!mort",//13
+   "normally_dark",//14
+   "river/small lake",//15
+   "ocean/big lake",//16
+   "swamp", //17
+   "need_fly",//18
+   "need_boat",//19
+   "need_climb",//20
+   "is_zlocked (for olc)",//21
+   "is_totally_loaded",//22
+   "is_used",//23
+   "!magic_entry",//24
+   "!vehicle (vehicles can't drive here)",//25
+   "cramped (!huge)",//26
+   "!ranged",//27
+   "need_dive_ability",//28
+   "used_in_track",//29
+   "can_camp",//30
+   "!complete (olc wise)",//31
+   "has_keywords",//32
+   "!mob_wander",//33
+   "!foreign_mob_wander",//34
+   "has_proc_script"//35
 };
-const LstrArray ROOM_FLAGS_NAMES(sizeof(r_names)/sizeof(CSentryE),
-                                 r_names, CS_ROOM_FLAGS);
+const BitfieldNames ROOM_FLAGS_NAMES(sizeof(r_names)/sizeof(const char*),
+                                     r_names, "Room Flags:");
 
-CSentryE o_names[] = {
-   CS_NO_REST_F,
-   CS_NO_EVIL_F,
-   CS_NO_NEUT_F,
-   CS_NO_GOOD_F,
-   CS_NO_DONATE_F,
-   CS_NO_DROP_F,
-   CS_NO_REM_F,
-   CS_ANTI_MORT_F,
-   CS_NO_IMM_F,
-   CS_NO_DEMI_F,
-   CS_IS_IN_USE_F, //10
-   CS_NO_WARRIOR_F,
-   CS_NO_SAGE_F,
-   CS_NO_WIZ_F,
-   CS_NO_RANGER_F,
-   CS_NO_THIEF_F,
-   CS_NO_ALCH_F,
-   CS_NO_CLERIC_F,
-   CS_NO_BARD_F,
-   CS_ANTI_NPC_F,
-   CS_NO_PC_F,//20
-   CS_NOT_WORN_F,
-   CS_WORN_HEAD_F,
-   CS_WORN_NECK_F,
-   CS_WORN_NECK_F,
-   CS_ARND_BODY_F,
-   CS_WORN_ARMS_F,
-   CS_WORN_W1_F,
-   CS_WORN_W2_F,
-   CS_WORN_HANDS_F,
-   CS_WIELDED_F,//30
-   CS_HELD_F,
-   CS_WORN_LIGHT_F,
-   CS_WORN_BODY_F,
-   CS_BELT_F,
-   CS_WORN_LEGS_F,
-   CS_WORN_FEET_F,
-   CS_WORN_FINGER1_F,
-   CS_WORN_FINGER2_F,
-   CS_SHIELD_F, //39
-   CS_NON_WEAPON_F,
-   CS_SLASH_F,
-   CS_SMASH_F,
-   CS_PIERCE_F,
-   CS_WHIP_F,
-   CS_NEEDS_AMMO_F,
-   CS_DART_THROWER_F,
-   CS_BOW_F,
-   CS_DART_F,
-   CS_ARROW_F,
-   CS_JUNK_F, //50
-   CS_WAND_F,
-   CS_POTION_F,
-   CS_SCROLL_F,
-   CS_CONTAINER_F,
-   CS_COINS_F,//55
-   CS_ARMOR_F,
-   CS_WEAPON_F,
-   CS_LIGHT_SOURCE_F,
-   CS_CANTEEN_F,
-   CS_LIQUID_F,//60
-   CS_FOOD_F,
-   CS_BOAT_F,
-   CS_HAS_PROC_DATA_F,
-   CS_TOOLBOX_F,
-   CS_CAULDRON_F,//65
-   CS_PEN_F,
-   CS_CONSTR_COMP_F,
-   CS_CONCOCT_COMP_F,
-   CS_PARCHMENT_F,
-   CS_NEEDS_RESETTING_F,
-   CS_IS_NOT_COMPLETE_F,
-   CS_HERB_F, //72
-   CS_VEND_MACHINE_F,
-   CS_BULLETIN_BOARD_F,
-   CS_BUTCHERABLE_F,
-   CS_HAS_SCRIPT_F//76
+const char* o_names[] = {
+   "no_rest",//0
+   "!evil", 
+   "!neutral",
+   "!good", 
+   "!donate",
+   "!drop",
+   "!remove",
+   "!mortal",
+   "!imm",
+   "!demi",
+   "in_use",//10
+   "!warrior",
+   "!sage",
+   "!wizard",
+   "!ranger",
+   "!thief",
+   "!alchemist", 
+   "!cleric",
+   "!bard",
+   "!mob",
+   "!pc",//20
+   "not worn",
+   "head",
+   "neck",
+   "neck",
+   "around body",
+   "arms", 
+   "wrist1",
+   "wrist2", 
+   "hands",
+   "wielded",//30
+   "held",
+   "light",
+   "body",
+   "belt",
+   "legs",
+   "feet",
+   "finger1", 
+   "finger2",
+   "shield", //39
+   "not a weapon",//40
+   "slash",
+   "smash",
+   "pierce",
+   "whip", 
+   "needs_ammo",
+   "dart_thrower",
+   "bow", 
+   "dart",
+   "arrow",
+   "junk", //50
+   "wand",
+   "potion",
+   "scroll",
+   "container",
+   "coins",//55
+   "armor",
+   "weapon",
+   "light_source",
+   "canteen",
+   "liquid",//60
+   "food",
+   "boat",
+   "has_spec_proc_data",
+   "toolbox",
+   "cauldron",
+   "pen", 
+   "construct_component",
+   "concoct_component",
+   "parchment", 
+   "needs_resetting",//70
+   "!complete", 
+   "herb", //72
+   "vend_machine",
+   "bulletin_board",
+   "is_butcherable",
+   "has_obj_script"//76
 };
 
-const LstrArray OBJ_FLAGS_NAMES(sizeof(o_names)/sizeof(CSentryE),
-                                o_names, CS_OBJ_FLAGS);
+const BitfieldNames OBJ_FLAGS_NAMES(sizeof(o_names)/sizeof(const char*),
+                                    o_names, "Object Flags:");
 
 /** Stat Affect names */
-CSentryE sa_names[] = {
-   CS_POSN_F,
-   CS_STR_F,
-   CS_INT_F,
-   CS_CON_F,
-   CS_CHA_F,
-   CS_WIZ_F,
-   CS_DEX_F,
-   CS_HIT_F,
-   CS_DAM_F,
-   CS_AC_F,
-   CS_ATTACKS_F, //10
-   CS_PAUSE_F,
-   CS_SEX_F,
-   CS_CLASS_F,
-   CS_RACE_F,
-   CS_CUR_HP_F,
-   CS_CUR_MA_F,
-   CS_CUR_MOV_F,
-   CS_ALIGN_F,
-   CS_LVL_F,
-   CS_HOMETOWN_F, //20
-   CS_WIMPY_F,
-   CS_PRAC_F,
-   CS_MAX_HP_F,
-   CS_MAX_MA_F,
-   CS_MAX_MOV_F,
-   CS_CTYPE_F,
-   CS_DRM_F,
-   CS_DGM_F,
-   CS_HT_RESIS_F,
-   CS_CLD_RESIS_F,
-   CS_ELEC_RESIS_F,
-   CS_SPELL_RESIS_F,
-   CS_RELIGION_F,
-   CS_HOME_ZONE_F,
-   CS_BHDC_F,
-   CS_BHDS_F,
-   CS_HP_REGEN_F,
-   CS_MA_REGEN_F,
-   CS_MV_REGEN_F,
-   CS_GUILD_F,
-   CS_NAKED_WEIGHT_F,
-   CS_NULL
+const char* sa_names[] = {
+   "position",
+   "Strength",
+   "Inteligence",
+   "Constitution",
+   "Charisma",
+   "Wisdom",
+   "Dexterity",
+   "HIT",
+   "Damage",
+   "AC",
+   "Attacks", //10
+   "PAUSE_CNT",
+   "SEX",
+   "CLASS",
+   "RACE",
+   "Current HP",
+   "Current MANA",
+   "Current Movement",
+   "Alignment",
+   "Level",
+   "hometown", //20
+   "wimpy",
+   "practices",
+   "MAX HP",
+   "MAX MANA",
+   "MAX Movement",
+   "PC/SMOB/MOB",
+   "DAM_RECV_Modifier",
+   "DAM_Given_Modifier",
+   "Head Resistance",
+   "Cold Resistance",
+   "Electrical Resistance",
+   "Spell Resistance",
+   "Religion",
+   "Belongs to Zone",
+   "Bare Hand Dice Count",
+   "Bare Hand Dice Sides",
+   "HP Regeneration",
+   "MANA Regeneration",
+   "Movement Regeneration",
+   "Guild",
+   "Naked Weight",
+   "NULL"
 };
-const LstrArray STAT_AFFECT_NAMES(sizeof(sa_names)/sizeof(CSentryE),
-                                  sa_names, CS_STAT_AFFECTS);
+const BitfieldNames STAT_AFFECT_NAMES(sizeof(sa_names)/sizeof(const char*),
+                                      sa_names, "Stat Affects:");
 
 
 const char* DARK_MSG = "It is too dark to see.\n";
 const char* SLEEP_MSG = "Dream on, my friend.\n";
 const char* BLIND_MSG = "You are blind as a bat, and your ears are small.\n";
 const char* NOT_IN_HAVEN_MSG =
-            "This is much to nice a room to fill with gore!!\n";
+            "This is much too nice a room to fill with gore!!\n";
 const char* NOT_IN_NOMAG_RM_MSG = 
             "This room is somehow insulated from magical energies!\n";
 const char* SPELL_MUST_BE_STANDING_MSG = 
@@ -557,42 +569,6 @@ const unsigned int Max_Int = (1 << (sizeof(int) * 8 - 1));
 const unsigned long Max_Long = (1 << (sizeof(long int) * 8 - 1));
 const unsigned short Max_Short = (1 << (sizeof(short int) * 8 - 1));
 
-const char* Opening_Screen = "<__SCRY__>\n\n\n
-
-
-                                                       $$$
-                                                       `$$
-               pyppy$$$ pyppy$$$ pyppy$$$ pyp  $$$      $$
-               $$$'`$$$ $$$'`$$$ $$$'`$$$ $$$  $$$      $$
-    |   ,$$$$$ $$$  `\"' $$$  $$$ $$$  $$$ $$$  $$$ $$$$ $$             $$$$
-  \\  ,$$$$$$$$ $$$      $$$  `\"' $$$  $$$ $$$  $$$ $$$$ $$ $$$ $$$ $$$ $$$'
---  $$$$$$'    $$$py$$$ $$$      $$$py$$' $$$py$$$   `$ $$ $$$ $$$ $$$ $$$
-  /  `$$$$$$$$ `\"'  $$$ $$$  $$$ $$$'`$$y `\"'  $$$ $$$$ $$ $$$ $$$ $$$ $$$.
-    |   `$$$$$ pyp  $$$ $$$  $$$ $$$  $$$ $$$  $$$ $$$$ $$             $$$$
-               $$$py$$$ $$$py$$$ $$$  $$$ $$$py$$$      $$
-               `\"'      `\"'      `\"'      `\"'           $$
-                                                       ,$$
-                          ScryMUD                      $$$
-
-                     Original Code and World
-
-        Written with DikuMUD and its derivatives in mind.
-
-                Code:  Ben Greear AKA Grock
-        Head Builder:  Shamu
-            Web Page:  http://scry.WANfear.com
-               Email:  greear@cyberhighway.net
-
-       Thanks to the kind folks at WANfear for hosting the ScryMUD site.
-       WANfear offers:
-          Virtual-Domain Web Site Hosting: (http://www.your-company.com/),
-          CVS repositories, and other hosting and consulting services.
-          Check them out at: http://www.WANfear.com
-";
-//Opening_Screen
-
-
-///****************  hardcoded global lists ****************///
 
 char* critter_conditions[11] = {
    "is in horrible condition.",  // 0 - 10%
@@ -612,15 +588,15 @@ long levels[45] = {
       50000, 100000, 150000, 200000,/*tenth*/ 300000, 400000, 500000, 
       750000, 1000000, 1500000, 2000000, 2750000, 3500000, 
       5000000,/*20_th*/ 7000000, 9000000, 11000000, 14000000, 17000000,
-      20000000, 25000000, 30000000, 35000000, 50000000,/*30_th*/
-      70000000, 90000000, 110000000, 130000000, 150000000, 170000000,
+      20000000, 25000000, 30000000, 35000000, 45000000,/*30_th*/
+      60000000, 90000000, 110000000, 130000000, 150000000, 170000000,
       190000000, 210000000, 230000000, 250000000, 300000000
    };//basic exp level cutoffs  
 
 
 char* login_prompts[] = {
    "\nEnter thy name:  ",
-			/* for new players */
+                        /* for new players */
    
    //"\n\x9B\x4D\x31\x32\x68\nChoose a Password:  ", 
    //"\n\x9B\x4D\x31\x32\x68\nEnter your password again for verification:  ",
@@ -630,33 +606,33 @@ char* login_prompts[] = {
    "\n\nSelection of Classes: \n
    Your class may affect your stats and will have an influence on
    the skills you are able to acquire.
-	Warrior		(1)	
-	Sage		(2)
-   	Wizard		(3)
-   	Ranger		(4)
-   	Thief		(5)
-   	Cleric		(7)
-   	Bard		(8)
+        Warrior               (1)        
+        Sage                  (2)
+        Wizard                (3)
+        Ranger                (4)
+        Thief                 (5)
+        Cleric                (7)
+        Bard                  (8)
 
    Enter 'help' or (0) for descriptions of the classes.
 
    Your choice is:  ",
-					/* for non-new players */
+                                        /* for non-new players */
 
    //"\n\x9B\x31\x32\x68\nEnter your password:  ",
    "\nEnter your password (Will be echoed):  ",
    
    "\nChoose your Race, or you can choose help on the races.
 
-		        Race		Help on Race
-	Human		(1)			(101)
-	Anitre		(2)			(102)
-	Darkling	(4)			(104)
-	Dwarf		(7)			(107)
-	Ogrue		(9)			(109)
-	Elf		(11)			(111)
+                        Race                Help on Race
+        Human           (1)                 (101)
+        Anitre          (2)                 (102)
+        Darkling        (4)                 (104)
+        Dwarf           (7)                 (107)
+        Ogrue           (9)                 (109)
+        Elf             (11                 (111)
 
-	Your choice: ",
+        Your choice: ",
       
       /* case 6 */
       "
@@ -667,6 +643,9 @@ Lengua:
         Espanol         (1)
         Portugues       (2)
         Italian         (3)
+        Serbian         (4)
+        German          (5)
+        Polish          (6)
 
         Your choice:
         Selection: "
@@ -683,8 +662,8 @@ char* olc_prompts[] = {
 /* 0 */
 "\n\nWhich do you wish to create: \n
 (1)object, (2)critter, (3)room, (4)door, (5)quit, (6)vehicle\n",
-		
-/* 1 */		/* here is output for the object. */
+                
+/* 1 */                /* here is output for the object. */
 "\nInput the object_num:  
 If you don't know, guess, the system will suggest one.\n",
 
@@ -729,15 +708,15 @@ a -1 terminates.
 
 ***  If you're making a weapon, please consider flagging a flag between
      41 and 49 inclusive.  This will help determine damage messages.
-***  Remember to flag 63 if you want spec procs or it is a component. ***\n",
+***  Remember to flag 63 if you want spec procs. ***\n",
 
 /* 7 */
 "\nEnter all these extras at once please:
-		
-(1)charges or light_count, 	(2)times rechargeable (wands), 
-(3)load percentage,		(4)max_in_game, 
-(5)weight(lbs), 		(6)dice_sides, 
-(7)dice_count,			(8)level
+                
+(1)charges or light_count,         (2)times rechargeable (wands), 
+(3)load percentage,                (4)max_in_game, 
+(5)weight(lbs),                 (6)dice_sides, 
+(7)dice_count,                        (8)level
 Example:  0 0 25 15 5 3 2 5
 
 WARNING:  if you make the object too powerful it will be deleted.
@@ -747,7 +726,7 @@ WARNING:  if you make the object too powerful it will be deleted.
 "\nEnter all these cur_stats at once please:
 
 vis_bit (To calculate add flags up:
-	{2 invis, 4 hidden, 8 god_invis1},
+        {2 invis, 4 hidden, 8 god_invis1},
 price,  (for comparison:  a good sword 4d4 should be around 3k)\n",
 
 /* 9 */
@@ -756,14 +735,14 @@ The number of the flag will toggle it, a -1 terminates.
 
 0 NULL, 1 NULL, 2 is_closed, 3 is_locked, 4 is_pickable, 5 is_mag_lockable,
 6 is_mag_locked, 7 is_destructable, 8 is_corpse (probably shouldn't use)
-9 is_NON_closeable, 17 consumes_key\n",
+9 is_NON_closeable, 10 player_owned, 17 consumes_key\n",
 
 /* 10 */
 "\nEnter all of these bag data at once please:
 
-(1)key number (zero if no key),		
+(1)key number (zero if no key),                
 (2)maximum weight(lbs) NOTE: this is ITSELF plus its INVENTORY
-(3)percentage weight (normal is 100),	
+(3)percentage weight (normal is 100),        
 (4)time till it disolves, (probably should make this -1)\n",
 
 /* 11 */
@@ -791,7 +770,7 @@ Here are the stats you can fiddle with:
 100 hunger, 101 thirst, 102 drugged.
 
 WARNING:  Once again, moderation is needed, if it is too extreme it will be
-	  deleted.  This is NOT a twink MUD!\n",
+          deleted.  This is NOT a twink MUD!\n",
 
 /* 14 */ 
 "\nTime to set obj_proc_flags.  The number of the flag will toggle it,
@@ -808,7 +787,7 @@ Other spells that it can CAST will be specified later.\n",
 ///***********************  critter prompts  *************************///
 //*********************************************************************//
 
-/* 15 */		/* here is output for the object. */
+/* 15 */                /* here is output for the object. */
 "\nInput the critter number:  
 If you don't know which one, try one, the game will suggest another if 
 its bad.\n",
@@ -828,22 +807,22 @@ Example:  A portal guard leans against the door.\n",
 /* 19 */
 "\nInput the long description, '~', ON LINE BY ITSELF, terminates:
 Example:  
-	You see a vague person standing here.
+        You see a vague person standing here.
 ~\n", 
 
 /* 20 */
 "\nTime to set crit_flags.  The number of the flag will toggle it,
 a -1 terminates.
 
-[2] is_flying, [4] can_climb, [5] gos, [6] yell, [7] gratz, [8] auc,
-[9] shout, [10] say, [11] tell, [12] wiznet, [16] is_sneak, 
-[18] can_dive, [21] is_hide
+[3] is_flying, [5] can_climb, [6] gos, [7] yell, [8] gratz, [9] auc,
+[10] shout, [11] say, [12] tell, [13] wiznet, [17] is_sneak, 
+[19] can_dive, [22] is_hide
 ",
 
 /* 21 */ // long data
 "\nEnter all these data at once please:
-		
-(1)gold		 (2)exp worth (lev 15 mob ~= 4k, lev 20 ~= 10k)
+                
+(1)gold                 (2)exp worth (lev 15 mob ~= 4k, lev 20 ~= 10k)
 (3)bank_gold (Zero is normal)
 
 Example:  566 2225 0\n",
@@ -851,16 +830,16 @@ Example:  566 2225 0\n",
 /* 22 */ //first 15 short_cur_stats
 "\nEnter all 15 of these short_cur_stats at once please:
 
-(1)position  {0 stand, 1 prone, 2 sit, 3 rest, 4 sleep, 5 med, 6 stun, 7 dead}
+(1)position  {0 stand, 1 sit, 2 rest, 3 sleep, 4 med, 5 stun, 6 dead, 7 prone}
 (2)str, (3)int, (4)con, (5)cha, (6)wis, (7)dex, (8)hit, (9)dam, (10)ac,
 (11)attacks per round, (12)pause_count {0 is good}, 
 (13)sex {0 female, 1 male, 2 neuter}
 (14)class, {1 Warrior, 2 Sage, 3 Wizard, 4 Ranger, 5 Thief, 6 Alchemist, 
           {7 Cleric, 8 Bard}
 (15)race, {1 human, 2 anitre, 3 avintre, 4 darkling, 5 drow,
-	   6 dragon, 7 dwarf, 8 ironclad, 9 ogrue, 10 rocktroll,
-	   11 elf, 12 faerie, 13 entity, 14 sombrian, 15 undead,
-	   16 animal, 17 monster}\n",
+           6 dragon, 7 dwarf, 8 ironclad, 9 ogrue, 10 rocktroll,
+           11 elf, 12 faerie, 13 entity, 14 sombrian, 15 undead,
+           16 animal, 17 monster}\n",
 
 /* 23, second 15 short_cur_stats */
 "\nEnter all 15 of these short_cur_stats at once please:
@@ -879,7 +858,7 @@ Example:  566 2225 0\n",
 (1)cold_resis, (2)elect_resis, (3)spell_resis
 (4)religion { 0 none, 1 fire, 2 ice, 3 air, 4 earth, 5 beast, 6 blade }
 (5)NULL, (6)bare_hand_dice_count, (7)bare_hand_dice_sides, (8)hp_regen, 
-(9)mana_regen, (10)mov_regen, (11)NULL, (12)naked_weight, (13)NULL,
+(9)mana_regen, (10)mov_regen, (11)NULL, (12)naked_weight, (13)fall_to (enter zero),
 
 Remember, you should enter zero's for NULL fields, they may one day
 be defined and zero will be default.\n",
@@ -888,8 +867,8 @@ be defined and zero will be default.\n",
 "\n(1)vis_bit: add these up:
              {1 dark, 2 invis, 4 hidden, 8 god_invis1}
 (2)see_bit:  add these up:
-	     {0 normal, 1 dark, 2 invis, 4 hidden,
-	      8 god_invis1, 16 god_invis2, 32 detect_link_dead}
+             {0 normal, 1 dark, 2 invis, 4 hidden,
+              8 god_invis1, 16 god_invis2, 32 detect_link_dead}
 (3)in_room:  0 is just fine here.\n",
 
 /* 26 eq */
@@ -926,7 +905,7 @@ a -1 terminates.
 0 has_proc_data, (teacher, shopkeeper, discuss, bow, curse, give procs,
                   PERSONALITY),
 1 scavenge, 2 wander, 5 edible_corpse, 6 is_banker, 7 is_sessile,
-8 !homing 16 has_skin. \n",
+8 !homing, 10 !victim_flee, 16 has_skin. \n",
 
 /* 31 spec_data: int1 */
 "\nIf mob is to be a sentinel, give direction guarding:
@@ -961,9 +940,9 @@ a -1 terminates.  You don't have to set any flags if you don't want to.
 
 /* 33 shopkeeper, markup, buy% */
 "\nEnter all these at once:
-(1)markup_percentage 		(2)buy_percentage
+(1)markup_percentage                 (2)buy_percentage
 (For example:  50 would be half, 200 would be twice.)
-(3) open_time		(4)close_time		(military)\n",
+(3) open_time                (4)close_time                (military)\n",
 
 /* 34 shopkeeper:  shop_data_flags */
 /* NOTE:  Don't reuse the first 3, were buy, sell, list procs */
@@ -1007,7 +986,7 @@ Note:  You can choose more than one.\n",
 //**************************  room prompts  ****************************//
 //**********************************************************************//
 
-/* 38 */	
+/* 38 */        
 "\nInput the room number (enter 1 for next available room):  ",
 
 /* 39 */
@@ -1026,7 +1005,7 @@ Example:  You see a non-descript room.\n",
 "\nTime to set room_flags.  The number of the flag will toggle it,
 a -1 terminates.
 
-0 no_rest, 1 !imm, 2 !god, 3 is_perm_dark, 4 weather, 5 !shout, 6 !mag_exit,
+0 no_rest, 1 !imm, 2 !god, 3 is_perm_dark, 4 weather, 5 !ranged_communication, 6 !mag_exit,
 7 is_haven, 8 !pk, 9 !magic, 10 !mob, 11 !potions, 12 !staffs, 13 !mort
 14 normally_dark, 15 river/small lake, 16 ocean/big lake, 17 swamp,
 18 need_fly, 19 need_boat, 20 need_climb, 24 !magic_entry,
@@ -1036,7 +1015,7 @@ a -1 terminates.
 
 /* 43 */ // cur_stats data
 "\nEnter all these data at once please:
-		
+                
 (1)vis_bit {0 NORMAL, 1 dark, 2 invis, 4 hidden, 8 god_invis1,
             16 god_invis2}
 (2)movement cost(in movement points)\n",
@@ -1064,7 +1043,7 @@ of time, just as the skill 'bash' works on this and other muds.\n",
 //**************************  door prompts  ****************************//
 //**********************************************************************//
 
-/* 47 */	
+/* 47 */        
 "\nInput the door number:  ",
 
 /* 48 */
@@ -1118,73 +1097,170 @@ NOTE:  For unlimited fuel, you should toggle the appropriate flag (2).
 "\nInput the vehicle number:  ",
 
 /* 55 proc_data:  give_proc */
-"NULL, error if you see this!!",
+"\nPlease enter the object number that should TRIGGER this proc when given to
+the mob.  Example:  55.  
+Note that this object should be created already as usual.\n",
 
 /* 56 proc_data:  say_proc (discuss) */
-"NULL, error if you see this!!",
+"\nPlease input the topic for this conversation.  For example, if you won't
+this discussion to be triggered upon a 'discuss history <this_mob>', you would
+enter 'history' here.  The quotes are NOT NEEDED.  Remember:  only an
+exact match (case insensitive of course) will allow the discussion to take
+place, so you will probably want to keep it simple.
+
+Example:  history\n",
 
 /* 57 proc_data:  bow_proc */
-"NULL, error if you see this!!",
+"\nPlease enter the message the person is to see when they bow to this mob.
+TERMINATE with a ~ on a LINE BY ITSELF!
+Example, for some priest:  
+
+The priest tells you 'You're attitude is encouraging, you should go discuss
+the brotherhood with the abbot in Elden Noir.'\n",
 
 /* 58 proc_data:  curse_proc:  message */
-"NULL, error if you see this!!",
+
+"\nPlease enter the message you would like shown to the person who will
+'curse' this mob.  TERMINATE with a ~ on a LINE BY ITSELF!
+Example, for some priest:
+
+The priest scowls and says, 'Perhaps THIS will teach you to respect the powers
+of good!'
+
+The priest may then transport the person somewhere...Hell perhaps??\n",
 
 /* 59 spec_data:  say proc, response */
-"NULL, error if you see this!!",
+"\nNow enter the response to this topic of discussion.  
+TERMINATE with a ~ on a LINE BY ITSELF!
+For example, for a priest and \'brotherhood\' for a topic:
+
+The abbot tells you, \'So you wish to join our brotherhood eh?  Consider
+yourself an accolyte, but if you truly wish to gain favor, bring me a root of
+the Golden Seal plant for my healing potions.  It grows in poplar shaded
+groves in the mountains to the east.\'
+
+Perhaps this priest will also have a give proc for the herb...\n",
 
 /* 60 proc_data:  give_proc correct_msg */
-"NULL, error if you see this!!",
+"\nPlease enter the message to be shown upon a CORRECT gift.
+TERMINATE with a ~ on a LINE BY ITSELF!
+Example for an abbot:  
+
+The abbot smiles and says, \'Thanks, because of your worthy quest I will tell
+you something of the lore of herbs.\'
+
+Then perhaps the abbot will teach a skill/spell 'herb lore' or something.\n",
 
 /* 61 proc_data:  bow_proc skill_name */
-"NULL, error if you see this!!",
+"\nIf you wish to have the mob give the player a skill/spell, enter that here.
+Example:  begging
+   
+Perhaps a skill an old begger would give a kind soul?
+If you don\'t want anything, please enter NA or na for not applicable.\n",
+
 
 /* 62 proc_data:  curse_proc skill_name */
-"NULL, error if you see this!!",
+"\nIf you wish to have the mob give the player a skill/spell, enter that here.
+Example:  ancient tongues
+
+Perhaps a skill a crusty old geezer would give a young upstart that shows
+courage, if not tact.  Then perhaps the geezer would transport him to some
+evil place?
+If you don't want anything, please enter NA or na for not applicable.\n",
 
 /* 63 proc_data:  say_proc skill_name */
-"NULL, error if you see this!!",
+"\nIf you wish to have the mob give the player a skill/spell, enter that here.
+Example:  history   
+
+Perhaps a skill a sage would give to a serious student?
+If you don\'t want anything, please enter NA or na for not applicable.\n",
 
 /* 64 proc_data:  give_proc skill_name */
-"NULL, error if you see this!!",
+"\nIf you wish to have the mob give the player a skill/spell, enter that here.
+
+Example:  herb lore
+
+If you don\'t want anything, please enter NA or na for not applicable.\n",
 
 /* 65 proc_data:  bow_proc, obj_num */
-"NULL, error if you see this!!",
+"\nPlease enter the number of the object the mob is to give to who ever
+bows to him/her.  If you don\'t want anything to be given, enter ZERO (0).
+Example:  82 \n",
 
 /* 66 proc_data:  curse_proc, obj_num */
-"NULL, error if you see this!!",
+"\nPlease enter the number of the object the mob is to give to who ever
+curses him/her.  If you don\'t want anything to be given, enter ZERO (0).
+Example:  66 \n",
 
 /* 67 proc_data:  say_proc, obj_num */
-"NULL, error if you see this!!",
+"\nPlease enter the number of the object the mob is to give to who ever
+discusses this topic.  If you don\'t want anything to be given, enter ZERO (0).
+Example:  0 \n",
 
 /* 68 proc_data:  give_proc, obj_num */
-"NULL, error if you see this!!",
+"\nPlease enter the number of the object the mob is to give to who ever
+gives the RIGHT gift.  If you don\'t want anything to be given, enter ZERO (0).
+Example:  24 \n",
 
 /* 69 proc_data:  bow_proc, trans_to_room */
-"NULL, error if you see this!!",
+"\nPlease enter the number of the room the mob is to transport the person who 
+bows to him/her to.  
+If you don\'t want the person transported anywhere, enter ZERO (0).
+Example:  0 \n",
 
 /* 70 proc_data:  curse_proc, trans_to_room */
-"NULL, error if you see this!!",
+"\nPlease enter the number of the room the mob is transport the person who 
+curses him/her to.  
+If you don\'t want the person transported anywhere, enter ZERO (0).
+Example:  666 \n",
 
 /* 71 proc_data: say_proc, trans_to_room */
-"NULL, error if you see this!!",
+"\nPlease enter the number of the room which the mob is to transport the
+person who discusses the given topic.  
+If you don\'t want the person transported anywhere, enter ZERO (0).
+Example:  1492 \n",
 
 /* 72 proc_data: give_proc, trans_to_room */
-"NULL, error if you see this!!",
+"\nPlease enter the number of the room which the mob is transport the person
+to who gives the CORRECT gift.  
+If you don\'t want the person transported anywhere, enter ZERO (0).
+Example:  1492 \n",
 
 /* 73 proc_data:  say_proc, prompt for another? */
-"NULL, error if you see this!!",
+"\nWould you like to add another discussion topic?  Yes(1) No(0)
+Example:  0 \n",
 
 /* 74 proc_data:  give_proc, wrong_gift_msg */
-"NULL, error if you see this!!",
+"\nPlease enter the message you would like the player to see if he/she gives
+a wrong item to this mob.  
+TERMINATE with a ~ on a LINE BY ITSELF!
+
+Example:  Thanks, but what I really need is a silver dragon scale. \n",
+
 
 /* 75 proc_data: wrong_align_msg  */
-"NULL, error if you see this!!",
+"\nPlease enter the message you would like a player of the wrong alignment 
+(as specified by flags set earlier (or not set)) to see.
+TERMINATE with a ~ on a LINE BY ITSELF!
+
+Example:  The priest frowns and tells you, 'If I wasn't a peaceful man
+I'd banish your petulant soul to the nine rings of Hell!!' \n",
 
 /* 76 proc_data: wrong_class_msg  */
-"NULL, error if you see this!!",
+"\nPlease enter the message you would like a player of the wrong class 
+(as specified by flags set earlier (or not set)) to see.
+TERMINATE with a ~ on a LINE BY ITSELF!
+
+Example:  The wizzard laughs and says, 'Why would I want to talk to one of
+your profession??'\n",
 
 /* 77 proc_data: wrong_race_msg  */
-"NULL, error if you see this!!",
+"\nPlease enter the message you would like a player of the wrong race 
+(as specified by flags set earlier (or not set)) to see.
+TERMINATE with a ~ on a LINE BY ITSELF!
+
+Example:  The dwarf laughs and says, 'You kind are not welcome in our
+hallowed tunnels.'\n",
 
 /* 78 obj_spec_proc:  skin_num  */
 "\nPlease enter the number of the object that is to be the skin.\n\n",

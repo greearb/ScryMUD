@@ -1,5 +1,5 @@
-// $Id: pet_spll.h,v 1.2 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: pet_spll.h,v 1.3 2001/03/29 03:02:33 eroper Exp $
+// $Revision: 1.3 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
 
 //
 //ScryMUD Server Code
@@ -32,6 +32,11 @@
 #include "const.h"
 #include <string2.h>
 #include "classes.h"
+
+
+void cast_create_greater_golem(critter& pc);
+void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl);
+
 
 void cast_charm(int i_th, const String* targ, critter& agg);
 void do_cast_charm(critter& targ, critter& pc, int is_canned,

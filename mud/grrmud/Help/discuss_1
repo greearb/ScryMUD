@@ -2,15 +2,13 @@
 
 This command may allow you to gain valuable information from a computer
 or sentient controlled player.  (Who says aliens haven't hacked the net
-yet!!)  This command is no longer being actively supported, but it
-does work in one zone.  It will be removed from there when I get some
-time.  Say and tell are now the commands of choice for communicating
-with characters.
+yet!!)  This command is no longer being actively supported. Say and 
+tell are now the commands of choice for communicating with characters.
 
 Syntax:  discuss [topic] <<i_th> [target]
 
 Example:  discuss 'love potion' esmerelda
 	  discuss quest knight
 <color=red>
-See Also:  give
+See Also:  give, say, tell
 </color></help>

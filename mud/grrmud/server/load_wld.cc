@@ -1,5 +1,5 @@
-// $Id: load_wld.cc,v 1.9 1999/09/07 07:00:27 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
+// $Id: load_wld.cc,v 1.10 2001/03/29 03:02:32 eroper Exp $
+// $Revision: 1.10 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
 
 //
 //ScryMUD Server Code
@@ -39,13 +39,13 @@
 void recursive_init_loads(object& obj, int depth) {
    obj_list[obj.OBJ_NUM].incrementCurInGame();
 
-   if (depth > 50) {
-      mudlog << "WARNING:  reached max depth in recursive_init_loads(obj)"
-             << endl;
+   if (depth > 80) {
+      mudlog << "ERROR:  reached max depth in recursive_init_loads(obj), obj: "
+             << obj.getIdNum() << endl;
       return;
    }
 
-   SCell<object*> cll(obj.inv);
+   Cell<object*> cll(obj.inv);
    object* ptr;
    while ((ptr = cll.next())) {
       recursive_init_loads(*ptr, ++depth);
@@ -62,7 +62,7 @@ void recursive_init_loads(critter& mob) {
          recursive_init_loads(*(mob.EQ[i]), 0);
    }//for
 
-   SCell<object*> cll(mob.inv);
+   Cell<object*> cll(mob.inv);
    object* ptr;
    while ((ptr = cll.next())) {
       recursive_init_loads(*ptr, 0);
@@ -74,13 +74,13 @@ void recursive_init_loads(critter& mob) {
 void recursive_init_unload(object& obj, int depth) {
    obj.decrementCurInGame();
 
-   if (depth > 50) {
-      mudlog << "WARNING:  reached max depth in recursive_init_unload(obj)"
-             << endl;
+   if (depth > 80) {
+      mudlog << "WARNING:  reached max depth in recursive_init_unload(obj), obj: "
+             << obj.getIdNum() << endl;
       return;
    }
 
-   SCell<object*> cll(obj.inv);
+   Cell<object*> cll(obj.inv);
    object* ptr;
    while ((ptr = cll.next())) {
       recursive_init_unload(*ptr, ++depth);
@@ -94,10 +94,10 @@ void recursive_init_unload(critter& mob) {
 
    for(int i = 1; i<MAX_EQ; i++) {
       if (mob.EQ[i])
-	 recursive_init_unload(*(mob.EQ[i]), 0);
+         recursive_init_unload(*(mob.EQ[i]), 0);
    }//for
 
-   SCell<object*> cll(mob.inv);
+   Cell<object*> cll(mob.inv);
    object* ptr;
    while ((ptr = cll.next())) {
       recursive_init_unload(*ptr, 0);
@@ -169,97 +169,6 @@ void writeSiteBanned() {
 }//writeSiteBanned
 
 
-void read_setup() {
-   String buf(100);
-
-   ifstream file("./grrmud.ini");
-   if (!file) {
-      mudlog << "ERROR:  ./grrmud.ini not opened correctly." << endl;
-      do_shutdown = TRUE;
-      exit(100);
-   }//if
-
-   file >> MAX_DESCRIPTORS_AVAILABLE;
-   buf.Getline(file, 80);
-
-   file >> Boot_Load_Modifier;
-   buf.Getline(file, 80);
-
-   file >> Regular_Load_Modifier;
-   buf.Getline(file, 80);
-
-   file >> Year;
-   buf.Getline(file, 80);
-
-   file >> Day;
-   buf.Getline(file, 80);
-
-   file >> Hour;
-   buf.Getline(file, 80);
-
-   file >> MAX_PLAYERS;
-   buf.Getline(file, 80);
-
-   file >> DFLT_PORT;
-   buf.Getline(file, 80);
-
-   file >> OPT_USEC;
-   buf.Getline(file, 80);
-
-   CONVERT_WORLD_FROM_DEV = FALSE;
-   file >> CONVERT_WORLD_FROM_DEV;
-   buf.Getline(file, 80);
-
-   file >> EXP_DIVISOR;
-   buf.Getline(file, 80);
-
-}//read_setup; 
-
-
-void write_setup() {
-   ofstream file("./grrmud.ini");
-   if (!file) {
-      mudlog << "ERROR:  ./grrmud.ini not opened correctly for write."
-             << endl;
-      do_shutdown = TRUE;
-      exit(100);
-   }//if
-
-   file << MAX_DESCRIPTORS_AVAILABLE;
-   file << "\t\t\tMAX_DESCRIPTORS_AVAILABLE\n";
-
-   file << Boot_Load_Modifier;
-   file << "\t\t\tBoot_Load_Modifier\n";
-
-   file << Regular_Load_Modifier;
-   file << "\t\t\tRegular_Load_Modifier\n";
-
-   file << Year;
-   file << "\t\t\tYear\n";
-
-   file << Day;
-   file << "\t\t\tDay\n";
-
-   file << Hour;
-   file << "\t\t\tHour\n";
-
-   file << MAX_PLAYERS;
-   file << "\t\t\tMAX_PLAYERS\n";
-
-   file << DFLT_PORT;
-   file << "\t\t\tDFLT_PORT\n";
-
-   file << OPT_USEC;
-   file << "\t\t\tOPT_USEC\n";
-
-   file << CONVERT_WORLD_FROM_DEV << "\t\t\tCONVERT_WORLD_FROM_DEV" << endl;
-
-   file << EXP_DIVISOR << "\t\tEXP_DIVISOR, should be around 100-150" << endl;
-
-}//write_setup;
-
-
-
 void load_wld() {
    int i;
    String buf(100);
@@ -269,31 +178,31 @@ void load_wld() {
    for (i = 0; i < NUMBER_OF_ZONES; i++ ) {
       if (ZoneCollection::instance().elementAt(i).isInUse()) {
          load_objects(i, ZoneCollection::instance().elementAt(i).isLocked());
-         for (int j = 0; j<NUMBER_OF_ITEMS; j++) {
-            obj_list[j].setIdNum(j);
-         }//for
       }//if
    }//for         
-
+   for (int j = 0; j<NUMBER_OF_ITEMS; j++) {
+      obj_list[j].setIdNum(j);
+   }//for
    mudlog.log(WRN, "ALL OBJECTS LOADED.\n");
+
    for (i = 0; i < NUMBER_OF_ZONES; i++ ) {
       if (ZoneCollection::instance().elementAt(i).isInUse()) {
-         load_doors(i, ZoneCollection::instance().elementAt(i).isLocked());
-         for (int j = 0; j<NUMBER_OF_DOORS; j++) {
-            door_list[j].setIdNum(j);
-         }//for
+         load_doors(i);
       }//if
    }//for         
-
+   for (int j = 0; j<NUMBER_OF_DOORS; j++) {
+      door_list[j].setIdNum(j);
+   }//for
    mudlog.log(WRN, "ALL DOORS LOADED.\n");
+
    for (i = 0; i < NUMBER_OF_ZONES; i++ ) {
       if (ZoneCollection::instance().elementAt(i).isInUse()) {
          load_critters(i, ZoneCollection::instance().elementAt(i).isLocked());
-         for (int j = 0; j<NUMBER_OF_MOBS; j++) {
-            mob_list[j].setIdNum(j);
-         }//for
       }//if
    }//for         
+   for (int j = 0; j<NUMBER_OF_MOBS; j++) {
+      mob_list[j].setIdNum(j);
+   }//for
    mudlog.log(WRN, "ALL CRITTERS LOADED.\n");
 
    for (i = 0; i < NUMBER_OF_ZONES; i++ ) {
@@ -359,10 +268,10 @@ void init_casting_objs() {
    for (int i = 0; i<NUMBER_OF_ITEMS; i++) {
       if (obj_list[i].isInUse()) {
          if (obj_list[i].obj_proc) {
-            Cell<SpellDuration*> cll(obj_list[i].obj_proc->casts_these_spells);
-            SpellDuration* ptr;
+            Cell<stat_spell_cell*> cll(obj_list[i].obj_proc->casts_these_spells);
+            stat_spell_cell* ptr;
             while ((ptr = cll.next())) {
-               SSCollection::instance().getSS(ptr->spell).addNewCaster(i);
+               SSCollection::instance().getSS(ptr->stat_spell).addNewCaster(i);
             }//while
          }//if could cast spells
       }//if in use
@@ -371,6 +280,40 @@ void init_casting_objs() {
 
 
 void write_all_zones() {
+   switch (config.useMySQL) {
+      #ifdef USEMYSQL
+      case true:
+         db_write_all_zones();
+         break;
+      #endif
+      case false:
+         file_write_all_zones();
+         break;
+   }
+}
+
+#ifdef USEMYSQL
+void db_write_all_zones() {
+   String buf(50);
+   int j;
+
+   for (int i = 0; i<NUMBER_OF_ZONES; i++) {
+      if (ZoneCollection::instance().elementAt(i).isInUse()) { //if exists
+         Sprintf(buf, "./World/zone_%i", i);
+
+         for (j = ZoneCollection::instance().elementAt(i).getBeginRoomNum();
+              j <= ZoneCollection::instance().elementAt(i).getEndRoomNum();
+              j++) {
+           if (room_list[j].isInUse()) {
+              room_list[j].dbWrite();
+           }//if
+         }//for
+      }//if
+   }//for
+}
+#endif
+
+void file_write_all_zones() {
    String buf(50);
    int j;
 
@@ -378,26 +321,26 @@ void write_all_zones() {
       if (ZoneCollection::instance().elementAt(i).isInUse()) { //if exists
          Sprintf(buf, "./World/zone_%i", i);
          ofstream rfile(buf);
-	 if (!rfile) {
-            mudlog.log(ERR, 
+         if (!rfile) {
+            mudlog.log(ERROR, 
                        "ERROR:  rfile not opened in 'write_all_zones'.\n");
             return;
-	 }//if
+         }//if
 
-	 for (j = ZoneCollection::instance().elementAt(i).getBeginRoomNum();
+         for (j = ZoneCollection::instance().elementAt(i).getBeginRoomNum();
               j <= ZoneCollection::instance().elementAt(i).getEndRoomNum();
               j++) {
-	   if (room_list[j].isInUse()) {
+           if (room_list[j].isInUse()) {
               if (room_list[j].isVehicle()) {
                  rfile << (j | 0x01000000) <<"\t\tRoom Number\n";
               }
               else {
                  rfile << j <<"\t\tRoom Number\n";
               }
-              room_list[j].write(rfile);
-	   }//if
-	 }//for
-	 rfile << "\n\n" << -1 << "\t\tEND OF FILE MARKER\n" << flush;
+              room_list[j].fileWrite(rfile);
+           }//if
+         }//for
+         rfile << "\n\n" << -1 << "\t\tEND OF FILE MARKER\n" << flush;
       }//if
    }//for
 }//write_all_zones
@@ -408,8 +351,68 @@ void load_skill_spells() {
    SSCollection::instance().read();
 }//load_skill_spells()
 
-
 void load_zone(int zone_num, int read_all) {
+#ifdef USEMYSQL
+   if (config.useMySQL)
+      db_load_zone(zone_num, read_all);
+   else
+#endif
+      file_load_zone(zone_num, read_all);
+}
+
+#ifdef USEMYSQL
+void db_load_zone(int zone_num, int read_all) {
+   int k;
+   MYSQL_RES* result;
+   MYSQL_ROW row;
+   String query="select ROOM_NUM from Rooms where IN_ZONE=";
+   query += zone_num;
+
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In db_load_zone(int, int):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         }
+         return;
+      }
+      while ((row=mysql_fetch_row(result))) {
+         k = atoi(row[0]);
+         if ((k & ~(0x01000000)) > NUMBER_OF_ROOMS) {
+            if (mudlog.ofLevel(ERROR)) {
+               mudlog << "In db_load_zone(int, int):\n";
+               mudlog << "Room# " << k << "is too high for the room_list.\n"
+                      << "Consider increasing the value of NUMBER_OF_ROOMS "
+                      << "in const.h\n";
+            }
+            return;
+         }
+         if ((k & ~(0x01000000)) > Cur_Max_Room_Num)
+            Cur_Max_Room_Num = (k & ~(0x01000000));
+
+         if ((k & 0x01000000)) {
+            vehicle* tmp_v = new vehicle;
+            tmp_v->dbRead(k, read_all);
+
+            pulsed_proc_rooms.gainData(tmp_v);
+            room_list.set(tmp_v, k);
+         }
+         room_list[k].dbRead(k, read_all);
+      }
+      mysql_free_result(result);
+   }
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In db_load_zone(int, int):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+}
+#endif
+
+void file_load_zone(int zone_num, int read_all) {
    char buf[81];  
    int k = 0;
    String buff(100);
@@ -419,12 +422,9 @@ void load_zone(int zone_num, int read_all) {
 
    sprintf(buf, "./World/zone_%i", zone_num);
    ifstream rfile(buf);
-   if (!rfile) {
+   if (!rfile) { 
       String tmp("cp ./World/DEFAULT_ZONE ");
       tmp += buf;
-      if (mudlog.ofLevel(WRN)) {
-         mudlog << "WARNING:  Creating new zone file -:" << buf << ":-\n";
-      }
       system(tmp);   //create the file then
       return;
    }//if
@@ -437,8 +437,8 @@ void load_zone(int zone_num, int read_all) {
       // compatibility!
       if ((k & ~(0x01000000)) > NUMBER_OF_ROOMS) {
          sprintf(buf, "Room# %i is too high for the room_list.\n", k);
-         mudlog.log(ERR, buf);
-         core_dump(__FUNCTION__);
+         mudlog.log(ERROR, buf);
+         exit(100);
       }//if
       if ((k & ~(0x01000000)) > Cur_Max_Room_Num)
          Cur_Max_Room_Num = (k & ~(0x01000000));
@@ -453,12 +453,10 @@ void load_zone(int zone_num, int read_all) {
          if (mudlog.ofLevel(DB))
             mudlog << "Reading a vehicle number:  " << k << endl;
          vehicle* tmp_v = new vehicle;
-         room* hack = tmp_v;
-         pulsed_proc_rooms.appendUnique(hack);
+         pulsed_proc_rooms.gainData(tmp_v);
          room_list.set(tmp_v, k);
       }
-
-      room_list[k].read(rfile, read_all);
+      room_list[k].fileRead(rfile, read_all);
       room_list[k].setRoomNum(k); //just in case
 
       rfile >> k;
@@ -486,48 +484,37 @@ void load_boards() {
 
    for (i = 0; i< NUMBER_OF_ITEMS; i++) {
       if (obj_list[i].OBJ_FLAGS.get(10)) {
-	 if (obj_list[i].OBJ_FLAGS.get(74)) { //if a board
-	    sbuf = "./Boards/board_";
-	    sbuf.Append(i);
+         if (obj_list[i].OBJ_FLAGS.get(74)) { //if a board
+            sbuf = "./Boards/board_";
+            sbuf.Append(i);
 
-	    ifstream rfile(sbuf);
-	    if (!rfile) { 
-      	       String tmp("cp ./World/DEFAULT_OBJECTS ");
-      	       tmp += sbuf;
-      	       system(tmp);   //create the file then
-      	       return;
-  	    }//if
+            ifstream rfile(sbuf);
+            if (!rfile) { 
+               String tmp("cp ./World/DEFAULT_OBJECTS ");
+               tmp += sbuf;
+               system(tmp);   //create the file then
+               return;
+            }//if
 
-	    rfile >> k;
-	    rfile.getline(buf, 80);  //allows comments after the mob num
-	    while ((k != -1) && rfile) {
-	       if (k > NUMBER_OF_ITEMS) {
-	          sprintf(buf, "Item# %i is too high for the obj_list.\n", k);
-        	  mudlog.log(DIS, buf);
-         	  exit(100);
-      	       }//if
-	       sprintf(buf, "Reading message Number %i.\n", k);
-	       mudlog.log(DBG, buf);
-	       new_obj = new object;
-	       new_obj->read(rfile, TRUE);
-/*
-                cout << "Names:  ";
-                Cell<String*> nmcll(new_obj->ob->names);
-                String* ssptr;
-                while ((ssptr = nmcll.next())) {
-                   cout << *ssptr << " ";
-                }
-*/
-               SCell<object*> sort_cll(obj_list[i].inv);
+            rfile >> k;
+            rfile.getline(buf, 80);  //allows comments after the mob num
+            while ((k != -1) && rfile) {
+               if (k > NUMBER_OF_ITEMS) {
+                  sprintf(buf, "Item# %i is too high for the obj_list.\n", k);
+                  mudlog.log(DIS, buf);
+                  exit(100);
+               }//if
+               sprintf(buf, "Reading message Number %i.\n", k);
+               mudlog.log(DBG, buf);
+               new_obj = new object;
+               new_obj->fileRead(rfile, TRUE);
+
+               Cell<object*> sort_cll(obj_list[i].inv);
                object* tmp_optr;
                int inserted = FALSE;
                while ((tmp_optr = sort_cll.next())) {
-                  //cout << *(tmp_optr->ob->names.peekBack()) << " "
-                  //     << atoi(*(tmp_optr->ob->names.peekBack()))
-                  //     << " " << *(new_obj->ob->names.peekFront()) << " "
-                  //     << atoi(*(new_obj->ob->names.peekFront())) << endl;
-                  if (atoi(*(tmp_optr->getShortName(~0))) > 
-                      atoi(*(new_obj->getShortName(~0)))) {
+                  if (atoi(*(tmp_optr->names.peekFront())) > 
+                      (atoi(*(new_obj->names.peekFront())))) {
                      inserted = TRUE;
                      obj_list[i].inv.insertBefore(sort_cll, new_obj);
                      break;
@@ -537,18 +524,68 @@ void load_boards() {
                   obj_list[i].inv.append(new_obj);
                }
 
-	       new_obj->setModified(TRUE);
-               new_obj->setContainer(&(obj_list[i]));
-       	       rfile >> k;
-      	       rfile.getline(buf, 80);
-   	    }//while, the big loop, reads in a whole room
+               new_obj->in_list = &(obj_list[i].inv); //make it SOBJ            
+               rfile >> k;
+               rfile.getline(buf, 80);
+            }//while, the big loop, reads in a whole room
          }//if
       }//if
    }//for
 }//load_boardss
 
-
 void load_objects(int for_zone, int read_all) {
+#ifdef USEMYSQL
+   if (config.useMySQL)
+      db_load_objects(for_zone, read_all);
+   else
+#endif
+      file_load_objects(for_zone, read_all);
+}
+
+#ifdef USEMYSQL
+void db_load_objects(int for_zone, int read_all) {
+   long k;
+   MYSQL_RES* result;
+   MYSQL_ROW row;
+   String query="select OBJ_NUM, SOBJ_NUM from Objects";
+
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+               mudlog << "In db_load_objects(int, int):\n";
+               mudlog << "Error retrieving query results: "
+                      << mysql_error(database) << endl;
+            }
+            return;
+         }
+         while ((row=mysql_fetch_row(result))) {
+            k=atol(row[1]);
+            if (k != -1) {
+               // Must be an SOBJ, we'll skip it now and load it when we load the
+               // critter or object it's on.
+               continue;
+            }
+            k=atol(row[0]);
+            if (k > NUMBER_OF_ITEMS) {
+               if (mudlog.ofLevel(ERROR)) {
+                  mudlog << "In db_load_objects(int, int): \n";
+               mudlog << "Item# " << k << " is too high for the obj_list.\n";
+               mudlog << "Consider increasing NUMBER_OF_ITEMS in const.h\n";
+               continue;
+            }
+         }
+         if (k > Cur_Max_Obj_Num)
+            Cur_Max_Obj_Num = k;
+
+         obj_list[k].dbRead(k, -1, read_all);
+         obj_list[k].OBJ_FLAGS.turn_off(70);
+         obj_list[k].OBJ_IN_ZONE = for_zone;
+      }
+   }
+}
+#endif
+
+void file_load_objects(int for_zone, int read_all) {
   
    int k;
    char buf[100];
@@ -580,19 +617,72 @@ void load_objects(int for_zone, int read_all) {
       sprintf(buf, "Reading Item Number %i.\n", k);
       mudlog.log(DBG, buf);
      
-      obj_list[k].read(rfile, read_all);
+      obj_list[k].fileRead(rfile, read_all);
       //normalize_obj(obj_list[k]); //make it normal as possible
       obj_list[k].OBJ_FLAGS.turn_off(70);   //doesn't need resetting
-      obj_list[k].setZoneNum(for_zone);
+      obj_list[k].OBJ_IN_ZONE = for_zone;
 
       rfile >> k;
       rfile.getline(buf, 80);
    }//while, the big loop, reads in a whole room
 }//load_items
 
-
-
 void load_critters(int for_zone, int read_all) {
+#ifdef USEMYSQL
+   if (config.useMySQL)
+      db_load_critters(for_zone, read_all);
+   else
+#endif
+      file_load_critters(for_zone, read_all);
+}
+
+#ifdef USEMYSQL
+void db_load_critters(int for_zone, int read_all) {
+   int k;
+   MYSQL_RES* result;
+   MYSQL_ROW row;
+   String query="select MOB_NUMBER from Critters where PC_NUM=0 and FROM_ZONE=";
+   query+=for_zone;
+
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In db_load_critters(int, int):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         }
+         return;
+      }
+      while ((row=mysql_fetch_row(result))) {
+         k=atoi(row[0]);
+         if (k > NUMBER_OF_MOBS) {
+            if (mudlog.ofLevel(ERROR)) {
+               mudlog << "In db_load_critters(int, int):\n";
+               mudlog << "Critter# " << k << " is too high for the mob list.\n"
+                      << "Consider increasing NUMBER_OF_MOBS in const.h.\n";
+            }
+            return;
+         }
+         if (k > Cur_Max_Crit_Num)
+            Cur_Max_Crit_Num = k;
+
+         mob_list[k].dbRead(k, 0, read_all);
+         if (mob_list[k].mob)
+            mob_list[k].MOB_FLAGS.turn_off(4);
+      }
+      mysql_free_result(result);
+   }
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In db_load_critters(int, int):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+}
+#endif
+
+void file_load_critters(int for_zone, int read_all) {
    int k;
    char buf[100];
    String sbuf(100);
@@ -624,7 +714,7 @@ void load_critters(int for_zone, int read_all) {
       if (k > Cur_Max_Crit_Num)
          Cur_Max_Crit_Num = k;
 
-      mob_list[k].read(rfile, read_all);
+      mob_list[k].fileRead(rfile, read_all);
       if (mob_list[k].mob) {
          mob_list[k].MOB_FLAGS.turn_off(4); //init to !need_resetting
       }//if
@@ -634,9 +724,58 @@ void load_critters(int for_zone, int read_all) {
    }//while, the big loop, reads in a whole critter
 }//load_critters
 
+void load_doors(int for_zone) {
+#ifdef USEMYSQL
+   if (config.useMySQL)
+      db_load_doors(for_zone);
+   else
+#endif
+      file_load_doors(for_zone);
+}
 
+#ifdef USEMYSQL
+void db_load_doors(int for_zone) {
+   long k;
+   MYSQL_RES* result;
+   MYSQL_ROW row;
+   String query="select DOOR_NUM from Doors";
 
-void load_doors(int for_zone, int read_all) {
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+               mudlog << "In db_load_doors(int):\n";
+               mudlog << "Error retrieving query results: "
+                      << mysql_error(database) << endl;
+            }
+            return;
+         }
+         while ((row=mysql_fetch_row(result))) {
+            k=atol(row[0]);
+            if (k > NUMBER_OF_DOORS) {
+               if (mudlog.ofLevel(ERROR)) {
+                  mudlog << "In db_load_doors(int): \n";
+               mudlog << "Door# " << k << " is too high for the obj_list.\n";
+               mudlog << "Consider increasing NUMBER_OF_DOORS in const.h\n";
+               continue;
+            }
+         }
+         if (k > Cur_Max_Door_Num)
+            Cur_Max_Door_Num = k;
+
+         door_list[k].dbRead(k);
+      }
+   }
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In db_load_critters(int, int):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+}
+#endif
+
+void file_load_doors(int for_zone) {
   
    int k;
    char temp_str[100];
@@ -665,7 +804,7 @@ void load_doors(int for_zone, int read_all) {
       if (k > Cur_Max_Door_Num)
          Cur_Max_Door_Num = k;
     
-      door_list[k].read(rfile, read_all);
+      door_list[k].fileRead(rfile);
 
       rfile >> k;
       rfile.getline(temp_str, 80);

@@ -1,5 +1,5 @@
-// $Id: MobScriptEditor.java,v 1.10 1999/06/26 06:14:16 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/26 06:14:16 $
+// $Id: MobScriptEditor.java,v 1.11 2001/03/29 03:02:24 eroper Exp $
+// $Revision: 1.11 $  $Author: eroper $ $Date: 2001/03/29 03:02:24 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -42,15 +42,14 @@ class MobScriptEditor extends Frame {
    LabeledChoice discrim_choice;
    LabeledTextField script_idx;
 
-   String[] cmds = {"close", "donate", "drop", "eat", "enter",
-                    "examine", "exit", "fill", "follow",
-                    "get", "give", "group", "hit", "junk", "list", "lock",
-                    "look", "meditate", "nod", "open", "order",
-                    "pay", "prone", "pull", "push", "put", "remove", "rest",
-                    "say", "shake",
-                    "shoot", "sit", "slap", "sleep", "stand", "tell",
-                    "throw", "ungroup", "unlock", "wake", "wear", "wield",
-                    "yell" };
+   String[] cmds = {   "break", "close", "discuss", "donate",
+   "drop", "eat", "enter", "examine", "exit", "fill", "flip", "follow",
+   "get", "give", "grab", "group",
+   "hit", "insert", "junk", "list", "lock", "look", "meditate", "nod",
+   "open", "order", "pay", "pick", "prone", "pull", "push", "put", 
+   "remove", "rest", "say", "shake", "shoot", "sit", "slap", "sleep", "stand",
+   "tell", "throw", "turn", "twist", "ungroup", "unlock", "wake", "wear",
+   "wield", "yell" };
    
    String[] discrims = { "FEM", "MALE", "NEUTER", "BARD", "CLERIC",
                          "WARRIOR", "SAGE", "WIZARD", "THIEF", "ALCHEMIST",

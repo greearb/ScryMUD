@@ -114,9 +114,9 @@ be little use in a serious battle.  They are usually open.
 44	Start of Door Data
 1024 44 0 0 0	vbit, door#, token#, key#
 10 9 -1  -:| bitfield |:-
-portal shimmering # shimmering portal ~	names
+portal gate shimmering doorway # doorway shimmering gate portal ~	names
 A shimmering portal stands here before you.  You don't know how long it will
-last, or where it leads to, so you better hurry!
+last or where it leads to, so you'd better hurry!
 
 ~
 
@@ -133,6 +133,58 @@ This is a grand dorkie
 10 9 8 5 3 2 -1  -:| bitfield |:-
 north door wooden # wooden door south ~	names
 This is a stout door with bronze hinges and a bronze keyhole.
+
+~
+
+70	Start of Door Data
+1024 70 0 588 0	vbit, door#, token#, key#
+10 9 8 7 5 4 3 2 -1  -:| bitfield |:-
+west door # door east ~	names
+You see a wooden door with the name "Amy" carved into it.
+
+~
+
+73	Start of Door Data
+1024 73 0 0 0	vbit, door#, token#, key#
+16 13 10 9 -1  -:| bitfield |:-
+east game # game west ~	names
+You see the entrance to a realm of happiness and addiction!
+
+~
+
+113	Start of Door Data
+1024 113 0 401 0	vbit, door#, token#, key#
+10 9 8 5 -1  -:| bitfield |:-
+west gate # gate east ~	names
+The gigantic western gates rise before you, their great metal pillars
+stretching into the sky.
+
+~
+
+114	Start of Door Data
+1024 114 0 401 0	vbit, door#, token#, key#
+10 9 8 5 -1  -:| bitfield |:-
+north gates # gates south ~	names
+The northern gates are quite short and are often left open.
+
+~
+
+127	Start of Door Data
+1024 127 0 0 0	vbit, door#, token#, key#
+16 13 10 9 -1  -:| bitfield |:-
+east game # game west ~	names
+You see the entrance to a realm of happiness and addiction!
+
+~
+
+135	Start of Door Data
+1024 135 0 0 0	vbit, door#, token#, key#
+16 13 10 9 -1  -:| bitfield |:-
+altar # temple altar ~	names
+The altar contains many gifts that people offer as tokens to the
+powers of good.  Fortunately, temple attendants regularly clean the
+altar out, because food is a typical offering!  Flowers also can be
+seen from time to time.
 
 ~
 

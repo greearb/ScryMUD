@@ -5,12 +5,12 @@ backfire and open one up to more than ordinary damage, or even death!
 ~
 acrobatics
 This skill allows one to move better and is the foundation to a
-healty life of battle and wanderlust.  It is a must for anyone
+healthy life of battle and wanderlust.  It is a must for anyone
 aspiring to the more graceful and sneaky mode of adventure.
 ~
 archery
 This skill greatly improves your ability to hit things with a
-projectile weapon.  It requires some knowledge of balistics.
+projectile weapon.  It requires some knowledge of ballistics.
 ~
 armor
 This spell helps protect one from the ravages of battle.  It can
@@ -21,7 +21,12 @@ This is a thief's primary weapon.  If you are skillful, and
 lucky, you may sneak up behind your victim and cause major
 damage before they are aware of your ill intentions.  More skilled
 adventurers may learn a similar trick known as circling for use
-in pitched battle.
+in pitched battle.  Note that you can't backstab with just any old
+weapon, it has to be specially designed to pierce.
+~
+ballistics
+This general skill allows you to judge bodies hurtling through space,
+which helps in all kinds of ranged combat and personal maneuvers.
 ~
 bash
 There is nothing subtle about bash.  This skill is used to bludgeon
@@ -116,7 +121,7 @@ kills its victim.
 ~
 charm
 Charm allows the user to cause other beings to fall under a spell of
-friendship.  The more charismatic the user, and the more gullable the
+friendship.  The more charismatic the user, and the more gullible the
 victim, the better this works.
 ~
 circle
@@ -210,6 +215,10 @@ them.
 ~
 detect poison
 Allows one to detect poison before ingesting a substance.
+~
+detect resistances
+Allows one to find strengths (or weaknesses) a particular creature
+may have.
 ~
 disarm
 Allows a skillful fighter to knock the weapon out of an
@@ -308,6 +317,10 @@ flame strike
 This spell calls down powerful pillars of flame from the
 skies, toasting anything in the mage's current vicinity.
 ~
+flesh to stone
+This spell has the power to instantly turn your opponant into
+stone, preventing all movement.
+~
 fly
 This spell allows a person to fly a short distance above
 the ground.
@@ -343,6 +356,10 @@ drug though:  It may have long term side effects!
 heal
 This spell allows one to bring forth his deity's healing powers
 on those who need it.
+~
+healing
+This general overview of the healing arts is necessary in order to
+learn the more advanced (and useful) spells.
 ~
 herbalism
 This is a basic skill needed by any who wish to be alchemists or
@@ -458,6 +475,10 @@ instead of hitting you.
 necromancy
 This dark art prepares it's practitioners for placing a twisted kind
 of life back into the corpses of the beings formerly known as living.
+~
+orb of power
+Focuses the energies of the mage into an orb of sheer power capable of tearing
+the very flesh from the bones of it's target.
 ~
 parry
 This skill allows you to turn the attack of an opponent.
@@ -604,8 +625,15 @@ is almost impossible to disarm them.
 ~
 tail
 This skill allows sneaky people to follow a creature without them
-realizing it.  It should be used in conjunction with sleep.
+realizing it.  It should be used in conjunction with sneak.
 ~
+
+tammuz
+The exclusive, and often dangerous meeting place of adventurers who have
+surpassed the thirtieth tier in their training.  It is rumored to be located
+somewhere in the Creleon mountian range.
+~
+
 teleport
 This spell allows one to randomly relocate within the local area.
 ~
@@ -624,7 +652,7 @@ in your area.
 ~
 trip
 This skill allows one to knock an opponent on his arse, making them more
-succeptable to attacks.
+susceptable to attacks.
 ~
 typhoon
 This spell can be used on water to cause a water spout to come and
@@ -651,4 +679,144 @@ it reports what is happening in whatever room it is in.
 ~
 wrestling
 This general skill allows one to fight better with no weapons at all.
+~
+hover
+Avians of a certain age find themselves suddenly bestowed with
+wings, mighty extensions from their shoulders which allow them to soar
+the lofty heights like their other avian cousins, the various birds that
+populate the skies of AnonyMUD. Using this skill allows the avian to
+fly, basically.
+
+SYNTAX : 
+type hover (at any time, to commence flying)
+~
+blast
+Much as the mighty human martial artists have the capacity to summon
+enormous energies and bring them to bear against their foes as an
+offensive spell, so too can avians channel their own energies. Using
+this attack, the avian channels an intense cone of wind at their opponent,
+causing considerable damage.
+ 
+SYNTAX
+type : blast <opponent> before or during combat 
+~
+fling
+Avians have very sharp vision and a good aim which allows them to
+hurl missile weapons with great accuracy, especially so the feathers
+which they can pluck from their own bodies (see PLUCK). Powerful avians
+have the ability to inflict great amounts of damage with this skill.
+ 
+SYNTAX : 
+type fling (during combat) direction enemy 
+~
+shriek
+The avian is possessed of powerful vocal chords, and at a certain
+age they gain the ability to fully focus this power, and can cause a
+shriek to emanate from them, causing considerable damage to the nervous
+systems of their foes, as they are bombarded by the ultrasonic energy.
+ 
+SYNTAX 
+type : shriek <opponent> before or during combat
+~
+carry
+Syntax: CARRY <name>
+ 
+     Much as the Hawk can carry a defenseless rabbit high into the skies
+and bear it for great distances, so too can the Avian snatch creatures up
+in their claws and carry them as they fly about.
+~ 
+peck
+As you mature, you will find that various appendages normally
+indigenous to avian life will sprout forth from your body. One such
+appendage will be the beak, with which you can deliver a sharp peck to
+your enemies. This peck in itself is hardly enough to slay a foe, but
+when used several times during a fight, it can inflict a fair amount of
+damage in addition to your regular attacks.
+ 
+SYNTAX :
+type : peck <foe>
+~ 
+tailsweep
+Avians of a certain age grow long, powerful bird-like tails that
+extend from the base of their spine, which can be used as offensive
+weapons. The avian can sweep his tail at the legs of his or her foe,
+causing them to stumble and fall if a good hit is scored.
+ 
+SYNTAX
+type : tailsweep  during combat and your foe will be affected if you
+succeed in the application of this skill
+~ 
+vision
+Syntax: Vision
+ 
+     Avian are possessed of senses far superior to other mortal races, and
+most evidenced in their sight. In addition to being able to see great
+distances, the Avian can also see things magically or naturally hidden that
+would normally be quite undetectable by observers.
+ 
+~
+dive
+Syntax: DIVE enemy
+ 
+     Like all birds of prey, the Avian has the ability to Dive upon a foe
+from great heights at an incredible velocity. The impact can cause an
+unprepared opponent considerable damage, but it can also cause the diver
+some harm if s/he miscalculates the routine.                                   
+             
+~
+glare
+Syntax: Glare <name>
+ 
+     Avians are intimidating creatures, with fierce, piercing eyes. Weak-
+willed monsters that are glared at by these eyes can find themselves sucked
+into a stae of mindless subservience, the luckless individual becoming in
+essence an automaton under the control of his/her/it's Avian master.
+~ 
+windzone
+Avians who reach certain levels of experience have access to physical
+and mental disciplines of considerable power. One such discipline is this
+one. Using this ability, the avian focuses all of his physical and mental
+power into a single source, channeling this power in the form of an
+attack that has the potential to seriously injure all the foes that
+surround the avian at that time. Windzone can inflict devastating damage
+upon even the most powerful of foes, and is one of the many reasons why
+the noble birdmen are so greatly respected (and feared).
+ 
+SYNTAX :
+type : windzone
+~ 
+pluck
+Powerful avians grow feathers of incredible strength that can
+actually be used as throwing weapons when extracted from their bodies.
+This is done by using the Pluck skill. However, the process is extremely
+painful, and can not be attempted more than once or twice at one time, or
+the pain will overwhelm and kill you.
+ 
+SYNTAX : Pluck
+~ 
+birdseye
+All avians are known for their remarkable optical abilities, and this
+ability is no better demonstrated than in the form of the birdseye skill.
+Using this skill, the avian can see far further than any other race,
+actually being able to see into the next room, receiving a full
+description of the room and its contents. Far superior to a scan, this
+skill ensures that the avian is rarely surprised by what may lie up ahead...
+Naturally, the skill requires a clear line of vision, and is negated by
+any walls or closed doors that may bar vision into the next room.
+ 
+SYNTAX :
+type : birdseye direction in which you wish to scan
+~
+sober
+Allows a magic user to extract drugs from someone and absorb them into
+themselves.  This leaves the person sober.  The magic user can also cast
+this spell upon themselves to remove a drunken state.
+
+SYNTAX : cast sober <victim>
+~
+remove poison
+Allows a wizard to extract poison from a victim's body and cease there
+pain.
+
+SYNTAX: cast 'remove poison' <victim>
 ~

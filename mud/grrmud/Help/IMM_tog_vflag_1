@@ -1,0 +1,12 @@
+<help olc tog_vflag>
+
+Used to toggle vehicle flags.  Automatically called on caller's CURRENT ROOM.
+
+syntax:  tog_vflag <<flag_num>
+
+example:  tog_vflag 3 		Toggles flag # 3 of CURRENT ROOM
+
+<color=red>
+See also:  olc, tog_oflag, tog_rflag, write_zone
+</color></help>
+

@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.16 1999/09/06 02:24:25 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/09/06 02:24:25 $
+// $Id: SkillSpell.cc,v 1.17 2001/03/29 03:02:27 eroper Exp $
+// $Revision: 1.17 $  $Author: eroper $ $Date: 2001/03/29 03:02:27 $
 
 //
 //ScryMUD Server Code
@@ -28,16 +28,6 @@
 #include "object.h"
 #include "misc.h"
 
-int SpellDuration::_cnt = 0;
-
-String SpellDuration::toString() const {
-   String buf(100);
-   Sprintf(buf, "Spell[%i] %s  Duration: %i\n",
-           spell, SSCollection::instance().getNameForNum(spell),
-           duration);
-   return buf;
-}
-
 ///******************************************************************///
 ///*********************  skill spell  ******************************///
 
@@ -49,13 +39,13 @@ SkillSpell::SkillSpell() : prereqs(0), enables(0) {
    scroll_num = 0;
 }//constructor
 
-SkillSpell::SkillSpell(SkillSpell& source) : prereqs(0), enables(0) {
+SkillSpell::SkillSpell(const SkillSpell& source) : prereqs(0), enables(0) {
    *this = source;
 }//copy constructor
 
 
 //Defining this may help with older compilers (2.7.2) and templates.
-SkillSpell& SkillSpell::operator=(SkillSpell& source) {
+SkillSpell& SkillSpell::operator=(const SkillSpell& source) {
    if (&source != this) {
       ss_num = source.ss_num;
       name = source.name;
@@ -72,7 +62,7 @@ String SkillSpell::getHtml() {
    String buf(100);
    String retval(500);
    Sprintf(retval, "<center><A name=\"%S\">\n<h3>Skill name: %S</h3>\n",
-           name.getString(), name.getString());
+           &name, &name);
 
    Sprintf(buf, "num: %i &nbsp; mininum level: %i &nbsp; difficulty: %i/100 &nbsp;",
            ss_num, min_level, difficulty);
@@ -113,7 +103,7 @@ String SkillSpell::toString() {
    String retval(500);
 
    Sprintf(retval, "[%i]%P06 %S%P19 min lvl: %i  difficulty: %i/100  mana: %i  scroll# %i\n",
-           ss_num, name.getString(), min_level, difficulty, mana_cost, scroll_num);
+           ss_num, &name, min_level, difficulty, mana_cost, scroll_num);
 
    int tmp = 0;
    if (!objs_casting_spell.isEmpty()) {
@@ -129,7 +119,7 @@ String SkillSpell::toString() {
 
    Cell<int> cll(prereqs);
    if (!prereqs.isEmpty()) {
-      retval.Append("  Prerequesites:    ");
+      retval.Append("  Prerequisites:    ");
       while ((tmp = cll.next())) {
          const char* foo = SSCollection::instance().getNameForNum(tmp);
          Sprintf(buf, "%s [%i],  ", foo, tmp);
@@ -153,43 +143,35 @@ String SkillSpell::toString() {
 
    
 
-int SkillSpell::read(istream& da_file, int read_all) {
+void SkillSpell::Read(ifstream& da_file) {
    char buf[100];
    int tmp;
    String bf(100);
 
-   clear();
+   Clear();
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  da_file FALSE in SkillSpell read." << endl;
       }
-      return -1;
+      return;
    }
 
-   da_file >> bf;
-
-   if (isnum(bf)) { //v02
-      ss_num = atoi(bf);
-      da_file.getline(buf, 80);
+   da_file >> ss_num;
+   da_file.getline(buf, 80);
    
-      mudlog << "SkillSpell::READ, ss_num = " << ss_num << endl;
+   mudlog << "SkillSpell::READ, ss_num = " << ss_num << endl;
 
-      da_file.getline(buf, 80);
-      LString ls(English, buf);
-      ls.strip();
-      name.addLstring(ls);
-   }
-   else { //v03
-      MetaTags mt(bf, da_file);
+   da_file.getline(buf, 80);
+   name = buf;
 
-      da_file >> ss_num;
-      name.read(da_file);
-   }
+   name.Strip();
+
+   mudlog << "Name -:" << name << ":-" << endl;
 
    da_file >> min_level >> difficulty >> mana_cost >> scroll_num;
    da_file.getline(buf, 80);
-      
+  
    da_file >> tmp;
    while (tmp != -1) {
       prereqs.append(tmp);
@@ -204,18 +186,13 @@ int SkillSpell::read(istream& da_file, int read_all) {
    }//while
    da_file.getline(buf, 80);
    da_file.getline(buf, 80);
-   return 0;
 }//read
 
-int SkillSpell::write(ostream& da_file) {
+void SkillSpell::Write(ofstream& da_file) {
    int tmp;
 
-   MetaTags mt(*this);
-   mt.write(da_file);
-
    da_file << ss_num << "SPELL/SKILL NUMBER\n";
-   name.write(da_file);
-
+   da_file << name << endl;
    da_file << min_level << " " << difficulty << " " << mana_cost 
            << " " << scroll_num << " minlvl, diff, mana, scroll#\n";
    
@@ -231,7 +208,6 @@ int SkillSpell::write(ostream& da_file) {
    }//while
    da_file << -1 << "\tenables\n";
    da_file << endl;
-   return 0;
 }//write
 
 
@@ -242,9 +218,9 @@ int SkillSpell::getScrollNum() {
    return -1;
 }
 
-void SkillSpell::clear() {
+void SkillSpell::Clear() {
    min_level = 0;
-   name.clear();
+   name.Clear();
    ss_num = 0;
    difficulty = 0;
    mana_cost = 0;
@@ -263,7 +239,7 @@ object* SkillSpell::getScroll() {
    if (mana_cost && !ss_num) {
       Sprintf(buf, "ERROR:  need to create a scroll for %S.\n",
               &name);
-      mudlog.log(ERR, buf);
+      mudlog.log(ERROR, buf);
       retval = NULL;
    }//if
    else {
@@ -275,13 +251,13 @@ object* SkillSpell::getScroll() {
          Sprintf(buf, 
                  "ERROR:  Tried to return non-existant scroll:  %i in get_number_of_scroll.\n",
                  retval);
-         mudlog.log(ERR, buf);
+         mudlog.log(ERROR, buf);
          return NULL;
       }//if
       if (!retval->isScroll()) {
          Sprintf(buf, "ERROR:  Tried to return scroll that was NOT a 
 scroll:  %i in get_number_of_scroll.\n", retval->getIdNum());
-         mudlog.log(ERR, buf);
+         mudlog.log(ERROR, buf);
          return NULL;
       }//if
    }//if
@@ -352,14 +328,11 @@ void SSCollection::treeInsert(const String& ss_name, int ss_num) {
 }
 
 
-const char* SSCollection::getNameForNum(int skill_num, critter* viewer) {
-   return getNameForNum(skill_num, viewer->getLanguage());
-}
-
-const char* SSCollection::getNameForNum(int skill_num, LanguageE lang) {
+const char* SSCollection::getNameForNum(int skill_num) {
+   
    if (!check_l_range(skill_num, 0, NUMBER_OF_SKILL_SPELLS, mob_list[0],
-		      FALSE)) {
-      if (mudlog.ofLevel(ERR)) {
+                      FALSE)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  skill_num out of range: " << skill_num
                 << " get_skill_name!!\n";
       }//if
@@ -367,7 +340,7 @@ const char* SSCollection::getNameForNum(int skill_num, LanguageE lang) {
    }//if
 
    if (ss_list[skill_num].getName().Strlen()) {
-      return (const char*)(ss_list[skill_num].getName(lang));
+      return (const char*)(ss_list[skill_num].getName());
    }//if
    else
       return "UNKNOWN";
@@ -464,8 +437,8 @@ String SSCollection::generateHtml() {
 <HEAD>
    <TITLE>  SKILLS SPELLS List </TITLE>
 </HEAD>
-<BODY TEXT=\"#33DDFF\" BGCOLOR=\"#000000\" LINK=\"#FFD700\"
-      VLINK=\"#DAA520\" ALINK=\"#FF0000\">
+<BODY TEXT=\"#3366AA\" BGCOLOR=\"#FFFFFF\" LINK=\"#AA7700\" VLINK=\"#AA7700\"
+ALINK=\"#FF0000\">
 
 <CENTER>
 <H2>
@@ -547,7 +520,7 @@ SkillSpell& SSCollection::getSS(int i) {
    }
 
    if (i != -1) {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  Returning DUMMY in SSCollection::getSS, for spll: "
                 << i << endl;
       }//if
@@ -564,7 +537,7 @@ void SSCollection::read() {
 
    ifstream zfile("./World/SKILLS_SPELLS");
    if (!zfile) {
-      mudlog.log(ERR, "ERROR:  SKILLS_SPELLS not opened correctly, fatal.\n");
+      mudlog.log(ERROR, "ERROR:  SKILLS_SPELLS not opened correctly, fatal.\n");
       return;
    }//if
 
@@ -573,10 +546,10 @@ void SSCollection::read() {
    
    while ((k != -1) && zfile) { //then read it in.
       if (!check_l_range(k, 0, NUMBER_OF_SKILL_SPELLS, mob_list[0], FALSE)) {
-         mudlog.log(ERR, "ERROR:  zone number is out of range, fatal\n");
+         mudlog.log(ERROR, "ERROR:  zone number is out of range, fatal\n");
          return;
       }//if
-      instance().getSS(k).read(zfile);
+      instance().getSS(k).Read(zfile);
       zfile >> k;
       zfile.getline(buf, 80);
    }//while
@@ -606,8 +579,8 @@ void SSCollection::read() {
             ARMOR_SKILL_NUM = i;
          else if (strcasecmp("backstab", getSS(i).getName()) == 0)
             BACKSTAB_SKILL_NUM = i;
-         else if (strcasecmp("balistics", getSS(i).getName()) == 0)
-            BALISTICS_SKILL_NUM = i;
+         else if (strcasecmp("ballistics", getSS(i).getName()) == 0)
+            BALLISTICS_SKILL_NUM = i;
          else if (strcasecmp("bash door", getSS(i).getName()) == 0)
             BASH_DOOR_SKILL_NUM = i;
          else if (strcasecmp("bash", getSS(i).getName()) == 0)
@@ -674,6 +647,8 @@ void SSCollection::read() {
             CREATE_FOOD_SKILL_NUM = i;
          else if (strcasecmp("create golem", getSS(i).getName()) == 0)
             CREATE_GOLEM_SKILL_NUM = i;
+         else if (strcasecmp("create greater golem", getSS(i).getName()) == 0)
+            CREATE_GREATER_GOLEM_SKILL_NUM = i;
          else if (strcasecmp("create light", getSS(i).getName()) == 0)
             CREATE_LIGHT_SKILL_NUM = i;
          else if (strcasecmp("create water", getSS(i).getName()) == 0)
@@ -694,18 +669,18 @@ void SSCollection::read() {
             DAGGER_SKILL_NUM = i;
          else if (strcasecmp("detection", getSS(i).getName()) == 0)
             DETECTION_SKILL_NUM = i;
-         else if (strcasecmp("detect alignment",
-                             getSS(i).getName()) == 0)
+         else if (strcasecmp("detect alignment", getSS(i).getName()) == 0)
             DETECT_ALIGNMENT_SKILL_NUM = i;
          else if (strcasecmp("detect hidden", getSS(i).getName()) == 0)
             DETECT_HIDDEN_SKILL_NUM = i;
-         else if (strcasecmp("detect invisibility", 
-                             getSS(i).getName()) == 0)
+         else if (strcasecmp("detect invisibility", getSS(i).getName()) == 0)
             DETECT_INVISIBILITY_SKILL_NUM = i;
          else if (strcasecmp("detect magic", getSS(i).getName()) == 0)
             DETECT_MAGIC_SKILL_NUM = i;
          else if (strcasecmp("detect poison", getSS(i).getName()) == 0)
             DETECT_POISON_SKILL_NUM = i;
+         else if (strcasecmp("detect resistances", getSS(i).getName()) == 0)
+            DETECT_RESISTANCES_SKILL_NUM = i;
          else if (strcasecmp("disarm", getSS(i).getName()) == 0)
             DISARM_SKILL_NUM = i;
          else if (strcasecmp("distortion wall", getSS(i).getName()) == 0)
@@ -716,11 +691,9 @@ void SSCollection::read() {
             DISPEL_GOOD_SKILL_NUM = i;
          else if (strcasecmp("dispel magic", getSS(i).getName()) == 0)
             DISPEL_MAGIC_SKILL_NUM = i;
-         else if (strcasecmp("divine protection",
-                             getSS(i).getName()) == 0)
+         else if (strcasecmp("divine protection", getSS(i).getName()) == 0)
             DIVINE_PROTECTION_SKILL_NUM = i;
-         else if (strcasecmp("dart of darkness",
-                             getSS(i).getName()) == 0)
+         else if (strcasecmp("dart of darkness", getSS(i).getName()) == 0)
             DOD_SKILL_NUM = i;
          else if (strcasecmp("dodge", getSS(i).getName()) == 0)
             DODGE_SKILL_NUM = i;
@@ -758,6 +731,8 @@ void SSCollection::read() {
             FIRE_BLADE_SKILL_NUM = i;
          else if (strcasecmp("flame strike", getSS(i).getName()) == 0)
             FLAME_STRIKE_SKILL_NUM = i;
+         else if (strcasecmp("flesh to stone", getSS(i).getName()) == 0)
+            FLESH_TO_STONE_SKILL_NUM = i;
          else if (strcasecmp("fly", getSS(i).getName()) == 0)
             FLY_SKILL_NUM = i;
          else if (strcasecmp("forestry", getSS(i).getName()) == 0)
@@ -838,6 +813,8 @@ void SSCollection::read() {
             MIRROR_IMAGE_SKILL_NUM = i;
          else if (strcasecmp("necromancy", getSS(i).getName()) == 0)
             NECROMANCY_SKILL_NUM = i;
+         else if (strcasecmp("orb of power", getSS(i).getName()) == 0)
+            ORB_OF_POWER_SKILL_NUM = i;
          else if (strcasecmp("parry", getSS(i).getName()) == 0)
             PARRY_SKILL_NUM = i;
          else if (strcasecmp("passdoor", getSS(i).getName()) == 0)
@@ -860,11 +837,9 @@ void SSCollection::read() {
             PRISMATIC_GLOBE_SKILL_NUM = i;
          else if (strcasecmp("protection", getSS(i).getName()) == 0)
             PROTECTION_SKILL_NUM = i;
-         else if (strcasecmp("protection from evil",
-                             getSS(i).getName()) == 0)
+         else if (strcasecmp("protection from evil", getSS(i).getName()) == 0)
             PFE_SKILL_NUM = i;
-         else if (strcasecmp("protection from good",
-                             getSS(i).getName()) == 0)
+         else if (strcasecmp("protection from good", getSS(i).getName()) == 0)
             PFG_SKILL_NUM = i;
          else if (strcasecmp("quake", getSS(i).getName()) == 0)
             QUAKE_SKILL_NUM = i;
@@ -915,6 +890,10 @@ void SSCollection::read() {
             SKIN_SKILL_NUM = i;
          else if (strcasecmp("sneak", getSS(i).getName()) == 0)
             SNEAK_SKILL_NUM = i;
+         else if (strcasecmp("sober", getSS(i).getName()) == 0)
+            SOBER_SKILL_NUM = i;
+         else if (strcasecmp("spear of darkness", getSS(i).getName()) == 0)
+            SOD_SKILL_NUM = i;
          else if (strcasecmp("stone skin", getSS(i).getName()) == 0)
             STONE_SKIN_SKILL_NUM = i;
          else if (strcasecmp("steal", getSS(i).getName()) == 0)
@@ -931,6 +910,8 @@ void SSCollection::read() {
             SWORDBOND_SKILL_NUM = i;
          else if (strcasecmp("tail", getSS(i).getName()) == 0)
             TAIL_SKILL_NUM = i;
+         else if (strcasecmp("tammuz", getSS(i).getName()) == 0)
+            TAMMUZ_SKILL_NUM = i;
          else if (strcasecmp("teleport", getSS(i).getName()) == 0)
             TELEPORT_SKILL_NUM = i;
          else if (strcasecmp("throwing", getSS(i).getName()) == 0)
@@ -955,6 +936,35 @@ void SSCollection::read() {
             WIZARD_EYE_SKILL_NUM = i;
          else if (strcasecmp("wrestling", getSS(i).getName()) == 0)
             WRESTLING_SKILL_NUM = i;
+
+// New skills for the Avian/Dragon race
+// [RJY] - Trice
+         else if (strcasecmp("hover", getSS(i).getName()) == 0)
+            HOVER_SKILL_NUM = i;
+         else if (strcasecmp("blast", getSS(i).getName()) == 0)
+            WING_POWER_SKILL_NUM = i;
+         else if (strcasecmp("fling", getSS(i).getName()) == 0)
+            SECRET_FEATHER_SKILL_NUM = i;
+         else if (strcasecmp("shriek", getSS(i).getName()) == 0)
+            SHRIEK_SKILL_NUM = i;
+         else if (strcasecmp("carry", getSS(i).getName()) == 0)
+            CARRY_SKILL_NUM = i;
+         else if (strcasecmp("peck", getSS(i).getName()) == 0)
+            PECK_SKILL_NUM = i;
+         else if (strcasecmp("tailsweep", getSS(i).getName()) == 0)
+            TAILSWEEP_SKILL_NUM = i;
+         else if (strcasecmp("vision", getSS(i).getName()) == 0)
+            VISION_SKILL_NUM = i;
+         else if (strcasecmp("dive", getSS(i).getName()) == 0)
+            DIVE_SKILL_NUM = i;
+         else if (strcasecmp("glare", getSS(i).getName()) == 0)
+            GLARE_SKILL_NUM = i;
+         else if (strcasecmp("windzone", getSS(i).getName()) == 0)
+            WINDZONE_SKILL_NUM = i;
+         else if (strcasecmp("pluck", getSS(i).getName()) == 0)
+            PLUCK_SKILL_NUM = i;
+         else if (strcasecmp("birdseye", getSS(i).getName()) == 0)
+            BIRDSEYE_SKILL_NUM = i;
          else {
             mudlog << "ERROR:  could not match the spell with a constant, spell_num:" 
                    << i << "  name -:" << getSS(i).getName() << ":- " << endl;
@@ -980,7 +990,7 @@ void SSCollection::read() {
       else {
          mudlog << "Reading ss -:" << tstr << ":-" << endl;
          
-         str_buf.termedRead(desc_file);
+         str_buf.Termed_Read(desc_file);
          
          mudlog << "Got Description -:" << str_buf << ":-" << endl;
          

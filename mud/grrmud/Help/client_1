@@ -1,0 +1,13 @@
+<help general client>
+
+This command is used to set the type of client that you are running.
+The current options are 'Hegemon' and 'none'.  None is the same as
+telnet, ie regular old text.
+
+syntax:  client [Hegemon | none]
+
+Example:  client none
+
+<color=red>
+See also:  prompt       </color>
+</help>

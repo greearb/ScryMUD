@@ -1,5 +1,5 @@
-// $Id: spells.h,v 1.5 1999/07/05 22:32:08 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/07/05 22:32:08 $
+// $Id: spells.h,v 1.6 2001/03/29 03:02:35 eroper Exp $
+// $Revision: 1.6 $  $Author: eroper $ $Date: 2001/03/29 03:02:35 $
 
 //
 //ScryMUD Server Code
@@ -37,7 +37,8 @@
 #include "door.h"
 
 #define SHADOWS_BLESSING_EFFECT          -15
-#define ARMOR_EFFECT		         -30
+#define ARMOR_EFFECT                         -30
+#define ARMOR_EFFECT_M           -30
 #define POISON_HP_REGEN_AUGMENTATION     -75
 #define POISON_MV_REGEN_AUGMENTATION     -75
 #define POISON_MA_REGEN_AUGMENTATION     -75
@@ -53,11 +54,14 @@ void do_cast_fireball(critter& agg, critter& vict, int is_canned, int lvl);
 void do_cast_poison(critter& agg, critter& vict, int is_canned, int lvl);
 void do_cast_illuminate(room& rm, critter& agg, int is_canned, int lvl);
 
-void cast_teleport(critter& pc);
+void cast_teleport(int i_th, const String* vict, critter& pc);
 void do_cast_teleport(critter& vict, critter& pc, int is_canned, int lvl);
 
 void cast_passdoor(int i_th, const String* vict, critter& pc);
 void do_cast_passdoor(door& dr, critter& vict, int is_canned, int lvl);
+
+void cast_tammuz(int i_th, const String* vict, critter& pc);
+void do_cast_tammuz(critter& vict, critter& pc, int is_canned, int lvl);
 
 void cast_recall(int i_th, const String* vict, critter& pc);
 void do_cast_recall(critter& vict, critter& pc, int is_canned, int lvl);
@@ -78,7 +82,7 @@ void rem_effects_crit(int spell_num, critter& pc, short do_msg);
 void rem_effects_obj(int spell_num, object& obj);
 void rem_effects_room(int spell_num, room& rm, short do_msg);
 void rem_effects_door(int spell_num, door& dr, room& rm1, room& rm2,
-		      short do_msg);
+                      short do_msg);
 
 int relocate_within_zone(critter& pc, int& is_dead, int sanity, int do_msgs);
 
@@ -94,6 +98,7 @@ void update_skills(critter& pc);
 short lost_concentration(critter& agg, int spell_num);
 
 int get_mana_cost(int spell_num);
+int get_mana_cost(int spell_num, critter& pc);
 //int get_mana_cost(const char* name);
 
 int get_number_of_scroll(int spell_num); //returns -1 if !exist

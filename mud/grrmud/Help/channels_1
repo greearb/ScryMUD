@@ -4,6 +4,7 @@ These are the various methods of communication.
 
 gossip   is for general, often non-mud related conversations (Mud Wide)
 say      is for room-wide communications                     (Room Wide)
+osay     is for room-wide ooc communications (out of char.)  (Room Wide)
 yell     is for emergencies..should be very important        (Mud Wide)
 auction  is for the selling of mud items                     (Mud Wide)
 tell     is for specific communication with another person   (NA)
@@ -20,5 +21,5 @@ pecho    is for immorts, echos something to one Player.
 wizchat  is like gossip for immortals only
 
 <color=red>
-See Also:  say, tell, emote, gecho, shout, reply
+See Also:  say, osay, tell, emote, gecho, shout, reply
 </color></help>

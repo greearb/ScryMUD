@@ -1,5 +1,5 @@
-// $Id: command2.h,v 1.8 1999/08/16 00:37:06 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/16 00:37:06 $
+// $Id: command2.h,v 1.9 2001/03/29 03:02:29 eroper Exp $
+// $Revision: 1.9 $  $Author: eroper $ $Date: 2001/03/29 03:02:29 $
 
 //
 //ScryMUD Server Code
@@ -39,6 +39,8 @@ int wimpy(int i, critter& pc);
 int language(const String& lang,  critter& pc);
 int abilities(critter& pc); //show's skills can lrn, %lrned
 int score(const String* str2, critter& pc);
+int score_long(critter& pc);
+int do_score_long(critter& targ, critter& pc);
 //int doUngroup(int i_th, const String* vict);
 int exit(critter& pc); //disp exits
 int auto_exit(critter& pc); //disp exits, concisely
@@ -64,11 +66,12 @@ int practice(const String* spell, int j_th, const String* teacher, critter&
               pc); 
 int toggle_prompt(const String* field, critter& pc);
 int list_merchandise(int i_th, const String* keeper, critter& pc);
-int do_list_merchandise(SafeList<object*>& inv, SafeList<object*>& perm_inv,
+int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
                         critter* crit_owner, object* obj_owner,
                         critter& pc);
 
 int mstat(int i_th, const String* name, critter& pc); //stat critter
+int do_mstat(critter& targ, critter& pc);
 
 //stat object
 int lore(int i_th, const String* name, critter& pc, int show_extra = FALSE);
@@ -78,6 +81,7 @@ int ostat(int i_th, const String* name, critter& pc); //stat object
 int do_ostat(object& obj, critter& pc);
 int rstat(int i_th, critter& pc); //stat room
 int do_rstat(room& rm, critter& pc); //stat room
+int do_dstat(door_data& dr, critter& pc);
 int dstat(int i_th, const String* name, critter& pc); //stat door
 
 int shutdown(const String* cond, critter& pc); //do clean shutdown of game

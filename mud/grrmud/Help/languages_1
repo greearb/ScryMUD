@@ -4,11 +4,12 @@ The language command can be used to change your preferred
 language.  Full support for languages other than english is
 not guaranteed, but we will do the best we can.  If you would
 like to help with translation to another language, please see
-me (greear@cyberhighway.net) and I'll show you how you can
+me (greearb@candelatech.com) and I'll show you how you can
 help!!
 
 Languages supported so far:  English(full), Spanish(partial),
-      Portugues(very little)
+      Portugues(very little), Serbian(coming soon),
+      Italian(almost none)
 
 Syntax:  language [language_choice]
 

@@ -1,5 +1,5 @@
-// $Id: parse.cc,v 1.21 1999/08/20 06:20:06 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/20 06:20:06 $
+// $Id: parse.cc,v 1.22 2001/03/29 03:02:33 eroper Exp $
+// $Revision: 1.22 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
 
 //
 //ScryMUD Server Code
@@ -137,7 +137,7 @@ const CmdSpecifier* CmdCollection::findSpecifierFor(const CmdSpecifier* cs,
    return NULL;
 }
 
-	     /******************************************/
+             /******************************************/
 int critter::processInput(String& input, short do_sub, int script_driven,
                           critter* c_script_owner, room* r_script_owner,
                           int was_ordered) {
@@ -168,9 +168,13 @@ int critter::processInput(String& input, short do_sub, int script_driven,
    }
 
    if (isMob()) { //not gonna parse for MOB's, but will for SMOBs btw
-      mudlog.log(ERR, "ERROR:  MOB tried to process_input, parse.cc.\n");
+      mudlog.log(ERROR, "ERROR:  MOB tried to process_input, parse.cc.\n");
       return -1;
    }//if
+
+   if (PAUSE > 100) {
+      PAUSE = 100;
+   }
 
    if ((PAUSE > 0) && !script_driven) {
       buf = input.Look_Command(TRUE); //look at the first one
@@ -212,14 +216,14 @@ int critter::processInput(String& input, short do_sub, int script_driven,
       }
    }//else
 
-			/* make sure it ends in newline */
+                        /* make sure it ends in newline */
    j = input.Strlen();
    if (input[j - 1] != '\n') {
       //log("WARNING:  input doesn't end in a newline, process_input.\n");
       input += "\n";
    }//if
 
-	       /*  Test for various Modes. */
+               /*  Test for various Modes. */
 
    if (pc) { //if its a pc
       pc->idle_ticks = 0;
@@ -300,11 +304,11 @@ int critter::processInput(String& input, short do_sub, int script_driven,
          return do_add_idea_comment(*this);
       }//if
 
-		     /* copy entry to last_input */
+                     /* copy entry to last_input */
       if ((input.Look_Command() != "!") && do_sub &&
           (input.Look_Command().Strlen())) {
-	pc->last_input = input.Get_Rest(FALSE); //get till newline
-	pc->last_input += "\n";
+        pc->last_input = input.Get_Rest(FALSE); //get till newline
+        pc->last_input += "\n";
       }//if
    }//if a pc
 
@@ -415,6 +419,12 @@ int critter::processInput(String& input, short do_sub, int script_driven,
       parse_communication(buf);
       return com_pemote(&buf, *this);
    }//if
+
+   if (strcasecmp(raw_strings[0], "gemote") == 0) {
+      buf = input.Get_Rest();
+      parse_communication(buf);
+      return com_gemote(&buf, *this);
+   }//if
    
    if (strcasecmp(raw_strings[0], "gecho") == 0) {
       buf = input.Get_Rest();
@@ -517,6 +527,12 @@ int critter::processInput(String& input, short do_sub, int script_driven,
       return say(buf, *this, *(getCurRoom()));
    }//if say
 
+   if ((strncasecmp(raw_strings[0], "osay", max(3, len1)) == 0)) {
+      buf = input.Get_Rest();
+      parse_communication(buf);
+      return osay(buf, *this, *(getCurRoom()));
+   }//if osay
+
    if (strncasecmp(raw_strings[0], "title", max(3, len1)) == 0) {
       buf = input.Get_Rest();
       parse_communication(buf);
@@ -558,8 +574,8 @@ int critter::processInput(String& input, short do_sub, int script_driven,
       
       //max input is RAW_MAX words/numbers
       if ((count >= (RAW_MAX - 1)) && (!eos)) {
-	 show(PARSE_ERR_MSG);
-	 return -1;
+         show(PARSE_ERR_MSG);
+         return -1;
       }//if
    }//while
    //   log("Done w/while loop.\n");
@@ -592,10 +608,10 @@ int critter::processInput(String& input, short do_sub, int script_driven,
       }//if
       else { //it was a string of some type
          cooked_strs[i] = buf;
-	 if (k == i) {
+         if (k == i) {
             cooked_ints[k] = 1;  //implicit 1
             k++;
-	 }//if
+         }//if
          i++;
       }//else
       j++;
@@ -669,7 +685,7 @@ int critter::executeCommand(String* cooked_strs, int* cooked_ints,
       int retval = getCurRoom()->attemptExecuteUnknownScript(cooked_strs[0],
                                                              cooked_ints[1],
                                                              cooked_strs[1],
-                                                             this);
+                                                             *this);
       if (retval >= 0) {
          return retval;
       }

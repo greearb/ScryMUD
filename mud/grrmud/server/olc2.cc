@@ -1,5 +1,5 @@
-// $Id: olc2.cc,v 1.16 1999/08/27 03:10:04 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
+// $Id: olc2.cc,v 1.17 2001/03/29 03:02:33 eroper Exp $
+// $Revision: 1.17 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
 
 //
 //ScryMUD Server Code
@@ -70,8 +70,8 @@ int normalize_obj(object& obj, bool just_check, critter* pc) {
   char buffer[4096];  // Pick a nice high value, just for safety
 
   sprintf(buffer,
-	  "Normalizing object:  finding limits by object level %d.\n",
-	  obj.OBJ_LEVEL);
+          "Normalizing object:  finding limits by object level %d.\n",
+          obj.OBJ_LEVEL);
   n_show(buffer, pc);
 
    if (obj.OBJ_NUM != obj_list[obj.OBJ_NUM].OBJ_NUM) {
@@ -88,11 +88,11 @@ int normalize_obj(object& obj, bool just_check, critter* pc) {
    // If not worn is on, then zero out the other worn flags just in case.
    if (obj.OBJ_FLAGS.get(21)) { 
       for (int i = 22; i<40; i++) {
-	if(obj.OBJ_FLAGS.get(i)) {
-	  sprintf(buffer, "Not_worn is on:  turning off flag %d.\n", i);
-	  n_show(buffer, pc);
-	  obj.OBJ_FLAGS.turn_off(i);
-	} // if
+        if(obj.OBJ_FLAGS.get(i)) {
+          sprintf(buffer, "Not_worn is on:  turning off flag %d.\n", i);
+          n_show(buffer, pc);
+          obj.OBJ_FLAGS.turn_off(i);
+        } // if
       }//for
    }//if
 
@@ -136,7 +136,7 @@ int normalize_obj(object& obj, bool just_check, critter* pc) {
       }
       n_show("Illegal object level, using level 1 bounds.\n", pc);
       if(!just_check) {
-	obj.OBJ_LEVEL = 1;
+        obj.OBJ_LEVEL = 1;
       }
       stat_plus = 2;
       other_plus = 20;
@@ -145,11 +145,11 @@ int normalize_obj(object& obj, bool just_check, critter* pc) {
    // If obj is not a weapon, don't let it be any particular kind of weapon
    if(obj.OBJ_FLAGS.get(40)) {
       for (int i = 41; i<49; i++) {
-	if(obj.OBJ_FLAGS.get(i)) {
-	  sprintf(buffer, "Object is not_weapon, turning off flag %d.\n", i);
-	  n_show(buffer, pc);
-	  obj.OBJ_FLAGS.turn_off(i);
-	}
+        if(obj.OBJ_FLAGS.get(i)) {
+          sprintf(buffer, "Object is not_weapon, turning off flag %d.\n", i);
+          n_show(buffer, pc);
+          obj.OBJ_FLAGS.turn_off(i);
+        }
       }//for
       obj.OBJ_FLAGS.turn_off(57);
    }
@@ -172,7 +172,7 @@ int normalize_obj(object& obj, bool just_check, critter* pc) {
    // Average for 1 die is (1 + DIE_SIDES)/2...  Add an extra half to the
    // end before truncate, so we round 1/2 hp up on damage count.
    int dam_avg = int((float(obj.OBJ_DAM_DICE_COUNT)
-		      * (float(obj.OBJ_DAM_DICE_SIDES) + 0.5)) + 0.5);
+                      * (float(obj.OBJ_DAM_DICE_SIDES) + 0.5)) + 0.5);
 
    int dam_max = obj.OBJ_DAM_DICE_COUNT * obj.OBJ_DAM_DICE_SIDES;
    int bracket = (obj.OBJ_LEVEL % 5) ? (obj.OBJ_LEVEL/5) + 1 : (obj.OBJ_LEVEL/5);
@@ -182,7 +182,7 @@ int normalize_obj(object& obj, bool just_check, critter* pc) {
      n_show("Damage average or max too high for object level.\n", pc);
    }
    while(!just_check
-	 && ((dam_max > dam_max_allowed) || (dam_avg > dam_avg_allowed))) {
+         && ((dam_max > dam_max_allowed) || (dam_avg > dam_avg_allowed))) {
      if(obj.OBJ_DAM_DICE_COUNT > obj.OBJ_DAM_DICE_SIDES) {
        obj.OBJ_DAM_DICE_COUNT--;
      } else {
@@ -190,11 +190,11 @@ int normalize_obj(object& obj, bool just_check, critter* pc) {
      }
      dam_max = obj.OBJ_DAM_DICE_COUNT * obj.OBJ_DAM_DICE_SIDES;
      dam_avg = int((float(obj.OBJ_DAM_DICE_COUNT)
-		    * (float(obj.OBJ_DAM_DICE_SIDES) + 0.5)) + 0.5);
+                    * (float(obj.OBJ_DAM_DICE_SIDES) + 0.5)) + 0.5);
    }
 
-   Cell<StatBonus*> cll(obj.stat_affects);
-   StatBonus* ptr, *tptr;
+   Cell<stat_spell_cell*> cll(obj.stat_affects);
+   stat_spell_cell* ptr, *tptr;
    int ss, bd, old_bd;
    ptr = cll.next();
    int stat_goodies = 0;
@@ -206,7 +206,7 @@ int normalize_obj(object& obj, bool just_check, critter* pc) {
 
    while (ptr) {
       is_bonus = 0;
-      ss = ptr->stat;
+      ss = ptr->stat_spell;
       if ((ss == 12) || (ss == 13) || (ss == 14) ||  // Sex, class, race
           (ss == 11) || (ss == 0) ||                 // pause count, position
           (ss == 19) || (ss == 20) || (ss == 21) ||  // level, hometown, wimpy
@@ -220,180 +220,180 @@ int normalize_obj(object& obj, bool just_check, critter* pc) {
          delete tptr;
       }//if
       else {
-         old_bd = bd = ptr->bonus;
+         old_bd = bd = ptr->bonus_duration;
          if ((ss >= 1) && (ss <= 6)) {  // stats
             bd = bound(-2*stat_plus, stat_plus, bd);
-	    bd = bound(-2*stat_plus, max_bonus - stat_goodies, bd);
-	    if(bd > 0) is_bonus = bd;
-	    if(bd != old_bd) {
-	      sprintf(buffer, "Value %d for stat %d disallowed.\n",
-		      old_bd, ss);
-	      n_show(buffer, pc);
-	    }
+            bd = bound(-2*stat_plus, max_bonus - stat_goodies, bd);
+            if(bd > 0) is_bonus = bd;
+            if(bd != old_bd) {
+              sprintf(buffer, "Value %d for stat %d disallowed.\n",
+                      old_bd, ss);
+              n_show(buffer, pc);
+            }
          }
-	 else if ((ss == 7) || (ss == 8)) {             // To hit, damage
- 	    bd = bound(-6, 3, bd);
-	    if(bd > 0) is_bonus = 1;
-	    if(bd != old_bd) {
-	      sprintf(buffer, "Value %d for stat %d disallowed.\n",
-		      old_bd, ss);
-	      n_show(buffer, pc);
-	    }
-	 }
+         else if ((ss == 7) || (ss == 8)) {             // To hit, damage
+             bd = bound(-6, 3, bd);
+            if(bd > 0) is_bonus = 1;
+            if(bd != old_bd) {
+              sprintf(buffer, "Value %d for stat %d disallowed.\n",
+                      old_bd, ss);
+              n_show(buffer, pc);
+            }
+         }
          else if (ss == 9) {            // ac
-	    // TODO:  finish
-	    // Note: armor in multiple categories (heavy/light) should be
-	    // restricted as lightest category, to prevent abuse.
-	    if (obj.OBJ_FLAGS.get(23)
-	       || obj.OBJ_FLAGS.get(24)  // neck
-	       || obj.OBJ_FLAGS.get(25)  // cloak (around body)
-	       || obj.OBJ_FLAGS.get(27)
-	       || obj.OBJ_FLAGS.get(28)  // bracelets (wrists)
-	       || obj.OBJ_FLAGS.get(32)  // light source
-	       || obj.OBJ_FLAGS.get(34)  // belt
-	       || obj.OBJ_FLAGS.get(37)
-	       || obj.OBJ_FLAGS.get(38)  // fingers
-	       ) {
-	      // This is light armor.
-	      bd = bound(-bracket, 2*bracket, bd);
-	      if(bd != old_bd) {
-		sprintf(buffer,
-			"Value %d for light armor disallowed.\n",
-			old_bd);
-		n_show(buffer, pc);
-	      }
-	    } else if (obj.OBJ_FLAGS.get(22)     // head
-		      || obj.OBJ_FLAGS.get(26)  // arms
-		      || obj.OBJ_FLAGS.get(29)  // gloves (hands)
-		      || obj.OBJ_FLAGS.get(30)  // wielded
-		      || obj.OBJ_FLAGS.get(31)  // held
-		      || obj.OBJ_FLAGS.get(35)  // legs
-		      || obj.OBJ_FLAGS.get(36)  // boots (feet)
-		      ) {
-	      // This is medium armor
-	      bd = bound(-3*bracket, 6*bracket, bd);
-	      if(bd != old_bd) {
-		sprintf(buffer,
-			"Value %d for medium armor disallowed.\n",
-			old_bd);
-		n_show(buffer, pc);
-	      }
-	    } else if (obj.OBJ_FLAGS.get(33) || obj.OBJ_FLAGS.get(39)) {
-	      // This is body armor and/or a shield
-	      bd = bound(-5*bracket, 10*bracket, bd);
-	      if(bd != old_bd) {
-		sprintf(buffer,
-			"Value %d for heavy armor disallowed.\n",
-			old_bd);
-		n_show(buffer, pc);
-	      }
-	    } else {
-	      // Don't know what it is :-(
-	      bd = bound(-other_plus, 2*other_plus, bd);
-	      if(bd != old_bd) {
-		sprintf(buffer,
-			"Value %d for unusual armor type disallowed.\n",
-			old_bd);
-		n_show(buffer, pc);
-	      }
-	    }
-	    if (bd < 0)
+            // TODO:  finish
+            // Note: armor in multiple categories (heavy/light) should be
+            // restricted as lightest category, to prevent abuse.
+            if (obj.OBJ_FLAGS.get(23)
+               || obj.OBJ_FLAGS.get(24)  // neck
+               || obj.OBJ_FLAGS.get(25)  // cloak (around body)
+               || obj.OBJ_FLAGS.get(27)
+               || obj.OBJ_FLAGS.get(28)  // bracelets (wrists)
+               || obj.OBJ_FLAGS.get(32)  // light source
+               || obj.OBJ_FLAGS.get(34)  // belt
+               || obj.OBJ_FLAGS.get(37)
+               || obj.OBJ_FLAGS.get(38)  // fingers
+               ) {
+              // This is light armor.
+              bd = bound(-bracket, 2*bracket, bd);
+              if(bd != old_bd) {
+                sprintf(buffer,
+                        "Value %d for light armor disallowed.\n",
+                        old_bd);
+                n_show(buffer, pc);
+              }
+            } else if (obj.OBJ_FLAGS.get(22)     // head
+                      || obj.OBJ_FLAGS.get(26)  // arms
+                      || obj.OBJ_FLAGS.get(29)  // gloves (hands)
+                      || obj.OBJ_FLAGS.get(30)  // wielded
+                      || obj.OBJ_FLAGS.get(31)  // held
+                      || obj.OBJ_FLAGS.get(35)  // legs
+                      || obj.OBJ_FLAGS.get(36)  // boots (feet)
+                      ) {
+              // This is medium armor
+              bd = bound(-3*bracket, 6*bracket, bd);
+              if(bd != old_bd) {
+                sprintf(buffer,
+                        "Value %d for medium armor disallowed.\n",
+                        old_bd);
+                n_show(buffer, pc);
+              }
+            } else if (obj.OBJ_FLAGS.get(33) || obj.OBJ_FLAGS.get(39)) {
+              // This is body armor and/or a shield
+              bd = bound(-5*bracket, 10*bracket, bd);
+              if(bd != old_bd) {
+                sprintf(buffer,
+                        "Value %d for heavy armor disallowed.\n",
+                        old_bd);
+                n_show(buffer, pc);
+              }
+            } else {
+              // Don't know what it is :-(
+              bd = bound(-other_plus, 2*other_plus, bd);
+              if(bd != old_bd) {
+                sprintf(buffer,
+                        "Value %d for unusual armor type disallowed.\n",
+                        old_bd);
+                n_show(buffer, pc);
+              }
+            }
+            if (bd < 0)
                is_bonus = 1;
          }
          else if (ss == 10) {           // attacks
             bd = bound(-1, 2, bd);
-	    bd = bound(-1, max_bonus - stat_goodies, bd);
-	    if(bd > 0) is_bonus = bd;
-	    if(old_bd != bd) {
-	      n_show("Too many attacks added or subtracted!\n", pc);
-	    }
+            bd = bound(-1, max_bonus - stat_goodies, bd);
+            if(bd > 0) is_bonus = bd;
+            if(old_bd != bd) {
+              n_show("Too many attacks added or subtracted!\n", pc);
+            }
          }
          else if ((ss >= 15) && (ss <= 17)) {
- 	    bd = bound(-200*stat_plus, 100*stat_plus, bd);  // HP, mana, move
-	    if(bd > 0) is_bonus = 1;
-	    if(old_bd != bd) {
-	      n_show("Too much current hp/mana/move added or subtracted.\n",
-		     pc);
-	    }
+             bd = bound(-200*stat_plus, 100*stat_plus, bd);  // HP, mana, move
+            if(bd > 0) is_bonus = 1;
+            if(old_bd != bd) {
+              n_show("Too much current hp/mana/move added or subtracted.\n",
+                     pc);
+            }
          }
          else if (ss == 18) {           // alignment
-	    bd = bound(-50, 50, bd);    // I'll just leave this as is
+            bd = bound(-50, 50, bd);    // I'll just leave this as is
          }
          else if ((ss >= 23) && (ss <= 25)) {  // hp, mana, move maxima
             bd = bound(-30*stat_plus, 15*stat_plus, bd);
-	    if(bd > 0) is_bonus = 1;
-	    if(old_bd != bd) {
-	      n_show("Too much max hp/mana/move added or subtracted.\n", pc);
-	    }
+            if(bd > 0) is_bonus = 1;
+            if(old_bd != bd) {
+              n_show("Too much max hp/mana/move added or subtracted.\n", pc);
+            }
          }
          else if (ss == 27) {           // Damage received
             bd = bound((-other_plus)/3, 2*other_plus/3, bd);
-	    bd = bound(-5*(max_bonus - stat_goodies), 2*other_plus/3, bd);
-	    if(bd < 0) is_bonus = (-bd + 4)/5; // bonus of 1 for each 5%
-	    if(old_bd != bd) {
-	      n_show("Too much dam_received affected.\n", pc);
-	    }
+            bd = bound(-5*(max_bonus - stat_goodies), 2*other_plus/3, bd);
+            if(bd < 0) is_bonus = (-bd + 4)/5; // bonus of 1 for each 5%
+            if(old_bd != bd) {
+              n_show("Too much dam_received affected.\n", pc);
+            }
          }
-	 else if (ss == 28) {           // Damage given
+         else if (ss == 28) {           // Damage given
             bd = bound((-2*other_plus)/3, other_plus/3, bd);
-	    bd = bound((-other_plus)/3, 5*(max_bonus - stat_goodies), bd);
-	    if(bd > 0) is_bonus = (bd + 4)/5;  // bonus of 1 for each 5%
-	    if(old_bd != bd) {
-	      n_show("Too much dam_given affected.\n", pc);
-	    }
-	 }
+            bd = bound((-other_plus)/3, 5*(max_bonus - stat_goodies), bd);
+            if(bd > 0) is_bonus = (bd + 4)/5;  // bonus of 1 for each 5%
+            if(old_bd != bd) {
+              n_show("Too much dam_given affected.\n", pc);
+            }
+         }
          else if ((ss >= 29) && (ss <= 32)) {  // resistances
             bd = bound(-other_plus, 2*other_plus, bd);
-	    if(bd < 0) is_bonus = 1;
-	    if(old_bd != bd) {
-	      sprintf(buffer, "Changed resistance %d by %d.  Disallowed.\n",
-		      ss, old_bd);
-	      n_show(buffer, pc);
-	    }
+            if(bd < 0) is_bonus = 1;
+            if(old_bd != bd) {
+              sprintf(buffer, "Changed resistance %d by %d.  Disallowed.\n",
+                      ss, old_bd);
+              n_show(buffer, pc);
+            }
          }
          else if ((ss == 35) || (ss == 36)) {  // Bare hand dice,
-	                                       // bare hand sides
+                                               // bare hand sides
             bd = bound(-2*stat_plus, stat_plus, bd);
-	    if(bd > 0) is_bonus = 1;
-	    if(old_bd != bd) {
-	      n_show("Barehand dice/sides affect out of range.\n", pc);
-	    }
+            if(bd > 0) is_bonus = 1;
+            if(old_bd != bd) {
+              n_show("Barehand dice/sides affect out of range.\n", pc);
+            }
          }
          else if ((ss >= 37) && (ss <= 39)) {  // Hp/mana/move regen
             bd = bound(-other_plus, other_plus/2, bd);
-	    if(bd > 0) is_bonus = 1;
-	    if(old_bd != bd) {
-	      n_show("Hp/mana/mov regen out of range.  Disallowed.\n", pc);
-	    }
+            if(bd > 0) is_bonus = 1;
+            if(old_bd != bd) {
+              n_show("Hp/mana/mov regen out of range.  Disallowed.\n", pc);
+            }
          }
          else if ((ss >= 100) && (ss <= 102)) { // Hunger, thirst, drugged
-	    bd = bound(-50, 50, bd);
-	    if(old_bd != bd) {
-	      n_show("Hunger/Thirst/Drug out of range.\n", pc);
-	    }
+            bd = bound(-50, 50, bd);
+            if(old_bd != bd) {
+              n_show("Hunger/Thirst/Drug out of range.\n", pc);
+            }
          }
 
-	 stat_goodies += is_bonus;
-	 if(!just_check) {
-            ptr->bonus = bd;
-	 }
-	 if((bd == 0) || (stat_goodies > max_bonus)) {
-	   // Remove ineffective stat mods, or ones that are too much
-	   if(bd != 0) {
-	     sprintf(buffer,
-		     "Too many (or too high) bonuses, stat %d, amt %d.\n",
-		     ss, old_bd);
-	   } else {
-	     sprintf(buffer, "Empty mod for %d.\n", ss);
-	   }
-	   n_show(buffer, pc);
-	   if(!just_check) {
-	     // Delete that puppy.
-	     tptr = ptr;
-	     ptr = obj.stat_affects.lose(cll);
-	     delete tptr;
-	   }
-	 } // (bd == 0) || (stat_goodies > max_bonus)
+         stat_goodies += is_bonus;
+         if(!just_check) {
+           ptr->bonus_duration = bd;
+         }
+         if((bd == 0) || (stat_goodies > max_bonus)) {
+           // Remove ineffective stat mods, or ones that are too much
+           if(bd != 0) {
+             sprintf(buffer,
+                     "Too many (or too high) bonuses, stat %d, amt %d.\n",
+                     ss, old_bd);
+           } else {
+             sprintf(buffer, "Empty mod for %d.\n", ss);
+           }
+           n_show(buffer, pc);
+           if(!just_check) {
+             // Delete that puppy.
+             tptr = ptr;
+             ptr = obj.stat_affects.lose(cll);
+             delete tptr;
+           }
+         } // (bd == 0) || (stat_goodies > max_bonus)
 
          if(ptr) ptr = cll.next();
       }//else
@@ -407,7 +407,7 @@ int normalize_obj(object& obj, bool just_check, critter* pc) {
    // If it can 'dissolve', then it must not be wearable, because it
    // makes a real mess when a corpse disolves and you are holding it!!
    // It could be made to work, but not worth the trouble IMHO. --BEN
-   if (obj.getIdNum() == CORPSE_OBJECT) {
+   if (obj.getIdNum() == config.corpseObject) {
       // Make sure it can't be worn.
       obj.OBJ_FLAGS.turn_on(21);
    }
@@ -437,7 +437,7 @@ int normalize_mob(critter& crit) {
    crit.RACE = bound(1, 14, crit.RACE);
    crit.LEVEL = bound(1, 40, crit.LEVEL);
    crit.setNativeZoneNum(bound(0, NUMBER_OF_ZONES, crit.getNativeZoneNum()));
-   crit.setHpMax(bound(1, 32000, crit.getHpMax()));
+   crit.setHP_MAX(bound(1, 32000, crit.HP_MAX));
    crit.MV_MAX = bound(1, 32000, crit.MV_MAX);
    crit.MA_MAX = bound(1, 32000, crit.MA_MAX);
    crit.DAM_REC_MOD = bound(1, 1000, crit.DAM_REC_MOD);
@@ -459,16 +459,54 @@ int normalize_mob(critter& crit) {
  
 
 int normalize_door(door_data& dr_data) {
-  dr_data.setVisBit(dr_data.getVisBit() | 1024);
+  dr_data.vis_bit |= 1024;
   return 0;
 }//normalize_door(data)
+
+int rm_give_proc(int mnum, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (!check_l_range(mnum, 0, NUMBER_OF_MOBS, pc, TRUE))
+      return -1;
+
+   if (!mob_list[mnum].isInUse()) {
+      show("This mob has not been created yet.\n", pc);
+      return -1;
+   }//if
+
+   if (!pc.doesOwnCritter(mob_list[mnum])) {
+      show("You don't own this mob.\n", pc);
+      return -1;
+   }//if
+   if (O_COUNT != 0) {
+      show("You must complete your OLC project first.\n", pc);
+      return -1;
+   }//if
+
+   if (mob_list[mnum].mob && mob_list[mnum].mob->proc_data &&
+       mob_list[mnum].mob->proc_data->give_proc) {
+      delete mob_list[mnum].mob->proc_data->give_proc;
+      mob_list[mnum].mob->proc_data->give_proc = NULL;
+      mob_list[mnum].mob->proc_data->flag1.turn_off(5);
+      show("Give proc removed.\n", pc);
+      show("Must asave to make changes permanent.\n", pc);
+      return 0;
+   }//if
+   else {
+      show("Failed to remove, did not exist.\n", pc);
+      return -1;
+   }//else
+}//rm_give_proc
+
 
 int rm_keyword(int kwd_num, critter& pc) {
    if (!ok_to_do_action(NULL, "IFPRZ", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
    
-   SCell<KeywordPair*> cll(ROOM.keywords);
+   Cell<KeywordPair*> cll(ROOM.keywords);
    KeywordPair* ptr;
    int cnt = 0;
    ptr = cll.next();
@@ -495,8 +533,8 @@ int add_keyword(critter& pc) {
    if (!ok_to_do_action(NULL, "IFPRZ", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
-   KeywordPair* kp = new KeywordPair();
-   ROOM.keywords.append(kp);
+
+   ROOM.keywords.append(new KeywordPair());
    ROOM.normalize();
    pc.show("Added a new Keyword at index 0.\n");
    return 0;
@@ -508,7 +546,7 @@ int clear_keyword(int kwd_num, critter& pc) {
       return -1;
    }
 
-   SCell<KeywordPair*> cll(ROOM.keywords);
+   Cell<KeywordPair*> cll(ROOM.keywords);
    KeywordPair* ptr;
    int cnt = 0;
    ptr = cll.next();
@@ -534,15 +572,14 @@ int add_kname(int kwd_num, const String* name, critter& pc) {
       return -1;
    }
    
-   SCell<KeywordPair*> cll(ROOM.keywords);
+   Cell<KeywordPair*> cll(ROOM.keywords);
    KeywordPair* ptr;
    int cnt = 0;
    ptr = cll.next();
    while (ptr) {
       if (cnt == kwd_num) {
-         LString ls(pc.getLanguage(), *name);
-         ptr->addName(ls);
-         pc.show(CS_NAME_ADDED);
+         ptr->names.append(new String(*name));
+         pc.show("Name added.\n");
          return 0;
       }
       else {
@@ -562,7 +599,7 @@ int ch_kdesc(int kwd_num, critter& pc) {
       return -1;
    }
    
-   SCell<KeywordPair*> cll(ROOM.keywords);
+   Cell<KeywordPair*> cll(ROOM.keywords);
    KeywordPair* ptr;
    int cnt = 0;
    ptr = cll.next();
@@ -573,9 +610,8 @@ int ch_kdesc(int kwd_num, critter& pc) {
          show("You may now paste descs up to 2k, ';' acts as a newline btw.\n",
               pc);
 
-         LString ls(pc.getLanguage(), "");
-         ptr->addLongDesc(ls); //clear it out...
-         pc.pc->imm_data->edit_string = ptr->getLongDescColl();
+         ptr->desc.Clear();
+         pc.pc->imm_data->edit_string = &(ptr->desc);
          pc.setMode(MODE_CH_DESC);
          return 0;
       }
@@ -595,14 +631,12 @@ int stat_keyword(int kwd_num, critter& pc) {
       return -1;
    }
 
-   SCell<KeywordPair*> cll(ROOM.keywords);
+   Cell<KeywordPair*> cll(ROOM.keywords);
    KeywordPair* ptr;
    int cnt = 0;
    while ((ptr = cll.next())) {
       if (cnt == kwd_num) {
-         String buf(500);
-         ptr->toStringStat(&pc, buf, ST_ALL);
-         pc.show(buf);
+         ptr->show(cnt, pc);
          return 0;
       }
       else {
@@ -624,7 +658,7 @@ int rm_stat_affect(int onum, int stat_num, critter& pc) {
       return -1;
    object* obj_ptr = &(obj_list[onum]);
    if (!obj_ptr->isInUse()) {
-      show("This mob has not been created yet.\n", pc);
+      pc.show(CS_OBJ_NOT_CREATED_YET);
       return -1;
    }//if
 
@@ -633,11 +667,11 @@ int rm_stat_affect(int onum, int stat_num, critter& pc) {
       return -1;
    }//if
 
-   Cell<StatBonus*> cll(obj_ptr->stat_affects);
-   StatBonus* ptr;
+   Cell<stat_spell_cell*> cll(obj_ptr->stat_affects);
+   stat_spell_cell* ptr;
    ptr = cll.next();
    while (ptr) {
-      if (ptr->stat == stat_num) {
+      if (ptr->stat_spell == stat_num) {
          delete ptr;
          pc.show("Removed that stat affect...\n");
          pc.show("Don't forget to aosave.\n");
@@ -664,7 +698,7 @@ int add_stat_affect(int onum, int stat_num, int val, critter& pc) {
 
    object* obj_ptr = &(obj_list[onum]);
    if (!obj_ptr->isInUse()) {
-      show("This mob has not been created yet.\n", pc);
+      pc.show(CS_OBJ_NOT_CREATED_YET);
       return -1;
    }//if
 
@@ -673,9 +707,10 @@ int add_stat_affect(int onum, int stat_num, int val, critter& pc) {
       return -1;
    }//if
 
-   obj_ptr->stat_affects.append(new StatBonus(stat_num, val));
-   if (!(pc.getImmLevel() >= 9)) {
-      normalize_obj(*obj_ptr);
+   obj_ptr->stat_affects.append(new stat_spell_cell(stat_num, val));
+   if(!(pc.pc && pc.pc->pc_data_flags.get(2)
+        && pc.pc->imm_data->imm_level >= 9)) {
+     normalize_obj(*obj_ptr);
    }
    pc.show("Was added..now normalizing object to weed out bad values...\n");
    pc.show("Don't forget to aosave.\n");
@@ -708,11 +743,11 @@ int rm_casts_spell(int onum, int spell_num, critter& pc) {
       return -1;
    }
 
-   Cell<SpellDuration*> cll(obj_ptr->CASTS_THESE_SPELLS);
-   SpellDuration* ptr;
+   Cell<stat_spell_cell*> cll(obj_ptr->CASTS_THESE_SPELLS);
+   stat_spell_cell* ptr;
    ptr = cll.next();
    while (ptr) {
-      if (ptr->spell == spell_num) {
+      if (ptr->stat_spell == spell_num) {
          delete ptr;
          pc.show("Removed that spell...\n");
          pc.show("Don't forget to aosave.\n");
@@ -762,15 +797,177 @@ int add_casts_spell(int onum, int level, int spell, critter& pc) {
 
    //turn on appropriate flags
    obj_ptr->OBJ_SPEC_FLAGS.turn_on(10);
-   SpellDuration* ptr = new SpellDuration();
-   ptr->duration = level;
-   ptr->spell = spell;
+   stat_spell_cell* ptr = new stat_spell_cell;
+   ptr->bonus_duration = level;
+   ptr->stat_spell = spell;
    obj_ptr->CASTS_THESE_SPELLS.append(ptr);
    obj_ptr->OBJ_FLAGS.turn_on(63); //so it will write out spec procs
 
    pc.show("Spell was added, don't forget to aosave.\n");
    return 0;
 }//add_casts_spell
+
+
+int rm_discuss_proc(int mnum, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (!check_l_range(mnum, 0, NUMBER_OF_MOBS, pc, TRUE))
+      return -1;
+
+   if (!mob_list[mnum].isInUse()) {
+      show("This mob has not been created yet.\n", pc);
+      return -1;
+   }//if
+
+   if (!pc.doesOwnCritter(mob_list[mnum])) {
+      show("You don't own this mob.\n", pc);
+      return -1;
+   }//if
+
+   if (O_COUNT != 0) {
+      show("You must complete your OLC project first.\n", pc);
+      return -1;
+   }//if
+
+   if (mob_list[mnum].mob && mob_list[mnum].mob->proc_data &&
+       !IsEmpty(mob_list[mnum].mob->proc_data->topics)) {
+      mob_list[mnum].mob->proc_data->topics.clearAndDestroy();
+      mob_list[mnum].mob->proc_data->flag1.turn_off(6);
+      show("Disscuss procs removed.\n", pc);
+      show("Must asave to make changes permanent.\n", pc);
+      return 0;
+   }//if
+   else {
+      show("Failed to remove, did not exist.\n", pc);
+   }//else
+   return -1;
+}//rm_discuss_proc
+
+
+int rm_curse_proc(int mnum, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (!check_l_range(mnum, 0, NUMBER_OF_MOBS, pc, TRUE))
+      return -1;
+
+   if (!mob_list[mnum].isInUse()) {
+      show("This mob has not been created yet.\n", pc);
+      return -1;
+   }//if
+
+   if (!pc.doesOwnCritter(mob_list[mnum])) {
+      show("You don't own this mob.\n", pc);
+      return -1;
+   }//if
+
+   if (O_COUNT != 0) {
+      show("You must complete your OLC project first.\n", pc);
+      return -1;
+   }//if
+
+   if (mob_list[mnum].mob && mob_list[mnum].mob->proc_data &&
+       mob_list[mnum].mob->proc_data->curse_proc) {
+      delete mob_list[mnum].mob->proc_data->curse_proc;
+      mob_list[mnum].mob->proc_data->curse_proc = NULL;
+      mob_list[mnum].mob->proc_data->flag1.turn_off(8);
+      show("Curse proc removed.\n", pc);
+      show("Must asave to make changes permanent.\n", pc);
+      return 0;
+   }//if
+   else {
+      show("Failed to remove, did not exist.\n", pc);
+      return -1;
+   }//else
+}//rm_curse_proc
+
+int rm_bow_proc(int mnum, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (!check_l_range(mnum, 0, NUMBER_OF_MOBS, pc, TRUE))
+      return -1;
+
+   if (!mob_list[mnum].CRIT_FLAGS.get(18)) {
+      show("This mob has not been created yet.\n", pc);
+      return -1;
+   }//if
+
+   if (!pc.doesOwnCritter(mob_list[mnum])) {
+      show("You don't own this mob.\n", pc);
+      return -1;
+   }//if
+
+   if (O_COUNT != 0) {
+      show("You must complete your OLC project first.\n", pc);
+      return -1;
+   }//if
+
+   if (mob_list[mnum].mob && mob_list[mnum].mob->proc_data &&
+       mob_list[mnum].mob->proc_data->bow_proc) {
+      delete mob_list[mnum].mob->proc_data->bow_proc;
+      mob_list[mnum].mob->proc_data->bow_proc = NULL;
+      mob_list[mnum].mob->proc_data->flag1.turn_off(7);
+      show("Bow proc removed.\n", pc);
+      show("Must asave to make changes permanent.\n", pc);
+      return 0;
+   }//if
+   else {
+      show("Failed to remove, did not exist.\n", pc);
+      return -1;
+   }//else
+}//rm_bow_proc
+
+
+
+int add_proc(int mnum, critter& pc) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (!check_l_range(mnum, 0, NUMBER_OF_MOBS, pc, TRUE))
+      return -1;
+   
+   if (!mob_list[mnum].CRIT_FLAGS.get(18)) {
+      show("This mob has not been created yet.\n", pc);
+      return -1;
+   }//if
+
+   if (!pc.doesOwnCritter(mob_list[mnum])) {
+      show("You don't own this mob.\n", pc);
+      return -1;
+   }//if
+
+   if (O_COUNT != 0) {
+      show("You must complete your OLC project first.\n", pc);
+      return -1;
+   }//if
+
+   int znum = ROOM.getZoneNum();
+
+   if (!ZoneCollection::instance().elementAt(znum).isOwnedBy(pc)) {
+     show("You must be in your own zone in order to build.\n", pc);
+     show("You will now be exited from OLC.  Go back to your zone!\n", pc);
+     pc.pc->input = NULL_STRING; //discard all input
+     return -1;
+   }//if
+        
+   OLC_MOB = &(mob_list[mnum]);
+   O_COUNT = 30;
+   pc.PC_FLAGS.turn_on(13);
+   OLC_MOB->setNotComplete();
+
+   show("You now have the ability to somewhat change this mob.  Be careful
+that you don't add a proc that is ALREADY THERE.  This will result in 
+strange things.  It should NOT be fatal however, so you can just remove
+the proc later with the appropriate command(s).\n", pc);
+   pc.setMode(MODE_OLC);
+   return 0;
+}//add_proc
 
 
 int reset_olc(critter& pc) {
@@ -791,7 +988,7 @@ case of OLC.\n", pc);
    pc.PC_FLAGS.turn_off(13); //olc_redo flag to FALSE
   
    int tmp = pc.IMM_LEVEL; //need to save this!!
-   pc.pc->imm_data->clear();
+   pc.pc->imm_data->Clear();
    pc.setImmLevel(tmp);
   
    pc.setMode(MODE_NORMAL);
@@ -808,11 +1005,10 @@ int ch_rdesc(critter& pc) {
    show("Enter a new room description for this room.\n", pc);
    show("Use a solitary '~' on a line by itself to end.\n", pc);
    show("You may now paste descs up to 2k, ';' acts as a newline btw.\n",
-	pc);
+        pc);
 
-   LString ls(pc.getLanguage(), "");
-   ROOM.addLongDesc(ls); //clear it out.
-   pc.pc->imm_data->edit_string = ROOM.getLongDescColl();
+   ROOM.long_desc.Clear();
+   pc.pc->imm_data->edit_string = &(ROOM.long_desc);
    pc.setMode(MODE_CH_DESC);
    return 0;
 }//ch_rdesc
@@ -867,15 +1063,13 @@ int stat_path(int veh_id, int path_cell_num, critter& pc) {
       return -1;
    }
 
-   String buf(500);
-   pcell->toStringStat(veh_id, path_cell_num, pc, buf, ST_ALL);
-   pc.show(buf);
+   pcell->stat(veh_id, path_cell_num, pc);
    return 0;
 }//stat_path
 
 
 int set_path_dir(int veh_id, int path_cell_num, int i_th,
-                  const String* dir, critter& pc) {
+                 const String* dir, critter& pc) {
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
@@ -1147,9 +1341,9 @@ int ch_path_desc(int veh_id, int path_cell_num, critter& pc) {
    pc.show("Use a solitary '~' on a line by itself to end.\n");
    pc.show("You may now paste descs up to 2k, ';' acts as a newline btw.\n");
 
-   LString ls(pc.getLanguage(), "");
-   pcell->getDescColl()->addLstring(ls); //blank it out.
-   pc.pc->imm_data->edit_string = pcell->getDescColl();
+   String* desc = pcell->getDescPtr();
+   desc->Clear();
+   pc.pc->imm_data->edit_string = desc;
    pc.setMode(MODE_CH_DESC);
    return 0;
 }//ch_path_desc
@@ -1201,9 +1395,9 @@ int add_mob_script(critter& pc, int mob_num, String& trigger_cmd,
    show("Use a solitary '~' on a line by itself to end.\n", pc);
 
    pc.pc->imm_data->tmp_proc_script
-      = new GenScript(trigger_cmd, target_num, actor_num, descriminator,
+      = new MobScript(trigger_cmd, target_num, actor_num, descriminator,
                       takes_precedence);
-   pc.pc->imm_data->proc_script_buffer.clearAndDestroy();
+   pc.pc->imm_data->proc_script_buffer.Clear();
    pc.pc->imm_data->tmp_script_entity_num = mob_num;
 
    pc.pc->imm_data->edit_string 
@@ -1260,12 +1454,12 @@ int add_room_script(critter& pc, int rm_num, String& trigger_cmd,
    show("Use a solitary '~' on a line by itself to end.\n", pc);
 
    pc.pc->imm_data->tmp_proc_script
-      = new GenScript(trigger_cmd, target_num, actor_num, descriminator,
+      = new RoomScript(trigger_cmd, target_num, actor_num, descriminator,
                        takes_precedence);
-   pc.pc->imm_data->proc_script_buffer.clearAndDestroy();
+   pc.pc->imm_data->proc_script_buffer.Clear();
    pc.pc->imm_data->tmp_script_entity_num = rm_num;
 
-   pc.pc->imm_data->edit_string
+   pc.pc->imm_data->edit_string 
       = &(pc.pc->imm_data->proc_script_buffer);
 
    pc.setMode(MODE_ADD_ROOM_SCRIPT);
@@ -1319,9 +1513,9 @@ int add_obj_script(critter& pc, int obj_num, String& trigger_cmd,
    show("Use a solitary '~' on a line by itself to end.\n", pc);
 
    pc.pc->imm_data->tmp_proc_script
-      = new GenScript(trigger_cmd, target_num, actor_num, descriminator,
+      = new ObjectScript(trigger_cmd, target_num, actor_num, descriminator,
                          takes_precedence);
-   pc.pc->imm_data->proc_script_buffer.clearAndDestroy();
+   pc.pc->imm_data->proc_script_buffer.Clear();
    pc.pc->imm_data->tmp_script_entity_num = obj_num;
 
    pc.pc->imm_data->edit_string 
@@ -1333,7 +1527,7 @@ int add_obj_script(critter& pc, int obj_num, String& trigger_cmd,
 
 
 int create_concoction(int rslt, int comp1, int comp2, int comp3, int comp4,
-                      int comp5, critter& pc) {
+                       int comp5, critter& pc) {
 
    return do_create_construction(rslt, comp1, comp2, comp3, comp4, comp5, pc,
                                  CONCOCTION);
@@ -1506,14 +1700,14 @@ int ch_odesc(int which_un, critter& pc) {
    show("Enter a new long_description for this object.\n", pc);
    show("Use a solitary '~' on a line by itself to end.\n", pc);
    show("You may now paste descs up to 2k, ';' acts as a newline btw.\n",
-	pc);
+        pc);
 
-   LString ls(pc.getLanguage(), "");
-   obj_list[which_un].addLongDesc(ls); //clear it out.
-   pc.pc->imm_data->edit_string = obj_list[which_un].getLongDescColl();
+   obj_list[which_un].long_desc.Clear();
+   pc.pc->imm_data->edit_string = &(obj_list[which_un].long_desc);
    pc.setMode(MODE_CH_DESC);
    return 0;
 }//ch_odesc
+
 
 
 int save_mob(int i_th, String* mob_name, critter& pc) {
@@ -1551,7 +1745,7 @@ int save_obj(int i_th, String* obj_name, critter& pc) {
 
    object* vict;
    vict = have_obj_named(pc.inv, i_th, obj_name, pc.SEE_BIT, 
-			 ROOM);
+                         ROOM);
    
    if (!vict) {
       vict = ROOM.haveObjNamed(i_th, obj_name, pc.SEE_BIT);
@@ -1567,9 +1761,9 @@ int save_obj(int i_th, String* obj_name, critter& pc) {
       return -1;
    }//if
 
-   obj_list[vict->OBJ_NUM].setModified(TRUE);; //minor hack
+   obj_list[vict->OBJ_NUM].IN_LIST = &(pc.inv); //minor hack
    obj_list[vict->OBJ_NUM] = *vict; //operator overload!!
-   obj_list[vict->OBJ_NUM].setModified(FALSE);
+   obj_list[vict->OBJ_NUM].IN_LIST = NULL;
 
    show("OK, object as been saved as is.  
         Aosave will make the changes permanent.\n", pc);
@@ -1643,11 +1837,10 @@ int ch_mdesc(int which_un, critter& pc) {
    show("Enter a new long_description for this critter.\n", pc);
    show("Use a solitary '~' on a line by itself to end.\n", pc);
    show("You may now paste descs up to 2k, ';' acts as a newline btw.\n",
-	pc);
+        pc);
 
-   LString ls(pc.getLanguage(), "");
-   mob_list[which_un].addLongDesc(ls);
-   pc.pc->imm_data->edit_string = mob_list[which_un].getLongDescColl();
+   mob_list[which_un].long_desc.Clear();
+   pc.pc->imm_data->edit_string = &(mob_list[which_un].long_desc);
    pc.setMode(MODE_CH_DESC);
    return 0;
 }//ch_mdesc
@@ -1679,19 +1872,19 @@ int ch_ddesc(int which_un, critter& pc) {
    show("Enter a new description for this door.\n", pc);
    show("Use a solitary '~' on a line by itself to end.\n", pc);
    show("You may now paste descs up to 2k, ';' acts as a newline btw.\n",
-	pc);
+        pc);
 
-   LString ls(pc.getLanguage(), "");
-   door_list[which_un].addLongDesc(ls); //clear it.
-   pc.pc->imm_data->edit_string = door_list[which_un].getLongDescColl();
+   door_list[which_un].long_desc.Clear();
+   pc.pc->imm_data->edit_string = &(door_list[which_un].long_desc);
    pc.setMode(MODE_CH_DESC);
    return 0;
 }//ch_ddesc
 
 
+
 int do_ch_desc(critter& pc) {
    String buf = pc.pc->input.Get_Rest();
-   LStringCollection* edit_str;
+   String* edit_str;
    int is_pc_desc = FALSE;
 
    if (pc.isImmort() && pc.pc->imm_data->edit_string) {
@@ -1699,7 +1892,7 @@ int do_ch_desc(critter& pc) {
    }
    else {
       is_pc_desc = TRUE;
-      edit_str = pc.getLongDescColl();
+      edit_str = &(pc.long_desc);
    }
 
    while (TRUE) {
@@ -1707,12 +1900,10 @@ int do_ch_desc(critter& pc) {
          return 0;
       }//if
 
-      if ((buf == "~") || 
-          (is_pc_desc && 
-           (edit_str->getString(&pc)->contains('\n') > 10))) {
+      if ((buf == "~") || (is_pc_desc && (edit_str->Contains('\n') > 10))) {
          show("Description changed.\n", pc);
          pc.setMode(MODE_NORMAL);
-         parse_for_max_80(*(edit_str->getString(&pc)));
+         parse_for_max_80(*(edit_str));
 
          if (pc.isImmort() && pc.pc->imm_data->edit_string) {
             pc.pc->imm_data->edit_string = NULL;
@@ -1720,9 +1911,10 @@ int do_ch_desc(critter& pc) {
 
          return 0;
       }//if
-      LString ls(pc.getLanguage(), buf);
-      ls.append("\n");
-      edit_str->appendString(ls);
+
+      *(edit_str) += buf;  //append the line to desc
+      *(edit_str) += "\n";
+
       buf = pc.pc->input.Get_Rest();
    }//while
    return 0;
@@ -1742,9 +1934,9 @@ int do_add_mob_script(critter& pc) {
          mudlog.log(TRC, "Script completed...");
          show("Script completed.\n", pc);
          pc.setMode(MODE_NORMAL);
-         parse_for_max_80(*(pc.pc->imm_data->edit_string->getString(&pc)));
+         parse_for_max_80(*(pc.pc->imm_data->edit_string));
 
-         if (GenScript::checkScript(*(pc.pc->imm_data->edit_string->getString(&pc)))) {
+         if (GenScript::checkScript(*(pc.pc->imm_data->edit_string))) {
 
             show("It's too hard to check the script, we'll assume you", pc);
             show("\nknow what you're doing.  If not, edit it again!", pc);
@@ -1756,8 +1948,8 @@ int do_add_mob_script(critter& pc) {
                mudlog.log(TRC, "About to addProcScript");
 
                mob_list[mob_num].
-                  addProcScript(*(pc.pc->imm_data->edit_string->getString(&pc)),
-                                pc.pc->imm_data->tmp_proc_script);
+                  addProcScript(*(pc.pc->imm_data->edit_string),
+                                (MobScript*)(pc.pc->imm_data->tmp_proc_script));
                mudlog.log(TRC, "Done with addProcScript");
                pc.pc->imm_data->tmp_proc_script = NULL;
             }//if
@@ -1766,7 +1958,7 @@ int do_add_mob_script(critter& pc) {
             mudlog.log(TRC, "Script failed check!!!");
 
             show("There was an ERROR IN THE SCRIPT.\n", pc);
-            pc.show(*(pc.pc->imm_data->edit_string->getString(&pc)));
+            show(*(pc.pc->imm_data->edit_string), pc);
 
             delete pc.pc->imm_data->tmp_proc_script;
             pc.pc->imm_data->tmp_proc_script = NULL;
@@ -1774,13 +1966,12 @@ int do_add_mob_script(critter& pc) {
 
          mudlog.log(TRC, "setting edit string to NULL");
 
-	 pc.pc->imm_data->edit_string = NULL;
+         pc.pc->imm_data->edit_string = NULL;
          return 0;
       }//if
 
-      LString ls(pc.getLanguage(), buf);
-      ls.append("\n");
-      pc.pc->imm_data->edit_string->appendString(ls);
+      *(pc.pc->imm_data->edit_string) += buf;  //append the line to desc
+      *(pc.pc->imm_data->edit_string) += "\n";
       buf = pc.pc->input.Get_Rest();
    }//while
    return 0;
@@ -1800,9 +1991,9 @@ int do_add_room_script(critter& pc) {
          mudlog.log(TRC, "Script completed...");
          show("Script completed.\n", pc);
          pc.setMode(MODE_NORMAL);
-         parse_for_max_80(*(pc.pc->imm_data->edit_string->getString(&pc)));
+         parse_for_max_80(*(pc.pc->imm_data->edit_string));
 
-         if (GenScript::checkScript(*(pc.pc->imm_data->edit_string->getString(&pc)))) {
+         if (GenScript::checkScript(*(pc.pc->imm_data->edit_string))) {
             show("It's too hard to check the script, we'll assume you", pc);
             show("\nknow what you're doing.  If not, edit it again!", pc);
 
@@ -1813,8 +2004,8 @@ int do_add_room_script(critter& pc) {
                mudlog.log(TRC, "About to addProcScript");
 
                room_list[rm_num].
-                  addProcScript(*(pc.pc->imm_data->edit_string->getString(&pc)),
-                                pc.pc->imm_data->tmp_proc_script);
+                  addProcScript(*(pc.pc->imm_data->edit_string),
+                                (RoomScript*)(pc.pc->imm_data->tmp_proc_script));
                pc.pc->imm_data->tmp_proc_script = NULL;
             }//if
          }//if script checks out ok
@@ -1822,7 +2013,7 @@ int do_add_room_script(critter& pc) {
             mudlog.log(TRC, "Script failed check!!!");
 
             show("There was an ERROR IN THE SCRIPT.\n", pc);
-            pc.show(*(pc.pc->imm_data->edit_string->getString(&pc)));
+            show(*(pc.pc->imm_data->edit_string), pc);
 
             delete pc.pc->imm_data->tmp_proc_script;
             pc.pc->imm_data->tmp_proc_script = NULL;
@@ -1830,14 +2021,12 @@ int do_add_room_script(critter& pc) {
 
          mudlog.log(TRC, "setting edit string to NULL");
 
-	 pc.pc->imm_data->edit_string = NULL;
+         pc.pc->imm_data->edit_string = NULL;
          return 0;
       }//if
 
-      LString ls(pc.getLanguage(), buf);
-      ls.append("\n");
-
-      pc.pc->imm_data->edit_string->appendString(ls);
+      *(pc.pc->imm_data->edit_string) += buf;  //append the line to desc
+      *(pc.pc->imm_data->edit_string) += "\n";
       buf = pc.pc->input.Get_Rest();
    }//while
    return 0;
@@ -1857,9 +2046,9 @@ int do_add_obj_script(critter& pc) {
          mudlog.log(TRC, "Script completed...");
          show("Script completed.\n", pc);
          pc.setMode(MODE_NORMAL);
-         parse_for_max_80(*(pc.pc->imm_data->edit_string->getString(pc.getLanguage())));
+         parse_for_max_80(*(pc.pc->imm_data->edit_string));
 
-         if (GenScript::checkScript(*(pc.pc->imm_data->edit_string->getString(pc.getLanguage())))) {
+         if (GenScript::checkScript(*(pc.pc->imm_data->edit_string))) {
             show("It's too hard to check the script, we'll assume you", pc);
             show("\nknow what you're doing.  If not, edit it again!", pc);
 
@@ -1870,8 +2059,8 @@ int do_add_obj_script(critter& pc) {
                mudlog.log(TRC, "About to addProcScript");
 
                obj_list[obj_num].
-                  addProcScript(*(pc.pc->imm_data->edit_string->getString(pc.getLanguage())),
-                                pc.pc->imm_data->tmp_proc_script);
+                  addProcScript(*(pc.pc->imm_data->edit_string),
+                                (ObjectScript*)(pc.pc->imm_data->tmp_proc_script));
                pc.pc->imm_data->tmp_proc_script = NULL;
             }//if
          }//if script checks out ok
@@ -1879,7 +2068,7 @@ int do_add_obj_script(critter& pc) {
             mudlog.log(TRC, "Script failed check!!!");
 
             show("There was an ERROR IN THE SCRIPT.\n", pc);
-            pc.show(*(pc.pc->imm_data->edit_string->getString(pc.getLanguage())));
+            show(*(pc.pc->imm_data->edit_string), pc);
 
             delete pc.pc->imm_data->tmp_proc_script;
             pc.pc->imm_data->tmp_proc_script = NULL;
@@ -1887,19 +2076,19 @@ int do_add_obj_script(critter& pc) {
 
          mudlog.log(TRC, "setting edit string to NULL");
 
-	 pc.pc->imm_data->edit_string = NULL;
+         pc.pc->imm_data->edit_string = NULL;
          return 0;
       }//if
 
-      LString ls(pc.getLanguage(), buf);
-      pc.pc->imm_data->edit_string->appendString(ls);
+      *(pc.pc->imm_data->edit_string) += buf;  //append the line to desc
+      *(pc.pc->imm_data->edit_string) += "\n";
       buf = pc.pc->input.Get_Rest();
    }//while
    return 0;
 }//do_add_obj_script
 
 
-int ch_rname(String* rname, critter& pc) {
+int ch_rname(const String* rname, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IFPR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -1911,14 +2100,14 @@ int ch_rname(String* rname, critter& pc) {
       return -1;
    }//if
 
-   ROOM.addShortDesc(pc.getLanguage(), *rname);
+   ROOM.short_desc = *rname;
 
    show("Room's short desc changed.\n", pc);
    return 0;
 }//ch_rname
 
 
-int ch_osdesc(int which_un, String* name, critter& pc) {
+int ch_osdesc(int which_un, const String* name, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -1944,14 +2133,14 @@ int ch_osdesc(int which_un, String* name, critter& pc) {
       return -1;
    }//if
 
-   obj_list[which_un].addShortDesc(pc.getLanguage(), *name);
+   obj_list[which_un].short_desc = *name;
 
    show("Object's short desc changed.\n", pc);
    return 0;
 }//ch_osdesc
 
 
-int ch_ondesc(int which_un, String* rname, critter& pc) {
+int ch_ondesc(int which_un, const String* rname, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -1976,14 +2165,14 @@ int ch_ondesc(int which_un, String* rname, critter& pc) {
       return -1;
    }//if
 
-   obj_list[which_un].addInRoomDesc(pc.getLanguage(), *rname);
+   obj_list[which_un].in_room_desc = *rname;
 
    show("Object's in_room desc changed.\n", pc);
    return 0;
 }//ch_osdesc
 
 
-int ch_msdesc(int which_un, String* rname, critter& pc) {
+int ch_msdesc(int which_un, const String* rname, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -2008,14 +2197,14 @@ int ch_msdesc(int which_un, String* rname, critter& pc) {
       return -1;
    }//if
 
-   mob_list[which_un].addShortDesc(pc.getLanguage(), *rname);
+   mob_list[which_un].short_desc = *rname;
 
    show("Mob's short desc changed.\n", pc);
    return 0;
 }//ch_msdesc
 
 
-int ch_mndesc(int which_un, String* rname, critter& pc) {
+int ch_mndesc(int which_un, const String* rname, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -2040,14 +2229,14 @@ int ch_mndesc(int which_un, String* rname, critter& pc) {
       return -1;
    }//if
 
-   mob_list[which_un].addInRoomDesc(pc.getLanguage(), *rname);
+   mob_list[which_un].in_room_desc = *rname;
 
    show("Mob's in room desc changed.\n", pc);
    return 0;
 }//ch_mndesc
 
 
-int add_mname(int which_un, String* name, critter& pc) {
+int add_mname(int which_un, const String* name, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -2055,7 +2244,7 @@ int add_mname(int which_un, String* name, critter& pc) {
    }
 
    if (name->Strlen() < 1) {
-      show("See help for add_mname.\n", pc);
+      pc.show("Please specify a keyword.\n");
       return -1;
    }//if
 
@@ -2072,11 +2261,46 @@ int add_mname(int which_un, String* name, critter& pc) {
       return -1;
    }//if
 
-   mob_list[which_un].addName(pc.getLanguage(), *name);
+   Put(new String(*name), mob_list[which_un].names);
 
    show("Added a name to the critter.\n", pc);
    return 0;
 }//add_mname
+
+
+int add_crit_alias(int i_th, const String* targ, String* alias,
+                   critter& pc) {
+   String buf(100);
+
+   if (alias->Strlen() < 1) {
+      pc.show("Please specify an alias.\n");
+      return -1;
+   }//if
+
+   critter* ptr = ROOM.haveCritNamed(i_th, targ, pc);
+   if (!ptr) {
+      pc.show("Add an alias to who??\n");
+      return -1;
+   }
+
+   if (!pc.pets.haveData(ptr)) {
+      pc.show("That creature is not a pet of yours.\n");
+      return -1;
+   }
+
+   if (ptr->isPc()) {
+      pc.show("You can't add aliases to players!!\n");
+      return -1;
+   }
+
+   alias->Append("_");
+   ptr->names.pushBack(new String(*alias));
+
+   Sprintf(buf, "Added alias: %S to your pet.\n", alias);
+   pc.show(buf);
+
+   return 0;
+}//add_crit_alais
 
 
 int clear_mnames(int which_un, critter& pc) {
@@ -2099,14 +2323,14 @@ int clear_mnames(int which_un, critter& pc) {
       return -1;
    }//if
 
-   mob_list[which_un].getNames().clearLanguage(pc.getLanguage());
+   mob_list[which_un].names.clearAndDestroy(); //all gone!
 
    show("Cleared the names from the critter.\n", pc);
    return 0;
 }//clear_mnames
 
 
-int add_oname(int which_un, String* name, critter& pc) {
+int add_oname(int which_un, const String* name, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -2131,7 +2355,7 @@ int add_oname(int which_un, String* name, critter& pc) {
       return -1;
    }//if
 
-   obj_list[which_un].addName(pc.getLanguage(), *name);
+   obj_list[which_un].names.append(new String(*name));
 
    show("Added a name to the object.\n", pc);
    return 0;
@@ -2158,14 +2382,14 @@ int clear_onames(int which_un, critter& pc) {
       return -1;
    }//if
 
-   obj_list[which_un].getNames().clearLanguage(pc.getLanguage()); //all gone!
+   obj_list[which_un].names.clearAndDestroy(); //all gone!
 
    show("Cleared the names from the object.\n", pc);
    return 0;
 }//clear_onames
 
 
-int rem_oname(int which_un, String* name, critter& pc) {
+int rem_oname(int which_un, const String* name, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -2190,18 +2414,23 @@ int rem_oname(int which_un, String* name, critter& pc) {
       return -1;
    }//if
 
-   if (obj_list[which_un].removeName(pc.getLanguage(), *name)) {
-      pc.show(CS_NAME_REMOVED);
-      return 0;
-   }
-   else {
-      pc.show(CS_NAME_NOT_FOUND);
-      return -1;
-   }
+   Cell<String*> cll(obj_list[which_un].names);
+   String* ptr;
+
+   while ((ptr = cll.next())) {
+      if (*ptr == *name) {
+         show("OK, name removed.\n", pc);
+         delete ptr;
+         ptr = obj_list[which_un].names.lose(cll);
+         return 0;
+      }//if
+   }//while
+   show("Name not found.\n", pc);
+   return -1;
 }//rem_oname
 
 
-int rem_mname(int which_un, String* name, critter& pc) {
+int rem_mname(int which_un, const String* name, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -2226,14 +2455,19 @@ int rem_mname(int which_un, String* name, critter& pc) {
       return -1;
    }//if
 
-   if (mob_list[which_un].removeName(pc.getLanguage(), *name)) {
-      pc.show(CS_NAME_REMOVED);
-      return 0;
-   }
-   else {
-      pc.show(CS_NAME_NOT_FOUND);
-      return -1;
-   }
+   Cell<String*> cll(mob_list[which_un].names);
+   String* ptr;
+
+   while ((ptr = cll.next())) {
+     if (*ptr == *name) {
+       show("OK, name removed.\n", pc);
+       delete ptr;
+       ptr = mob_list[which_un].names.lose(cll);
+       return 0;
+     }//if
+   }//while
+   show("Name not found.\n", pc);
+   return -1;
 }//rem_mname
 
 

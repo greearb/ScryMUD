@@ -12,7 +12,7 @@ tavern after a few too many!
 
 ~
 18 12 11 10 7 6 -1  -:| bitfield |:-
-4355 1100000 0 	long_data
+175 1100000 0 	long_data
 0 17 14 10 14 14 13 5 5 60 1 0 1 1 0 435 100 100 250 
 18 0 0 0 435 100 100 2 100 100 0 80 100 80 6 0 5 5 110 80 
 80 0 0 0 	shrt_cur_stats
@@ -24,9 +24,9 @@ tavern after a few too many!
 4 1 0 -1  -:| bitfield |:-
 1 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
- 200 75 12 3	shop_data shorts
+ 200 75 9 3	shop_data shorts
 61 59 2 1 0 -1  -:| bitfield |:-
-213 -1  End of perm_inv
+77 -1  End of perm_inv
 	end_of_crit
 
 2	Start of Mob
@@ -43,9 +43,9 @@ mountain range to the east.  He does not deny it, but neither has he ever
 described his journey.
 ~
 18 12 11 8 7 6 -1  -:| bitfield |:-
-4000 250000 0 	long_data
+0 250000 0 	long_data
 0 18 17 13 17 18 14 20 7 20 2 0 1 1 1 701 401 100 925 
-25 1 0 0 701 401 100 2 100 100 50 50 50 50 0 0 4 8 150 125 
+5 1 0 0 701 401 100 2 100 100 50 50 50 50 0 0 4 8 150 125 
 100 0 0 0 	shrt_cur_stats
 1024 1029 1 	cur_stats
 6 1 -1	eq: num, posn
@@ -54,13 +54,49 @@ described his journey.
  2 0 1	mob#, tmp_num, max_n_game
 17 4 -1  -:| bitfield |:-
 1  Start of a mob proc script
-say 0 0 0	 Trigger Command, targ, actor 
- god 
- say I hope you do not use that name in vain, %M...;
- pause 2;
- say  We take that topic very seriously here in the temple.;
+enter 0 -1 0	 Trigger Command, targ, actor 
+
+ if is_greater_than %M level;
  pause 1;
+ tell %M Greetings, young
+adventurer!;
+ else;
+ end;
+
+~
+2  Start of a mob proc script
+say 0 -1 0	 Trigger Command, targ, actor 
+ god 
+ if chance 1 4 3;
+ tell %M I hope you do not use that name in vain, %M.;
+ pause
+2;
+ tell %M We take that topic very seriously here in the temple.;
+ pause 2;
+ tell %M
+If you were to anger God, I should fear the consequences which might befall
+you!;
+ pause 2;
+ tell %M It would not be a pretty sight, indeed...;
+ pause 2;
+ tell %M
+Please, %M, restrict your use of that word.;
+ pause 2;
+ tell %M If you do not truly
+mean it, the consequences you bring on will be yours and yours alone, and the
+church will not be able to help you!;
+ pause 2;
+ tell %M Be careful, %M, and choose
+your words wisely!;
+ else;
+ say I hope you do not use that name in vain,
+%M...;
+ pause 3;
+ say We take that topic very seriously here in the temple.;
+ pause
+1;
  emote makes a slight gesture towards the altar.;
+ end;
 
 ~
 -1  End of mob proc scripts
@@ -76,14 +112,14 @@ A citizen walks along, his destination sure.
 contented look on his face and waves as he passes you.
 ~
 18 12 11 8 7 6 -1  -:| bitfield |:-
-100 2500 0 	long_data
-0 13 12 13 11 10 14 2 1 75 1 0 1 4 1 31 101 100 123 
+50 2500 0 	long_data
+0 13 12 13 11 10 14 -1 -8 75 1 0 1 4 1 31 101 100 123 
 4 1 0 0 31 101 100 2 100 100 70 70 70 70 0 0 2 4 100 100 
 100 0 0 0 	shrt_cur_stats
-1024 1025 0 	cur_stats
-1 9 -1	eq: num, posn
+1024 1025 15 	cur_stats
+-1	eq: num, posn
 -1	affected_by
-4 -1	inv
+-1	inv
  3 0 25	mob#, tmp_num, max_n_game
 4 -1  -:| bitfield |:-
 	end_of_crit
@@ -101,15 +137,23 @@ that never seems to quite get full, no matter how much junk he picks up.
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
 85 15000 0 	long_data
-0 15 12 12 10 14 10 1 1 60 1 0 1 6 0 65 100 100 0 
-5 1 20 0 65 100 100 2 100 100 0 80 80 80 0 0 2 3 100 50 
+0 14 12 12 10 14 10 1 1 60 1 0 1 6 0 65 100 800 0 
+5 1 20 0 65 100 800 2 100 100 0 80 80 80 0 0 2 3 100 50 
 100 0 0 0 	shrt_cur_stats
 1024 1031 1 	cur_stats
 -1	eq: num, posn
 -1	affected_by
 -1	inv
  4 0 10	mob#, tmp_num, max_n_game
-4 2 1 -1  -:| bitfield |:-
+17 4 2 1 -1  -:| bitfield |:-
+1  Start of a mob proc script
+enter 0 -1 0	 Trigger Command, targ, actor 
+
+ get all;
+ donate all;
+
+~
+-1  End of mob proc scripts
 	end_of_crit
 
 10	Start of Mob
@@ -123,7 +167,7 @@ in some places, but hard in others.  You better watch out!
 
 ~
 18 5 -1  -:| bitfield |:-
-5542 1200000 0 	long_data
+400 1200000 0 	long_data
 1 18 18 15 18 18 15 6 5 35 1 0 0 6 0 312 250 100 950 
 21 1 0 0 312 250 100 2 100 100 0 20 50 50 0 0 5 5 140 130 
 100 0 0 0 	shrt_cur_stats
@@ -146,7 +190,7 @@ have kneaded bread for all these years could definately knead your head!
 
 ~
 18 12 11 -1  -:| bitfield |:-
-3000 150000 0 	long_data
+400 150000 0 	long_data
 0 15 15 15 15 15 15 5 5 25 1 0 1 6 0 275 200 50 350 
 21 1 0 0 275 200 50 2 80 100 0 85 80 60 0 0 5 5 175 100 
 75 0 0 0 	shrt_cur_stats
@@ -178,7 +222,7 @@ so nothing ever does...
 
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-4500 950000 0 	long_data
+200 950000 0 	long_data
 2 13 17 11 9 16 14 10 10 0 1 0 1 3 1 500 850 100 -450 
 22 0 0 0 500 850 100 2 100 100 80 80 100 30 0 0 5 5 100 100 
 100 0 0 0 	shrt_cur_stats
@@ -197,7 +241,7 @@ so nothing ever does...
 shaman man ~	names
 an old shaman
 ~
-An old shaman is searching for an herb called Goldenseal.
+An old shaman is searching for an herb called goldenseal.
 ~
 	You see an old, but sturdy man.  He has traveled far if the dust upon
 his clothes speaks truly.  He has come in search of the Goldenseal plant, a
@@ -206,7 +250,7 @@ bestow great wisdom on those who were kind, and patient enough listen.
 
 ~
 18 12 11 6 5 -1  -:| bitfield |:-
-4000 850000 0 	long_data
+100 850000 0 	long_data
 0 14 18 12 14 18 12 5 5 45 1 0 1 2 0 356 455 100 850 
 23 0 0 0 356 455 100 2 75 100 0 50 50 30 0 0 5 4 125 150 
 100 0 0 0 	shrt_cur_stats
@@ -215,57 +259,58 @@ bestow great wisdom on those who were kind, and patient enough listen.
 -1	affected_by
 -1	inv
  19 0 1	mob#, tmp_num, max_n_game
-4 0 -1  -:| bitfield |:-
-7 6 5 -1  -:| bitfield |:-
+17 4 0 -1  -:| bitfield |:-
+-1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
-60	 test_num, valid for give_proc mostly
-The old shaman says, "Thanks, this will allow me to cure my ailing father.
-If you are ever in Daemon Rhea, be sure to look us up!  I'll tell you of the
-secrets of curing disease, they may help you in your journies..."
+1  Start of a mob proc script
+say 0 -1 0	 Trigger Command, targ, actor 
+ goldenseal 
+ pause 1;
+ emote looks at you.;
+ pause 1;
+ tell %M I seek a goldenseal plant which I
+must have in order to heal my father.  I would be happy to share some of my
+knowledge with you in return for this living treasure.;
 
 ~
-cure disease
-0 0	obj_num, trans_room#
-Thanks, but what I would really like is a living specimen of the Goldenseal
-plant.
+2  Start of a mob proc script
+give 0 -1 0	 Trigger Command, targ, actor 
+ DESCRIM_60 
+ silent_junk goldenseal;
+ silent_junk goldenseal;
+ pause 1;
+ tell %M Oh, thank you! 
+You are very kind!;
+ pause 2;
+ tell %M I promised I would share some of my
+knowledge with you.  I have heard that there is a village of Ogrue hidden
+within the forest near the southern barrier range.  I have heard that these
+Ogrue have a special power of some sort!  Perhaps you should investigate
+it.;
+ pause 1;
+ tell %M Thank you again!;
 
 ~
-end action_proc_data
-0	 test_num, valid for give_proc mostly
-The man says, "Thank you for humoring an old man.  I am searching for an
-herb known as Goldenseal.  It is very important for me to find this herb."; 
+3  Start of a mob proc script
+enter 0 -1 0	 Trigger Command, targ, actor 
+
+ emote bows.;
+**%M                                     if does_own 60;
+ pause 1;
+ tell %M You have a goldenseal plant! 
+Please, may I have it?  I need it to help my father!;
+ else;
+ tell shaman
+Wibble!;
+ end;
 
 ~
-	 Skill name
-0 0	obj_num, trans_room#
-
-~
-end action_proc_data
-1    here starts a valid say_proc_cell.
-goldenseal
-The old man looks at you and says, "I seek a goldenseal plant which I must have
-in order to heal my father.  I would be happy to share some of my knowledge
-with you in return for this living treasure."
-
-~
-na
-0 0	 end of say_proc_cell
--1    end of say_proc_cells
-The old shaman scowls, "I will neither accept nor give help to those who do
-not follow a life of goodness.
-
-~
-BUG::  REPORT ME
-
-~
-BUG:: REPORT ME
-
-~
+-1  End of mob proc scripts
 	end_of_crit
 
 37	Start of Mob
 golem earth ~	names
-an earth golem
+a golem of the earth
 ~
 An earthen golem stands here immobile.
 ~
@@ -317,7 +362,7 @@ close the error of their foolish ways.
 	end_of_crit
 
 39	Start of Mob
-minion dwarf ~	names
+minion dwarf devil man ~	names
 a dwarven devil
 ~
 A small, sweating man with a charred leather apron stands here.
@@ -402,6 +447,84 @@ at all;  she just seems materialize in different places.
 0 -6 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
 	end_of_crit
 
+45	Start of Mob
+quad momma mama shopkeeper ~	names
+Momma Quad
+~
+Momma Quad stands here cleaning her little corner of the shop.
+~
+Momma Quad seems very quiet mannered in her ways, she walks around quietly 
+cleaning things here and there and commenting on how great she thinks of her 
+son Quaddie.  She looks really buff for a mother and you wonder how Quad 
+could possibly get away with the things he does!
+
+~
+18 -1  -:| bitfield |:-
+0 7000000 0 	long_data
+0 30 30 30 30 30 30 15 15 -50 2 0 0 1 1 1500 900 600 0 
+30 0 0 0 1500 900 600 2 100 100 -50 -50 -50 -50 0 0 4 6 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1028 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 45 0 1	mob#, tmp_num, max_n_game
+17 0 -1  -:| bitfield |:-
+13 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 300 40 9 21	shop_data shorts
+3 -1  -:| bitfield |:-
+-1  End of perm_inv
+-1  End of PlayerShopData list
+Grock  Manager
+0 0 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+1  Start of a mob proc script
+enter 0 -1 0	 Trigger Command, targ, actor 
+
+ tell %M Welcome to my shop, %M!  Feel free to have a look around!;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+54	Start of Mob
+Rika shopkeeper ~	names
+Rika
+~
+Rika is standing here behind the counter.
+~
+She's a pretty young girl with long brown hair and blue eyes.
+
+~
+18 -1  -:| bitfield |:-
+0 2000000 0 	long_data
+0 30 23 23 23 23 23 15 15 -20 2 0 0 1 1 1000 600 330 0 
+27 0 0 0 1000 600 330 2 100 100 0 0 0 0 0 0 4 5 100 100 
+100 5 130 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 54 0 1	mob#, tmp_num, max_n_game
+17 0 -1  -:| bitfield |:-
+13 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 40 200 9 21	shop_data shorts
+3 -1  -:| bitfield |:-
+-1  End of perm_inv
+-1  End of PlayerShopData list
+mia  Manager
+0 0 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+1  Start of a mob proc script
+enter 0 -1 0	 Trigger Command, targ, actor 
+
+ pause 1;
+ say Welcome, %M!;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
 55	Start of Mob
 illusion ~	names
 an illusion
@@ -449,8 +572,41 @@ to not live!
 -1  -:| bitfield |:-
 	end_of_crit
 
+58	Start of Mob
+Kaela ~	names
+Kaela
+~
+Kaela looks up from her bouquet as you enter.
+~
+       Kaela is a middle-aged woman with dark hair and an olive complexion. 
+She is strangely beautiful, but every now and then an aching sadness seems to
+cloud her face.  An old scar mars an otherwise perfect cheek, but even the
+disfigurement tends to lend a sort of power to her beauty.  She grew up in the
+streets of Dar Thane, far to the north, but few have had the honor of her
+story.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+500 140000 0 	long_data
+0 14 15 14 15 15 14 7 7 30 1 0 0 2 1 245 180 100 999 
+14 0 0 0 245 180 100 2 100 100 80 80 80 80 0 0 4 5 100 100 
+100 5 120 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 58 0 1	mob#, tmp_num, max_n_game
+4 0 -1  -:| bitfield |:-
+13 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 200 40 6 19	shop_data shorts
+-1  -:| bitfield |:-
+251 -1  End of perm_inv
+2 10 6 1 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
 76	Start of Mob
-Shawna ~	names
+Shawna shawna mage grand woman made mage grand ~	names
 the grand mage Shawna
 ~
 A beautiful woman with long brown wavy hair looks up as you enter.
@@ -465,12 +621,12 @@ for the best, but his quest was dangerous, and she fears for the worst.
 
 ~
 18 12 11 10 9 8 7 6 5 -1  -:| bitfield |:-
-8750 1245000 0 	long_data
-0 18 20 15 19 19 18 15 15 -60 1 0 0 3 1 950 1000 300 650 
-28 0 0 0 950 1000 100 2 70 100 50 50 100 0 0 0 6 6 100 150 
+500 1600000 0 	long_data
+0 18 20 15 19 19 18 15 15 -60 1 0 0 3 1 950 1000 100 650 
+31 0 0 0 950 1000 100 2 50 100 50 50 100 0 0 0 6 6 100 150 
 100 0 0 0 	shrt_cur_stats
 1024 1039 73 	cur_stats
-202 2 144 10 -1	eq: num, posn
+202 2 202 3 144 10 -1	eq: num, posn
 -1	affected_by
 -1	inv
  76 0 1	mob#, tmp_num, max_n_game
@@ -595,7 +751,7 @@ enjoin it once again, and it's great power can free Korg!;
 	end_of_crit
 
 78	Start of Mob
-student mage ~	names
+student mage man ~	names
 a student of the academy
 ~
 A young man with a satchel is lost in thought.
@@ -619,10 +775,10 @@ but his manner is that of a city dweller.
 	end_of_crit
 
 79	Start of Mob
-student mage ~	names
+student mage frightened young man ~	names
 a harried student
 ~
-A frightened young man cringes he passes you.
+A frightened young man cringes as he passes you.
 ~
 This young man looks completely disheveled and confused!  His hands are visibly
 shaking, and he is a pasty shade of off white.  You're afraid to ask what is
@@ -630,7 +786,7 @@ wrong, but you suspect he just had a meeting that didn't go so well!
 
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-235 75000 0 	long_data
+0 75000 0 	long_data
 0 15 14 15 14 14 14 3 2 60 1 0 1 3 11 100 100 100 50 
 5 1 0 0 100 100 100 2 100 100 80 80 100 90 0 0 2 2 100 100 
 100 0 0 0 	shrt_cur_stats
@@ -643,7 +799,7 @@ wrong, but you suspect he just had a meeting that didn't go so well!
 	end_of_crit
 
 81	Start of Mob
-student mage woman ~	names
+student mage woman woman young ~	names
 a young woman
 ~
 A young woman smiles as she passes you.
@@ -655,7 +811,7 @@ the top.
 
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-235 75000 0 	long_data
+40 75000 0 	long_data
 0 15 14 15 14 14 14 3 2 60 1 0 0 3 11 100 100 100 50 
 5 1 0 0 100 100 100 2 100 100 80 80 100 90 0 0 2 2 100 100 
 100 0 0 0 	shrt_cur_stats
@@ -731,7 +887,7 @@ lost all self respect, and hides in the shadows when you come near.
 ~
 18 12 11 8 7 6 -1  -:| bitfield |:-
 0 2500 0 	long_data
-0 13 7 13 11 10 14 -1 0 75 1 0 1 4 1 18 101 100 123 
+0 13 7 13 11 10 14 -1 0 75 1 0 1 4 16 18 101 100 123 
 1 1 0 0 18 101 100 2 100 100 70 70 70 70 0 0 2 4 100 100 
 100 0 0 0 	shrt_cur_stats
 1024 1025 2079 	cur_stats
@@ -740,6 +896,48 @@ lost all self respect, and hides in the shadows when you come near.
 -1	inv
  160 0 25	mob#, tmp_num, max_n_game
 4 -1  -:| bitfield |:-
+	end_of_crit
+
+163	Start of Mob
+shopkeeper pinky ~	names
+Pinky
+~
+Pinky is standing here.
+~
+You see a young woman in a pink dress. She seems quite happy to have some 
+visitors but that does not hide her dred of working at this store. She 
+greets you merrily with her blue eyes and looked about ready to hug 
+you...but decides not to.
+
+~
+18 -1  -:| bitfield |:-
+0 1000000 0 	long_data
+0 40 20 20 20 20 20 10 10 0 1 1 0 1 1 700 500 300 0 
+40 0 0 0 700 500 300 2 100 100 0 0 0 0 0 0 4 5 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1025 97 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 163 0 1	mob#, tmp_num, max_n_game
+17 0 -1  -:| bitfield |:-
+13 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 300 40 9 21	shop_data shorts
+3 -1  -:| bitfield |:-
+-1  End of perm_inv
+-1  End of PlayerShopData list
+Grock  Manager
+0 0 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+1  Start of a mob proc script
+enter 0 -1 0	 Trigger Command, targ, actor 
+
+ pause 1;
+ say Welcome, %M!  Violet isn't feeling well, so I'm running the shop. 
+My name is Pinky!;
+
+~
+-1  End of mob proc scripts
 	end_of_crit
 
 164	Start of Mob
@@ -758,7 +956,7 @@ He completely ignores you, absorbed in his own little world.
 4 1 0 0 31 101 100 2 100 100 70 70 70 70 0 0 2 4 100 100 
 100 0 0 0 	shrt_cur_stats
 1024 1025 46 	cur_stats
-1 9 -1	eq: num, posn
+-1	eq: num, posn
 -1	affected_by
 4 -1	inv
  164 0 25	mob#, tmp_num, max_n_game
@@ -785,9 +983,9 @@ and treacherous family in Dar Thane.
 
 ~
 18 16 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-18000 3900000 0 	long_data
-0 22 22 20 18 20 24 45 55 -30 2 0 1 5 1 2500 100 100 100 
-30 0 0 0 2500 100 100 2 50 100 80 80 100 90 0 0 8 7 100 100 
+800 15000000 0 	long_data
+0 22 22 20 18 20 24 60 60 -200 2 0 1 5 1 2500 100 100 100 
+31 0 0 0 2500 100 100 2 100 100 -50 -50 -50 -50 0 0 12 7 100 100 
 100 0 0 0 	shrt_cur_stats
 1024 1024 85 	cur_stats
 -1	eq: num, posn
@@ -798,7 +996,81 @@ and treacherous family in Dar Thane.
 13 4 3 2 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
 5 -1  -:| bitfield |:-
-9 2 4 9 5  sk_viol, benev, def, bad_assed, soc_aware
+10 2 10 10 5  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+190	Start of Mob
+golem earth water ~	names
+a golem of the water
+~
+A flowing water-like golem stands here.
+~
+Someone has caused a liquid to become animate.  The being before you is vaguely
+humanoid, but its lack of a meaningful face and its flowing, water-like skin
+make it a disturbing sight to see.
+
+~
+18 -1  -:| bitfield |:-
+0 10000 0 	long_data
+0 10 5 15 5 5 10 0 5 80 1 0 2 1 0 100 100 100 0 
+10 0 0 0 100 100 100 2 70 100 0 20 20 100 0 0 4 5 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 190 0 100	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+191	Start of Mob
+golem earth air ~	names
+a golem of the air
+~
+A misty, not-quite-solid animation of the gaseous elements stands here.
+~
+This being looks to be not entirely solid, its body letting through a
+distinctly noticeable amount of light.  It seems to be a humanoid form of the
+air you breathe, but its lack of a distinguishable face make it a very
+disturbing sight.
+
+~
+18 -1  -:| bitfield |:-
+0 10000 0 	long_data
+0 10 5 15 5 5 10 0 5 80 1 0 2 1 0 100 100 100 0 
+10 0 0 0 100 100 100 2 70 100 0 20 20 100 0 0 4 5 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 191 0 100	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+193	Start of Mob
+golem earth fire ~	names
+a golem of fire
+~
+A burnt, vaguely humanoid body with fiery eyes stands here.
+~
+The being before you is a frightening sight.  Its charred skin and
+indistinguishable features combined with the powerful odor of burnt flesh it
+emits are enough to make you gag.  The glowing fire-like light emitted from its
+eyes give it an entrancing, mind-numbing blank stare.
+
+~
+18 -1  -:| bitfield |:-
+0 10000 0 	long_data
+0 10 5 15 5 5 10 0 5 80 1 0 2 1 0 100 100 100 0 
+10 0 0 0 100 100 100 2 70 100 0 20 20 100 0 0 4 5 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 193 0 100	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
 	end_of_crit
 
 195	Start of Mob
@@ -815,7 +1087,7 @@ a fine dagger sheathed in her belt, swaying with her every step.
 
 ~
 20 18 12 11 10 7 -1  -:| bitfield |:-
-325 150000 0 	long_data
+80 150000 0 	long_data
 0 16 15 12 18 13 19 2 8 10 1 1 0 5 0 275 175 190 600 
 9 4 20 0 275 175 190 2 100 100 0 90 90 75 0 0 1 4 5 5 
 10 0 0 0 	shrt_cur_stats
@@ -860,14 +1132,14 @@ as people come and go.
 
 ~
 18 16 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-6500 1350000 0 	long_data
+80 1350000 0 	long_data
 0 20 16 15 14 14 21 18 18 0 2 0 1 5 1 750 100 200 -50 
 25 0 0 0 750 100 200 2 60 110 80 80 100 90 0 0 7 4 120 100 
 100 0 0 0 	shrt_cur_stats
 1024 1031 84 	cur_stats
 -1	eq: num, posn
 -1	affected_by
--1	inv
+50 -1	inv
  196 0 1	mob#, tmp_num, max_n_game
 17 4 0 -1  -:| bitfield |:-
 13 3 -1  -:| bitfield |:-
@@ -908,7 +1180,7 @@ strapped to each thigh.
 
 ~
 20 18 17 12 11 10 7 -1  -:| bitfield |:-
-300 150000 0 	long_data
+65 150000 0 	long_data
 0 15 15 12 18 13 19 2 10 10 1 0 1 5 0 275 175 190 600 
 9 4 20 0 275 175 190 2 100 100 0 90 90 75 0 0 1 4 5 5 
 10 0 0 0 	shrt_cur_stats
@@ -941,7 +1213,7 @@ hit 195 -1 1	 Trigger Command, targ, actor
 
 199	Start of Mob
 master battlemaster guildmaster ~	names
-The Battle Master
+the battle master
 ~
 The battle master of Garland stands here ready to give you a lesson.
 ~
@@ -953,9 +1225,9 @@ along!
 
 ~
 18 16 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-18000 2900000 0 	long_data
-0 21 16 18 14 20 18 50 35 0 1 0 1 1 1 1100 100 100 295 
-30 0 0 0 1100 100 100 2 60 110 80 80 100 90 0 0 6 8 130 100 
+650 20000000 0 	long_data
+0 21 16 18 14 20 18 50 35 -100 1 0 1 1 1 1300 100 100 295 
+31 0 0 0 1300 100 100 2 60 110 80 80 100 90 0 0 6 10 130 100 
 100 5 0 0 	shrt_cur_stats
 1024 1029 839 	cur_stats
 -1	eq: num, posn
@@ -982,9 +1254,9 @@ who ask for, and will accept, his teachings.
 
 ~
 20 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-400 2100000 0 	long_data
-0 15 20 15 14 21 14 20 20 -100 1 0 1 7 1 700 1100 100 50 
-30 0 0 0 700 1100 100 2 50 100 10 10 10 -20 0 0 6 6 100 130 
+450 14000000 0 	long_data
+0 15 20 15 14 21 14 20 20 -100 2 0 1 7 1 1200 1100 100 50 
+31 0 0 0 1200 1100 100 2 50 100 10 10 10 -20 0 0 14 6 100 130 
 100 5 0 0 	shrt_cur_stats
 1024 1031 89 	cur_stats
 -1	eq: num, posn
@@ -999,7 +1271,7 @@ who ask for, and will accept, his teachings.
 	end_of_crit
 
 204	Start of Mob
-guard ~	names
+guard city fellow ~	names
 a city guard
 ~
 A city guard in a crisp uniform looks around for trouble.
@@ -1009,19 +1281,32 @@ talking to the locals as doing any real work, but no one seems to mind.
 
 ~
 18 16 -1  -:| bitfield |:-
-1200 480000 0 	long_data
+100 600000 0 	long_data
 0 12 12 12 12 12 12 9 8 10 2 0 1 1 1 600 200 200 100 
-17 5 0 0 600 200 200 2 100 110 0 50 50 50 0 0 4 4 100 100 
+32 5 0 0 600 200 200 2 100 110 0 50 50 50 0 0 4 4 100 100 
 100 0 0 0 	shrt_cur_stats
 1024 1027 1 	cur_stats
-1 9 193 12 -1	eq: num, posn
+-1	eq: num, posn
 -1	affected_by
 -1	inv
- 204 0 15	mob#, tmp_num, max_n_game
-4 2 0 -1  -:| bitfield |:-
+ 204 0 45	mob#, tmp_num, max_n_game
+17 4 2 0 -1  -:| bitfield |:-
 13 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
 0 0 0 -5 0  sk_viol, benev, def, bad_assed, soc_aware
+1  Start of a mob proc script
+hit 0 -1 0	 Trigger Command, targ, actor 
+
+ if is_equal_to %M level;
+ assist %M;
+ else;
+ tell %M Fighting is not allowed
+here!;
+ pause 1;
+ kill %M;
+
+~
+-1  End of mob proc scripts
 	end_of_crit
 
 205	Start of Mob
@@ -1037,7 +1322,7 @@ understand the source of such strength!
 
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-9500 1200000 0 	long_data
+230 1200000 0 	long_data
 0 23 14 15 14 14 20 20 30 10 1 0 1 1 1 1100 100 100 150 
 25 0 0 0 1100 100 100 2 100 100 -20 80 100 90 0 0 4 8 100 100 
 100 5 0 0 	shrt_cur_stats
@@ -1051,7 +1336,7 @@ understand the source of such strength!
 0	int1, above bitfield started spec_data
  200 75 7 21	shop_data shorts
 57 49 48 47 44 43 42 41 2 1 0 -1  -:| bitfield |:-
-190 87 -1  End of perm_inv
+190 87 289 257 258 329 339 441 -1  End of perm_inv
 0 0 0 4 0  sk_viol, benev, def, bad_assed, soc_aware
 	end_of_crit
 
@@ -1067,12 +1352,12 @@ anything to occupy his rich, but empty life.
 
 ~
 18 16 -1  -:| bitfield |:-
-1200 100000 0 	long_data
+150 100000 0 	long_data
 0 17 12 12 18 12 12 9 17 10 2 0 1 1 11 600 200 200 100 
 12 5 0 0 600 200 200 2 100 110 0 50 50 50 0 0 4 4 100 100 
 100 0 0 0 	shrt_cur_stats
 1024 1027 44 	cur_stats
-1 9 -1	eq: num, posn
+-1	eq: num, posn
 -1	affected_by
 -1	inv
  216 0 1	mob#, tmp_num, max_n_game
@@ -1101,7 +1386,7 @@ beneficiary of some expert spell-casting!
 
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-10600 750000 0 	long_data
+140 750000 0 	long_data
 0 18 18 15 17 15 14 10 15 10 1 0 1 1 1 1100 100 100 500 
 29 1 0 0 1100 100 100 2 50 100 10 10 10 10 0 0 6 8 100 100 
 100 5 200 0 	shrt_cur_stats
@@ -1125,7 +1410,7 @@ big as his partner, he is nearly as strong, and twice as fast!
 
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-5000 3000000 0 	long_data
+100 3000000 0 	long_data
 0 16 16 15 14 16 20 10 8 0 1 0 1 1 1 1000 800 100 50 
 25 1 0 0 1000 800 100 2 80 100 50 50 80 70 0 0 4 8 100 100 
 100 5 0 0 	shrt_cur_stats
@@ -1152,7 +1437,7 @@ man, nodding to the customers as he looks out for trouble.
 
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-2500 900000 0 	long_data
+50 900000 0 	long_data
 0 21 16 15 14 16 16 10 6 20 1 0 1 1 9 750 500 100 50 
 21 1 0 0 750 500 100 2 100 100 80 80 100 90 0 0 4 7 100 100 
 100 5 0 0 	shrt_cur_stats
@@ -1166,7 +1451,7 @@ man, nodding to the customers as he looks out for trouble.
 
 278	Start of Mob
 manager ~	names
-store manager
+a store manager
 ~
 A stout store manager sweeps the floor as he greets you.
 ~
@@ -1187,9 +1472,9 @@ you need to continue on your journey.
 4 0 -1  -:| bitfield |:-
 1 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
- 100 50 5 23	shop_data shorts
+ 300 50 5 23	shop_data shorts
 64 62 61 59 58 54 2 1 0 -1  -:| bitfield |:-
-91 11 4 79 92 -1  End of perm_inv
+91 11 4 79 92 20 737 -1  End of perm_inv
 	end_of_crit
 
 288	Start of Mob
@@ -1229,7 +1514,7 @@ payment, death.
 
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-9500 1200000 0 	long_data
+0 1200000 0 	long_data
 0 23 14 15 14 14 20 20 30 10 1 0 1 1 9 1100 100 100 150 
 25 0 0 0 1100 100 100 2 100 100 -20 80 100 90 0 0 4 8 100 100 
 100 5 0 0 	shrt_cur_stats
@@ -1241,9 +1526,30 @@ payment, death.
 17 0 -1  -:| bitfield |:-
 13 4 3 1 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
- 200 75 7 21	shop_data shorts
+ 200 75 9 21	shop_data shorts
 3 2 1 0 -1  -:| bitfield |:-
 -1  End of perm_inv
+1 63 330 110 PlayerShopData 
+1 20 210 105 PlayerShopData 
+1 166 270 90 PlayerShopData 
+1 231 120 40 PlayerShopData 
+1 65 90 30 PlayerShopData 
+1 170 210 70 PlayerShopData 
+1 115 8100 900 PlayerShopData 
+1 227 750 250 PlayerShopData 
+1 88 750 250 PlayerShopData 
+1 216 720 240 PlayerShopData 
+1 108 69 23 PlayerShopData 
+1 62 8000 1500 PlayerShopData 
+1 134 225 100 PlayerShopData 
+1 402 1250 300 PlayerShopData 
+1 71 150 20 PlayerShopData 
+1 40 390 85 PlayerShopData 
+1 102 1500 230 PlayerShopData 
+1 171 1200 210 PlayerShopData 
+1 67 1700 240 PlayerShopData 
+1 87 800 130 PlayerShopData 
+1 25 6750 3000 PlayerShopData 
 -1  End of PlayerShopData list
 Gryphon  Manager
 0 0 0 4 0  sk_viol, benev, def, bad_assed, soc_aware
@@ -1251,6 +1557,289 @@ Gryphon  Manager
 enter -1 -1 0	 Trigger Command, targ, actor 
 
  say "Har, Har! I has a visitor, does ye want to buys enythin %M?";
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+305	Start of Mob
+citizen ~	names
+a citizen
+~
+A citizen walks along, his destination sure.
+~
+     This man is walking along enjoying some time outdoors.  He has a 
+contented look on his face and waves as he passes you.
+~
+18 12 11 8 7 6 -1  -:| bitfield |:-
+100 2500 0 	long_data
+0 13 12 13 11 10 14 -1 -8 75 1 0 1 4 1 31 101 100 123 
+4 1 30 0 31 101 100 2 100 100 70 70 70 70 0 0 2 4 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1025 15 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 305 0 1	mob#, tmp_num, max_n_game
+17 4 -1  -:| bitfield |:-
+1  Start of a mob proc script
+enter 0 -1 0	 Trigger Command, targ, actor 
+
+**%M                     if does_own 470;
+ tell %M Ah!  You found my knife!  May I have it back?;
+ else;
+**%M                     if is_less_than citizen LEVEL;
+ tell %M Hello.  I seem to have
+misplaced my knife.  Could you help me find it?;
+ tell %M I think I left it in
+the forest of Tyro to the east.  It has my name enscribed on its handle.;
+ else;
+ end;
+ else;
+ end;
+
+~
+2  Start of a mob proc script
+give 305 -1 0	 Trigger Command, targ, actor 
+ DESCRIM_470 
+ tell %M Oh, thank you!  I suppose I must reward you.;
+ pause 1;
+ pay 50
+%M;
+ slient_junk knife;
+ silent_junk knife;
+
+~
+3  Start of a mob proc script
+say 1 -1 0	 Trigger Command, targ, actor 
+ name 
+ tell %M My name is Archibald.;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+311	Start of Mob
+citizen ~	names
+a citizen
+~
+A citizen walks along, his destination sure.
+~
+     This man is walking along enjoying some time outdoors.  He has a 
+contented look on his face and waves as he passes you.
+~
+18 12 11 8 7 6 -1  -:| bitfield |:-
+250 2500 0 	long_data
+0 13 12 13 11 10 14 -1 -8 75 1 0 1 4 1 31 101 100 123 
+4 1 30 0 31 101 100 2 100 100 70 70 70 70 0 0 2 4 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1025 15 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 311 0 1	mob#, tmp_num, max_n_game
+17 4 -1  -:| bitfield |:-
+1  Start of a mob proc script
+tell 0 -1 0	 Trigger Command, targ, actor 
+ yes 
+**%M                       if is_less_than citizen LEVEL;
+ pause 1;
+ tell %M Thank you!  I need this bag
+of goods delivered to a friend of mine named Nina in the Citadel.  She will pay
+you when you get there.;
+ oload 473;
+ pause 1;
+ give bag %M;
+ else;
+ end;
+
+~
+2  Start of a mob proc script
+enter 0 -1 0	 Trigger Command, targ, actor 
+
+**%M                     if does_own 473;
+ tell %M Aren't you going to take that to the Citadel for
+me?  The Citadel is out towards the west, just follow the path.;
+ else;
+**%M                     if
+is_less_than citizen LEVEL;
+ pause 1;
+ tell %M I need some goods delivered to the
+Citadel.  I will reward you if you help me.  Will you help me?;
+ end;
+ else;
+ end;
+
+~
+3  Start of a mob proc script
+tell 0 -1 0	 Trigger Command, targ, actor 
+ yep 
+**%M                       if is_less_than citizen LEVEL;
+ pause 1;
+ tell %M Thank you!  I need this bag
+of goods delivered to a friend of mine named Nina in the Citadel.  She will pay
+you when you get there.;
+ oload 473;
+ pause 1;
+ give bag %M;
+ else;
+ end;
+
+~
+4  Start of a mob proc script
+tell 0 -1 0	 Trigger Command, targ, actor 
+ yeah 
+**%M                       if is_less_than citizen LEVEL;
+ pause 1;
+ tell %M Thank you!  I need this bag
+of goods delivered to a friend of mine named Nina in the Citadel.  She will pay
+you when you get there.;
+ oload 473;
+ pause 1;
+ give bag %M;
+ else;
+ end;
+
+~
+5  Start of a mob proc script
+tell 0 -1 0	 Trigger Command, targ, actor 
+ ok 
+**%M                       if is_less_than citizen LEVEL;
+ pause 1;
+ tell %M Thank you!  I need this bag
+of goods delivered to a friend of mine named Nina in the Citadel.  She will pay
+you when you get there.;
+ oload 473;
+ pause 1;
+ give bag %M;
+ else;
+ end;
+
+~
+6  Start of a mob proc script
+tell 0 -1 0	 Trigger Command, targ, actor 
+ okay 
+**%M                       if is_less_than citizen LEVEL;
+ pause 1;
+ tell %M Thank you!  I need this bag
+of goods delivered to a friend of mine named Nina in the Citadel.  She will pay
+you when you get there.;
+ oload 473;
+ pause 1;
+ give bag %M;
+ else;
+ end;
+
+~
+7  Start of a mob proc script
+tell 0 -1 0	 Trigger Command, targ, actor 
+ sure 
+**%M                       if is_less_than citizen LEVEL;
+ pause 1;
+ tell %M Thank you!  I need this bag
+of goods delivered to a friend of mine named Nina in the Citadel.  She will pay
+you when you get there.;
+ oload 473;
+ pause 1;
+ give bag %M;
+ else;
+ end;
+
+~
+8  Start of a mob proc script
+tell 0 -1 0	 Trigger Command, targ, actor 
+ no 
+ tell %M Ahh, that's too bad.  I guess I will have to find someone else...;
+
+~
+9  Start of a mob proc script
+say 0 -1 0	 Trigger Command, targ, actor 
+ yes 
+**%M                       if is_less_than citizen LEVEL;
+ pause 1;
+ tell %M Thank you!  I need this bag
+of goods delivered to a friend of mine named Nina in the Citadel.  She will pay
+you when you get there.;
+ oload 473;
+ pause 1;
+ give bag %M;
+ else;
+ end;
+
+~
+10  Start of a mob proc script
+say 0 -1 0	 Trigger Command, targ, actor 
+ yeah 
+**%M                       if is_less_than citizen LEVEL;
+ pause 1;
+ tell %M Thank you!  I need this bag
+of goods delivered to a friend of mine named Nina in the Citadel.  She will pay
+you when you get there.;
+ oload 473;
+ pause 1;
+ give bag %M;
+ else;
+ end;
+
+~
+11  Start of a mob proc script
+say 0 -1 0	 Trigger Command, targ, actor 
+ yep 
+**%M                       if is_less_than citizen LEVEL;
+ pause 1;
+ tell %M Thank you!  I need this bag
+of goods delivered to a friend of mine named Nina in the Citadel.  She will pay
+you when you get there.;
+ oload 473;
+ pause 1;
+ give bag %M;
+ else;
+ end;
+
+~
+12  Start of a mob proc script
+say 0 -1 0	 Trigger Command, targ, actor 
+ ok 
+**%M                       if is_less_than citizen LEVEL;
+ pause 1;
+ tell %M Thank you!  I need this bag
+of goods delivered to a friend of mine named Nina in the Citadel.  She will pay
+you when you get there.;
+ oload 473;
+ pause 1;
+ give bag %M;
+ else;
+ end;
+
+~
+13  Start of a mob proc script
+say 0 -1 0	 Trigger Command, targ, actor 
+ okay 
+**%M                       if is_less_than citizen LEVEL;
+ pause 1;
+ tell %M Thank you!  I need this bag
+of goods delivered to a friend of mine named Nina in the Citadel.  She will pay
+you when you get there.;
+ oload 473;
+ pause 1;
+ give bag %M;
+ else;
+ end;
+
+~
+14  Start of a mob proc script
+say 0 -1 0	 Trigger Command, targ, actor 
+ sure 
+**%M                       if is_less_than citizen LEVEL;
+ pause 1;
+ tell %M Thank you!  I need this bag
+of goods delivered to a friend of mine named Nina in the Citadel.  She will pay
+you when you get there.;
+ oload 473;
+ pause 1;
+ give bag %M;
+ else;
+ end;
 
 ~
 -1  End of mob proc scripts
@@ -1271,7 +1860,7 @@ story.
 
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-5400 1400 0 	long_data
+220 140000 0 	long_data
 0 14 15 14 15 15 14 4 4 45 1 0 0 2 0 245 180 100 999 
 14 0 60 0 245 180 100 2 80 100 0 80 80 70 0 0 4 5 100 100 
 100 0 0 0 	shrt_cur_stats
@@ -1280,7 +1869,7 @@ story.
 -1	affected_by
 -1	inv
  400 0 1	mob#, tmp_num, max_n_game
-4 -1  -:| bitfield |:-
+-1  -:| bitfield |:-
 	end_of_crit
 
 401	Start of Mob
@@ -1296,9 +1885,9 @@ visibly.
 
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-855 650000 0 	long_data
-0 18 10 12 10 10 15 8 8 20 2 0 1 1 0 435 100 100 0 
-18 0 0 0 435 100 100 2 80 100 0 50 60 70 0 0 6 7 125 80 
+120 15000000 0 	long_data
+0 30 30 30 30 30 30 20 20 -50 2 0 1 1 0 2000 100 500 0 
+31 0 0 0 2000 100 500 2 80 100 -50 -50 -50 -50 0 0 6 9 125 80 
 80 0 0 0 	shrt_cur_stats
 1024 1028 0 	cur_stats
 -1	eq: num, posn
@@ -1306,6 +1895,181 @@ visibly.
 -1	inv
  401 0 1	mob#, tmp_num, max_n_game
 4 1 -1  -:| bitfield |:-
+	end_of_crit
+
+405	Start of Mob
+dog ~	names
+a large attack dog
+~
+A large attack dog stands at the ready.
+~
+Its mouth drips with saliva and its black nose shines as it sniffs the air. 
+Its black and brown coat glistens in the light and its muscles twitch as it
+moves.
+
+~
+18 -1  -:| bitfield |:-
+0 50000 0 	long_data
+0 5 1 5 3 1 8 2 3 80 2 0 1 1 14 75 1 300 0 
+4 0 0 0 75 1 300 2 100 100 80 80 80 80 0 0 3 4 50 50 
+50 5 40 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 405 0 1	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+406	Start of Mob
+dog ~	names
+a large dog
+~
+A large dog walks around, sniffing the ground.
+~
+Its coat is curly and ruffled, and though it is large it doesn't look to be
+especially good at fighting.
+
+~
+18 -1  -:| bitfield |:-
+0 30000 0 	long_data
+0 3 1 3 3 1 7 2 2 80 1 0 1 1 14 55 1 200 0 
+3 0 0 0 55 1 200 2 100 100 90 90 90 90 0 0 3 3 50 50 
+50 5 50 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 406 0 1	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+407	Start of Mob
+cat ~	names
+a small cat
+~
+A small cat walks around cautiously.
+~
+It is small for a cat and doesn't look too bright either.
+
+~
+18 -1  -:| bitfield |:-
+0 10000 0 	long_data
+0 1 1 1 1 1 1 1 1 100 1 0 1 1 14 20 1 100 0 
+1 0 0 0 20 1 100 2 100 100 100 100 100 100 0 0 2 2 10 10 
+10 5 10 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 407 0 1	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+408	Start of Mob
+owner shop pet ~	names
+the owner of the pet shop
+~
+The owner of the pet shop stands behind the counter.
+~
+He is an elderly man with a gentle smile.
+
+~
+18 -1  -:| bitfield |:-
+0 200000 0 	long_data
+0 10 10 10 10 10 10 5 5 50 1 0 1 1 1 300 200 200 0 
+10 0 0 0 300 200 200 2 100 100 50 50 50 50 0 0 4 5 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 408 0 1	mob#, tmp_num, max_n_game
+4 0 -1  -:| bitfield |:-
+13 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 300 40 9 21	shop_data shorts
+-1  -:| bitfield |:-
+579 591 592 -1  End of perm_inv
+0 0 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+409	Start of Mob
+owner shop pet assistant boy ~	names
+the pet shop assistant
+~
+The pet shop assistant stands here.
+~
+He is a teenage boy, and his clothes are covered in animal fur.
+
+~
+18 -1  -:| bitfield |:-
+0 200000 0 	long_data
+0 10 10 10 10 10 10 5 5 50 1 0 1 1 1 300 200 200 0 
+10 0 0 0 300 200 200 2 100 100 50 50 50 50 0 0 4 5 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 409 0 1	mob#, tmp_num, max_n_game
+17 4 0 -1  -:| bitfield |:-
+13 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 300 40 9 21	shop_data shorts
+-1  -:| bitfield |:-
+579 591 592 -1  End of perm_inv
+0 0 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+1  Start of a mob proc script
+give 409 -1 0	 Trigger Command, targ, actor 
+ DESCRIM_579 
+ mload 407;
+ enslave cat;
+ pause 1;
+ order cat follow %M;
+ pause 1;
+ tell %M There you
+go!;
+
+~
+2  Start of a mob proc script
+give 409 -1 0	 Trigger Command, targ, actor 
+ DESCRIM_591 
+ mload 406;
+ enslave dog;
+ pause 1;
+ order dog follow %M;
+ pause 1;
+ tell %M There you
+go!;
+
+~
+3  Start of a mob proc script
+give 409 -1 0	 Trigger Command, targ, actor 
+ DESCRIM_592 
+ mload 405;
+ enslave dog;
+ pause 1;
+ order dog follow %M;
+ pause 1;
+ tell %M There you
+go!;
+
+~
+4  Start of a mob proc script
+give 409 -1 0	 Trigger Command, targ, actor 
+ DESCRIM_752 
+ mload 495;
+ enslave penguin;
+ pause 1;
+ order penguin follow %M;
+ pause 1;
+ tell %M
+There's your penguin!  Isn't he snuggly-wuggly!  Look at the cute widdle
+penguin!  He's such a snookems!;
+
+~
+-1  End of mob proc scripts
 	end_of_crit
 
 446	Start of Mob
@@ -1321,7 +2085,7 @@ As he greets you, you can only see his chin move in the shadows.
 
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-9500 1200000 0 	long_data
+50 1200000 0 	long_data
 0 23 14 15 14 14 20 20 30 7 1 0 1 1 1 1100 100 100 150 
 25 0 0 0 1100 100 100 2 100 100 -20 80 100 90 0 0 4 8 100 100 
 100 5 0 0 	shrt_cur_stats
@@ -1334,7 +2098,7 @@ As he greets you, you can only see his chin move in the shadows.
 13 4 3 1 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
  200 75 7 21	shop_data shorts
-2 1 0 -1  -:| bitfield |:-
+56 2 1 0 -1  -:| bitfield |:-
 224 188 101 -1  End of perm_inv
 0 0 0 4 0  sk_viol, benev, def, bad_assed, soc_aware
 	end_of_crit
@@ -1353,7 +2117,7 @@ on hand.
 
 ~
 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-9500 1200000 0 	long_data
+200 1200000 0 	long_data
 0 23 14 15 14 14 20 20 30 7 1 0 1 1 1 1100 100 100 150 
 25 0 0 0 1100 100 100 2 100 100 -20 80 100 90 0 0 4 8 100 100 
 100 5 0 0 	shrt_cur_stats
@@ -1362,13 +2126,154 @@ on hand.
 -1	affected_by
 -1	inv
  447 0 1	mob#, tmp_num, max_n_game
-4 0 -1  -:| bitfield |:-
+17 4 0 -1  -:| bitfield |:-
 13 4 3 1 -1  -:| bitfield |:-
 0	int1, above bitfield started spec_data
- 200 75 7 21	shop_data shorts
+ 300 75 7 21	shop_data shorts
 2 1 0 -1  -:| bitfield |:-
-26 30 295 313 246 247 218 455 454 -1  End of perm_inv
+30 242 295 303 313 318 322 372 22 361 510 509 513 -1  End of perm_inv
 0 0 0 4 0  sk_viol, benev, def, bad_assed, soc_aware
+1  Start of a mob proc script
+give 0 -1 0	 Trigger Command, targ, actor 
+ DESCRIM_371 
+ pause 1;
+ emote unravels the note and begins to read.;
+ pause 2;
+ emote sets the rock
+down on the counter and looks uneasily at it for a moment.;
+ pause 2;
+ tell %M I
+don't know what to do with this rock either.;
+ junk uniquekeyword;
+ junk
+uniquekeyword;
+ junk uniquekeyword;
+ pause 1;
+ tell %M I can dilute it so it is no
+longer extremely dangerous, but after that I have no way of disposing of
+it.;
+ pause 2;
+ tell %M I will turn this into a potion for you -- perhaps you will
+be able to find some use for it.;
+ pause 2;
+ emote pulls out two clear jars of
+yellow liquid.;
+ pause 1;
+ emote breaks the rock in two and deposits half in each
+jar and shakes the jars vigorously.;
+ pause 2;
+ oload 608;
+ oload 608;
+ give
+iverunoutofgoodkeywords %M;
+ give iverunoutofgoodkeywords %M;
+ pause 1;
+ tell %M
+There you go...I hope you can find use for it!;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+495	Start of Mob
+penguin ~	names
+a small penguin
+~
+A small penguin waddles around.
+~
+It is rather small and looks quite uncomfortable outside of its arctic habitat.
+
+~
+18 -1  -:| bitfield |:-
+0 1000 0 	long_data
+0 1 1 1 1 1 1 1 1 100 1 0 1 1 14 20 1 400 500 
+1 0 0 0 20 1 400 2 100 100 100 -100 100 100 0 0 2 2 100 100 
+100 5 30 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 495 0 1	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+516	Start of Mob
+bartender barkeep ~	names
+the barkeep
+~
+The barkeep stands behind the bar, skillfully mixing drinks.
+~
+He is an elderly man with a wrinkled face.  He speaks freely with some patrons
+of the bar and barely acknowledges others as they ask for their drinks. 
+Presumably he is more friendly with those who are friends and associates of
+Maedon than those who are not.
+
+~
+18 -1  -:| bitfield |:-
+0 5000000 0 	long_data
+0 25 25 25 25 25 25 15 15 -25 2 0 1 1 1 1000 200 200 -600 
+30 0 0 0 1000 200 200 2 75 125 -25 -25 -25 -25 0 0 6 6 100 100 
+100 5 160 0 	shrt_cur_stats
+1024 1031 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 516 0 1	mob#, tmp_num, max_n_game
+4 0 -1  -:| bitfield |:-
+13 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 300 40 9 21	shop_data shorts
+-1  -:| bitfield |:-
+203 77 363 -1  End of perm_inv
+5 -5 -5 10 -5  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+526	Start of Mob
+frank butcher ~	names
+Frank the butcher
+~
+Frank the butcher wipes his bloody knife on his equally bloody apron.
+~
+He's a large husky man, and so covered in blood you'd fear he were dead if he
+wasn't standing up and hacking away at a carcass!
+
+~
+18 16 -1  -:| bitfield |:-
+40 1000000 0 	long_data
+0 20 20 20 20 20 20 12 21 0 2 0 1 1 1 700 500 300 500 
+21 0 0 0 700 500 300 2 100 100 0 0 0 0 0 0 4 6 100 100 
+100 5 180 0 	shrt_cur_stats
+1024 1031 98 	cur_stats
+250 9 -1	eq: num, posn
+-1	affected_by
+-1	inv
+ 526 0 1	mob#, tmp_num, max_n_game
+17 4 0 -1  -:| bitfield |:-
+13 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 250 40 7 21	shop_data shorts
+-1  -:| bitfield |:-
+97 -1  End of perm_inv
+0 0 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+1  Start of a mob proc script
+give 526 -1 0	 Trigger Command, targ, actor 
+ DESCRIM_3 
+ silent_junk corpse;
+ silent_junk corpse;
+ silent_junk corpse;
+ silent_junk
+corpse;
+ pause 1;
+ emote grins and begins working on the carcass.;
+ pause 5;
+ emote
+tosses lots of bloody fleshy bits into a bin in the back of the room, and hands
+you the remainder.;
+ oload 97;
+ give meat %M;
+
+~
+-1  End of mob proc scripts
 	end_of_crit
 
 

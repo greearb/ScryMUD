@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.3 1999/06/05 23:29:16 greear Exp $
-# $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:16 $
+# $Id: Makefile,v 1.4 2001/03/29 03:02:38 eroper Exp $
+# $Revision: 1.4 $  $Author: eroper $ $Date: 2001/03/29 03:02:38 $
 
 #ARCHIVE      = /home/greear/mud/lib/liblog.a
 
@@ -24,7 +24,7 @@ all: test1
 	cp LogStream.h ${PROG_HOME}/include
 
 test1:
-	g++ -g -o test1 test1.cc
+	g++ -g -fhuge-objects -o test1 test1.cc
 
 
 clean:

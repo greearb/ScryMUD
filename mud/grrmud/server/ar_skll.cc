@@ -1,5 +1,5 @@
-// $Id: ar_skll.cc,v 1.6 1999/08/25 06:35:11 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
+// $Id: ar_skll.cc,v 1.7 2001/03/29 03:02:28 eroper Exp $
+// $Revision: 1.7 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
 
 //
 //ScryMUD Server Code
@@ -54,7 +54,7 @@ int do_berserk(critter& pc) {
    String buf(100);
 
    if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB sent to do_berserk.\n");
+      mudlog.log(ERROR, "ERROR:  MOB sent to do_berserk.\n");
       return -1;
    }//if
 
@@ -73,18 +73,21 @@ int do_berserk(critter& pc) {
       while ((ptr = ROOM.findNextSpellCritter())) {
          if (ptr != &pc) {
             if (ptr->mob || 
-                 (ptr->pc && pc.isFighting(*ptr))) {
+                 (ptr->pc && HaveData(ptr, pc.IS_FIGHTING))) {
 
                if (ptr->pc && ptr->PC_FLAGS.get(7)) { //if !hassle
                   continue;
                }//if
                
+               if (ptr->isMob()) {
+                  ptr = mob_to_smob(*ptr, pc.getCurRoomNum());
+               }//if
                flag = TRUE;
                ptr = check_for_diversions(*ptr, "MB", pc);
                if (!ptr) { //mirror was hit probably
                   continue;
                }//if
-               if (!pc.isFighting(*ptr)) {
+               if (!HaveData(ptr, pc.IS_FIGHTING)) {
                   join_in_battle(pc, *ptr);
                }//if
 
@@ -123,7 +126,7 @@ int do_berserk(critter& pc) {
    }//if
    else {
       show("You trip and nearly break a leg!!\n", pc);
-      emote("gets all riled up nearly trips!!\n", pc, ROOM, TRUE);
+      emote("gets all riled up and nearly trips!!\n", pc, ROOM, TRUE);
       return -1;
    }//else
    return 0;

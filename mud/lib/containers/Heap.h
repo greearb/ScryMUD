@@ -1,5 +1,5 @@
-// $Id: Heap.h,v 1.2 1999/06/05 23:29:16 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:16 $
+// $Id: Heap.h,v 1.3 2001/03/29 03:02:38 eroper Exp $
+// $Revision: 1.3 $  $Author: eroper $ $Date: 2001/03/29 03:02:38 $
 
 //
 //ScryMUD Server Code

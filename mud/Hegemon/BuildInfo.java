@@ -24,9 +24,9 @@
 public class BuildInfo {
    static public String getBuildInfo() {
       return ("<color red>\n" +
-"Built on:   Mon Jun 28 17:23:32 MST 1999 \n" +
+"Built on:   Sat Apr  1 12:32:52 MST 2000 \n" +
 "By:         greear \n" +
-"On machine: Linux burrito.cyberhighway.net 2.2.5-15 i686 unknown \n" +
+"On machine: Linux grok.myip.org 2.2.12-20 i586 unknown \n" +
 " </color><color blue>\n" +
 "\n" +
 "Hegemon Client Code:  Java Client for ScryMUD Server Code\n" +

@@ -1,0 +1,423 @@
+5	Start of Mob
+GGrock ~	names
+GGrock is here waiting to train builders with skills.
+~
+GGrock is here waiting to train builders with skills.
+~
+You see GGrock a magnificent trainer here.
+
+~
+18 -1  -:| bitfield |:-
+0 0 0 	long_data
+0 15 15 15 15 15 15 15 15 15 1 0 1 3 1 299 999 999 0 
+40 10 0 0 999 999 999 2 1 1 0 0 0 0 0 10 1 1 0 5 
+5 5 0 0 	shrt_cur_stats
+1025 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 5 0 1	mob#, tmp_num, max_n_game
+4 0 -1  -:| bitfield |:-
+13 2 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+8 7 6 5 4 3 2 1 -1  -:| bitfield |:-
+10 10 10 10 10  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+6	Start of Mob
+Mikel ~	names
+Mile Tyler
+~
+Mikel Tyler stands here eating snacks.
+~
+You see Mikel Tyler standing here munching on his favorite snack....YOUR MOMMA!
+
+~
+18 -1  -:| bitfield |:-
+20 17000000 0 	long_data
+4 7 2 4 4 2 1 1 100 150 1 0 2 8 7 200 200 200 0 
+20 10 0 0 30 30 30 2 200 15 100 100 100 100 0 10 1 1 0 5 
+5 5 350 0 	shrt_cur_stats
+1025 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 6 0 1	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+364	Start of Mob
+Swamp Rat ~	names
+a swamp rat
+~
+A swamp rat stands here.
+~
+A swamp looks simmilar to a man but is definately a creature that is not
+natural.
+
+~
+18 17 16 5 -1  -:| bitfield |:-
+0 45600 0 	long_data
+0 13 5 15 14 14 14 3 7 0 1 0 1 1 14 200 100 100 50 
+5 1 0 0 300 100 300 2 100 100 80 80 100 90 5 10 5 6 100 100 
+100 5 150 0 	shrt_cur_stats
+1027 1024 0 	cur_stats
+283 9 -1	eq: num, posn
+13 -1 -1	affected_by
+-1	inv
+ 364 0 10	mob#, tmp_num, max_n_game
+16 2 1 -1  -:| bitfield |:-
+0        skin number
+	end_of_crit
+
+365	Start of Mob
+Swamp Rat ~	names
+a swamp rat
+~
+A swamp rat stands here.
+~
+A swamp looks simmilar to a man but is definately a creature that is not
+natural.
+
+~
+18 17 16 5 -1  -:| bitfield |:-
+0 45600 0 	long_data
+0 13 5 15 14 14 14 3 7 0 1 0 1 1 14 200 100 100 50 
+5 1 0 0 300 100 300 2 100 100 80 80 100 90 5 10 5 6 100 100 
+100 5 150 0 	shrt_cur_stats
+1027 1024 0 	cur_stats
+283 9 -1	eq: num, posn
+13 -1 -1	affected_by
+-1	inv
+ 365 0 10	mob#, tmp_num, max_n_game
+16 2 1 -1  -:| bitfield |:-
+0        skin number
+	end_of_crit
+
+366	Start of Mob
+Alley Cat ~	names
+an alley cat
+~
+An alley cat prowles around looking for food.
+~
+An alley cat looks starved and is rummaging around for food.
+
+~
+18 -1  -:| bitfield |:-
+0 2500 0 	long_data
+0 5 14 15 14 14 14 1 1 60 1 0 1 1 14 100 100 100 50 
+1 1 0 0 45 10 100 2 80 75 80 80 100 90 5 10 2 2 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 366 0 1	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+367	Start of Mob
+Alley Cat ~	names
+an alley cat
+~
+An alley cat prowles around looking for food.
+~
+An alley cat looks starved and is rummaging around for food.
+
+~
+18 -1  -:| bitfield |:-
+0 2500 0 	long_data
+0 5 14 15 14 14 14 1 1 60 1 0 1 1 14 100 100 100 50 
+1 1 0 0 45 10 100 2 80 75 80 80 100 90 5 10 2 2 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 367 0 1	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+368	Start of Mob
+grimy boy ~	names
+a little grimy boy
+~
+A little grimy boy leers at you.
+~
+A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
+he's ever bathed.
+
+~
+18 17 -1  -:| bitfield |:-
+100 50000 0 	long_data
+0 9 14 15 14 14 14 1 1 60 1 0 1 1 1 60 100 100 50 
+3 1 0 0 100 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 150 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 368 0 1	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+369	Start of Mob
+grimy boy ~	names
+a little grimy boy
+~
+A little grimy boy leers at you.
+~
+A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
+he's ever bathed.
+
+~
+18 17 -1  -:| bitfield |:-
+100 50000 0 	long_data
+0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
+3 1 0 0 100 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 60 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 369 0 15	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+370	Start of Mob
+grimy boy ~	names
+a little grimy boy
+~
+A little grimy boy leers at you.
+~
+A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
+he's ever bathed.
+
+~
+18 17 -1  -:| bitfield |:-
+100 50000 0 	long_data
+0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
+3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 60 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 370 0 15	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+371	Start of Mob
+grimy boy ~	names
+a little grimy boy
+~
+A little grimy boy leers at you.
+~
+A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
+he's ever bathed.
+
+~
+18 17 -1  -:| bitfield |:-
+100 50000 0 	long_data
+0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
+3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 60 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 371 0 15	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+372	Start of Mob
+grimy boy ~	names
+a little grimy boy
+~
+A little grimy boy leers at you.
+~
+A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
+he's ever bathed.
+
+~
+18 17 -1  -:| bitfield |:-
+100 1000000 0 	long_data
+0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
+3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 60 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 372 0 15	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+373	Start of Mob
+grimy boy ~	names
+a little grimy boy
+~
+A little grimy boy leers at you.
+~
+A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
+he's ever bathed.
+
+~
+18 17 -1  -:| bitfield |:-
+100 50000 0 	long_data
+0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
+3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 60 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 373 0 15	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+374	Start of Mob
+grimy boy ~	names
+a little grimy boy
+~
+A little grimy boy leers at you.
+~
+A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
+he's ever bathed.
+
+~
+18 17 -1  -:| bitfield |:-
+100 10000000 0 	long_data
+0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
+3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 60 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 374 0 15	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+375	Start of Mob
+grimy boy ~	names
+a little grimy boy
+~
+A little grimy boy leers at you.
+~
+A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
+he's ever bathed.
+
+~
+18 17 -1  -:| bitfield |:-
+100 50000 0 	long_data
+0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
+3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 60 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+7 7 7 7 13 13 13 13 13 -1	inv
+ 375 0 15	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+376	Start of Mob
+grimy boy ~	names
+a little grimy boy
+~
+A little grimy boy leers at you.
+~
+A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
+he's ever bathed.
+
+~
+18 17 -1  -:| bitfield |:-
+100 50000 0 	long_data
+0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
+3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 60 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+7 7 7 7 13 13 13 13 13 -1	inv
+ 376 0 15	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+377	Start of Mob
+grimy boy ~	names
+a little grimy boy
+~
+A little grimy boy leers at you.
+~
+A grimy boy looks helpless. He is wearing crumby rags and it doesn't look like
+he's ever bathed.
+
+~
+18 17 -1  -:| bitfield |:-
+100 50000 0 	long_data
+0 9 14 15 14 14 14 1 1 60 1 0 1 5 1 60 100 100 50 
+3 1 0 0 66 100 100 2 100 100 80 80 100 90 0 10 2 2 100 100 
+100 5 60 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+13 13 13 13 13 -1	inv
+ 377 0 15	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+382	Start of Mob
+Alexander ~	names
+Alexander
+~
+Alexander the newbie stands here.
+~
+You see Alexander the newbie standing here.
+
+~
+18 11 10 9 8 7 6 5 4 -1  -:| bitfield |:-
+15000 150000 0 	long_data
+0 18 18 18 18 18 18 18 18 -15 2 0 1 4 1 200 200 200 1 
+6 10 0 0 350 350 350 2 50 200 0 50 50 50 0 10 24 24 100 100 
+100 5 220 0 	shrt_cur_stats
+1026 1026 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 382 0 1	mob#, tmp_num, max_n_game
+0 -1  -:| bitfield |:-
+13 8 6 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+0	 test_num, valid for give_proc mostly
+Alexander says, 'Well maybe you will have better luck next time without asking
+me, so go screw yourself dick head.'
+
+~
+
+0 2386	obj_num, trans_room#
+
+~
+end action_proc_data
+1    here starts a valid say_proc_cell.
+hello
+Alexander tells you, 'So you want me to reply to that huh?! Was that a trick or
+seriously a questiong? What you think I'm being funny? Well I'm not dick
+head*grin*. Alright Hello.'
+
+~
+tornado
+0 0	 end of say_proc_cell
+-1    end of say_proc_cells
+
+~
+
+~
+
+~
+5 10 2 5 -2  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+
+-1 END OF MOB FILE

@@ -10,6 +10,25 @@ Example:  toggle			Shows list of your flags.
 	  toggle gossip			Toggles gossip channel.
 	  toggle client                 Allows you to use/stop using
 					   the Java Client.
+
+Various Toggles Include:
+	brief			Don't show long room descrs.
+	autosplit		Autosplit gold with your party.
+	autoloot		Automatically loot corpses.
+	gold_only		Use with autoloot, only take gold.
+	tank graph		Show tanks health when in combat. 
+	cloak			Hide your class/level in who listings.
+	autoexits		Automatically list available exits.
+	client tags
+	page breaks
+	ansi color		Toggle color on/off.
+	carriage-return
+	cr behind
+	no_show_NPC_entry	Dont say anything when a MOB walks in.
+	no_beep			Toggle whether you can be beeped.
+	roleplaying		Marks "who" listing that your are RPing.
+	afk			Toggle AFK flag in "who" listing.
+	 
 <color = red>
 See Also:  prompt, nogossip
 </color></help>

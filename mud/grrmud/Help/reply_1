@@ -10,6 +10,6 @@ syntax:  reply [message text]
 example:  reply Why don't you come... rescue me from this boring man!
 
 <color = red>
-See Also:  say, channels, discuss, tell
+See Also:  say, osay, channels, discuss, tell
 </color></help>
 

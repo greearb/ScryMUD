@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.43 1999/09/07 07:00:27 greear Exp $
-// $Revision: 1.43 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
+// $Id: room.cc,v 1.44 2001/03/29 03:02:33 eroper Exp $
+// $Revision: 1.44 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
 
 //
 //ScryMUD Server Code
@@ -26,6 +26,10 @@
 //**********************************************************************//
 ///************************  room  ********************************///
 
+#ifdef USEMYSQL
+#include <mysql/mysql.h>
+#endif
+#include "door.h"
 #include "room.h"
 #include "misc.h"
 #include "misc2.h"
@@ -35,33 +39,66 @@
 #include "zone.h"
 #include "load_wld.h"
 #include "Filters.h"
-#include "Markup.h"
+#include <map.h>
 
 
 int KeywordPair::_cnt = 0;
 
-void KeywordPair::toStringStat(critter* viewer, String& rslt, int idx,
-                               ToStringTypeE st) {
+void KeywordPair::show(int idx, critter& pc) {
    String buf(100);
-   rslt.clear();
+   Sprintf(buf, "Keyword [%i] ", idx);
    
-   if (!viewer || viewer->isUsingClient()) {
-      Sprintf(rslt, "<KEYWORD %i>", idx);
-      Entity::toStringStat(viewer, rslt, st);
-      rslt.append(buf);
-      rslt.append("</KEYWORD>");
-   }
-   else {
-      Sprintf(buf, "Keyword [%i]\n", idx);
-      rslt.append(buf);
-      Entity::toStringStat(viewer, buf, st);
-      rslt.append(buf);
-   }
-}//toStringStat
+   Cell<String*> cll(names);
+   String* ptr;
 
-SafeList<object*>& KeywordPair::getInv() {
-   core_dump("KeywordPair::getInv");
-   return dummy_inv;
+   while ((ptr = cll.next())) {
+      buf.Append(*ptr);
+      buf.Append(" ");
+   }//while
+
+   buf.Append("\n\n");
+   pc.show(buf);
+   pc.show("\n");
+   
+   pc.show(desc);
+   pc.show("\n");
+
+   if (pc.isUsingClient()) {
+      Sprintf(buf, "<KEYWORD %i ", idx);
+
+      names.head(cll);
+      while ((ptr = cll.next())) {
+         buf.Append(*ptr);
+         buf.Append(" ");
+      }//while
+
+      buf.Append(">\n");
+
+      pc.show(buf);
+      
+      pc.show("<KEYWORD_DESC>");
+      pc.show(desc);
+      pc.show("</KEYWORD_DESC>");
+   }//if
+}//show
+      
+
+int KeywordPair::isNamed(const String* name) {
+   Cell<String*> cll(names);
+   String* ptr;
+
+   while ((ptr = cll.next())) {
+      if (strncasecmp(*name, *ptr, name->Strlen()) == 0) {
+         return TRUE;
+      }//if
+   }//while
+
+   return FALSE;
+}//isNamed
+
+void KeywordPair::clear() {
+   names.clearAndDestroy();
+   desc.Clear();
 }
 
 KeywordPair::~KeywordPair() {
@@ -69,70 +106,88 @@ KeywordPair::~KeywordPair() {
    clear();
 }
 
-KeywordPair::KeywordPair(KeywordPair& src) {
+KeywordPair::KeywordPair(const KeywordPair& src) {
    _cnt++;
    *this = src;
 }
 
-
-int KeywordPair::write(ostream& dafile) {
-   MetaTags mt(*this);
-   mt.write(dafile);
-   return Entity::write(dafile);
-}
-
-
-int KeywordPair::read(istream& dafile, int read_all = TRUE) {
-   String buf(100);
-   dafile >> buf;
-   if (strcmp(buf, "<META") == 0) {
-      MetaTags mt(buf, dafile);
-      return Entity::read(dafile, read_all);
-   }
-   else {
-      addName(buf);
-
-      while (TRUE && dafile) {
-         dafile >> buf;
-         if (strcmp(buf, "~") == 0) {
-            buf.getLine(dafile, 80);
-            break;
-         }
-         else {
-            addName(buf);
-         }
-      }//while
-      
-      buf.termedRead(dafile);
-      addLongDesc(buf);
-   }//else
-   return 0;
-}//read
-
-
-int KeywordPair::getCurRoomNum() {
-   if (getContainer()) {
-      return getContainer()->getCurRoomNum();
-   }
-   if (mudlog.ofLevel(WRN)) {
-      mudlog << "WARNING:  KeywordPair::getCurRoomNum failed\n";
-   }
-   return 0;
-}//getCurRoomNum
-
-KeywordPair& KeywordPair::operator=(KeywordPair& rhs) {
+KeywordPair& KeywordPair::operator=(const KeywordPair& rhs) {
    if (&rhs != this) {
-      Entity* hack = (Entity*)(&rhs);
-      *((Entity*)(this)) = *hack;
+      clear();
+      
+      Cell<String*> cll(rhs.names);
+      String* ptr;
+
+      while ((ptr = cll.next())) {
+         names.append(new String(*ptr));
+      }
+
+      desc = rhs.desc;
    }//if
 
    return *this;
 }//operator=
 
 
+void KeywordPair::write(ofstream& dafile) {
+   Cell<String*> cll(names);
+   String* ptr;
+
+   while ((ptr = cll.next())) {
+      dafile << *ptr << " ";
+   }//while
+
+   dafile << "~" << endl;
+
+   dafile << desc << "\n~\n";
+}//write
+
+
+void KeywordPair::read(ifstream& dafile) {
+   String buf(80);
+   char buf2[100];
+
+   while (TRUE) {
+      dafile >> buf;
+      if (strcmp(buf, "~") == 0) {
+         dafile.getline(buf2, 79);
+         break;
+      }
+      else {
+         names.append(new String(buf));
+      }
+   }//while
+
+   desc.Termed_Read(dafile);
+}//read   
+
+KeywordPair* room::haveKeyword(int i_th, const String* name) {
+   int foo = 0;
+   return haveKeyword(i_th, name, foo);
+}
+
+KeywordPair* room::haveKeyword(int i_th, const String* name, int& count_sofar) {
+   int cnt = 0;
+   Cell<KeywordPair*> cll(keywords);
+   KeywordPair* ptr;
+
+   while ((ptr = cll.next())) {
+      if (ptr->isNamed(name)) {
+         cnt++;
+         count_sofar++;
+         if (cnt == i_th) {
+            return ptr;
+         }
+      }//if
+   }//while
+
+   return NULL;
+}//haveKeyword
+
+
 int room::_cnt = 0;
 
-room::room() : critters(NULL), inv(NULL) {
+room::room() {
    _cnt++;
    for (int i = 0; i<ROOM_CUR_STATS; i++) {
       cur_stats[i] = 0;
@@ -142,7 +197,7 @@ room::room() : critters(NULL), inv(NULL) {
    obj_ptr_log << "RM_CON " << getIdNum() << " " << this << "\n";
 } // sub_room constructor
 
-room::room(int rm_num) : critters(NULL), inv(NULL) {
+room::room(int rm_num) {
    _cnt++;
    for (int i = 0; i<ROOM_CUR_STATS; i++) {
       cur_stats[i] = 0;
@@ -156,7 +211,7 @@ room::room(int rm_num) : critters(NULL), inv(NULL) {
 
 
 int room::makeReadyForAreaSpell() {
-   SCell<critter*> cll(critters);
+   Cell<critter*> cll(critters);
    critter* ptr;
    
    while ((ptr = cll.next())) {
@@ -166,7 +221,7 @@ int room::makeReadyForAreaSpell() {
 }
 
 critter* room::findNextSpellCritter() {
-   SCell<critter*> cll(critters);
+   Cell<critter*> cll(critters);
    critter* ptr;
 
    while ((ptr = cll.next())) {
@@ -181,7 +236,7 @@ critter* room::findNextSpellCritter() {
 
 
 critter* room::findNextProcMob() {
-   SCell<critter*> cll(critters);
+   Cell<critter*> cll(critters);
    critter* ptr;
    
    while ((ptr = cll.next())) {
@@ -200,40 +255,10 @@ critter* room::findNextProcMob() {
    return NULL;
 }//findNextProcMob
 
-KeywordPair* room::haveKeyword(int i_th, const String* name,
-                               critter* viewer, int& sofar) {
-   
-   SCell<KeywordPair*> cell(keywords);
-   KeywordPair* ptr;
-   int count = 0, ptr_v_bit;
-   int c_bit = ~0;
-   LanguageE lang = English;
-   if (viewer) {
-      c_bit = viewer->getSeeBit();
-      lang = viewer->getLanguage();
-   }
-
-   if (name->Strlen() == 0) 
-      return NULL;
-
-   while ((ptr = cell.next())) {
-      ptr_v_bit = (ptr->getVisBit() | getVisBit());
-      if (detect(c_bit, ptr_v_bit)) {
-         if (ptr->isNamed(*name, lang)) {
-            count++;
-            sofar++;
-            if (count == i_th) {
-               return ptr;
-            }//if
-         }//if
-      }//if
-   }//while
-   return NULL;
-}
 
 
 void room::recursivelyLoad() { //mobs and objects
-   SCell<critter*> ccll(critters);
+   Cell<critter*> ccll(critters);
    critter* cptr;
    
    while ((cptr = ccll.next())) {
@@ -241,7 +266,7 @@ void room::recursivelyLoad() { //mobs and objects
       cptr->incrementCurInGame(); //recursive_... no longer does it.
    }//while
    
-   SCell<object*> ocll(inv);
+   Cell<object*> ocll(inv);
    object* optr;
    while ((optr = ocll.next())) {
       recursive_init_loads(*optr, 0);
@@ -249,7 +274,7 @@ void room::recursivelyLoad() { //mobs and objects
 }//recursivelyLoad()
 
 
-room::room(room& source) : critters(NULL), inv(NULL) {
+room::room(room& source) {
    _cnt++;
    *this = source; //overloaded = operator
    
@@ -262,7 +287,13 @@ room::~room() {
 
    obj_ptr_log << "RM_DES " << getIdNum() << " " << this << "\n";
 
-   room::clear();
+   if (!do_shutdown) {
+      affected_rooms.loseData(this);
+      pulsed_proc_rooms.loseData(this);
+      embattled_rooms.loseData(this);
+   }//if
+
+   Clear();
 }//sub_room deconstructor
 
 
@@ -271,59 +302,90 @@ room& room::operator=(room& source) {
    if (this == &source)
       return *this;
 
+   Cell<stat_spell_cell*> cell;
+   stat_spell_cell *tmp_stat, *tmp_stat2;
    int i;
-   SCell<object*> obj_cll;
+   String* string;
+   Cell<String*> cll(source.names);
+   Cell<object*> obj_cll;
    object* obj_ptr;
-   SCell<critter*> crit_cll;
+   Cell<critter*> crit_cll;
    critter* crit_ptr;
    
    //mudlog.log(DBG, "In rm operator= overload.\n");
-   room::clear(); //clear this thing out!!
+   Clear(); //clear this thing out!!
    
-   Entity* hack = &source;
-   *((Entity*)(this)) = *hack;
-   *((Scriptable*)(this)) = (Scriptable)(source);
-
+   while ((string = cll.next())) {
+      Put(new String(*(string)), names);
+   }//while
+   
    short_desc = source.short_desc;
+   long_desc = source.long_desc;
    
    room_flags = source.room_flags;
 
-   keywords.becomeDeepCopyOf(source.keywords);
+   Cell<KeywordPair*> kcll(source.keywords);
+   KeywordPair* kptr;
+   while ((kptr = kcll.next())) {
+      keywords.append(new KeywordPair(*kptr));
+   }
    
    for (i = 0; i<ROOM_CUR_STATS; i++) {
       cur_stats[i] = source.cur_stats[i];
    }
 
+   affected_by.clearAndDestroy();
+   source.affected_by.head(cell);
+   while ((tmp_stat = cell.next())) {
+      tmp_stat2 = new stat_spell_cell;
+      *tmp_stat2 = *tmp_stat; //shallow copy should work 
+      affected_by.append(tmp_stat2);
+   }//while
+   
    source.inv.head(obj_cll);
    while ((obj_ptr = obj_cll.next())) {
-      if (!obj_ptr->isModified()) { //no multiple ptrs to SOBJ's
+      if (!obj_ptr->IN_LIST) { //no multiple ptrs to SOBJ's
          inv.append(obj_ptr);
       }//if
    }//while
 
-   doors.becomeDeepCopyOf(source.doors);
+   Cell<door*> dcell(source.doors);
+   door* dptr;
+   while ((dptr = dcell.next())) {
+      doors.append(new door(*dptr));
+   }//while
    
    source.critters.head(crit_cll);
    while ((crit_ptr = crit_cll.next())) {
-      if (!crit_ptr->isModified()) { //only copy MOB's
+      if (crit_ptr->isMob()) { //only copy MOB's
          gainCritter(crit_ptr); //will increment cur_in_game
       }//if
    }//while
+
+   Cell<RoomScript*> script_cll(room_proc_scripts);
+   RoomScript* script_ptr;
+   while ((script_ptr = script_cll.next())) {
+      room_proc_scripts.append(new RoomScript(*script_ptr));
+   }
+
+   // Don't copy pending scripts.
 
    return *this;
 }//room::operator= overload
 
 
-void room::clear() {
+void room::Clear() {
    int i;
    
    if (mudlog.ofLevel(TRC)) {
-      mudlog << "room::clear..." << endl;
+      mudlog << "room::Clear..." << endl;
    }
 
-   short_desc.clear();
+   names.clearAndDestroy();
+   short_desc.Clear();
+   long_desc.Clear();
    
-   room_flags.clear();
+   room_flags.Clear();
 
    keywords.clearAndDestroy();
    
@@ -331,13 +393,18 @@ void room::clear() {
       cur_stats[i] = 0;
    }
 
+   affected_by.clearAndDestroy();
    clear_obj_list(inv);
 
+   // Assume here that the mob is only on the affected_mobs list.
+   // Otherwise, have to do a better cleanup to get em out of the game
+   // cleanly.
    critter* tmp;
    while (!critters.isEmpty()) {
       tmp = critters.peekFront();
       removeCritter(tmp); //decrement cur_in_game
-      if (tmp->isModified()) {
+      if (tmp->isSmob()) {
+         affected_mobs.loseData(tmp);
          delete tmp;
       }
    }//while
@@ -345,69 +412,475 @@ void room::clear() {
    doors.clearAndDestroy();
 
    if (mudlog.ofLevel(TRC)) {
-      mudlog << "room::clear...  DONE." << endl;
+      mudlog << "room::Clear...  DONE." << endl;
    }
 
-}// clear
+   pending_scripts.clearAndDestroy();
+   room_proc_scripts.clearAndDestroy();
+   cur_script = NULL; // points into the pending_scripts
+   pause = 0;
+}// Clear
 
+#ifdef USEMYSQL
+void room::dbRead(int room_num, short read_all) {
+   int quantity, obj_num, sobj_num, mob_num;
+   MYSQL_RES* result;
+   MYSQL_ROW row;
+   String query="select * from Rooms where ROOM_NUM=";
+   query += room_num;
 
-int room::read(istream& ifile, int read_all = TRUE) {
-   // Grab the first token, if it's <META then we're V3+, otherwise
-   // we're V2.
-   String str(50);
-   ifile >> str; //grab the first token, if V2.x it not be <META
+   Clear();
 
-   if (strcasecmp(str, "<META") == 0) {
-      return read_v3(ifile, read_all);
-   }
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbRead(int, short):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         } // if
+         return;
+      } // if
+      row=mysql_fetch_row(result);
+      
+      short_desc = row[ROOMTBL_SHORT_DESC];
+      long_desc = row[ROOMTBL_LONG_DESC];
+      
+      cur_stats[0] = atoi(row[ROOMTBL_VIS_BIT]);
+      cur_stats[1] = atoi(row[ROOMTBL_MOVEMENT_COST]);
+      cur_stats[2] = atoi(row[ROOMTBL_ROOM_NUM]);
+      cur_stats[3] = atoi(row[ROOMTBL_FALL_TO]);
+
+      room_flags.set(ROOMFLAG_NO_RESTRICTIONS, atoi(row[ROOMTBL_NO_RESTRICTIONS]));
+      room_flags.set(ROOMFLAG_NO_IMM, atoi(row[ROOMTBL_NO_IMM]));
+      room_flags.set(ROOMFLAG_NO_GOD, atoi(row[ROOMTBL_NO_GOD]));
+      room_flags.set(ROOMFLAG_IS_PERM_DARK, atoi(row[ROOMTBL_IS_PERM_DARK]));
+      room_flags.set(ROOMFLAG_WEATHER, atoi(row[ROOMTBL_WEATHER]));
+      room_flags.set(ROOMFLAG_NO_SHOUT, atoi(row[ROOMTBL_NO_SHOUT]));
+      room_flags.set(ROOMFLAG_NO_MAGICAL_EXIT, atoi(row[ROOMTBL_NO_MAGICAL_EXIT]));
+      room_flags.set(ROOMFLAG_IS_HAVEN, atoi(row[ROOMTBL_IS_HAVEN]));
+      room_flags.set(ROOMFLAG_NO_PK, atoi(row[ROOMTBL_NO_PK]));
+      room_flags.set(ROOMFLAG_NO_MAGIC, atoi(row[ROOMTBL_NO_MAGIC]));
+      room_flags.set(ROOMFLAG_NO_MOB, atoi(row[ROOMTBL_NO_MOB]));
+      room_flags.set(ROOMFLAG_NO_POTIONS, atoi(row[ROOMTBL_NO_POTIONS]));
+      room_flags.set(ROOMFLAG_NO_STAFFS, atoi(row[ROOMTBL_NO_STAFFS]));
+      room_flags.set(ROOMFLAG_NO_MORTALS, atoi(row[ROOMTBL_NO_MORTALS]));
+      room_flags.set(ROOMFLAG_NORMALLY_DARK, atoi(row[ROOMTBL_NORMALLY_DARK]));
+      room_flags.set(ROOMFLAG_SHALLOW_WATER, atoi(row[ROOMTBL_SHALLOW_WATER]));
+      room_flags.set(ROOMFLAG_DEEP_WATER, atoi(row[ROOMTBL_DEEP_WATER]));
+      room_flags.set(ROOMFLAG_SWAMP, atoi(row[ROOMTBL_SWAMP]));
+      room_flags.set(ROOMFLAG_NEED_FLY, atoi(row[ROOMTBL_NEED_FLY]));
+      room_flags.set(ROOMFLAG_NEED_BOAT, atoi(row[ROOMTBL_NEED_BOAT]));
+      room_flags.set(ROOMFLAG_NEED_CLIMB, atoi(row[ROOMTBL_NEED_CLIMB]));
+      room_flags.set(ROOMFLAG_NO_MAGICAL_ENTRY, atoi(row[ROOMTBL_NO_MAGICAL_ENTRY]));
+      room_flags.set(ROOMFLAG_NO_VEHICLES, atoi(row[ROOMTBL_NO_VEHICLES]));
+      room_flags.set(ROOMFLAG_CRAMPED, atoi(row[ROOMTBL_CRAMPED]));
+      room_flags.set(ROOMFLAG_NO_RANGED_ATTACK, atoi(row[ROOMTBL_NO_RANGED_ATTACK]));
+      room_flags.set(ROOMFLAG_NEED_DIVE, atoi(row[ROOMTBL_NEED_DIVE]));
+      room_flags.set(ROOMFLAG_USED_IN_TRACK, atoi(row[ROOMTBL_USED_IN_TRACK]));
+      room_flags.set(ROOMFLAG_CAN_CAMP, atoi(row[ROOMTBL_CAN_CAMP]));
+      room_flags.set(ROOMFLAG_HAS_KEYWORDS, atoi(row[ROOMTBL_HAS_KEYWORDS]));
+      room_flags.set(ROOMFLAG_NO_WANDERING_MOBS, atoi(row[ROOMTBL_NO_WANDERING_MOBS]));
+      room_flags.set(ROOMFLAG_NO_FOREIGN_WANDERING_MOBS, atoi(row[ROOMTBL_NO_FOREIGN_WANDERING_MOBS]));
+      room_flags.set(ROOMFLAG_HAS_PROC_SCRIPT, atoi(row[ROOMTBL_HAS_PROC_SCRIPT]));
+      mysql_free_result(result);
+   } // if
    else {
-      return read_v2(ifile, read_all, str);
-   }
-}//read
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbRead(int, short):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      } // if
+      return;
+   } // else
+   
+   // names
+   query="select NAME from RoomNames where ROOM_NUM=";
+   query+=room_num;
 
-int room::read_v2(istream& ofile, int read_all, String& firstName) {
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbRead(int, short):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         } // if
+         return;
+      } // if
+      while ((row=mysql_fetch_row(result))) {
+         Put(new String(row[0]), names);
+      } // while
+      mysql_free_result(result);
+   } // if
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbRead(int, short):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      } // if
+      return;
+   } // else
+
+   // inventory
+   query="select OBJ_NUM, SOBJ_NUM, QUANTITY from RoomInv where ROOM_NUM=";
+   query+=room_num;
+
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbRead(int, short):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         } // if
+         return;
+      } // if
+      while ((row=mysql_fetch_row(result))) {
+         obj_num = atoi(row[0]);
+         sobj_num = atoi(row[1]);
+         quantity = atoi(row[2]);
+
+         for (;quantity > 0; quantity--) {
+            if (check_l_range(obj_num, 0, NUMBER_OF_ITEMS, mob_list[0], FALSE)) {
+               if (obj_list[obj_num].isInUse()) {
+                  if (read_all || ((obj_list[obj_num].OBJ_PRCNT_LOAD *
+                                  config.currentLoadModifier)/100) > d(1,100)) {
+                     if (obj_list[obj_num].isPlayerOwned()) {
+                        object* po_sack = load_player_box(obj_num);
+                        if (po_sack) {
+                           po_sack->IN_LIST = &(inv);
+                           po_sack->setCurRoomNum(getIdNum(), 0);
+                           affected_objects.gainData(po_sack);
+                           gainInv(po_sack);
+                        } // if
+                     } // if
+                     else {
+                        gainInv(&(obj_list[obj_num]));
+                     } // else
+                  } // if
+               } // if
+               else {
+                  if (mudlog.ofLevel(ERROR)) {
+                     mudlog << "In room::dbRead(int, short):\n";
+                     mudlog << "ERROR: Trying to load non-existant object"
+                            << obj_num << " in room " << room_num << ".\n";
+                  } // if
+               } // else
+            } // if
+         } // for
+      } // while
+      mysql_free_result(result);
+   } // if
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbRead(int, short):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      } // if
+      return;
+   } // else
+
+   // doors
+   query="select EXIT_NUM, DOOR_NUM, DESTINATION, DISTANCE from RoomExits ";
+   query+="where ROOM_NUM=";
+   query+=room_num;
+
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbRead(int, short):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         } // if
+         return;
+      } // if
+
+      Cell<door*> cll;
+      door* dr_ptr;
+      door* walker;
+      short did_insert = FALSE;
+      while ((row=mysql_fetch_row(result))) {
+         dr_ptr = new door;
+         dr_ptr->destination = atoi(row[2]);
+         dr_ptr->distance = atoi(row[3]);
+         dr_ptr->dr_data = &(door_list[atoi(row[1])]);
+         dr_ptr->in_room = room_num;
+
+         MYSQL_RES* tmp_res;
+         MYSQL_ROW tmp_row;
+         String tmp_qry="select SPELL_NUM, DURATION from RoomExitSplls ";
+         tmp_qry+="where ROOM_NUM=";
+         tmp_qry+=room_num;
+         tmp_qry+=" and EXIT_NUM=";
+         tmp_qry+=atoi(row[0]);
+
+         if (mysql_real_query(database, tmp_qry, strlen(tmp_qry))==0) {
+            if ((tmp_res=mysql_store_result(database))==NULL) {
+               if (mudlog.ofLevel(WRN)) {
+                  mudlog << "In door::dbRead(int, short):\n";
+                  mudlog << "Error retrieving query results: "
+                         << mysql_error(database) << endl;
+               } // if
+               return;
+            } // if
+            while ((tmp_row=mysql_fetch_row(result))) {
+               Put(new stat_spell_cell(atoi(row[0]), atoi(row[1])), dr_ptr->affected_by);
+            } // while
+         } // if
+         else {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "In door::dbRead(int, short):\n";
+               mudlog << "Error executing query: " << mysql_error(database)
+                      << endl;
+            } // if
+         } // else
+         mysql_free_result(tmp_res);
+
+         doors.head(cll);
+         String* dr_name = name_of_door(*dr_ptr, ~0);
+         String* walk_name;
+         while ((walker = cll.next())) {
+            walk_name = name_of_door(*walker, ~0);
+            if (*walk_name > *dr_name) {
+               doors.insertBefore(cll, dr_ptr);
+               did_insert=TRUE;
+               break;
+            } // if
+         } // while
+
+         if (!did_insert)
+            doors.append(dr_ptr);
+      } // while
+      mysql_free_result(result);
+   } // if
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbRead(int, short):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      } // if
+      return;
+   } // else
+
+   // critters
+   query="select MOB_NUM, QUANTITY from RoomMobs where ROOM_NUM=";
+   query+=room_num;
+
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbRead(int, short):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         } // if
+         return;
+      } // if
+      while ((row=mysql_fetch_row(result))) {
+         mob_num = atoi(row[0]);
+         if (mob_list[mob_num].isInUse()) {
+            if (mob_list[mob_num].isPlayerShopKeeper()) {
+               critter* shop_owner = load_player_shop_owner(mob_num);
+               if (shop_owner) {
+                  shop_owner->setCurRoomNum(room_num);
+                  gainCritter(shop_owner);
+               } // if
+            } // if
+            else {
+               gainCritter(&(mob_list[mob_num]));
+            } // else
+         } // if
+         else {
+            if (mudlog.ofLevel(ERROR)) {
+               mudlog << "In room::dbRead(int, short):\n";
+               mudlog << "Error: Trying to load non-existant mob" << mob_num
+                      << " in room " << room_num << ".\n";
+            } // if
+         } // else
+      } // while
+      mysql_free_result(result);
+   } // if
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbRead(int, short):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      } // if
+      return;
+   } // else
+
+   if (room_flags.get(ROOMFLAG_HAS_PROC_SCRIPT)) {
+      RoomScript* rs_ptr;
+      query="select * from RoomScripts where ROOM_NUM=";
+      query+=room_num;
+
+      if (mysql_real_query(database, query, strlen(query))==0) {
+         if ((result=mysql_store_result(database))==NULL) {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "In room::dbRead(int, short):\n";
+               mudlog << "Error retrieving query results: "
+                      << mysql_error(database) << endl;
+            } // if
+            return;
+         } // if
+         while ((row=mysql_fetch_row(result))) {
+            String* tmp_disc = new String(row[RMSCRTBL_DISCRIMINATOR]);
+            tmp_disc->Strip();
+            tmp_disc->Prepend(" ");
+            tmp_disc->Append(" ");
+
+            rs_ptr = new RoomScript(*(new String(row[RMSCRTBL_TRIGGER_CMD])),
+                                    atoi(row[RMSCRTBL_TARGET]),
+                                    atoi(row[RMSCRTBL_ACTOR]),
+                                    *tmp_disc,
+                                    atoi(row[RMSCRTBL_PRECEDENCE]));
+            
+            String sbuf(1024);
+            sbuf = row[RMSCRTBL_SCRIPT_COMMANDS];
+
+            String* tmp_str;
+            while ((tmp_str = sbuf.getUntil(';'))) {
+               rs_ptr->appendCmd(*tmp_str);
+               delete tmp_str;
+            } // while
+            rs_ptr->compile();
+         } // while
+         mysql_free_result(result);
+      } // if
+      else {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbRead(int, short):\n";
+            mudlog << "Error executing query: " << mysql_error(database) << endl;
+         } // if
+         return;
+      } // else
+   }
+
+   // spells
+   query="select SPELL_NUM, DURATION from RoomSpells where ROOM_NUM=";
+   query+=room_num;
+
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbRead(int, short):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         } // if
+         return;
+      } // if
+      stat_spell_cell* ss_ptr;
+      while ((row=mysql_fetch_row(result))) {
+         ss_ptr = new stat_spell_cell;
+         ss_ptr->stat_spell = atoi(row[0]);
+         ss_ptr->bonus_duration = atoi(row[1]);
+         Put(ss_ptr, affected_by);
+      } // while
+      mysql_free_result(result);
+   } // if
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbRead(int, short):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      } // if
+      return;
+   } // else
+
+   // keywords
+   if (room_flags.get(ROOMFLAG_HAS_KEYWORDS)) {
+      query="select KEYWORD_INDEX, DESCRIPTION from RoomKeywords where ROOM_NUM=";
+      query+=room_num;
+
+      if (mysql_real_query(database, query, strlen(query))==0) {
+         if ((result=mysql_store_result(database))==NULL) {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "In room::dbRead(int, short):\n";
+               mudlog << "Error retrieving query results: "
+                      << mysql_error(database) << endl;
+            } // if
+            return;
+         } // if
+         while ((row=mysql_fetch_row(result))) {
+            KeywordPair* kwd_ptr;
+            MYSQL_RES* tmp_res;
+            MYSQL_ROW tmp_row;
+            String tmp_qry="select KEYWORD from RoomKeynames where ROOM_NUM=";
+            tmp_qry+=room_num;
+            tmp_qry+=" and KEYWORD_INDEX=";
+            tmp_qry+=row[0];
+            if (mysql_real_query(database, tmp_qry, strlen(tmp_qry))==0) {
+               if ((tmp_res=mysql_store_result(database))==NULL) {
+                  if (mudlog.ofLevel(WRN)) {
+                     mudlog << "In room::dbRead(int, short):\n";
+                     mudlog << "Error retrieving query results: "
+                            << mysql_error(database) << endl;
+                  } // if
+                  return;
+               } // if
+               kwd_ptr = new KeywordPair();
+               while ((tmp_row=mysql_fetch_row(tmp_res))) {
+                  kwd_ptr->names.append(new String(tmp_row[0]));
+               } // while
+               mysql_free_result(tmp_res);
+               kwd_ptr->desc = *(new String(row[1]));
+            } // if
+         } // while
+         mysql_free_result(result);
+      } // if
+      else {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbRead(int, short):\n";
+            mudlog << "Error executing query: " << mysql_error(database) << endl;
+         } // if
+         return;
+      } // else
+   } // if
+
+   setVisBit(getVisBit() | 1024);
+   if (getVisBit() & 1) {
+      room_flags.turn_on(14);
+   } // if
+} // dbRead
+#endif
+
+void room::fileRead(ifstream& ofile, short read_all) {
    int i, test = TRUE;
+   stat_spell_cell* ss_ptr;
    char tmp[81];
    String tmp_str(80);
+   String* string;
    door* dr_ptr;
 
    if (mudlog.ofLevel(DB)) {
       mudlog << "Reading room, read_all:  " << read_all << endl;
    }
 
-   room::clear();  //stop up any memory leaks etc.
+   Clear();  //stop up any memory leaks etc.
 
    if (!ofile) {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
       }
-      return -1;
+      return;
    }
 
    while (test) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
+         if (mudlog.ofLevel(ERROR)) {
             mudlog << "ERROR:  da_file FALSE in room read." << endl;
          }
-         return -1;
+         return;
       }
+
       ofile >> tmp_str;
       if (strcmp(tmp_str, "~") == 0) {
          test = FALSE;
       }//if
       else {
-         addName(tmp_str);
+         string = new String(tmp_str);
+         Put(string, names);
       }//else
    }//while            
    ofile.getline(tmp, 80);         
 
-   tmp_str.termedRead(ofile);
-   addShortDesc(tmp_str);
+   short_desc.Termed_Read(ofile);
+   //mudlog.log(DBG, short_desc);
 
-   tmp_str.termedRead(ofile);
-   addLongDesc(tmp_str);
+   long_desc.Termed_Read(ofile);
 
-   room_flags.read(ofile);
+   room_flags.Read(ofile);
    room_flags.turn_on(23); //turn on in_use flag for CERTAIN
    if (room_flags.get(21)) { //if zlocked
       read_all = TRUE;
@@ -422,7 +895,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
          ofile.getline(tmp, 80);
          if (i != -1) {
             kwd_ptr = new KeywordPair();
-            kwd_ptr->read(ofile, read_all);
+            kwd_ptr->read(ofile);
             keywords.append(kwd_ptr);
          }
          else { //read line, then read desc
@@ -434,6 +907,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
    if (mudlog.ofLevel(DB)) {
       mudlog << "Reading room, about to do cur_stats.  " << endl;
    }
+
    
    for (i = 0; i<ROOM_CUR_STATS; i++) {
       ofile >> cur_stats[i];
@@ -442,21 +916,19 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
 
 
                 /*  Affected By */
-   SpellDuration* sd_ptr = NULL;
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
+         if (mudlog.ofLevel(ERROR)) {
             mudlog << "ERROR:  da_file FALSE in room read." << endl;
          }
-         return -1;
+         return;
       }
       
-      sd_ptr = new SpellDuration();
-      sd_ptr->spell = i;
-      ofile >> sd_ptr->duration;
-      
-      addAffectedBy(sd_ptr);
+      ss_ptr = new stat_spell_cell;
+      ss_ptr->stat_spell = i;
+      ofile >> ss_ptr->bonus_duration;
+      Put(ss_ptr, affected_by);
       
       ofile >> i;
    }//while
@@ -465,8 +937,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
 
    if (!affected_by.isEmpty()) {
       // Also place it on the list of rooms to be checked for loss of spell...
-      room* _this = this;
-      affected_rooms.appendUnique(_this);
+      affected_rooms.gainData(this);
    }//if
 
    if (mudlog.ofLevel(DB)) {
@@ -476,25 +947,42 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
+         if (mudlog.ofLevel(ERROR)) {
             mudlog << "ERROR:  da_file FALSE in room read, inv."
               << endl;
          }
-         return -1;
+         return;
       }
       if (check_l_range(i, 0, NUMBER_OF_ITEMS, mob_list[0], FALSE)) {
          if (obj_list[i].isInUse()) {
             if (read_all || 
-                ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
+                ((obj_list[i].OBJ_PRCNT_LOAD*config.currentLoadModifier)/100) > 
                 d(1,100)) {
-               gainInv(&(obj_list[i]));    //add it to inventory
+               if (obj_list[i].isPlayerOwned()) {
+                  object* po_sack = load_player_box(i);
+                  if (po_sack) {
+                     // Denote it as 'modified', (SOBJ)
+                     po_sack->IN_LIST = &(inv);
+                     po_sack->setCurRoomNum(getIdNum(), 0);
+                     affected_objects.gainData(po_sack);
+                     gainInv(po_sack);
+                  }
+                  else {
+                     //put a virgin copy in the room
+                     gainInv(&(obj_list[i]));
+                  }
+               }
+               else {
+                  gainInv(&(obj_list[i]));    //add it to inventory
+               }
+//               obj_list[i].OBJ_CUR_IN_GAME++; //increment cur_in_game
             }//if
          }//if
          else {
             Sprintf(tmp_str, 
              "ERROR:  trying to load non_existant inv: %i in room:  %i.\n",
              i, cur_stats[2]);
-            mudlog.log(ERR, tmp_str);
+            mudlog.log(ERROR, tmp_str);
          }//else
       }//if
       ofile >> i;
@@ -502,32 +990,30 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
    ofile.getline(tmp, 80);   
 
                        /*  Doors  */
-   SCell<door*> cll;
+   Cell<door*> cll;
    door* walker;
    short did_insert = FALSE;
    ofile >> i; //check for terminal value
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in room::read." << endl;
+         if (mudlog.ofLevel(ERROR)) {
+            mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
          }
-         ::core_dump(__FUNCTION__);
-         return -1;
+         return;
       }
 
       dr_ptr = new door;
-      dr_ptr->read(ofile);
-      dr_ptr->setContainer(this);
+      dr_ptr->Read(ofile);
+      dr_ptr->in_room = cur_stats[2]; //RM_NUM
       doors.head(cll);
-      String* dr_name = dr_ptr->getName();
-
+      String* dr_name = name_of_door(*dr_ptr, ~0);
       if (!dr_name) {
-         mudlog.log(ERR, "ERROR:  dr_name is NULL.");
+         mudlog.log(ERROR, "ERROR:  dr_name is NULL.");
       }//if
 
       String* walk_name;
       while ((walker = cll.next())) {
-         walk_name = walker->getName();
+         walk_name = name_of_door(*walker, ~0);
          if (*walk_name > *dr_name) {
             doors.insertBefore(cll, dr_ptr);
             did_insert = TRUE;
@@ -549,16 +1035,18 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
+         if (mudlog.ofLevel(ERROR)) {
             mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
          }
-         return -1;
+         return;
       }
 
       if (mob_list[i].isInUse()) {
          if (mob_list[i].isPlayerShopKeeper()) {
             critter* shop_owner = load_player_shop_owner(i);
             if (shop_owner) {
+               // it will be a SMOB, but it needs it's room set here.
+               shop_owner->setCurRoomNum(getIdNum());
                gainCritter(shop_owner);
             }//if
          }//if
@@ -570,18 +1058,17 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
          Sprintf(tmp_str, 
                  "ERROR:  trying to load non_existant mob: %i, in room: %i\n",
                  i, cur_stats[2]);
-         mudlog.log(ERR, tmp_str);
+         mudlog.log(ERROR, tmp_str);
       }//else
       ofile >> i;
    }//while 
    ofile.getline(tmp, 80); //get comments after mobs...
 
-
    /* read procs, if we have them. */
    if (room_flags.get(35)) {
       //mudlog.log("Mob has proc scripts...");
       int sent_;
-      GenScript* ptr;
+      RoomScript* ptr;
 
       ofile >> sent_;
       ofile.getline(tmp, 80);
@@ -595,15 +1082,15 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
          if (mudlog.ofLevel(DB))
             mudlog << "\nReading script# " << sent_ << endl;
          if (!ofile) {
-            if (mudlog.ofLevel(ERR)) {
+            if (mudlog.ofLevel(ERROR)) {
                mudlog << "ERROR:  mob_data reading script da_file FALSE." << endl;
             }
-            return -1;
+            return;
          }
 
-         ptr = new GenScript();
+         ptr = new RoomScript();
          ptr->read(ofile);
-         addProcScript(ptr);
+         Put(ptr, room_proc_scripts);
          ofile >> sent_;
          ofile.getline(tmp, 80);
          if (mudlog.ofLevel(DB))
@@ -612,6 +1099,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
    }//if it had proc scripts
 
    ofile.getline(tmp, 80); //get comments at end of room..
+
    // Post processing...
 
    int vb = getVisBit();
@@ -622,200 +1110,21 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
 
    if (mudlog.ofLevel(DB)) {
       mudlog << "Done reading room, number:  " << getRoomNum() << endl;
-      if (!isVehicle()) {
-         mudlog << "\n********-----------**************-----------*******\n";
-         String buf(500);
-         toStringStat(NULL, buf, ST_ALL);
-         mudlog << buf << endl;
-         mudlog << "********-----------**************-----------*******\n\n";
-      }
    }
-   return 0;
-}//read_v2
+}//Read
 
 
-int room::read_v3(istream& ofile, int read_all = TRUE) {
-   int i;
-   char tmp[81];
-   String tmp_str(80);
-   door* dr_ptr;
-
-   if (mudlog.ofLevel(DB)) {
-      mudlog << "Reading room, read_all:  " << read_all << endl;
-   }
-
-   room::clear();  //stop up any memory leaks etc.
-
-   if (!ofile) {
-      if (mudlog.ofLevel(ERR)) {
-         mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
-      }
-      return -1;
-   }
-
-   Entity::read(ofile, read_all);
-   Scriptable::read(ofile, read_all);
-
-   short_desc.read(ofile);
-
-   room_flags.read(ofile);
-   room_flags.turn_on(23); //turn on in_use flag for CERTAIN
-   if (room_flags.get(21)) { //if zlocked
-      read_all = TRUE;
-      room_flags.turn_on(22); //it will be totally loaded
-   }//if
-   setComplete(); //if we can read it, it's complete!
-
-   KeywordPair* kwd_ptr;
-   if (room_flags.get(32)) { //if has keywords
-      while (TRUE) {
-         ofile >> i;
-         ofile.getline(tmp, 80);
-         if (i != -1) {
-            kwd_ptr = new KeywordPair();
-            kwd_ptr->read(ofile);
-            keywords.append(kwd_ptr);
-            kwd_ptr->setContainer(this);
-         }
-         else { //read line, then read desc
-            break;
-         }
-      }//while
-   }//if
-
-   if (mudlog.ofLevel(DB)) {
-      mudlog << "Reading room, about to do cur_stats.  " << endl;
-   }
+stat_spell_cell* room::isAffectedBy(int spell_num) const {
+   Cell<stat_spell_cell*> cll(affected_by);
+   stat_spell_cell* ptr;
    
-   for (i = 0; i<ROOM_CUR_STATS; i++) {
-      ofile >> cur_stats[i];
-   }
-   ofile.getline(tmp, 80);
-
-
-   if (!affected_by.isEmpty()) {
-      // Also place it on the list of rooms to be checked for loss of spell...
-      room* _this = this;
-      affected_rooms.appendUnique(_this);
-   }//if
-
-   if (mudlog.ofLevel(DB)) {
-      mudlog << "Reading room, about to do inventory." << endl;
-   }
-		/*  Inventory */
-   ofile >> i;
-   while (i != -1) {
-      if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in room read, inv."
-              << endl;
-         }
-         return -1;
-      }
-      if (check_l_range(i, 0, NUMBER_OF_ITEMS, mob_list[0], FALSE)) {
-         if (obj_list[i].isInUse()) {
-            if (read_all || 
-                ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
-                d(1,100)) {
-               gainInv(&(obj_list[i]));    //add it to inventory
-//               obj_list[i].OBJ_CUR_IN_GAME++; //increment cur_in_game
-            }//if
-         }//if
-         else {
-            Sprintf(tmp_str, 
-             "ERROR:  trying to load non_existant inv: %i in room:  %i.\n",
-             i, cur_stats[2]);
-            mudlog.log(ERR, tmp_str);
-         }//else
-      }//if
-      ofile >> i;
+   while ((ptr = cll.next())) {
+      if (ptr->stat_spell == spell_num)
+         return ptr;
    }//while
-   ofile.getline(tmp, 80);   
 
-                       /*  Doors  */
-   SCell<door*> cll;
-   door* walker;
-   short did_insert = FALSE;
-   ofile >> i; //check for terminal value
-   while (i != -1) {
-      if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in room::read, doors" << endl;
-         }
-         ::core_dump(__FUNCTION__);
-         return -1;
-      }
-
-      dr_ptr = new door();
-      dr_ptr->read(ofile, read_all);
-      dr_ptr->setContainer(this);
-      doors.head(cll);
-      tmp_str = *(dr_ptr->getDirection());
-
-      const String* walk_name;
-      while ((walker = cll.next())) {
-	 walk_name = walker->getName();
-         if (*walk_name > tmp_str) {
-            doors.insertBefore(cll, dr_ptr);
-            did_insert = TRUE;
-            break;
-         }//if
-      }//while
-
-      if (!did_insert)
-         doors.append(dr_ptr);
-      ofile >> i; //check for next terminal value
-   }//while 
-   ofile.getline(tmp, 80); //clear rest of line
-
-   if (mudlog.ofLevel(DB)) {
-      mudlog << "Reading room About to read critters.." << endl;
-   }
-
-                      /*  Critters, stored mobl#  */
-   ofile >> i;
-   while (i != -1) {
-      if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
-         }
-         return -1;
-      }
-
-      if (mob_list[i].isInUse()) {
-         if (mob_list[i].isPlayerShopKeeper()) {
-            critter* shop_owner = load_player_shop_owner(i);
-            if (shop_owner) {
-               gainCritter(shop_owner);
-            }//if
-         }//if
-         else { //regular case
-            gainCritter(&(mob_list[i])); //this will increment cur_in_game
-         }
-      }//if
-      else {
-         Sprintf(tmp_str, 
-                 "ERROR:  trying to load non_existant mob: %i, in room: %i\n",
-                 i, cur_stats[2]);
-         mudlog.log(ERR, tmp_str);
-      }//else
-      ofile >> i;
-   }//while 
-   ofile.getline(tmp, 80); //get comments after mobs...
-
-   // Post processing...
-
-   int vb = getVisBit();
-   setVisBit(vb | 1024); //hack, forgot a flag :P
-   if (vb & 1) {
-      room_flags.turn_on(14); //make normally_dark
-   }
-
-   if (mudlog.ofLevel(DB)) {
-      mudlog << "Done reading room, number:  " << getRoomNum() << endl;
-   }
-   return 0;
-}//read_v3
+   return NULL;
+}//is_affected_by
 
 
 void room::checkLight(int do_msg) {
@@ -824,17 +1133,18 @@ void room::checkLight(int do_msg) {
 
    if (isPermDark()) {
       //mudlog << "Permdark, trying to make the room dark.\n";
-      setVisBit(vb | 1); //perm dark it is
+      vb |= 1; //perm dark it is
    }//if
-   else if (isNormallyDark()) { //normally dark
+   else if (isNormallyDark() || (isNightTime() && room_flags.get(4))) {
+      //normally dark, or outside and night time
       //mudlog << "Normally dark, trying to make the room dark.\n";
       setVisBit(vb | 1);
       if (isAffectedBy(ILLUMINATE_SKILL_NUM)) {
          //mudlog << "Room was ILLUMINATED, making it light." << endl;
-         setVisBit(vb & ~1);
+         vb &= ~1;
       }//if
       else {
-         SCell<critter*> cll(critters);
+         Cell<critter*> cll(critters);
          critter* crit_ptr;
          while ((crit_ptr = cll.next())) {
             if (crit_ptr->CRIT_FLAGS.get(1)) { //if using_light source 
@@ -842,58 +1152,492 @@ void room::checkLight(int do_msg) {
                //   mudlog << "Room was ILLUMINATED, making it light." << endl;
                //}
 
-               setVisBit(vb & ~1);
+               vb &= ~1;
                break;
             }//if
          }//while
       }//else
    }//if normally_dark
    else {
-      setVisBit(vb & ~1);
+      vb &= ~1;
    }//else
    
    if (do_msg) {
       if (vb != getVisBit()) {
          if (vb & 1) { //it was changed to dark
-            showAllCept(CS_ROOM_BECOMES_DARK);
+            showAllCept("The room becomes dark.\n");
          }//if
          else {
-            showAllCept(CS_ROOM_BECOMES_LIGHT);
+            showAllCept("The room becomes light.\n");
          }//else
       }//if
    }//if do_messages
+   setVisBit(vb);
 }//checkLight
 
 
-int room::write(ostream& ofile) {
+#ifdef USEMYSQL
+void room::dbWrite() {
+   String query;
+   String fields;
+   String values;
+   char* buf;
+
+   // Delete the old records
+   query="delete from Rooms where ROOM_NUM=";
+   query+=cur_stats[2];
+
+   if (mysql_real_query(database, query, strlen(query))!=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbWrite()";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+
+   query="delete from RoomSpells where ROOM_NUM=";
+   query+=cur_stats[2];
+
+   if (mysql_real_query(database, query, strlen(query))!=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbWrite()";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+
+   query="delete from RoomExits where ROOM_NUM=";
+   query+=cur_stats[2];
+
+   if (mysql_real_query(database, query, strlen(query))!=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbWrite()";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+
+   query="delete from RoomExitSpells where ROOM_NUM=";
+   query+=cur_stats[2];
+
+   if (mysql_real_query(database, query, strlen(query))!=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbWrite()";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+
+   query="delete from RoomScripts where ROOM_NUM=";
+   query+=cur_stats[2];
+
+   if (mysql_real_query(database, query, strlen(query))!=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbWrite()";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+
+   query="delete from RoomInv where ROOM_NUM=";
+   query+=cur_stats[2];
+
+   if (mysql_real_query(database, query, strlen(query))!=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbWrite()";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+
+   query="delete from RoomMobs where ROOM_NUM=";
+   query+=cur_stats[2];
+
+   if (mysql_real_query(database, query, strlen(query))!=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbWrite()";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+
+   query="delete from RoomKeywords where ROOM_NUM=";
+   query+=cur_stats[2];
+
+   if (mysql_real_query(database, query, strlen(query))!=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbWrite()";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+
+   query="delete from RoomKeynames where ROOM_NUM=";
+   query+=cur_stats[2];
+
+   if (mysql_real_query(database, query, strlen(query))!=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbWrite()";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+
+   query="delete from RoomNames where ROOM_NUM=";
+   query+=cur_stats[2];
+
+   if (mysql_real_query(database, query, strlen(query))!=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbWrite()";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+
+   // Now write out the new data.
+   normalize();
+   query="insert into Rooms ";
+   fields="(ROOM_NUM, SHORT_DESC, LONG_DESC, VIS_BIT, MOVEMENT_COST, FALL_TO, ";
+   fields+="IN_ZONE, NO_RESTRICTIONS, NO_IMM, NO_GOD, IS_PERM_DARK, WEATHER, ";
+   fields+="NO_SHOUT, NO_MAGICAL_EXIT, IS_HAVEN, NO_PK, NO_MAGIC, NO_MOB, ";
+   fields+="NO_POTIONS, NO_STAFFS, NO_MORTALS, NORMALLY_DARK, SHALLOW_WATER, ";
+   fields+="DEEP_WATER, SWAMP, NEED_FLY, NEED_BOAT, NO_MAGICAL_ENTRY, ";
+   fields+="NO_VEHICLES, CRAMPED, NO_RANGED_ATTACK, NEED_DIVE, NEED_CLIMB, ";
+   fields+="USED_IN_TRACK, CAN_CAMP, HAS_KEYWORDS, NO_WANDERING_MOBS, ";
+   fields+="NO_FOREIGN_WANDERING_MOBS, HAS_PROC_SCRIPT) ";
+   values="values (";
+
+   // ROOM_NUM
+   values+=cur_stats[2]+", ";
+
+   // SHORT_DESC, LONG_DESC
+   buf=(char*)malloc(short_desc.Strlen()*2+1);
+   mysql_escape_string(buf, short_desc, short_desc.Strlen());
+   values+=*"'"+buf+*"', ";
+   free(buf);
+   buf=(char*)malloc(long_desc.Strlen()*2+1);
+   mysql_escape_string(buf, long_desc, long_desc.Strlen());
+   values+=*"'"+buf+*"', ";
+   free(buf);
+
+   // VIS_BIT, MOVEMENT_COST, FALL_TO
+   values+=cur_stats[0]+", ";
+   values+=cur_stats[1]+", ";
+   values+=cur_stats[3]+", ";
+
+   // NO_RESTRICTIONS to HAS_PROC_SCRIPT
+   values+=room_flags.get(ROOMFLAG_NO_RESTRICTIONS)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_IMM)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_GOD)+", ";
+   values+=room_flags.get(ROOMFLAG_IS_PERM_DARK)+", ";
+   values+=room_flags.get(ROOMFLAG_WEATHER)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_SHOUT)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_MAGICAL_EXIT)+", ";
+   values+=room_flags.get(ROOMFLAG_IS_HAVEN)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_PK)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_MAGIC)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_MOB)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_POTIONS)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_STAFFS)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_MORTALS)+", ";
+   values+=room_flags.get(ROOMFLAG_NORMALLY_DARK)+", ";
+   values+=room_flags.get(ROOMFLAG_SHALLOW_WATER)+", ";
+   values+=room_flags.get(ROOMFLAG_DEEP_WATER)+", ";
+   values+=room_flags.get(ROOMFLAG_SWAMP)+", ";
+   values+=room_flags.get(ROOMFLAG_NEED_FLY)+", ";
+   values+=room_flags.get(ROOMFLAG_NEED_BOAT)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_MAGICAL_ENTRY)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_VEHICLES)+", ";
+   values+=room_flags.get(ROOMFLAG_CRAMPED)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_RANGED_ATTACK)+", ";
+   values+=room_flags.get(ROOMFLAG_NEED_DIVE)+", ";
+   values+=room_flags.get(ROOMFLAG_NEED_CLIMB)+", ";
+   values+=room_flags.get(ROOMFLAG_USED_IN_TRACK)+", ";
+   values+=room_flags.get(ROOMFLAG_CAN_CAMP)+", ";
+   values+=room_flags.get(ROOMFLAG_HAS_KEYWORDS)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_WANDERING_MOBS)+", ";
+   values+=room_flags.get(ROOMFLAG_NO_FOREIGN_WANDERING_MOBS)+", ";
+   values+=room_flags.get(ROOMFLAG_HAS_PROC_SCRIPT)+")";
+   // end of values
+
+   query+=fields+values;
+
+   if (mysql_real_query(database, query, query.Strlen())!=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In room::dbWrite()";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+
+   // names
+   if (keywords.size() > 0) {
+      Cell<String*> n_cell(names);
+      String* n_ptr;
+
+      query="insert into RoomNames ";
+      fields="(ROOM_NUM, NAME) ";
+      values="values (";
+      
+      n_ptr = n_cell.next();
+      values+=cur_stats[2]+", ";
+      buf=(char*)malloc(n_ptr->Strlen()*2+1);
+      mysql_escape_string(buf, *n_ptr, n_ptr->Strlen());
+      values+=*"'"+buf+*"', ";
+      free(buf);
+      while ((n_ptr=n_cell.next())) {
+         values+=", (";
+         values+=cur_stats[2]+", ";
+         buf=(char*)malloc(n_ptr->Strlen()*2+1);
+         mysql_escape_string(buf, *n_ptr, n_ptr->Strlen());
+         values+=*"'"+buf+*"', ";
+         free(buf);
+      }
+
+      query+=fields+values;
+      if (mysql_real_query(database, query, query.Strlen())!=0) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbWrite()";
+            mudlog << "Error executing query: "
+                   << mysql_error(database) << endl;
+         }
+      }
+   }
+   // keywords
+   if (room_flags.get(ROOMFLAG_HAS_KEYWORDS) && keywords.size()>0) {
+      String descflds, keynmflds;
+      String descvals, keynmvals;
+      int writeNames=false;
+      int keyindex=0;
+      Cell<String*> ncll;
+      String* n_ptr;
+      Cell<KeywordPair*> kcll(keywords);
+      KeywordPair* kptr;
+
+      descflds="(ROOM_NUM, KEYWORD_INDEX, DESCRIPTION) ";
+      keynmflds="(ROOM_NUM, KEYWORD_INDEX, KEYWORD) ";
+      descvals="values ";
+      keynmvals="values ";
+
+      while ((kptr=kcll.next())) {
+         descvals+="(";
+         descvals+=cur_stats[2]+", ";
+         descvals+=keyindex+", ";
+         buf=(char*)malloc(kptr->desc.Strlen()*2+1);
+         mysql_escape_string(buf, kptr->desc, kptr->desc.Strlen());
+         descvals+=*"'"+buf+*"'), ";
+         free(buf);
+         if (kptr->names.size() > 0) {
+            writeNames=true;
+            kptr->names.head(ncll);
+            while ((n_ptr=ncll.next())) {
+               keynmvals+="(";
+               keynmvals+=cur_stats[2]+", ";
+               keynmvals+=keyindex+", ";
+               buf=(char*)malloc(n_ptr->Strlen()*2+1);
+               mysql_escape_string(buf, *n_ptr, n_ptr->Strlen());
+               keynmvals+=*"'"+buf+*"'), ";
+            }
+         }
+         keyindex++;
+      }
+
+      query="insert into RoomKeywords "+*descflds+*descvals;
+      query.dropFromEnd(2); // Lose the trailing ", "
+      if (mysql_real_query(database, query, query.Strlen())!=0) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbWrite()";
+            mudlog << "Error executing query: "
+                   << mysql_error(database) << endl;
+         }
+      }
+      if (writeNames) {
+         query="insert into RoomKeynames"+*keynmflds+*keynmvals;
+         query.dropFromEnd(2); // Lose the trailing ", "
+         if (mysql_real_query(database, query, query.Strlen())!=0) {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "In room::dbWrite()";
+               mudlog << "Error executing query: "
+                      << mysql_error(database) << endl;
+            }
+         }
+      }
+   }
+
+   // affected by
+   if (affected_by.size()>0) {
+      Cell<stat_spell_cell*> ss_cell(affected_by);
+      stat_spell_cell* ss_ptr;
+
+      query = "insert into RoomSpells ";
+      fields = "(ROOM_NUM, SPELL_NUM, DURATION) ";
+      values = "values ";
+      while ((ss_ptr = ss_cell.next())) {
+         values += "(";
+         values += cur_stats[2] + ", ";
+         values += ss_ptr->stat_spell + ", ";
+         values += ss_ptr->bonus_duration + "), ";
+      }
+
+      query += fields + values;
+      query.dropFromEnd(2); // Lose the trailing ", "
+      if (mysql_real_query(database, query, query.Strlen())!=0) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbWrite()";
+            mudlog << "Error executing query: "
+                   << mysql_error(database) << endl;
+         }
+      }
+   }
+   // inventory
+   if (inv.size()>0) {
+      Cell<object*> ob_cell(inv);
+      map<int, int> onums;
+      object* ob_ptr;
+
+      query = "insert into RoomInv ";
+      fields = "(ROOM_NUM, OBJ_NUM, SOBJ_NUM, QUANTITY) ";
+      values = "values ";
+
+      while ((ob_ptr = ob_cell.next()))
+         onums[ob_ptr->cur_stats[2]]++;
+
+      inv.head(ob_cell);
+      
+      while ((ob_ptr = ob_cell.next())) {
+         values += "(" + cur_stats[2] + *", " + ob_ptr->cur_stats[2] + *", 0, "
+            + onums[ob_ptr->cur_stats[2]] + *"), ";
+      }
+
+      query += fields + values;
+      query.dropFromEnd(2); // Lose the trailing ", "
+      if (mysql_real_query(database, query, query.Strlen())!=0) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbWrite()";
+            mudlog << "Error executing query: "
+                   << mysql_error(database) << endl;
+         }
+      }
+   }
+   // critters
+   if (critters.size()>0) {
+      Cell<critter*> c_cell(critters);
+      map<int, int> cnums;
+      critter* c_ptr;
+
+      query = "insert into RoomMobs ";
+      fields = "(ROOM_NUM, MOB_NUM, QUANTITY) ";
+      values = "values ";
+
+      while ((c_ptr = c_cell.next()))
+         cnums[c_ptr->cur_stats[2]]++;
+
+      critters.head(c_cell);
+      
+      while ((c_ptr = c_cell.next())) {
+         values += "(" + c_ptr->cur_stats[2] + *", "
+            + cnums[c_ptr->cur_stats[2]] + *"), ";
+      }
+
+      query += fields + values;
+      query.dropFromEnd(2); // Lose the trailing ", "
+      if (mysql_real_query(database, query, query.Strlen())!=0) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbWrite()";
+            mudlog << "Error executing query: "
+                   << mysql_error(database) << endl;
+         }
+      }
+   }
+   // exits
+   if (doors.size()>0) {
+      int i=0;
+      Cell<door*> d_cell(doors);
+      door* d_ptr;
+
+      query = "insert into RoomExits ";
+      fields = "(ROOM_NUM, EXIT_NUM, DOOR_NUM, DESTINATION, DISTANCE) ";
+      values = "values ";
+
+      while ((d_ptr = d_cell.next())) {
+         values += "(" + cur_stats[2] + *", " + i + *", "
+            + d_ptr->dr_data->door_num + *", " + d_ptr->destination + *", "
+            + d_ptr->distance + *"), ";
+         if (d_ptr->affected_by.size() > 0) {
+            Cell<stat_spell_cell*> ss_cll(d_ptr->affected_by);
+            String spell_query = "insert into RoomExitSpells ";
+            String spell_fields = "(ROOM_NUM, EXIT_NUM, SPELL_NUM, DURATION) ";
+            String spell_values = "values ";
+            stat_spell_cell* ss_ptr;
+
+            while ((ss_ptr = ss_cll.next())) {
+               values += "(" + cur_stats[2] + *", " + i + *", "
+                  + ss_ptr->stat_spell + *", " + ss_ptr->bonus_duration + *"), ";
+            }
+
+            query += fields + values;
+            query.dropFromEnd(2);
+            if (mysql_real_query(database, query, query.Strlen())!=0) {
+               if (mudlog.ofLevel(WRN)) {
+                  mudlog << "In room::dbWrite()";
+                  mudlog << "Error executing query: "
+                         << mysql_error(database) << endl;
+               }
+            }
+         }
+         i++;
+      }
+
+      query += fields + values;
+      query.dropFromEnd(2); // Lose the trailing ", "
+      if (mysql_real_query(database, query, query.Strlen())!=0) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In room::dbWrite()";
+            mudlog << "Error executing query: "
+                   << mysql_error(database) << endl;
+         }
+      }
+   }
+}
+#endif
+
+void room::fileWrite(ofstream& ofile) {
    int i, j;
-   SCell<door*> d_cell(doors);
+   Cell<stat_spell_cell*> ss_cell(affected_by);
+   stat_spell_cell* ss_ptr;
+   Cell<String*> n_cell(names);
+   String* n_ptr;
+   Cell<door*> d_cell(doors);
    door* d_ptr;
-   SCell<object*> ob_cell(inv);
+   Cell<object*> ob_cell(inv);
    object* ob_ptr;
-   SCell<critter*> c_cell(critters);
+   Cell<critter*> c_cell(critters);
    critter* c_ptr;
    short was_totally_read = FALSE;
 
    normalize(); //make sure everything jives!
    
-   Entity::write(ofile);
-   Scriptable::write(ofile);
-
    if (room_flags.get(22)) { //totaly read flag
       was_totally_read = TRUE;
       room_flags.turn_off(22); // this flag is purely temp, don't write
    }//if
 
+   while ((n_ptr = n_cell.next())) {
+      ofile << *n_ptr << " ";
+   }//while            
+   ofile << "~" << "\tnames\n";
 
-   short_desc.write(ofile);
+   parse_for_max_80(short_desc);
+   ofile << short_desc << endl << "~" << endl;
+   parse_for_max_80(long_desc);
+   ofile << long_desc << endl << "~" << endl;
 
-   room_flags.write(ofile);
+   room_flags.Write(ofile);
 
    //mudlog << "Keywords size:  " << keywords.size() << endl;
    
    if (room_flags.get(32)) { //if has keywords
-      SCell<KeywordPair*> kcll(keywords);
+      Cell<KeywordPair*> kcll(keywords);
       KeywordPair* kptr;
 
       while ((kptr = kcll.next())) {
@@ -912,8 +1656,15 @@ int room::write(ostream& ofile) {
    }//for
    ofile << "\tcur_stats\n";
 
-		/*  Inventory */
-   
+                /*  Affected By */
+   while ((ss_ptr = ss_cell.next())) {
+      ofile << ss_ptr->stat_spell << " " << ss_ptr->bonus_duration << " ";
+      if ((i + 1) % 20 == 0)
+         ofile << endl;
+   }//while
+   ofile << -1 << "\taffected_by\n";
+
+                /*  Inventory */   
    j = 0;
    inv.head(ob_cell);
    while ((ob_ptr = ob_cell.next())) {
@@ -927,16 +1678,22 @@ int room::write(ostream& ofile) {
    
    j = 0;
    while ((d_ptr = d_cell.next())) {
-     if (d_ptr->isInUse()) {
-       ofile << 1 << " "; //test for next, will read untill -1
-       d_ptr->write(ofile);
-       if (++j > 8) {
-         ofile << endl;
-         j = 0;
-       }//if
-     }//if
+      if (d_ptr->dr_data->door_data_flags.get(10)) {
+         ofile << 1 << " "; //test for next, will read untill -1
+         d_ptr->Write(ofile);
+         if (++j > 8) {
+            ofile << endl;
+            j = 0;
+         }//if
+      }//if
+      else {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "WARNING: door not in use for room: " << getIdNum() 
+                   << " door: " << d_ptr->getIdNum() << endl;
+         }
+      }
    }//while 
-   ofile << -1 << "\tdoor#, dest\n";
+   ofile << -1 << "\tEnd of Doors\n";
 
                       /*  Critters, stored mob# */
    int cnt = 0;
@@ -951,90 +1708,251 @@ int room::write(ostream& ofile) {
    }//while
    ofile << -1 << "\tmobs\n";
 
+   if (room_flags.get(35)) {
+      Cell<RoomScript*> cll;
+      room_proc_scripts.head(cll);
+      RoomScript* ptr;
+
+      int i = 1;
+      while ((ptr = cll.next())) {
+         ofile << i++ <<  "  Start of a room proc script\n";
+         ptr->write(ofile);
+      }
+      
+      ofile << "-1  End of room proc scripts" << endl;
+   }
+
    ofile << "End of Room\n";
  
    if (was_totally_read) {
       room_flags.turn_on(22); //make it as it was
    }//if
-   return 0;
 }//Write....sub_room
 
 
-void room::checkForBattle(critter& pc) {
-   SCell<critter*> cll(critters);
-
+void room::checkForProc(String& cmd, String& arg1, critter& actor,
+                        int targ) {
+   Cell<critter*> cll(critters);
    critter* ptr;
+   
+   mudlog.log("room::checkForProc.");
    while ((ptr = cll.next())) {
-      if (ptr->doesRemember(pc) && ptr->canDetect(pc)) {
-         say("There you are!!", *ptr, *(ptr->getCurRoom()));
-         try_hit(pc, *ptr);
-      }//if
+      //if (!ptr->pc) { //SMOB (not a PC)
+      //   if (ptr->mob->mob_data_flags.get(17)) { //ok then, it has data
+      //      if (mudlog.ofLevel(DBG)) {
+      //         mudlog << "room::checkForProc, found a mob: " 
+      //                << ptr->getName() << endl;
+      //      }
 
-      if (!haveCritter(&pc)) {
+      // Make sure that the actor is still in the room.
+      if (!critters.haveData(&actor)) {
          return;
       }
-      if (haveCritter(ptr)) { //make sure we're still there
-         if (pc.doesRemember(*ptr) && pc.canDetect(*ptr)) {
-            say("I've found you now!!", pc, *this);
-            try_hit(*ptr, pc);
-         }//if
+
+      // Have to check all, because mob also checks objects that
+      // the mob owns.
+      if (ptr->isMob()) { //if it's a MOB
+         //mudlog.log("Doing mob_to_smob..");
+         ptr = mob_to_smob(*ptr, getRoomNum());
+      }
+
+      ptr->checkForProc(cmd, arg1, actor, targ, *this);
+      //   }//if
+      //}//if
+   }//while
+
+
+   Cell<object*> ocll(inv);
+   object* optr;
+   while ((optr = ocll.next())) {
+
+      // Make sure that the actor is still in the room.
+      if (!critters.haveData(&actor)) {
+         return;
+      }
+
+      if (optr->hasScript()) {
+         if (mudlog.ofLevel(DBG)) {
+            mudlog << "room::checkForProc, found an object: " 
+                   << optr->getName() << endl;
+         }
+         if (!optr->isModified()) {
+            //mudlog.log("Doing obj_to_sobj..");
+            object* tmp = optr;
+            optr = obj_to_sobj(*optr, &inv, getIdNum());
+            if (!inv.substituteData(tmp, optr, 1)) {
+               mudlog.log(ERROR, "ERROR: checkForProc: substituteData  failed after obj_to_sobj.\n");
+            }//if
+         }
+         optr->checkForProc(cmd, arg1, actor, targ, *this);
       }//if
    }//while
-}//checkForBattle
+
+   // Now, check for room procs!!
+   Cell<RoomScript*> rcll;
+   RoomScript* rptr;
+         
+   room_proc_scripts.head(rcll);
+
+   int idx = 0;
+   while ((rptr = rcll.next())) {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "room::checkForProc, found room script: " 
+                << rptr->toStringBrief(0, getIdNum(), ENTITY_ROOM, idx) << endl;
+      }
+
+      // Make sure that the actor is still in the room.
+      if (!critters.haveData(&actor)) {
+         return;
+      }
+
+      if (rptr->matches(cmd, arg1, actor, targ)) {
+         mudlog.log("Script matches..\n");
+         if (pending_scripts.size() >= 10) { //only queue 10 scripts
+            return; //do nothing, don't want to get too much backlog.
+         }
+         else {
+            // add it to the pending scripts.
+            mudlog.log("Generating script.\n");
+            rptr->generateScript(cmd, arg1, actor, targ, *this, NULL);
+
+            mudlog.log("Inserting new script.\n");
+            insertNewScript(new RoomScript(*rptr));
+
+            if (cur_script) {
+               mudlog.log("Had a cur_script.\n");
+               if (cur_script->getPrecedence() <
+                   pending_scripts.peekFront()->getPrecedence()) {
+                  
+                  mudlog.log("Junking cur_script because of precedence.\n");
+                  pending_scripts.loseData(cur_script); //take it out of queue
+                  delete cur_script; //junk it!
+                  cur_script = pending_scripts.peekFront();
+                  cur_script->resetStackPtr(); //get ready to start
+               }//if
+               // else, it just goes into the queue
+            }//if we currently have a script.
+            else { //there was none, so grab the first one.
+               mudlog.log("Was no cur_script, taking top of pending stack.\n");
+               cur_script = pending_scripts.peekFront();
+               proc_action_rooms.gainData(this);
+               cur_script->resetStackPtr(); //get ready to start
+            }
+
+            return;
+         }//else
+      }//if matches
+      idx++;
+   }//while
+}//checkForProc
+
+/** Attempt to trigger a room script directly.  So far, we support only
+ * pull and push, but more can easily be added.
+ */
+int room::attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
+                                      critter& actor) {
+
+   int targ;
+   targ = i_th = -1; //use i_th to quiet the compiler.
+   
+   // Now, check for room procs!!
+   Cell<RoomScript*> rcll;
+   RoomScript* rptr;
+         
+   room_proc_scripts.head(rcll);
+
+   int idx = 0;
+   while ((rptr = rcll.next())) {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "room::attemptExecuteUnknownScript, found room script: " 
+                << rptr->toStringBrief(0, getIdNum(), ENTITY_ROOM, idx) << endl;
+      }
+      if (rptr->matches(cmd, arg1, actor, targ)) {
+         mudlog.log("Script matches..\n");
+         if (pending_scripts.size() >= 10) { //only queue 10 scripts
+            actor.show("Please try again in a bit.\n");
+            return 0; //do nothing, don't want to get too much backlog.
+         }
+         else {
+            // add it to the pending scripts.
+            mudlog.log("Generating script.\n");
+            rptr->generateScript(cmd, arg1, actor, targ, *this, NULL);
+
+            mudlog.log("Inserting new script.\n");
+            insertNewScript(new RoomScript(*rptr));
+
+            if (cur_script) {
+               mudlog.log("Had a cur_script.\n");
+               if (cur_script->getPrecedence() <
+                   pending_scripts.peekFront()->getPrecedence()) {
+                  
+                  mudlog.log("Junking cur_script because of precedence.\n");
+                  pending_scripts.loseData(cur_script); //take it out of queue
+                  delete cur_script; //junk it!
+                  cur_script = pending_scripts.peekFront();
+                  cur_script->resetStackPtr(); //get ready to start
+               }//if
+               // else, it just goes into the queue
+            }//if we currently have a script.
+            else { //there was none, so grab the first one.
+               mudlog.log("Was no cur_script, taking top of pending stack.\n");
+               cur_script = pending_scripts.peekFront();
+               proc_action_rooms.gainData(this);
+               cur_script->resetStackPtr(); //get ready to start
+            }
+
+            return 0;
+         }//else
+      }//if matches
+      idx++;
+   }//while
+   return -1; //didn't find anything that matched
+}//attemptExecuteUnknownScript
 
 
 int room::getZoneNum() {
    return ZoneCollection::instance().getZoneFor(*this).getIdNum();
 }
 
-void room::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
-   String buf(500);
+void room::stat(critter& pc) {
+   String buf2(100);
 
-   if (viewer && viewer->isUsingClient()) {
-      Sprintf(rslt, "<ROOM %i> ", getIdNum());
+   if (names.peekFront()) {
+      show(*(names.peekFront()), pc);
+   }//if
+
+   Sprintf(buf2, "  Belongs to zone:  %i.\n", getZoneNum());
+   show(buf2, pc);
+
+   show(short_desc, pc);
+   show("\n", pc);
+   show(long_desc, pc);
+   pc.show("\n");
+
+   Cell<KeywordPair*> cll(keywords);
+   KeywordPair* ptr;
+   int cnt = 0;
+
+   while ((ptr = cll.next())) {
+      ptr->show(cnt, pc);
+      cnt++;
    }
-   else {
-      Sprintf(rslt, "Room: %i", getIdNum());
+
+   out_field(room_flags, pc, ROOM_FLAGS_NAMES);
+
+   show("\n", pc);
+   Sprintf(buf2, "v_bit: %i  mv$: %i  r_num: %i  pause: %i  fall_to: %i\n", 
+           getVisBit(), getMovCost(), getRoomNum(), getPause(), getFallTo());
+   show(buf2, pc);
+
+   Sprintf(buf2, "Number of critters:  %i  Number of Scripts Pending: %i\n\n",
+           critters.size(), pending_scripts.size());
+   show(buf2, pc);
+
+   if (room_proc_scripts.size() > 0) {
+      listScripts(pc);
    }
-
-   Entity::toStringStat(viewer, buf, st);
-   rslt.append(buf);
-
-   short_desc.toStringStat("<SHORT_DESC>", "</SHORT_DESC>\n", viewer, buf);
-   rslt.append(buf);
-
-   if ((viewer && viewer->isImmort()) || (st | ST_IDENTIFY)) {
-      Markup::toString(NULL, room_flags, ROOM_FLAGS_NAMES,
-                       viewer, NULL, buf);
-      rslt.append(buf);
-      
-      Sprintf(buf, "Movement Cost: %i\n", getMovCost());
-      rslt.append(buf);
-   }
-
-   if ((viewer && viewer->isImmort()) || (st == ST_ALL)) {
-      SCell<KeywordPair*> cll(keywords);
-      KeywordPair* ptr;
-      int cnt = 0;
-
-      while ((ptr = cll.next())) {
-         ptr->toStringStat(viewer, buf, cnt, st);
-         rslt.append(buf);
-         cnt++;
-      }
-
-      Scriptable::toStringStat(viewer, buf);
-      rslt.append(buf);
-
-      Sprintf(buf, "Number of critters:  %i  Number of Scripts Pending: %i\n\n",
-              critters.size(), pending_scripts.size());
-      rslt.append(buf);
-   }//if immort
-
-   if (viewer && viewer->isUsingClient()) {
-      rslt.append("</ROOM>\n");
-   }
-}//toStringStat
+}//stat
 
 
 /* called after OLC to enforce as much state as possible. */
@@ -1054,7 +1972,7 @@ const String* room::getRandomExitDir(critter& pc) {
    int sz = doors.size();
    int idx = d(1, sz);
 
-   SCell<door*> cll(doors);
+   Cell<door*> cll(doors);
    door* ptr;
 
    int cnt = 0;
@@ -1100,7 +2018,7 @@ const String* room::getRandomExitDir(critter& pc) {
    return &UNKNOWN;
 }//getRandomExitDir
 
-int room::isInUse() {
+int room::isInUse() const {
    return (room_flags.get(23) || critters.size());
 }
 
@@ -1108,6 +2026,27 @@ int room::getCritCount(critter& pc) {
    return crit_count(critters, pc);
 }
 
+int room::getObjCount(object& obj) {
+   int retval = 0;
+   Cell<object*> cll(inv);
+   object* ptr;
+
+   while ((ptr = cll.next()))
+      if (ptr->getIdNum() == obj.getIdNum()) retval++;
+   
+   return retval;
+}
+
+int room::getObjCount(int onum) {
+   int retval = 0;
+   Cell<object*> cll(inv);
+   object* ptr;
+
+   while ((ptr = cll.next()))
+      if (ptr->getIdNum() == onum) retval++;
+   
+   return retval;
+}
 
 /* this returns the critter if exists.  rm_num is the number of
  * the room we found it in.  Returns NULL if not found.
@@ -1115,13 +2054,14 @@ int room::getCritCount(critter& pc) {
 critter* room::haveCritNamedInWorld(const int i_th, const String* name,
                                     const int see_bit, int& rm_num) {
    Cell<String*> char_cell;
-   SCell<critter*> cell;
+   Cell<critter*> cell;
    critter* crit_ptr;
-   int count = 0;
+   int count = 0, len;
+   String *string;
 
    mudlog.log(DBG, "In have_crit_named, for whole room_list");
 
-   if (name->Strlen() == 0) 
+   if ((len = name->Strlen()) == 0) 
       return NULL;
 
    if (i_th <= 0)
@@ -1139,11 +2079,14 @@ critter* room::haveCritNamedInWorld(const int i_th, const String* name,
          room_list[i].critters.head(cell);
          while ((crit_ptr = cell.next())) {
             if (detect(see_bit, crit_ptr->VIS_BIT)) {
-               if (crit_ptr->isNamed(*name, NULL)) {
-                  count++;
-                  if (count == i_th) {
-                     rm_num = i;
-                     return crit_ptr;
+               crit_ptr->names.head(char_cell);
+               while ((string = char_cell.next())) {
+                  if (strncasecmp(*string, *name, len) == 0){ 
+                     count++;
+                     if (count == i_th) {
+                        rm_num = i;
+                        return crit_ptr;
+                     }//if
                   }//if
                }//while
             }//if
@@ -1161,16 +2104,18 @@ critter* room::haveCritNamedInWorld(const int i_th, const String* name,
 critter* room::haveCritNamedInZone(zone& zn, const int i_th,
                                    const String* name, const int see_bit,
                                    int& in_room) {
-   SCell<critter*> cell;
+   Cell<String*> char_cell;
+   Cell<critter*> cell;
    critter* crit_ptr;
    int count = 0, len;
+   String *string;
 
    in_room = 0;
 
    //log("In have_crit_named, for whole zone");
 
    if (!name) {
-      mudlog.log(ERR, "ERROR:  NULL name sent to have_crit_named.\n");
+      mudlog.log(ERROR, "ERROR:  NULL name sent to have_crit_named.\n");
       return NULL;
    }//if
 
@@ -1186,13 +2131,16 @@ critter* room::haveCritNamedInZone(zone& zn, const int i_th,
       room_list[i].critters.head(cell);
       while ((crit_ptr = cell.next())) {
          if (detect(see_bit, crit_ptr->VIS_BIT)) {
-            if (crit_ptr->isNamed(*name, NULL)) {
-               count++;
-               if (count == i_th) {
-                  in_room = i;
-                  return crit_ptr;
+            crit_ptr->names.head(char_cell);
+            while ((string = char_cell.next())) {
+               if (strncasecmp(*string, *name, len) == 0){ 
+                  count++;
+                  if (count == i_th) {
+                     in_room = i;
+                     return crit_ptr;
+                  }//if
                }//if
-            }//if
+            }//while
          }//if
       }//while
    }//for
@@ -1203,10 +2151,10 @@ critter* room::haveCritNamedInZone(zone& zn, const int i_th,
 
 void room::doPoofOut(critter& pc) {
    String buf(100);
-   SCell<critter*> cll(critters);
+   Cell<critter*> cll(critters);
    critter* ptr;
    while ((ptr = cll.next())) {
-      if (&pc != ptr) {
+      if ((&pc != ptr) && ptr->canDetect(pc) && !ptr->isSleeping()) {
          if (ptr->isImmort() && (ptr->IMM_LEVEL >= pc.IMM_LEVEL)) {
             Sprintf(buf, "[OUT: %S] %S\n", pc.getName(), &(pc.getPoofout()));
          }
@@ -1230,7 +2178,8 @@ int room::doRclear(int new_rm_num) {
          int is_dead;
          crit_ptr->doGoToRoom(new_rm_num, NULL, NULL, is_dead, getIdNum(), 1);
          if (!is_dead) {
-            crit_ptr->show("The void has swallowed your previous location!!\n");
+            show("The void has swallowed your previous location!!\n", 
+                 *crit_ptr);
          }
       }
       else {
@@ -1239,15 +2188,15 @@ int room::doRclear(int new_rm_num) {
       }//else
    }//while
 
-   room::clear();  //clear out the room pc WAS in!!
+   Clear();  //clear out the room pc WAS in!!
    return 0;
 }//doRclear
 
 
 int room::doScan(critter& pc) {
    String buf(100);
-   SCell<door*> dcll(doors);
-   SCell<critter*> cll;
+   Cell<door*> dcll(doors);
+   Cell<critter*> cll;
    critter* ptr;
    int a, b;
 
@@ -1284,10 +2233,10 @@ int room::doScan(critter& pc) {
 
 void room::doPoofIn(critter& pc) {
    String buf(100);
-   SCell<critter*> cll(critters);
+   Cell<critter*> cll(critters);
    critter* ptr;
    while ((ptr = cll.next())) {
-      if (&pc != ptr) {
+      if ((&pc != ptr) && !ptr->isSleeping() && ptr->canDetect(pc)) {
          if (ptr->isImmort() && (ptr->IMM_LEVEL >= pc.IMM_LEVEL)) {
             Sprintf(buf, "[IN: %S] %S\n", pc.getName(), &(pc.getPoofin()));
          }
@@ -1302,7 +2251,7 @@ void room::doPoofIn(critter& pc) {
 
 
 void room::resetProcMobs() {
-   SCell<critter*> cll(critters);
+   Cell<critter*> cll(critters);
    critter* ptr;
    while ((ptr = cll.next())) {
       //mudlog << "Found a critter:  " << ptr << endl << flush;
@@ -1317,13 +2266,13 @@ void room::resetProcMobs() {
 void room::purgeCritter(int mob_num, critter& pc) {
    int done = FALSE;
    while (!done) {
-      SCell<critter*> cll(critters);
+      Cell<critter*> cll(critters);
       critter* ptr;
 
       done = TRUE;
       while ((ptr = cll.next())) {
          if (ptr->isNpc() && (ptr->getIdNum() == mob_num)) {
-            agg_kills_vict(pc, *ptr);
+            agg_kills_vict(&pc, *ptr);
             done = FALSE;
             break;
          }//if
@@ -1333,9 +2282,9 @@ void room::purgeCritter(int mob_num, critter& pc) {
 
 
 int room::sub_a_4_b(critter* crit_ptr, int i_th, const String& name,
-                    critter* viewer) {
+                    int see_bit) {
    return crit_sub_a_4_b(crit_ptr, critters, i_th, 
-                         &name, viewer);
+                         &name, see_bit, *this);
 }
 
 int room::sub_a_4_b(critter* a, critter* b, int i_th) {
@@ -1361,20 +2310,20 @@ void room::gainCritter(critter* crit) {
    if (crit->isMob()) {
       crit = mob_to_smob(*crit, *this);
    }//if
-   crit->setContainer(this);
+   crit->setCurRoomNum(getRoomNum());
 }
 
 void room::loseObjectFromGame(object& which_un) {
-   SCell<object*> ocll(inv);
+   Cell<object*> ocll(inv);
    object* optr;
-   SCell<critter*> ccll;
+   Cell<critter*> ccll;
    critter* cptr;
 
    int targ_num = which_un.getIdNum();
 
    optr = ocll.next();
    while (optr) {
-      if (optr->isModified() && (optr->getIdNum() == targ_num)) { //if SOBJ
+      if (optr->IN_LIST && (optr->getIdNum() == targ_num)) { //if SOBJ
          delete optr;
          optr = inv.lose(ocll);
       }
@@ -1405,13 +2354,13 @@ critter* room::removeCritter(critter* crit) {
       // We use room 0 for newbies logging in and such...will get boundary
       // case errors here in some instances...
       if (getIdNum() != 0) {
-         if (mudlog.ofLevel(ERR)) {
+         if (mudlog.ofLevel(WRN)) {
             mudlog << "WARNING:  could not remove the critter in"
                    << " room::removeCrit(), crit_name: " << *(crit->getName()) 
                    << " num: " << crit->getIdNum() << " room: "
                    << getIdNum() << endl;
+            core_dump("removeCritter");
          }//if
-         core_dump("removeCritter");
       }//if
    }//else
 
@@ -1419,9 +2368,9 @@ critter* room::removeCritter(critter* crit) {
 }//removeCritter
 
 
-void room::getPetsFor(critter& owner, SafeList<critter*>& rslts) {
+void room::getPetsFor(critter& owner, List<critter*>& rslts) {
    critter* ptr;
-   SCell<critter*> cll(critters);
+   Cell<critter*> cll(critters);
    while ((ptr = cll.next())) {
       if (owner.PETS.haveData(ptr)) {
          rslts.append(ptr);
@@ -1441,7 +2390,7 @@ void room::outInv(critter& pc) {
 void room::gainInv(object* obj) {
    if (obj->obj_flags.get(55)) { //if it's coins
       if (obj->cur_stats[1] == 0) {
-         if (obj->isModified()) {
+         if (obj->IN_LIST) {
             mudlog << "ERROR:  Possible memory leak, gainInv:  obj is SOBJ"
                    << " but has zero coins, obj#" << obj->getIdNum()
                    << " room# " << getIdNum() << endl;
@@ -1450,13 +2399,38 @@ void room::gainInv(object* obj) {
       }//if
    }//if
          
+   // If this ever changes from prepend, must change the disolve-pet
+   // code in misc.cc (it disolves the corpse)
    inv.prepend(obj);
-   if (obj->isModified()) {
-      obj->setContainer(this);
+   if (obj->IN_LIST) {
+      obj->IN_LIST = &inv;
+      obj->setCurRoomNum(getIdNum(), 0);
    }
-}
+}//gainInv
+
+void room::purgeObj(object* obj, critter* pc, int do_msg) {
+   
+   loseInv(obj);
+
+   if (!obj->isBulletinBoard()) {
+      recursive_init_unload(*obj, 0);
+   }
+   else {
+      obj->decrementCurInGame();
+   }
+
+   if (do_msg && pc) {
+      pc->show("Ok, object purged from room.\n");
+   }
+
+   if (obj->IN_LIST) {
+      delete obj;
+   }//if
+}//purgeObj
+
 
 object* room::loseInv(object* obj) {
+   obj->setCurRoomNum(0, 0);
    return inv.loseData(obj);
 }
 
@@ -1471,7 +2445,7 @@ critter* room::haveCritNamed(int i_th, const String* name, int see_bit) {
 }
 
 critter* room::haveCritNamed(int i_th, const String* name, critter& pc) {
-   int foo;
+   int foo = 0;
    return haveCritNamed(i_th, name, pc, foo);
 }
 
@@ -1481,8 +2455,7 @@ critter* room::haveCritNamed(int i_th, const String* name, critter& pc,
        (strcasecmp(*name, "self") == 0)) {
       return &pc;
    }
-   return ::have_crit_named(critters, i_th, name, pc.SEE_BIT,
-                            count_sofar, *this);
+   return ::have_crit_named(critters, i_th, name, pc.SEE_BIT, count_sofar, *this);
 }
 
 critter* room::haveCritter(critter* ptr) {
@@ -1499,21 +2472,9 @@ object* room::haveObject(object* ptr) {
    return NULL;
 }
 
-object* room::haveObjNamed(int i_th, const String* name, critter& viewer) {
-   int foo;
-   return ::have_obj_named(inv, i_th, name, viewer.getSeeBit(),
-                           *this, foo, viewer.getLanguage());
-}
-
-void room::checkForProc(String& cmd, String& arg1, critter& actor,
-                        int targ_num) {
-   Scriptable::checkForProc(cmd, arg1, &actor, targ_num, this, NULL);
-}
-
-
-object* room::haveObjNamed(int i_th, const String* name, int c_bit) {
-   int foo;
-   return ::have_obj_named(inv, i_th, name, c_bit, *this, foo);
+object* room::haveObjNamed(int i_th, const String* name, int see_bit) {
+   int foo = 0;
+   return ::have_obj_named(inv, i_th, name, see_bit, *this, foo);
 }
 
 object* room::haveAccessibleObjNamed(int i_th, const String* name,
@@ -1531,8 +2492,86 @@ object* room::haveAccessibleObjNamed(int i_th, const String* name,
    return ptr;
 }//haveAccesibleObjNamed
 
+int room::doClose(int i_th, const String* name) {
+   door* dr_ptr;
+   object* ob_ptr;
+   String buf(100);
+
+   if ((dr_ptr = door::findDoor(this->DOORS, i_th, name, ~0, *this))) {
+      if (dr_ptr->isOpen()) {
+         if (dr_ptr->canClose()) {
+            dr_ptr->close();
+            return 0;
+         }
+      }
+   }
+   else {
+      ob_ptr = this->haveObjNamed(i_th, name, ~0);
+      if (ob_ptr && ob_ptr->bag && !ob_ptr->isModified()) {
+         ob_ptr = obj_to_sobj(*ob_ptr, this->getInv(), TRUE, 
+                              i_th, name, ~0, *this);
+      }
+      if (ob_ptr && ob_ptr->bag && !ob_ptr->isClosed()) {
+         ob_ptr->bag->close();
+         return 0;
+      }
+   }
+   return -1;
+}
+
+int room::doMload(int i_th) {
+   critter* crit_ptr; 
+
+   if ((i_th >= 1) && (i_th < NUMBER_OF_MOBS)) {
+      crit_ptr = &(mob_list[i_th]);
+      if (!crit_ptr->CRIT_FLAGS.get(18)) {
+         return -1;
+      }//if
+   }//if
+                 /* do it then */
+
+   if (crit_ptr->isPlayerShopKeeper()) {
+      critter* shop_keeper = load_player_shop_owner(crit_ptr->getIdNum());
+      if (shop_keeper) {
+         gainCritter(shop_keeper);
+      }//if
+   }//if
+   else {
+      gainCritter(&(mob_list[crit_ptr->getIdNum()]));
+   }
+
+   recursive_init_loads(*crit_ptr);
+   return 0;
+}//mload
+
+
+int room::doOload(int i_th) {
+   object* obj_ptr;
+   //   mudlog.log(TRC, "In oclone.\n");
+
+   if ((i_th >= 1) && (i_th < NUMBER_OF_ITEMS)) {
+      obj_ptr = &(obj_list[i_th]);
+      if (!obj_ptr->OBJ_FLAGS.get(10)) {
+         return -1;
+      }//if
+   }//if
+   else {
+      return -1;
+   }//else
+         
+   if (!obj_ptr->isBulletinBoard()) {
+      recursive_init_loads(*obj_ptr, 0);
+   }
+   else {
+      obj_ptr->incrementCurInGame();
+   }
+   gainInv(obj_ptr);
+   return 0;
+}//oload
+
+
 critter* room::findFirstBanker() {
-   SCell<critter*> cell(critters);
+   Cell<critter*> cell(critters);
    critter* crit_ptr;
 
    while ((crit_ptr = cell.next())) { 
@@ -1546,7 +2585,7 @@ critter* room::findFirstBanker() {
 
 
 critter* room::findFirstShopKeeper() {
-   SCell<critter*> cell(critters);
+   Cell<critter*> cell(critters);
    critter* crit_ptr;
 
    while ((crit_ptr = cell.next())) { 
@@ -1560,7 +2599,7 @@ critter* room::findFirstShopKeeper() {
 
 
 critter* room::findFirstTeacher() {
-   SCell<critter*> cell(critters);
+   Cell<critter*> cell(critters);
    critter* crit_ptr;
 
    while ((crit_ptr = cell.next())) { 
@@ -1573,101 +2612,165 @@ critter* room::findFirstTeacher() {
 }//findFirstTeacher
 
 
-door* room::findDoor(int i_th, const String* direction, critter& viewer, int& sofar) {
-   return door::findDoor(doors, i_th, direction, sofar, &viewer);
-}
 
-door* room::findDoor(int i_th, const String* direction, critter& viewer) {
-   int foo = 0;
-   return door::findDoor(doors, i_th, direction, foo, &viewer);
-}
-
-door* room::findDoor(int i_th, const String* direction) {
-   return door::findDoor(doors, i_th, direction, NULL);
-}
-
-
-void room::showAllCept(CSentryE msg, critter* pc, critter* pc2) {
-   SCell<critter*> cell(critters);
+void room::showAllCept(const char* msg, critter* pc) const {
+   Cell<critter*> cell(critters);
    critter* crit_ptr;
 
    while ((crit_ptr = cell.next())) { 
-      if ((crit_ptr != pc) && (crit_ptr != pc2)) {  
-	 if (crit_ptr->POS < POS_SLEEP)  
-	    crit_ptr->show(msg);
-      }
+      if (crit_ptr != pc)  
+         if (crit_ptr->POS < POS_SLEEP)  
+            show(msg, *crit_ptr);
    }//while
 
-   SCell<object*> cll(inv);
+   Cell<object*> cll(inv);
    object* obj;
 
    while ((obj = cll.next())) {
      if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
-       if ((crit_ptr != pc) && (crit_ptr != pc2)) {
-	 if (crit_ptr->POS < POS_SLEEP) {
-	   crit_ptr->show("#####");
-	   crit_ptr->show(msg);
-	 }//if
+       if (crit_ptr != pc) {
+         if (crit_ptr->POS < POS_SLEEP) {
+           show("#####", *crit_ptr);
+           show(msg, *crit_ptr);
+         }//if
        }//if
      }//if
    }//while
 }// show_all_cept
 
+void room::finishedRoomProc() {
+   if (cur_script) {
+      pending_scripts.loseData(cur_script);
+      delete cur_script;
+   }
 
-void room::showAllCept(String& msg, critter* pc, critter* pc2) {
-   SCell<critter*> cell(critters);
-   critter* crit_ptr;
+   // This could easily end up being NULL, that's OK!
+   cur_script = pending_scripts.peekFront();
+}//finishedRoomProc
 
-   while ((crit_ptr = cell.next())) { 
-      if ((crit_ptr != pc) && (crit_ptr != pc2)) {  
-	 if (crit_ptr->POS < POS_SLEEP)  
-	    crit_ptr->show(msg);
-      }
-   }//while
+void room::addProcScript(const String& txt, RoomScript* script_data) {
+   //similar to reading it in...
+   //first, see if we are over-writing one...
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In room::addProcScript, txt:  \n" << txt
+             << "\nscript data:  "
+             << script_data->toStringBrief(0, 0, ENTITY_ROOM, 0) << endl;
+   }
 
-   SCell<object*> cll(inv);
-   object* obj;
+   room_flags.turn_on(35);
 
-   while ((obj = cll.next())) {
-     if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
-       if ((crit_ptr != pc) && (crit_ptr != pc2)) {
-	 if (crit_ptr->POS < POS_SLEEP) {
-	   crit_ptr->show("#####");
-	   crit_ptr->show(msg);
-	 }//if
-       }//if
-     }//if
-   }//while
-}// show_all_cept
+   Cell<RoomScript*> cll;
+   RoomScript* ptr;
+   room_proc_scripts.head(cll);
 
-
-void room::showAllCeptN(CSentryE msg, Entity* getNameOf) {
-   SCell<critter*> cell(critters);
-   critter* crit_ptr;
-   String buf(100);
-
-   while ((crit_ptr = cell.next())) { 
-      if (crit_ptr->POS < POS_SLEEP) {
-         Sprintf(buf, cstr(msg, *crit_ptr), getNameOf->getName(crit_ptr));
-         buf.cap();
-         crit_ptr->show(buf);
-      }
-   }//while
-
-   SCell<object*> cll(inv);
-   object* obj;
-
-   while ((obj = cll.next())) {
-      if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
-	 if (crit_ptr->POS < POS_SLEEP) {
-            crit_ptr->show("#####");
-            Sprintf(buf, cstr(msg, *crit_ptr), getNameOf->getName(crit_ptr));
-            buf.cap();
-            crit_ptr->show(msg);
-	 }//if
+   while ((ptr = cll.next())) {
+      if (ptr->matches(*script_data)) {
+         //got a match.
+         mudlog.log("room::addProcScript, they match.");
+         *ptr = *script_data;
+         ptr->setScript(txt);
+         delete script_data;
+         return;
       }//if
    }//while
-}// show_all_cept
+   
+   mudlog.log(DBG, "About to setScript.");
+   
+   script_data->setScript(txt);
+   mudlog.log(DBG, "done with setScript.");
+
+   if (!script_data) {
+      mudlog.log(ERROR, "script_data is NULL, room::addProcScript.");
+      return;
+   }
+
+   room_proc_scripts.append(script_data);
+}//addProcScript
+
+void room::listScripts(critter& pc) {
+   String buf(500);
+   buf.Append("These scripts are defined for this room, the actual scripts
+may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n");
+
+   pc.show(buf);
+
+   String tmp(100);
+   int found_one = FALSE;
+   Cell<RoomScript*> cll(room_proc_scripts);
+   RoomScript* ptr;
+   int idx = 0;
+   while ((ptr = cll.next())) {
+      found_one = TRUE;
+      tmp = ptr->toStringBrief(FALSE, 0, ENTITY_ROOM, idx);
+      Sprintf(buf, "[%i] %S\n", idx, &(tmp));
+      pc.show(buf);
+      idx++;
+   }
+
+   if (!found_one) {
+      buf.Append("No scripts defined for this room.\n");
+      show(buf, pc);
+   }
+}//listScripts
+
+void room::removeScript(String& trigger, int i_th, critter& pc) {
+   int sofar = 1;
+   String buf(500);
+ 
+   Cell<RoomScript*> cll(room_proc_scripts);
+   RoomScript* ptr;
+   ptr = cll.next();
+   while (ptr) {
+      if (strcasecmp(*(ptr->getTrigger()), trigger) == 0) {
+         if (sofar == i_th) {
+            delete ptr;
+            ptr = room_proc_scripts.lose(cll);
+            show("Deleted it...\n", pc);
+            return;
+         }//if
+         else {
+            ptr = cll.next();
+         }
+         sofar++;
+      }//if
+      else {
+         ptr = cll.next();
+      }
+   }//while
+
+   show("Didn't find that script..\n", pc);
+}//removeScript
+
+
+int room::insertNewScript(RoomScript* script) {
+   RoomScript* ptr;
+   Cell<RoomScript*> cll(pending_scripts);
+
+   // Don't append scripts that have a zero precedence, if there
+   // are other scripts in the queue.
+   if ((script->getPrecedence() == 0) && (!pending_scripts.isEmpty())) {
+      delete script;
+      return 0;
+   }
+
+   while ((ptr = cll.next())) {
+      if (ptr->getPrecedence() < script->getPrecedence()) {
+         // Then insert it
+         pending_scripts.insertBefore(cll, script);
+         return 0;
+      }//if
+   }//while
+
+   // If here, then we need to place it at the end.
+   pending_scripts.append(script);
+   return 0;
+}
+
+
+void room::doScriptJump(int abs_offset) {
+   if (cur_script)
+      cur_script->doScriptJump(abs_offset);
+}
 
 
 int room::doEmote(critter& pc, CSelectorColl& includes,
@@ -1682,7 +2785,7 @@ int room::doEmote(critter& pc, CSelectorColl& includes,
 
 int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
                    CSentryE cs_entry, va_list argp) {
-   SCell<critter*> cll(critters);
+   Cell<critter*> cll(critters);
    critter* ptr;
    String buf(100);
    String buf2(100);
@@ -1704,7 +2807,7 @@ int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
             if (mudlog.ofLevel(DBG)) {
                mudlog << endl << "buf -:" << buf << ":-" << endl << endl;
             }
-            Sprintf(buf2, "%S %S", pc.getName(ptr), &buf);
+            Sprintf(buf2, "%S %S", pc.getName(ptr->SEE_BIT), &buf);
             buf2.Cap();
             ptr->show(buf2);
          }//if
@@ -1713,149 +2816,32 @@ int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
    return 0;
 }//vDoEmote
 
-int room::doEmoteN(critter& pc, CSentryE cs_entry, Entity& vict) {
-   return doEmoteN(pc, Selectors::instance().CC_all,
-                   Selectors::instance().CC_sleeping,
-                   cs_entry, vict);
-}
-
-int room::doEmoteN(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
-                   CSentryE cs_entry, Entity& vict) {
-   SCell<critter*> cll(critters);
-   critter* ptr;
-   String buf(100);
-   String buf2(100);
-
-   while ((ptr = cll.next())) {
-      if (!(denies.matches(ptr, &pc))) {
-         if (mudlog.ofLevel(DBG)) {
-            mudlog << "room::doEmoteN, not denied." << endl;
-         }
-         if (includes.matches(ptr, &pc)) {
-            if (mudlog.ofLevel(DBG)) {
-               mudlog << "room::doEmoteN, includes matched." << endl;
-               mudlog << "cstr of " << (int)(cs_entry) << "-:"
-                      << cstr(cs_entry, *ptr) << ":-" <<  endl;
-            }
-
-            Sprintf(buf, cstr(cs_entry, *ptr), vict.getLongName());
-            if (mudlog.ofLevel(DBG)) {
-               mudlog << endl << "buf -:" << buf << ":-" << endl << endl;
-            }
-            Sprintf(buf2, "%S %S", pc.getName(ptr), &buf);
-            buf2.cap();
-            ptr->show(buf2);
+int room::getVisBit(bool lightAdjust = false) const {
+   int vb = cur_stats[0];
+   if (lightAdjust) {
+      if (isPermDark()) {
+         vb |= 1; //perm dark it is
+      }//if
+      else if (isNormallyDark() || (isNightTime() && room_flags.get(4))) {
+         //normally dark, or outside and night time
+         vb |= 1;
+         if (isAffectedBy(ILLUMINATE_SKILL_NUM)) {
+            vb &= ~1;
          }//if
-      }//if
-   }//while
-   return 0;
-}//doEmoteN
-
-
-/** These default to english, makes a copy of incoming data. */
-void room::addShortDesc(String& new_val) {
-   short_desc.addString(English, new_val);
-}
-
-void room::addShortDesc(LanguageE l, String& buf) {
-   short_desc.addString(l, buf);
-}
-
-void room::setShortDesc(CSentryE msg) {
-   for (int i = 0; i<LS_PER_ENTRY; i++) {
-      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
-      short_desc.addLstring(nm);
+         else {
+            Cell<critter*> cll(critters);
+            critter* crit_ptr;
+            while ((crit_ptr = cll.next())) {
+               if (crit_ptr->CRIT_FLAGS.get(1)) { //if using_light source 
+                  vb &= ~1;
+                  break;
+               }//if
+            }//while
+         }//else
+      }//if normally_dark
+      else {
+         vb &= ~1;
+      }//else
    }
+   return vb;
 }
-
-void room::appendShortDesc(CSentryE msg) {
-   for (int i = 0; i<LS_PER_ENTRY; i++) {
-      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
-      short_desc.appendString(nm);
-   }
-}
-
-void room::appendShortDesc(String& msg) {
-   short_desc.appendString(English, msg);
-}
-
-void room::prependShortDesc(String& str) {
-   short_desc.prependString(English, str);
-}
-
-void room::prependShortDesc(CSentryE msg) {
-   for (int i = 0; i<LS_PER_ENTRY; i++) {
-      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
-      short_desc.prependString(nm);
-   }
-}
-
-   /** Makes a copy of incoming data. */
-void room::addShortDesc(LString& new_val) {
-   short_desc.addLstring(new_val);
-}
-
-String* room::getShortDesc(critter* observer) {
-   if (detect(observer->getSeeBit(), vis_bit)) {
-      return short_desc.getString(observer->getLanguage());
-   }
-   else {
-      return &UNKNOWN;
-   }
-}
-
-String* room::getShortDesc(int see_bit) {
-   if (detect(see_bit, vis_bit)) {
-      return short_desc.getString(English);
-   }
-   else {
-      return &UNKNOWN;
-   }
-}
-
-
-int room::haveMinObj(int cnt, int obj_num) {
-   SCell<object*> cll(inv);
-   object* ptr;
-   int count = 0;
-
-   if (cnt == 0)
-      return FALSE;
-
-   while ((ptr = cll.next())) {
-      count += ptr->getObjCountByNumber(obj_num, 0);
-
-      if (ptr->getIdNum() == obj_num) {
-         count++;
-      }//if obj nums agree
-
-      if (count >= cnt) {
-         return TRUE;
-      }//if
-   }//while
-
-   return FALSE;
-}//haveObjNumbered
-
-
-object* room::getObjNumbered(int cnt, int obj_num, critter& viewer) {
-   SCell<object*> cll(inv);
-   object* ptr;
-   int count = 0;
-
-   if (cnt == 0)
-      return NULL;
-
-   while ((ptr = cll.next())) {
-      if (viewer.canDetect(*ptr)) {
-         if (ptr->getIdNum() == obj_num) {
-            count++;
-            if (count == cnt) {
-               return ptr;
-            }//if
-         }//if obj nums agree
-      }
-   }//while
-
-   return NULL;
-}//getObjNumbered

@@ -1,5 +1,5 @@
-// $Id: olc2.h,v 1.11 1999/08/30 06:30:41 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
+// $Id: olc2.h,v 1.12 2001/03/29 03:02:33 eroper Exp $
+// $Revision: 1.12 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
 
 //
 //ScryMUD Server Code
@@ -34,31 +34,33 @@
 
 
 int do_create_construction(int rslt, int comp1, int comp2, int comp3, int comp4,
-                           int comp5, critter& pc, ComponentEnum con_type);
+                       int comp5, critter& pc, ComponentEnum con_type);
 
 int create_concoction(int rslt, int comp1, int comp2, int comp3, int comp4,
-                      int comp5, critter& pc);
+                       int comp5, critter& pc);
 
 int create_construction(int rslt, int comp1, int comp2, int comp3, int comp4,
-                        int comp5, critter& pc);
+                         int comp5, critter& pc);
 
 int save_mob(int i_th, String* mob_name, critter& pc);
 int save_obj(int i_th, String* obj_name, critter& pc);
 
-/** make it fit w/in standards as much as possible, set 1024 vis bit... */
-int normalize_obj(object& obj, bool just_check = false, critter* pc = NULL);
+// normalize_obj:  make it fit w/in standards as
+//                 much as possible, set 1024
+//                 vis bit...
+int normalize_obj(object& obj, bool just_check = false, critter *pc = NULL);
 
 int normalize_mob(critter& obj);
 int normalize_room(room& rm);
 int normalize_door(door_data& dr);
 
-int ch_rname(String* rname, critter& pc);
+int ch_rname(const String* rname, critter& pc);
 int ch_rdesc(critter& pc);  
 int ch_kdesc(int idx, critter& pc);
 
 int ch_path_desc(int veh_id, int path_cell_num, critter& pc);
 int set_path_dir(int veh_id, int path_cell_num, int i_th,
-                 const String* dir, critter& pc);
+                  const String* dir, critter& pc);
 
 int add_keyword(critter& pc);
 int rm_keyword(int idx, critter& pc);
@@ -80,14 +82,14 @@ int list_paths(int veh_id, critter& pc);
 int stat_path(int veh_id, int path_cell_num, critter& pc);
 int set_path_pointer(int veh_id, int index, critter& pc);
 int set_veh_stop(int veh_id, int path_cell_num,
-                 const String* yes_no, critter& pc);
+                  const String* yes_no, critter& pc);
 
 int ch_mdesc(int i_th, critter& pc);
-int ch_mndesc(int mob_num, String* desc, critter& pc);
-int ch_msdesc(int mob_num, String* desc, critter& pc);
+int ch_mndesc(int mob_num, const String* desc, critter& pc);
+int ch_msdesc(int mob_num, const String* desc, critter& pc);
 
-int ch_ondesc(int obj_num, String* desc, critter& pc);
-int ch_osdesc(int obj_num, String* desc, critter& pc);
+int ch_ondesc(int obj_num, const String* desc, critter& pc);
+int ch_osdesc(int obj_num, const String* desc, critter& pc);
 int ch_odesc(int i_th, critter& pc);
 
 int ch_ddesc(int i_th, critter& pc);
@@ -96,13 +98,13 @@ int do_ch_desc(critter& pc);  //does stuff, and exits upon '~'
 
 
 int add_mob_script(critter& pc, int mob_num, String& trigger_cmd,
-                   int actor_num, String& descriminator, int target_num,
-                   int takes_precedence);
+                    int actor_num, String& descriminator, int target_num,
+                    int takes_precedence);
 int do_add_mob_script(critter& pc);
 
 int add_room_script(critter& pc, int rm_num, String& trigger_cmd,
-                    int actor_num, String& descriminator, int target_num,
-                    int takes_precedence);
+                     int actor_num, String& descriminator, int target_num,
+                     int takes_precedence);
 int do_add_room_script(critter& pc);
 
 int add_obj_script(critter& pc, int obj_num, String& trigger_cmd,
@@ -114,10 +116,14 @@ int do_add_obj_script(critter& pc);
 int clear_mnames(int obj_num, critter& pc);
 int clear_onames(int obj_num, critter& pc);
 
-int add_oname(int obj_num, String* name, critter& pc);
-int add_mname(int mob_num, String* name, critter& pc);
-int rem_oname(int obj_num, String* name, critter& pc);
-int rem_mname(int mob_num, String* name, critter& pc);
+
+int add_crit_alias(int i_th, const String* targ, String* alias,
+                   critter& pc);
+
+int add_oname(int obj_num, const String* name, critter& pc);
+int add_mname(int mob_num, const String* name, critter& pc);
+int rem_oname(int obj_num, const String* name, critter& pc);
+int rem_mname(int mob_num, const String* name, critter& pc);
 
 int reset_olc(critter& pc);
 int add_proc(int mnum, critter& pc);

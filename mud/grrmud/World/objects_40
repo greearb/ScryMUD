@@ -1,0 +1,249 @@
+326	 Start of Object
+stream ~	names
+a crystal-clear stream
+~
+ 
+~
+It flows through the clearing at a slow pace.  The water looks clean and fit to
+drink.
+
+~
+59 54 40 21 10 -1  -:| bitfield |:-
+-1 0 100 0 1 1001 0 0 0 	extras
+1024 0 326 40 	cur_stats
+9 -1  -:| bitfield |:-
+0 2000 100 -1 	 bag_stuff
+-1	affected_by
+7 -1	inv
+-1	stat_affects
+End of Object.
+
+
+328	 Start of Object
+sword short shortsword ~	names
+a short sword
+~
+A short sword lies here gathering dust.
+~
+A short  and fairly light sword with a few rust spots lies here.  It isn't
+the greatest you've ever seen, but it looks pretty sharp!
+
+~
+57 43 41 30 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 5 2 3 2 	extras
+1024 500 328 40 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+329	 Start of Object
+dagger ~	names
+a dagger
+~
+A small dagger lies here.
+~
+The dagger is short and well-polished, and it looks like it could be quite
+dangerous!
+
+~
+57 43 41 31 30 10 -1  -:| bitfield |:-
+0 0 100 0 1 3 2 6 3 	extras
+1024 250 329 40 	cur_stats
+-1	affected_by
+-1	inv
+8 3 -1	stat_affects
+End of Object.
+
+
+340	 Start of Object
+bearskin ~	names
+a bearskin
+~
+The fur of a bear lies here, cut away from the body.
+~
+It doesn't look too pleasant to wear, but it would probably be of help in
+battle.
+
+~
+56 40 25 10 -1  -:| bitfield |:-
+0 0 100 0 1 2 0 0 1 	extras
+1024 100 340 40 	cur_stats
+-1	affected_by
+-1	inv
+23 5 30 -15 -1	stat_affects
+End of Object.
+
+
+581	 Start of Object
+gold pile ~	names
+a pile of gold
+~
+A pile of gold lies here.
+~
+You see a pile of gold, wish you could tell how big it was eh? :)
+
+~
+55 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 20 1 0 0 0 	extras
+1024 236 581 40 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+582	 Start of Object
+ring ~	names
+a shiny ring
+~
+A shining ring lies here.
+~
+You see a shiny, polished metal ring.
+
+~
+56 40 38 37 10 -1  -:| bitfield |:-
+0 0 100 0 20 1 0 0 4 	extras
+1024 100 582 40 	cur_stats
+-1	affected_by
+-1	inv
+23 12 -1	stat_affects
+End of Object.
+
+
+583	 Start of Object
+breastplate metal plate ~	names
+a metal breastplate
+~
+A dull metal breastplate lies here.
+~
+It has some dents and scratches, but it looks like it'd be good protection!
+
+~
+56 40 33 10 -1  -:| bitfield |:-
+0 0 100 0 20 8 0 0 4 	extras
+1024 120 583 40 	cur_stats
+-1	affected_by
+-1	inv
+9 -12 -1	stat_affects
+End of Object.
+
+
+584	 Start of Object
+gem red ~	names
+a reddish-colored gem
+~
+A reddish-colored gem lies here, glowing slightly.
+~
+It is hot to the touch and gives off a bit of an aura.
+
+~
+63 51 40 31 10 -1  -:| bitfield |:-
+4 0 100 0 100 1 0 0 4 	extras
+1024 200 584 40 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+219 4 -1 spell#, level (casts)
+End of Object.
+
+
+754	 Start of Object
+skin bobcat pelt fur ~	names
+the pelt of a bobcat
+~
+The tattered pelt of a bobcat lies here in a heap.
+~
+It is thin enough that it probably wouldn't offer much protection, but it's
+pretty good for looks!
+
+~
+56 50 40 25 10 -1  -:| bitfield |:-
+0 0 100 0 100 5 0 0 0 	extras
+0 100 754 40 	cur_stats
+-1	affected_by
+-1	inv
+9 -5 -1	stat_affects
+End of Object.
+
+
+755	 Start of Object
+a fur hat ~	names
+a fur hat
+~
+A thick, soft fur hat lies here.
+~
+It is a reddish color and looks to have come from a fox.
+
+~
+56 50 40 22 10 -1  -:| bitfield |:-
+0 0 100 0 100 3 0 0 0 	extras
+0 200 755 40 	cur_stats
+-1	affected_by
+-1	inv
+30 -30 -1	stat_affects
+End of Object.
+
+
+760	 Start of Object
+skin bearskin ~	names
+a bearskin
+~
+The skin of a bear lies here.
+~
+It is a shiny bearskin, cleanly removed from the bear.
+
+~
+56 40 25 10 -1  -:| bitfield |:-
+0 0 100 0 1 8 0 0 0 	extras
+1024 10 760 40 	cur_stats
+-1	affected_by
+-1	inv
+9 -5 -1	stat_affects
+End of Object.
+
+
+761	 Start of Object
+skin rabbit rabbitskin ~	names
+a rabbit skin
+~
+The skin of a rabbit lies here.
+~
+It is a small white skin, cleanly removed from its previous owner.
+
+~
+67 63 56 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 3 0 0 0 	extras
+1024 10 761 40 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+1 -1  -:| bitfield |:-
+762 761 0 0 0 0	 target object, companions
+End of Object.
+
+
+762	 Start of Object
+pouch rabbitskin skin ~	names
+a rabbit skin pouch
+~
+A small pouch made of the skin of a rabbit lies here.
+~
+It is a small pouch made from the skin of a white rabbit.
+
+~
+54 40 31 10 -1  -:| bitfield |:-
+0 0 100 0 1 2 0 0 0 	extras
+1024 20 762 40 	cur_stats
+9 -1  -:| bitfield |:-
+0 12 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+-1 END OF FILE

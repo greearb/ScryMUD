@@ -1,5 +1,5 @@
-// $Id: dam_skll.h,v 1.3 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: dam_skll.h,v 1.4 2001/03/29 03:02:31 eroper Exp $
+// $Revision: 1.4 $  $Author: eroper $ $Date: 2001/03/29 03:02:31 $
 
 //
 //ScryMUD Server Code
@@ -34,9 +34,9 @@
 #include "spells.h"
 #include "skills.h"
 
-int body_slam(int i_th, const String* vict, critter& pc);
+int body_slam(int i_th, const String* vict, critter& pc, int was_ordered);
 int do_body_slam(critter& vict, critter& pc);
-int hurl(int i_th, const String* vict, critter& pc);
+int hurl(int i_th, const String* vict, critter& pc, int was_ordered);
 int do_hurl(critter& vict, critter& pc);
 
 

@@ -1,0 +1,241 @@
+478	 Start of Object
+large axe ~	names
+a large axe
+~
+A large axe lies here.
+~
+A large axe looks rather heavy.
+
+~
+40 21 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 5 0 0 0 	extras
+1024 500 478 10 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+568	 Start of Object
+large axe ~	names
+a large axe
+~
+A large axe lies here.
+~
+A large axe looks rather heavy.
+
+~
+57 40 30 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 5 0 0 0 	extras
+1024 5000 568 10 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+612	 Start of Object
+large axe ~	names
+a large axe
+~
+A large axe lies here.
+~
+A large axe looks rather heavy.
+
+~
+57 40 30 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 25 2 2 0 	extras
+1024 5000 612 10 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+613	 Start of Object
+large axe ~	names
+a large axe
+~
+A large axe lies here.
+~
+A large axe looks rather heavy.
+
+~
+57 40 30 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 5 2 2 0 	extras
+1024 5000 613 10 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+614	 Start of Object
+large axe ~	names
+a large dwarven axe
+~
+A large axe lies here.
+~
+A large dwarven axe looks rather heavy. The extremely sharp edge looks like it
+could cleave a man in two with ease.
+
+~
+57 40 30 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 10 2 2 0 	extras
+1024 5000 614 10 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+616	 Start of Object
+large axe ~	names
+a large dwarven axe
+~
+A large axe lies here.
+~
+A large dwarven axe looks rather heavy. The extremely sharp edge looks like it
+could cleave a man in two with ease.
+
+~
+57 40 30 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 10 2 2 0 	extras
+1024 5000 616 10 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+617	 Start of Object
+large axe ~	names
+a large dwarven axe
+~
+A large axe lies here.
+~
+A large dwarven axe looks rather heavy. The extremely sharp edge looks like it
+could cleave a man in two with ease.
+
+~
+57 40 30 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 10 2 3 3 	extras
+1024 5000 617 10 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+619	 Start of Object
+lump worms ~	names
+a lump of worms
+~
+a lump of worms crawls around here.
+~
+A generic object looks kinda sad.
+
+~
+61 40 22 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 0 0 0 0 	extras
+1024 500 619 10 	cur_stats
+-1	affected_by
+-1	inv
+100 5 -1	stat_affects
+End of Object.
+
+
+620	 Start of Object
+large axe ~	names
+a large dwarven axe
+~
+A large axe lies here.
+~
+A large dwarven axe looks rather heavy. The extremely sharp edge looks like it
+could cleave a man in two with ease.
+
+~
+57 40 30 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 10 2 3 8 	extras
+1024 5000 620 10 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+648	 Start of Object
+large axe ~	names
+a large dwarven axe
+~
+A large axe lies here.
+~
+A large dwarven axe looks rather heavy. The extremely sharp edge looks like it
+could cleave a man in two with ease.
+
+~
+57 40 30 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 10 2 3 8 	extras
+1024 5000 648 10 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+738	 Start of Object
+Orb ~	names
+Orb of Virginity
+~
+An Orb of Virginity lays here ready to be pricked.
+~
+You see an Orb of Virginity laying here ready to be pricked.
+
+~
+56 40 34 19 10 -1  -:| bitfield |:-
+0 0 39 0 1 0 0 0 20 	extras
+1026 399999 738 10 	cur_stats
+-1	affected_by
+-1	inv
+100 50 10000 -100 100 50 100 50 10 2 -1	stat_affects
+End of Object.
+
+
+745	 Start of Object
+Pork Crimps Pork Crimps ~	names
+Pork Crimps
+~
+A pair of CRAPY woven pair of crimps lays here.
+~
+You see a pair of FINELY WOVEN PORK CRIMPS LAY HERE FOR A bar-b-que.
+
+~
+57 43 42 41 30 19 10 -1  -:| bitfield |:-
+0 0 30 0 1 2 2 3 10 	extras
+1026 30 745 10 	cur_stats
+-1	affected_by
+-1	inv
+100 50 400 -100 2 2 2 2 -1	stat_affects
+End of Object.
+
+
+748	 Start of Object
+Orb of Mana Orb of Mana ~	names
+Orb of Mana
+~
+Orb of Mana
+~
+Orb of Mana
+
+~
+70 32 10 -1  -:| bitfield |:-
+-1 0 23 0 1 3 0 0 3 	extras
+1026 299999 748 10 	cur_stats
+-1	affected_by
+-1	inv
+30 40 -1	stat_affects
+End of Object.
+
+
+
+-1 END OF FILE

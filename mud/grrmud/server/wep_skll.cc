@@ -1,5 +1,5 @@
-// $Id: wep_skll.cc,v 1.6 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: wep_skll.cc,v 1.7 2001/03/29 03:02:36 eroper Exp $
+// $Revision: 1.7 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
 
 //
 //ScryMUD Server Code
@@ -42,9 +42,9 @@ int circle(int i_th, const String* victim, critter& pc) {
    String buf(100);
 
    if (victim->Strlen() == 0)
-      crit_ptr = pc.getFirstFighting();
+      crit_ptr = Top(pc.IS_FIGHTING);
    else
-      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc);
+      crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
 
    if (crit_ptr) {
 
@@ -52,14 +52,20 @@ int circle(int i_th, const String* victim, critter& pc) {
          return -1;
       }
 
-      if (!pc.isFighting(*crit_ptr)) {
-	 show("You must be fighting a person to circle him.\n", pc);
-	 return -1;
+      if (!HaveData(crit_ptr, pc.IS_FIGHTING)) {
+         show("You must be fighting a person to circle him.\n", pc);
+         return -1;
       }//if
 
-      if (!pc.EQ[9] || !pc.EQ[9]->OBJ_FLAGS.get(43)) {
-	 show("You must be wielding a piercing weapon to circle.\n", pc);
-	 return -1;
+      if (crit_ptr->IS_FIGHTING.peekFront() == &pc) {
+         pc.show("You cannot break free to circle around.\n");
+         return -1;
+      }
+
+      if (!(pc.EQ[9] && pc.EQ[9]->OBJ_FLAGS.get(43)) &&
+         !(pc.EQ[10] && pc.EQ[10]->OBJ_FLAGS.get(43))) {
+         show("You must be holding or wielding a piercing weapon to circle.\n", pc);
+         return -1;
       }//if
 
       return do_circle(*crit_ptr, pc);
@@ -73,46 +79,78 @@ int circle(int i_th, const String* victim, critter& pc) {
 
 int do_circle(critter& vict, critter& pc) {
    String buf(100);
+   String* weap_name;
    short do_fatality = FALSE;
+   int wd;
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERR, "ERROR:  smob sent in to do_circle.\n");
+      mudlog.log(ERROR, "ERROR:  smob sent in to do_circle.\n");
       return -1;
    }//if
 
    if (skill_did_hit(pc, CIRCLE_SKILL_NUM, vict)) { 
 
-      int wd = pc.DAM + d(pc.EQ[9]->OBJ_DAM_DICE_COUNT, 
-			  pc.EQ[9]->OBJ_DAM_DICE_SIDES);
+      if(pc.EQ[9] && pc.EQ[9]->OBJ_FLAGS.get(43)) {
+         wd = pc.DAM + d(pc.EQ[9]->OBJ_DAM_DICE_COUNT, 
+                         pc.EQ[9]->OBJ_DAM_DICE_SIDES);
+         weap_name = long_name_of_obj(*(pc.EQ[9]), ~0);
+      }
+      else if(pc.EQ[10] && pc.EQ[10]->OBJ_FLAGS.get(43)) {
+         // People with dual wield can circle sometimes.
+         if (!(d(1,100) < 
+               d(1, (int)(((float)(get_percent_lrnd(DUAL_WIELD_SKILL_NUM,pc)) * 
+                    (float)(pc.DEX) / 10.0))))) {
+            Sprintf(buf, "You whirl just in time to avoid %S's blade in your back.\n", 
+                 name_of_crit(pc, vict.SEE_BIT));
+            show(buf, vict);
+
+            Sprintf(buf, "You nick your forearm trying to circle %S.\n",
+                 name_of_crit(vict, pc.SEE_BIT));
+            show(buf, pc);
+
+            Sprintf(buf, "avoids %S's attempt to circle around %s.",
+                    name_of_crit(pc, ~0), get_his_her(vict));
+            emote(buf, vict, ROOM, TRUE, &pc);
+
+            pc.PAUSE += 3;
+            return 0;
+         }
+         wd = pc.DAM + d(pc.EQ[10]->OBJ_DAM_DICE_COUNT, 
+                         pc.EQ[10]->OBJ_DAM_DICE_SIDES);
+         weap_name = long_name_of_obj(*(pc.EQ[10]), ~0);
+      }
+      else {
+         mudlog.log(ERROR, "ERROR:  do_circle: pc.EQ[9] or pc.EQ[10] isn't a dagger\n");
+         return -1;
+      }
       exact_raw_damage(((pc.LEVEL / 5 + 1) * wd / 2), NORMAL, vict, pc);
 
       if (vict.HP < 0) { //do fatality
          show("You collapse as a blade enters your back!\n", vict);
-	 Sprintf(buf, 
-	"places %S in %S's back, producing a lot of blood and a corpse!\n",
-		 long_name_of_obj(*(pc.EQ[9]), ~0), name_of_crit(vict, ~0));
-	 emote(buf, pc, ROOM, TRUE, &vict);
-	 Sprintf(buf, "%S's body goes limp in your arms.\n", 
-		 name_of_crit(vict, pc.SEE_BIT));
-	 show(buf, pc);
+         Sprintf(buf, 
+        "places %S in %S's back, producing a lot of blood and a corpse!\n",
+                 weap_name, name_of_crit(vict, ~0));
+         emote(buf, pc, ROOM, TRUE, &vict);
+         Sprintf(buf, "%S's body goes limp in your arms.\n", 
+                 name_of_crit(vict, pc.SEE_BIT));
+         show(buf, pc);
          do_fatality = TRUE;
       }//if fatality
       else { //no fatality
          Sprintf(buf, "%S circles you and places a blade in your back!\n", 
-		 name_of_crit(pc, vict.SEE_BIT));
-	 show(buf, vict);
-	 Sprintf(buf, "circles and places %S in %S's back.",
-		 long_name_of_obj(*(pc.EQ[9]), ~0), name_of_crit(vict, ~0));
-	 emote(buf, pc, ROOM, TRUE, &vict);
-	 Sprintf(buf, "You circle and place %S in %S's back.", 
-		 long_name_of_obj(*(pc.EQ[9]), pc.SEE_BIT),
-		 name_of_crit(vict, pc.SEE_BIT));
-	 show(buf, pc);
+                 name_of_crit(pc, vict.SEE_BIT));
+         show(buf, vict);
+         Sprintf(buf, "circles and places %S in %S's back.",
+                 weap_name, name_of_crit(vict, ~0));
+         emote(buf, pc, ROOM, TRUE, &vict);
+         Sprintf(buf, "You circle and place %S in %S's back.", 
+                 weap_name, name_of_crit(vict, pc.SEE_BIT));
+         show(buf, pc);
       }//else
    }//if hit
    else {  //missed
       Sprintf(buf, 
-	"You whirl just in time to avoid %S's blade in your back.\n", 
+        "You whirl just in time to avoid %S's blade in your back.\n", 
                  name_of_crit(pc, vict.SEE_BIT));
       show(buf, vict);
 
@@ -121,12 +159,12 @@ int do_circle(critter& vict, critter& pc) {
       show(buf, pc);
 
       Sprintf(buf, "avoids %S's attempt to circle around %s.",
-	      name_of_crit(pc, ~0), get_his_her(vict));
+              name_of_crit(pc, ~0), get_him_her(vict));
       emote(buf, vict, ROOM, TRUE, &pc);
    }//else
 
    if (do_fatality) {
-      agg_kills_vict(pc, vict);
+      agg_kills_vict(&pc, vict);
    }//if
 
    pc.PAUSE += 3;
@@ -139,7 +177,7 @@ int backstab(int i_th, const String* victim, critter& pc) {
    critter* crit_ptr;
    String buf(100);
 
-   crit_ptr = ROOM.haveCritNamed(i_th, victim, pc);
+   crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
    
    if (crit_ptr) {
       if (!ok_to_do_action(crit_ptr, "mBSVFP", 0, pc, pc.getCurRoom(), NULL,
@@ -152,16 +190,22 @@ int backstab(int i_th, const String* victim, critter& pc) {
          return -1;
       }//if
 
-      if (!pc.EQ[9] || !pc.EQ[9]->OBJ_FLAGS.get(43)) {
-	 show("You must be wielding a piercing weapon to backstab.\n", pc);
-	 return -1;
+      if (!(pc.EQ[9] && pc.EQ[9]->OBJ_FLAGS.get(43)) &&
+         !(pc.EQ[10] && pc.EQ[10]->OBJ_FLAGS.get(43))) {
+            show("You must be holding or wielding a piercing weapon to backstab.\n", pc);
+            return -1;
+      } // else
+
+      if (crit_ptr->isMob()) {
+         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE, i_th, victim,
+                                pc.SEE_BIT);
       }//if
 
       if (!(crit_ptr = check_for_diversions(*crit_ptr, "GM", pc)))
          return -1;
 
-      if (crit_ptr->isFighting()) {
-	 show("The element of supprise has been lost.\n", pc);
+      if (!IsEmpty(crit_ptr->IS_FIGHTING)) {
+         show("The element of supprise has been lost.\n", pc);
          return do_hit(*crit_ptr, pc);
       }//if
 
@@ -176,45 +220,59 @@ int backstab(int i_th, const String* victim, critter& pc) {
 
 int do_backstab(critter& vict, critter& pc) {
    String buf(100);
+   String* weap_name;
    short do_fatality = FALSE;
+   int wd;
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERR, "ERROR:  MOB sent to do_bash.\n");
+      mudlog.log(ERROR, "ERROR:  MOB sent to do_backstab.\n");
       return -1;
    }//if
 
-   if (!pc.isFighting(vict)) {
+   if (!HaveData(&vict, pc.IS_FIGHTING)) {
       join_in_battle(pc, vict);
    }//if
 
    if (skill_did_hit(pc, BACKSTAB_SKILL_NUM, vict)) { 
 
-      int wd = pc.DAM + d(pc.EQ[9]->OBJ_DAM_DICE_COUNT, 
-			  pc.EQ[9]->OBJ_DAM_DICE_SIDES);
+      if(pc.EQ[9] && pc.EQ[9]->OBJ_FLAGS.get(43)) {
+         wd = pc.DAM + d(pc.EQ[9]->OBJ_DAM_DICE_COUNT, 
+                         pc.EQ[9]->OBJ_DAM_DICE_SIDES);
+         weap_name = long_name_of_obj(*(pc.EQ[9]), ~0);
+      }
+      else if(pc.EQ[10] && pc.EQ[10]->OBJ_FLAGS.get(43)) {
+         wd = pc.DAM + d(pc.EQ[10]->OBJ_DAM_DICE_COUNT, 
+                         pc.EQ[10]->OBJ_DAM_DICE_SIDES);
+         weap_name = long_name_of_obj(*(pc.EQ[10]), ~0);
+      }
+      else {
+         mudlog.log(ERROR, "ERROR:  do_backstab: pc.EQ[9] or pc.EQ[10] isn't a dagger\n");
+         return -1;
+      }
+
       exact_raw_damage(((pc.LEVEL / 5 + 1) * wd), NORMAL, vict, pc);
 
       if (vict.HP < 0) { //do fatality
          show("You collapse as a blade enters your back!\n", vict);
-	 Sprintf(buf, 
-	"places %S in %S's back, producing a lot of blood and a corpse!\n",
-		 long_name_of_obj(*(pc.EQ[9]), ~0), name_of_crit(vict, ~0));
-	 emote(buf, pc, ROOM, TRUE, &vict);
-	 Sprintf(buf, "%S's body goes limp in your arms.\n", 
-		 name_of_crit(vict, pc.SEE_BIT));
-	 show(buf, pc);
+         Sprintf(buf, 
+        "places %S in %S's back, producing a lot of blood and a corpse!\n",
+                 weap_name, name_of_crit(vict, ~0));
+         emote(buf, pc, ROOM, TRUE, &vict);
+         Sprintf(buf, "%S's body goes limp in your arms.\n", 
+                 name_of_crit(vict, pc.SEE_BIT));
+         show(buf, pc);
          do_fatality = TRUE;
       }//if fatality
       else { //no fatality
          Sprintf(buf, "%S places a blade in your back!\n", 
-		 name_of_crit(pc, vict.SEE_BIT));
-	 show(buf, vict);
-	 Sprintf(buf, "places %S in %S's back.",
-		 long_name_of_obj(*(pc.EQ[9]), ~0), name_of_crit(vict, ~0));
-	 emote(buf, pc, ROOM, TRUE, &vict);
-	 Sprintf(buf, "You place %S in %S's back.", 
-		 long_name_of_obj(*(pc.EQ[9]), pc.SEE_BIT),
-		 name_of_crit(vict, pc.SEE_BIT));
-	 show(buf, pc);
+                 name_of_crit(pc, vict.SEE_BIT));
+         show(buf, vict);
+         Sprintf(buf, "places %S in %S's back.",
+                 weap_name, name_of_crit(vict, ~0));
+         emote(buf, pc, ROOM, TRUE, &vict);
+         Sprintf(buf, "You place %S in %S's back.", 
+                 weap_name, name_of_crit(vict, pc.SEE_BIT));
+         show(buf, pc);
       }//else
    }//if hit
    else {  //missed
@@ -228,14 +286,14 @@ int do_backstab(critter& vict, critter& pc) {
       show(buf, pc);
 
       Sprintf(buf, "avoids %S's attempt to backstab %s.",
-	      name_of_crit(pc, ~0), get_his_her(vict));
+              name_of_crit(pc, ~0), get_him_her(vict));
       emote(buf, vict, ROOM, TRUE, &pc);
    }//else
 
    pc.PAUSE += d(1,3);
 
    if (do_fatality) {
-      agg_kills_vict(pc, vict);
+      agg_kills_vict(&pc, vict);
    }//if
    return 0;
 }//do_backstab
@@ -245,7 +303,7 @@ int disarm(int i_th, const String* victim, critter& pc) {
    critter* crit_ptr;
    String buf(100);
 
-   crit_ptr = ROOM.haveCritNamed(i_th, victim, pc);
+   crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
 
    if (crit_ptr) {
       if (!ok_to_do_action(crit_ptr, "mSVFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -256,6 +314,12 @@ int disarm(int i_th, const String* victim, critter& pc) {
          show("You slap your wrist and feel stupid!!\n", pc);
          return -1;
       }//if
+
+      if (crit_ptr->isMob()) {
+         crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE, i_th, victim,
+                                pc.SEE_BIT);
+      }//if
+
 
       if (!(crit_ptr = check_for_diversions(*crit_ptr, "GSMgos", pc)))
          return -1;
@@ -274,11 +338,11 @@ int do_disarm(critter& vict, critter& pc) {
    int posn = 9; //wielded
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERR, "ERROR:  MOB sent to do_disarm.\n");
+      mudlog.log(ERROR, "ERROR:  MOB sent to do_disarm.\n");
       return -1;
    }//if
 
-   if (!pc.isFighting(vict)) {
+   if (!pc.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(pc, vict);
    }//if
 
@@ -294,7 +358,7 @@ int do_disarm(critter& vict, critter& pc) {
 
    int missed = FALSE;
    if (d(1, 100) > d(1, pc.STR * 10 + 
-		     get_percent_lrnd(SWORDBOND_SKILL_NUM, pc))) {
+                     get_percent_lrnd(SWORDBOND_SKILL_NUM, pc))) {
       missed = TRUE;
    }//if
    
@@ -324,11 +388,11 @@ int do_disarm(critter& vict, critter& pc) {
       show(buf, vict);
       
       Sprintf(buf, "You fail to disarm %S.\n",
-	      name_of_crit(vict, pc.SEE_BIT));
+              name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
       
       Sprintf(buf, "fails to disarm %S!",
-	      name_of_crit(vict, ~0));
+              name_of_crit(vict, ~0));
       emote(buf, pc, ROOM, TRUE, &vict);
    }//else
    return 0;

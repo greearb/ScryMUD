@@ -89,7 +89,7 @@ return add_casts_spell(i, j, k, pc);
 add_zone ~
 return addZone(i, pc);
 adlist ~
-return adlist(pc);
+return adlist(i, pc);
 affect_hp ~
 return affect_crit_stat(STAT_HP, cooked_strs[2], i, &(cooked_strs[1]), j, k, pc.getCurRoom(), &pc);
 affect_mana ~
@@ -100,6 +100,8 @@ afk socials ~
 afk(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 agree socials ~
 agree(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+announce socials ~
+announce(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 add_perm_inv ~
 return add_perm_inv(i, j, &(cooked_strs[1]), pc);
 assist ~
@@ -109,10 +111,14 @@ return assist(i, &(cooked_strs[1]), pc);
 # asave write_zone write_zone ~
 # return write_zone(i, pc);
 
+alias ~
+return add_crit_alias(i, &(cooked_strs[1]), &(cooked_strs[2]), pc);
 alist zlist zlist ~
 return zlist(i, j, pc); 
 amlist ~
 return amlist(i, j, pc);
+add_proc ~
+return add_proc(i, pc);
 add_path ~
 return add_path(i, j, pc);
 amsave ~
@@ -133,6 +139,10 @@ anitre *anitre ~
 NOP
 
 # case B
+bounce socials ~
+bounce(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+bah socials ~
+bah(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 bug typo *bug ~
 NOP
 buglist ~
@@ -143,12 +153,16 @@ backstab bs ~
 return backstab(i, &(cooked_strs[1]), pc);
 bash ~
 return bash(i, &cooked_strs[1], pc);
+battlecry socials ~
+battlecry(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 beep ~
 return beep(i, &(cooked_strs[1]), pc);
 beckon socials ~
 beckon(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 berserk ~
 return berserk(pc);
+bite socials ~
+bite(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 block ~
 return block(i, &(cooked_strs[1]), pc);
 blush socials ~
@@ -158,9 +172,7 @@ return blend(pc);
 bonk socials ~
 bonk(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 body_slam bodyslam bodyslam ~
-return body_slam(i, &(cooked_strs[1]), pc);
-bounce socials ~
-bounce(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+return body_slam(i, &(cooked_strs[1]), pc, was_ordered);
 bow socials ~
 bow(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 burp socials ~
@@ -192,16 +204,26 @@ clear_onames ~
 return clear_onames(i, pc);
 close ~
 return close(i, &(cooked_strs[1]), pc);
+client ~
+client_command( &(cooked_strs[1]), pc); return 0;
 color ansi color ~
 return color((cooked_strs[1]), (cooked_strs[2]), pc);
+comparators *comparators ~
+NOP
 consider ~
 return consider(i, &(cooked_strs[1]), pc);
 concoct brew concoct ~
-return concoct(pc);
+return concoct(pc, !was_ordered);
+cough socials ~
+cough(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 cheer socials ~
 cheer(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+chomp socials ~
+chomp(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 chuckle socials ~
 chuckle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+chance ~
+return (chance( i, j, k));
 ch_mdesc ~
 return ch_mdesc(i, pc);
 ch_msdesc ~
@@ -226,8 +248,12 @@ ch_rname ~
 return ch_rname(&(cooked_strs[1]), pc);
 ch_zname ~
 return ch_zname(i, &(cooked_strs[1]), pc);
+climb socials ~
+climb(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 construct ~
-return construct(pc);
+return construct(pc, !was_ordered);
+cower socials ~
+cower(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 create_concoction create_conct ~
 return create_concoction(i, j, k, l, m, n, pc);
 create_construction create_constrct ~
@@ -258,12 +284,20 @@ describe ~
 return describe(pc);
 delete_door ~
 return delete_door(i, &(cooked_strs[1]), pc);
+deals *deals ~
+NOP
+derelicts *derelicts ~
+NOP
+discuss ~
+return discuss(&(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 disco socials ~
 disco(j, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 disdain socials ~
 disdain(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 disarm ~
 return disarm(i, &(cooked_strs[1]), pc);
+doze socials ~
+doze(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 does_own comparators ~
 return does_own(pc, i, j, k, l, m, n);
 donate ~
@@ -313,7 +347,7 @@ return exit(pc);
 examine ~
 return examine(i, &(cooked_strs[1]), pc);
 exact_damage ~
-return exact_damage(i, j, cooked_strs[2], pc);
+return exact_damage(i, j, cooked_strs[2], pc, was_ordered);
 elf *elf ~
 NOP
 elves *elves ~
@@ -344,6 +378,8 @@ faerie *faerie ~
 NOP
 
 #case G
+gemote *emote ~
+NOP
 get take get ~
 return get(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 gag ~
@@ -352,6 +388,14 @@ giggle socials ~
 giggle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 give ~
 return give(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
+go enter go ~
+is_dead = FALSE; return go(i, &(cooked_strs[1]), pc, is_dead);
+goo socials ~
+goo(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+greet socials ~
+greet(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+groan socials ~
+groan(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 group ~
 return group(i, &(cooked_strs[1]), pc);
 grin socials ~
@@ -364,8 +408,6 @@ grunt socials ~
 grunt(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 guard ~
 return guard(i, &(cooked_strs[1]), pc);
-go enter go ~
-is_dead = FALSE; return go(i, &(cooked_strs[1]), pc, is_dead);
 goto ~
 return _goto(i, &(cooked_strs[1]), pc);
 gossip *channels ~
@@ -395,7 +437,7 @@ hug(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 hum socials ~
 hum(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 hurl ~
-return hurl(i, &(cooked_strs[1]), pc);
+return hurl(i, &(cooked_strs[1]), pc, was_ordered);
 humans *human ~
 NOP
 houses *houses ~
@@ -428,6 +470,12 @@ NOP
 immrules *immrules ~
 NOP
 
+# case J
+jump socials ~
+social_jump(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+junk ~
+return junk(i, &(cooked_strs[1]), &(cooked_strs[2]), pc);
+
 #case K
 kiss socials ~
 kiss(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
@@ -436,11 +484,12 @@ return kick(i, &(cooked_strs[1]), pc);
 keywords *keyword ~
 NOP
 
+#case L
 look ls look ~
 return look(i, &(cooked_strs[1]), pc, TRUE); /* ignore brief */
 lag socials ~
 lag(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
-laugh socials ~
+laugh lol socials ~
 laugh(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 label_dummy label: add_mob_script ~
 return -1; //should never get here
@@ -456,8 +505,8 @@ list_obj_scripts ~
 return list_obj_scripts(i, pc);
 list_paths ~
 return list_paths(i, pc);
-list_mob_scripts ~
-return list_mob_scripts(i, pc);
+list_scripts ~
+return list_scripts(i, pc);
 list_room_scripts ~
 return list_room_scripts(i, pc);
 list_site_bans ~
@@ -474,12 +523,16 @@ log_level ~
 return log_level(i, pc);
 ldwho ~
 return ldwho(pc);
+loser socials ~
+loser(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 
 # case M
 make_builder ~
 return make_builder(i, &(cooked_strs[1]), pc);
 make_pso ~
 return make_pso(i, &(cooked_strs[1]), pc);
+megawibble socials ~
+megawibble(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 meditate ~
 return meditate(pc);
 mstat ~
@@ -498,6 +551,8 @@ mset ~
 return mset(i, &(cooked_strs[1]), &(cooked_strs[2]), k, &(cooked_strs[3]), pc);
 muahaha socials ~
 muahaha(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+mutter socials ~
+mutter(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 mvnum ~
 return mvnum(i, &(cooked_strs[1]), pc);
 move *move ~
@@ -510,6 +565,10 @@ northeast ne northeast ~
 return northeast(pc, *(pc.getCurRoom()), is_dead);
 northwest nw northwest ~
 return northwest(pc, *(pc.getCurRoom()), is_dead);
+nestle socials ~
+nestle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+nibble socials ~
+nibble(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 nog socials ~
 nog(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 nogossip ~
@@ -538,6 +597,8 @@ oload ~
 return oload(i, &(cooked_strs[1]), pc);
 oreload ~
 return oreload(pc);
+osay *osay ~
+NOP
 oset ~
 return oset(i, &(cooked_strs[1]), &(cooked_strs[2]), k, &(cooked_strs[3]), pc);
 ovnum ~
@@ -552,16 +613,20 @@ NOP
 # case P
 pat socials ~
 pat(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+panic socials ~
+panic(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 passwd ~
 return passwd(&(cooked_strs[1]), &(cooked_strs[2]), &(cooked_strs[3]), pc);
 page_break ~
 return page_break(i, pc);
+peck socials ~
+peck(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 practice ~
 return practice(&(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 pay ~
 return pay(i, j, &(cooked_strs[1]), pc);
 pause add_mob_script ~
-return pause(i, pc);
+return pause(i, pc, was_ordered);
 pinch socials ~
 pinch(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 possess ~
@@ -572,6 +637,8 @@ pft socials ~
 pft(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 picklock ~
 return picklock(i, &(cooked_strs[1]), pc);
+point socials ~
+point(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 poke socials ~
 poke(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 ponder socials ~
@@ -582,6 +649,8 @@ prone ~
 return prone(pc);
 puke socials ~
 puke(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+punt socials ~
+punt(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 put ~
 return put(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 pemote *pemote ~
@@ -592,8 +661,8 @@ poofout *poofout ~
 NOP
 pecho *add_mob_script ~
 NOP
-pout *socials ~
-NOP
+pout socials ~
+pout(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 
 # case Q
 quaff ~
@@ -602,12 +671,14 @@ quit logout log_out quit ~
 return log_out(pc);
 
 # case R
-reset_olc ~
-return reset_olc(pc);
 remove ~
 return remove(i, &(cooked_strs[1]), pc);
 rest ~
 return rest(pc);
+reset_olc ~
+return reset_olc(pc);
+remort ~
+return remort(i, &(cooked_strs[1]), &(cooked_strs[2]), &(cooked_strs[3]), pc);
 recite ~
 return recite(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 read ~
@@ -640,12 +711,20 @@ rstat ~
 return rstat(i, pc);
 rset ~
 return rset(&(cooked_strs[1]), j, pc);
+rm_give_proc ~
+return rm_give_proc(i, pc);
+rm_discuss_proc ~
+return rm_discuss_proc(i, pc);
+rm_bow_proc ~
+return rm_bow_proc(i, pc);
+rm_curse_proc ~
+return rm_curse_proc(i, pc);
 rm_obj_script rem_obj_script rm_obj_script ~
 return rem_obj_script(i, cooked_strs[1], j, pc);
 rm_room_script rem_room_script rm_room_script ~
 return rem_room_script(i, cooked_strs[1], j, pc);
-rm_mob_script rem_mob_script rm_script ~
-return rem_mob_script(i, (cooked_strs[1]), j, pc);
+rm_script rem_script rm_script ~
+return rem_script(i, (cooked_strs[1]), j, pc);
 rm_stat_affect rem_stat_affect rm_stat_affect ~
 return rm_stat_affect(i, j, pc);
 rm_casts_spell rem_casts_spell rm_casts_spell ~
@@ -684,11 +763,11 @@ southwest sw southwest ~
 return southwest(pc, *(pc.getCurRoom()), is_dead);
 save ~
 return ::save(pc);
-sacrifice junk junk ~
-return junk(i, &(cooked_strs[1]), &(cooked_strs[2]), pc);
+sacrifice ~
+return sacrifice(&(cooked_strs[1]), pc);
 scan ~
 return scan(pc);
-set_path ~
+set_path_dir ~
 return set_path_dir(i, j, k, &(cooked_strs[1]), pc);
 set_ven_stop ~
 return  set_veh_stop(i, j, &(cooked_strs[1]), pc);
@@ -726,6 +805,10 @@ shoot ~
 return shoot(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 show_zones ~
 return showZones(pc);
+shock socials ~
+shock(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+shudder socials ~
+shudder(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 sigh socials ~
 sigh(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 silly socials ~
@@ -748,6 +831,10 @@ slist ~
 return slist(i, cooked_strs[1], j, pc);
 smirk socials ~
 smirk(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+smooch socials ~
+smooch(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+snap socials ~
+snap(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 snicker socials ~
 snicker(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 sneak ~
@@ -756,12 +843,16 @@ snoop ~
 return snoop(i, &(cooked_strs[1]), pc);
 sob socials ~
 sob(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
-stat_mob_script stat_script ~
-return stat_mob_script(i, j, pc);
+stat_script ~
+return stat_script(i, j, pc);
 splash socials ~
 splash(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+split ~
+return cmd_split(i, pc);
 stand ~
 return stand(pc);
+stare socials ~
+stare(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 stat_keyword ~
 return stat_keyword(i, pc);
 stat_obj_script ~
@@ -786,7 +877,7 @@ strut socials ~
 strut(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 smob *smob ~
 NOP
-sombri *sombri ~
+sombre sombri *sombre ~
 NOP
 socials *socials ~
 NOP
@@ -800,6 +891,10 @@ skills *skills ~
 NOP
 shops *shops ~
 NOP
+sweatdrop socials ~
+sweatdrop(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+swoon socials ~
+swoon(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 
 
 # case T
@@ -811,16 +906,28 @@ throw ~
 return _throw(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 thank socials ~
 thank(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+thpppt socials ~
+thpppt(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 time ~
-return time(pc);
+return pc.showTime();
+tickle socials ~
+tickle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 track ~
 return track(i, &(cooked_strs[1]), pc);
+tremble socials ~
+tremble(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+trip ~
+return trip(i, &(cooked_strs[1]), pc);
+trout socials ~
+trout(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 twiddle socials ~
 twiddle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 toggle ~
 return toggle_prompt(&(cooked_strs[1]), pc);
 tog_veh_stop ~
 return tog_veh_stop(i, j, pc);
+tog_vflag ~
+return tog_vflag(i, pc);
 total_rezone ~
 return total_rezone(pc);
 tog_mflag ~
@@ -837,10 +944,14 @@ title *title ~
 NOP
 theme *theme ~
 NOP
+twirl socials ~
+twirl(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 
 # case U
 up ~
 return up(pc, *(pc.getCurRoom()), is_dead); 
+unwield remove ~
+return remove(i, &(cooked_strs[1]), pc);
 unlock ~
 return unlock(i, &(cooked_strs[1]), pc); 
 unsiteban ~
@@ -892,8 +1003,14 @@ wink socials ~
 wink(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 wiggle socials ~
 wiggle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+wiggletoes socials ~
+wiggletoes(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 whistle socials ~
 whistle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+whine socials ~
+whine(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+whip socials ~
+whip(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 where ~
 return where(i, &(cooked_strs[1]), pc);
 who ~
@@ -923,10 +1040,12 @@ return write_world(pc);
 
 
 # case Y
-yawn socials ~
-yawn(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 yell *yell ~
 NOP
+yawn socials ~
+yawn(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+yuck socials ~
+yuck(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 
 # case Z
 zlock ~
@@ -948,7 +1067,7 @@ NOP
 
 # Help Only, these mess up the parser if they
 # are higher...
-classes sage wizard ranger thief alchemist cleric bard *classes ~
+classes warrior sage wizard ranger thief alchemist cleric bard *classes ~
 NOP
 script_cmds push pull *script_cmds ~
 NOP

@@ -1,0 +1,11 @@
+<help communications osay>
+
+Broadcasts an OOC (out of character) message to everyone awake in
+your current room. OOC is useful for RolePlay.
+
+Syntax:  osay <<your message>
+
+Example:  osay What's the air-speed velocity of an unladen swallow??
+<color=red>
+See Also:  channels, tell, emote
+</color></help>

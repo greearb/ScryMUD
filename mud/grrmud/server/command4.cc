@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.37 1999/09/07 07:00:26 greear Exp $
-// $Revision: 1.37 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
+// $Id: command4.cc,v 1.38 2001/03/29 03:02:29 eroper Exp $
+// $Revision: 1.38 $  $Author: eroper $ $Date: 2001/03/29 03:02:29 $
 
 //
 //ScryMUD Server Code
@@ -43,10 +43,11 @@
 #include "load_wld.h"
 #include <time.h>
 #include <unistd.h>
+#include "vehicle.h"
 
 
 int do_gecho(const char* msg) {
-   SCell<critter*> cll(pc_list);
+   Cell<critter*> cll(pc_list);
    critter* ptr;
 
    while ((ptr = cll.next())) {
@@ -56,13 +57,26 @@ int do_gecho(const char* msg) {
 }//do_gecho
 
 
-int title(String* titl, critter& pc) {
-   if (titl->Strlen() > 79) {
+int title(const String* tit, critter& pc) {
+   if (tit->Strlen() > 79) {
       pc.show(CS_TITLE_80_ONLY);
       return -1;
    }//if
-   
-   pc.addShortDesc(*titl);
+   (pc.short_desc) = *tit;
+
+   switch(pc.short_desc[0]) {
+      case '-':
+      case ',':
+      case ':':
+      case '.':
+      case '?':
+      case '!':
+      case '\'':
+         break;
+      default:
+         pc.short_desc.Prepend(" ");
+   }
+
    pc.show(CS_TITLE_CHANGED);
    return 0;
 }//title
@@ -145,7 +159,7 @@ int mreload(critter& pc) {
 int read(int i_th, const String* post, int j_th, const String* board, critter& pc) {
    String buf(100);
 
-   SCell<object*> cll(ROOM.getInv());
+   Cell<object*> cll(*(ROOM.getInv()));
    object* ptr;
    
    if (board->Strlen() == 0) {
@@ -178,9 +192,9 @@ int read(int i_th, const String* post, int j_th, const String* board, critter& p
       return -1;
    }//if
 
-   pc.show(msg->getShortDesc(&pc));
-   pc.show("\n\n");
-   pc.show(msg->getLongDesc(&pc));
+   show(msg->short_desc, pc);
+   show("\n\n", pc);
+   show(msg->long_desc, pc);
    return 0;
 }//read
 
@@ -295,7 +309,7 @@ int unpost(int i_th, const String* post, critter& pc) {
       return -1;
    }
 
-   SCell<object*> cll(ROOM.getInv());
+   Cell<object*> cll(*(ROOM.getInv()));
    object* ptr;
 
    while ((ptr = cll.next())) {
@@ -329,18 +343,18 @@ int unpost(int i_th, const String* post, critter& pc) {
    ptr->inv.loseData(msg);
    delete msg;
 
-	/* update the numbers and short_descs for asthetic reasons */
+        /* update the numbers and short_descs for asthetic reasons */
    short eos, term_by_period;
    int i = 1;
    ptr->inv.head(cll);
    while ((msg = cll.next())) {
-      msg->getNames().clearAndDestroy();
+      msg->names.clearAndDestroy();
       Sprintf(buf, "%i", i);
-      msg->addName(buf);
-      msg->addName(CS_MESSAGE);
-      buf = msg->getShortDesc()->Get_Command(eos, term_by_period);
+      Put(new String(buf), msg->names);
+      msg->names.append(new String(cstr(CS_MESSAGE, pc)));
+      buf = msg->short_desc.Get_Command(eos, term_by_period);
       Sprintf(buf, "Message_%i", i);
-      msg->prependShortDesc(buf);
+      msg->short_desc.Prepend(buf);
       i++;
    }//while
 
@@ -356,34 +370,38 @@ int write_board(object& obj) {
    Sprintf(buf, "./Boards/board_%i", obj.OBJ_NUM);
    ofstream ifile(buf);
    if (!ifile) {
-      mudlog.log(ERR, "ERROR:  couldn't open board file.\n");
+      mudlog.log(ERROR, "ERROR:  couldn't open board file.\n");
       return -1;
    }//if
 
-   SCell<object*> cll(obj.inv);
+   Cell<object*> cll(obj.inv);
    object* ptr;
 
    while ((ptr = cll.prev())) {
       ifile << ptr->OBJ_NUM << "\t\tMessage number\n";
-      ptr->write(ifile);
+      ptr->Write(ifile);
       ifile << "\n\n";
    }//while
 
-   ifile << "-1		EOF.\n";
+   ifile << "-1                EOF.\n";
    return 0;
 }//write_board
 
 
-int post(String* title, critter& pc) {
+int post(const String* title, critter& pc) {
    if (!ok_to_do_action(NULL, "mFPSG", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
+
+   if (!pc.isPc())
+      return -1;
    
    object* ptr;
-   SCell<object*> cll(ROOM.getInv());
+   Cell<object*> cll(*(ROOM.getInv()));
    while ((ptr = cll.next())) {
       if (ptr->OBJ_FLAGS.get(74)) {
          break;
+
       }//if
    }//while
 
@@ -395,7 +413,7 @@ int post(String* title, critter& pc) {
 
    pc.show(CS_ENTER_MSG_POST);
    pc.pc->post_msg = new object;
-   pc.pc->post_msg->addShortDesc(*title);
+   pc.pc->post_msg->short_desc = *title;
    pc.setMode(MODE_WRITING_POST); 
    return 0;
 }//post
@@ -412,7 +430,7 @@ int do_post(critter& pc) {
    if (buf == "~") {
       show("Your message has been posted.\n", pc);
 
-      SCell<object*> cll(ROOM.getInv());
+      Cell<object*> cll(*(ROOM.getInv()));
       object* ptr;
       while ((ptr = cll.next())) {
          if (ptr->OBJ_FLAGS.get(74)) {
@@ -423,66 +441,67 @@ int do_post(critter& pc) {
       if (!ptr) {
          show("Ack, someone moved the bulletin board.\n", pc);
 
-			/* clean up mess */
-	 delete pc.pc->post_msg;
+                        /* clean up mess */
+         delete pc.pc->post_msg;
          pc.pc->post_msg = NULL;
       }//if
-      else {		/* good to go, save to disk */
-         pc.pc->post_msg->setContainer(ptr);
-         pc.pc->post_msg->setModified(TRUE);
-	 pc.pc->post_msg->OBJ_FLAGS.turn_on(7); //!mort
-	 int i = get_next_msg_num(*ptr);
-	 pc.pc->post_msg->OBJ_NUM = i;
+      else {                /* good to go, save to disk */
+         pc.pc->post_msg->in_list = &(ptr->inv);  //make it SOBJ
+         pc.pc->post_msg->OBJ_FLAGS.turn_on(7); //!mort
+         int i = get_next_msg_num(*ptr);
+         pc.pc->post_msg->OBJ_NUM = i;
 
-	 Sprintf(buf, "%i", i);
-         pc.pc->post_msg->addName(buf);
+         String* name = new String(20);
+         Sprintf(*name, "%i", i);
+         Put(name, (pc.pc->post_msg->names));
          Sprintf(buf, "message_%i", i);
-         pc.pc->post_msg->addName(buf);
+         name = new String(buf);
+         pc.pc->post_msg->names.append(name);
 
-	 String tmp_desc(*(pc.pc->post_msg->getShortDesc(~0)));
-   	 Sprintf(buf, "message_%i from %S:  ", i, pc.getName());
-         pc.pc->post_msg->addShortDesc(buf);
-         pc.pc->post_msg->appendShortDesc(tmp_desc);
+         String tmp_desc((pc.pc->post_msg->short_desc));
+            Sprintf((pc.pc->post_msg->short_desc),
+                 "message_%i from %S:  ", i, name_of_crit(pc, ~0));
+         pc.pc->post_msg->short_desc.Append(tmp_desc);
 
-   	 Sprintf(buf, "A message from %S lies here.", pc.getName());
-         pc.pc->post_msg->addInRoomDesc(buf);
+            Sprintf((pc.pc->post_msg->in_room_desc),
+                 "A message from %S lies here.", name_of_crit(pc, ~0));
 
-	 Sprintf(buf, "./Boards/board_%i", ptr->OBJ_NUM);
-	 ifstream ifile(buf, ios::nocreate);
-     	 if (!ifile) {
-	    mudlog.log(INF, "CHECK:  creating new board file.\n");
-	    String buf2(100);
-	    Sprintf(buf2, "cp ./World/DEFAULT_OBJECTS ./Boards/board_%i",
-		     ptr->OBJ_NUM);
-	    system(buf2); //now it exists
-	 }//if
-	 else {
-	    mudlog.log(INF, "CHECK:  didn't create new board file.\n");
+
+         Sprintf(buf, "./Boards/board_%i", ptr->OBJ_NUM);
+         ifstream ifile(buf, ios::nocreate);
+              if (!ifile) {
+            mudlog.log(INF, "CHECK:  creating new board file.\n");
+            String buf2(100);
+            Sprintf(buf2, "cp ./World/DEFAULT_OBJECTS ./Boards/board_%i",
+                     ptr->OBJ_NUM);
+            system(buf2); //now it exists
+         }//if
+         else {
+            mudlog.log(INF, "CHECK:  didn't create new board file.\n");
          }
 
-	 ofstream da_msg("./Boards/TMP_MSG");
-	 da_msg << i << "\tmessage number\n";
-	 pc.pc->post_msg->write(da_msg);
-	 da_msg << endl << endl << flush;
-	    
-	 Sprintf(buf, "cat ./Boards/board_%i >> ./Boards/TMP_MSG",
-	         ptr->OBJ_NUM); //append it
-	 system(buf);
-	 Sprintf(buf, "mv -f ./Boards/TMP_MSG ./Boards/board_%i", 
-                 ptr->OBJ_NUM); //move it back to right name
-	 system(buf);
+         ofstream da_msg("./Boards/TMP_MSG");
+         da_msg << i << "\tmessage number\n";
+         pc.pc->post_msg->Write(da_msg);
+         da_msg << endl << endl << flush;
+            
+         Sprintf(buf, "cat ./Boards/board_%i >> ./Boards/TMP_MSG",
+                 ptr->OBJ_NUM); //append it
+         system(buf);
+         Sprintf(buf, "mv -f ./Boards/TMP_MSG ./Boards/board_%i", 
+                    ptr->OBJ_NUM); //move it back to right name
+         system(buf);
 
-         ptr->gainInv(pc.pc->post_msg);
-	 pc.pc->post_msg = NULL;
+         Put(pc.pc->post_msg, ptr->inv);
+         pc.pc->post_msg = NULL;
       }//else
 
       pc.setMode(MODE_NORMAL);
       return 0;
    }//if
 
-   LString ls(pc.getLanguage(), buf);
-   ls.append("\n");
-   pc.pc->post_msg->appendLongDesc(ls);
+   (pc.pc->post_msg->long_desc) += buf;
+   (pc.pc->post_msg->long_desc) += "\n";
    return 0;
 }//do_post
 
@@ -497,7 +516,7 @@ int log_out(critter& pc) {
    if (!pc.pc)
       return -1;
 
-   if (pc.isFighting()) {
+   if (!IsEmpty(pc.IS_FIGHTING)) {
       show("You must stop fighting first.\n", pc);
       return -1;
    }//if
@@ -541,6 +560,10 @@ int snoop(int i_th, const String* vict, critter& pc) {
    }
    else if (!ptr->pc) {
       pc.show("You can only snoop PC's.\n");
+      return -1;
+   }
+   else if (&pc == ptr) {
+      pc.show("You can't snoop yourself!\n");
       return -1;
    }
    else {
@@ -601,6 +624,11 @@ int possess(int i_th, const String* vict, critter& pc) {
       return -1;
    }
    else {
+      if (ptr->isMob()) {
+         ptr = mob_to_smob(*ptr,  pc.getCurRoomNum(), TRUE, i_th,
+                           vict, pc.SEE_BIT);
+      }//if
+
       pc.possessing = ptr;
       ptr->possessed_by = &pc;
       String buf(100);
@@ -694,13 +722,13 @@ int _goto(int i_th, const String* name, critter& pc) {
 
 
 int where(int i_th, const String* name, critter& pc) {
-   SCell<critter*> cll;
+   Cell<critter*> cll;
    critter* ptr = NULL;
    String buf(100);
 
    int zn = ROOM.getZoneNum();
 
-   if (!ok_to_do_action(NULL, "F", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+   if (!ok_to_do_action(NULL, "Fr", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
 
@@ -709,11 +737,13 @@ int where(int i_th, const String* name, critter& pc) {
          pc_list.head(cll);
          while ((ptr = cll.next())) {
             if (zn == ptr->getCurZoneNum()) {
-               if ((pc.LEVEL + 3 > ptr->LEVEL) &&
-                   detect(pc.SEE_BIT, ptr->VIS_BIT | 
-                          room_list[ptr->getCurRoomNum()].getVisBit())) {
+               int rmtModPC = pc.isRemort() ? 30 : 0;
+               int rmtModPtr = ptr->isRemort() ? 30 : 0;
+               if (((pc.LEVEL + rmtModPC + 3 > ptr->LEVEL + rmtModPtr)) &&
+                  detect(pc.SEE_BIT, ptr->VIS_BIT |
+                     room_list[ptr->getCurRoomNum()].getVisBit())) {
                   Sprintf(buf, "%S%P20%S\n", name_of_crit(*ptr, pc.SEE_BIT),
-                          room_list[ptr->getCurRoomNum()].getShortDesc(&pc));
+                          &(room_list[ptr->getCurRoomNum()].short_desc));
                   show(buf, pc);
                }//if
             }//if
@@ -724,17 +754,19 @@ int where(int i_th, const String* name, critter& pc) {
          int end = ZoneCollection::instance().elementAt(pc.getCurZoneNum()).getEndRoomNum();
          for (int i = start; i<= end; i++) {
             if (room_list.elementAtNoCreate(i)) {
-               SCell<critter*> ccll(room_list[i].getCrits());
+               Cell<critter*> ccll(room_list[i].getCrits());
                while ((ptr = ccll.next())) {
                   if (!ptr->isPc()) {
                      Sprintf(buf, "[Room %i] %P11[%i]%P20%S.\n",
                              i, ptr->getIdNum(), ptr->getName());
+                     pc.show(buf);
                   }
                   else {
-                     Sprintf(buf, "[Room %i] %P11[PC] ***%S***.\n",
-                             i, ptr->getName());
+                     if (!ptr->isImmort() ||  (ptr->isImmort() && (ptr->getImmLevel() <= pc.getImmLevel()))) {
+                        Sprintf(buf, "[Room %i] %P11[PC] ***%S***.\n", i, ptr->getName());
+                        pc.show(buf);
+                     }
                   }
-                  pc.show(buf);
                }//while
             }//if
          }//for
@@ -743,21 +775,23 @@ int where(int i_th, const String* name, critter& pc) {
    else {
       if (pc.isImmort()) {
          if (strcasecmp(*name, "pcs") == 0) {
-            SCell<critter*> ccll(pc_list);
+            Cell<critter*> ccll(pc_list);
             critter* ptr;
             while ((ptr = ccll.next())) {
-               Sprintf(buf, "[Room %i] %P11[PC]%P20%S.\n",
-                       ptr->getCurRoomNum(), ptr->getName());
-               pc.show(buf);
+               if (!ptr->isImmort() ||  (ptr->isImmort() && (ptr->getImmLevel() <= pc.getImmLevel()))) {
+                  Sprintf(buf, "[Room %i] %P11[PC]%P20%S.\n",
+                          ptr->getCurRoomNum(), ptr->getName());
+                  pc.show(buf);
+               }
             }//while
             return 0;
          }//if
          else if (strcasecmp(*name, "objs") == 0) {
-         int start = ZoneCollection::instance().elementAt(pc.getCurZoneNum()).getBeginRoomNum();
-         int end = ZoneCollection::instance().elementAt(pc.getCurZoneNum()).getEndRoomNum();
+            int start = ZoneCollection::instance().elementAt(pc.getCurZoneNum()).getBeginRoomNum();
+            int end = ZoneCollection::instance().elementAt(pc.getCurZoneNum()).getEndRoomNum();
             for (int i = start; i<= end; i++) {
                if (room_list.elementAtNoCreate(i)) {
-                  SCell<object*> ocll(room_list[i].getInv());
+                  Cell<object*> ocll(*(room_list[i].getInv()));
                   object* optr;
                   while ((optr = ocll.next())) {
                      Sprintf(buf, "[Room %i] %P11[%i]%P20%S.\n",
@@ -772,13 +806,20 @@ int where(int i_th, const String* name, critter& pc) {
 
       ptr = have_crit_named(pc_list, i_th, name, pc.SEE_BIT, ROOM);
       if (ptr) {
-         if ((pc.LEVEL + 3 > ptr->LEVEL) &&
-             (ROOM.getZoneNum() == 
-              room_list[ptr->getCurRoomNum()].getZoneNum()) &&
-             detect(pc.SEE_BIT, ptr->VIS_BIT | 
-                    room_list[ptr->getCurRoomNum()].getVisBit())) {
+         if (pc.isImmort()) {
+            if (!ptr->isImmort() || (ptr->getImmLevel() <= pc.getImmLevel())) {
+               Sprintf(buf, "%S%P20[%i]%S\n", ptr->getName(pc),
+                       ptr->getCurRoomNum(), &(room_list[ptr->getCurRoomNum()].short_desc));
+               show(buf, pc);
+            }
+         }
+         else if ((pc.LEVEL + 3 > ptr->LEVEL) &&
+                  (ROOM.getZoneNum() == 
+                   room_list[ptr->getCurRoomNum()].getZoneNum()) &&
+                  detect(pc.SEE_BIT, ptr->VIS_BIT | 
+                         room_list[ptr->getCurRoomNum()].getVisBit())) {
             Sprintf(buf, "%S%P20%S\n", ptr->getName(pc.SEE_BIT),
-                    room_list[ptr->getCurRoomNum()].getShortDesc(&pc));
+                    &(room_list[ptr->getCurRoomNum()].short_desc));
             show(buf, pc);
          }//if
       }//if
@@ -792,6 +833,11 @@ int where(int i_th, const String* name, critter& pc) {
 
 int roll(int i, int j, critter& pc) {
    String buf(100);
+   if (i > 100) {
+      pc.show("Can only roll your dice a max of 100 times!!\n");
+      i = 100;
+   }
+
    Sprintf(buf, "Your roll of %i dice of %i side(s) is:  %i\n",
            i, j, d(i, j));
    pc.show(buf);
@@ -841,8 +887,8 @@ int zgoto(int i_th, critter& pc) {
    rm_num = i;
    for (; i< ndroom; i++) {
       if (room_list[i].isInUse()) {
-	 rm_num = i;
-	 break;
+         rm_num = i;
+         break;
       }//if
    }//for
 
@@ -895,11 +941,11 @@ int rclear(int i_th, critter& pc) {
    }//if
 
    int new_rm_num;
-   if (pc.getCurRoomNum() != LOGIN_ROOM) {
-      new_rm_num = LOGIN_ROOM;
+   if (pc.getCurRoomNum() != config.loginRoom) {
+      new_rm_num = config.loginRoom;
    }//if
    else {
-      new_rm_num = LOGIN_ROOM + 1;
+      new_rm_num = config.loginRoom + 1;
    }//else
 
    if (mudlog.ofLevel(DBG)) {
@@ -939,7 +985,7 @@ int oclear(int i_th, critter& pc) {
         pc);
    show("these changes permanent, you will have to do an 'aosave'.\n", pc);
 
-   SCell<critter*> ccll;
+   Cell<critter*> ccll;
    critter* cptr;
    for (int i = 0; i<NUMBER_OF_ROOMS; i++) {
       if (room_list.elementAtNoCreate(i)) {
@@ -952,7 +998,7 @@ int oclear(int i_th, critter& pc) {
       cptr->loseObjectFromGame(&(obj_list[i_th]));
    }//while
 
-   obj_list[i_th].clear();  //clear out the object
+   obj_list[i_th].Clear();  //clear out the object
    return 0;
 }// oclear
 
@@ -981,7 +1027,7 @@ int mclear(int i_th, critter& pc) {
       room_list[i].purgeCritter(i_th, pc);
    }//for
 
-   mob_list[i_th].clear();  //clear out the mob
+   mob_list[i_th].Clear();  //clear out the mob
 
    return 0;
 }// mclear
@@ -1008,16 +1054,16 @@ int dclear(int i_th, critter& pc) {
         pc);
    show("these changes permanent, you will have to do an 'adsave'.\n", pc);
 
-   door_list[i_th].clear();  //clear out the mob
+   door_list[i_th].Clear();  //clear out the mob
 
-   SCell<door*> cll;
+   Cell<door*> cll;
    door* ptr;
    for (int i = 0; i<NUMBER_OF_ROOMS; i++) {
       if (room_list.elementAtNoCreate(i)) {
          room_list[i].DOORS.head(cll);
          ptr = cll.next();
          while (ptr) {
-            if (ptr->getDrData() == &door_list[i_th])  {
+            if (ptr->dr_data == &door_list[i_th])  {
                delete ptr;
                ptr = room_list[i].DOORS.lose(cll);
             }//if
@@ -1040,7 +1086,7 @@ int brief(critter& pc) {
 int num_of_generic_door(const String* direction) {
    String* tmp_name;
    for (int i = 1; i <= 10; i++) {
-      tmp_name = door_list[i].getFirstName();
+      tmp_name = Top(door_list[i].names);
       if (strcasecmp(*direction, *tmp_name) == 0)
          return i;
    }//for
@@ -1054,18 +1100,18 @@ int flip_door(int i_th, const String* name, critter& pc) {
       return -1;
    }
 
-   door* dr_ptr = ROOM.findDoor(i_th, name, pc);
+   door* dr_ptr = door::findDoor(ROOM.DOORS, i_th, name, pc.SEE_BIT, ROOM);
    if (!dr_ptr) {
       show("That door doesn't seem to exist.\n", pc);
       return -1;
    }//if
 
-   if (!dr_ptr->isFlippable()) {
+   if (!dr_ptr->dr_data->door_data_flags.get(9)) {
       show("That door is flagged !FLIP.\n", pc);
       return -1;
    }//if
 
-   dr_ptr->setDestination(-(dr_ptr->getDestination()));
+   dr_ptr->destination = (-(dr_ptr->destination));
    show("The door has been flipped.\n", pc);
    return 0;
 }//flip_door
@@ -1115,7 +1161,7 @@ int door_to(int room_num, int dist, const String* direction, critter& pc) {
 
 
 int do_door_to(room& cur_room, room& targ_room, int distance, critter&
-		pc, const String* direction, int is_gate = FALSE) {
+                pc, const String* direction, int is_gate = FALSE) {
    String buf(100);
    int i;
 
@@ -1136,20 +1182,19 @@ int do_door_to(room& cur_room, room& targ_room, int distance, critter&
    }//else
 
    door* new_door = new door;
-   new_door->setDrData(&(door_list[i]));
-   new_door->setDestination(targ_room.getRoomNum());
-   new_door->setDistance(distance);
-   new_door->setContainer(&cur_room);
+   new_door->dr_data = &(door_list[i]);
+   new_door->destination = targ_room.getRoomNum();
+   new_door->distance = distance;
+   new_door->in_room = cur_room.getRoomNum();
    if (is_gate) {
-      new_door->setTicksTillDisolve(pc.LEVEL/8 + 1);
+      new_door->ticks_till_disolve = pc.LEVEL/8 + 1;
       obj_ptr_log << "NOTE " << cur_room.getIdNum() << " " << &cur_room
                   << "Adding to affected_rooms bcause of gate." << endl;
-      room* hack = &cur_room;
-      affected_rooms.appendUnique(hack);
+      affected_rooms.gainData(&cur_room);
    }//if
-   cur_room.doors.append(new_door);
+   Put(new_door, cur_room.doors);
    if (!is_gate)
-      show("OK, doors added (its reflexive now)\n", pc);
+     show("OK, doors added (its reflexive now)\n", pc);
    return 0;
 }//do_door_to
 
@@ -1163,18 +1208,18 @@ int replace_door(int nd_num, const String* direction, critter& pc) {
    if (!check_l_range(nd_num, 0, NUMBER_OF_DOORS, pc, TRUE))
       return -1;
 
-   if (!door_list[nd_num].isInUse()) {
+   if (IsEmpty(door_list[nd_num].names)) {
       show("That door doesn't exist yet.\n", pc);
       return -1;
    }//if
    
-   door* dr_ptr = ROOM.findDoor(1, direction, pc);
+   door* dr_ptr = door::findDoor(ROOM.DOORS, 1, direction, ~0, ROOM);
    if (!dr_ptr) {
       show("That door doesn't seem to exist.\n", pc);
       return -1;
    }//if
 
-   dr_ptr->setDrData(&(door_list[nd_num])); //essentially add new door
+   dr_ptr->dr_data = &(door_list[nd_num]); //essentially add new door
    return 0;
 }//replace_door
 
@@ -1184,7 +1229,8 @@ int delete_door(int i_th, const String* direction, critter& pc) {
       return -1;
    }
 
-   door* dr_ptr = ROOM.findDoor(i_th, direction, pc);
+   door* dr_ptr = 
+         door::findDoor(ROOM.DOORS, i_th, direction, pc.SEE_BIT, ROOM);
    if (!dr_ptr) {
       show("That door doesn't seem to exist.\n", pc);
       return -1;
@@ -1247,29 +1293,56 @@ int write_zone(int znum, critter& pc) {
    return do_write_zone(znum);
 }//write_zone
 
-
 int do_write_zone(int znum) {
+   switch (config.useMySQL) {
+      #ifdef USEMYSQL
+      case true:
+         return do_db_write_zone(znum);
+      break;
+      #endif;
+      case false:
+         return do_file_write_zone(znum);
+      break;
+   }
+   return -1;
+}
+
+#ifdef USEMYSQL
+int do_db_write_zone(int znum) {
+   int j;
+   for (j = ZoneCollection::instance().elementAt(znum).getBeginRoomNum();
+        j <= ZoneCollection::instance().elementAt(znum).getEndRoomNum();
+        j++) {
+      if (!IsEmpty(room_list[j].names)) {
+         room_list[j].dbWrite();
+      }
+   }
+   return 0;
+}
+#endif
+
+int do_file_write_zone(int znum) {
    String buf(100);
    int j;
    
    Sprintf(buf, "./World/zone_%i", znum);
    ofstream rfile(buf);
    if (!rfile) {
-      mudlog.log(ERR, "ERROR:  rfile not opened in 'write_zone'.\n");
+      mudlog.log(ERROR, "ERROR:  rfile not opened in 'write_zone'.\n");
       return -1;
    }//if
    
    for (j = ZoneCollection::instance().elementAt(znum).getBeginRoomNum();
         j <= ZoneCollection::instance().elementAt(znum).getEndRoomNum();
         j++) {
-      if (room_list[j].isInUse()) {
+      if (!IsEmpty(room_list[j].names)) {
          if (room_list[j].isVehicle()) {
             rfile << (j | 0x01000000) << "\t\tVehicle number\n";
          }
          else {
             rfile << j << "\t\tRoom Number\n";
          }
-         room_list[j].write(rfile);
+         room_list[j].fileWrite(rfile);
       }//if
    }//for
    rfile << "\n\n" << -1 << "\t\tEND OF FILE MARKER\n" << flush;
@@ -1346,6 +1419,11 @@ int prompt(const String* pr, critter& pc) {
    if (!ok_to_do_action(NULL, "mFG", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
+
+   if (!pc.isPc()) {
+      pc.show("Only PCs can set prompts...\n");
+      return -1;
+   }
    
    if (*pr == "NORMAL") //reset to default
       pc.pc->prompt = "%N< %hH %mM %vV >  ";
@@ -1362,7 +1440,7 @@ int give(int i_th, const String* obj, int j_th, const String* target,
    critter* targ;
    object* item;
 
-   if (!ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+   if (!ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
    
@@ -1383,7 +1461,11 @@ int give(int i_th, const String* obj, int j_th, const String* target,
       return -1;
    }//if
 
-   		/* assume have valid item and targ */
+   if (targ->isMob())
+      targ = mob_to_smob(*targ, pc.getCurRoomNum(), TRUE, j_th, target, pc.SEE_BIT);
+
+                   /* assume have valid item and targ */
+
    return do_give(*targ, pc, *item);
 
 }//give()
@@ -1400,8 +1482,8 @@ int do_give(critter& targ, critter& pc, object& obj) {
       return -1;
    }//if
 
-   if (obj.isModified())
-      obj.setContainer(&targ);
+   if (obj.IN_LIST)
+      obj.IN_LIST = &(targ.inv);
 
    targ.gainInv(&obj);
 
@@ -1409,7 +1491,7 @@ int do_give(critter& targ, critter& pc, object& obj) {
       harmless. */
    pc.loseInv(&obj);
 
-   SCell<critter*> cll(ROOM.getCrits());
+   Cell<critter*> cll(ROOM.getCrits());
    critter* crit_ptr;
    while ((crit_ptr = cll.next())) {
       if ((crit_ptr != &targ) && (crit_ptr != &pc)) {
@@ -1417,19 +1499,28 @@ int do_give(critter& targ, critter& pc, object& obj) {
                  name_of_crit(pc, crit_ptr->SEE_BIT),
                  long_name_of_obj(obj, crit_ptr->SEE_BIT),
                  name_of_crit(targ, crit_ptr->SEE_BIT));
-	 buf.Cap();
+         buf.Cap();
          show(buf, *crit_ptr);
       }//if
    }//while
 
-   Sprintf(buf, "You give %S to %S.\n", obj.getShortDesc(&pc),
-           targ.getName(&pc));
+   Sprintf(buf, "You give %S to %S.\n", &(obj.short_desc),
+        name_of_crit(targ, pc.SEE_BIT));
    show(buf, pc);
 
-   Sprintf(buf, "%S gives you %S.\n", pc.getName(&targ),
-           obj.getLongName(&targ));
+   Sprintf(buf, "%S gives you %S.\n", name_of_crit(pc, targ.SEE_BIT),
+           long_name_of_obj(obj, targ.SEE_BIT));
    buf.Cap();
    show(buf, targ);
+
+   if (targ.isPlayerShopKeeper()) {
+      if (targ.mob->proc_data->sh_data->getPsdFor(obj)==NULL) {
+         say("I have no use for that.", targ, ROOM);
+         targ.loseInv(&obj);
+         ROOM.gainInv(&obj);
+         drop_eq_effects(obj, targ, TRUE);
+      }
+   }
 
    int deleted_obj = FALSE;
 
@@ -1437,6 +1528,7 @@ int do_give(critter& targ, critter& pc, object& obj) {
    gain_eq_effects(obj, NULL, targ, -1, FALSE, deleted_obj); //don't do msgs
 
    if (!deleted_obj) {
+      do_domob_give_proc(targ, pc, obj); //this can recurse but twice I believe
       
       String cmd = "give";
       String obj_num;
@@ -1471,7 +1563,7 @@ int olist(int start, int end, critter& pc) {
 
    for (int i = start; i<= end; i++) {
       if (obj_list[i].OBJ_FLAGS.get(10)) {
-         Sprintf(buf, "\t%i\t%S\n", i, obj_list[i].getShortDesc(&pc));
+         Sprintf(buf, "\t%i\t%S\n", i, &(obj_list[i].short_desc));
          show(buf, pc);
       }//if
       else {
@@ -1535,7 +1627,7 @@ int mlist(int start, int end, critter& pc) {
 
    for (int i = start; i<= end; i++) {
       if (mob_list[i].CRIT_FLAGS.get(18)) {
-         Sprintf(buf, "\t%i\t%S\n", i, mob_list[i].getShortDesc(&pc));
+         Sprintf(buf, "\t%i\t%S\n", i, &(mob_list[i].short_desc));
          show(buf, pc);
       }//if
       else {
@@ -1569,8 +1661,8 @@ int rlist(int start, int end, critter& pc) {
    }//if
 
    for (int i = start; i<= end; i++) {
-      if (room_list[i].isInUse()) {
-         Sprintf(buf, "\t%i\t%S\n", i, room_list[i].getShortDesc(&pc));
+      if (!IsEmpty(room_list[i].names)) {
+         Sprintf(buf, "\t%i\t%S\n", i, &(room_list[i].short_desc));
          show(buf, pc);
       }//if
       else {
@@ -1604,8 +1696,8 @@ int dlist(int start, int end, critter& pc) {
    }//if
 
    for (int i = start; i<= end; i++) {
-      if (door_list[i].isInUse()) {
-         Sprintf(buf, "\t%i\t%S\n", i, door_list[i].getLongDesc(&pc));
+      if (!IsEmpty(door_list[i].names)) {
+         Sprintf(buf, "\t%i\t%S\n", i, &(door_list[i].long_desc));
          show(buf, pc);
       }//if
       else {
@@ -1617,21 +1709,33 @@ int dlist(int start, int end, critter& pc) {
 }//dlist
 
 
-int adlist(critter& pc) {
+int adlist(int znum, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
 
-   int zone_num = ROOM.getZoneNum();
+   int zone_num;
+
+   if (znum == 1) {
+      zone_num = ROOM.getZoneNum();
+   }
+   else {
+      zone_num = znum;
+   }
+
+   if (zone_num < 0)
+      zone_num = 0;
+   if (zone_num >= NUMBER_OF_ZONES) 
+      zone_num = NUMBER_OF_ZONES - 1;
 
    Sprintf(buf, "Here are all the doors for zone: %i\n\n", zone_num);
    pc.show(buf);
 
    for (int i = 0; i<NUMBER_OF_DOORS; i++) {
-      if (door_list[i].isInUse() && door_list[i].belongsToZone(zone_num)) {
-         Sprintf(buf, "       %i%P14%S\n", i, door_list[i].getLongDesc(&pc));
+      if (door_list[i].isInUse() && door_list[i].isInZone(zone_num)) {
+         Sprintf(buf, "       %i%P14%S\n", i, &(door_list[i].long_desc));
          show(buf, pc);
       }//if
    }//for
@@ -1661,6 +1765,34 @@ int tog_rflag(int flagnum, critter& pc) {
    }
    return -1;
 }//tog_rflag
+
+
+int tog_vflag(int flagnum, critter& pc) {
+   String buf(50);
+
+   if (!ok_to_do_action(NULL, "IFPRZ", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (!check_l_range(flagnum, 0, 200, pc, TRUE)) {
+      return -1;
+   }//if
+
+   if (!ROOM.isVehicle()) {
+      pc.show("This room is not a vehicle.\n");
+      return -1;
+   }
+   else {
+      vehicle* v = (vehicle*)(&ROOM);
+
+      Sprintf(buf, "Toggling vehicle flag#:  %i.\n", flagnum);
+      show(buf, pc);
+   
+      v->toggleVehicleFlag(flagnum);
+      return 0;
+   }
+   return -1;
+}//tog_vflag
 
 
 int set_zflag(int flagnum, const String* on_off, critter& pc) {
@@ -1720,24 +1852,50 @@ int rset(const String* targ, int new_val, critter& pc) {
    }
 
    int len1;
+   int flag = FALSE;
 
    if ((len1 = targ->Strlen()) == 0) {
       show("You may set any of these, range is in parentheses:\n", pc);
       show("movement (-5, 50)\n", pc);
       show("vis_bit (0, 2 billion), NOTE:  better know what yer doing!\n", pc);
+      show("in_room (1, MAX_RM_NUM), Vehicles only.\n", pc);
+      show("fall_to (0, MAX_RM_NUM), Where a flying critter will land if it falls.\n",pc);
       return 0;
    }//if
 
    if (strncasecmp(*targ, "movement", len1) == 0) {
-     if (check_l_range(new_val, -5, 50, pc, TRUE))
-        ROOM.setMovCost(new_val);
+      if (check_l_range(new_val, -5, 50, pc, TRUE)) {
+         ROOM.setMovCost(new_val);
+         flag = TRUE;
+      }
    }//if
    else if (strncasecmp(*targ, "vis_bit", len1) == 0) {
-     if (check_l_range(new_val, 0, 2000000000, pc, TRUE))
-        ROOM.setVisBit(new_val);
+      if (check_l_range(new_val, 0, 2000000000, pc, TRUE)) {
+         ROOM.setVisBit(new_val);
+         flag = TRUE;
+      }
    }//if
-   else {
-      show("You can't set that, see help.\n", pc);
+   else if (strncasecmp(*targ, "in_room", len1) == 0) {
+      if (ROOM.isVehicle()) {
+         vehicle* v = (vehicle*)(&(ROOM));
+         if (strncasecmp(*targ, "in_room", len1) == 0) {
+            if (check_l_range(new_val, 1, NUMBER_OF_ROOMS, pc, TRUE)) {
+               v->setInRoom(new_val);
+               flag = TRUE;
+            }
+         }
+      }
+   }
+   else if (strncasecmp(*targ, "fall_to", len1) == 0) {
+      if (check_l_range(new_val, 0, NUMBER_OF_ROOMS, pc, TRUE)) {
+         ROOM.setFallTo(new_val);
+         if (new_val == 0) pc.show("Falling critters will stay in this room.");
+         flag = TRUE;
+      }
+   }
+
+   if (!flag) {
+      show("Error trying to rset.\n", pc);
       return -1;
    }//else 
    return 0;
@@ -1775,12 +1933,12 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       show("mob_name (keyword)          short_desc\n", pc);
       show("in_room_desc                naked_weight (1, 20000)\n", pc);
       show("sex (0-female, 1-male, 2-neuter)\n", pc);
-      show("position (0, 6)             align (-1000 1000)\n", pc);
+      show("position (0, 6)             alignment (-1000 1000)\n", pc);
       show("hunger (-1, 9999)           thirst (-1, 9999)\n", pc);
-      show("drugged (-1, 9999)          ", pc);
+      show("drugged (-1, 9999)          wimpy(0-99999)\n", pc);
       show("quest_points (0, 1000)      gold (0, 50 million)\n", pc);
       show("experience (0, 100 million) bank_gold (0, 50 million)\n", pc);
-      show("strength (0, 100)           inteligence (0, 100)\n", pc);
+      show("strength (0, 100)           intelligence (0, 100)\n", pc);
       show("constitution (0, 100)       charisma (0, 100)\n", pc);
       show("wisdom (0, 100)             dexterity (0, 100)\n", pc);
       show("hit (-100, 100)             dam (0, 100)\n", pc);
@@ -1804,7 +1962,8 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       show("benevolence (-10, 10)       pause (0, 50)\n", pc);
       show("Language (0 English, 1 Spanish, 2 Portugues)\n", pc);
       show("home_room (0 - MAX_ROOMS)   password(3 char mininum)\n", pc);
-      show("manager (of store)\n", pc);
+      show("manager (of store)          ticks_old(0, 500)", pc);
+      show("ticks_till_freedom (0 - 500000)\n", pc);
       return 0;
    }//if
 
@@ -1841,9 +2000,9 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
    else {
       if (ptr->isImmort() && (ptr->IMM_LEVEL >= pc.IMM_LEVEL)
-	  && (ptr != &pc)) {
+          && (ptr != &pc)) {
          show("You can't mess with one so powerful.\n", pc);
-	 return -1;
+         return -1;
       }//if
    }//else
 
@@ -1868,7 +2027,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
    
    if ((ptr->pc) && (pc.IMM_LEVEL < 9) && (ptr != &pc)) {
-	 //only 9+ imms can 'set' pcs
+         //only 9+ imms can 'set' pcs
       show("You must be an imm of level 9 or more to 'mset' players.\n", pc);
       return -1;
    }//if
@@ -1882,34 +2041,46 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
          }//if
       }//if
       else if (strncasecmp(*targ, "skill_violence", len1) == 0) {
-	if (check_l_range(new_val, -10, 10, pc, TRUE)) {
-	  ptr->mob->setSkillViolence(new_val);
+        if (check_l_range(new_val, -10, 10, pc, TRUE)) {
+          ptr->mob->setSkillViolence(new_val);
           flag = TRUE;
-	}//if
+        }//if
+      }//if
+      else if (strncasecmp(*targ, "ticks_old", len1) == 0) {
+        if (check_l_range(new_val, 0, 500, pc, TRUE)) {
+          ptr->mob->setTicksOld(new_val);
+          flag = TRUE;
+        }//if
+      }//if
+      else if (strncasecmp(*targ, "ticks_till_freedom", len1) == 0) {
+        if (check_l_range(new_val, 0, 500000, pc, TRUE)) {
+          ptr->mob->setTicksTillFreedom(new_val);
+          flag = TRUE;
+        }//if
       }//if
       else if (strncasecmp(*targ, "home_room", len1) == 0) {
-	if (check_l_range(new_val, 0, NUMBER_OF_ROOMS - 1, pc, TRUE)) {
+        if (check_l_range(new_val, 0, NUMBER_OF_ROOMS - 1, pc, TRUE)) {
            ptr->mob->home_room = new_val;
            flag = TRUE;
-	}//if
+        }//if
       }//if
       else if (strncasecmp(*targ, "defensiveness", len1) == 0) {
-	if (check_l_range(new_val, -10, 10, pc, TRUE)) {
-	  ptr->mob->setDefensiveness(new_val);
+        if (check_l_range(new_val, -10, 10, pc, TRUE)) {
+          ptr->mob->setDefensiveness(new_val);
           flag = TRUE;
-	}//if
+        }//if
       }//if
       else if (strncasecmp(*targ, "social_awareness", len1) == 0) {
-	if (check_l_range(new_val, -10, 10, pc, TRUE)) {
-	  ptr->mob->setSocialAwareness(new_val);
+        if (check_l_range(new_val, -10, 10, pc, TRUE)) {
+          ptr->mob->setSocialAwareness(new_val);
           flag = TRUE;
-	}//if
+        }//if
       }//if
       else if (strncasecmp(*targ, "benevolence", len1) == 0) {
-	if (check_l_range(new_val, -10, 10, pc, TRUE)) {
-	  ptr->mob->setBenevolence(new_val);
+        if (check_l_range(new_val, -10, 10, pc, TRUE)) {
+          ptr->mob->setBenevolence(new_val);
           flag = TRUE;
-	}//if
+        }//if
       }//if
       else if (strncasecmp(*targ, "manager", 7) == 0) {
          flag = TRUE;
@@ -1936,34 +2107,34 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
 
    if (ptr->pc) { //only can set these on pc's
       if (strncasecmp(*targ, "hunger", len1) == 0) {
-	if (check_l_range(new_val, -1, 9999, pc, TRUE)) {
-	  ptr->HUNGER = new_val;
-	  flag = TRUE;
-	}//if
+        if (check_l_range(new_val, -1, 9999, pc, TRUE)) {
+          ptr->HUNGER = new_val;
+          flag = TRUE;
+        }//if
       }//if
       else if (strncasecmp(*targ, "thirst", len1) == 0) {
-	if (check_l_range(new_val, -1, 9999, pc, TRUE)) {
-	  ptr->THIRST = new_val;
+        if (check_l_range(new_val, -1, 9999, pc, TRUE)) {
+          ptr->THIRST = new_val;
           flag = TRUE;
-	}//if
+        }//if
       }//if
       else if (strncasecmp(*targ, "drugged", len1) == 0) {
-	if (check_l_range(new_val, -1, 9999, pc, TRUE)) {
-	  ptr->DRUGGED = new_val;
+        if (check_l_range(new_val, -1, 9999, pc, TRUE)) {
+          ptr->DRUGGED = new_val;
           flag = TRUE;
-	}//if
+        }//if
       }//if
       else if (strncasecmp(*targ, "quest_points", len1) == 0) {
-	if (check_l_range(new_val, 0, 1000, pc, TRUE)) {
-	  ptr->pc->quest_points = new_val;
-	  flag = TRUE;
-	}//if
+        if (check_l_range(new_val, 0, 1000, pc, TRUE)) {
+          ptr->pc->quest_points = new_val;
+          flag = TRUE;
+        }//if
       }//if
       else if (strncasecmp(*targ, "practices", len1) == 0) {
-	if (check_l_range(new_val, 0, 100, pc, TRUE)) {
-	  ptr->PRACS = new_val;
-	  flag = TRUE;
-	}//if
+        if (check_l_range(new_val, 0, 100, pc, TRUE)) {
+          ptr->PRACS = new_val;
+          flag = TRUE;
+        }//if
       }//if
       else if (strncasecmp(*targ, "password", len1) == 0) {
          if (new_val_string->Strlen() > 3) {
@@ -1975,12 +2146,12 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
          return -1;
       }//if
       else if (strncasecmp(*targ, "language", len1) == 0) {
-	if (check_l_range(new_val, (int)(English), (int)(LastLanguage - 1),
+        if (check_l_range(new_val, (int)(English), (int)(LastLanguage - 1),
                           pc, TRUE)) {
-	  ptr->pc->preferred_language = (LanguageE)(new_val);
+          ptr->pc->preferred_language = (LanguageE)(new_val);
           ptr->PC_FLAGS.turn_on(27);
-	  flag = TRUE;
-	}//if
+          flag = TRUE;
+        }//if
       }//if
    }//if pc only
 
@@ -1992,10 +2163,10 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
        if (ptr->mob) {
           ptr->setMaxInGame(new_val);
           flag = TRUE;
-	}//if
-	else {
+        }//if
+        else {
            show("This can only work on MOBILES.\n", pc);
-	}//else
+        }//else
      }//if
    }//if
    else if (strncasecmp(*targ, "naked_weight", len1) == 0) {
@@ -2004,11 +2175,16 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
         flag = TRUE;
      }//if
    }//if
+   else if (strncasecmp(*targ, "wimpy", len1) == 0) {
+     if (check_l_range(new_val, 0, 99999, pc, TRUE)) {
+        ptr->setWimpy(new_val);
+        flag = TRUE;
+     }//if
+   }//if
    else if (strncasecmp(*targ, "mob_name", len1) == 0) {
       if (!ptr->isPc()) {
-         ptr->getNames().clearLanguage(pc.getLanguage());
-         LString ls(pc.getLanguage(), *new_val_string);
-         ptr->addName(ls);
+         ptr->names.clearAndDestroy();
+         ptr->names.append(new String(*new_val_string));
          flag = TRUE;
       }//if
       else {
@@ -2017,8 +2193,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
    else if (strncasecmp(*targ, "short_desc", len1) == 0) {
       if (!ptr->isPc()) {
-         LString ls(pc.getLanguage(), *new_val_string);
-         ptr->addShortDesc(ls);
+         ptr->short_desc = *new_val_string;
          flag = TRUE;
       }//if
       else {
@@ -2027,8 +2202,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
    else if (strncasecmp(*targ, "in_room_desc", len1) == 0) {
       if (!ptr->isPc()) {
-         LString ls(pc.getLanguage(), *new_val_string);
-         ptr->addInRoomDesc(ls);
+         ptr->in_room_desc = *new_val_string;
          flag = TRUE;
       }//if
       else {
@@ -2038,79 +2212,79 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    else if (strncasecmp(*targ, "close_time", len1) == 0) {
      if (check_l_range(new_val, 0, 23, pc, TRUE)) {
        if (ptr->mob && ptr->mob->proc_data &&
-	   ptr->mob->proc_data->sh_data) {
-	  ptr->mob->proc_data->sh_data->close_time = new_val;
+           ptr->mob->proc_data->sh_data) {
+          ptr->mob->proc_data->sh_data->close_time = new_val;
           flag = TRUE;
-	}//if
-	else {
-	  show("This can only work on MOBILES.\n", pc);
-	}//else
+        }//if
+        else {
+          show("This can only work on MOBILES.\n", pc);
+        }//else
      }//if
    }//if
    else if (strncasecmp(*targ, "buy%", len1) == 0) {
      if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
        if (ptr->mob && ptr->mob->proc_data &&
-	   ptr->mob->proc_data->sh_data) {
-	  ptr->mob->proc_data->sh_data->buy_percentage = new_val;
+           ptr->mob->proc_data->sh_data) {
+          ptr->mob->proc_data->sh_data->buy_percentage = new_val;
           flag = TRUE;
-	}//if
-	else {
-	  show("This can only work on MOBILES.\n", pc);
-	}//else
+        }//if
+        else {
+          show("This can only work on MOBILES.\n", pc);
+        }//else
      }//if
    }//if
    else if (strncasecmp(*targ, "markup%", len1) == 0) {
      if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
        if (ptr->mob && ptr->mob->proc_data &&
-	   ptr->mob->proc_data->sh_data) {
-	  ptr->mob->proc_data->sh_data->markup = new_val;
+           ptr->mob->proc_data->sh_data) {
+          ptr->mob->proc_data->sh_data->markup = new_val;
           flag = TRUE;
-	}//if
-	else {
-	  show("This can only work on MOBILES.\n", pc);
-	}//else
+        }//if
+        else {
+          show("This can only work on MOBILES.\n", pc);
+        }//else
      }//if
    }//if
    else if (strncasecmp(*targ, "close_time", len1) == 0) {
      if (check_l_range(new_val, 0, 23, pc, TRUE)) {
        if (ptr->mob && ptr->mob->proc_data &&
-	   ptr->mob->proc_data->sh_data) {
-	  ptr->mob->proc_data->sh_data->close_time = new_val;
+           ptr->mob->proc_data->sh_data) {
+          ptr->mob->proc_data->sh_data->close_time = new_val;
           flag = TRUE;
-	}//if
-	else {
-	  show("This can only work on MOBILES.\n", pc);
-	}//else
+        }//if
+        else {
+          show("This can only work on MOBILES.\n", pc);
+        }//else
      }//if
    }//if
    else if (strncasecmp(*targ, "open_time", len1) == 0) {
      if (check_l_range(new_val, 0, 23, pc, TRUE)) {
        if (ptr->mob && ptr->mob->proc_data &&
-	   ptr->mob->proc_data->sh_data) {
-	  ptr->mob->proc_data->sh_data->open_time = new_val;
+           ptr->mob->proc_data->sh_data) {
+          ptr->mob->proc_data->sh_data->open_time = new_val;
           flag = TRUE;
-	}//if
-	else {
-	  show("This can only work on MOBILES.\n", pc);
-	}//else
+        }//if
+        else {
+          show("This can only work on MOBILES.\n", pc);
+        }//else
      }//if
    }//if
    else if (strncasecmp(*targ, "skin_num", len1) == 0) {
      if (check_l_range(new_val, 0, NUMBER_OF_ITEMS, pc, TRUE)) {
        if (ptr->mob) {
-	 if (new_val == 0)  {
-	   ptr->MOB_FLAGS.turn_off(16);
-  	   ptr->mob->skin_num = 0;
-	 }//if
-	 else {
-	   ptr->MOB_FLAGS.turn_on(16);
-	   ptr->mob->skin_num = new_val;
-	 }//else
+         if (new_val == 0)  {
+           ptr->MOB_FLAGS.turn_off(16);
+             ptr->mob->skin_num = 0;
+         }//if
+         else {
+           ptr->MOB_FLAGS.turn_on(16);
+           ptr->mob->skin_num = new_val;
+         }//else
          flag = TRUE;
-	}//if
-	else {
-	  show("This can only work on MOBILES.\n", pc);
-	}//else
+        }//if
+        else {
+          show("This can only work on MOBILES.\n", pc);
+        }//else
      }//if
    }//if
    else if (strncasecmp(*targ, "gold", len1) == 0) {
@@ -2133,7 +2307,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
    else if (strncasecmp(*targ, "exp_worth", len1) == 0) {
      if (check_l_range(new_val, 0, 500000, pc, TRUE)) {
-       ptr->EXP = new_val * EXP_DIVISOR;
+       ptr->EXP = new_val * config.experienceDivisor;
        flag = TRUE;
      }//if
    }//if
@@ -2143,7 +2317,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
        flag = TRUE;
      }//if
    }//if
-   else if (strncasecmp(*targ, "align", len1) == 0) {
+   else if (strncasecmp(*targ, "alignment", len1) == 0) {
      if (check_l_range(new_val, -1000, 1000, pc, TRUE)) {
        ptr->ALIGN = new_val;
        flag = TRUE;
@@ -2197,7 +2371,8 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
        flag = TRUE;
      }//if
    }//if
-   else if (strncasecmp(*targ, "dam_rcv_mod", max(len1, 5)) == 0) {
+   else if ((strncasecmp(*targ, "dam_rcv_mod", max(len1, 5)) == 0) ||
+            (strncasecmp(*targ, "dam_rec_mod", max(len1, 5)) == 0)) {
      if (check_l_range(new_val, 1, 1000, pc, TRUE)) {
        ptr->DAM_REC_MOD = new_val;
        flag = TRUE;
@@ -2227,7 +2402,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
        flag = TRUE;
      }//if
    }//if
-   else if (strncasecmp(*targ, "inteligence", len1) == 0) {
+   else if (strncasecmp(*targ, "intelligence", len1) == 0) {
      if (check_l_range(new_val, 0, 100, pc, TRUE)) {
        ptr->INT = new_val;
        flag = TRUE;
@@ -2325,7 +2500,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
    else if (strncasecmp(*targ, "hp_max", max(len1, 4)) == 0) {
      if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
-       ptr->setHpMax(new_val);
+       ptr->setHP_MAX(new_val);
        flag = TRUE;
      }//if
    }//if
@@ -2384,7 +2559,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    else {
      show("Oops, for some reason it failed, remember that not everyone\n", pc);
      show("can do an mset on everyone else, some things are restricted.\n",
-	  pc);
+          pc);
      return -1;
    }//else
 }//mset
@@ -2408,20 +2583,21 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
       Sprintf(buf, "key_num (0, %i)\n", NUMBER_OF_ITEMS);
       show(buf, pc);
       show("max_weight (0, 9999)        percentage_weight (1, 1000)\n",
-	   pc);
+           pc);
       show("time_till_disolve (0, 500)  charges/light_count (-1, 100)\n",
-	   pc);
+           pc);
       show("percent_load (0, 100)       weight (0, 10000)\n", pc);
       show("dice_sides (0, 50)          dice_count (0, 50)\n", pc);
       show("level (0, 30)               vis_bit (0, 2 billion)\n", pc);
       show("price (0, 50 million)       max_in_game(0, 1000)\n", pc);
       show("obj_name (ie keyword)       short_desc\n", pc);
       show("in_room_desc                liquid(1, MAX_OBJS)\n", pc);
+      show("max_recharge_cnt(100)       \n", pc);
       return 0;
    }//if
 
    object* ptr = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT,
-				ROOM);
+                                ROOM);
    if (!ptr) {
       ptr = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);      
    }//if
@@ -2457,34 +2633,34 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
 
    if (ptr->bag) { //thingies for bags
       if (strncasecmp(*targ, "key_num", len1) == 0) {
-	if (check_l_range(new_val, 0, NUMBER_OF_ITEMS, pc, TRUE)) {
-	  ptr->bag->setKey(new_val);
-	  flag = TRUE;
-	}//if
+        if (check_l_range(new_val, 0, NUMBER_OF_ITEMS, pc, TRUE)) {
+          ptr->bag->key_num = new_val;
+          flag = TRUE;
+        }//if
       }//if
       else if (strncasecmp(*targ, "max_weight", len1) == 0) {
-	if (check_l_range(new_val, 0, 9999, pc, TRUE)) {
-	  ptr->bag->setMaxWeight(new_val);
+        if (check_l_range(new_val, 0, 9999, pc, TRUE)) {
+          ptr->bag->max_weight = new_val;
           flag = TRUE;
-	}//if
+        }//if
       }//if
       else if (strncasecmp(*targ, "percentage_weight", len1) == 0) {
-	if (check_l_range(new_val, 1, 1000, pc, TRUE)) {
-	  ptr->bag->setPercentWeight(new_val);
-	  flag = TRUE;
-	}//if
+        if (check_l_range(new_val, 1, 1000, pc, TRUE)) {
+          ptr->bag->percentage_weight = new_val;
+          flag = TRUE;
+        }//if
       }//if
       else if (strncasecmp(*targ, "time_till_disolve", len1) == 0) {
-	if (check_l_range(new_val, 0, 500, pc, TRUE)) {
-	  ptr->bag->setTimeTillDisolve(new_val);
-	  flag = TRUE;
-	}//if
+        if (check_l_range(new_val, 0, 500, pc, TRUE)) {
+          ptr->bag->time_till_disolve = new_val;
+          flag = TRUE;
+        }//if
       }//if
       else if (strncasecmp(*targ, "liquid", len1) == 0) {
-	if (check_l_range(new_val, 1, Cur_Max_Obj_Num, pc, TRUE)) {
+        if (check_l_range(new_val, 1, Cur_Max_Obj_Num, pc, TRUE)) {
            if (obj_list[new_val].isInUse() && obj_list[new_val].isLiquid()) {
               if (ptr->isCanteen()) {
-                 SCell<object*> cll(ptr->inv);
+                 Cell<object*> cll(ptr->inv);
                  object* optr;
                  while ((optr = cll.next())) {
                     recursive_init_unload(*optr, 0);
@@ -2512,20 +2688,23 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
          flag = TRUE;
       }//if
    }//if
+   else if (strncasecmp(*targ, "max_recharge_cnt", len1) == 0) {
+      if (check_l_range(new_val, 0, 100, pc, TRUE)) {
+         ptr->extras[1] = new_val;
+         flag = TRUE;
+      }//if
+   }//if
    else if (strncasecmp(*targ, "obj_name", len1) == 0) {
-      ptr->getNames().clearLanguage(pc.getLanguage());
-      LString ls(pc.getLanguage(), *new_val_string);
-      ptr->addName(ls);
+      ptr->names.clearAndDestroy();
+      ptr->names.append(new String(*new_val_string));
       flag = TRUE;
    }//if
    else if (strncasecmp(*targ, "short_desc", len1) == 0) {
-      LString ls(pc.getLanguage(), *new_val_string);
-      ptr->addShortDesc(ls);
+      ptr->short_desc = *new_val_string;
       flag = TRUE;
    }//if
    else if (strncasecmp(*targ, "in_room_desc", len1) == 0) {
-      LString ls(pc.getLanguage(), *new_val_string);
-      ptr->addInRoomDesc(ls);
+      ptr->in_room_desc = *new_val_string;
       flag = TRUE;
    }//if
    else if (strncasecmp(*targ, "percent_load", len1) == 0) {
@@ -2549,20 +2728,20 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
    else if (strncasecmp(*targ, "dice_sides", len1) == 0) {
       if (check_l_range(new_val, 0, 50, pc, TRUE)) {
          ptr->extras[6] = new_val;
-	 if(!(pc.pc && pc.pc->pc_data_flags.get(2)
-	      && pc.pc->imm_data->imm_level >= 9)) {
-	   normalize_obj(*ptr);
-	 }
+         if(!(pc.pc && pc.pc->pc_data_flags.get(2)
+              && pc.pc->imm_data->imm_level >= 9)) {
+           normalize_obj(*ptr);
+         }
          flag = TRUE;
       }//if
    }//if
    else if (strncasecmp(*targ, "dice_count", len1) == 0) {
       if (check_l_range(new_val, 0, 50, pc, TRUE)) {
          ptr->extras[7] = new_val;
-	 if(!(pc.pc && pc.pc->pc_data_flags.get(2)
-	      && pc.pc->imm_data->imm_level >= 9)) {
-	   normalize_obj(*ptr);
-	 }
+         if(!(pc.pc && pc.pc->pc_data_flags.get(2)
+              && pc.pc->imm_data->imm_level >= 9)) {
+           normalize_obj(*ptr);
+         }
          flag = TRUE;
       }//if
    }//if
@@ -2575,10 +2754,10 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
    else if (strncasecmp(*targ, "level", len1) == 0) {
       if (check_l_range(new_val, 0, 30, pc, TRUE)) {
          ptr->OBJ_LEVEL = new_val;
-	 if(!(pc.pc && pc.pc->pc_data_flags.get(2)
-	      && pc.pc->imm_data->imm_level >= 9)) {
-	   normalize_obj(*ptr);
-	 }
+         if(!(pc.pc && pc.pc->pc_data_flags.get(2)
+              && pc.pc->imm_data->imm_level >= 9)) {
+           normalize_obj(*ptr);
+         }
          flag = TRUE;
       }//if
    }//if
@@ -2627,7 +2806,7 @@ int dset(int i_th, const String* vict, const String* targ, int new_val,
       return 0;
    }//if
 
-   door* ptr = ROOM.findDoor(i_th, vict, pc);
+   door* ptr = door::findDoor(ROOM.DOORS, i_th, vict, pc.SEE_BIT, ROOM);
    if (!ptr) {
       show("You don't see that door.\n", pc);
       return -1;
@@ -2650,7 +2829,7 @@ int dset(int i_th, const String* vict, const String* targ, int new_val,
 
    if (strncasecmp(*targ, "distance", len1) == 0) {
      if (check_l_range(new_val, 0, 15, pc, TRUE)) {
-       ptr->setDistance(new_val);
+       ptr->distance = new_val;
        flag = TRUE;
      }//if
    }//if
@@ -2667,27 +2846,28 @@ int dset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
 
    if (strncasecmp(*targ, "toggle_flag", len1) == 0) {
-      if (check_l_range(new_val, 0, 20, pc, TRUE)) {
-         if (ptr->flipFlag(new_val)) {
-            flag = TRUE;
-         }//if
-      }//if
+     if (check_l_range(new_val, 0, 20, pc, TRUE)) {
+       if ((new_val != 10) && (new_val != 14)) {
+         ptr->dr_data->door_data_flags.flip(new_val);
+         flag = TRUE;
+       }//if
+     }//if
    }//if
    else if (strncasecmp(*targ, "vis_bit", len1) == 0) {
-      if (check_l_range(new_val, 0, (1 << 30), pc, TRUE)) {
-         ptr->getDrData()->setVisBit(new_val);
-         flag = TRUE;
-      }//if
+     if (check_l_range(new_val, 0, (1 << 30), pc, TRUE)) {
+       ptr->dr_data->vis_bit = new_val;
+       flag = TRUE;
+     }//if
    }//if
    else if (strncasecmp(*targ, "key_num", len1) == 0) {
      if (check_l_range(new_val, 0, NUMBER_OF_ITEMS, pc, TRUE)) {
-       ptr->setKey(new_val);
+       ptr->dr_data->key_num = new_val;
        flag = TRUE;
      }//if
    }//if
    else if (strncasecmp(*targ, "token_num", len1) == 0) {
      if (check_l_range(new_val, 0, NUMBER_OF_ITEMS, pc, TRUE)) {
-       ptr->setToken(new_val);
+       ptr->dr_data->token_num = new_val;
        flag = TRUE;
      }//if
    }//if
@@ -2718,7 +2898,7 @@ int tog_oflag(int flagnum, const String* flag_type,
 
    object* obj_ptr = NULL;
 
-   if ((obj->Strlen() > 0) && (*obj != "DB")) {
+   if ((obj->Strlen() > 0) && (strcasecmp(*obj, "DB") != 0)) {
       obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT,
                                ROOM);
       if (!obj_ptr) {
@@ -2751,14 +2931,14 @@ int tog_oflag(int flagnum, const String* flag_type,
    if ((strncasecmp(*flag_type, "obj_flag", 1) == 0) ||
        (strncasecmp(*flag_type, "bag_flag", 1) == 0) ||
       (strncasecmp(*flag_type, "spec_flag", 1) == 0)) {
-      if (obj_ptr->isModified()) {
-         Sprintf(buf, "Toggling obj_flag#:  %i on MODIFIED OBJECT:  %S.\n", flagnum, 
-                 obj_ptr->getShortDesc(&pc));
+      if (obj_ptr->IN_LIST) {
+         Sprintf(buf, "Toggling obj_flag#:  %i on SOBJ:  %S.\n", flagnum, 
+                 &(obj_ptr->short_desc));
          show(buf, pc);
       }//if SOBJ
       else {
          Sprintf(buf, "Toggling obj_flag#:  %i on OBJ:  %S.\n", flagnum, 
-                 obj_ptr->getShortDesc(&pc));
+                 &(obj_ptr->short_desc));
          show(buf, pc);
       }//else
    }//if
@@ -2785,7 +2965,8 @@ int tog_oflag(int flagnum, const String* flag_type,
          show("Doh, thats not a bag!!\n", pc);
          return -1;
       }//if
-      if (obj_ptr->bag->flipFlag(flagnum)) {
+      if (flagnum != 8) {
+         obj_ptr->bag->bag_flags.flip(flagnum);
          return 0;
       }//if
       else {
@@ -2863,17 +3044,18 @@ int tog_mflag(int flagnum, const String* flag_type,
    }//if
 
    if ((strncasecmp(*flag_type, "mob_flag", 1) == 0) ||
+       (strncasecmp(*flag_type, "pc_flag", 1) == 0) ||
        (strncasecmp(*flag_type, "crit_flag", 1) == 0) ||
        (strncasecmp(*flag_type, "teach_flag", 1) == 0) ||
        (strncasecmp(*flag_type, "shop_flag", 1) == 0)) {
       if (mob_ptr->isMob()) {
-         Sprintf(buf, "Toggling flag#:  %i on NON-MODIFIED (DB) Critter:  %S.\n",
-                 flagnum, mob_ptr->getShortDesc(&pc));
+         Sprintf(buf, "Toggling flag#:  %i on MOB:  %S.\n", flagnum,
+                 &(mob_ptr->short_desc));
          show(buf, pc);
       }//if SOBJ
       else if (mob_ptr->isSmob()) {
-         Sprintf(buf, "Toggling flag#:  %i on MODIFIED Critter:  %S.\n", flagnum,
-                 mob_ptr->getShortDesc(&pc));
+         Sprintf(buf, "Toggling flag#:  %i on SMOB:  %S.\n", flagnum,
+                 &(mob_ptr->short_desc));
          show(buf, pc);
       }//else
       else if (mob_ptr->isPc()) {
@@ -2883,14 +3065,15 @@ int tog_mflag(int flagnum, const String* flag_type,
       }
    }//if
    else {
-      show("You must specify flagtype as:  'mob_flag' or 'crit_flag'.\n",
+      show("You must specify flagtype as:  'mob_flag', 'pc_flag', 'crit_flag', 'teach_flag' or 'shop_flag'.\n",
            pc);
       return -1;
    }//else
 
    if (strncasecmp(*flag_type, "mob_flag", 1) == 0) {
       if ((flagnum == 1) || (flagnum == 2) || (flagnum == 5) ||
-         (flagnum == 6) || (flagnum == 7) || (flagnum == 8)) {
+         (flagnum == 6) || (flagnum == 7) || (flagnum == 8) ||
+         (flagnum == 9) ||  (flagnum == 10)) {
          if (mob_ptr->isNpc()) {
             mob_ptr->MOB_FLAGS.flip(flagnum);
             return 0;
@@ -2923,6 +3106,23 @@ int tog_mflag(int flagnum, const String* flag_type,
          return -1;
       }
    }
+   else if (strncasecmp(*flag_type, "pc_flag", 1) == 0) {
+      if (mob_ptr->pc) {
+         switch(flagnum) {
+            case 24: case 30: case 31:
+               mob_ptr->PC_FLAGS.flip(flagnum);
+               return 0;
+            default:
+               show("OOPS, you can't toggle that flag.\n", pc);
+               show("Valid flags: 24 !wizchat, 30 is_remort, 31 has_sacrificed.\n", pc);
+               return -1;
+         }
+      }
+      else {
+         pc.show("OOPS:  That critter is not a PC.\n");
+         return -1;
+      }
+   }
    else if (strncasecmp(*flag_type, "crit_flag", 1) == 0) {
       if ((flagnum != 18) && (flagnum != 24)) { //put restrictions here
          mob_ptr->CRIT_FLAGS.flip(flagnum);
@@ -2934,7 +3134,7 @@ int tog_mflag(int flagnum, const String* flag_type,
       }//else
    }//else 
    else {
-      pc.show("You must specify a flag type of:  crit_flag, mob_flag, or shop_flag");
+      pc.show("You must specify flagtype as:  'mob_flag', 'pc_flag', 'crit_flag', 'teach_flag' or 'shop_flag'.\n");
       return -1;
    }
 }// tog_mflag

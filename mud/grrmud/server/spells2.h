@@ -1,5 +1,5 @@
-// $Id: spells2.h,v 1.3 1999/08/10 07:06:21 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/08/10 07:06:21 $
+// $Id: spells2.h,v 1.4 2001/03/29 03:02:35 eroper Exp $
+// $Revision: 1.4 $  $Author: eroper $ $Date: 2001/03/29 03:02:35 $
 
 //
 //ScryMUD Server Code
@@ -38,12 +38,13 @@
 #define CURSE_STR_EFFECT          -2
 #define CURSE_MA_REGEN_EFFECT     -10
 #define DIVINE_PROTECTION_EFFECT  -35 /* to AC */
-#define STONE_SKIN_EFFECT_DRM     -20 /* to dam_rec_mod */
-#define STONE_SKIN_EFFECT_DEX     -3
-#define SANCTUARY_EFFECT_DRM      -40 /* to dam_rec_mod */
+#define STONE_SKIN_EFFECT_DRM     -25 /* to dam_rec_mod */
+#define STONE_SKIN_EFFECT_DEX     -1
+#define SANCTUARY_EFFECT_DRM      -35 /* to dam_rec_mod */
 #define PRISMATIC_GLOBE_EFFECT_AC -100
 #define PRISMATIC_GLOBE_EFFECT_MOV -50
-
+#define MAGIC_SHIELD_AC_EFFECT     -10
+#define MAGIC_SHIELD_SAC_EFFECT    -50 /* spell resistance */
 
 
 void cast_blindness(int i_th, const String* dr, critter& agg);
@@ -56,9 +57,9 @@ void cast_remove_poison(int i_th, const String* dr, critter& agg);
 void do_cast_remove_poison(critter& targ, critter& pc, int is_canned, int lvl);
 
 void do_locate_object(object &obj, const String* targ, critter& pc,
-		      int rm_num, int sanity, int spell_level);
+                      int rm_num, int sanity, int spell_level);
 void do_locate_object(critter& crit, const String* targ, critter& pc,
-		      int rm_num, int sanity, int spell_level);
+                      int rm_num, int sanity, int spell_level);
 
 void cast_wizard_eye(int i_th, const String* vict, critter& pc);
 void do_cast_wizard_eye(object& obj, critter& pc, int is_canned, int lvl);
@@ -77,24 +78,24 @@ void do_cast_absorb_blows(critter& vict, critter& agg, int is_canned, int lvl);
 
 void cast_prismatic_globe(int i_th, const String* vict, critter& agg);
 void do_cast_prismatic_globe(critter& vict, critter& agg, int is_canned,
-			     int lvl);
+                             int lvl);
 
 void cast_sanctuary(int i_th, const String* vict, critter& agg);
 void do_cast_sanctuary(critter& vict, critter& agg, int is_canned, int lvl);
 
 void cast_divine_protection(int i_th, const String* vict, critter& agg);
 void do_cast_divine_protection(critter& vict, critter& agg, int is_canned,
-			       int lvl);
+                               int lvl);
 
 void cast_identify(int i_th, const String* vict, critter& agg);
 void do_cast_identify(object& vict, critter& agg, int is_canned, int lvl);
 
 void cast_shadows_blessing(int i_th, const String* vict, critter& agg);
 void do_cast_shadows_blessing(critter& vict, critter& agg, int is_canned, 
-			      int lvl);
+                              int lvl);
 void cast_bind_wound(int i_th, const String* vict, critter& agg);
 void do_cast_bind_wound(critter& vict, critter& agg, int is_canned, 
-			      int lvl);
+                              int lvl);
 
 void cast_weaken(int i_th, const String* vict, critter& agg);
 void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl);
@@ -109,6 +110,9 @@ void do_cast_curse(critter& vict, critter& agg, int is_canned, int lvl);
 
 void cast_strength(int i_th, const String* vict, critter& agg);
 void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl);
+
+void do_cast_flesh_to_stone(critter& vict, critter& agg, int is_canned, int lvl);
+void cast_flesh_to_stone(int i_th, const String* victim, critter& pc);
 
 void cast_sleep(int i_th, const String* vict, critter& agg);
 void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl);
@@ -126,12 +130,14 @@ void cast_haste(int i_th, const String* vict, critter& agg);
 void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl);
 
 void cast_dispel_magic(int i_th, const String* vict, critter& agg);
-void do_cast_dispel_magic(critter& vict, critter& agg, int is_canned,
-			   int lvl);
+void do_cast_dispel_magic(critter& vict, critter& agg, int is_canned, int lvl);
+void do_cast_dispel_magic(object& vict, critter& agg, int is_canned, int lvl);
 
 void cast_stone_skin(int i_th, const String* vict, critter& agg);
 void do_cast_stone_skin(critter& vict, critter& agg, int is_canned, int lvl);
 
+void cast_sober(int i_th, const String* vict, critter& agg);
+void do_cast_sober(critter& vict, critter& agg, int is_canned, int lvl);
 
 ///**************   auxillary functions   *************///
 

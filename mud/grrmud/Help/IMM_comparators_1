@@ -4,7 +4,10 @@ These commands are designed to be used in scripts to allow
 conditional branching.  Position options are:
 	stand, sit, rest, sleep, meditate, stun, dead, prone
 
-You may compare these fields currently:  MOV, MANA, HP, ALIGN
+You may compare these fields currently:  MOV, MANA, HP, ALIGN,
+BENEVOLENCE, HOMETOWN, NATIVEZONE, AGE, VISBIT, SEEBIT,
+NAKED_WEIGHT, CHARISMA, HP_MAX, MANA_MAX, MOV_MAX, WIMPY,
+LEVEL, CLASS, GOLD, RACE
 
 Syntax: is_equal_to <<i_th> [targ] [field]
 Syntax: is_less_than <<i_th> [targ] [field]

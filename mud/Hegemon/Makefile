@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.11 1999/06/05 23:29:12 greear Exp $
-# $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+# $Id: Makefile,v 1.12 2001/03/29 03:02:24 eroper Exp $
+# $Revision: 1.12 $  $Author: eroper $ $Date: 2001/03/29 03:02:24 $
 
 # Makefile for Hegemon project
 
@@ -7,9 +7,9 @@
 
 CUR_DATE=`date '+%y.%m.%d %h:%m:%s'`
 
-JHOME=/usr/local/jdk117_v2
+JHOME=/usr/local/jdk
 JBIN=${JHOME}/bin
-JAVAC=${JBIN}/javac
+JAVAC=/usr/bin/jikes
 JAR=${JBIN}/jar
 
 FLAGS=-classpath ${JHOME}/lib/classes.zip:./ -deprecation

@@ -1,5 +1,5 @@
-// $Id: tmp_socials.cc,v 1.2 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: tmp_socials.cc,v 1.3 2001/03/29 03:02:35 eroper Exp $
+// $Revision: 1.3 $  $Author: eroper $ $Date: 2001/03/29 03:02:35 $
 
 //
 //ScryMUD Server Code
@@ -156,7 +156,7 @@ void insane(int i_th, const String* vict, critter& pc, room& rm) {
          show("Your sanity is slowly slipping away...\n", pc);
          Sprintf(buf,
 "\b's sanity is slowly slipping away, right before your very eyes!\n", 
-		get_hisself_herself(pc));
+                get_hisself_herself(pc));
          emote(buf, pc, ROOM, TRUE);
       }//if targ and agg is same
       else {
@@ -171,7 +171,7 @@ void insane(int i_th, const String* vict, critter& pc, room& rm) {
          while (ptr = cll.next()) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
                Sprintf(buf, 
-		 "%S whispers to %S to call the men in white coats.\n",
+                 "%S whispers to %S to call the men in white coats.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -183,7 +183,7 @@ void insane(int i_th, const String* vict, critter& pc, room& rm) {
    else {
       show("Your sanity is slowly slipping away...\n", pc);
       emote(
-	"\b's sanity is slowly slipping away, right before your very eyes!",
+        "\b's sanity is slowly slipping away, right before your very eyes!",
         pc, ROOM, TRUE);
    }//else
 }//insane
@@ -292,7 +292,7 @@ void poke(int i_th, const String* vict, critter& pc, room& rm) {
    if (vict->Strlen()) {
       critter* crit_ptr =
             have_crit_named(rm.CRITTERS, i_th, vict, pc.SEE_BIT,
-			    rm);
+                            rm);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -301,7 +301,7 @@ void poke(int i_th, const String* vict, critter& pc, room& rm) {
       else if (crit_ptr == &pc) {
          show("You poke yourself ruefully.\n", pc);
          Sprintf(buf, "pokes %s in the eye.\n",
-		 get_hisself_herself(pc)); 
+                 get_hisself_herself(pc)); 
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
@@ -338,7 +338,7 @@ void hop(int i_th, const String* vict, critter& pc, room& rm) {
    if (vict->Strlen()) {
       critter* crit_ptr =
             have_crit_named(rm.CRITTERS, i_th, vict, pc.SEE_BIT,
-			    rm);
+                            rm);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -347,7 +347,7 @@ void hop(int i_th, const String* vict, critter& pc, room& rm) {
       else if (crit_ptr == &pc) {
          show("You hop in little circles around yourself.\n", pc);
          Sprintf(buf, "hops gleefully in little circles around %s.\n",
-		 get_hisself_herself(pc)); 
+                 get_hisself_herself(pc)); 
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
@@ -467,7 +467,7 @@ get_hisself_herself(pc));
    }//if a victim
    else {      
       show("You growl menacingly like the beast you really are. Grrr!!!\n",
-	   pc);
+           pc);
       emote("growls menacingly.  Grrr!", pc, rm, TRUE);
    }//else
 }//growl
@@ -969,11 +969,11 @@ rm);
       }//if targ and agg is same
       else {
          Sprintf(buf, 
-		"You panic and run in circles around %S while screaming.\n", 
+                "You panic and run in circles around %S while screaming.\n", 
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
          Sprintf(buf, 
-	        "%S panics and runs in circles around you, screaming.\n",  
+                "%S panics and runs in circles around you, screaming.\n",  
                 name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
@@ -981,7 +981,7 @@ rm);
          while (ptr = cll.next()) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
                Sprintf(buf, 
-		 "%S panics and runs screaming in circles around %S.\n",
+                 "%S panics and runs screaming in circles around %S.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1060,12 +1060,12 @@ rm);
       else if (pc.POS > POS_SIT)
          show("You are not in a position to do that.\n", pc);
       else if (crit_ptr == &pc) {
-	 if (strcasecmp(*(Top(pc.names)), "levander") == 0) {
-	    show("You ARE a Ponder!!.\n", pc);
-	 }//if
-	 else {
+         if (strcasecmp(*(Top(pc.names)), "levander") == 0) {
+            show("You ARE a Ponder!!.\n", pc);
+         }//if
+         else {
             show("You ponder your own existence.\n", pc);
-	 }//else
+         }//else
          Sprintf(buf, "ponders %s.\n", get_hisself_herself(pc));  
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
@@ -1281,7 +1281,7 @@ void weep(int i_th, const String* vict, critter& pc, room& rm) {
    else {      //change these next two lines
       show("You weep big mournful tears.  Poor you.\n", pc);
       emote("weeps loudly, drenching everything with tears!!", pc,
-	    rm, TRUE);
+            rm, TRUE);
    }//else
 }//weep
 
@@ -1417,9 +1417,9 @@ void cheer(int i_th, const String* vict, critter& pc, room& rm) {
    }//if a victim
    else {      
       show("You give a good try at starting the wave....nothing happens!\n", 
-		pc);
+                pc);
       emote("throws up the hands and gives a big cheer!!", pc, rm, 
-		TRUE);
+                TRUE);
    }//else
 }//cheer
 
@@ -1595,14 +1595,14 @@ void bow(int i_th, const String* vict, critter& pc, room& rm) {
                show(buf, *ptr);
             }//if
          }//while
-	 if (crit_ptr->mob && crit_ptr->mob->proc_data &&
-	     crit_ptr->mob->proc_data->bow_proc) {
+         if (crit_ptr->mob && crit_ptr->mob->proc_data &&
+             crit_ptr->mob->proc_data->bow_proc) {
            ptr = crit_ptr;
-	   if (crit_ptr->isMob()) {
-	     ptr = mob_to_smob(*crit_ptr, rm.getCurRoomNum());
-	   }//if
-	   do_domob_bow_proc(*ptr, pc);
-	 }//if
+           if (crit_ptr->isMob()) {
+             ptr = mob_to_smob(*crit_ptr, rm.getCurRoomNum());
+           }//if
+           do_domob_bow_proc(*ptr, pc);
+         }//if
       }//else
    }//if a victim
    else {      
@@ -1649,20 +1649,20 @@ void curse(int i_th, const String* vict, critter& pc, room& rm) {
                show(buf, *ptr);
             }//if
          }//while
-	 if (crit_ptr->mob && crit_ptr->mob->proc_data &&
-	     crit_ptr->mob->proc_data->curse_proc) {
+         if (crit_ptr->mob && crit_ptr->mob->proc_data &&
+             crit_ptr->mob->proc_data->curse_proc) {
            ptr = crit_ptr;
-	   if (crit_ptr->isMob()) {
-	     ptr = mob_to_smob(*crit_ptr, rm.getCurRoomNum());
-	   }//if
-	   do_domob_curse_proc(*ptr, pc);
-	 }//if
+           if (crit_ptr->isMob()) {
+             ptr = mob_to_smob(*crit_ptr, rm.getCurRoomNum());
+           }//if
+           do_domob_curse_proc(*ptr, pc);
+         }//if
       }//else
    }//if a victim
    else {      
       show("You curse darkly at the world.", pc);
       Sprintf(buf, "curses the situation %s finds %s in.", get_he_she(pc),
-	      get_hisself_herself(pc));
+              get_hisself_herself(pc));
       emote(buf, pc, rm, TRUE);
    }//else
 }//curse

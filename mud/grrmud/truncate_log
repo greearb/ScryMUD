@@ -2,7 +2,7 @@
 
 LOG_FILE=$1
 
-echo -n "In truncate_log.."
+#echo -n "In truncate_log.."
 
 if [ $# = "0" ]
 then

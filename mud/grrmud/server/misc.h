@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.20 1999/09/07 07:00:27 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
+// $Id: misc.h,v 1.21 2001/03/29 03:02:32 eroper Exp $
+// $Revision: 1.21 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
 
 //
 //ScryMUD Server Code
@@ -39,19 +39,16 @@
 #include "BugEntry.h"
 #include "SkillSpell.h"
 #include "MudStats.h"
-#include "Markup.h"
-
 
 extern LazyPtrArray<room> room_list;
-extern SafeList<room*> embattled_rooms; 
-extern SafeList<room*> affected_rooms;
-extern SafeList<object*> obj_to_be_disolved_list; //grrmud.cc
-extern SafeList<critter*> pulsed_proc_mobs;
-extern SafeList<room*> pulsed_proc_rooms;
-extern SafeList<object*> pulsed_proc_objects;
-extern PtrArray<Scriptable>  scripting_entities;
-
-extern SafeList<object*> dummy_inv;
+extern PtrList<room> embattled_rooms; 
+extern PtrList<room> affected_rooms;
+extern PtrList<object> obj_to_be_disolved_list; //grrmud.cc
+extern PtrList<critter> pulsed_proc_mobs;
+extern PtrList<room> pulsed_proc_rooms;
+extern PtrList<object> pulsed_proc_objects;
+extern PtrArray<room> proc_action_rooms;
+extern PtrArray<object> proc_action_objs;
 
 extern BugCollection bl_ideas;
 extern BugCollection bl_bugs;
@@ -67,7 +64,6 @@ extern BugCollection bl_comp_bugs;
 float spell_objs_ratio(int spell_num);
 
 const char* cstr(CSentryE e, critter& c);
-const char* cstr(CSentryE e, LanguageE lang);
 
 // Returns address of static member (not thread safe)
 String& getCurTime(); //in the real world (tm) :)
@@ -78,11 +74,12 @@ int bound(int low, int high, int val);
 int  d(const int num_rolls, const int dice_sides); 
 //void critter::save();
 
-int obj_sub_a_4_b(object* a, SafeList<object*>& lst, 
-                  const int i_th, const String* name, critter* viewer);
-
-int crit_sub_a_4_b(critter* a, SafeList<critter*>& lst, 
-                   const int i_th, const String* name, critter* viewer);
+int obj_sub_a_4_b(object* a, PtrList<object>& lst, 
+                  const int i_th, const String* name, const int see_bit,
+                  room& rm);
+int crit_sub_a_4_b(critter* a, PtrList<critter>& lst, 
+                   const int i_th, const String* name, const int see_bit,
+                   room& rm);
 
 short isnum(String& word);
 
@@ -102,71 +99,68 @@ void close_files();
 int detect(int see_bit, int vis_bit); //does bit comparison
 
 void show(const char* message, critter& pc);
-
-/** Show to all PC's flagged to accept extra info. */
-void showExtraInfo(CSentryE msg);
+void show_all_but_2(critter& A, critter& B, const char* message, 
+                    room& rm); 
+void show_all(const char* msg, const room& rm);
 
 int vDoShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
-                SafeList<critter*>& lst, CSentryE cs_entry, va_list argp);
+                List<critter*>& lst, CSentryE cs_entry, va_list argp);
 int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
-               SafeList<critter*>& lst, CSentryE cs_entry, ...);
+               List<critter*>& lst, CSentryE cs_entry, ...);
 
-void out_str(SafeList<String*>& lst, critter& pc); 
-void out_crit(SafeList<critter*>& lst, critter& pc, int see_all = FALSE);
-void do_out_crit_list(SafeList<critter*>& lst, critter* pc, String& rslt,
-                      int see_all = FALSE);
-
-void out_inv(SafeList<object*>& lst, critter& pc, ObjListTypeE l_type); 
-void do_out_obj_list(SafeList<object*>& lst, critter& pc,
-                     ObjListTypeE l_type, String& rslt); 
+void out_str(const List<String*>& lst, critter& pc); 
+void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE);
+void out_inv(const List<object*>& lst, critter& pc, const short l_type); 
+         //outs the names object*, formats according to l_type
 
 
-	 /* searches the given list, lst will not be modified */
-critter* have_crit_named(SafeList<critter*>& lst, const int i_th, 
+         /* searches the given list, lst will not be modified */
+critter* have_crit_named(List<critter*>& lst, const int i_th, 
                          const String* name, const int see_bit,
                          const room& rm, int do_exact = FALSE); 
 
-critter* have_crit_named(SafeList<critter*>& lst, const int i_th, 
+critter* have_crit_named(List<critter*>& lst, const int i_th, 
                          const String* name, const int see_bit,
                          int& count_sofar, const room& rm,
                          int do_exact = FALSE);
 
-/** If viewer is NULL, it will be as if the viewer can see everyting.
- */
-critter* have_crit_named(SafeList<critter*>& lst, const int i_th, 
-                         const String* name, critter* viewer,
-                         int do_exact = FALSE);
 
-
-object*  have_obj_named(SafeList<object*>& lst, const int i_th, 
+object*  have_obj_named(const List<object*>& lst, const int i_th, 
                         const String* name, const int see_bit,
                         const room& rm);
 
-object*  have_obj_named(SafeList<object*>& lst, const int i_th, 
+object*  have_obj_named(const List<object*>& lst, const int i_th, 
                         const String* name, const int see_bit,
-                        const room& rm, int& count_sofar, LanguageE lang = English);
+                        const room& rm, int& count_sofar);
 
 /** Return the number of instances of an object with that name, as would
  * be found by have_obj_named, in the lst.  Used for finding i_th element
  * in two lists that look like one list to the user.  
  * (ie list_merchandise, buy)
  */
-int obj_named_count(SafeList<object*>& lst, const String* name,
+int obj_named_count(const List<object*>& lst, const String* name,
                     const int see_bit, const room& rm);
 
-/* DEPRECATED, use getName(...) instead. */
+//String* critter::getName(int see_bit);
 const String* name_of_crit(critter& pc, int see_bit);
-String* name_of_obj(object& obj, int see_bit);
+
+String* name_of_door(const door& dr, int see_bit);
+String* name_of_dr_data(const door_data& dr, int see_bit, int dest);
+String* name_of_obj(const object& obj, int see_bit);
 String* long_name_of_obj(object& obj, int see_bit);
-
-
+String* name_of_room(const room& rm, int see_bit);
 char* get_his_her(const critter& crit);
 char* get_hisself_herself(const critter& crit);
 char* get_he_she(const critter& crit);
 
+int obj_is_named(const object& obj, const String& name);
+int mob_is_named(const critter& pc, const String& name);
+int door_is_named(const door_data& dr, const String& name);
+
 short is_banned(const String& hostname);
 short is_newbie_banned(const String& ip);
 
+void disolve_object(object& obj);
 void do_disolve_object(object& obj);
 
 void decrease_timed_affecting_pcs();
@@ -180,11 +174,18 @@ void do_regeneration_smobs();
 void do_regeneration_objects();
 void do_regeneration_rooms();
 void do_regeneration_zones();
-int update_zone(int i_th, int total_read);
-int update_critters(int i_th, int read_all);
-int update_objects(int i_th, int read_all);
+int update_zone(int i_th, short total_read);
+int db_update_zone(int i_th, short total_read);
+int file_update_zone(int i_th, short total_read);
+int update_critters(int i_th, short read_all);
+int db_update_critters(int i_th, short read_all);
+int file_update_critters(int i_th, short read_all);
+int update_objects(int i_th, short read_all);
+int db_update_objects(int zone_num, short read_all);
+int file_update_objects(int zone_num, short read_all);
 void do_tick();
 void do_mini_tick(); //every round of battle....
+bool isNightTime();
 
 
 #endif 

@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.50 1999/09/11 06:12:16 greear Exp $
-// $Revision: 1.50 $  $Author: greear $ $Date: 1999/09/11 06:12:16 $
+// $Id: critter.h,v 1.51 2001/03/29 03:02:31 eroper Exp $
+// $Revision: 1.51 $  $Author: eroper $ $Date: 2001/03/29 03:02:31 $
 
 //
 //ScryMUD Server Code
@@ -92,18 +92,19 @@ public:
    
    temp_crit_data();
    temp_crit_data(const temp_crit_data& source);
-   virtual ~temp_crit_data();
+   ~temp_crit_data();
 
    int doUnShield();
 
    static int getInstanceCount() { return _cnt; }
-   
-   virtual void toStringStat(critter* viewer, String& rslt);
-   void clear();
+
+   void Clear();
 };//temp_crit_data
 
 
-class immort_data : public Serialized {
+class MobScript;
+
+class immort_data {
 protected:
    static int _cnt;
 
@@ -117,20 +118,18 @@ public:
    PtrList<String> tmplist;
    short imm_level;
    
-   LStringCollection* edit_string;
+   String* edit_string;
    GenScript* tmp_proc_script;
    int tmp_script_entity_num;
-   LStringCollection proc_script_buffer;
+   String proc_script_buffer;
    
-   immort_data();				// default constructor
+   immort_data();                                // default constructor
    immort_data(const immort_data& source);   // copy constructor
-   virtual ~immort_data();
+   ~immort_data();
 
-   int read(istream& dafile, int read_all = TRUE);
-   int write(ostream& dafile);
-   void clear();
-   virtual LEtypeE getEntityType() { return LE_IMM_DATA; }
-
+   void Read(ifstream& dafile);
+   void Write(ofstream& dafile);
+   void Clear();
    static int getInstanceCount() { return _cnt; }
 };//immort_data
 
@@ -138,7 +137,7 @@ public:
 
 ///********************** teacher_data  **************************///
 
-class teacher_data : public Serialized {
+class teacher_data {
 protected:
    static int _cnt;
 
@@ -149,23 +148,20 @@ public:
    
    teacher_data(); //constructor
    teacher_data(const teacher_data& source); // copy constructor
-   virtual ~teacher_data() { _cnt--; }
+   ~teacher_data() { _cnt--; }
 
    int togTeachFlag(int flag) {
       teach_data_flags.flip(flag);
       return 0;
    }
 
-   int read(istream& da_file, int read_all = TRUE);
-   int write(ostream& da_file);
-   void clear() { teach_data_flags.clear(); }
-   virtual LEtypeE getEntityType() { return LE_TEACHER_DATA; }
-   virtual void toStringStat(critter* viewer, String& rslt);
+   void Read(ifstream& da_file);
+   void Write(ofstream& da_file) const;
    static int getInstanceCount() { return _cnt; }
 }; //teacher_data
 
 
-class PlayerShopData : public Serialized {
+class PlayerShopData {
 private:
    static int _cnt;
 
@@ -191,7 +187,7 @@ public:
 
    // No need to do an operator-equal now.
 
-   virtual ~PlayerShopData() { _cnt--; }
+   ~PlayerShopData() { _cnt--; }
 
    int getObjNum() const { return object_num; }
    void setObjNum(int i) {
@@ -211,15 +207,16 @@ public:
    void clear() { object_num = buy_price = sell_price = 0; }
 
    // Returns false when there are no more, object_num otherwise.
-   int read(istream& da_file, int read_all = TRUE);      
-   int write(ostream& da_file);
-   virtual LEtypeE getEntityType() { return LE_PLAYER_SHOP_DATA; }
+   int read(ifstream& da_file);
+      
+   void write(ofstream& da_file) const ;
+
 }; // PlayerShopData
 
 
 ///*********************  shop_data  ***********************///
 
-class shop_data : public Serialized {
+class shop_data {
 private:
    static int _cnt;
 
@@ -232,7 +229,7 @@ public:
    // 3 Player-run shopkeeper
    // 40-73 type to trade flags, same as obj_flags
    //
-   SafeList<object*> perm_inv; //holds perm inventory
+   PtrList<object> perm_inv; //holds perm inventory
 
    // Holds extra info for player run shops.
    PtrList<PlayerShopData> ps_data_list;
@@ -240,24 +237,16 @@ public:
 
 
    shop_data();
-   shop_data(shop_data& source);  //copy constructor
-   virtual ~shop_data();
-   shop_data& operator=(shop_data& src);
+   shop_data(const shop_data& source);  //copy constructor
+   ~shop_data();
 
    int isPlayerRun() const { return shop_data_flags.get(3); }
 
-   void clear();
-   // ahh, the joys of pure virtual!!
-   int read(istream& da_file, int read_all = TRUE) {
-      ::core_dump("shop_data::read(...) not supported.\n");
-      return 0; //never get here...but compiler doesn't know that.
-   }
-   int read(istream& da_file, int read_all, critter* container);
+   void Clear();
+   void Read(ifstream& da_file, short read_all);
+   void Write(ofstream& da_file) const ;
+   shop_data& operator=(const shop_data& src);
 
-   int write(ostream& da_file);
-   virtual LEtypeE getEntityType() { return LE_SHOP_DATA; }
-
-   virtual void toStringStat(critter* viewer, String& rslt);
    static int getInstanceCount() { return _cnt; }
 
    void valueRem(int idx, critter& manager);
@@ -298,10 +287,71 @@ public:
    temp_proc_data(const temp_proc_data& source); //copy constructor
    ~temp_proc_data();
 
-   void clear();
+   void Clear();
    temp_proc_data& operator=(const temp_proc_data& source);
    static int getInstanceCount() { return _cnt; }
 };//temp_proc_data
+
+
+
+///**********************  say_proc_cell  ****************************///
+///**  This is used to hold data for different topics in        *******///
+///**  action_proc_data class.                                  *******///
+///********************************************************************///
+
+class say_proc_cell {
+protected:
+   static int _cnt;
+
+public:
+   String topic;
+   String msg;        //msg to who is trying to discuss
+   String skill_name; //skill to be taught upon this discussion
+   int obj_num;       //to be given upon this discussion
+   int trans_to_room; //number of room to be trans'd to upon this discussion
+   
+   say_proc_cell();
+   say_proc_cell(const say_proc_cell& source);
+   ~say_proc_cell() { _cnt--; }
+   // say_proc_cell& operator=(const say_proc_cell& source);
+   
+   void Clear();
+   void Read(ifstream& da_file);
+   void Write(ofstream& da_file);
+   static int getInstanceCount() { return _cnt; }
+};//say_proc_cell
+
+
+
+///**********************  action_proc_data  ****************************///
+///**  This holds data for procs that are triggered by some action.  ****///
+///**  For example, bow, curse, give, say...                         ****///
+///**********************************************************************///
+
+class action_proc_data {
+protected:
+   static int _cnt;
+
+public:
+
+   int test_num;                 //used with give
+   String correct_msg;           //msg shown to pc upon correct gift/action
+   String skill_name;            //skill to be taught upon a correct gift
+   int obj_num;                  //to be given upon a correct gift
+   int trans_to_room;            //room# to be trans'd to upon correct gift
+   
+   String wrong_gift_msg;
+   
+   action_proc_data();
+   action_proc_data(const action_proc_data& source);
+   action_proc_data& operator=(const action_proc_data& source); //op overload
+   ~action_proc_data();
+   
+   void Clear();
+   void Read(ifstream& da_file);
+   void Write(ofstream& da_file);
+   static int getInstanceCount() { return _cnt; }
+};//action_proc_data
 
 
 
@@ -310,7 +360,7 @@ public:
 ///***  Holds special info and procedures for NPC players  *****///
 ///*************************************************************///
 
-class spec_data : public Serialized {
+class spec_data {
 protected:
    short skill_violence;
    short benevolence;
@@ -321,33 +371,35 @@ protected:
 
 public:
    bitfield flag1; // 0 NULL 1 shopkeeper, 2 teacher
-	  //3 let_same_class_pass, 4 let_same_race_pass
+          //3 let_same_class_pass, 4 let_same_race_pass
           //5 has_mob_give_proc, 6 has_mob_say_proc, 7 has_mob_bow_proc,
           //8 has_mob_curse_proc, 9 proc_with_same_race, 
           //10 proc_with_same_align, 11 proc_with_same_class
-	  //12 NULL, 13 has_AI
+          //12 NULL, 13 has_AI
           //
    short int1; //direction guarding, for sentinels
    shop_data* sh_data;
    teacher_data* teach_data;
    temp_proc_data* temp_proc;   //holds tracking and other info
    
+   action_proc_data* give_proc;
+   action_proc_data* bow_proc;
+   action_proc_data* curse_proc;
+   
+   PtrList<say_proc_cell> topics; //used for say_procs (discuss)
+   
+   String wrong_align_msg; // these 3 are used with action/say procs
+   String wrong_class_msg;
+   String wrong_race_msg;
+   
    spec_data();
    spec_data(const spec_data& source);   //copy constructor
-   virtual ~spec_data();
+   ~spec_data();
 
-   void clear();
-   int read(istream& da_file, int read_all = TRUE) {
-      ::core_dump("spec_data::read(...) not supported.\n");
-      return 0; //never get here...but compiler doesn't know that.
-   }
-
-   int read(istream& da_file, critter* container, int read_all = TRUE);
-   int write(ostream& da_file);
-   virtual LEtypeE getEntityType() { return LE_MOB_PROC_DATA; }
+   void Clear();
+   void Read(ifstream& da_file, short read_all);
+   void Write(ofstream& da_file);
    spec_data& operator=(const spec_data& source);
-
-   virtual void toStringStat(critter* viewer, String& rslt);
 
    static int getInstanceCount() { return _cnt; }
    int getBenevolence() const { return benevolence; }
@@ -386,11 +438,13 @@ public:
 
 ///*********************** mob data ***************************///
  
-class mob_data : public Serialized {
+class mob_data {
 protected:
    int cur_in_game;
    int max_in_game;
    static int _cnt;
+   int ticks_old;
+   int ticks_till_freedom;
 
 public:
    int mob_num;
@@ -404,20 +458,23 @@ public:
      // 4 need_resetting, 5 edible_corpse, 6 is_banker,
      // 7 sessile (won't track out of current room)
      // 8 !homing (won't come home after tracking),
-     // 9 NULL, 10 NULL, 11 NULL, 12 NULL, 13 NULL, 14 NULL, 15 NULL,
+     // 9 disolvable (ie summoned critters),
+     // 10 !victim_flee, 11 NULL, 12 NULL, 13 NULL, 14 NULL, 15 NULL,
      // 16 has_skin, 17 has_mob_script
      //
 
    spec_data* proc_data;
    int skin_num;
 
+   PtrList<MobScript> mob_proc_scripts;
+   MobScript* cur_script; // a pointer into the List of MobScripts.
+   PtrList<MobScript> pending_scripts;
+
    int home_room; /* set when first placed in a room. */
 
    mob_data();
    mob_data(mob_data& source);  //copy constructor
-   virtual ~mob_data();
-
-   virtual void toStringStat(critter* viewer, String& rslt);
+   ~mob_data();
 
    int getCurInGame() { return cur_in_game; }
    int setCurInGame(int i) { cur_in_game = i; return cur_in_game; }
@@ -433,6 +490,14 @@ public:
    int getSocialAwareness() const;
    int getSkillViolence() const;
    int getDefensiveness() const;
+   int getTicksOld() const { return ticks_old; }
+   void setTicksOld(int i) { ticks_old = i; }
+   void incrementTicksOld() { ticks_old++; }
+   int getTicksTillFreedom() const { return ticks_till_freedom; }
+   void setTicksTillFreedom(int i) { ticks_till_freedom = i; }
+   void decrementTicksTillFreedom() { ticks_till_freedom--; }
+   void setDisolvable(int val) { mob_data_flags.set(9, val); }
+   int isDisolvable() const { return mob_data_flags.get(9); }
 
    // Higher is 'more'
    void setBenevolence(int i);
@@ -446,23 +511,18 @@ public:
 
    int isSentinel() const;
    int hasProcData() const { return mob_data_flags.get(0); } 
-   int hasMobScript() const { return mob_data_flags.get(17); } //TODO, take it out??
+   int hasMobScript() const { return mob_data_flags.get(17); }
+   int isRunningScript() const { return cur_script != 0; }
    int isNoHoming() const { return mob_data_flags.get(8); }
-   int isSessile() const { return mob_data_flags.get(7); }
-   int isTracking() const { return (proc_data && proc_data->temp_proc &&
-                                    proc_data->temp_proc->tracking.Strlen()); }
-   String* getTrackingTarget() { return &(proc_data->temp_proc->tracking); }
 
-   void clear();
+   void Clear();
    mob_data& operator= (mob_data& source);
-   int write(ostream& ofile);
-   int read(istream& ofile, critter* container, int read_all = TRUE);
-   // ahh, the joys of pure virtual!!
-   int read(istream& da_file, int read_all = TRUE) {
-      ::core_dump("shop_data::read(...) not supported.\n");
-      return 0; //never get here...but compiler doesn't know that.
-   }
-   virtual LEtypeE getEntityType() { return LE_MOB_DATA; }
+   void Write(ofstream& ofile);
+   void Read(ifstream& ofile, short read_all);
+   int isInProcNow() { return (cur_script && (cur_script->isInProgress())); }
+   void addProcScript(const String& txt, MobScript* script_data);
+   void finishedMobProc();
+   void doScriptJump(int abs_offset);
    static int getInstanceCount() { return _cnt; }
 
    int togShopFlag(int flag) {
@@ -482,7 +542,7 @@ public:
 
 ///*********************** pc data  ***********************///
  
-class pc_data : public Serialized {
+class pc_data {
 protected:
    static int _cnt;
 
@@ -503,8 +563,9 @@ public:
       // 17 is_blocking_door, 18 can_det_magic, 19 detect_inventory
       // 20 show_vnums, 21 has_poofin_poofout_msg, 22 page_output
       // 23 in_page_break_mode, 24 !wizchat, 25 has_colors, 26 use_color
-      // 27 has_language_choice, 28 !show_mob_entry, 29 no_beep
-      // 30 show_dbg
+      // 27 has_language_choice, 28 !show_mob_entry, 29 no_beep,
+      // 30 is_remort, 31 has_sacrificed, 32 is_roleplaying,
+      // 33 is_afk, 34 gold_only
 
    short birth_day; //day born
    short birth_year; //year born
@@ -559,31 +620,34 @@ public:
    String bug_comment;
 
    pc_data();
-   pc_data(pc_data& source);  //copy constructor
-   virtual ~pc_data();
-   pc_data& operator= (pc_data& source);
+   pc_data(const pc_data& source);  //copy constructor
+   ~pc_data();
 
-   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
+   pc_data& operator= (const pc_data& source);
 
    int canBeBeeped() const { return (!(pc_data_flags.get(29))); }
 
-   void clear();
-   int write(ostream& ofile);
-   int read(istream& ofile, int read_all = TRUE);
-   virtual LEtypeE getEntityType() { return LE_PC_DATA; }
+   void Clear();
+   void Write(ofstream& ofile);
+   void Read(ifstream& ofile);
    static int getInstanceCount() { return _cnt; }
+
+   int client;
 };//class pc_data
 
 
 ///***************************** critter ******************************///
 
-class critter : public Entity, public Scriptable {
+class critter {
 protected:
    static int _cnt;
-   LStringCollection short_desc;
-   LStringCollection in_room_desc;
 
 public:
+   int spam_cnt;
+   PtrList<String> names;
+   String short_desc;
+   String in_room_desc;
+   String long_desc;
    
    bitfield crit_flags;
    // 0 can_see_inv, 1 using_light_src, 2 NULL, 3 is_flying,           
@@ -603,7 +667,7 @@ public:
    // 0 position   {0 stand, 1 sit, 2 rest, 3 sleep, 4 med,
    //               5 stun, 6 dead, 7 prone}
    // 1 str, 2 int, 3 con, 4 cha, 5 wis,
-   // 6 dex, 7 hit, 8 dam, 9 ac, 10 attacks, 11 pause_count (DEPRECATED)
+   // 6 dex, 7 hit, 8 dam, 9 ac, 10 attacks, 11 pause_count
    // 12 sex {0 female, 1 male, 2 neuter}
    // 13 class, {1 warrior, 2 sage, 3 wizard, 4 ranger, 5 thief,
    //            6 alchemist, 7 cleric, 8 bard}
@@ -629,7 +693,7 @@ public:
    //            8 imm_invis1, 16 imm_invis3, 32 link_dead_detect
    //            64 imm_invis5, 128 imm_invis7, 256 imm_invis9,
    //            512 imm_invis10, 1024  NORMAL
-   // 2 in_room, used for logging in only, now. (v3)
+   // 2 in_room,
    
    object* eq[MAX_EQ + 1];    //0 do_not_use
    //1 head, 2 neck, 3 neck, 4 around body, 5 arms, 
@@ -637,9 +701,10 @@ public:
    //12 body, 13 belt, 14 legs, 15 feet, 16 finger, 17 finger
    //18 shield 
    
-   PtrList<SpellDuration> mini_affected_by; //decreased every battle
+   PtrList<stat_spell_cell> affected_by;  
+   PtrList<stat_spell_cell> mini_affected_by; //decreased every battle
    //round
-   SafeList<object*> inv;
+   PtrList<object> inv; // array of items in inventory
    
    pc_data* pc; //NULL if not a pc
    mob_data* mob; //null if not a mob
@@ -647,35 +712,31 @@ public:
    critter* follower_of; //pointer to who one is following
    //NULL if following self
    critter* master;      //NULL if not charmed in some way
-   SafeList<critter*> pets; 
-   SafeList<critter*> followers;
-   SafeList<critter*> groupees;
-   SafeList<critter*> is_fighting;
+   PtrList<critter> pets; 
+   PtrList<critter> followers;
+   PtrList<critter> groupees; // List of everyone in your group.
+   PtrList<critter> is_fighting;
    temp_crit_data* temp_crit;
    int mirrors;
    critter* possessing; //ptr to who we are possessing
-   critter* possessed_by; //ptr to who is possessing us   
+   critter* possessed_by; //ptr to who is possessing us
+   
 
    critter();
    critter(critter& source); //copy constructor
-   virtual ~critter();
-   void clear();
-   virtual int read(istream& da_file, int read_all = TRUE);
-   virtual int read_v2(istream& da_file, String& name, int read_all = TRUE);
-   virtual int read_v3(istream& da_file, MetaTags& mt, int read_all = TRUE);
-   virtual int write(ostream& da_file);
-   critter& operator=(critter& source);
+   ~critter();
+   void Clear();
+   critter& operator= (critter& source);
    
-   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
-
-   /** I think the compiler is screwing up, I shouldn't have to declare this here
-    * --Ben */
-   virtual String* getName(int c_bit = ~0) { return Entity::getName(c_bit); }
-   virtual String* getName(critter* viewer); //overload Entity
-   virtual String* getLongName(critter* viewer) { return getShortDesc(viewer); }
-
    int getCurWeight();
    int getMaxWeight();
+   void dbRead(int crit_num, int pc_num, short read_all);
+   void fileRead(ifstream& da_file, short read_all);
+   void Write(ofstream& da_file);
+
+   /** NOTE:  This may normalize the real value.
+    */
+   int getDamRecMod();
 
    /** For scripts, the script_targ is always *this.  The script_owner
     * will be null (for non-script specific stuff) and should be specified
@@ -697,6 +758,9 @@ public:
    static int createWithDescriptor(int socket);
    void startLogin();
 
+   void checkForProc(String& cmd, String& arg1, critter& actor,
+                     int targ, room& cur_room);
+
    object* findObjInEq(int i_th, const String& name, int see_bit,
                        room& rm, int& posn, int& count_sofar);
    
@@ -715,12 +779,14 @@ public:
    void doLogin();
    void save();
    void emote(const char* msg);
+   void pemote(const char* msg);
 
    void emote(CSelectorColl& includes, CSelectorColl& denies,
               CSentryE cs_entry, .../*Sprintf args*/);
 
    void doSuicide();
 
+   void addProcScript(const String& txt, MobScript* script_data);
    void remember(critter& pc);
    void trackToKill(critter& vict, int& is_dead);
    int travelToRoom(int targ_room_num, int num_steps, int& is_dead);
@@ -732,53 +798,11 @@ public:
    int doesOwnDoor(door& dr);
    int doesOwnDoor(door_data& dd);
 
-   int showDebug() { return (pc && PC_FLAGS.get(30)); }
    int isCloaked() { return (pc && PC_FLAGS.get(3)); }
+   int isInProcNow() { return (mob && mob->isInProcNow()); }
    int isInBattle() { return !(is_fighting.isEmpty()); }
 
-   virtual void addInRoomDesc(String& buf);
-   virtual void addInRoomDesc(LString& buf);
-   virtual void addInRoomDesc(LanguageE l, String& new_val);
-
-   virtual void addShortDesc(String& buf);
-   virtual void addShortDesc(LString& buf);
-   virtual void addShortDesc(LanguageE l, String& new_val);
-
-   virtual void setShortDesc(CSentryE desc);
-
-   virtual void appendShortDesc(CSentryE whichun);
-   virtual void appendShortDesc(String& msg);
-   virtual void appendInRoomDesc(CSentryE whichun);
-
-   virtual void prependShortDesc(String& buf);
-
-   virtual String* getShortDesc(critter* observer);
-   virtual String* getShortDesc(int c_bit = ~0);
-   virtual String* getInRoomDesc(critter* observer);
-
-   virtual LStringCollection* getInRoomDescColl() { return &in_room_desc; }
-   virtual void setInRoomDescColl(LStringCollection& ldesc) {
-      in_room_desc = ldesc;
-   }
-   virtual LStringCollection* getShortDescColl() { return &short_desc; }
-   virtual void setShortDescColl(LStringCollection& sdesc) {
-      short_desc = sdesc;
-   }
-
-   /** Returns TRUE if room contains in it's inventory (and inventory's inv),
-    * at least cnt objects numbered obj_num.
-    */
-   int haveMinObj(int cnt, int obj_num);
-
-   /** Returns the i_th object of VNUM obj_num.  It must be in the
-    * player's inventory.
-    */
-   object* getObjNumbered(int i_th, int obj_num);
-
-   /** Viewer may be self, but may not be as well. */
-   object* haveObjNamed(int i_th, const String* name, critter* viewer);
-   /** Viewer is self. */
-   object* haveObjNamed(int i_th, const String* name);
+   int haveObjNumbered(int count, int obj_num);
 
    /** If return is > 0, self is more powerful, if less than 0,
     * b is more powerful...  The larger/smaller the value, the more
@@ -789,17 +813,18 @@ public:
    int isWeakerThan(critter& pc) { return (compareTo(pc) < 0); }
    int isStrongerThan(critter& pc) { return (compareTo(pc) > 0); }
    int isSessile() const { return mob && mob->mob_data_flags.get(7); }
-   int needsResetting() const { return mob && mob->mob_data_flags.get(4); }
-
+   
    void doHuntProc(int steps, int& is_dead); //found in batl_prc.cc
+   void finishedMobProc() { if (mob) mob->finishedMobProc();}
    int getIdNum() const;
-   int getImmLevel();
+   int getImmLevel() const;
    int getHomeRoom() { if (mob) return mob->home_room; return 0; }
    int shouldBeHoming();
+   int showTime();
 
    // Where the mob is from, not what area it belongs to.
    int getHomeTown() const { return short_cur_stats[20]; }
-
+   
    // What area it belongs to, ie what file it's stored in.
    int getNativeZoneNum() const { return short_cur_stats[34]; }
 
@@ -807,10 +832,15 @@ public:
    int getXpToNextLevel() const;
    int getVisBit() const { return cur_stats[0]; }
    int getSeeBit() const { return cur_stats[1]; }
-   void setSeeBit(int val) { cur_stats[1] = val; }
-
    String* getTrackingTarget();
 
+   const String* getName() const { return getName(~0); }
+   const String* getName(int see_bit) const ;
+   const String* getName(critter& looker) { return getName(looker.getSeeBit()); }
+   const String* getLongName() const { return getName(); }
+   const String* getLongName(int see_bit) const { return getName(see_bit); }
+   const String* getShortName() const { return getShortName(~0); }
+   const String* getShortName(int see_bit) const ;
    int doBecomeNonPet(); //misc2.cc
    int doUngroup(int i_th, const String* vict); //command2.cc
    int doFollow(critter& pc, int do_msgs = TRUE);
@@ -825,50 +855,28 @@ public:
    int getCurRoomNum();
    int getCurZoneNum(); //what are we in right now
    String* getInput() { return &(pc->input); }
-   int getHp() const { return short_cur_stats[15]; }
-   int getHpMax() const { return short_cur_stats[23]; }
+   int getCharisma() const { return short_cur_stats[4]; }
+   int getHP() const { return short_cur_stats[15]; }
+   int getHP_MAX() const { return short_cur_stats[23]; }
    int getMana() const { return short_cur_stats[16]; }
    int getManaMax() const { return short_cur_stats[24]; }
    int getMov() const { return short_cur_stats[17]; }
    int getMovMax() const { return short_cur_stats[25]; }
    int getAlignment() const { return short_cur_stats[18]; }
-   const char* getClassName(critter* viewer);
-   int getClass() const { return CLASS; }
-   const char* getRaceName(critter* viewer);
-   int getRace() const { return RACE; }
-   int getGold() const { return GOLD; }
-   int getExp() const { return EXP; }
-   int getStr() const { return STR; }
-   int getInt() const { return INT; }
-   int getCon() const { return CON; }
-   int getCha() const { return CHA; }
-   int getWis() const { return WIS; }
-   int getDex() const { return DEX; }
-   int getHit() const { return HIT; }
-   int getDam() const { return DAM; }
-   int getAC() const { return AC; }
-   int getAttacks() const { return ATTACKS; }
-   int getSex() const { return SEX; }
-   const char* getSexName(critter* viewer) const;
-   int getAlign() const { return ALIGN; }
-   int getHomeTown() { return getZoneNum(); }
-   int getPractices() const { return PRACS; }
-   int getDamRcvMod() const { return DAM_REC_MOD; }
-   int getDamGivMod() const { return DAM_GIV_MOD; }
-   int getHeatResist() const { return HEAT_RESIS; }
-   int getColdResist() const { return COLD_RESIS; }
-   int getElectResist() const { return ELEC_RESIS; }
-   int getSpellResist() const { return SPEL_RESIS; }
-   int getBhDiceCount() const { return BH_DICE_COUNT; }
-   int getBhDiceSides() const { return BH_DICE_SIDES; }
-   int getHpRegen() const { return HP_REGEN; }
-   int getManaRegen() const { return MA_REGEN; }
-   int getMovRegen() const { return MV_REGEN; }
-   int getWimpy() const { return WIMPY; }
-   int getReligion() const { return RELIGION; }
-   
    LanguageE getLanguageChoice() const ;
-   LanguageE getLanguage() const { return getLanguageChoice(); }
+   int getWimpy() const { return short_cur_stats[21]; }
+
+   const ScriptCmd* getNextScriptCmd() {
+      if (mob) {
+         return mob->cur_script->getNextCommand();
+      }
+      return NULL;
+   }
+
+   int getPause() const { return short_cur_stats[11]; }
+   void setPause(int i) { short_cur_stats[11] = i; }
+
+   void setWimpy(int i) { short_cur_stats[21] = i; }
 
    int getPosn() const { return short_cur_stats[0]; }
    void setPosn(int i) {
@@ -877,13 +885,7 @@ public:
       }
    }//setPosn
 
-   const char* getPosnStr(critter* for_this_pc);
-
-   SafeList<object*>& getInv() { return inv; }
-   SafeList<critter*>& getPets() { return pets; }
-   SafeList<critter*>& getFollowers() { return followers; }
-   SafeList<critter*>& getGroupees() { return groupees; }
-   SafeList<critter*>& getIsFighting() { return is_fighting; }
+   const char* getPosnStr(critter& for_this_pc);
 
    critter* getFirstFighting();
    String& getPoofin();
@@ -904,24 +906,32 @@ public:
    void setHP(int i);
    void setMana(int i);
    void setMov(int i);
-   void setHpMax(int i);
+   void setHP_MAX(int i);
+   void setManaMax(int i);
+   void setMovMax(int i);
    void setMode(PcMode val);
    void setImmLevel(int i);
+   void setCurRoomNum(int i); //assign in_roomtoo
    void setTrackingTarget(const String& targ_name);
    void setPoofin(const char* pin);
    void setPoofout(const char* pout);
    void setComplete();
    void setNotComplete();
    void setNoClient();
-   void setModified(int val);
+   void setHasSacrificed(int i) { PC_FLAGS.set(31, i); }
+   void setIsRemort(int i) { PC_FLAGS.set(30, i); }
 
+   int isRemort() { return PC_FLAGS.get(30); }
+   int hasSacrificed() { return PC_FLAGS.get(31); }   
    int hasAI();
    int shouldDoPrompt() { return PC_FLAGS.get(10); }
    int shouldDoTank() { return PC_FLAGS.get(4); }
    int canDetectMagic() { return (mob || (pc && PC_FLAGS.get(18))); }
-   int canDetect(const Entity& other) const;
+   int canDetect(const critter& other) const;
    int canDive() const { return CRIT_FLAGS.get(19); }
    int isUsingClient() const ;
+   bool setClient(int which);
+   int whichClient();
    int isUsingColor();
    int isBrief();
    int shouldSeeInventory();
@@ -932,15 +942,22 @@ public:
    int isNoHassle();
    int isSneaking() const;
    int isHiding() const;
+   int isRolePlaying() { return PC_FLAGS.get(32); }
+   int isAFK() { return PC_FLAGS.get(33); }
+   int isGoldOnly() { return PC_FLAGS.get(34); }
    
-   int isModified() const { return isSmob(); }
    int isMob() const { return (CRITTER_TYPE == 2); }
    int isNPC() const { return (isMob() || isSmob()); }
    int isSmob() const { return (CRITTER_TYPE == 1); }
    int isPc() const { return (CRITTER_TYPE == 0); }
    int isNpc() const { return !isPc(); }
-   int isTracking() const { return mob && mob->isTracking(); }
-   
+   int isTracking() const { return mob && mob->proc_data &&
+                               mob->proc_data->temp_proc &&
+                               mob->proc_data->temp_proc->tracking.Strlen(); }
+   int isGroupLeader();
+   int isInGroupWith(critter* v);
+   int makeGroupSane();
+
    int getBenevolence() const;
    int isSentinel() const;
 
@@ -955,11 +972,13 @@ public:
    String* getBackGroundColor();
    String* getBattleColor();
 
+   int isNamed(const String& str) const ;
    int isGagged();
    int isFrozen();
-   int isImmort();
+   int isImmort() const;
    int isFlying();
    int isTailing() { return CRIT_FLAGS.get(23); }
+   int isDualWielding() { return crit_flags.get(16); }
    int canClimb();
    int isParalyzed();
    int isNotComplete() const ;
@@ -978,14 +997,15 @@ public:
    int isThief() const  { return CLASS == THIEF; }
    int isFighting() const  { return !is_fighting.isEmpty(); }
    int isFighting(critter& da_pc) { return is_fighting.haveData(&da_pc); }
-
+   
+   int isResting() const { return POS == POS_REST; }
    int isStanding() const { return POS == POS_STAND; }
    int isSitting() const { return POS == POS_SIT; }
    int isSleeping() const { return POS == POS_SLEEP; }
    int isStunned() const { return POS == POS_STUN; }
    int isMeditating() const { return POS == POS_MED; }
    int isPossessed() const { return (!possessed_by); }
-
+   int posnNonTalkative() const { return ((POS > POS_REST) && (POS != POS_PRONE)); }
    int isEdible() const { return mob && MOB_FLAGS.get(5); }
    
    int isHuman() { return RACE ==  HUMAN; }
@@ -1008,7 +1028,7 @@ public:
    int isShopKeeper();
    int isPlayerShopKeeper();
    int isManagedBy(critter& pc);
-
+   stat_spell_cell* isAffectedBy(int spell_num);
    // return current value of cur_in_game after operation
    int getCurInGame();
    int setCurInGame(int i);
@@ -1018,7 +1038,12 @@ public:
    int setMaxInGame(int i);
    void clearIGFlags(); //clear the Inc/Dec Cur In Game checks
 
-   int getLevel() { return LEVEL; }
+   int getLevel() const { return LEVEL; }
+   int getClass() const { return CLASS; }
+   int getRace() const { return RACE; }
+   void setLevel(int i) { LEVEL = i; }
+   void setRace(int i) { RACE = i; }
+   void setClass(int i) { CLASS = i; }
 
    /**  Translates an asci string (like HP, MANA, MOV, ALIGN, etc)
     * and returns the integer value.  Returns 0 if it can't
@@ -1038,16 +1063,11 @@ public:
 
    void show(const char* msg);
    void show(CSentryE); //Pick language of choice, if available.
-   void show(LString& msg) { show((String)(msg)); }
-   void show(String& msg);
-   void show(LStringCollection& msg, int show_all = FALSE);
-   void show(const String* msg);
-   /** Composes Sprintf on msg, with named.getLongName() passed in to it. */
-   void showN(CSentryE msg, Entity& named);
 
    object* loseInv(object* obj); //returns the object removed. (or NULL)
    void loseObjectFromGame(object* obj);
 
+   PtrList<object>& getInv() { return inv; }
 
    void gainInv(object* obj);
 
@@ -1057,6 +1077,8 @@ public:
    void doGoToRoom(int dest_room, const char* from_dir, door* by_door,
                    int& is_dead, int cur_room, int sanity,
                    int do_msgs = TRUE);
+   void doScriptJump(int abs_index);
+   int insertNewScript(MobScript* script);
 
    void breakEarthMeld();
 
@@ -1076,15 +1098,14 @@ public:
 
    /** Can fail if cnt is bad, does all messages. */
    int doDropCoins(int cnt);
+   int doPutCoins(int cnt, object* bag);
+   void split(int amt, int do_msg);
 
    /** Assume we are removing this object at this posn. */
    void checkLight(object* obj = NULL, int posn = -1);
-   void doDecreaseTimedAffecting();
    void drunkifyMsg(String& msg);
    void checkForBattle(room& rm);
    static int getInstanceCount() { return _cnt; }
-   virtual LEtypeE getEntityType() { return LE_CRITTER; }
-
 };//class critter
  
 

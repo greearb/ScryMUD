@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.33 1999/09/08 06:11:36 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 1999/09/08 06:11:36 $
+// $Id: object.cc,v 1.34 2001/03/29 03:02:32 eroper Exp $
+// $Revision: 1.34 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
 
 //
 //ScryMUD Server Code
@@ -31,7 +31,9 @@
 #include "misc2.h"
 #include "const.h"
 #include "batl_prc.h"
-#include "Markup.h"
+#include "load_wld.h"
+#include "battle.h"
+
 
 //*************************************************************//
 ///****************** obj construct data  ********************///
@@ -53,11 +55,11 @@ obj_construct_data::obj_construct_data(const obj_construct_data& source) {
    item5 = source.item5;
 }//copy constructor
 
-void obj_construct_data::read(istream& da_file, int read_all = TRUE) {
+void obj_construct_data::Read(ifstream& da_file) {
    char buf[100];
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  da_file FALSE in obj_construct_data read." << endl;
       }
       return;
@@ -67,7 +69,7 @@ void obj_construct_data::read(istream& da_file, int read_all = TRUE) {
    da_file.getline(buf, 99);
 }//Read
 
-void obj_construct_data::write(ostream& da_file) {
+void obj_construct_data::Write(ofstream& da_file) const {
    da_file << target_object << " " << item1 << " " << item2 << " "
            << item3 << " " << item4 << " " << item5;
    da_file << "\t target object, companions\n";
@@ -97,7 +99,7 @@ obj_spec_data::obj_spec_data(const obj_spec_data& source) { //copy constructr
 obj_spec_data::~obj_spec_data() { //destructor
    _cnt--;
    delete construct_data;
-   if (skin_ptr && skin_ptr->isModified()) {
+   if (skin_ptr && skin_ptr->IN_LIST) {
       delete skin_ptr;
       skin_ptr = NULL;
    }//if
@@ -114,13 +116,13 @@ obj_spec_data& obj_spec_data::operator=(const obj_spec_data& source) {
    if (this == &source)
       return *this;
 
-   clear();  //clear current mess
+   Clear();  //clear current mess
    obj_spec_data_flags = source.obj_spec_data_flags;
    if (source.construct_data) {
       construct_data = new obj_construct_data(*(source.construct_data));
    }//if
 
-   if (source.skin_ptr && !source.skin_ptr->isModified()) {
+   if (source.skin_ptr && !source.skin_ptr->IN_LIST) {
       skin_ptr = source.skin_ptr; //don't copy ptrs to SOBJ's
    }//if
    else {
@@ -128,17 +130,21 @@ obj_spec_data& obj_spec_data::operator=(const obj_spec_data& source) {
    }//else
    w_eye_owner = source.w_eye_owner;
 
-   casts_these_spells.becomeDeepCopyOf(source.casts_these_spells);
-
+   casts_these_spells.clearAndDestroy();
+   Cell<stat_spell_cell*> cll(source.casts_these_spells);
+   stat_spell_cell* ptr;
+   while ((ptr = cll.next())) {
+      casts_these_spells.append(new stat_spell_cell(*ptr));
+   }//while
    return *this;
 }// operator= overload
 
-void obj_spec_data::clear() {
-   obj_spec_data_flags.clear();
+void obj_spec_data::Clear() {
+   obj_spec_data_flags.Clear();
    delete construct_data;
    construct_data = NULL;
    
-   if (skin_ptr && skin_ptr->isModified()) {
+   if (skin_ptr && skin_ptr->IN_LIST) {
       delete skin_ptr;
    }//if
    skin_ptr = NULL;
@@ -148,20 +154,20 @@ void obj_spec_data::clear() {
 }//clear
 
 
-int obj_spec_data::read(istream& da_file, int read_all = TRUE) {
+void obj_spec_data::Read(ifstream& da_file) {
    char buf[82];
    int tmp;
 
-   clear();
+   Clear();
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  da_file FALSE in obj_spec_data read." << endl;
       }
-      return -1;
+      return;
    }
 
-   obj_spec_data_flags.read(da_file);
+   obj_spec_data_flags.Read(da_file);
 
    obj_spec_data_flags.turn_off(4); //hack!!
    obj_spec_data_flags.turn_off(5);
@@ -174,7 +180,7 @@ int obj_spec_data::read(istream& da_file, int read_all = TRUE) {
       if (!construct_data) {
          construct_data = new obj_construct_data;
       }//if
-      construct_data->read(da_file);
+      construct_data->Read(da_file);
    }//if
 
    if (obj_spec_data_flags.get(2)) {
@@ -194,76 +200,45 @@ int obj_spec_data::read(istream& da_file, int read_all = TRUE) {
       da_file >> first;
       while (first != -1) {
          da_file >> second;
-         casts_these_spells.append(new SpellDuration(first, second));
+         casts_these_spells.append(new stat_spell_cell(first, second));
          da_file >> first;
       }//while
       da_file.getline(buf, 80);
    }//if
-   return 0;
-}//read
-
-void obj_spec_data::toStringStat(critter* viewer, String& rslt) {
-   String buf(100);
-   rslt.clear();
-
-   if (viewer->isUsingClient()) {
-      rslt.append("<OBJ_SPEC>\n");
-   }
-   else {
-      rslt.append("Object Spec Proc Data:\n");
-   }
-
-   Markup::toString(NULL, obj_spec_data_flags, OBJ_SPEC_DATA_FLAGS_NAMES, viewer,
-                    NULL, buf);
-   rslt.append(buf);
-
-   if (construct_data) {
-      rslt.append("Construct Data:\n");
-
-      Sprintf(buf, 
-              "\tTarget: %i, item1: %i, item2: %i, item3: %i, item4: %i, item5: %i\n",
-              construct_data->target_object, construct_data->item1,
-              construct_data->item2, construct_data->item3,
-              construct_data->item4, construct_data->item5);
-      rslt.append(buf);
-   }//if
-         
-   // Casts spells taken care of elsewhere.
-}//toStringStat
+}//Read
 
 
-int obj_spec_data::write(ostream& da_file) {
-   obj_spec_data_flags.write(da_file);
+void obj_spec_data::Write(ofstream& da_file) const {
+   obj_spec_data_flags.Write(da_file);
    if (obj_spec_data_flags.get(1)) { //if have construct data
       if (!construct_data) {
-         mudlog.log(ERR, "ERROR:  trying to write NULL construct data.\n");
-         return -1;
+         mudlog.log(ERROR, "ERROR:  trying to write NULL construct data.\n");
+         return;
       }//if
-      construct_data->write(da_file);
+      construct_data->Write(da_file);
    }//if
    if (obj_spec_data_flags.get(2)) {
      if (!skin_ptr) {
        da_file << 0 << "     skin number\n";
      }//if
      else {
-       da_file << skin_ptr->OBJ_NUM << "	skin number\n";
+       da_file << skin_ptr->OBJ_NUM << "        skin number\n";
      }//else
    }//if
 
    if (obj_spec_data_flags.get(10)) {
-     Cell<SpellDuration*> cll(casts_these_spells);
-     SpellDuration* ptr;
+     Cell<stat_spell_cell*> cll(casts_these_spells);
+     stat_spell_cell* ptr;
      int cnt = 0;
      while ((ptr = cll.next())) {
        if (++cnt > 15) {
-	 cnt = 0;
-	 da_file << "\n";
+         cnt = 0;
+         da_file << "\n";
        }//if
-       da_file << ptr->spell << " " << ptr->duration << " ";
+       da_file << ptr->stat_spell << " " << ptr->bonus_duration << " ";
      }//while
      da_file << "-1 spell#, level (casts)\n";
    }//if
-   return 0;
 }//Write
 
 
@@ -281,90 +256,21 @@ bag_struct::bag_struct(const bag_struct& source) {
    *this = source; //a shallow copy should work
 }//copy constructor
 
-int bag_struct::write(ostream& ofile) {
-   MetaTags mt(*this);
-   mt.write(ofile);
-
-   Closable::write(ofile);
-
-   ofile << " " << max_weight << " " << percentage_weight << " "
+void bag_struct::Write(ofstream& ofile) const {
+   bag_flags.Write(ofile);
+   ofile << key_num << " " << max_weight << " " << percentage_weight << " "
          << time_till_disolve << " " << "\t bag_stuff\n";
-   return 0;
 }//Write()
 
 
-void bag_struct::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
-   String buf(300);
-   rslt.clear();
-
-   if (viewer->isUsingClient()) {
-      rslt.append("<BAG>\n");
-   }
-   else {
-      rslt.append("Bag Information: \n");
-   }
-
-   Closable::toStringStat(viewer, buf, st);
-   rslt.append(buf);
-
-   Sprintf(buf, "max weight:  %i,  percentage weight:  %i  ", 
-           max_weight, percentage_weight);
-   rslt.append(buf);
-
-   if (viewer->isImmort()) {
-      Sprintf(buf, "time till disolve:  %i.\n", time_till_disolve);
-      rslt.append(buf);
-
-   }//if
-   if (viewer->isUsingClient()) {
-      rslt.append("</BAG>\n");
-   }
-}//toStrintStat
-
-
-int bag_struct::read(istream& ofile, int read_all = TRUE) {
+void bag_struct::Read(ifstream& ofile) {
    char buf[81];
-   String str(80);
-   ofile >> str; //grab the first token, if V2.x it will be a number (bitfield)
-
-   if (isnum(str)) { //v2
-      if (strcmp(str, "-1") != 0) {
-         bitfield bf;
-         bf.read(ofile);
-         bf.turn_on(atoi(buf));
-
-         // Now, set all these flags.  Hateful, but we gotta translate them to
-         // how the Closable's flags like it.
-         setClosed(bf.get(2));
-         setLocked(bf.get(3));
-         setPickable(bf.get(4));
-         setMagLockable(bf.get(5));
-         setMagLocked(bf.get(6));
-         setDestructable(bf.get(7));
-         setCorpse(bf.get(8));
-         setNoClose(bf.get(9));
-         setConsumesKey(bf.get(17));
-      }//if
-      else {
-         //grab a newline
-         ofile.getline(buf, 80);
-      }
-
-      int key;
-      ofile >> key;
-      setKey(key);
-
-      ofile >> max_weight >> percentage_weight >> time_till_disolve;
-   }
-   else { //V3.0 format
-      MetaTags mt(str, ofile);
-
-      Closable::read(ofile);
-      ofile >> max_weight >> percentage_weight >> time_till_disolve;
-   }
+   
+   bag_flags.Read(ofile);
+   ofile >> key_num >> max_weight >> percentage_weight 
+         >> time_till_disolve;
    ofile.getline(buf, 80);
-   return (0);
-}//read()
+}//Read()
 
 
 //*************************************************************//
@@ -372,11 +278,13 @@ int bag_struct::read(istream& ofile, int read_all = TRUE) {
 
 int object::_cnt = 0;
 
-object::object (object& source) :
-      Entity(source), Scriptable(source), inv(NULL) { //copy constructor
+object::object (object& source) { //copy constructor
    _cnt++;
+   pause = source.pause;
+   in_room = source.in_room;
+   cur_script = NULL;
 
-   is_modified = FALSE;
+   in_list = NULL;
    bag = NULL;
    obj_proc = NULL;
 
@@ -386,17 +294,20 @@ object::object (object& source) :
 }//obj copy constructor
 
 
-object::object() : inv(NULL) {
+object::object() {
    int i;
 
    _cnt++;
+   pause = 0;
+   in_room = 0;
+   cur_script = NULL;
   
    for (i = 0; i<OBJ_MAX_EXTRAS; i++)
       extras[i] = 0;       
    for (i = 0; i<OBJ_CUR_STATS; i++)
       cur_stats[i] = 0;    
    
-   is_modified = FALSE;
+   in_list = NULL;
    bag = NULL;
    obj_proc = NULL;
    
@@ -410,12 +321,19 @@ object::~object() {
 
    obj_ptr_log << "OBJ_DES " << getIdNum() << " " << this << "\n";
 
-   if ((!isModified()) && (!do_shutdown)) {
-      mudlog.log(ERR, "ERROR:  trying to delete OBJ before shutdown.\n");
-      ::core_dump("Deleting un-modified object.");
+   if ((!in_list) && (!do_shutdown)) {
+      mudlog.log(ERROR, "ERROR:  trying to delete OBJ before shutdown.\n");
+      //do_shutdown = TRUE;
+      //exit(2);
    }//if
 
-   object::clear();
+   if (!do_shutdown) {
+      affected_objects.loseData(this);
+      pulsed_proc_objects.loseData(this);
+      proc_action_objs.loseData(this);
+   }//if
+
+   Clear();
 }//destructor
 
 
@@ -424,26 +342,41 @@ object& object::operator= (object& source) {
    if (this == &source)
       return *this;
    
-   SCell<object*> cll;
+   Cell<stat_spell_cell*> cell;
+   stat_spell_cell *tmp_stat, *tmp_stat2;
+   Cell<object*> cll;
    object* obj_ptr;      
    int i;
    
-   if (!isModified() && isInUse()) {
-      mudlog.log(ERR, "ERROR:  OBJ being assigned to... should be a SOBJ!\n");
-      ::core_dump("object::operator=, !modified, and is in use.");
+   if (!in_list && obj_flags.get(10)) {
+      mudlog.log(ERROR, "ERROR:  OBJ being assigned to... should be a SOBJ!\n");
+      //do_shutdown = TRUE;
+      //exit(2);
    }//if
    
-   clear();
+   Clear();
+   
+   pause = source.pause;
+   in_room = source.in_room;
+
+   String* ptr;
+   Cell<String*> scll(source.names);
+   while ((ptr = scll.next())) {
+      names.append(new String(*ptr));
+   }//while
    
    short_desc = source.short_desc;
    in_room_desc = source.in_room_desc;
+   long_desc = source.long_desc;
+   
+   in_list = source.in_list;
    
    obj_flags = source.obj_flags; //use bitfield's overloaded =
 
-   if (!isInUse()) { //in use
+   if (!obj_flags.get(10)) { //in use
       mudlog << "ERROR:  assigning obj, flag 10 (in use) not set."
              << endl;
-      obj_flags.turn_on(10); //make it in-use
+      obj_flags.turn_on(10);
    }
    
    for (i = 0; i<OBJ_MAX_EXTRAS; i++) 
@@ -456,108 +389,130 @@ object& object::operator= (object& source) {
       bag = new bag_struct(*(source.bag));
    }//if bag
    
-   affected_by.becomeDeepCopyOf(source.affected_by);
+   source.affected_by.head(cell);
+   while ((tmp_stat = cell.next())) {
+      tmp_stat2 = new stat_spell_cell;
+      *tmp_stat2 = *tmp_stat; //shallow copy should work 
+      affected_by.append(tmp_stat2);
+   }//while
    
    source.inv.head(cll);
    while ((obj_ptr = cll.next())) {
-      if (!obj_ptr->isModified()) { //multiple ptrs to SOBJ's will be a problem
+      if (!obj_ptr->IN_LIST) { //multiple ptrs to SOBJ's will be a problem
          inv.append(obj_ptr);
       }//if
    }//while
-
-   stat_affects.becomeDeepCopyOf(source.stat_affects);
+   
+   source.stat_affects.head(cell);
+   while ((tmp_stat = cell.next())) {
+      tmp_stat2 = new stat_spell_cell;
+      *tmp_stat2 = *tmp_stat; //shallow copy should work 
+      stat_affects.append(tmp_stat2);
+   }//while
    
    if (source.obj_proc) {
       obj_proc = new obj_spec_data(*(source.obj_proc));
    }//if
 
+   // Don't copy pending scripts, can't see any reason to.
+   Cell<ObjectScript*> oscll(source.obj_proc_scripts);
+   ObjectScript* osptr;
+   
+   while ((osptr = oscll.next())) {
+      obj_proc_scripts.append(new ObjectScript(*osptr));
+   }
+   
    return *this;
 }//operator= overload
-	    
+            
 
-void object::clear() {
-   Entity::clear();
-   Scriptable::clear();
+void object::Clear() {
+   pause = 0;
+   in_room = 0;
 
-   short_desc.clear();
-   in_room_desc.clear();
+   if (cur_script) {
+      pending_scripts.loseData(cur_script);
+      delete cur_script;
+      cur_script = NULL;
+   }
+
+   names.clearAndDestroy();
+   short_desc.Clear();
+   in_room_desc.Clear();
+   long_desc.Clear();
    
-   obj_flags.clear();
+   obj_flags.Clear();
    
    delete bag;
    bag = NULL;
-
+   in_list = NULL;
+   
+   affected_by.clearAndDestroy();
    stat_affects.clearAndDestroy();
    clear_obj_list(inv);
    
    delete obj_proc;
    obj_proc = NULL;
+
+   obj_proc_scripts.clearAndDestroy();
+   pending_scripts.clearAndDestroy();
+   delete cur_script;
+   cur_script = NULL;
+
 }//Clear
 
 
-/** ptr will be consumed by this call, ie takes charge of memory. */
-void object::addStatAffect(StatBonus* ptr) {
-   stat_affects.prepend(ptr);
-}
-
-room* object::getCurRoom() {
-   return &(room_list[getCurRoomNum()]);
-}
-
-int object::getCurRoomNum() {
-   if (getContainer()) {
-      return getContainer()->getCurRoomNum();
-   }
-   if (mudlog.ofLevel(WRN)) {
-      mudlog << "WARNING:  object::getCurRoomNum failed, obj# " << getIdNum()
-             << endl;
-   }
-   return 0;
-}//getCurRoomNum
-
-
-int object::getCurWeight() {
+int object::getCurWeight() const {
    if (inv.isEmpty()) {
       return extras[5];
    }
    else {
-      SCell<object*> cll(inv);
+      Cell<object*> cll(inv);
       object* tmp_obj;
       int tmp_wt = 0;
       while ((tmp_obj = cll.next())) {
          tmp_wt += tmp_obj->getCurWeight();
       }//while
-      return tmp_wt + extras[5];  // weight of inv, plus container's wt
+      return (tmp_wt * (this->bag->percentage_weight/100)) + extras[5];  // weight of inv, plus container's wt
    }//else
 }//cur_weight
 
 int object::getMaxWeight() const {
    if (bag) 
-      return bag->getMaxWeight();
+      return bag->max_weight;
    else
       return getMaxWeight();
 }//max_weight
 
 
-int object::write(ostream& ofile) {
+void object::Write(ofstream& ofile) {
    int i;
-   Cell<SpellDuration*> sd_cell;
-   Cell<StatBonus*> sb_cell;
-   StatBonus* sb_ptr;
-   SCell<object*> ob_cell;
+   Cell<stat_spell_cell*> ss_cell;
+   stat_spell_cell* ss_ptr;
+   Cell<object*> ob_cell;
    object* ob_ptr;
-
-   //TODO
-   MetaTags mt(*this);
-   mt.write(ofile);
-
-   Entity::write(ofile);
-   Scriptable::write(ofile);
-
-   short_desc.write(ofile);
-   in_room_desc.write(ofile);
+   Cell<String*> st_cell(names);
+   String* st_ptr;
    
-   obj_flags.write(ofile);
+   int len_writ = 0;
+   while ((st_ptr = st_cell.next())) {
+      len_writ += st_ptr->Strlen() + 1;
+      if (len_writ > 79) {
+         ofile << endl;
+         len_writ = 0;
+      }//if
+      ofile << *st_ptr << " ";
+   }//while
+   ofile << "~" << "\tnames\n";
+   
+   parse_for_max_80(short_desc);
+   ofile << short_desc << endl << "~" << endl;
+   parse_for_max_80(in_room_desc);
+   ofile << in_room_desc << endl << "~" << endl;
+   parse_for_max_80(long_desc);
+   ofile << long_desc << endl << "~" << endl;
+   
+   obj_flags.Write(ofile);
    
    int n_game = extras[3];
    extras[3] = 0;
@@ -572,20 +527,31 @@ int object::write(ostream& ofile) {
    
    /*  Do Bag      */
    if (bag) 
-      bag->write(ofile);
+      bag->Write(ofile);
    
    
-   /*  Inventory */   
-   if (!isBulletinBoard()) { //don't write out inv of a board
+   /*  Affected By */
+   i = 0;
+   affected_by.head(ss_cell);
+   while ((ss_ptr = ss_cell.next())) {
+      ofile << ss_ptr->stat_spell << " " << ss_ptr->bonus_duration << " ";
+      if ((++i % 20) == 0)
+         ofile << endl;
+   }//while
+   ofile << -1 << "\taffected_by\n";
+   
+   /*  Inventory */
+   
+   if (!obj_flags.get(74)) { //don't write out inv of a board
       i = 0;
       inv.head(ob_cell);
       while ((ob_ptr = ob_cell.next())) {
-         if (ob_ptr->isModified()) {
+         if (ob_ptr->IN_LIST) {
             ofile << -2 << "\t Start of SOBJ\n";
-            ob_ptr->write(ofile);
+            ob_ptr->Write(ofile);
          }//if
          else {
-            ofile << ob_ptr->getIdNum() << " ";
+            ofile << ob_ptr->OBJ_NUM << " ";
             if ((++i % 20) == 0)
                ofile << endl;
          }//else
@@ -596,9 +562,9 @@ int object::write(ostream& ofile) {
    
    /*  Stat_Affects */
    i = 0;
-   stat_affects.head(sb_cell);
-   while ((sb_ptr = sb_cell.next())) {
-      ofile << sb_ptr->stat << " " << sb_ptr->bonus << " ";
+   stat_affects.head(ss_cell);
+   while ((ss_ptr = ss_cell.next())) {
+      ofile << ss_ptr->stat_spell << " " << ss_ptr->bonus_duration << " ";
       if ((++i % 20) == 0)
          ofile << endl;
    }//while
@@ -606,58 +572,518 @@ int object::write(ostream& ofile) {
    
    if (obj_flags.get(63)) { //if has spec_data
       if (!obj_proc) {
-         mudlog.log(ERR, "ERROR:  trying to write a NULL obj_proc.\n");
-         return -1;
+         mudlog.log(ERROR, "ERROR:  trying to write a NULL obj_proc.\n");
+         return;
       }//if
-      obj_proc->write(ofile);
+      obj_proc->Write(ofile);
    }//if has spec_data
 
+   if (obj_flags.get(76)) {
+      Cell<ObjectScript*> cll;
+      obj_proc_scripts.head(cll);
+      ObjectScript* ptr;
+
+      int i = 1;
+      while ((ptr = cll.next())) {
+         ofile << i++ <<  "  Start of a object proc script\n";
+         ptr->write(ofile);
+      }
+      
+      ofile << "-1  End of object proc scripts" << endl;
+   }
+
    ofile << "End of Object.\n\n";
-   return 0;
 }//Write...obj
 
+#ifdef USEMYSQL
+void object::dbRead(long obj_num, long sobj_num, short read_all) {
+   long l;
+   MYSQL_RES* result;
+   MYSQL_ROW row;
+   String query="select * from Objects where OBJ_NUM=";
+   String name;
+   query += obj_num;
+   query += " and SOBJ_NUM=";
+   query += sobj_num;
 
-int object::read(istream& da_file, int read_all) {
-   String buf(100);
-   da_file >> buf;
-   if (strcasecmp(buf, "<META") == 0) {
-      MetaTags mt(buf, da_file);
-      return read_v3(da_file, read_all);
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In object::dbRead(long, long, short):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         }
+         return;
+      }
+      row=mysql_fetch_row(result);
+      l=atol(row[OBJTBL_SOBJ_NUM]);
+      if (l != -1 && !isModified()) {
+         // Trying to read data for an SOBJ into an OBJ
+         if (mudlog.ofLevel(DIS)) {
+            mudlog << "In object::dbRead(long, long, short):\n";
+            mudlog << "Attempting to read data for an SOBJ into an OBJ.\n";
+         }
+         core_dump("ERROR: Won't load data for an SOBJ into an OBJ.\n");
+      }
+
+      Clear();
+
+      // Basic stuff
+      OBJ_NUM = obj_num;
+
+      short_desc = row[OBJTBL_SHORT_DESC];
+      in_room_desc = row[OBJTBL_IN_ROOM_DESC];
+      long_desc = row[OBJTBL_LONG_DESC];
+
+      // Cripes, we definately need to make obj_flags private and write
+      // functions to set each flag.
+      obj_flags.set(OBJFLAG_NO_REST, atol(row[OBJTBL_NO_REST]));
+      obj_flags.set(OBJFLAG_ANTI_EVIL, atol(row[OBJTBL_ANTI_EVIL]));
+      obj_flags.set(OBJFLAG_ANTI_NEUTRAL, atol(row[OBJTBL_ANTI_NEUTRAL]));
+      obj_flags.set(OBJFLAG_ANTI_GOOD, atol(row[OBJTBL_ANTI_GOOD]));
+      obj_flags.set(OBJFLAG_ANTI_DONATE, atol(row[OBJTBL_ANTI_DONATE]));
+      obj_flags.set(OBJFLAG_ANTI_DROP, atol(row[OBJTBL_ANTI_DROP]));
+      obj_flags.set(OBJFLAG_ANTI_REMOVE, atol(row[OBJTBL_ANTI_REMOVE]));
+      obj_flags.set(OBJFLAG_ANTI_MORTAL, atol(row[OBJTBL_ANTI_MORTAL]));
+      obj_flags.set(OBJFLAG_ANTI_IMMORTAL, atol(row[OBJTBL_ANTI_IMMORTAL]));
+      obj_flags.set(OBJFLAG_ANTI_DEMI, atol(row[OBJTBL_ANTI_DEMI]));
+      obj_flags.set(OBJFLAG_IN_USE, atol(row[OBJTBL_IN_USE]));
+      obj_flags.set(OBJFLAG_ANTI_WARRIOR, atol(row[OBJTBL_ANTI_WARRIOR]));
+      obj_flags.set(OBJFLAG_ANTI_SAGE, atol(row[OBJTBL_ANTI_SAGE]));
+      obj_flags.set(OBJFLAG_ANTI_WIZARD, atol(row[OBJTBL_ANTI_WIZARD]));
+      obj_flags.set(OBJFLAG_ANTI_RANGER, atol(row[OBJTBL_ANTI_RANGER]));
+      obj_flags.set(OBJFLAG_ANTI_THIEF, atol(row[OBJTBL_ANTI_THIEF]));
+      obj_flags.set(OBJFLAG_ANTI_ALCHEMIST, atol(row[OBJTBL_ANTI_ALCHEMIST]));
+      obj_flags.set(OBJFLAG_ANTI_CLERIC, atol(row[OBJTBL_ANTI_CLERIC]));
+      obj_flags.set(OBJFLAG_ANTI_BARD, atol(row[OBJTBL_ANTI_BARD]));
+      obj_flags.set(OBJFLAG_ANTI_MOB, atol(row[OBJTBL_ANTI_MOB]));
+      obj_flags.set(OBJFLAG_ANTI_PC, atol(row[OBJTBL_ANTI_PC]));
+      obj_flags.set(OBJFLAG_NOT_WORN, atol(row[OBJTBL_NOT_WORN]));
+      obj_flags.set(OBJFLAG_HEAD, atol(row[OBJTBL_HEAD]));
+      obj_flags.set(OBJFLAG_NECK1, atol(row[OBJTBL_NECK1]));
+      obj_flags.set(OBJFLAG_NECK2, atol(row[OBJTBL_NECK2]));
+      obj_flags.set(OBJFLAG_AROUND_BODY, atol(row[OBJTBL_AROUND_BODY]));
+      obj_flags.set(OBJFLAG_ARMS, atol(row[OBJTBL_ARMS]));
+      obj_flags.set(OBJFLAG_WRIST1, atol(row[OBJTBL_WRIST1]));
+      obj_flags.set(OBJFLAG_WRIST2, atol(row[OBJTBL_WRIST2]));
+      obj_flags.set(OBJFLAG_HANDS, atol(row[OBJTBL_HANDS]));
+      obj_flags.set(OBJFLAG_WIELDED, atol(row[OBJTBL_WIELDED]));
+      obj_flags.set(OBJFLAG_HELD, atol(row[OBJTBL_HELD]));
+      obj_flags.set(OBJFLAG_LIGHT, atol(row[OBJTBL_LIGHT]));
+      obj_flags.set(OBJFLAG_BODY, atol(row[OBJTBL_BODY]));
+      obj_flags.set(OBJFLAG_BELT, atol(row[OBJTBL_BELT]));
+      obj_flags.set(OBJFLAG_LEGS, atol(row[OBJTBL_LEGS]));
+      obj_flags.set(OBJFLAG_FEET, atol(row[OBJTBL_FEET]));
+      obj_flags.set(OBJFLAG_FINGER1, atol(row[OBJTBL_FINGER1]));
+      obj_flags.set(OBJFLAG_FINGER2, atol(row[OBJTBL_FINGER2]));
+      obj_flags.set(OBJFLAG_SHIELD, atol(row[OBJTBL_SHIELD]));
+      obj_flags.set(OBJFLAG_NOT_A_WEAPON, atol(row[OBJTBL_NOT_A_WEAPON]));
+      obj_flags.set(OBJFLAG_SLASH, atol(row[OBJTBL_SLASH]));
+      obj_flags.set(OBJFLAG_SMASH, atol(row[OBJTBL_SMASH]));
+      obj_flags.set(OBJFLAG_PIERCE, atol(row[OBJTBL_PIERCE]));
+      obj_flags.set(OBJFLAG_WHIP, atol(row[OBJTBL_WHIP]));
+      obj_flags.set(OBJFLAG_NEEDS_AMMO, atol(row[OBJTBL_NEEDS_AMMO]));
+      obj_flags.set(OBJFLAG_DART_THROWER, atol(row[OBJTBL_DART_THROWER]));
+      obj_flags.set(OBJFLAG_BOW, atol(row[OBJTBL_BOW]));
+      obj_flags.set(OBJFLAG_DART, atol(row[OBJTBL_DART]));
+      obj_flags.set(OBJFLAG_ARROW, atol(row[OBJTBL_ARROW]));
+      obj_flags.set(OBJFLAG_JUNK, atol(row[OBJTBL_JUNK]));
+      obj_flags.set(OBJFLAG_WAND, atol(row[OBJTBL_WAND]));
+      obj_flags.set(OBJFLAG_POTION, atol(row[OBJTBL_POTION]));
+      obj_flags.set(OBJFLAG_SCROLL, atol(row[OBJTBL_SCROLL]));
+      obj_flags.set(OBJFLAG_CONTAINER, atol(row[OBJTBL_CONTAINER]));
+      obj_flags.set(OBJFLAG_COINS, atol(row[OBJTBL_COINS]));
+      obj_flags.set(OBJFLAG_ARMOR, atol(row[OBJTBL_ARMOR]));
+      obj_flags.set(OBJFLAG_WEAPON, atol(row[OBJTBL_WEAPON]));
+      obj_flags.set(OBJFLAG_LIGHT_SOURCE, atol(row[OBJTBL_LIGHT_SOURCE]));
+      obj_flags.set(OBJFLAG_CANTEEN, atol(row[OBJTBL_CANTEEN]));
+      obj_flags.set(OBJFLAG_LIQUID, atol(row[OBJTBL_LIQUID]));
+      obj_flags.set(OBJFLAG_FOOD, atol(row[OBJTBL_FOOD]));
+      obj_flags.set(OBJFLAG_BOAT, atol(row[OBJTBL_BOAT]));
+      obj_flags.set(OBJFLAG_HAS_SPEC_PROC_DATA, atol(row[OBJTBL_HAS_SPEC_PROC_DATA]));
+      obj_flags.set(OBJFLAG_TOOLBOX,atol(row[OBJTBL_TOOLBOX]));
+      obj_flags.set(OBJFLAG_CAULDRON, atol(row[OBJTBL_CAULDRON]));
+      obj_flags.set(OBJFLAG_PEN, atol(row[OBJTBL_PEN]));
+      obj_flags.set(OBJFLAG_CONSTRUCT_COMPONENT, atol(row[OBJTBL_CONSTRUCT_COMPONENT]));
+      obj_flags.set(OBJFLAG_CONCOCT_COMPONENT, atol(row[OBJTBL_CONCOCT_COMPONENT]));
+      obj_flags.set(OBJFLAG_PARCHMENT, atol(row[OBJTBL_PARCHMENT]));
+      obj_flags.set(OBJFLAG_NEEDS_RESETTING, atol(row[OBJTBL_NEEDS_RESETTING]));
+      obj_flags.set(OBJFLAG_HERB, atol(row[OBJTBL_HERB]));
+      obj_flags.set(OBJFLAG_VENDING_MACHINE, atol(row[OBJTBL_VENDING_MACHINE]));
+      obj_flags.set(OBJFLAG_BULLETIN_BOARD, atol(row[OBJTBL_BULLETIN_BOARD]));
+      obj_flags.set(OBJFLAG_IS_BUTCHERABLE, atol(row[OBJTBL_IS_BUTCHERABLE]));
+      obj_flags.set(OBJFLAG_HAS_OBJ_SCRIPT, atol(row[OBJTBL_HAS_OBJ_SCRIPT]));
+
+      obj_flags.turn_on(OBJFLAG_IN_USE);
+      obj_flags.turn_off(OBJFLAG_NOT_COMPLETE);
+      if (obj_flags.get(OBJFLAG_WIELDED))
+         obj_flags.turn_on(OBJFLAG_WEAPON);
+
+      extras[0] = atol(row[OBJTBL_CHARGES]);
+      extras[1] = atol(row[OBJTBL_TIMES_RECHARGABLE]);
+      extras[2] = atol(row[OBJTBL_PERCENT_LOAD]);
+      extras[4] = atol(row[OBJTBL_MAX_IN_GAME]);
+      extras[5] = atol(row[OBJTBL_WEIGHT]);
+      extras[6] = atol(row[OBJTBL_DICE_SIDES]);
+      extras[7] = atol(row[OBJTBL_DICE_COUNT]);
+      extras[8] = atol(row[OBJTBL_LEVEL]);
+
+      if (extras[0] < -1) 
+         extras[0] = -1;
+
+      cur_stats[0] = atol(row[OBJTBL_VIS_BIT]);
+      cur_stats[1] = atol(row[OBJTBL_PRICE]);
+      cur_stats[3] = atol(row[OBJTBL_FROM_ZONE]);
+
+      // Bag stuff
+      if (obj_flags.get(OBJFLAG_CONTAINER)) {
+         bag = new bag_struct;
+         bag->bag_flags.set(BAGFLAG_IS_CLOSED, atol(row[OBJTBL_IS_CLOSED]));
+         bag->bag_flags.set(BAGFLAG_IS_LOCKED, atol(row[OBJTBL_IS_LOCKED]));
+         bag->bag_flags.set(BAGFLAG_IS_PICKABLE, atol(row[OBJTBL_IS_PICKABLE]));
+         bag->bag_flags.set(BAGFLAG_IS_MAG_LOCKABLE, atol(row[OBJTBL_IS_MAG_LOCKABLE]));
+         bag->bag_flags.set(BAGFLAG_IS_MAG_LOCKED, atol(row[OBJTBL_IS_MAG_LOCKED]));
+         bag->bag_flags.set(BAGFLAG_IS_DESTRUCTABLE, atol(row[OBJTBL_IS_DESCTRUCTABLE]));
+         bag->bag_flags.set(BAGFLAG_IS_CORPSE, atol(row[OBJTBL_IS_CORPSE]));
+         bag->bag_flags.set(BAGFLAG_NOT_CLOSABLE, atol(row[OBJTBL_NOT_CLOSABLE]));
+         bag->bag_flags.set(BAGFLAG_PLAYER_OWNED, atol(row[OBJTBL_IS_PLAYER_OWNED]));
+         bag->bag_flags.set(BAGFLAG_CONSUMES_KEY, atol(row[OBJTBL_CONSUMES_KEY]));
+
+         bag->key_num           = atol(row[OBJTBL_KEY_NUM]);
+         bag->max_weight        = atol(row[OBJTBL_MAX_WEIGHT]);
+         bag->percentage_weight = atol(row[OBJTBL_PERCENT_WEIGHT]);
+         bag->time_till_disolve = atol(row[OBJTBL_TIME_TILL_DISSOLVE]);
+      }
+      // Spec data
+      if (obj_flags.get(OBJFLAG_HAS_SPEC_PROC_DATA)) {
+         if (obj_proc->obj_spec_data_flags.get(2)) {
+            if (check_l_range(atoi(row[OBJTBL_SKIN_NUMBER]), 1, NUMBER_OF_ITEMS,
+               mob_list[0], FALSE)) {
+               obj_proc->skin_ptr = &(obj_list[atoi(row[OBJTBL_SKIN_NUMBER])]);
+            }
+            else {
+               obj_proc->skin_ptr = NULL;
+               obj_proc->obj_spec_data_flags.turn_off(2);
+            }
+         }
+      }
+      mysql_free_result(result);
    }
    else {
-      return read_v2(da_file, buf, read_all);
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In object::dbRead(long, long, short):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
    }
-}//read
-
-int object::read_v2(istream& ofile, String& first_name, short read_all) {
-   int i, test = TRUE;
-   StatBonus* sb_ptr;
-   SpellDuration* sd_ptr;
-   char tmp[81];
-   String tmp_str(280);
    
-   clear();  //stop up any memory leaks etc.
+   // Names
+   query="select NAME from ObjNames where OBJ_NUM=";
+   query+=obj_num;
+   query+=" and SOBJ_NUM=";
+   query+=sobj_num;
 
-   mudlog.log(DB, "In obj::read.\n");
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In object::dbRead(long, long, short):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         }
+         return;
+      }
+      while ((row=mysql_fetch_row(result))) {
+         name = row[0];
+         names.append(&name);
+      }
+   }
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In object::dbRead(long, long, short):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+   // Affected By
+   query="select SPELL_NUM, DURATION from ObjSpells where OBJ_NUM=";
+   query+=obj_num;
+   query+=" and SOBJ_NUM=";
+   query+=sobj_num;
+
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In object::dbRead(long, long, short):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         }
+         return;
+      }
+      stat_spell_cell* ss_ptr;
+      while ((row=mysql_fetch_row(result))) {
+         ss_ptr = new stat_spell_cell;
+         ss_ptr->stat_spell = atoi(row[0]);
+         ss_ptr->bonus_duration = atoi(row[1]);
+         affected_by.append(ss_ptr);
+      }
+      mysql_free_result(result);
+   }
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In object::dbRead(long, long, short):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+   // Inventory
+   query="select CONTENT_OBJ_NUM, CONTENT_SOBJ_NUM, QUANTITY from ObjInv where OBJ_NUM=";
+   query+=obj_num;
+   query+=" and SOBJ_NUM=";
+   query+=sobj_num;
+
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In object::dbRead(long, long, short):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         }
+         return;
+      }
+      int content_sobj, content_obj, quantity;
+      while ((row=mysql_fetch_row(result))) {
+         content_obj = atoi(row[0]);
+         content_sobj = atoi(row[1]);
+         quantity = atoi(row[2]);
+         if (content_sobj != 0) {
+            object* new_obj = new object;
+            new_obj->dbRead(content_obj, content_sobj, read_all);
+            inv.append(new_obj);
+            affected_objects.append(new_obj);
+         }
+         else {
+            if (obj_list[content_obj].isInUse()) {
+               if (read_all || ((obj_list[content_obj].OBJ_PRCNT_LOAD *
+                   config.currentLoadModifier) / 100) > d(1,100)) {
+                  inv.append(&obj_list[content_obj]);
+               }
+            }
+            else {
+               inv.append(&obj_list[content_obj]);
+            }
+         }
+      }
+      mysql_free_result(result);
+   }
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In object::dbRead(long, long, short):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+   // Stat Affects
+   query="select STAT, ADJUSTMENT from ObjStatAff where OBJ_NUM=";
+   query+=obj_num;
+   query+=" and SOBJ_NUM=";
+   query+=sobj_num;
+
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In object::dbRead(long, long, short):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         }
+         return;
+      }
+      stat_spell_cell* ss_ptr;
+      while ((row=mysql_fetch_row(result))) {
+         ss_ptr = new stat_spell_cell;
+         ss_ptr->stat_spell = atoi(row[0]);
+         ss_ptr->bonus_duration = atoi(row[1]);
+         stat_affects.append(ss_ptr);
+      }
+      mysql_free_result(result);
+   }
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In object::dbRead(long, long, short):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+   if (obj_proc) {
+      // casts
+      if (obj_proc->obj_spec_data_flags.get(10)) {
+         String query="select SPELL_NUM, LEVEL from ObjCasts where OBJ_NUM=";
+         query+=obj_num;
+         query+=" and SOBJ_NUM=";
+         query+=sobj_num;
+
+         if (mysql_real_query(database, query, strlen(query))==0) {
+            if ((result=mysql_store_result(database))==NULL) {
+               if (mudlog.ofLevel(WRN)) {
+                  mudlog << "In object::dbRead(long, long, short):\n";
+                  mudlog << "Error retrieving query results: "
+                         << mysql_error(database) << endl;
+               }
+               return;
+            }
+            while ((row=mysql_fetch_row(result))) {
+               obj_proc->casts_these_spells.append(new stat_spell_cell(
+                        atoi(row[0]), atoi(row[1])));
+            }
+            mysql_free_result(result);
+         }
+         else {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "In object::dbRead(long, long, short):\n";
+               mudlog << "Error executing query: " << mysql_error(database)
+                      << endl;
+            }
+            return;
+         }
+      }
+      // constructs
+      if (obj_proc->obj_spec_data_flags.get(1)) {
+         if (!obj_proc->construct_data)
+            obj_proc->construct_data = new obj_construct_data;
+
+         query="select TARGET_OBJ_NUM from Componants where COMPONANT_OBJ_NUM=";
+         query+=obj_num;
+
+         if (mysql_real_query(database, query, strlen(query))==0) {
+            if ((result=mysql_store_result(database))==NULL) {
+               if (mudlog.ofLevel(WRN)) {
+                  mudlog << "In object::dbRead(long, long, short):\n";
+                  mudlog << "Error retrieving query results: "
+                         << mysql_error(database) << endl;
+               }
+               return;
+            }
+            row=mysql_fetch_row(result);
+            obj_proc->construct_data->target_object = atoi(row[0]);
+            mysql_free_result(result);
+         }
+         else {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "In object::dbRead(long, long, short):\n";
+               mudlog << "Error executing query: " << mysql_error(database)
+                      << endl;
+            }
+            return;
+         }
+      }
+      query="select COMPONANT_OBJ_NUM from Componants where TARGET_OBJ_NUM=";
+      query+=obj_proc->construct_data->target_object;
+
+
+      if (mysql_real_query(database, query, strlen(query))==0) {
+         if ((result=mysql_store_result(database))==NULL) {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "In object::dbRead(long, long, short):\n";
+               mudlog << "Error retrieving query results: "
+                      << mysql_error(database) << endl;
+            }
+            return;
+         }
+         row=mysql_fetch_row(result);
+         obj_proc->construct_data->item1 = atoi(row[0]);
+         row=mysql_fetch_row(result);
+         obj_proc->construct_data->item2 = atoi(row[0]);
+         row=mysql_fetch_row(result);
+         obj_proc->construct_data->item3 = atoi(row[0]);
+         row=mysql_fetch_row(result);
+         obj_proc->construct_data->item4 = atoi(row[0]);
+         row=mysql_fetch_row(result);
+         obj_proc->construct_data->item5 = atoi(row[0]);
+         mysql_free_result(result);
+      }
+      else {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In object::dbRead(long, long, short):\n";
+            mudlog << "Error executing query: " << mysql_error(database)
+                   << endl;
+         }
+         return;
+      }
+   }
+   // scripts
+   if (obj_flags.get(76)) {
+      ObjectScript* ptr;
+      query="select * from ObjScripts where OBJ_NUM=";
+      query+=obj_num;
+      query+=" and SOBJ_NUM=";
+      query+=sobj_num;
+
+      if (mysql_real_query(database, query, strlen(query))==0) {
+         if ((result=mysql_store_result(database))==NULL) {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "In object::dbRead(long, long, short):\n";
+               mudlog << "Error retrieving query results: "
+                      << mysql_error(database) << endl;
+            }
+            return;
+         }
+         while ((row=mysql_fetch_row(result))) {
+            String* tmp_disc = new String(row[OSCRTBL_DISCRIMINATOR]);
+            tmp_disc->Strip();
+            tmp_disc->Prepend(" ");
+            tmp_disc->Append(" ");
+
+            ptr = new ObjectScript(*(new String(row[OSCRTBL_TRIGGER_CMD])),
+                                   atoi(row[OSCRTBL_TARGET]),
+                                   atoi(row[OSCRTBL_ACTOR]),
+                                   *tmp_disc,
+                                   atoi(row[OSCRTBL_PRECEDENCE]));
+            String sbuf;
+            sbuf = row[OSCRTBL_SCRIPT_COMMANDS];
+            String* tmp_str;
+            while ((tmp_str = sbuf.getUntil(';'))) {
+               ptr->appendCmd(*tmp_str);
+               delete tmp_str;
+            }
+            ptr->compile();
+         }
+         mysql_free_result(result);
+      }
+      else {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In object::dbRead(long, long, short):\n";
+            mudlog << "Error executing query: " << mysql_error(database) << endl;
+         }
+         return;
+      }
+   }
+}
+#endif
+
+void object::fileRead(ifstream& ofile, short read_all) {
+   int i, test = TRUE;
+   stat_spell_cell* ss_ptr;
+   char tmp[81];
+   String tmp_str(80);
+   String* string;
+   
+   Clear();  //stop up any memory leaks etc.
+
+   mudlog.log(DB, "In obj::Read.\n");
 
    if (!ofile) {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  da_file FALSE in obj read." << endl;
       }
-      ::core_dump(__FUNCTION__);
-      return -1;
+      return;
    }
-
-   addName(first_name);
 
    test = TRUE;
    while (test) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read, in while." << endl;
+         if (mudlog.ofLevel(ERROR)) {
+            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
          }
-         ::core_dump(__FUNCTION__);
-         return -1;
+         return;
       }
 
       ofile >> tmp_str;
@@ -665,25 +1091,21 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
          test = FALSE;
       }//if
       else {
-         addName(tmp_str);
+         string = new String(tmp_str);
+         names.append(string);
       }//else
    }//while            
    ofile.getline(tmp, 80);         
 
    mudlog.log(DB, "About to do termed read..");
-
-   tmp_str.termedRead(ofile);
-   addShortDesc(tmp_str);
    
-   tmp_str.termedRead(ofile);
-   addInRoomDesc(tmp_str);
-
-   tmp_str.termedRead(ofile);
-   addLongDesc(tmp_str);
+   short_desc.Termed_Read(ofile);
+   in_room_desc.Termed_Read(ofile);
+   long_desc.Termed_Read(ofile);
    
    mudlog.log(DB, "Done with termed read..");
 
-   obj_flags.read(ofile);
+   obj_flags.Read(ofile);
    obj_flags.turn_on(10); //in_use
    obj_flags.turn_off(71); //if we can read it, it's complete!
    if (obj_flags.get(30)) {
@@ -702,23 +1124,22 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
    if (obj_flags.get(54)) { //is a container
       if (!bag)
          bag = new bag_struct;
-      bag->read(ofile);
+      bag->Read(ofile);
    }//if
    
    /*  Affected By */
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read, affected by" << endl;
+         if (mudlog.ofLevel(ERROR)) {
+            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
          }
-         ::core_dump(__FUNCTION__);
-         return -1;
+         return;
       }
-      sd_ptr = new SpellDuration();
-      sd_ptr->spell = i;
-      ofile >> sd_ptr->duration;
-      addAffectedBy(sd_ptr);
+      ss_ptr = new stat_spell_cell;
+      ss_ptr->stat_spell = i;
+      ofile >> ss_ptr->bonus_duration;
+      affected_by.append(ss_ptr);
       ofile >> i;
    }//while
    ofile.getline(tmp, 80);
@@ -727,32 +1148,29 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read, inv" << endl;
+         if (mudlog.ofLevel(ERROR)) {
+            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
          }
-         ::core_dump(__FUNCTION__);
-         return -1;
+         return;
       }
 
       if (i == -2) { //assume its supposed to load, gonna load fer sure
          object* new_obj = new object;
          ofile.getline(tmp, 80);  //junk message
-         new_obj->read(ofile, TRUE);
+         new_obj->fileRead(ofile, TRUE);
 
          inv.append(new_obj);    //add it to inventory
          affected_objects.append(new_obj);
 
-         new_obj->setContainer(this);
-         new_obj->setModified(TRUE);
+         new_obj->IN_LIST = &(inv); //make sure its a SOBJ
       }//if
       else {
          if (obj_list[i].isInUse()) {
-            if (read_all || ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
-                d(1,100)) {
+            if (read_all || ((obj_list[i].OBJ_PRCNT_LOAD *
+                config.currentLoadModifier) / 100) > d(1,100)) {
                mudlog << "INFO:  Loading inventory object: " << i << " on object: "
                       << cur_stats[2] << endl;
-               object* ptr = &(obj_list[i]); //compiler issue
-               inv.append(ptr); //add it to inventory
+               inv.append(&(obj_list[i]));    //add it to inventory
             }//if
             else {
                if (mudlog.ofLevel(DB)) {
@@ -763,8 +1181,7 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
             }//else
          }//if
          else { //TODO:  load percentage ignored here....need a fix!
-            object* ptr = &(obj_list[i]); //compiler issue
-            inv.append(ptr);     //add it to inventory
+            inv.append(&(obj_list[i]));    //add it to inventory
          }//if
       }//else
       ofile >> i;
@@ -777,19 +1194,17 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read, stat_affects" << endl;
+         if (mudlog.ofLevel(ERROR)) {
+            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
          }
-         ::core_dump(__FUNCTION__);
-         return -1;
+         return;
       }
 
       ofile >> bonus;
-      sb_ptr = new StatBonus();
-      sb_ptr->stat = i;
-      sb_ptr->bonus = bonus;
-
-      addStatAffect(sb_ptr);
+      ss_ptr = new stat_spell_cell;
+      ss_ptr->stat_spell = i;
+      ss_ptr->bonus_duration = bonus;
+      stat_affects.append(ss_ptr);
       ofile >> i;
    }//while
    ofile.getline(tmp, 80);
@@ -797,14 +1212,14 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
    if (obj_flags.get(63)) {   // if it has spec data
       if (!obj_proc)
          obj_proc = new obj_spec_data;
-      obj_proc->read(ofile);
+      obj_proc->Read(ofile);
    }//if
 
    /* read procs, if we have them. */
    if (obj_flags.get(76)) {
       //mudlog.log("Object has proc scripts...");
       int sent_;
-      GenScript* ptr;
+      ObjectScript* ptr;
 
       ofile >> sent_;
       ofile.getline(tmp, 80);
@@ -818,16 +1233,15 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
          if (mudlog.ofLevel(DB))
             mudlog << "\nReading script# " << sent_ << endl;
          if (!ofile) {
-            if (mudlog.ofLevel(ERR)) {
-               mudlog << "ERROR:  object reading script da_file FALSE, scripts" << endl;
+            if (mudlog.ofLevel(ERROR)) {
+               mudlog << "ERROR:  object reading script da_file FALSE." << endl;
             }
-            ::core_dump(__FUNCTION__);
-            return -1;
+            return;
          }
 
-         ptr = new GenScript();
+         ptr = new ObjectScript();
          ptr->read(ofile);
-         addProcScript(ptr);
+         obj_proc_scripts.append(ptr);
          ofile >> sent_;
          ofile.getline(tmp, 80);
          if (mudlog.ofLevel(DB))
@@ -846,137 +1260,10 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
    ofile.getline(tmp, 80); //junk end of obj space
 
    OBJ_VIS_BIT |= 1024; //hack, turn on 'normal' bit
-   return 0;
-}//read_v2
+   pause = 0;
+   in_room = 0;
 
-
-int object::read_v3(istream& ofile, int read_all) {
-   int i;
-   StatBonus* ss_ptr;
-   char tmp[81];
-   String tmp_str(80);
-   
-   clear();  //stop up any memory leaks etc.
-
-   mudlog.log(DB, "In obj::read_v3.\n");
-
-   Entity::read(ofile);
-   Scriptable::read(ofile);
-
-   short_desc.read(ofile);
-   in_room_desc.read(ofile);
-   
-   obj_flags.read(ofile);
-   obj_flags.turn_on(10); //in_use
-   obj_flags.turn_off(71); //if we can read it, it's complete!
-   if (obj_flags.get(30)) {
-      obj_flags.turn_on(57); //all wieldables are weapons now
-   }//if
-   
-   for (i = 0; i<OBJ_MAX_EXTRAS; i++)
-      ofile >> extras[i];
-   ofile.getline(tmp, 80);
-   
-   for (i = 0; i<OBJ_CUR_STATS; i++)
-      ofile >> cur_stats[i];
-   ofile.getline(tmp, 80);
-   
-   /*  bag  */
-   if (obj_flags.get(54)) { //is a container
-      if (!bag)
-         bag = new bag_struct;
-      bag->read(ofile);
-   }//if
-   
-   /*  Inventory */
-   ofile >> i;
-   while (i != -1) {
-      if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read, inv" << endl;
-         }
-         ::core_dump(__FUNCTION__);
-         return -1;
-      }
-
-      if (i == -2) { //assume its supposed to load, gonna load fer sure
-         object* new_obj = new object;
-         ofile.getline(tmp, 80);  //junk message
-         new_obj->read(ofile, TRUE);
-
-         inv.append(new_obj);    //add it to inventory
-         affected_objects.append(new_obj);
-
-         new_obj->setContainer(this);
-         new_obj->setModified(TRUE);
-      }//if
-      else {
-         if (obj_list[i].isInUse()) {
-            if (read_all || 
-                ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
-                d(1,100)) {
-               mudlog << "INFO:  Loading inventory object: " << i
-                      << " on object: " << cur_stats[2] << endl;
-               object* ptr = &(obj_list[i]); //compiler issue
-               inv.append(ptr); //add it to inventory
-            }//if
-            else {
-               if (mudlog.ofLevel(DB)) {
-                  mudlog << "INFO:  Not loading object: " << i << " on object: "
-                         << cur_stats[2] << " because %load check failed."
-                         << endl;
-               }
-            }//else
-         }//if
-         else { //TODO:  load percentage ignored here....need a fix!
-            object* ptr = &(obj_list[i]); //compiler issue
-            inv.append(ptr); //add it to inventory
-         }//if
-      }//else
-      ofile >> i;
-   }//while
-   ofile.getline(tmp, 80);   
-
-   // stat affects
-
-   int bonus;
-   ofile >> i;
-   while (i != -1) {
-      if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read, stat_aff" << endl;
-         }
-         ::core_dump(__FUNCTION__);
-         return -1;
-      }
-
-      ofile >> bonus;
-      ss_ptr = new StatBonus();
-      ss_ptr->stat = i;
-      ss_ptr->bonus = bonus;
-      stat_affects.append(ss_ptr);
-      ofile >> i;
-   }//while
-   ofile.getline(tmp, 80);
-   
-   if (obj_flags.get(63)) {   // if it has spec data
-      if (!obj_proc)
-         obj_proc = new obj_spec_data;
-      obj_proc->read(ofile);
-   }//if
-
-   /* if charges < -1, make them -1 (infinity) */
-   if (extras[0] < -1) {
-      extras[0] = -1;
-   }
-
-   //mudlog.log(DBG, "Done reading in obj.\n");
-   ofile.getline(tmp, 80); //junk end of obj msg
-   ofile.getline(tmp, 80); //junk end of obj space
-
-   OBJ_VIS_BIT |= 1024; //hack, turn on 'normal' bit
-   return 0;
-}//read_v3
+}//Read....object
 
 int object::isMagic() {
    if (!stat_affects.isEmpty() || !affected_by.isEmpty())
@@ -992,8 +1279,8 @@ object* object::loseInv(object* obj) {
 
 void object::gainInv(object* obj) {
    inv.append(obj);
-   if (obj->isModified())
-      obj->setContainer(this);
+   if (obj->IN_LIST)
+      obj->IN_LIST = &(inv);
 }//gainInv
 
 int object::getIdNum() {
@@ -1014,18 +1301,21 @@ int object::isFood() const {
 }
 
 int object::isLocked() const {
-   return (bag && bag->isLocked());
+   return (bag && BAG_FLAGS.get(3));
 }
 
 
 int object::isMagLocked() const {
-   return (bag && bag->isMagLocked());
+   return (bag && BAG_FLAGS.get(6));
 }
 
 int object::isClosed() const {
-   return (bag && bag->isClosed());
+   return (bag && BAG_FLAGS.get(2));
 }
 
+int object::isPlayerOwned() const {
+   return (bag && BAG_FLAGS.get(10));
+}
 
 int object::isPotion() const {
    return (OBJ_FLAGS.get(52) && obj_proc);
@@ -1033,6 +1323,10 @@ int object::isPotion() const {
 
 int object::isScroll() const {
    return (OBJ_FLAGS.get(53) && obj_proc);
+}
+
+int object::isNamed(const String& name) const {
+   return obj_is_named(*this, name);
 }
 
 int object::isLiquid() const {
@@ -1079,7 +1373,7 @@ int object::getMaxInGame() {
 
 int object::getKeyNum() {
    if (bag) {
-      return bag->getKey();
+      return bag->key_num;
    }
    return 0;
 }
@@ -1109,6 +1403,9 @@ int object::isLit() const {
 void object::lock() {
    if (bag) {
       bag->lock();
+      if (isPlayerOwned()) {
+         save_player_box(*this);
+      }
    }
 }//lock
 
@@ -1122,6 +1419,9 @@ int object::consumesKey() {
 void object::unlock() {
    if (bag) {
       bag->unlock();
+      if (isPlayerOwned()) {
+         save_player_box(*this);
+      }
    }
 }//lock
 
@@ -1173,104 +1473,29 @@ void object::makeComponent(int targ, int comp1, int comp2, int comp3,
    }
 }//makeComponent
 
+void object::setCurRoomNum(int i, int sanity) {
+   in_room = i;
 
-void object::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
-   String buf(500);
-   rslt.clear();
-
-   if (!isInUse()) {
-      rslt.append("This object is NULL, not init'd by the game.\n");
+   if (inv.isEmpty()) {
       return;
-   }//if
-
-   if (viewer->isUsingClient()) {
-      Sprintf(rslt, "<OBJECT %i>\n", getIdNum());
    }
    else {
-      Sprintf(rslt, "Object: %i\n", getIdNum());
-   }
+      Cell<object*> cll(inv);
+      object* ptr;
 
-   Entity::toStringStat(viewer, buf, st);
-   rslt.append(buf);
-
-   Scriptable::toStringStat(viewer, buf);
-   rslt.append(buf);
-
-   short_desc.toStringStat("<SHORT_DESC>", "</SHORT_DESC>", viewer, buf);
-   rslt.append(buf);
-
-   in_room_desc.toStringStat("<NROOM_DESC>", "</NROM_DESC>", viewer, buf);
-   rslt.append(buf);
-
-   if (isWeapon()) {
-      if ((st | ST_IDENTIFY) || viewer->isImmort()) {
-         Sprintf(buf, "Weapon Damage: %id%i.\n",
-                 getDiceCnt(), getDiceSides());
-         rslt.append(buf);
-      }
-   }//else
-
-   if ((st | ST_IDENTIFY) || viewer->isImmort()) {
-
-      if (!stat_affects.isEmpty()) {
-         rslt.append("Stat affects:\n");
-         Markup::toString(&stat_affects, viewer, STAT_AFFECT_NAMES, buf);
-         rslt.append(buf);
+      if (sanity > 20) {
+         mudlog << "WARNING:  object::setCurInRoom, sanity over-run, obj#: "
+                << getIdNum() << endl;
+         return;
       }
 
-      if (obj_proc && !CASTS_THESE_SPELLS.isEmpty()) {
-         rslt.append("Casts these spells:\n");
-         Markup::toString(&(CASTS_THESE_SPELLS), viewer, buf);
-         rslt.append(buf);
-      }//if
-
-      Markup::toString(NULL, obj_flags, OBJ_FLAGS_NAMES, viewer, NULL, buf);
-      rslt.append(buf);
-
-      if (!inv.isEmpty()) {
-         rslt.append("Inventory:\n");
-         Markup::toString(&inv, viewer, OBJ_INV, buf);
-         rslt.append(buf);
-      }
-
-      Sprintf(buf, "\nBelongs to zone:  %i.\n", getIdNum());
-      rslt.append(buf);
-
-      if (bag) {
-         bag->toStringStat(viewer, buf, st);
-         rslt.append(buf);
-      }
-   }//if immort or identify
-
-   if (viewer->isImmort()) {
-      Sprintf(buf, "\nchrgs: %i  rechrg: %i  p_load: %i  cur_in_game: %i.\n", 
-              (int)(extras[0]), (int)(extras[1]), (int)(extras[2]),
-              (int)(getCurInGame()));
-      rslt.append(buf);
-
-      Sprintf(buf, "max_in_game: %i  wt: %i  dice_sides: %i  #dice: %i.\n", 
-              (int)(extras[4]), (int)(getCurWeight()), (int)(extras[6]),
-              (int)(extras[7])); 
-      rslt.append(buf);
-
-      Sprintf(buf, "lvl: %i  price: %i  item#: %i zone# %i.\n", 
-              (int)(extras[8]), cur_stats[1], cur_stats[2], cur_stats[3]);
-      rslt.append(buf);
-
-      if (obj_proc) {
-         obj_proc->toStringStat(viewer, buf);
-      }//if obj proc
-
-      if (isModified()) 
-         rslt.append("IS_MODIFIED\n");
-      else 
-         rslt.append("NOT_MODIFIED\n");
-   }//if is immort
-
-   if (viewer->isUsingClient()) {
-      rslt.append("</OBJECT>\n");
-   }
-}//toStringStat
+      while ((ptr = cll.next())) {
+         if (ptr->isModified()) {
+            ptr->setCurRoomNum(i, sanity + 1);
+         }
+      }//while
+   }//if
+}//setCurInRoom
 
 
 int object::getObjCountByNumber(int onum, int sanity) {
@@ -1287,7 +1512,7 @@ int object::getObjCountByNumber(int onum, int sanity) {
       return 0;
    }
    else {
-      SCell<object*> cll(inv);
+      Cell<object*> cll(inv);
       object* ptr;
       int count = 0;
 
@@ -1314,6 +1539,40 @@ int object::getObjCountByNumber(int onum, int sanity) {
    }//if
 }//getObjectCountByNumber
 
+int object::doJunk() {
+   if (isModified()) {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "DEBUG:  in doJunk, wasModified, obj: " << this << endl;
+      }      
+      return find_and_delete_obj(this, getCurRoomNum());
+   }
+   else {
+      mudlog.log(ERROR, "ERROR:  in doJunk, was NOT Modified.\n");
+      return FALSE;
+   }
+}
+
+int object::doMload(int i_th) {
+   critter* crit_ptr;
+
+   if (0 < i_th < NUMBER_OF_MOBS) {
+      crit_ptr = &(mob_list[i_th]);
+      // Make sure this mob is in use
+      if (!crit_ptr->CRIT_FLAGS.get(18)) return -1;
+   }
+   else return -1;
+   if (crit_ptr->isPlayerShopKeeper()) {
+      critter* shop_keeper = load_player_shop_owner(crit_ptr->getIdNum());
+      if(shop_keeper) {
+         room_list[getCurRoomNum()].gainCritter(shop_keeper);
+      }
+   }
+   else {
+      room_list[getCurRoomNum()].gainCritter(&(mob_list[crit_ptr->getIdNum()]));
+   }
+   recursive_init_loads(*crit_ptr);
+   return 0;
+}
 
 int object::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
                        int cur_room, int sanity) {
@@ -1343,133 +1602,265 @@ int object::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
 }//doGoToRoom
 
 
-StatBonus* object::hasStatAffect(int stat_num) {
-   Cell<StatBonus*> cll(stat_affects);
-   StatBonus* ptr;
+void object::finishedObjProc() {
+   if (cur_script) {
+      pending_scripts.loseData(cur_script);
+      delete cur_script;
+   }
+
+   // This could easily end up being NULL, that's OK!
+   cur_script = pending_scripts.peekFront();
+}//finishedRoomProc
+
+void object::addProcScript(const String& txt, ObjectScript* script_data) {
+   //similar to reading it in...
+   //first, see if we are over-writing one...
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In object::addProcScript, txt:  \n" << txt
+             << "\nscript data:  "
+             << script_data->toStringBrief(0, 0, ENTITY_ROOM, 0) << endl;
+   }
+
+   obj_flags.turn_on(76);
+
+   Cell<ObjectScript*> cll;
+   ObjectScript* ptr;
+   obj_proc_scripts.head(cll);
 
    while ((ptr = cll.next())) {
-      if (ptr->stat == stat_num)
-         return ptr;
+      if (ptr->matches(*script_data)) {
+         //got a match.
+         mudlog.log("object::addProcScript, they match.");
+         *ptr = *script_data;
+         ptr->setScript(txt);
+         delete script_data;
+         return;
+      }//if
    }//while
-   return NULL;
-}//has_stat_affect
+   
+   mudlog.log(DBG, "About to setScript.");
+   
+   script_data->setScript(txt);
+   mudlog.log(DBG, "done with setScript.");
+
+   if (!script_data) {
+      mudlog.log(ERROR, "script_data is NULL, object::addProcScript.");
+      return;
+   }
+
+   obj_proc_scripts.append(script_data);
+}//addProcScript
 
 
-object* object::haveObjNumbered(int i_th, int num, int see_bit, room& rm) {
-   SCell<object*> cll(inv);
-   object* ptr;
-   int count = 0;
+void object::listScripts(critter& pc) {
+   String buf(500);
+   buf.Append("These scripts are defined for this object, the actual scripts
+may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n");
+
+   pc.show(buf);
+
+   String tmp(100);
+   int found_one = FALSE;
+   Cell<ObjectScript*> cll(obj_proc_scripts);
+   ObjectScript* ptr;
+   int idx = 0;
+   while ((ptr = cll.next())) {
+      found_one = TRUE;
+      tmp = ptr->toStringBrief(FALSE, 0, ENTITY_OBJECT, idx);
+      Sprintf(buf, "[%i] %S\n", idx, &(tmp));
+      pc.show(buf);
+      idx++;
+   }
+
+   if (!found_one) {
+      buf.Append("No scripts defined for this object.\n");
+      show(buf, pc);
+   }
+}//listScripts
+
+void object::removeScript(String& trigger, int i_th, critter& pc) {
+   int sofar = 1;
+   String buf(500);
+ 
+   Cell<ObjectScript*> cll(obj_proc_scripts);
+   ObjectScript* ptr;
+   ptr = cll.next();
+   while (ptr) {
+      if (strcasecmp(*(ptr->getTrigger()), trigger) == 0) {
+         if (sofar == i_th) {
+            delete ptr;
+            ptr = obj_proc_scripts.lose(cll);
+            show("Deleted it...\n", pc);
+            return;
+         }//if
+         else {
+            ptr = cll.next();
+         }
+         sofar++;
+      }//if
+      else {
+         ptr = cll.next();
+      }
+   }//while
+
+   show("Didn't find that script..\n", pc);
+}//removeScript
+
+
+int object::insertNewScript(ObjectScript* script) {
+   ObjectScript* ptr;
+   Cell<ObjectScript*> cll(pending_scripts);
+
+   // Don't append scripts that have a zero precedence, if there
+   // are other scripts in the queue.
+   if ((script->getPrecedence() == 0) && (!pending_scripts.isEmpty())) {
+      delete script;
+      return 0;
+   }
 
    while ((ptr = cll.next())) {
-      if (ptr->OBJ_NUM == num) {
-         if (detect(see_bit, (ptr->getVisBit() | rm.getVisBit()))) { 
-            count++;
-            if (count == i_th) {
-               return ptr;
+      if (ptr->getPrecedence() < script->getPrecedence()) {
+         // Then insert it
+         pending_scripts.insertBefore(cll, script);
+         return 0;
+      }//if
+   }//while
+
+   // If here, then we need to place it at the end.
+   pending_scripts.append(script);
+   return 0;
+}
+
+
+void object::doScriptJump(int abs_offset) {
+   if (cur_script)
+      cur_script->doScriptJump(abs_offset);
+}
+
+// NOTE:  The script owner is *this.  It is likely, but not necessary
+// that targ is also *this
+void object::checkForProc(String& cmd, String& arg1, critter& actor,
+                          int targ, room& rm, int sanity = 0) {
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In object::checkForProc, size of scripts: "
+             << obj_proc_scripts.size() << endl;
+   }
+
+   if (!isModified()) {
+      mudlog.log(ERROR, "ERROR:  object::checkForProc, got an OBJ (not modified).");
+      return;
+   }
+
+   if (sanity > 100) {
+      mudlog.log(ERROR, "ERROR: object::checkForProc busted recursion sanity check.");
+      return;
+   }
+
+   Cell<ObjectScript*> cll;
+   ObjectScript* ptr;
+         
+   obj_proc_scripts.head(cll);
+
+   while ((ptr = cll.next())) {
+      mudlog.log("In while.");
+      mudlog.log(ptr->toStringBrief(0, 0, ENTITY_OBJECT, 0));
+      if (ptr->matches(cmd, arg1, actor, targ, getIdNum())) {
+         mudlog.log("Matches..");
+         if (pending_scripts.size() >= 10) { //only queue 10 scripts
+            return; //do nothing, don't want to get too much backlog.
+         }
+         else {
+            // add it to the pending scripts.
+            ptr->generateScript(cmd, arg1, actor, targ, rm, NULL, this);
+            insertNewScript(new ObjectScript(*ptr));
+
+            if (cur_script) {
+               if (cur_script->getPrecedence() <
+                   pending_scripts.peekFront()->getPrecedence()) {
+                  
+                  pending_scripts.loseData(cur_script); //take it out of queue
+                  delete cur_script; //junk it!
+                  cur_script = pending_scripts.peekFront();
+                  cur_script->resetStackPtr(); //get ready to start
+               }//if
+               // else, it just goes into the queue
+            }//if we currently have a script.
+            else { //there was none, so grab the first one.
+               cur_script = pending_scripts.peekFront();
+               proc_action_objs.gainData(this);
+               cur_script->resetStackPtr(); //get ready to start
+            }
+
+            return;
+         }//else
+      }//if matches
+   }//while
+
+   // Look through all inventory (recursively)
+
+   Cell<object*> ocll(inv);
+   object* optr;
+   while ((optr = ocll.next())) {
+      if (optr->hasScript()) {
+         if (!optr->isModified()) {
+            object* tmp = optr;
+            optr = obj_to_sobj(*optr, &inv, getCurRoomNum());
+            if (!inv.substituteData(tmp, optr, 1)) {
+               mudlog.log(ERROR, "ERROR: critter::checkForProc: substituteData  failed after obj_to_sobj.\n");
             }//if
-         }//if detect
-      }//if obj nums agree
+         }
+         optr->checkForProc(cmd, arg1, actor, targ, rm, sanity + 1);
+      }//if
    }//while
-   return NULL;
-}//have_obj_numbered
 
+}//checkForProcAction
 
-
-/** These default to english, makes a copy of incoming data. */
-void object::addShortDesc(String& new_val) {
-   short_desc.addString(English, new_val);
+const String* object::getLongName(critter& pc) {
+   return getLongName(pc.SEE_BIT);
 }
 
-void object::addShortDesc(LanguageE l, String& buf) {
-   short_desc.addString(l, buf);
-}
 
-void object::addInRoomDesc(String& new_val) {
-   in_room_desc.addString(English, new_val);
-}
+int object::getSacPoints(List<object*>& tmp_list, int sanity) {
+   int retval = 0;
+   int tmp = 0;
 
-void object::addInRoomDesc(LanguageE l, String& new_val) {
-   in_room_desc.addString(l, new_val);
-}
-
-void object::appendShortDesc(CSentryE msg) {
-   for (int i = 0; i<LS_PER_ENTRY; i++) {
-      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
-      short_desc.appendString(nm);
+   if (sanity > 100) {
+      mudlog << __PRETTY_FUNCTION__ << ": ERROR: busted sanity check.\n";
+      return 0;
    }
-}
 
-void object::appendShortDesc(String& msg) {
-   short_desc.appendString(English, msg);
-}
-
-void object::prependShortDesc(String& str) {
-   short_desc.prependString(English, str);
-}
-
-void object::appendInRoomDesc(CSentryE msg) {
-   for (int i = 0; i<LS_PER_ENTRY; i++) {
-      LString nm((LanguageE)(i), CSHandler::getString(msg, (LanguageE)(i)));
-      in_room_desc.appendString(nm);
+   if (obj_count(tmp_list, *this) == 0) {
+      tmp_list.append(this);
+      tmp = calcSacPoints();
+      if (tmp > 0)
+         retval += tmp;
    }
-}
-
-   /** Makes a copy of incoming data. */
-void object::addShortDesc(LString& new_val) {
-   short_desc.addLstring(new_val);
-}
-
-void object::addInRoomDesc(LString& new_val) {
-   in_room_desc.addLstring(new_val);
-}
-
-String* object::getShortDesc(critter* observer) {
-   if (detect(observer->getSeeBit(), vis_bit)) {
-      return short_desc.getString(observer->getLanguage());
-   }
-   else {
-      return &UNKNOWN;
-   }
-}
-
-String* object::getShortDesc(int see_bit) {
-   if (detect(see_bit, vis_bit)) {
-      return short_desc.getString(English);
-   }
-   else {
-      return &UNKNOWN;
-   }
-} 
-
-String* object::getInRoomDesc(critter* observer) {
-   if (detect(observer->getSeeBit(), vis_bit)) {
-      return in_room_desc.getString(observer->getLanguage());
-   }
-   else {
-      return &UNKNOWN;
-   }
-}
-
-object* object::haveObjNamed(int i_th, const String* name, critter* viewer) {
-   int foo = 0;
-   int c_bit = ~0;
-   LanguageE lang = English;
-   if (viewer) {
-      c_bit = viewer->getSeeBit();
-      lang = viewer->getLanguage();
-   }
-   return ::have_obj_named(inv, i_th, name, c_bit, *(getCurRoom()),
-                           foo, lang);
-}
-
-StatBonus* object::haveStatAffect(int stat_num) {
-   Cell<StatBonus*> cll(stat_affects);
-   StatBonus* ptr;
-
+   
+   Cell<object*> cll(inv);
+   object* ptr;
    while ((ptr = cll.next())) {
-      if (ptr->stat == stat_num)
-         return ptr;
+      tmp = ptr->getSacPoints(tmp_list, sanity + 1);
+      if (tmp > 0)
+         retval += tmp;
    }//while
-   return NULL;
-}//is_affected_by
+   return retval;
+}
 
+int object::calcSacPoints() {
+   int retval = 0;
+   Cell<stat_spell_cell*> cll(stat_affects);
+   stat_spell_cell* ptr;
+   while ((ptr = cll.next())) {
+      switch (ptr->stat_spell) {
+         // Only do select stat_affects, see critter.h comments for the
+         // definitions. (short_cur_stats) --Ben
+      case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 10:
+      case 23: case 24: case 25: case 35: case 36: case 37: case 38: case 39: {
+         retval += ptr->bonus_duration;
+      }
+      default:
+         ;//Do nothing
+      }//switch
+   }//while
+   return retval;
+}

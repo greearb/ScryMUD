@@ -1,5 +1,5 @@
-// $Id: batl_prc.h,v 1.6 1999/08/25 06:35:11 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
+// $Id: batl_prc.h,v 1.7 2001/03/29 03:02:28 eroper Exp $
+// $Revision: 1.7 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
 
 //
 //ScryMUD Server Code
@@ -36,10 +36,10 @@
 #include "object.h"
 #include "door.h"
 
-#define PROJECTILE_DEATH		0	//mode for alert_room_proc
+#define PROJECTILE_DEATH                0        //mode for alert_room_proc
 
 short is_tank(critter& pc);
-critter* find_weakest(SafeList<critter*>& lst);
+critter* find_weakest(List<critter*>& lst);
 
 void do_battle_proc(critter& pc);
 
@@ -52,7 +52,7 @@ void path_from_a_to_b(int a, int b, List<int>& path); //a,b are room numbers
 void track_to_kill(critter& vict, critter& agg);
 void a_summons_help_against_b(critter& agg, critter& vict);
 void alert_room_proc(int rm_num, int alert_type, critter& targ,
-		     critter& agg);
+                     critter& agg);
 void do_hunt_proc(critter& pc, int num_steps);
 
 ///**********************************************************************///

@@ -1,5 +1,5 @@
-// $Id: SkillSpell.h,v 1.10 1999/09/06 02:24:25 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/09/06 02:24:25 $
+// $Id: SkillSpell.h,v 1.11 2001/03/29 03:02:28 eroper Exp $
+// $Revision: 1.11 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
 
 //
 //ScryMUD Server Code
@@ -33,45 +33,18 @@
 #include <iostream.h>
 #include <rb_tree.h>
 #include <PtrArray.h>
-#include "Serialized.h"
-#include "lang_strings.h"
-#include "classes.h"
-
 
 ///***********************  skill spell  *****************************///
 
-#define NUMBER_OF_SKILL_SPELLS          400
+#define NUMBER_OF_SKILL_SPELLS          414
 
 class object;
 class critter;
 
-/** A pairing of Spell and it's Duration. */
-class SpellDuration {
-private:
-   static int _cnt;
-
-public:
-   int spell;
-   int duration;
-   
-   SpellDuration() : spell(0), duration(0) { _cnt++; }
-   SpellDuration(int ss, int bd) :
-         spell(ss), duration(bd) { _cnt++; }
-   SpellDuration(const SpellDuration& src) :
-         spell(src.spell),
-         duration(src.duration) { _cnt++; }
-   ~SpellDuration() { _cnt--; }
-
-   String toString() const ;
-
-   static int getInstanceCount() { return _cnt; }
-};//SpellDuration
-
-
-class SkillSpell : public Serialized {
+class SkillSpell {
  protected:
    short ss_num;
-   LStringCollection name;
+   String name;
    short min_level; //absolute minimum that ANYONE can learn it at
    short difficulty; //0-100, 100 is more difficult
    short mana_cost;  //baseline mana cost
@@ -80,19 +53,16 @@ class SkillSpell : public Serialized {
 
  public:
 
-   // zero will be the 'null' value.  This means you can never insert a
-   // zero into one of these lists.
    List<int> prereqs;  //spell/skill numbers of pre-requisites
    List<int> enables;  //spell/skill numbers it enables you to take
 
    SkillSpell();
-   SkillSpell(SkillSpell& source);
-   SkillSpell& operator=(SkillSpell& source);
-   virtual ~SkillSpell() { }
+   SkillSpell(const SkillSpell& source);
+   SkillSpell& operator=(const SkillSpell& source);
 
-   int read(istream& da_file, int read_all = TRUE);
-   int write(ostream& da_file);
-   void clear();
+   void Read(ifstream& da_file);
+   void Write(ofstream& da_file);
+   void Clear();
 
    String getHtml();
    String toString();
@@ -107,20 +77,16 @@ class SkillSpell : public Serialized {
 
    object* getScroll(); //can return NULL
    int getScrollNum();
-   String& getName(LanguageE lang) { return *(name.getString(lang)); }
-   String& getName() { return *(name.getString(English)); }
+   String& getName() { return name; }
    int getMinLevel() const { return min_level; }
    int getDifficulty() const { return difficulty; }
    int getManaCost() const { return mana_cost; }
    int getIdNum() const { return ss_num; }
    int getSSNum() const { return ss_num; }
-   int isInUse() { return (name.getString()->Strlen() > 0); }
+   int isInUse() const { return (name.Strlen() > 0); }
 
    int isValid();
    void normalize();
-
-   virtual LEtypeE getEntityType() { return LE_SKILL_SPELL; }
-
 };//SkillSpell class
 
 
@@ -140,8 +106,7 @@ class SSCollection {
    SkillSpell& getSS(int i);
 
    String& getSSDesc(int i) { return ss_descs[i]; }
-   const char* getNameForNum(int ss_number, critter* viewer);
-   const char* getNameForNum(int ss_number, LanguageE lang = English);
+   const char* getNameForNum(int ss_number);
    int getNumForName(const char* name);
    int getNumForName(const String& name);
    void read();
@@ -161,3 +126,4 @@ class SSCollection {
 
 
 #endif
+

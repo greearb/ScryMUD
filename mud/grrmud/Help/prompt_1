@@ -12,8 +12,10 @@ prompt with special letter combinations as follows:
 
 %h	current hit points	%H	maximum hit points
 %v	current mov points	%V	maximum mov points
-%m	current mana points	%M	maximum mov points
+%m	current mana points	%M	maximum mana points
 %%      a '%' symbol
+%N      Newline
+
 
 If you imput NORMAL as your prompt string you are set to the
 default, which is something similar to:  <<%hH %mM %vV >

@@ -1,0 +1,1508 @@
+4083		Room Number
+clearing center ~	names
+Center of clearing.
+~
+You stand in the center of a small clearing.  The woods surrounding it are very
+thick and the ground level of the forest is very dark.  Shadows and shapes
+drift in and out of sight deeper into the woods.  A small stream flows through
+the clearing.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4083 0 	cur_stats
+-1	affected_by
+326 -1	inv
+1 1 4088 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4086 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4091 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4085 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+23 308 -1	mobs
+End of Room
+4084		Room Number
+ne clearing ~	names
+A small clearing.
+~
+You are at the edge of the clearing.  Large, thick trees and foliage block your
+path.  There is a small path which leads into the woods to the northwest.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4084 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4086 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 7 4093 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4085 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4085		Room Number
+outside_gates ~	names
+Clearings of Tyro
+~
+You stand at the edge of a small clearing.  Green long grass fills the
+clearing, reaching up to your knees and swaying gently back and forth in the
+light breeze.  Various forms of small animals are visible within the clearing
+and the surrounding forest.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4085 52 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4083 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4084 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4090 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4194 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4086		Room Number
+north clearing ~	names
+A small clearing.
+~
+You stand at the edge of the clearing. You notice a small hut to the north,
+surrounded by dark looking trees. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4086 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4089 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4087 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4083 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4084 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4087		Room Number
+hut ~	names
+A small hut.
+~
+You stand inside of a small hut made from straw and wood.  A simple table and
+chair are located in the corner.  To the left, you see a small stone stove,
+slowly cooking some gruel.  To the east is the doorway, and the word "Welcome"
+is carved above it.  There is a sign on the wall.
+
+~
+32 23 21 -1  -:| bitfield |:-
+1   Start of KeywordPair
+sign note ~
+Welcome to Tyro's trainer.
+To see what you can practice, simply type: abilities
+To practice a skill or spell, type: practice 'name of skill'
+You must enclose the name of the skill or spell in single quotes if it is more
+than one word. Otherwise, you can just type: practice skill.
+
+~
+-1  No more KeywordPairs
+1024 1 4087 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4171 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4086 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+209 -1	mobs
+End of Room
+4088		Room Number
+east clearing ~	names
+A small clearing.
+~
+You stand at the edge of a small clearing. Poison ivy and thorns block further
+travel to the east. You can hear creatures running behind the trees off in a
+distance.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4088 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4089 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4092 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4083 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+304 -1	mobs
+End of Room
+4089		Room Number
+northeast clearing ~	names
+A small clearing.
+~
+You stand at the northeast corner of the small clearing. A small dirt road to
+the northeast leads into the woods. The small road disappears into the
+darkness.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4089 0 	cur_stats
+-1	affected_by
+470 -1	inv
+1 6 4102 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4088 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4086 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+306 -1	mobs
+End of Room
+4090		Room Number
+southwest clearing ~	names
+A small clearing.
+~
+You stand at the southwest corner of the small clearing. A rocky path leads
+into the dark woods to the southwest. Grasshoppers are seen jumping back and
+forth on the path.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4090 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4091 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4085 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4133 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+308 -1	mobs
+End of Room
+4091		Room Number
+south clearing ~	names
+A small clearing.
+~
+You stand at the southern edge of a small clearing. A large fallen tree blocks
+your path to the south. Small purple flowers grows out of the fallen giant.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4091 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4092 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4083 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4090 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+92 -1	mobs
+End of Room
+4092		Room Number
+southeast clearing ~	names
+A small clearing.
+~
+You stand at the southeast corner of the small clearing. You see some paw
+prints on the soft patch of mud in the corner. The grass here is pressed down
+like something has been laying there often.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4092 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4088 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 5 4135 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4091 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+23 -1	mobs
+End of Room
+4093		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+You stand on a small path, just inside the dark woods. Bushes nearby rustles
+now and then. Strange animal sounds are heard echoing from deep within the
+woods. The trees and bushes are so thick, you can't see very far.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4093 0 	cur_stats
+-1	affected_by
+328 -1	inv
+1 3 4094 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 6 4095 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 5 4084 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+308 -1	mobs
+End of Room
+4094		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+You stand at a dead end. Large boulders and trees surround you. There is no way
+out except south to where you came in from.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4094 0 	cur_stats
+-1	affected_by
+-1	inv
+1 4 4093 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+12 -1	mobs
+End of Room
+4095		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+You stand deeper in the woods, surrounded by large towering trees. Giant
+mushrooms grow along the path.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4095 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4096 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4093 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+268 -1	mobs
+End of Room
+4096		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+You stand now far into the woods.  Surrounding you are large, towering trees,
+their branches reaching up and masking your view of the sky.  Large mushrooms
+grow along the path and in the forest.
+
+~
+32 30 23 21 4 -1  -:| bitfield |:-
+1   Start of KeywordPair
+mushroom ~
+You see a small red mushroom.  You ponder at its color and come to the
+conclusion that its poisonous.  Therefore you should leave it alone.
+
+~
+-1  No more KeywordPairs
+1024 1 4096 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4097 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 6 4098 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4095 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4097		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+To the north and south you see only trees.  There is no path that can be seen
+in those directions.  Red smears are visible on some nearby boulders.  There is
+a note nailed to a nearby tree.
+
+~
+32 30 23 21 4 -1  -:| bitfield |:-
+1   Start of KeywordPair
+note sign ~
+The note reads, "To all adventurers: Beware of evil creatures!"
+
+~
+-1  No more KeywordPairs
+1024 1 4097 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4100 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4096 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4098		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+Molded boulders and mossy trees surround you. A grassy pathway can be seen to
+the north. Strange looking markings can be seen on nearby trees.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4098 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4099 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 5 4100 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4096 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4099		Room Number
+woods ~	names
+Within the forest of Tyro
+~
+A path leads off to the east, heading up a hill.  To the south lies the bulk of
+the forest of Tyro.  A clearing in the woods is visible to that direction,
+along with a few small wooden dwellings.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4099 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4104 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4098 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+12 14 -1	mobs
+End of Room
+4100		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+A soft rumbling sound is heard off to the southeast. The trees in this part of
+the woods seem much greener, and taller. Long green vines hangs down from the
+trees.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4100 0 	cur_stats
+-1	affected_by
+-1	inv
+1 7 4098 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4101 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4097 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+268 308 -1	mobs
+End of Room
+4101		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+Tall green trees sway gently in the breeze. A single beam of light shines down
+from a hole through the tree tops. Leaves crackle under your foot.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4101 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4100 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 5 4102 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4102		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+A loud thundering sound is heard to the east. Over the tree tops you notice
+some mist rising and falling. Sound of trickling water can be heard somewhere
+behind the wall of trees.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4102 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4103 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 7 4101 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4089 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+92 -1	mobs
+End of Room
+4103		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+The side of a steep mountain, and giant trees block your path. Small pebbles
+tumbles down the mountain every so often.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4103 0 	cur_stats
+-1	affected_by
+-1	inv
+1 4 4102 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+12 306 -1	mobs
+End of Room
+4104		Room Number
+woods ~	names
+On a small path
+~
+You stand on the edge of a hill which rises up to the north and east.  To the
+west and south a valley stretches out.  The sound of splashing water is
+discernable from a southeasterly direction.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4104 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4105 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4099 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+304 -1	mobs
+End of Room
+4105		Room Number
+woods ~	names
+On a small path
+~
+The path on which you are travelling is relatively narrow and is probably not
+fit for more than one person to traverse at a time.  The land continues to rise
+off to the north and east, and it dips suddenly down into a valley to the
+southwest.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4105 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4106 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4104 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4106		Room Number
+woods ~	names
+On a small path
+~
+A distant thundering sound, like that of a waterfall, is heard to the
+southeast, and in fact a small stream is visible splashing over a rocky
+overhang and into a small lake in that direction.  The path continues east
+towards the stream, and west through the forest.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4106 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4107 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4105 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+307 -1	mobs
+End of Room
+4107		Room Number
+woods ~	names
+On a small path
+~
+You stand at the top of the highlands, looking down at the dense forest below. 
+A small lake is visible to the south, inset into the rocky side of the hills,
+and the rest of the forest of Tyro is visible to the southeast.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4107 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4108 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4106 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4108		Room Number
+woods ~	names
+On a small path
+~
+You stand at a small stream which runs in from the northeast.  The stream
+itself is small, but it is almost knee-deep and the current is swift.  The
+water is clear and cold, and looks like it would be very fit to drink from!
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4108 0 	cur_stats
+-1	affected_by
+185 609 609 609 609 -1	inv
+1 5 4109 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4107 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4109		Room Number
+woods ~	names
+On a small path
+~
+You stand at the edge of the rocky highlands which reach out from the Creleon
+range.  A stream runs in from the mountains and crosses the path to the
+northwest, and the hill dips down into a valley to the south.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4109 0 	cur_stats
+-1	affected_by
+-1	inv
+1 7 4108 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4110 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+14 -1	mobs
+End of Room
+4110		Room Number
+woods ~	names
+On a small path
+~
+You are on the edge of a hill which extends up higher to the north.  The hill
+is the out-casting of the Creleon mountains that lie to the east, and a stream
+runs out of the mountain ranges and into the highlands, eventually feeding into
+a small lake which lies to the west.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4110 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4109 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4111 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+92 -1	mobs
+End of Room
+4111		Room Number
+woods ~	names
+On a small path
+~
+The thundering of a waterfall can be heard coming from the west, and a small
+rocky lake is visible in that direction.  The highlands which extend out from
+the Creleon mountains begin not far to the north with meager hill which reaches
+up out of the valley in which you now stand.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4111 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4110 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4112 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+304 -1	mobs
+End of Room
+4112		Room Number
+woods ~	names
+On a small path
+~
+The path continues straight to the north and south.  Through the trees to the
+west you can see a shallow lake which appears to be fed via a small stream
+running in from the mountains to the northeast.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4112 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4111 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4113 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4113		Room Number
+woods ~	names
+On a small path
+~
+The path continues to the north and south, cutting through the dense trees. 
+Another small path has been carved into the forest to the west and leads to the
+small lake visible through the trees.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4113 0 	cur_stats
+-1	affected_by
+609 609 -1	inv
+1 3 4112 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4114 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4115 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+12 -1	mobs
+End of Room
+4114		Room Number
+woods ~	names
+On a small path
+~
+A small lake is visible to the west, fed by a waterfall which runs in from the
+highlands and the Creleon range to the east.  The path continues to the north
+and south, leading up a hill to the north.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4114 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4113 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4116 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+307 -1	mobs
+End of Room
+4115		Room Number
+woods ~	names
+In a shallow lake
+~
+You have wandered through the woods and standing before you is a clear lake. 
+In the distance you can see a waterfall.  You hear its mighty crashing
+thunder-like sound hitting the lake.  The lake looks very refreshing and
+shallow.  You are standing between the edge of the woods and the edge of the
+lake.  There is a piece of paper stuck to a tree trunk.
+
+~
+32 25 23 21 15 10 4 -1  -:| bitfield |:-
+1   Start of KeywordPair
+paper ~
+Be careful of the waters.  Enter at your own risk.
+
+~
+-1  No more KeywordPairs
+1024 5 4115 0 	cur_stats
+-1	affected_by
+353 -1	inv
+1 1 4113 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4136 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 7 4143 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4138 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4139 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4144 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4116		Room Number
+woods ~	names
+On a small path
+~
+The thick foliage of the forest blocks your view eventually in all directions. 
+However, the sounds of splashing water can be heard coming from the northwest. 
+The path leads on to the north and south.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4116 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4114 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4117 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+304 -1	mobs
+End of Room
+4117		Room Number
+woods ~	names
+On a small path
+~
+The sounds of animals are prevalent here over the rustling of the trees and
+grasses.  Chirps of birds, howls of wolves, shrieks of smaller woodland animals
+are all discernable.  The path continues north and south.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4117 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4116 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4118 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4118		Room Number
+woods ~	names
+On a small path
+~
+The trees and foliage spread out thickly around you, making movement off of the
+path very difficult.  The path leads to the north and south.  To the north you
+can see that the path rises up a hill very far off in the distance.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4118 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4117 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4119 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4119		Room Number
+woods ~	names
+On a small path
+~
+A small lake is visible off to the northwest, its surface reflecting light. 
+The path continues to the north and south.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4119 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4118 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4120 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4120		Room Number
+woods ~	names
+On a small path
+~
+The air is noticeably humid here, and water drips off of leaves and branches
+occasionally.  An occasional forest critter runs across the path, darting
+quickly into the underbrush.  The path continues north and southeast.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4120 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4119 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4121 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4121		Room Number
+woods ~	names
+On a small path
+~
+The sound of splashing water is clearly discernable above the sounds of the
+animals and the wind here.  It appears to be coming from a northernly
+direction, and you can vaguely make out the reflection of water in that
+direction.  The path leads to the northeast and west.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4121 0 	cur_stats
+-1	affected_by
+-1	inv
+1 6 4120 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4122 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+268 307 -1	mobs
+End of Room
+4122		Room Number
+woods ~	names
+On a small path
+~
+A small stream runs across the path, moving towards the south.  Glancing to the
+north, you can see that the stream splits into two branches, and to the south
+you can see that it runs quite a distance to the south before eventually
+joining up again and disappearing out of sight.  The path continues east and
+west.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4122 0 	cur_stats
+-1	affected_by
+609 609 609 -1	inv
+1 1 4121 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4123 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+92 -1	mobs
+End of Room
+4123		Room Number
+woods ~	names
+On a small path
+~
+A large tree lies across the path here, partially obstructing the path.  To the
+north you can discern the sound of rushing water, but you cannot see its source
+through the trees.  The path continues east and west.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4123 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4122 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4124 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4124		Room Number
+woods ~	names
+On a small path
+~
+Flying insects buzz around your body, some barely large enough to see and some
+bigger than a coin.  There is a light fog, and water drips from leaves and
+branches as it condenses.  The path leads east and west.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4124 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4123 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4125 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+307 -1	mobs
+End of Room
+4125		Room Number
+woods ~	names
+On a small path
+~
+The sounds of animals are abundant, but their appearances are not.  A few small
+forest critters are seen scurrying along the ground, up tree trunks, and along
+branches, but larger animals like wolves are not to be seen.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4125 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4124 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4126 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4126		Room Number
+woods ~	names
+On a small path
+~
+The path makes a sharp turn and begins to head to the east.  The forest seems a
+bit greener in that direction, and long slender green vines are visible growing
+up the large trees.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4126 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4125 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4127 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4127		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+Large flat stones encircle this area. On each stone are strange carvings. The
+trees here are marked with different color paint. The path continues to the
+south and northeast.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4127 0 	cur_stats
+-1	affected_by
+-1	inv
+1 6 4132 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 7 4129 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4126 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4128		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+none
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4128 0 	cur_stats
+-1	affected_by
+-1	inv
+1 8 4127 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4129		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+Piles of bones and garbage cover this area. Seems someone uses this as their
+personal garbage dump. Twigs and leaves are used to cover some of it up. Large
+black beetles runs in and out of the piles.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4129 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4131 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4130 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 5 4127 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+268 268 -1	mobs
+End of Room
+4130		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+Small leather straps tied to various animal skulls hangs from the tree
+branches. A clanking sound can be heard each time a breeze blows by.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4130 0 	cur_stats
+-1	affected_by
+-1	inv
+1 7 4133 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4129 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+306 306 -1	mobs
+End of Room
+4131		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+The grass in this area is finely cut. Small tree stumps are carved into what
+looks chairs. The skin of a boar is seen stretched across some wooden frames.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4131 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4132 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4129 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4132		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+A musky smell is in the air. The damp woods creates a humid atmosphere. As you
+walk foot prints are created in the soft dirt. Rustling sounds of leaves is
+heard to the west.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4132 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4134 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4127 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4131 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4133		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+You stand at the edge of the dark woods. To the northeast you can see a small
+clearing. The path you stand on continues to the south and southeast.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4133 0 	cur_stats
+-1	affected_by
+-1	inv
+1 6 4090 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4145 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 5 4130 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+268 -1	mobs
+End of Room
+4134		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+You stand along a narrow dirt path, covered with small smooth pebbles. Large
+pines and berry bushes shades the path. The path continues to the northwest and
+south.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4134 0 	cur_stats
+-1	affected_by
+-1	inv
+1 6 4135 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4132 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4135		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+You stand just inside the dark wooded area. To the northwest you can see a
+small clearing, with various animals roaming around. Strange sounds can be
+heard echoing throughout the woods.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4135 0 	cur_stats
+-1	affected_by
+-1	inv
+1 7 4092 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4137 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4134 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+92 12 -1	mobs
+End of Room
+4136		Room Number
+woods ~	names
+In a shallow lake
+~
+You are at the northeast corner of the lake, near the waterfall.  The northern
+and eastern borders of the lake are created by a small sandstone cliff - part
+of the extension of the Creleons - which has been worn down and washed away to
+create this small inlet, within which lies the lake.  The waterfall crashes
+down over the rocks to the north, falling into the lake and splashing water
+everywhere.  The area behind the waterfall is dark and indented into the rock
+for at least a small distance.
+
+~
+23 21 4 -1  -:| bitfield |:-
+1024 5 4136 0 	cur_stats
+-1	affected_by
+353 -1	inv
+1 4 4115 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4144 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 68 4146 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4143 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4137		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+You stand at a dead end. At the edge of the shadows you see a pit of quick
+sand. A few articles of clothing is seen floating on top of the sand.
+
+~
+23 21 4 -1  -:| bitfield |:-
+1024 1 4137 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4135 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4138		Room Number
+woods ~	names
+In a shallow lake
+~
+You are in the southeastern corner of the lake.  The waterfall thunders into
+the lake off to the north, and the sandstone cliff creating the northern border
+of the lake is visible in that direction.
+
+~
+23 21 4 -1  -:| bitfield |:-
+1024 5 4138 0 	cur_stats
+-1	affected_by
+353 -1	inv
+1 3 4115 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 7 4144 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4139 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4139		Room Number
+woods ~	names
+In a shallow lake
+~
+You are at the southern end of the lake, in very calm water.  A small stream
+leads slowly out of the lake in a southernly direction.  Lily pads grow around
+you, and numerous fish are visible hiding below them.
+
+~
+23 21 15 4 -1  -:| bitfield |:-
+1024 5 4139 0 	cur_stats
+-1	affected_by
+353 -1	inv
+1 1 4138 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4144 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 6 4115 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 7 4141 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4140 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4140		Room Number
+woods ~	names
+In a shallow lake
+~
+You are at the southwestern end of the lake, in water much calmer than that to
+the north.  Lily pads grow within the crystal-clear water around you and small
+fish, turtles, and frogs can be seen swimming about beneath them.  To the east,
+a small stream leads out of the lake.
+
+~
+23 21 15 4 -1  -:| bitfield |:-
+1024 5 4140 0 	cur_stats
+-1	affected_by
+353 -1	inv
+1 1 4139 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4141 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 6 4144 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4141		Room Number
+woods ~	names
+In a shallow lake
+~
+You are at the western end of the lake, near the rocky shore.  The trees beyond
+the shore are immediately very thick and it would be hard to pass through them.
+ The bottom of the lake is also made of rough rocks and pebbles and is easy to
+walk on, other than stumbling over larger pieces of rock.
+
+~
+23 21 15 4 -1  -:| bitfield |:-
+1024 5 4141 0 	cur_stats
+-1	affected_by
+353 -1	inv
+1 1 4144 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4142 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 6 4143 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4140 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 5 4139 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4142		Room Number
+woods ~	names
+In a shallow lake
+~
+Small fish can be seen darting about underneath the water's surface.  The
+western end of the lake is also partially formed by a sandstone barrier like
+the northern end, but it drops off quickly to nothing more than a rocky shore
+surrounded by trees.
+
+~
+30 23 21 15 4 -1  -:| bitfield |:-
+1024 5 4142 0 	cur_stats
+-1	affected_by
+353 -1	inv
+1 1 4143 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4141 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 5 4144 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4143		Room Number
+woods ~	names
+In a shallow lake
+~
+You are at the northern end of the lake, near the low sandstone cliff which
+borders it.  The waterfall lies to the east, its mighty thundering noise
+drowning out all other sounds.  The lake is not more than waist-deep here, and
+because its bottom is made of rock, it is very easy to walk in.
+
+~
+30 23 21 15 4 -1  -:| bitfield |:-
+1024 5 4143 0 	cur_stats
+-1	affected_by
+353 -1	inv
+1 1 4136 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4144 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 5 4115 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4141 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4142 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4144		Room Number
+woods ~	names
+In a shallow lake
+~
+You are in the middle of the lake, still no more than waist-deep in the water. 
+Off to the northeast the waterfall thunders over the rocks and into the lake,
+creating quite a scene.
+
+~
+23 21 15 4 -1  -:| bitfield |:-
+1024 5 4144 0 	cur_stats
+-1	affected_by
+353 -1	inv
+1 1 4115 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4143 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 6 4136 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 7 4142 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4139 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 5 4138 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4140 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4141 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4145		Room Number
+woods ~	names
+Dark woods of Tyro.
+~
+You stand at the edge of a large pit. Peering down you can only see darkness.
+The pit seems to be sucking in air into it. Small bugs are seen sucked into the
+dark emptiness.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 1 4145 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4133 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+304 -1	mobs
+End of Room
+4146		Room Number
+woods ~	names
+Within a cave
+~
+You step through the waterfall and find yourself within a cave within the rock.
+ The floor of the cave is above the water level, though it is still wet from
+the splashing of the waterfall.  The cave itself is more like a tunnel - it is
+tall and narrow, and it seems to lead deeper to the north.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 5 4146 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4147 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4136 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4147		Room Number
+woods ~	names
+Within a cave
+~
+The floor of the cave seems to slant slowly downwards, and you are soon
+knee-deep in water.  There doesn't appear to be any movement to the water, and
+the cave soon stops its descent putting you at a level waist-deep in the water.
+ The water is very murky and it is hard to see what is under it.  The tunnel
+curves to the northeast.
+
+~
+23 21 14 -1  -:| bitfield |:-
+1025 5 4147 0 	cur_stats
+-1	affected_by
+-1	inv
+1 6 4148 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4146 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4148		Room Number
+woods ~	names
+Within a cave
+~
+The floor of the tunnel ascends a bit and you are soon on dry ground again. 
+The silence in the tunnel is eerie - the distant rumbling of the waterfall is
+heard to the southwest, but other than that there is no sound but the echoes of
+your movements.  The tunnel heads to the east.
+
+~
+23 21 14 -1  -:| bitfield |:-
+1025 5 4148 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4149 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4147 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4149		Room Number
+woods ~	names
+Within a cave
+~
+The tunnel suddenly opens up into a large cave, glittering with treasure!  It
+looks as if someone has been hiding valuable items here and you have stumbled
+upon their stash!
+
+~
+23 21 14 -1  -:| bitfield |:-
+1025 5 4149 0 	cur_stats
+-1	affected_by
+583 582 582 581 288 406 584 -1	inv
+1 2 4148 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4170		Room Number
+woods ~	names
+A dark cave.
+~
+To the west you can see a wide stalagmite.  It must of took many years for this
+to form.  The ceiling is getting lower and you can feel water dripping on your
+head.
+
+~
+30 26 25 23 21 14 -1  -:| bitfield |:-
+1025 5 4170 0 	cur_stats
+-1	affected_by
+-1	inv
+1 7 4169 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4166 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4171		Room Number
+store ~	names
+General Store
+~
+You stand in a small shop.  Weapons, armor, and other oddities fill the
+shelves.  The smell of wood and leather is in the air.  There is a sign nailed
+to the wall.
+
+~
+32 25 23 21 -1  -:| bitfield |:-
+1   Start of KeywordPair
+sign ~
+Welcome to Tyro's general store.  We have what you need.
+To get a list of items, type 'list'.  To buy something, type 'buy item'.
+
+~
+-1  No more KeywordPairs
+1024 1 4171 0 	cur_stats
+-1	affected_by
+-1	inv
+1 2 4087 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+167 -1	mobs
+End of Room
+
+
+-1		END OF FILE MARKER

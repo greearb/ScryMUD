@@ -9,7 +9,7 @@ NOTE:  You have to suround multi-word skills/spells with single
 
 Syntax:  practice ['spell/skill'] <<<<i_th> [teacher]>
 
-Example:  practice illumminate		Teaches you illuminate
+Example:  practice illuminate		Teaches you illuminate
 	  practice			Same as 'abilities'.
 <color=red>
 See Also:  abilities, score

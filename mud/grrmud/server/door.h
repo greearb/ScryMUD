@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.22 1999/09/06 02:24:28 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
+// $Id: door.h,v 1.23 2001/03/29 03:02:31 eroper Exp $
+// $Revision: 1.23 $  $Author: eroper $ $Date: 2001/03/29 03:02:31 $
 
 //
 //ScryMUD Server Code
@@ -38,164 +38,159 @@
 
 class room;
 
-class door_data : virtual public Entity, virtual public Closable {
-private:
+class door_data {
+protected:
    static int _cnt;
 
 public:
+   PtrList<String> names; //the direction e, w... will be first 
+   String long_desc;
+
+   int vis_bit;
+   int door_num; // the vnum of the door
+   int token_num;
+   int key_num;
+   int in_zone; //owner zone
+
+   // When modifying this, modify DOOR_DATA_FLAGS_NAMES in const.cc
+   bitfield door_data_flags;
+              // 0 open exit, basically no door
+              // 1 is_mag_lockable, 2 is_closed, 3 is_locked, 4 is_pckabl,
+              // 5 is_lockable, 6 mag_locked (spell only can open it)
+              // 7 is_destructable, 8 is_closeable, 9 is_flippable
+              // 10 in_use, 11 is_unopenable (by players, auto only)
+              // 12 is_vehicle_exit, 13 is_secret, 14 is_blocked,
+              // 15 !complete 16 secret_when_open_too, 17 consume_key
+              // 18 !passdoor
+
+   int isOpen() const { return !(door_data_flags.get(2)); }
+   int canClose() const { return canOpen(); }
+   int isVehicleExit() const { return door_data_flags.get(12); }
+   int canOpen() const { return (!door_data_flags.get(11) 
+                                  && door_data_flags.get(8)); }
+   int canLock() const { return door_data_flags.get(5); }
+
+   int isClosed() const { return door_data_flags.get(2); }
+   int isLocked() const { return door_data_flags.get(3); }
+   int isMagLocked() const { return door_data_flags.get(6); }
+   int isSecret() const { 
+      return (door_data_flags.get(13) || door_data_flags.get(16)); }
+   int isInUse() const { return door_data_flags.get(10); }
+   int isInZone(int zn) { return zn == in_zone; }
+   int isNotComplete() const { return door_data_flags.get(15); }
+   int isSecretWhenOpen()  const { return door_data_flags.get(16); }
+   int consumesKey() const { return door_data_flags.get(17); }
+   int isNoPassdoor() const { return door_data_flags.get(18); }
+
+   void setComplete() { door_data_flags.turn_off(15); }
+   void setNotComplete() { door_data_flags.turn_on(15); }
+   void setIdNum(int i) { door_num = i; }
+   int getIdNum() const { return door_num; }
+
+   int getZoneNum() const { return in_zone; }
+   int getKeyNum() const { return key_num; }
+   int getTokenNum() const { return token_num; }
+
    door_data (); //default constructor
    door_data(const door_data& source);  //copy constructor
-   door_data& operator=(door_data& source);
-   virtual ~door_data ();
+   door_data& operator=(const door_data& source);
+   ~door_data ();
 
-   void clear();
-   int read(istream& da_file, int read_all = TRUE);
-   int write(ostream& da_file);
+   void close() { door_data_flags.turn_on(2); }
+   void open() { door_data_flags.turn_off(2); }
+   void lock() { close(); door_data_flags.turn_on(3); }
+   void unlock() { door_data_flags.turn_off(3); }
+
+   void Clear();
+   void dbRead(int door_num);
+   void fileRead(ifstream& da_file);
+   void Write(ofstream& da_file);
    static int getInstanceCount() { return _cnt; }
-
-   virtual String* getName(int c_bit) { return getName(c_bit, English, 0); }
-   virtual String* getName(critter* viewer, int dir);
-   virtual String* getName(critter* viewer);
-   virtual String* getName(int c_bit, LanguageE lang, int dest);
-   
-   String* getDirection(int dest, int c_bit = ~0, LanguageE lang = English);
-   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
-
-   virtual SafeList<object*>& getInv();
-
-   virtual LEtypeE getEntityType() { return LE_DOOR_DATA; }
-
 }; //door_data
+
  
  
  
 //*********************** door **************************//
  
 class critter;
-
-/** Door is strange in that it contains much of it's information
- * in the door_data class, which may be shared by several doors.
- */
-class door : virtual public ContainedObject, virtual public Serialized {
-private:
+ 
+class door {
+protected:
    static int _cnt;
 
-protected:
+public:
    door_data* dr_data;  
    int destination;
    short distance;
+   PtrList<stat_spell_cell> affected_by;
    critter* crit_blocking;
    int ticks_till_disolve; //for temp doors
-   PtrList<SpellDuration> affected_by;
-   Entity* container;
-
-public:
+   int in_room;
    
    door();
-   door(door& source); //copy constructor
-   door& operator= (door& source);
+   door(const door& source); //copy constructor
+   door& operator= (const door& source);
    ~door();
 
-   virtual LEtypeE getEntityType() { return LE_DOOR; }
-   void clear();
-   int write(ostream& da_file);
-   int read(istream& da_file, int read_all = TRUE);
-   virtual String* getName(critter* viewer) {
-      return dr_data->getName(viewer, destination);
-   }
-   virtual String* getName(int c_bit = ~0) {
-      return dr_data->getName(c_bit);
-   }
-   virtual int nameIsSecret(const String* name);
-   virtual const char* getAbrevDir();
+   void Clear();
+   void Write(ofstream& da_file);
+   void Read(ifstream& da_file);
 
-   virtual void setContainer(Entity* cont) { container = cont; }
-   Entity* getContainer() { return container; }
-
-   virtual door_data* getDrData() { return dr_data; }
-   void setDrData(door_data* dr) { dr_data = dr; }
-
-   critter* getCritBlocking() const { return crit_blocking; }
-   void setCritBlocking(critter* pc) { crit_blocking = pc; }
-   int getDestination() const { return destination; }
-   void setDestination(int val) { destination = val; }
-   int getDistance() const { return distance; }
-   void setDistance(int val) { distance = val; }
-
-   virtual PtrList<SpellDuration>& getAffectedBy() { return affected_by; }
-
-   virtual SpellDuration* isAffectedBy(int spell_num);
-   virtual int isAffected() { return !(affected_by.isEmpty()); }
-   virtual int affectedByToString(critter* viewer, String& rslt);
-   virtual void addAffectedBy(SpellDuration* ptr) { affected_by.prepend(ptr); }
-
-   void setTicksTillDisolve(int val) { ticks_till_disolve = val; }
-   int getTicksTillDisolve() const { return ticks_till_disolve; }
-   int decrementTicksTillDisolve() { return --ticks_till_disolve; }
-
-   int getVisBit() const { if (dr_data) return dr_data->getVisBit(); return 0; }
-   int isInUse() const { return (dr_data && dr_data->isInUse()); }
+   int getVisBit() const { if (dr_data) return dr_data->vis_bit; return 0; }
    int isOpen() const { return (dr_data && dr_data->isOpen()); }
    int isSecret() const { return dr_data && dr_data->isSecret(); }
    int isClosed() const { return dr_data && dr_data->isClosed(); }
    int canOpen() const { return dr_data && dr_data->canOpen(); }
    int isLocked() const { return dr_data && dr_data->isLocked(); }
-   int isBlocked() const { return dr_data && dr_data->isBlocked(); }
    int isMagLocked() const { return dr_data && dr_data->isMagLocked(); }
    int isVehicleExit() const { return dr_data && dr_data->isVehicleExit(); }
    int canClose() const { return canOpen(); }
    int isSecretWhenOpen() const { return dr_data && dr_data->isSecretWhenOpen(); }
    int consumesKey() const { return dr_data && dr_data->consumesKey(); }
-   int isNoPassdoor() const { return dr_data && dr_data->isNoPassdoor(); }
-   int isDestructable() const { return dr_data && dr_data->isDestructable(); }
-   int isFlippable() const { return dr_data && dr_data->isFlippable(); }
-   int isPickable() const { return dr_data && dr_data->isPickable(); }
-
-   virtual int flipFlag(int fnum) { return dr_data && dr_data->flipFlag(fnum); }
+   int isNoPassdoor() const { return (dr_data && dr_data->isNoPassdoor()); }
+   int getIdNum() const { if (dr_data) return dr_data->getIdNum(); return 0; }
 
    void lock() { if (dr_data) dr_data->lock(); }
    void unlock() { if (dr_data) dr_data->unlock(); }
    void open() { if (dr_data) dr_data->open(); }
    void close() { if (dr_data) dr_data->close(); }
 
-   void setDestructable(int val) { dr_data->setDestructable(val); }
-   void setLockable(int val) { dr_data->setLockable(val); }
-   void setBlocked(int val) { dr_data->setBlocked(val); }
-   void setLocked(int val) { dr_data->setLocked(val); }
-
-   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
-
-   int setKey(int nkey) { return dr_data && dr_data->setKey(nkey); }
-   int setToken(int nkey) { return dr_data && dr_data->setToken(nkey); }
-
    int getKeyNum() const {
       if (dr_data) 
-         return dr_data->getKey();
+         return dr_data->getKeyNum();
       return 0;
    }
 
    int getTokenNum() const {
       if (dr_data) 
-         return dr_data->getToken();
+         return dr_data->getTokenNum();
       return 0;
    }
 
-   int getCurRoomNum();
+   stat_spell_cell* isAffectedBy(int spell_num);
 
    room* getDestRoom();
    String* getDirection();
 
    ///******************  Static Functions ***************************///
-   /** Viewer can be null. */
-   static door* findDoor(SafePtrList<door> &lst, const int i_th,
-                         const String* name, int& count_sofar,
-                         critter* viewer);
+   static door* findDoor(const PtrList<door> &lst, const int i_th,
+                         const String* name, const int see_bit,
+                         const room& rm, int& count_sofar);
 
-   /** Viewer can be null. */
-   static door* findDoor(SafePtrList<door> &lst, const int i_th,
-                         const String* name, critter* viewer);
+   static door* findDoor(const PtrList<door> &lst, const int i_th,
+                         const String* name, const int see_bit,
+                         const room& rm);
 
-   static door* findDoorByDest(SafePtrList<door>& lst, int dest_room);
+   static door* findDoor(const PtrList<door>& lst, const int i_th,
+                         const String* name, const int see_bit,
+                         const int rm_vis_bit);
+
+   static door* findDoor(const PtrList<door>& lst, const int i_th,
+                         const String* name, const int see_bit,
+                         const int rm_vis_bit, int& count_sofar);
+
+   static door* findDoorByDest(const PtrList<door>& lst, int dest_room);
 
    static int getInstanceCount() { return _cnt; }
 };//struct door   

@@ -2,7 +2,8 @@
 
 This is a very powerful skill.  If you are sneaky enough, and have the
 right weapon, you may gain a huge advantage over an advesary who is not
-expecting to be attacked.
+expecting to be attacked.  Note that you can't backstab with just any old
+weapon, it has to be specially designed to pierce.
 
 Syntax:  bs <<i_th> [victim]
 	 backstab <<i_th> [victim]

@@ -1,8 +1,10 @@
 <help battle consider>
 
-This command allows you to get some idea of what a oponent
+This command allows you to get some idea of what an opponent
 might be able to do to you.  This is somewhat obvious to
-many players, and they may not take your probing lightly!
+many players, and they may not take your probing lightly!  It
+is known to be unreliable, but it may offer you good information
+at times!!
 
 Syntax:  consider <<i_th> [critter]
 

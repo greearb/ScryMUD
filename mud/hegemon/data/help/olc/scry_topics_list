@@ -5,6 +5,7 @@ add_kname
 add_mname
 add_mob_script
 add_oname
+add_path
 add_perm_inv
 add_proc
 add_stat_affect

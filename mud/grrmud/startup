@@ -13,10 +13,10 @@ fi
 
 while ( : ) do
 
-    #  Don't let us use more than 20 MEG, if we do, it's probably a
+    #  Don't let us use more than 30 MEG, if we do, it's probably a
     #  memory leak.  If the database ever gets huge, this will need to
     #  be raised.
-    ulimit -d 20000
+    ulimit -d 30000
 
     echo "Starting ScryMUD at: `date`"
 

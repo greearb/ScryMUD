@@ -1,5 +1,5 @@
-// $Id: zone.cc,v 1.5 1999/09/07 07:00:27 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
+// $Id: zone.cc,v 1.6 2001/03/29 03:02:36 eroper Exp $
+// $Revision: 1.6 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
 
 //
 //ScryMUD Server Code
@@ -22,6 +22,9 @@
 // To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
 //                                     greearb@agcs.com
 //
+#ifdef USEMYSQL
+#include "mysql/mysql.h"
+#endif
 
 #include "zone.h"
 #include "const.h"
@@ -39,8 +42,58 @@ ZoneList& ZoneList::instance() {
    return self;
 }
 
-
 void ZoneList::readSelf() {
+#ifdef USEMYSQL
+   if (config.useMySQL)
+      dbReadSelf();
+   else
+#endif
+      fileReadSelf();
+}
+
+#ifdef USEMYSQL
+void ZoneList::dbReadSelf() {
+   long i;
+   MYSQL_RES* result;
+   MYSQL_ROW row;
+   String query="select ZONE_NUM from Zones";
+
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In ZoneList::dbReadSelf():\n";
+            mudlog << "Eror retrieving query results: " << mysql_error(database)
+                   << endl;
+         }
+         return;
+      }
+      while ((row=mysql_fetch_row(result))) {
+         i=atol(row[0]);
+         if ((i >= 0) && (i < NUMBER_OF_ZONES)) {
+            add(i);
+         }
+         else {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "In ZoneList::dbReadSelf():\n";
+               mudlog << "Bad zone number " << i << " in Zones table. You may\n"
+                      << "need to increase NUMBER_OF_ZONES in const.h, then\n"
+                      << "recompile.\n";
+               return;
+            }
+         }
+      }
+      mysql_free_result(result);
+   }
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In ZoneList::dbReadSelf():\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+   }
+}
+#endif
+
+void ZoneList::fileReadSelf() {
    ifstream dafile("./World/ENABLED_ZONES");
    int i;
    if (dafile) {
@@ -55,6 +108,12 @@ void ZoneList::readSelf() {
 }//read()
 
 void ZoneList::writeSelf() {
+   // In theory, writing the Zones collection will take care of this
+   // in the MySQL database.
+   fileWriteSelf();
+}
+
+void ZoneList::fileWriteSelf() {
    ofstream dafile("./World/ENABLED_ZONES");
    Cell<int*> cll(nums);
    int* ptr;
@@ -176,11 +235,11 @@ void ZoneCollection::readSelf() {
    
    while ((k != -1) && zfile) { //then read it in.
       if (!check_l_range(k, 0, NUMBER_OF_ZONES, mob_list[0], FALSE)) {
-         mudlog.log(ERR, "ERROR:  zone number is out of range, fatal\n");
+         mudlog.log(ERROR, "ERROR:  zone number is out of range, fatal\n");
          do_shutdown = TRUE;
          exit(100);
       }//if
-      zone_list[k].read(zfile, k);
+      zone_list[k].Read(zfile, k);
       zfile >> k;
       zfile.getline(buf, 80);
    }//while
@@ -193,12 +252,13 @@ void ZoneCollection::doRegeneration() { //for all areas that need it.
       if (zone_list.elementAtNoCreate(i)) {
          if (zone_list[i].isInUse()) {
             zone_list[i].decrementTicksTillRegen();
-            if ((zone_list[i].getTicksTillRegen() <= 0) &&
-                (!room_list[zone_list[i].getEndRoomNum()].isZlocked())) {
-               update_objects(i, FALSE);
-               //            log("Objects updated.\n");
-               update_critters(i, FALSE);
-               update_zone(i, FALSE);
+            if (zone_list[i].getTicksTillRegen() <= 0) {
+               if (!room_list[zone_list[i].getEndRoomNum()].isZlocked()) {
+                  update_objects(i, FALSE);
+                  //            log("Objects updated.\n");
+                  update_critters(i, FALSE);
+                  update_zone(i, FALSE);
+               }
                zone_list[i].resetTicksTillRegen();
             }//if
          }//if
@@ -303,19 +363,37 @@ void ZoneCollection::writeWorld(critter& pc) {
 
 /* helper function, not directly called by player */
 void ZoneCollection::writeSelf() {
+#ifdef USEMYSQL
+   if (config.useMySQL)
+      dbWriteSelf();
+   else
+#endif
+      fileWriteSelf();
+}
+
+void ZoneCollection::fileWriteSelf() {
 
    ofstream dafile("./World/ZONE_FILE");
 
    for (int i = 0; i<NUMBER_OF_ZONES; i++) {
       if (zone_list[i].isInUse()) {
          dafile << i << "\tBegin of zone\n";
-	 zone_list[i].write(dafile);
+         zone_list[i].fileWrite(dafile);
       }//if
    }//for
 
-   dafile << "-1		END OF ZONE FILE\n" << flush;
+   dafile << "-1                END OF ZONE FILE\n" << flush;
 }//write_zone_list
 
+#ifdef USEMYSQL
+void ZoneCollection::dbWriteSelf() {
+   for (int i = 0; i<NUMBER_OF_ZONES; i++) {
+      if (zone_list[i].isInUse()) {
+         zone_list[i].dbWrite();
+      }
+   }
+}
+#endif
 
 void ZoneCollection::createNeatoFiles() {
    String buf(100);
@@ -334,7 +412,7 @@ void ZoneCollection::createNewZone(critter& pc, int num_ticks, int num_rooms,
                                    const String& name) {
    String buf(100);
 
-   	/* find the starting room */
+           /* find the starting room */
    int start = 0, i = 0;
    for (; i<NUMBER_OF_ZONES; i++) {
       if (zone_list[i].getEndRoomNum() > start) {
@@ -353,7 +431,7 @@ void ZoneCollection::createNewZone(critter& pc, int num_ticks, int num_rooms,
    int free_zone = -1;
    for (i = 0; i< NUMBER_OF_ZONES; i++) {
       if (!zone_list[i].isInUse()) {
-	 free_zone = i;
+         free_zone = i;
          break;
       }//if
    }//for
@@ -368,7 +446,7 @@ void ZoneCollection::createNewZone(critter& pc, int num_ticks, int num_rooms,
    if (num_ticks < 10)
       num_ticks = 10;
 
-		/* good to go */
+                /* good to go */
    zone_list[free_zone].setName(name);
    zone_list[free_zone].setTicksInRegenCycle(num_ticks);
    zone_list[free_zone].setTicksTillRegen(num_ticks);
@@ -436,7 +514,7 @@ String zone::createNeatoMapFile() {
 
    // This will create lots of duplicate entries, but the
    // neato program should deal with it easier than I can!
-   SCell<door*> cll;
+   Cell<door*> cll;
    door* ptr;
 
    String cur_room_name(50);
@@ -447,7 +525,7 @@ String zone::createNeatoMapFile() {
 
    for (int i = begin_room_num; i <= end_room_num; i++) {
       if (room_list.elementAtNoCreate(i)) {
-         Sprintf(cur_room_name, "[%i] %S", i, room_list[i].getShortDesc());
+         Sprintf(cur_room_name, "[%i] %S", i, &(room_list[i].short_desc));
          //spaceToNewlines(cur_room_name);
 
          room_list[i].doors.head(cll);
@@ -457,7 +535,7 @@ String zone::createNeatoMapFile() {
             if (ptr->getDestRoom()) {
                Sprintf(dest_room_name, "[%i] %S",
                        ptr->getDestRoom()->getIdNum(),
-                       ptr->getDestRoom()->getShortDesc());
+                       &(ptr->getDestRoom()->short_desc));
                //spaceToNewlines(dest_room_name);
                
                if (ptr->getDestRoom()->getZoneNum() != zone_num) {
@@ -512,9 +590,9 @@ int zone::removeOwner(const String& char_name) {
    while ((ptr = cll.next())) {
       if (strcasecmp(*ptr, char_name) == 0) {
          String* ptr2 = ptr;
-	 ptr = owners.lose(cll);
-	 delete ptr2;
-	 ptr2 = NULL;
+         ptr = owners.lose(cll);
+         delete ptr2;
+         ptr2 = NULL;
          return TRUE;
       }//if
    }//while
@@ -562,7 +640,7 @@ int zone::isOwnedBy(critter& pc) {
       String* ptr;
       
       while ((ptr = cll.next())) {
-         if (strcasecmp(*ptr, *(pc.getFirstName())) == 0)
+         if (strcasecmp(*ptr, *(Top(pc.names))) == 0)
             return TRUE;
       }//wile
    }//if
@@ -572,11 +650,11 @@ int zone::isOwnedBy(critter& pc) {
 
 
 /** znum will be the number for this zone. */
-int zone::read(istream& dafile, int znum) {
+int zone::Read(ifstream& dafile, int znum) {
    mudlog.log(DBG, "In zone::read.\n");
    char buf[81];
 
-   clear();
+   Clear();
 
    if ((znum < 0) || (znum > NUMBER_OF_ZONES)) {
       mudlog << "ERROR:  znum is out of range: " << znum << endl;
@@ -587,30 +665,33 @@ int zone::read(istream& dafile, int znum) {
    }
 
    if (!dafile) {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  da_file FALSE in obj read." << endl;
       }
       return FALSE;
    }
 
-		/* zone_name */
+                /* zone_name */
    dafile.getline(buf, 80);
    zone_name = buf;
-	
-		/* numeric data */
+        
+                /* numeric data */
    dafile >> ticks_in_regen_cycle >> ticks_till_regen >>
-       	     begin_room_num >> end_room_num;
+                    begin_room_num >> end_room_num;
+   if ((ticks_till_regen < 0) || (ticks_till_regen > ticks_in_regen_cycle)) {
+      ticks_till_regen = ticks_in_regen_cycle;
+   }
    dafile.getline(buf, 80);  //clear junk
 
    //mudlog.log(DBG, "About to read zone_flags.\n");
-   zone_flags.read(dafile);
+   zone_flags.Read(dafile);
    //mudlog.log(DBG, "read em.\n");
 
    short test = TRUE;
    while (test) {
 
       if (!dafile) {
-         if (mudlog.ofLevel(ERR)) {
+         if (mudlog.ofLevel(ERROR)) {
             mudlog << "ERROR:  da_file FALSE in zone read." << endl;
          }
          return FALSE;
@@ -633,33 +714,103 @@ int zone::read(istream& dafile, int znum) {
 }//Read
 
 
-int zone::write(ostream& dafile) {
+int zone::fileWrite(ofstream& dafile) {
    Cell<String*> st_cell(owners);
    String* st_ptr;
 
    dafile << zone_name << endl;
    dafile << ticks_in_regen_cycle << " " << ticks_till_regen << " "
-	  << begin_room_num << " " << end_room_num << endl;
+          << begin_room_num << " " << end_room_num << endl;
 
    int len = 0;
 
-   zone_flags.write(dafile);
+   zone_flags.Write(dafile);
 
    while ((st_ptr = st_cell.next())) {
       len += st_ptr->Strlen() + 1;
       if (len > 79) {
-	 dafile << endl;
-	 len = 0;
+         dafile << endl;
+         len = 0;
       }//if
       dafile << *st_ptr << " ";
    }//while
    dafile << "~" << "\towners\n\n";
-   return TRUE;
-}//Write
+   return true;
+}//fileWrite
 
-void zone::clear() {
-   zone_name.clear();
-   zone_flags.clear();
+#ifdef USEMYSQL
+int zone::dbWrite() {
+   Cell<String*> st_cell(owners);
+   String query;
+   String* st_ptr;
+
+   query = "DELETE FROM Zones WHERE ZONE_NUM = ";
+   query += zone_num;
+
+   if (mysql_real_query(database, query, strlen(query)) !=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In zone::dbWrite():\n";
+         mudlog << "Eror executing query: " << mysql_error(database)
+                << endl;
+      }
+      return FALSE;
+   }
+
+   query = "DELETE FROM ZoneOwners WHERE ZONE_NUM = ";
+   query += zone_num;
+
+   if (mysql_real_query(database, query, strlen(query)) !=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In zone::dbWrite():\n";
+         mudlog << "Eror executing query: " << mysql_error(database)
+                << endl;
+      }
+      return FALSE;
+   }
+
+   query = "INSERT INTO Zones (ZONE_NUM, TICKS_IN_REGEN_CYCLE, ";
+   query += "TICKS_TILL_REGEN, ZONE_NAME, BEG_ROOM_NUM, END_ROOM_NUM) VALUES ";
+
+   query += "("; query += zone_num;             query += ", ";
+                 query += ticks_in_regen_cycle; query += ", ";
+                 query += ticks_till_regen;     query += ", ";
+                 query += zone_name;            query += ", ";
+                 query += begin_room_num;       query += ", ";
+                 query += end_room_num;
+   query += ")";
+
+   if (mysql_real_query(database, query, strlen(query)) !=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In zone::dbWrite():\n";
+         mudlog << "Eror executing query: " << mysql_error(database)
+                << endl;
+      }
+      return false;
+   }
+
+   query = "INSERT INTO ZoneOwners (ZONE_NUM, OWNER) VALUES ";
+   while ((st_ptr = st_cell.next())) {
+      query += "(";
+      query += zone_num; query += ", ";
+      query += *st_ptr;  query += "), ";
+   }//while
+   query.dropFromEnd(2);
+   if (mysql_real_query(database, query, strlen(query)) !=0) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In zone::dbWrite():\n";
+         mudlog << "Eror executing query: " << mysql_error(database)
+                << endl;
+      }
+      return false;
+   }
+
+   return true;
+}
+#endif
+
+void zone::Clear() {
+   zone_name.Clear();
+   zone_flags.Clear();
    owners.clearAndDestroy();
    ticks_in_regen_cycle = ticks_till_regen = begin_room_num = end_room_num = 0;
    zone_num = 0;
@@ -671,12 +822,12 @@ int zone::isTotallyLoaded() {
 
    for (i = begin_room_num; i <= end_room_num; i++) {
       if (room_list.elementAtNoCreate(i) && room_list[i].isInUse()) {
-	 if (room_list[i].isTotalLoaded()) { //if total loaded
-	    return TRUE;
-	 }//if
-   	 else {
-	    return FALSE;
-	 }//else
+         if (room_list[i].isTotalLoaded()) { //if total loaded
+            return TRUE;
+         }//if
+            else {
+            return FALSE;
+         }//else
       }//if
    }//for
 
@@ -693,12 +844,12 @@ int zone::isLocked() {
 
    for (i = begin_room_num; i <= end_room_num; i++) {
       if (room_list.elementAtNoCreate(i) && room_list[i].isInUse()) {
-	 if (room_list[i].isZlocked()) { //if total loaded
-	    return TRUE;
-	 }//if
-   	 else {
-	    return FALSE;
-	 }//else
+         if (room_list[i].isZlocked()) { //if total loaded
+            return TRUE;
+         }//if
+            else {
+            return FALSE;
+         }//else
       }//if
    }//for
 

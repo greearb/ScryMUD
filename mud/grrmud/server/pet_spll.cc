@@ -1,5 +1,5 @@
-// $Id: pet_spll.cc,v 1.12 1999/09/07 07:00:27 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
+// $Id: pet_spll.cc,v 1.13 2001/03/29 03:02:33 eroper Exp $
+// $Revision: 1.13 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
 
 //
 //ScryMUD Server Code
@@ -40,7 +40,224 @@
 #include "command3.h"
 #include <PtrArray.h>
 #include "load_wld.h"
+#include "trv_spll.h"
 
+void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
+   String buf(100);
+   int spell_num = CREATE_GREATER_GOLEM_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, pc);
+   int whichgolem = d(1,4)-1;
+
+   const char nofollow[][110] = { "Your creature sinks back into the earth, unwilling to follow you!\n",
+          "Your creature appears for a moment, but then disperses in a shower of sparks.\n",
+          "A small cloud forms over your head and pelts you with hail!\n",
+          "Your feet burn for a moment, but nothing terribly impressive seems to happen.\n"};
+   const char golemnames[][11] = { "granite", "ice", "lightning", "hellfire"};
+   const int golemnums[] = {config.graniteGolemMob, config.iceGolemMob,
+                            config.lightningGolemMob, config.hellfireGolemMob};
+   /*  Check for: lost concentration, did_hit, !mag room    */
+   /*  Do: damage to vict, mana from agg, messages to all involved, */
+   /*      increment pause_count, */
+
+   if (!is_canned)
+     lvl = pc.LEVEL;
+
+   int lost_con = FALSE;
+
+   critter* golem = NULL;
+
+   if (is_canned || !(lost_con = lost_concentration(pc, spell_num))) {
+     /* create an elemental golem: earth */
+     if (!is_canned)
+       pc.MANA -= spell_mana;
+      
+     if (!mob_list[config.graniteGolemMob].isInUse() || 
+        !mob_list[config.iceGolemMob].isInUse() || 
+        !mob_list[config.lightningGolemMob].isInUse() || 
+        !mob_list[config.hellfireGolemMob].isInUse()) {
+       mudlog.log(ERROR, "ERROR: Greater Golem doesn't exist.\n");
+       return;
+     }//if
+
+
+     if (pc.PETS.size() >= (pc.CHA/4 +1)) {
+       show(nofollow[whichgolem], pc);
+       return;
+     }//if
+
+
+	 
+	 if (d(pc.INT/2, lvl) > 25) 
+	 {
+
+	
+       golem = mob_to_smob(mob_list[golemnums[whichgolem]], pc.getCurRoomNum(), TRUE);
+       golem->mob->setDisolvable(TRUE);
+       golem->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
+       ROOM.gainCritter(golem);
+       recursive_init_loads(*golem);
+
+       Sprintf(buf, "You create a golem of animated %s.\n", &golemnames[whichgolem]);
+       show(buf, pc);
+       Sprintf(buf, "creates a golem of animated %s!", &golemnames[whichgolem]);
+       emote(buf, pc, ROOM, TRUE);
+
+       /* now figure out it's strength, and HP and other stuff*/
+       golem->HP = d(5, lvl * 3)+200+lvl*2;
+       golem->setHP_MAX(golem->HP);
+       golem->STR = d(2, lvl/3) + (lvl/5);
+       golem->LEVEL = pc.LEVEL;
+       if( lvl > 20)
+       {
+         golem->ATTACKS = 2;
+       }
+       else golem->ATTACKS=1;
+
+       switch (whichgolem) {
+	     case 0:
+		   golem->STR += d(2,2) + 1;
+		   golem->DEX = lvl/3;
+		   golem->CON = lvl/2 + d(2,2) + 1;
+		   golem->HIT = lvl/3;
+		   golem->DAM = lvl/4;
+		   golem->DAM_GIV_MOD = 100;
+		   golem->DAM_REC_MOD = 100-(lvl+10);
+		   golem->AC = 50-d(10,lvl/5);
+		   golem->HEAT_RESIS = 50-d(10, lvl/5);
+	  	   golem->COLD_RESIS = 50-d(10, lvl/5);
+		   golem->SPEL_RESIS = 50-d(10, lvl/5);
+		   golem->ELEC_RESIS = 50-d(10, lvl/5);
+		   if (lvl/10 > 10) golem->mob->setSkillViolence(10);
+		   else golem->mob->setSkillViolence(lvl/10);
+		   golem->mob->setDefensiveness(-10);
+		   golem->mob->setBenevolence(-10);
+		   golem->mob->setBadAssedness(-10);
+		   golem->mob->setSocialAwareness(-10);
+		   golem->BH_DICE_COUNT = lvl/5;
+		   golem->BH_DICE_SIDES = lvl/4;
+		   break;
+
+	     case 1:
+		   golem->DEX = lvl/2;
+		   golem->HIT = lvl/3 + d(1,2);
+		   golem->DAM = lvl/4+d(2,2);
+		   golem->DAM_GIV_MOD = 100;
+		   golem->DAM_REC_MOD = 90;
+		   golem->AC = 50-d(10,lvl/5);
+		   golem->HEAT_RESIS = 50-d(10,lvl/5);
+		   golem->COLD_RESIS = 30-d(10,lvl/5);
+		   golem->SPEL_RESIS = 50-d(10,lvl/5);
+		   golem->ELEC_RESIS = 50-d(10,lvl/5);
+		   if (lvl/7 > 10) golem->mob->setSkillViolence(10);
+		   else golem->mob->setSkillViolence(lvl/7);
+		   golem->mob->setDefensiveness(-10);
+		   golem->mob->setBenevolence(-10);
+		   golem->mob->setBadAssedness(-10);
+		   golem->mob->setSocialAwareness(-10);
+		   golem->BH_DICE_COUNT = lvl/5;
+		   golem->BH_DICE_SIDES = lvl/4;
+		   break;
+
+
+	     case 2:
+		   golem->HP -=200;
+                   golem->MANA = d(5, lvl * 2)+(pc.INT/2)+lvl/2;
+		   golem->STR -= 6 ;
+		   golem->DEX = lvl/2;
+		   golem->INT = pc.INT/3+lvl/3 + d(2,2);
+           golem->WIS = pc.INT/3+lvl/3 + d(2,2);
+		   golem->HIT = lvl/3;
+		   golem->DAM = lvl/4;
+		   golem->DAM_GIV_MOD = 100;
+		   golem->DAM_REC_MOD = 100;
+		   golem->AC = 50-d(10,lvl/5);
+		   golem->HEAT_RESIS = 50-d(10,lvl/5);
+		   golem->COLD_RESIS = 50-d(10,lvl/5);
+		   golem->SPEL_RESIS = 30-d(10,lvl/5);
+		   golem->ELEC_RESIS = 50-d(10,lvl/5);
+		   if (lvl/6 > 10) golem->mob->setSkillViolence(10);
+		   else golem->mob->setSkillViolence(lvl/6);
+		   golem->mob->setDefensiveness(-10);
+		   golem->mob->setBenevolence(-10);
+		   golem->mob->setBadAssedness(-10);
+		   golem->mob->setSocialAwareness(-10);
+		   golem->BH_DICE_COUNT = lvl/6;
+		   golem->BH_DICE_SIDES = lvl/5;
+		   break;
+
+	     case 3:
+		   golem->STR += 2;
+		   golem->DEX = lvl/2 + d(2,2) + 1;
+		   golem->HIT = lvl/3+d(1,2);
+		   golem->DAM = lvl/4 + d(2,2);
+		   golem->DAM_GIV_MOD = 100 + lvl/2;
+		   golem->DAM_REC_MOD = 100;
+		   golem->AC = 50-d(10,lvl/5);
+		   golem->HEAT_RESIS = 30-d(10,lvl/5);
+		   golem->COLD_RESIS = 50-d(10,lvl/5);
+		   golem->SPEL_RESIS = 50-d(10,lvl/5);
+		   golem->ELEC_RESIS = 50-d(10,lvl/5);
+		   if (lvl/6 > 10) golem->mob->setSkillViolence(10);
+		   else golem->mob->setSkillViolence(lvl/6);
+		   golem->mob->setDefensiveness(-10);
+		   golem->mob->setBenevolence(-10);
+		   golem->mob->setBadAssedness(-10);
+		   golem->mob->setSocialAwareness(-10);
+		   golem->BH_DICE_COUNT = lvl/5;
+		   golem->BH_DICE_SIDES = lvl/4;
+		   break;
+
+	      default: mudlog.log(DBG, "DEBUG: Default Golem in: do_cast_greater_golem:pet_spll.cc, setting golem stats");
+	   }//switch 
+       golem->setHP_MAX(golem->HP);
+       golem->MA_MAX = golem->MANA;
+       /* now it follows and is a pet of the person */
+       Put(golem, pc.PETS);
+       golem->MASTER = &pc;
+
+	   golem->doFollow(pc); // golem starts following caster
+   }//if golem explosion
+   else {
+	   //do_exploding_golem(pc, whichgolem,lvl)
+	   emote("loses control of the energies he has summoned!!\n", pc, ROOM, TRUE);
+	   show("You lose control of the energy that forms the life of the golem!!",pc);
+      
+       switch(whichgolem){
+	      case 0:
+              do_cast_quake(pc, TRUE, lvl*2);
+              break;
+          case 1:
+              do_cast_icestorm(pc, TRUE, lvl*2);             
+              break;
+          case 2:
+              do_cast_lightning_storm(pc, TRUE, lvl*2);
+              break;
+          case 3:
+              do_cast_firestorm(pc, TRUE, lvl*2);
+              break;
+          default: mudlog.log(DBG, "DEBUG: Default Golem in: do_cast_greater_golem:pet_spll.cc, exploding golem");
+	   }//switch whichgolem
+      }//else
+   }//if canned or didn't lose concentration
+   else { //not canned AND lost concentration
+     show(LOST_CONCENTRATION_MSG_SELF, pc);
+     emote("obviously forgot part of the spell!\n", pc, ROOM, TRUE);
+     if (!is_canned)
+       pc.MANA -= spell_mana / 2;
+   }//else lost concentration
+   pc.PAUSE += 1;
+}//do_cast_create_golem
+
+
+void cast_create_greater_golem(critter& pc) {
+   int spell_num = CREATE_GOLEM_SKILL_NUM;
+
+   if (!ok_to_do_action(NULL, "KMSNBb", spell_num, pc)) {
+      return;
+   }//if
+
+   do_cast_create_greater_golem(pc, FALSE, 0);
+}//cast_create_golem
 
 
 void cast_charm(int i_th, const String* vict, critter& pc) {
@@ -55,6 +272,11 @@ void cast_charm(int i_th, const String* vict, critter& pc) {
       return;
    }//if
 
+   if (ptr->isMob()) {
+      ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, vict,
+                        pc.SEE_BIT);
+   }//if
+
    if (!ok_to_do_action(ptr, "KMSNV", spell_num, pc)) {
      return;
    }//if
@@ -66,7 +288,7 @@ void cast_charm(int i_th, const String* vict, critter& pc) {
 void do_cast_charm(critter& vict, critter& pc, int is_canned, int lvl) {
    String buf(100);
    int spell_num = CHARM_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    if (!is_canned)
      lvl = pc.LEVEL;
@@ -88,7 +310,7 @@ void do_cast_charm(critter& vict, critter& pc, int is_canned, int lvl) {
    }
 
    if ((is_canned && (did_hit = 
-		      did_spell_hit(vict, COERCION, pc, lvl, TRUE))) ||
+                      did_spell_hit(vict, COERCION, pc, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(pc, spell_num)) && 
          (did_hit = did_spell_hit(pc, COERCION, vict)))) {
       
@@ -97,10 +319,13 @@ void do_cast_charm(critter& vict, critter& pc, int is_canned, int lvl) {
            pc.MANA -= spell_mana;
 
          /* now it follows and is a pet of the person */
-         critter* hack = &vict;
-         pc.getPets().append(hack);
+         Put(&vict, pc.PETS);
          vict.MASTER = &pc;
-         
+
+         if (vict.mob) {
+            vict.mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
+         }
+
          Sprintf(buf, "You charm %S into following you!\n",
                  name_of_crit(vict, pc.SEE_BIT));
          show(buf, pc);
@@ -162,14 +387,14 @@ void do_cast_mass_charm(room& rm, critter& pc, int is_canned,
                         int lvl) {
    String buf(100);
    int spell_num = MASS_CHARM_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    int base_mana = pc.MANA;
 
    critter* ptr;
    
-   SafeList<critter*> tmp_lst(rm.getCrits());
-   SCell<critter*> cll(tmp_lst);
+   List<critter*> tmp_lst(rm.getCrits());
+   Cell<critter*> cll(tmp_lst);
 
    while ((ptr = cll.next())) {
       if (ptr != &pc) {
@@ -186,7 +411,7 @@ void do_cast_mass_charm(room& rm, critter& pc, int is_canned,
 void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
    String buf(100);
    int spell_num = RAISE_UNDEAD_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    if (!is_canned)
       lvl = pc.LEVEL;
@@ -196,19 +421,22 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
    object* corpse = NULL;
    critter* pet = NULL;
 
-   if (!(corpse = ROOM.getObjNumbered(1, CORPSE_OBJECT, pc))) {
+   if (!(corpse = have_obj_numbered(*(ROOM.getInv()), 1, config.corpseObject,
+                                    pc.SEE_BIT, ROOM))) {
       show("You need a corpse in order to animate it!\n", pc);
       return;
    }//if
 
    if (is_canned || !(lost_con = lost_concentration(pc, spell_num))) {
       
-      if (!mob_list[RAISED_CORPSE_NUM].isInUse()) {
-         mudlog.log(ERR, "ERROR:  need to create a RAISED_CORPSE_MOB.\n");
+      if (!mob_list[config.walkingCorpseMob].isInUse()) {
+         mudlog.log(ERROR, "ERROR:  need to create a RAISED_CORPSE_MOB.\n");
          return;
       }//if
       
-      pet = mob_to_smob(mob_list[RAISED_CORPSE_NUM], ROOM, TRUE);
+      pet = mob_to_smob(mob_list[config.walkingCorpseMob], pc.getCurRoomNum(), TRUE);
+      pet->mob->setDisolvable(TRUE);
+      pet->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
       ROOM.gainCritter(pet);
       
       recursive_init_loads(*pet);
@@ -219,7 +447,7 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
       ROOM.loseInv(corpse);
       corpse->decrementCurInGame(); //no recursive unload, stuff transferred
 
-      if (corpse->isModified()) { //this should be true in most cases btw
+      if (corpse->IN_LIST) { //this should be true in most cases btw
          delete corpse;
       }//if
       corpse = NULL; //completely shed of it
@@ -239,13 +467,13 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
       
       /* not figure out it's strength, and HP */
       pet->HP = d(4, lvl * 4);
-      pet->setHpMax(pet->HP);
+      pet->setHP_MAX(pet->HP);
       pet->STR = d(2,2) + (lvl / 2);
       pet->LEVEL = pc.LEVEL;
       pet->ALIGN = pc.ALIGN;
       
       /* now it follows and is a pet of the person */
-      pc.getPets().append(pet);
+      Put(pet, pc.PETS);
       pet->MASTER = &pc;
 
       pet->doFollow(pc); // golem starts following caster     
@@ -275,8 +503,16 @@ void cast_raise_undead(critter& pc) {
 void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
    String buf(100);
    int spell_num = CREATE_GOLEM_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
+   int whichgolem = d(1,4)-1;
 
+   const char nofollow[][77] = { "Your creature sinks back into the earth, unwilling to follow you!\n", 
+          "Your creature appears for a moment, but then disperses into the atmosphere.\n",
+          "A small cloud of condensation forms over your head and drenches you!\n",
+          "A few hot sparks drift by, but nothing terribly impressive sems to happen.\n"};
+   const char golemnames[][6] = { "earth", "water", "mist", "fire"};
+   const int golemnums[] = {config.earthGolemMob, config.waterGolemMob,
+                            config.airGolemMob, config.fireGolemMob};
    /*  Check for: lost concentration, did_hit, !mag room    */
    /*  Do: damage to vict, mana from agg, messages to all involved, */
    /*      increment pause_count, */
@@ -293,34 +529,38 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
      if (!is_canned)
        pc.MANA -= spell_mana;
 
-     if (!mob_list[EARTH_GOLEM_NUMBER].isInUse()) {
-       mudlog.log(ERR, "ERROR:  need to create an EARTH_GOLEM.\n");
+     if (!mob_list[config.earthGolemMob].isInUse() ||
+        !mob_list[config.waterGolemMob].isInUse() ||
+        !mob_list[config.airGolemMob].isInUse() ||
+        !mob_list[config.fireGolemMob].isInUse()) {
+       mudlog.log(ERROR, "ERROR: Greater Golem doesn't exist.\n");
        return;
      }//if
      
      if (pc.PETS.size() >= (pc.CHA/4 +1)) {
-       show(
-         "Your creature sinks back into the earth, unwilling to follow you!\n",
-	 pc);
+       show(nofollow[whichgolem], pc);
        return;
      }//if
 
-     golem = mob_to_smob(mob_list[EARTH_GOLEM_NUMBER], ROOM, TRUE);
+     golem = mob_to_smob(mob_list[golemnums[whichgolem]], pc.getCurRoomNum(), TRUE);
+     golem->mob->setDisolvable(TRUE);
+     golem->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
      ROOM.gainCritter(golem);
      recursive_init_loads(*golem);
 
-     show("You create a golem of animated earth.\n", pc);
-     emote("creates a golem of animated earth!", pc, 
-	   ROOM, TRUE);
+     Sprintf(buf, "You create a golem of animated %s.\n", &golemnames[whichgolem]);
+     show(buf, pc);
+     Sprintf(buf, "creates a golem of animated %s!", &golemnames[whichgolem]);
+     emote(buf, pc, ROOM, TRUE);
 
      /* now figure out it's strength, and HP */
      golem->HP = d(4, lvl * 3);
-     golem->setHpMax(golem->HP);
+     golem->setHP_MAX(golem->HP);
      golem->STR = d(2,2) + (lvl / 2);
      golem->LEVEL = pc.LEVEL;
 
      /* now it follows and is a pet of the person */
-     pc.getPets().append(golem);
+     Put(golem, pc.PETS);
      golem->MASTER = &pc;
 
      golem->doFollow(pc); // golem starts following caster     
@@ -349,7 +589,7 @@ void cast_create_golem(critter& pc) {
 void do_cast_create_light(critter& pc, int is_canned, int lvl) {
    String buf(100);
    int spell_num = CREATE_LIGHT_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    if (!is_canned)
      lvl = pc.LEVEL;
@@ -361,22 +601,22 @@ void do_cast_create_light(critter& pc, int is_canned, int lvl) {
       if (!is_canned)
          pc.MANA -= spell_mana;
       
-      if (!obj_list[CREATE_LIGHT_NUMBER].OBJ_FLAGS.get(10)) {
-         mudlog.log(ERR, "ERROR:  need to create an CREATE_LIGHT object.\n");
+      if (!obj_list[config.createLightObject].OBJ_FLAGS.get(10)) {
+         mudlog.log(ERROR, "ERROR:  need to create an CREATE_LIGHT object.\n");
          return;
       }//if
       
       Sprintf(buf, "You produce %S out of thin air!\n",
-              long_name_of_obj(obj_list[CREATE_LIGHT_NUMBER], ~0));
+              long_name_of_obj(obj_list[config.createLightObject], ~0));
       show(buf, pc);
       Sprintf(buf, "cups %s hands and produces %S!",
               get_his_her(pc),
-              long_name_of_obj(obj_list[CREATE_LIGHT_NUMBER], ~0));
+              long_name_of_obj(obj_list[config.createLightObject], ~0));
       emote(buf, pc, ROOM, TRUE);
       
-      pc.gainInv(&(obj_list[CREATE_LIGHT_NUMBER])); 
+      pc.gainInv(&(obj_list[config.createLightObject])); 
       
-      recursive_init_loads(obj_list[CREATE_LIGHT_NUMBER], 0);
+      recursive_init_loads(obj_list[config.createLightObject], 0);
       
    }//if canned or didn't lose concentration
    else { //not canned AND lost concentration
@@ -403,7 +643,7 @@ void cast_create_light(critter& pc) {
 void do_cast_create_food(critter& pc, int is_canned, int lvl) {
    String buf(100);
    int spell_num = CREATE_FOOD_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    if (!is_canned)
      lvl = pc.LEVEL;
@@ -415,21 +655,21 @@ void do_cast_create_food(critter& pc, int is_canned, int lvl) {
       if (!is_canned)
          pc.MANA -= spell_mana;
       
-      if (!obj_list[CREATE_FOOD_NUMBER].OBJ_FLAGS.get(10)) {
-         mudlog.log(ERR, "ERROR:  need to create an CREATE_FOOD object.\n");
+      if (!obj_list[config.createFoodObject1].OBJ_FLAGS.get(10)) {
+         mudlog.log(ERROR, "ERROR:  need to create an CREATE_FOOD object.\n");
          return;
       }//if
       
       Sprintf(buf, "You grab %S out of mid air!\n",
-              long_name_of_obj(obj_list[CREATE_FOOD_NUMBER], ~0));
+              long_name_of_obj(obj_list[config.createFoodObject1], ~0));
       show(buf, pc);
       Sprintf(buf, "reaches somewhere and pulls out %S!", 
-              long_name_of_obj(obj_list[CREATE_FOOD_NUMBER], ~0));
+              long_name_of_obj(obj_list[config.createFoodObject1], ~0));
       emote(buf, pc, ROOM, TRUE);
       
-      pc.gainInv(&(obj_list[CREATE_FOOD_NUMBER]));
+      pc.gainInv(&(obj_list[config.createFoodObject1]));
 
-      recursive_init_loads(obj_list[CREATE_FOOD_NUMBER], 0);
+      recursive_init_loads(obj_list[config.createFoodObject1], 0);
       
    }//if canned or didn't lose concentration
    else { //not canned AND lost concentration
@@ -457,7 +697,7 @@ void cast_create_food(critter& pc) {
 void do_cast_heros_feast(critter& pc, int is_canned, int lvl) {
    String buf(100);
    int spell_num = HEROS_FEAST_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    if (!is_canned)
      lvl = pc.LEVEL;
@@ -469,12 +709,12 @@ void do_cast_heros_feast(critter& pc, int is_canned, int lvl) {
      if (!is_canned)
        pc.MANA -= spell_mana;
 
-     if ((!obj_list[CREATE_FOOD_NUMBER].isInUse()) ||
-         (!obj_list[CREATE_FOOD2_NUMBER].isInUse()) || 
-         (!obj_list[CREATE_FOOD3_NUMBER].isInUse()) || 
-         (!obj_list[CREATE_FOOD4_NUMBER].isInUse())) {
+     if ((!obj_list[config.createFoodObject1].isInUse()) ||
+         (!obj_list[config.createFoodObject2].isInUse()) || 
+         (!obj_list[config.createFoodObject3].isInUse()) || 
+         (!obj_list[config.createFoodObject3].isInUse())) {
         pc.show("ERROR:  Tell your sysadmin, food objects not created.\n");
-        mudlog.log(ERR, "ERROR:  need to create an CREATE_FOOD[x] objects.\n");
+        mudlog.log(ERROR, "ERROR:  need to create an CREATE_FOOD[x] objects.\n");
         return;
      }//if
 
@@ -483,20 +723,20 @@ void do_cast_heros_feast(critter& pc, int is_canned, int lvl) {
      for (int i = 0; i<count; i++) {
         rnd = d(1,4);
         if (rnd == 1) {
-           ROOM.gainInv(&(obj_list[CREATE_FOOD_NUMBER]));
-           recursive_init_loads(obj_list[CREATE_FOOD_NUMBER], 0);
+           ROOM.gainInv(&(obj_list[config.createFoodObject1]));
+           recursive_init_loads(obj_list[config.createFoodObject1], 0);
         }
         else if (rnd == 2) {
-           ROOM.gainInv(&(obj_list[CREATE_FOOD2_NUMBER]));
-           recursive_init_loads(obj_list[CREATE_FOOD2_NUMBER], 0);
+           ROOM.gainInv(&(obj_list[config.createFoodObject2]));
+           recursive_init_loads(obj_list[config.createFoodObject2], 0);
         }
         else if (rnd == 3) {
-           ROOM.gainInv(&(obj_list[CREATE_FOOD3_NUMBER]));
-           recursive_init_loads(obj_list[CREATE_FOOD3_NUMBER], 0);
+           ROOM.gainInv(&(obj_list[config.createFoodObject3]));
+           recursive_init_loads(obj_list[config.createFoodObject3], 0);
         }
         else if (rnd == 4) {
-           ROOM.gainInv(&(obj_list[CREATE_FOOD4_NUMBER]));
-           recursive_init_loads(obj_list[CREATE_FOOD4_NUMBER], 0);
+           ROOM.gainInv(&(obj_list[config.createFoodObject4]));
+           recursive_init_loads(obj_list[config.createFoodObject4], 0);
         }
      }//for
 
@@ -527,7 +767,7 @@ void cast_heros_feast(critter& pc) {
 void do_cast_illusion(critter& pc, int is_canned, int lvl) {
    String buf(100);
    int spell_num = ILLUSION_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    if (!is_canned)
      lvl = pc.LEVEL;
@@ -541,15 +781,17 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       if (!is_canned)
          pc.MANA -= spell_mana;
       
-      if (!mob_list[ILLUSION_NUMBER].isInUse()) {
-         mudlog << "ERROR:  need to create an ILLUSION_MOB# " << ILLUSION_NUMBER << endl;
+      if (!mob_list[config.illusionMob].isInUse()) {
+         mudlog << "ERROR:  need to create an ILLUSION_MOB# " << config.illusionMob << endl;
          return;
       }//if
       
-      golem = mob_to_smob(mob_list[ILLUSION_NUMBER], ROOM, TRUE);
+      golem = mob_to_smob(mob_list[config.illusionMob], pc.getCurRoomNum(), TRUE);
+      golem->mob->setDisolvable(TRUE);
+      golem->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
       ROOM.gainCritter(golem);
 
-      recursive_init_loads(mob_list[ILLUSION_NUMBER]);
+      recursive_init_loads(mob_list[config.illusionMob]);
       
       show("You create an illusion of yourself.\n", pc);
       emote("shimmers and then splits into two identical beings!", pc, 
@@ -557,7 +799,7 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       
       /* now figure out it's strength, and HP */
       golem->HP = 1;
-      golem->setHpMax(1);
+      golem->setHP_MAX(1);
       golem->STR = 1;
       golem->LEVEL = pc.LEVEL;
       golem->setPosn(pc.getPosn());
@@ -566,22 +808,23 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       golem->RACE = pc.RACE;
       golem->ALIGN = pc.ALIGN;
       
-      golem->setNames(pc.getNames());
+      golem->names.prepend(new String(*(Top(pc.names)))); 
       if (pc.pc) {
-         Sprintf(buf, "%S %S", pc.getName(&pc), pc.getShortDesc(&pc));
-         golem->addShortDesc(pc.getLanguage(), buf);
+         Sprintf(buf, "%S %S", name_of_crit(pc, ~0), &(pc.short_desc));
+         golem->short_desc = buf;
 
          Sprintf(buf, "%S %S %s\n", 
-                 pc.getShortName(&pc), pc.getShortDesc(&pc),
-                 pc.getPosnStr(&pc));
-         golem->addInRoomDesc(pc.getLanguage(), buf);
+                 pc.getShortName(), &(pc.short_desc), 
+                 pc.getPosnStr(pc));
+         golem->in_room_desc = buf;      
       }//if
       else {
-         golem->setShortDescColl(*(pc.getShortDescColl()));
-         golem->setInRoomDescColl(*(pc.getInRoomDescColl()));
+         golem->short_desc = pc.short_desc;
+         golem->in_room_desc = pc.in_room_desc;
       }//
+
       
-      golem->setLongDescColl(*(pc.getLongDescColl()));
+      golem->long_desc = pc.long_desc;
    }//if canned or didn't lose concentration
    else { //not canned AND lost concentration
       show(LOST_CONCENTRATION_MSG_SELF, pc);
@@ -608,7 +851,7 @@ void cast_illusion(critter& pc) {
 void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
    String buf(100);
    int spell_num = CONJURE_MINION_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    if (!is_canned)
       lvl = pc.LEVEL;
@@ -620,23 +863,23 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
    if (is_canned || !(lost_con = lost_concentration(pc, spell_num))) {
       /* create a random minion */
       if (!is_canned)
-         pc.MANA -= spell_mana / 2;
+         pc.MANA -= spell_mana;
       
       int tmp = d(1,4); //for choices
       
       int which_un = 0;
       switch (tmp) {
       case 1:
-         which_un = MINION_ONE_NUMBER;
+         which_un = config.minionMob1;
          break;
       case 2:
-         which_un = MINION_TWO_NUMBER;
+         which_un = config.minionMob2;
          break;
       case 3:
-         which_un = MINION_THREE_NUMBER;
+         which_un = config.minionMob3;
          break;
       case 4:
-         which_un = MINION_FOUR_NUMBER;
+         which_un = config.minionMob4;
          break;
       }//switch
       
@@ -648,7 +891,9 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
          return;
       }//if
 
-      golem = mob_to_smob(mob_list[which_un], ROOM, TRUE);
+      golem = mob_to_smob(mob_list[which_un], pc.getCurRoomNum(), TRUE);
+      golem->mob->setDisolvable(TRUE);
+      golem->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
       ROOM.gainCritter(golem);
 
       recursive_init_loads(mob_list[which_un]);
@@ -657,18 +902,18 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
       emote("summons a minion of Hell!", pc, ROOM, TRUE);
 
      if (pc.PETS.size() < (pc.CHA/4 + 1) && 
-	 (d(1, pc.CHA * 10 + lvl * 4) > (d(1, golem->LEVEL * 4)))) {
+         (d(1, pc.CHA * 10 + lvl * 4) > (d(1, golem->LEVEL * 4)))) {
        /* now it follows and is a pet of the person */
-       pc.getPets().append(golem);
+       Put(golem, pc.PETS);
        golem->MASTER = &pc;       
        golem->doFollow(pc); // golem starts following caster     
      }//if it worked
      else {
        Sprintf(buf, "whirls around and attacks %S with a great fury!\n",
-	       name_of_crit(pc, ~0));
+               name_of_crit(pc, ~0));
        emote(buf, *golem, ROOM, TRUE, &pc);
        Sprintf(buf, "Uh-oh, %S has broken free of your spell!!\n",
-	       name_of_crit(*golem, pc.SEE_BIT));
+               name_of_crit(*golem, pc.SEE_BIT));
        show(buf, pc);
        join_in_battle(*golem, pc);
      }//else
@@ -708,7 +953,7 @@ void cast_conjure_horde(critter& pc) {
 void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
    String buf(100);
    int spell_num = CONJURE_HORDE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    if (!is_canned)
      lvl = pc.LEVEL;
@@ -733,21 +978,21 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
      
        switch (tmp) {
        case 1:
-          which_un = MINION_ONE_NUMBER;
+          which_un = config.minionMob1;
           break;
        case 2:
-          which_un = MINION_TWO_NUMBER;
+          which_un = config.minionMob2;
           break;
        case 3:
-          which_un = MINION_THREE_NUMBER;
+          which_un = config.minionMob3;
           break;
        case 4:
-          which_un = MINION_FOUR_NUMBER;
+          which_un = config.minionMob4;
           break;
        }//switch
 
        if ((which_un == 0) || (!mob_list[which_un].isInUse())) {
-          if (mudlog.ofLevel(ERR)) {
+          if (mudlog.ofLevel(ERROR)) {
              mudlog << "ERROR:  (conjure horde) need to create MINION# " 
                     << which_un << endl;
           }
@@ -756,25 +1001,27 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
           return;
        }//if
 
-       golem = mob_to_smob(mob_list[which_un], ROOM, TRUE);
+       golem = mob_to_smob(mob_list[which_un], pc.getCurRoomNum(), TRUE);
+       golem->mob->setDisolvable(TRUE);
+       golem->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
        ROOM.gainCritter(golem);
        recursive_init_loads(mob_list[which_un]);
 
        if (pc.PETS.size() < (pc.CHA/4 + 1) && 
-	   (d(1, pc.CHA * 10 + lvl * 4) > (d(1, golem->LEVEL * 2)))) {
-	 /* now it follows and is a pet of the person */
-	 pc.getPets().append(golem);
-	 golem->MASTER = &pc;       
-	 golem->doFollow(pc); // golem starts following caster     
+           (d(1, pc.CHA * 10 + lvl * 4) > (d(1, golem->LEVEL * 2)))) {
+         /* now it follows and is a pet of the person */
+         Put(golem, pc.PETS);
+         golem->MASTER = &pc;       
+         golem->doFollow(pc); // golem starts following caster     
        }//if it worked
        else {
-	 Sprintf(buf, "whirls around and attacks %S with a great fury!\n",
-		 name_of_crit(pc, ~0));
-	 emote(buf, *golem, ROOM, TRUE, &pc);
-	 Sprintf(buf, "Uh-oh, %S has broken free of your spell!!\n",
-		 name_of_crit(*golem, pc.SEE_BIT));
-	 show(buf, pc);
-	 join_in_battle(*golem, pc);
+         Sprintf(buf, "whirls around and attacks %S with a great fury!\n",
+                 name_of_crit(pc, ~0));
+         emote(buf, *golem, ROOM, TRUE, &pc);
+         Sprintf(buf, "Uh-oh, %S has broken free of your spell!!\n",
+                 name_of_crit(*golem, pc.SEE_BIT));
+         show(buf, pc);
+         join_in_battle(*golem, pc);
        }//else
      }//for
      if (!is_canned)

@@ -8,6 +8,6 @@ syntax:  tell <<target_person> <<message text>
 
 example:  tell gideon I have your bible!
 <color = red>
-See Also:  say, channels, discuss, emote, reply
+See Also:  say, osay, channels, discuss, emote, reply
 </color></help>
 

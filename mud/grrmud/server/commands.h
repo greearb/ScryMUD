@@ -1,5 +1,5 @@
-// $Id: commands.h,v 1.15 1999/06/30 01:57:29 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/30 01:57:29 $
+// $Id: commands.h,v 1.16 2001/03/29 03:02:30 eroper Exp $
+// $Revision: 1.16 $  $Author: eroper $ $Date: 2001/03/29 03:02:30 $
 
 //
 //ScryMUD Server Code
@@ -39,6 +39,7 @@
 #include "lang_strings.h"
 
 
+int cmd_split(int amt, critter& pc);
 int show_eq(critter& pc);
 int drop(int i_th, const String* obj, const String* obj_all, critter& pc);
 int donate(int i_th, const String* obj, const String* obj_all, critter& pc);
@@ -66,6 +67,7 @@ int assist(int i_th, const String* friendly, critter& hitter);
 int do_hit(critter& vict, critter& pc);
  
 int say(const char* message, critter& pc, room& rm);
+int osay(const char* message, critter& pc, room& rm);
 int yell(const char* message, critter& pc);
 int shout(const char* message, critter& pc);
 int gossip(const char* message, critter& pc);
@@ -106,6 +108,9 @@ int pemote(const char* msg, critter& pc, room& rm, short show_non_detects,
 int do_emote(const char* msg, CSentryE cs_entry, critter& pc, room& rm,
              short show_non_detects, int possessive, critter* crit = NULL);
 
+// breaks from the tradition of the emote family, but then, emote could use
+// some breaking.
+int gemote(const char* msg, critter& pc);
 
 ///************************  login functions  ************************///
 
@@ -120,12 +125,12 @@ int quit_do_login_old(critter& pc);
 
 int source_give_to(critter& pc, object& obj, critter& targ); //does msgs
 int move(critter& pc, int i_th, const char* direction, short do_followers,
-          room& cur_room, int& is_dead);
+          room& cur_room, int& is_dead, int check_no_wander = FALSE);
 int don_obj(object& obj, critter& pc);
 int out_eq(critter& targ, critter& looker);
 
 int obj_wear_by(object& obj, critter& pc, int posn, short do_msg);
-int obj_get_by(object& obj, critter& pc, short do_msg);
+int obj_get_by(object& obj, critter& pc, short do_msg, int check_wt);
 int obj_drop_by(object& obj, critter& pc);
 int obj_remove_by(object& obj, critter& pc);
 int eq_put_by(object& obj, object& bag, critter& pc, short obj_in_bag); 

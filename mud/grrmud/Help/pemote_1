@@ -10,5 +10,5 @@ Syntax:  pemote [message]
 Example:  pemote fists shake with palsy!!   	And your name is Grock,
 	Shows everyone in your room:  Grock's fists shake with palsy!!
 <color=red>
-See Also:  socials, say, gecho, emote, describe, title
+See Also:  socials, say, osay, gecho, emote, describe, title
 </color></help>

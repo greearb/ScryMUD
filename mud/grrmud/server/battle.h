@@ -1,5 +1,5 @@
-// $Id: battle.h,v 1.9 1999/09/06 07:12:50 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/09/06 07:12:50 $
+// $Id: battle.h,v 1.10 2001/03/29 03:02:28 eroper Exp $
+// $Revision: 1.10 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
 
 //
 //ScryMUD Server Code
@@ -39,12 +39,12 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
                      int& show_vict_tags);
 
 //Convenience method, calls the one below, with show_vict_tags == FALSE
-void agg_kills_vict(critter& agg, critter& vict);
-void agg_kills_vict(critter& agg, critter& vict,
-                    int& show_vict_tags);  //death of a critter
-void crit_dies(critter& pc); //indirect deaths
+// agg may be NULL if this is an indirect death.
+void agg_kills_vict(critter* agg, critter& vict, int do_msg = TRUE);
+void agg_kills_vict(critter* agg, critter& vict,
+                    int& show_vict_tags, int do_msg);  //death of a critter
 
-void disburse_xp(critter& agg, critter& vict);
+void disburse_xp(critter& agg, const critter& vict);
 void dead_crit_to_corpse(critter& vict, int& show_vict_tags);
 void gain_xp(critter& crit, const long xp, const short do_output); 
 void gain_level(critter& crit);
@@ -54,12 +54,18 @@ int exact_raw_damage(int damage, int damage_type, critter& pc,
                      critter& agg);
 int exact_raw_damage(int damage, int damage_type, critter& pc);
 
+critter* mob_to_smob(critter& mob, const int room_num, int do_sub,
+                     int i_th, const String* name, int see_bit);
+critter* mob_to_smob(critter& mob, const int room_num,
+                     int supress_sub_fail_msg = FALSE);
+
+// Use this one when you can, as opposed to the one above.
 critter* mob_to_smob(critter& mob, room& rm,
                      int supress_sub_fail_msg = FALSE);
 
-object*  obj_to_sobj(object& obj, Entity* container, int do_sub,
-                     int i_th, const String* name, critter& viewer);
-object*  obj_to_sobj(object& obj, Entity* container);
+object*  obj_to_sobj(object& obj, PtrList<object>* in_list, int do_sub,
+                     int i_th, const String* name, int see_bit, room& rm);
+object*  obj_to_sobj(object& obj, PtrList<object>* in_list, int rm_num);
 
 
 #endif

@@ -1,5 +1,5 @@
-# $Id: translation4.spec,v 1.1 1999/08/22 07:16:20 greear Exp $
-# $Revision: 1.1 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
+# $Id: translation4.spec,v 1.2 2001/03/29 03:02:36 eroper Exp $
+# $Revision: 1.2 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
 
 # The syntax is as follows:
 # ENUM_NAME LANGUAGE "TEXT" LANGUAGE "TEXT" ... ~
@@ -26,17 +26,27 @@
 
 CS_TITLE_CHANGED
 	eng "Title changed.\n"
+	ser "Titula promenjena.\n"
+	ger "Titel geändert.\n"
 	~
 
 CS_TITLE_80_ONLY
 	eng "Your title must be less than 80 characters.\n"
+	ser "Tvoja titula mora da bude manja od 80 karaktera.\n"
+	ger "Ihr Titel darf nicht mehr als 80 Buchstaben umfassen.\n"
 	~
 
 CS_MESSAGE
 	eng "message"
+	ser "poruka"
+	ger "Nachricht"
 	~
 
 CS_ENTER_MSG_POST
 	eng "Enter your message to be posted.
 Use a solitary '~' on a line by itself to end.\n"
+	ser "Unesi poruku koju zelis da postavis.
+Koristi solitary '~' znak u posebnoj liniji kada hoces da zavrsis.\n"
+	ger "Geben Sie die zu versendende Nachricht ein.
+Zum Abschluss bitte eine Zeile mit einem einzelnen '~' verwenden.\n"
 	~

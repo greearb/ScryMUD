@@ -1,5 +1,5 @@
-// $Id: dam_spll.h,v 1.3 1999/08/10 07:06:19 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/08/10 07:06:19 $
+// $Id: dam_spll.h,v 1.4 2001/03/29 03:02:31 eroper Exp $
+// $Revision: 1.4 $  $Author: eroper $ $Date: 2001/03/29 03:02:31 $
 
 //
 //ScryMUD Server Code
@@ -34,6 +34,11 @@
 
 /* define affects constants here */
 
+void cast_dark_spear(int i_th, const String* victim, critter& pc);
+void do_cast_dark_spear(critter& vict, critter& agg, int is_canned, int lvl);
+
+void cast_orb_of_power(int i_th, const String* dr, critter& agg);
+void do_cast_orb_of_power(critter& vict, critter& pc, int is_canned, int lvl);
 
 void cast_rainbow(int i_th, const String* dr, critter& agg);
 void do_cast_rainbow(critter& vict, critter& pc, int is_canned, int lvl);
@@ -49,22 +54,22 @@ void do_cast_harm(critter& vict, critter& pc, int is_canned, int lvl);
 
 void cast_cause_sickness(int i_th, const String* dr, critter& agg);
 void do_cast_cause_sickness(critter& vict, critter& pc, int is_canned,
-			    int lvl);
+                            int lvl);
 
 void cast_cause_critical(int i_th, const String* dr, critter& agg);
 void do_cast_cause_critical(critter& vict, critter& pc, int is_canned,
-			    int lvl);
+                            int lvl);
 
 void cast_holy_word(int i_th, const String* dr, critter& agg);
 void do_cast_holy_word(critter& vict, critter& pc, int is_canned,
-			    int lvl);
+                            int lvl);
 
 void cast_shocking_grasp(int i_th, const String* dr, critter& agg);
 void do_cast_shocking_grasp(critter& vict, critter& pc, int is_canned,
-			    int lvl);
+                            int lvl);
 void cast_burning_hands(int i_th, const String* dr, critter& agg);
 void do_cast_burning_hands(critter& vict, critter& pc, int is_canned,
-			   int lvl);
+                           int lvl);
 void cast_dark_dart(int i_th, const String* dr, critter& agg);
 void do_cast_dark_dart(critter& vict, critter& pc, int is_canned, int lvl);
 

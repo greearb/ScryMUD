@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.14 1999/09/07 07:00:27 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
+// $Id: spells2.cc,v 1.15 2001/03/29 03:02:35 eroper Exp $
+// $Revision: 1.15 $  $Author: eroper $ $Date: 2001/03/29 03:02:35 $
 
 //
 //ScryMUD Server Code
@@ -45,10 +45,10 @@
 
 
 void do_cast_locate(const String* targ, critter& agg, int is_canned,
-			      int lvl) {
+                              int lvl) {
    String buf(100);
    int spell_num = LOCATE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -81,18 +81,18 @@ void do_cast_locate(const String* targ, critter& agg, int is_canned,
          begin = ZoneCollection::instance().elementAt(zon).getBeginRoomNum();
       }
 
-      SCell<critter*> ccll;
+      Cell<critter*> ccll;
       critter* ptr;
-      SCell<object*> ocll;
+      Cell<object*> ocll;
       for (int i = begin; i<= end; i++) {
          // TODO:  Optimize this..move it into room class so we don't have
          // to make coppies of the list! --BEN
-         SafeList<critter*> tmp_crits(room_list[i].getCrits());
+         List<critter*> tmp_crits(room_list[i].getCrits());
          tmp_crits.head(ccll);
          while ((ptr = ccll.next())) {
             do_locate_object(*ptr, targ, agg, i, 0, lvl);
          }//while
-         room_list[i].getInv().head(ocll);
+         room_list[i].getInv()->head(ocll);
          while ((ptr = ccll.next())) {
             do_locate_object(*ptr, targ, agg, i, 0, lvl);
          }//while
@@ -126,10 +126,10 @@ void cast_locate(const String* victim, critter& pc) {
 
 
 void do_cast_wizard_eye(object& vict, critter& pc, int is_canned,
-			      int lvl) {
+                        int lvl) {
    String buf(100);
    int spell_num = WIZARD_EYE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    int lost_con = FALSE;
 
@@ -144,8 +144,8 @@ void do_cast_wizard_eye(object& vict, critter& pc, int is_canned,
        pc.MANA -= spell_mana;
 
      if (!vict.obj_proc) {
-       vict.obj_proc = new obj_spec_data;
-       vict.OBJ_FLAGS.turn_on(63);
+        vict.obj_proc = new obj_spec_data;
+        vict.OBJ_FLAGS.turn_on(63);
      }//if
      if (vict.obj_proc->w_eye_owner) {
        show("That object is already being used for a wizard's eye!\n", pc);
@@ -156,6 +156,9 @@ void do_cast_wizard_eye(object& vict, critter& pc, int is_canned,
        return;
      }//if
      else {
+       Sprintf(buf, "Your perspective shifts slightly as you begin to see from the point of view of the %S.",
+               name_of_obj(vict, pc.SEE_BIT));
+       show(buf, pc);
        vict.obj_proc->w_eye_owner = &pc;
        pc.pc->w_eye_obj = &vict;
      }//
@@ -178,9 +181,19 @@ void cast_wizard_eye(int i_th, const String* victim, critter& pc) {
                        /* check out pc */
 
    if (!(vict = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT, 
-			       ROOM))) {
-     vict = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
+                               ROOM))) {
+      vict = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
+      if (vict && !vict->isModified()) {
+         vict = obj_to_sobj(*vict, ROOM.getInv(), TRUE, i_th, victim, 
+                            pc.SEE_BIT, ROOM);
+      }//if
    }//if
+   else {
+      if (!vict->isModified()) {
+         vict = obj_to_sobj(*vict, &(pc.inv), TRUE, i_th, victim, 
+                            pc.SEE_BIT, ROOM);
+      }//if
+   }
 
    if (!vict) {
       show("On which item??\n", pc);
@@ -199,10 +212,10 @@ void cast_wizard_eye(int i_th, const String* victim, critter& pc) {
 
 
 void do_cast_recharge(object& vict, critter& agg, int is_canned,
-			      int lvl) {
+                              int lvl) {
    String buf(100);
    int spell_num = RECHARGE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -217,16 +230,16 @@ void do_cast_recharge(object& vict, critter& agg, int is_canned,
      vict.CHARGES++;
 
      Sprintf(buf, "You pour all your energy into %S.\n", 
-	     long_name_of_obj(vict, agg.SEE_BIT));
+             long_name_of_obj(vict, agg.SEE_BIT));
      show(buf, agg);
 
      Sprintf(buf, "pours all %s energy into %S.\n", get_his_her(agg),
-	     long_name_of_obj(vict, agg.SEE_BIT));
+             long_name_of_obj(vict, agg.SEE_BIT));
    }//if it worked
    else { //not canned AND lost concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -238,14 +251,15 @@ void cast_recharge(int i_th, const String* victim, critter& pc) {
    object* vict = NULL;
    int spell_num = RECHARGE_SKILL_NUM;
 
-   if (!(vict = pc.haveObjNamed(i_th, victim))) {
+   if (!(vict = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT, 
+                               ROOM))) {
       show("Recharge what??\n", pc);
       return;
    }//if
 
-   if (!vict->isModified()) {
-     vict = obj_to_sobj(*vict, &(pc), TRUE, i_th, victim, 
-                        pc);
+   if (!vict->IN_LIST) {
+     vict = obj_to_sobj(*vict, &(pc.inv), TRUE, i_th, victim, 
+                           pc.SEE_BIT, ROOM);
    }//if
 
 
@@ -265,7 +279,7 @@ void cast_recharge(int i_th, const String* victim, critter& pc) {
 
    if (vict->CHARGES != 0) {
      show("It already contains as much power as you could place in it!\n",
-	  pc);
+          pc);
      return;
    }//if
                  /* all checks have been passed, lets do it */
@@ -276,10 +290,10 @@ void cast_recharge(int i_th, const String* victim, critter& pc) {
 
 
 void do_cast_identify(object& vict, critter& agg, int is_canned,
-			      int lvl) {
+                              int lvl) {
    String buf(100);
    int spell_num = IDENTIFY_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -311,7 +325,7 @@ void cast_identify(int i_th, const String* victim, critter& pc) {
    int spell_num = IDENTIFY_SKILL_NUM;
 
    if (!(vict = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT, 
-			       ROOM))) {
+                               ROOM))) {
       vict = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
    }//if
 
@@ -330,56 +344,57 @@ void cast_identify(int i_th, const String* victim, critter& pc) {
 
 
 void do_cast_bind_wound(critter& vict, critter& agg, int is_canned,
-			      int lvl) {
+                              int lvl) {
    String buf(100);
    int spell_num = BIND_WOUND_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
    if (!is_canned)
      lvl = agg.LEVEL;
 
-   SpellDuration* ptr;
+   stat_spell_cell* ptr;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
-     ptr = vict.isAffectedBy(spell_num);
+     ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
 
      if (ptr) {
        show("Ok.\n", agg);
-       ptr->duration += lvl/2;
+       ptr->bonus_duration += lvl/2;
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
-        vict.HP_REGEN += BIND_WOUND_EFFECT;
+       Put(new stat_spell_cell(spell_num, lvl + 5), 
+           vict.affected_by);
+       vict.HP_REGEN += BIND_WOUND_EFFECT;
 
-        if (&vict == &agg) {
-           show("You wrap your wounds in magical bandages.\n", vict);
-           Sprintf(buf, "wraps %s wounds in magical bandages.", 
-                   get_his_her(vict));
-           emote(buf, vict, room_list[vict.getCurRoomNum()], TRUE);
-        }//if
-        else {
-           Sprintf(buf, "You wrap %S's wounds in magical bandages.\n", 
-                   name_of_crit(vict, agg.SEE_BIT));
-           show(buf, agg);
-           Sprintf(buf, "%S wraps your wounds in magical bandages.\n", 
-                   name_of_crit(agg, vict.SEE_BIT));
-           buf.Cap();
-           show(buf, vict);
-           Sprintf(buf, "wraps %S's wounds with magical bandages.",
-                   name_of_crit(vict, ~0));
-           emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-        }//else
+       if (&vict == &agg) {
+         show("You wrap your wounds in magical bandages.\n", vict);
+         Sprintf(buf, "wraps %s wounds in magical bandages.", 
+                 get_his_her(vict));
+         emote(buf, vict, room_list[vict.getCurRoomNum()], TRUE);
+       }//if
+       else {
+         Sprintf(buf, "You wrap %S's wounds in magical bandages.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S wraps your wounds in magical bandages.\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "wraps %S's wounds with magical bandages.",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+       }//else
      }//else
    }//if it worked
    else { //not canned AND lost concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -398,6 +413,12 @@ void cast_bind_wound(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+               /* got a victim, now check for mob/smob */
+   if (vict->isMob()) {
+     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                        victim, pc.SEE_BIT);
+   }//if
+
    if (!ok_to_do_action(vict, "KMSNB", spell_num, pc)) {
      return;
    }//if
@@ -409,56 +430,57 @@ void cast_bind_wound(int i_th, const String* victim, critter& pc) {
 
 
 void do_cast_shadows_blessing(critter& vict, critter& agg, int is_canned,
-			      int lvl) {
+                              int lvl) {
    String buf(100);
    int spell_num = SHADOWS_BLESSING_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
    if (!is_canned)
      lvl = agg.LEVEL;
 
-   SpellDuration* ptr;
+   stat_spell_cell* ptr;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
-     ptr = vict.isAffectedBy(spell_num);
+     ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
 
      if (ptr) {
        show("Ok.\n", agg);
-       ptr->duration += lvl/2;
+       ptr->bonus_duration += lvl/2;
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
+       Put(new stat_spell_cell(spell_num, lvl + 5), 
+           vict.affected_by);
        vict.AC += SHADOWS_BLESSING_EFFECT;
 
        if (&vict == &agg) {
-	 show("You cloak yourself in a vail of shadows!\n", vict);
-	 Sprintf(buf, "cloaks %s in a vail of shadows!", 
-		 get_himself_herself(vict));
-	 emote(buf, vict, room_list[vict.getCurRoomNum()], TRUE);
+         show("You cloak yourself in a veil of shadows!\n", vict);
+         Sprintf(buf, "cloaks %s in a veil of shadows!", 
+                 get_himself_herself(vict));
+         emote(buf, vict, room_list[vict.getCurRoomNum()], TRUE);
        }//if
        else {
-	 Sprintf(buf, "You cloak %S in a vail of shadows.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S cloaks you in a vail of shadows!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "cloaks %S in a vail of shadows!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You cloak %S in a veil of shadows.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S cloaks you in a veil of shadows!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "cloaks %S in a veil of shadows!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if it worked
    else { //not canned AND lost concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -477,6 +499,12 @@ void cast_shadows_blessing(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+               /* got a victim, now check for mob/smob */
+   if (vict->isMob()) {
+     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                        victim, pc.SEE_BIT);
+   }//if
+
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -487,10 +515,10 @@ void cast_shadows_blessing(int i_th, const String* victim, critter& pc) {
 
 
 void do_cast_cure_blind(critter& vict, critter& agg, 
-			   int is_canned, int lvl) {
+                           int is_canned, int lvl) {
    String buf(100);
    int spell_num = CURE_BLINDNESS_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -500,7 +528,8 @@ void do_cast_cure_blind(critter& vict, critter& agg,
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
 
      int pnum;
-     SpellDuration* ptr = vict.isAffectedBy((pnum = BLINDNESS_SKILL_NUM));
+     stat_spell_cell* ptr = is_affected_by((pnum = BLINDNESS_SKILL_NUM),
+                                           vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -510,25 +539,25 @@ void do_cast_cure_blind(critter& vict, critter& agg,
      }//if
      else {
        rem_effects_crit(pnum, vict, FALSE); //no longer affected by blindness
-       vict.getAffectedBy().loseData(ptr);
+       vict.affected_by.loseData(ptr);
 
        if (&vict == &agg) {
-	 show("You can see again!\n", agg);
-	 Sprintf(buf, "cures %s blindness.", 
-		 get_himself_herself(agg));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+         show("You can see again!\n", agg);
+         Sprintf(buf, "cures %s of blindness.", 
+                 get_himself_herself(agg));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
        }//if
        else {
-	 Sprintf(buf, "You cure %S's blindness.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S cures your blindness.\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "cures %S's blindness!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You cure %S's blindness.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S cures your blindness.\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "cures %S's blindness!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
@@ -536,7 +565,7 @@ void do_cast_cure_blind(critter& vict, critter& agg,
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      Sprintf(buf, "seems to have lost %s concentration!", get_his_her(agg));
      emote(buf, agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);       
+           room_list[agg.getCurRoomNum()], TRUE);       
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -555,6 +584,11 @@ void cast_cure_blind(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+              victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -564,10 +598,10 @@ void cast_cure_blind(int i_th, const String* victim, critter& pc) {
 
 
 void do_cast_remove_poison(critter& vict, critter& agg, 
-			   int is_canned, int lvl) {
+                           int is_canned, int lvl) {
    String buf(100);
    int spell_num = REMOVE_POISON_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -577,7 +611,8 @@ void do_cast_remove_poison(critter& vict, critter& agg,
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
 
      int pnum;
-     SpellDuration* ptr = vict.isAffectedBy((pnum = POISON_SKILL_NUM));
+     stat_spell_cell* ptr = is_affected_by((pnum = POISON_SKILL_NUM),
+                                           vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -587,25 +622,25 @@ void do_cast_remove_poison(critter& vict, critter& agg,
      }//if
      else {
        rem_effects_crit(pnum, vict, FALSE); //no longer affected by poison
-       vict.getAffectedBy().loseData(ptr);
+       vict.affected_by.loseData(ptr);
 
        if (&vict == &agg) {
-	 show("You cure yourself!\n", agg);
-	 Sprintf(buf, "cures %s of a poisoning.", 
-		 get_himself_herself(agg));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+         show("You cure yourself!\n", agg);
+         Sprintf(buf, "cures %s of a poisoning.", 
+                 get_himself_herself(agg));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
        }//if
        else {
-	 Sprintf(buf, "You remove poison from %S's body.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S cures you of a poisoning.\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "cures %S of a poisoning!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You remove poison from %S's body.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S cures you of a poisoning.\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "cures %S of a poisoning!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
@@ -613,7 +648,7 @@ void do_cast_remove_poison(critter& vict, critter& agg,
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      Sprintf(buf, "seems to have lost %s concentration!", get_his_her(agg));
      emote(buf, agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);       
+           room_list[agg.getCurRoomNum()], TRUE);       
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -632,6 +667,11 @@ void cast_remove_poison(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+              victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -639,13 +679,12 @@ void cast_remove_poison(int i_th, const String* victim, critter& pc) {
    do_cast_remove_poison(*vict, pc, FALSE, 0);
 }//do_cast_remove_poison
 
-
-
-void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl) {
+void do_cast_flesh_to_stone(critter& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);
    short did_hit = TRUE;
-   int spell_num = SLEEP_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   short do_join_in_battle = FALSE;
+   int spell_num = FLESH_TO_STONE_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -653,11 +692,131 @@ void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if ((is_canned && (did_hit = 
-		      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
+                      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     
+     if (!is_canned)
+       agg.MANA -= spell_mana;
+
+     if (ptr) {
+       ptr->bonus_duration += lvl / 3;
+       show("Ok.\n", agg);
+     }//if
+     else if (vict.LEVEL > agg.LEVEL) {
+       Put(new stat_spell_cell(STONE_SKIN_SKILL_NUM, lvl + 5), 
+          vict.affected_by);
+       vict.DAM_REC_MOD += STONE_SKIN_EFFECT_DRM;
+       vict.DEX += STONE_SKIN_EFFECT_DEX;
+
+       if (&vict == &agg) {
+          show("Your skin turns as hard as stone!\n", agg);
+       }//if
+       else {
+          Sprintf(buf, "You turn %S's skin as hard as stone.\n", 
+             name_of_crit(vict, agg.SEE_BIT));
+          show(buf, agg);
+          Sprintf(buf, "%S turns you skin as hard as stone!\n", 
+             name_of_crit(agg, vict.SEE_BIT));
+          buf.Cap();
+          show(buf, vict);
+          Sprintf(buf, "turns %S's skin as hard as stone!",
+             name_of_crit(vict, ~0));
+          emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+       }//else
+     } // else if (vict.LEVEL > agg.LEVEL)
+     else {
+       Put(new stat_spell_cell(spell_num, lvl/2), 
+           vict.affected_by);
+       vict.CRIT_FLAGS.turn_on(14);
+
+       if (&vict == &agg) {
+         show("You have been petrified!\n", agg);
+       }//if
+       else {
+         Sprintf(buf, "You petrify %S!\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S petrifies you!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "petrifies %S!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+       }//else
+     }//else
+   }//if worked
+   else if (!did_hit) {
+     do_join_in_battle = TRUE;
+     Sprintf(buf, "You fail to petrify %S!\n", 
+             name_of_crit(vict, agg.SEE_BIT));
+     show(buf, agg);
+     Sprintf(buf, "%S fails to petrify you!\n", 
+             name_of_crit(agg, vict.SEE_BIT));
+     buf.Cap();
+     show(buf, vict);
+     Sprintf(buf, "fails to petrify %S!",
+             name_of_crit(vict, ~0));
+     emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+   }//if missed
+   else { //not canned && LOST concentration
+     show(LOST_CONCENTRATION_MSG_SELF, agg);
+     emote("feels a little weak in the head!", agg, 
+           room_list[agg.getCurRoomNum()], TRUE);       
+     if (!is_canned)
+       agg.MANA -= spell_mana / 2;
+   }//else lost concentration
+   agg.PAUSE += 1; 
+
+   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING ))
+           join_in_battle(agg, vict);
+}
+
+void cast_flesh_to_stone(int i_th, const String* victim, critter& pc) {
+   critter* vict = NULL;
+   int spell_num = FLESH_TO_STONE_SKILL_NUM;
+
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
+
+   if (!vict) {
+      show("Whom do you wish to petrify??\n", pc);
+      return;
+   }//if
+
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+              victim, pc.SEE_BIT);
+   }//if
+   
+   if (!ok_to_do_action(vict, "KMSVN", spell_num, pc)) {
+     return;
+   }//if
+
+   do_cast_flesh_to_stone(*vict, pc, FALSE, 0);
+}
+
+
+
+void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl) {
+   String buf(100);
+   short did_hit = TRUE;
+   int spell_num = SLEEP_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, agg);
+
+   int lost_con = FALSE;
+
+   if (!is_canned)
+     lvl = agg.LEVEL;
+
+   if ((vict.getLevel() <= agg.getLevel()) && ((is_canned && (did_hit = 
+                      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
+       (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
+         (did_hit = did_spell_hit(agg, CRONIC, vict))))) {
+
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -666,47 +825,48 @@ void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl) {
         show("They are already asleep!\n", agg);
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl/6 + 1));
+       Put(new stat_spell_cell(spell_num, lvl/6 + 1), 
+           vict.affected_by);
        vict.CRIT_FLAGS.turn_on(15); //is perm_sleeped
        vict.setPosn(POS_SLEEP);
 
        if (&vict == &agg) {
-	 show("You put yourself to sleep!\n", agg);
-	 Sprintf(buf, "puts %s to sleep for a while!", 
-		 get_himself_herself(agg));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+         show("You put yourself to sleep!\n", agg);
+         Sprintf(buf, "puts %s to sleep for a while!", 
+                 get_himself_herself(agg));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
        }//if
        else {
-	 Sprintf(buf, "You put %S to sleep!\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S forces sleep to fall over your eyes...\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "forces %S to sleep!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You put %S to sleep!\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S forces sleep to fall over your eyes...\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "forces %S to sleep!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else if (!did_hit) {
      Sprintf(buf, "You fail to put %S to sleep!\n", 
-	     name_of_crit(vict, agg.SEE_BIT));
+             name_of_crit(vict, agg.SEE_BIT));
      show(buf, agg);
      Sprintf(buf, "%S fails to force you to sleep.\n", 
-	     name_of_crit(agg, vict.SEE_BIT));
+             name_of_crit(agg, vict.SEE_BIT));
      buf.Cap();
      show(buf, vict);
      Sprintf(buf, "fails to force %S to go to sleep!",
-	     name_of_crit(vict, ~0));
+             name_of_crit(vict, ~0));
      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
    }//if missed
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      Sprintf(buf, "seems to have lost %s concentration!", get_his_her(agg));
      emote(buf, agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);       
+           room_list[agg.getCurRoomNum()], TRUE);       
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -725,6 +885,11 @@ void cast_sleep(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+              victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "BKMSVN", spell_num, pc)) {
       return;
    }//if
@@ -736,7 +901,7 @@ void cast_sleep(int i_th, const String* victim, critter& pc) {
 void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);
    int spell_num = STRENGTH_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -745,40 +910,41 @@ void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
 
      if (ptr) {
-       ptr->duration += lvl / 2;
+       ptr->bonus_duration += lvl / 2;
        show("Ok.\n", agg);
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl));
+       Put(new stat_spell_cell(spell_num, lvl), 
+           vict.affected_by);
        vict.STR += STRENGTH_EFFECT;
 
        if (&vict == &agg) {
-	 show("You feel stronger!\n", agg);
+         show("You feel stronger!\n", agg);
        }//if
        else {
-	 Sprintf(buf, "You make %S's stronger!\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S makes you stronger!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "gives %S strength!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You make %S stronger!\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S makes you stronger!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "gives %S strength!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("feels a little weak in the head!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);       
+           room_list[agg.getCurRoomNum()], TRUE);       
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -797,6 +963,11 @@ void cast_strength(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+              victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -806,17 +977,17 @@ void cast_strength(int i_th, const String* victim, critter& pc) {
 
 
 void do_cast_remove_curse(critter& vict, critter& agg, int is_canned,
-			  int lvl) {
+                          int lvl) {
    String buf(100);
    int spell_num = REMOVE_CURSE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
    if (!is_canned)
      lvl = agg.LEVEL;
 
-   SpellDuration* ptr = vict.isAffectedBy(CURSE_SKILL_NUM);
+   stat_spell_cell* ptr = is_affected_by(CURSE_SKILL_NUM, vict);  
    if (!ptr) {
      Sprintf(buf, "%S isn't cursed.\n", name_of_crit(vict, agg.SEE_BIT));
      show(buf, agg);
@@ -830,25 +1001,25 @@ void do_cast_remove_curse(critter& vict, critter& agg, int is_canned,
 
 
      rem_effects_crit(CURSE_SKILL_NUM, vict, TRUE);
-     vict.getAffectedBy().loseData(ptr); //might be redundant
+     vict.affected_by.loseData(ptr); //might be redundant
 
      if (&vict == &agg) {
        show("You feel a curse lifted from your body!\n", agg);
      }//if
      else {
        Sprintf(buf, "You lift a curse from %S's soul!\n", 
-	       name_of_crit(vict, agg.SEE_BIT));
+               name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, "%S removes a curse on your soul!\n", 
-	       name_of_crit(agg, vict.SEE_BIT));
+               name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
        Sprintf(buf, "removes a curse from %S!",
-	       name_of_crit(vict, ~0));
+               name_of_crit(vict, ~0));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-       if (d(1,10) == 1) {
-	 show("OOPS, the curse has transferred to YOU!!\n", agg);
-	 do_cast_curse(agg, agg, FALSE, 0);
+       if (d(1,5) == 1) {
+         show("OOPS, the curse has transferred to YOU!!\n", agg);
+         do_cast_curse(agg, agg, FALSE, 0);
        }//if
      }//else
    }//if worked
@@ -864,17 +1035,17 @@ void do_cast_remove_curse(critter& vict, critter& agg, int is_canned,
 
 
 void do_cast_remove_curse(object& vict, critter& agg, int is_canned,
-			  int lvl) {
+                          int lvl) {
    String buf(100);
    int spell_num = REMOVE_CURSE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
    if (!is_canned)
      lvl = agg.LEVEL;
 
-   SpellDuration* ptr = vict.isAffectedBy(CURSE_SKILL_NUM);
+   stat_spell_cell* ptr = is_affected_by(CURSE_SKILL_NUM, vict);  
    if (!ptr) {
      Sprintf(buf, "%S isn't cursed.\n", name_of_obj(vict, agg.SEE_BIT));
      show(buf, agg);
@@ -887,13 +1058,13 @@ void do_cast_remove_curse(object& vict, critter& agg, int is_canned,
        agg.MANA -= spell_mana;
 
      rem_effects_obj(CURSE_SKILL_NUM, vict);
-     vict.getAffectedBy().loseData(ptr); //might be redundant
+     vict.affected_by.loseData(ptr); //might be redundant
 
      Sprintf(buf, "You lift a curse from %S!\n", 
-	     long_name_of_obj(vict, agg.SEE_BIT));
+             long_name_of_obj(vict, agg.SEE_BIT));
      show(buf, agg);
      Sprintf(buf, "removes a curse from %S!",
-	     long_name_of_obj(vict, ~0));
+             long_name_of_obj(vict, ~0));
      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
    }//if worked
    else { //not canned && LOST concentration
@@ -919,28 +1090,34 @@ void cast_remove_curse(int i_th, const String* victim, critter& pc) {
    vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
-     obj = pc.haveObjNamed(i_th, victim);
+     obj = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT, ROOM);
      if (obj) {
-       if (!obj->isModified()) {
-	 obj = obj_to_sobj(*obj, &(pc), TRUE, i_th, victim, pc);
+       if (!obj->IN_LIST) {
+         obj = obj_to_sobj(*obj, &(pc.inv), TRUE, i_th, victim,
+                           pc.SEE_BIT, ROOM);
        }//if
      }//if
      else {
-       obj = ROOM.haveObjNamed(i_th, victim, pc);
+       obj = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
        if (obj) {
-	 if (!obj->isModified()) {
-            obj = obj_to_sobj(*obj, &(ROOM), TRUE, i_th, victim, pc);
-	 }//if
+         if (!obj->IN_LIST) {
+           obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, victim,
+                             pc.SEE_BIT, ROOM);
+         }//if
        }//if
        else {
-          show("Remove curse from what??\n", pc);
-          return;
+         show("Remove curse from what??\n", pc);
+         return;
        }//else
      }//else
      /* if here then have a valid object */
      do_cast_remove_curse(*obj, pc, FALSE, 0);
    }//if
    else {
+     if (vict->isMob()) {
+       vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                          victim, pc.SEE_BIT);
+     }//if
      do_cast_remove_curse(*vict, pc, FALSE, 0);
    }//else
 }//cast_remove_curse
@@ -954,22 +1131,24 @@ void cast_curse(int i_th, const String* victim, critter& pc) {
    vict = ROOM.haveCritNamed(i_th, victim, pc);
 
    if (!vict) {
-     obj = pc.haveObjNamed(i_th, victim);
+     obj = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT, ROOM);
      if (obj) {
-       if (!obj->isModified()) {
-	 obj = obj_to_sobj(*obj, &(pc), TRUE, i_th, victim, pc);
+       if (!obj->IN_LIST) {
+         obj = obj_to_sobj(*obj, &(pc.inv), TRUE, i_th, victim,
+                           pc.SEE_BIT, ROOM);
        }//if
      }//if
      else {
-       obj = ROOM.haveObjNamed(i_th, victim, pc);
+       obj = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
        if (obj) {
-	 if (!obj->isModified()) {
-	   obj = obj_to_sobj(*obj, &(ROOM), TRUE, i_th, victim, pc);
-	 }//if
+         if (!obj->IN_LIST) {
+           obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, victim,
+                             pc.SEE_BIT, ROOM);
+         }//if
        }//if
        else {
-	 show("Curse what??\n", pc);
-	 return;
+         show("Curse what??\n", pc);
+         return;
        }//else
      }//else
      /* if here then have a valid object */
@@ -979,6 +1158,10 @@ void cast_curse(int i_th, const String* victim, critter& pc) {
      do_cast_curse(*obj, pc, FALSE, 0);
    }//if
    else {
+     if (vict->isMob()) {
+       vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                          victim, pc.SEE_BIT);
+     }//if
      if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
        return;
      }//if
@@ -991,7 +1174,7 @@ void do_cast_curse(critter& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);
    short did_hit = TRUE;
    int spell_num = CURSE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -999,51 +1182,52 @@ void do_cast_curse(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if ((is_canned && (did_hit = 
-		      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
+                      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
 
      if (ptr) {
-       ptr->duration += lvl / 3;
+       ptr->bonus_duration += lvl / 3;
        show("Ok.\n", agg);
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl/2 + 5));
+       Put(new stat_spell_cell(spell_num, lvl/2 + 5), 
+           vict.affected_by);
        vict.STR += CURSE_STR_EFFECT;
        vict.MA_REGEN += CURSE_MA_REGEN_EFFECT;
 
        if (&vict == &agg) {
-	 show("You feel cursed!\n", agg);
+         show("You feel cursed!\n", agg);
        }//if
        else {
-	 Sprintf(buf, "You lay a curse on %S!\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S lays a curse on you!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "lays a curse on %S!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You lay a curse on %S!\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S lays a curse on you!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "lays a curse on %S!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else if (!did_hit) {
      Sprintf(buf, "Your curse does not stick to %S!\n", 
-	     name_of_crit(vict, agg.SEE_BIT));
+             name_of_crit(vict, agg.SEE_BIT));
      show(buf, agg);
      Sprintf(buf, "%S tries and fails to lay a curse on you!\n", 
-	     name_of_crit(agg, vict.SEE_BIT));
+             name_of_crit(agg, vict.SEE_BIT));
      buf.Cap();
      show(buf, vict);
      Sprintf(buf, "fails to lay a curse on %S!",
-	     name_of_crit(vict, ~0));
+             name_of_crit(vict, ~0));
      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
    }//if didn't hit
    else { //not canned && LOST concentration
@@ -1060,7 +1244,7 @@ void do_cast_curse(critter& vict, critter& agg, int is_canned, int lvl) {
 void do_cast_curse(object& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);
    int spell_num = CURSE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -1069,25 +1253,26 @@ void do_cast_curse(object& vict, critter& agg, int is_canned, int lvl) {
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
 
      if (ptr) {
-       ptr->duration += lvl / 3;
+       ptr->bonus_duration += lvl / 3;
        show("Ok.\n", agg);
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl/2 + 5));
+       Put(new stat_spell_cell(spell_num, lvl/2 + 5), 
+           vict.affected_by);
        vict.OBJ_FLAGS.turn_on(5); //no_drop
 
        Sprintf(buf, "You lay a curse on %S!\n", 
-	       long_name_of_obj(vict, agg.SEE_BIT));
+               long_name_of_obj(vict, agg.SEE_BIT));
        show(buf, agg);
 
        Sprintf(buf, "lays a curse on %S!",
-	       long_name_of_obj(vict, ~0));
+               long_name_of_obj(vict, ~0));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
      }//else
    }//if worked
@@ -1101,12 +1286,11 @@ void do_cast_curse(object& vict, critter& agg, int is_canned, int lvl) {
    agg.PAUSE += 1; 
 }//do_cast_curse (obj)
 
-
 void do_cast_blindness(critter& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);
    short did_hit = TRUE;
    int spell_num = BLINDNESS_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -1114,56 +1298,57 @@ void do_cast_blindness(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if ((is_canned && (did_hit = 
-		      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
+                      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
 
      if (ptr) {
-       ptr->duration += lvl / 3;
+       ptr->bonus_duration += lvl / 3;
        show("Ok.\n", agg);
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl/2));
+       Put(new stat_spell_cell(spell_num, lvl/2), 
+           vict.affected_by);
        vict.SEE_BIT &= ~(1024); //turn off the flag
 
        if (&vict == &agg) {
-	 show("You have been blinded!\n", agg);
+         show("You have been blinded!\n", agg);
        }//if
        else {
-	 Sprintf(buf, "You blind %S!\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S blinds you!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "blinds %S!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You blind %S!\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S blinds you!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "blinds %S!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else if (!did_hit) {
      Sprintf(buf, "You fail to blind %S!\n", 
-	     name_of_crit(vict, agg.SEE_BIT));
+             name_of_crit(vict, agg.SEE_BIT));
      show(buf, agg);
      Sprintf(buf, "%S fails to blind you!\n", 
-	     name_of_crit(agg, vict.SEE_BIT));
+             name_of_crit(agg, vict.SEE_BIT));
      buf.Cap();
      show(buf, vict);
      Sprintf(buf, "fails to blind %S!",
-	     name_of_crit(vict, ~0));
+             name_of_crit(vict, ~0));
      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
    }//if missed
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("feels a little weak in the head!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);       
+           room_list[agg.getCurRoomNum()], TRUE);       
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -1182,6 +1367,11 @@ void cast_blindness(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+              victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSVN", spell_num, pc)) {
      return;
    }//if
@@ -1194,7 +1384,7 @@ void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);
    short did_hit = TRUE;
    int spell_num = WEAKEN_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -1202,56 +1392,57 @@ void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if ((is_canned && (did_hit = 
-		      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
+                      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
      
      if (!is_canned)
        agg.MANA -= spell_mana;
 
      if (ptr) {
-       ptr->duration += lvl / 3;
+       ptr->bonus_duration += lvl / 3;
        show("Ok.\n", agg);
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl/2));
+       Put(new stat_spell_cell(spell_num, lvl/2), 
+           vict.affected_by);
        vict.STR += WEAKEN_EFFECT;
 
        if (&vict == &agg) {
-	 show("You feel weaker!\n", agg);
+         show("You feel weaker!\n", agg);
        }//if
        else {
-	 Sprintf(buf, "You drain some of %S's strength!\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S drains your strength!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "drains %S's strength!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You drain some of %S's strength!\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S drains your strength!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "drains %S's strength!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else if (!did_hit) {
      Sprintf(buf, "You fail to drain some of %S's strength!\n", 
-	     name_of_crit(vict, agg.SEE_BIT));
+             name_of_crit(vict, agg.SEE_BIT));
      show(buf, agg);
      Sprintf(buf, "%S fails to drain your strength!\n", 
-	     name_of_crit(agg, vict.SEE_BIT));
+             name_of_crit(agg, vict.SEE_BIT));
      buf.Cap();
      show(buf, vict);
      Sprintf(buf, "fails to drain %S's strength!",
-	     name_of_crit(vict, ~0));
+             name_of_crit(vict, ~0));
      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
    }//did_hit
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("feels a little weak in the head!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);       
+           room_list[agg.getCurRoomNum()], TRUE);       
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -1270,6 +1461,11 @@ void cast_weaken(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+              victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSVN", spell_num, pc)) {
      return;
    }//if
@@ -1282,7 +1478,7 @@ void cast_weaken(int i_th, const String* victim, critter& pc) {
 void do_cast_fly(critter& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);
    int spell_num = FLY_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -1290,41 +1486,42 @@ void do_cast_fly(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->duration += lvl/3;
+       ptr->bonus_duration += lvl/3;
        show("Ok.\n", agg);
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl/2 + 5));
+       Put(new stat_spell_cell(spell_num, lvl/2 + 5), 
+           vict.affected_by);
        vict.CRIT_FLAGS.turn_on(3);
 
        if (&vict == &agg) {
-	 show("Your feet leave the ground and only the wind slows you down!", 
-	      agg);
+         show("Your feet leave the ground and only the wind slows you down!", 
+              agg);
        }//if
        else {
-	 Sprintf(buf, "You cause %S to start flying.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S causes you to start flying!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "causes %S to start flying!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You cause %S to start flying.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S causes you to start flying!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "causes %S to start flying!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -1343,6 +1540,11 @@ void cast_fly(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                        victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1355,7 +1557,7 @@ void cast_fly(int i_th, const String* victim, critter& pc) {
 void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);
    int spell_num = HASTE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -1363,7 +1565,7 @@ void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
@@ -1376,37 +1578,38 @@ void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
      }//if
 
      if (ptr) {
-       ptr->duration += lvl/4 + 2;
+       ptr->bonus_duration += lvl/4 + 2;
        show("Ok.\n", agg);
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl/4 + 4));
+       Put(new stat_spell_cell(spell_num, lvl/4 + 4), 
+           vict.affected_by);
        vict.ATTACKS++;
 
        if (&vict == &agg) {
-	 show("Your reflexes are taken to a whole new level!\n", 
-	      agg);
-	 emote("moves with a quickness quite unlike before!\n", agg,
-	       room_list[agg.getCurRoomNum()], TRUE);
+         show("Your reflexes are taken to a whole new level!\n", 
+              agg);
+         emote("moves with a quickness quite unlike before!\n", agg,
+               room_list[agg.getCurRoomNum()], TRUE);
        }//if
        else {
-	 Sprintf(buf, "You hasten %S's movement.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S hastens your movements!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "hastens %S's movements!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You hasten %S's movement.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S hastens your movements!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "hastens %S's movements!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -1425,6 +1628,11 @@ void cast_haste(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                        victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1436,105 +1644,179 @@ void cast_haste(int i_th, const String* victim, critter& pc) {
 
 
 void do_cast_dispel_magic(critter& vict, critter& agg, int is_canned,
-			   int lvl) {
+                           int lvl) {
    String buf(100);
    int spell_num = DISPEL_MAGIC_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
-   int do_join_in_battle = FALSE;
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
-
+   
    if (!is_canned)
-     lvl = agg.LEVEL;
+      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     do_join_in_battle = TRUE;
+      
+      int mana_count = 0;
+      Cell<stat_spell_cell*> cll(vict.affected_by);
+      stat_spell_cell* ptr;
+      
+      while ((ptr = cll.next())) {
+         mana_count += get_mana_cost(ptr->stat_spell);
+         rem_effects_crit(ptr->stat_spell, vict, TRUE);
+      }//while
+      vict.affected_by.clearAndDestroy();
+      
+      if (!is_canned && (agg.pc) && (agg.MANA < mana_count * 2)
+          && d(1,4) == 4) {
+         show("You try to absorb too much power and part of your memory is erased!\n",
+              agg);
+         int tmp;
+         if (agg.SKILLS_KNOWN.Min(tmp)) {
+            int p_learned = get_percent_lrnd(tmp, agg);
+            if (p_learned != -1) {
+               int new_p_learned = max(p_learned - d(1,25), 1);
+               agg.SKILLS_KNOWN.Insert(tmp, new_p_learned);
+            }//if
+         }//find a psuedo random one
+      }//if
 
-     int mana_count = 0;
-     Cell<SpellDuration*> cll(vict.getAffectedBy());
-     SpellDuration* ptr;
-
-     while ((ptr = cll.next())) {
-       mana_count += get_mana_cost(ptr->spell);
-       rem_effects_crit(ptr->spell, vict, TRUE);
-     }//while
-     vict.getAffectedBy().clearAndDestroy();
-     
-     if ((agg.pc) && (agg.MANA < mana_count * 2) && d(1,4) == 4) {
-       show(
-     "You try to absorb too much power and part of your memory is erased!\n",
-     agg);
-       int tmp;
-       if (agg.SKILLS_KNOWN.Min(tmp))
-	 agg.SKILLS_KNOWN.Delete(tmp);
-     }//if
-
-     if (!is_canned) {
-       agg.MANA -= mana_count;
-       if (agg.MANA < 0)
-	 agg.MANA = 0;
-     }//if
-
-     if (&vict == &agg) {
-       show("You are purged of all your magic!\n", 
-	    agg);
-       Sprintf(buf, "has been stripped of all %s magic!", get_his_her(vict));
-       emote(buf, vict, room_list[vict.getCurRoomNum()], TRUE);
-     }//if
-     else {
-       Sprintf(buf, "You remove %S's magical protection.\n", 
-	       name_of_crit(vict, agg.SEE_BIT));
-       show(buf, agg);
-       Sprintf(buf, "%S removes your magical protection!\n", 
-	       name_of_crit(agg, vict.SEE_BIT));
-       buf.Cap();
-       show(buf, vict);
-       Sprintf(buf, "removes %S's magical protection!",
-	       name_of_crit(vict, ~0));
-       emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-     }//else
+      if (!is_canned) {
+         agg.MANA -= mana_count;
+         if (agg.MANA < 0)
+            agg.MANA = 0;
+      }//if
+      
+      if (&vict == &agg) {
+         show("You are purged of all your magic!\n", 
+              agg);
+         Sprintf(buf, "has been stripped of all %s magic!", get_his_her(vict));
+         emote(buf, vict, room_list[vict.getCurRoomNum()], TRUE);
+      }//if
+      else {
+         Sprintf(buf, "You remove %S's magical protection.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S removes your magical protection!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "removes %S's magical protection!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+      }//else
    }//if worked
    else { //not canned && LOST concentration
-     show(LOST_CONCENTRATION_MSG_SELF, agg);
-     emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);       
-     if (!is_canned)
-       agg.MANA -= spell_mana / 2;
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
+      emote("obviously forgot part of the spell!", agg, 
+            room_list[agg.getCurRoomNum()], TRUE);       
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
    }//else lost concentration
-
-   if (do_join_in_battle) {
-     if (!vict.isFighting(agg)) {
-       join_in_battle(vict, agg);
-     }//if
-   }//if
-   agg.incrementPause(1);
+   
+   agg.PAUSE += 1;   // increment pause_count
 }//do_cast_dispel_magic
  
 
+void do_cast_dispel_magic(object& vict, critter& agg, int is_canned, int lvl) {
+   String buf(100);
+   int spell_num = DISPEL_MAGIC_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, agg);
+
+   int lost_con = FALSE;
+   
+   if (!is_canned)
+      lvl = agg.LEVEL;
+   
+   if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
+      int mana_count = 0;
+      Cell<stat_spell_cell*> cll(vict.affected_by);
+      stat_spell_cell* ptr;
+      
+      while ((ptr = cll.next())) {
+         mana_count += get_mana_cost(ptr->stat_spell);
+         rem_effects_obj(ptr->stat_spell, vict);
+      }//while
+      vict.affected_by.clearAndDestroy();
+      
+      if (!is_canned && (agg.pc) && (agg.MANA < mana_count * 2)
+          && d(1,4) == 4) {
+         show(
+            "You try to absorb too much power and part of your memory is erased!\n",
+            agg);
+         int tmp;
+         if (agg.SKILLS_KNOWN.Min(tmp)) {
+            int p_learned = get_percent_lrnd(tmp, agg);
+            if (p_learned != -1) {
+               int new_p_learned = max(p_learned - d(1,25), 1);
+               agg.SKILLS_KNOWN.Insert(tmp, new_p_learned);
+            }//if
+         }//find a psuedo random one
+      }//if
+
+      if (!is_canned) {
+         agg.MANA -= mana_count;
+         if (agg.MANA < 0)
+            agg.MANA = 0;
+      }//if
+      
+      Sprintf(buf, "You remove %S's magical protection.\n", 
+              name_of_obj(vict, agg.SEE_BIT));
+      show(buf, agg);
+      buf.Cap();
+      Sprintf(buf, "removes %S's magical protection!",
+              name_of_obj(vict, ~0));
+      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+   }//if worked
+   else { //not canned && LOST concentration
+      show(LOST_CONCENTRATION_MSG_SELF, agg);
+      emote("obviously forgot part of the spell!", agg, 
+            room_list[agg.getCurRoomNum()], TRUE);       
+      if (!is_canned)
+         agg.MANA -= spell_mana / 2;
+   }//else lost concentration
+   
+   agg.PAUSE += 1;   // increment pause_count
+} // do_cast_dispel_magic
+
 void cast_dispel_magic(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
+   object*  targ = NULL;
    int spell_num = DISPEL_MAGIC_SKILL_NUM;
 
    vict = ROOM.haveCritNamed(i_th, victim, pc);
 
-   if (!vict) {
-      show("Whom do you wish to free of their magic??\n", pc);
-      return;
-   }//if
+   if (ok_to_do_action(vict, "KSNV", spell_num, pc)) {
 
-   if (!ok_to_do_action(vict, "KSNV", spell_num, pc)) {
-     return;
-   }//if
-                 /* all checks have been passed, lets do it */
+      if (!vict) { //no critter found...
+         targ = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
 
-   do_cast_dispel_magic(*vict, pc, FALSE, 0);
+         if (targ) { //found an object
+            // so, cast it on an object, then
+            do_cast_dispel_magic(*targ, pc, FALSE, 0);
+         }//if found an object
+
+         else {// didn't find anything
+            show("What do you wish to purge of magic??\n", pc);
+         }//didn't find anything
+      }//if no critter found
+
+      else { //found a critter
+         if (vict->isMob()) {//is a mob
+            vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                              victim, pc.SEE_BIT);
+         }//if critter's a mob
+
+         // Okay, cast it on a critter then
+         do_cast_dispel_magic(*vict, pc, FALSE, 0);
+      } // else, found a critter
+   }//if
 }//do_cast_dispel_magic
 
 
 void do_cast_fireproof(critter& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);
    int spell_num = FIREPROOF_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -1542,41 +1824,42 @@ void do_cast_fireproof(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->duration += lvl/2 +5;
+       ptr->bonus_duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
+       Put(new stat_spell_cell(spell_num, lvl + 5), 
+           vict.affected_by);
        vict.HEAT_RESIS += FIRE_PROOF_EFFECT;
 
        if (&vict == &agg) {
-	 show("You feel almost immune from heat!\n", 
-	      agg);
+         show("You feel almost immune from heat!\n", 
+              agg);
        }//if
        else {
-	 Sprintf(buf, "You lend protection from fire to %S.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S protects you from excessive heat!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "lends %S some protection from fire!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You lend protection from fire to %S.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S protects you from excessive heat!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "lends %S some protection from fire!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -1595,6 +1878,11 @@ void cast_fireproof(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                        victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1606,10 +1894,10 @@ void cast_fireproof(int i_th, const String* victim, critter& pc) {
 
 
 void do_cast_magic_shield(critter& vict, critter& agg, int is_canned,
-			  int lvl) {
+                          int lvl) {
    String buf(100);    
    int spell_num = MAGIC_SHIELD_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -1617,40 +1905,43 @@ void do_cast_magic_shield(critter& vict, critter& agg, int is_canned,
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->duration += lvl/2;
+       ptr->bonus_duration += lvl/2;
        show("Ok.\n", agg);
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl));
+       Put(new stat_spell_cell(spell_num, lvl), 
+           vict.affected_by);
+       vict.AC += MAGIC_SHIELD_AC_EFFECT;
+       vict.SPEL_RESIS += MAGIC_SHIELD_SAC_EFFECT;
 
        if (&vict == &agg) {
-	 show("A magical shield forms around you!\n", 
-	      agg);
+         show("A magical shield forms around you!\n", 
+              agg);
        }//if
        else {
-	 Sprintf(buf, "You envelop %S in a magical shield.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S envelops you in a magical shield!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "envelops %S in a magical shield!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You envelop %S in a magical shield.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S envelops you in a magical shield!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "envelops %S in a magical shield!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -1669,6 +1960,11 @@ void cast_magic_shield(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                        victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1682,7 +1978,7 @@ void do_cast_sanctuary(critter& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);
     
    int spell_num = SANCTUARY_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -1690,44 +1986,49 @@ void do_cast_sanctuary(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     stat_spell_cell* sptr = is_affected_by(STONE_SKIN_SKILL_NUM, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->duration += lvl/2 +5;
+       ptr->bonus_duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
      else if (vict.DAM_REC_MOD <= 70) {
        show("You can protect them no better!\n", agg);
      }//if
+     else if (sptr) {
+        agg.show("Sanctuary cannot be used with Stone skin.\n");
+     }
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
+       Put(new stat_spell_cell(spell_num, lvl + 5), 
+           vict.affected_by);
        vict.DAM_REC_MOD += SANCTUARY_EFFECT_DRM;
 
        if (&vict == &agg) {
-	 show("You are protected by a glowing white light!\n", 
-	      agg);
+         show("You are protected by a glowing white light!\n", 
+              agg);
        }//if
        else {
-	 Sprintf(buf, "You surround %S with a protective white light.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S surrounds you with a protective white light!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "surrounds %S with a protective white light!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You surround %S with a protective white light.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S surrounds you with a protective white light!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "surrounds %S with a protective white light!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -1746,6 +2047,11 @@ void cast_sanctuary(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                        victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1756,10 +2062,10 @@ void cast_sanctuary(int i_th, const String* victim, critter& pc) {
 
 
 void do_cast_prismatic_globe(critter& vict, critter& agg, int is_canned,
-			     int lvl) {
+                             int lvl) {
    String buf(100);    
    int spell_num = PRISMATIC_GLOBE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -1767,35 +2073,36 @@ void do_cast_prismatic_globe(critter& vict, critter& agg, int is_canned,
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->duration += lvl/2;
+       ptr->bonus_duration += lvl/2;
        show("You strengthen the globe.\n", agg);
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
+       Put(new stat_spell_cell(spell_num, lvl + 5), 
+           vict.affected_by);
        vict.AC += PRISMATIC_GLOBE_EFFECT_AC;
        vict.MOV += PRISMATIC_GLOBE_EFFECT_MOV;
 
        if (&vict == &agg) {
-	 show("An almost impermeable globe surrounds you!\n", 
-	      agg);
+         show("An almost impermeable globe surrounds you!\n", 
+              agg);
        }//if
        else {
-	 Sprintf(buf, "You surround %S with a prismatic globe.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S surrounds you with a prismatic globe!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "surrounds %S with a prismatic globe!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You surround %S with a prismatic globe.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S surrounds you with a prismatic globe!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "surrounds %S with a prismatic globe!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
@@ -1821,6 +2128,11 @@ void cast_prismatic_globe(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                        victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1834,7 +2146,7 @@ void cast_prismatic_globe(int i_th, const String* victim, critter& pc) {
 void do_cast_stone_skin(critter& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);    
    int spell_num = STONE_SKIN_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -1842,45 +2154,50 @@ void do_cast_stone_skin(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
+     stat_spell_cell* sptr = is_affected_by(SANCTUARY_SKILL_NUM, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->duration += lvl/2 +5;
+       ptr->bonus_duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
      else if (vict.DAM_REC_MOD <= 40) {
-       show("You can protect them no better!\n", agg);
+        show("You can protect them no better!\n", agg);
      }//if
+     else if (sptr) {
+        agg.show("Stone skin cannot be used with Sanctuary.\n");
+     }
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
+       Put(new stat_spell_cell(spell_num, lvl + 5), 
+           vict.affected_by);
        vict.DAM_REC_MOD += STONE_SKIN_EFFECT_DRM;
        vict.DEX += STONE_SKIN_EFFECT_DEX;
 
        if (&vict == &agg) {
-	 show("Your skin turns as hard as stone!\n", 
-	      agg);
+         show("Your skin turns as hard as stone!\n", 
+              agg);
        }//if
        else {
-	 Sprintf(buf, "You turn %S's skin as hard as stone.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S turns you skin as hard as stone!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "turns %S's skin as hard as stone!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You turn %S's skin as hard as stone.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S turns you skin as hard as stone!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "turns %S's skin as hard as stone!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -1899,6 +2216,11 @@ void cast_stone_skin(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                        victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1911,7 +2233,7 @@ void cast_stone_skin(int i_th, const String* victim, critter& pc) {
 void do_cast_armor(critter& vict, critter& agg, int is_canned, int lvl) {
    String buf(100);
    int spell_num = ARMOR_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -1919,23 +2241,26 @@ void do_cast_armor(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->duration += lvl/2 +5;
+       ptr->bonus_duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
-     else if ((ptr = vict.isAffectedBy(DIVINE_PROTECTION_SKILL_NUM))) {
+     else if ((ptr = is_affected_by(DIVINE_PROTECTION_SKILL_NUM,
+                                    vict))) {
        show("You are already protected by divine protection.\n",
             agg); //can't be affected by both at once
      }//if divine_protection already
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
+       Put(new stat_spell_cell(spell_num, lvl + 5), 
+           vict.affected_by);
 
        vict.AC += ARMOR_EFFECT;
+       vict.SPEL_RESIS += ARMOR_EFFECT_M;
 
        if (&vict == &agg) {
           show("You feel better protected!\n", 
@@ -1944,23 +2269,23 @@ void do_cast_armor(critter& vict, critter& agg, int is_canned, int lvl) {
           emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, NULL);
        }//if
        else {
-	 Sprintf(buf, "You lend protection to %S.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S protects you!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "lends %S some divine protection!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You lend protection to %S.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S protects you!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "lends %S some divine protection!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -1979,6 +2304,11 @@ void cast_armor(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                        victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -1990,10 +2320,10 @@ void cast_armor(int i_th, const String* victim, critter& pc) {
 
 
 void do_cast_absorb_blows(critter& vict, critter& agg, int is_canned,
-			  int lvl) {
+                          int lvl) {
    String buf(100);    
    int spell_num = ABSORB_BLOWS_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -2001,43 +2331,44 @@ void do_cast_absorb_blows(critter& vict, critter& agg, int is_canned,
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->duration += lvl/2;
+       ptr->bonus_duration += lvl/2;
        show("Ok.\n", agg);
      }//if
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl));
+       Put(new stat_spell_cell(spell_num, lvl), 
+           vict.affected_by);
 
        if (&vict == &agg) {
-	 show(
+         show(
 "You weave an interdimensional lattice of magical streams around yourself!\n", 
-	      agg);
+              agg);
        }//if
        else {
-	 Sprintf(buf, 
-		 "You wrap %S in an interdimensional lattice of power.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, 
-		 "%S wraps you in an interdimensional lattice of power!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "wraps %S in an interdimensional lattice of power!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, 
+                 "You wrap %S in an interdimensional lattice of power.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, 
+                 "%S wraps you in an interdimensional lattice of power!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "wraps %S in an interdimensional lattice of power!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -2060,10 +2391,10 @@ void cast_absorb_blows(critter& pc) {
 
 
 void do_cast_divine_protection(critter& vict, critter& agg, int is_canned,
-			       int lvl) {
+                               int lvl) {
    String buf(100);
    int spell_num = DIVINE_PROTECTION_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    int lost_con = FALSE;
 
@@ -2071,44 +2402,45 @@ void do_cast_divine_protection(critter& vict, critter& agg, int is_canned,
      lvl = agg.LEVEL;
 
    if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) { 
-     SpellDuration* ptr = vict.isAffectedBy(spell_num);
+     stat_spell_cell* ptr = is_affected_by(spell_num, vict);
 
      if (!is_canned)
        agg.MANA -= spell_mana;
      
      if (ptr) {
-       ptr->duration += lvl/2 +5;
+       ptr->bonus_duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
-     else if ((ptr = vict.isAffectedBy(ARMOR_SKILL_NUM))) {
+     else if ((ptr = is_affected_by(ARMOR_SKILL_NUM, vict))) {
        show("Ok.\n", agg); //can't be affected by both at once
      }//if armored already
      else {
-        vict.addAffectedBy(new SpellDuration(spell_num, lvl + 5));
+       Put(new stat_spell_cell(spell_num, lvl + 5), 
+           vict.affected_by);
        vict.AC += DIVINE_PROTECTION_EFFECT;
 
        if (&vict == &agg) {
-	 show("You feel much better protected!\n", 
-	      agg);
+         show("You feel much better protected!\n", 
+              agg);
        }//if
        else {
-	 Sprintf(buf, "You lend divine protection to %S.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, "%S protects you with divine forces!\n", 
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "lends %S some divine protection!",
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         Sprintf(buf, "You lend divine protection to %S.\n", 
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S protects you with divine forces!\n", 
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "lends %S some divine protection!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else { //not canned && LOST concentration
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote("obviously forgot part of the spell!", agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
@@ -2127,6 +2459,11 @@ void cast_divine_protection(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+     vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                        victim, pc.SEE_BIT);
+   }//if
+   
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
@@ -2138,15 +2475,17 @@ void cast_divine_protection(int i_th, const String* victim, critter& pc) {
 
 
 void do_locate_object(object &obj, const String* targ, critter& pc,
-		      int rm_num, int sanity, int lvl) {
+                      int rm_num, int sanity, int lvl) {
+   obj_ptr_log << "OBJ_LOC " << &obj << endl;
+
    if ((sanity > 10) || 
        !detect(pc.SEE_BIT, 
                room_list[rm_num].getVisBit() | obj.OBJ_VIS_BIT)) {
       return;
-  }//if
+   }//if
 
-   if (!obj.getInv().isEmpty()) {
-      SCell<object*> cll(obj.inv);
+   if (!IsEmpty(obj.inv)) {
+      Cell<object*> cll(obj.inv);
       object* ptr;
       while ((ptr = cll.next())) {
          do_locate_object(*ptr, targ, pc, rm_num, sanity + 1, lvl);
@@ -2162,11 +2501,11 @@ void do_locate_object(object &obj, const String* targ, critter& pc,
             if (pc.isImmort()) {
                Sprintf(buf, "ROOM: %i  [%i]%S:  %P40%S.\n", rm_num,
                        obj.getIdNum(), long_name_of_obj(obj, ~0),
-                       room_list[rm_num].getShortDesc(&pc));
+                       &(room_list[rm_num].short_desc));
             }
             else {
                Sprintf(buf, "%S:  %P40%S.\n", long_name_of_obj(obj, ~0),
-                       room_list[rm_num].getShortDesc(&pc));
+                       &(room_list[rm_num].short_desc));
             }
 
             buf.Cap();
@@ -2178,15 +2517,15 @@ void do_locate_object(object &obj, const String* targ, critter& pc,
 
 
 void do_locate_object(critter &crit, const String* targ, critter& pc,
-		      int rm_num, int sanity, int lvl) {
+                      int rm_num, int sanity, int lvl) {
    if ((sanity > 10) || 
        !detect(pc.SEE_BIT, 
                room_list[rm_num].getVisBit() | crit.VIS_BIT)) {
       return;
    }//if
    
-   if (!crit.getInv().isEmpty()) {
-      SCell<object*> cll(crit.inv);
+   if (!IsEmpty(crit.inv)) {
+      Cell<object*> cll(crit.inv);
       object* ptr;
       while ((ptr = cll.next())) {
          do_locate_object(*ptr, targ, pc, rm_num, sanity + 1, lvl);
@@ -2199,3 +2538,89 @@ void do_locate_object(critter &crit, const String* targ, critter& pc,
       }//if
    }//for
 }//do locate object (critter)
+
+//added by aasen
+void cast_sober(int i_th, const String* victim, critter& pc) {
+   critter* vict = NULL;
+   int spell_num = SOBER_SKILL_NUM;
+
+   vict = ROOM.haveCritNamed(i_th, victim, pc);
+
+   if (!vict) {
+      show("Whom do you wish to sober??\n", pc);
+      return;
+   }//if
+
+   if (!vict->isPc()) {
+      pc.show("No need to sober this one up...\n");
+      return;
+   }
+
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
+     return;
+   }//if
+
+                 /* all checks have been passed, lets do it */
+   do_cast_sober(*vict, pc, FALSE, 0);
+}//cast_sober
+
+
+//added by aasen
+void do_cast_sober(critter& vict, critter& agg, int is_canned, int lvl) {
+   String buf(100);
+   int spell_num = SOBER_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, agg);
+
+   int lost_con = FALSE;
+
+   if (!vict.isPc()) {
+      return;
+   }
+
+   if (!is_canned)
+     lvl = agg.LEVEL;
+
+   if (is_canned || !(lost_con = lost_concentration(agg, spell_num))) {
+	
+     if (!is_canned)
+       agg.MANA -= spell_mana;
+
+     if (vict.DRUGGED < 1) {
+       show("That person is not drugged.\n", agg);
+     }//if
+     else {
+       if (&vict == &agg) {
+	  vict.DRUGGED = -2;
+          show("You feel great except for a splitting headache!\n",
+               agg);
+          Sprintf(buf, "clears %s head.", get_himself_herself(agg));
+          emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, NULL);
+       }//if
+       else {
+	 agg.DRUGGED = vict.DRUGGED;
+   	 vict.DRUGGED = -2;
+         Sprintf(buf, "You take the drugs from %S.\n",
+                 name_of_crit(vict, agg.SEE_BIT));
+         show(buf, agg);
+         Sprintf(buf, "%S absorbs your minds poison!\n",
+                 name_of_crit(agg, vict.SEE_BIT));
+         buf.Cap();
+         show(buf, vict);
+         Sprintf(buf, "%S absorbs some mind poison!",
+                 name_of_crit(vict, ~0));
+         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+       }//else
+     }//else
+   }//if worked
+   else { //not canned && LOST concentration
+     show(LOST_CONCENTRATION_MSG_SELF, agg);
+     emote("obviously forgot part of the spell!", agg,
+           room_list[agg.getCurRoomNum()], TRUE);
+     if (!is_canned)
+       agg.MANA -= spell_mana / 2;
+   }//else lost concentration
+   agg.PAUSE += 1;   // increment pause_count
+}//do_cast_sober
+
+
+

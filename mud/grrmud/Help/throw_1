@@ -1,7 +1,8 @@
 <help battle throw>
 
-Attempt to throw a person out of the room in some direction.  This is
-not considered a friendly act by most people!
+Attempt to throw an object at a person in another room.  This is
+not considered a friendly act by most people!  You will throw
+whatever you are holding or wielding.
 
 Syntax:  throw <<i_th> [direction] <<j_th> [critter]
 

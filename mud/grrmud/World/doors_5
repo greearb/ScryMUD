@@ -1,0 +1,18 @@
+25	Start of Door Data
+1024 25 0 0 5	vbit, door#, token#, key#
+10 9 8 2 -1  -:| bitfield |:-
+west door # door east ~	names
+This is a wooden door.
+
+~
+
+104	Start of Door Data
+1024 104 0 0 5	vbit, door#, token#, key#
+18 16 13 10 9 8 2 -1  -:| bitfield |:-
+south vines briars # vines briars north ~	names
+You see an impenetrable wall of briars and vines.
+
+~
+
+
+-1 END OF DOOR FILE

@@ -1,5 +1,5 @@
-// $Id: rm_spll.cc,v 1.5 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: rm_spll.cc,v 1.6 2001/03/29 03:02:33 eroper Exp $
+// $Revision: 1.6 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
 
 //
 //ScryMUD Server Code
@@ -39,7 +39,7 @@
 
 void cast_portal(int i_th, const String* dr, critter& pc) {
    int spell_num = PORTAL_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
    critter* targ;
    
                        /* check out pc */
@@ -71,6 +71,11 @@ void cast_portal(int i_th, const String* dr, critter& pc) {
       pc.show("You may not enter that room by magical means!\n");
       return;
    }
+   
+   if (targ->getCurRoom()->isNoMagExit()) {
+      pc.show("Powerful energies force your portal closed from the other side.\n");
+      return;
+   }
 
    do_cast_portal(room_list[targ->getCurRoomNum()], pc, FALSE, 0);
 }//cast_portal
@@ -79,7 +84,7 @@ void cast_portal(int i_th, const String* dr, critter& pc) {
 void do_cast_portal(room& rm, critter& agg, int is_canned,
                         int lvl) {
    int spell_num = PORTAL_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
    String buf(100);
    short do_effects = FALSE;
  
@@ -93,17 +98,17 @@ void do_cast_portal(room& rm, critter& agg, int is_canned,
 
    if (is_canned || !lost_concentration(agg, spell_num)) {
       if (!is_canned)
-	agg.MANA -= spell_mana;
+        agg.MANA -= spell_mana;
       do_effects = TRUE;
       show("A shimmering portal opens before you!\n", agg); 
       emote("opens a shimmering portal to...somewhere!", agg, 
-	    room_list[agg.getCurRoomNum()], TRUE);
-      rm.showAllCept(CS_PORTAL_OPENS_BEFORE_YOU);
+            room_list[agg.getCurRoomNum()], TRUE);
+      show_all("A portal opens up before you!!\n", rm); 
    }//if canned
    else {//lost con
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else !canned
@@ -112,9 +117,9 @@ void do_cast_portal(room& rm, critter& agg, int is_canned,
 
    if (do_effects) {
      do_door_to(room_list[agg.getCurRoomNum()], rm, 0, agg, &NULL_STRING, 
-		GATE_DOOR_NUM);
+                config.gateDoor);
      do_door_to(rm, room_list[agg.getCurRoomNum()], 0, agg, &NULL_STRING, 
-		GATE_DOOR_NUM);
+                config.gateDoor);
    }//if
 }//do_cast_portal
 
@@ -122,7 +127,7 @@ void do_cast_portal(room& rm, critter& agg, int is_canned,
 
 void cast_gate(int i_th, const String* dr, critter& pc) {
    int spell_num = GATE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
    critter* targ;
    
                        /* check out pc */
@@ -161,7 +166,7 @@ void cast_gate(int i_th, const String* dr, critter& pc) {
 
 void do_cast_gate(room& rm, critter& agg, int is_canned, int lvl) {
    int spell_num = GATE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
    String buf(100);
    short do_effects = FALSE;
  
@@ -177,23 +182,23 @@ void do_cast_gate(room& rm, critter& agg, int is_canned, int lvl) {
 
    if (is_canned || !lost_concentration(agg, spell_num)) {
       if (!is_canned)
-	agg.MANA -= spell_mana;
+        agg.MANA -= spell_mana;
       do_effects = TRUE;
       show("A shimmering gate opens before you!\n", agg); 
       emote("opens a shimmering gate to...somewhere!", agg, 
-	    room_list[agg.getCurRoomNum()], TRUE); 
+            room_list[agg.getCurRoomNum()], TRUE); 
    }//if canned
    else {//lost con
      show(LOST_CONCENTRATION_MSG_SELF, agg);
      emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
-	   room_list[agg.getCurRoomNum()], TRUE);
+           room_list[agg.getCurRoomNum()], TRUE);
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else !canned
 
    if (do_effects) {
      do_door_to(room_list[agg.getCurRoomNum()], rm, 0, agg, &NULL_STRING, 
-		GATE_DOOR_NUM);
+                config.gateDoor);
    }//if
 }//do_cast_gate
 
@@ -201,7 +206,7 @@ void do_cast_gate(room& rm, critter& agg, int is_canned, int lvl) {
 
 void cast_distortion_wall(int i_th, const String* dr, critter& pc) {
    int spell_num = DISTORTION_WALL_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
    door* dptr;
    
                        /* check out pc */
@@ -218,7 +223,7 @@ void cast_distortion_wall(int i_th, const String* dr, critter& pc) {
       return;
    }//if
 
-   dptr = ROOM.findDoor(i_th, dr, pc);
+   dptr = door::findDoor(ROOM.DOORS, i_th, dr, pc.SEE_BIT, ROOM);
    if (!dptr) {
       show("You don't see that door.\n", pc);
       return;
@@ -232,7 +237,7 @@ void cast_distortion_wall(int i_th, const String* dr, critter& pc) {
 void do_cast_distortion_wall(door& dr, critter& agg, int is_canned,
                         int lvl) {
    int spell_num = DISTORTION_WALL_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
    String buf(100);
    short do_effects = FALSE;
    room* rm = &(room_list[agg.getCurRoomNum()]);
@@ -267,29 +272,27 @@ void do_cast_distortion_wall(door& dr, critter& agg, int is_canned,
    }//else !canned
 
    if (do_effects) {
-      door* dptr = door::findDoorByDest(room_list[abs(dr.getDestination())].DOORS, 
+      door* dptr = door::findDoorByDest(room_list[abs(dr.destination)].DOORS, 
                                         agg.getCurRoomNum());
       if (!dptr) {
-	 return;
+         return;
       }//if
-
-      SpellDuration* sp = dptr->isAffectedBy(spell_num);
+      stat_spell_cell* sp = dptr->isAffectedBy(spell_num);
       if (sp) {
-         sp->duration += (int)((float)(lvl) / 4.0);
+         sp->bonus_duration += (int)((float)(lvl) / 4.0);
       }//if
       else {
-         dptr->addAffectedBy(new SpellDuration(spell_num, lvl/3));
-         affected_doors.appendUnique(dptr); //add to global aff'd list
+         Put(new stat_spell_cell(spell_num, lvl/3), dptr->affected_by);
+         affected_doors.gainData(dptr); //add to global aff'd list
       }
 
       sp = dr.isAffectedBy(spell_num);
       if (sp) {
-         sp->duration += (int)((float)(lvl) / 4.0);
+         sp->bonus_duration += (int)((float)(lvl) / 4.0);
       }//if
       else {
-         dr.addAffectedBy(new SpellDuration(spell_num, lvl/3));
-         door* hack;
-         affected_doors.appendUnique(hack); //add to global aff'd list
+         Put(new stat_spell_cell(spell_num, lvl/3), dr.affected_by);
+         affected_doors.gainData(&dr); //add to global aff'd list
       }
    }//if
 }//do_cast_distortion_wall
@@ -308,12 +311,17 @@ void cast_firewall(critter& pc) {
 void do_cast_firewall(room& rm, critter& agg, int is_canned,
                         int lvl) {
    int spell_num = FIREWALL_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
    String buf(100);
    short do_effects = FALSE;
  
    if (room_list[agg.getCurRoomNum()].isNoMagic()) {
       show(NOT_IN_NOMAG_RM_MSG, agg);
+      return;
+   }//if
+
+   if (room_list[agg.getCurRoomNum()].isHaven()) {
+      show(NOT_IN_HAVEN_MSG, agg);
       return;
    }//if
 
@@ -324,8 +332,8 @@ void do_cast_firewall(room& rm, critter& agg, int is_canned,
 
    if (is_canned) {
       if (rm.isSmallWater() || rm.isBigWater()) { //if water
-	 show("There is nothing here to sustain a fire!\n", agg);
-	 return;
+         show("There is nothing here to sustain a fire!\n", agg);
+         return;
       }//if
       else {
          do_effects = TRUE;
@@ -336,15 +344,15 @@ void do_cast_firewall(room& rm, critter& agg, int is_canned,
    else {//not canned 
       if (!lost_concentration(agg, spell_num)) { 
          if (rm.isSmallWater() || rm.isBigWater()) { //if water
-   	    show("There is nothing here to sustain a fire!\n", agg);
-	    return;
+               show("There is nothing here to sustain a fire!\n", agg);
+            return;
          }//if
          else {
             do_effects = TRUE;
             show("A ring of flames rises up around you!\n", agg); 
             emote("calls forth a circle of flames.", agg, rm, TRUE); 
             agg.MANA -= spell_mana;
-	 }//else
+         }//else
       }//if ! lost concentration
       else { //lost concentration
          show(LOST_CONCENTRATION_MSG_SELF, agg);
@@ -354,42 +362,45 @@ void do_cast_firewall(room& rm, critter& agg, int is_canned,
    }//else !canned
 
    if (do_effects) {
-      SpellDuration* sp;
+      stat_spell_cell* sp;
 
-      SCell<door*> d_cll(rm.DOORS);
+      Cell<door*> d_cll(rm.DOORS);
       door* d_ptr;
       while ((d_ptr = d_cll.next())) {
-	 d_ptr = 
-            door::findDoorByDest(room_list[abs(d_ptr->getDestination())].DOORS,
-                                 rm.getRoomNum());
-	 if (!d_ptr) { 
-	    continue;
-	 }//if
+         d_ptr = door::findDoorByDest(room_list[abs(d_ptr->destination)].DOORS,
+                                      rm.getRoomNum());
+         if (!d_ptr) { 
+            continue;
+         }//if
+
          sp = d_ptr->isAffectedBy(spell_num);
          if (sp) {
-            sp->duration += (int)((float)(lvl) / 4.0);
+            sp->bonus_duration += (int)((float)(lvl) / 4.0);
          }//if
          else {
-            d_ptr->addAffectedBy(new SpellDuration(spell_num, lvl/3));
-            affected_doors.appendUnique(d_ptr); //add to global aff'd list
-	 }//if
+            Put(new stat_spell_cell(spell_num, lvl/3),
+                d_ptr->affected_by);
+            affected_doors.gainData(d_ptr); //add to global aff'd list
+         }//if
       }//while
    }//if
 
    if (do_effects) { //for doors leading out
-      SpellDuration* sp;
+      stat_spell_cell* sp;
 
-      SCell<door*> d_cll(rm.DOORS);
+      Cell<door*> d_cll(rm.DOORS);
       door* d_ptr;
       while ((d_ptr = d_cll.next())) {
+
          sp = d_ptr->isAffectedBy(spell_num);
          if (sp) {
-            sp->duration += (int)((float)(lvl) / 4.0);
+            sp->bonus_duration += (int)((float)(lvl) / 4.0);
          }//if
          else {
-            d_ptr->addAffectedBy(new SpellDuration(spell_num, lvl/3));
-            affected_doors.appendUnique(d_ptr); //add to global aff'd list
-	 }//if
+            Put(new stat_spell_cell(spell_num, lvl/3),
+                d_ptr->affected_by);
+            affected_doors.gainData(d_ptr); //add to global aff'd list
+         }//if
       }//while
    }//if
 }//do_cast_firewall

@@ -1,0 +1,745 @@
+56	 Start of Object
+wine ~	names
+some wine
+~
+Some wine sloshes around.
+~
+Some wine sloshes around in a bottle.
+
+~
+60 40 21 10 -1  -:| bitfield |:-
+1 0 100 0 1 1 0 0 1 	extras
+1024 10 56 41 	cur_stats
+-1	affected_by
+-1	inv
+101 2 102 5 -1	stat_affects
+End of Object.
+
+
+64	 Start of Object
+ale ~	names
+some ale
+~
+A salty, alcoholic yellow liquid sloshes around.
+~
+It doesn't look too interesting.  Some foam floats on the surface, and some
+little specs drift around in the liquid.
+
+~
+60 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 1 0 0 0 	extras
+1024 10 64 41 	cur_stats
+-1	affected_by
+-1	inv
+102 8 101 2 -1	stat_affects
+End of Object.
+
+
+68	 Start of Object
+gruel ~	names
+some gruel
+~
+A gelatinous lump of gruel lies here.
+~
+It is a pasty, food-like substance that will sustain you, but give you no
+pleasure.
+
+~
+61 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 1 0 0 0 	extras
+1024 8 68 41 	cur_stats
+-1	affected_by
+-1	inv
+101 -2 100 5 -1	stat_affects
+End of Object.
+
+
+71	 Start of Object
+shield wooden ~	names
+a wooden shield
+~
+A worn wooden shield lies on the ground.
+~
+It is assembled from planks of wood and fastened together with some tight rope
+and glue.
+
+~
+56 40 39 10 -1  -:| bitfield |:-
+0 0 100 0 1 5 0 0 0 	extras
+1024 100 71 41 	cur_stats
+-1	affected_by
+-1	inv
+9 -5 -1	stat_affects
+End of Object.
+
+
+77	 Start of Object
+wine bottle ~	names
+a bottle of wine
+~
+A bottle of wine lies here.
+~
+It is filled with some white wine.  It looks quite good, but you better not
+drink too much!
+
+~
+59 54 40 21 10 -1  -:| bitfield |:-
+4 0 100 0 1 1 0 0 1 	extras
+1024 100 77 41 	cur_stats
+9 -1  -:| bitfield |:-
+0 5 100 -1 	 bag_stuff
+-1	affected_by
+56 -1	inv
+-1	stat_affects
+End of Object.
+
+
+88	 Start of Object
+arrow wooden ~	names
+a wood-tipped arrow
+~
+A wooden arrow lies here.
+~
+It is small with feathers on one end and a wooden tip on the other.
+
+~
+49 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 3 1 0 	extras
+1024 20 88 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+92	 Start of Object
+boat ~	names
+a small boat
+~
+A small wooden boat lies here.
+~
+It is a small boat and can only hold one person.  It is made of wood and has a
+small sail.
+
+~
+62 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 80 0 0 1 	extras
+1024 1500 92 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+171	 Start of Object
+bottle ale ~	names
+a bottle of ale
+~
+A bottle of ale lies here.
+~
+It looks just about like any other alcoholic beverage in a bottle.  It's
+probably not too good for your health!
+
+~
+59 54 40 21 10 -1  -:| bitfield |:-
+2 0 100 0 1 1 0 0 0 	extras
+1024 65 171 41 	cur_stats
+-1  -:| bitfield |:-
+0 4 100 -1 	 bag_stuff
+-1	affected_by
+64 -1	inv
+-1	stat_affects
+End of Object.
+
+
+199	 Start of Object
+beer ~	names
+some beer
+~
+Some beer sloshes around.
+~
+Some beer sloshes around in a mug.
+
+~
+60 40 21 10 -1  -:| bitfield |:-
+1 0 100 0 1 1 0 0 1 	extras
+1024 10 199 41 	cur_stats
+-1	affected_by
+-1	inv
+101 3 102 3 -1	stat_affects
+End of Object.
+
+
+203	 Start of Object
+beer mug ~	names
+a mug of beer
+~
+A mug full of beer lies here.
+~
+It is almost full and foaming over the top.  Better not drink too much!
+
+~
+59 54 40 21 10 -1  -:| bitfield |:-
+4 0 100 0 1 1 0 0 1 	extras
+1024 30 203 41 	cur_stats
+9 -1  -:| bitfield |:-
+0 5 100 -1 	 bag_stuff
+-1	affected_by
+199 -1	inv
+-1	stat_affects
+End of Object.
+
+
+242	 Start of Object
+charm scroll ~	names
+a scroll of charm
+~
+An attractive scroll scribed on glossy paper lies here.
+~
+This scroll is the picture of elegance, you find yourself unable to resist
+unrolling and reading it aloud.  Oddly enough, noone else in the room seems to
+find it as interesting as you do.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 3500 242 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+178 25 -1 spell#, level (casts)
+End of Object.
+
+
+254	 Start of Object
+arrow stone flint ~	names
+a flint-tipped arrow
+~
+An arrow tipped with flint lies here.
+~
+It has feathers on one end and a pointy tip made of flint on the other.
+
+~
+49 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 3 2 0 	extras
+1024 50 254 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+256	 Start of Object
+arrow stone shale ~	names
+a shale-tipped arrow
+~
+An arrow tipped with shale lies here.
+~
+It is made of wood with feathers on the end and a tip made of shale.
+
+~
+49 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 3 3 0 	extras
+1024 100 256 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+257	 Start of Object
+arrow metal copper ~	names
+a copper-tipped arrow
+~
+A copper-tipped arrow lies here.
+~
+It is small and made of wood.  It is topped with a copper head.
+
+~
+49 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 3 4 0 	extras
+1024 200 257 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+258	 Start of Object
+arrow metal iron ~	names
+an iron-tipped arrow
+~
+An arrow tipped with iron lies here.
+~
+It is small and has an iron tip.
+
+~
+49 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 3 5 0 	extras
+1024 430 258 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+259	 Start of Object
+arrow metal brass ~	names
+a brass-tipped arrow
+~
+A brass-tipped arrow is lying here.
+~
+It is is made of wood and tipped with brass.
+
+~
+49 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 3 6 0 	extras
+1024 600 259 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+276	 Start of Object
+dagger ~	names
+a dagger
+~
+A dagger lies on the ground.
+~
+It doesn't look to be too deadly, but it could be useful nonetheless.
+
+~
+57 41 31 30 10 -1  -:| bitfield |:-
+0 0 100 0 1000 2 2 5 1 	extras
+1024 500 276 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+283	 Start of Object
+axe ~	names
+an axe
+~
+An axe lies on the ground.
+~
+It is relatively light and could be good for chopping things up.
+
+~
+57 42 41 30 10 -1  -:| bitfield |:-
+0 0 100 0 1000 10 3 4 1 	extras
+1024 600 283 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+286	 Start of Object
+ring ~	names
+a ring
+~
+A ring lies on the ground.
+~
+It is made of some sort of dull-looking metal and doesn't look like it's
+anything too special.
+
+~
+56 40 38 37 10 -1  -:| bitfield |:-
+0 0 100 0 1000 1 0 0 1 	extras
+1024 300 286 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+288	 Start of Object
+helmet ~	names
+a helmet
+~
+A helmet lies on the ground.
+~
+It's made of metal and could probably protect your head from whatever comes at
+it.
+
+~
+56 40 22 10 -1  -:| bitfield |:-
+0 0 100 0 1000 3 0 0 1 	extras
+1024 700 288 41 	cur_stats
+-1	affected_by
+-1	inv
+9 -5 -1	stat_affects
+End of Object.
+
+
+289	 Start of Object
+bow ~	names
+a wooden bow
+~
+A bow lies on the ground.
+~
+It looks to be strong and would probably be very accurate in the hands of a
+skilled user.
+
+~
+57 47 45 30 10 -1  -:| bitfield |:-
+0 0 100 0 1000 4 3 3 5 	extras
+1024 800 289 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+290	 Start of Object
+gloves ~	names
+a pair of gloves
+~
+A pair of gloves lies on the ground.
+~
+They are made of leather and don't look like they do much more than protect
+against the elements.
+
+~
+56 40 29 10 -1  -:| bitfield |:-
+0 0 100 0 1000 2 0 0 1 	extras
+1024 300 290 41 	cur_stats
+-1	affected_by
+-1	inv
+23 5 -1	stat_affects
+End of Object.
+
+
+291	 Start of Object
+shield ~	names
+a shield
+~
+A shield lies on the ground.
+~
+It is made of wood and could probably protect you in an emergency.
+
+~
+56 40 39 10 -1  -:| bitfield |:-
+0 0 100 0 1000 5 0 0 1 	extras
+1024 500 291 41 	cur_stats
+-1	affected_by
+-1	inv
+9 -5 -1	stat_affects
+End of Object.
+
+
+292	 Start of Object
+breastplate ~	names
+a breastplate
+~
+A breastplate lies on the ground.
+~
+It is made of wood and could probably protect you in an emergency.
+
+~
+56 40 33 10 -1  -:| bitfield |:-
+0 0 100 0 1000 10 0 0 1 	extras
+1024 400 292 41 	cur_stats
+-1	affected_by
+-1	inv
+9 -5 23 5 -1	stat_affects
+End of Object.
+
+
+303	 Start of Object
+fly scroll ~	names
+a scroll of flight
+~
+A lightweight scroll floats in the air before you.
+~
+This scroll is amazingly light, even for a scroll.  You're tempted to see how
+high you could throw it, but you wonder if it would ever come back down!
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 200 0 0 0 0 	extras
+1024 4000 303 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+172 25 -1 spell#, level (casts)
+End of Object.
+
+
+336	 Start of Object
+bread loaf ~	names
+a loaf of bread
+~
+A loaf of bread lies on the ground.
+~
+It looks nourishing enough to keep you alive, but not much more.
+
+~
+61 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1000 1 0 0 1 	extras
+1024 7 336 41 	cur_stats
+-1	affected_by
+-1	inv
+100 5 101 -2 -1	stat_affects
+End of Object.
+
+
+338	 Start of Object
+apple ~	names
+an apple
+~
+An apple lies on the ground.
+~
+It looks nourishing enough to keep you alive, but not much more.
+
+~
+61 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1000 1 0 0 1 	extras
+1024 10 338 41 	cur_stats
+-1	affected_by
+-1	inv
+100 2 101 1 -1	stat_affects
+End of Object.
+
+
+341	 Start of Object
+watermelon ~	names
+a watermelon
+~
+A large watermelon lies on the ground.
+~
+It looks nourishing enough to keep you alive, but not much more.
+
+~
+61 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1000 8 0 0 1 	extras
+1024 100 341 41 	cur_stats
+-1	affected_by
+-1	inv
+101 3 100 10 -1	stat_affects
+End of Object.
+
+
+342	 Start of Object
+canteen ~	names
+a canteen
+~
+A canteen lies on the ground.
+~
+This is a simple canteen with a cork for a lid.  From the scuffed
+nature, you can believe it's seen a long life!
+
+~
+59 54 40 21 10 -1  -:| bitfield |:-
+5 0 100 0 1000 1 0 0 1 	extras
+1024 50 342 41 	cur_stats
+2 -1  -:| bitfield |:-
+0 10 100 -1 	 bag_stuff
+-1	affected_by
+7 -1	inv
+-1	stat_affects
+End of Object.
+
+
+344	 Start of Object
+canteen ~	names
+a canteen
+~
+A canteen lies on the ground.
+~
+This is a simple canteen with a cork for a lid.  From the scuffed nature, you
+can believe it's seen a long life!
+
+~
+59 54 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1000 1 0 0 1 	extras
+1024 60 344 41 	cur_stats
+-1  -:| bitfield |:-
+0 5 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+345	 Start of Object
+torch ~	names
+a torch
+~
+A torch lies on the ground.
+~
+It is made of wood wrapped with some sort of cloth and doused with a smelly,
+presumably flammable liquid.
+
+~
+58 40 32 10 -1  -:| bitfield |:-
+25 0 100 0 1000 3 0 0 1 	extras
+1024 30 345 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+346	 Start of Object
+lantern ~	names
+a lantern
+~
+A lantern lies on the ground.
+~
+It is made of metal and filled with some sort of flammable liquid.
+
+~
+58 40 32 10 -1  -:| bitfield |:-
+40 0 100 0 1000 5 0 0 1 	extras
+1024 300 346 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+347	 Start of Object
+sword long longsword ~	names
+a long sword
+~
+A long sword lies on the ground.
+~
+It is not of great quality but it could probably still do some damage.
+
+~
+57 41 30 10 -1  -:| bitfield |:-
+0 0 100 0 1000 5 2 5 1 	extras
+1024 500 347 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+385	 Start of Object
+pen ~	names
+a simple pen
+~
+A small, simple pen lies here.
+~
+It is small and simple.  It could probably serve decently for letters, but it
+lacks the precision for scrolls.
+
+~
+66 57 43 30 10 0 -1  -:| bitfield |:-
+0 0 100 0 25 1 2 3 5 	extras
+1024 100 385 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+410	 Start of Object
+herbal anti-drug mixture ~	names
+a powerful drug antidote
+~
+Some anti-drug mixture sloshes around.
+~
+You see some brown liquid in a jar, along with little pieces of leaves and
+twigs.
+
+~
+60 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 1 0 0 1 	extras
+1024 6000 410 41 	cur_stats
+-1	affected_by
+-1	inv
+102 -20 -1	stat_affects
+End of Object.
+
+
+411	 Start of Object
+bottle mixture anti-drug antidote mixture drug antidrug ~	names
+a bottle of a powerful drug antidote
+~
+A bottle filled with a powerful herbal anti-drug mixture lies here.
+~
+You see a bottle filled with a brownish liquid which has pieces of twigs and
+leaves floating around in it. It looks nasty but it does the job!
+
+~
+59 54 21 10 -1  -:| bitfield |:-
+1 0 100 0 1 3 0 0 1 	extras
+1024 2000 411 41 	cur_stats
+9 -1  -:| bitfield |:-
+0 5 100 -1 	 bag_stuff
+-1	affected_by
+410 -1	inv
+-1	stat_affects
+End of Object.
+
+
+448	 Start of Object
+pen ~	names
+a fancy pen
+~
+A fancy metal pen lies here.
+~
+It is made of metal and has a felt tip.  It is probably excellent for writing,
+and good for scribing as well.
+
+~
+66 57 43 30 10 0 -1  -:| bitfield |:-
+0 0 100 0 25 1 2 3 15 	extras
+1024 200 448 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+449	 Start of Object
+pen ~	names
+an exquisitely-designed pen
+~
+An extremely well-constructed pen lies here.
+~
+It is made of metal with carvings on its surface and a soft grip for its
+holder.  It has a felt tip and looks like it could produce some beautiful
+writings even from the sloppiest writer!
+
+~
+66 57 43 30 10 0 -1  -:| bitfield |:-
+0 0 100 0 25 1 2 3 20 	extras
+1024 350 449 41 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+467	 Start of Object
+quiver bag ~	names
+a quiver
+~
+A quiver lies here.
+~
+It is made of leather and is very large.  It looks like it could hold quite a
+few arrows.
+
+~
+54 40 31 10 -1  -:| bitfield |:-
+0 0 100 0 1 3 0 0 0 	extras
+1024 100 467 41 	cur_stats
+9 -1  -:| bitfield |:-
+0 4 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+-1 END OF FILE

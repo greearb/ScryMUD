@@ -2,37 +2,40 @@
 
 Here is a list of all mortal help topics.
 
-abilities        adjust_register  anitre           assist           
-balance          bash             beep             berserk          
-brief            bug              buglist          butcher          
-cast             channels         circle           classes          
-close            color            commands         concoct          
-construct        credits          curse            darkling         
-deposit          describe         disarm           discuss          
+abilities        adjust_register  alias            anitre           
+backstab         balance          bash             beep             
+block            bodyslam         brief            bug              
+butcher          buy              cast             channels         
+classes          claw             client           close            
+commands         concoct          consider         construct        
+curse            darkling         date             deals            
+derelicts        describe         disarm           discuss          
 down             drink            drop             dwarf            
 east             eat              elf              emote            
 eq               examine          exit             exits            
 flee             follow           get              give             
 group            guard            help             hide             
-hold             human            hurl             idea             
-ironclad         junk             languages        list             
-look             lore             meditate         move             
-north            northeast        northwest        offer            
-open             order            page_break       passwd           
-pemote           picklock         post             practice         
-prone            put              quaf             quit             
-read             recite           regeneration     remove           
-rest             roll             save             say              
-score            scribe           script_cmds      sell             
-shoot            shout            sit              skills           
-sleep            sneak            socials          sombre           
-southeast        southwest        stand            suicide          
-tell             theme            throw            time             
-toggle           topics           track            ungroup          
+hold             houses           human            hurl             
+immrules         inventory        ironclad         junk             
+list             lock             look             lore             
+move             nogossip         north            northeast        
+offer            ogrue            open             order            
+passwd           pay              pemote           picklock         
+practice         prompt           prone            put              
+quit             races            read             recite           
+remort           remove           reply            rescue           
+roll             rules            sacrifice        save             
+scan             score            scribe           script_cmds      
+shield           shoot            shops            shout            
+skills           skin             sleep            sneak            
+sombre           south            southeast        southwest        
+stand            steal            suicide          tail             
+theme            throw            time             title            
+topics           track            trip             ungroup          
 up               use              value_add        value_list       
 value_set        wake             wear             west             
 who              wield            wimpy            withdraw         
-
+zones            
 
 <color=red>
 See Also:  commands, wizhelp

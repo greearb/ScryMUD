@@ -1,5 +1,5 @@
-// $Id: ez_spll.h,v 1.3 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: ez_spll.h,v 1.4 2001/03/29 03:02:31 eroper Exp $
+// $Revision: 1.4 $  $Author: eroper $ $Date: 2001/03/29 03:02:31 $
 
 //
 //ScryMUD Server Code
@@ -34,10 +34,10 @@
 
 /* define affects constants here */
 
-#define WEB_DEX_AUGMENTATION		-2
-#define WEB_MV_REGEN_AUGMENTATION	-50
-#define ENTANGLE_DEX_AUGMENTATION	-5
-#define ENTANGLE_MV_REGEN_AUGMENTATION	-85
+#define WEB_DEX_AUGMENTATION                -2
+#define WEB_MV_REGEN_AUGMENTATION        -50
+#define ENTANGLE_DEX_AUGMENTATION        -5
+#define ENTANGLE_MV_REGEN_AUGMENTATION        -85
 #define FAERIE_FIRE_AC_AUGMENTATION      40
 #define RUNE_EDGE_EFFECTS                1 /* to the dam dice sidesd! */
 #define BLESS_EFFECTS                    1 /* to hit */
@@ -61,9 +61,13 @@ void do_cast_create_water(object& targ, critter& pc, int is_canned, int lvl);
 void cast_enchant_armor(int i_th, const String* dr, critter& agg);
 void do_cast_enchant_armor(object& targ, critter& pc, int is_canned, int lvl);
 
+void cast_detect_resistances(int i_th, const String* victim, critter& pc);
+void do_cast_detect_resistances(critter& vict, critter& agg, int is_canned, int lvl);
+
+
 void cast_detect_magic(int i_th, const String* dr, critter& agg);
 void do_cast_detect_magic(critter& targ, critter& pc, int is_canned,
- 			  int lvl);
+                           int lvl);
 
 void cast_infravision(int i_th, const String* targ, critter& pc);
 void do_cast_infravision(critter& targ, critter& pc, int is_canned,
@@ -71,16 +75,16 @@ void do_cast_infravision(critter& targ, critter& pc, int is_canned,
 
 void cast_detect_hidden(int i_th, const String* dr, critter& agg);
 void do_cast_detect_hidden(critter& targ, critter& pc, int is_canned,
- 			  int lvl);
+                           int lvl);
 void cast_detect_invisibility(int i_th, const String* dr, critter& agg);
 void do_cast_detect_invisibility(critter& targ, critter& pc, int is_canned,
- 			  int lvl);
+                           int lvl);
 void cast_detect_alignment(int i_th, const String* dr, critter& agg);
 void do_cast_detect_alignment(critter& targ, critter& pc, int is_canned,
- 			  int lvl);
+                           int lvl);
 void cast_detect_poison(int i_th, const String* dr, critter& agg);
 void do_cast_detect_poison(object& targ, critter& pc, int is_canned,
- 			  int lvl);
+                           int lvl);
 void cast_pfg(critter& agg);
 void do_cast_pfg(critter& targ, critter& pc, int is_canned, int lvl);
 

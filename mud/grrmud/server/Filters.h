@@ -1,5 +1,5 @@
-// $Id: Filters.h,v 1.5 1999/08/20 06:20:04 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
+// $Id: Filters.h,v 1.6 2001/03/29 03:02:27 eroper Exp $
+// $Revision: 1.6 $  $Author: eroper $ $Date: 2001/03/29 03:02:27 $
 
 //
 //ScryMUD Server Code
@@ -239,7 +239,6 @@ public:
    CSelectorColl CC_gets_info_allow;
    CSelectorColl CC_using_client;
    CSelectorColl CC_not_using_client;
-   CSelectorColl CC_sleeping;
 
    static Selectors& instance();
 

@@ -1,5 +1,5 @@
-// $Id: ClientDisplay.java,v 1.11 1999/06/23 04:16:05 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/23 04:16:05 $
+// $Id: ClientDisplay.java,v 1.12 2001/03/29 03:02:24 eroper Exp $
+// $Revision: 1.12 $  $Author: eroper $ $Date: 2001/03/29 03:02:24 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -519,7 +519,7 @@ class ClientDisplay extends Frame {
       }
       else {
          try {
-            URL u = new URL("http://www.primenet.com/~greear/ScryMUD/mort_help.html");
+            URL u = new URL("http://scry.wanfear.com/ScryMUD/mort_help.html");
             hm.getMotherClass().getAppletContext().showDocument(u);
          }//try
          catch (Exception e) {

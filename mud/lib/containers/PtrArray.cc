@@ -1,5 +1,5 @@
-// $Id: PtrArray.cc,v 1.4 1999/06/05 23:29:16 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:16 $
+// $Id: PtrArray.cc,v 1.5 2001/03/29 03:02:38 eroper Exp $
+// $Revision: 1.5 $  $Author: eroper $ $Date: 2001/03/29 03:02:38 $
 
 //
 //ScryMUD Server Code
@@ -301,11 +301,14 @@ int PtrArrayBase<T>::setAndDestroy(T* val, int posn) {
    if (ptr_list[posn])
       delete ptr_list[posn];
 
-   if (val && (posn >= cur_len))
+   if (val && (posn >= cur_len)) {
       cur_len = posn + 1;
+   }
    else if (!val) {
       if (posn == (cur_len - 1)) {
-         for (int i = cur_len - 2; i>=0; i--) {
+         int old_cur_len = cur_len;
+         cur_len = 0;
+         for (int i = old_cur_len - 2; i>=0; i--) {
             cur_len = i + 1;
             if (ptr_list[i]) {
                break;
@@ -325,11 +328,14 @@ int PtrArrayBase<T>::set(T* val, int posn) {
 
    ensureCapacity(posn + 1);
    
-   if (val && (posn >= cur_len))
+   if (val && (posn >= cur_len)) {
       cur_len = posn + 1;
+   }
    else if (!val) {
       if (posn == (cur_len - 1)) {
-         for (int i = cur_len - 2; i>=0; i--) {
+         int old_cur_len = cur_len;
+         cur_len = 0;
+         for (int i = old_cur_len - 2; i>=0; i--) {
             cur_len = i + 1;
             if (ptr_list[i]) {
                break;
@@ -504,3 +510,77 @@ int ObjArray<T>::contains(T& val) const {
    }//for
    return FALSE;
 }//contains
+
+
+///**********************************************************************///
+///*********************  FixedHistory  *********************************///
+///**********************************************************************///
+
+template <class T>
+int FixedHistory<T>::init(int sz, T& null_val) {
+   array = new T[sz];
+   head = 0;
+   null_value = null_val;
+   len = sz;
+   return len;
+}//init
+
+template <class T>
+FixedHistory<T>::FixedHistory(const FixedHistory<T>& src) :
+      len(src.len), head(src.head), null_value(src.null_value) {
+   _cnt++;
+   array = new T[len];
+   for (int i = 0; i<len; i++) {
+      array[i] = src.array[i];
+   }
+}
+
+template <class T>
+FixedHistory<T>& FixedHistory<T>::operator=(const FixedHistory<T>& src) {
+   ensureCapacity(src.len);
+   len = src.len;
+   for (int i = 0; i<len; i++) {
+      array[i] = src.array[i];
+   }
+   null_value = src.null_value;
+   head = src.head;
+}
+
+template <class T>
+void FixedHistory<T>::ensureCapacity(int cap) {
+   if (cap > len) {
+      T* tmp = array;
+      array = new T[cap];
+
+      int i;
+      for (i = 0; i<len; i++) {
+         array[i] = tmp[i];
+      }//for
+      for (i; i<cap; i++) {
+         array[i] = null_value;
+      }
+
+      delete[] tmp;
+      len = cap;
+   }//if
+}//ensureCapacity
+
+   /** Does not clean up memory, just marks all as un-used. */
+template <class T>
+void FixedHistory<T>::clear() {
+   for (int i = 0; i<len; i++) {
+      array[i] = null_value;
+   }
+   head = 0;
+}
+
+
+/** Cleans up all the memory it can. */
+template <class T>
+void FixedHistory<T>::purge() {
+   delete[] array;
+   array = NULL;
+   len = 0;
+   head = 0;
+}
+

@@ -1,5 +1,5 @@
-# $Id: translation_olc.spec,v 1.2 1999/08/22 07:16:20 greear Exp $
-# $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
+# $Id: translation_olc.spec,v 1.3 2001/03/29 03:02:36 eroper Exp $
+# $Revision: 1.3 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -30,7 +30,7 @@
 # See translations.spec for more details...
 
 CS_OLC_INTRO
-	eng "Welcome go OnLine Creation.\n\n
+	eng "Welcome to OnLine Creation.\n\n
 You can always type 'quit_olc' to temporarily exit, but be sure to complete
 the item before you log off, or it will be lost.  To delete a work in 
 progress, you can quit out of olc and then use the 'reset_olc' command.
@@ -39,16 +39,29 @@ Check the help if you have questions.
 NOTE:  You can only do olc while IN a zone you own now.  Shouldn't be much
 of a change for most of you though.
 [[press enter to continue]]\n\n"
+	
+	ser "Dobrodosli u OnLine Creation.\n\n
+Mozes uvek da otkucas 'quit_olc' da privremeno izadjes, ali budi sigurand da 
+zavrsis sto si poceo pre nego sto se izlogujes ili ce tvoj rad biti izgubljen.
+Da izbrises ono sto si zapoceo da radis mozes da prekines i onda da koristis
+'reset_olc' komandu.  Pogledaj 'help' ako imas jos neka pitanja.
+
+NAPOMENA: Mozes da koristis olc samo u zonama koje ti posedujes. 
+[[pritisni enter da nastavis]]\n\n"
+
+	ger "Willkommen im OLC (OnLine Creation) Bereich!\n
+Sie können Ihre Arbeit jederzeit durch Eingabe von 'quit_olc' zeitweise
+beenden, aber vergessen Sie nicht, das bearbeitete Objekt fertigzustellen,
+bevor Sie sich aus dem System abmelden, da Ihre Arbeit sonst verloren geht.
+Um ein begonnenes Werk endgültig abzubrechen, verlassen Sie den OLC-Bereich
+mit 'quit_olc' und geben dann das 'reset_olc' Kommando.
+Weitere Hinweise finden Sie in der Hilfe!
+
+Hinweis: OLC ist nur möglich, während Sie sich in einer von Ihnen selbst
+verwalteten Zone befinden!\n
+[[Bitte Return drücken]]\n"
 	~
 
-CS_NAME_NOT_FOUND
-	eng "That entity does not have that name (keyword).\n"
-	~
-
-CS_NAME_REMOVED
-	eng "The name (keyword) was removed from that entity.\n"
-	~
-
-CS_NAME_ADDED
-	eng "Name added.\n"
+CS_OBJ_NOT_CREATED_YET
+	eng "This object has not been created yet.\n"
 	~

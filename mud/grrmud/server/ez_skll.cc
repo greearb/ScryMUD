@@ -1,5 +1,5 @@
-// $Id: ez_skll.cc,v 1.9 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: ez_skll.cc,v 1.10 2001/03/29 03:02:31 eroper Exp $
+// $Revision: 1.10 $  $Author: eroper $ $Date: 2001/03/29 03:02:31 $
 
 //
 //ScryMUD Server Code
@@ -70,8 +70,8 @@ int do_rescue(critter& vict, critter& pc) {
     return -1;
   }//if
 
-  if (!vict.isFighting()) {
-     Sprintf(buf, "%s isn't fighting anyone!\n", get_his_her(vict));
+  if (IsEmpty(vict.IS_FIGHTING)) {
+     Sprintf(buf, "%s isn't fighting anyone!\n", get_he_she(vict));
      buf.Cap();
      show(buf, pc);
      return -1;
@@ -85,15 +85,13 @@ int do_rescue(critter& vict, critter& pc) {
   /*  good to go as far as I can tell */
 
   if (skill_did_hit(pc, RESCUE_SKILL_NUM, vict)) {
-     SCell<critter*> cll(vict.IS_FIGHTING);
+     Cell<critter*> cll(vict.IS_FIGHTING);
      critter* ptr;
 
      while ((ptr = cll.next())) {
-        critter* hack = &vict;
-        ptr->IS_FIGHTING.loseData(hack); //rescued no longer in target list
-        hack = &pc;
-        ptr->IS_FIGHTING.appendUnique(hack);   //rescuer in target list
-        pc.IS_FIGHTING.appendUnique(ptr);   //attacker in rescuer's list
+        ptr->IS_FIGHTING.loseData(&vict); //rescued no longer in target list
+        ptr->IS_FIGHTING.gainData(&pc);   //rescuer in target list
+        pc.IS_FIGHTING.gainData(ptr);   //attacker in rescuer's list
      }//while
      /* all are attacking the rescue-er now */
 
@@ -143,6 +141,10 @@ int shield(int i_th, const String* vict, critter& pc, int was_ordered) {
    if (!ptr) {
      show("Shield who??\n", pc);
      return -1;
+   }//if
+
+   if (ptr->isMob()) {
+      ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, vict, pc.SEE_BIT);
    }//if
 
    return do_shield(*ptr, pc); 
@@ -224,6 +226,10 @@ int guard(int i_th, const String* vict, critter& pc) {
      return -1;
    }//if
 
+   if (ptr->isMob()) {
+      ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, vict, pc.SEE_BIT);
+   }//if
+
    return do_guard(*ptr, pc); 
 }//guard
 
@@ -284,18 +290,20 @@ int picklock(int i_th, const String* vict, critter& pc) {
       return -1;
    }
 
-   dr = ROOM.findDoor(i_th, vict, pc);
+   dr = door::findDoor(ROOM.DOORS, i_th, vict, pc.SEE_BIT, ROOM); 
    if (!dr) {
-      obj = pc.haveObjNamed(i_th, vict);
+      obj = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT, ROOM);
       if (!obj) {
-         obj = ROOM.haveObjNamed(i_th, vict, pc);
-         if (obj && !obj->isModified()) {
-            obj = obj_to_sobj(*obj, &ROOM, TRUE, i_th, vict, pc);
+         obj = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);
+         if (obj && !obj->in_list) {
+            obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, vict,
+                              pc.SEE_BIT, ROOM);
          }
       }//if
       else {
-         if (!obj->isModified()) {
-            obj = obj_to_sobj(*obj, &pc, TRUE, i_th, vict, pc);
+         if (!obj->in_list) {
+            obj = obj_to_sobj(*obj, &(pc.inv), TRUE, i_th, vict,
+                              pc.SEE_BIT, ROOM);
          }
       }
 
@@ -303,7 +311,6 @@ int picklock(int i_th, const String* vict, critter& pc) {
          show("You don't see that here.\n", pc); 
          return -1;
       }//if
-            
       return do_picklock(*obj, pc);
    }//if
 
@@ -314,22 +321,22 @@ int picklock(int i_th, const String* vict, critter& pc) {
 int do_picklock(door& dr, critter& pc) {
 
    if (skill_did_hit(pc, PICKLOCK_SKILL_NUM, pc)) {
-      if (!dr.isClosed())
+      if (!dr.dr_data->door_data_flags.get(2))
          show("It isn't even closed.\n", pc);
-      else if (!dr.isLocked())
+      else if (!dr.dr_data->door_data_flags.get(3))
          show("It isn't locked!!\n", pc);
-      else if (!dr.isPickable())
+      else if (!dr.dr_data->door_data_flags.get(4))
          show("It can't be opened so easily.\n", pc);
       else { //good to go
          show("You skillfully pick the lock.\n", pc);
          emote("skillfully picks the lock.", pc, ROOM, TRUE);
-         dr.setLocked(FALSE);
+         dr.dr_data->door_data_flags.turn_off(3); //no longer locked
          return 0;
       }//else
    }//if it worked
    else {
       show("You strain your eyes and fingers, but accomplish nothing.\n", 
-	    pc);
+            pc);
       emote("fiddles with the lock in vain.", pc, ROOM, TRUE);
       pc.PAUSE += 3;
    }//else
@@ -340,24 +347,24 @@ int do_picklock(door& dr, critter& pc) {
 int do_picklock(object& obj, critter& pc) { //for objects
 
    if (skill_did_hit(pc, PICKLOCK_SKILL_NUM, pc)) {
-      if (!obj.getBag())
-	 show("That is not a container.\n", pc);
-      else if (!obj.getBag()->isClosed())
+      if (!obj.bag)
+         show("That is not a container.\n", pc);
+      else if (!obj.BAG_FLAGS.get(2))
          show("It isn't even closed.\n", pc);
-      else if (!obj.getBag()->isLocked())
+      else if (!obj.BAG_FLAGS.get(3))
          show("It isn't locked!!\n", pc);
-      else if (!obj.getBag()->isPickable())
+      else if (!obj.BAG_FLAGS.get(4))
          show("It can't be opened so easily.\n", pc);
       else { //good to go
          show("You skillfully pick the lock.\n", pc);
          emote("skillfully picks the lock.", pc, ROOM, TRUE);
-         obj.getBag()->setLocked(FALSE);
+         obj.BAG_FLAGS.turn_off(3); //no longer locked
          return 0;
       }//else
    }//if it worked
    else {
       show("You strain your eyes and fingers, but accomplish nothing.\n", 
-	    pc);
+            pc);
       emote("fiddles with the lock in vain.", pc, ROOM, TRUE);
       pc.PAUSE += 3;
    }//else
@@ -378,22 +385,22 @@ int earthmeld(critter& pc) {
 
 
 int do_earthmeld(critter& pc) {
-   SpellDuration* sp = NULL;
+   stat_spell_cell* sp = NULL;
    int spell_num = EARTHMELD_SKILL_NUM; 
 
    // Check for a forrest room. 
    if (ROOM.canCamp()) {
-      if ((sp = pc.isAffectedBy(spell_num))) {
+      if ((sp = is_affected_by(spell_num, pc))) {
          pc.breakEarthMeld();
          return 0;
       }//if
       else {
-	 pc.show("You entwine yourself in the powers of nature, binding
+         pc.show("You entwine yourself in the powers of nature, binding
  yourself to the earth's embrace.\n");
       }//else
       
       /* it lasts untill mana runs out, or the player moves */
-      pc.addAffectedBy(new SpellDuration(spell_num, -1));
+      pc.affected_by.pushFront(new stat_spell_cell(spell_num, -1));
       return 0;
    }//if
    else {

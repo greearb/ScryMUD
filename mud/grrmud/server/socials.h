@@ -1,5 +1,5 @@
-// $Id: socials.h,v 1.4 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: socials.h,v 1.5 2001/03/29 03:02:35 eroper Exp $
+// $Revision: 1.5 $  $Author: eroper $ $Date: 2001/03/29 03:02:35 $
 
 //
 //ScryMUD Server Code
@@ -32,7 +32,29 @@
 #include "classes.h"
 #include <string2.h>
 
+/* by Rydia */
+void whip(int i_th, const String* vict, critter& pc, room& rm);
+
+/* by Shamu */
+void mutter(int i_th, const String* vict, critter& pc, room& rm);
+void cough(int i_th, const String* vict, critter& pc, room& rm);
+void point(int i_th, const String* vict, critter& pc, room& rm);
+void snap(int i_th, const String* vict, critter& pc, room& rm);
+void whine(int i_th, const String* vict, critter& pc, room& rm);
+void bah(int i_th, const String* vict, critter& pc, room& rm);
+void punt(int i_th, const String* vict, critter& pc, room& rm);
+void yuck(int i_th, const String* vict, critter& pc, room& rm);
+void announce(int i_th, const String* vict, critter& pc, room& rm);
+void greet(int i_th, const String* vict, critter& pc, room& rm);
+void doze(int i_th, const String* vict, critter& pc, room& rm);
+void megawibble(int i_th, const String* vict, critter& pc, room& rm);
+
+
 void pout(int i_th, const String* vict, critter& pc, room& rm);
+void bite(int i_th, const String* vict, critter& pc, room& rm);
+void nibble(int i_th, const String* vict, critter& pc, room& rm);
+void chomp(int i_th, const String* vict, critter& pc, room& rm);
+void social_jump(int i_th, const String* vict, critter& pc, room& rm);
 void lag(int i_th, const String* vict, critter& pc, room& rm);
 void sigh(int i_th, const String* vict, critter& pc, room& rm);
 void wink(int i_th, const String* vict, critter& pc, room& rm);
@@ -71,5 +93,6 @@ void wave(int i_th, const String* vict, critter& pc, room& rm);
 void bow(int i_th, const String* vict, critter& pc, room& rm);
 void curse(int i_th, const String* vict, critter& pc, room& rm);
 void disdain(int i_th, const String* vict, critter& pc, room& rm);
+void thpppt(int i_th, const String* vict, critter& pc, room& rm);
 
 #endif

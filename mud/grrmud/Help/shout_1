@@ -9,5 +9,5 @@ Syntax:  shout [your message]
 Example:  shout I'm lost, please help me!
 
 <color=red>
-See Also:  channels, tell, say, emote
+See Also:  channels, tell, say, osay, emote
 </color></help>

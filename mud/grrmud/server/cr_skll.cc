@@ -1,5 +1,5 @@
-// $Id: cr_skll.cc,v 1.5 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: cr_skll.cc,v 1.6 2001/03/29 03:02:30 eroper Exp $
+// $Revision: 1.6 $  $Author: eroper $ $Date: 2001/03/29 03:02:30 $
 
 //
 //ScryMUD Server Code
@@ -48,21 +48,23 @@ int skin(int i_th, const String* vict, critter& pc) {
    }//if     
 
    int in_rm = FALSE;
-   obj = pc.haveObjNamed(i_th, vict);
+   obj = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT, ROOM);
    if (!obj) {
       in_rm = TRUE;
-      obj = ROOM.haveObjNamed(i_th, vict, pc);
+      obj = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);
    }//if
    if (!obj) {
       show("You don't see that here.\n", pc); 
       return -1;
    }//if
 
-   if (!obj->isModified()) {
+   if (!obj->IN_LIST) {
       if (in_rm) 
-	 obj = obj_to_sobj(*obj, &(ROOM), TRUE, i_th, vict, pc);
+         obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, vict,
+                           pc.SEE_BIT, ROOM);
       else
-	 obj = obj_to_sobj(*obj, &(pc), TRUE, i_th, vict, pc);
+         obj = obj_to_sobj(*obj, &(pc.inv), TRUE, i_th, vict,
+                           pc.SEE_BIT, ROOM);
    }//if
 
    return do_skin(*obj, pc); 
@@ -73,14 +75,14 @@ int do_skin(object& obj, critter& pc) {
    String buf(100);
 
    if ((obj.obj_proc && obj.obj_proc->skin_ptr &&
-	obj.obj_proc->skin_ptr->OBJ_NUM == PC_SKIN_OBJECT) || 
-	skill_did_hit(pc, SKIN_SKILL_NUM, pc)) {
+        obj.obj_proc->skin_ptr->OBJ_NUM == config.pcSkinObject) || 
+        skill_did_hit(pc, SKIN_SKILL_NUM, pc)) {
       if (!obj.obj_proc ||
-	  !obj.obj_proc->obj_spec_data_flags.get(2) || 
-	  !obj.obj_proc->skin_ptr ||
-	  !obj.obj_proc->skin_ptr->OBJ_FLAGS.get(10)) { //not in use?
-	 show("This thing doesn't have a skin!.\n", pc);
-	 return -1;
+          !obj.obj_proc->obj_spec_data_flags.get(2) || 
+          !obj.obj_proc->skin_ptr ||
+          !obj.obj_proc->skin_ptr->OBJ_FLAGS.get(10)) { //not in use?
+         show("This thing doesn't have a skin!.\n", pc);
+         return -1;
       }//if
 
       pc.gainInv(obj.obj_proc->skin_ptr);
@@ -94,24 +96,24 @@ int do_skin(object& obj, critter& pc) {
    }//if
    else {
       if (!obj.obj_proc ||
-		!obj.obj_proc->obj_spec_data_flags.get(2)) {
-	 show("It doesn't have a skin.\n", pc);
-	 return -1;
+                !obj.obj_proc->obj_spec_data_flags.get(2)) {
+         show("It doesn't have a skin.\n", pc);
+         return -1;
       }//if
 
       obj.obj_proc->obj_spec_data_flags.turn_off(2);
       obj.obj_proc->skin_ptr->decrementCurInGame();
 
-      if (obj.obj_proc->skin_ptr->isModified()) {
-	delete obj.obj_proc->skin_ptr;
+      if (obj.obj_proc->skin_ptr->IN_LIST) {
+        delete obj.obj_proc->skin_ptr;
       }//if
       obj.obj_proc->skin_ptr = NULL;
 
       Sprintf(buf, "tries to skin %S but only makes a bloody mess!",
-		long_name_of_obj(obj, ~0));
+                long_name_of_obj(obj, ~0));
       emote(buf, pc, ROOM, TRUE);
       Sprintf(buf, "You try to skin %S but only make a bloody mess!\n",
-		long_name_of_obj(obj, ~0));      
+                long_name_of_obj(obj, ~0));      
       show(buf, pc);
    }//else
    return 0;
@@ -128,10 +130,10 @@ int butcher(int i_th, const String* vict, critter& pc) {
    }//if     
 
    int in_rm = FALSE;
-   obj = pc.haveObjNamed(i_th, vict);
+   obj = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT, ROOM);
    if (!obj) {
       in_rm = TRUE;
-      obj = ROOM.haveObjNamed(i_th, vict, pc);
+      obj = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);
    }//if
    if (!obj) {
       show("You don't see that here.\n", pc); 
@@ -143,11 +145,13 @@ int butcher(int i_th, const String* vict, critter& pc) {
       return -1;
    }//if
 
-   if (!obj->isModified()) {
+   if (!obj->IN_LIST) {
       if (in_rm) 
-	 obj = obj_to_sobj(*obj, &(ROOM), TRUE, i_th, vict, pc);
+         obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, vict,
+                           pc.SEE_BIT, ROOM);
       else
-	 obj = obj_to_sobj(*obj, &(pc), TRUE, i_th, vict, pc);
+         obj = obj_to_sobj(*obj, &(pc.inv), TRUE, i_th, vict,
+                           pc.SEE_BIT, ROOM);
    }//if
 
    return do_butcher(*obj, pc); 
@@ -163,11 +167,11 @@ int do_butcher(object& obj, critter& pc) {
    }//if
 
    if (skill_did_hit(pc, BUTCHER_SKILL_NUM, pc)) {
-      if (obj_list[MEAT_OBJ_NUMBER].OBJ_FLAGS.get(10)) {
-         pc.gainInv(&(obj_list[MEAT_OBJ_NUMBER]));
+      if (obj_list[config.meatObject].OBJ_FLAGS.get(10)) {
+         pc.gainInv(&(obj_list[config.meatObject]));
          obj.OBJ_FLAGS.turn_off(75); //no longer butcherable
 
-         recursive_init_loads(obj_list[MEAT_OBJ_NUMBER], 0);
+         recursive_init_loads(obj_list[config.meatObject], 0);
 
          Sprintf(buf, "butchers %S.", long_name_of_obj(obj, ~0));
          emote(buf, pc, ROOM, TRUE);
@@ -176,17 +180,17 @@ int do_butcher(object& obj, critter& pc) {
          return 0;
       }//if
       else {
-	 show("BUG, my gawd, you've found a BUG!!\n", pc);
-	 return -1;
+         show("BUG, my gawd, you've found a BUG!!\n", pc);
+         return -1;
       }//if
    }//if skill worked
    else {
      Sprintf(buf, "You try to butcher %S, but ruin it all!!\n",
-	     long_name_of_obj(obj, pc.SEE_BIT));
+             long_name_of_obj(obj, pc.SEE_BIT));
      show(buf, pc);
 
      Sprintf(buf, "tries to butcher %S, but ruins it all!!",
-	     long_name_of_obj(obj, pc.SEE_BIT));
+             long_name_of_obj(obj, pc.SEE_BIT));
      emote(buf, pc, ROOM, TRUE);
 
      obj.OBJ_FLAGS.turn_off(75);

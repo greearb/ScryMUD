@@ -1,42 +1,67 @@
 <help general houses>
-A basic house costs 100,000 gold.  This includes three rooms,
-all indoors, as well as a closed door.
+A basic house costs 150,000 gold.  This includes three basic rooms and a
+locked door.
 
 Location:
-  Affordable: (Mak'Tor, Dar Thane, along desolate roads): no extra cost.
-  Middle-class area (Jakarta, River City, closer to civilization): +40,000 
-  Garland and the surrounding area: +80,000 gold extra.
+  Affordable (Mak'Tor, Dar Thane, along desolate roads): no extra cost
+  Middle-class area (Jakarta, River City, etc.): +50,000 
+  Garland: +100,000
+
+Additional rooms:  50,000 gold per room, maximum 10.
 
 Doors:
-  Extra door (two exits from house, must be nearby): +100,000, max of 2
-  Locked door  (comes with one key): 50,000 gold extra.
-  High-quality door (bash-proof): 50,000 gold extra.
-  Higher-quality door (bash and pick-proof):  100,000 gold extra.
-  Highest-quality door: (bash, pick, pass-proof):  150,000 gold extra.
-  Hidden door: 100,000 gold extra.
+  Extra door (two exits from house, must be nearby): 100,000 gold, max of 1
+    Locked : 50,000 gold.
+  High-quality door (bash-proof): 50,000 gold.
+  Higher-quality door (bash and pick-proof):  100,000 gold.
+  Highest-quality door: (bash, pick, pass-proof):  150,000 gold.
+  Additional door inside house (closed):  50,000 gold, maximum 2
+  Extra key: 10,000 gold.
 
-Additional rooms:
-  50,000 gold per additional room.  The maximum is 10 rooms per house.
+Note:  When upgrading door quality, upgrade price is the difference between
+the upgrade state and the current state.
 
 Special rooms: (Per Room)
-  Outside: +0,  30,000 gold extra to be able to camp in the room,
-  !MOB (computer critters can't enter) room:  80,000 gold.
-  Haven: (battle not allowed):  200,000 gold.
-  Dark: 30,000 gold.
-  Permanently dark: 50,000 gold.
-  No magic: 75,000 gold.
-  No magical entry (teleport, portal, gate): 50,000 gold.
-  No magical exit (teleport, portal, gate): 50,000 gold.
-  General Keywords (look 'blah'): 20,000 each
+  Outside: no cost,  50,000 gold extra to be able to camp and earthmeld.
+  Computer critters can't enter the room:  100,000 gold.
+  Battle not allowed:  200,000 gold.
+  Dark: 50,000 gold.
+  Permanently dark: 100,000 gold.
+  No magic: 10,000 gold.
+  No magical entry (teleport, portal, gate): 100,000 gold.
+  No magical exit (teleport, portal, gate): 100,000 gold.
+  General Keywords ('look blah'): 20,000 gold each.
+  Removal of special room characteristics: 10,000 gold per characteristic.
 
 Other:
-  Removal of special room characteristics: 10,000 gold per room.
   A sign outside your house ('look sign'): 75,000 gold.
-  A fountain or other infinite water source: 100,000 gold.
-  Description change: 20,000 gold per room (negotiable).
+  A fountain or other infinite water source: 150,000 gold.
+  Furniture:  100,000 per piece of furniture, no stat effects.
+  
+House storage boxes:
+House storage boxes are made to store a few valuable items.  They will hold
+your items safely between reboots and crashes.  You must own at least a
+basic house prior to buying a house storage box and the box must be located
+within your house.  Boxes can be upgraded to hold more equipment and can be
+made lockable to give you extra protection, lest a thief break into your
+house.  
+
+A basic house storage box costs 500,000 gold and holds five pounds of
+equipment.  Extra space is 100,000 gold per pound, up to sixty pounds.
+Locked:  500,000 gold extra.  Your house key opens the box.
+A separate key:  100,000 gold extra.
+
+Multiple players can combine their houses and multiply their limits.  Five
+players combined can buy a fifty-room house, for example.  Ask an immortal for
+more information on this.
+
+You get to name and describe your house and its contents yourself, but an
+immortal will build the house for you.
 
 If you'd like to buy a house, get in contact with an immortal and they'll 
-help you out.
+help you out.  You may only purchase one house.
+
+See 'help deals' for special deals on houses and shops.
 
 <color=red>
 See Also:  commands topics shops

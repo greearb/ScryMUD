@@ -1,5 +1,5 @@
-// $Id: code_gen.cc,v 1.12 1999/08/30 06:30:40 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
+// $Id: code_gen.cc,v 1.13 2001/03/29 03:02:28 eroper Exp $
+// $Revision: 1.13 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
 
 //
 //ScryMUD Server Code
@@ -74,7 +74,11 @@ int core_dump(const char* msg) {
 
 LanguageEntry::LanguageEntry(const LanguageEntry& src)
       : enum_name(src.enum_name) {
-   vals.becomeDeepCopyOf(src.vals);
+   Cell<LVPair*> cll(src.vals);
+   LVPair* ptr;
+   while ((ptr = cll.next())) {
+      vals.append(new LVPair(*ptr));
+   }
 }//copy constructor
 
 
@@ -153,8 +157,7 @@ enum LanguageE {
             found_one = TRUE;
             break;
          }
-      }//for
-
+      }
       if (!found_one) {
          cerr << "WARNING: Unknown language: -:" << ptr->lang << ":-" << endl;
       }
@@ -336,8 +339,6 @@ enum LanguageE {\n";
    
    of_h <<"   LastLanguage\n};\n\n";
 
-   of_h << "extern const char* LanguageNames[" << NUM_LANGUAGES + 1 << "];\n\n";
-
    // If the ENUM above changes, change this 3 to be equal to
    // the number of languages.
    of_h << "#define LS_PER_ENTRY " << NUM_LANGUAGES 
@@ -363,9 +364,8 @@ public:
    static const char* getString(CSentryE which_string, LanguageE language);
 };
 
-const char* str(LanguageE lang);
 
-#endif\n";
+#endif\n\n";
    of_h << flush;
 
    // Done with .h file, lets start on the .cc file
@@ -399,17 +399,6 @@ const char* CSHandler::getString(CSentryE which_string, LanguageE language) {
       return language_strings[(int)(which_string)][0];
    }//else
 }//getString\n\n";
-
-   of_cc << "const char* LanguageNames[" << NUM_LANGUAGES + 1 << "] = {\n";
-   for (int j = 0; j<NUM_LANGUAGES; j++) {
-      of_cc << "   \"" << languages[j] << "\"," << endl;
-   }
-   of_cc << "   NULL\n};\n\n";
-
-   of_cc << "
-const char* str(LanguageE lang) {
-   return LanguageNames[lang];
-}//str\n\n";
 
    of_cc << flush;
 
@@ -595,7 +584,7 @@ public:
    of_h << "\nextern ExeCmd* exe_cmd_array[" << cmd_count + 1 << "];\n\n";
    of_h << cmd_enum << endl;
    of_h << exe_cmds << endl;
-   of_h << "\n\n#endif";
+   of_h << "\n\n#endif\n\n";
 
    // Now, the .cc file
    of_cc << "ExeCmd* exe_cmd_array[" << cmd_count + 1 << "];\n\n";

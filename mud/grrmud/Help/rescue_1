@@ -1,0 +1,13 @@
+<help skills rescue>
+
+Rescue lets you save a person who is being attacked, but you are
+put into their place!  Useful for protecting the weaker members
+of your party!
+
+Syntax:  rescue <<i_th> target
+
+Example:  rescue shamu
+
+<color=red>
+See Also:  backstab shield
+</color></help>

@@ -1,0 +1,260 @@
+839		Room Number
+blah ~	names
+Welcome to the test zone!
+~
+Welcome to the test zone.  This zone is where all of the new builders start out
+so that they can get the hang of the OLC without having to be worried about
+goofing things up, as well as not having to worry about doing something wrong
+as they're creating their zone.  If you're unsure about how to build, check out
+the building documents that are on Scry's web page at http://scry.wanfear.com
+and read up on them.  If you're using Hegemon, things will be much easier for
+you, and the actual building docs won't apply, but the concepts within them
+will most definitely, so you should still read them before you do any building.
+ If you're using any regular MUD or telnet client you'll be using the straight
+OLC instead of Hegemon's GUI OLC, so the building docs will apply to you
+directly.
+You can feel free to create anything and everything that you want here, but
+take note that this zone *will* be completely cleared out (as in, deleted) from
+time to time and everything you've made will be lost.  Therefore, you shouldn't
+create anything that you will want to keep here. Also, don't go on any massive
+building sprees and create a whole slew of rooms because this zone only has 20
+rooms.  You can create four or five rooms if you want, though.
+If you get stuck using the OLC, Grock and Shamu can both answer any questions
+you've got.  If neither of us are logged on to this port, hop on to the main
+port and see if we're there.
+Once you feel you've gotten the hang of the OLC, it's time to read up on the
+MUD's theme.  There are various documents on the web page that will explain the
+theme to you.  Once you understand the MUD's theme it's time to come up with
+your own area.  We'll accept most any area as long as it fits in with the theme
+of the MUD.  To get an idea approved, just get in contact with Grock or Shamu
+and we'll discuss it.
+Also, there's a bulletin board in the Temple of Garland which has lots of
+valuable information on it.  'goto 1' to get there and then type 'examine
+board'.
+Again, feel free to create anything and everything that you want here and
+experiment however you want, but remember that this zone does get deleted
+periodically to free up space so you shouldn't create anything that you really
+want to keep.
+That's it for now.  Head north of here and you can start building!  Also, try
+not to do anything to this room as its description is somewhat valuable. =)
+
+~
+23 21 4 -1  -:| bitfield |:-
+1024 0 839 0 	cur_stats
+-1	affected_by
+352 358 32 5 5 -1	inv
+1 1 840 2 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+5 -1	mobs
+End of Room
+840		Room Number
+Swamp ~	names
+A thick bog.
+~
+Your in a thick bog, the mud is sucking your feet deep into the mud and you
+find it hard to move. There are large twisted trees and many small creatures
+that seem to follow every move you make with your eyes.
+
+~
+26 23 21 17 0 -1  -:| bitfield |:-
+1024 2 840 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 843 2 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 841 2 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 839 2 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+841		Room Number
+Swamp ~	names
+A thick bog.
+~
+Your in a thick bog, the mud is sucking your feet deep into the mud and you
+find it hard to move. There are large twisted trees and many small creatures
+that seem to follow every move you make with your eyes.
+
+~
+35 26 23 21 17 0 -1  -:| bitfield |:-
+1024 2 841 0 	cur_stats
+-1	affected_by
+-1	inv
+1 136 842 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 840 2 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+1  Start of a room proc script
+enter 0 -1 0	 Trigger Command, targ, actor 
+
+ rm_move_all down;
+
+~
+-1  End of room proc scripts
+End of Room
+842		Room Number
+Under ~	names
+Under the quicksand.
+~
+You've fallen through what seemed to be a soft patch of sand from above, but
+now that your under it you see the sand flows on air with a life of its own,
+you see a slippery vine on the east wall, maybe you could climb up.
+
+~
+26 23 21 20 17 14 0 -1  -:| bitfield |:-
+1025 2 842 0 	cur_stats
+-1	affected_by
+-1	inv
+1 9 841 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+843		Room Number
+tangled ~	names
+Inside a giant tangled tree.
+~
+You enter the room and find yourself inside a giant tangled tree, the branches
+seem almost as if they were stairs leading up.
+
+~
+26 23 21 14 0 -1  -:| bitfield |:-
+1025 3 843 0 	cur_stats
+-1	affected_by
+-1	inv
+1 4 840 2 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 9 844 2 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+844		Room Number
+tangled ~	names
+Inside a giant tangled tree.
+~
+You've worked yourself up onto the lower banches of the tangled tree, you
+notice that it spreads up into what almost seems to be a town.
+
+~
+26 23 21 14 0 -1  -:| bitfield |:-
+1025 3 844 0 	cur_stats
+-1	affected_by
+-1	inv
+1 10 843 2 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 9 845 2 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+845		Room Number
+tangled ~	names
+Inside a giant tangled tree.
+~
+You've climbed onto a branch that is old and withered and you almost lose your
+footing. You begin to think that this wasn't such an idea, but the town above
+your head draws you in.
+
+~
+26 23 21 14 0 -1  -:| bitfield |:-
+1025 3 845 0 	cur_stats
+-1	affected_by
+-1	inv
+1 10 844 2 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 9 847 2 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+846		Room Number
+Oops ~	names
+Inside a giant tangled tree.
+~
+Oops!
+
+~
+23 21 0 -1  -:| bitfield |:-
+1024 1 846 0 	cur_stats
+-1	affected_by
+-1	inv
+1 2 847 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+847		Room Number
+Tree ~	names
+Inside a giant tangled tree.
+~
+You look up and see that its the most direct route to the city, but you also
+notice a small hole to the east that you could go east but it is too dark for
+you to really see what's there 
+
+~
+26 23 21 0 -1  -:| bitfield |:-
+1024 3 847 0 	cur_stats
+-1	affected_by
+-1	inv
+1 10 845 2 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 9 848 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+848		Room Number
+tree ~	names
+Climb to the city.
+~
+You begin your acent into the city and it becomes a sudden decent.
+
+~
+26 23 21 14 0 -1  -:| bitfield |:-
+1024 2 848 0 	cur_stats
+-1	affected_by
+-1	inv
+1 10 847 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+849		Room Number
+Swamp ~	names
+A tunnel
+~
+Your under ground. You see several roots and branches lining the tunnel. Its
+pretty dark.
+
+~
+23 21 0 -1  -:| bitfield |:-
+1024 2 849 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	End of Doors
+-1	mobs
+End of Room
+850		Room Number
+Swamp ~	names
+A tunnel
+~
+Your under ground. You see several roots and branches lining the tunnel. Its
+pretty dark.
+
+~
+23 21 0 -1  -:| bitfield |:-
+1024 2 850 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	End of Doors
+-1	mobs
+End of Room
+
+
+-1		END OF FILE MARKER

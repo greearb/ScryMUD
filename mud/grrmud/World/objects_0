@@ -9,7 +9,7 @@ curved hand guards and its grip is of tightly wrapped leather.  It's
 pommel has a falcon stamped into it.
 ~
 57 41 30 10 -1  -:| bitfield |:-
-0 0 100 0 200 11 2 6 1 	extras
+0 0 10 0 200 11 2 6 1 	extras
 1024 85 1 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -37,20 +37,20 @@ End of Object.
 
 
 3	 Start of Object
-corpse ~	names
+corpse body ~	names
 a corpse
 ~
 You see a ghastly bug-ridden corpse!
 ~
-    This testament to the inherent violence of the universe saddens you.  
-You ponder the sacrilige and then manage to rationalize your stealing of this
-former being's belongings.  What would a dead person need with gold anyway??
+This testament to the inherent violence of the universe saddens you.  You
+ponder the sacrilege and then manage to rationalize your stealing of this
+former being's belongings.  What would a dead person need with gold, anyway?
 
 ~
-70 54 40 31 10 -1  -:| bitfield |:-
+54 40 21 10 4 -1  -:| bitfield |:-
 0 0 100 0 32000 150 0 0 0 	extras
 1024 100 3 0 	cur_stats
-128 -1  -:| bitfield |:-
+128 9 -1  -:| bitfield |:-
 0 200 100 10 	 bag_stuff
 -1	affected_by
 -1	inv
@@ -86,7 +86,7 @@ A pile of gold lies here.
      You see a pile of gold lying on the ground, wish you could tell how
 big it was eh? :)
 ~
-70 55 40 10 -1  -:| bitfield |:-
+55 40 10 -1  -:| bitfield |:-
 0 0 100 0 32000 2 0 0 0 	extras
 1024 0 5 0 	cur_stats
 -1	affected_by
@@ -139,7 +139,7 @@ A bug-ridden skin lies here.
 You see a nasty, not-long-dead skin here!!
 
 ~
-50 33 31 29 28 27 23 22 10 0 -1  -:| bitfield |:-
+50 36 35 34 33 31 29 28 27 26 25 24 23 22 10 0 -1  -:| bitfield |:-
 0 0 100 0 500 10 0 0 0 	extras
 1024 35 8 0 	cur_stats
 -1	affected_by
@@ -301,7 +301,7 @@ to be made into all kinds of neat things.
 
 ~
 67 63 50 40 31 10 0 -1  -:| bitfield |:-
-0 0 25 0 20 2 0 0 1 	extras
+0 0 75 0 20 2 0 0 1 	extras
 1024 15 17 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -321,7 +321,7 @@ A tough bull hide lies here.
 
 ~
 67 63 50 40 21 10 0 -1  -:| bitfield |:-
-0 0 25 0 20 3 0 0 1 	extras
+0 0 50 0 20 3 0 0 1 	extras
 1024 15 18 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -341,17 +341,17 @@ A bull hide shield lies in the dust.
 branch and a bull hide.  
 
 ~
-56 40 39 15 10 -1  -:| bitfield |:-
-0 0 100 0 25 4 0 0 1 	extras
+56 40 39 10 -1  -:| bitfield |:-
+0 0 0 0 25 6 0 0 6 	extras
 1024 45 19 0 	cur_stats
 -1	affected_by
 -1	inv
-9 -5 -1	stat_affects
+9 -10 23 5 -1	stat_affects
 End of Object.
 
 
 20	 Start of Object
-toolbox wooden ~	names
+toolbox wooden box ~	names
 a rough wooden toolbox
 ~
 A rough wooden toolbox filled with inconsequential tools sits here.
@@ -363,7 +363,7 @@ finer, but for simple projects this should do just fine.
 ~
 64 54 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 250 15 0 0 1 	extras
-1024 45 20 0 	cur_stats
+1024 40 20 0 	cur_stats
 -1  -:| bitfield |:-
 0 30 100 -1 	 bag_stuff
 -1	affected_by
@@ -395,14 +395,14 @@ End of Object.
 parchment blank ~	names
 a blank parchment
 ~
-A blank parchment lies here, tabala rasa.
+A blank parchment lies here, tabula rasa.
 ~
 	You see a fine piece of parchment ready to be written on.
 
 ~
 69 63 40 31 10 0 -1  -:| bitfield |:-
-0 0 100 0 20 2 0 0 1 	extras
-1024 1000 22 0 	cur_stats
+0 0 100 0 20 2 0 0 11 	extras
+1024 3334 22 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -416,14 +416,14 @@ a felt tipped pen
 ~
 A felt tipped pen lies here with the cap on it.
 ~
-	You see a fairly nice pen.  It will serve for communications and
+You see a fairly nice pen.  It will serve for communications and
 minor spells, but you somehow doubt that it would be worthy of a truly
 powerful spell.
 
 ~
 66 57 43 30 10 0 -1  -:| bitfield |:-
-0 0 25 0 25 2 2 3 15 	extras
-1024 35 23 0 	cur_stats
+0 0 100 0 25 1 2 3 5 	extras
+1024 50 23 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -441,7 +441,7 @@ A scroll in a delicate hand lies here rolled up.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 1 0 100 0 50 2 0 0 15 	extras
-1024 4500 25 0 	cur_stats
+1024 400 25 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -461,7 +461,7 @@ A tightly wrapped scroll lies here.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 1 0 100 0 15 2 0 0 10 	extras
-1024 4150 26 0 	cur_stats
+1024 1200 26 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -482,7 +482,7 @@ not exude evil however, but gives off instead an aura of peacefullness.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 1 0 100 0 20 2 0 0 15 	extras
-1024 8300 27 0 	cur_stats
+1024 3500 27 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -502,7 +502,7 @@ An evil looking scroll lies here.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 1 0 100 0 25 2 0 0 5 	extras
-1024 3215 28 0 	cur_stats
+1024 2000 28 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -544,7 +544,7 @@ filled with strange equations of some type.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 1 0 100 0 25 2 0 0 13 	extras
-1024 4215 30 0 	cur_stats
+1024 400 30 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -563,18 +563,19 @@ You see the keys to happiness and addiction.
 It reads:
 	Welcome to ScryMUD, coded by Ben Greear(currently 
 greear@cyberhighway.net).  Please check out the web page for news and
-information:  www.primenet.com/~greear/ScryMUD/scry.html
-...
-ScryMUD is all original code and world, written from the ground up by
+information:  http://scry.wanfear.com
+	
+	ScryMUD is all original code and world, written from the ground up by
 myself and our band of merry builders.  We would be honored if you
 would join us in re-discovering the realm you now find yourself in.
-...
-For a complete list of help commands, try:  help topics
-...
-I have written a special client, Hegemon for ScryMUD.  It has some nice
+	
+	For a complete list of help commands, try:
+  help commands
+  help topics
+  help rules
+	I have written a special client, Hegemon for ScryMUD.  It has some nice
 features, including color and a navigation panel.  Hegemon is a java
 applet, and you may get to it from the page mentioned above.
-...
 Enjoy your stay,
 -- Grock, Shamu and the rest
 
@@ -601,7 +602,7 @@ try 'read <number>.
 
 ~
 74 54 40 21 10 7 -1  -:| bitfield |:-
-0 0 100 0 50 45 0 0 0 	extras
+0 0 100 0 50 500 0 0 0 	extras
 1024 5000 32 0 	cur_stats
 -1  -:| bitfield |:-
 0 500 100 -1 	 bag_stuff
@@ -621,31 +622,9 @@ A yellow lucust bow lies here.
 It glows golden in the light.
 
 ~
-57 47 30 17 10 -1  -:| bitfield |:-
-0 0 25 0 20 14 4 5 5 	extras
-1024 3100 33 0 	cur_stats
--1	affected_by
--1	inv
--1	stat_affects
-End of Object.
-
-
-34	 Start of Object
-mug ale ~	names
-a wooden mug of ale
-~
-A wooden mug of ale sits here slowly leaking.
-~
-The mug is of shoddy wooden construct, while the ale inside foams over
-the top and runs down the side.  Wherever the mug sits, a ring of ale is
-left behind.      
-
-~
-59 54 40 31 10 0 -1  -:| bitfield |:-
-0 0 100 0 100 2 0 0 0 	extras
-1024 25 34 0 	cur_stats
-9 -1  -:| bitfield |:-
-0 4 100 -1 	 bag_stuff
+57 47 45 30 17 10 -1  -:| bitfield |:-
+0 0 25 0 20 14 3 4 10 	extras
+1024 6200 33 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -688,7 +667,7 @@ enough to last a life time.
 1024 495 37 0 	cur_stats
 -1	affected_by
 -1	inv
-7 0 -1	stat_affects
+25 10 -1	stat_affects
 End of Object.
 
 
@@ -725,7 +704,7 @@ serpent.
 1024 895 40 0 	cur_stats
 -1	affected_by
 -1	inv
--1	stat_affects
+2 1 -1	stat_affects
 End of Object.
 
 
@@ -780,7 +759,7 @@ and in the right hands, it could be deadly.
 
 ~
 57 43 31 30 10 0 -1  -:| bitfield |:-
-0 0 100 0 0 10 4 4 5 	extras
+0 0 100 0 0 10 3 4 5 	extras
 1024 3500 50 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -800,7 +779,7 @@ is admired by many physicians for it's antibiotic healing properties.
 ~
 40 10 0 -1  -:| bitfield |:-
 0 0 25 0 5 2 0 0 1 	extras
-1028 7500 60 0 	cur_stats
+1024 7500 60 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -858,12 +837,14 @@ three of its neighbors.  It is supprisingly light, and affords great
 protection to piercing weapons!
 
 ~
-56 40 35 10 -1  -:| bitfield |:-
+67 63 56 40 35 10 -1  -:| bitfield |:-
 0 0 50 0 50 12 0 0 0 	extras
 1024 2100 101 0 	cur_stats
 -1	affected_by
 -1	inv
 9 -15 -1	stat_affects
+1 -1  -:| bitfield |:-
+463 462 101 0 0 0	 target object, companions
 End of Object.
 
 
@@ -889,7 +870,7 @@ End of Object.
 
 
 144	 Start of Object
-staff runed ash ~	names
+staff runed ash ashen ~	names
 an ashen staff
 ~
 A staff of carved ash lies here.
@@ -901,11 +882,11 @@ it guards him or her.
 
 ~
 63 57 51 42 31 30 15 11 10 1 -1  -:| bitfield |:-
-4 0 50 0 0 5 5 5 4 	extras
+4 0 50 0 0 5 5 5 20 	extras
 1024 5500 144 0 	cur_stats
 -1	affected_by
 -1	inv
--1	stat_affects
+24 10 -1	stat_affects
 10 -1  -:| bitfield |:-
 217 20 -1 spell#, level (casts)
 End of Object.
@@ -936,7 +917,7 @@ End of Object.
 
 146	 Start of Object
 dagger fang maedon ~	names
-Meadon's Fang
+Maedon's Fang
 ~
 A beautiful dagger of blue steel inscribed with a serpent's image lies here.
 ~
@@ -947,12 +928,12 @@ Maedon struck a stone table with this dagger.  The dagger pierced
 three inches of granite to it's hilt, itself hissing violently!
 
 ~
-57 43 30 17 16 14 12 11 10 5 -1  -:| bitfield |:-
-0 0 10 0 3 8 4 7 4 	extras
+57 43 31 30 18 17 16 14 13 12 11 10 3 2 -1  -:| bitfield |:-
+0 0 10 0 3 8 4 7 20 	extras
 1024 500000 146 0 	cur_stats
 -1	affected_by
 -1	inv
-8 0 -1	stat_affects
+18 -300 23 25 35 2 -1	stat_affects
 End of Object.
 
 
@@ -967,7 +948,7 @@ This soft scroll is covered with healing words and smells of ointment.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 8500 153 0 	cur_stats
+1024 3000 153 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1007,7 +988,7 @@ cool, fire seems to burn around the edges...
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 6500 160 0 	cur_stats
+1024 3000 160 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1028,7 +1009,7 @@ fashioned this one!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 500 162 0 	cur_stats
+1024 1500 162 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1068,7 +1049,7 @@ the fingers.
 
 ~
 57 41 31 30 10 0 -1  -:| bitfield |:-
-0 0 100 0 200 8 4 3 0 	extras
+0 0 100 0 200 8 4 3 5 	extras
 1024 500 190 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -1087,11 +1068,11 @@ do a decent job of protecting it's owner.
 
 ~
 56 33 10 -1  -:| bitfield |:-
-0 0 50 0 30 2 0 0 12 	extras
+0 0 5 0 30 2 0 0 12 	extras
 1024 100 193 0 	cur_stats
 -1	affected_by
 -1	inv
--1	stat_affects
+9 -4 -1	stat_affects
 End of Object.
 
 
@@ -1167,7 +1148,7 @@ your skin gives you a feeling of security.
 
 ~
 56 40 24 23 10 1 -1  -:| bitfield |:-
-0 0 100 0 0 5 1 0 0 	extras
+0 0 50 0 0 5 1 0 12 	extras
 1024 15495 202 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -1187,7 +1168,7 @@ the ground and over water.
 ~
 63 52 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 50 1 0 0 0 	extras
-1024 1500 218 0 	cur_stats
+1024 12000 218 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1248,7 +1229,7 @@ but perhaps it isn't so bad!
 ~
 63 52 40 31 10 0 -1  -:| bitfield |:-
 0 0 50 0 50 1 0 0 0 	extras
-1024 1500 247 0 	cur_stats
+1024 2000 247 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1269,7 +1250,7 @@ for you!
 ~
 63 52 40 31 10 0 -1  -:| bitfield |:-
 0 0 50 0 50 1 0 0 0 	extras
-1024 2500 248 0 	cur_stats
+1024 15000 248 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1289,12 +1270,30 @@ This stuff looks like tar, and smells evil!
 ~
 63 52 40 31 10 0 -1  -:| bitfield |:-
 0 0 50 0 50 1 0 0 0 	extras
-1024 500 249 0 	cur_stats
+1024 5000 249 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
 10 -1  -:| bitfield |:-
 228 25 -1 spell#, level (casts)
+End of Object.
+
+
+251	 Start of Object
+rose red stem ~	names
+a red rose
+~
+A red rose lies on the ground.
+~
+It is small but has many petals.
+
+~
+61 50 40 31 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 0 0 0 	extras
+1024 15 251 0 	cur_stats
+-1	affected_by
+-1	inv
+100 1 101 -1 -1	stat_affects
 End of Object.
 
 
@@ -1310,7 +1309,7 @@ of the evils of this world!
 ~
 63 52 40 31 10 0 -1  -:| bitfield |:-
 0 0 50 0 50 1 0 0 0 	extras
-1024 75 268 0 	cur_stats
+1024 2000 268 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1331,7 +1330,7 @@ to chase it with, but you've heard it's good for your senses.
 ~
 63 52 40 31 10 0 -1  -:| bitfield |:-
 0 0 50 0 50 1 0 0 0 	extras
-1024 4530 269 0 	cur_stats
+1024 2000 269 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1351,7 +1350,7 @@ This syruppy liquid looks like it could sooth your aches and pains.
 ~
 63 52 40 31 10 0 -1  -:| bitfield |:-
 0 0 40 0 50 1 0 0 0 	extras
-1024 8500 277 0 	cur_stats
+1024 1000 277 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1410,7 +1409,7 @@ This red potion sloshes angrily in it's container, waiting to escape.
 ~
 63 52 40 31 10 0 -1  -:| bitfield |:-
 0 0 50 0 50 1 0 0 0 	extras
-1024 6770 282 0 	cur_stats
+1024 1500 282 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1431,7 +1430,7 @@ of power.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 650 295 0 	cur_stats
+1024 200 295 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1452,7 +1451,7 @@ of power, traced in bright red ink.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 8650 296 0 	cur_stats
+1024 2500 296 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1474,7 +1473,7 @@ seen before, reads, 'Fat Basselope'.  You can only wonder!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 650 297 0 	cur_stats
+1024 1500 297 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1495,7 +1494,7 @@ of power.  The parchment, especially around the letters is very sticky.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 650 298 0 	cur_stats
+1024 1500 298 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1516,7 +1515,7 @@ words.  A powerful argument for the pen, over the sword!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 650 299 0 	cur_stats
+1024 1000 299 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1537,7 +1536,7 @@ properties of any object.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 50 0 50 1 0 0 0 	extras
-1024 500 313 0 	cur_stats
+1024 250 313 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1559,7 +1558,7 @@ for the author!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 650 318 0 	cur_stats
+1024 8000 318 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1580,7 +1579,7 @@ bled into the paper making it almost illegible in places.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 650 319 0 	cur_stats
+1024 3000 319 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1601,7 +1600,7 @@ legible in fact!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 650 320 0 	cur_stats
+1024 1200 320 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1622,7 +1621,7 @@ legible in fact!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 650 321 0 	cur_stats
+1024 1200 321 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1642,7 +1641,7 @@ This fine parchment seems to offer means to other dimensions!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 650 322 0 	cur_stats
+1024 500 322 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1653,9 +1652,9 @@ End of Object.
 
 323	 Start of Object
 scroll lightning ~	names
-a scroll of lightning
+a scroll of lightning storm
 ~
-A crackles with electricity as you un-roll it.
+A scroll crackles with electricity as it lies here.
 ~
 This fine parchment is covered with a strange blue script that
 crawls across the page as you try to read it.
@@ -1663,7 +1662,7 @@ crawls across the page as you try to read it.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 650 323 0 	cur_stats
+1024 1200 323 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1674,7 +1673,7 @@ End of Object.
 
 324	 Start of Object
 scroll meteorstorm ~	names
-a scroll of fire and brimstone!
+a scroll of fire and brimstone
 ~
 A blood red scroll of hellfire and damnation lies here.
 ~
@@ -1684,7 +1683,7 @@ fiery wrath from on high!  One might even say, armageddon.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 650 324 0 	cur_stats
+1024 1200 324 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1706,7 +1705,7 @@ reminding you of medicine.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 650 325 0 	cur_stats
+1024 5000 325 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1748,7 +1747,7 @@ life into a corpse.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 10500 361 0 	cur_stats
+1024 1000 361 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1769,7 +1768,7 @@ vision.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 1500 362 0 	cur_stats
+1024 800 362 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1814,34 +1813,12 @@ beings.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 5500 366 0 	cur_stats
+1024 2500 366 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
 10 -1  -:| bitfield |:-
 152 20 -1 spell#, level (casts)
-End of Object.
-
-
-367	 Start of Object
-scroll detect magic ~	names
-a scroll of detect magic
-~
-A scroll for the detection of magical powers lies here.
-~
-Tiny lines appear on the scroll, pointing towards the northeast, no matter
-how you turn the scroll.  A small line across the top reads:
-On the Detection of Magical Forces.
-
-~
-63 53 40 31 10 0 -1  -:| bitfield |:-
-0 0 100 0 100 1 0 0 0 	extras
-1024 5500 367 0 	cur_stats
--1	affected_by
--1	inv
--1	stat_affects
-10 -1  -:| bitfield |:-
-154 20 -1 spell#, level (casts)
 End of Object.
 
 
@@ -1856,7 +1833,7 @@ This scroll promises to widen your eyes a bit!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 1500 368 0 	cur_stats
+1024 100 368 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1877,7 +1854,7 @@ physical realm!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 1500 369 0 	cur_stats
+1024 100 369 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1898,7 +1875,7 @@ glaze over and your senses begin to drift!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 1500 370 0 	cur_stats
+1024 3000 370 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1919,7 +1896,7 @@ they are going, or how they might be able to get back!
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 12500 372 0 	cur_stats
+1024 4500 372 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1939,7 +1916,7 @@ This script calls down horrible luck on its victim.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 1500 373 0 	cur_stats
+1024 2000 373 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1960,7 +1937,7 @@ quaf it!
 ~
 63 52 40 31 10 0 -1  -:| bitfield |:-
 0 0 100 0 100 1 0 0 0 	extras
-1024 3500 374 0 	cur_stats
+1024 1000 374 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1971,7 +1948,7 @@ End of Object.
 
 400	 Start of Object
 pastry apple danish ~	names
-an apple-cinamon danish
+an apple-cinnamon danish
 ~
 A danish wrapped in a white paper lies here.
 ~
@@ -2021,7 +1998,7 @@ allow you to see things that are invisible to others!
 ~
 63 52 40 31 10 0 -1  -:| bitfield |:-
 0 0 50 0 50 1 0 0 0 	extras
-0 2500 454 0 	cur_stats
+1024 2000 454 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -2042,12 +2019,1596 @@ let you see hidden things!
 ~
 63 52 40 31 10 0 -1  -:| bitfield |:-
 0 0 50 0 50 1 0 0 0 	extras
-0 1500 455 0 	cur_stats
+1024 2000 455 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
 10 -1  -:| bitfield |:-
 162 20 -1 spell#, level (casts)
+End of Object.
+
+
+470	 Start of Object
+knife silver ~	names
+a silver knife
+~
+A silver knife is lying here.
+~
+It is small with a leather handle.  It has the word "Archibald" enscribed on
+its blade.
+
+~
+57 43 40 31 30 10 -1  -:| bitfield |:-
+0 0 100 0 1 2 2 2 0 	extras
+1024 15 470 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+473	 Start of Object
+bag goods ~	names
+a bag of goods
+~
+A bag full of goods lies here.
+~
+It is a small bag with lumps of various sizes and shapes bulging from it.  A
+chain is wrapped tightly around the open end and bound with a primitive keyhole
+lock.
+
+~
+56 54 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 2 0 0 0 	extras
+1024 10 473 0 	cur_stats
+3 2 -1  -:| bitfield |:-
+0 2 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+486	 Start of Object
+canteen ~	names
+CLONE OF:  canteen.
+~
+CLONE OF:  canteen.
+~
+This is a simple canteen with a cork for a lid.  From the scuffed
+nature, you can believe it's seen a long life!
+
+~
+59 54 40 21 10 -1  -:| bitfield |:-
+20 0 100 0 1000 1 0 0 1 	extras
+1024 50 486 0 	cur_stats
+2 -1  -:| bitfield |:-
+0 10 100 -1 	 bag_stuff
+-1	affected_by
+7 -1	inv
+-1	stat_affects
+End of Object.
+
+
+487	 Start of Object
+canteen ~	names
+CLONE OF:  canteen.
+~
+CLONE OF:  canteen.
+~
+This is a simple canteen with a cork for a lid.  From the scuffed
+nature, you can believe it's seen a long life!
+
+~
+59 54 40 21 10 -1  -:| bitfield |:-
+20 0 100 0 1000 1 0 0 1 	extras
+1024 50 487 0 	cur_stats
+2 -1  -:| bitfield |:-
+0 10 100 -1 	 bag_stuff
+-1	affected_by
+7 -1	inv
+-1	stat_affects
+End of Object.
+
+
+488	 Start of Object
+canteen ~	names
+CLONE OF:  canteen.
+~
+CLONE OF:  canteen.
+~
+This is a simple canteen with a cork for a lid.  From the scuffed
+nature, you can believe it's seen a long life!
+
+~
+59 54 40 21 10 -1  -:| bitfield |:-
+20 0 100 0 1000 1 0 0 1 	extras
+1024 50 488 0 	cur_stats
+2 -1  -:| bitfield |:-
+0 10 100 -1 	 bag_stuff
+-1	affected_by
+7 -1	inv
+-1	stat_affects
+End of Object.
+
+
+506	 Start of Object
+potion purple strength ~	names
+a dark purple potion
+~
+A dark purple potion in a jar lies here.
+~
+It has a slightly offensive odor and its murky, soupy appearance isn't too
+appetizing either.
+
+~
+63 52 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 1 0 0 0 	extras
+1024 3000 506 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+177 20 -1 spell#, level (casts)
+End of Object.
+
+
+509	 Start of Object
+scroll gate ~	names
+a scroll of gate
+~
+A scroll which will open a magical gateway lies here.
+~
+You see a scroll which will let you travel to distant lands!
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 1200 509 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+159 20 -1 spell#, level (casts)
+End of Object.
+
+
+510	 Start of Object
+scroll portal ~	names
+a scroll of portal
+~
+A scroll for opening a magical doorway lies here.
+~
+You see a scroll which will let you travel to distant lands...and back!
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 1500 510 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+160 20 -1 spell#, level (casts)
+End of Object.
+
+
+511	 Start of Object
+scroll passdoor door ~	names
+a scroll of passdoor
+~
+A scroll that looks not entirely solid lies here.
+~
+It seems to slide right through your hands in places!
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 2250 511 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+181 20 -1 spell#, level (casts)
+End of Object.
+
+
+512	 Start of Object
+scroll image mirror ~	names
+a scroll of mirror image
+~
+A scroll which reflects your face on its surface lies here.
+~
+You see a shiny scroll which reflects your face on its surface as you look at
+it.
+
+~
+63 53 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 500 512 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+153 20 -1 spell#, level (casts)
+End of Object.
+
+
+513	 Start of Object
+scroll summon ~	names
+a scroll of summon
+~
+A scroll which seems to pull you towards itself lies here.
+~
+You see a scroll which begs you to come closer!
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 1500 513 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+167 20 -1 spell#, level (casts)
+End of Object.
+
+
+514	 Start of Object
+scroll blade fire ~	names
+a scroll of fire blade
+~
+A scorching hot scroll lies here.
+~
+Its words burn with intensity!
+
+~
+63 53 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 1200 514 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+186 20 -1 spell#, level (casts)
+End of Object.
+
+
+515	 Start of Object
+scroll grasp shocking ~	names
+a scroll of shocking grasp
+~
+A scroll which seems to grip your soul lies here.
+~
+It seems to grip your soul with some invisible magical grasp!
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 515 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+136 20 -1 spell#, level (casts)
+End of Object.
+
+
+516	 Start of Object
+scroll blindness cure ~	names
+a scroll of cure blindness
+~
+A scroll lies here very clearly in your vision.
+~
+Its words are very crisp and clear, moreso than is normal for your eyesight.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 516 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+3 20 -1 spell#, level (casts)
+End of Object.
+
+
+517	 Start of Object
+scroll infravision ~	names
+a scroll of infravision
+~
+A scroll with a slightly red hue lies here.
+~
+It has a slightly red tint and seems to glow a bit.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 517 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+13 20 -1 spell#, level (casts)
+End of Object.
+
+
+518	 Start of Object
+scroll hands burning ~	names
+a scroll of burning hands
+~
+A very hot scroll lies here.
+~
+You see a scroll which makes your hands burn!
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 300 518 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+38 20 -1 spell#, level (casts)
+End of Object.
+
+
+519	 Start of Object
+scroll conjure horde ~	names
+a scroll of conjure horde
+~
+A scroll of conjure horde lies here.
+~
+You see a scroll of conjure horde.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 519 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+147 20 -1 spell#, level (casts)
+End of Object.
+
+
+522	 Start of Object
+scroll illusion ~	names
+a scroll of illusion
+~
+A scroll of illusion lies here.
+~
+You see a scroll of illusion.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 522 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+150 20 -1 spell#, level (casts)
+End of Object.
+
+
+523	 Start of Object
+scroll locate ~	names
+a scroll of locate
+~
+A scroll which helps you in finding things lies here.
+~
+You see a scroll of locate.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 523 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+166 20 -1 spell#, level (casts)
+End of Object.
+
+
+524	 Start of Object
+scroll wizard eye ~	names
+a scroll of wizard eye
+~
+A scroll of wizard eye lies here.
+~
+You see a scroll of wizard eye.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 524 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+168 20 -1 spell#, level (casts)
+End of Object.
+
+
+525	 Start of Object
+scroll recharge ~	names
+a scroll of recharge
+~
+A scroll which will help you replenish wands lies here.
+~
+You see a scroll of recharge.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 525 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+173 20 -1 spell#, level (casts)
+End of Object.
+
+
+526	 Start of Object
+scroll dispel magic ~	names
+a scroll of dispel magic
+~
+A scroll which will help you remove magic lies here.
+~
+You see a scroll of dispel magic.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 526 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+176 20 -1 spell#, level (casts)
+End of Object.
+
+
+527	 Start of Object
+scroll bless ~	names
+a scroll of bless
+~
+A very holy scroll lies here.
+~
+You see a scroll of bless.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 527 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+191 20 -1 spell#, level (casts)
+End of Object.
+
+
+528	 Start of Object
+scroll harm scroll harm ~	names
+a scroll of harm
+~
+A scroll of harm lies here.
+~
+You see a scroll of harm.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 528 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+197 20 -1 spell#, level (casts)
+End of Object.
+
+
+529	 Start of Object
+scroll flame strike ~	names
+a scroll of flame strike
+~
+A scroll of flame strike lies here.
+~
+You see a scroll of flame strike.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 529 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+198 20 -1 spell#, level (casts)
+End of Object.
+
+
+530	 Start of Object
+scroll heal group ~	names
+a scroll of group heal
+~
+A scroll for healing your group lies here.
+~
+You see a scroll of group heal.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 530 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+200 20 -1 spell#, level (casts)
+End of Object.
+
+
+531	 Start of Object
+scroll stone skin ~	names
+a scroll of stone skin
+~
+A stony scroll lies here.
+~
+You see a scroll of stone skin.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 531 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+204 20 -1 spell#, level (casts)
+End of Object.
+
+
+532	 Start of Object
+scroll prismatic globe ~	names
+a scroll of prismatic globe
+~
+A scroll of prismatic globe lies here.
+~
+You see a scroll of prismatic globe.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 532 0 	cur_stats
+-1	affected_by
+-1	inv
+0 3000 -1	stat_affects
+10 -1  -:| bitfield |:-
+206 20 -1 spell#, level (casts)
+End of Object.
+
+
+533	 Start of Object
+scroll create food ~	names
+a scroll of create food
+~
+A scroll which looks like it could be eaten lies here.
+~
+You see a scroll of create food.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 533 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+210 20 -1 spell#, level (casts)
+End of Object.
+
+
+534	 Start of Object
+scroll create water ~	names
+a scroll of create water
+~
+A scroll of create water lies here.
+~
+You see a scroll of create water.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 534 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+213 20 -1 spell#, level (casts)
+End of Object.
+
+
+535	 Start of Object
+scroll icestorm storm ~	names
+a scroll of icestorm
+~
+An icy scroll lies here.
+~
+You see a scroll of icestorm.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 535 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+215 20 -1 spell#, level (casts)
+End of Object.
+
+
+536	 Start of Object
+scroll lightning bolt ~	names
+a scroll of lightning bolt
+~
+You see a scroll which crackles with electricity.
+~
+You see a scroll which crackles with electricity.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 536 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+217 20 -1 spell#, level (casts)
+End of Object.
+
+
+537	 Start of Object
+scroll firestorm ~	names
+a scroll of firestorm
+~
+A scroll of firestorm lies here.
+~
+You see a scroll of firestorm.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 537 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+220 20 -1 spell#, level (casts)
+End of Object.
+
+
+538	 Start of Object
+scroll plague ~	names
+a scroll of plague
+~
+A scroll of a horrible plague lies here.
+~
+You see a scroll of a horrible plague!
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 538 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+227 20 -1 spell#, level (casts)
+End of Object.
+
+
+539	 Start of Object
+scroll flesh stone ~	names
+a scroll of flesh to stone
+~
+A scroll of flesh to stone lies here.
+~
+You see a scroll of flesh to stone.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 539 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+234 20 -1 spell#, level (casts)
+End of Object.
+
+
+540	 Start of Object
+scroll detect resistances ~	names
+a scroll of detect resistances
+~
+A scroll for detecting resistances lies here.
+~
+You see a scroll of detect resistances.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 540 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+235 20 -1 spell#, level (casts)
+End of Object.
+
+
+541	 Start of Object
+scroll tammuz ~	names
+a scroll of tammuz
+~
+A scroll of tammuz lies here.
+~
+You see a scroll of tammuz.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 541 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+249 20 -1 spell#, level (casts)
+End of Object.
+
+
+542	 Start of Object
+scroll creat golem ~	names
+a scroll of create golem
+~
+A scroll of create golem lies here.
+~
+You see a scroll of create golem.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 542 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+145 20 -1 spell#, level (casts)
+End of Object.
+
+
+543	 Start of Object
+scroll conjure minion scroll conjure minion ~	names
+a scroll of conjure minion
+~
+A scroll of conjure minion lies here.
+~
+You see a scroll of conjure minion lying here.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 543 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+146 20 -1 spell#, level (casts)
+End of Object.
+
+
+544	 Start of Object
+scroll detect poison ~	names
+a scroll of detect poison
+~
+A scroll of detect poison lies here.
+~
+You see a scroll of detect poison.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 544 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+156 20 -1 spell#, level (casts)
+End of Object.
+
+
+545	 Start of Object
+scroll detect alignment ~	names
+a scroll of detect alignment
+~
+A scroll of detect alignment lies here.
+~
+You see a scroll of detect alignment.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 545 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+164 20 -1 spell#, level (casts)
+End of Object.
+
+
+546	 Start of Object
+scroll weaken ~	names
+a scroll of weaken
+~
+A scroll of weaken lies here.
+~
+You see a scroll of weaken.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 546 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+170 20 -1 spell#, level (casts)
+End of Object.
+
+
+547	 Start of Object
+scroll fireproof ~	names
+a scroll of fireproof
+~
+A scroll of fireproof lies here.
+~
+You see a scroll of fireproof.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 547 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+174 20 -1 spell#, level (casts)
+End of Object.
+
+
+548	 Start of Object
+scroll haste ~	names
+a scroll of haste
+~
+A scroll of haste lies here.
+~
+You see a scroll of haste.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 200 548 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+175 20 -1 spell#, level (casts)
+End of Object.
+
+
+549	 Start of Object
+scroll strength ~	names
+a scroll of strength
+~
+A scroll of strength lies here.
+~
+You see a scroll of strength.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 549 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+177 20 -1 spell#, level (casts)
+End of Object.
+
+
+550	 Start of Object
+scroll enchant weapon ~	names
+a scroll of enchant weapon
+~
+A scroll of enchant weapon lies here.
+~
+You see a scroll of enchant weapon.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 550 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+182 20 -1 spell#, level (casts)
+End of Object.
+
+
+551	 Start of Object
+scroll enchant armor ~	names
+a scroll of enchant armor
+~
+You see a scroll of enchant armor.
+~
+You see a scroll of enchant armor.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 551 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+183 20 -1 spell#, level (casts)
+End of Object.
+
+
+552	 Start of Object
+scroll rune edge ~	names
+a scroll of rune edge
+~
+A scroll of rune edge lies here.
+~
+You see a scroll of rune edge.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 552 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+184 20 -1 spell#, level (casts)
+End of Object.
+
+
+553	 Start of Object
+scroll frost blade ~	names
+a scroll of frost blade
+~
+A scroll of frost blade lies here.
+~
+You see a scroll of frost blade.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 553 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+185 20 -1 spell#, level (casts)
+End of Object.
+
+
+554	 Start of Object
+scroll cure serious ~	names
+a scroll of cure serious
+~
+A scroll of cure serious lies here.
+~
+You see a scroll of cure serious.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 554 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+188 20 -1 spell#, level (casts)
+End of Object.
+
+
+555	 Start of Object
+scroll cure critical ~	names
+a scroll of cure critical
+~
+A scroll of cure critical lies here.
+~
+You see a scroll of cure critical.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 555 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+189 20 -1 spell#, level (casts)
+End of Object.
+
+
+556	 Start of Object
+scroll protection scroll protection evil ~	names
+a scroll of protection from evil
+~
+A scroll of protection from evil lies here.
+~
+You see a scroll of protection from evil.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 556 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+192 20 -1 spell#, level (casts)
+End of Object.
+
+
+557	 Start of Object
+scroll protection good ~	names
+a scroll of protection from good
+~
+A scroll of protection from good lies here.
+~
+You see a scroll of protection from good.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 557 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+193 20 -1 spell#, level (casts)
+End of Object.
+
+
+558	 Start of Object
+scroll remove curse ~	names
+a scroll of remove curse
+~
+A scroll of remove curse lies here.
+~
+You see a scroll of remove curse.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 558 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+194 20 -1 spell#, level (casts)
+End of Object.
+
+
+559	 Start of Object
+scroll dispel good ~	names
+a scroll of dispel good
+~
+A scroll of dispel good lies here.
+~
+You see a scroll of dispel good.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 559 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+195 20 -1 spell#, level (casts)
+End of Object.
+
+
+560	 Start of Object
+scroll holy word ~	names
+a scroll of holy word
+~
+A scroll of holy word lies here.
+~
+You see a scroll of holy word,
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 560 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+199 20 -1 spell#, level (casts)
+End of Object.
+
+
+561	 Start of Object
+scroll divine protection ~	names
+a scroll of divine protection
+~
+A scroll of diving protection lies here.
+~
+You see a scroll of divine protection.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 561 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+201 20 -1 spell#, level (casts)
+End of Object.
+
+
+562	 Start of Object
+scroll heros feast ~	names
+a scroll of hero's feast
+~
+A scroll of hero's feast lies here.
+~
+You see a scroll of hero's feast.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 562 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+211 20 -1 spell#, level (casts)
+End of Object.
+
+
+563	 Start of Object
+scroll magic shield ~	names
+a scroll of magic shield
+~
+A scroll of magic shield lies here.
+~
+You see a scroll of magic shield.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 563 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+214 20 -1 spell#, level (casts)
+End of Object.
+
+
+564	 Start of Object
+scroll blindness ~	names
+a scroll of blindness
+~
+A scroll of blindness lies here.
+~
+You see a scroll of blindness.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 564 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+221 20 -1 spell#, level (casts)
+End of Object.
+
+
+565	 Start of Object
+scroll cause sickness ~	names
+a scroll of cause sickness
+~
+A scroll of cause sickness lies here.
+~
+You see a scroll of cause sickness.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 565 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+222 20 -1 spell#, level (casts)
+End of Object.
+
+
+566	 Start of Object
+cause critical ~	names
+a scroll of cause critical
+~
+A scroll of cause critical lies here.
+~
+You see a scroll of cause critical.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 566 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+224 20 -1 spell#, level (casts)
+End of Object.
+
+
+567	 Start of Object
+scroll dispel evil ~	names
+a scroll of dispel evil
+~
+A scroll of dispel evil lies here.
+~
+You see a scroll of dispel evil.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 100 0 0 0 0 	extras
+1024 3000 567 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+228 20 -1 spell#, level (casts)
+End of Object.
+
+
+579	 Start of Object
+ticket construct token ~	names
+a token for a small cat
+~
+A token lies here.
+~
+You see a small wooden token.
+
+~
+50 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 0 0 0 	extras
+1024 100 579 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+588	 Start of Object
+key amy ~	names
+a key
+~
+A metal key lies here.
+~
+It has the name "Amy" enscribed on its handle.
+
+~
+50 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 0 0 0 	extras
+1024 10 588 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+591	 Start of Object
+ticket construct token ~	names
+a token for a large dog
+~
+A token lies here.
+~
+You see a small wooden token.
+
+~
+50 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 0 0 0 	extras
+1024 700 591 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+592	 Start of Object
+ticket construct token ~	names
+a token for a large attack dog
+~
+A token lies here.
+~
+You see a small wooden token.
+
+~
+50 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 0 0 0 	extras
+1024 1000 592 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+601	 Start of Object
+scroll orb power this_thing_is_freaking_nuts ~	names
+a scroll of orb of power
+~
+A glowing hot scroll lies here, scorching the ground.
+~
+Its words glow with the intensity of pure energy, ready to be released!
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+0 0 100 0 1000 0 0 0 0 	extras
+1024 50000 601 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+233 20 -1 spell#, level (casts)
+End of Object.
+
+
+608	 Start of Object
+potion strength iverunoutofgoodkeywords ~	names
+a black murky potion
+~
+A blackish potion lies here.
+~
+Its black liquid oozes slowly in its container.
+
+~
+63 52 40 21 10 -1  -:| bitfield |:-
+1 0 100 0 1 0 0 0 0 	extras
+1024 8000 608 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+177 30 -1 spell#, level (casts)
+End of Object.
+
+
+609	 Start of Object
+papyrus plant root paper ~	names
+a papyrus plant
+~
+A papyrus plant grows here.
+~
+Its straight, flower-less steam reaches up over your head, and at intervals
+along the stem are groups of small, flexible grasslike branches.
+
+~
+67 63 50 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 50 3 0 0 0 	extras
+1024 5 609 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+1 -1  -:| bitfield |:-
+610 609 0 0 0 0	 target object, companions
+End of Object.
+
+
+610	 Start of Object
+bundle fibers papyrus paper ~	names
+a bundle of papyrus fibers
+~
+A bundle of papyrus fibers lie here.
+~
+There are quite a few of the slender, flexible papyrus fibers, arranged
+lengthwise and bound together.  There are almost certainly enough to make a
+large piece of papyrus paper.
+
+~
+67 63 50 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 0 0 0 	extras
+1024 50 610 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+1 -1  -:| bitfield |:-
+611 610 743 0 0 0	 target object, companions
+End of Object.
+
+
+629	 Start of Object
+board notices bulletin ~	names
+the development bulletin board
+~
+The development notice board is attached to the wall.
+~
+To see the messages on the board, type 'examine board'.  To read a message,
+type 'read #'.
+
+~
+74 54 50 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 1000 0 0 0 	extras
+1024 0 629 0 	cur_stats
+-1  -:| bitfield |:-
+0 1000 0 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+632	 Start of Object
+scroll absorb blows ~	names
+a scroll of absorb blows
+~
+A scroll of absorb blows lies here.
+~
+You see a very tough scroll.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 0 0 0 	extras
+1024 3000 632 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+208 20 -1 spell#, level (casts)
+End of Object.
+
+
+634	 Start of Object
+scroll bind wound ~	names
+a scroll of bind wound
+~
+A scroll of bind wound lies here.
+~
+You see a scroll of bind wound.
+
+~
+63 53 40 31 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 0 0 0 	extras
+1024 3000 634 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+187 20 -1 spell#, level (casts)
+End of Object.
+
+
+730	 Start of Object
+beehive hive ~	names
+a beehive
+~
+A beehive hangs from a tree, bees buzzing in and out.
+~
+It's not very big and it looks as if some forest critter has been trying to get
+at it, as there's a large hole in one side.
+
+~
+76 54 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 10 500 0 0 0 	extras
+1024 10 730 0 	cur_stats
+9 -1  -:| bitfield |:-
+0 1005 100 -1 	 bag_stuff
+-1	affected_by
+391 743 -1	inv
+-1	stat_affects
+-1  End of object proc scripts
+End of Object.
+
+
+737	 Start of Object
+cauldron small iron ~	names
+a small iron cauldron
+~
+A small cauldron, made of iron, lies here.
+~
+It is a small, slightly rusty iron cauldron.
+
+~
+65 59 54 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 10000 25 0 0 0 	extras
+1024 800 737 0 	cur_stats
+9 -1  -:| bitfield |:-
+0 45 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+742	 Start of Object
+box bin storage donation large big ~	names
+a large wooden storage bin
+~
+A large, wooden storage bin sits here.
+~
+It is quite large and can probably hold a fair amount.  It has a hinged lid
+which is left open most of the time, and many use it for more long-term storage
+of items left in the donation room.
+
+~
+54 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 1000 0 0 0 	extras
+1024 10 742 0 	cur_stats
+10 -1  -:| bitfield |:-
+0 1200 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+743	 Start of Object
+honey ~	names
+some honey
+~
+Some honey lies in a sticky glob.
+~
+It's probably not great to eat, but it's sticky and could hold things together!
+
+~
+67 63 50 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 1 0 0 0 	extras
+1024 10 743 0 	cur_stats
+-1	affected_by
+-1	inv
+100 4 -1	stat_affects
+1 -1  -:| bitfield |:-
+611 610 743 0 0 0	 target object, companions
+End of Object.
+
+
+752	 Start of Object
+token penguin ~	names
+a token for a penguin
+~
+A small wooden token lies here.
+~
+You see a small wooden token.
+
+~
+50 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 1 0 0 0 0 	extras
+1024 10 752 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
 End of Object.
 
 

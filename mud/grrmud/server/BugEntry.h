@@ -1,8 +1,8 @@
-// $Id: BugEntry.h,v 1.7 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: BugEntry.h,v 1.8 2001/03/29 03:02:27 eroper Exp $
+// $Revision: 1.8 $  $Author: eroper $ $Date: 2001/03/29 03:02:27 $
 
-// $Id: BugEntry.h,v 1.7 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: BugEntry.h,v 1.8 2001/03/29 03:02:27 eroper Exp $
+// $Revision: 1.8 $  $Author: eroper $ $Date: 2001/03/29 03:02:27 $
 
 //
 //ScryMUD Server Code

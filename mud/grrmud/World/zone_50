@@ -1,0 +1,794 @@
+4643		Room Number
+newbie ~	names
+Entrance to the instructional area
+~
+You stand outside of the entrance to ScryMUD's newbie learning area.  Beyond
+these doors you will learn the basic skills which you will need to survive in
+the realm of ScryMUD.  To enter the learning area, you will need to move to the
+north.  Type "north" to enter the newbie area and begin your education!  If you
+want to have a lesson repeated, just type "look".
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4643 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4645 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 6 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4644		Room Number
+newbie ~	names
+Lesson One: Movement
+~
+Scry has a 10-directional movement system: you can move north, south, east,
+west, northwest, northeast, southwest, and southeast, as well as up and down. 
+To move in any one of these directions, just type the direction and hit enter. 
+They can be abbreviated, also, as: n, s, e, w, nw, ne, sw, se, u, d.  You
+should be able to see a list of visible exits from your room by typing "exits",
+or by looking below the room's description.  If you are using Hegemon, the
+directional pad will also change colors when an exit is visible.  In additional
+to the 10 standard exits, the 'enter' command will allow you to move in
+non-standard directions.  There is not always a non-standard exit from a room,
+and they do not show up on the visible exits list, so it is up to you to find
+them.  To use the enter command, type 'enter keyword', where keyword is the
+name of what you want to enter.  Lastly, there are doors which you can open and
+close.  To open a door, type 'open door'.  Some doors are locked, and you will
+need a key to open those doors.  Some doors can also be hidden, so you might
+not see them without some investigation.  Now, move to lesson two.  It is west
+of here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4644 0 	cur_stats
+-1	affected_by
+-1	inv
+1 4 4645 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4646 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4645		Room Number
+newbie ~	names
+Introduction to ScryMUD
+~
+Welcome to ScryMUD!  Scry is a place where people of all ages can come to enjoy
+themselves.  If you're unfamiliar with Scry's commands and interface, head
+north of here to start learning!
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4645 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4644 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4643 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4646		Room Number
+newbie ~	names
+Lesson Two: Communication
+~
+Scry has various methods, called "channels", which you can use to communicate. 
+The first of these is "say".  Typing "say Hello!" will send a message to
+everyone that is in your current room.  Another channel is "gossip".  Typing
+"gossip Hello!" will send a message to everyone in the game who is not asleep,
+meditating, deaf, or has gossip turned off.  Other channels are:
+tell: Typing "tell grock Hello!" will send a message only to Grock.  Typing
+"reply Hello!" will send a message to the last person who sent a tell to you.
+shout: Typing "shout Hello!" will send a message to everyone near you.
+yell: Typing "yell Hello!" will send a message to everyone in the game.  This
+is for emergencies.
+emote: emote will send a message to everyone in your current room, but in the
+third-person.  If your name was Joe, typing "emote smiles." would display "Joe
+smiles.".
+Channels like gossip and yell are what are called "global" channels, in that
+they broadcast a message to everyone in the game.  People might get mad at you
+if you use these channels too much, or "spam" them.
+Now, move to lesson three.  It is down from here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4646 0 	cur_stats
+-1	affected_by
+-1	inv
+1 10 4647 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 1 4644 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4647		Room Number
+newbie ~	names
+Lesson Three: Configuration and Color
+~
+Scry has various options that can be turned on and off.  To get a list of these
+options, type "toggle".  Here are some of the important ones and their
+meanings:
+brief: Brief controls whether you see room descriptions or not.  We recommend
+you leave this turned off because you might miss important information
+otherwise.
+Autoloot: autoloot controls whether you automatically loot corpses after you've
+killed something or not.
+no beep: This controls whether you can be beeped via the "beep player" command.
+You might miss important announcements if you have this off.
+Scry also has ANSI color for those who aren't using Hegemon.  Hegemon has its
+own form of color which is turned on automatically when you enter the game.  To
+turn on ANSI color, type 'toggle ansi'.  That will turn color on, but will not
+set your color preferences.  Your color preferences are set with the 'color'
+command.  For now, type 'color suggested'.  That will put your colors to a
+pre-programmed setting.
+Now, move to lesson four.  It is east of here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4647 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4648 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 9 4646 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4648		Room Number
+newbie ~	names
+Lesson Four: Your Character
+~
+As you probably noticed when you created your character, there were lots of
+options to choose from.  Your character's "statistics", like how strong, how
+intelligent, and how dextrous he or she is, were all influenced by your choice
+of race and class.  Each combination of race and class has its advantages and
+disadvantages, and these are permanent in nature and cannot be changed for the
+most part.  However, you can make your character more unique.  Let's start by
+changing your title.  Type "who".  You will see your name, followed by "the
+newbie", followed by your class and level.  To change your title, type 'title
+what you want your title to be'.  For example, 'title the fearsome warrior!'. 
+You can also change your description.  Type 'look self'.  You will see some
+general information about yourself, including "He/She/It looks perfectly
+normal."  You can change that to a unique description by typing "describe",
+then hitting enter, and then entering your description.  (If you are using
+zMUD, a MUD client for Windows, type 'look zmud' first.)  When you are done
+with your description, hit enter, and then enter a tilde (~).  You are now
+quite a unique person!
+Now, move to lesson five.  It is up from here.
+
+~
+32 24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1   Start of KeywordPair
+zmud ~
+If you're using zMUD, you might have trouble entering a description, because
+zMUD uses the tilde (~) for one of its special functions.  To enter a
+description you'll need to go up to View, then Preferences, then to Special
+Characters.  There you'll need to disable (un-check) the box for the tilde (~).
+ This will disable zMUD's keypad movement functions, so you'll have to decide
+whether you want to do this or not.  The tilde (~) is also used when posting
+messages on boards, so you'll need to disable it if you want to post messages
+on bulletin boards, as well.
+  
+Another way of disabling the tilde is to click on the icon of a computer which
+resides in the lower-right corner near the clock.  This will disable parsing. 
+Many thanks to Jamie for this suggestion!
+
+~
+-1  No more KeywordPairs
+1024 0 4648 0 	cur_stats
+-1	affected_by
+-1	inv
+1 9 4649 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4647 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4649		Room Number
+newbie ~	names
+Lesson Five: Your Character: Part Two
+~
+You can also find out more information about your character.  Type 'score'. 
+You will see various stats your character has, including gold, experience
+points, hit points, mana, and movement points.  Typing 'score long' will give
+you a more detailed list.  Now type 'inventory'.  You will see items that you
+currently have in your inventory, as well as the amount of gold you have.  Note
+that you have a canvas sack in your inventory.  This will be important later
+on.
+You also have what is called a "prompt".  This is the line at the bottom of
+your screen that is enclosed in brackets.  This tells you how many hit points,
+mana points, and movement points you have.  This is important to watch in
+battle, as it tells you how healthy (or unhealthy!) you are. Now, move to
+lesson six.  Is south of here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4649 0 	cur_stats
+-1	affected_by
+-1	inv
+1 10 4648 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4650 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4650		Room Number
+newbie ~	names
+Lesson Six: Items
+~
+As you found out before, you have a canvas sack in your inventory.  This sack
+contains some valuable items which will help you start out.  Type 'examine
+sack'.  You will see a list of items that are in the sack.  Now, type 'get all
+sack'.  This will remove everything from the sack, and place it in your
+inventory.  Carrying items in bags like this one is helpful because it helps
+keep your inventory clean.  Now, type 'put bread sack'.  This will put a loaf
+of bread back into the sack.  Now, type 'get bread sack'.  This will remove the
+bread from the sack.
+Now that you have everything out of the sack, type 'wear all'.  This will equip
+you.  Now, try 'remove dagger'.  This will remove the dagger which you are
+wielding.  Now, try 'wear dagger' to wield the dagger again. If you want to
+pick up an item that is lying on the ground, type 'get item'.  If you want to
+leave an item on the ground, type 'drop item'.  Now, move to lesson seven,
+which is west of here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4650 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4649 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4651 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4651		Room Number
+newbie ~	names
+Lesson Seven: Items: Part Two
+~
+In your journeys throughout the realm, you will come across many items which
+you can use.  In addition to commands like put, get, remove, and wear, you will
+be able to use commands like fill, drink, eat, and empty.  Let's try these
+commands now.
+You have a canteen in your inventory.  Try 'drink canteen'.  You'll feel less
+thirsty.  Try it again, until it says you're too full to drink any more, or
+your water runs out.  Now, try 'eat bread'.  You'll feel less hungry.  Try it
+again until it says you're too full to eat any more, or your bread runs out. 
+Now you'll notice that there is a fountain in the room.  Try 'drink fountain'. 
+Most likely you'll be too full to drink any more, but normally fountains are
+very helpful as they give free water! You can also refill your canteen at the
+fountain.  Type 'fill canteen fountain' to refill it, and try it again until
+the canteen is full.  Now, move to lesson eight, which is north of here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4651 0 	cur_stats
+-1	affected_by
+46 -1	inv
+1 1 4650 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4652 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4652		Room Number
+newbie ~	names
+Lesson Eight: Items: Part Three
+~
+Sometimes you'll want to get rid of an item.  If you want, you can just use the
+'drop item' command.  Or, if you want to get a little bit of a reward for
+getting rid of the item, you can do a 'junk item'.  If you think it's something
+that's of value to other people, please use the 'donate item' command which
+will leave it in the donation room in Garland where others can make use of it. 
+Now, move to lesson nine, which is up from here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4652 0 	cur_stats
+-1	affected_by
+-1	inv
+1 4 4651 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 9 4653 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4653		Room Number
+newbie ~	names
+Lesson Nine: Shops
+~
+Sometimes, you'll want to buy something from a shop.  Most people buy their
+food from shops, and some equip themselves with items from shops.  You'll
+notice that there is a baker in this room.  To see what he has to sell, type
+'list'.  You'll notice that he's selling a loaf of bread.  If you're low on
+bread, you might want to buy some now.  To buy bread, type 'buy bread'.  Some
+shopkeepers will also allow you to sell items to them, at a reduced price.  To
+see how much a shopkeeper wants for your item, type 'offer item'.  To sell an
+item, type 'sell item'.  Only some shopkeepers will allow you to sell things to
+them.  Now, move to lesson ten, which is south of here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4653 0 	cur_stats
+-1	affected_by
+-1	inv
+1 10 4652 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4654 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+77 -1	mobs
+End of Room
+4654		Room Number
+newbie ~	names
+Lesson Ten: Battle
+~
+To advance in power, you'll need to gain experience points.  Experience points
+are gained through battle.  You can also gain valuable equipment through
+battle, once you've killed off whoever is wearing it.  Before you kill
+anything, you'll need to make sure you're capable of killing it.  Type
+'consider monster' to see if you're capable of killing it.  Be warned, though,
+that looks can be deceiving, and consider might not always be right!  Once
+you've determined that you can kill something, you will need to attack it.  You
+can attack it either by using a surprise attack by casting a spell, or just
+typing 'kill monster'.  If it turns out that you're losing, you can type 'flee'
+which will attempt to get you out of battle.  You can also set the game to make
+you flee automatically with the wimpy command.  Do do this, type 'wimpy #',
+replacing # with the number of hit points you want to have left when the game
+makes you flee.  It takes one round of battle to make you flee, so make sure
+you set it so you have enough hit points to survive anothe rount of battle. 
+Take note that if you flee, the fight isn't over - many mobs will hunt you
+down!  If you win a fight, you will gain some experience points.  You will also
+be able to get everything that your opponent was wearing or had in its
+inventory with the 'get all corpse' command.  Now, move to lesson eleven, which
+is east of here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4654 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4655 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4653 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4655		Room Number
+newbie ~	names
+Lesson Eleven: Battle: Part Two
+~
+So what happens if you lose in battle?  Well, you die!  But don't worry - the
+game isn't over!  When you die, you'll lose some of your experience points, and
+you'll also be reincarnated at the Temple in Garland.  From there, you'll need
+to find your corpse.  Your corpse will be wherever you were fighting.  You'll
+need to get back to it quickly, though, because some people and monsters might
+see it as a good opportunity to get some equipment!  Don't worry, though -
+there are punishments for those who do this! Now, move to lesson twelve, which
+is northwest of here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4655 0 	cur_stats
+-1	affected_by
+-1	inv
+1 7 4656 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4654 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4656		Room Number
+newbie ~	names
+Lesson Twelve: Skills and Spells
+~
+I'm sure you're probably wondering how you get cool abilities to help take down
+your opponents.  To do this, you'll need to learn skills and spells.  To learn
+skills and spells, you'll need "practices".  Practices are sessions where
+you'll get to learn part of a skill or spell from a trainer.  The more
+practices you have, the more skills and spells you can learn!  You start out
+with a certain number of practices to help get you started, and you will get
+somewhere between two and six practices every time you increase your level. 
+Some skills and spells are more difficult to learn than others, so it might
+take more practices to learn one skill than another.
+Scry's skill and spell system works like a tree.  You start out at the bottom
+of the tree with only a few basic skills and spells you can practice.  Once
+you've practiced those skills and spells, you'll gain more that you can
+practice and you'll branch out further along the tree.  Not everyone can
+practice every skill and spell, so some players might have a particular spell
+that you don't, and you might have a special skill that others don't have.  To
+see a list of what skills and spells you currently have or can get, type
+'abilities'.  Now, more to lesson thirteen, which is southwest of here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4656 0 	cur_stats
+-1	affected_by
+-1	inv
+1 5 4655 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 8 4657 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4657		Room Number
+newbie ~	names
+Lesson Thirteen: Learning Skills and Spells
+~
+When you want to learn a skill or spell, you'll need to find a trainer.  There
+is a trainer for each class in the city of Garland, as well as some other towns
+and cities.  If you don't know where your trainer is, you can ask over the
+gossip channel and someone will help you out.  You'll notice that there's a
+trainer in this room.  If you want to learn some skills or spells now, you can
+learn them from him.  To learn a skill or spell, first find its name by typing
+'abilities'.  Then, you'll need to practice the skill with the practice
+command.  If the skill or spell is one word, you can just type 'practice spell
+trainer', but if the skill or spell is more than one word, you'll need to
+enclose the name of it in single quotes, like so: 'practice 'spell name'
+trainer'.  This is so that the game knows that you're trying to practice a
+two-word spell.  If you want to be able to remember this simply, just put
+quotes around the name of all skills and spells when you are practicing them,
+whether they're two words or not.  Now, move to lesson fourteen, which is to
+the west of here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4657 0 	cur_stats
+-1	affected_by
+-1	inv
+1 6 4656 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4658 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+101 -1	mobs
+End of Room
+4658		Room Number
+newbie ~	names
+Lesson Fourteen: Using Skills and Spells
+~
+I'm sure you'll want to learn the skills and spells you learned in the last
+lesson.  First, however, you'll need to know a bit more about the skills and
+spells.
+Most of the skills and spells that players can learn when they're first
+starting out are called "base skills".  These skills don't actually do
+anything, but they are the fundamental knowledge that you need to have to be
+able to learn your branches of skills and spells.  Once you've learned these
+base skills you'll be able to practice real skills and spells.
+  
+Now, once you have some real skills and spells, this is how you will use them:
+If you learned a spell, you will use it by typing 'cast spell target'.  Some of
+the time you won't need to specify a target, and when a spell name is more than
+one word you'll need to put quotes around them like you did when you were
+practicing. 
+If it is a skill, you'll need to just type the name of the skill to use it,
+sometimes specifying a target.  Some skills are automatic and you won't need to
+do anything to use them. Now, move to lesson fifteen, which is to the south of
+here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4658 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4657 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4659 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4659		Room Number
+newbie ~	names
+Lesson Fifteen: Logging Out
+~
+When you want to quit out of Scry, you can just type 'quit'.  Scry does not
+have a rent system, so you do not need to deposit your equipment anywhere
+before you leave.  To be safe, you can type 'save' before you quit if you want,
+although you are saved automatically when you quit.  When you're in the game,
+you should save periodically, but please don't make a trigger to save after
+every kill as it puts a little bit of load on the machine.  You can log out
+from anywhere within the game.  When you are under level 5, you will always log
+in in the Temple of Garland, but after level 5 you will log in wherever you
+logged out.  If you just close the window or cut the connection, your character
+will still be in the game and will be susceptible to being attacked.  "Link
+dead" characters, as they are called, are forced to log out automatically after
+30 minutes, but for 30 minutes they will be vulnerable.  Now, move to lesson
+sixteen, which is to the east of here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4659 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4661 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 4658 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4660		Room Number
+newbie ~	names
+Congratulations!
+~
+Congratulations! You've completed ScryMUD's newbie learning area! There are,
+however, a few more things you'll need to learn before you can head on out into
+the world.  Move north of here to start the final stages of your instruction.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4660 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4662 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4661 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4661		Room Number
+newbie ~	names
+Lesson Sixteen:  The Layout of the Realm
+~
+Now it's time to get your bearings.  Once you've completed the learning area
+you'll be placed in the temple in the city of Garland.  Garland is the main
+city in the realm and it is where most events center around.  Garland is shaped
+almost symmetrically, and everything leads back to one central point known as
+the central plaza.  It is hard to get lost in Garland because you just need to
+move in the opposite direction you came to get back to the central plaza!
+In Garland you will find many shops, as well as trainers.  There is a plaque in
+the central plaza in Garland which will help you get your bearings.
+Garland is important, but it is only a small part of the realm.  There are two
+other great cities in the realm, Jakarta and Dar Thane.  Dar Thane, to the
+north, is home to many thugs and evildoers, whereas Jakarta, to the south, is
+more peaceful.  There are numerous other cities and towns spread throughout the
+realm, as well as a vast expanse of wilderness to explore!  Now, move to lesson
+seventeen, which is to the east of here.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4661 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4660 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4659 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4662		Room Number
+newbie ~	names
+The Rules:  Lesson One
+~
+Before you can head out into the world, you'll need to become familiar with
+Scry's rules.  Most of these are simple, common decency rules and are there for
+your benefit. Head north to learn the rules.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4662 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4664 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4660 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4663		Room Number
+newbie ~	names
+Lesson Sixteen: The Rules
+~
+Before you can head out into the world, you'll need to become familiar with
+Scry's rules.  Most of these are simple, common decency rules and are there for
+your benefit. Head north to learn the rules.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4663 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	End of Doors
+-1	mobs
+End of Room
+4664		Room Number
+newbie ~	names
+The Rules:  Lesson Two
+~
+ScryMUD is a place for people of all ages to come and have a good time.  As
+such, swearing and vulgarity is frowned upon.  Mild swearing is tolerable from
+time to time, but repeated use and/or extreme vulgarity is not.  You will
+receive a warning when you overstep the bounds of decency, and if you don't
+refrain from using vulgar words you will be silenced.  Move north to continue
+learning the rules.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4664 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4665 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4662 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4665		Room Number
+newbie ~	names
+The Rules:  Lesson Three
+~
+Any and all sexually and racially derogatory remarks and other types of
+harassment *will not* be tolerated.  If you harass someone, you *will* be
+punished.  Ignorance is no excuse.  Failure to clean up your behavior after
+being warned is grounds for character freezing, and if you don't stop after
+that, look forward to character deletion and sitebans.  Racial and sexual
+harassment are *not* taken lightly.  Move north to continue learning the rules.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4665 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4666 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4664 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4666		Room Number
+newbie ~	names
+The Rules:  Lesson Four
+~
+Lastly for out-of-character rules: Immortal-mortal relations.  All of Scry's
+immortals are easily identifiable by the "IMM" written before their level, like
+"(IMM-5)".  Scry's imms do their best to help you out, and since they are doing
+all of this out of the goodness of their hearts, try to be nice to them. 
+Yelling and screaming at them isn't going to get you anywhere.  If you've got a
+problem, talk to an imm about it and they'll help you out to the best of their
+ability.  Remember, some imms might not have the capability to do everything
+that others can, so your problem might not get solved right away.  Also,
+begging for hints and equipment will go unanswered by the imms.  You'll have to
+either get help from mortals or find out on your own.  If you have
+a problem with an imm, talk with Grock or Shamu about it and they'll help sort
+the situation out.  If you have a problem with Shamu, talk with Grock. 
+Immortals have a set of rules just like mortals do, and they are expected to
+follow the rules too. Now move north for in-character rules.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4666 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4667 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4665 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4667		Room Number
+newbie ~	names
+The Rules:  Lesson Five
+~
+Now for in-game rules.  Please treat all other players with respect.  You don't
+want someone on your case, so don't get on someone else's case.  Killing other
+players (known as PKilling) is legal but frowned upon, and there are various
+forms of punishment for it, so be prepared to avoid the law if you player-kill
+someone!  The same applies for looting other people's corpses.  Stealing other
+people's kills by attacking the same mob as they when it's almost dead is also
+frowned upon, and players won't like you much if you do it.  Now move north for
+the last section of rules.
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4667 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4668 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4666 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4668		Room Number
+newbie ~	names
+What to do if you've got problems
+~
+If you're stuck somewhere or you need help, just ask!  Even if there aren't any
+immortals on, the other mortals in the game might be willing to help you out. 
+If you find a bug or typo or have an idea, feel free to use the bug, typo, and
+idea commands to report them where they'll be read by the immortals and acted
+upon.  Now, head north to complete your education!
+
+~
+24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4668 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4669 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4667 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4669		Room Number
+newbie ~	names
+The end of ScryMUD's newbie learning area!
+~
+Congratulations, you've completed ScryMUD's newbie learning area!  You're now
+ready to head out into the world and make a name for yourself!
+  
+If you think you're ready to enter the game, just type 'enter game' now. 
+Otherwise, if you'd like to repeat your training, type 'enter training' now.
+
+~
+35 24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4669 0 	cur_stats
+-1	affected_by
+31 31 31 31 31 -1	inv
+1 60 8 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 4668 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 71 4643 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+1  Start of a room proc script
+enter 0 -1 0	 Trigger Command, targ, actor 
+
+ wizchat %M has completed the newbie zone.;
+
+~
+-1  End of room proc scripts
+End of Room
+4670		Room Number
+newbie ~	names
+Entrance to the instructional area
+~
+You stand outside of the entrance to ScryMUD's newbie learning area.  Beyond
+these doors you will learn the basic skills which you will need to survive in
+the realm of ScryMUD.  To enter the learning area, you will need to move to the
+north.
+  
+If you went to the west from the end of the newbie area by accident but you
+wanted to enter the game, don't fret - you won't have to go through the whole
+newbie zone again.  You can type 'enter game' from here, as well!
+
+~
+35 24 23 21 10 9 8 7 6 -1  -:| bitfield |:-
+1024 0 4670 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4644 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+-1  End of room proc scripts
+End of Room
+
+
+-1		END OF FILE MARKER

@@ -1,5 +1,5 @@
-// $Id: LogStream.h,v 1.8 1999/07/18 00:59:23 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
+// $Id: LogStream.h,v 1.9 2001/03/29 03:02:38 eroper Exp $
+// $Revision: 1.9 $  $Author: eroper $ $Date: 2001/03/29 03:02:38 $
 
 //
 //ScryMUD Server Code
@@ -38,12 +38,12 @@
 
 enum LogLevelEnum {
    DIS = 1,   //disasters
-   ERR = 2,   //errors
+   ERROR = 2,   //errors
    WRN = 4,   //warnings
    INF = 8,   //info
    TRC = 16,  //function trace
    DBG = 32,  //debug
-   SEC = 64,  // log security violations
+   LSEC = 64,  // log security violations
    DB = 128,  // READ or WRITE from the world files
    XMT = 256, // Output from MUD to characters
    INP = 512, // Input from players
@@ -91,7 +91,8 @@ public:
       // Allow some outside filtering...
       if (file_action == OVERWRITE) {
          ofstream ofile(fname);
-         ofile << str() << flush();
+         ofile << str();
+         ofile.close();
 
          char buf[200];
          sprintf(buf, "truncate_log %s", fname);
@@ -99,7 +100,8 @@ public:
       }
       else if (file_action == APPEND) {
          ofstream ofile(fname, ios::app);
-         ofile << str() << flush();
+         ofile << str();
+         ofile.close();
       }
 
       seekp(0); //Reset the streambuf

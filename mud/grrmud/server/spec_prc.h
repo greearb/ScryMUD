@@ -1,5 +1,5 @@
-// $Id: spec_prc.h,v 1.5 1999/09/06 07:12:52 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
+// $Id: spec_prc.h,v 1.6 2001/03/29 03:02:35 eroper Exp $
+// $Revision: 1.6 $  $Author: eroper $ $Date: 2001/03/29 03:02:35 $
 
 //
 //ScryMUD Server Code
@@ -38,12 +38,12 @@ int do_this_obj_proc(int type_of_proc, int proc_num, critter& owner,
 int do_pulsed_spec_procs(int first_room, int last_room);
 
 int do_sell_proc(int prcnum, critter& shop_keeper, int i_th, const String* 
-		  item, critter& buyer);
+                  item, critter& buyer);
 int do_vend_buy(object& vender, int i_th, const String* item, critter& pc);
 int do_buy_proc(int prcnum, critter& shop_keeper, int i_th, const String* 
-		  item, critter& buyer);
+                  item, critter& buyer);
 int do_offer_proc(int prcnum, critter& shop_keeper, int i_th, const String* 
-		  item, critter& buyer);
+                  item, critter& buyer);
 
 int do_wand_scroll_proc(critter* vict, int proc_num, critter& pc,
                           int spell_lvl);
@@ -56,4 +56,18 @@ int do_wand_scroll_proc(object* vict, int proc_num, critter& pc,
 int do_shot_proc(critter& targ, critter& pc, short did_hit,
                   int& is_targ_dead); //assumes SMOB
 
+int do_domob_give_proc(critter& targ, critter& pc, object& obj);
+int do_domob_say_proc(critter& targ, critter& pc, const String& msg);
+int do_domob_bow_proc(critter& targ, critter& pc);
+int do_domob_curse_proc(critter& targ, critter& pc);
+
+int pass_domob_checks(critter& mob, critter& pc);
+
 #endif
+
+
+
+
+
+
+

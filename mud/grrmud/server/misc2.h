@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.25 1999/09/06 07:12:52 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
+// $Id: misc2.h,v 1.26 2001/03/29 03:02:32 eroper Exp $
+// $Revision: 1.26 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
 
 //
 //ScryMUD Server Code
@@ -39,6 +39,7 @@
 int core_dump(const char* msg);
 short a_will_help_b_against_c(critter& a, critter& b, critter& pc);
 void lose_fly(critter& pc, short do_msg = FALSE);
+void unpetrify(critter& pc, short do_msg = FALSE);
 void show_stat_affects(object& obj, critter& pc);
 
 critter* check_for_diversions(critter& pc, char* tests, critter& agg);
@@ -57,6 +58,11 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
                     critter& pc, room* aux_rm = NULL, critter* aux_crit = NULL,
                     int do_msg = TRUE);
 
+stat_spell_cell* is_affected_by(int spell_num, critter& pc);
+stat_spell_cell* is_affected_by(int spell_num, object& obj);
+
+stat_spell_cell* has_stat_affect(int affect_num, object& obj);
+
 void leave_room_effects(room& rm, critter& pc);
 void leave_room_effects(room& rm, object& obj);
 
@@ -73,6 +79,9 @@ int min(int i, int j); //simple find-max function
 
 void save_all();  //pc_list and linkdead_list
 
+String* direction_of_door(const door& dr);
+const char* abbrev_dir_of_door(const door& dr);
+
 void parse_communication(String& str);
 void parse_for_max_80(String& str);
 void strip_hegemon_tags(String& str);
@@ -84,12 +93,19 @@ short zone_is_total_loaded(int znum);
 short zone_is_locked(int znum);
 
 
+
+object* have_obj_numbered(const List<object*>& lst, const int i_th,
+                          const int obj_num, const int see_bit,
+                          const room& rm);
+
+say_proc_cell* have_topic_named(List<say_proc_cell*> lst, const String& msg);
+
 const String* next_mov_dir(room& car);
 short is_car_at_dest(room& car);
 short is_next_stop_a_dest(room& car);
 void move_room(room& car, int i_th, const String* direction);
 void do_vehicle_moves();    //moves em if needed
-int mob_can_enter(critter& pc, room& rm, short do_msg);
+int mob_can_enter(critter& pc, room& rm, short do_msg, int check_no_wander = FALSE);
 int car_can_enter(room& car, room& rm, short do_msg);
 
 room* get_next_room(int zone);
@@ -107,12 +123,19 @@ int get_percent_lrnd(int skill_num, const critter& pc, short automatic = FALSE);
 void increment_percent_lrnd(int skill_num, critter& pc);
 
 void init_masks();
-int obj_count(SafeList<object*>& lst, object& src);
-int crit_count(SafeList<critter*>& lst, critter& src);
-void clear_crit_list(SafeList<critter*>& lst);
-void clear_obj_list(SafeList<object*>& lst);
+int obj_count(List<object*>& lst, object& src);
+int crit_count(List<critter*>& lst, critter& src);
+void clear_crit_list(PtrList<critter>& lst);
+void clear_obj_list(PtrList<object>& lst);
 
+void out_field(const bitfield& field, critter& pc, const BitfieldNames& names);
+void out_stat_list(const List<stat_spell_cell*>& lst, critter& pc,
+                   const BitfieldNames& names);
+void out_spell_list(const List<stat_spell_cell*>& lst, critter& pc,
+        int show_ostat_dat_flag);
 //void critter::doBecomeNonPet();
+const String* single_obj_name(object& obj, int see_bit);
+short name_is_secret(const String* name, door& dr);
 
 const char* get_himself_herself(critter& pc);
 const char* get_him_her(critter& pc);
@@ -123,6 +146,22 @@ const char* get_fellow_lady(critter& pc);
 // Returns a newly allocated SMOB, or NULL if a problem is
 // encountered.
 critter* load_player_shop_owner(int mob_num);
+#ifdef USEMYSQL
+critter* db_load_player_shop_owner(int mob_num);
+#endif
+critter* file_load_player_shop_owner(int mob_num);
 int save_player_shop_owner(critter& mob_to_save);
+
+object* load_player_box(int box_num);
+#ifdef USEMYSQL
+object* db_load_player_box(int box_num);
+#endif
+object* file_load_player_box(int box_num);
+int save_player_box(object& obj);
+
+int find_and_delete_obj(object* obj_to_find, int room_num);
+int find_and_delete_obj(object* obj_to_find, critter* crit_ptr);
+int find_and_delete_obj(object* obj_to_find, object* find_in);
+
 
 #endif 

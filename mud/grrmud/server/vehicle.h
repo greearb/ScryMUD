@@ -1,5 +1,5 @@
-// $Id: vehicle.h,v 1.8 1999/09/07 07:00:27 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
+// $Id: vehicle.h,v 1.9 2001/03/29 03:02:36 eroper Exp $
+// $Revision: 1.9 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
 
 //
 //ScryMUD Server Code
@@ -31,47 +31,6 @@
 #include "room.h"
 #include "misc.h"
 #include "misc2.h"
-
-///***********************  PathCell  *****************************///
-
-class PathCell : public Serialized {
-private:
-   LStringCollection desc;
-   String dir_to_next;
-   int i_th_dir;
-   int is_destination;
-   static int _cnt;
-   PathCell(const PathCell& src);
-
-public:
-   PathCell(LString& description, String& direction_to_next, int is_dest);
-   PathCell();
-
-   virtual ~PathCell() { _cnt--; }
-
-   static int getInstanceCount() { return _cnt; }
-
-   void setDesc(LString& description) { desc.addLstring(description); }
-   String* getDesc(critter* viewer) { return desc.getString(viewer); }
-   LStringCollection* getDescColl() { return &desc; }
-
-   void setDir(int i_th, const String& dir) { i_th_dir = i_th; dir_to_next = dir; }
-   String& getDir() { return dir_to_next; }
-   int getDirNum() const { return i_th_dir; }
-
-   void setIsDest(int i);
-   int isDest();
-
-   //need the veh_num and cell_num to display appropriately.
-   void toStringStat(int veh_num, int cell_num, critter& pc, String& buf,
-                     ToStringTypeE st);
-   virtual LEtypeE getEntityType() { return LE_PATH_CELL; }
-
-   void clear();
-   int read(istream& da_file, int read_all = TRUE);
-   int write(ostream& da_file);
-};//PathCell
-
 
 class vehicle : public room {
 protected:
@@ -112,9 +71,7 @@ public:
    }
 
    void showVehicleFlags(critter& pc) {
-      String buf(300);
-      Markup::toString(vehicle_flags, VEHICLE_FLAGS_NAMES, &pc, buf);
-      pc.show(buf);
+      out_field(vehicle_flags, pc, VEHICLE_FLAGS_NAMES);
    }
 
    void showPaths(critter& pc);
@@ -135,7 +92,7 @@ public:
    void setMaxFuel(int i) { max_fuel = i; }
    void setTicksBetweenStops(int i) { ticks_between_stops = i; }
 
-   String& getPassengerMessage(critter* viewer);
+   String getPassengerMessage();
    String getExitDirection();
    int getExitNum();
 
@@ -144,15 +101,21 @@ public:
    int move(); //figure direction and call other move function
 
    door* findNextExit(); //for non-self-guided vehicles
-   int canEnter(room* dest, int do_msg);
-   virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
+   int canEnter(const room* dest, int do_msg) const;
+   virtual void stat(critter& pc);
 
-   virtual void clear();
-   virtual int read(istream& da_file, int read_all = TRUE);
-   virtual int write(ostream& da_file);
+   virtual void Clear();
+#ifdef USEMYSQL
+   virtual void dbWrite();
+   virtual void dbRead(int veh_num, short read_all);
+#endif
+   virtual void fileRead(ifstream& da_file, short read_all);
+   virtual void fileWrite(ofstream& da_file);
 
    virtual void normalize(); /* called after OLC to enforce as much state as
                               * possible. */
+
+
 };//vehicle
 
 #endif

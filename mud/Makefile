@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.11 1999/07/23 02:57:19 greear Exp $
-# $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/23 02:57:19 $
+# $Id: Makefile,v 1.12 2001/03/29 03:02:24 eroper Exp $
+# $Revision: 1.12 $  $Author: eroper $ $Date: 2001/03/29 03:02:24 $
 
 #  Makefile for Hegemon and ScryMUD
 
@@ -33,7 +33,7 @@ CORE_FILES = \
 MISC_FILES = \
 	grrmud/Boards/board_32 \
 	grrmud/Pfiles/admin grrmud/PlayerShops \
-	grrmud/grrmud.ini grrmud/shutdown_msg grrmud/startup
+	grrmud/shutdown_msg grrmud/startup
 
 
 
@@ -99,9 +99,8 @@ install: build_scry_bin
 	mkdir -p grrmud/log/Bugs
 	mkdir -p grrmud/log/Errors
 	mkdir -p grrmud/log/Warnings
-	cp grrmud/grrmud.ini grrmud/grrmud.ini.bak
 	mv -f grrmud/server/grrmud grrmud/gmud
-	@echo "You may want to check the grrmud/grrmud.ini file to make sure"
+	@echo "You may want to check the grrmud/grrmud.cfg file to make sure"
 	@echo "the settings are agreeable, especially the port."
 	@echo "" 
 	@echo "If everything worked as planned, you may cd to ./grrmud and type"

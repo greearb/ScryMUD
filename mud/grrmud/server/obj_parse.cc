@@ -1,5 +1,5 @@
-// $Id: obj_parse.cc,v 1.4 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: obj_parse.cc,v 1.5 2001/03/29 03:02:32 eroper Exp $
+// $Revision: 1.5 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
 
 //
 //ScryMUD Server Code
@@ -40,14 +40,16 @@
 #include "obj_cmds.h"
 #include "parse.h"
 
-	     /******************************************/
-int object::processInput(String& input, room& rm) {
+             /******************************************/
+int object::processInput(String& input, room& rm, int& was_deleted) {
    String raw_strings[RAW_MAX];
    String cooked_strs[COOKED_MAX];
    int cooked_ints[COOKED_MAX];
    String buf(100);
    int i, j, len1, k, l, m, n;
    short eos, term_by_period;
+
+   was_deleted = FALSE;
 
    for (i = 0; i<COOKED_MAX; i++) {
       cooked_ints[i] = 1;
@@ -66,7 +68,7 @@ int object::processInput(String& input, room& rm) {
       return 0; //do nothing
    }//if
 
-			/* make sure it ends in newline */
+                        /* make sure it ends in newline */
    j = input.Strlen();
    if (input[j - 1] != '\n') {
       //log("WARNING:  input doesn't end in a newline, process_input.\n");
@@ -168,7 +170,7 @@ int object::processInput(String& input, room& rm) {
       
       //max input is RAW_MAX words/numbers
       if ((count >= (RAW_MAX - 1)) && (!eos)) {
-	 return -1;
+         return -1;
       }//if
    }//while
    //   log("Done w/while loop.\n");
@@ -201,10 +203,10 @@ int object::processInput(String& input, room& rm) {
       }//if
       else { //it was a string of some type
          cooked_strs[i] = buf;
-	 if (k == i) {
+         if (k == i) {
             cooked_ints[k] = 1;  //implicit 1
             k++;
-	 }//if
+         }//if
          i++;
       }//else
       j++;
@@ -268,31 +270,44 @@ int object::processInput(String& input, room& rm) {
       case 'H':
       case 'I': 
       case 'J': 
+         if (strncasecmp(cooked_strs[0], "junk", len1) == 0) {
+            if (this->doJunk()) {
+               was_deleted = TRUE;
+               return TRUE;
+            }
+            else {
+               was_deleted = FALSE;
+               return FALSE;
+            }
+         }//if
       case 'K':
       case 'L':
       case 'M':
+         if (strncasecmp(cooked_strs[0], "mload", len1) == 0) {
+            return this->doMload(i);
+         }//if
       case 'N':
       case 'O':
          if (strncasecmp(cooked_strs[0], "obj_move", len1) == 0) { 
-	    return move(i, &(cooked_strs[1]), j, &(cooked_strs[2]), rm);
-	 }//if
+            return move(i, &(cooked_strs[1]), j, &(cooked_strs[2]), rm);
+         }//if
          else if (strncasecmp(cooked_strs[0], "obj_move_all", len1) == 0) { 
-	    return move_all(i, &(cooked_strs[1]), rm);
-	 }//if
+            return move_all(i, &(cooked_strs[1]), rm);
+         }//if
          else if (strncasecmp(cooked_strs[0], "obj_omove", len1) == 0) { 
-	    return omove(i, &(cooked_strs[1]), j, &(cooked_strs[2]), rm);
-	 }//if
+            return omove(i, &(cooked_strs[1]), j, &(cooked_strs[2]), rm);
+         }//if
          else if (strncasecmp(cooked_strs[0], "obj_omove_all", len1) == 0) { 
-	    return omove_all(i, &(cooked_strs[1]), rm);
-	 }//if
+            return omove_all(i, &(cooked_strs[1]), rm);
+         }//if
          else {
             return -1;
          }
 
       case 'P': 
          if (strncasecmp(cooked_strs[0], "pause", len1) == 0) { 
-	    return this->obj_pause(i);
-	 }//if
+            return this->obj_pause(i);
+         }//if
          else {
             return -1;
          }
@@ -307,7 +322,7 @@ int object::processInput(String& input, room& rm) {
       case 'Y':
       case 'Z':
       default:   
-	 return -1;
+         return -1;
    }//switch
 
    return -1;

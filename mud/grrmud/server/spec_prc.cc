@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.26 1999/08/29 01:17:17 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/29 01:17:17 $
+// $Id: spec_prc.cc,v 1.27 2001/03/29 03:02:35 eroper Exp $
+// $Revision: 1.27 $  $Author: eroper $ $Date: 2001/03/29 03:02:35 $
 
 //
 //ScryMUD Server Code
@@ -62,7 +62,13 @@ int do_just_killed_procs(critter& agg) {
 
    if (agg.pc) {  //if do pc things
       if (agg.PC_FLAGS.get(12)) { //autoloot
-         String all("all");
+         String all;
+         if (agg.isGoldOnly()) { // only get gold if gold_only flag.
+            all = "gold";
+         }
+         else {
+            all = "all"; // otherwise grab everything.
+         }
          String corpse("corpse");
          get(1, &all, 1, &corpse, agg, FALSE); //don't show msgs
          //agg.pc->input.Prepend("get all corpse\n");
@@ -100,6 +106,236 @@ int do_just_killed_procs(critter& agg) {
 }//do_just_killed_procs
 
 
+
+/* assumes both are either SMOB's or PC's, triggered by
+ * give.  This is old style procs, should be deprecated. */
+int do_domob_give_proc(critter& targ, critter& pc, object& obj) {
+   if (!targ.isSmob())
+      return -1;
+   
+   if (targ.mob && targ.mob->proc_data && 
+       targ.mob->proc_data->give_proc) {  //if so, got a live one!
+      
+      if (obj.OBJ_NUM == targ.DOMOB_GIVE_NUM) {  //if gave right item
+         
+         if (targ.GIVE_RIGHT_MSG.Strlen()) { //if has a message
+            show(targ.GIVE_RIGHT_MSG, pc);
+         }//if
+
+         /* now lets do any procs that need doing */
+         if (check_l_range(targ.GIVE_RIGHT_ITEM, 1, 
+                           NUMBER_OF_ITEMS, pc, FALSE)) {
+            recursive_init_loads(obj_list[targ.GIVE_RIGHT_ITEM], 0);
+            do_give(pc, targ, obj_list[targ.GIVE_RIGHT_ITEM]);
+         }//if
+         if (targ.GIVE_TEACH.Strlen()) { //if should teach something
+            int spell_num = SSCollection::instance().getNumForName(targ.GIVE_TEACH);
+            if (spell_num == -1) { // if it didn't exist
+               mudlog.log(ERROR, "ERROR:  spell unknown in do_domob_give.\n");
+               mudlog.log(ERROR, targ.GIVE_TEACH);
+            }//if
+            else {
+               int retval;
+               if (!pc.SKILLS_KNOWN.Find(spell_num, retval)) {
+                  pc.SKILLS_KNOWN.Insert(spell_num, 1);
+               }//if
+            }//else
+         }//if should teach
+
+         if (check_l_range(targ.GIVE_TRANSPORT_ROOM, 1,
+                           NUMBER_OF_ROOMS, pc, FALSE)) { //if should transprt
+            do_transport(pc, targ, room_list[targ.GIVE_TRANSPORT_ROOM]);
+         }//if
+         
+         // Now, delete the object,
+         targ.loseInv(&obj);
+         recursive_init_unload(obj, 0);
+         if (obj.IN_LIST) {
+            delete &obj;
+            return 0;
+         }//if
+         
+      }//if gave right object
+      else {
+         if (targ.GIVE_WRONG_MSG.Strlen()) {
+            show(targ.GIVE_WRONG_MSG, pc);
+         }//if
+      }//else
+   }//if targ has such a special procedure
+   return 0;
+}//do_domob_give_proc
+
+      
+ 
+/* assumes both are either SMOB's or PC's
+ * this is triggered by 'discuss', not 'say'
+ * This is old style procs, should be deprecated. */
+int do_domob_say_proc(critter& targ, critter& pc, const String& msg) {  
+  say_proc_cell* ptr;
+
+  if (!targ.isSmob())
+    return -1;
+
+  if (targ.mob && targ.mob->proc_data && 
+      !IsEmpty(targ.mob->proc_data->topics)) {  //if so, got a live one!
+
+    if (!pass_domob_checks(targ, pc))
+      return -1;
+
+    if ((ptr = have_topic_named(targ.TOPICS, msg))) {  
+      if (ptr->msg.Strlen()) { //if has a message
+        show(ptr->msg, pc);
+      }//if
+      /* now lets do any procs that need doing */
+      if (check_l_range(ptr->obj_num, 1, NUMBER_OF_ITEMS, pc, FALSE)) { 
+        do_give(pc, targ, obj_list[ptr->obj_num]);
+      }//if
+      if (ptr->skill_name.Strlen()) { //if should teach something
+         int spell_num = SSCollection::instance().getNumForName(ptr->skill_name);
+         if (spell_num == -1) { // if it didn't exist
+            if (mudlog.ofLevel(ERROR)) {
+               mudlog << "ERROR:  spell unknown in do_domob_say, name -:"
+                      << ptr->skill_name << ":-" << endl;
+            }
+         }//if
+         else {
+            int retval;
+            if (!pc.SKILLS_KNOWN.Find(spell_num, retval)) {
+               pc.SKILLS_KNOWN.Insert(spell_num, 1);
+            }//if
+         }//else
+      }//if should teach
+      if (check_l_range(ptr->trans_to_room, 1, NUMBER_OF_ROOMS, pc, FALSE)) {
+        do_transport(pc, targ, room_list[ptr->trans_to_room]);
+      }//if
+    }//if gave right object
+    else {
+      do_tell(targ, 
+              "Well, sounds interesting, but I don't know much of it.\n",
+              pc, FALSE, targ.getCurRoomNum());
+    }//else
+  }//if targ has such a special procedure
+  return 0;
+}//do_domob_say_proc
+
+
+/* assumes both are either SMOB's or PC's
+ *  Triggered by bow.
+ * This is old style procs, should be deprecated. */
+int do_domob_bow_proc(critter& targ, critter& pc) {
+  if (!targ.isSmob())
+    return -1;
+
+  if (targ.mob && targ.mob->proc_data && 
+      targ.mob->proc_data->bow_proc) {  //if so, got a live one!
+
+    /*  Don't think checks are usefull here
+    if (!pass_domob_checks(targ, pc))
+      return;
+      */
+
+    if (targ.BOW_MSG.Strlen()) { //if has a message
+      show(targ.BOW_MSG, pc);
+    }//if
+      /* now lets do any procs that need doing */
+    if (check_l_range(targ.BOW_ITEM, 1, NUMBER_OF_ITEMS, pc, FALSE)) {
+      do_give(pc, targ, obj_list[targ.BOW_ITEM]);
+    }//if
+    if (targ.BOW_TEACH.Strlen()) { //if should teach something
+      int spell_num = SSCollection::instance().getNumForName(targ.BOW_TEACH);
+      if (spell_num == -1) { // if it didn't exist
+        mudlog.log(ERROR, "ERROR:  spell unknown in do_domob_bow.\n");
+        mudlog.log(ERROR, targ.BOW_TEACH);
+      }//if
+      else {
+        int retval;
+        if (!pc.SKILLS_KNOWN.Find(spell_num, retval)) {
+          pc.SKILLS_KNOWN.Insert(spell_num, 1);
+        }//if
+      }//else
+    }//if should teach
+    if (check_l_range(targ.BOW_TRANSPORT_ROOM, 1, NUMBER_OF_ROOMS, 
+                      pc, FALSE)) {
+      do_transport(pc, targ, room_list[targ.BOW_TRANSPORT_ROOM]);
+    }//if
+  }//if has bow special procedure
+  return 0;
+}//do_domob_bow_proc
+
+
+/* assumes both are either SMOB's or PC's
+ * Triggered by curse.
+ * This is old style procs, should be deprecated. */
+int do_domob_curse_proc(critter& targ, critter& pc) {
+  if (!targ.isSmob())
+    return -1;
+
+  if (targ.mob && targ.mob->proc_data && 
+      targ.mob->proc_data->curse_proc) {  //if so, got a live one!
+
+    /* I don't think checks are usefull here
+    if (!pass_domob_checks(targ, pc))
+      return;
+    */
+
+    if (targ.CURSE_MSG.Strlen()) { //if has a message
+      show(targ.CURSE_MSG, pc);
+    }//if
+      /* now lets do any procs that need doing */
+    if (check_l_range(targ.CURSE_ITEM, 1, NUMBER_OF_ITEMS, pc, FALSE)) {
+      do_give(pc, targ, obj_list[targ.CURSE_ITEM]);
+    }//if
+    if (targ.CURSE_TEACH.Strlen()) { //if should teach something
+      int spell_num = SSCollection::instance().getNumForName(targ.CURSE_TEACH);
+      if (spell_num == -1) { // if it didn't exist
+        mudlog.log(ERROR, "ERROR:  spell unknown in do_domob_curse.\n");
+        mudlog.log(ERROR, targ.CURSE_TEACH);
+      }//if
+      else {
+        int retval;
+        if (!pc.SKILLS_KNOWN.Find(spell_num, retval)) {
+          pc.SKILLS_KNOWN.Insert(spell_num, 1);
+        }//if
+      }//else
+    }//if should teach
+    if (check_l_range(targ.CURSE_TRANSPORT_ROOM, 1, NUMBER_OF_ROOMS, 
+                      pc, FALSE)) { //if should transport
+      do_transport(pc, targ, room_list[targ.CURSE_TRANSPORT_ROOM]);
+    }//if
+  }//if has curse special procedure
+  return 0;
+}//do_domob_curse_proc
+
+
+/* assumes existance of targ.FLAG1, what a stupid fn name **doh**  */
+int pass_domob_checks(critter& targ, critter& pc) {
+   if (targ.FLAG1.get(9) && (targ.RACE != pc.RACE)) {
+      show(targ.WRONG_RACE_MSG, pc);
+      return FALSE;
+   }//if
+   else if (targ.FLAG1.get(10)) { //align check
+      if ((targ.ALIGN < -350) && (pc.ALIGN >= -350)) {
+         show(targ.WRONG_ALIGN_MSG, pc);
+         return FALSE;
+      }//if
+      else if ((targ.ALIGN >= -350) && (targ.ALIGN <= 350) && 
+               ((pc.ALIGN < -350) || (pc.ALIGN > 350))) {
+         show(targ.WRONG_ALIGN_MSG, pc);
+         return FALSE;
+      }//if
+      else if ((targ.ALIGN > 350) && (pc.ALIGN <= 350)){
+         show(targ.WRONG_ALIGN_MSG, pc);
+         return FALSE;
+      }//if
+   }//if align check
+   else if (targ.FLAG1.get(11) && (targ.CLASS != pc.CLASS)) {
+      show(targ.WRONG_CLASS_MSG, pc);
+      return FALSE;
+   }//if
+   return TRUE;
+}//pass_domob_checks
+
+
 int do_shot_proc(critter& targ, critter& pc, short did_hit,
                   int& is_targ_dead) {
   /* targ is victim, but is retaliating agains the pc here */
@@ -107,7 +343,7 @@ int do_shot_proc(critter& targ, critter& pc, short did_hit,
    if (!targ.mob)
       return -1;
    if (targ.isMob()) {
-     mudlog.log(ERR, "ERROR:  targ is a MOB in do_shot_proc.\n");
+     mudlog.log(ERROR, "ERROR:  targ is a MOB in do_shot_proc.\n");
      return -1;
    }//if
 
@@ -117,7 +353,7 @@ int do_shot_proc(critter& targ, critter& pc, short did_hit,
       return 0;
    }//if
 
-	   /* these have AI */
+           /* these have AI */
    if (targ.INT1) { /* sentinals go down no matter what */
       prone(targ);
    }//if
@@ -127,14 +363,14 @@ int do_shot_proc(critter& targ, critter& pc, short did_hit,
 
    if ((benev < -7) || (bad_ass > 6)) {
      if (targ.EQ[9] && (targ.EQ[9]->OBJ_FLAGS.get(47) ||
-			targ.EQ[9]->OBJ_FLAGS.get(46))) { //with ranged
+                        targ.EQ[9]->OBJ_FLAGS.get(46))) { //with ranged
        do_shoot(pc, targ);  
      }//if have ranged attack
      targ.trackToKill(pc, is_targ_dead);  //go after the bastard!!
    }//if
    else if ((benev < -3) || (bad_ass > 4)) {
      if (targ.EQ[9] && (targ.EQ[9]->OBJ_FLAGS.get(47) ||
-			targ.EQ[9]->OBJ_FLAGS.get(46))) { //with ranged
+                        targ.EQ[9]->OBJ_FLAGS.get(46))) { //with ranged
        do_shoot(pc, targ);  
      }//if have ranged attack
      targ.remember(pc); //targ remembers pc, will be aggressive
@@ -150,7 +386,7 @@ int do_shot_proc(critter& targ, critter& pc, short did_hit,
    else if (bad_ass < 3) {
       flee_to_safety(targ, is_targ_dead);
       if (!is_targ_dead)
-         hit(1, pc.getFirstName(), targ);  //in case they fled to room of agg
+         hit(1, Top(pc.names), targ);  //in case they fled to room of agg
    }//else no ranged attack
    else {
      prone(targ);
@@ -192,7 +428,7 @@ int do_wand_scroll_proc(door* dr_ptr, int proc_num, critter& pc,
          Sprintf(buf, 
                  "ERROR:  default called in do_wand_scroll_proc(DR):  %i.\n", 
                  proc_num);
-         mudlog.log(ERR, buf);
+         mudlog.log(ERROR, buf);
          show( "You call upon unknown forces, and nothing happens!\n",
               pc);
          return -1;
@@ -291,7 +527,7 @@ int do_wand_scroll_proc(int proc_num, critter& pc,
          Sprintf(buf, 
                  "ERROR:  dflt called in do_wand_scroll_proc(NONE):  %i.\n", 
                  proc_num);
-         mudlog.log(ERR, buf);
+         mudlog.log(ERROR, buf);
          show( "You call upon unknown forces, and nothing happens!\n",
               pc);
          return -1;
@@ -360,7 +596,7 @@ int do_wand_scroll_proc(object* otarg, int proc_num, critter& pc,
          Sprintf(buf, 
                  "ERROR:  default called in do_wand_scroll_proc(OBJ):  %i.\n", 
                  proc_num);
-         mudlog.log(ERR, buf);
+         mudlog.log(ERROR, buf);
          show( "You call upon unknown forces, and nothing happens!\n",
               pc);
          return -1;
@@ -549,11 +785,14 @@ int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
        case 228: //this is not the error it looks like, see dam_spll.cc
          do_cast_dispel_good(*targ, pc, TRUE, spell_lvl);
          return 0;
+       case 233:
+         do_cast_orb_of_power(*targ, pc, TRUE, spell_lvl);
+         return 0;
        default:
          Sprintf(buf, 
                  "ERROR:  dflt called in do_wand_scroll_proc(CRIT):  %i.\n", 
                  proc_num);
-         mudlog.log(ERR, buf);
+         mudlog.log(ERROR, buf);
          show( "You call upon unknown forces, and nothing happens!\n",
               pc);
          return 0;
@@ -616,13 +855,17 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
             }
             if (ptr->MOB_FLAGS.get(1)) { //scavenge
                if (d(1,100) <= 10) {
-                  if ((sz = room_list[i].getInv().size())) { //objs to pick up?
+                  if ((sz = room_list[i].getInv()->size())) { //objs to pick up?
                      
+                     if (ptr->isMob()) { //if its a MOB
+                        ptr = mob_to_smob(*ptr, i);
+                     }//if
+
                      int attempted = d(1, sz) - 1; //translate to zero-based!
-                     obj_ptr = room_list[i].getInv().elementAt(attempted);
+                     obj_ptr = room_list[i].getInv()->elementAt(attempted);
  
                      if (!obj_ptr) {
-                        if (mudlog.ofLevel(ERR)) {
+                        if (mudlog.ofLevel(ERROR)) {
                            mudlog << "ERROR:  obj_ptr NULL in scavenge proc, rm:"
                                   << i << " inv_size: " << sz << " attempted: "
                                   << attempted << endl;
@@ -630,7 +873,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
                         return -1;
                      }//if
   
-                     Sprintf(gtobj, "get %S\n", obj_ptr->getFirstName());
+                     Sprintf(gtobj, "get %S\n", Top(obj_ptr->names));
  
                      ptr->processInput(gtobj, FALSE, TRUE);
                      if (!ptr->isAnimal() && !ptr->isMonster()) {
@@ -640,7 +883,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
                   }//if random chance
                }//if
             }// if scavenge
-            if (ptr->isWanderer() && !ptr->isTracking() && !ptr->isRunningScript() &&
+            if (ptr->isWanderer() && !ptr->isTracking() && !ptr->isInProcNow() &&
                 room_list[i].haveCritter(ptr)) {
                if (d(1, 10) > 8) {
                   //log("Doing wander spec_prc.\n");
@@ -653,17 +896,17 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
 
                   is_dead = FALSE;
                   move(*ptr, 1, *(room_list[i].getRandomExitDir(*ptr)),
-                       TRUE, room_list[i], is_dead);
+                       TRUE, room_list[i], is_dead, TRUE);
 
                   if (is_dead)
                      continue; //with the while loop
 
                }//if chance succeedes, 40% chance
             }//if wander
-	    if (ptr->isTracking() && room_list[i].haveCritter(ptr)) {
+            if (ptr->isTracking() && room_list[i].haveCritter(ptr)) {
                is_dead = FALSE;
-	       ptr->doHuntProc(d(1, ptr->DEX/2), is_dead);
-	    }//if hunting
+               ptr->doHuntProc(d(1, ptr->DEX/2), is_dead);
+            }//if hunting
             else if (ptr->shouldBeHoming() && room_list[i].haveCritter(ptr)) {
                is_dead = FALSE;
                //mudlog << "WARNING: doing travelToRoom from spec_prc.cc" << endl;
@@ -684,7 +927,6 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
 }//do_pulsed
 
 
-// TODO:  Translations problems with the emotes here...
 // Just does messages, no real actions.
 int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
                      object& obj, int posn) {
@@ -698,103 +940,103 @@ int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
          //log("Doing generic wear proc.\n");
          if (posn == 1) {
             Sprintf(tmp_str, "You start wearing %S on your head.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S on %s head.\n", 
-                    obj.getShortDesc(), get_his_her(pc));
+                    &(obj.short_desc), get_his_her(pc));
          }//if
          else if (posn == 2 || posn == 3) {
             Sprintf(tmp_str, "You start wearing %S around your neck.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S around %s neck.\n", 
-                    obj.getShortDesc(), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 4) {
             Sprintf(tmp_str, "You start wearing %S about your body.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S about %s body.\n", 
-                    obj.getShortDesc(), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 5) {
             Sprintf(tmp_str, "You start wearing %S on your arms.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S on %s arms.\n", 
-                    obj.getShortDesc(),
+                    &(obj.short_desc),
                     get_his_her(pc));
          }//if
          else if (posn == 6 || posn == 7) {
             Sprintf(tmp_str, "You start wearing %S around your wrist.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S around %s wrist.\n", 
-                    obj.getShortDesc(), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 8) {
             Sprintf(tmp_str, "You place %S on your hands.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "places %S on %s hands.\n", 
-                    obj.getShortDesc(), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 9) {
             Sprintf(tmp_str, "You wield %S.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "wields %S.\n", 
-                    obj.getShortDesc());
+                    &(obj.short_desc));
          }//if
          else if (posn == 10) {
             Sprintf(tmp_str, "You grab %S.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "grabs %S.\n", 
-                    obj.getShortDesc());
+                    &(obj.short_desc));
          }//if
          else if (posn == 11) {
             Sprintf(tmp_str, "You start using %S as a light.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts using %S as a light.\n", 
-                    obj.getShortDesc());
+                    &(obj.short_desc));
          }//if
          else if (posn == 12) {
             Sprintf(tmp_str, "You wear %S on your body.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "wears %S on %s body.\n", 
-                    obj.getShortDesc(), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 13) {
             Sprintf(tmp_str, "You start wearing %S around your waist.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S around %s waist.\n", 
-                    obj.getShortDesc(), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 14) {
             Sprintf(tmp_str, "You start wearing %S on your legs.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S on %s legs.\n", 
-                    obj.getShortDesc(), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 15) {
             Sprintf(tmp_str, "You put %S on your feet.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "puts %S on %s feet.\n", 
-                    obj.getShortDesc(), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 16 || posn == 17) {
             Sprintf(tmp_str, "You place %S on your finger.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "places %S on %s finger.\n", 
-                    obj.getShortDesc(), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 18) {
             Sprintf(tmp_str, "You start using %S as a shield.\n", 
-                    obj.getShortDesc(&pc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts using %S as a shield.\n", 
-                    obj.getShortDesc(), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else {
@@ -808,22 +1050,22 @@ int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
       else {
          Sprintf(tmp_str, "ERROR:  uncoded obj_wear_proc called: %i.\n",
                  proc_num);
-         mudlog.log(ERR, tmp_str);
+         mudlog.log(ERROR, tmp_str);
       }//else
    }//if
    else if (type_of_proc == OBJ_REMOVE_PROC) {
       if (proc_num == -2) { //rem_prc1, default
          Sprintf(tmp_str, "You stop using %S.\n", 
-		obj.getShortDesc(&pc));
+                &(obj.short_desc));
          Sprintf(other_msg, "stops using %S.", 
-              obj.getShortDesc());
+              &(obj.short_desc));
          emote(other_msg, pc, ROOM, TRUE);
          show(tmp_str, pc);
       }//if proc -2
       else {
          Sprintf(tmp_str, "ERROR:  uncoded obj_rem_proc called: %i.\n",
                  proc_num);
-         mudlog.log(ERR, tmp_str);
+         mudlog.log(ERROR, tmp_str);
       }//else
    }//if OBJ_REMOVE_PROC      
    else if (type_of_proc == OBJ_CONSUME_PROC) {
@@ -836,7 +1078,7 @@ int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
       else {
          Sprintf(tmp_str, "ERROR:  uncoded obj_consume_proc called: %i.\n",
                  proc_num);
-         mudlog.log(ERR, tmp_str);
+         mudlog.log(ERROR, tmp_str);
       }//else
    }//if
    return 0;
@@ -853,29 +1095,29 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
    //log("In do_buy_proc.\n");
 
    if (keeper.isMob()) {
-      mudlog.log(ERR, "ERROR:  keeper is MOB in do_buy_proc.\n");
+      mudlog.log(ERROR, "ERROR:  keeper is MOB in do_buy_proc.\n");
       return -1;
    }//if
 
    if (keeper.mob) {
       if (keeper.mob->proc_data) {
          if (!(keeper.mob->proc_data->sh_data)) {
-            mudlog.log(ERR, "ERROR:  keeper has no sh_data in do_buy_proc.\n");
+            mudlog.log(ERROR, "ERROR:  keeper has no sh_data in do_buy_proc.\n");
             return -1;
          }//if
       }//if
       else {
-         mudlog.log(ERR, "ERROR:  keeper has no proc_data in do_buy_proc.\n");
+         mudlog.log(ERROR, "ERROR:  keeper has no proc_data in do_buy_proc.\n");
          return -1;
       }//else
    }//if
    else {
-      mudlog.log(ERR, "ERROR:  keeper's mob is NULL in do_buy_proc.\n");
+      mudlog.log(ERROR, "ERROR:  keeper's mob is NULL in do_buy_proc.\n");
       return -1;
    }//else
 
    if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to buy.\n");
+      mudlog.log(ERROR, "ERROR:  MOB trying to buy.\n");
       return -1;
    }//if
 
@@ -895,8 +1137,8 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
 
          if (!obj_ptr) {
             int first_cnt = obj_named_count(keeper.inv, item, pc.SEE_BIT, ROOM);
-            obj_ptr = have_obj_named(keeper.PERM_INV, (i_th - first_cnt), item,
-                                     pc.SEE_BIT, ROOM);
+            obj_ptr = have_obj_named(keeper.PERM_INV, (i_th - first_cnt), item, pc.SEE_BIT,
+                                     ROOM);
             is_perm = TRUE;
          }//if
      
@@ -906,7 +1148,7 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
          // that listed them like this...  Cut-And-Pasted from the list_merchandise()
          // method in command2.cc
 
-         SCell<object*> cell(keeper.inv);
+         Cell<object*> cell(keeper.inv);
          static int item_counts[NUMBER_OF_ITEMS + 1];
          
          memset(item_counts, 0, sizeof(int) * (NUMBER_OF_ITEMS + 1));
@@ -928,7 +1170,7 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
             
             id_num = tmp_optr->getIdNum();
             
-            if (!tmp_optr->isModified() &&
+            if (!tmp_optr->in_list &&
                 (item_counts[id_num] == -1)) { //already done it
                continue;
             }
@@ -955,7 +1197,7 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
             
             id_num = tmp_optr->getIdNum();
             
-            if (!tmp_optr->isModified() &&
+            if (!tmp_optr->in_list &&
                 (item_counts[id_num] == -1)) { //already done it
                continue;
             }
@@ -986,7 +1228,7 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
       }//if
       else {
          // This will do messages if needed.
-         if (!obj_get_by(*obj_ptr, pc, TRUE)) {
+         if (!obj_get_by(*obj_ptr, pc, TRUE, TRUE)) {
             return -1;
          }//if
 
@@ -1000,8 +1242,8 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
 
          if (price > pc.GOLD) {
             do_tell(keeper, "I don't run a charity here!!", pc, FALSE, 
-		    pc.getCurRoomNum()); 
-            disdain(1, pc.getFirstName(), keeper, ROOM);
+                    pc.getCurRoomNum()); 
+            disdain(1, Top(pc.names), keeper, ROOM);
             return -1;
          }//if
 
@@ -1033,14 +1275,10 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
             pc.gainInv(obj_ptr);
          }
 
-         if (keeper.isPlayerShopKeeper()) {
-            save_player_shop_owner(keeper);
-         }
-
       }//else
    }//if buy proc_0
    else {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  bad proc num sent to do_buy_proc: "
                 << prc_num << endl;
       }//if
@@ -1057,7 +1295,7 @@ int do_vend_buy(object& vendor, int i_th, const String* item, critter& pc) {
    mudlog.log(TRC, "In do_vend_buy.\n");
 
    if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to buy.\n");
+      mudlog.log(ERROR, "ERROR:  MOB trying to buy.\n");
       return -1;
    }//if
 
@@ -1069,7 +1307,7 @@ int do_vend_buy(object& vendor, int i_th, const String* item, critter& pc) {
    }//if
    else {
 
-      if (!obj_get_by(*obj_ptr, pc, TRUE)) {
+      if (!obj_get_by(*obj_ptr, pc, TRUE, TRUE)) {
          return -1;
       }//if
 
@@ -1080,12 +1318,12 @@ int do_vend_buy(object& vendor, int i_th, const String* item, critter& pc) {
          return -1;
       }//if
 
-         	/* good to go I believe! */
+                 /* good to go I believe! */
       pc.GOLD -= price;
       int del_obj = FALSE;
       recursive_init_loads(*obj_ptr, 0);
       Sprintf(buf, "You insert %i coins and out pops %S.", price,
-              obj_ptr->getLongName(&pc));
+              obj_ptr->getLongName(pc));
       show(buf, pc);
       gain_eq_effects(obj_list[obj_ptr->OBJ_NUM], NULL, pc, FALSE, FALSE, del_obj);
       if (!del_obj) {
@@ -1107,30 +1345,30 @@ int do_offer_proc(int prc_num, critter& keeper, int i_th,
    //log("In do_buy_proc.\n");
 
    if (keeper.isMob()) {
-      mudlog.log(ERR, "ERROR:  keeper is MOB in do_offer_proc.\n");
+      mudlog.log(ERROR, "ERROR:  keeper is MOB in do_offer_proc.\n");
       return -1;
    }//if
 
    if (keeper.mob) {
       if (keeper.mob->proc_data) {
          if (!(keeper.mob->proc_data->sh_data)) {
-            mudlog.log(ERR, "ERROR:  keeper has no sh_data in do_offer_proc.\n");
+            mudlog.log(ERROR, "ERROR:  keeper has no sh_data in do_offer_proc.\n");
             return -1;
          }//if
       }//if
       else {
-         mudlog.log(ERR, "ERROR:  keeper has no proc_data in do_offer_proc.\n");
+         mudlog.log(ERROR, "ERROR:  keeper has no proc_data in do_offer_proc.\n");
          return -1;
       }//else
    }//if
    else {
-      mudlog.log(ERR, "ERROR:  keeper's mob is NULL in do_offer_proc.\n");
+      mudlog.log(ERROR, "ERROR:  keeper's mob is NULL in do_offer_proc.\n");
       return -1;
    }//else
             
 
    if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to offer.\n");
+      mudlog.log(ERROR, "ERROR:  MOB trying to offer.\n");
       return -1;
    }//if
 
@@ -1145,7 +1383,7 @@ int do_offer_proc(int prc_num, critter& keeper, int i_th,
                                ROOM);
       if (!obj_ptr) {
          Sprintf(buf, "You don't have the %S.", item);
-	 show(buf, pc);
+         show(buf, pc);
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());
       }//if
       else {
@@ -1158,7 +1396,7 @@ int do_offer_proc(int prc_num, critter& keeper, int i_th,
 
          if (!will_buy) {
             do_tell(keeper, "I don't buy that type of stuff.", pc, 
-		    FALSE, pc.getCurRoomNum());
+                    FALSE, pc.getCurRoomNum());
             return -1;
          }//if
 
@@ -1171,7 +1409,7 @@ int do_offer_proc(int prc_num, critter& keeper, int i_th,
          }//if
 
          //log("Good to go!\n");
-         	/* good to go I believe! */
+                 /* good to go I believe! */
          Sprintf(buf, "I'd give you %i coins for that.", price);
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());
          return 0;
@@ -1180,7 +1418,7 @@ int do_offer_proc(int prc_num, critter& keeper, int i_th,
    else {
       Sprintf(buf, "ERROR:  bad proc num sent to do_offer_proc: %i.\n", 
               prc_num);
-      mudlog.log(ERR, buf);
+      mudlog.log(ERROR, buf);
    }//else        
    return -1;
 }//do_offer_proc
@@ -1198,27 +1436,27 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
    if (keeper.mob) {
       if (keeper.mob->proc_data) {
          if (!(keeper.mob->proc_data->sh_data)) {
-            mudlog.log(ERR, "ERROR:  keeper has no sh_data in do_sell_proc.\n");
+            mudlog.log(ERROR, "ERROR:  keeper has no sh_data in do_sell_proc.\n");
             return -1;
          }//if
       }//if
       else {
-         mudlog.log(ERR, "ERROR:  keeper has no proc_data in do_sell_proc.\n");
+         mudlog.log(ERROR, "ERROR:  keeper has no proc_data in do_sell_proc.\n");
          return -1;
       }//else
    }//if
    else {
-      mudlog.log(ERR, "ERROR:  keeper's mob is NULL in do_sell_proc.\n");
+      mudlog.log(ERROR, "ERROR:  keeper's mob is NULL in do_sell_proc.\n");
       return -1;
    }//else
             
    if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB trying to sell.\n");
+      mudlog.log(ERROR, "ERROR:  MOB trying to sell.\n");
       return -1;
    }//if
 
    if (keeper.isMob()) {
-      mudlog.log(ERR, "ERROR:  keeper is MOB in do_sell_proc.\n");
+      mudlog.log(ERROR, "ERROR:  keeper is MOB in do_sell_proc.\n");
       return -1;
    }//if
 
@@ -1245,7 +1483,7 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
 
          if (!will_buy) {
             do_tell(keeper, "I don't buy that type of stuff.", pc, FALSE, 
-		    pc.getCurRoomNum());
+                    pc.getCurRoomNum());
             return -1;
          }//if
 
@@ -1253,7 +1491,7 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
          
          if (price < 0) {
             do_tell(keeper, "I don't buy that type of stuff.", pc, FALSE, 
-		    pc.getCurRoomNum());
+                    pc.getCurRoomNum());
             return -1;
          }//if
 
@@ -1265,7 +1503,7 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
          }//if
 
          Sprintf(buf, "You now have %S.\n", 
-		obj_ptr->getShortDesc(&keeper));
+                &(obj_ptr->short_desc));
          show(buf, keeper);
          Sprintf(buf, "Here's %i coins.", price);
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());
@@ -1277,13 +1515,9 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
          pc.loseInv(obj_ptr);
 
          int del_obj = FALSE;
-         gain_eq_effects(*obj_ptr, NULL, pc, FALSE, FALSE, del_obj);
+         gain_eq_effects(*obj_ptr, NULL, keeper, FALSE, FALSE, del_obj);
          if (!del_obj) {
-            pc.gainInv(&(obj_list[obj_ptr->OBJ_NUM])); //only dispense OBJ's
-         }
-
-         if (keeper.isPlayerShopKeeper()) {
-            save_player_shop_owner(keeper);
+            keeper.gainInv(obj_ptr);
          }
          return 0;
       }//else
@@ -1291,7 +1525,7 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
    else {
       Sprintf(buf, "ERROR:  bad proc num sent to do_sell_proc: %i.\n", 
               prc_num);
-      mudlog.log(ERR, buf);
+      mudlog.log(ERROR, buf);
    }//else        
    return -1;
 }//do_sell_proc

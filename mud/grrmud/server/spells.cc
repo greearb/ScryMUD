@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.17 1999/09/06 02:24:28 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
+// $Id: spells.cc,v 1.18 2001/03/29 03:02:35 eroper Exp $
+// $Revision: 1.18 $  $Author: eroper $ $Date: 2001/03/29 03:02:35 $
 
 //
 //ScryMUD Server Code
@@ -45,10 +45,20 @@
 #include "trv_spll.h"
 #include <PtrArray.h>
 #include "SkillSpell.h"
-#include "lang_strings.h"
+#include "clients.h"
+
 
 int get_mana_cost(int spell_num) {
    return SSCollection::instance().getSS(spell_num).getManaCost();
+}
+
+int get_mana_cost(int spell_num, critter& pc) {
+   float pl, mana_cost=SSCollection::instance().getSS(spell_num).getManaCost();
+
+   if (pc.isPc() && ((pl = (float)get_percent_lrnd(MANA_SKILL_NUM, pc)) > -1))
+      mana_cost-=mana_cost*(pl/900.0);
+   
+   return (int)mana_cost;
 }
 
 
@@ -57,10 +67,13 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
 
    if (spell_num == ARMOR_SKILL_NUM) {  
      pc.AC -= ARMOR_EFFECT;
+     pc.SPEL_RESIS -= ARMOR_EFFECT_M;
      if (do_msg)
        show("You feel more vulnerable.\n", pc);
    }//if
    else if (spell_num == MAGIC_SHIELD_SKILL_NUM) {
+      pc.AC -= MAGIC_SHIELD_AC_EFFECT;
+      pc.SPEL_RESIS -= MAGIC_SHIELD_SAC_EFFECT;
      if (do_msg)
        show("Your magical shield dissipates.\n", pc);
    }//if
@@ -87,11 +100,17 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
      if (do_msg)
        show("Your protective shadows fade away.\n", pc);
    }//if
+   else if (spell_num == CURSE_SKILL_NUM) {
+     pc.STR -= CURSE_STR_EFFECT;
+     pc.MA_REGEN -= CURSE_MA_REGEN_EFFECT;
+     if (do_msg)
+       show("You feel less cursed!\n", pc);
+   }//if
    else if (spell_num == DETECT_MAGIC_SKILL_NUM) {
      if (pc.pc) {
        pc.PC_FLAGS.turn_off(18);
        if (do_msg)
-	 show("You can no longer detect magical auras.\n", pc);
+         show("You can no longer detect magical auras.\n", pc);
      }//if
    }//if
    else if (spell_num == DETECT_HIDDEN_SKILL_NUM) {
@@ -100,9 +119,15 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
        show("You no longer detect hidden things.\n", pc);
    }//if
    else if (spell_num == INFRAVISION_SKILL_NUM) {
-     pc.SEE_BIT &= ~(1);
-     if (do_msg)
-       show("You can no longer see in the dark.\n", pc);
+     if ( pc.isDarkling() || pc.isImmort() ) {
+       if (do_msg) {
+         show("Infravision has worn off. Then again who cares.\n", pc);
+       }
+     } else {
+       pc.SEE_BIT &= ~(1);
+       if (do_msg)
+         show("You can no longer see in the dark.\n", pc);
+     }
    }//if
    else if (spell_num == DETECT_INVISIBILITY_SKILL_NUM) {
      pc.SEE_BIT &= ~(2);
@@ -117,6 +142,10 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
    else if (spell_num == SLEEP_SKILL_NUM) {
      pc.CRIT_FLAGS.turn_off(15);
      wake(pc);
+   }//if
+   else if (spell_num == FLESH_TO_STONE_SKILL_NUM) {
+     pc.CRIT_FLAGS.turn_off(14);
+     unpetrify(pc, do_msg); //more dire effects??
    }//if
    else if (spell_num == FLY_SKILL_NUM) {
      pc.CRIT_FLAGS.turn_off(3);
@@ -178,7 +207,7 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
      pc.MOV -= PRISMATIC_GLOBE_EFFECT_MOV;
      if (do_msg)
        show("Your prismatic shield folds in upon itself and dissappears.\n",
-	    pc);
+            pc);
    }//if
    else if (spell_num == SANCTUARY_SKILL_NUM) {
      pc.DAM_REC_MOD -= SANCTUARY_EFFECT_DRM;
@@ -196,7 +225,7 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
        show("You feel slightly less blessed in the eyes of your lord.\n", pc);
    }//if
    else if ((spell_num == CHARM_SKILL_NUM) || 
-	    (spell_num == MASS_CHARM_SKILL_NUM)) {
+            (spell_num == MASS_CHARM_SKILL_NUM)) {
      follow(1, &NULL_STRING, pc, do_msg);
    }//if
    else if (spell_num == INVISIBILITY_SKILL_NUM) {
@@ -207,7 +236,7 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
       Sprintf(buf, "ERROR:  rem_effects_crit DEFAULT: spll# [%i] %s.\n",
               spell_num,
               (const char*)(SSCollection::instance().getNameForNum(spell_num)));
-      mudlog.log(ERR, buf);
+      mudlog.log(ERROR, buf);
    }//switch
 }// rem_effects_crit()
 
@@ -219,38 +248,46 @@ void rem_effects_obj(int spell_num, object &obj) {
      obj.OBJ_DAM_DICE_SIDES -= RUNE_EDGE_EFFECTS;
   }//if
   else if ((spell_num == FROST_BLADE_SKILL_NUM) ||
-	   (spell_num == FIRE_BLADE_SKILL_NUM)) {
+           (spell_num == FIRE_BLADE_SKILL_NUM)) {
     ; //do nothing, losing spell is enough
   }//if
+  else if (spell_num == INVISIBILITY_SKILL_NUM) {
+    obj.OBJ_VIS_BIT &= ~2;
+  }
+  else if (spell_num == WIZARD_EYE_SKILL_NUM) {
+     Sprintf(buf, "%S is no longer sending you visions.\n", obj.getName());
+     obj.obj_proc->w_eye_owner->show(buf);
+     obj.obj_proc->w_eye_owner->pc->w_eye_obj = NULL; //pc not looking at it anymore.
+     obj.obj_proc->w_eye_owner = NULL; //object not owned.
+  }
   else {
     Sprintf(buf, "ERROR:  rem_effects_obj, not supported, spll# [%i] %s.\n",
-	    spell_num, (const char*)(SSCollection::instance().getNameForNum(spell_num)));
-    mudlog.log(ERR, buf);
+            spell_num, (const char*)(SSCollection::instance().getNameForNum(spell_num)));
+    mudlog.log(ERROR, buf);
   }//else
 }// rem_effects_obj()
 
 
 void rem_effects_door(int spell_num, door& dr, room& rm1,
-		      room& rm2, short do_msg) {
+                      room& rm2, short do_msg) {
   String buf(100);
   
   if (spell_num == FIREWALL_SKILL_NUM) {
      if (do_msg) {
-        rm1.showAllCept(CS_FLAMES_DIE_DOWN);
-        rm2.showAllCept(CS_FLAMES_DIE_DOWN);
+        show_all("The flames on the exit die down.\n", rm1);
+        show_all("The flames on the exit die down.\n", rm2);
      }//if
   }//if
   else if (spell_num == DISTORTION_WALL_SKILL_NUM) {
     if (do_msg) {
-       rm1.showAllCept(CS_DISTORTION_FADES);
-       rm2.showAllCept(CS_DISTORTION_FADES);
+      show_all("The distortion field fades.\n", rm1);
+      show_all("The distortion field fades.\n", rm2);
     }//if
   }//if
   else {
-     Sprintf(buf, "ERROR:  rem_effects_door, spll# [%i] %s.\n",
-	     spell_num, 
+     Sprintf(buf, "ERROR:  rem_effects_door, spll# [%i] %s.\n", spell_num, 
              (const char*)(SSCollection::instance().getNameForNum(spell_num)));
-     mudlog.log(ERR, buf);
+     mudlog.log(ERROR, buf);
   }//else
 }// rem_effects_door()
  
@@ -263,9 +300,9 @@ void rem_effects_room(int spell_num, room &rm, short do_msg) {
    }//if
    else {
      Sprintf(buf, 
-	     "ERROR:  spell_num(%i) out of range in rem_effects_room.\n",
+             "ERROR:  spell_num(%i) out of range in rem_effects_room.\n",
              spell_num);
-     mudlog.log(ERR, buf);
+     mudlog.log(ERROR, buf);
    }//else
 }// rem_effects_room()
 
@@ -275,7 +312,7 @@ void do_firewall_effects(critter& pc, int& is_dead) {
    is_dead = FALSE;
 
    if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB sent to do_firewall_effects.\n");
+      mudlog.log(ERROR, "ERROR:  MOB sent to do_firewall_effects.\n");
       return;
    }//if
 
@@ -284,7 +321,7 @@ void do_firewall_effects(critter& pc, int& is_dead) {
    if (pc.HP < 0) {
       emote("is burned to death!!", pc, ROOM, TRUE);
       show("You have been burned to death!\n", pc);
-      crit_dies(pc);
+      agg_kills_vict(NULL, pc);
       is_dead = TRUE;
    }//if
    else {
@@ -300,7 +337,7 @@ int do_distortion_wall_effects(critter& pc, int& is_dead, int sanity) {
    int retval;
 
    if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB sent to do_distortion_wall_effects.\n");
+      mudlog.log(ERROR, "ERROR:  MOB sent to do_distortion_wall_effects.\n");
       is_dead = FALSE;
       return -1;
    }//if
@@ -319,7 +356,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
    short do_join_in_battle = TRUE;
    short do_fatality = FALSE;
    int spell_num = FIREBALL_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
  
    /*  Check for: lost concentration, did_hit, !mag room    */
    /*  Do: damage to vict, mana from agg, messages to all involved, */
@@ -353,7 +390,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
                show("You give yourself a taste of life after death!\n", 
                     agg);
                Sprintf(buf, "blasts %s with %s crimson inferno.\n", 
-                      get_hisself_herself(vict), 
+                      get_himself_herself(vict), 
                       get_his_her(agg));
                emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
             }//else
@@ -393,7 +430,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
          if (&agg == &vict) {
             show("You miss yourself with your sulpherous inferno.\n", agg);
             Sprintf(buf, "misses %s with %s fireball.\n", 
-                    get_hisself_herself(vict),
+                    get_himself_herself(vict),
                     get_his_her(vict));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
             do_join_in_battle = FALSE;
@@ -495,12 +532,15 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
       }//else lost concentration
    }//else !canned
 
-   if (do_join_in_battle && agg.isFighting(vict)) {
+   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
       join_in_battle(agg, vict);
    }//if
 
    if (do_fatality) {
-      agg_kills_vict(agg, vict);
+      if (vict.mob && vict.MOB_FLAGS.get(16)) {
+         vict.MOB_FLAGS.turn_off(16);
+      }
+      agg_kills_vict(&agg, vict);
    }//if
 }//do_cast_fireball
  
@@ -510,12 +550,16 @@ void cast_fireball(int i_th, const String* victim, critter& pc) {
    int spell_num = FIREBALL_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = pc.getFirstFighting();
+      vict = Top(pc.IS_FIGHTING);
    else 
       vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
       show("Whom do you wish to barbeque??\n", pc);
       return;
+   }//if
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+              victim, pc.SEE_BIT);
    }//if
 
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
@@ -523,7 +567,7 @@ void cast_fireball(int i_th, const String* victim, critter& pc) {
    }//if
    
    if (!(vict = check_for_diversions(*vict, "SGM", pc)))
-     return;						       
+     return;                                                       
                  /* all checks have been passed, lets do it */
 
    do_cast_fireball(*vict, pc, FALSE, 0);
@@ -532,9 +576,27 @@ void cast_fireball(int i_th, const String* victim, critter& pc) {
 
 void cast_summon(int i_th, const String* targ, critter& pc) {
    int spell_num = SUMMON_SKILL_NUM;
+   String buf(100);
 
    critter* vict = have_crit_named(pc_list, i_th, targ,
                                    pc.SEE_BIT, ROOM);
+
+   if( config.newSummon) {
+      int rm_num;
+
+      if (!vict) {
+       vict = have_crit_named(linkdead_list, i_th, targ,
+                 pc.SEE_BIT, ROOM);
+      }
+
+      if (vict) {
+       rm_num = vict->getCurRoomNum();
+      }
+      else {
+          vict = room::haveCritNamedInWorld(i_th, targ, pc.SEE_BIT, rm_num);
+      }
+   }
+
    if (!vict) {
       show("You don't see that person!\n", pc);
       return;
@@ -543,6 +605,14 @@ void cast_summon(int i_th, const String* targ, critter& pc) {
    if (!ok_to_do_action(vict, "KMSNB", spell_num, pc)) {
       return;
    }//if
+
+   if (vict->isImmort() && (vict->getLevel() > pc.getLevel())) {
+      pc.show("You wish (and you suddenly feel hungry for your efforts!)!!\n");
+      if (pc.HUNGER > 0) {
+         pc.HUNGER = 0; //cause I'm evil!! --Ben
+      }
+      return;
+   }
 
    if (ROOM.isNoMagEntry()) {
       pc.show("You can't magically transport someone to this room!\n");
@@ -559,7 +629,7 @@ void do_cast_summon(critter& vict, critter& pc, int is_canned, int lvl) {
    String buf(100);
    short do_affects = FALSE;
    int spell_num = SUMMON_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    int lost_con = FALSE;
    int did_hit = TRUE;
@@ -568,7 +638,7 @@ void do_cast_summon(critter& vict, critter& pc, int is_canned, int lvl) {
       lvl = pc.LEVEL;
    
    if (is_canned || (!(lost_con = lost_concentration(pc, spell_num)) &&
-		     (did_hit = did_spell_hit(pc, SUMMON, vict)))){ 
+                     (did_hit = did_spell_hit(pc, SUMMON, vict)))){ 
       do_affects = TRUE;
       if (!is_canned)
          pc.MANA -= spell_mana;
@@ -606,15 +676,13 @@ void do_cast_summon(critter& vict, critter& pc, int is_canned, int lvl) {
          return;
       }
 
-      Sprintf(buf, 
-	      "%S opens a portal above your head and yanks you through!\n",
-	      name_of_crit(pc, vict.SEE_BIT));
+      Sprintf(buf, "%S opens a portal above your head and yanks you through!\n",
+              name_of_crit(pc, vict.SEE_BIT));
       buf.Cap();
       show(buf, vict);
       
-      Sprintf(buf, 
-	      "is suddenly yanked through a portal that opened over %s head!",
-	      get_his_her(vict));
+      Sprintf(buf, "is suddenly yanked through a portal that opens over %s head!",
+              get_his_her(vict));
       emote(buf, vict, room_list[vict.getCurRoomNum()], TRUE); 
       
       Sprintf(buf, "has been summoned by %S.", name_of_crit(pc, ~0));
@@ -626,12 +694,22 @@ void do_cast_summon(critter& vict, critter& pc, int is_canned, int lvl) {
       
    }//if do_affects
    pc.PAUSE += 1; 
+
+   // RJY [Trice] attempt to slap on ending tags
+   if( vict.isPc() && vict.isInBattle() ) {
+      if (vict.isUsingClient()) {
+         show(CTAG_END_BATTLE(vict.whichClient()), vict);
+      }
+      else if (vict.isUsingColor()) {
+         show(*(vict.getDefaultColor()), vict);
+      }
+   }
 }//do_cast_summon
  
 
 void cast_passdoor(int i_th, const String* drr, critter& pc) {
    int spell_num = PASSDOOR_SKILL_NUM;
-   door* dr = ROOM.findDoor(i_th, drr, pc);
+   door* dr = door::findDoor(ROOM.DOORS, i_th, drr, pc.SEE_BIT, ROOM);
 
    if (!dr) {
       show("Which door do you wish to pass?\n", pc);
@@ -650,7 +728,7 @@ void cast_passdoor(int i_th, const String* drr, critter& pc) {
    }//if
 
    if (dr->isNoPassdoor()) {
-      pc.show("This door is imbued with properties that blocks your spell!\n");
+      pc.show("This door is imbued with properties that block your spell!\n");
       return;
    }
 
@@ -658,7 +736,7 @@ void cast_passdoor(int i_th, const String* drr, critter& pc) {
      return;
    }//if
 
-   if (!(mob_can_enter(pc, room_list[abs(dr->getDestination())], TRUE)))
+   if (!(mob_can_enter(pc, room_list[abs(dr->destination)], TRUE)))
      return;
 
    do_cast_passdoor(*dr, pc, FALSE, 0);  //does no error checking
@@ -669,7 +747,7 @@ void do_cast_passdoor(door& dr, critter& vict, int is_canned, int lvl) {
    String buf(100);
    short do_affects = FALSE;
    int spell_num = PASSDOOR_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, vict);
 
    if (!is_canned)
       lvl = vict.LEVEL;
@@ -703,7 +781,7 @@ void do_cast_passdoor(door& dr, critter& vict, int is_canned, int lvl) {
             room_list[vict.getCurRoomNum()], TRUE); 
       
       int is_dead;
-      vict.doGoToRoom(abs(dr.getDestination()), NULL, NULL, is_dead,
+      vict.doGoToRoom(abs(dr.destination), NULL, NULL, is_dead,
                       vict.getCurRoomNum(), 1);
       
       if (!is_dead) {
@@ -714,6 +792,80 @@ void do_cast_passdoor(door& dr, critter& vict, int is_canned, int lvl) {
    vict.PAUSE += 1;   // increment pause_count
 }//do_cast_passdoor
 
+void cast_tammuz(int i_th, const String* victim, critter& pc) {
+   int spell_num = TAMMUZ_SKILL_NUM;
+   critter* vict = NULL;
+   if (victim->Strlen() == 0)
+     vict = &pc;
+   else {
+     vict = ROOM.haveCritNamed(i_th, victim, pc);
+   }//else
+
+   if (!vict) {
+     show("Transport who?\n", pc);
+     return;
+   }//if
+
+   if (!ok_to_do_action(vict, "KMSNB", spell_num, pc)) {
+     return;
+   }//if
+
+   do_cast_tammuz(*vict, pc, FALSE, 0);  //does no error checking
+}//cast_tammuz
+
+
+void do_cast_tammuz(critter& vict, critter& pc, int is_canned, int lvl) {
+   String buf(100);
+   short do_affects = FALSE;
+   int spell_num = TAMMUZ_SKILL_NUM;
+   int spell_mana = get_mana_cost(spell_num, pc);
+
+   if (!is_canned)
+     lvl = pc.LEVEL;
+
+   int lost_con = TRUE;
+
+   if (pc.isMob()) {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "WARNING:  MOB in do_cast_tammuz." << endl;
+      }
+      return;
+   }//if
+
+   if (pc.getCurRoom()->isNoMagExit()) {
+      vict.show("You cannot leave this place by magical means!\n");
+      return;
+   }
+   
+   if (is_canned || !(lost_con = lost_concentration(pc, spell_num))) { 
+      do_affects = TRUE;
+      if (!is_canned)
+        pc.MANA -= spell_mana;
+   }//else !canned
+   else { //lost con
+      show(LOST_CONCENTRATION_MSG_SELF, pc);     
+      emote(LOST_CONCENTRATION_MSG_OTHER, pc, ROOM, FALSE);
+      if (!is_canned)
+         pc.MANA -= spell_mana / 2;
+   }//else lost concentration
+   
+   if (do_affects) {
+      show("The world shimmers!\n", vict);
+      emote("grows plaid and disappears.", vict,
+            room_list[vict.getCurRoomNum()], TRUE); 
+      
+      int is_dead;
+      vict.doGoToRoom(config.tammuzRoom, NULL, NULL, is_dead,
+                      vict.getCurRoomNum(), 1);
+
+      if (!is_dead) {
+         emote("blinks into existence.", vict, room_list[vict.getCurRoomNum()],
+               TRUE);
+      }//if
+
+   }//if do_affects
+   vict.PAUSE += 1;   // increment pause_count
+}//do_cast_tammuz
 
 void cast_recall(int i_th, const String* victim, critter& pc) {
    int spell_num = RECALL_SKILL_NUM;
@@ -729,7 +881,7 @@ void cast_recall(int i_th, const String* victim, critter& pc) {
      return;
    }//if
 
-   if (!ok_to_do_action(vict, "KMSNB", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
      return;
    }//if
 
@@ -741,7 +893,7 @@ void do_cast_recall(critter& vict, critter& pc, int is_canned, int lvl) {
    String buf(100);
    short do_affects = FALSE;
    int spell_num = RECALL_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    if (!is_canned)
      lvl = pc.LEVEL;
@@ -754,11 +906,21 @@ void do_cast_recall(critter& vict, critter& pc, int is_canned, int lvl) {
       }
       return;
    }//if
+
+   if (vict.isNPC()) {
+      pc.show("You cannot recall NPC players.\n");
+      return;
+   }
+
+   if (pc.getCurRoom()->isNoMagExit()) {
+      vict.show("You cannot leave this place by magical means!\n");
+      return;
+   }
    
    if (is_canned || !(lost_con = lost_concentration(pc, spell_num))) { 
       do_affects = TRUE;
       if (!is_canned)
-	pc.MANA -= spell_mana;
+        pc.MANA -= spell_mana;
    }//else !canned
    else { //lost con
       show(LOST_CONCENTRATION_MSG_SELF, pc);     
@@ -769,11 +931,11 @@ void do_cast_recall(critter& vict, critter& pc, int is_canned, int lvl) {
    
    if (do_affects) {
       show("The world shimmers!\n", vict);
-      emote("grows opaque and disappears.", vict,
+      emote("grows translucent and disappears.", vict,
             room_list[vict.getCurRoomNum()], TRUE); 
       
       int is_dead;
-      vict.doGoToRoom(RECALL_ROOM, NULL, NULL, is_dead,
+      vict.doGoToRoom(config.recallRoom, NULL, NULL, is_dead,
                       vict.getCurRoomNum(), 1);
 
       if (!is_dead) {
@@ -786,14 +948,49 @@ void do_cast_recall(critter& vict, critter& pc, int is_canned, int lvl) {
 }//do_cast_recall
  
 
-void cast_teleport(critter& pc) {
+void cast_teleport(int i_th, const String* targ, critter& pc) {
    int spell_num = TELEPORT_SKILL_NUM;
+   String buf(100);
+
+    critter* vict = have_crit_named(pc_list, i_th, targ, pc.SEE_BIT, ROOM);
+
+
+   if( config.newTeleport)
+   {
+
+      int rm_num;
+
+      if (!vict) {
+       vict = have_crit_named(linkdead_list, i_th, targ,
+                     pc.SEE_BIT, ROOM);
+    }
+
+    if (vict) {
+        rm_num = vict->getCurRoomNum();
+    }
+    else {
+         vict = room::haveCritNamedInWorld(i_th, targ, pc.SEE_BIT, rm_num);
+    }
+
+    if (!vict) {
+         show("That person is not to be found.\n", pc);
+           return;
+    }//if
+   }
 
    if (!ok_to_do_action(NULL, "KMSN", spell_num, pc)) {
      return;
    }//if
 
-   do_cast_teleport(pc, pc, FALSE, 0);  //does no error checking
+   if( config.newTeleport)
+   {
+              do_cast_teleport(*vict, pc, FALSE, 0);  //does no error checking
+   }
+   else
+   {
+              do_cast_teleport(pc, pc, FALSE, 0);  //does no error checking
+   }
+
 }//cast_teleport
 
 
@@ -802,7 +999,7 @@ void do_cast_teleport(critter& vict, critter& pc, int is_canned, int lvl) {
    int new_room_num = FALSE;
    short done = FALSE, do_affects = FALSE;
    int spell_num = TELEPORT_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, pc);
 
    //log("in do_cast_teleport\n");
 
@@ -811,29 +1008,35 @@ void do_cast_teleport(critter& vict, critter& pc, int is_canned, int lvl) {
 
    int lost_con = TRUE;
 
-   if (vict.getCurRoom()->isNoMagExit()) {
+   if (pc.getCurRoom()->isNoMagExit()) {
       vict.show("You cannot leave this place by magic means!\n");
       return;
+   }
+   if( config.newTeleport ) {
+      if (vict.getCurRoom()->isNoMagEntry()) {
+         pc.show("You can't magically transport to that room!\n");
+         return;
+      }
    }
 
    if (is_canned || !(lost_con = lost_concentration(pc, spell_num))) { 
       do_affects = TRUE;
       if (!is_canned)
-	vict.MANA -= spell_mana;
+        pc.MANA -= spell_mana;
    }//else !canned
    else { //lost con
-     show(LOST_CONCENTRATION_MSG_SELF, pc);
+      show(LOST_CONCENTRATION_MSG_SELF, pc);
      
-     emote(LOST_CONCENTRATION_MSG_OTHER, pc, 
-	   room_list[pc.getCurRoomNum()], FALSE);
-     if (!is_canned)
-       pc.MANA -= spell_mana / 2;
+      emote(LOST_CONCENTRATION_MSG_OTHER, pc, 
+           room_list[pc.getCurRoomNum()], FALSE);
+      if (!is_canned)
+         pc.MANA -= spell_mana / 2;
    }//else lost concentration
 
    if (do_affects) {
       show("The world shimmers!\n", vict);
-      emote("grows opaque and disapears.", vict,
-            room_list[vict.getCurRoomNum()], TRUE); 
+      emote("grows translucent and disappears.", vict,
+            room_list[pc.getCurRoomNum()], TRUE); 
 
       int sanity = 0;
       while (!done) {
@@ -843,29 +1046,57 @@ void do_cast_teleport(critter& vict, critter& pc, int is_canned, int lvl) {
                       << "  vict:  " << *(name_of_crit(vict, ~0)) << endl;
             }
             emote("disappears briefly and then shimmers back into existence.",
-                  vict, room_list[vict.getCurRoomNum()], TRUE);
+                  vict, room_list[pc.getCurRoomNum()], TRUE);
 
             break;
          }
 
-         new_room_num = d(1, Cur_Max_Room_Num);
-         if ((mob_can_enter(vict, room_list[new_room_num], FALSE)) &&
-             (!room_list[new_room_num].isNoMagEntry())) {
-            done = TRUE;
-            emote("shimmers into existence.", vict, 
-                  room_list[vict.getCurRoomNum()], TRUE);
-            int is_dead;
-            vict.doRemoveFromBattle();
-            vict.doGoToRoom(new_room_num, NULL, NULL, is_dead,
-                            vict.getCurRoomNum(), 1);
-            if (is_dead)
-               return;
-         }//if
-      }//while
 
+         if ( config.newTeleport) {
+            int is_dead;
+            
+            new_room_num = vict.getCurRoomNum();
+            if ((mob_can_enter(vict, room_list[new_room_num], FALSE)) &&
+                (!room_list[new_room_num].isNoMagEntry())) {
+               done = TRUE;
+               emote("shimmers into existence.", vict,
+                     room_list[vict.getCurRoomNum()], TRUE);
+               vict.doRemoveFromBattle();
+               vict.doGoToRoom(vict.getCurRoomNum(), NULL, NULL,is_dead, vict.getCurRoomNum(), 1);
+               if (is_dead)
+                 return;
+            }//if
+         }
+         else {
+            int is_dead;
+            
+            new_room_num = d(1, Cur_Max_Room_Num);
+            if ((mob_can_enter(vict, room_list[new_room_num], FALSE)) &&
+                (!room_list[new_room_num].isNoMagEntry())) {
+               done = TRUE;
+               vict.doRemoveFromBattle();
+               vict.doGoToRoom(new_room_num, NULL, NULL, is_dead,
+                               vict.getCurRoomNum(), 1);
+               if (is_dead)
+                 return;
+               emote("shimmers into existence.", vict,
+                     room_list[vict.getCurRoomNum()], TRUE);
+            }//if
+         }
+      }//while
+      
       vict.doRemoveFromBattle();
    }//if do_affects
    vict.PAUSE += 1;   // increment pause_count
+   // RJY [Trice] attempt to slap in ending battle TAGS
+   if( vict.isInBattle() ) {
+      if (vict.isUsingClient()) {
+         show(CTAG_END_BATTLE(vict.whichClient()), vict);
+      } 
+      else if (vict.isUsingColor()) {
+         show(*(vict.getDefaultColor()), vict);
+      }
+   }
 }//do_cast_teleport
  
 
@@ -875,7 +1106,7 @@ void cast_poison(int i_th, const String* victim, critter& pc) {
    int spell_num = POISON_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = pc.getFirstFighting();
+      vict = Top(pc.IS_FIGHTING);
    else 
       vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
@@ -883,6 +1114,11 @@ void cast_poison(int i_th, const String* victim, critter& pc) {
       return;
    }//if
 
+   if (vict->isMob()) {
+      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
+                          victim, pc.SEE_BIT);
+   }//if
+ 
    if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
@@ -896,7 +1132,7 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
    short do_effects = FALSE;
    short do_join_in_battle = TRUE;
    int spell_num = POISON_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
  
 
    if (!is_canned)
@@ -923,7 +1159,7 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
             Sprintf(buf, "%S poisons %S.\n", 
                       name_of_crit(agg, ~0), name_of_crit(vict, ~0));
             buf.Cap();
-            room_list[agg.getCurRoomNum()].showAllCept(buf, &agg, &vict);
+            show_all_but_2(agg, vict, buf, room_list[agg.getCurRoomNum()]);
          }//else
       }//if did_hit
       else { //missed
@@ -987,20 +1223,23 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
    }//else !canned
 
    if (do_effects) {
-      SpellDuration* sd = vict.isAffectedBy(spell_num);
-      if (sd) {
-         sd->duration += (int)((float)(lvl) / 3.0);
-      }//if
-      else {
-         sd = new SpellDuration(spell_num, lvl/3);
-         vict.addAffectedBy(sd);
-         vict.HP_REGEN += POISON_HP_REGEN_AUGMENTATION;
-         vict.MV_REGEN += POISON_MV_REGEN_AUGMENTATION;
-         vict.MA_REGEN += POISON_MA_REGEN_AUGMENTATION;
-      }
+      stat_spell_cell* sp;
+
+      Cell<stat_spell_cell*> cll(vict.affected_by);
+      while ((sp = cll.next())) {
+         if (sp->stat_spell == spell_num) {
+            sp->bonus_duration += (int)((float)(lvl) / 3.0);
+            return;
+         }//if
+      }//while
+
+      Put(new stat_spell_cell(spell_num, lvl/3), vict.affected_by);
+      vict.HP_REGEN += POISON_HP_REGEN_AUGMENTATION;
+      vict.MV_REGEN += POISON_MV_REGEN_AUGMENTATION;
+      vict.MA_REGEN += POISON_MA_REGEN_AUGMENTATION;
    }//if
 
-   if (do_join_in_battle && agg.isFighting(vict)) {
+   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
       join_in_battle(agg, vict);
    }//if
 }//do_cast_poison
@@ -1020,7 +1259,7 @@ void cast_illuminate(critter& pc) {
 void do_cast_illuminate(room& rm, critter& agg, int is_canned,
                         int lvl) {
    int spell_num = ILLUMINATE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
    String buf(100);
    short do_effects = FALSE;
  
@@ -1055,20 +1294,22 @@ void do_cast_illuminate(room& rm, critter& agg, int is_canned,
 
    if (do_effects) {
       mudlog.log(DBG, "Doing illuminate effects.\n");
+      stat_spell_cell* sp;
 
-      SpellDuration* sd = rm.isAffectedBy(spell_num);
-      if (sd) {
-         sd->duration += (int)((float)(lvl) / 2.0);
-      }//if
-      else {
-         obj_ptr_log << "NOTE " << rm.getIdNum() << " " << &rm
-                     << "Adding to affected_rooms bcause of illuminate." << endl;
-         room* hack = &rm;
-         affected_rooms.appendUnique(hack); //add to global affected list so
-                                            //spell can wear off eventually
-         sd = new SpellDuration(spell_num, lvl/2);
-         rm.addAffectedBy(sd);
-      }
+      Cell<stat_spell_cell*> cll(rm.affected_by);
+      while ((sp = cll.next())) {
+         if (sp->stat_spell == spell_num) {
+            sp->bonus_duration += (int)((float)(lvl) / 2.0);
+            return;
+         }//if
+      }//while
+
+      obj_ptr_log << "NOTE " << rm.getIdNum() << " " << &rm
+                  << "Adding to affected_rooms bcause of illuminate." << endl;
+
+      affected_rooms.gainData(&rm); //add to global affected list so
+                                     //spell can wear off eventually
+      Put(new stat_spell_cell(spell_num, lvl/2), rm.affected_by);
       rm.setVisBit(rm.getVisBit() & ~1);  //make it light
    }//if
 }//do_cast_illuminate
@@ -1088,7 +1329,7 @@ int has_all_prereqs(int skill_num, critter& pc) {
    while ((tmp = cll.next())) {
      if (pc.SKILLS_KNOWN.Find(tmp, retval)) {
        if (retval < 50)
-	 return FALSE;
+         return FALSE;
      }//if
      else
        return FALSE;
@@ -1119,7 +1360,7 @@ void update_skill(int last_learned, critter& pc) {
    }
 
    if (!check_l_range(last_learned, 0, NUMBER_OF_SKILL_SPELLS, pc, FALSE)) {
-      mudlog.log(ERR,
+      mudlog.log(ERROR,
                  "ERROR:  last_learned out of range, gain_spells_skills!!\n");
       return;
    }//if
@@ -1129,28 +1370,30 @@ void update_skill(int last_learned, critter& pc) {
    while ((tmp = cll.next())) {
      if (has_all_prereqs(tmp, pc) && (get_percent_lrnd(tmp, pc) == -1)) {
         pc.SKILLS_KNOWN.Insert(tmp, 1);
-	if (tmp == WEAPON_MASTERY_SKILL_NUM)
-	   pc.DAM++;
-	else if (tmp == HONOR_CODE_SKILL_NUM)
-	   pc.WIS++;
-	else if (tmp == LEADERSHIP_SKILL_NUM)
-	   pc.CHA++;
-	else if (tmp == QUICKFOOT_SKILL_NUM)
-	   pc.DEX++;
-	else if (tmp == WRESTLING_SKILL_NUM)
-	   pc.BH_DICE_COUNT++;
-	else if (tmp == SECOND_ATTACK_SKILL_NUM)
-	   pc.ATTACKS++;
-	else if (tmp == CLIMBING_SKILL_NUM)
-	   pc.CRIT_FLAGS.turn_on(5);
-	else if (tmp == DUAL_WIELD_SKILL_NUM)
-	   pc.CRIT_FLAGS.turn_on(16);
-	else if (tmp == LOGIC_SKILL_NUM)
- 	   pc.CHA--; //logical people are boring!!
-	else if (tmp == MARTIAL_ARTS_SKILL_NUM) {
-	   pc.BH_DICE_COUNT++;
-	   pc.BH_DICE_SIDES += 2;
-	}//martail arts
+        if (tmp == WEAPON_MASTERY_SKILL_NUM)
+           pc.DAM++;
+        else if (tmp == HONOR_CODE_SKILL_NUM)
+           pc.WIS++;
+        else if (tmp == LEADERSHIP_SKILL_NUM)
+           pc.CHA++;
+        else if (tmp == QUICKFOOT_SKILL_NUM)
+           pc.DEX++;
+        else if (tmp == WRESTLING_SKILL_NUM)
+           pc.BH_DICE_COUNT++;
+// This needs to be done in do_battle(), otherwise +1 attack items only work
+// for people with at least 1% in second attack.
+//        else if (tmp == SECOND_ATTACK_SKILL_NUM)
+//           pc.ATTACKS++;
+        else if (tmp == CLIMBING_SKILL_NUM)
+           pc.CRIT_FLAGS.turn_on(5);
+        else if (tmp == DUAL_WIELD_SKILL_NUM)
+           pc.CRIT_FLAGS.turn_on(16);
+        else if (tmp == LOGIC_SKILL_NUM)
+            pc.CHA--; //logical people are boring!!
+        else if (tmp == MARTIAL_ARTS_SKILL_NUM) {
+           pc.BH_DICE_COUNT++;
+           pc.BH_DICE_SIDES += 2;
+        }//martail arts
      }//if
    }//while
 }//gain_spells_skills
@@ -1168,8 +1411,8 @@ short lost_concentration(critter& agg, int spell_num) {
       percent_lrned = 50 + (2 * agg.LEVEL);
    }// else
 
-   i = (int)(((float)percent_lrned / 75.0) * 
-     (float)(agg.WIS + agg.INT + agg.LEVEL + 200));
+   i = (int)(((float)percent_lrned / 50.0) * 
+     (float)(agg.WIS + agg.INT + agg.LEVEL + 130));
 
    return (d(1, 100) >= d(1, i));
 }//lost_concentration

@@ -1,0 +1,72 @@
+46	 Start of Object
+fountain ~	names
+a fountain
+~
+A small stone fountain sprays water up into the air.
+~
+It's small and made of stone.  The water that comes out looks crystal clear and
+spills over into a larger holding tank underneath.
+
+~
+59 54 40 21 10 -1  -:| bitfield |:-
+-1 0 100 0 1 1000 0 0 0 	extras
+1024 0 46 50 	cur_stats
+-1  -:| bitfield |:-
+0 2000 100 -1 	 bag_stuff
+-1	affected_by
+7 -1	inv
+-1	stat_affects
+End of Object.
+
+
+352	 Start of Object
+map garland city note paper ~	names
+a map of the city of Garland
+~
+A map of the city of Garland lies here.
+~
+                       To the forest of Glenwood
+				   ^
+MAP      		 Tavern	   |
+OF		              |	   |  Mages' guild
+THE	            Rose      |	   |   |
+CITY	            Lane      |	   |   |    Violet
+OF	                  \<--     |    --> / Drive
+GARLAND  Warriors' guild-> \	   |       / <---Elder Cleric
+			    \	   |      /
+			     \	   |     /
+			      \    |    /
+		     Magician  \   |   /      Bank    Weaponsmith  
+		          |	\  |  /         |       | 
+To the 	    	          v	 \ | /          v       v  To the forest         
+Crossroads <-----------------------X-------------------------->of Tyro
+	     Daisy Lane		 / | \      Daisy Lane  ^     |
+				/  |  \                 |     |
+			       /   |   \         Armorsmith   |
+			      /	   |    \                     |
+			     /	   |     \                    |
+			    /	   |      \                   |
+			   /	   |       \                  v
+			  /        |        \            Longfellow
+		      Violet       |        Rose            Road
+		      Drive  ----> |        Lane 
+			     |	   |
+		Thieves' guild	   |
+		                   v
+Southern
+				 Gates
+   
+   
+
+~
+50 40 21 10 -1  -:| bitfield |:-
+0 0 100 0 10 0 0 0 0 	extras
+0 10 352 50 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+-1 END OF FILE

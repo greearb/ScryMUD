@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.22 1999/08/22 07:16:19 greear Exp $
-# $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/22 07:16:19 $
+# $Id: Makefile,v 1.23 2001/03/29 03:02:27 eroper Exp $
+# $Revision: 1.23 $  $Author: eroper $ $Date: 2001/03/29 03:02:27 $
 
 # makefile template
 include ../../MakeInclude
@@ -16,31 +16,29 @@ AUDIT_TARG = ./audit
 GEN_TARGS = lang_strings.h parse_gen.h lang_strings.cc parse_gen.cc
 
 SRCS  = parse_gen.cc lang_strings.cc classes.cc object.cc critter.cc \
-Filters.cc room.cc door.cc skills.cc command3.cc Markup.cc \
+Filters.cc room.cc door.cc skills.cc command3.cc \
 grrmud.cc commands.cc command2.cc socials.cc spells.cc \
 olc.cc load_wld.cc misc.cc misc2.cc parse.cc battle.cc spec_prc.cc \
 login.cc command4.cc olc2.cc command5.cc batl_prc.cc spells2.cc \
 ez_spll.cc dam_spll.cc trv_spll.cc rm_spll.cc dam_skll.cc wep_skll.cc \
 ez_skll.cc social2.cc cr_skll.cc ar_skll.cc pet_spll.cc vehicle.cc \
 script.cc SkillSpell.cc zone.cc rm_parse.cc rm_cmds.cc obj_parse.cc \
-obj_cmds.cc BugEntry.cc MudStats.cc Serialized.cc Scriptable.cc
+obj_cmds.cc BugEntry.cc MudStats.cc clients.cc ServerConfig.cc
 
 OBJS = parse_gen.o lang_strings.o classes.o object.o critter.o \
-Filters.o room.o door.o skills.o command3.o Markup.o \
+Filters.o room.o door.o skills.o command3.o \
 grrmud.o commands.o command2.o socials.o spells.o olc.o \
 load_wld.o misc.o misc2.o parse.o battle.o spec_prc.o login.o \
 command4.o olc2.o command5.o batl_prc.o spells2.o \
 ez_spll.o dam_spll.o trv_spll.o rm_spll.o dam_skll.o wep_skll.o \
 ez_skll.o social2.o cr_skll.o ar_skll.o pet_spll.o vehicle.o const.o \
 script.o SkillSpell.o zone.o rm_parse.o rm_cmds.o obj_parse.o \
-obj_cmds.o BugEntry.o MudStats.o Serialized.o \
-Scriptable.o BuildInfo.o
+obj_cmds.o BuildInfo.o BugEntry.o MudStats.o clients.o ServerConfig.o
 
 GEN_SPEC = gen_cmds.spec
-LANG_SPEC = translations.spec translation2.spec translation_olc.spec \
-translations_classes.spec translation_misc.spec translation_spell.spec \
-translation_battle.spec translation4.spec
-
+LANG_SPEC = translations.spec translations_classes.spec translation2.spec \
+translation4.spec translation_olc.spec translation_spell.spec \
+translation_battle.spec translation_skill.spec translation5.spec
 
 TARG = grrmud                                 #program to be created
 

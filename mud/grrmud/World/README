@@ -1,0 +1,42 @@
+Syntax for some files found here:
+
+------------------------------------------------------------------
+SKILLS_SPELLS:
+
+Here is the format for the SKILLS_SPELLS file.  The parser is too
+lame to allow comments within the file :)
+
+This is an example entry from the file.
+
+4                        # Skill/Spell number
+4			 # Skill/Spell number
+illuminate               # Skill/Spell name
+0 55 10 295              # MIN_LVL, Difficulty, mana, scroll_num.  See NOTE 1 below.  
+212 -1  pre-reqs         # Pre-requisite skills/spells (gotta learn these first.) -1 terminates.
+218 -1  enables          # Skills/Spells this skill/spell enables, -1 terminates.
+
+
+NOTE 1:
+  MIN_LEVEL (0-30), Difficulty (1-100%), mana_cost (zero for skills),
+  scroll_num (if any, zero otherwise)
+
+NOTE 2:
+  You can put comments after the last 3 lines, at least.  There is no need
+  to denote the comments, as anything past the expected values will be ignored.
+
+
+
+------------------------------------------------------------------
+SS_DESCS:
+
+It's real simple:
+SKILL/SPELL NAME
+Comment, terminated by a ~ on a line by itself (~<RETURN>)
+
+Example:
+
+absorb blows
+This magical spell allows you to absorb some spells, and convert
+their hostile power into helpful energy.  However, it can also
+backfire and open one up to more than ordinary damage, or even death!
+~

@@ -1,0 +1,12 @@
+<help skills trip>
+
+Attempt to trip someone to the ground in order to better take
+advantage of them in battle.
+
+Syntax:  trip <<i_th> target
+
+Example:  trip 2.guard
+
+<color=red>
+See Also:  hit bash
+</color></help>

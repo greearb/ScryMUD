@@ -226,7 +226,7 @@ int main(int argc, char** argv) {
          targ_file << "
 <html>
 <title>ScryMUD Help</title>
-<BODY TEXT=\"#33DDFF\" BGCOLOR=\"#000000\" LINK=\"#FFCC00\" VLINK=\"#FF9900\" ALINK=\"#FF0000\">
+<BODY TEXT=\"#3366AA\" BGCOLOR=\"#FFFFFF\" LINK=\"#AA7700\" VLINK=\"#AA7700\" ALINK=\"#FF0000\">
 <P>
 <h2><center> Help on commands for ScryMUD </center><P>
 " << endl;

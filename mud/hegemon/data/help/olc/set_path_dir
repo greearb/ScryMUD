@@ -10,4 +10,4 @@ Example:  set_path_dir 25 2 1 north         Exit to the first north exit.
 
 
 See Also:  rstat, stat_path, ch_path_desc, set_path_dir, rem_path, add_path,
-	   tog_veh_stop, list_paths, set_path_pointer
+See Also:  tog_veh_stop, list_paths, set_path_pointer

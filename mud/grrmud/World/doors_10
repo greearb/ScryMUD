@@ -1,0 +1,63 @@
+136	Start of Door Data
+1039 136 0 0 10	vbit, door#, token#, key#
+16 13 11 10 9 -1  -:| bitfield |:-
+down invis door # invis door up ~	names
+There seems to be a soft sandy spot that just sucks you in, you can't get back
+up
+
+~
+
+137	Start of Door Data
+1024 137 0 0 10	vbit, door#, token#, key#
+16 13 11 10 9 -1  -:| bitfield |:-
+down invis door # invis door up ~	names
+There seems to be a soft sandy spot that just sucks you in, you can't get back
+up
+
+~
+
+138	Start of Door Data
+1024 138 0 0 10	vbit, door#, token#, key#
+16 13 10 9 -1  -:| bitfield |:-
+west door # door east ~	names
+you can't see it
+w
+olc
+j
+
+~
+
+139	Start of Door Data
+1026 139 0 0 10	vbit, door#, token#, key#
+16 13 10 9 -1  -:| bitfield |:-
+west door # door east ~	names
+you can't see it
+
+~
+
+140	Start of Door Data
+1028 140 0 0 10	vbit, door#, token#, key#
+16 13 10 9 -1  -:| bitfield |:-
+west a door # a door east ~	names
+You don't see that here.
+
+~
+
+141	Start of Door Data
+1028 141 0 0 10	vbit, door#, token#, key#
+16 13 10 9 2 -1  -:| bitfield |:-
+west a door # a door east ~	names
+You don't see that here.
+
+~
+
+142	Start of Door Data
+1028 142 0 0 10	vbit, door#, token#, key#
+16 13 10 9 -1  -:| bitfield |:-
+west a door # a door east ~	names
+You don't see that here.
+
+~
+
+
+-1 END OF DOOR FILE

@@ -1,5 +1,5 @@
-// $Id: skills.h,v 1.4 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: skills.h,v 1.5 2001/03/29 03:02:34 eroper Exp $
+// $Revision: 1.5 $  $Author: eroper $ $Date: 2001/03/29 03:02:34 $
 
 //
 //ScryMUD Server Code
@@ -53,7 +53,7 @@ int kick(int i_th, const String* vict, critter& pc);
 int do_kick(critter& vict, critter& pc);
 
 int steal(int i_th, const String* obj, int j_th, const String* vict,
-	   critter& pc);
+           critter& pc);
 int do_steal(object* obj, critter& vict, critter& pc, short is_gold = FALSE);
 
 int trip(int i_th, const String* vict, critter& pc);
@@ -76,8 +76,8 @@ int scan(critter& pc);
 
 short skill_did_hit(critter& agg, int skill_num, critter& vict);
 short did_spell_hit(const critter& agg, const int spell_type,
-		    const critter& vict, 
-		    int lvl = -1, short is_canned = FALSE);
+                    const critter& vict, 
+                    int lvl = -1, short is_canned = FALSE);
  
 #endif 
 

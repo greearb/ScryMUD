@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.19 1999/09/06 02:24:28 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
+// $Id: login.cc,v 1.20 2001/03/29 03:02:32 eroper Exp $
+// $Revision: 1.20 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
 
 //
 //ScryMUD Server Code
@@ -38,6 +38,7 @@
 #include <unistd.h>
 #include "const.h"
 #include "Filters.h"
+#include "clients.h"
 
 
 extern List<critter*> new_pc_list;
@@ -61,13 +62,19 @@ void critter::startLogin() {
    pc->link_condition = CON_LOGGING_IN;
    pc->index = 0; //set to show the first prompt
    pc->input = NULL_STRING;  //null out input
-   show(Opening_Screen);
+   show(get_page("./opening")); //opening page
    show(login_prompts[0]); 
    mudlog.log(TRC, "Done w/start_login.\n");
 }//start_login
 
 
 void critter::doLogin() {
+#ifdef USEMYSQL
+   MYSQL_RES* result;
+   MYSQL_ROW row;
+   String query;
+#endif
+
    String string;
    short eos, term_by_period;
    int j;
@@ -78,12 +85,12 @@ void critter::doLogin() {
    mudlog.log(TRC, "In do_login.\n");
 
    if (!pc) {
-      mudlog.log(ERR, "ERROR:  PC is NULL in do_login.\n");
+      mudlog.log(ERROR, "ERROR:  PC is NULL in do_login.\n");
       return;
    }//if
 
    if ((pc->index > 7) || (pc->index < 0)) {
-      mudlog.log(ERR, "ERROR:  bad index sent to do_login.\n");
+      mudlog.log(ERROR, "ERROR:  bad index sent to do_login.\n");
       setMode(MODE_LOGOFF_NEWBIE_PLEASE);
    }//if
    else {
@@ -94,6 +101,7 @@ void critter::doLogin() {
 
             if (string == "__HEGEMON__") {
                using_client(*this);
+               setClient(HEGEMON);
                show("Detected Hegemon Client\n");
                break;
             }
@@ -122,25 +130,61 @@ void critter::doLogin() {
             }//if
             else {
                //log("In else of case 0\n");
-               addName(string);
-               name = string;
-               name.Tolower();
-               name.Prepend("./Pfiles/");
-               
-               ifstream rfile(name);
-               
-               if (rfile) { //if player is not new
-                  pc->index = 5;
-               }//if
-               else {
-                  if (is_newbie_banned(*(getHostName()))) {
-                     show("Your site has been newbie-banned.\n");
-                     setMode(MODE_LOGOFF_NEWBIE_PLEASE);
-                  }
-                  else {
-                     pc->index = 7; //go choose language
-                  }
-               }//else
+               switch (config.useMySQL) {
+#ifdef USEMYSQL
+                  case true:
+                     query = "select * from Critters where MOB_NUM=0 and SHORT_DESC=";
+                     query+=string;
+                     if (mysql_real_query(database, query, strlen(query))!=0) {
+                        if (mudlog.ofLevel(WRN)) {
+                           mudlog << "In critter::doLogin():\n";
+                           mudlog << "Error executing query: "
+                                  << mysql_error(database) << endl;
+                        }
+                        return;
+                     }
+                     if ((result=mysql_store_result(database))==NULL) {
+                        if (mudlog.ofLevel(WRN)) {
+                           mudlog << "In critter::doLogin():\n";
+                           mudlog << "Error retrieving query results: "
+                                  << mysql_error(database) << endl;
+                        }
+                        return;
+                     }
+                     row=mysql_fetch_row(result);
+                     if (row) pc->index = 5;
+                     else {
+                        if (is_newbie_banned(*(getHostName()))) {
+                           show("Your site has been newbie-banned.\n");
+                           setMode(MODE_LOGOFF_NEWBIE_PLEASE);
+                        }
+                        else pc->index = 7;
+                     }
+                  break;
+#endif
+                  case false:
+                     string2 = new String(string);
+                     Put(string2, (names));
+                     name = string;
+                     name.Tolower();
+                     name.Prepend("./Pfiles/");
+                     
+                     ifstream rfile(name);
+                     
+                     if (rfile) { //if player is not new
+                        pc->index = 5;
+                     }//if
+                     else {
+                        if (is_newbie_banned(*(getHostName()))) {
+                           show("Your site has been newbie-banned.\n");
+                           setMode(MODE_LOGOFF_NEWBIE_PLEASE);
+                        }
+                        else {
+                           pc->index = 7; //go choose language
+                        }
+                     }//else
+                  break;
+               }
             }//else            
             //         log("All done w/case 0.\n");
             break;
@@ -149,6 +193,8 @@ void critter::doLogin() {
 
             if (string == "__HEGEMON__") {
                using_client(*this);
+               setClient(HEGEMON);
+
                show("Detected Hegemon Client\n");
                break;
             }
@@ -261,7 +307,7 @@ void critter::doLogin() {
                   help(1, &string, &NULL_STRING, *this);
                }
                else {
-                  show("Please enter the a correct number.\n");
+                  show("Please enter a correct number.\n");
                }
             }
             break;
@@ -326,6 +372,8 @@ void critter::doLogin() {
                
                if (string == "__HEGEMON__") {
                   using_client(*this);
+                  setClient(HEGEMON);
+
                   show("Detected Hegemon Client\n");
                   break;
                }
@@ -333,33 +381,43 @@ void critter::doLogin() {
                if (!isUsingClient())
                   show(ANSI_ECHO_ON); //echo ON
 
-               string2 = getFirstName();
-               
-               name = *(string2);
-               name.Tolower();
-               name.Prepend("./Pfiles/");
-               
-               ifstream rfile(name);
-               if (!rfile) {
-                  if (mudlog.ofLevel(ERR)) {
-                     mudlog << "ERROR:  rfile not opened, case 5 of login.\n"
-                            << "Here is the bad filename -:" << name << ":-"
-                            << endl;
-                  }
-                  do_shutdown =  TRUE;
-                  exit(2);
-               }//if
-               
                int tmp_int = pc->descriptor;
                int tmp_index = pc->index;
                tmp_host = pc->host;
                int using_hegemon = isUsingClient();
 
-               read(rfile, TRUE);
+               switch (config.useMySQL) {
+#ifdef USEMYSQL
+                  case true:
+                     dbRead(0, atoi(row[CRITTBL_PC_NUMBER]), true);
+                  break;
+#endif
+                  case false:
+                     string2 = names.peekFront();
+                     name = *(string2);
+                     name.Tolower();
+                     name.Prepend("./Pfiles/");
+                     
+                     ifstream rfile(name);
+                     if (!rfile) {
+                        if (mudlog.ofLevel(ERROR)) {
+                           mudlog << "ERROR: rfile not opened, case 5 of login."
+                                  << "\nHere is the bad filename -:"
+                                  << name << ":-" << endl;
+                        }
+                        do_shutdown =  TRUE;
+                        exit(2);
+                     }//if
+                     
+                     fileRead(rfile, TRUE);
+                  break;
+               }
+
                setNoClient(); //turn off by default
 
                if (using_hegemon) {
                   using_client(*this);
+                  setClient(HEGEMON);
                }
                
                pc->descriptor = tmp_int;
@@ -385,11 +443,11 @@ void critter::doLogin() {
                   
                   critter* old_ptr;
                   old_ptr = have_crit_named(linkdead_list, 1, 
-                                            getFirstName(), ~0, *(getCurRoom()),
+                                            Top((names)), ~0, *(getCurRoom()),
                                             TRUE);
                   if (!old_ptr) {
                      old_ptr = have_crit_named(pc_list, 2,
-                                               getFirstName(), ~0, *(getCurRoom()),
+                                               Top(names), ~0, *(getCurRoom()),
                                                TRUE);
                      was_link_dead = FALSE;
                   }//if
@@ -412,7 +470,7 @@ void critter::doLogin() {
                      old_ptr->pc->index = 0;
                      old_ptr->pc->mode = MODE_NORMAL;
                      old_ptr->pc->host = pc->host;
-                     
+
                      linkdead_list.loseData(old_ptr);
                      if (was_link_dead) {
                         new_pc_list.gainData(old_ptr); //should be good to go
@@ -424,11 +482,13 @@ void critter::doLogin() {
 
                      if (isUsingClient()) {
                         using_client(*old_ptr);
+                        old_ptr->setClient(whichClient());
                      }
                      
-                     if (!old_ptr->isUsingClient()) {
-                        old_ptr->show("<ENGAGE_HEGEMON>\n");
-                     }
+                     // I don't think this is needed. --Ben
+                     //if (!old_ptr->isUsingClient()) {
+                     //   old_ptr->show(CTAG_ENGAGE_CLIENT(HEGEMON)); // can we use crit.whichClient() here?
+                     //}
                      look(1, &NULL_STRING, *old_ptr); //autolook
                      
                      if (was_link_dead) {
@@ -461,11 +521,45 @@ void critter::doLogin() {
                   else {
                      /* regular logging in */
                      quit_do_login_old(*this); //join the game
+
+                     // alert imms of possible multiplaying
+                     Cell<critter*> cll(pc_list);
+                     critter* ptr;
+                     int show=false;
+                     String mplayers(100);
+
+                     mplayers.Append("INFO:  ");
+                     mplayers.Append(*getName(~0));
+                     mplayers.Append("[");
+                     mplayers.Append(pc->host);
+                     mplayers.Append("] is connected from the same IP as ");
+                     while ((ptr = cll.next())) {
+                        if (ptr!=this && ptr->getLinkCond()==1 &&
+                            strcasecmp(ptr->pc->host, pc->host)==0) {
+                           show=true;
+                           mplayers.Append(*ptr->getName(~0));
+                           mplayers.Append("[");
+                           mplayers.Append(ptr->pc->host);
+                           mplayers.Append("], ");
+                        }
+                     }
+                     if (show) {
+                        mplayers.dropFromEnd(2);
+                        mplayers.Append(".");
+                        pc_list.head(cll);
+                        while((ptr = cll.next())) {
+                           if (ptr->isImmort()) {
+                              if (ptr->pc->imm_data->imm_level > 8) {
+                                 ptr->show(mplayers);
+                              }
+                           }
+                        }
+                     }
                   }//else
                }//if
                else {
                   show("Password Incorrect...  Cya!\n");
-                  if (mudlog.ofLevel(SEC)) {
+                  if (mudlog.ofLevel(LSEC)) {
                      mudlog << "WARNING:  old player:  Logging off character:  " 
                             << (*getName()) << " from host:  " << pc->host
                             << " for incorrect password:  -: " << string
@@ -499,7 +593,7 @@ void critter::doLogin() {
             break;
    
          default:
-            mudlog.log(ERR, "ERROR:  default called in do_login.\n");
+            mudlog.log(ERROR, "ERROR:  default called in do_login.\n");
             show("ERROR found, tell imp:  'default called in do_login'.\n");
             setMode(MODE_LOGOFF_NEWBIE_PLEASE);
             break;
@@ -511,10 +605,11 @@ void critter::doLogin() {
 
 int  quit_do_login_new(critter& pc) {
    int i;
+   int points, points_left=30;
    //log("in quit_do_login_new\n");
 
-   pc.setShortDesc(CS_THE_NEWBIE);
-   pc.setLongDesc(CS_NEWBIE_LONG_DESC);
+   pc.short_desc = " the newbie";
+   pc.long_desc = "You see someone who is quite normal.";
 
    pc.pc->link_condition = CON_PLAYING;
    pc.pc->index = 0;
@@ -527,7 +622,12 @@ int  quit_do_login_new(critter& pc) {
    pc.setPosn(POS_STAND);
    // con, cha, int, wis.......
    for (i = 1; i<7; i++) {
-      pc.short_cur_stats[i] = (d(1,8) + 10);
+      // You can still get high stats, but your stats will never be lower than
+      // 10, and they will never add up to more than 90 -- Justin
+      points = d(1,8);
+      if (points > points_left) { points = points_left; points_left=0; }
+      else points_left -= points;
+      pc.short_cur_stats[i] = points+10;
    }//for
    pc.HIT = 1; //7
    pc.DAM = 1;  // 8
@@ -540,9 +640,9 @@ int  quit_do_login_new(critter& pc) {
    pc.MOV = (100 + pc.DEX/2);    // mov
    pc.ALIGN = 0; //align
    pc.LEVEL = 1; //level
-   pc.setContainer(&(room_list[NEWBIE_ROOM])); //starting room
+   pc.setCurRoomNum(config.newbieRoom); //starting room
    pc.PRACS = (pc.WIS / 3); //wis dependent, practices
-   pc.setHpMax(pc.HP); //hp_max
+   pc.setHP_MAX(pc.HP); //hp_max
    pc.MA_MAX = pc.MANA; // mana_max
    pc.MV_MAX = pc.MOV; // mov_max
    pc.CRITTER_TYPE = 0; // 0 is pc, 1 is smob, 2 is mob
@@ -577,96 +677,96 @@ int  quit_do_login_new(critter& pc) {
    pc.GOLD = 5 * (pc.CHA * 250); //starting gold is charisma dependent :)
    pc.EXP = 1; 
    pc.BANK_GOLD = 0;
-   pc.BIRTH_DAY = Day;
-   pc.BIRTH_YEAR = Year;
-   pc.RENT_DAY = Day;
-   pc.RENT_YEAR = Year;
+   pc.BIRTH_DAY = config.day;
+   pc.BIRTH_YEAR = config.year;
+   pc.RENT_DAY = config.day;
+   pc.RENT_YEAR = config.year;
 
    switch (pc.RACE) {
       case HUMAN:
          break;
       case ANITRE:
-	 pc.COLD_RESIS -= 50;
-	 break;
+         pc.COLD_RESIS -= 50;
+         break;
       case DARKLING:
-	 pc.SEE_BIT |= 1;  //see dark
-	 pc.STR--;
-	 pc.DEX += 2;
-	 pc.CON--;
-	 pc.CHA--;  //retribution for see dark
+         pc.SEE_BIT |= 1;  //see dark
+         pc.STR--;
+         pc.DEX += 2;
+         pc.CON--;
+         pc.CHA--;  //retribution for see dark
          break;
       case DWARF:
-	 pc.STR++;
-	 pc.DEX--;
-	 pc.CON++;
-	 pc.CHA--;
-	 break;
+         pc.STR++;
+         pc.DEX--;
+         pc.CON++;
+         pc.CHA--;
+         break;
       case ELF:
-	 pc.STR -= 2;
-	 pc.INT++;
-	 pc.WIS++;
-	 pc.CON--;
-	 pc.DEX++;
-	 break;
+         pc.STR -= 2;
+         pc.INT++;
+         pc.WIS++;
+         pc.CON--;
+         pc.DEX++;
+         break;
       case OGRUE:
-	 pc.STR += 2;
-	 pc.DEX -= 2;
-	 pc.CON += 2;
-	 pc.INT--;
-	 pc.WIS--;
-	 break;
+         pc.STR += 2;
+         pc.DEX -= 2;
+         pc.CON += 2;
+         pc.INT--;
+         pc.WIS--;
+         break;
       case SOMBRIAN:
-	 break;
+         break;
       default:
-	 mudlog.log(ERR, "ERROR:  default called in race switch, login.cc\n");
-	 break;
-   }//switch	   	 
+         mudlog.log(ERROR, "ERROR:  default called in race switch, login.cc\n");
+         break;
+   }//switch                    
 
 
    //GAIN FIRST LEVEL SKILLS HERE, IS FOUNDATION FOR ALL ELSE//
    switch (pc.CLASS) {
       case WARRIOR:
-	 pc.SKILLS_KNOWN.Insert(WEAPON_MASTERY_SKILL_NUM, 10);
-	 pc.SKILLS_KNOWN.Insert(PHYSICAL_ARTS_SKILL_NUM, 25);
-	 pc.STR++;
-	 break;
+         pc.SKILLS_KNOWN.Insert(WEAPON_MASTERY_SKILL_NUM, 10);
+         pc.SKILLS_KNOWN.Insert(PHYSICAL_ARTS_SKILL_NUM, 25);
+         pc.STR++;
+         break;
       case SAGE:
-	 pc.SKILLS_KNOWN.Insert(HERBALISM_SKILL_NUM, 25);
-	 pc.SKILLS_KNOWN.Insert(PHILOSOPHY_SKILL_NUM, 25);
-	 pc.SKILLS_KNOWN.Insert(BLACKSMITHING_SKILL_NUM, 25);
-	 pc.WIS++;
-	 break;
+         pc.SKILLS_KNOWN.Insert(HERBALISM_SKILL_NUM, 25);
+         pc.SKILLS_KNOWN.Insert(PHILOSOPHY_SKILL_NUM, 25);
+         pc.SKILLS_KNOWN.Insert(BLACKSMITHING_SKILL_NUM, 25);
+         pc.WIS++;
+         break;
       case WIZARD:
-	 pc.SKILLS_KNOWN.Insert(LITERACY_SKILL_NUM, 10);
-	 pc.SKILLS_KNOWN.Insert(CHANNELLING_SKILL_NUM, 10);
-	 pc.INT++;
-	 break;
+         pc.SKILLS_KNOWN.Insert(LITERACY_SKILL_NUM, 10);
+         pc.SKILLS_KNOWN.Insert(CHANNELLING_SKILL_NUM, 10);
+         pc.INT++;
+         break;
       case RANGER:
-	 pc.SKILLS_KNOWN.Insert(FORESTRY_SKILL_NUM, 25);
-	 pc.SKILLS_KNOWN.Insert(PHYSICAL_ARTS_SKILL_NUM, 10);
-	 pc.CON++;
-	 break;
+         pc.SKILLS_KNOWN.Insert(FORESTRY_SKILL_NUM, 25);
+         pc.SKILLS_KNOWN.Insert(PHYSICAL_ARTS_SKILL_NUM, 10);
+         pc.CON++;
+         break;
       case THIEF:
-	 pc.SKILLS_KNOWN.Insert(ACROBATICS_SKILL_NUM, 25);
-	 pc.SKILLS_KNOWN.Insert(PHYSICAL_ARTS_SKILL_NUM, 10);
-	 pc.DEX++;
-	 break;
+         pc.SKILLS_KNOWN.Insert(ACROBATICS_SKILL_NUM, 25);
+         pc.SKILLS_KNOWN.Insert(PHYSICAL_ARTS_SKILL_NUM, 10);
+         pc.DEX++;
+         break;
       case BARD:
-	 pc.SKILLS_KNOWN.Insert(HONOR_CODE_SKILL_NUM, 25);
-	 pc.SKILLS_KNOWN.Insert(PHYSICAL_ARTS_SKILL_NUM, 10);
-	 pc.CHA++;
-	 break;
+         pc.SKILLS_KNOWN.Insert(HONOR_CODE_SKILL_NUM, 25);
+         pc.SKILLS_KNOWN.Insert(PHYSICAL_ARTS_SKILL_NUM, 10);
+         pc.CHA++;
+         break;
       case CLERIC:
-	 pc.SKILLS_KNOWN.Insert(PHILOSOPHY_SKILL_NUM, 25);
-	 pc.SKILLS_KNOWN.Insert(PHYSIK_SKILL_NUM, 25);
-	 pc.WIS++;
-	 break;
+         pc.SKILLS_KNOWN.Insert(PHILOSOPHY_SKILL_NUM, 25);
+         pc.SKILLS_KNOWN.Insert(PHYSIK_SKILL_NUM, 25);
+         pc.WIS++;
+         break;
       default:
-	 mudlog.log(ERR, 
+         mudlog.log(ERROR, 
                     "ERROR:  In default of class modifiers in login.cc.\n");
          break;
    }//switch for class
-	
+        
    pc.CRIT_FLAGS.turn_on(18); //in_use
 
    String buf(100);
@@ -679,6 +779,38 @@ int  quit_do_login_new(critter& pc) {
               Selectors::instance().CC_not_using_client, pc_list,
               CS_NEW_PLAYER_INFO_C, pc.getName(), pc.getHostName());
 
+   // alert imms of possible multiplaying
+   Cell<critter*> cll(pc_list);
+   critter* ptr;
+   int do_show=false;
+   String mplayers(100);
+
+   mplayers.Append("INFO:  ");
+   mplayers.Append(*pc.getName(~0));
+   mplayers.Append("[");
+   mplayers.Append(pc.pc->host);
+   mplayers.Append("] is connected from the same IP as ");
+   while ((ptr = cll.next())) {
+      if (ptr!=&pc && ptr->getLinkCond()==1 &&
+          strcasecmp(ptr->pc->host, pc.pc->host)==0) {
+         do_show=true;
+         mplayers.Append(*ptr->getName(~0));
+         mplayers.Append(", ");
+      }
+   }
+   if (do_show) {
+      mplayers.dropFromEnd(2);
+      mplayers.Append(".");
+      pc_list.head(cll);
+      while((ptr = cll.next())) {
+         if (ptr->isImmort()) {
+            if (ptr->pc->imm_data->imm_level > 8) {
+               ptr->show(mplayers);
+            }
+         }
+      }
+   }
+
    pc.pc->last_login_time = time(NULL);
    
    if (mudlog.ofLevel(DBG)) {
@@ -690,7 +822,7 @@ int  quit_do_login_new(critter& pc) {
    // Give them some EQ to start with...
    
    // object 358 is the newbie bag
-   object* obj_ptr = &(obj_list[NEWBIE_BAG_NUM]);
+   object* obj_ptr = &(obj_list[config.newbieBagObject]);
    if (obj_ptr->isInUse()) {
       if (!obj_ptr->isBulletinBoard()) {
          recursive_init_loads(*obj_ptr, 0);
@@ -698,7 +830,7 @@ int  quit_do_login_new(critter& pc) {
       else {
          obj_ptr->incrementCurInGame();
       }
-      pc.gainInv(&(obj_list[NEWBIE_BAG_NUM]));
+      pc.gainInv(&(obj_list[config.newbieBagObject]));
    }//if
    else {
       mudlog << "ERROR:  newbie bag is not IN USE, ie not built.\n";
@@ -709,7 +841,7 @@ int  quit_do_login_new(critter& pc) {
    emote("has entered the game.", pc, ROOM, TRUE);
    room_list[pc.getCurRoomNum()].gainCritter(&pc);
    if (!pc.isUsingClient()) {
-      pc.show("<ENGAGE_HEGEMON>\n");
+      pc.show(CTAG_ENGAGE_CLIENT(HEGEMON));
    }
    else {
       pc.show("You're prompt is on by default, but as Hegemon displays
@@ -719,7 +851,7 @@ command:  prompt %N\n");
    show("Welcome to the Game.\n\n", pc);
    look(1, &NULL_STRING, pc); //autolook
    show("\r\nIf your screen is 'stair-stepped', type:  toggle carriage\n",
-	pc);
+        pc);
 
    pc.save(); //make sure they have a Pfile
 
@@ -741,13 +873,13 @@ int  quit_do_login_old(critter& pc) {
 
    
    if (pc.LEVEL < 5) {
-      pc.setContainer(room_list.elementAt(LOGIN_ROOM));
+      pc.setCurRoomNum(config.loginRoom);
    }
    else if (!ROOM.isInUse()) {
-      pc.setContainer(room_list.elementAt(LOGIN_ROOM));
+      pc.setCurRoomNum(config.loginRoom);
    }
    else if (BOOT_TIME > pc.pc->last_login_time) { 
-      pc.setContainer(room_list.elementAt(LOGIN_ROOM));
+      pc.setCurRoomNum(config.loginRoom);
    }//if not logged in since last crash
 
    if (mudlog.ofLevel(DBG)) {
@@ -776,7 +908,7 @@ int  quit_do_login_old(critter& pc) {
    ROOM.gainCritter(&pc);
    
    if (!pc.isUsingClient()) {
-      pc.show("<ENGAGE_HEGEMON>\n");
+      pc.show(CTAG_ENGAGE_CLIENT(HEGEMON));
    }
 
    if (pc.isUsingColor()) {

@@ -1,5 +1,5 @@
-// $Id: script.cc,v 1.22 1999/09/06 07:12:52 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
+// $Id: script.cc,v 1.23 2001/03/29 03:02:34 eroper Exp $
+// $Revision: 1.23 $  $Author: eroper $ $Date: 2001/03/29 03:02:34 $
 
 //
 //ScryMUD Server Code
@@ -74,16 +74,21 @@ int affect_crit_stat(StatTypeE ste, String& up_down, int i_th,
       return -1;
    }//if
 
+   if (crit_ptr->isMob()) {
+      crit_ptr = mob_to_smob(*crit_ptr,  rm->getIdNum(), TRUE, i_th,
+                             victim, ~0);
+   }//if
+
    switch (ste) 
       {
       case STAT_HP: {
          if (strcasecmp(up_down, "up") == 0) {
-            crit_ptr->setHP(crit_ptr->getHp() + d(dice_cnt, dice_sides));
+            crit_ptr->setHP(crit_ptr->getHP() + d(dice_cnt, dice_sides));
          }
          else {
-            crit_ptr->setHP(max(crit_ptr->getHp() - d(dice_cnt, dice_sides), 1));
+            crit_ptr->setHP(max(crit_ptr->getHP() - d(dice_cnt, dice_sides), 1));
          }
-         return crit_ptr->getHp();
+         return crit_ptr->getHP();
       }
       case STAT_MANA: {
          if (strcasecmp(up_down, "up") == 0) {
@@ -106,15 +111,19 @@ int affect_crit_stat(StatTypeE ste, String& up_down, int i_th,
       default:
         return -1;
       }//switch
-   return 0;
 }//affect_crit_stat
 
+
 /** Exact some damage. */
-int exact_damage(int dice_cnt, int dice_sides, String& msg, critter& pc) {
+int exact_damage(int dice_cnt, int dice_sides, String& msg, critter& pc, int was_ordered = FALSE) {
    
    if (pc.isMob()) {
       mudlog << "ERROR:  MOB sent to exact_damage, should be pc or SMOB.\n";
       return -1;
+   }
+
+   if (was_ordered) {
+      return FALSE;
    }
 
    dice_cnt = bound(0, 20, dice_cnt);
@@ -125,11 +134,12 @@ int exact_damage(int dice_cnt, int dice_sides, String& msg, critter& pc) {
    exact_raw_damage(d(dice_cnt, dice_sides), NORMAL, pc);
 
    if (pc.HP < 0) { //was a fatality
-      agg_kills_vict(pc, pc);
+      agg_kills_vict(&pc, pc);
    }
 
    return 0;
 }//exact_damage
+
 
 /** Used to provide branching in scripts..  The lengths of the
  * cooked* arrays passed in are directly related to the cooked*
@@ -190,7 +200,7 @@ int do_mob_comparison(int i_th, const String& rhs_critter,
    int pc_val;
 
    if (!crit_ptr) {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  Couldn't find crit_ptr, i_th: " << i_th
                 << " rhs -:" << rhs_critter << ":-\n";
       }
@@ -231,6 +241,12 @@ int is_in_posn(String& str, critter& pc) {
    }//else
 }//is_in_posn
 
+/* used for random branching in scripts */
+int chance(int cnt, int sides, int val) {
+
+   return (val >= d(cnt,sides));
+
+}//chance
 
 /** Used to provide branching in scripts..  The lengths of the
  * cooked* arrays passed in are directly related to the cooked*
@@ -255,8 +271,8 @@ int script_jump(int on_test, String* cooked_strs, int* cooked_ints,
    // functionality later??
    int test = !on_test;
 
-   if ((c_code_owner && c_code_owner->isRunningScript()) ||
-       (r_code_owner && r_code_owner->isRunningScript())) {
+   if ((c_code_owner && c_code_owner->isInProcNow()) ||
+       (r_code_owner && r_code_owner->isInProcNow())) {
 
       if (mudlog.ofLevel(SCRIPT)) {
          mudlog << "had an owner, and was inProcNow()" << endl;
@@ -412,12 +428,15 @@ int script_jump(int on_test, String* cooked_strs, int* cooked_ints,
       obj6 = 0;
    }
 
-   if ((obj1 <= 1) || (pc.haveMinObj(count1, obj1))) {
-      if ((obj2 <= 1) || (pc.haveMinObj(count2, obj2))) {
-         if ((obj3 <= 1) || (pc.haveMinObj(count3, obj3))) {
-            if ((obj4 <= 1) || (pc.haveMinObj(count4, obj4))) {
-               if ((obj5 <= 1) || (pc.haveMinObj(count5, obj5))) {
-                  if ((obj6 <= 1) || (pc.haveMinObj(count6, obj6))) {
+   if ((obj1 <= 1) || (pc.haveObjNumbered(count1, obj1))) {
+      if ((obj2 <= 1) || (pc.haveObjNumbered(count2, obj2))) {
+         if ((obj3 <= 1) || (pc.haveObjNumbered(count3, obj3))) {
+            if ((obj4 <= 1) || 
+                (pc.haveObjNumbered(count4, obj4))) {
+               if ((obj5 <= 1) ||
+                   (pc.haveObjNumbered(count5, obj5))) {
+                  if ((obj6 <= 1) ||
+                      (pc.haveObjNumbered(count6, obj6))) {
                      if (mudlog.ofLevel(SCRIPT)) {
                         mudlog << "Returning TRUE" << endl;
                      }
@@ -607,7 +626,8 @@ int GenScript::validTrigger(const char* trig) {
 }//validTrigger
 
 
-String GenScript::toStringBrief(int client_format, int idx) {
+String GenScript::toStringBrief(int client_format, int mob_num,
+                                entity_type entity, int idx) {
    String buf(100);
    if (client_format) {
       String tmp_d;
@@ -618,8 +638,18 @@ String GenScript::toStringBrief(int client_format, int idx) {
 
       String tmp(100);
 
-      Sprintf(buf, "<SCRIPT %S %i %i %i %i>", &trigger_cmd,
-              actor, target, precedence, idx);
+      if (entity == ENTITY_CRITTER) {
+         Sprintf(buf, "<MOB_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
+                 mob_num, actor, target, precedence, idx);
+      }
+      else if (entity == ENTITY_ROOM) {
+         Sprintf(buf, "<ROOM_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
+                 mob_num, actor, target, precedence, idx);
+      }
+      else if (entity == ENTITY_OBJECT) {
+         Sprintf(buf, "<OBJ_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
+                 mob_num, actor, target, precedence, idx);
+      }
 
       Sprintf(tmp, "<DISCRIM %S>", &tmp_d);
       buf.Append(tmp);
@@ -710,7 +740,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
              <<  *(name_of_crit(act, ~0))
              << "  targ:  " << targ << " obj_actor_num: "
              << obj_actor_num << endl;
-      mudlog << "this:  " << toStringBrief(0, 0) << endl;
+      mudlog << "this:  " << toStringBrief(0, 0, ENTITY_ROOM, 0) << endl;
    }
 
    if (strcasecmp(cmd, trigger_cmd) == 0) {
@@ -720,12 +750,13 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
       if (trig_discriminator.Strlen() > 0) {
          arg1.Tolower();
 
-         // Do special checks (but not for say, yell, or tell)
+         // Do special checks (but not for say, discuss, yell, or tell)
          if (strcasecmp(cmd, "say") && strcasecmp(cmd, "yell")
-             && (strcasecmp(cmd, "tell"))) { //if we're not communications..
+             && strcasecmp(cmd, "tell") && strcasecmp(cmd, "discuss")) {
+            //if we're not communications..
             if (strcasecmp(cmd, "give") == 0) { //if we are give cmd
                int obj_num = atoi(arg1);
-               if ((obj_num > 1) && (obj_num < NUMBER_OF_ITEMS)) {
+               if ((obj_num > 0) && (obj_num < NUMBER_OF_ITEMS)) {
                   if (!strstr(trig_discriminator, arg1)) {
                      if (mudlog.ofLevel(DBG)) {
                         mudlog << "Returning false, give, target not right."
@@ -947,7 +978,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
                   return FALSE;
                }//if
             }//if
-         }//if we're not say, yell, or tell
+         }//if we're not say, discuss, yell, or tell
          else {
             // Don't just let them guess letters...
             if (trig_discriminator.Strlen() >= 5) {
@@ -1071,8 +1102,10 @@ void GenScript::clear() {
    next_lbl_num = 0;
 }//clear
 
-int GenScript::parseMobScriptCommand(ScriptCmd& cmd, critter& owner) {
+int MobScript::_cnt = 0;
+int MobScript::parseScriptCommand(ScriptCmd& cmd, critter& owner, int& obj_was_deleted) {
    // Look at first command and see if it has non-standard actors.
+   obj_was_deleted = FALSE;
    critter* script_actor = NULL;
    object* obj_script_actor = NULL;
 
@@ -1109,7 +1142,8 @@ int GenScript::parseMobScriptCommand(ScriptCmd& cmd, critter& owner) {
    if (obj_script_actor) {
       mudlog.log("Had an obj_script_actor.\n");
       targ = cmd.getCommand(); //reuse targ, it should contain the command now.
-      return obj_script_actor->processInput(targ, room_list[obj_script_actor->getCurRoomNum()]);
+      return obj_script_actor->processInput(targ, room_list[obj_script_actor->getCurRoomNum()],
+                                            obj_was_deleted);
    }
    else if (!script_actor) {
       script_actor = &owner;
@@ -1118,6 +1152,7 @@ int GenScript::parseMobScriptCommand(ScriptCmd& cmd, critter& owner) {
    targ = cmd.getCommand(); //reuse targ, it should contain the command now.
    return script_actor->processInput(targ, FALSE, TRUE, &owner, NULL);
 }//parseScriptCommand
+
 
 
 /** compile() must be called after all appends have been
@@ -1148,7 +1183,8 @@ void GenScript::appendCmd(String& str) {
  * Also
  */
 void GenScript::generateScript(String& cmd, String& arg1, critter& act,
-                               int targ, room& rm, Entity* script_owner) {
+                               int targ, room& rm, critter* script_owner,
+                               object* object_owner = NULL) {
 
    //mudlog << "GenScript::generateScript, compiled_cmds.cur_len: "
    //       << compiled_cmds.getCurLen() << endl;
@@ -1162,13 +1198,12 @@ void GenScript::generateScript(String& cmd, String& arg1, critter& act,
    if (targ > 0) {
       // first, generate a critter if possible 
       if (check_l_range(targ, 0, NUMBER_OF_MOBS, act, FALSE)) {
-         if (mob_list[targ].isInUse()) {
+         if (mob_list[targ].CRIT_FLAGS.get(18))
             targ_crit = &(mob_list[targ]);
-         }
       }
 
       if (check_l_range(targ, 0, NUMBER_OF_ITEMS, act, FALSE)) {
-         if (obj_list[targ].isInUse())
+         if (obj_list[targ].OBJ_FLAGS.get(10))
             targ_obj = &(obj_list[targ]);
       }
    }
@@ -1198,6 +1233,7 @@ void GenScript::generateScript(String& cmd, String& arg1, critter& act,
       // actor with the first command of:  **%M
 
       targ_str = tmp_cmd.getTarget();
+      
 
       if (strncmp("**%M", targ_str, 4) == 0) { //actor
          sprintf(tmp_buf, "**M@%8X_%i ", (unsigned int)(&act), rm.getIdNum());
@@ -1209,19 +1245,14 @@ void GenScript::generateScript(String& cmd, String& arg1, critter& act,
          targ_str = tmp_buf;
       }//if
       else if (strncmp("**%S", targ_str, 4) == 0) { //script owner, default
-         if (script_owner->getEntityType() == LE_OBJECT) {
+         if (object_owner) {
             // For Object Scripts
-            sprintf(tmp_buf, "**O@%8X_%i ", (unsigned int)(script_owner),
-                    rm.getIdNum());
-         }
-         else if (script_owner->getEntityType() == LE_CRITTER) {
-            sprintf(tmp_buf, "**M@%8X_%i ", (unsigned int)(script_owner),
+            sprintf(tmp_buf, "**O@%8X_%i ", (unsigned int)(object_owner),
                     rm.getIdNum());
          }
          else {
-            mudlog << "ERROR: unsupported entity: " 
-                   << (int)(script_owner->getEntityType()) << " in generateScript."
-                   << endl;
+            sprintf(tmp_buf, "**M@%8X_%i ", (unsigned int)(script_owner),
+                    rm.getIdNum());
          }
          targ_str = tmp_buf;
       }//if
@@ -1274,6 +1305,9 @@ void GenScript::generateScript(String& cmd, String& arg1, critter& act,
                if (script_owner) {
                   buf.Append(*(script_owner->getName(~0)));
                }//if
+               else if (object_owner) {
+                  buf.Append(*(object_owner->getName(~0)));
+               }
                break;
             default:
                buf.Append("__PARSE ERROR__");
@@ -1360,7 +1394,7 @@ void GenScript::optimizeLabels(const PtrArray<ScriptCmd>& incomming,
 
    //mudlog << "In optimize Labels" << endl;
 
-   List<KVPair<String, int>*> labels(NULL);
+   PtrList<KVPair<String, int> > labels;
 
    rslts.clearAndDestroy();
 
@@ -1433,6 +1467,8 @@ void GenScript::optimizeLabels(const PtrArray<ScriptCmd>& incomming,
          rslts.appendShallowCopy(new ScriptCmd(*(incomming.constElementAt(i))));
       }//for
    }//for
+
+   labels.clearAndDestroy();
 }//optimizeLabels
 
 
@@ -1534,13 +1570,13 @@ void GenScript::parseBlockFP(int& start_idx,
 }//parseBlockFP
 
 
-void GenScript::read(istream& da_file) {
+void GenScript::read(ifstream& da_file) {
    char buf[100];
    clear();
    mudlog.log(DB, "in GenScript::Read()");
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  da_file FALSE in GenScript read." << endl;
       }
       return;
@@ -1580,7 +1616,7 @@ void GenScript::read(istream& da_file) {
    // It will be one large chuck of text, which will be parsed
    // and put into the queue.
    String sbuf(1024);
-   sbuf.termedRead(da_file);
+   sbuf.Termed_Read(da_file);
 
    if (mudlog.ofLevel(DB)) {
       mudlog << "Script read:  Termed Read:  -:" << sbuf << ":-\n" << endl;
@@ -1597,10 +1633,10 @@ void GenScript::read(istream& da_file) {
 
    compile(); //Compile into script assembly code
    
-}//read
+}//Read
 
 
-void GenScript::write(ostream& da_file) const {
+void GenScript::write(ofstream& da_file) const {
    da_file << trigger_cmd << " " << target 
            << " " << actor << " " << precedence 
            << "\t Trigger Command, targ, actor \n";
@@ -1620,8 +1656,9 @@ void GenScript::write(ostream& da_file) const {
 }//Write
 
 
-int GenScript::parseRoomScriptCommand(ScriptCmd& cmd, room& owner) {
-
+int RoomScript::_cnt = 0;
+int RoomScript::parseScriptCommand(ScriptCmd& cmd, room& owner, int& obj_was_deleted) {
+   obj_was_deleted = FALSE;
    if (mudlog.ofLevel(DBG)) {
       mudlog << "RoomScript::parseScriptCommand, target -:"
              << cmd.getTarget() << ":-  cmd -:"
@@ -1669,7 +1706,8 @@ int GenScript::parseRoomScriptCommand(ScriptCmd& cmd, room& owner) {
    if (obj_script_actor) {
       mudlog.log("Had an obj_script_actor.\n");
       targ = cmd.getCommand(); //reuse targ, it should contain the command now.
-      return obj_script_actor->processInput(targ, room_list[obj_script_actor->getCurRoomNum()]);
+      return obj_script_actor->processInput(targ, room_list[obj_script_actor->getCurRoomNum()],
+                                            obj_was_deleted);
    }
    else if (script_actor) {
       mudlog.log("Had a script_actor.\n");
@@ -1683,8 +1721,9 @@ int GenScript::parseRoomScriptCommand(ScriptCmd& cmd, room& owner) {
    }
 }//parseScriptCommand
 
-int GenScript::parseObjScriptCommand(ScriptCmd& cmd, object& owner) {
-
+int ObjectScript::_cnt = 0;
+int ObjectScript::parseScriptCommand(ScriptCmd& cmd, object& owner, int& obj_was_deleted) {
+   obj_was_deleted = FALSE;
    if (mudlog.ofLevel(DBG)) {
       mudlog << "ObjectScript::parseScriptCommand, target -:"
              << cmd.getTarget() << ":-  cmd -:"
@@ -1733,7 +1772,8 @@ int GenScript::parseObjScriptCommand(ScriptCmd& cmd, object& owner) {
    if (obj_script_actor) {
       mudlog.log("Had an obj_script_actor.\n");
       targ = cmd.getCommand(); //reuse targ, it should contain the command now.
-      return obj_script_actor->processInput(targ, room_list[obj_script_actor->getCurRoomNum()]);
+      return obj_script_actor->processInput(targ, room_list[obj_script_actor->getCurRoomNum()],
+                                            obj_was_deleted);
    }
    else if (script_actor) {
       mudlog.log("Had a script_actor.\n");
@@ -1744,6 +1784,8 @@ int GenScript::parseObjScriptCommand(ScriptCmd& cmd, object& owner) {
    else {
       mudlog.log("Room was the owner.\n");
       targ = cmd.getCommand(); //reuse targ, it should contain the command now.
-      return owner.processInput(targ, room_list[owner.getCurRoomNum()]);
+      return owner.processInput(targ, room_list[owner.getCurRoomNum()],
+                                obj_was_deleted);
    }
 }//parseScriptCommand
+

@@ -1,5 +1,5 @@
-// $Id: load_wld.h,v 1.4 1999/09/07 07:00:27 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
+// $Id: load_wld.h,v 1.5 2001/03/29 03:02:32 eroper Exp $
+// $Revision: 1.5 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
 
 //
 //ScryMUD Server Code
@@ -41,14 +41,24 @@ void init_casting_objs();
 void load_boards();
 void load_wld();
 void load_zone(int i_th, int read_all); //read in i_th zone file
+void db_load_zone(int i_th, int read_all); //read in i_th zone file
+void file_load_zone(int i_th, int read_all); //read in i_th zone file
 void load_objects(int of_zone, int read_all);
+void db_load_objects(int of_zone, int read_all);
+void file_load_objects(int of_zone, int read_all);
 void load_critters(int of_zone, int read_all);
-void load_doors(int of_zone, int read_all);
-void read_setup();
-void write_setup();
+void file_load_critters(int of_zone, int read_all);
+void db_load_critters(int of_zone, int read_all);
+void load_doors(int of_zone);
+void db_load_doors(int of_zone);
+void file_load_doors(int of_zone);
 void load_skill_spells();
 
 void write_all_zones(); //used for DB changeover mostly
+#ifdef USEMYSQL
+void db_write_all_zones(); //used for DB changeover mostly
+#endif
+void file_write_all_zones(); //used for DB changeover mostly
 void write_all_doors(); //NOT CODED now
 void write_all_objects(); //NOT CODED now
 

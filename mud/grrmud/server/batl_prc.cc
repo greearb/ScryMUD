@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.13 1999/09/06 07:12:50 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/09/06 07:12:50 $
+// $Id: batl_prc.cc,v 1.14 2001/03/29 03:02:28 eroper Exp $
+// $Revision: 1.14 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
 
 //
 //ScryMUD Server Code
@@ -62,20 +62,23 @@ void do_entered_room_procs(critter& pc, door* dr, const char* from_dir,
    }
 
    String buf(100);
-   Cell<SpellDuration*> cll;
-   SpellDuration* ptr;
+   Cell<stat_spell_cell*> cll;
+   stat_spell_cell* ptr;
    critter* crit = &pc;
 
    is_dead = FALSE;
    /* check for a firewall spell */
 
    if (dr) {
-      dr->getAffectedBy().head(cll);
+      dr->affected_by.head(cll);
       while ((ptr = cll.next())) {
-         if (ptr->spell == FIREWALL_SKILL_NUM) {
+         if (crit->isMob()) { //assume they will be affected!
+            crit = mob_to_smob(*crit, rm.getRoomNum());
+         }//if
+         if (ptr->stat_spell == FIREWALL_SKILL_NUM) {
             do_firewall_effects(*crit, is_dead);
          }
-         else if (ptr->spell == DISTORTION_WALL_SKILL_NUM) {
+         else if (ptr->stat_spell == DISTORTION_WALL_SKILL_NUM) {
             // Increment sanity here because this may re-curse through
             // this method again. --BEN
             do_distortion_wall_effects(*crit, is_dead, sanity + 1);
@@ -126,7 +129,12 @@ void do_battle_proc(critter& pc) {
   if (pc.isAnimal())
      return;
 
-  if (pc.isStunned())
+  // Replaced isStunned with this, should let you perm-sleep and trip critters to
+  // make them stop kicking, bashing, casting spells...
+  if (!pc.isStanding())
+     return;
+
+  if (pc.isParalyzed())
      return;
 
   String buf(100);
@@ -145,7 +153,7 @@ void do_battle_proc(critter& pc) {
     violence = defense = 0;
   }//else
 
-  critter* primary_targ = pc.getFirstFighting();
+  critter* primary_targ = Top(pc.IS_FIGHTING);
 
   if (!primary_targ)
     return; //why are we here??
@@ -153,457 +161,457 @@ void do_battle_proc(critter& pc) {
   if (violence < -8)
     return;
 
-  chance = d(1, 10); //expand this for more cases	    
+  chance = d(1, 10); //expand this for more cases            
 
   if (lvl > 20) {
     if (cls == THIEF) {
       if (violence > 7) { //lets kill the weaklings/clerics!
-	if ((chance > 7) && (!is_tank(pc)) && pc.EQ[9] && 
-	    pc.EQ[9]->OBJ_FLAGS.get(43)) {
-	  critter* weakest = find_weakest(pc.getIsFighting());
-	  do_circle(*weakest, pc);
-	}//if
-	else if (chance > 5) {
-	  do_claw(*primary_targ, pc);
-	}
+        if ((chance > 7) && (!is_tank(pc)) && pc.EQ[9] && 
+            pc.EQ[9]->OBJ_FLAGS.get(43)) {
+          critter* weakest = find_weakest(pc.IS_FIGHTING);
+          do_circle(*weakest, pc);
+        }//if
+        else if (chance > 5) {
+          do_claw(*primary_targ, pc);
+        }
       }//if very violent
       else if (violence > 3) {
-	if (chance > 8) {
-	  critter* weakest = find_weakest(pc.getIsFighting());
-	  do_bash(*weakest, pc);
-	}//if
-	else if (chance > 5) {
-	  if (num_fighting > 5) {
-	    do_trip(*primary_targ, pc);
-	  }//if
-	}
+        if (chance > 8) {
+          critter* weakest = find_weakest(pc.IS_FIGHTING);
+          do_bash(*weakest, pc);
+        }//if
+        else if (chance > 5) {
+          if (num_fighting > 5) {
+            do_trip(*primary_targ, pc);
+          }//if
+        }
       }//if not so violent
       else if (violence >= 0) {
-	if (chance > 7) {
-	  do_trip(*primary_targ, pc);
-	}//if
+        if (chance > 7) {
+          do_trip(*primary_targ, pc);
+        }//if
       }//if not so violent
     }//if a thief
     else if ((cls == WIZARD) || (cls == ALCHEMIST) || (cls == CLERIC)) {
       if (pc.MANA < 0)
-	return;
+        return;
 
       if (defense <= 0) {
-	if (violence > 8) { //lets kill the weaklings/clerics!
-	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.getIsFighting());
-	    do_cast_fireball(*weakest, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 6) {
-	    if (num_fighting > 3) {
-	      do_cast_flame_strike(pc, FALSE, 0);
-	    }//if
-	    else {
-	      do_cast_rainbow(*primary_targ, pc, FALSE, 0);
-	    }//else
-	  }//else
-	  else if (chance > 4) {
-	    do_cast_lightning(*primary_targ, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 2) {
-	    if (cls == CLERIC)
-	      do_cast_holy_word(*primary_targ, pc, FALSE, 0);
-	    else
-	      do_cast_harm(*primary_targ, pc, FALSE, 0);	    
-	  }//if
-	}//if very violent
-	else if (violence > 3) {
-	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.getIsFighting());
-	    do_cast_rainbow(*weakest, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 6) {
-	    if (num_fighting > 5) {
-	      do_cast_meteorstorm(pc, FALSE, 0);
-	    }//if
-	    else {
-	      do_cast_lightning(*primary_targ, pc, FALSE, 0);
-	    }//else
-	  }//if
-	  else if (chance > 4) {
-	    do_cast_harm(*primary_targ, pc, FALSE, 0);
-	  }//if
-	}//if not so violent
-	else if (violence >= 0) {
-	  if (chance > 7) {
-	    do_cast_fireball(*primary_targ, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 4) {
-	    do_cast_rainbow(*primary_targ, pc, FALSE, 0);
-	  }//if
-	}//if not so violent
+        if (violence > 8) { //lets kill the weaklings/clerics!
+          if (chance > 8) {
+            critter* weakest = find_weakest(pc.IS_FIGHTING);
+            do_cast_fireball(*weakest, pc, FALSE, 0);
+          }//if
+          else if (chance > 6) {
+            if (num_fighting > 3) {
+              do_cast_flame_strike(pc, FALSE, 0);
+            }//if
+            else {
+              do_cast_rainbow(*primary_targ, pc, FALSE, 0);
+            }//else
+          }//else
+          else if (chance > 4) {
+            do_cast_lightning(*primary_targ, pc, FALSE, 0);
+          }//if
+          else if (chance > 2) {
+            if (cls == CLERIC)
+              do_cast_holy_word(*primary_targ, pc, FALSE, 0);
+            else
+              do_cast_harm(*primary_targ, pc, FALSE, 0);            
+          }//if
+        }//if very violent
+        else if (violence > 3) {
+          if (chance > 8) {
+            critter* weakest = find_weakest(pc.IS_FIGHTING);
+            do_cast_rainbow(*weakest, pc, FALSE, 0);
+          }//if
+          else if (chance > 6) {
+            if (num_fighting > 5) {
+              do_cast_meteorstorm(pc, FALSE, 0);
+            }//if
+            else {
+              do_cast_lightning(*primary_targ, pc, FALSE, 0);
+            }//else
+          }//if
+          else if (chance > 4) {
+            do_cast_harm(*primary_targ, pc, FALSE, 0);
+          }//if
+        }//if not so violent
+        else if (violence >= 0) {
+          if (chance > 7) {
+            do_cast_fireball(*primary_targ, pc, FALSE, 0);
+          }//if
+          else if (chance > 4) {
+            do_cast_rainbow(*primary_targ, pc, FALSE, 0);
+          }//if
+        }//if not so violent
       }//if more offensive
       else {//is more DEFENSIVE
-	if (violence > 8) { //lets kill the weaklings/clerics!
-	  if (chance > 8) {
-	    if (!pc.isAffectedBy(SANCTUARY_SKILL_NUM)) {
-	      do_cast_sanctuary(pc, pc, FALSE, 0);
-	    }//if
-	    else {
-	      if ((pc.HP + 300) < pc.getHpMax()) {
-		do_cast_restore(pc, pc, FALSE, 0);
-	      }//if
-	    }//else
-	  }//if
-	  else if (chance > 5) {
-	    do_cast_dispel_magic(*primary_targ, pc, FALSE, 0);
-	  }//else
-	  else if (chance > 3) {
-	    do_cast_calm(pc, FALSE, 0);
-	    smirk(1, &NULL_STRING, pc, ROOM);
-	    do_cast_teleport(pc, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 2) {
-	    if (cls == CLERIC)
-	      do_cast_holy_word(*primary_targ, pc, FALSE, 0);
-	    else
-	      do_cast_harm(*primary_targ, pc, FALSE, 0);	    
-	  }//if
-	}//if very violent
-	else if (violence > 3) {
-	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.getIsFighting());
-	    do_cast_blindness(*weakest, pc, FALSE, 0);
-	  }//if
-	  else if ((chance > 6) && ((pc.HP + 300) < pc.getHpMax())) {
-	    if (cls == CLERIC) {
-	      do_cast_restore(pc, pc, FALSE, 0);
-	    }//if
-	    else if (pc.HP < 60) {
-	      do_cast_teleport(pc, pc, FALSE, 0);
-	    }//else
-	  }//if
-	  else if ((chance > 4) && ((pc.HP + 100) < pc.getHpMax())) {
-	    do_cast_harm(*primary_targ, pc, FALSE, 0);
-	  }//if
-	}//if not so violent
-	else if (violence >= 0) {
-	  if ((chance > 7) && ((pc.HP + 300) < pc.getHpMax())) {
-	    do_cast_restore(pc, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 4) {
-	    do_cast_armor(pc, pc, FALSE, 0);
-	  }//if
-	}//if not so violent
+        if (violence > 8) { //lets kill the weaklings/clerics!
+          if (chance > 8) {
+            if (!is_affected_by(SANCTUARY_SKILL_NUM, pc)) {
+              do_cast_sanctuary(pc, pc, FALSE, 0);
+            }//if
+            else {
+              if ((pc.HP + 300) < pc.HP_MAX) {
+                do_cast_restore(pc, pc, FALSE, 0);
+              }//if
+            }//else
+          }//if
+          else if (chance > 5) {
+            do_cast_dispel_magic(*primary_targ, pc, FALSE, 0);
+          }//else
+          else if (chance > 3) {
+            do_cast_calm(pc, FALSE, 0);
+            smirk(1, &NULL_STRING, pc, ROOM);
+            do_cast_teleport(pc, pc, FALSE, 0);
+          }//if
+          else if (chance > 2) {
+            if (cls == CLERIC)
+              do_cast_holy_word(*primary_targ, pc, FALSE, 0);
+            else
+              do_cast_harm(*primary_targ, pc, FALSE, 0);            
+          }//if
+        }//if very violent
+        else if (violence > 3) {
+          if (chance > 8) {
+            critter* weakest = find_weakest(pc.IS_FIGHTING);
+            do_cast_blindness(*weakest, pc, FALSE, 0);
+          }//if
+          else if ((chance > 6) && ((pc.HP + 300) < pc.HP_MAX)) {
+            if (cls == CLERIC) {
+              do_cast_restore(pc, pc, FALSE, 0);
+            }//if
+            else if (pc.HP < 60) {
+              do_cast_teleport(pc, pc, FALSE, 0);
+            }//else
+          }//if
+          else if ((chance > 4) && ((pc.HP + 100) < pc.HP_MAX)) {
+            do_cast_harm(*primary_targ, pc, FALSE, 0);
+          }//if
+        }//if not so violent
+        else if (violence >= 0) {
+          if ((chance > 7) && ((pc.HP + 300) < pc.HP_MAX)) {
+            do_cast_restore(pc, pc, FALSE, 0);
+          }//if
+          else if (chance > 4) {
+            do_cast_armor(pc, pc, FALSE, 0);
+          }//if
+        }//if not so violent
       }//if more defensive
     }//if a magic user
     else {
       /* bards, warriors, rangers and all others */
       if (violence > 7) { //lets kill the weaklings/clerics!
-	chance = d(1, 10); //expand this for more cases	    
-	if (chance > 7) {
-	  critter* weakest = find_weakest(pc.getIsFighting());
-	  do_body_slam(*weakest, pc);
-	}//if
-	else if ((chance > 5) && (pc.MOV > 0)) {
-	  if (num_fighting > 3) {
-	    do_berserk(pc);
-	  }//if
-	  else {
-	    do_hurl(*primary_targ, pc);
-	  }//else
-	}
-	else if ((chance > 4) && (primary_targ->EQ[9])) {
-	  do_disarm(*primary_targ, pc);
-	}//if
-	else if (chance > 2) {
-	  do_bash(*primary_targ, pc);
-	}//if
+        chance = d(1, 10); //expand this for more cases            
+        if (chance > 7) {
+          critter* weakest = find_weakest(pc.IS_FIGHTING);
+          do_body_slam(*weakest, pc);
+        }//if
+        else if ((chance > 5) && (pc.MOV > 0)) {
+          if (num_fighting > 3) {
+            do_berserk(pc);
+          }//if
+          else {
+            do_hurl(*primary_targ, pc);
+          }//else
+        }
+        else if ((chance > 4) && (primary_targ->EQ[9])) {
+          do_disarm(*primary_targ, pc);
+        }//if
+        else if (chance > 2) {
+          do_bash(*primary_targ, pc);
+        }//if
       }//if very violent
       else if (violence > 3) {
-	chance = d(1, 10); //expand this for more cases	    
-	if (chance > 8) {
-	  critter* weakest = find_weakest(pc.getIsFighting());
-	  do_bash(*weakest, pc);
-	}//if
-	else if ((chance > 6) && (pc.MOV > 0)) {
-	  if (num_fighting > 5) {
-	    do_berserk(pc);
-	  }//if
-	  else {
-	    do_trip(*primary_targ, pc);
-	  }//else
-	}
-	else if (chance > 4) {
-	  do_kick(*primary_targ, pc);
-	}//if
+        chance = d(1, 10); //expand this for more cases            
+        if (chance > 8) {
+          critter* weakest = find_weakest(pc.IS_FIGHTING);
+          do_bash(*weakest, pc);
+        }//if
+        else if ((chance > 6) && (pc.MOV > 0)) {
+          if (num_fighting > 5) {
+            do_berserk(pc);
+          }//if
+          else {
+            do_trip(*primary_targ, pc);
+          }//else
+        }
+        else if (chance > 4) {
+          do_kick(*primary_targ, pc);
+        }//if
       }//if not so violent
       else if (violence >= 0) {
-	chance = d(1, 10); //expand this for more cases	    
-	if (chance > 7) {
-	  do_bash(*primary_targ, pc);
-	}//if
-	else if ((chance > 4) && (primary_targ->EQ[9])) {
-	  do_disarm(*primary_targ, pc);
-	}//if
+        chance = d(1, 10); //expand this for more cases            
+        if (chance > 7) {
+          do_bash(*primary_targ, pc);
+        }//if
+        else if ((chance > 4) && (primary_targ->EQ[9])) {
+          do_disarm(*primary_targ, pc);
+        }//if
       }//if not so violent
     }//if a warrior or ranger or generic
   }//if level 20 and above
   else if (lvl > 10) {
     if (cls == THIEF) {
       if (violence > 7) { //lets kill the weaklings/clerics!
-	if ((chance > 7) && (!is_tank(pc)) && pc.EQ[9] && 
-	    pc.EQ[9]->OBJ_FLAGS.get(43)) {
-	  critter* weakest = find_weakest(pc.getIsFighting());
-	  do_circle(*weakest, pc);
-	}//if
-	else if (chance > 5) {
-	  do_claw(*primary_targ, pc);
-	}
+        if ((chance > 7) && (!is_tank(pc)) && pc.EQ[9] && 
+            pc.EQ[9]->OBJ_FLAGS.get(43)) {
+          critter* weakest = find_weakest(pc.IS_FIGHTING);
+          do_circle(*weakest, pc);
+        }//if
+        else if (chance > 5) {
+          do_claw(*primary_targ, pc);
+        }
       }//if very violent
       else if (violence > 3) {
-	if (chance > 8) {
-	  critter* weakest = find_weakest(pc.getIsFighting());
-	  do_bash(*weakest, pc);
-	}//if
-	else if (chance > 5) {
-	  if (num_fighting > 5) {
-	    do_trip(*primary_targ, pc);
-	  }//if
-	}
+        if (chance > 8) {
+          critter* weakest = find_weakest(pc.IS_FIGHTING);
+          do_bash(*weakest, pc);
+        }//if
+        else if (chance > 5) {
+          if (num_fighting > 5) {
+            do_trip(*primary_targ, pc);
+          }//if
+        }
       }//if not so violent
       else if (violence >= 0) {
-	if (chance > 7) {
-	  do_trip(*primary_targ, pc);
-	}//if
+        if (chance > 7) {
+          do_trip(*primary_targ, pc);
+        }//if
       }//if not so violent
     }//if a thief
     else if ((cls == WIZARD) || (cls == ALCHEMIST) || (cls == CLERIC)) {
       if (pc.MANA < 0)
-	return;
+        return;
       if (defense <= 0) {
-	if (violence > 8) { //lets kill the weaklings/clerics!
-	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.getIsFighting());
-	    do_cast_rainbow(*weakest, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 6) {
-	    if (num_fighting > 3) {
-	      do_cast_icestorm(pc, FALSE, 0);
-	    }//if
-	    else {
-	      do_cast_shocking_grasp(*primary_targ, pc, FALSE, 0);
-	    }//else
-	  }//else
-	  else if (chance > 4) {
-	    do_cast_lightning(*primary_targ, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 2) {
-	    if (cls == CLERIC)
-	      do_cast_harm(*primary_targ, pc, FALSE, 0);
-	    else
-	      do_cast_blindness(*primary_targ, pc, FALSE, 0);	    
-	  }//if
-	}//if very violent
-	else if (violence > 3) {
-	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.getIsFighting());
-	    do_cast_rainbow(*weakest, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 6) {
-	    if (num_fighting > 5) {
-	      do_cast_lightning_storm(pc, FALSE, 0);
-	    }//if
-	    else {
-	      do_cast_lightning(*primary_targ, pc, FALSE, 0);
-	    }//else
-	  }//if
-	  else if (chance > 4) {
-	    do_cast_weaken(*primary_targ, pc, FALSE, 0);
-	  }//if
-	}//if not so violent
-	else if (violence >= 0) {
-	  if (chance > 7) {
-	    do_cast_poison(*primary_targ, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 4) {
-	    do_cast_burning_hands(*primary_targ, pc, FALSE, 0);
-	  }//if
-	}//if not so violent
+        if (violence > 8) { //lets kill the weaklings/clerics!
+          if (chance > 8) {
+            critter* weakest = find_weakest(pc.IS_FIGHTING);
+            do_cast_rainbow(*weakest, pc, FALSE, 0);
+          }//if
+          else if (chance > 6) {
+            if (num_fighting > 3) {
+              do_cast_icestorm(pc, FALSE, 0);
+            }//if
+            else {
+              do_cast_shocking_grasp(*primary_targ, pc, FALSE, 0);
+            }//else
+          }//else
+          else if (chance > 4) {
+            do_cast_lightning(*primary_targ, pc, FALSE, 0);
+          }//if
+          else if (chance > 2) {
+            if (cls == CLERIC)
+              do_cast_harm(*primary_targ, pc, FALSE, 0);
+            else
+              do_cast_blindness(*primary_targ, pc, FALSE, 0);            
+          }//if
+        }//if very violent
+        else if (violence > 3) {
+          if (chance > 8) {
+            critter* weakest = find_weakest(pc.IS_FIGHTING);
+            do_cast_rainbow(*weakest, pc, FALSE, 0);
+          }//if
+          else if (chance > 6) {
+            if (num_fighting > 5) {
+              do_cast_lightning_storm(pc, FALSE, 0);
+            }//if
+            else {
+              do_cast_lightning(*primary_targ, pc, FALSE, 0);
+            }//else
+          }//if
+          else if (chance > 4) {
+            do_cast_weaken(*primary_targ, pc, FALSE, 0);
+          }//if
+        }//if not so violent
+        else if (violence >= 0) {
+          if (chance > 7) {
+            do_cast_poison(*primary_targ, pc, FALSE, 0);
+          }//if
+          else if (chance > 4) {
+            do_cast_burning_hands(*primary_targ, pc, FALSE, 0);
+          }//if
+        }//if not so violent
       }//if more offensive
       else {//is more DEFENSIVE
-	if (violence > 8) { //lets kill the weaklings/clerics!
-	  if (chance > 8) {
-	    if (!pc.isAffectedBy(ARMOR_SKILL_NUM)) {
-	      do_cast_armor(pc, pc, FALSE, 0);
-	    }//if
-	    else {
-	      if ((pc.HP + 100) < pc.getHpMax()) {
-		do_cast_heal(pc, pc, FALSE, 0);
-	      }//if
-	    }//else
-	  }//if
-	  else if (chance > 5) {
-	    do_cast_blindness(*primary_targ, pc, FALSE, 0);
-	  }//else
-	  else if (chance > 3) {
-	    if (!pc.isAffectedBy(STONE_SKIN_SKILL_NUM))
-	      do_cast_stone_skin(pc, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 2) {
-	    if (cls == CLERIC)
-	      do_cast_cause_critical(*primary_targ, pc, FALSE, 0);
-	    else
-	      do_cast_burning_hands(*primary_targ, pc, FALSE, 0);    
-	  }//if
-	}//if very violent
-	else if (violence > 3) {
-	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.getIsFighting());
-	    do_cast_blindness(*weakest, pc, FALSE, 0);
-	  }//if
-	  else if ((chance > 6) && ((pc.HP + 100) < pc.getHpMax())) {
-	    if (cls == CLERIC) {
-	      do_cast_heal(pc, pc, FALSE, 0);
-	    }//if
-	    else if (pc.HP < 60) {
-	      do_cast_cure_critical(pc, pc, FALSE, 0);
-	    }//else
-	  }//if
-	  else if (chance > 4) {
-	    do_cast_shocking_grasp(*primary_targ, pc, FALSE, 0);
-	  }//if
-	}//if not so violent
-	else if (violence >= 0) {
-	  if ((chance > 7) && ((pc.HP + 100) < pc.getHpMax())) {
-	    do_cast_heal(pc, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 4) {
-	    do_cast_armor(pc, pc, FALSE, 0);
-	  }//if
-	}//if not so violent
+        if (violence > 8) { //lets kill the weaklings/clerics!
+          if (chance > 8) {
+            if (!is_affected_by(ARMOR_SKILL_NUM, pc)) {
+              do_cast_armor(pc, pc, FALSE, 0);
+            }//if
+            else {
+              if ((pc.HP + 100) < pc.HP_MAX) {
+                do_cast_heal(pc, pc, FALSE, 0);
+              }//if
+            }//else
+          }//if
+          else if (chance > 5) {
+            do_cast_blindness(*primary_targ, pc, FALSE, 0);
+          }//else
+          else if (chance > 3) {
+            if (!is_affected_by(STONE_SKIN_SKILL_NUM, pc))
+              do_cast_stone_skin(pc, pc, FALSE, 0);
+          }//if
+          else if (chance > 2) {
+            if (cls == CLERIC)
+              do_cast_cause_critical(*primary_targ, pc, FALSE, 0);
+            else
+              do_cast_burning_hands(*primary_targ, pc, FALSE, 0);    
+          }//if
+        }//if very violent
+        else if (violence > 3) {
+          if (chance > 8) {
+            critter* weakest = find_weakest(pc.IS_FIGHTING);
+            do_cast_blindness(*weakest, pc, FALSE, 0);
+          }//if
+          else if ((chance > 6) && ((pc.HP + 100) < pc.HP_MAX)) {
+            if (cls == CLERIC) {
+              do_cast_heal(pc, pc, FALSE, 0);
+            }//if
+            else if (pc.HP < 60) {
+              do_cast_cure_critical(pc, pc, FALSE, 0);
+            }//else
+          }//if
+          else if (chance > 4) {
+            do_cast_shocking_grasp(*primary_targ, pc, FALSE, 0);
+          }//if
+        }//if not so violent
+        else if (violence >= 0) {
+          if ((chance > 7) && ((pc.HP + 100) < pc.HP_MAX)) {
+            do_cast_heal(pc, pc, FALSE, 0);
+          }//if
+          else if (chance > 4) {
+            do_cast_armor(pc, pc, FALSE, 0);
+          }//if
+        }//if not so violent
       }//if more defensive
     }//if a magic user
     else {
       /* bards, warriors, rangers and all others */
       if (violence > 7) { //lets kill the weaklings/clerics!
-	chance = d(1, 10); //expand this for more cases	    
-	if (chance > 7) {
-	  critter* weakest = find_weakest(pc.getIsFighting());
-	  do_bash(*weakest, pc);
-	}//if
-	else if ((chance > 5) && (pc.MOV > 0)) {
-	  if (num_fighting > 3) {
-	    do_berserk(pc);
-	  }//if
-	}
-	else if ((chance > 4) && (primary_targ->EQ[9])) {
-	  do_trip(*primary_targ, pc);
-	}//if
-	else if (chance > 2) {
-	  do_bash(*primary_targ, pc);
-	}//if
+        chance = d(1, 10); //expand this for more cases            
+        if (chance > 7) {
+          critter* weakest = find_weakest(pc.IS_FIGHTING);
+          do_bash(*weakest, pc);
+        }//if
+        else if ((chance > 5) && (pc.MOV > 0)) {
+          if (num_fighting > 3) {
+            do_berserk(pc);
+          }//if
+        }
+        else if ((chance > 4) && (primary_targ->EQ[9])) {
+          do_trip(*primary_targ, pc);
+        }//if
+        else if (chance > 2) {
+          do_bash(*primary_targ, pc);
+        }//if
       }//if very violent
       else if (violence > 3) {
-	chance = d(1, 10); //expand this for more cases	    
-	if (chance > 8) {
-	  critter* weakest = find_weakest(pc.getIsFighting());
-	  do_bash(*weakest, pc);
-	}//if
-	else if (chance > 6) {
-	  do_trip(*primary_targ, pc);
-	}
+        chance = d(1, 10); //expand this for more cases            
+        if (chance > 8) {
+          critter* weakest = find_weakest(pc.IS_FIGHTING);
+          do_bash(*weakest, pc);
+        }//if
+        else if (chance > 6) {
+          do_trip(*primary_targ, pc);
+        }
       }//if not so violent
       else if (violence >= 0) {
-	chance = d(1, 10); //expand this for more cases	    
-	if (chance > 7) {
-	  do_bash(*primary_targ, pc);
-	}//if
-	else if (chance > 5) {
-	  do_kick(*primary_targ, pc);
-	}//if
+        chance = d(1, 10); //expand this for more cases            
+        if (chance > 7) {
+          do_bash(*primary_targ, pc);
+        }//if
+        else if (chance > 5) {
+          do_kick(*primary_targ, pc);
+        }//if
       }//if not so violent
     }//if a warrior or ranger or generic
   }//if level 11 - 20
   else { //class 1-10
     if (cls == THIEF) {
       if (violence > 7) { //lets kill the weaklings/clerics!
-	if ((chance > 7) && (!is_tank(pc)) && pc.EQ[9] && 
-	    pc.EQ[9]->OBJ_FLAGS.get(43)) {
-	  critter* weakest = find_weakest(pc.getIsFighting());
-	  do_kick(*weakest, pc);
-	}//if
+        if ((chance > 7) && (!is_tank(pc)) && pc.EQ[9] && 
+            pc.EQ[9]->OBJ_FLAGS.get(43)) {
+          critter* weakest = find_weakest(pc.IS_FIGHTING);
+          do_kick(*weakest, pc);
+        }//if
       }//if very violent
       else if (violence >= 0) {
-	if (chance > 8) {
-	  do_trip(*primary_targ, pc);
-	}//if
+        if (chance > 8) {
+          do_trip(*primary_targ, pc);
+        }//if
       }//if not so violent
     }//if a thief
     else if ((cls == WIZARD) || (cls == ALCHEMIST) || (cls == CLERIC)) {
       if (pc.MANA < 0)
-	return;
+        return;
       if (defense <= 0) {
-	if (violence > 8) { //lets kill the weaklings/clerics!
-	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.getIsFighting());
-	    do_cast_dark_dart(*weakest, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 6) {
-	    do_cast_shocking_grasp(*primary_targ, pc, FALSE, 0);
-	  }//if
-	}//if very violent
-	else if (violence > 3) {
-	  if (chance > 8) {
-	    critter* weakest = find_weakest(pc.getIsFighting());
-	    do_cast_burning_hands(*weakest, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 4) {
-	    do_cast_cure_serious(pc, pc, FALSE, 0);
-	  }//if
-	}//if not so violent
-	else if (violence >= 0) {
-	  if (chance > 9) {
-	    do_cast_dark_dart(*primary_targ, pc, FALSE, 0);
-	  }//if
-	  else if (chance > 6) {
-	    do_cast_cure_serious(pc, pc, FALSE, 0);
-	  }//if
-	}//if not so violent
+        if (violence > 8) { //lets kill the weaklings/clerics!
+          if (chance > 8) {
+            critter* weakest = find_weakest(pc.IS_FIGHTING);
+            do_cast_dark_dart(*weakest, pc, FALSE, 0);
+          }//if
+          else if (chance > 6) {
+            do_cast_shocking_grasp(*primary_targ, pc, FALSE, 0);
+          }//if
+        }//if very violent
+        else if (violence > 3) {
+          if (chance > 8) {
+            critter* weakest = find_weakest(pc.IS_FIGHTING);
+            do_cast_burning_hands(*weakest, pc, FALSE, 0);
+          }//if
+          else if (chance > 4) {
+            do_cast_cure_serious(pc, pc, FALSE, 0);
+          }//if
+        }//if not so violent
+        else if (violence >= 0) {
+          if (chance > 9) {
+            do_cast_dark_dart(*primary_targ, pc, FALSE, 0);
+          }//if
+          else if (chance > 6) {
+            do_cast_cure_serious(pc, pc, FALSE, 0);
+          }//if
+        }//if not so violent
       }//if more offensive
       else {//is more DEFENSIVE
-	if (violence > 8) {
-	  if (chance > 8) {
-             if (!pc.isAffectedBy(BLESS_SKILL_NUM)) {
-	      do_cast_bless(pc, pc, FALSE, 0);
-	    }//if
-	    else {
-	      do_cast_cure_serious(pc, pc, FALSE, 0);
-	    }//else
-	  }//if
-	}//if very violent
-	else if (violence > 3) {
-	  if (chance > 8) {
-	    do_cast_cure_serious(pc, pc, FALSE, 0);
-	  }//if
-	}//if not so violent
-	else if (violence >= 0) {
-	  if ((chance > 9) && ((pc.HP + 10) < pc.getHpMax())) {
-	    do_cast_cure_serious(pc, pc, FALSE, 0);
-	  }//if
-	}//if not so violent
+        if (violence > 8) { //lets kill the weaklings/clerics!
+          if (chance > 8) {
+            if (!is_affected_by(BLESS_SKILL_NUM, pc)) {
+              do_cast_bless(pc, pc, FALSE, 0);
+            }//if
+            else {
+              do_cast_cure_serious(pc, pc, FALSE, 0);
+            }//else
+          }//if
+        }//if very violent
+        else if (violence > 3) {
+          if (chance > 8) {
+            do_cast_cure_serious(pc, pc, FALSE, 0);
+          }//if
+        }//if not so violent
+        else if (violence >= 0) {
+          if ((chance > 9) && ((pc.HP + 10) < pc.HP_MAX)) {
+            do_cast_cure_serious(pc, pc, FALSE, 0);
+          }//if
+        }//if not so violent
       }//if more defensive
     }//if a magic user
     else {
       /* bards, warriors, rangers and all others */
       if (violence > 7) { //lets kill the weaklings/clerics!
-	if (chance > 8) {
-	  critter* weakest = find_weakest(pc.getIsFighting());
-	  do_kick(*weakest, pc);
-	}//if
-	else if (chance > 5) {
-	  do_kick(*primary_targ, pc);
-	}//if
+        if (chance > 8) {
+          critter* weakest = find_weakest(pc.IS_FIGHTING);
+          do_kick(*weakest, pc);
+        }//if
+        else if (chance > 5) {
+          do_kick(*primary_targ, pc);
+        }//if
       }//if very violent
       else if (violence >= 0) {
-	if (chance > 8) {
-	  do_kick(*primary_targ, pc);
-	}//if
+        if (chance > 8) {
+          do_kick(*primary_targ, pc);
+        }//if
       }//if not so violent
     }//if a warrior or ranger or generic
   }//if level 0-10
@@ -612,7 +620,7 @@ void do_battle_proc(critter& pc) {
 
 /* path is empty upon failure, otherwise holds path */
 void path_from_a_to_b(int start_room, int targ_room, List<int>& path) {
-   SCell<door*> cll;
+   Cell<door*> cll;
    door* ptr;
    int counter = 0;
    int tmp_rm;
@@ -639,55 +647,55 @@ void path_from_a_to_b(int start_room, int targ_room, List<int>& path) {
          tcll.Head(tree);
          while (tcll) {
             counter = tcll.Next_Breadth();
-	    room_list[counter].setFlag(29, FALSE); //no longer in a path
-      	 }//while
-	 path.clear(); //sorry, didn't find it!
+            room_list[counter].setFlag(29, FALSE); //no longer in a path
+               }//while
+         path.clear(); //sorry, didn't find it!
          return;
       }//if
 
       /* par is a cell, pointing to a tree node, which contains the
-	 number of the current room.  This is par.Data(). */
+         number of the current room.  This is par.Data(). */
 
       // Sprintf(buf, "TRACK:  Here is current room#:  %i\n", par.Data());
       // log(buf);
 
-		 /* cll is a List<door*> cell, it will take us through
-		    all of the possible exits in the room numbered 
-		    by par.Data() */
+                 /* cll is a List<door*> cell, it will take us through
+                    all of the possible exits in the room numbered 
+                    by par.Data() */
 
       room_list[par.Data()].DOORS.head(cll);
       while ((ptr = cll.next())) {
-         tmp_rm = abs(ptr->getDestination());
+         tmp_rm = abs(ptr->destination);
 
-	 if (!room_list[tmp_rm].getFlag(29)) {//not already in a path
+         if (!room_list[tmp_rm].getFlag(29)) {//not already in a path
 
-	    /* tmp_child will point to the newly inserted tree node */
+            /* tmp_child will point to the newly inserted tree node */
             tmp_child = par.Push_Child(tmp_rm);   //add to tree
 
             // tree2.Log(); //write tree to logfile
 
-	    room_list[tmp_rm].setFlag(29, TRUE);   //now its in a path
+            room_list[tmp_rm].setFlag(29, TRUE);   //now its in a path
 
-	    if (tmp_rm == targ_room) { //if found it
-	      //log("TRACK:  FOUND IT, here is tree:");
-	      //Tree2.Log();
+            if (tmp_rm == targ_room) { //if found it
+              //log("TRACK:  FOUND IT, here is tree:");
+              //Tree2.Log();
 
-	       tcll.Head(*tmp_child); //tcll now points to the tmp_child
+               tcll.Head(*tmp_child); //tcll now points to the tmp_child
 
-	       while (tcll) {
-		  tmp_rm = tcll.Parent();
-		  path.prepend(tmp_rm);
-	       }//while
+               while (tcll) {
+                  tmp_rm = tcll.Parent();
+                  path.prepend(tmp_rm);
+               }//while
 
 
                tcll.Head(tree);
                while (tcll) {
-		  counter = tcll.Next_Breadth();
-	          room_list[counter].setFlag(29, FALSE);
-      	       }//while
-	       return;
-	    }//if
-	 }//if
+                  counter = tcll.Next_Breadth();
+                  room_list[counter].setFlag(29, FALSE);
+                     }//while
+               return;
+            }//if
+         }//if
       }//while, goes through each door
       par.Next_Breadth();
    }//while not done or count > 500
@@ -707,22 +715,25 @@ void path_from_a_to_b(int start_room, int targ_room, List<int>& path) {
 
 
 void a_summons_help_against_b(critter& vict, critter& pc) {
-   SafeList<critter*> tmp_lst(NULL);
+   List<critter*> tmp_lst(NULL);
    if (!vict.mob)
       return;
 
    /* first check room that C is in */
-   SCell<critter*> cll(ROOM.getCrits());
+   Cell<critter*> cll(ROOM.getCrits());
    critter* ptr;
 
    while ((ptr = cll.next())) {
       if (a_will_help_b_against_c(*ptr, vict, pc)) {
-         tmp_lst.append(ptr);
+         Put(ptr, tmp_lst);
       }//if
    }//while
    
    tmp_lst.head(cll);
    while ((ptr = cll.next())) {
+      if (ptr->isMob()) {
+         ptr = mob_to_smob(*ptr, pc.getCurRoomNum());
+      }//if
       do_hit(pc, *ptr);
    }//while
    
@@ -730,13 +741,13 @@ void a_summons_help_against_b(critter& vict, critter& pc) {
    
    int cur_room = vict.getCurRoomNum();
    int targ_room;
-   SCell<door*> dcll(room_list[cur_room].DOORS);
+   Cell<door*> dcll(room_list[cur_room].DOORS);
    door* dptr;
    while ((dptr = dcll.next())) {
       if (door::findDoorByDest(room_list[(targ_room = 
-                                          abs(dptr->getDestination()))].DOORS,
+                                          abs(dptr->destination))].DOORS,
                                cur_room)) {
-         SafeList<critter*> room_crits(room_list[targ_room].getCrits());
+         List<critter*> room_crits(room_list[targ_room].getCrits());
          room_crits.head(cll);
          while ((ptr = cll.next())) {
             if (a_will_help_b_against_c(*ptr, vict, pc)) {
@@ -746,6 +757,9 @@ void a_summons_help_against_b(critter& vict, critter& pc) {
          
          tmp_lst.head(cll);
          while ((ptr = cll.next())) {
+            if (ptr->isMob()) {
+               ptr = mob_to_smob(*ptr, targ_room);
+            }//if
             int is_dead = FALSE;
             ptr->trackToKill(pc, is_dead);
          }//while
@@ -757,9 +771,9 @@ void a_summons_help_against_b(critter& vict, critter& pc) {
 
 /* called when a projectile comes through room, usually from throw or shoot. */
 void alert_room_proc(int rm_num, int alert_type, critter& targ,
-		     critter& agg) {
-   SafeList<critter*> tmp_lst(room_list[rm_num].getCrits());
-   SCell<critter*> cll(tmp_lst);
+                     critter& agg) {
+   List<critter*> tmp_lst(room_list[rm_num].getCrits());
+   Cell<critter*> cll(tmp_lst);
    critter* ptr;
    String buf(100);
 
@@ -784,10 +798,10 @@ void alert_room_proc(int rm_num, int alert_type, critter& targ,
 }//alert_room_proc
 
 
-critter* find_weakest(SafeList<critter*>& lst) {
-   SCell<critter*> cll(lst);
+critter* find_weakest(List<critter*>& lst) {
+   Cell<critter*> cll(lst);
    critter* ptr;
-   critter* weakest = lst.peekFront();
+   critter* weakest = Top(lst);
    
    while ((ptr = cll.next())) {
       if (ptr == weakest)
@@ -801,17 +815,16 @@ critter* find_weakest(SafeList<critter*>& lst) {
   
 
 short is_tank(critter& pc) {
-  if (!pc.isFighting()) {
-     return FALSE;
-  }
+  if (IsEmpty(pc.IS_FIGHTING))
+    return FALSE;
 
-  SCell<critter*> cll(pc.getIsFighting());
+  Cell<critter*> cll(pc.IS_FIGHTING);
   critter* ptr;
 
   while ((ptr = cll.next())) {
-     if (ptr->getIsFighting().peekFront() == &pc) {
-        return TRUE;
-     }//if
+    if (Top(ptr->IS_FIGHTING) == &pc) {
+      return TRUE;
+    }//if
   }//while
 
   return FALSE;
@@ -841,7 +854,7 @@ void do_was_calmed_procs(critter& calmed, critter& calmer) {
             do_hit(calmer, calmed);
          }
       }//if
-	
+        
       return;
   }//if it's a mob etc
 }//do_calmed_procs

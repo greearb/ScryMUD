@@ -1,5 +1,5 @@
-// $Id: zone.h,v 1.4 1999/08/27 03:10:05 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/08/27 03:10:05 $
+// $Id: zone.h,v 1.5 2001/03/29 03:02:36 eroper Exp $
+// $Revision: 1.5 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
 
 //
 //ScryMUD Server Code
@@ -43,6 +43,9 @@ class critter;
 class door;
 
 
+
+
+
 /**  The zones that are to be enabled, ie zunlocked when we transition
  * from the development DB to the beta/release DB.
  */
@@ -67,7 +70,14 @@ public:
    void remove(int i);
 
    void readSelf();
+   void fileReadSelf();
+#ifdef USEMYSQL
+   void dbReadSelf();
+#endif
+
    void writeSelf();
+   void fileWriteSelf();
+
    int contains(int i);
    void execute();
    String toString();
@@ -123,10 +133,11 @@ public:
    /**  znum will be assigned to zone_num, kinda a hack to fix
     * an oversight.
     */
-   int read(istream& dafile, int znum);
-   int write(ostream& dafile);
+   int Read(ifstream& dafile, int znum);
+   int fileWrite(ofstream& dafile);
+   int dbWrite();
 
-   void clear();
+   void Clear();
 
 
    /**  From mortal intervention, mob procs, vehicle movement.. */
@@ -175,6 +186,10 @@ public:
 
    void readSelf();
    void writeSelf();
+   void fileWriteSelf();
+#if USEMYSQL
+   void dbWriteSelf();
+#endif
 
    void writeWorld(critter& pc); //write all rooms, objs, doors, and critters!!
 

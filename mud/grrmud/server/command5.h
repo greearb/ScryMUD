@@ -1,5 +1,5 @@
-// $Id: command5.h,v 1.16 1999/09/01 06:00:03 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
+// $Id: command5.h,v 1.17 2001/03/29 03:02:29 eroper Exp $
+// $Revision: 1.17 $  $Author: eroper $ $Date: 2001/03/29 03:02:29 $
 
 //
 //ScryMUD Server Code
@@ -44,20 +44,21 @@ int deposit(int i_th, const String* coins, int j_th,
             const String* banker, critter& pc);
 
 // SMOB only, used in scripts
-int pause(int rounds, critter& pc);
+int pause(int rounds, critter& pc, int was_ordered = FALSE);
 
 int page_break(int lines, critter& pc);
 
 int color(String& var, String& val, critter& pc);
 
 /* Toggle client usage to TRUE */
-int using_client(critter& pc);
+bool using_client(critter& pc);
 
 int update_cur_in_game(critter& pc);
 
-int list_mob_scripts(int mob_num, critter& pc);
-int stat_mob_script(int mob_num, int script_idx, critter& pc);
-int rem_mob_script(int mob_num, String& trigger, int i_th, critter& pc);
+int list_scripts(int mob_num, critter& pc);
+int do_list_scripts(critter& targ, critter& pc);
+int stat_script(int mob_num, int script_idx, critter& pc);
+int rem_script(int mob_num, String& trigger, int i_th, critter& pc);
 
 int list_room_scripts(int rm_num, critter& pc);
 int stat_room_script(int rm_num, int script_idx, critter& pc);
@@ -69,7 +70,7 @@ int rem_obj_script(int obj_num, String& trigger, int i_th, critter& pc);
 
 int slist(int begin, const String& name, int howmany, critter& pc);
 int teach(int i_th, const String* name, int prcnt, const String* skill, 
-	   critter& pc);
+           critter& pc);
 int add_perm_inv(int obj_num, int i_th, const String* name, critter& pc);
 int rem_perm_inv(int i_th, const String* name, int j_th,
                  const String* mob_name, critter& pc);
@@ -77,6 +78,7 @@ int beep(int i_th, const String* name, critter& pc);
 int opurge(int i_th, const String* name, critter& pc);
 int do_transport(critter& targ, critter& pc, room& dest);
 int itrans(int i_th, const String* targ, int rm_num, critter& pc);
+int discuss(const String* topic, int i_th, const String* targ, critter& pc);
 int suicide(const String* passwd,  critter& pc);
 int pay(int amount, int i_th, const String* targ,  critter& pc);
 int mvnum(int i_th, const String* name, critter& pc);
@@ -106,20 +108,21 @@ int ungag(int i_th, const String* targ, critter& pc);
 int thaw(int i_th, const String* targ, critter& pc);
 int com_emote(const String* msg, critter& pc);
 int com_pemote(const String* msg, critter& pc);
+int com_gemote(const String* msg, critter& pc);
 int com_gecho(const String* msg, critter& pc);
 int com_recho(const String* msg, critter& pc);
 int com_pecho(int i_th, const String* targ, const String* msg, critter& pc);
 int com_zecho(const String* msg, critter& pc);
 int prone(critter& pc);
 int shoot(int i_th, const String* dir, int j_th, const String* mob, 
-	   critter& pc);
+           critter& pc);
 int do_shoot(critter& targ, critter& pc);
 int _throw(int i_th, const String* dir, int j_th, const String* mob, 
-	   critter& pc);
+           critter& pc);
 int do_throw(critter& targ, critter& pc);
 
 int zcreate(int num_rooms, const String* name, int num_ticks,
-	     critter& pc);
+             critter& pc);
 int write_zone_list();
 int zenable(int znum, const String* char_name, critter& pc);
 int zdisable(int znum, const String* char_name, critter& pc);
@@ -148,6 +151,9 @@ int adjust_register(int i_th, const String* targ, int new_balance, critter& pc);
 
 
 int handle_olc(critter& pc, int do_sub);
+
+void client_command(const String* vict, critter& pc);
+
 
 #endif
 

@@ -1,5 +1,5 @@
-// $Id: Filters.cc,v 1.5 1999/08/20 06:20:04 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/20 06:20:04 $
+// $Id: Filters.cc,v 1.6 2001/03/29 03:02:27 eroper Exp $
+// $Revision: 1.6 $  $Author: eroper $ $Date: 2001/03/29 03:02:27 $
 
 //
 //ScryMUD Server Code
@@ -112,8 +112,7 @@ Selectors::Selectors()
                           &selectActorSneakWorked),
         CC_gets_info_allow(CSelectorColl::SELECTOR_AND, &selectGetsInfo),
         CC_using_client(CSelectorColl::SELECTOR_AND, &selectUsingClient),
-        CC_not_using_client(CSelectorColl::SELECTOR_AND, &selectNotUsingClient),
-        CC_sleeping(CSelectorColl::SELECTOR_OR, &selectIsSleeping)
+        CC_not_using_client(CSelectorColl::SELECTOR_AND, &selectNotUsingClient)
 {
 }//Constructor
 

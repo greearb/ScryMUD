@@ -1,0 +1,498 @@
+60	Start of Mob
+hunter elf ~	names
+an elven hunter
+~
+A hunter blends into the forest floor.
+~
+	This man is about 5 feet tall and thin through the hips.  His shoulders
+are quite wide though, and he seems to posses a wiry strength uncommon for such
+a slight build.  His dark hair and features, as well as his humble leather
+clothing allow him to blend seamlessly into the forest.
+
+~
+18 17 12 11 -1  -:| bitfield |:-
+45 214000 0 	long_data
+0 14 15 12 15 13 17 6 2 60 1 0 1 4 0 150 50 100 450 
+12 16 35 0 150 50 100 2 100 100 0 80 100 100 4 5 3 4 100 100 
+100 0 0 0 	shrt_cur_stats
+1028 1028 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 60 0 10	mob#, tmp_num, max_n_game
+4 2 -1  -:| bitfield |:-
+	end_of_crit
+
+61	Start of Mob
+woman young elf ~	names
+a young elven woman
+~
+A young elven woman is here watching her toddler.
+~
+This beautiful young elven woman is all smiles as she watches her toddler
+walking around clumsily.  She has the dark complexion and hair common to
+elves and is dressed in a light brown dress, which wraps itself gently
+around her legs as a breeze blows by.
+
+~
+18 12 11 10 8 7 6 5 -1  -:| bitfield |:-
+40 120000 0 	long_data
+0 12 12 12 17 12 12 5 2 50 1 0 0 4 0 150 100 100 750 
+14 5 40 0 150 100 100 2 90 100 0 80 80 70 3 5 4 5 120 120 
+120 0 0 0 	shrt_cur_stats
+1024 1028 0 	cur_stats
+102 12 -1	eq: num, posn
+-1	affected_by
+103 -1	inv
+ 61 0 3	mob#, tmp_num, max_n_game
+4 -1  -:| bitfield |:-
+	end_of_crit
+
+68	Start of Mob
+toddler elf ~	names
+an elven toddler
+~
+An elven toddler stumbles around gurgling happily.
+~
+This child is clothed in a funky little brown jump suit.  He is wandering
+around in small circles drooling on everything he sees.  Better watch out,
+this little fellow just fixed his glistening eyes on you!
+
+~
+18 5 -1  -:| bitfield |:-
+0 1000 0 	long_data
+0 5 1 1 18 1 9 0 0 100 1 5 1 4 0 1 1 25 800 
+1 5 0 0 1 1 25 2 1000 1 0 90 90 90 0 5 0 0 100 100 
+100 0 10 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 68 0 3	mob#, tmp_num, max_n_game
+4 1 -1  -:| bitfield |:-
+	end_of_crit
+
+71	Start of Mob
+Nirmal elf ~	names
+Nirmal
+~
+Nirmal stands here at ease.
+~
+Nirmal, the famous elven archer, stands here at ease.  He is not of noble
+blood, but his legendary skill with the bow has made him beloved of Lord Lyral
+and the elven people.  He stands tall for an elf at a little under six feet and
+his wide shoulders give you an idea of his strength.  He looks warily at you as
+you enter the room.
+
+~
+18 12 11 10 7 6 5 -1  -:| bitfield |:-
+100 750000 0 	long_data
+0 18 13 13 15 15 18 15 8 30 2 0 1 4 0 355 100 150 350 
+18 5 0 0 355 100 150 2 80 100 0 70 70 70 6 5 5 7 150 100 
+100 0 0 0 	shrt_cur_stats
+1024 1028 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 71 0 1	mob#, tmp_num, max_n_game
+4 2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+75	Start of Mob
+bear black ~	names
+a large black bear
+~
+A large black bear shuffles through the forest.
+~
+This is a truly formidible beast.  It stands five feet at the shoulders and
+weighs over 200 pounds.  Two inch claws nicely decorate each large paw.  What
+a beautiful pelt though!
+
+~
+18 17 5 -1  -:| bitfield |:-
+0 250000 0 	long_data
+0 20 8 20 8 8 20 10 5 30 2 0 0 5 16 450 40 150 -100 
+12 5 0 0 450 40 150 2 100 100 0 80 80 100 5 5 4 5 100 100 
+100 0 220 0 	shrt_cur_stats
+1024 1029 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 75 0 10	mob#, tmp_num, max_n_game
+16 5 4 2 -1  -:| bitfield |:-
+112        skin number
+	end_of_crit
+
+83	Start of Mob
+bird ~	names
+a chirping bird
+~
+A small bird flies about chirping.
+~
+	This red colored bird is small and very loud. Its orange beak brings forth
+a veritable cacophany of what it must surely hear as beautiful music.
+
+~
+18 3 -1  -:| bitfield |:-
+0 500 0 	long_data
+0 0 1 1 1 1 7 0 0 100 1 0 0 1 16 1 10 40 0 
+1 5 0 0 1 10 40 2 100 1 0 90 90 90 0 5 0 0 2 2 
+2 0 1 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 83 0 20	mob#, tmp_num, max_n_game
+17 4 2 -1  -:| bitfield |:-
+-1  End of mob proc scripts
+	end_of_crit
+
+84	Start of Mob
+fox ~	names
+a red fox
+~
+A red fox moves carefully here.
+~
+A small, reddish-grey fox looks at you warily, not sure whether you are friend
+or foe.  Its ears swivel back and forth, and its nose is lifted into the air
+gently testing the winds.
+
+~
+18 -1  -:| bitfield |:-
+0 30000 0 	long_data
+0 8 8 8 8 8 8 0 0 85 1 0 1 1 16 80 25 70 0 
+4 5 0 0 80 25 70 2 100 100 0 100 100 80 5 5 1 4 1 1 
+1 0 0 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 84 0 30	mob#, tmp_num, max_n_game
+16 5 4 2 -1  -:| bitfield |:-
+747        skin number
+	end_of_crit
+
+85	Start of Mob
+wolf ~	names
+a wolf
+~
+A wolf stands here.
+~
+	This grey wolf is the size of an average dog with large canine teeth. It
+notices you and its hackles raise slightly as it growls very softly.
+
+~
+18 -1  -:| bitfield |:-
+0 45000 0 	long_data
+0 10 10 10 10 10 10 1 0 89 1 0 1 1 16 100 50 100 0 
+5 5 0 0 100 50 100 2 100 100 0 100 100 90 5 5 2 3 3 3 
+3 0 30 0 	shrt_cur_stats
+1024 1029 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 85 0 30	mob#, tmp_num, max_n_game
+16 5 4 2 -1  -:| bitfield |:-
+746        skin number
+	end_of_crit
+
+86	Start of Mob
+child ~	names
+an elven child
+~
+An elven child plays here.
+~
+This child looks to be about 10 years old. Eyes wide with innocence.
+Green clothing lets the child blend in with the foliage if danger is present.
+
+~
+18 -1  -:| bitfield |:-
+12 50700 0 	long_data
+0 10 10 10 10 10 10 0 0 75 1 0 1 1 11 100 50 100 200 
+5 5 15 0 100 50 100 2 100 100 0 100 100 100 0 5 1 6 10 10 
+10 0 0 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 86 0 8	mob#, tmp_num, max_n_game
+4 2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+87	Start of Mob
+elven citizen ~	names
+an elven citizen
+~
+An elven citizen walks peacefully here.
+~
+This citizen is slender and wears green clothing. The citizen looks warily
+about for any
+danger that might show itself. Under dangerous circumstances they would run
+to tell the guards.
+
+~
+18 -1  -:| bitfield |:-
+25 95000 0 	long_data
+0 10 10 10 10 10 10 0 0 70 1 0 0 2 0 200 100 100 10 
+8 5 15 0 200 100 100 2 100 100 0 50 80 40 0 5 1 10 5 5 
+5 0 0 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 87 0 20	mob#, tmp_num, max_n_game
+4 2 -1  -:| bitfield |:-
+	end_of_crit
+
+88	Start of Mob
+elf sentry ~	names
+an elf sentry
+~
+An elf sentry stands watch here.
+~
+This elf is aware of all that transpires about him. His job is mark and keep
+an eye on all tresspassers. If they are enemies he is to kill them. He wears
+green clothes that help keep him camoflauged.
+
+~
+18 -1  -:| bitfield |:-
+58 218600 0 	long_data
+0 11 11 11 11 11 11 1 1 49 1 0 1 1 11 373 100 100 39 
+12 5 0 0 373 100 100 2 100 100 0 80 40 60 0 5 2 4 5 5 
+5 0 0 0 	shrt_cur_stats
+1028 1029 0 	cur_stats
+105 9 104 12 -1	eq: num, posn
+-1	affected_by
+-1	inv
+ 88 0 30	mob#, tmp_num, max_n_game
+4 2 -1  -:| bitfield |:-
+	end_of_crit
+
+90	Start of Mob
+fletcher Milva ~	names
+Milva
+~
+Milva the fletcher stands here patiently.
+~
+Milva is an elderly elf but she makes some of the best bows in these parts.
+Her skin is stark tan and she wears brown clothing with a green cloak. A small
+walking stick helps her to move around but her hands are extraordinarily
+slender.
+
+~
+18 -1  -:| bitfield |:-
+130 800000 0 	long_data
+0 14 14 14 14 14 14 1 1 12 1 0 0 2 0 750 200 200 100 
+20 5 0 0 750 200 200 2 100 100 0 50 50 50 5 5 3 8 10 10 
+10 0 0 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+107 -1	inv
+ 90 0 1	mob#, tmp_num, max_n_game
+4 0 -1  -:| bitfield |:-
+1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 120 40 18 0	shop_data shorts
+48 47 1 0 -1  -:| bitfield |:-
+107 88 467 -1  End of perm_inv
+	end_of_crit
+
+91	Start of Mob
+elven guard ~	names
+an elven guard
+~
+An elven guard stands here.
+~
+The elven guard seems a friendly man but the gait of his stride and the
+thickness of his arms makes you realize he could hurt you if he wished.
+He glances briefly at you sizing you up and continues warily on his way.
+
+~
+18 -1  -:| bitfield |:-
+35 480000 0 	long_data
+0 12 12 12 12 12 12 6 6 10 2 0 1 1 11 600 200 200 100 
+17 5 0 0 600 200 200 2 100 110 0 50 50 50 0 5 4 4 20 20 
+20 0 0 0 	shrt_cur_stats
+1024 1027 0 	cur_stats
+104 12 -1	eq: num, posn
+-1	affected_by
+106 -1	inv
+ 91 0 9	mob#, tmp_num, max_n_game
+4 2 -1  -:| bitfield |:-
+	end_of_crit
+
+93	Start of Mob
+Kytlar baker ~	names
+Kytlar
+~
+Kytlar the baker stands here.
+~
+This baker is an elderly elven woman.
+She wears a white and green outfit covered in flour.
+She greets you with a warm smile.
+
+~
+18 -1  -:| bitfield |:-
+35 600000 0 	long_data
+0 12 12 12 12 12 12 10 10 0 1 0 0 2 0 700 200 200 100 
+20 5 0 0 700 200 200 2 100 100 0 50 50 50 0 5 2 6 10 10 
+10 0 0 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+108 -1	inv
+ 93 0 1	mob#, tmp_num, max_n_game
+4 0 -1  -:| bitfield |:-
+1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 100 100 7 21	shop_data shorts
+61 1 0 -1  -:| bitfield |:-
+108 -1  End of perm_inv
+	end_of_crit
+
+94	Start of Mob
+lyvarn shopkeeper ~	names
+Lyvarn the shopkeeper
+~
+Lyvarn the shopkeeper waits here patiently.
+~
+Lyvarn is a chubby male elf. 
+He wears brown clothing and has a white apron on..his grey hair marks him as
+elderly as he greets you with a warm smile.
+
+~
+18 -1  -:| bitfield |:-
+35 500000 0 	long_data
+0 12 12 12 12 12 12 5 5 -10 1 0 1 8 0 700 200 200 100 
+20 5 0 0 700 200 200 2 100 100 0 70 70 70 0 5 2 6 30 30 
+30 0 0 0 	shrt_cur_stats
+1024 1031 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+110 109 -1	inv
+ 94 0 1	mob#, tmp_num, max_n_game
+4 0 -1  -:| bitfield |:-
+1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 100 100 18 0	shop_data shorts
+59 58 50 1 0 -1  -:| bitfield |:-
+110 109 -1  End of perm_inv
+	end_of_crit
+
+95	Start of Mob
+magic glornl ~	names
+Glornl the Mage
+~
+Glornl the Mage levitates here.
+~
+This elderly man blazes with an aura of power. He is also the owner of the
+elven magic shop and the towns head mage. He wears green robes with archaic
+symbols. His smile is warm for his friends.
+
+~
+18 3 -1  -:| bitfield |:-
+300 900000 0 	long_data
+0 10 17 15 15 15 15 10 10 -30 1 0 1 3 0 700 700 200 200 
+20 5 10 0 700 700 200 2 100 100 0 50 50 50 3 5 2 7 20 20 
+20 0 0 0 	shrt_cur_stats
+1024 1027 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+114 113 -1	inv
+ 95 0 1	mob#, tmp_num, max_n_game
+4 0 -1  -:| bitfield |:-
+1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 100 100 13 0	shop_data shorts
+69 58 56 53 52 51 1 0 -1  -:| bitfield |:-
+114 113 -1  End of perm_inv
+	end_of_crit
+
+96	Start of Mob
+otal ~	names
+Otal
+~
+Otal, the old healer and trainer, stands here.
+~
+This elf is beyond ancient in years. He spends his time passing on knowledge
+to others and telling stories about the Silver lady , his old friend. His green
+clothes are old but very expensive looking. He usually is holding his magic
+staff.
+
+~
+18 -1  -:| bitfield |:-
+400 950000 0 	long_data
+0 14 14 14 14 14 14 15 10 -40 1 0 1 7 11 700 500 500 300 
+20 5 0 0 700 500 500 2 90 110 0 50 50 50 4 5 2 9 10 10 
+10 0 0 0 	shrt_cur_stats
+1024 1031 0 	cur_stats
+115 10 -1	eq: num, posn
+-1	affected_by
+-1	inv
+ 96 0 1	mob#, tmp_num, max_n_game
+4 1 0 -1  -:| bitfield |:-
+9 6 2 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+8 7 6 5 4 3 2 1 -1  -:| bitfield |:-
+1    here starts a valid say_proc_cell.
+silver lady
+Otal tells you, "Hmmm.. The Silver Lady. She is my oldest and best friend.
+She is so kind. For some reason she hates visitors though she welcomes friends
+of mine. Ok, I will tell you where she is. In her living quarters the
+Silver room. Open the north wall by opening leaf. It is a huge silver leaf
+that blends in well with the silver walls. It was a gift from me. Leave me be
+please as I remember her.
+
+~
+na
+0 0	 end of say_proc_cell
+-1    end of say_proc_cells
+Otal stares at you and says "Leave me be!"
+
+~
+Otal stares at you and says "Leave me be!"
+
+~
+Otal stares at you and says "You are no student of mine. Be gone!"
+
+~
+	end_of_crit
+
+98	Start of Mob
+lord lyral ~	names
+Lord Lyral
+~
+The elven lord Lyral stands here thinking.
+~
+Lyral is in his middle years and has grey hair and blue eyes. He spends
+much time in this room planning defenses. He wears a green and blue outfit
+and wields a slender dagger. He was put in charge here by the hidden elven
+base. The lord puts much into proper respect.
+
+~
+18 5 -1  -:| bitfield |:-
+500 1200000 0 	long_data
+0 16 16 16 16 16 16 20 20 -50 2 0 1 1 11 750 500 500 300 
+21 5 0 0 750 500 500 2 100 100 0 50 50 50 0 5 2 9 10 10 
+10 0 0 0 	shrt_cur_stats
+1026 1031 0 	cur_stats
+114 4 118 9 -1	eq: num, posn
+-1	affected_by
+-1	inv
+ 98 0 1	mob#, tmp_num, max_n_game
+17 4 1 0 -1  -:| bitfield |:-
+9 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+1  Start of a mob proc script
+say 0 -1 0	 Trigger Command, targ, actor 
+ sword 
+ look %M;
+ tell %M I am here to protect and help the elves, not you!;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+
+-1 END OF MOB FILE

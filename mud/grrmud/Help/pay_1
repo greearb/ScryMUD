@@ -9,5 +9,5 @@ Syntax:  pay [amount] <<i_th> [target]
 Example:  pay 50 Divine
           pay 25 2.john
 <color=red>
-See Also:  give
+See Also:  give split
 </color></help>

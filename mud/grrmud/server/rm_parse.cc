@@ -1,5 +1,5 @@
-// $Id: rm_parse.cc,v 1.9 1999/07/12 07:14:32 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
+// $Id: rm_parse.cc,v 1.10 2001/03/29 03:02:33 eroper Exp $
+// $Revision: 1.10 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
 
 //
 //ScryMUD Server Code
@@ -40,7 +40,7 @@
 #include "rm_cmds.h"
 #include "parse.h"
 
-	     /******************************************/
+             /******************************************/
 int room::processInput(String& input) {
    String raw_strings[RAW_MAX];
    String cooked_strs[COOKED_MAX];
@@ -66,7 +66,7 @@ int room::processInput(String& input) {
       return 0; //do nothing
    }//if
 
-			/* make sure it ends in newline */
+                        /* make sure it ends in newline */
    j = input.Strlen();
    if (input[j - 1] != '\n') {
       //log("WARNING:  input doesn't end in a newline, process_input.\n");
@@ -188,7 +188,7 @@ int room::processInput(String& input) {
       
       //max input is RAW_MAX words/numbers
       if ((count >= (RAW_MAX - 1)) && (!eos)) {
-	 return -1;
+         return -1;
       }//if
    }//while
    //   log("Done w/while loop.\n");
@@ -221,10 +221,10 @@ int room::processInput(String& input) {
       }//if
       else { //it was a string of some type
          cooked_strs[i] = buf;
-	 if (k == i) {
+         if (k == i) {
             cooked_ints[k] = 1;  //implicit 1
             k++;
-	 }//if
+         }//if
          i++;
       }//else
       j++;
@@ -281,6 +281,9 @@ int room::processInput(String& input) {
          }
       case 'B':
       case 'C':
+         if (strncasecmp(cooked_strs[0], "close", len1) == 0) {
+            return this->doClose(i, &(cooked_strs[1]));
+         }
       case 'D':
       case 'E':
       case 'F':
@@ -291,41 +294,54 @@ int room::processInput(String& input) {
       case 'K':
       case 'L':
       case 'M':
+         if (strncasecmp(cooked_strs[0], "mload", len1) == 0) { 
+            return this->doMload(i);
+         }//if
+         else {
+            return -1;
+         }
       case 'N':
       case 'O':
+         if (strncasecmp(cooked_strs[0], "oload", len1) == 0) { 
+            return this->doOload(i);
+         }//if
+         else {
+            return -1;
+         }
+
       case 'P': 
          if (strncasecmp(cooked_strs[0], "pause", len1) == 0) { 
-	    return this->rm_pause(i);
-	 }//if
+            return this->rm_pause(i);
+         }//if
          else {
             return -1;
          }
       case 'Q':
       case 'R':
          if (strncasecmp(cooked_strs[0], "rm_move", len1) == 0) { 
-	    return this->move(i, &(cooked_strs[1]), j, &(cooked_strs[2]));
-	 }//if
+            return this->move(i, &(cooked_strs[1]), j, &(cooked_strs[2]));
+         }//if
          else if (strncasecmp(cooked_strs[0], "rm_move_all", len1) == 0) { 
-	    return this->move_all(i, &(cooked_strs[1]));
-	 }//if
-         else if (strncasecmp(cooked_strs[0], "rm_transport_all", len1) == 0) { 
-	    return this->transport_all(i);
-	 }//if
+            return this->move_all(i, &(cooked_strs[1]));
+         }//if
          else if (strncasecmp(cooked_strs[0], "rm_transport", len1) == 0) { 
-	    return this->transport(i, &(cooked_strs[1]), j);
-	 }//if
-         else if (strncasecmp(cooked_strs[0], "rm_otransport_all", len1) == 0) { 
-	    return this->otransport_all(i);
-	 }//if
+            return this->transport(i, &(cooked_strs[1]), j);
+         }//if
+         else if (strncasecmp(cooked_strs[0], "rm_transport_all", len1) == 0) { 
+            return this->transport_all(i);
+         }//if
          else if (strncasecmp(cooked_strs[0], "rm_otransport", len1) == 0) { 
-	    return this->otransport(i, &(cooked_strs[1]), j);
-	 }//if
+            return this->otransport(i, &(cooked_strs[1]), j);
+         }//if
+         else if (strncasecmp(cooked_strs[0], "rm_otransport_all", len1) == 0) { 
+            return this->otransport_all(i);
+         }//if
          else if (strncasecmp(cooked_strs[0], "rm_omove", len1) == 0) { 
-	    return this->omove(i, &(cooked_strs[1]), j, &(cooked_strs[2]));
-	 }//if
+            return this->omove(i, &(cooked_strs[1]), j, &(cooked_strs[2]));
+         }//if
          else if (strncasecmp(cooked_strs[0], "rm_omove_all", len1) == 0) { 
-	    return this->omove_all(i, &(cooked_strs[1]));
-	 }//if
+            return this->omove_all(i, &(cooked_strs[1]));
+         }//if
          else {
             return -1;
          }
@@ -339,7 +355,7 @@ int room::processInput(String& input) {
       case 'Y':
       case 'Z':
       default:   
-	 return -1;
+         return -1;
    }//switch
 
    return -1;

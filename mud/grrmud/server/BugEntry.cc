@@ -1,5 +1,5 @@
-// $Id: BugEntry.cc,v 1.11 1999/08/27 03:10:03 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
+// $Id: BugEntry.cc,v 1.12 2001/03/29 03:02:27 eroper Exp $
+// $Revision: 1.12 $  $Author: eroper $ $Date: 2001/03/29 03:02:27 $
 
 //
 //ScryMUD Server Code
@@ -77,12 +77,12 @@ int CommentEntry::read(ifstream& dafile) {
    if (sent == -1)
      return -1;
 
-   date.termedRead(dafile);
+   date.Termed_Read(dafile);
 
    dafile >> reporter;
    dafile.getline(buf, 99);
    
-   report.termedRead(dafile);
+   report.Termed_Read(dafile);
 
    html_safe_report = report.sterilizeForHtml();
    heg_safe_report = report;
@@ -185,14 +185,14 @@ BugEntry::BugEntry(int bn, const char* _reporter, const char* _date,
 int BugEntry::clear() {
    bug_num = room_num = 0;
    cur_state = open;
-   flags.clear();
-   create_date.clear();
-   reporter.clear();
-   assigned_to.clear();
+   flags.Clear();
+   create_date.Clear();
+   reporter.Clear();
+   assigned_to.Clear();
    reports.clearAndDestroy();
-   title.clear();
-   html_safe_title.clear();
-   heg_safe_title.clear();
+   title.Clear();
+   html_safe_title.Clear();
+   heg_safe_title.Clear();
    return 0;
 }//clear
 
@@ -207,7 +207,13 @@ BugEntry& BugEntry::operator=(const BugEntry& src) {
    title = src.title;
    html_safe_title = src.html_safe_title;
    heg_safe_title = src.heg_safe_title;
-   reports.becomeDeepCopyOf(src.reports);
+   reports.clearAndDestroy();
+   
+   Cell<CommentEntry*> cll(src.reports);
+   CommentEntry* ptr;
+   while ((ptr = cll.next())) {
+      reports.append(new CommentEntry(*ptr));
+   }
    return *this;
 }//operatoe=
 
@@ -289,7 +295,7 @@ int BugEntry::read(ifstream& dafile) {
    cur_state = (state)(cs);
    dafile.getline(buf, 99);
 
-   flags.read(dafile);
+   flags.Read(dafile);
 
    dafile.getline(buf, 99);
    create_date = buf;
@@ -301,7 +307,7 @@ int BugEntry::read(ifstream& dafile) {
    dafile >> assigned_to;
    dafile.getline(buf, 99);
 
-   title.termedRead(dafile);
+   title.Termed_Read(dafile);
 
    html_safe_title = title.sterilizeForHtml();
    heg_safe_title = title;
@@ -318,7 +324,7 @@ int BugEntry::write(ofstream& dafile) {
    dafile << bug_num << " " << room_num << " " << (int)cur_state
           << " bug_num, room_num, state\n";
 
-   flags.write(dafile);
+   flags.Write(dafile);
 
    dafile << create_date << endl;
    dafile << reporter << endl;

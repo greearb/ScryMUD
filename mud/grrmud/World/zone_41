@@ -1,0 +1,34 @@
+4183		Room Number
+examples ~	names
+Object Examples
+~
+
+~
+24 23 21 13 -1  -:| bitfield |:-
+1024 0 4183 0 	cur_stats
+-1	affected_by
+-1	inv
+1 4 4184 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+4184		Room Number
+examples ~	names
+Mob Examples
+~
+blah
+
+~
+24 23 21 13 -1  -:| bitfield |:-
+1024 0 4184 0 	cur_stats
+-1	affected_by
+-1	inv
+1 3 4183 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+
+
+-1		END OF FILE MARKER

@@ -1,5 +1,5 @@
-// $Id: trv_spll.cc,v 1.8 1999/08/25 06:35:12 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/25 06:35:12 $
+// $Id: trv_spll.cc,v 1.9 2001/03/29 03:02:36 eroper Exp $
+// $Revision: 1.9 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
 
 //
 //ScryMUD Server Code
@@ -54,7 +54,7 @@ void do_cast_group_heal(critter& agg, int is_canned, int lvl) {
    String buf(100);
    short do_affects = FALSE;
    int spell_num = GROUP_HEAL_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
 
    if (is_canned) {
@@ -78,7 +78,7 @@ void do_cast_group_heal(critter& agg, int is_canned, int lvl) {
    if (do_affects) {
 
       show("You heal the group.\n", agg);
-      SCell<critter*> cll(room_list[agg.getCurRoomNum()].getCrits());
+      Cell<critter*> cll(room_list[agg.getCurRoomNum()].getCrits());
       critter* ptr;
       
       while ((ptr = cll.next())) {
@@ -87,11 +87,11 @@ void do_cast_group_heal(critter& agg, int is_canned, int lvl) {
          }//if
          
          ptr->HP += (d(8, (40 + lvl/2)));
-         if (ptr->HP > ptr->getHpMax())
-            ptr->HP = ptr->getHpMax();
+         if (ptr->HP > ptr->HP_MAX)
+            ptr->HP = ptr->HP_MAX;
          
          Sprintf(buf, "%S heals you and your companions.\n",
-                 agg.getName(ptr));
+                 name_of_crit(agg, ptr->SEE_BIT));
          show(buf, *ptr);
       }//while
       agg.PAUSE += 1;   // increment pause_count
@@ -116,7 +116,7 @@ void do_cast_flame_strike(critter& agg, int is_canned, int lvl) {
    String buf(100);
    short do_affects = FALSE;
    int spell_num = FLAME_STRIKE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
 
    if (is_canned) {
@@ -143,7 +143,8 @@ void do_cast_flame_strike(critter& agg, int is_canned, int lvl) {
 
       rm->makeReadyForAreaSpell();
 
-      agg.getCurRoom()->showAllCept(CS_PILLARS_OF_FIRE);
+      show_all("Pillars of crimson fire spurt up from below!!\n", 
+               room_list[agg.getCurRoomNum()]);
 
       while ((ptr = rm->findNextSpellCritter())) {
          if ((ptr == &agg) || is_grouped(*ptr, agg)) {
@@ -165,7 +166,7 @@ void do_cast_flame_strike(critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "is consumed by %S's pillar of flames!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-               agg_kills_vict(agg, *ptr);
+               agg_kills_vict(&agg, *ptr);
             }//if
             else {
                Sprintf(buf, "You are burned by %S's pillar of flames.\n",
@@ -174,7 +175,7 @@ void do_cast_flame_strike(critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "is burned by %S's pillar of fire!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-               if (!ptr->isFighting(agg)) {
+               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
                   join_in_battle(*ptr, agg);
                }//if
             }//else
@@ -202,7 +203,7 @@ void do_cast_meteorstorm(critter& agg, int is_canned, int lvl) {
    String buf(100);
    short do_affects = FALSE;
    int spell_num = METEORSTORM_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
 
    if (is_canned) {
@@ -229,7 +230,8 @@ void do_cast_meteorstorm(critter& agg, int is_canned, int lvl) {
 
       rm->makeReadyForAreaSpell();
 
-      agg.getCurRoom()->showAllCept(CS_SONIC_BOOMS);
+      show_all("Sonic booms rend the air asunder!!\n", 
+               room_list[agg.getCurRoomNum()]);
 
       while ((ptr = rm->findNextSpellCritter())) {
          if ((ptr == &agg) || is_grouped(*ptr, agg)) {
@@ -252,7 +254,7 @@ void do_cast_meteorstorm(critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "is crushed by %S's meteor!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-               agg_kills_vict(agg, *ptr);
+               agg_kills_vict(&agg, *ptr);
             }//if
             else {
                Sprintf(buf, "You are struck by %S's meteor.\n",
@@ -261,7 +263,7 @@ void do_cast_meteorstorm(critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "is struck by %S's meteor!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-               if (!ptr->isFighting(agg)) {
+               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
                   join_in_battle(*ptr, agg);
                }//if
             }//else
@@ -289,7 +291,7 @@ void do_cast_icestorm(critter& agg, int is_canned, int lvl) {
    String buf(100);
    short do_affects = FALSE;
    int spell_num = ICESTORM_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
 
    if (is_canned) {
@@ -316,7 +318,8 @@ void do_cast_icestorm(critter& agg, int is_canned, int lvl) {
 
       rm->makeReadyForAreaSpell();
 
-      agg.getCurRoom()->showAllCept(CS_ICE_SHARDS);
+      show_all("Large shards of ice start falling from the sky!!\n", 
+               room_list[agg.getCurRoomNum()]);
 
       while ((ptr = rm->findNextSpellCritter())) {
          if ((ptr == &agg) || is_grouped(*ptr, agg)) {
@@ -339,7 +342,7 @@ void do_cast_icestorm(critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "is crushed by %S's ice shard!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-               agg_kills_vict(agg, *ptr);
+               agg_kills_vict(&agg, *ptr);
             }//if
             else {
                Sprintf(buf, "You are struck by %S's ice shard.\n",
@@ -348,7 +351,7 @@ void do_cast_icestorm(critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "is struck by %S's ice shard!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-               if (!ptr->isFighting(agg)) {
+               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
                   join_in_battle(*ptr, agg);
                }//if
             }//else
@@ -376,7 +379,7 @@ void do_cast_firestorm(critter& agg, int is_canned, int lvl) {
    String buf(100);
    short do_affects = FALSE;
    int spell_num = FIRESTORM_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
 
    if (is_canned) {
@@ -403,7 +406,8 @@ void do_cast_firestorm(critter& agg, int is_canned, int lvl) {
 
       rm->makeReadyForAreaSpell();
 
-      agg.getCurRoom()->showAllCept(CS_FLAMING_VITROL);
+      show_all("Globs of flaming vitrol start falling from the sky!!\n", 
+               room_list[agg.getCurRoomNum()]);
       
       while ((ptr = rm->findNextSpellCritter())) {
          if ((ptr == &agg) || is_grouped(*ptr, agg)) {
@@ -425,7 +429,7 @@ void do_cast_firestorm(critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "is burned to a crisp by %S's fire storm!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-               agg_kills_vict(agg, *ptr);
+               agg_kills_vict(&agg, *ptr);
             }//if
             else {
                Sprintf(buf, "You are burned by %S's fire storm.\n",
@@ -434,7 +438,7 @@ void do_cast_firestorm(critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "is burned by %S's fire storm!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-               if (!ptr->isFighting(agg)) {
+               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
                   join_in_battle(*ptr, agg);
                }//if
             }//else
@@ -450,7 +454,7 @@ void do_cast_lightning_storm(critter& agg, int is_canned, int lvl) {
    String buf(100);
    short do_affects = FALSE;
    int spell_num = LIGHTNING_STORM_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    if (is_canned) {
       do_affects = TRUE;
@@ -497,13 +501,13 @@ void do_cast_lightning_storm(critter& agg, int is_canned, int lvl) {
                show("You are exploded by the bolt of lightning.\n", *ptr);
                emote("explodes in the bolt of lightning.", *ptr, 
                      room_list[ptr->getCurRoomNum()], TRUE);
-               agg_kills_vict(agg, *ptr);
+               agg_kills_vict(&agg, *ptr);
             }//if
             else {
                show("You are fried by the bolt of lightning!\n", *ptr);
                emote("is struck by the lightning bolt.", *ptr,
                      room_list[ptr->getCurRoomNum()], TRUE);
-               if (!ptr->isFighting(agg)) {
+               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
                   join_in_battle(*ptr, agg);
                }//if
             }//else
@@ -529,7 +533,7 @@ void do_cast_quake(critter& agg, int is_canned, int lvl) {
    String buf(100);
    short do_affects = FALSE;
    int spell_num = QUAKE_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    if (is_canned) {
       do_affects = TRUE;
@@ -544,9 +548,9 @@ void do_cast_quake(critter& agg, int is_canned, int lvl) {
          show(LOST_CONCENTRATION_MSG_SELF, agg);
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
                room_list[agg.getCurRoomNum()], FALSE);
-	 agg.MANA -= spell_mana / 2;
+         agg.MANA -= spell_mana / 2;
          agg.PAUSE += 1; 
-	 return;
+         return;
       }//else lost concentration
    }//else !canned
 
@@ -556,7 +560,8 @@ void do_cast_quake(critter& agg, int is_canned, int lvl) {
 
       rm->makeReadyForAreaSpell();
 
-      agg.getCurRoom()->showAllCept(CS_EARTH_HEAVES);
+      show_all("The earth heaves violently!!\n",
+               room_list[agg.getCurRoomNum()]);
       
       while ((ptr = rm->findNextSpellCritter())) {
          if ((ptr == &agg) || is_grouped(*ptr, agg)) {
@@ -575,13 +580,13 @@ void do_cast_quake(critter& agg, int is_canned, int lvl) {
                show("You are mortally injured by the heaving earth.\n", *ptr);
                emote("is mortally injured by the heaving earth.", *ptr, 
                      room_list[ptr->getCurRoomNum()], TRUE);
-               agg_kills_vict(agg, *ptr);
+               agg_kills_vict(&agg, *ptr);
             }//if
             else {
                show("You are injured by the earthquake!\n", *ptr);
                emote("is injured by the earthquake.", *ptr,
                      room_list[ptr->getCurRoomNum()], TRUE);
-               if (!ptr->isFighting(agg)) {
+               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
                   join_in_battle(*ptr, agg);
                }//if
             }//else
@@ -619,8 +624,13 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
    int new_room_num = FALSE;
    short done = FALSE, do_affects = FALSE;
    int spell_num = TYPHOON_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
-   
+   int spell_mana = get_mana_cost(spell_num, agg);
+
+   if (agg.getCurRoom()->isBigWater()) {
+      agg.show("Your typhoon fails to find water and fizzles!\n");
+      return;
+   }//if
+
    if (is_canned) {
       do_affects = TRUE;
    }//if is_canned
@@ -634,7 +644,7 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
          show(LOST_CONCENTRATION_MSG_SELF, agg);
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
                room_list[agg.getCurRoomNum()], FALSE);
-	 agg.MANA -= spell_mana / 2;
+         agg.MANA -= spell_mana / 2;
          agg.PAUSE += 1; 
       }//else lost concentration
    }//else !canned
@@ -645,7 +655,8 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
 
       rm->makeReadyForAreaSpell();
 
-      agg.getCurRoom()->showAllCept(CS_SKIES_GROW_DARK);
+      show_all("The skies grow dark and the wind begins to howl!\n", 
+               room_list[agg.getCurRoomNum()]);
       
       short count = 0;
       
@@ -678,7 +689,7 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
             if (mob_can_enter(*ptr, room_list[new_room_num], FALSE)) {
                done = TRUE;
                if ((ptr->POS == POS_PRONE) ||
-                   (d(1, (ptr->getCurWeight() - lvl)) > 50)) {
+                   (d(1, (ptr->CRIT_WT_CARRIED - lvl)) > 50)) {
                   break; //do nothing
                }//if
                if (ptr->isMob()) {
@@ -705,7 +716,7 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
                           *ptr);
                      emote("is crushed into the earth.", *ptr, 
                            room_list[ptr->getCurRoomNum()], TRUE);
-                     agg_kills_vict(agg, *ptr);
+                     agg_kills_vict(&agg, *ptr);
                   }//if
                   else {
                      show("You land painfully on the ground.\n", *ptr);
@@ -753,7 +764,7 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
    int new_room_num = FALSE;
    short done = FALSE, do_affects = FALSE;
    int spell_num = TORNADO_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num);
+   int spell_mana = get_mana_cost(spell_num, agg);
 
    if (is_canned) {
       do_affects = TRUE;
@@ -768,7 +779,7 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
          show(LOST_CONCENTRATION_MSG_SELF, agg);
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
                room_list[agg.getCurRoomNum()], FALSE);
-	 agg.MANA -= spell_mana / 2;
+         agg.MANA -= spell_mana / 2;
          agg.PAUSE += 1; 
       }//else lost concentration
    }//else !canned
@@ -779,8 +790,9 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
 
       rm->makeReadyForAreaSpell();
 
-      agg.getCurRoom()->showAllCept(CS_SKIES_GROW_DARK);
-
+      show_all("The skies grow dark and the wind begins to howl!\n",
+               room_list[agg.getCurRoomNum()]);
+      
       int begin_rm, end_rm;
       int zon = room_list[agg.getCurRoomNum()].getZoneNum();
       begin_rm = ZoneCollection::instance().elementAt(zon).getBeginRoomNum();
@@ -810,7 +822,7 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
             if (mob_can_enter(*ptr, room_list[new_room_num], FALSE)) {
                done = TRUE;
                if ((ptr->POS == POS_PRONE) ||
-                   (d(1, ptr->getCurWeight() - lvl) > 50)) {
+                   (d(1, ptr->CRIT_WT_CARRIED - lvl) > 50)) {
                   break; //do nothing
                }//if
                if (ptr->isMob()) {
@@ -838,7 +850,7 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
                           *ptr);
                      emote("is crushed into the earth.", *ptr, 
                            room_list[ptr->getCurRoomNum()], TRUE);
-                     agg_kills_vict(agg, *ptr);
+                     agg_kills_vict(&agg, *ptr);
                   }//if
                   else {
                      show("You land painfully on the ground.\n", *ptr);

@@ -14,9 +14,14 @@ MAKE=make
 # TODO:  Choose these flags in the ./configure script.
 
 # NOTE:  Use these variables if you are using EGCS and glibc 5
-CCFLAGS = -g -D_GNU_SOURCE -fguiding-decls\
+CCFLAGS = -g -D_GNU_SOURCE $(BG_NEW_GCC_TEMPLATES) $(GUIDING_DECLS) -fhuge-objects \
           -Wall -I$(MUD_HOME)/include
 LDLIBS =  -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
+
+
+# NOTE:  For Cygwin users:
+#        Add this flag (say, after -g) for Cygwin compiles:  -Wno-error
+#        You also need to install the lib-crypt library.
 
 
 # This one works on some modern Slackware systems.
@@ -51,6 +56,9 @@ LDLIBS =  -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
 # (NOTE:  I haven't tested these, but one person was very pleased with
 #         the results and suggested them.) --BEN
 
+# Uncomment these lines if MySQL is available to store the data files
+#LDLIBS += -lmysqlclient
+#CCFLAGS += -DUSEMYSQL
 
 
 ###################################################
@@ -61,8 +69,8 @@ LDLIBS =  -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
 CUR_DATE=`date '+%y.%m.%d'`
 
 #  For distribution purposes  (This is the stable branch now.)
-SCRY_VERSION=2.0.1
-HEGEMON_VERSION=2.0.1
+SCRY_VERSION=2.1.4
+HEGEMON_VERSION=2.1.4
 
 LDFLAGS =  -L$(MUD_HOME)/lib #linker flaggs
 

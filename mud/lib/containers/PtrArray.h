@@ -1,5 +1,5 @@
-// $Id: PtrArray.h,v 1.5 1999/06/26 06:14:17 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
+// $Id: PtrArray.h,v 1.6 2001/03/29 03:02:38 eroper Exp $
+// $Revision: 1.6 $  $Author: eroper $ $Date: 2001/03/29 03:02:38 $
 
 //
 //ScryMUD Server Code
@@ -257,6 +257,96 @@ public:
    int contains(T& val) const ;
 
 };//ObjArray
+
+
+/** This is a fixed length queue.  Meant to append and search very
+ * fast.
+ */
+template <class T> class FixedHistory {
+private:
+   int _cnt;
+
+protected:
+   int len;
+   unsigned int head;
+   T* array;
+   T null_value;
+
+   int init(int sz, T& null_val);
+
+public:
+   FixedHistory() { init(10, (T)(0)); }
+   FixedHistory(int sz) { init(sz, (T)(0)); }
+   FixedHistory(int sz, T& null_val) { init(sz, null_val); }
+   FixedHistory(const FixedHistory<T>& src);
+   FixedHistory<T>& operator=(const FixedHistory<T>& src);
+   virtual ~FixedHistory() { delete[] array; }
+
+   T& elementAt(int idx) const {
+      assert((idx >= 0) && (idx < len));
+      return array[idx];
+   }
+
+   void setElementAt(int idx, T& val) {
+      assert((idx >= 0) && (idx < len));
+      array[idx] = val;
+   }
+
+   void ensureCapacity(int sz);
+
+   int getNextIdx(int from_idx) const { return (head + 1) % len; }
+   int getCurIdx() { return (head % len); }
+   int getPrevIdx(int from_idx) const { return (head - 1) % len; }
+   
+   /** Add to the end of the array, will wrap of course. */
+   void appendElement(T& val) {
+      head++;
+      array[head % len] = val;
+   }
+
+   /** Does not clean up memory, just marks all as un-used. */
+   void clear();
+
+   /** Cleans up all the memory it can. */
+   void purge();
+
+   /** Get the maximum capacity available w/out grabbing more memory. */
+   int getCapacity() const { return len; }
+
+   /** Returns TRUE if the array contains the element 'val', as
+    * determined by operator=
+    */
+   int contains(T& val) const {
+      return (indexOf(val) > 0);
+   }
+
+   /** Returns < 0 if not found, first idx otherwise.  As determined by
+    * operator=
+    */
+   int indexOf(T& val) const {
+      for (int i = 0; i<len; i++) {
+         if (val == array[i]) {
+            return i;
+         }
+      }
+      return -1;
+   }
+
+   /** Returns cout of objects in array, as determined by operator=
+    */
+   int objCount(T& val) const {
+      int retval = 0;
+      for (int i = 0; i<len; i++) {
+         if (val == array[i]) {
+            retval++;
+         }
+      }//for
+      return retval;
+   }//objCount
+   
+};//FixedHistory
+
+
 
 #ifndef __INCLUDE_PTR_ARRAY_CC__
 #define __INCLUDE_PTR_ARRAY_CC__

@@ -1,5 +1,5 @@
-// $Id: door.cc,v 1.12 1999/09/07 07:00:26 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
+// $Id: door.cc,v 1.13 2001/03/29 03:02:31 eroper Exp $
+// $Revision: 1.13 $  $Author: eroper $ $Date: 2001/03/29 03:02:31 $
 
 //
 //ScryMUD Server Code
@@ -35,203 +35,204 @@
 
 int door_data::_cnt = 0;
 
-door_data::door_data () : Entity(), Closable() { //default constructor
+door_data::door_data () { //default constructor
    _cnt++;
+   Clear();
 }//door_data constructor
 
-door_data::door_data (const door_data& source) 
-      : Entity((Entity)(source)),
-        Closable((Closable)(source)) {
+door_data::door_data (const door_data& source) {
    _cnt++;
+   *this = source; 
 }//door
 
 door_data::~door_data () {
    _cnt--;
+   Clear();
 } //destructor
 
-door_data& door_data::operator= (door_data& source) {
+door_data& door_data::operator= (const door_data& source) {
 
    if (this == &source)
       return *this;
 
-   Entity* hack = &source;
-   *((Entity*)(this)) = *hack;
-   *((Closable*)(this)) = (Closable)(source);
+   vis_bit = source.vis_bit;
+   door_num = source.door_num;
+   token_num = source.token_num;
+   key_num = source.token_num;
+   in_zone = source.in_zone;
    
+   door_data_flags = source.door_data_flags; //bitfield overloaded =
+
+   names.becomeDeepCopyOf(source.names);
+   
+   long_desc = source.long_desc;
    return *this;
 }//operator=
 
 
-void door_data::clear() {
-   Entity::clear();
-   Closable::clear();
+void door_data::Clear() {
+   vis_bit = door_num = key_num = token_num = in_zone = 0;
+   names.clearAndDestroy();
+   long_desc.Clear();
+   door_data_flags.off_all();
 }//clear
 
-SafeList<object*>& door_data::getInv() {
-   ::core_dump("door_data::getInv called.\n");
-   return dummy_inv;
-}
+#ifdef USEMYSQL
+void door_data::dbRead(int door_num) {
+   MYSQL_RES* result;
+   MYSQL_ROW row;
+   String query="select * from Doors where DOOR_NUM=";
+   query += door_num;
 
-int door_data::read(istream& da_file, int read_all = TRUE) {
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In door_data::dbRead(int):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         }
+         return;
+      }
+      row=mysql_fetch_row(result);
+
+      vis_bit = atoi(row[DOORTBL_VIS_BIT]);
+      door_num = atoi(row[DOORTBL_DOOR_NUM]);
+      token_num = atoi(row[DOORTBL_TOKEN_NUM]);
+      in_zone = atoi(row[DOORTBL_IN_ZONE]);
+
+      vis_bit |= 1024;
+
+      door_data_flags.set(DDFLAG_OPEN_EXIT, atoi(row[DOORTBL_OPEN_EXIT]));
+      door_data_flags.set(DDFLAG_MAGIC_LOCKABLE, atoi(row[DOORTBL_MAGIC_LOCKABLE]));
+      door_data_flags.set(DDFLAG_CLOSED, atoi(row[DOORTBL_CLOSED]));
+      door_data_flags.set(DDFLAG_LOCKED, atoi(row[DOORTBL_LOCKED]));
+      door_data_flags.set(DDFLAG_PICKABLE, atoi(row[DOORTBL_PICKABLE]));
+      door_data_flags.set(DDFLAG_LOCKABLE, atoi(row[DOORTBL_LOCKABLE]));
+      door_data_flags.set(DDFLAG_MAG_LOCKED, atoi(row[DOORTBL_MAG_LOCKED]));
+      door_data_flags.set(DDFLAG_DESTRUCTABLE, atoi(row[DOORTBL_DESTRUCTABLE]));
+      door_data_flags.set(DDFLAG_CLOSABLE, atoi(row[DOORTBL_CLOSABLE]));
+      door_data_flags.set(DDFLAG_FLIPPABLE, atoi(row[DOORTBL_FLIPPABLE]));
+      door_data_flags.set(DDFLAG_PC_CANT_OPEN, atoi(row[DOORTBL_PC_CANT_OPEN]));
+      door_data_flags.set(DDFLAG_VEHICLE_EXIT, atoi(row[DOORTBL_VEHICLE_EXIT]));
+      door_data_flags.set(DDFLAG_SECRET, atoi(row[DOORTBL_SECRET]));
+      door_data_flags.set(DDFLAG_BLOCKED, atoi(row[DOORTBL_BLOCKED]));
+      door_data_flags.set(DDFLAG_SECRET_WHEN_OPEN, atoi(row[DOORTBL_SECRET_WHEN_OPEN]));
+      door_data_flags.set(DDFLAG_CONSUMES_KEY, atoi(row[DOORTBL_CONSUMES_KEY]));
+      door_data_flags.set(DDFLAG_NO_PASSDOOR, atoi(row[DOORTBL_NO_PASSDOOR]));
+
+      door_data_flags.turn_on(DDFLAG_IN_USE);
+      setComplete();
+      mysql_free_result(result);
+   }
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In door_data::dbRead(int):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+
+   // names
+   query = "select NAME from DoorNames where DOOR_NUM=";
+   query += door_num;
+
+   if (mysql_real_query(database, query, strlen(query))==0) {
+      if ((result=mysql_store_result(database))==NULL) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "In door_data::dbRead(int):\n";
+            mudlog << "Error retrieving query results: "
+                   << mysql_error(database) << endl;
+         }
+         return;
+      }
+      while ((row=mysql_fetch_row(result))) {
+         Put(new String(row[0]), names);
+      }
+      mysql_free_result(result);
+   }
+   else {
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "In door_data::dbRead(int):\n";
+         mudlog << "Error executing query: " << mysql_error(database) << endl;
+      }
+      return;
+   }
+}
+#endif
+
+void door_data::fileRead(ifstream& da_file) {
+   char tmp[81];
    String tmp_str(80);
+   String* string;
+   int test = TRUE;
+   
+   Clear();
    
    if (!da_file) {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  da_file FALSE in door_data read." << endl;
       }
-      return -1;
+      return;
    }
 
-   da_file >> tmp_str;
-   if (isnum(tmp_str)) { // _v2 read
-      setVisBit(atoi(tmp_str) | 1024);
-
-      int test;
-      int key_num;
-      int door_num;
-      int in_zone;
-      int token_num;
-
-      da_file >> door_num >> token_num >> key_num >> in_zone;
-      tmp_str.getLine(da_file, 80);
-
-      setKey(key_num);
-      setIdNum(door_num);
-      setToken(token_num);
-      setZoneNum(in_zone);
-
-      bitfield door_data_flags;
-      door_data_flags.read(da_file);
-      door_data_flags.turn_on(10); //set in use flag no matter what
-      Closable::setFlags(door_data_flags);
-
-      setComplete();  //if we can read it, it's complete!
-      
-      test = TRUE;
-      while (test) {
-         if (!da_file) {
-            if (mudlog.ofLevel(ERR)) {
-               mudlog << "ERROR:  da_file FALSE in door_data read." << endl;
-            }
-            return -1;
-         }
-         
-         da_file >> tmp_str;
-         if (strcmp(tmp_str, "~") == 0) {
-            test = FALSE;
-         }//if
-         else {
-            addName(tmp_str);
-         }//else
-      }//while            
-      tmp_str.getLine(da_file, 80);
+   da_file >> vis_bit >> door_num >> token_num >> key_num >> in_zone;
+   da_file.getline(tmp, 80);         
    
-      tmp_str.termedRead(da_file);
-      addLongDesc(tmp_str);
-   }// if _v2
-   else {
-      MetaTags mt(tmp_str, da_file);
-      Entity::read(da_file, read_all);
-      Closable::read(da_file, read_all);
-   }
-   return 0;
+   vis_bit |= 1024; //hack, forgot blindness bit :P
+   
+   door_data_flags.Read(da_file);
+   door_data_flags.turn_on(10); //set in use flag no matter what
+
+   setComplete();  //if we can read it, it's complete!
+
+   test = TRUE;
+   while (test) {
+      if (!da_file) {
+         if (mudlog.ofLevel(ERROR)) {
+            mudlog << "ERROR:  da_file FALSE in door_data read." << endl;
+         }
+         return;
+      }
+
+      da_file >> tmp_str;
+      if (strcmp(tmp_str, "~") == 0) {
+         test = FALSE;
+      }//if
+      else {
+         string = new String(tmp_str);
+         Put(string, names);
+      }//else
+   }//while            
+   da_file.getline(tmp, 80);         
+   
+   long_desc.Termed_Read(da_file);
 }//Read
 
-void door_data::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
-   String buf(500);
 
-   if (viewer->isUsingClient()) {
-      Sprintf(rslt, "<DOOR_DATA %i>\n", getIdNum());
-   }
-   else {
-      Sprintf(rslt, "Door Data: %i", getIdNum());
-   }
-
-   Entity::toStringStat(viewer, buf, st);
-   rslt.append(buf);
-
-   Closable::toStringStat(viewer, buf, st);
-   rslt.append(buf);
-
-   if (viewer->isUsingClient()) {
-      rslt.append("</DOOR_DATA>\n");
-   }
-}//toStringStat
-
-
-int door_data::write(ostream& da_file) {
-   MetaTags mt(*this);
-   mt.write(da_file);
-
-   Entity::write(da_file);
-   return Closable::write(da_file);
+void door_data::Write(ofstream& da_file) {
+   Cell<String*> cll(names);
+   String* ptr;
+   
+   da_file << vis_bit << " " << door_num << " "
+           << token_num << " " << key_num << " " << in_zone
+           << "\tvbit, door#, token#, key#\n";
+   
+   door_data_flags.Write(da_file);
+   
+   int len = 0;
+   while ((ptr = cll.next())) {
+      len += ptr->Strlen() + 1;
+      if (len > 79) {
+         da_file << endl;
+         len = 0;
+      }//if
+      da_file << *ptr << " ";
+   }//while            
+   da_file << "~" << "\tnames\n";         
+   
+   parse_for_max_80(long_desc);
+   da_file << long_desc << endl << "~" << endl;
 }//Write
-
-String* door_data::getDirection(int dest, int c_bit = ~0, LanguageE lang = English) {
-   KeywordEntry* ls_coll = getNamesCollection(lang);
-
-   if (!ls_coll || ls_coll->isEmpty()) {
-      return &UNKNOWN;
-   }
-   if (!detect(c_bit, getVisBit())) {
-      return &SOMETHING;
-   }//if
-
-   if (dest >= 0) {
-      return getFirstName(c_bit, lang);
-   }//else
-   else {
-      return getLastName(c_bit, lang);
-   }
-}//getDirection
-
-String* door_data::getName(critter* viewer, int dir) {
-   return getName(viewer->getSeeBit(), viewer->getLanguage(), dir);
-}
-
-String* door_data::getName(critter* viewer) {
-   return getName(viewer->getSeeBit(), viewer->getLanguage(), 0);
-}
-
-String* door_data::getName(int c_bit, LanguageE lang, int dest) {
-   KeywordEntry* ls_coll = getNamesCollection(lang);
-
-   if (!ls_coll || ls_coll->isEmpty()) {
-      return &UNKNOWN;
-   }
-
-   Cell<LString*> cell(*ls_coll);
-   String *str, *str2;
-
-   if (!detect(c_bit, getVisBit())) {
-      return &SOMETHING;
-   }//if
-
-   if (dest >= 0) {
-      str = cell.next();
-      str2 = cell.next();
-
-      if (str2)
-	 if (*str2 != "#")
-	    return str2;
-	 else
-	    return str;
-      else  // no specific name, just the direction
-	 return str;
-    }//if
-    else {
-      str = cell.prev();
-      str2 = cell.prev();
-
-      if (str2)
-	 if (*(str2) != "#")
-	    return str2;
-	 else
-	    return str;
-      else  // no specific name, just the direction
-	 return str;
-   }//else
-}//getName(critter* viewer, int direction)...
 
 
 
@@ -240,361 +241,231 @@ String* door_data::getName(int c_bit, LanguageE lang, int dest) {
  
 int door::_cnt = 0;
 
-door::door() : dr_data(NULL), destination(0), distance(0),
-               crit_blocking(NULL), ticks_till_disolve(-1),
-               container(NULL) {
+door::door() {
    _cnt++;
+   dr_data = NULL;
+   crit_blocking = NULL;
+   destination = in_room = 0;
+   distance = 0; /* number of battle rounds it takes to move
+                    can be used to slow ppl/vehicles down when logical */
+   ticks_till_disolve = -1; // don't disolve
 }//door constructor
 
-door::door(door& source) : dr_data(source.dr_data),
-                           destination(source.destination),
-                           distance(source.distance),
-                           crit_blocking(NULL), // Don't copy this. 
-                           ticks_till_disolve(-1),
-                           container(NULL) {
+door::door(const door& source) {
    _cnt++;
+   dr_data = NULL;
+   crit_blocking = NULL;
+   *this = source;
+   ticks_till_disolve = -1;
 }//door copy constructor
 
 door::~door() {
-   affected_by.clearAndDestroy();
-   container = NULL;
    _cnt--;
+   affected_doors.loseData(this);
+   Clear();
 }//destructor
 
-
-SpellDuration* door::isAffectedBy(int spell_num) {
-   Cell<SpellDuration*> cll(affected_by);
-   SpellDuration* ptr;
-
-   while ((ptr = cll.next())) {
-      if (ptr->spell == spell_num)
-         return ptr;
-   }//while
-   return NULL;
-}//is_affected_by
-
-int door::affectedByToString(critter* viewer, String& rslt) {
-   String buf(100);
-   rslt.clear();
-   if (!affected_by.isEmpty()) {
-      rslt.append(cstr(CS_AFFECTED_BY, *viewer));
-      Cell<SpellDuration*> cll(affected_by);
-      SpellDuration* sd_ptr;
-      while ((sd_ptr = cll.next())) {
-         Sprintf(buf, "\t%s.\n", 
-                 (const char*)(SSCollection::instance().getNameForNum(sd_ptr->spell)));
-         rslt.append(buf);
-      }//while
-   }//if
-   else {
-      rslt.append(cstr(CS_NOT_AFFECTED_SPELLS, *viewer));
-   }//else
-   return 0;
-}//affectedByToString
-
-
-int door::getCurRoomNum() {
-   if (getContainer()) {
-      return getContainer()->getCurRoomNum();
-   }
-   if (mudlog.ofLevel(WRN)) {
-      mudlog << "WARNING:  door::getCurRoomNum failed\n";
-   }
-   return 0;
-}//getCurRoomNum
-
-
-void door::clear() {
+void door::Clear() {
    dr_data = NULL; //do not delete data pointed too, its in static arrays
    crit_blocking = NULL;
-   ticks_till_disolve = -1;
+   destination = in_room = 0;
+   distance = 0;
    affected_by.clearAndDestroy();
-   container = NULL;
+   ticks_till_disolve = -1;
 }//Clear()
 
 
-door& door::operator= (door& source) {
+door& door::operator= (const door& source) {
 
    if (this == &source)
       return *this;
+
+   Clear();
    
-   affected_by.becomeDeepCopyOf(source.affected_by);
-
-   //Shallow copy is preferred here.
-   dr_data = source.dr_data;
-
+   if (!source.dr_data) {
+      mudlog.log(ERROR, "ERROR:  assigning with empty door as source.\n");
+      return *this;
+   }//if
+   
+   if (!dr_data) {
+      dr_data = new door_data(*(source.dr_data));
+   }//if 
+   else {
+      *dr_data = *(source.dr_data);
+   }//else
    destination = source.destination;
    distance = source.distance;
+   
+   Cell<stat_spell_cell*> cll(source.affected_by);
+   stat_spell_cell* ptr;
+   while ((ptr = cll.next())) {
+      Put(new stat_spell_cell(*ptr), affected_by);
+   }//while
+   
    crit_blocking = source.crit_blocking;
    ticks_till_disolve = source.ticks_till_disolve;
-   container = source.container;
+   in_room = source.in_room;
    return *this;
 }//operator=
 
-int door::read(istream& da_file, int read_all = TRUE) {
+void door::Read(ifstream& da_file) {
    int data_index;
    int i, tmp;
-   String buf(100);
-   
-   clear();
+   char buf[82];
+  
+   Clear();
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERR)) {
-         mudlog << "ERROR:  da_file FALSE in door read, top" << endl;
+      if (mudlog.ofLevel(ERROR)) {
+         mudlog << "ERROR:  da_file FALSE in door read." << endl;
       }
-      ::core_dump(__FUNCTION__);
-      return -1;
+      return;
    }
 
-   da_file >> buf;
-
-   if (isnum(buf)) { //if _v2
-      data_index = atoi(buf);
-      if (!check_l_range(data_index, 0, NUMBER_OF_DOORS, mob_list[0], FALSE)) {
-         mudlog.log(ERR, "ERROR:  door_index is out of range.\n");
-         data_index = 1; //at least it won't crash this way
-      }//if
-      /* ok, got good data_index */
+   da_file >> data_index;
+   if (!check_l_range(data_index, 0, NUMBER_OF_DOORS, mob_list[0], FALSE)) {
+      mudlog.log(ERROR, "ERROR:  door_index is out of range.\n");
+      data_index = 1; //at least it won't crash this way
+   }//if
+   /* ok, got good data_index */
    
-      dr_data = &(door_list[data_index]);
-      da_file >> destination;
-      da_file >> distance;
+   dr_data = &(door_list[data_index]);
+   da_file >> destination;
+   da_file >> distance;
    
-      buf.getLine(da_file, 80);
-      da_file >> i;
-      while (i != -1) { //affected by
-         if (!da_file) {
-            if (mudlog.ofLevel(ERR)) {
-               mudlog << "ERROR:  da_file FALSE in door read." << endl;
-            }
-            ::core_dump(__FUNCTION__);
-            return -1;
+   /* comment this out for reading original, DB_UPGRADE */
+   da_file.getline(buf, 80);
+   da_file >> i;
+   int is_affected = FALSE;
+   while (i != -1) { //affected by
+      if (!da_file) {
+         if (mudlog.ofLevel(ERROR)) {
+            mudlog << "ERROR:  da_file FALSE in door read." << endl;
          }
-
-         da_file >> tmp;
-         SpellDuration* sd = new SpellDuration(i, tmp);
-         addAffectedBy(sd);
-         da_file >> i;
-      }//while
-      buf.getLine(da_file, 80);
-   }//if _v2
-   else {
-      MetaTags mt(buf, da_file);
-
-      da_file >> data_index;
-      if (!check_l_range(data_index, 0, NUMBER_OF_DOORS, mob_list[0], FALSE)) {
-         mudlog.log(ERR, "ERROR:  door_index is out of range.\n");
-         data_index = 1; //at least it won't crash this way
-      }//if
-      /* ok, got good data_index */
-   
-      dr_data = &(door_list[data_index]);
-      da_file >> destination;
-      da_file >> distance;
-      buf.getLine(da_file, 80);
-
-      da_file >> i;
-      while (i != -1) { //affected by
-         if (!da_file) {
-            if (mudlog.ofLevel(ERR)) {
-               mudlog << "ERROR:  da_file FALSE in door read." << endl;
-            }
-            return -1;
-         }
-
-         da_file >> tmp;
-         SpellDuration* sd = new SpellDuration(i, tmp);
-         addAffectedBy(sd);
-         da_file >> i;
-      }//while   
-      buf.getLine(da_file, 80);
-
-   }//else, _v3
-   
-   if (isAffected()) {
-      door* hack = this;
-      affected_doors.appendUnique(hack);
-   }
-   return 0;
-}// read()
-
-
-void door::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
-   String buf(500);
-
-   if (viewer->isUsingClient()) {
-      rslt = "<DOOR>\n";
-   }
-   else {
-      rslt = "Door:\n";
-   }
-
-   if (viewer->isImmort()) {
-      Sprintf(buf, "Destination: %i  Distance: %i  Ticks-till-Disolve: %i\n",
-              destination, distance, ticks_till_disolve);
-      rslt.append(buf);
-
-      if (crit_blocking) {
-         Sprintf(buf, "Blocked by: %S\n", crit_blocking->getName(viewer));
-         rslt.append(buf);
+         return;
       }
-   }
 
-   if (dr_data) {
-      // This is where the interesting stuff is kept.
-      dr_data->toStringStat(viewer, buf, st);
-      rslt.append(buf);
-   }
-   if (viewer->isUsingClient()) {
-      rslt.append("</DOOR>\n");
-   }
-}//toStringStat
-
-
-int door::write(ostream& da_file) {
-   MetaTags mt(*this);
-   mt.write(da_file);
-
-   da_file << dr_data->getIdNum() << " " << destination << " "
-           << distance << "dr_data#, dest, dist\n";
-
-   Cell<SpellDuration*> cll(affected_by);
-   SpellDuration* ptr;
-   while ((ptr = cll.next())) {
-      da_file << ptr->spell << " " << ptr->duration << " ";
-   }
-   da_file << "-1  //affected-by\n";
-   return 0;
-}//Write()
-
-int door::nameIsSecret(const String* name) {
-   Cell<KeywordEntry*> col_cell(dr_data->getNames());
-   String* ptr;
-   int len = name->Strlen();
-
-   if (len == 0)
-      return FALSE;
-
-   KeywordEntry* coll;
-   while ((coll = col_cell.next())) {
-      Cell<LString*> cll(*coll);
-
-      if (destination >= 0) { //if positive, go from top
-         ptr = cll.next();
-         while ((ptr = cll.next())) {
-            if (*ptr == "#")
-               break; // didn't find it
-            if (strncasecmp(*name, *ptr, len) == 0)
-               return TRUE;
-         }//while
-         return FALSE;
-      }//if
-      else {
-         ptr = cll.prev();
-         while ((ptr = cll.prev())) {
-            if (*ptr == "#")
-               break; // didn't find it
-            if (strncasecmp(*name, *ptr, len) == 0)
-               return TRUE;
-         }//while
-         return FALSE;
-      }//else
+      is_affected = TRUE;
+      da_file >> tmp;
+      Put(new stat_spell_cell(i, tmp), affected_by);
+      da_file >> i;
    }//while
-   return FALSE;
-}//nameIsSecret
+   
+   if (is_affected) {
+      affected_doors.gainData(this);
+   }
+
+   da_file.getline(buf, 80);
+}// Read()
+
+
+void door::Write(ofstream& da_file) {
+   int count = 0;
+   
+   da_file << dr_data->door_num << " " << destination << " "
+           << distance << " door# dest# distance\n";
+   
+   Cell<stat_spell_cell*> cll(affected_by);
+   stat_spell_cell* ptr;
+   while ((ptr = cll.next())) {
+      da_file << ptr->stat_spell << " " << ptr->bonus_duration << " ";
+      if (++count > 20) {
+         da_file << endl;
+         count = 0;
+      }//if
+   }//while
+   da_file << -1 << "\tdoor Affected_Bye (end of door)\n";
+}//Write()
 
 
 
    ///******************  Static Functions ***************************///
 
 /* static */
-door* door::findDoor(SafePtrList<door> &lst, const int i_th,
-                     const String* name, critter* viewer) {
-   int foo;
-   return findDoor(lst, i_th, name, foo, viewer);
+door* door::findDoor(const PtrList<door> &lst, const int i_th,
+                     const String* name, const int see_bit,
+                     const room& rm) {
+   int foo = 0;
+   return findDoor(lst, i_th, name, see_bit, rm, foo);
 }
 
-door* door::findDoor(SafePtrList<door> &lst, const int i_th,
-                     const String* name, int& count_sofar,
-                     critter* viewer) {
+door* door::findDoor(const PtrList<door> &lst, const int i_th,
+                     const String* name, const int see_bit,
+                     const room& rm, int& count_sofar) {
+   return door::findDoor(lst, i_th, name, see_bit, rm.getVisBit(), count_sofar);
+}
 
-   Cell<LString*> names_cll;
-   SCell<door*> cell(lst);
+door* door::findDoor(const PtrList<door> &lst, const int i_th,
+                     const String* name, const int see_bit,
+                     const int rm_vis_bit) {
+   int foo = 0;
+   return findDoor(lst, i_th, name, see_bit, rm_vis_bit, foo);
+}
+
+/* static */
+door* door::findDoor(const PtrList<door> &lst, const int i_th,
+                     const String* name, const int see_bit,
+                     const int rm_vis_bit, int& count_sofar) {
+   Cell<String*> char_cell;
+   Cell<door*> cell(lst);
    door* door_ptr;
    int count = 0, ptr_v_bit, len;
-   LString *string;
-   KeywordEntry* col_ptr;
-
-   //log("in have_door_named");
-
-   int rm_vis_bit = 0;
-   LanguageE lang = English;
-   int pc_see_bit = ~0;
-   if (viewer) {
-      rm_vis_bit = viewer->getCurRoom()->getVisBit();
-      lang = viewer->getLanguage();
-      pc_see_bit = viewer->getSeeBit();
-   }
-
-   if (!name) {
-      mudlog.log(WRN, "ERROR:  name is NULL in have_door_named.\n");
-      return NULL;
-   }//if
+   String *string;
 
    if ((len = name->Strlen()) == 0) {
-      mudlog.log(WRN, "WARNING:  len was zero in have_door_named.\n");
+      //mudlog.log(WRN, "WARNING:  len was zero in have_door_named.\n");
       return NULL;
    }//if
 
-
    while ((door_ptr = cell.next())) {
-      ptr_v_bit = (door_ptr->getVisBit() | rm_vis_bit); 
-      if (detect(pc_see_bit, ptr_v_bit)) {
-         col_ptr = door_ptr->dr_data->getNamesCollection(lang);
-         col_ptr->head(names_cll);
-	 if (door_ptr->destination < 0) {
-	    string = names_cll.prev(); 
-	    while (*string != "#") {
-	       if (strncasecmp(*string, *name, len) == 0) {
-		  count++;
-                  count_sofar++;
-		  if (count == i_th) {
-		     return door_ptr;
-		  }//if
-                  break;
-	       }//if
-	       string = names_cll.prev();
-	    }//while
-	 }//if
-	 else {
-	    while ((string = names_cll.next())) {
-	       if (*string == "#") {
-		  break;
-	       }//if
-	       else {
-		  if (strncasecmp(*string, *name, name->Strlen()) == 0) {
-		     count++;
+      ptr_v_bit = (door_ptr->DOOR_VIS_BIT | rm_vis_bit); 
+      if (detect(see_bit, ptr_v_bit)) {
+         door_ptr->dr_data->names.head(char_cell);
+         if (door_ptr->destination < 0) {
+            string = char_cell.prev();
+            if (string) {
+               while (*string != "#") {
+                  if (strncasecmp(*string, *name, len) == 0) {
+                     count++;
                      count_sofar++;
-		     if (count == i_th) {
-			return door_ptr;
-		     }//if
+                     if (count == i_th) {
+                        return door_ptr;
+                     }//if
                      break;
-		  }//if
-	       }//else
-	    }//while
-	 }//if
+                  }//if
+                  string = char_cell.prev();
+               }//while
+            }
+         }//if
+         else {
+            while ((string = char_cell.next())) {
+               if (*string == "#") {
+                  break;
+               }//if
+               else {
+                  if (strncasecmp(*string, *name, name->Strlen()) == 0) {
+                     count++;
+                     count_sofar++;
+                     if (count == i_th) {
+                        return door_ptr;
+                     }//if
+                     break;
+                  }//if
+               }//else
+            }//while
+         }//if
       }//if
    }//while
    return NULL;
 }//haveDoor
 
-door* door::findDoorByDest(SafePtrList<door>& lst, int dest_room) {
-   SCell<door*> cll(lst);
+door* door::findDoorByDest(const PtrList<door>& lst, int dest_room) {
+   Cell<door*> cll(lst);
    door* ptr;
 
    while ((ptr = cll.next())) {
       if (abs(ptr->destination) == dest_room) {
-	 return ptr;
+         return ptr;
       }//if
    }//while
    return ptr;
@@ -607,50 +478,18 @@ room* door::getDestRoom() {
 
 
 String* door::getDirection() {
-   String* ptr = NULL;
-   if (destination < 0)
-      ptr = dr_data->getLastName();
-   else
-      ptr = dr_data->getFirstName();
-   
-   if (ptr)
-      return ptr;
-   else
-      return &UNKNOWN;
-}//getDirection
+   return direction_of_door(*this);
+}
 
 
-const char* door::getAbrevDir() {
-   String* dir;
+stat_spell_cell* door::isAffectedBy(int spell_num) {
+   Cell<stat_spell_cell*> cll(affected_by);
+   stat_spell_cell* sp;
+   while ((sp = cll.next())) {
+      if (sp->stat_spell == spell_num) {
+         return sp;
+      }
+   }//while
+   return NULL;
+}
 
-   if (destination < 0) 
-      dir = dr_data->getLastName();
-   else
-      dir = dr_data->getFirstName();
-
-   if (dir == NULL) {
-      return "??";
-   }//if
-
-   if (strcasecmp(*dir, "north") == 0) 
-      return "N";
-   else if (strcasecmp(*dir, "northwest") == 0)
-      return "NW";
-   else if (strcasecmp(*dir, "northeast") == 0)
-      return "NE";
-   else if (strcasecmp(*dir, "east") == 0)
-      return "E";
-   else if (strcasecmp(*dir, "south") == 0)
-      return "S";
-   else if (strcasecmp(*dir, "southeast") == 0)
-      return "SE";
-   else if (strcasecmp(*dir, "southwest") == 0)
-      return "SW";
-   else if (strcasecmp(*dir, "west") == 0)
-      return "W";
-   else if (strcasecmp(*dir, "up") == 0)
-      return "U";
-   else if (strcasecmp(*dir, "down") == 0)
-      return "D";
-   else return "??";
-}//abbrev_dir_of_door

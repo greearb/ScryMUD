@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.30 1999/09/06 02:24:28 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
+// $Id: misc2.cc,v 1.31 2001/03/29 03:02:32 eroper Exp $
+// $Revision: 1.31 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
 
 //
 //ScryMUD Server Code
@@ -25,7 +25,7 @@
 
 ///*************************** misc2.cc ****************************///
 ///********  Headers for this file are found in misc2.h   ************///
-///********  Bitfield masks defined here as well.	 ************///
+///********  Bitfield masks defined here as well.         ************///
 
 #include "misc.h"
 #include "misc2.h"
@@ -51,6 +51,28 @@
 // Returns a newly allocated SMOB, or NULL if a problem is
 // encountered.
 critter* load_player_shop_owner(int mob_num) {
+   switch (config.useMySQL) {
+#ifdef USEMYSQL
+      case true:
+         return db_load_player_shop_owner(mob_num);
+         break;
+#endif
+      case false:
+         return file_load_player_shop_owner(mob_num);
+         break;
+   }
+   return NULL;
+}
+#ifdef USEMYSQL
+critter* db_load_player_shop_owner(int mob_num) {
+   critter* sk = new critter();
+   sk->dbRead(mob_num, 0, true);
+   sk->short_cur_stats[26] = 1;
+   affected_mobs.append(sk);
+   return sk;
+}
+#endif
+critter* file_load_player_shop_owner(int mob_num) {
    String buf(100);
 
    if (mob_list[mob_num].isInUse()) {
@@ -62,14 +84,16 @@ critter* load_player_shop_owner(int mob_num) {
       
       if (dafile) {
          critter* sk = new critter();
-         sk->read(dafile, TRUE); //read all inventory.
+         sk->fileRead(dafile, TRUE); //read all inventory.
 
          // Make sure it's labeled as a SMOB
          sk->short_cur_stats[26] = 1; /* make it a SMOB */
+         affected_mobs.append(sk);
+
          return sk;
       }//if
       else {
-         if (mudlog.ofLevel(ERR)) {
+         if (mudlog.ofLevel(ERROR)) {
             mudlog << "ERROR:  Could not open Player Shop Keeper -:"
                    << buf << ":- for reading." << endl;
          }//if
@@ -77,7 +101,7 @@ critter* load_player_shop_owner(int mob_num) {
       }//else
    }//if
    else {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  load_player_shop_owner, mob_num: "
                 << mob_num << " is not in use." << endl;
       }//if
@@ -104,11 +128,11 @@ int save_player_shop_owner(critter& pc) {
       ofstream dafile(buf);
       
       if (dafile) {
-         pc.write(dafile);
+         pc.Write(dafile);
          return TRUE;
       }//if
       else {
-         if (mudlog.ofLevel(ERR)) {
+         if (mudlog.ofLevel(ERROR)) {
             mudlog << "ERROR:  Could not open Player Shop Keeper -:"
                    << buf << ":- for writing." << endl;
          }//if
@@ -116,7 +140,7 @@ int save_player_shop_owner(critter& pc) {
       }//else
    }//if
    else {
-      if (mudlog.ofLevel(ERR)) {
+      if (mudlog.ofLevel(ERROR)) {
          mudlog << "ERROR:  save_player_shop_owner, mob_num: "
                 << pc.getIdNum() << " is not in use." << endl;
       }//if
@@ -124,6 +148,82 @@ int save_player_shop_owner(critter& pc) {
    }//else
 }//save_player_shop_owner
 
+object* load_player_box(int box_num) {
+#ifdef USEMYSQL
+   if (config.useMySQL)
+      return db_load_player_box(box_num);
+   else
+#endif
+      return file_load_player_box(box_num);
+}
+
+#ifdef USEMYSQL
+object* db_load_player_box(int box_num) {
+   object* box = new object();
+   box->dbRead(box_num, -1, true);
+   return box;
+}
+#endif
+
+object* file_load_player_box(int box_num) {
+   String buf(100);
+
+   if (obj_list[box_num].isInUse()) {
+      Sprintf(buf, "./PlayerSacks/%i", box_num);
+
+      ifstream dafile(buf);
+      
+      if (dafile) {
+         object* box = new object();
+         box->fileRead(dafile, TRUE);
+
+         return box;
+      }
+      else {
+         if (mudlog.ofLevel(ERROR)) {
+            mudlog << "ERROR:  Could not open Player Box -:"
+                   << buf << ":- for reading." << endl;
+         }
+         return NULL;
+      }
+   }
+   else {
+      if (mudlog.ofLevel(ERROR)) {
+         mudlog << "ERROR:  load_player_box, box_num: "
+                << box_num << " is not in use." << endl;
+      }
+      return NULL;
+   }
+}
+
+int save_player_box(object& box) {
+   String buf(100);
+
+   if(obj_list[box.getIdNum()].isInUse()) {
+      Sprintf(buf, "./PlayerSacks/%i", box.getIdNum());
+
+      ofstream dafile(buf);
+
+      if(dafile) {
+         box.Write(dafile);
+         return TRUE;
+      }
+      else {
+         if (mudlog.ofLevel(ERROR)) {
+            mudlog << "ERROR:  Could not open Player Owned Box -:"
+                   << box.getIdNum() << ":- for writing." << endl;
+         }
+         return FALSE;
+      }
+   }
+   else {
+      if (mudlog.ofLevel(ERROR)) {
+         mudlog << "ERROR:  save_player_box, obj_num: "
+                << box.getIdNum() << " is not in use." << endl;
+      }
+      return FALSE;
+   }
+}
 
 int core_dump(const char* msg) {
    cerr << "In my_assert, msg:  " << msg << endl;
@@ -191,14 +291,30 @@ short a_will_help_b_against_c(critter& a, critter& b, critter& c) {
 
   
 void lose_fly(critter& pc, short do_msg = FALSE) {
-  if (do_msg)
-    show("Good thing gravity doesn't work all that well yet!\n", pc);
+  int is_dead;
+  if (do_msg) {
+    show("You glance down just in time to see the ground rushing up to meet you.\n", pc);
+    pc.emote("suddenly falls out of the sky.\n");
+  }
+
+  if (ROOM.needsFly() && (ROOM.getFallTo() != 0)) {
+    pc.doGoToRoom(ROOM.getFallTo(), "from the sky", NULL, is_dead, 
+                  pc.getCurRoomNum(), 1, TRUE);
+  }
+
+  if (!is_dead)
+    look(1, &NULL_STRING, pc, TRUE);
 }//lose_fly
 
+void unpetrify(critter& pc, short do_msg = FALSE) {
+  if (do_msg)
+    show("Your skin returns to its origional rubbery texture.\n", pc);
+  pc.CRIT_FLAGS.turn_off(14);
+}//unpetrify
 
 void show_stat_affects(object& obj, critter& pc) {
-   Cell<StatBonus*> cll(obj.stat_affects);
-   StatBonus* ptr;
+   Cell<stat_spell_cell*> cll(obj.stat_affects);
+   stat_spell_cell* ptr;
    String buf(100);
 
    if (obj.stat_affects.isEmpty()) {
@@ -206,149 +322,149 @@ void show_stat_affects(object& obj, critter& pc) {
    }
    
    while ((ptr = cll.next())) {
-      if (ptr->stat == 1) {
-         Sprintf(buf, "Strength[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      if (ptr->stat_spell == 1) {
+         Sprintf(buf, "Strength[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 2) {
-         Sprintf(buf, "Inteligence[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 2) {
+         Sprintf(buf, "Inteligence[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 3) {
-         Sprintf(buf, "Constitution[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 3) {
+         Sprintf(buf, "Constitution[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 4) {
-         Sprintf(buf, "Charisma[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 4) {
+         Sprintf(buf, "Charisma[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 5) {
-         Sprintf(buf, "Wisdom[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 5) {
+         Sprintf(buf, "Wisdom[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 6) {
-         Sprintf(buf, "Dexterity[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 6) {
+         Sprintf(buf, "Dexterity[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 7) {
-         Sprintf(buf, "Hit (chance)[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 7) {
+         Sprintf(buf, "Hit (chance)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 8) {
-         Sprintf(buf, "Damage[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 8) {
+         Sprintf(buf, "Damage[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 9) {
-         Sprintf(buf, "AC (armor)[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 9) {
+         Sprintf(buf, "AC (armor)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 10) {
-         Sprintf(buf, "Attacks[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 10) {
+         Sprintf(buf, "Attacks[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 15) {
-         Sprintf(buf, "HP (current)[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 15) {
+         Sprintf(buf, "HP (current)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 16) {
+      else if (ptr->stat_spell == 16) {
          Sprintf(buf, "Mana (current)[%i]:%P25 %i\n",
-                 ptr->stat, ptr->bonus);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 17) {
+      else if (ptr->stat_spell == 17) {
          Sprintf(buf, "Movement (current)[%i]:%P25 %i\n",
-                 ptr->stat, ptr->bonus);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 18) {
-         Sprintf(buf, "Alignment[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 18) {
+         Sprintf(buf, "Alignment[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 22) {
-         Sprintf(buf, "Practices[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 22) {
+         Sprintf(buf, "Practices[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 23) {
-         Sprintf(buf, "HP (max)[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 23) {
+         Sprintf(buf, "HP (max)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 24) {
-         Sprintf(buf, "Mana (max)[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 24) {
+         Sprintf(buf, "Mana (max)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 25) {
-         Sprintf(buf, "Movement (max)[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 25) {
+         Sprintf(buf, "Movement (max)[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 27) {
+      else if (ptr->stat_spell == 27) {
          Sprintf(buf, "Damage Recieved Modifier[%i]:%P25 %i\n",
-                 ptr->stat, ptr->bonus);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 28) {
+      else if (ptr->stat_spell == 28) {
          Sprintf(buf, "Damage Given Modifier[%i]:%P25 %i\n",
-                 ptr->stat, ptr->bonus);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 29) {
+      else if (ptr->stat_spell == 29) {
          Sprintf(buf, "Heat Resistance[%i]:%P25 %i\n",
-                 ptr->stat, ptr->bonus);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 30) {
+      else if (ptr->stat_spell == 30) {
          Sprintf(buf, "Cold Resistance[%i]:%P25 %i\n",
-                 ptr->stat, ptr->bonus);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 31) {
+      else if (ptr->stat_spell == 31) {
          Sprintf(buf, "Electrical Resistance[%i]:%P25 %i\n",
-                 ptr->stat, ptr->bonus);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 32) {
-         Sprintf(buf, "Spell Resistance[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 32) {
+         Sprintf(buf, "Spell Resistance[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 35) {
+      else if (ptr->stat_spell == 35) {
          Sprintf(buf, "Bare Hand Dice Count[%i]:%P25 %i\n",
-                 ptr->stat, ptr->bonus);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 36) {
+      else if (ptr->stat_spell == 36) {
          Sprintf(buf, "Bare Hand Dice Sides[%i]:%P25 %i\n",
-                 ptr->stat, ptr->bonus);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 37) {
+      else if (ptr->stat_spell == 37) {
          Sprintf(buf, "HP Regeneration[%i]:%P25 %i\n",
-                 ptr->stat, ptr->bonus);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 38) {
+      else if (ptr->stat_spell == 38) {
          Sprintf(buf, "Mana Regeneration[%i]:%P25 %i\n",
-                 ptr->stat, ptr->bonus);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 39) {
+      else if (ptr->stat_spell == 39) {
          Sprintf(buf, "Movement Regeneration[%i]:%P25 %i\n",
-                 ptr->stat, ptr->bonus);
+                 ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 100) {
-         Sprintf(buf, "Hunger[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 100) {
+         Sprintf(buf, "Hunger[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 101) {
-         Sprintf(buf, "Thirst[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 101) {
+         Sprintf(buf, "Thirst[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
-      else if (ptr->stat == 102) {
-         Sprintf(buf, "Drugged[%i]:%P25 %i\n", ptr->stat, ptr->bonus);
+      else if (ptr->stat_spell == 102) {
+         Sprintf(buf, "Drugged[%i]:%P25 %i\n", ptr->stat_spell, ptr->bonus_duration);
          show(buf, pc);
       }//if
       else {
-         Sprintf(buf, "Unknown [%i]:, value: [%i]\n", ptr->stat,
-                 ptr->bonus);
+         Sprintf(buf, "Unknown [%i]:, value: [%i]\n", ptr->stat_spell,
+                 ptr->bonus_duration);
          show(buf, pc);
       }//if
 
@@ -377,11 +493,12 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
   char chr;
   int mana_cost = 0;
 
-  mana_cost = SSCollection::instance().getSS(spell_num).getManaCost();
+  // mana_cost = SSCollection::instance().getSS(spell_num).getManaCost();
+  mana_cost = get_mana_cost(spell_num, pc);
 
   if (pc.isMob()) {
      Sprintf(buf, "ERROR:  mob casting spell# %i.\n", spell_num);
-     mudlog.log(ERR, buf);
+     mudlog.log(ERROR, buf);
      return FALSE;
   }//if
 
@@ -517,25 +634,31 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
         }//if
      }//if
      else if (chr == 'V') {
-        // Let ppl do whatever they want to themselves!!
-        if (ROOM.isHaven() && (&pc != vict)) {
+        if (ROOM.isZlocked() && !(pc.doesOwnRoom(ROOM) || pc.getImmLevel() > 8)) {
            if (do_msg) {
-              show("Violence is not permitted here.\n", pc);
-           }//if
+              pc.show("You don't own this room, and the zone is locked.\n");
+           }
            return FALSE;
-        }//if
-        else if (ROOM.isNoPK() && vict && vict->pc && (&pc != vict)) {
-           if (do_msg) {
-              show("Player killing is not allowed here.\n", pc);
+        }
+        if (!pc.isImmort()) {
+           if (ROOM.isHaven() && (&pc != vict)) {
+              if (do_msg) {
+                 show("Violence is not permitted here.\n", pc);
+              }//if
+              return FALSE;
            }//if
-           return FALSE;
+           else if (ROOM.isNoPK() && vict && vict->pc && (&pc != vict)) {
+              if (do_msg) {
+                 show("Player killing is not allowed here.\n", pc);
+              }//if
+              return FALSE;
+           }//if
         }//if
      }//if
   }//for
   return TRUE;
 }//ok_to_do_action
 
-      
 
 critter* check_for_diversions(critter& pc, char* tests, critter& agg) {
   char chr;
@@ -548,45 +671,84 @@ critter* check_for_diversions(critter& pc, char* tests, critter& agg) {
   for (i = 0; (chr = tests[i]); i++) {
     if (chr == 'S') {
       if (pc.temp_crit && pc.SHIELDED_BY) {
-	if (d(1, 175) > pc.SHIELDED_BY->DEX + 
-	    get_percent_lrnd(SHIELD_SKILL_NUM, *(pc.SHIELDED_BY))) {
-	  if (ROOM.haveCritter(pc.SHIELDED_BY)) {
+        if (d(1, 175) > pc.SHIELDED_BY->DEX + 
+            get_percent_lrnd(SHIELD_SKILL_NUM, *(pc.SHIELDED_BY))) {
+          if (ROOM.haveCritter(pc.SHIELDED_BY)) {
              return pc.SHIELDED_BY;
           }//if
-	}//if
+        }//if
       }//if
     }//if
     else if (chr == 'G') {
       if (pc.temp_crit) {
-	if (pc.GUARDED_BY) {
-	  if (d(1, 175) > pc.GUARDED_BY->DEX +
-	      get_percent_lrnd(GUARD_SKILL_NUM, *(pc.GUARDED_BY))) {
-	    if (ROOM.haveCritter(pc.GUARDED_BY)) {
+        if (pc.GUARDED_BY) {
+          if (d(1, 175) > pc.GUARDED_BY->DEX +
+              get_percent_lrnd(GUARD_SKILL_NUM, *(pc.GUARDED_BY))) {
+            if (ROOM.haveCritter(pc.GUARDED_BY)) {
                return pc.GUARDED_BY;
             }
-	  }//if
-	}//if
+          }//if
+        }//if
       }//if
     }//if Guard
     else if (chr == 'M') {
       if (pc.mirrors > 0) {
         if (d(1, pc.mirrors) > 1) {
-	  pc.mirrors--;
-	  Sprintf(buf, "%S shatters a mirror image of you.\n",
-		  name_of_crit(agg, pc.SEE_BIT));
-	  buf.Cap();
-	  show(buf, pc);
-	  Sprintf(buf, "breaks a mirror image of %S.",
-		  name_of_crit(pc, ~0));
-	  emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &pc);
-	  return NULL;
-	}//if hit a mirror
+          pc.mirrors--;
+          Sprintf(buf, "%S shatters a mirror image of you.\n",
+                  name_of_crit(agg, pc.SEE_BIT));
+          buf.Cap();
+          show(buf, pc);
+          Sprintf(buf, "breaks a mirror image of %S.",
+                  name_of_crit(pc, ~0));
+          emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &pc);
+          return NULL;
+        }//if hit a mirror
       }//if has mirrors
     }//if mirror check
   }//for 
 
   return &pc;
 }//check_for_diversions
+
+
+stat_spell_cell* is_affected_by(int spell_num, critter& pc) {
+  Cell<stat_spell_cell*> cll(pc.affected_by);
+  stat_spell_cell* ptr;
+
+  while ((ptr = cll.next())) {
+    if (ptr->stat_spell == spell_num)
+      return ptr;
+  }//while
+
+  return NULL;
+}//is_affected_by
+
+
+stat_spell_cell* is_affected_by(int spell_num, object& obj) {
+  Cell<stat_spell_cell*> cll(obj.affected_by);
+  stat_spell_cell* ptr;
+
+  while ((ptr = cll.next())) {
+    if (ptr->stat_spell == spell_num)
+      return ptr;
+  }//while
+
+  return NULL;
+}//is_affected_by (obj)
+
+
+stat_spell_cell* has_stat_affect(int stat_num, object& obj) {
+  Cell<stat_spell_cell*> cll(obj.stat_affects);
+  stat_spell_cell* ptr;
+
+  while ((ptr = cll.next())) {
+    if (ptr->stat_spell == stat_num)
+      return ptr;
+  }//while
+
+  return NULL;
+}//has_stat_affect
 
 
 const char* get_opposite_dir(const char* dir) {
@@ -618,13 +780,13 @@ const char* get_opposite_dir(const char* dir) {
 
 
 void leave_room_effects(room& rm, critter& pc) {
-   SCell<door*> cll(rm.DOORS);
+   Cell<door*> cll(rm.DOORS);
    door* ptr;
 
    while ((ptr = cll.next())) {
-      if (ptr->getCritBlocking() == &pc) {
-         ptr->setBlocked(FALSE);
-         ptr->setCritBlocking(NULL);
+      if (ptr->crit_blocking == &pc) {
+         ptr->dr_data->door_data_flags.turn_off(14); //no longer blocked
+         ptr->crit_blocking = NULL;
       }//if
    }//while
 
@@ -637,6 +799,7 @@ void leave_room_effects(room& rm, critter& pc) {
 
    String cmd = "exit";
    rm.checkForProc(cmd, NULL_STRING, pc, -1);
+
 }//leave_room_effects
 
 
@@ -648,6 +811,15 @@ void leave_room_effects(room& rm, object& obj) {
    //rm.checkForProc(cmd, NULL_STRING, pc, -1);
 
 }//leave_room_effects (Objects)
+
+
+
+const String* single_obj_name(object& obj, int see_bit) {
+   if (detect(see_bit, obj.OBJ_VIS_BIT))
+      return Top(obj.names);
+   else
+      return &SOMETHING; //global 'someone' String
+}//single_obj_name
 
 
 const char* get_himself_herself(critter& pc) {
@@ -684,18 +856,18 @@ const char* get_him_her(critter& pc) {
 
 
 int is_grouped(critter& crit, critter& pc) {
-   SCell<critter*> cll(pc.GROUPEES);
+   Cell<critter*> cll(pc.GROUPEES);
    critter* ptr;
 
    while ((ptr = cll.next())) {
       if (ptr == &crit)
-	 return TRUE;
+         return TRUE;
    }//while
 
    crit.GROUPEES.head(cll);
    while ((ptr = cll.next())) {
       if (ptr == &pc)
-	 return TRUE;
+         return TRUE;
    }//while
    return FALSE;
 }//is_grouped
@@ -737,8 +909,11 @@ int get_race_num(const char* name) {
       return ENTITY;
    if (strcasecmp(name, "sombrian") == 0)
       return SOMBRIAN;
+   if (strcasecmp(name, "avian") == 0)
+      return AVIAN;
    return OTHER_RACE;
 }//get race_num
+
 
 
 int get_class_num(const char* name) {
@@ -760,6 +935,7 @@ int get_class_num(const char* name) {
       return BARD;
    return OTHER_CLASS;
 }//get class num
+
 
 
 const char* get_race_name(int num) {
@@ -799,6 +975,8 @@ const char* get_race_name(int num) {
       return "entity";
    if (num == SOMBRIAN)
       return "sombrian";
+   if (num == AVIAN)
+      return "avian";
    return "UNKNOWN";
 }//get race name
 
@@ -838,7 +1016,7 @@ int min(int i, int j) {
 }
 
 void save_all() {
-  SCell<critter*> cll(pc_list);
+  Cell<critter*> cll(pc_list);
   critter* ptr;
 
   //log("In save_all.\n");
@@ -854,6 +1032,20 @@ void save_all() {
   }//while
 
 }//save all
+
+
+say_proc_cell* have_topic_named(List<say_proc_cell*> lst, const String& msg) {
+  Cell<say_proc_cell*> cll(lst);
+  say_proc_cell* ptr;
+
+  while ((ptr = cll.next())) {
+    if (strcasecmp(ptr->topic, msg) == 0) {
+      return ptr;
+    }//if
+  }//while
+
+  return NULL;
+}//have_topic_named
 
 
 void strip_hegemon_tags(String& str) {
@@ -983,30 +1175,30 @@ void parse_for_max_80(String& str) {
       found_it = FALSE;
       i = start;
       if ((i + 79) >= len) {
-	 break;//done
+         break;//done
       }//if
       while ((i < len) && (str[i] != '\n') && (i < (start + 80))) {
          i++;
       }//while
       sofar = i;
       if ((sofar - start) > 79) { //gotta fix it
-	 while (i > start) {
-	    i--;
-	    if (str[i] == ' ') {
-	       str.setCharAt(i, '\n');
-	       i++; //move past newline
-	       start = i;
-	       found_it = TRUE;
-	       break;
-	    }//if
-	 }//while
-	 if (!found_it) { //there wasn't a space
-	    str.setCharAt((i + 78), '\n'); 
-	    start = i + 79;
-	 }//if
+         while (i > start) {
+            i--;
+            if (str[i] == ' ') {
+               str.setCharAt(i, '\n');
+               i++; //move past newline
+               start = i;
+               found_it = TRUE;
+               break;
+            }//if
+         }//while
+         if (!found_it) { //there wasn't a space
+            str.setCharAt((i + 78), '\n'); 
+            start = i + 79;
+         }//if
       }//if need fixing
       else {
-	 start = sofar + 1;
+         start = sofar + 1;
       }//else
    }//while true
 
@@ -1015,7 +1207,7 @@ void parse_for_max_80(String& str) {
 
    for (i = 0; i < (len - 1); i++) {
       if ((str[i] == '~') && (isspace(str[i+1]))) {
-	 str.setCharAt(i, ' ');
+         str.setCharAt(i, ' ');
       }//if
    }//for
 
@@ -1025,14 +1217,44 @@ void parse_for_max_80(String& str) {
 }//parse_for_max_80()
 
 
+short name_is_secret(const String* name, door& dr) {
+   Cell<String*> cll(dr.dr_data->names);
+   String* ptr;
+   int len = name->Strlen();
+
+   if (len == 0)
+      return FALSE;
+
+   if (dr.destination >= 0) { //if positive, go from top
+      ptr = cll.next();
+      while ((ptr = cll.next())) {
+         if (*ptr == "#")
+            break; // didn't find it
+         if (strncasecmp(*name, *ptr, len) == 0)
+            return TRUE;
+      }//while
+      return FALSE;
+   }//if
+   else {
+      ptr = cll.prev();
+      while ((ptr = cll.prev())) {
+         if (*ptr == "#")
+            break; // didn't find it
+         if (strncasecmp(*name, *ptr, len) == 0)
+            return TRUE;
+      }//while
+      return FALSE;
+   }//else
+}//name_is_secret
+
 // May return a NULL!
 String* dir_of_room(room& rm, int dest_rm_num) {
-   SCell<door*> cll(rm.DOORS);
+   Cell<door*> cll(rm.DOORS);
    door* ptr;
 
    while ((ptr = cll.next())) {
-      if (abs(ptr->getDestination()) == abs(dest_rm_num)) {
-	 return ptr->getDirection();
+      if (abs(ptr->destination) == abs(dest_rm_num)) {
+         return direction_of_door(*ptr);
       }//if
    }//while
 
@@ -1041,15 +1263,15 @@ String* dir_of_room(room& rm, int dest_rm_num) {
 
 
 int get_next_msg_num(object& board) {
-   SCell<object*> cll(board.inv);
+   Cell<object*> cll(board.inv);
    object* ptr;
    int sofar = 0;
    int i;
 
    while ((ptr = cll.next())) {
-      i = atoi(*(ptr->getFirstName()));
+      i = atoi(*(ptr->names.peekFront()));
       if (i > sofar)
-	 sofar = i;
+         sofar = i;
    }//while
 
    return sofar + 1;
@@ -1065,7 +1287,8 @@ String owner_of_zone(int rm_num) {
 
 
 void do_vehicle_moves() {
-   SCell<room*> cll(pulsed_proc_rooms);
+   Cell<room*> cll;
+   pulsed_proc_rooms.head(cll); //declared in grrmud.cc 
    room* rm_ptr;
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In do_vehicle_moves, pulsed_proc_rooms.Size():  "
@@ -1092,13 +1315,18 @@ void do_vehicle_moves() {
 }//do_vehicle_moves()
 
 
-int mob_can_enter(critter& pc, room& rm, short do_msg) {
+int mob_can_enter(critter& pc, room& rm, short do_msg, int check_no_wander = FALSE) {
    int retval = FALSE;
 
    if (!rm.isInUse()) { //if not used
       if (do_msg)
          show("That room doesn't really exist!!\n", pc);
    }//if
+   else if ((rm.isNoMortal() && !pc.isImmort())) {
+      if (do_msg) {
+         pc.show("Mortals are not allowed there!!\n");
+      }
+   }
    else if ((rm.needsBoat()) && //need boat
             (!(pc.CRIT_FLAGS.get(4) || pc.CRIT_FLAGS.get(3)))) {
       if (do_msg)
@@ -1110,7 +1338,7 @@ int mob_can_enter(critter& pc, room& rm, short do_msg) {
          show("You must be able to dive to go there.\n", pc);
    }//if
    else if ((rm.needsClimb()) && //need climb
-	    (!(pc.isFlying() || pc.canClimb()))) {
+            (!(pc.isFlying() || pc.canClimb()))) {
       if (do_msg) {
          show("You lose your footing and almost fall!!\n", pc);
          emote("slips and almost falls!!\n", pc, ROOM, TRUE);
@@ -1126,6 +1354,12 @@ int mob_can_enter(critter& pc, room& rm, short do_msg) {
                (!pc.isPc())) {
       if (do_msg)
          show("Mobs are not allowed to move there.\n", pc); //never see prob.
+   }//if !mob
+   else if (!pc.isPc() && check_no_wander && 
+            (rm.isNoWanderMob() || 
+             (rm.isNoWanderForeignMob() && (pc.getHomeTown() != rm.getZoneNum())))) {
+      if (do_msg)
+         show("Mobs are not allowed to wander there.\n", pc); //never see prob.
    }//if !mob
    else if (rm.isZlocked()) {
       if (pc.isImmort()) {
@@ -1159,8 +1393,83 @@ int mob_can_enter(critter& pc, room& rm, short do_msg) {
 }//mob_can_enter
 
 
+
+void out_stat_list(const List<stat_spell_cell*>& lst, critter& pc,
+                   const BitfieldNames& names) {
+   Cell<stat_spell_cell*> cll(lst);
+   stat_spell_cell* ptr;
+   String buf(100);
+   String buf2(100);
+
+   if (lst.isEmpty()) {
+      pc.show("NONE\n");
+      return;
+   }
+
+   while ((ptr = cll.next())) {
+      Sprintf(buf, "(%s %i) ", names.getName(ptr->stat_spell),
+              ptr->bonus_duration);
+      buf2.Append(buf);
+   }//while
+   buf2.Append("\n");
+   pc.show(buf2);
+}//out_stat_list
+
+
+void out_spell_list(const List<stat_spell_cell*>& lst, critter& pc, int
+        show_ostat_dat_flag) {
+   Cell<stat_spell_cell*> cll(lst);
+   stat_spell_cell* ptr;
+   String buf(100);
+   String buf2(100);
+
+   if (lst.isEmpty()) {
+      pc.show("NONE\n");
+      return;
+   }
+
+   while ((ptr = cll.next())) {
+
+       // If being called from ostat, show spell level. 
+       if (show_ostat_dat_flag) {
+           Sprintf(buf, "(%s %i) ",
+                   SSCollection::instance().getNameForNum(ptr->stat_spell),
+                   ptr->bonus_duration);
+       } else {
+           Sprintf(buf, "(%s) ",
+                   SSCollection::instance().getNameForNum(ptr->stat_spell));
+       }
+
+      buf2.Append(buf);
+   }//while
+   buf2.Append("\n");
+   pc.show(buf2);
+}//out_spell_list
+
+
+object* have_obj_numbered(const List<object*>& lst, const int i_th,
+                          const int obj_num, const int see_bit,
+                          const room& rm) {
+   Cell<object*> cll(lst);
+   object* ptr;
+   int count = 0;
+
+   while ((ptr = cll.next())) {
+      if (ptr->OBJ_NUM == obj_num) {
+         if (detect(see_bit, (ptr->OBJ_VIS_BIT | rm.getVisBit()))) { 
+            count++;
+            if (count == i_th) {
+               return ptr;
+            }//if
+         }//if detect
+      }//if obj nums agree
+   }//while
+   return NULL;
+}//have_obj_numbered
+
+
 int get_game_time() {
-   return Hour;
+   return config.hour;
 }//get_game_time
 
 
@@ -1190,7 +1499,7 @@ const char* get_month(int day) {
    else if (day <= 365)
       return "December";
    else {
-      mudlog.log(ERR, "ERROR:  day is > 365, in get_month.\n");
+      mudlog.log(ERROR, "ERROR:  day is > 365, in get_month.\n");
       return "Leap Month";
    }//else
 }//get_month
@@ -1222,7 +1531,7 @@ const int get_day_of_month(int day) { //day of the year that is
    else if (day <= 365)
       return day - 334;
    else {
-      mudlog.log(ERR, "ERROR:  day is > 365, get_day_of_month.\n");
+      mudlog.log(ERROR, "ERROR:  day is > 365, get_day_of_month.\n");
       return 32;
    }//else
 }//get_day_of_month
@@ -1277,7 +1586,7 @@ const char* military_to_am(int m_time) {
    else if (m_time == 23)
       return "12 am";
    else {
-      mudlog.log(ERR, "ERROR:  m_time out of range, military_to_am.\n");
+      mudlog.log(ERROR, "ERROR:  m_time out of range, military_to_am.\n");
       return "0 am";
    }//else
 }//military_to_am
@@ -1309,7 +1618,7 @@ int get_next_obj() {
 
 int get_next_door() { 
    for (int i = 10; i<NUMBER_OF_DOORS; i++) { 
-      if (!(door_list[i].isInUse())) {
+      if (!(door_list[i].door_data_flags.get(10))) {
          return i;
       }//if
    }//for
@@ -1319,7 +1628,7 @@ int get_next_door() {
 
 int get_next_mob() { 
    for (int i = 10; i<NUMBER_OF_MOBS; i++) { 
-      if (!(mob_list[i].isInUse())) {
+      if (!(mob_list[i].CRIT_FLAGS.get(18))) {
          return i;
       }//if
    }//for
@@ -1369,7 +1678,7 @@ void increment_percent_lrnd(int skill_num, critter& pc) {
       pc.SKILLS_KNOWN.Insert(skill_num, p_lrnt); //update value
       return;
    }//if
-   mudlog.log(ERR,
+   mudlog.log(ERROR,
               "ERROR:  tried to increment_%_lrnd on a skill unknown by pc.\n");
 }//inc_skill
 
@@ -1400,9 +1709,59 @@ void init_masks() {
 }//init masks
 
 
-int obj_count(SafeList<object*>& lst, object& src) {
+String* direction_of_door(const door& drr) {
+   String* ptr = NULL;
+   if (drr.destination < 0)
+      ptr = drr.dr_data->names.peekRear();
+   else
+      ptr = drr.dr_data->names.peekFront();
+
+   if (ptr)
+      return ptr;
+   else
+      return &UNKNOWN;
+}//direction_of_door
+
+
+const char* abbrev_dir_of_door(const door& drr) {
+   String* dir;
+
+   if (drr.destination < 0) 
+      dir = drr.dr_data->names.peekRear();
+   else
+      dir = drr.dr_data->names.peekFront();
+
+   if (dir == NULL) {
+      return "??";
+   }//if
+
+   if (strcasecmp(*dir, "north") == 0) 
+      return "N";
+   else if (strcasecmp(*dir, "northwest") == 0)
+      return "NW";
+   else if (strcasecmp(*dir, "northeast") == 0)
+      return "NE";
+   else if (strcasecmp(*dir, "east") == 0)
+      return "E";
+   else if (strcasecmp(*dir, "south") == 0)
+      return "S";
+   else if (strcasecmp(*dir, "southeast") == 0)
+      return "SE";
+   else if (strcasecmp(*dir, "southwest") == 0)
+      return "SW";
+   else if (strcasecmp(*dir, "west") == 0)
+      return "W";
+   else if (strcasecmp(*dir, "up") == 0)
+      return "U";
+   else if (strcasecmp(*dir, "down") == 0)
+      return "D";
+   else return "??";
+}//abbrev_dir_of_door
+
+
+int obj_count(List<object*>& lst, object& src) {
    int retval = 0;
-   SCell<object*> cll(lst);
+   Cell<object*> cll(lst);
    object* ptr;
 
    while ((ptr = cll.next())) {
@@ -1413,9 +1772,9 @@ int obj_count(SafeList<object*>& lst, object& src) {
    return retval;
 }//obj_count
 
-int crit_count(SafeList<critter*>& lst, critter& src) {
+int crit_count(List<critter*>& lst, critter& src) {
    int retval = 0;
-   SCell<critter*> cll(lst);
+   Cell<critter*> cll(lst);
    critter* ptr;
 
    if (!src.mob) {
@@ -1433,8 +1792,8 @@ int crit_count(SafeList<critter*>& lst, critter& src) {
 }//crit_count
 
 
-void clear_crit_list(SafeList<critter*>& lst) {
-   SCell<critter*> cll(lst);
+void clear_crit_list(PtrList<critter>& lst) {
+   Cell<critter*> cll(lst);
    critter* ptr;
    //log("In clear_crit_list.\n");
 
@@ -1448,8 +1807,8 @@ void clear_crit_list(SafeList<critter*>& lst) {
 }//clear_crit_list
 
 
-void clear_obj_list(SafeList<object*>& lst) {
-   SCell<object*> cll(lst);
+void clear_obj_list(PtrList<object>& lst) {
+   Cell<object*> cll(lst);
    object* ptr;
 
    //log("In clear_obj_list.\n");
@@ -1457,7 +1816,7 @@ void clear_obj_list(SafeList<object*>& lst) {
    ptr = cll.next();
    while (ptr) {
       //log("In while loop.\n");
-      if (ptr->isModified()) { //if its a SOBJ
+      if (ptr->in_list) { //if its a SOBJ
          delete ptr;   //delete it for sure
       }//if
       
@@ -1466,11 +1825,39 @@ void clear_obj_list(SafeList<object*>& lst) {
 }//clear_obj_list
 
 
+void out_field(const bitfield& field, critter& pc, const BitfieldNames& names) {
+   int k = field.max_bit();
+   String buf(100);
+   String tmp(50);
+   int sofar = 0;
+
+   Sprintf(buf, "%S (SET)\n\t", &(names.getHeader()));
+   pc.show(buf);
+   buf = "";
+
+   for (int i = 0; i <= k; i++) {
+      if (field.get(i)) {
+         Sprintf(tmp, "[%i] %s,  ", i, names.getName(i));
+         if ((sofar + tmp.Strlen()) > 80) {
+            buf += "\n\t";
+            sofar = tmp.Strlen();
+         }
+         else {
+            sofar += tmp.Strlen();
+         }
+         buf += tmp;
+      }//if
+   }//for
+   buf.Append("\n");
+   show(buf, pc);
+}//out_field
+
+   
 int critter::doBecomeNonPet() {
    String buf(100);
 
    if (isMob()) {
-      mudlog.log(ERR, "ERROR:  mob sent to unpet.\n");
+      mudlog.log(ERROR, "ERROR:  mob sent to unpet.\n");
       return -1;
    }//if
 
@@ -1478,9 +1865,174 @@ int critter::doBecomeNonPet() {
       return -1;
    }//if
 
-   critter* hack = this;
-   MASTER->PETS.loseData(hack); //master no longer has pc as pet...
+   MASTER->PETS.loseData(this); //master no longer has pc as pet...
    MASTER = NULL;   // slave of none
 
    return doUngroup(1, &NULL_STRING);
 }//unpet
+
+
+const char* class_of_crit(critter& pc) {
+   return get_class_name(pc.CLASS);
+}//class_of_crit
+
+int find_and_delete_obj(object* obj_to_find, int room_num) {
+   // Find an object in the rooms current inventory, also look in containers' and
+   // critters' inventories.
+   // Returns FALSE on error (room doesn't exist, removed wasn't found)
+   //         TRUE  when an object has been removed
+   object* obj = NULL;
+   critter* crit = NULL;
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "DEBUG:  in find_and_remove_obj(object* obj_to_find = " << obj_to_find
+             << ", int rm_num = " << room_num << ")\n";
+   }
+
+   // Sanity checks, make sure this is a valid room
+   if ((0 > room_num > NUMBER_OF_ROOMS) || !room_list[room_num].isInUse()) {
+      mudlog.log(DBG, "DEBUG:  Room is invalid.\n");
+      return FALSE;
+   }
+
+   Cell<object *> obj_cll(*(room_list[room_num].getInv()));
+   Cell<critter*> crit_cll(room_list[room_num].getCrits());
+
+   // Try to find obj_to_find in the room's inventory
+   mudlog.log(DBG, "DEBUG:  checking objects in the room.\n");
+   while((obj = obj_cll.next())) {
+      if (obj == obj_to_find) {
+         // Found it, so delete it
+         mudlog.log(DBG, "DEBUG:  Found object in the room.\n");
+         room_list[room_num].loseInv(obj_to_find);
+         if (obj_to_find->isModified()) {
+            delete obj_to_find;
+         }
+         return TRUE;
+      }
+      else if (find_and_delete_obj(obj_to_find, obj)) {
+         mudlog.log(DBG, "DEBUG:  Found object in a container.\n");
+         return TRUE;
+      }
+   }
+
+   // Check the critters in the room
+   mudlog.log(DBG, "DEBUG:  checking on critters in the room.\n");
+   while((crit = crit_cll.next())) {
+      if (find_and_delete_obj(obj_to_find, crit)) {
+         mudlog.log(DBG, "DEBUG:  Found object on a critter.\n");
+         return TRUE;
+      }
+   }
+
+   // Guess we didn't find it
+   mudlog.log(DBG, "DEBUG:  Didn't find object in room.\n");
+   return FALSE;
+}
+
+int find_and_delete_obj(object* obj_to_find, critter* crit_ptr) {
+   // Find an object in a critter's current inventory, also look in containers the
+   // critter owns, and at the critter's equipment list
+   // Returns FALSE on error (crit_ptr is bad, didn't find obj_to_find)
+   //         TRUE  when an object has been removed
+   object* obj = NULL;
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "DEBUG:  in find_and_remove_obj(object* obj_to_find = " << obj_to_find
+             << ", crit_ptr = " << crit_ptr << ")\n";
+   }
+
+   if (!crit_ptr) {
+      mudlog.log(DBG, "DEBUG:  bad crit_ptr.\n");
+      return FALSE;
+   }
+
+   Cell<object*> obj_cll(crit_ptr->inv);
+
+   // Try to find obj_to_find in the critter's inventory
+   mudlog.log(DBG, "DEBUG:  checking critter's inventory.\n");
+   obj = obj_cll.next();
+   while (obj) {
+      if (obj == obj_to_find) {
+         // Found it, so delete it
+         mudlog.log(DBG, "DEBUG:  found object in critter's inventory.\n");
+         crit_ptr->loseInv(obj_to_find);
+         if (obj_to_find->isModified()) {
+            delete obj_to_find;
+         }
+         return TRUE;
+      }
+      else {
+         if (find_and_delete_obj(obj_to_find, obj)) {
+            mudlog.log(DBG, "DEBUG:  Found object in a container (2).");
+            return TRUE;
+         }
+      }//else
+      obj = obj_cll.next();
+   }
+
+   // Check the critter's equipped items
+   mudlog.log(DBG, "DEBUG:  checking critter's equipment.");
+   for (int i=1; i < MAX_EQ; i++) {
+      if (crit_ptr->EQ[i] == obj_to_find) {
+         // Found it, so delete it
+         mudlog.log(DBG, "DEBUG:  found object in critter's EQ[].");
+         remove_eq_effects(*crit_ptr->EQ[i], *crit_ptr, FALSE, FALSE, i);
+         crit_ptr->EQ[i] = NULL;
+         if (obj_to_find->isModified()) {
+            delete obj_to_find;
+         }
+         return TRUE;
+      }
+      else {
+         if (crit_ptr->EQ[i] && find_and_delete_obj(obj_to_find, crit_ptr->EQ[i])) {
+            mudlog.log(DBG, "DEBUG:  Found object in a container.\n");
+            return TRUE;
+         }
+      }
+   }
+
+   // Guess we didn't find it
+   mudlog.log(DBG, "DEBUG:  didn't find object on critter.\n");
+   return FALSE;
+}
+
+int find_and_delete_obj(object* obj_to_find, object* find_in) {
+   // Find an object in another object's inventory - infinately recursive
+   // Returns FALSE on error (find_in isn't a container, obj_to_find isn't in find_in)
+   //         TRUE  when an object has been removed
+   object* obj = NULL;
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "DEBUG:  in find_and_remove_obj(object* obj_to_find = " << obj_to_find
+             << ", object* find_in = " << find_in << ")\n";
+   }
+
+   Cell<object *> cll(find_in->inv);
+
+   // Try to find obj_to_find in find_in's inventory
+   mudlog.log(DBG, "DEBUG:  checking object's inventory.\n");
+   obj = cll.next();
+   while (obj) {
+      if (obj == obj_to_find) {
+         // Found it, so, delete it
+         mudlog.log(DBG, "DEBUG:  Found object in container.\n");
+         find_in->loseInv(obj_to_find);
+         if (obj_to_find->isModified()) {
+            delete obj_to_find;
+         }
+         return TRUE;
+      }
+      else {
+         if (find_and_delete_obj(obj_to_find, obj)) {
+            mudlog.log(DBG, "DEBUG:  Found object in container in container.\n");
+            return TRUE;
+         }
+      }
+      obj = cll.next();
+   }
+
+   // Guess we didn't find it
+   mudlog.log(DBG, "DEBUG:  Couldn't find object in container.\n");
+   return FALSE;
+}

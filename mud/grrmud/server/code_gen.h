@@ -1,5 +1,5 @@
-// $Id: code_gen.h,v 1.6 1999/08/10 07:06:17 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
+// $Id: code_gen.h,v 1.7 2001/03/29 03:02:28 eroper Exp $
+// $Revision: 1.7 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
 
 //
 //ScryMUD Server Code
@@ -36,13 +36,16 @@
 /** Only change these two things to add a new language, and of course
  * the server code may need changes too.
  */
-#define NUM_LANGUAGES 4
+#define NUM_LANGUAGES 7
 
 char* languages[NUM_LANGUAGES] = {
    "English",
    "Spanish",
    "Portugues",
-   "Italian"
+   "Italian",
+   "Serbian",
+   "German",
+   "Polish"
 };
 
 

@@ -10,5 +10,5 @@ syntax:  order [i_th] <<pet> <<command string>    Order one pet.
 example:  order fol get sword		All will attempt to get a sword.
           order fol fol			All will follow themselves now.
 <color=red>
-See Also:  group, ungroup, follow, possess, enslave
+See Also:  group, ungroup, follow, possess, enslave, alias
 </color></help>

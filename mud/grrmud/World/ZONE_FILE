@@ -1,7 +1,44 @@
 0	Begin of zone
 Garland
-15 4 1 100
+15 10 1 100
 -1  -:| bitfield |:-
 admin ~	owners
+
+5	Begin of zone
+Elven Forest
+15 -385048 401 499
+-1  -:| bitfield |:-
+admin ~	owners
+
+10	Begin of zone
+test area
+20 7 839 858
+-1  -:| bitfield |:-
+admin ~ owners
+
+40	Begin of zone
+Tyro
+15 6 4083 4182
+-1  -:| bitfield |:-
+admin ~	owners
+
+41	Begin of zone
+Storage for generic mobs and objects
+10 1 4183 4192
+-1  -:| bitfield |:-
+admin ~	owners
+
+42	Begin of zone
+East of Garland
+19 5 4193 4242
+-1  -:| bitfield |:-
+admin ~	owners
+
+50	Begin of zone
+The Newbie Zone
+10 5 4643 4677
+-1  -:| bitfield |:-
+admin ~	owners
+
 
 -1		END OF ZONE FILE

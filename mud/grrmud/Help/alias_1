@@ -1,0 +1,14 @@
+<help general alias>
+
+The alias command can be used to add a name (keyword) to
+a pet.  An underbar (_) is appended to the end of the alias
+to prevent spoofing.  However, because Scry does partial name
+matching, this should not be obvious.
+
+Syntax:  alias <<i_th> [target] [new_alias]
+
+Example:  alias 2.guard joebob
+	  
+<color=red>
+See Also:  order
+</color></help>

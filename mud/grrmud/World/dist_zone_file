@@ -1,7 +1,331 @@
 0	Begin of zone
 Garland
-15 4 1 100
+15 10 1 100
 -1  -:| bitfield |:-
 admin ~	owners
+
+1	Begin of zone
+Jakarta
+15 7 101 200
+-1  -:| bitfield |:-
+ ~	owners
+
+2	Begin of zone
+Dar Thane
+15 14 201 300
+-1  -:| bitfield |:-
+ ~	owners
+
+3	Begin of zone
+Garland-Jakarta road
+15 -385047 301 350
+-1  -:| bitfield |:-
+ ~	owners
+
+4	Begin of zone
+Northern Routes
+15 -223379 351 400
+-1  -:| bitfield |:-
+ ~	owners
+
+5	Begin of zone
+Elven Forest
+15 -385048 401 499
+-1  -:| bitfield |:-
+admin ~	owners
+
+6	Begin of zone
+Dragon Valley
+15 14 500 600
+-1  -:| bitfield |:-
+ ~	owners
+
+7	Begin of zone
+Immortdom
+15 13 601 701
+-1  -:| bitfield |:-
+ ~	owners
+
+8	Begin of zone
+Mainland/Anitre land ocean
+15 7 702 737
+-1  -:| bitfield |:-
+ ~	owners
+
+9	Begin of zone
+Dragon Path
+20 14 738 838
+-1  -:| bitfield |:-
+ ~	owners
+
+10	Begin of zone
+test area
+20 7 839 858
+-1  -:| bitfield |:-
+admin ~ owners
+
+11	Begin of zone
+River City
+20 -76956 859 958
+-1  -:| bitfield |:-
+ ~	owners
+
+12	Begin of zone
+Mak'Tor
+20 4 959 1058
+-1  -:| bitfield |:-
+ ~	owners
+
+13	Begin of zone
+The Citadel of Koth
+25 10 1059 1238
+-1  -:| bitfield |:-
+ ~	owners
+
+14	Begin of zone
+Thano Torre
+20 4 1239 1288
+-1  -:| bitfield |:-
+ ~	owners
+
+15	Begin of zone
+DarkSoul Mountain
+25 21 1289 1408
+-1  -:| bitfield |:-
+ ~	owners
+
+16	Begin of zone
+RoadStop Inn
+20 18 1409 1462
+-1  -:| bitfield |:-
+ ~	owners
+
+17	Begin of zone
+Garland houses
+20 18 1463 1522
+-1  -:| bitfield |:-
+ ~	owners
+
+18	Begin of zone
+Dwarven Ruins
+25 24 1523 1622
+-1  -:| bitfield |:-
+ ~	owners
+
+19	Begin of zone
+Paths to Darksoul Mountain
+15 3 1623 1642
+-1  -:| bitfield |:-
+ ~	owners
+
+20	Begin of zone
+Inside DarkSoul Mountain
+20 11 1643 1892
+-1  -:| bitfield |:-
+ ~	owners
+
+21	Begin of zone
+Thrud's zone
+15 10 1893 1992
+-1  -:| bitfield |:-
+ ~	owners
+
+22	Begin of zone
+UNUSED
+15 10 1993 2072
+-1  -:| bitfield |:-
+ ~	owners
+
+23	Begin of zone
+Longfellow Road
+15 12 2073 2172
+-1  -:| bitfield |:-
+ ~	owners
+
+24	Begin of zone
+Busiris
+15 7 2173 2322
+-1  -:| bitfield |:-
+ ~	owners
+
+25	Begin of zone
+Anitre connecting zone
+15 11 2323 2422
+-1  -:| bitfield |:-
+ ~	owners
+
+26	Begin of zone
+Valley of the Damned
+19 5 2423 2522
+-1  -:| bitfield |:-
+ ~	owners
+
+27	Begin of zone
+The Ogrue settlement
+23 3 2523 2572
+-1  -:| bitfield |:-
+ ~	owners
+
+28	Begin of zone
+Durian Spire
+21 16 2573 2692
+-1  -:| bitfield |:-
+ ~	owners
+
+29	Begin of zone
+Under Darksoul Mountain
+24 7 2693 2922
+-1  -:| bitfield |:-
+ ~	owners
+
+30	Begin of zone
+Remortdom
+20 7 2923 3047
+-1  -:| bitfield |:-
+ ~	owners
+
+31	Begin of zone
+UNUSED
+21 7 3048 3247
+-1  -:| bitfield |:-
+ ~	owners
+
+32	Begin of zone
+Sea Breeze Road
+15 13 3248 3322
+-1  -:| bitfield |:-
+ ~	owners
+
+33	Begin of zone
+Ancient Groves
+20 18 3323 3402
+-1  -:| bitfield |:-
+ ~	owners
+
+34	Begin of zone
+UNUSED
+18 16 3403 3552
+-1  -:| bitfield |:-
+ ~	owners
+
+35	Begin of zone
+Gingon's Zone
+15 11 3553 3772
+-1  -:| bitfield |:-
+ ~	owners
+
+36	Begin of zone
+The Docks
+15 9 3773 3812
+-1  -:| bitfield |:-
+ ~	owners
+
+37	Begin of zone
+UNUSED
+17 17 3813 3962
+-1  -:| bitfield |:-
+ ~	owners
+
+38	Begin of zone
+Eden
+18 7 3963 4022
+-1  -:| bitfield |:-
+ ~	owners
+
+39	Begin of zone
+Mount Null
+19 13 4023 4082
+-1  -:| bitfield |:-
+ ~	owners
+
+40	Begin of zone
+Tyro
+15 6 4083 4182
+-1  -:| bitfield |:-
+admin ~	owners
+
+41	Begin of zone
+Storage for generic mobs and objects
+10 1 4183 4192
+-1  -:| bitfield |:-
+admin ~	owners
+
+42	Begin of zone
+East of Garland
+19 5 4193 4242
+-1  -:| bitfield |:-
+admin ~	owners
+
+43	Begin of zone
+Thimble
+21 16 4243 4342
+-1  -:| bitfield |:-
+ ~	owners
+
+44	Begin of zone
+The Bridge to River City
+15 7 4343 4372
+-1  -:| bitfield |:-
+ ~	owners
+
+45	Begin of zone
+UNUSED
+21 17 4373 4447
+-1  -:| bitfield |:-
+ ~	owners
+
+46	Begin of zone
+UNUSED
+16 5 4448 4497
+-1  -:| bitfield |:-
+ ~	owners
+
+47	Begin of zone
+UNUSED
+17 17 4498 4552
+-1  -:| bitfield |:-
+ ~	owners
+
+48	Begin of zone
+UNUSED
+17 17 4553 4602
+-1  -:| bitfield |:-
+ ~	owners
+
+49	Begin of zone
+UNUSED
+19 2 4603 4642
+-1  -:| bitfield |:-
+ ~	owners
+
+50	Begin of zone
+The Newbie Zone
+10 5 4643 4677
+-1  -:| bitfield |:-
+admin ~	owners
+
+51	Begin of zone
+UNUSED
+20 4 4678 4777
+-1  -:| bitfield |:-
+ ~	owners
+
+52	Begin of zone
+Gryphon's residence
+20 19 4778 4802
+-1  -:| bitfield |:-
+ ~	owners
+
+53	Begin of zone
+Kjeravo
+14 5 4803 4852
+-1  -:| bitfield |:-
+ ~	owners
+
+54	Begin of zone
+Castle Cynder
+25 24 4853 5052
+-1  -:| bitfield |:-
+ ~	owners
 
 -1		END OF ZONE FILE

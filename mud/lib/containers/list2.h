@@ -1,5 +1,5 @@
-// $Id: list2.h,v 1.13 1999/08/27 03:10:05 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/27 03:10:05 $
+// $Id: list2.h,v 1.14 2001/03/29 03:02:38 eroper Exp $
+// $Revision: 1.14 $  $Author: eroper $ $Date: 2001/03/29 03:02:38 $
 
 //
 //ScryMUD Server Code
@@ -245,7 +245,7 @@ public:
       }//while
 
       if (!header) {
-         mudlog.log(ERR, "ERROR:  HEADER NULL in Clear.\n");
+         mudlog.log(ERROR, "ERROR:  HEADER NULL in Clear.\n");
       }//if
       sz = 0;
    }// clear
@@ -356,6 +356,7 @@ public:
       sz++;
    }//put
 
+   /** Will not put a duplicate object in the list. */
    virtual void gainData(const T& data) {
       if (!haveData(data)) {
          append(data);
@@ -542,10 +543,18 @@ public:
       return TRUE;
    }
 
+#ifdef _BG_TEMPLATE_HACK
+   friend void Put<>(const T& val, List<T> &L);
+   friend T Top<>(const List<T> &L);
+   friend int IsEmpty<>(const List<T> &L);
+   friend int HaveData<>(const T& val, const List<T>& L);
+#else
    friend void Put(const T& val, List<T> &L);
    friend T Top(const List<T> &L);
    friend int IsEmpty(const List<T> &L);
    friend int HaveData(const T& val, const List<T>& L);
+#endif
+
 };
 
 // A few of these are back wards compatable hacks
@@ -598,7 +607,7 @@ protected:
       Assert((int)node);
       List<T>::Node *N = new List<T>::Node; 
       if (!N) {
-         mudlog.log(ERR, "ERROR, out of Memory trying to allocate a cell.\n");
+         mudlog.log(ERROR, "ERROR, out of Memory trying to allocate a cell.\n");
          exit (101);
       }//if
       N->item = data;
@@ -732,6 +741,17 @@ public:
          delete val;
       }//while
    }//clearAndDestroy
+
+   T* findByOperEquals(T& val) {
+      Cell<T*> cll(*this);
+      T* ptr;
+      while ((ptr = cll.next())) {
+         if (val == *ptr) {
+            return ptr;
+         }
+      }//while
+      return NULL;
+   }//findByOperEquals
 
 };//PtrList
 

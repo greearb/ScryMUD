@@ -1,0 +1,2352 @@
+401		Room Number
+forest ~	names
+A narrow forest path.
+~
+A small path winds through the lush undergrowth.  To the north the forest
+opens up a little and to the south the vegetation grows very thick.  The
+path is a little hard to see there, but it does seem to go through to the
+other side.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 401 401 	cur_stats
+-1	affected_by
+379 -1	inv
+1 3 450 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 491 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+402		Room Number
+forest ~	names
+The Elven Forest
+~
+The trees bend slightly in the wind as this newer section grows towards the
+sunlight. Animal noises resonate throughout the lush green foliage. A small
+bird flies about and chirps as you come close to her nest.  There are few
+sticks or brambles on the forest floor.  It is as if someone has swept
+the entire forest.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 402 402 	cur_stats
+-1	affected_by
+609 -1	inv
+1 3 403 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 404 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+403		Room Number
+forest ~	names
+The Elven Forest
+~
+Young trees reach towards the sky and animal noises resonate through the
+trees. Scraps of bark are on the ground from when a deer sharpened its
+antlers on a small maple. A squirrel leaps overhead as you make a small
+noise. The forest is perfect, but you can't shake the feeling that eyes
+are watching you.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 403 403 	cur_stats
+-1	affected_by
+-1	inv
+1 1 492 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 411 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 402 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 405 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+404		Room Number
+forest ~	names
+The Elven Forest
+~
+The trees are thick with leaves which are turning slightly in the soft
+breeze.  The moist air brings the sounds of small animals chirping and
+rustling through the undergrowth.  A brave lizard darts across your path
+into a small hole on the inside of a tree trunk. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 404 404 	cur_stats
+-1	affected_by
+-1	inv
+1 1 402 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 405 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 496 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 406 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+405		Room Number
+forest ~	names
+The Elven Forest
+~
+You find yourself in a tall grove of poplars growing beside a very small
+stream.  Small blue flowers grow from the mossy rocks beside the creek.
+A small pair of footprints can be seen on a small sand bar, leading
+off into the forest.
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 405 405 	cur_stats
+-1	affected_by
+730 -1	inv
+1 1 403 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 409 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 404 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 407 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+406		Room Number
+forest ~	names
+The Elven Forest
+~
+This large grove of pine trees marks the southern point of what the elves
+claim as their own.  The south is a maze of honeysuckle and blackberries,
+making travel impossible, but the east shows promise!  The forest grows
+larger to the north.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 406 406 	cur_stats
+-1	affected_by
+-1	inv
+1 1 404 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 407 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 413 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 83 -1	mobs
+End of Room
+407		Room Number
+forest ~	names
+The Elven Forest
+~
+The elven forest surrounds you with its towering trees, green foliage, and
+scurrying animals. A few birds fly overhead as a nice breeze wafts around
+you. The rich sunlight brings warmth to this forest of the elves. Exits lead
+in all four cardinal directions.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 407 407 	cur_stats
+-1	affected_by
+383 -1	inv
+1 1 405 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 408 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 406 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 427 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+75 84 83 -1	mobs
+End of Room
+408		Room Number
+forest forest ~	names
+The Elven Forest
+~
+This pristine forest grove is no accident.  The elves draw power from the
+sacred groves and give great care to keep them strong and free of vermin.
+They are so close to nature that they seem to be able to communicate 
+with the forest animals and little goes on in the forest without the elves 
+quickly learning of it.  A small movement reveals a chipmunk running for
+cover.  
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 408 408 	cur_stats
+-1	affected_by
+609 -1	inv
+1 1 409 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 414 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 407 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 428 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+85 -1	mobs
+End of Room
+409		Room Number
+forest ~	names
+The Elven Forest
+~
+Trees thin out a bit here to let in more rays of sun. Small puddles from a
+recent rainstorm bring out small snails. A slight breeze brings the sound
+of many animals to your ears.  The verdant forest spreads out in all
+directions. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 409 409 	cur_stats
+-1	affected_by
+-1	inv
+1 1 411 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 410 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 405 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 408 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 -1	mobs
+End of Room
+410		Room Number
+forest ~	names
+The Elven Forest
+~
+You are on a small rise in the forest.  Tall oaks and white pines reach
+for the heavens and clumps of laurels make traveling a bit difficult.
+You are just high enough to be able to look out over the forest to the
+north and south.  It continues as far as you can see in both directions,
+hiding many sights and secrets from the outside world.
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 410 410 	cur_stats
+-1	affected_by
+18 -1	inv
+1 1 415 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 412 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 409 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 414 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 -1	mobs
+End of Room
+411		Room Number
+forest ~	names
+The eastern edge.
+~
+The trees bend slightly in the wind as this newer section grows towards the
+sunlight. Animal noises resonate throughout the lush green foliage. A small
+bird flies about and chirps as you come close to her nest.  A large
+rotting log offers a fine place to sit and rest your weary legs.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 411 411 	cur_stats
+-1	affected_by
+609 -1	inv
+1 3 415 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 403 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 409 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 83 -1	mobs
+End of Room
+412		Room Number
+forest ~	names
+The Elven Forest
+~
+The elven forest surrounds you with its towering trees, green foliage, and
+scurrying animals. A few birds fly overhead as a nice breeze wafts around
+you. The rich sunlight brings warmth to this forest of the elves. Exits lead
+in all four cardinal directions.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 412 412 	cur_stats
+-1	affected_by
+-1	inv
+1 1 416 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 420 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 410 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 423 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+75 -1	mobs
+End of Room
+413		Room Number
+forest ~	names
+The southern edge.
+~
+You have reached the southern edge of the Elven forest.  To the south you can
+see what must be the Northern Route, but travel through the brambles would
+be ill-advised at best.  The elves once roamed farther south, but they
+generally don't like the 'groundlings' and have moved farther north as more
+and more people ply the northern trade route.  The forest continues to the east
+and west, and grows taller and more lush to the north.  A small stream
+flows to the south through the brambles.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 413 413 	cur_stats
+-1	affected_by
+-1	inv
+1 1 406 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 427 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 434 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 85 -1	mobs
+End of Room
+414		Room Number
+forest ~	names
+The Elven Forest
+~
+Majestically tall trees tower upwards here as animals dart across the
+branches keeping an eye and ear out for you. Green foliage covers all
+areas and only small creatures disturb the scenery. Wind whistles in your
+ears and strands of light pierce the tree's branches and fall on the
+forest floor.  The forest is open in all directions.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 414 414 	cur_stats
+-1	affected_by
+383 -1	inv
+1 1 410 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 423 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 408 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 429 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+415		Room Number
+forest ~	names
+The eastern edge.
+~
+A huge oak has fallen on the ground here, the trunk splintered as if
+struck by a mighty bolt of lightning.  Smaller trees are growing madly
+towards this newly opened vista to the sky, and vines and briars make
+the area almost impossible to cross.  The elves know this is part of
+nature and will not interfere untill a clear winner emerges from the
+seedlings vieing for sunlight and life.
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 415 415 	cur_stats
+-1	affected_by
+-1	inv
+1 3 416 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 411 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 410 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+416		Room Number
+forest ~	names
+The eastern edge.
+~
+The trees are rich with leaves as they bask in the warmth of the sun. They
+rustle and shake as you pass by almost as if they were alive. Animals make
+noises around you. A slight wind passes through the forest and rain can be
+felt on its way.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 416 416 	cur_stats
+-1	affected_by
+-1	inv
+1 3 417 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 415 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 412 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 -1	mobs
+End of Room
+417		Room Number
+forest ~	names
+The eastern edge.
+~
+This part of the forest looks almost identical to the parts you have
+already traveled.  Tall trees can be seen in all directions.
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 417 417 	cur_stats
+-1	affected_by
+-1	inv
+1 3 418 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 416 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 420 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+85 84 -1	mobs
+End of Room
+418		Room Number
+forest ~	names
+The eastern edge.
+~
+You are near the eastern edge of the Elven forest.  The trees grow larger and
+healthier to the west.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 418 418 	cur_stats
+-1	affected_by
+-1	inv
+1 3 419 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 417 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 421 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+419		Room Number
+forest ~	names
+The eastern edge.
+~
+Young trees reach towards the sky and the small twitterings of animals drift to
+your ears on a slight breeze.  A large rock lies flat on the ground and you can
+see where a squirrel has eaten some hickory nuts on it, leaving crumbs that
+ants are now busily carrying away.  Rising out of the forest to the east is
+a large forbidding mountain, and a small path leads off to the east towards it.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 419 419 	cur_stats
+-1	affected_by
+-1	inv
+1 1 2644 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 418 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 422 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 -1	mobs
+End of Room
+420		Room Number
+forest ~	names
+The Elven Forest
+~
+Tall trees tower all around you.  Some of the trunks are five feet in
+diameter here, and the tops are lost in a maze of branches.
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 420 420 	cur_stats
+-1	affected_by
+-1	inv
+1 1 417 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 421 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 412 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 424 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 83 -1	mobs
+End of Room
+421		Room Number
+forest ~	names
+The Elven Forest
+~
+The trees here are even larger than elsewhere in the forest.  It has been
+said that the elves can travel for miles through the forest without ever
+touching the ground on a network of walkways almost invisible from the
+ground.
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 421 421 	cur_stats
+-1	affected_by
+-1	inv
+1 1 418 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 422 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 420 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 425 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+75 84 -1	mobs
+End of Room
+422		Room Number
+forest forest ~	names
+The Elven Forest
+~
+You have reached the northern end of the forest kept by the elves.  The trees
+begin to grow smaller here, and brush makes it impossible to travel unless
+you find a trail.  To the south the forest opens up and you can spy a
+magnificant stand of trees.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 422 422 	cur_stats
+-1	affected_by
+-1	inv
+1 1 419 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 421 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 426 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 83 -1	mobs
+End of Room
+423		Room Number
+forest ~	names
+The Elven Forest
+~
+You are on the eastern slope of a low ridge which continues to rise to the
+west.  You are just high enough to be able to see over the trees to the east
+and into the rolling hills of the grasslands.  The forest continues in all
+directions from here.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 423 423 	cur_stats
+-1	affected_by
+730 -1	inv
+1 1 412 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 424 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 414 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 430 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+60 84 -1	mobs
+End of Room
+424		Room Number
+forest ~	names
+The Elven Forest
+~
+You are on a gently rising slope leading up to the west.  Far to the east
+you can see the grasslands, and even farther you can see the peaks of the
+Creleon Mountains rising up into the clouds.  The trees are of good size here
+and a faint trail, you can't tell whether its animal or not, leads up the
+slope to the west.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 424 424 	cur_stats
+-1	affected_by
+-1	inv
+1 1 420 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 425 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 423 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 431 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 83 -1	mobs
+End of Room
+425		Room Number
+forest ~	names
+The Elven Forest
+~
+You are in a beautiful stand of tall and stately trees.  The branches grow
+together strangely above your head, but it is hard to focus on them to figure
+out why you have this impression.  To the west a huge silver tree grows out
+of the forest floor, reaching for the heavens.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 425 425 	cur_stats
+-1	affected_by
+-1	inv
+1 1 421 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 426 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 424 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 432 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+426		Room Number
+forest ~	names
+The Elven Forest
+~
+You have reached the northern end of the forest kept by the elves.  The trees
+begin to grow smaller here, and brush makes it impossible to travel unless
+you find a trail.  To the south the forest opens up and you can spy a
+magnificant stand of trees. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 426 426 	cur_stats
+-1	affected_by
+-1	inv
+1 1 422 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 425 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 433 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+85 -1	mobs
+End of Room
+427		Room Number
+forest ~	names
+The Elven Forest
+~
+You are nearing the southern edge of the Elven forest.  As you pause to look
+around you hear the faint clop of horses hooves on hard ground to the south.
+The forest grows taller to the north and spreads out in all directions.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 427 427 	cur_stats
+-1	affected_by
+609 -1	inv
+1 1 407 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 428 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 413 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 435 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+85 -1	mobs
+End of Room
+428		Room Number
+forest ~	names
+The Elven Forest
+~
+You once again find yourself surrounded by trees of varying sizes and a
+well kept forest floor.  You can hear a stream to the west, and to the
+south the forest thins out a little.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 428 428 	cur_stats
+-1	affected_by
+-1	inv
+1 1 408 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 429 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 427 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 436 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+85 -1	mobs
+End of Room
+429		Room Number
+forest ~	names
+The Elven Forest
+~
+You are on the eastern side of a ridge running north and south.  To the
+east the forest continues out of sight, and also to the north and south,
+though you can't see very far in those directions.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 429 429 	cur_stats
+-1	affected_by
+-1	inv
+1 1 414 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 430 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 428 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 437 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+430		Room Number
+forest ~	names
+Higher on the low ridge.
+~
+The elven forest surrounds you with its towering trees, green foliage, and
+scurrying animals. A few birds fly overhead as a nice breeze wafts around
+you. The rich sunlight brings warmth to this forest of the elves. Exits lead to
+the east, north, and south.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 430 430 	cur_stats
+-1	affected_by
+-1	inv
+1 1 423 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 431 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 429 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 83 -1	mobs
+End of Room
+431		Room Number
+forest forest ~	names
+On the western slope.
+~
+You are just to the west of the ridge top, looking down into the valley to
+the west.  From the lay of the land you would guess there is some rough
+travel farther to the west, but to the north the land grows flatter and
+the forest clears out.  Whats more, a huge silver tree grows out of the 
+valley floor, towering above all the rest of the trees, even though they
+themselves are none too small.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 431 431 	cur_stats
+-1	affected_by
+-1	inv
+1 1 424 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 432 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 430 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 439 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 -1	mobs
+End of Room
+432		Room Number
+tree ~	names
+The Elven Tree
+~
+The trees give way here to a huge silvery tree. It stretches up and
+out of sight.  As you study this marvelous specimen you notice small
+handholds spiraling up the side of the tree.  Far up into the branches
+you catch a glimpse of rope bridges leading away from a large platform.
+It will be a grueling climb, but who knows what mysteries you will
+uncover.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 432 432 	cur_stats
+-1	affected_by
+-1	inv
+1 1 425 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 433 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 431 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 9 467 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 440 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+433		Room Number
+forest ~	names
+The Elven Forest
+~
+You have reached the northern end of the forest kept by the elves.  The trees
+begin to grow smaller here, and brush makes it impossible to travel unless
+you find a trail.  To the south the forest opens up and you can spy a
+magnificant stand of trees. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 433 433 	cur_stats
+-1	affected_by
+-1	inv
+1 1 426 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 432 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 441 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 83 85 -1	mobs
+End of Room
+434		Room Number
+forest ~	names
+The Elven Forest
+~
+You have reached the southern part of the Elven Forest.  You can continue
+farther into it to the north, or travel east or west along its southern
+boundary.  To the south you notice a small rabbit path leading into a rose
+bush, but even crawling you don't imagine you'd get very far.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 434 434 	cur_stats
+-1	affected_by
+-1	inv
+1 1 413 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 435 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 442 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+435		Room Number
+forest ~	names
+The Southern Edge.
+~
+This is the southern part of the Elven Forest, Glenwood.  The trees are
+shorter than to the north, and many branches have been twisted and knarled
+by natural accidents.  The forest continues much the same to the east and
+west, but to the south you see an inpenetrable wall of briars and vines.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 435 435 	cur_stats
+-1	affected_by
+-1	inv
+1 1 427 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 436 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 434 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 443 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 85 -1	mobs
+End of Room
+436		Room Number
+forest ~	names
+The Elven Forest
+~
+A clear stream flows to the southeast.  Just glancing at it you wouldn't think
+it was big enough to hold any fish, but as you walk closer you see several
+large trout flee to cover under rocks and logs in the crystal pools.  The
+forest continues unhindered in all directions, although to the south it
+seems to thin out a bit.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 436 436 	cur_stats
+-1	affected_by
+-1	inv
+1 1 428 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 437 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 435 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 444 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+437		Room Number
+forest ~	names
+By the Stream.
+~
+You are near a clear stream winding its way south through the Elven forest.
+Large trees grow everywhere here, and their branches look thicker than would
+seem natural.  To the north you can see a large waterfall and everywhere
+else the forest contines as far as you can see.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 437 437 	cur_stats
+-1	affected_by
+378 -1	inv
+1 1 429 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 438 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 436 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 445 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 83 -1	mobs
+End of Room
+438		Room Number
+forest ~	names
+Beneath the Waterfalls.
+~
+You have reached the bottom of a grand waterfall.  A narrow ribbon of
+glistening water falls from over 200 paces up, and from down here it seems
+like 400!  Large trees grow here, reaching high out of the gorge for life
+giving light.  One tree even seems to have a large branch that almost touches
+the falling water!  The water collects here at the bottom in a large pool then 
+flows away to the south.  The eastern wall of this gorge seems impossible
+to climb from here, but you could always walk farther south and try.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 438 438 	cur_stats
+-1	affected_by
+-1	inv
+1 4 437 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 446 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 -1	mobs
+End of Room
+439		Room Number
+forest ~	names
+Above the waterfall.
+~
+From here you can see far to the south.  If you squint you almost can see
+what could be the grasslands, but it might just be a cloud.  What dominates
+the view is a huge silver tree towering above the rest to the south west.
+As you glance back down at the ground you realize you had better not go too
+near the edge, for the rocks are slippery, and though the fall might not be
+so bad, landing would surely ruin your day!
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 439 439 	cur_stats
+-1	affected_by
+-1	inv
+1 1 431 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 440 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 447 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 85 -1	mobs
+End of Room
+440		Room Number
+forest forest ~	names
+In the high valley.
+~
+You are in a high valley in the Elven woods.  A swift stream flows to the south
+and hills rise up to the east and west.  A huge silver tree dominates your view
+to the east, easily twice as tall as any trees around it.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 440 440 	cur_stats
+-1	affected_by
+185 -1	inv
+1 1 432 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 441 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 439 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 448 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+85 83 83 -1	mobs
+End of Room
+441		Room Number
+forest ~	names
+The Elven Forest
+~
+The trees bend slightly in the wind as this newer section grows towards the
+sunlight. Animal noises resonate throughout the lush green foliage. A small
+bird flies about and chirps as you come close to her nest.  The forest
+floor is cleaner than many of the inns you've stayed in!
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 441 441 	cur_stats
+-1	affected_by
+-1	inv
+1 1 433 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 440 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 449 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+60 84 -1	mobs
+End of Room
+442		Room Number
+forest ~	names
+The Elven Forest
+~
+You find yourself at the southern part of the Elven Forest.  You can tell
+there is a road, the Northern Route probably, to the south, but the brambles
+are too thick for you to travel through them here.  The Forest becomes 
+taller to the north, and continues much the same to the east and west.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 442 442 	cur_stats
+-1	affected_by
+17 609 -1	inv
+1 1 434 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 443 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 450 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+443		Room Number
+forest ~	names
+The Elven Forest
+~
+You find yourself in the southern part of the beautiful Elven Forest.  Tall
+trees fill the sky, and a few small plants flower at their base.  To the
+south the forest becomes more choked with briars and bushes, but to the 
+north it becomes even more spacious, and the trees continue to grow larger 
+and taller.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 443 443 	cur_stats
+-1	affected_by
+-1	inv
+1 1 435 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 444 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 442 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 452 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+85 -1	mobs
+End of Room
+444		Room Number
+forest ~	names
+The Elven Forest
+~
+The trees are markedly taller and thicker of trunk here than elsewhere
+in the forest.  In fact, you can't even see the tops of these trees very
+clearly, although they aren't that far away.  It seems as if you eyes just
+have trouble focusing on certain places.  To the west you spy a huge silver
+tree of a variety unknown to you.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 444 444 	cur_stats
+-1	affected_by
+-1	inv
+1 1 436 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 445 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 443 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 453 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+75 -1	mobs
+End of Room
+445		Room Number
+forest ~	names
+Near the Waterfall.
+~
+	The small creek that flows from the west continues to the east, where it
+joins another, larger creek.  The larger flows from the north off of an 
+extremely high waterfall.  You can just see the top of it at this distance,
+but it must be 200 paces tall at least.
+
+~
+33 30 23 21 4 -1  -:| bitfield |:-
+1024 2 445 445 	cur_stats
+-1	affected_by
+-1	inv
+1 1 437 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 446 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 444 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 455 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+446		Room Number
+forest ~	names
+On the side of the Gorge.
+~
+You find yourself on the side of a steep ridge which drops off precipitiously
+to the east.  You can hear a waterfall from here, and everything is damp,
+but you can see nothing but lush undergrowth and a few small yellow iris's
+growing on the downhill side of a large granite rock.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 446 446 	cur_stats
+-1	affected_by
+60 377 -1	inv
+1 1 438 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 447 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 445 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 456 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+447		Room Number
+forest ~	names
+The Elven Forest
+~
+The trackless elven forest continues in all directions.  Some low blueberry
+bushes grow in a small clearing but it seems they are not in season here.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 447 447 	cur_stats
+-1	affected_by
+-1	inv
+1 1 439 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 448 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 446 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 457 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+85 -1	mobs
+End of Room
+448		Room Number
+forest forest ~	names
+The Elven Forest
+~
+You are on the rim of the lower valley.  The land drops off sharply to the
+south and east, and gently to the west.  The forest continues to the north.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 448 448 	cur_stats
+-1	affected_by
+-1	inv
+1 1 440 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 449 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 447 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 458 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+85 83 -1	mobs
+End of Room
+449		Room Number
+forest ~	names
+The Elven Forest
+~
+You find yourself deep within Glenwood forest.  This part of the woods looks
+fairly non-descript.  The woods spread out before you to the south, and also 
+to the east and west.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 449 449 	cur_stats
+-1	affected_by
+-1	inv
+1 1 441 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 448 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 459 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+450		Room Number
+forest ~	names
+The Elven Forest
+~
+You find yourself in the southern part of the great Elven Forest, also
+known as Glenwood.  The trees are fairly large here, but you can see the tops
+of much greater trees farther to the north.  The forest continues in all
+directions.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 450 450 	cur_stats
+-1	affected_by
+-1	inv
+1 1 442 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 452 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 401 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 451 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 -1	mobs
+End of Room
+451		Room Number
+forest ~	names
+The Elven Forest
+~
+The trees are rich with leaves as they bask in the warmth of the sun. They
+rustle and shake as you pass by almost as if they were alive. Animals make
+noises around you. A slight wind passes through the forest and rain can be
+felt on its way.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 451 451 	cur_stats
+-1	affected_by
+-1	inv
+1 1 450 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 454 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+452		Room Number
+forest ~	names
+The Elven Forest
+~
+The elven forest surrounds you with its towering trees, green foliage, and
+scurrying animals. A few birds fly overhead as a nice breeze wafts around
+you. The rich sunlight brings warmth to this forest of the elves. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 452 452 	cur_stats
+-1	affected_by
+-1	inv
+1 1 443 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 453 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 450 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 454 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 85 -1	mobs
+End of Room
+453		Room Number
+tree ~	names
+Base of the Silver Tree.
+~
+You have reached the bottom of the huge tree you saw from a distance.  This
+tree is by far bigger than any you have seen before, its branches completely
+block the sun, and its trunk more than ten paces thick!  The bark is
+silvery and smooth, and as you look closely you notice almost invisible
+handholds growing right out of the tree, rising in a spiral up and out of
+sight.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 453 453 	cur_stats
+-1	affected_by
+-1	inv
+1 1 444 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 455 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 452 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 9 466 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 460 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+60 -1	mobs
+End of Room
+454		Room Number
+forest ~	names
+The Elven Forest
+~
+This is near the southwestern border of the Elven forest.  The forest becomes
+neater, and the trees larger farther to the north and east.  To the west it
+is choked with brambles so that you think better of attempting passage.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 454 454 	cur_stats
+-1	affected_by
+377 -1	inv
+1 1 452 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 460 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 451 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 495 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+455		Room Number
+forest ~	names
+In the Hemlock Grove.
+~
+A small creek rises out of the ground here, and it has allowed the moisture
+loving hemlock trees to grow to impressive size.  The creek continues to the
+east where it appears it joins a larger creek.  You can see the land rising
+sharply to the northeast, and it almost sounds as if there is a waterfall!
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 455 455 	cur_stats
+-1	affected_by
+-1	inv
+1 1 445 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 456 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 453 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 461 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+85 -1	mobs
+End of Room
+456		Room Number
+forest ~	names
+The Elven Forest
+~
+You are on a low ridge sloping down to the southwest.  It grows steeper to
+the east and flattens out nicely to the south.  Large hickory and oak trees
+grow here in abundance.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 456 456 	cur_stats
+-1	affected_by
+-1	inv
+1 1 446 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 457 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 455 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 462 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 83 -1	mobs
+End of Room
+457		Room Number
+forest ~	names
+The Elven Forest
+~
+You are in the western part of the Elven Forest.  Great and small trees
+complete the circle of life, each competing for light and nutrients.  The
+forest continues in all directions.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 457 457 	cur_stats
+-1	affected_by
+-1	inv
+1 1 447 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 458 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 456 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 463 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+75 -1	mobs
+End of Room
+458		Room Number
+forest ~	names
+The Elven Forest
+~
+You are on a broad, flat ridge that you have been climbing for some time.
+The vegetation is not as lush as it is at lower elevations, but the larger
+forest trees can still reach 8 feet in diameter.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 458 458 	cur_stats
+-1	affected_by
+-1	inv
+1 1 448 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 459 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 457 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 464 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 83 85 -1	mobs
+End of Room
+459		Room Number
+forest ~	names
+The Elven Forest
+~
+You are on a broad, flat ridge that you have been climbing for some time.
+The vegetation is not as lush as it is at lower elevations, but the larger
+forest trees can still reach 8 feet in diameter.    
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 459 459 	cur_stats
+-1	affected_by
+-1	inv
+1 1 449 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 498 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 458 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 465 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+60 85 -1	mobs
+End of Room
+460		Room Number
+forest ~	names
+The Elven Forest
+~
+	The trees are generally larger here than farther south, and something is
+strange about their tops.  They are not over 150 paces high, but your eyes
+grow hazy when trying to focus.  As you scan back and forth you seem to see
+an occasional rope bridge, but when you look back, nothing is to be seen.  
+In fact, this is all making you a bit dizzy!
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 460 460 	cur_stats
+-1	affected_by
+-1	inv
+1 1 453 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 461 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 454 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 493 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+461		Room Number
+forest ~	names
+In the Hemlock Grove.
+~
+     You have reached a grove of hemlock trees.  Some of them are as much as
+five paces thick.  It seems that they grow even larger to the east, and as you
+look that way, you catch a glimpse of a huge silver tree towering over the
+rest!
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 461 461 	cur_stats
+-1	affected_by
+-1	inv
+1 1 455 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 462 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 460 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 494 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+60 85 19 -1	mobs
+End of Room
+462		Room Number
+forest ~	names
+The Elven Forest
+~
+You find yourself deep in the elven forest.  A large grove of hemlock
+trees lie to the south and a small ridge rises up to the east.  The forest
+continues to the north as well.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 462 462 	cur_stats
+-1	affected_by
+-1	inv
+1 1 456 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 463 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 461 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+60 84 -1	mobs
+End of Room
+463		Room Number
+forest ~	names
+The Elven Forest
+~
+This is the western end of the elven forest.  The forest actually continues
+for many miles, but it is not nearly as friendly or well kept as the forest
+to the east.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 463 463 	cur_stats
+-1	affected_by
+-1	inv
+1 1 457 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 464 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 462 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 83 -1	mobs
+End of Room
+464		Room Number
+forest ~	names
+The Elven Forest
+~
+You have reached the western end of the part of the forest tended by the
+elves.  It grows more spacious to the east and to the south, but to the west
+briars and broken trees choke the land.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 464 464 	cur_stats
+-1	affected_by
+-1	inv
+1 1 458 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 465 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 463 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 83 -1	mobs
+End of Room
+465		Room Number
+forest ~	names
+The Elven Forest
+~
+You are on a broad, flat ridge that you have been climbing for some time.
+The vegetation is not as lush as it is at lower elevations, but the larger
+forest trees can still reach 8 feet in diameter.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 465 465 	cur_stats
+-1	affected_by
+-1	inv
+1 1 459 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 499 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 464 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+60 83 85 -1	mobs
+End of Room
+466		Room Number
+post ~	names
+The Elven Post
+~
+You stand on a huge branch that connects to a huge silvery tree. This is
+the entrance to the elven tree top town.  Elven rangers and artisans
+travel to and fro, and a guard is usually posted right here for
+protection. Leaves and woodwork decorate the surroundings of this semi
+peaceful town.  Birds dart in and out of the town with chirps and bleeps.
+You can hear the splash of a fountain to the north, and a walkway leads
+to the east.  Far below is the forest floor.
+
+~
+33 30 23 21 4 -1  -:| bitfield |:-
+1024 2 466 466 	cur_stats
+-1	affected_by
+-1	inv
+1 10 453 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 1 468 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 477 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+467		Room Number
+post ~	names
+The Elven Post
+~
+You stand on a huge branch protruding from a huge tree. A small ladder
+like structure heads down the trunk. Green and silver leaves wave in the
+wind as the elven structures built in and around the limbs sway slightly.
+Usually a guard or two is posted here to guard against tresspassers into
+the elven tree top town.  Exits head down,south and west. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 3 467 467 	cur_stats
+-1	affected_by
+-1	inv
+1 10 432 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 469 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 474 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+468		Room Number
+walkway ~	names
+A Treetop Walkway
+~
+You stand on a small wooden walkway connecting the different trees and
+limbs together. If you fell it would be a long drop to the ground. Strong,
+thin ropes and limbs help you keep your balance. The walkway is about one
+foot wide. Elves, even the children, walk and run along them as if they
+were the ground.  Exits lead east and west along the walkway and south to
+a small home and north to the bakery. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 3 468 468 	cur_stats
+-1	affected_by
+-1	inv
+1 1 472 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 471 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 473 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 466 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+91 87 -1	mobs
+End of Room
+469		Room Number
+walkway ~	names
+The Elven Walkway
+~
+You stand on a one span wooden walkway connecting the trees and limbs.
+Elves walk and run around with little fear of falling. Birds dart in and
+out of the canopy and a slight breeze makes you reach for a hand hold. 
+Exits lead north and south and east into a small gated off area. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 3 469 469 	cur_stats
+-1	affected_by
+-1	inv
+1 1 482 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 467 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 470 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+87 -1	mobs
+End of Room
+470		Room Number
+limb ~	names
+A Tree Limb
+~
+You stand carefully on a thick tree limb.  The silvery bark allows you to
+get a good foothold.  A walkway heads north and west connecting the
+treetop elven town. Elven citizens and children hurry about.  The forest
+canopy, and a little elven magic, keep the weather temperate here all year
+round.  Exits lead north and west. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 470 470 	cur_stats
+-1	affected_by
+-1	inv
+1 3 469 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 472 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+87 -1	mobs
+End of Room
+471		Room Number
+bakery ~	names
+An Elven Bakery
+~
+This small, leaf covered hut seems to grow right out of the side of a
+tree.  It blends so well with its surroundings that you didn't even notice
+it until an elven woman walked out with a basket of bread. The scent of
+baked goods, combined with a few wooden ornaments give this place a
+comfortable feeling. A hamok hangs in one corner allowing the baker to
+take naps. The only exit is south back to the treetop walkways. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 471 471 	cur_stats
+-1	affected_by
+-1	inv
+1 4 468 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+93 -1	mobs
+End of Room
+472		Room Number
+walkway ~	names
+A Treetop Walkway
+~
+This walkway is only one pace wide. Even the best of balancers of the
+groundlings would have trouble navigating this walkway. The elves seem to
+manage it quite well, however;  the elven children run along innocently
+and the parents walk quite confidently.  Exits lead east and west and
+south into the magic shop. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 472 472 	cur_stats
+-1	affected_by
+-1	inv
+1 1 470 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 481 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 468 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+86 -1	mobs
+End of Room
+473		Room Number
+hut ~	names
+An Elven Hut
+~
+You stand in a small hut used by the elven citizens as homes. It is made
+from overlayering branches with leaves as a roof and entwined twigs as
+walls.  Elves may seem to live in barbarity to many, but those who are
+wiser understand the natural splendor of the forest that enlightens the
+Elven homes far more than golden baubles and fancy, heavy furniture.  The
+door leads back to the north. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 473 473 	cur_stats
+-1	affected_by
+-1	inv
+1 3 468 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+87 86 -1	mobs
+End of Room
+474		Room Number
+walkway ~	names
+An Elven Walkway
+~
+You walk upon a slender wooden walkway that rocks in the wind. It connects
+the branches and trees that make up the small elven town. Huge green and
+silver leaves are used as covering in case of rain and a few drops drip
+from the tips from the last storm.  From the look of things this village
+is sparsely populated, but that is only because most spend their time out
+in the forest.  Exits lead east and west and a hut is to the north and the
+general store is south. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 474 474 	cur_stats
+-1	affected_by
+-1	inv
+1 1 467 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 478 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 480 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 475 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+91 -1	mobs
+End of Room
+475		Room Number
+crosswalk ~	names
+An Elven Crosswalk
+~
+You stand on a small wooden and rope platform. It is the connector for all
+the little walkways heading around the elven town. Elven children use this
+spot as a meeting point and a starting place for many of their games,
+which usually lead them to run fast and furiously along the swaying
+walkways.  Warmth descends on you from beems of sunlight coming through
+the upper tree canopy.  Exits head east and south and north into the
+fletcher's shop.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 475 475 	cur_stats
+-1	affected_by
+-1	inv
+1 1 474 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 479 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 476 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+86 86 87 -1	mobs
+End of Room
+476		Room Number
+walkway ~	names
+At the waterfall.
+~
+You stand on a small wooden walkway. It connects to different trees and
+limbs of the elven tree top community. A small waterfall descends past you
+and some strange looking leaves divert some of the water into some wooden
+troughs which carry the water to a fountain in the center of the village. 
+The sight is very beautiful as the sun makes miniature rainbows and casts
+them about randomly. Exits lead north and south. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 476 476 	cur_stats
+-1	affected_by
+-1	inv
+1 3 475 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 477 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+86 -1	mobs
+End of Room
+477		Room Number
+fountain ~	names
+The Elven Fountain
+~
+The huge trunk of a maple tree has been hollowed out to form a fountain.
+The water is carried here in wooden troughs from a waterfall nearby.  The
+elven folk keep the fountain scrubbed out so that the water is always 
+crystal clear, and one of the local shamans cast a minor spell on the
+whole apparatus to keep it cold, even on the hottest summer day.  The
+overflow, when there is some, falls far down to the forest floor where it
+splashes harmlessly on a huge flat rock.
+
+~
+30 23 21 8 4 -1  -:| bitfield |:-
+1024 2 477 477 	cur_stats
+-1	affected_by
+10 -1	inv
+1 3 476 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 466 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+478		Room Number
+hut ~	names
+The Elven Hut
+~
+You stand in a small elven living hut.  A small window reveals the forest
+floor below where the ocasional doe may be seen feeding on the succulent
+grasses and acorns.  Hammocks strung along the walls allow a place for the
+elves to sleep. A hole in the ceiling lets the smoke from a small fire
+meander up and out. The exit is to the south. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 478 478 	cur_stats
+-1	affected_by
+-1	inv
+1 4 474 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+87 86 -1	mobs
+End of Room
+479		Room Number
+fletchery ~	names
+The Fletchers Shop.
+~
+You stand in a small hut that is decorated with many bows and arrows of
+all shapes and sizes. A small cot lies to the side of the main counter
+where a few short bows are for sale. The fletcher usually stands behind
+the low counter which doubles as her workbench.  There is very little room
+to move around in here. The exit is south. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 479 479 	cur_stats
+-1	affected_by
+-1	inv
+1 4 475 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+90 -1	mobs
+End of Room
+480		Room Number
+general ~	names
+The Elven General Store
+~
+This store is filled with barrels of pitch covered torches and loads of
+waterskins.  Shelves lining the wall are filled with all kinds of dry
+goods and a few crafts from the local artists.  This is where the elven
+sentries and rangers come to get supplies for their sojourns. The hut is
+decorated with natural decorations and has a huge counter for the owner to
+stand behind. A painting of the elven fountain hangs overhead.  The exit
+is to the north. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 480 480 	cur_stats
+-1	affected_by
+-1	inv
+1 3 474 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+94 -1	mobs
+End of Room
+481		Room Number
+magic ~	names
+The Elven Magic Shop
+~
+This shop is littered with arcane artifacts and magical devices.  Some
+real and others just nice to look at.  Magical wards above the entrance
+protect the room and a small wooden gargoyle watches all customers.  A
+small, book covered bed stands in the corner, but there is no way anyone
+could sleep in that mess!  A beautiful woven rug lies in the middle of the
+floor, probably a gift from one of the local weavers. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 481 481 	cur_stats
+-1	affected_by
+-1	inv
+1 3 472 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+95 -1	mobs
+End of Room
+482		Room Number
+guard ~	names
+The Elven Command Post
+~
+This is a fortified room used as the center of guard headquarters. It has
+bunks to the side and weapons and armor along the wall. Guards are
+stationed here on guard duty, usually to be found sitting around a small
+wooden table playing cards.  You guess guard quarters do not change much
+no matter where you go.  A door leads west and a small staircase leads up
+to another level of walkways. 
+
+~
+30 26 23 21 4 -1  -:| bitfield |:-
+1024 2 482 482 	cur_stats
+-1	affected_by
+-1	inv
+1 9 483 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 469 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+91 91 -1	mobs
+End of Room
+483		Room Number
+treetop ~	names
+The Elven Tree Top
+~
+You stand on the uppermost canopy level for this tree and elven town.  The
+elven grove spreads out before you, some of the trees reaching so high as
+to nearly touch the clouds!  At this height the whole structure sways
+continously in the wind, bridges growing slack, then taught again.  It
+takes you a while to get used to it, much like sailors their first time
+at sea.  You can go down or head over the tree top walkway west or south. 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 3 483 483 	cur_stats
+-1	affected_by
+-1	inv
+1 10 482 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 484 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 486 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+484		Room Number
+cloud ~	names
+The Cloud Observatory
+~
+Cloud watching has become en vogue here lately, especially among the
+younger generation.  This is a favorite place for these people to gather
+and chat and look up at the heavens.  Many bring mugs of tea or coffee and
+snack on the pastries that someone always manages to bring.  The older
+people think its all rather silly, but, truth be told, the watchers spend
+as much time watching each other as the skies!
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 3 484 484 	cur_stats
+-1	affected_by
+-1	inv
+1 3 483 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 485 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+88 -1	mobs
+End of Room
+485		Room Number
+treetop ~	names
+The Elven Garden
+~
+You stand on the tree top and amidst a small flower garden. It is used by
+healers for certain herbs that grow more potent with the direct sunlight. 
+This ideal place allows for sunlight and rain in large amounts and few
+animals to bother the delicate plants.  The plants grow in hanging baskets
+and wooden troughs and the whole area is accessible from a woven floor. 
+Unlike many of the elven constructions, this one has low walls and because
+of this many of the mothers like to bring their toddlers here to wander in
+relative safety.  Fortunately the herbs are out of reach of their curious
+little hands! 
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 485 485 	cur_stats
+-1	affected_by
+-1	inv
+1 1 484 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 486 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+68 61 91 -1	mobs
+End of Room
+486		Room Number
+entrance ~	names
+The Royal Entrance
+~
+You stand before the Royal Complex, in awe of its simple splendor.  The
+elves have little use for stone or metal statues, as they are difficult to
+lift to this height, but their wooden statues rank with the best of the
+groundling's sculptures.  Each shows a famous elven king or prince, and
+the statue just to the right of the enterance shows the First King,
+wielding his legendary sword known as Glamdryl.  Farther to the west a
+great web of walkways and platforms stretch out of view, obscured by
+leaves and silken curtains.  The trees have positioned their leaves and
+boughs in such a way that never a drop of water reaches the royal
+quarters.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 3 486 486 	cur_stats
+-1	affected_by
+-1	inv
+1 1 483 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 485 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 487 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+487		Room Number
+foyer ~	names
+The Elven Hall
+~
+You stand in a naturally decorated room that acts as the entranceway to
+the royal compound. The entire structure is made from magically carved wood.
+Small designs of different shades surround you in a dance of eye catching
+patterns. A smokeless torch is set in a bracer here on the wall and provides
+some warmth and light for non elven visitors. A great bear rug colored
+green with silver lining is spread across the floor. A guard is usually on
+duty here to protect the compound. A door leads east and you can go south or
+north.
+
+~
+30 26 25 23 21 4 -1  -:| bitfield |:-
+1024 3 487 487 	cur_stats
+-1	affected_by
+-1	inv
+1 1 486 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 497 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 488 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 489 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+91 91 -1	mobs
+End of Room
+488		Room Number
+leaf ~	names
+The Leaf Room
+~
+This room is made of and decorated with every different kind of leaf in
+the forest. Great silver leaves and tiny red leaves and the normal green
+leaves and many more. A huge leaf acts as the roof as layered red leaves
+protect the walls like scale armor. A small window is formed to the side
+to allow a fresh breeze to waft throughh the compound.  A torch is on the
+wall here and what is strange is that no smoke is drifting from the torch.
+It must be magical in nature. Exits lead north and west. 
+
+~
+30 26 23 21 4 -1  -:| bitfield |:-
+1024 2 488 488 	cur_stats
+-1	affected_by
+-1	inv
+1 3 487 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 490 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+489		Room Number
+healer ~	names
+The Old Room
+~
+This room holds all the old relics of the past. It is still used to train
+young elves and to tell great stories in. Great fur mats provide
+comfortable places for people to rest. A low platfrom in the center is
+where the speakers pesent their story or lecture. A few windows are in the
+roof to provide light and air yet keeps people from staring out the window
+to escape the less interesting lectures. The exit is back east. 
+
+~
+30 26 23 21 4 -1  -:| bitfield |:-
+1024 2 489 489 	cur_stats
+-1	affected_by
+-1	inv
+1 1 487 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+96 -1	mobs
+End of Room
+490		Room Number
+command ~	names
+The Elven Command Room
+~
+This room is covered in banners and maps of the nearest areas used by the
+Lord and his council to plan defenses and attacks. A swinging hamok
+provides a place for the commander to sleep in times of crisis.  A wooden
+table dominates the center and this is where the elven command may argue
+long into the night to keep other elves safe. A great wolf rug hangs over
+the table. The only exit is east. 
+
+~
+30 26 23 21 4 -1  -:| bitfield |:-
+1024 2 490 490 	cur_stats
+-1	affected_by
+-1	inv
+1 1 488 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+71 98 91 91 -1	mobs
+End of Room
+491		Room Number
+forest ~	names
+In the briar patch.
+~
+This place is covered in green briars, blackberry bushes, grape vines and
+every other kind of plant that makes travel near impossible!  A vine 
+covered branch blocks narrow path that tunnels through this mess to 
+the north and the Northern Route, a much wider road, can be seen to 
+the south.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 491 491 	cur_stats
+-1	affected_by
+-1	inv
+1 41 -358 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 401 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+83 -1	mobs
+End of Room
+492		Room Number
+forest ~	names
+Near the Edge of the Forest.
+~
+The bigger trees are few and far between, but the small undergrowh more than
+makes up for them.  Smaller pines, dogwoods, and chinkapins vie for light
+with the ever present vines and briars.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 492 492 	cur_stats
+-1	affected_by
+-1	inv
+1 1 1409 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 403 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+493		Room Number
+forest ~	names
+The Elven Forest
+~
+The trees here are smaller than farther to the east, but they are still 
+something to behold.  The oaks and poplars and maples are well spaced
+and someone has cleared out the underbrush that chokes the forest further
+west.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 493 493 	cur_stats
+-1	affected_by
+-1	inv
+1 1 460 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 494 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 495 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+60 84 -1	mobs
+End of Room
+494		Room Number
+forest ~	names
+The Elven Forest
+~
+	The trees here are smaller than farther to the east, but they are still 
+something to behold.  The oaks, poplars and maples are well spaced
+and someone has cleared out the underbrush that chokes the forest further
+west.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 494 494 	cur_stats
+-1	affected_by
+-1	inv
+1 1 461 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 493 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+495		Room Number
+forest ~	names
+The Elven Forest
+~
+The trees here are smaller than farther to the east, but they are still 
+something to behold.  A small path leads west through the underbrush
+towards a towering mountain peak.  To the east the forest is airy and
+enviting.
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 495 495 	cur_stats
+-1	affected_by
+-1	inv
+1 1 454 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 3 493 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 4778 1 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+496		Room Number
+forest ~	names
+A small grassy field.
+~
+You have found a small grassy field that leads farther to the south and
+leads to the forest to the north.  For one reason or another, the briars
+aren't so bad here and the shade of the poplars and the soft grass underneath
+make you want to lie down and enjoy some rest!
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 496 496 	cur_stats
+-1	affected_by
+-1	inv
+1 3 404 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 397 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+84 -1	mobs
+End of Room
+497		Room Number
+foyer ~	names
+On the Balcony.
+~
+You are on a small wooden balcony overlooking the forest.  From here you can
+see the waterfall in all its splendor to the north, and the limbs have been
+cleared, or never grew in the way, so that you can also see the forest floor.
+
+~
+30 26 25 23 21 4 -1  -:| bitfield |:-
+1024 3 497 497 	cur_stats
+-1	affected_by
+-1	inv
+1 4 487 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+498		Room Number
+forest ~	names
+The Elven Forest
+~
+You are on a broad, flat ridge that you have been climbing for some time.
+The vegetation is not as lush as it is at lower elevations, but the larger
+forest trees can still reach 8 feet in diameter.    
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 498 498 	cur_stats
+-1	affected_by
+-1	inv
+1 4 459 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 2 499 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+499		Room Number
+forest ~	names
+The Elven Forest
+~
+You are on a broad, flat ridge that you have been climbing for some time.
+The vegetation is not as lush as it is at lower elevations, but the larger
+forest trees can still reach 8 feet in diameter.    
+
+~
+30 23 21 4 -1  -:| bitfield |:-
+1024 2 499 499 	cur_stats
+-1	affected_by
+-1	inv
+1 1 498 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+1 4 465 0 door# dest# distance
+-1	door Affected_Bye (end of door)
+-1	End of Doors
+-1	mobs
+End of Room
+
+
+-1		END OF FILE MARKER

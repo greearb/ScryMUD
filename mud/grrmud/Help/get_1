@@ -2,7 +2,8 @@
 
 Attempt to get a object.  You can 'get' something from a
 container, from the ground in your current room, from a container
-in your current room, and from a container you possess. 
+in your current room, and from a container you possess.  You cannot
+be holding or otherwise wearing the container.
 
 Syntax:  get <<i_th> [target] <<j_th> [container] 
 

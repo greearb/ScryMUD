@@ -1,5 +1,5 @@
-// $Id: string2.cc,v 1.17 1999/09/11 06:12:17 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/09/11 06:12:17 $
+// $Id: string2.cc,v 1.18 2001/03/29 03:02:38 eroper Exp $
+// $Revision: 1.18 $  $Author: eroper $ $Date: 2001/03/29 03:02:38 $
 
 //
 //ScryMUD Server Code
@@ -88,7 +88,7 @@ String String::sterilizeForHtml() const {
    return retval;
 }//sterilizeForHtml
 
-void String::strip() {
+void String::Strip() {
    int i;
 
    if (cur_len == 0)
@@ -359,7 +359,7 @@ void String::Report() const {
 }//Report
  
 
-String String::lookCommand(short is_first = 0) const {
+String String::Look_Command(short is_first = 0) const {
    String temp(100);
    int i = 0; 
    char a;
@@ -384,7 +384,7 @@ String String::lookCommand(short is_first = 0) const {
          return temp;
       }
       if (string[i+1] == '\'') {
-         temp.append(a);
+         temp.Append(a);
          i += 2;
          a = string[i];
       }//if
@@ -402,7 +402,7 @@ String String::lookCommand(short is_first = 0) const {
       if (in_quotes) {
          if (a == '\'') {
             if (string[i+1] == '\'') { //escaped the quote
-               temp.append(a);
+               temp.Append(a);
             }//if
             else {
                break; //all done
@@ -415,7 +415,7 @@ String String::lookCommand(short is_first = 0) const {
             break;
          }//if
          else {
-            temp.append(a);
+            temp.Append(a);
          }//else
       }//else
 
@@ -428,8 +428,7 @@ String String::lookCommand(short is_first = 0) const {
 }//look_command
 
 
-String String::getCommand(short& eos, short& term_by_period,
-                          short is_first = 0) {
+String String::Get_Command(short& eos, short& term_by_period, short is_first = 0) {
    String temp(100);
    int i = 0, k = 0;
    eos = term_by_period = FALSE;
@@ -481,7 +480,7 @@ String String::getCommand(short& eos, short& term_by_period,
          }//if
          else {
             if ((a == '\'') && (string[i+1] == '\'')) {
-               temp.append(a);
+               temp.Append(a);
                i += 2;
                a = string[i];
             }//if
@@ -550,7 +549,7 @@ String String::getCommand(short& eos, short& term_by_period,
 }//get_command
 	 
 
-String String::getRest(short destruct = TRUE) {
+String String::Get_Rest(short destruct = TRUE) {
    String temp(300);
    int i = 0, k = 0;
    char a;
@@ -590,14 +589,14 @@ String String::getRest(short destruct = TRUE) {
 void String::Refigure_strlen() {
    cur_len = strlen(string);
    if (cur_len > max_len) {
-      LOGFILE.log(ERR, "ERROR:  cur_len is > max_len, end of string was\n");
+      LOGFILE.log(ERROR, "ERROR:  cur_len is > max_len, end of string was\n");
       //log("over-written.  Good luck, you'll need it!\n");
       cur_len = max_len;
       string[cur_len] = '\0';  //try to salvage the situation..
    }//if
 }//Refigure_strlen
 
-int String::contains(const char ch) const {
+int String::Contains(const char ch) const {
    int retval = 0;
    for (int i = 0; i<cur_len; i++) {
       if (string[i] == ch) {
@@ -609,52 +608,16 @@ int String::contains(const char ch) const {
 }
 
 
-/**  Reads in bytes untill it gets to the dlm.  It does NOT include the
- * delimiter.  A backslash escapes the delimiter.
- */
-void String::readUntil(char delim, istream& dafile) {
-   int is_escaped = FALSE;
-   char ch;
-   clear();
-   // Get to the beginning
-   while (dafile) {
-      dafile.get(ch);
-      if (ch == '\\') {
-         if (is_escaped) {
-            is_escaped = FALSE;
-            this->append(ch);
-         }
-         else {
-            is_escaped = TRUE;
-         }
-      }
-      else if (ch == delim) {
-         if (is_escaped) {
-            is_escaped = FALSE;
-            this->append(ch);
-         }
-         else {
-            return;
-         }
-      }
-      else {
-         is_escaped = FALSE;
-         this->append(ch);
-      }
-   }//while
-}//readUntil
-
-
 /** Reads untill it finds the delim, and then reads untill
  * it finds another.  Escape the delim with a \ (backslash).
  * This is not too efficient, as it reads one character at
  * a time, btw.
  */
-int String::readToken(char delim, istream& dafile, int include_delim) {
+int String::readToken(char delim, ifstream& dafile, int include_delim) {
    char ch;
    int is_escaped = FALSE;
 
-   clear();
+   Vclear();
 
    // Get to the beginning
    while (dafile) {
@@ -726,14 +689,17 @@ int String::readToken(char delim, istream& dafile, int include_delim) {
 }//readToken
 
 
-void String::termedRead(istream& da_file) { //reads lines untill it finds
+void String::Termed_Read(ifstream& da_file) { //reads lines untill it finds
 					      // a line containing only "~"
    char buf[182];
    short test;
 
    *this = "";  
 
-   Assert(da_file && 1, "WARNING:  String::Termed_Read, da_file is null\n"); 
+   if (!da_file) {
+      LOGFILE.log(WRN, "WARNING:  String::Termed_Read, da_file is null\n");
+      return;
+   }
 
    da_file.getline(buf, 180);
 
@@ -767,7 +733,7 @@ void String::termedRead(istream& da_file) { //reads lines untill it finds
 }//Termed_Read
 
 
-void String::toLower() {
+void String::Tolower() {
    for (int i = 0; i < cur_len; i++) {
       string[i] = tolower(string[i]);
    }//for
@@ -803,7 +769,7 @@ int String::Write(const int desc, const int max_to_write) {
                          max_to_write - sofar);
       if (this_round < 0) { //some error happened
          perror("String.Write() err");
-         LOGFILE.log(ERR, "ERROR:  String.Write() err.\n");
+         LOGFILE.log(ERROR, "ERROR:  String.Write() err.\n");
          string[0] = '\0';
          cur_len = 0;
          return -1;
@@ -846,6 +812,11 @@ int String::Read(const int desc, const int max_to_read) {
    //log(*this);
 
    do {
+
+      if ((max_to_read - (begin + sofar) - 1) == 0) {
+         break; //Done
+      }
+
       this_round = read(desc, (string + sofar + begin), 
                         max_to_read - (begin + sofar) - 1);
       
@@ -937,12 +908,12 @@ void String::purge() {
 }//Clear      
 
 
-void String::clear() {
+void String::Clear() {
    *this = "\0";
 }//Clear
 
 
-void String::cap() {
+void String::Cap() {
    for (int i = 0; i<cur_len; i++) {
       if (isalpha(string[i])) {
          string[i] = toupper(string[i]);
@@ -951,14 +922,14 @@ void String::cap() {
    }//for
 }//Cap      
 
-void String::getLine(istream& stream, int max_len) {
+void String::Getline(istream& stream, int max_len) {
    char buf[max_len + 1];
    stream.getline(buf, max_len);
    *this = buf;
 }//Getline      
 
 
-void String::append(const char* source) {
+void String::Append(const char* source) {
    if (!source)
       return;
    int k = strlen(source);
@@ -970,66 +941,60 @@ void String::append(const char* source) {
     */
    strcat(string + cur_len, source);
    cur_len += k;
-}//append      
+}//Append      
 
 
-void String::append(const int i) {
+void String::Append(const int i) {
    char source[25];
    sprintf(source, "%i", i);
-   this->append(source);
-}//append      
+   this->Append(source);
+}//Append      
 
 void String::appendHex(const long i) {
    char source[25];
    sprintf(source, "%lx", i);
-   this->append(source);
-}//append      
+   this->Append(source);
+}//Append      
 
 
-void String::append(const char c) {
+void String::Append(const char c) {
    char buf[2];
    sprintf(buf, "%c", c);
-   this->append(buf);
-}//append      
+   this->Append(buf);
+}//Append      
 
 
-void String::append(const String& S) {
-   if (&S != this) {
-      ensureCapacity(cur_len + S.cur_len);
-      strcat(string, S.string);
-      cur_len += S.cur_len;
-   }
-   else {
-      String tmp(S);
-      append(tmp);
-   }
-}//append      
+void String::Append(const String& S) {
+   ensureCapacity(cur_len + S.cur_len);
+   strcat(string, S.string);
+   cur_len += S.cur_len;
+}//Append      
 
 
-void String::prepend(const int i) {
+void String::Prepend(const int i) {
    char source[25];
    sprintf(source, "%i", i);
-   this->prepend(source);
-}//prepend      
+   this->Prepend(source);
+}//Prepend      
 
 
-void String::prepend(const long i) {
+void String::Prepend(const long i) {
    char source[25];
    sprintf(source, "%d", (int)(i));
-   this->prepend(source);
-}//prepend      
+   this->Prepend(source);
+}//Prepend      
 
 
-void String::prepend(const char* source) {
+void String::Prepend(const char* source) {
    String tmp(*this); //keep a copy handy
    *this = source;
-   this->append(tmp);
-}//prepend      
+   this->Append(tmp);
+}//Prepend      
 
 
-void String::prepend(const String& source) {
-   this->prepend(source.string);
-}//prepend      
+void String::Prepend(const String& source) {
+   this->Prepend(source.string);
+}//Prepend      
 
 
    
@@ -1041,47 +1006,47 @@ String::operator const char*() const {
 
 
 String& String::operator+= (const String &S) {
-   this->append(S);
+   this->Append(S);
    return *this;
 }//+= operator
 
 String& String::operator+= (const char s) {
-   this->append(s);
+   this->Append(s);
    return *this;
 }//+= operator
 
 
 String& String::operator+= (const char* S) {
-   this->append(S);
+   this->Append(S);
    return *this;
 }//+= operator
 
 
 String& String::operator+= (const int i) {
-   this->append(i);
+   this->Append(i);
    return *this;
 }
 
 String& String::operator+= (const long l) {
-   this->append((int)l); //bah, same thing in a real computer
+   this->Append((int)l); //bah, same thing in a real computer
    return *this;
 }
 
 String& String::operator= (const int i) {
    Clear();
-   this->append(i);
+   this->Append(i);
    return *this;
 }
 
 String& String::operator= (const long l) {
    Clear();
-   append((int)l); //same thing in a real computer, for now at least
+   Append((int)l); //same thing in a real computer, for now at least
    return *this;
 }
 
 String& String::operator= (const char c) {
    Clear();
-   append(c);
+   Append(c);
    return *this;
 }
 
@@ -1127,14 +1092,14 @@ char String::operator[] (const unsigned int i) const {
 
 String String::operator+ (const char* S) const {
    String tmp(*this);
-   tmp.append(S);
+   tmp.Append(S);
    return tmp;
 }//assignment operator
 
 
 String String::operator+ (const String& S) const {
    String tmp(*this);
-   tmp.append(S);
+   tmp.Append(S);
    return tmp;
 }//assignment operator
 
@@ -1194,8 +1159,6 @@ void vSprintf(String& targ, const char* string, va_list ap) {
    int s_len;
    char* tmp_chr_str;
    String* tmp_str;
-   void* junk;
-   char ch_buf[50];
 
    targ = "\0"; //initialize targ
 
@@ -1205,18 +1168,18 @@ void vSprintf(String& targ, const char* string, va_list ap) {
          if (string[i] != '%') {
             switch (string[i]) {
                case 'i':    /* int */  
-                  targ.append(va_arg(ap, int));
+                  targ.Append(va_arg(ap, int));
                   break;
                case 'I':    /* ignore */
-                  junk = va_arg(ap, void*);
+                  (void)va_arg(ap, void*);
                   // Do nothing with it!!
                   break;
                case 'd':     /* long, turn it into an int */
-                  targ.append(va_arg(ap, int));
+                  targ.Append(va_arg(ap, int));
                   break;
                case 's':      /* char * */
                   if ((tmp_chr_str = va_arg(ap, char *))) {
-                     targ.append(tmp_chr_str);
+                     targ.Append(tmp_chr_str);
                   }//if
                   break;
                case 'p':    /* pointer */
@@ -1224,7 +1187,7 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                   break;
                case 'S':      /* String */
                   if ((tmp_str = va_arg(ap, String *))) {
-                     targ.append(*tmp_str);
+                     targ.Append(*tmp_str);
                   }//if
                   break;
                case 'P':      /* pad w/spaces */
@@ -1235,50 +1198,44 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                         num += (int)(string[i+1]) - 48;
                      }//if
                      else {
-                        LOGFILE.log(ERR, 
+                        LOGFILE.log(ERROR, 
                                     "ERROR:  Sprintf, case 'P', first not an int\n");
                      }
                   }//if two digits
                   else {
-                     LOGFILE.log(ERR,
+                     LOGFILE.log(ERROR,
                                  "ERROR:  Sprintf, case 'P', second not an int\n");
                   }
                   i += 2; //now pointing to next valid letter
                   
                   s_len = targ.Strlen();
                   while (s_len < num) {
-                     targ.append(" ");  //pad another space
+                     targ.Append(" ");  //pad another space
                      s_len++;
                   }//while
                   i--;  //slight hack
                   break;
-               case 'x':
-                  i = va_arg(ap, int);
-                  sprintf(ch_buf, "0x%lx", i);
-                  targ.append(ch_buf);
-                  break;
                default:
-                  sprintf(ch_buf, "ERROR: default (%c) called in Sprintf.\n",
-                          string[i]);
-                  targ.Assert(FALSE, ch_buf);
+                  targ.Assert(FALSE, "ERROR: default called in Sprintf.\n");
             }//switch
             i++;
          }//if
          else { //
             i++;
-            targ.append("%");
+            targ.Append("%");
          }//else
       }//if
       else {
-         targ.append(string[i]);
+         targ.Append(string[i]);
          i++;
       }//else
    }//for
 }//vSprintf
 
-/* WARNING:  this will fail if input is > 299 chars. */
+		/* WARNING:  this will fail if input is > 99 chars. */
+
 istream& operator>> (istream& stream, String& str) {
-   char buf[300];
+   char buf[100];
    stream >> buf;
    str = buf;
    return stream;

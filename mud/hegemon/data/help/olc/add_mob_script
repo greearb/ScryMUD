@@ -144,8 +144,7 @@ object #44 in his/her possession.
 
 **%M if does_own 44
 
-
-
+===============================
 High Level Constructs:
 ----------------------
 if [conditional command and arguments]
@@ -156,9 +155,9 @@ else
     of stuff]
 end
 
-
+===============================
 Low Level Constructs:
----------------------
+-------------------------------
 
 script_goto_true [label] [conditional command and args]
 script_goto_false [label] [conditional command and args]
@@ -166,26 +165,23 @@ script_jump_true [line number] [conditional command and args]
 script_jump_false [line number] [conditional command and args]
 label: [your_label]
 
-Conditional Commands:
----------------------
+===============================
+Conditional Commands: (See 'help does_own' for more information.)
+-------------------------------
 
-TRUE
-FALSE
-is_in_posn [stand, sit, rest, sleep, meditate,
-            stun, dead, or prone]
-does_own [obj#1, obj#2 ... obj#6]  //You may test up to 6.
+TRUE, FALSE, is_equal_to, is_less_than, is_greater_than,
+is_in_posn, does_own
 
-(More to follow soon.)
 
 Special Scripting Commands:
----------------------------
+--------------------------------
 recho:          Room wide echo.
 silent_junk:    Junk object without any external messages.
 oload:          Load an object from nowhere.
 
+===============================
 Example Mob Script:
-===============
-
+-------------------------------
 
 Trigger:  give  Actor Mob:  -1  Target Mob:  76  Precedence: 1
         Discriminator:   334 .
@@ -203,20 +199,27 @@ say Hrm....;;
 say End of script..;;
 
 ==============================
-NEW:  Room Scripting Commands:
+Room Scripting Commands:
 ------------------------------
-recho:          Echo a message to the room.
-tell:           The room tells a player a message.
-zecho:          Cause a message to be echoed across the entire zone.
-wizchat:        Cause a message to be sent to the wizchat channel.
-rm_move_all:    Force all players to exit in a certain direction.
-rm_move:        Force one player to exit in a certain direction.
-neighbor_echo:  Echo a message to a neighboring room (like after a move).
-rm_omove_all:   Force all objects to exit in a certain direction.
-rm_omove:       Force one object to exit in a certain direction.
+recho:            Echo a message to the room.
+tell:             The room tells a player a message.
+zecho:            Cause a message to be echoed across the entire zone.
+wizchat:          Cause a message to be sent to the wizchat channel.
+rm_move_all:      Force all players to exit in a certain direction.
+rm_move:          Force one player to exit in a certain direction.
+rm_transport_all: Move all mobs to another room.
+rm_transport:     Move one mob to another room.
+neighbor_echo:    Echo a message to a neighboring room (like after a move).
+other_room_echo:  Echo a message to a different room, by VNUM.
+rm_omove_all:     Force all objects to exit in a certain direction.
+rm_omove:         Force one object to exit in a certain direction.
+rm_otransport:    Force an object to go to another room.
+rm_otransport_all: Force all objecs to go to another room.
+oload:
+mload:
 
 ==============================
-NEW:  Object Scripting Commands:
+Object Scripting Commands:
 ------------------------------
 recho:          Echo a message to the room.
 tell:           The room tells a player a message.
@@ -227,8 +230,9 @@ obj_move:       Force one player to exit in a certain direction.
 neighbor_echo:  Echo a message to a neighboring room (like after a move).
 obj_omove_all:  Force all objects to exit in a certain direction.
 obj_omove:      Force one object to exit in a certain direction.
-
+pull:           Triggered by: pull [descriminator], see help for pull.
+push:           Triggered by: push [descriminator], see help for push.
 
 
 See Also:  olc amsave mstat rm_script list_scripts stat_script affect_hp
-See Also:  affect_mana affect_mov comparators
+See Also:  affect_mana affect_mov comparators rm_comm

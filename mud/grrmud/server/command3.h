@@ -1,5 +1,5 @@
-// $Id: command3.h,v 1.9 1999/08/10 07:06:18 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/10 07:06:18 $
+// $Id: command3.h,v 1.10 2001/03/29 03:02:29 eroper Exp $
+// $Revision: 1.10 $  $Author: eroper $ $Date: 2001/03/29 03:02:29 $
 
 //
 //ScryMUD Server Code
@@ -51,6 +51,10 @@ int flee(critter& pc, int& is_dead);
 int flee_to_safety(critter& pc, int& is_dead);  // MOB PROC
 int slay(int i_th, const String* name, critter& pc);
 
+int sacrifice(const String* cmd, critter& pc);
+int remort(int i_th, const String* v, const String* new_race,
+           const String* new_class, critter& pc);
+
 // Dealing with active (zunlocked) zones.
 int addZone(int i, critter& pc);
 int showZones(critter& pc);
@@ -64,7 +68,6 @@ int do_junk(int do_msg, int i_th, const String* str1,
              const String* str2, critter& pc);
 
 int enslave(int i_th, const String* name, critter& pc);
-int time(critter& pc);
 int order(String* str, critter& pc);
 int force(String* str, critter& pc);
 int force_all(String* str, critter& pc);
@@ -76,7 +79,7 @@ int follow(int i_th, const String* name, critter& pc, int do_msg = TRUE);
 //int critter::doFollow(critter& vict, int do_msg = TRUE);
 
 int do_tell(critter& pc, const char* msg, critter& targ, short show_teller,
-	     int room_num_of_targ); //last arg is for mob_to_smob in spec procs
+             int room_num_of_targ); //last arg is for mob_to_smob in spec procs
 int tell(int i_th, const String* targ, const char* msg, critter& pc);
 
 int who(critter& pc);
