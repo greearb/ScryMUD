@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.22 1999/07/18 20:12:03 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/07/18 20:12:03 $
+// $Id: misc.cc,v 1.23 1999/07/18 21:16:18 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/07/18 21:16:18 $
 
 //
 //ScryMUD Server Code
@@ -1229,17 +1229,24 @@ void decrease_timed_affecting_rooms() {  //will decrease all
 
    Cell<room*> cell;
    affected_rooms.head(cell);
-   room* rm_ptr;
+   room* rm_ptr = NULL;
    Cell<stat_spell_cell*> sp_cell;
-   stat_spell_cell* sp_ptr;
+   stat_spell_cell* sp_ptr = NULL;
    short take_it_off = FALSE;
 
-  // log("In decrease_timed_affecting_rooms\n");
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In dta_rooms: affected_rooms.size() == " 
+             << affected_rooms.size() << endl;
+   }
+
    rm_ptr = cell.next();
    while (rm_ptr) {
       take_it_off = TRUE;
-      
-      
+
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "dta_rooms, rm_ptr: " << rm_ptr << endl;
+      }
+
       Cell<door*> dcll(rm_ptr->DOORS);
       door* dptr, *tmp_dptr;
       dptr = dcll.next();
@@ -1275,10 +1282,18 @@ void decrease_timed_affecting_rooms() {  //will decrease all
 	    sp_ptr = sp_cell.next();
       }//while
       
-      if (take_it_off) 
+      if (take_it_off) {
+         if (mudlog.ofLevel(DBG)) {
+            mudlog << "Taking it off...\n";
+         }
          rm_ptr = affected_rooms.lose(cell);
-      else
+      }
+      else {
+         if (mudlog.ofLevel(DBG)) {
+            mudlog << "NOT Taking it off...\n";
+         }
          rm_ptr = cell.next();
+      }
    }//while
 }//decrease_timed_affecting_rooms
 

@@ -1,5 +1,5 @@
-// $Id: load_wld.cc,v 1.5 1999/07/18 00:59:23 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
+// $Id: load_wld.cc,v 1.6 1999/07/18 21:16:18 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/07/18 21:16:18 $
 
 //
 //ScryMUD Server Code
@@ -328,6 +328,16 @@ void load_wld() {
    for (int i = 0; i<Cur_Max_Crit_Num; i++) {
       if (mob_list[i].isInUse()) {
          obj_ptr_log << "CRI_LST " << i << " " << &(mob_list[i]) << "\n";
+      }//if
+   }//for
+
+
+   // Write out addresses of all critters in the object list.
+   for (int i = 0; i<Cur_Max_Room_Num; i++) {
+      if (room_list.elementAtNoCreate(i)) {
+         if (room_list[i].isInUse()) {
+            obj_ptr_log << "RM_LST " << i << " " << &(room_list[i]) << "\n";
+         }//if
       }//if
    }//for
 

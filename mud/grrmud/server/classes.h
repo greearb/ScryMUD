@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.6 1999/06/05 23:29:13 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+// $Id: classes.h,v 1.7 1999/07/18 21:16:18 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/18 21:16:18 $
 
 //
 //ScryMUD Server Code
@@ -55,6 +55,62 @@ public:
    static String makeSafeForHegTag(const char* string);
 }; 
 
+class ContainedObject;
+
+class ObjectContainer {
+private:
+   List<ContainedObject*> inv;
+
+public:
+   int appendObject(ContainedObject* o) {
+      inv.append(o);
+      return TRUE;
+   }
+
+   int prependObject(ContainedObject* o) {
+      inv.prepend(o);
+      return TRUE;
+   }
+
+   ContainedObject* removeObject(ContainedObject* o) {
+      return inv.loseData(o);
+   }
+
+   List<ContainedObject*>& getInv() { return inv; }
+};//ObjectContainer
+
+
+class ContainedObject {
+private:
+   ObjectContainer* contained_by;
+
+public:
+   ContainedObject() : contained_by(NULL) { };
+   ContainedObject(ObjectContainer* ptr) : contained_by(ptr) { };
+
+   int appendContainer(ObjectContainer* ptr) {
+      if (ptr->appendObject(this)) {
+         contained_by->removeObject(this);
+         contained_by = ptr;
+         return TRUE;
+      }
+      return FALSE;
+   }//appendContainer
+
+   int prependContainer(ObjectContainer* ptr) {
+      if (ptr->prependObject(this)) {
+         contained_by->removeObject(this);
+         contained_by = ptr;
+         return TRUE;
+      }
+      return FALSE;
+   }//appendContainer
+
+   ObjectContainer* getContainer() {
+      return contained_by;
+   }
+
+};//ContainedObject
 
 
 ///************************  stat_cell  ************************///

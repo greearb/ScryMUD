@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.25 1999/07/16 06:12:53 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
+// $Id: room.cc,v 1.26 1999/07/18 21:16:18 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/07/18 21:16:18 $
 
 //
 //ScryMUD Server Code
@@ -184,6 +184,7 @@ room::room() {
    }
    setVisBit(1024); //hack, forgot 'normal' vis bit earlier
    pause = 0;
+   obj_ptr_log << "RM_CON " << getIdNum() << " " << this << "\n";
 } // sub_room constructor
 
 room::room(int rm_num) {
@@ -193,6 +194,9 @@ room::room(int rm_num) {
    }
    cur_stats[2] = rm_num;
    setVisBit(1024); //hack, forgot 'normal' vis bit earlier
+   pause = 0;
+
+   obj_ptr_log << "RM_CON_I " << getIdNum() << " " << this << "\n";
 } // sub_room constructor
 
 
@@ -263,11 +267,15 @@ void room::recursivelyLoad() { //mobs and objects
 room::room(room& source) {
    _cnt++;
    *this = source; //overloaded = operator
+   
+   obj_ptr_log << "RM_CC " << getIdNum() << " " << this << "\n";
 } // sub_room copy constructor
 
 
 room::~room() {
    _cnt--;
+
+   obj_ptr_log << "RM_DES " << getIdNum() << " " << this << "\n";
 
    if (!do_shutdown) {
       affected_rooms.loseData(this);
