@@ -1,5 +1,5 @@
-// $Id: socials.cc,v 1.7 2001/03/29 03:02:34 eroper Exp $
-// $Revision: 1.7 $  $Author: eroper $ $Date: 2001/03/29 03:02:34 $
+// $Id: socials.cc,v 1.8 2001/10/08 02:36:45 justin Exp $
+// $Revision: 1.8 $  $Author: justin $ $Date: 2001/10/08 02:36:45 $
 
 //
 //ScryMUD Server Code
@@ -240,8 +240,8 @@ void snap(int i_th, const String* vict, critter& pc, room& rm) {
          Sprintf(buf, "You snap your fingers in front of %S's face.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S snaps their fingers in front of your face.\n",
-                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         Sprintf(buf, "%S snaps %s fingers in front of your face.\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT), get_his_her(pc));
          buf.Cap();
          show(buf, *crit_ptr);
          
@@ -258,7 +258,8 @@ void snap(int i_th, const String* vict, critter& pc, room& rm) {
    }//if a victim
    else {      
       show("You snap your fingers.\n", pc);
-      emote("snaps their fingers.", pc, rm, TRUE);
+      Sprintf(buf, "snaps %s fingers.\n", get_his_her(pc));
+      emote(buf, pc, rm, TRUE);
    }//else
 }//snap
 
