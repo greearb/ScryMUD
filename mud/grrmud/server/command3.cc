@@ -664,7 +664,8 @@ int bug(const String& str, critter& pc) {
  */
 int buglist(BugTypeE bt, int i, const String& cmd, int j, const String& mod,
             const String& notes, critter& pc) {
-   if (!pc.isPc() && &(notes)) { //using notes here stops compiler warnings.
+   if (!pc.isPc()) { 
+      i = notes.Strlen(); //using notes here stops compiler warnings.
       return -1;
    }
 

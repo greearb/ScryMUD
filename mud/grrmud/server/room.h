@@ -144,7 +144,7 @@ public:
    int getVisBit() const { return cur_stats[0]; }
    int getMovCost() const { return cur_stats[1]; }
    int getRoomNum() const { return cur_stats[2]; }
-   int getIdNum() { return getRoomNum(); }
+   int getIdNum() const { return getRoomNum(); }
    void setVisBit(int i) { cur_stats[0] = i; }
    void setMovCost(int i) { cur_stats[1] = i; }
    void setRoomNum(int i) { cur_stats[2] = i; }   
