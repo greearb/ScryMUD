@@ -1099,8 +1099,7 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
    // Only support one buy proc at this time, and probably forever!
    if (prc_num == 0) { //buy proc_0
       //log("Doing buy proc_0.\n");
-      cur_time = get_game_time();
-      if (keeper.OPEN_TIME < keeper.CLOSE_TIME) {
+      if (!keeper.isOpen(get_game_time())) {
          if ((cur_time < keeper.OPEN_TIME) || (cur_time > keeper.CLOSE_TIME)) {
             Sprintf(buf, "Hours are from %s to %s.\n", 
                     military_to_am(keeper.OPEN_TIME),
@@ -1276,8 +1275,7 @@ int do_offer_proc(int prc_num, critter& keeper, int i_th,
 
    if (prc_num == 2) { //offer proc_0
       //log("Doing offer proc_2.\n");
-      price = get_game_time();
-      if ((price < keeper.OPEN_TIME) || (price > keeper.CLOSE_TIME)) {
+      if (!keeper.isOpen(get_game_time())) {
          Sprintf(buf, "Hours are from %s to %s.\n", 
                  military_to_am(keeper.OPEN_TIME),
                  military_to_am(keeper.CLOSE_TIME));
@@ -1376,8 +1374,7 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
 
    if (prc_num == 1) { //sell proc_1
       //log("Doing sell proc_1.\n");
-      price = get_game_time();
-      if ((price < keeper.OPEN_TIME) || (price > keeper.CLOSE_TIME)) {
+      if (!keeper.isOpen(get_game_time())) {
          Sprintf(buf, "Hours are from %s to %s.\n", 
                  military_to_am(keeper.OPEN_TIME),
                  military_to_am(keeper.CLOSE_TIME));

@@ -87,7 +87,8 @@ Arguments:
 -----------------------------------------------------------------------
 Special Scripting Commands:
 	pause, exact_damage, oload, mload, affect_hp, affect_mana,
-        affect_mov
+        affect_mov, is_greater_than, is_less_than, is_equal_to,
+	is_in_posn
 -----------------------------------------------------------------------
 
    NOTE:  the use of the 'pause' command can be very useful, as it helps
@@ -230,4 +231,4 @@ obj_omove:      Force one object to exit in a certain direction.
 
 
 See Also:  olc amsave mstat rm_script list_scripts stat_script affect_hp
-See Also:  affect_mana affect_mov
+See Also:  affect_mana affect_mov comparators

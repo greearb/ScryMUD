@@ -33,6 +33,7 @@ char* BugEntry::state_str[] = {
    "assigned",
    "retest",
    "closed",
+   "defer",
    "all",
    "none",
    "high_state",
@@ -225,7 +226,7 @@ void BugEntry::appendComment(const char* date, const char* report,
 //does checking needed
 int BugEntry::changeState(state new_state, int imm_level, const String& name) {
    
-   if ((imm_level < 10) && (strcasecmp(name, assigned_to) != 0)) {
+   if ((imm_level < 9) && (strcasecmp(name, assigned_to) != 0)) {
       return -EPERM;
    }
 
@@ -236,11 +237,17 @@ int BugEntry::changeState(state new_state, int imm_level, const String& name) {
       return 0;
    }
 
+   // Don't restrict me cause I'm lazy!!
+   if (imm_level == 10) {
+      cur_state = new_state;
+      return 0;
+   }
+
    switch (cur_state)
      {
       case open:
-         if (new_state == assigned) {
-            cur_state = assigned;
+         if ((new_state == assigned) || (new_state == defer)) {
+            cur_state = new_state;
             return 0;
          }
          else {
@@ -338,30 +345,40 @@ int BugEntry::write(ofstream& dafile) {
 int BugEntry::writeHtml(ofstream& dafile) {
    String buf(200);
 
-   dafile << "\n<table width=\"95%\" border=3>
-<caption align=top><strong>" << html_color[cur_state];
+   if (!reports.isEmpty()) {
+      dafile << "\n<table width=\"95%\" border=3>
+<caption align=top><strong>";
+   }
+   else {
+      dafile << "<center><b>\n";
+   }
+
+   dafile << html_color[cur_state];
 
    Sprintf(buf, "[%i] %P08[%s]%P17 <u>%S</u>  %P35By %S %P60Room: %i<br>\n<font size += 1>%S</font>",
            bug_num, state_str[cur_state], &create_date, &reporter,
            room_num, &html_safe_title);
    
-   dafile << buf << "</font></strong></caption><h4>\n";
-
-   Cell<CommentEntry*> cll(reports);
-   CommentEntry* ptr;
-   int did_one = FALSE;
-   while ((ptr = cll.next())) {
-      did_one = TRUE;
-      ptr->writeHtml(dafile, html_color[cur_state]);
-   }
-
-   // Empty tables don't even show the caption...
-   if (!did_one) {
-      dafile << "<tr><td> N/A</td><td>N/A</td><td>N/A</td></tr>";
-   }
-
-   dafile << "</h4></table>\n";
+   dafile << buf << "</font>\n";
    
+   if (!reports.isEmpty()) {
+      dafile << "</strong></caption><h4>\n";
+
+      Cell<CommentEntry*> cll(reports);
+      CommentEntry* ptr;
+      int did_one = FALSE;
+      while ((ptr = cll.next())) {
+         did_one = TRUE;
+         ptr->writeHtml(dafile, html_color[cur_state]);
+      }
+   
+   
+      dafile << "</h4></table>\n";
+   }//if
+   else {
+      dafile << "</b></center>\n";
+   }
+
    if (dafile)
      return 0;
    return -1;
@@ -424,7 +441,7 @@ String BugEntry::toStringHeg(const char* col_type) {
 
 int BugEntry::canComment(int imm_level, const String& name) {
    // Only way to comment on a closed one btw.
-   if (imm_level >= 10) {
+   if (imm_level >= 9) {
       return TRUE;
    }
 
@@ -435,6 +452,7 @@ int BugEntry::canComment(int imm_level, const String& name) {
    // retest and open can be commented on by anyone.
    return TRUE;
 }//canComment
+
 
 int BugEntry::reAssign(const String& new_name, int imm_level,
                        const String& name) {
@@ -513,6 +531,7 @@ from ScryMUD.<P>
 <a href=\"#assigned\">Assigned Issues</a> 
 <a href=\"#retest\">Issues to Retest</a> 
 <a href=\"#closed\">Closed Issues</a>
+<a href=\"#defer\">Deferred Issues</a>
 </center><P>
 ";
 
@@ -551,6 +570,20 @@ from ScryMUD.<P>
       bugs.head(cll);
       while ((ptr = cll.next())) {
          if (ptr->getState() == BugEntry::retest) {
+            dafile << "<tr><td>\n";
+            ptr->writeHtml(dafile);
+            dafile << "</td></tr><P>" << endl;
+         }
+      }//while
+
+
+      dafile << "</table><P>
+<a name=\"defer\"></a>
+<h2><u>Issues that have been Deferred</u></h2>
+ <table width=\"100%\"border=3>\n";
+      bugs.head(cll);
+      while ((ptr = cll.next())) {
+         if (ptr->getState() == BugEntry::defer) {
             dafile << "<tr><td>\n";
             ptr->writeHtml(dafile);
             dafile << "</td></tr><P>" << endl;

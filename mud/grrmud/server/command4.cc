@@ -2723,9 +2723,10 @@ int tog_mflag(int flagnum, const String* flag_type,
            pc);
       return -1;
    }//else
-   
+
    if (strncasecmp(*flag_type, "mob_flag", 1) == 0) {
-      if ((flagnum == 1) || (flagnum == 2) || (flagnum == 5)) {
+      if ((flagnum == 1) || (flagnum == 2) || (flagnum == 5) ||
+         (flagnum == 6)) {
          if (mob_ptr->isNpc()) {
             mob_ptr->MOB_FLAGS.flip(flagnum);
             return 0;

@@ -164,6 +164,7 @@ berserk_1 \
 bodyslam_1 \
 brief_1 \
 bug_1 \
+buglist_1 \
 butcher_1 \
 buy_1 \
 cast_1 \

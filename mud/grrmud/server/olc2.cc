@@ -159,7 +159,7 @@ int normalize_mob(critter& crit) {
       crit.short_cur_stats[i] = bound(5, 1000, crit.short_cur_stats[i]);
    }//for
    return 0;
-}
+}//normalize_mob
  
 
 int normalize_door(door_data& dr_data) {

@@ -785,12 +785,19 @@ int do_hit(critter& vict, critter& pc) {
 }//do_hit
 
 
-int cast(const String* spell, int j_th, const String* victim, critter &pc) {
+int cast(const String* spell, int j_th, const String* victim, critter &pc,
+         int was_ordered) {
    int len = spell->Strlen();
 
    if (mudlog.ofLevel(TRC)) {
       mudlog << "In cast, spell:  " << *spell << "  j:  " << j_th
-             << "  vict:  " << *victim << endl;
+             << "  vict:  " << *victim << " was_ordered: " <<
+             was_ordered << endl;
+   }
+
+   if (was_ordered) {
+      pc.show("You can't be ordered to cast a spell.\n");
+      return -1;
    }
 
    if (!ok_to_do_action(NULL, "mFPN", 0, pc, pc.getCurRoom(), NULL, TRUE)) {

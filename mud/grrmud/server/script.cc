@@ -272,9 +272,10 @@ int script_jump(int on_test, String* cooked_strs, int* cooked_ints,
       else {
 
          //  The + 1 steps past the first command, which was script_jump_***
-         test = test_targ.executeCommand(cooked_strs + 1, cooked_ints + 1, sanity,
-                                         c_code_owner, r_code_owner,
-                                         FALSE/* do_sub */);
+         test = test_targ.executeCommand(cooked_strs + 1, cooked_ints + 1,
+                                         sanity, c_code_owner, r_code_owner,
+                                         FALSE,/* do_sub */
+                                         FALSE/* was_ordered*/);
          if (mudlog.ofLevel(SCRIPT)) {
             mudlog << "script_jump, test is: " << test << " on test: "
                    << on_test << endl;

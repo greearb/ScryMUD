@@ -46,8 +46,8 @@ int look(int i_th, const String* object, critter& looker,
 int do_look(int i_th, const String* obj, critter& pc, room& rm,
             int ignore_brief);
 
-int cast(const String* spell_name, int j, const String* victim, critter& 
-          caster); 
+int cast(const String* spell_name, int j, const String* victim,
+         critter& caster, int was_ordered);
 int put(int i, const String* object, int j, const String* bag, critter& 
           putter); 
 int get(int i, const String* object, int j, const String* bag, critter& 

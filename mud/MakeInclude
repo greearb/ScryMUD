@@ -25,8 +25,8 @@ MAKE=make
 CUR_DATE=`date '+%y.%m.%d'`
 
 #  For distribution purposes
-SCRY_VERSION=1.9.1
-HEGEMON_VERSION=1.9.1
+SCRY_VERSION=1.9.2
+HEGEMON_VERSION=1.9.2
 
 LDFLAGS =  -L$(MUD_HOME)/lib #linker flaggs
 
@@ -51,6 +51,16 @@ LDLIBS =  -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
 #LDLIBS =  -lm -lstring2 -lbitfield #-lnsl # -lsocket
 
 
+# Here's some hints that should give you markedly better performance,
+# though a loss of debugging information.
+#
+#  Replace the -g with -O6 -fno-frame-pointer
+#
+#  It will take longer to compile, but will use much less memory and will
+#  run faster.  It will also have NO debugging info to speak of (at least
+#  not in the core file, should it produce one.)
+# (NOTE:  I haven't tested these, but one person was very pleased with
+#         the results and suggested them.) --BEN
 
 #  Other compilers may work, but I haven't tested with them.
 #  I don't suppose it could hurt to try though!

@@ -1675,7 +1675,7 @@ int order(String* str, critter& pc) {
 	 tmp_lst.head(cll);
 	 while ((ptr = cll.next())) {
             if (ROOM.haveCritter(ptr)) {
-               ptr->processInput(*str, TRUE, FALSE);
+               ptr->processInput(*str, TRUE, FALSE, NULL, NULL, TRUE);
             }//if
 	 }//while
 
@@ -1689,7 +1689,7 @@ int order(String* str, critter& pc) {
                String cmd = "order";
                ROOM.checkForProc(cmd, *str, pc, ptr->MOB_NUM);
 
-               ptr->processInput(*str, TRUE, FALSE);
+               ptr->processInput(*str, TRUE, FALSE, NULL, NULL, TRUE);
                show("Ok.\n", pc);
             }//if
             else {

@@ -214,7 +214,7 @@ String& str1, String& str2, String& str3, String& str4, \
 String& str5, int i, int j, int k, int l, int m, int n,\
 int& is_dead, critter& pc, critter* c_script_owner, \
 room* r_script_owner, String* cooked_strs, int* cooked_ints, \
-int do_sub, int sanity
+int do_sub, int sanity, int was_ordered
 \n");
 
    // Hopefully, a smart compiler will get rid of this test.  It's
@@ -224,7 +224,7 @@ int do_sub, int sanity
 #define CODE_GEN_VAR_TEST_IF \
 1 || &str1 || &str2 || &str3 || &str4 || &str5 || i || j || k || l \
 || m || n || is_dead || &pc ||c_script_owner || r_script_owner \
-|| cooked_strs || cooked_ints || do_sub || sanity\n\n");
+|| cooked_strs || cooked_ints || do_sub || sanity || was_ordered\n\n");
 
 
    exe_cmds.Append("

@@ -3262,7 +3262,6 @@ void finish_olc_room(critter& pc) {
 }//finish_olc_vehicle
 
 
-
 void finish_olc_mob(critter& pc) {
    mudlog.log(TRC, "In finish_olc_mob.\n");
    

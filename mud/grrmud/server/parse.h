@@ -113,7 +113,6 @@ public:
       return (abs(toupper(val) - 'A') % CMD_ARRAY_LEN);
    }
 
-
 };
 
 extern CmdCollection cmds_collection;

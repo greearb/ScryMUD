@@ -357,7 +357,7 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
   int mana_cost = 0;
 
   mana_cost = SSCollection::instance().getSS(spell_num).getManaCost();
-  
+
   if (pc.isMob()) {
      Sprintf(buf, "ERROR:  mob casting spell# %i.\n", spell_num);
      mudlog.log(ERR, buf);

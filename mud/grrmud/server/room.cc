@@ -1362,12 +1362,16 @@ critter* room::removeCritter(critter* crit) {
       }
    }//if
    else {
-      if (mudlog.ofLevel(WRN)) {
-         mudlog << "WARNING:  could not remove the critter in"
-                << " room::removeCrit(), crit_name: " << *(crit->getName()) 
-                << " num: " << crit->getIdNum() << " room: "
-                << getIdNum() << endl;
-         core_dump("removeCritter");
+      // We use room 0 for newbies logging in and such...will get boundary
+      // case errors here in some instances...
+      if (getIdNum() != 0) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "WARNING:  could not remove the critter in"
+                   << " room::removeCrit(), crit_name: " << *(crit->getName()) 
+                   << " num: " << crit->getIdNum() << " room: "
+                   << getIdNum() << endl;
+            core_dump("removeCritter");
+         }//if
       }//if
    }//else
 

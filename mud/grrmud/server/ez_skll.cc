@@ -159,8 +159,9 @@ int do_shield(critter& vict, critter& pc) {
    if (!pc.temp_crit) {
       pc.temp_crit = new temp_crit_data;
    }//if
+
    if (!vict.temp_crit) {
-      pc.temp_crit = new temp_crit_data;
+      vict.temp_crit = new temp_crit_data;
    }//if
    
    if (vict.SHIELDED_BY || vict.SHIELDING) {

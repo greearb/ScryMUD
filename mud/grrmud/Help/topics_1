@@ -9,29 +9,29 @@ cast             channels         circle           claw
 color            commands         concoct          consider         
 credits          curse            darkling         date             
 describe         disarm           discuss          donate           
-drink            drop             dwarf            east             
-elf              emote            empty            eq               
-exit             exits            fill             flee             
-get              give             go               group            
-help             hide             hit              hold             
-hurl             idea             inventory        ironclad         
-list             lock             look             lore             
-move             nogossip         north            northeast        
-offer            ogrue            open             order            
-passwd           pay              pemote           picklock         
-practice         prompt           prone            put              
-quit             races            read             recite           
-remove           reply            rest             roll             
-say              scan             score            scribe           
-shield           shoot            shout            sit              
-skin             sleep            sneak            socials          
-south            southeast        southwest        stand            
-tail             tell             theme            throw            
-title            toggle           topics           track            
-unlock           up               use              value_add        
-value_rem        value_set        wake             wear             
-where            who              wield            wimpy            
-wizlist          
+drink            drop             dwarf            earthmeld        
+eat              elf              emote            empty            
+examine          exit             exits            fill             
+follow           get              give             go               
+guard            help             hide             hit              
+human            hurl             idea             inventory        
+junk             list             lock             look             
+meditate         move             nogossip         north            
+northwest        offer            ogrue            open             
+page_break       passwd           pay              pemote           
+post             practice         prompt           prone            
+quaf             quit             races            read             
+regeneration     remove           reply            rest             
+save             say              scan             score            
+sell             shield           shoot            shout            
+skills           skin             sleep            sneak            
+sombre           south            southeast        southwest        
+suicide          tail             tell             theme            
+time             title            toggle           topics           
+ungroup          unlock           up               use              
+value_list       value_rem        value_set        wake             
+west             where            who              wield            
+withdraw         wizlist          
 
 <color=red>
 See Also:  commands, wizhelp

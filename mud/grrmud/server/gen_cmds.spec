@@ -169,9 +169,10 @@ return buy(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 brief ~
 return brief(pc);
 
+
 # case C
 cast ~
-return cast(&(cooked_strs[1]), j, &(cooked_strs[2]), pc);
+return cast(&(cooked_strs[1]), j, &(cooked_strs[2]), pc, was_ordered);
 cackle socials ~
 cackle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 circle ~
@@ -222,7 +223,7 @@ ch_zname ~
 return ch_zname(i, &(cooked_strs[1]), pc);
 construct ~
 return construct(pc);
-create_concoction create_concoct ~
+create_concoction create_conct ~
 return create_concoction(i, j, k, l, m, n, pc);
 create_construction create_constrct ~
 return create_construction(i, j, k, l, m, n, pc);

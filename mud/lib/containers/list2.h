@@ -113,11 +113,12 @@ protected:
       }//for
 
       mudlog << "List<> ERROR:  could not remove cell: " << (void*)(&cll)
-             << toString() << endl;
+             << " " << toString() << endl;
 
-      ::core_dump("handleRemoveCell");
+      //::core_dump("handleRemoveCell");
       return FALSE;
    }//handleRemoveCell      
+
 
    int handleAddCell(Cell<T>& cll) {
       for (int i = 0; i<NUMBER_OF_CONCURENT_CELLS; i++) {
@@ -128,9 +129,9 @@ protected:
       }//for
       
       mudlog << "List<> ERROR:  could not add cell: " << (void*)(&cll)
-             << toString() << endl;
+             << " " << toString() << endl;
 
-      ::core_dump("handleAddCell");
+      //::core_dump("handleAddCell");
       return FALSE;
    }//handleAddCell
 

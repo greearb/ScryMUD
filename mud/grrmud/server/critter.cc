@@ -1187,7 +1187,7 @@ void mob_data::Read(ifstream& ofile, short read_all) {
    mob_data_flags.Read(ofile);
    
    // not currently used.
-   mob_data_flags.turn_off(6);
+   //mob_data_flags.turn_off(6);
    mob_data_flags.turn_off(7);
    mob_data_flags.turn_off(8);
    mob_data_flags.turn_off(9);
@@ -3644,3 +3644,22 @@ int critter::getFieldValue(const char* field) const {
       return 0;
    }
 }
+
+/** Only valid for shop owners. */
+int critter::isOpen(int cmt) const {
+   if (mob && mob->proc_data && mob->proc_data->sh_data) {
+
+      // 9 AM to 4 PM  (9 - 16)
+      if ((OPEN_TIME <= CLOSE_TIME) &&
+          (cmt >= OPEN_TIME) && (cmt <= CLOSE_TIME)) {
+         return TRUE;
+      }
+      // 4 PM to 9 AM (16 - 9)
+      else if ((CLOSE_TIME <= OPEN_TIME) &&
+               (cmt >= OPEN_TIME) || (cmt <= CLOSE_TIME)) {
+         return TRUE;
+      }
+   }//if
+   return FALSE;
+}//isOpen
+

@@ -364,6 +364,8 @@ void cast_bless(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = BLESS_SKILL_NUM;
 
+   mudlog.dbg("In cast_bless.\n");
+
    if (!(vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT))) {
       show("You don't see that person.\n", pc);
       return;
@@ -375,82 +377,84 @@ void cast_bless(int i_th, const String* victim, critter& pc) {
    }//if
 
    if (!ok_to_do_action(vict, "KMSN", spell_num, pc)) {
-     return;
+      return;
    }//if
 
+   mudlog.dbg("Just before do_cast_bless.\n");
    do_cast_bless(*vict, pc, FALSE, 0);  //does no error checking
 }//cast_bless
 
 
 void do_cast_bless(critter& vict, critter& agg, int is_canned, 
-			  int lvl) {
+                   int lvl) {
    stat_spell_cell* sp = NULL;
    String buf(100);
    short do_effects = FALSE;
    int spell_num = BLESS_SKILL_NUM;
    int spell_mana = get_mana_cost(spell_num);
  
+   mudlog.dbg("In do_cast_bless.\n");
+
    if (!is_canned)
       lvl = agg.LEVEL;
 
    short lost_con = TRUE;
 
    if (is_canned || (!(lost_con = lost_concentration(agg, spell_num)))) {
-     do_effects = TRUE;
+      do_effects = TRUE;
 
-     if (!is_canned)
-       agg.MANA -= spell_mana;
+      if (!is_canned)
+         agg.MANA -= spell_mana;
 
-     if ((sp = is_affected_by(spell_num, vict))) {
-       show("Ok.\n", agg);
-     }//if
-     else {
-       if (&vict == &agg) {
-	 show("You feel blessed by a god.\n",
-	      vict);
-	 emote("seems a little luckier.", agg, 
-	       room_list[agg.getCurRoomNum()], TRUE); 
-       }//if
-       else {
-	 Sprintf(buf, "You give your god's blessing to %S.\n", 
-		 name_of_crit(vict, agg.SEE_BIT));
-	 show(buf, agg);
-	 Sprintf(buf, 
-  	     "%S gives you %s god's blessing.\n",
-		 get_his_her(agg),
-		 name_of_crit(agg, vict.SEE_BIT));
-	 buf.Cap();
-	 show(buf, vict);
-	 Sprintf(buf, "gives %s god's blessing to %S.\n",
-		 get_his_her(agg),
-		 name_of_crit(vict, ~0));
-	 emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE, &vict);
-       }//else
-     }//else, not already affected
+      if ((sp = is_affected_by(spell_num, vict))) {
+         show("Ok.\n", agg);
+      }//if
+      else {
+         if (&vict == &agg) {
+            show("You feel blessed by a god.\n",
+                 vict);
+            emote("seems a little luckier.", agg, 
+                  room_list[agg.getCurRoomNum()], TRUE); 
+         }//if
+         else {
+            Sprintf(buf, "You give your god's blessing to %S.\n", 
+                    name_of_crit(vict, agg.SEE_BIT));
+            show(buf, agg);
+            Sprintf(buf, 
+                    "%S gives you %s god's blessing.\n",
+                    get_his_her(agg),
+                    name_of_crit(agg, vict.SEE_BIT));
+            buf.Cap();
+            show(buf, vict);
+            Sprintf(buf, "gives %s god's blessing to %S.\n",
+                    get_his_her(agg),
+                    name_of_crit(vict, ~0));
+            emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE, &vict);
+         }//else
+      }//else, not already affected
    }//if did_hit
    else if (lost_con) {//lost concentration 
       show(LOST_CONCENTRATION_MSG_SELF, agg);     
-     
+      
       emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
             *(agg.getCurRoom()), FALSE);
-
+      
       if (!is_canned)
          agg.MANA -= spell_mana / 2;
    }//else
    
    agg.PAUSE++;
-
+   
    if (do_effects) {
-     if (sp)
-       sp->bonus_duration += lvl/3;
-     else {
-       Put(new stat_spell_cell(spell_num, 5 + lvl/2),
-	   vict.affected_by);
-       vict.HIT += BLESS_EFFECTS;
-     }//else
+      if (sp)
+         sp->bonus_duration += lvl/3;
+      else {
+         Put(new stat_spell_cell(spell_num, 5 + lvl/2),
+             vict.affected_by);
+         vict.HIT += BLESS_EFFECTS;
+      }//else
    }//if
 }//do_cast_bless
-
 
 
 void cast_pfg(critter& pc) {

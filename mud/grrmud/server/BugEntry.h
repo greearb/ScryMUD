@@ -60,6 +60,7 @@ public:
       assigned,
       retest,
       closed,
+      defer,
       all,
       none,
       high_state

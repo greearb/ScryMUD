@@ -136,7 +136,9 @@ const CmdSpecifier* CmdCollection::findSpecifierFor(const CmdSpecifier* cs,
 
 	     /******************************************/
 int critter::processInput(String& input, short do_sub, int script_driven,
-                          critter* c_script_owner, room* r_script_owner) {
+                          critter* c_script_owner, room* r_script_owner,
+                          int was_ordered) {
+
    String raw_strings[RAW_MAX];
    String cooked_strs[COOKED_MAX];
    int cooked_ints[COOKED_MAX];
@@ -614,13 +616,15 @@ int critter::processInput(String& input, short do_sub, int script_driven,
    /********************************************************/
 
    return executeCommand(cooked_strs, cooked_ints, 1,
-                         c_script_owner, r_script_owner, do_sub);
+                         c_script_owner, r_script_owner, do_sub,
+                         was_ordered);
 }// process input
 
 
 int critter::executeCommand(String* cooked_strs, int* cooked_ints,
                             int sanity, critter* c_script_owner,
-                            room* r_script_owner, int do_sub) {
+                            room* r_script_owner, int do_sub,
+                            int was_ordered) {
    int is_dead = FALSE;
    int i, len1;
 
@@ -647,7 +651,8 @@ int critter::executeCommand(String* cooked_strs, int* cooked_ints,
                     cooked_ints[1], cooked_ints[2], cooked_ints[3],
                     cooked_ints[4], cooked_ints[5], cooked_ints[6],
                     is_dead, *this, c_script_owner, r_script_owner,
-                    cooked_strs, cooked_ints, do_sub, sanity + 1);
+                    cooked_strs, cooked_ints, do_sub, sanity + 1,
+                    was_ordered);
       }//if we have a command handler.
       else {
          show("You may need to be more specific, or maybe there is only\n");

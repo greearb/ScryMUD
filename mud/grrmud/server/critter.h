@@ -428,6 +428,8 @@ public:
    int tmp_num; //not used now
 
    // When modifying this, modify MOB_DATA_FLAGS_NAMES in const.cc
+   // Also check the read method for mob_data, and the tog_mflag
+   // methods to make sure the flag is not reset or ignored.
    bitfield mob_data_flags; //all the proc bits
      // 0 has_proc_data, 1 scavenge, 2 wander, 3 should_do_procs,
      // 4 need_resetting, 5 edible_corpse, 6 is_banker, 7 NULL,
@@ -684,14 +686,14 @@ public:
     */
    int processInput(String& input, short do_sub, int script_driven, 
                     critter* c_script_owner = NULL,
-                    room* r_script_owner = NULL);
+                    room* r_script_owner = NULL, int was_ordered = FALSE);
 
    /**  Run a command after it has been parsed by processInput.  Also called
     * from the script_jump method.
     */
    int executeCommand(String* cooked_strs, int* cooked_ints,
                       int sanity, critter* c_script_owner,
-                      room* r_script_owner, int do_sub);
+                      room* r_script_owner, int do_sub, int was_ordered);
 
    int writeOutput();
    int readInput();
@@ -921,7 +923,7 @@ public:
    int isCharmed() { return master != NULL; }
    int isWanderer() { return mob && MOB_FLAGS.get(2); }
    int isBanker() { return mob && MOB_FLAGS.get(6); }
- 
+   int isOpen(int cur_military_time) const;
 
    int isPlayerShopKeeper();
    int isManagedBy(critter& pc);
