@@ -1,5 +1,5 @@
-// $Id: string2.cc,v 1.10 1999/06/14 06:05:44 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/14 06:05:44 $
+// $Id: string2.cc,v 1.11 1999/06/15 04:45:13 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/15 04:45:13 $
 
 //
 //ScryMUD Server Code
@@ -1141,7 +1141,7 @@ void Sprintf(String& targ, const char* string, ... ) {
    return;
 }
 
-void vSprintf(String& targ, const char* string, va_list& ap) {
+void vSprintf(String& targ, const char* string, va_list ap) {
    int i = 0;
    int num = 0;
    String buf(100);

@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.11 1999/06/14 06:05:44 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/14 06:05:44 $
+// $Id: room.h,v 1.12 1999/06/15 04:45:13 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/15 04:45:13 $
 
 //
 //ScryMUD Server Code
@@ -293,7 +293,7 @@ public:
    int doEmote(critter& pc, CSelectorColl& includes,
                CSelectorColl& denies, CSentryE cs_entry, ...);
    int vDoEmote(critter& pc, CSelectorColl& includes,
-                CSelectorColl& denies, CSentryE cs_entry, va_list& argp);
+                CSelectorColl& denies, CSentryE cs_entry, va_list argp);
 
    int makeReadyForAreaSpell();
    critter* findNextProcMob();

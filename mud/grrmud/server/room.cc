@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.19 1999/06/15 03:32:35 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/15 03:32:35 $
+// $Id: room.cc,v 1.20 1999/06/15 04:45:13 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/15 04:45:13 $
 
 //
 //ScryMUD Server Code
@@ -1676,7 +1676,7 @@ int room::doEmote(critter& pc, CSelectorColl& includes,
 }
 
 int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
-                   CSentryE cs_entry, va_list& argp) {
+                   CSentryE cs_entry, va_list argp) {
    Cell<critter*> cll(critters);
    critter* ptr;
    String buf(100);

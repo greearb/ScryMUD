@@ -20,6 +20,9 @@ while ( : ) do
 
     echo "Starting ScryMUD at: `date`"
 
+    # Just in case.
+    chmod u+x ./gmud
+
     ./gmud >& gmud.log
     RETVAL=$?
 

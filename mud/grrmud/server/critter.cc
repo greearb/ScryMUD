@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.24 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: critter.cc,v 1.25 1999/06/15 04:45:13 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/06/15 04:45:13 $
 
 //
 //ScryMUD Server Code
@@ -2880,7 +2880,7 @@ void critter::emote(CSelectorColl& includes, CSelectorColl& denies,
    va_start(argp, cs_entry);
    getCurRoom()->vDoEmote(*this, includes, denies, cs_entry, argp);
    va_end(argp);
-}
+}//emote
 
 
 void critter::doPrompt() {

@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.14 1999/06/14 06:05:43 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+// $Id: battle.cc,v 1.15 1999/06/15 04:45:13 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/15 04:45:13 $
 
 //
 //ScryMUD Server Code
@@ -941,7 +941,7 @@ void gain_level(critter& crit) {
       }//switch
 
    crit.LEVEL++;
-   crit.PRACS += (int)((float)(crit.INT)/4.0);
+   crit.PRACS += d(2, (int)((float)(crit.INT)/6.0)) + 1;
    crit.MA_MAX += mana_gain;
    crit.setHP_MAX(crit.getHP_MAX() + hp_gain);
    crit.MV_MAX += d(1, crit.DEX);
