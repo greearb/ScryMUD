@@ -1999,11 +1999,20 @@ void critter::split(int amt, int do_msg) {
    if (d > 0) {
       Cell<critter*> cll(GROUPEES);
       critter* ptr;
-      
+
+      d = 0;
       while ((ptr = cll.next())) {
+         if( ptr->getCurRoomNum() == getCurRoomNum() ) {
+            d++;
+         }
+      };
+
+      GROUPEES.head(cll);
+
+      while ((ptr = cll.prev())) {
          if (ptr->getCurRoomNum() == getCurRoomNum()) {
             ptr->GOLD += amt / d;
-            
+
             if (do_msg) {
                Sprintf(buf, "%S splits %i coins, your share is: %i\n", getName(*ptr), amt, amt/d);
                ptr->show(buf);
@@ -4183,7 +4192,7 @@ void critter::doPrompt() {
    String targ(200);
    // Conversion buf for longs, NOTE: update append() method --Khaav
    String conv_buf(20); 
-   int source_len = PROMPT_STRING.Strlen();
+   unsigned int source_len = PROMPT_STRING.Strlen();
 
    if (! isAFK() ) {
       for (i = 0; i < source_len; ) {
@@ -4308,7 +4317,7 @@ void critter::doPrompt() {
    // Instead of spamming out all the pending commands, be nice about it
    {
       String tmp;
-      int i;
+      unsigned int i;
 
       tmp.Clear();
       for(i=0;i<pc->input.Strlen();i++) {
