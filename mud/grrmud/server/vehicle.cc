@@ -1,5 +1,5 @@
-// $Id: vehicle.cc,v 1.7 1999/09/06 02:24:28 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
+// $Id: vehicle.cc,v 1.8 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -118,7 +118,7 @@ void vehicle::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
    room::toStringStat(viewer, buf, st);
    rslt.append(buf);
 
-   if (viewer->isImmort()) {
+   if (!viewer || viewer->isImmort()) {
       rslt.append("\n\t\t\tIS A VEHICLE\nVehicle flags:\n");
       Markup::toString("", vehicle_flags, VEHICLE_FLAGS_NAMES, viewer, "", buf);
       rslt.append(buf);
@@ -447,13 +447,17 @@ void vehicle::setPathPointer(int index) {
 }//setPathPointer
    
 
-int vehicle::read(istream& da_file, short read_all) {
+int vehicle::read(istream& da_file, int read_all) {
    vehicle::clear();
+
+   mudlog << __FUNCTION__ << endl;
+
    room::read(da_file, read_all);
 
    char tmp[81];
    //now, read in vehicle specific stuff...
 
+   mudlog << "About to read vehicle flags...\n";
    vehicle_flags.read(da_file);
 
    da_file.getline(tmp, 80);
@@ -463,10 +467,12 @@ int vehicle::read(istream& da_file, short read_all) {
    da_file >> sentinel;
    da_file.getline(tmp, 80);
    while (sentinel != -1) {
+      mudlog << "top of while, Reading path, sent: " << sentinel << endl;
       if (!da_file) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR: da_file bad in vehicle::read()\n" << endl;
          }
+         ::core_dump(__FUNCTION__);
          return -1;
       }
 
@@ -475,6 +481,7 @@ int vehicle::read(istream& da_file, short read_all) {
       path_cells.append(ptr);
 
       da_file >> sentinel;
+      mudlog << "bottom of while, Reading path, sent: " << sentinel << endl;
       da_file.getline(tmp, 80);
    }
 
@@ -486,6 +493,15 @@ int vehicle::read(istream& da_file, short read_all) {
    da_file >> ticks_between_stops;
       
    da_file.getline(tmp, 80);
+
+   if (mudlog.ofLevel(DB)) {
+      mudlog << "\nXXXXXXXX-----------**************-----------*******\n";
+      String buf(500);
+      toStringStat(NULL, buf, ST_ALL);
+      mudlog << buf << endl;
+      mudlog << "XXXXXXXX-----------**************-----------*******\n\n";
+   }
+
    return 0;
 }//read
 
@@ -548,18 +564,29 @@ int PathCell::read(istream& da_file, int read_all = TRUE) {
    char tmp[81];
    String buf(100);
 
+   PathCell::clear();
+
    da_file >> buf;
-   if (strcasecmp(buf, "<META") == 0) { //then do v3 style read
+   if (strcmp(buf, "<META") == 0) { //then do v3 style read
+      mudlog << __FUNCTION__ << ": v_03\n";
       MetaTags mt(buf, da_file);
       desc.read(da_file);
       da_file >> is_destination >> i_th_dir >> dir_to_next;
       da_file.getline(tmp, 80);
    }
    else { //v02 read
-      buf.termedRead(da_file);
-      desc.addString(English, buf);
-
-      //   mudlog << "PathCell:  got desc:  -:" << desc << ":-" << endl;
+      mudlog << __FUNCTION__ << ": v_02\n";
+      if (strcmp(buf, "~") != 0) {
+         String tmpb(100);
+         tmpb.termedRead(da_file);
+         tmpb.prepend(" ");
+         tmpb.prepend(buf);
+         desc.addString(English, buf);
+      }
+      else {
+         String tmp2(" ");
+         desc.addString(English, tmp2);
+      }
 
       da_file >> is_destination >> i_th_dir >> dir_to_next;
 

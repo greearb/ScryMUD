@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.18 1999/09/06 07:12:50 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/09/06 07:12:50 $
+// $Id: classes.cc,v 1.19 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -49,12 +49,20 @@ LstrArray::LstrArray(int length, const CSentryE* _names,
 
 
 const char* LstrArray::getHeader(critter* viewer) const {
-   return cstr(header, *viewer);
+   LanguageE lang = English;
+   if (viewer)
+      lang = viewer->getLanguage();
+
+   return cstr(header, lang);
 }
 
 const char* LstrArray::getName(int idx, critter* viewer) const {
+   LanguageE lang = English;
+   if (viewer)
+      lang = viewer->getLanguage();
+
    if ((idx >= 0) && (idx < len))
-      return cstr(names[idx], *viewer);
+      return cstr(names[idx], lang);
    return "";
 }
 
@@ -62,8 +70,12 @@ const char* LstrArray::getName(int idx, critter* viewer) const {
 void LstrArray::listNames(String& buf, critter* viewer) const {
    String tmp(200);
 
+   LanguageE lang = English;
+   if (viewer)
+      lang = viewer->getLanguage();
+
    buf = getHeader(viewer);
-   buf += cstr(CS_DEFINED, *viewer);
+   buf += cstr(CS_DEFINED, lang);
    int sofar = 0;
 
    for (int i = 0; i<len; i++) {
@@ -99,6 +111,8 @@ int MetaTags::construct(const char* first_tag, istream& dafile) {
    if (strcasecmp(first_tag, "<META") == 0) {
       while (readTag(key, val, dafile) >= 0) {
          addTag(key, val);
+         mudlog << "MetaTags::construct, Adding key -:" << key
+                << ":-  val -:" << val << ":-\n";
       }
       dafile.getline(buf, 99); // junk the trailing META>
    }//if
@@ -107,6 +121,7 @@ int MetaTags::construct(const char* first_tag, istream& dafile) {
          mudlog << "ERROR: reading MetaTags, first_tag bad -:" << first_tag
                 << ":-\n";
       }
+      ::core_dump(__FUNCTION__);
    }
    if (dafile)
       return 0;
@@ -141,7 +156,7 @@ MetaTags::MetaTags(istream& dafile) {
 }
 
 int MetaTags::read(istream& dafile) {
-   clear();
+   MetaTags::clear();
    String buf(100);
    dafile >> buf;
    return construct(buf, dafile);
@@ -196,7 +211,7 @@ void MetaTags::generateTags(MetaTags& rslt, Serialized& obj) {
 
 void Closable::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
    String buf(200);
-   if (viewer->isUsingClient()) {
+   if (!viewer || viewer->isUsingClient()) {
       Sprintf(rslt, "<CLOSABLE %i %i>", key, token);
       Markup::toString(flags, CLOSABLE_FLAGS_NAMES, viewer, buf);
       rslt.append(buf);
@@ -298,9 +313,14 @@ void LStringCollection::toStringStat(const char* pre, const char* post,
                                      critter* viewer, String& rslt) {
    LString* ptr = NULL;
    String buf(100);
-   if (viewer->isUsingClient()) {
+   
+   LanguageE lang = English;
+   if (viewer)
+      lang = viewer->getLanguage();
+
+   if (!viewer || viewer->isUsingClient()) {
       Sprintf(rslt, "%s<LS_COLL>", pre);
-      if (viewer->isImmort()) {
+      if (!viewer || viewer->isImmort()) {
          Cell<LString*> cll(*this);
          while((ptr = cll.next())) {
             Sprintf(buf, "<LS %i>%S</LS>\n", (int)(ptr->getLanguage()),
@@ -309,7 +329,7 @@ void LStringCollection::toStringStat(const char* pre, const char* post,
          }//while
       }//if
       else {
-         ptr = getString(viewer);
+         ptr = getString(lang);
          Sprintf(buf, "<LS %i>%S</LS>\n", (int)(ptr->getLanguage()),
                  (String*)(ptr));
          rslt.append(buf);
@@ -318,7 +338,7 @@ void LStringCollection::toStringStat(const char* pre, const char* post,
       rslt.append(buf);
    }//if
    else {
-      if (viewer->isImmort()) {
+      if (!viewer || viewer->isImmort()) {
          Cell<LString*> cll(*this);
          LString* ptr = NULL;
          while((ptr = cll.next())) {
@@ -328,7 +348,7 @@ void LStringCollection::toStringStat(const char* pre, const char* post,
          }//while
       }//if
       else {
-         ptr = getString(viewer);
+         ptr = getString(lang);
          Sprintf(buf, "%S\n", (String*)(ptr));
          rslt.append(buf);
       }//else
@@ -444,11 +464,11 @@ LString* LStringCollection::getString(LanguageE for_lang) {
 }
 
 void KeywordEntry::toStringStat(critter* viewer, String& rslt) {
-   if (viewer->isUsingClient()) {
+   if (!viewer || viewer->isUsingClient()) {
       Sprintf(rslt, "<KE_NAMES %i> ", (int)(lang));
    }
    else {
-      Sprintf(rslt, "Lang: %s\n", str(lang));
+      Sprintf(rslt, "Lang: %s  ", str(lang));
    }
 
    Cell<LString*> cll(*this);
@@ -459,7 +479,7 @@ void KeywordEntry::toStringStat(critter* viewer, String& rslt) {
       rslt.append("\" ");
    }
 
-   if (viewer->isUsingClient()) {
+   if (!viewer || viewer->isUsingClient()) {
       rslt.append("</KE_NAMES>\n");
    }
    else {
@@ -472,7 +492,7 @@ int KeywordEntry::write(ostream& dafile) {
    LString* ptr;
    dafile << (int)(lang) << endl;
    while ((ptr = cll.next())) {
-      dafile << "99" << *ptr << endl;
+      dafile << "99 " << *ptr << endl;
    }
    dafile << "-1\n";
    return 0;
@@ -489,8 +509,9 @@ int KeywordEntry::read(istream& dafile, int read_all) {
    dafile >> sent;
    while (dafile && (sent != -1)) {
       dafile >> ls;
+      ls.strip(); //get rid of whitespace.
       append(new LString(ls));
-
+      mudlog << "KeywordEntry::read, got name -:" << ls << ":-\n";
       dafile >> sent;
    }//while
    dafile.getline(buf, 99);
@@ -559,29 +580,21 @@ void LKeywordCollection::clearLanguage(LanguageE lang) {
    //else, it wasn't there anyway..
 }
 
-
-int LKeywordCollection::write(ostream& dafile) {
-   Cell<KeywordEntry*> cll(*this);
-   KeywordEntry* ptr;
-   while ((ptr = cll.next())) {
-      dafile << "1 ";
-      ptr->write(dafile);
-   }
-   dafile << "-1\n";
-   return 0;
-}
-
 void LKeywordCollection::toStringStat(critter* viewer, String& rslt) {
-   if (viewer->isUsingClient()) {
+   if (!viewer || viewer->isUsingClient()) {
       rslt = "<KW_COLL>";
    }
    else {
       rslt.clear();
    }
 
+   LanguageE lang = English;
+   if (viewer)
+      lang = viewer->getLanguage();
+
    KeywordEntry* ptr;
    String buf(100);
-   if (viewer->isImmort()) {
+   if (!viewer || viewer->isImmort()) {
       //show all
       Cell<KeywordEntry*> cll(*this);
       while ((ptr = cll.next())) {
@@ -590,14 +603,14 @@ void LKeywordCollection::toStringStat(critter* viewer, String& rslt) {
       }
    }
    else {
-      ptr = getCollection(viewer->getLanguage());
+      ptr = getCollection(lang);
       if (ptr) {
          ptr->toStringStat(viewer, buf);
          rslt.append(buf);
       }//if
    }//else
 
-   if (viewer->isUsingClient()) {
+   if (!viewer || viewer->isUsingClient()) {
       rslt.append("<KW_COLL>\n");
    }
    else {
@@ -605,6 +618,18 @@ void LKeywordCollection::toStringStat(critter* viewer, String& rslt) {
    }
 }//toStringStat
 
+
+
+int LKeywordCollection::write(ostream& dafile) {
+   Cell<KeywordEntry*> cll(*this);
+   KeywordEntry* ptr;
+   while ((ptr = cll.next())) {
+      dafile << "1 ";
+      ptr->write(dafile);
+   }
+   dafile << "-1 end of keyword_coll\n";
+   return 0;
+}
 
 int LKeywordCollection::read(istream& dafile, int read_all) {
    int sent = 0;
@@ -616,8 +641,15 @@ int LKeywordCollection::read(istream& dafile, int read_all) {
       ptr->read(dafile);
       append(ptr);
 
+      String buf(100);
+      ptr->toStringStat(NULL, buf);
+      mudlog << "LKeywordCollection::read, got entry -:" << buf << ":-\n";
+
       dafile >> sent;
    }//while
+   char buf[100];
+   dafile.getline(buf, 99);
+
    if (dafile)
       return 0;
    return -1;
@@ -656,10 +688,14 @@ SpellDuration* Entity::isAffectedBy(int spell_num) {
 
 
 int Entity::affectedByToString(critter* viewer, String& rslt) {
+   LanguageE lang = English;
+   if (viewer)
+      lang = viewer->getLanguage();
+
    String buf(100);
    rslt.clear();
    if (!affected_by.isEmpty()) {
-      rslt.append(cstr(CS_AFFECTED_BY, *viewer));
+      rslt.append(cstr(CS_AFFECTED_BY, lang));
       Cell<SpellDuration*> cll(affected_by);
       SpellDuration* sd_ptr;
       while ((sd_ptr = cll.next())) {
@@ -669,7 +705,7 @@ int Entity::affectedByToString(critter* viewer, String& rslt) {
       }//while
    }//if
    else {
-      rslt.append(cstr(CS_NOT_AFFECTED_SPELLS, *viewer));
+      rslt.append(cstr(CS_NOT_AFFECTED_SPELLS, lang));
    }//else
    return 0;
 }//affectedByToString
@@ -689,9 +725,15 @@ void Entity::clear() {
 }
  
 
-String* Entity::getName(int c_bit) {
+String* Entity::getName(int c_bit, LanguageE lang) {
+   String* retval = NULL;
    if (detect(c_bit, vis_bit)) {
-      return names.getCollection(English)->peekFront();
+      if (names.getCollection(lang)) {
+         retval = names.getCollection(lang)->peekFront();
+      }
+   }
+   if (retval) {
+      return retval;
    }
    else {
       return &SOMEONE;
@@ -703,21 +745,29 @@ String* Entity::getFirstName(int c_bit) {
 }
 
 String* Entity::getLastName(int c_bit, LanguageE lang) {
+   String* retval = NULL;
    if (detect(c_bit, vis_bit)) {
-      return names.getCollection(lang)->peekRear();
+      if (names.getCollection(lang)) {
+         retval = names.getCollection(lang)->peekRear();
+      }
    }
-   else {
-      return &SOMEONE;
-   }
+
+   if (retval)
+      return retval;
+   return &SOMEONE;
 }
 
 String* Entity::getFirstName(int c_bit, LanguageE lang) {
+   String* retval = NULL;
    if (detect(c_bit, vis_bit)) {
-      return names.getCollection(lang)->peekFront();
+      if (names.getCollection(lang)) {
+         retval = names.getCollection(lang)->peekFront();
+      }
    }
-   else {
-      return &SOMEONE;
-   }
+
+   if (retval)
+      return retval;
+   return &SOMEONE;
 }
 
 
@@ -733,14 +783,14 @@ String* Entity::getLongName(int c_bit) {
    return Entity::getName(c_bit);
 }
 
-
 String* Entity::getName(critter* observer) {
-   if (detect(observer->getSeeBit(), vis_bit)) {
-      return names.getCollection(observer->getLanguage())->peekFront();
+   LanguageE lang = English;
+   int c_bit = ~0;
+   if (observer) {
+      lang = observer->getLanguage();
+      c_bit = observer->getSeeBit();
    }
-   else {
-      return &SOMEONE;
-   }
+   return getName(c_bit, lang);
 }
 
 String* Entity::getFirstName(critter* observer) {
@@ -759,9 +809,16 @@ String* Entity::getLongName(critter* observer) {
    return Entity::getName(observer);
 }
 
-String* Entity::getLongDesc(critter* observer) {
-   if (detect(observer->getSeeBit(), vis_bit)) {
-      return long_desc.getString(observer->getLanguage());
+String* Entity::getLongDesc(critter* viewer) {
+   LanguageE lang = English;
+   int c_bit = ~0;
+   if (viewer) {
+      lang = viewer->getLanguage();
+      c_bit = viewer->getSeeBit();
+   }
+
+   if (detect(c_bit, vis_bit)) {
+      return long_desc.getString(lang);
    }
    else {
       return &UNKNOWN;
@@ -919,7 +976,7 @@ void Entity::addAffectedBy(int spell, int duration) {
  */
 void Entity::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
    String buf(100);
-   if (viewer->isUsingClient()) {
+   if (!viewer || viewer->isUsingClient()) {
       Sprintf(rslt, "<ENTITY %i>", id_num);
    }
    else {
@@ -931,7 +988,7 @@ void Entity::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
    long_desc.toStringStat(viewer, buf);
    rslt.append(buf);
 
-   if ((st | ST_IDENTIFY) || viewer->isImmort()) {
+   if ((st | ST_IDENTIFY) || (!viewer || viewer->isImmort())) {
       Sprintf(buf, "\nid_num: %i  vis_bits: %i  zone_num: %i\n",
               id_num, vis_bit, zone_num);
       rslt.append(buf);
@@ -962,6 +1019,8 @@ int Entity::read(istream& dafile, int read_all) {
    MetaTags mt(dafile);
    dafile >> id_num >> vis_bit >> zone_num;
    
+   Entity::clear();
+
    SpellDuration* ptr;
    int spell;
    int dur;

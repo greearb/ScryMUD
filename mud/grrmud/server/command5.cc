@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.36 1999/09/06 07:12:51 greear Exp $
-// $Revision: 1.36 $  $Author: greear $ $Date: 1999/09/06 07:12:51 $
+// $Id: command5.cc,v 1.37 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.37 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -1170,7 +1170,7 @@ int arlist(int zone, int how_many, critter& pc) {
          && (count < how_many));
         i++) {
       if (room_list[i].isInUse()) {
-	 Sprintf(buf, "[%i]\t%S\n", i, &(room_list[i].short_desc));
+	 Sprintf(buf, "[%i]\t%S\n", i, room_list[i].getShortDesc(&pc));
 	 count++;
 	 show(buf, pc);
       }//if

@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.53 1999/09/06 07:12:51 greear Exp $
-// $Revision: 1.53 $  $Author: greear $ $Date: 1999/09/06 07:12:51 $
+// $Id: critter.cc,v 1.54 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.54 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -650,7 +650,7 @@ spec_data& spec_data::operator=(const spec_data& source) {
 }//op = overload
 
 
-int spec_data::read(istream& da_file, int read_all = TRUE) {
+int spec_data::read(istream& da_file, critter* container, int read_all) {
    char tmp[81];
   
    clear();
@@ -671,7 +671,7 @@ int spec_data::read(istream& da_file, int read_all = TRUE) {
 
    if (flag1.get(1)) {  // shopkeeper
       sh_data = new shop_data;
-      sh_data->read(da_file, read_all);
+      sh_data->read(da_file, read_all, container);
    }//if
 
    if (flag1.get(2)) {  // teacher
@@ -947,7 +947,7 @@ int mob_data::write(ostream& ofile) {
 }//Write()
 
 
-int mob_data::read(istream& ofile, int read_all = TRUE) {
+int mob_data::read(istream& ofile, critter* container, int read_all) {
    char tmp[81];
    
    clear();
@@ -980,7 +980,7 @@ int mob_data::read(istream& ofile, int read_all = TRUE) {
    
    if (mob_data_flags.get(0)) { //does it have spec_data?
       proc_data = new spec_data;
-      proc_data->read(ofile, read_all);
+      proc_data->read(ofile, container, read_all);
    }//if
    
    if (mob_data_flags.get(16)) {
@@ -1718,27 +1718,31 @@ int critter::doUnShield() {
 }
 
 
-const char* critter::getPosnStr(critter& for_this_pc) {
+const char* critter::getPosnStr(critter* for_this_pc) {
+   LanguageE lang = English;
+   if (for_this_pc)
+      lang = for_this_pc->getLanguage();
+
    switch (getPosn())
       {
       case POS_STAND:
-         return cstr(CS_STANDING, for_this_pc);
+         return cstr(CS_STANDING, lang);
       case POS_SIT:
-         return cstr(CS_SITTING, for_this_pc);
+         return cstr(CS_SITTING, lang);
       case POS_PRONE:
-         return cstr(CS_PRONE, for_this_pc);
+         return cstr(CS_PRONE, lang);
       case POS_REST:
-         return cstr(CS_RESTING, for_this_pc);
+         return cstr(CS_RESTING, lang);
       case POS_SLEEP:
-         return cstr(CS_SLEEPING, for_this_pc);
+         return cstr(CS_SLEEPING, lang);
       case POS_MED:
-         return cstr(CS_MEDITATING, for_this_pc);
+         return cstr(CS_MEDITATING, lang);
       case POS_STUN:
-         return cstr(CS_STUNNED, for_this_pc);
+         return cstr(CS_STUNNED, lang);
       case POS_DEAD:
-         return cstr(CS_DEAD, for_this_pc);
+         return cstr(CS_DEAD, lang);
       default:
-         return cstr(CS_UNKNOWN, for_this_pc);
+         return cstr(CS_UNKNOWN, lang);
       }//switch
 }//getPosnStr
 
@@ -1878,7 +1882,14 @@ int critter::getMaxWeight() {
 }//max_weight
 
 int critter::getCurRoomNum() {
-   return IN_ROOM;
+   if (getContainer()) {
+      return getContainer()->getCurRoomNum();
+   }
+   if (mudlog.ofLevel(WRN)) {
+      mudlog << "WARNING:  object::getCurRoomNum failed, obj# " << getIdNum()
+             << endl;
+   }
+   return 0;
 }
 
 void critter::checkForBattle(room& rm) {
@@ -1896,13 +1907,20 @@ int critter::write(ostream& ofile) {
    object* ob_ptr;
    String tmp_str(100);
 
-   //TODO:  Write out super-classes.
-
+   MetaTags mt(*this);
    if (pc) {
-      ofile << " " << pc->host << " __LEVEL__ " << getLevel();
+      String key("HOST");
+      String val(10);
+      mt.addTag(key, pc->host);
+      key = "LEVEL";
+      val = getLevel();
+      mt.addTag(key, val);
    }
+   mt.write(ofile);
 
-   ofile << "\n";
+   //TODO:  Write out super-classes.
+   Entity::write(ofile);
+   Scriptable::write(ofile);
 
    short_desc.write(ofile);
    in_room_desc.write(ofile);
@@ -2086,8 +2104,8 @@ int critter::read_v2(istream& ofile, String& name, int read_all) {
       else {
          if (obj_list[i].isInUse()) {  //exists?
             if (read_all || 
-                     ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 
-			100) > d(1,100)) {
+                ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 
+                 100) > d(1,100)) {
                eq[z] = &(obj_list[i]);      //now it wears it
             }//if
          }//
@@ -2173,7 +2191,7 @@ int critter::read_v2(istream& ofile, String& name, int read_all) {
       if (!(mob)) {
          mob = new mob_data;
       }//if
-      mob->read(ofile, read_all); 
+      mob->read(ofile, this, read_all); 
    }//else
    ofile.getline(tmp, 80);      
    //mudlog.log(DBG, "Done w/read crit.\n");
@@ -2212,19 +2230,24 @@ int critter::read_v3(istream& ofile, MetaTags& mt, int read_all = TRUE) {
 
    setComplete(); //if we can read it, it's complete enough!
 
-   for (i = 0; i<MOB_LONG_DATA; i++)
+   for (i = 0; i<MOB_LONG_DATA; i++) {
       ofile >> long_data[i];
+      mudlog << "long_data[" << i << "] == " << long_data[i] << endl;
+   }
    ofile.getline(tmp, 80);
 
    for (i = 0; i<MOB_SHORT_CUR_STATS; i++) {
       ofile >> short_cur_stats[i];
+      mudlog << "short_cur_stats[" << i << "] == " << short_cur_stats[i] << endl;
    }
    ofile.getline(tmp, 80);
 
    for (i = 0; i<MOB_CUR_STATS; i++) {
       ofile >> cur_stats[i];
+      mudlog << "cur_stats[" << i << "] == " << cur_stats[i] << endl;
    }
    ofile.getline(tmp, 80);
+   mudlog << " about to do eq, tmp: " << tmp << ":-\n";
 
          	/* EQ, read in item_num, posn */
    ofile >> i;
@@ -2233,6 +2256,7 @@ int critter::read_v3(istream& ofile, MetaTags& mt, int read_all = TRUE) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in crit read." << endl;
          }
+         ::core_dump(__FUNCTION__);
          return -1;
       }
 
@@ -2267,7 +2291,7 @@ int critter::read_v3(istream& ofile, MetaTags& mt, int read_all = TRUE) {
          else {
             Sprintf(tmp_str, 
                     "ERROR:  trying to load non-existant obj: %i, 
-              in critter's: %S  eq.\n", i, &short_desc);
+              in critter's: %S  eq.\n", i, getShortDesc());
             mudlog.log(ERR, tmp_str);
          }//else
       }//else
@@ -2280,8 +2304,9 @@ int critter::read_v3(istream& ofile, MetaTags& mt, int read_all = TRUE) {
    while (i != -1) {
       if (!ofile) {
          if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in crit read." << endl;
+            mudlog << "ERROR:  da_file FALSE in crit read, in while" << endl;
          }
+         ::core_dump(__FUNCTION__);
          return -1;
       }
 
@@ -2557,7 +2582,7 @@ void critter::doRemoveFromBattle() {
 }//doRemoveFromBattle
 
 void critter::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
-                        int& is_dead, int cur_room, int sanity, int do_msgs) {
+                         int& is_dead, int cur_room, int sanity, int do_msgs) {
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In doGoToRoom, dest_room:  " << dest_room
              << "  cur_room:  " << cur_room
@@ -2870,13 +2895,12 @@ void critter::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
 
 // set in_room to zero
 void critter::doLeaveRoom() {
-   room_list[IN_ROOM].removeCritter(this);
-   IN_ROOM = 0;
+   getCurRoom()->removeCritter(this);
 }//doLeaveRoom
 
 
 room* critter::getCurRoom() {
-   return &(room_list[IN_ROOM]);
+   return &(room_list[getCurRoomNum()]);
 }
 
    

@@ -1,5 +1,5 @@
-// $Id: Serialized.h,v 1.6 1999/08/30 06:30:40 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
+// $Id: Serialized.h,v 1.7 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -48,6 +48,7 @@ enum LEtypeE {
    LE_DOOR = 7,
    LE_GEN_SCRIPT = 8,
    LE_SKILL_SPELL = 9,
+   LE_SERIALIZED = 10,
    LE_LS_COLLECTION = 11,
    LE_SCRIPT_COLL = 12,
    LE_CLOSABLE = 13,
@@ -74,7 +75,7 @@ public:
    virtual int read(istream& dafile, int read_all = TRUE) = 0;
 
    /** Stuff used to generate meta data. */
-   virtual LEtypeE getEntityType() = 0;
+   virtual LEtypeE getEntityType() { return LE_SERIALIZED; }
    virtual const char* getVersion() { return "3.0"; }
    virtual String getOptionalMetaTags() { String r; return r; } //ie blank
 };

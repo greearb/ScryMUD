@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.48 1999/09/06 07:12:51 greear Exp $
-// $Revision: 1.48 $  $Author: greear $ $Date: 1999/09/06 07:12:51 $
+// $Id: critter.h,v 1.49 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.49 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -337,7 +337,12 @@ public:
    virtual ~spec_data();
 
    void clear();
-   int read(istream& da_file, int read_all = TRUE);
+   int read(istream& da_file, int read_all = TRUE) {
+      ::core_dump("spec_data::read(...) not supported.\n");
+      return 0; //never get here...but compiler doesn't know that.
+   }
+
+   int read(istream& da_file, critter* container, int read_all = TRUE);
    int write(ostream& da_file);
    virtual LEtypeE getEntityType() { return LE_MOB_PROC_DATA; }
    spec_data& operator=(const spec_data& source);
@@ -451,7 +456,12 @@ public:
    void clear();
    mob_data& operator= (mob_data& source);
    int write(ostream& ofile);
-   int read(istream& ofile, int read_all = TRUE);
+   int read(istream& ofile, critter* container, int read_all = TRUE);
+   // ahh, the joys of pure virtual!!
+   int read(istream& da_file, int read_all = TRUE) {
+      ::core_dump("shop_data::read(...) not supported.\n");
+      return 0; //never get here...but compiler doesn't know that.
+   }
    virtual LEtypeE getEntityType() { return LE_MOB_DATA; }
    static int getInstanceCount() { return _cnt; }
 
@@ -618,7 +628,7 @@ public:
    //            8 imm_invis1, 16 imm_invis3, 32 link_dead_detect
    //            64 imm_invis5, 128 imm_invis7, 256 imm_invis9,
    //            512 imm_invis10, 1024  NORMAL
-   // 2 in_room,
+   // 2 in_room, used for logging in only, now. (v3)
    
    object* eq[MAX_EQ + 1];    //0 do_not_use
    //1 head, 2 neck, 3 neck, 4 around body, 5 arms, 
@@ -775,7 +785,8 @@ public:
    int isWeakerThan(critter& pc) { return (compareTo(pc) < 0); }
    int isStrongerThan(critter& pc) { return (compareTo(pc) > 0); }
    int isSessile() const { return mob && mob->mob_data_flags.get(7); }
-   
+   int needsResetting() const { return mob && mob->mob_data_flags.get(4); }
+
    void doHuntProc(int steps, int& is_dead); //found in batl_prc.cc
    int getIdNum() const;
    int getImmLevel();
@@ -862,7 +873,7 @@ public:
       }
    }//setPosn
 
-   const char* getPosnStr(critter& for_this_pc);
+   const char* getPosnStr(critter* for_this_pc);
 
    SafeList<object*>& getInv() { return inv; }
    SafeList<critter*>& getPets() { return pets; }

@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.19 1999/09/06 07:12:52 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
+// $Id: misc.h,v 1.20 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -67,6 +67,7 @@ extern BugCollection bl_comp_bugs;
 float spell_objs_ratio(int spell_num);
 
 const char* cstr(CSentryE e, critter& c);
+const char* cstr(CSentryE e, LanguageE lang);
 
 // Returns address of static member (not thread safe)
 String& getCurTime(); //in the real world (tm) :)
@@ -112,7 +113,7 @@ int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
 
 void out_str(SafeList<String*>& lst, critter& pc); 
 void out_crit(SafeList<critter*>& lst, critter& pc, int see_all = FALSE);
-void do_out_crit_list(SafeList<critter*>& lst, critter& pc, String& rslt,
+void do_out_crit_list(SafeList<critter*>& lst, critter* pc, String& rslt,
                       int see_all = FALSE);
 
 void out_inv(SafeList<object*>& lst, critter& pc, ObjListTypeE l_type); 
@@ -179,9 +180,9 @@ void do_regeneration_smobs();
 void do_regeneration_objects();
 void do_regeneration_rooms();
 void do_regeneration_zones();
-int update_zone(int i_th, short total_read);
-int update_critters(int i_th, short read_all);
-int update_objects(int i_th, short read_all);
+int update_zone(int i_th, int total_read);
+int update_critters(int i_th, int read_all);
+int update_objects(int i_th, int read_all);
 void do_tick();
 void do_mini_tick(); //every round of battle....
 

@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.32 1999/09/01 06:00:03 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 1999/09/01 06:00:03 $
+// $Id: grrmud.cc,v 1.33 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -103,7 +103,9 @@ int __s_cell_cnt = 0;
 
 
 
-LogStream            mudlog("./log/logfile.txt", ERR | DIS | WRN | SEC | DB | DBG);
+LogStream            mudlog("./log/logfile.txt",
+                            ERR | DIS | WRN | SEC | DB | DBG | ALL,
+                            LogStream::APPEND);
 LogStream            obj_ptr_log("./log/obj_ptr.log", ALL, LogStream::APPEND);
 
 List<String*>        banned_hosts(NULL);
@@ -556,7 +558,7 @@ any strange occurances.
    readSiteBanned();
 
    // By default, turn off logging specific to the DATABASE.
-   mudlog.setLevel(ERR | DIS | WRN | SEC);
+   mudlog.setLevel(ERR | DIS | WRN | SEC | ALL);
 
    // Drop into our endless loop.
    run_the_game(DFLT_PORT);

@@ -1,5 +1,5 @@
-// $Id: string2.cc,v 1.15 1999/08/30 06:30:41 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
+// $Id: string2.cc,v 1.16 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -733,10 +733,7 @@ void String::termedRead(istream& da_file) { //reads lines untill it finds
 
    *this = "";  
 
-   if (!da_file) {
-      LOGFILE.log(WRN, "WARNING:  String::Termed_Read, da_file is null\n");
-      return;
-   }
+   Assert(da_file && 1, "WARNING:  String::Termed_Read, da_file is null\n"); 
 
    da_file.getline(buf, 180);
 

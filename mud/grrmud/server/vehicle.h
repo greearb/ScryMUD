@@ -1,5 +1,5 @@
-// $Id: vehicle.h,v 1.7 1999/08/29 01:17:17 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/29 01:17:17 $
+// $Id: vehicle.h,v 1.8 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -37,7 +37,7 @@
 class PathCell : public Serialized {
 private:
    LStringCollection desc;
-   LString dir_to_next;
+   String dir_to_next;
    int i_th_dir;
    int is_destination;
    static int _cnt;
@@ -148,7 +148,7 @@ public:
    virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st);
 
    virtual void clear();
-   virtual int read(istream& da_file, short read_all);
+   virtual int read(istream& da_file, int read_all = TRUE);
    virtual int write(ostream& da_file);
 
    virtual void normalize(); /* called after OLC to enforce as much state as

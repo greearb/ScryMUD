@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.25 1999/09/06 07:12:51 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/09/06 07:12:51 $
+// $Id: const.h,v 1.26 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -759,7 +759,6 @@ extern int EXP_DIVISOR;   // critter.exp/exp_divisor =>exp gained per kill
 #define MOV     	 short_cur_stats[17]
 #define ALIGN   	 short_cur_stats[18]
 #define LEVEL   	 short_cur_stats[19]
-#define IN_ROOM 	 cur_stats[2]
 #define WIMPY            short_cur_stats[21]
 #define PRACS   	 short_cur_stats[22]
 #define MA_MAX  	 short_cur_stats[24]

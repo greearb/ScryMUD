@@ -1,5 +1,5 @@
-// $Id: load_wld.h,v 1.3 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: load_wld.h,v 1.4 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -40,10 +40,10 @@ void init_casting_objs();
 
 void load_boards();
 void load_wld();
-void load_zone(int i_th); //read in i_th zone file
-void load_objects(int of_zone);
-void load_critters(int of_zone);
-void load_doors(int of_zone);
+void load_zone(int i_th, int read_all); //read in i_th zone file
+void load_objects(int of_zone, int read_all);
+void load_critters(int of_zone, int read_all);
+void load_doors(int of_zone, int read_all);
 void read_setup();
 void write_setup();
 void load_skill_spells();

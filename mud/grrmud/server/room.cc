@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.42 1999/09/06 07:12:52 greear Exp $
-// $Revision: 1.42 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
+// $Id: room.cc,v 1.43 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.43 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -45,7 +45,7 @@ void KeywordPair::toStringStat(critter* viewer, String& rslt, int idx,
    String buf(100);
    rslt.clear();
    
-   if (viewer->isUsingClient()) {
+   if (!viewer || viewer->isUsingClient()) {
       Sprintf(rslt, "<KEYWORD %i>", idx);
       Entity::toStringStat(viewer, rslt, st);
       rslt.append(buf);
@@ -73,6 +73,42 @@ KeywordPair::KeywordPair(KeywordPair& src) {
    _cnt++;
    *this = src;
 }
+
+
+int KeywordPair::write(ostream& dafile) {
+   MetaTags mt(*this);
+   mt.write(dafile);
+   return Entity::write(dafile);
+}
+
+
+int KeywordPair::read(istream& dafile, int read_all = TRUE) {
+   String buf(100);
+   dafile >> buf;
+   if (strcmp(buf, "<META") == 0) {
+      MetaTags mt(buf, dafile);
+      return Entity::read(dafile, read_all);
+   }
+   else {
+      addName(buf);
+
+      while (TRUE && dafile) {
+         dafile >> buf;
+         if (strcmp(buf, "~") == 0) {
+            buf.getLine(dafile, 80);
+            break;
+         }
+         else {
+            addName(buf);
+         }
+      }//while
+      
+      buf.termedRead(dafile);
+      addLongDesc(buf);
+   }//else
+   return 0;
+}//read
+
 
 int KeywordPair::getCurRoomNum() {
    if (getContainer()) {
@@ -226,7 +262,7 @@ room::~room() {
 
    obj_ptr_log << "RM_DES " << getIdNum() << " " << this << "\n";
 
-   clear();
+   room::clear();
 }//sub_room deconstructor
 
 
@@ -242,7 +278,7 @@ room& room::operator=(room& source) {
    critter* crit_ptr;
    
    //mudlog.log(DBG, "In rm operator= overload.\n");
-   clear(); //clear this thing out!!
+   room::clear(); //clear this thing out!!
    
    Entity* hack = &source;
    *((Entity*)(this)) = *hack;
@@ -321,7 +357,7 @@ int room::read(istream& ifile, int read_all = TRUE) {
    String str(50);
    ifile >> str; //grab the first token, if V2.x it not be <META
 
-   if (str == "<META") {
+   if (strcasecmp(str, "<META") == 0) {
       return read_v3(ifile, read_all);
    }
    else {
@@ -339,7 +375,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
       mudlog << "Reading room, read_all:  " << read_all << endl;
    }
 
-   clear();  //stop up any memory leaks etc.
+   room::clear();  //stop up any memory leaks etc.
 
    if (!ofile) {
       if (mudlog.ofLevel(ERR)) {
@@ -398,7 +434,6 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
    if (mudlog.ofLevel(DB)) {
       mudlog << "Reading room, about to do cur_stats.  " << endl;
    }
-
    
    for (i = 0; i<ROOM_CUR_STATS; i++) {
       ofile >> cur_stats[i];
@@ -453,7 +488,6 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
                 ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
                 d(1,100)) {
                gainInv(&(obj_list[i]));    //add it to inventory
-//               obj_list[i].OBJ_CUR_IN_GAME++; //increment cur_in_game
             }//if
          }//if
          else {
@@ -475,8 +509,9 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
    while (i != -1) {
       if (!ofile) {
          if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
+            mudlog << "ERROR:  da_file FALSE in room::read." << endl;
          }
+         ::core_dump(__FUNCTION__);
          return -1;
       }
 
@@ -587,12 +622,18 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
 
    if (mudlog.ofLevel(DB)) {
       mudlog << "Done reading room, number:  " << getRoomNum() << endl;
+      if (!isVehicle()) {
+         mudlog << "\n********-----------**************-----------*******\n";
+         String buf(500);
+         toStringStat(NULL, buf, ST_ALL);
+         mudlog << buf << endl;
+         mudlog << "********-----------**************-----------*******\n\n";
+      }
    }
    return 0;
 }//read_v2
 
 
-//TODO
 int room::read_v3(istream& ofile, int read_all = TRUE) {
    int i;
    char tmp[81];
@@ -699,8 +740,9 @@ int room::read_v3(istream& ofile, int read_all = TRUE) {
    while (i != -1) {
       if (!ofile) {
          if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
+            mudlog << "ERROR:  da_file FALSE in room::read, doors" << endl;
          }
+         ::core_dump(__FUNCTION__);
          return -1;
       }
 
@@ -948,7 +990,7 @@ int room::getZoneNum() {
 void room::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
    String buf(500);
 
-   if (viewer->isUsingClient()) {
+   if (viewer && viewer->isUsingClient()) {
       Sprintf(rslt, "<ROOM %i> ", getIdNum());
    }
    else {
@@ -961,7 +1003,7 @@ void room::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
    short_desc.toStringStat("<SHORT_DESC>", "</SHORT_DESC>\n", viewer, buf);
    rslt.append(buf);
 
-   if (viewer->isImmort() || (st | ST_IDENTIFY)) {
+   if ((viewer && viewer->isImmort()) || (st | ST_IDENTIFY)) {
       Markup::toString(NULL, room_flags, ROOM_FLAGS_NAMES,
                        viewer, NULL, buf);
       rslt.append(buf);
@@ -970,7 +1012,7 @@ void room::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
       rslt.append(buf);
    }
 
-   if (viewer->isImmort()) {
+   if ((viewer && viewer->isImmort()) || (st == ST_ALL)) {
       SCell<KeywordPair*> cll(keywords);
       KeywordPair* ptr;
       int cnt = 0;
@@ -989,7 +1031,7 @@ void room::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
       rslt.append(buf);
    }//if immort
 
-   if (viewer->isUsingClient()) {
+   if (viewer && viewer->isUsingClient()) {
       rslt.append("</ROOM>\n");
    }
 }//toStringStat
@@ -1197,7 +1239,7 @@ int room::doRclear(int new_rm_num) {
       }//else
    }//while
 
-   clear();  //clear out the room pc WAS in!!
+   room::clear();  //clear out the room pc WAS in!!
    return 0;
 }//doRclear
 
@@ -1363,13 +1405,13 @@ critter* room::removeCritter(critter* crit) {
       // We use room 0 for newbies logging in and such...will get boundary
       // case errors here in some instances...
       if (getIdNum() != 0) {
-         if (mudlog.ofLevel(WRN)) {
+         if (mudlog.ofLevel(ERR)) {
             mudlog << "WARNING:  could not remove the critter in"
                    << " room::removeCrit(), crit_name: " << *(crit->getName()) 
                    << " num: " << crit->getIdNum() << " room: "
                    << getIdNum() << endl;
-            core_dump("removeCritter");
          }//if
+         core_dump("removeCritter");
       }//if
    }//else
 

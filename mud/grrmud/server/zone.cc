@@ -1,5 +1,5 @@
-// $Id: zone.cc,v 1.4 1999/08/27 03:10:05 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/08/27 03:10:05 $
+// $Id: zone.cc,v 1.5 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -447,7 +447,7 @@ String zone::createNeatoMapFile() {
 
    for (int i = begin_room_num; i <= end_room_num; i++) {
       if (room_list.elementAtNoCreate(i)) {
-         Sprintf(cur_room_name, "[%i] %S", i, &(room_list[i].short_desc));
+         Sprintf(cur_room_name, "[%i] %S", i, room_list[i].getShortDesc());
          //spaceToNewlines(cur_room_name);
 
          room_list[i].doors.head(cll);
@@ -457,7 +457,7 @@ String zone::createNeatoMapFile() {
             if (ptr->getDestRoom()) {
                Sprintf(dest_room_name, "[%i] %S",
                        ptr->getDestRoom()->getIdNum(),
-                       &(ptr->getDestRoom()->short_desc));
+                       ptr->getDestRoom()->getShortDesc());
                //spaceToNewlines(dest_room_name);
                
                if (ptr->getDestRoom()->getZoneNum() != zone_num) {

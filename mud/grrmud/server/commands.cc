@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.35 1999/09/06 07:12:51 greear Exp $
-// $Revision: 1.35 $  $Author: greear $ $Date: 1999/09/06 07:12:51 $
+// $Id: commands.cc,v 1.36 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.36 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -607,7 +607,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
       if (!pc.IS_BRIEF || ignore_brief) { //isn't brief
          if (pc.USING_CLIENT) 
             show("<RM_DESC>", pc);
-         pc.show(rm.getShortDesc(&pc));
+         pc.show(rm.getLongDesc(&pc));
          if (pc.USING_CLIENT) 
             show("</RM_DESC>\n", pc);
          else

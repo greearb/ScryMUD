@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.31 1999/09/06 07:12:52 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
+// $Id: object.cc,v 1.32 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -327,7 +327,7 @@ int bag_struct::read(istream& ofile, int read_all = TRUE) {
    String str(80);
    ofile >> str; //grab the first token, if V2.x it will be a number (bitfield)
 
-   if (isnum(str)) {
+   if (isnum(str)) { //v2
       if (strcmp(str, "-1") != 0) {
          bitfield bf;
          bf.read(ofile);
@@ -345,6 +345,10 @@ int bag_struct::read(istream& ofile, int read_all = TRUE) {
          setNoClose(bf.get(9));
          setConsumesKey(bf.get(17));
       }//if
+      else {
+         //grab a newline
+         ofile.getline(buf, 80);
+      }
 
       int key;
       ofile >> key;
@@ -353,7 +357,7 @@ int bag_struct::read(istream& ofile, int read_all = TRUE) {
       ofile >> max_weight >> percentage_weight >> time_till_disolve;
    }
    else { //V3.0 format
-      MetaTags mt(buf, ofile);
+      MetaTags mt(str, ofile);
 
       Closable::read(ofile);
       ofile >> max_weight >> percentage_weight >> time_till_disolve;
@@ -640,6 +644,7 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
       if (mudlog.ofLevel(ERR)) {
          mudlog << "ERROR:  da_file FALSE in obj read." << endl;
       }
+      ::core_dump(__FUNCTION__);
       return -1;
    }
 
@@ -649,8 +654,9 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
    while (test) {
       if (!ofile) {
          if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
+            mudlog << "ERROR:  da_file FALSE in obj read, in while." << endl;
          }
+         ::core_dump(__FUNCTION__);
          return -1;
       }
 
@@ -704,8 +710,9 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
    while (i != -1) {
       if (!ofile) {
          if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
+            mudlog << "ERROR:  da_file FALSE in obj read, affected by" << endl;
          }
+         ::core_dump(__FUNCTION__);
          return -1;
       }
       sd_ptr = new SpellDuration();
@@ -721,8 +728,9 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
    while (i != -1) {
       if (!ofile) {
          if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
+            mudlog << "ERROR:  da_file FALSE in obj read, inv" << endl;
          }
+         ::core_dump(__FUNCTION__);
          return -1;
       }
 
@@ -770,8 +778,9 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
    while (i != -1) {
       if (!ofile) {
          if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
+            mudlog << "ERROR:  da_file FALSE in obj read, stat_affects" << endl;
          }
+         ::core_dump(__FUNCTION__);
          return -1;
       }
 
@@ -810,8 +819,9 @@ int object::read_v2(istream& ofile, String& first_name, short read_all) {
             mudlog << "\nReading script# " << sent_ << endl;
          if (!ofile) {
             if (mudlog.ofLevel(ERR)) {
-               mudlog << "ERROR:  object reading script da_file FALSE." << endl;
+               mudlog << "ERROR:  object reading script da_file FALSE, scripts" << endl;
             }
+            ::core_dump(__FUNCTION__);
             return -1;
          }
 
@@ -883,8 +893,9 @@ int object::read_v3(istream& ofile, int read_all) {
    while (i != -1) {
       if (!ofile) {
          if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
+            mudlog << "ERROR:  da_file FALSE in obj read, inv" << endl;
          }
+         ::core_dump(__FUNCTION__);
          return -1;
       }
 
@@ -933,8 +944,9 @@ int object::read_v3(istream& ofile, int read_all) {
    while (i != -1) {
       if (!ofile) {
          if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
+            mudlog << "ERROR:  da_file FALSE in obj read, stat_aff" << endl;
          }
+         ::core_dump(__FUNCTION__);
          return -1;
       }
 

@@ -1,5 +1,5 @@
-// $Id: load_wld.cc,v 1.8 1999/08/16 07:31:24 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/16 07:31:24 $
+// $Id: load_wld.cc,v 1.9 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -268,7 +268,7 @@ void load_wld() {
 
    for (i = 0; i < NUMBER_OF_ZONES; i++ ) {
       if (ZoneCollection::instance().elementAt(i).isInUse()) {
-         load_objects(i);
+         load_objects(i, ZoneCollection::instance().elementAt(i).isLocked());
          for (int j = 0; j<NUMBER_OF_ITEMS; j++) {
             obj_list[j].setIdNum(j);
          }//for
@@ -278,7 +278,7 @@ void load_wld() {
    mudlog.log(WRN, "ALL OBJECTS LOADED.\n");
    for (i = 0; i < NUMBER_OF_ZONES; i++ ) {
       if (ZoneCollection::instance().elementAt(i).isInUse()) {
-         load_doors(i);
+         load_doors(i, ZoneCollection::instance().elementAt(i).isLocked());
          for (int j = 0; j<NUMBER_OF_DOORS; j++) {
             door_list[j].setIdNum(j);
          }//for
@@ -288,7 +288,7 @@ void load_wld() {
    mudlog.log(WRN, "ALL DOORS LOADED.\n");
    for (i = 0; i < NUMBER_OF_ZONES; i++ ) {
       if (ZoneCollection::instance().elementAt(i).isInUse()) {
-         load_critters(i);
+         load_critters(i, ZoneCollection::instance().elementAt(i).isLocked());
          for (int j = 0; j<NUMBER_OF_MOBS; j++) {
             mob_list[j].setIdNum(j);
          }//for
@@ -298,7 +298,7 @@ void load_wld() {
 
    for (i = 0; i < NUMBER_OF_ZONES; i++ ) {
       if (ZoneCollection::instance().elementAt(i).isInUse()) {
-         load_zone(i);
+         load_zone(i, ZoneCollection::instance().elementAt(i).isLocked());
       }//if
       // No need to initialize room numbers here.
    }//for         
@@ -409,7 +409,7 @@ void load_skill_spells() {
 }//load_skill_spells()
 
 
-void load_zone(int zone_num) {
+void load_zone(int zone_num, int read_all) {
    char buf[81];  
    int k = 0;
    String buff(100);
@@ -419,9 +419,12 @@ void load_zone(int zone_num) {
 
    sprintf(buf, "./World/zone_%i", zone_num);
    ifstream rfile(buf);
-   if (!rfile) { 
+   if (!rfile) {
       String tmp("cp ./World/DEFAULT_ZONE ");
       tmp += buf;
+      if (mudlog.ofLevel(WRN)) {
+         mudlog << "WARNING:  Creating new zone file -:" << buf << ":-\n";
+      }
       system(tmp);   //create the file then
       return;
    }//if
@@ -435,7 +438,7 @@ void load_zone(int zone_num) {
       if ((k & ~(0x01000000)) > NUMBER_OF_ROOMS) {
          sprintf(buf, "Room# %i is too high for the room_list.\n", k);
          mudlog.log(ERR, buf);
-         exit(100);
+         core_dump(__FUNCTION__);
       }//if
       if ((k & ~(0x01000000)) > Cur_Max_Room_Num)
          Cur_Max_Room_Num = (k & ~(0x01000000));
@@ -455,7 +458,7 @@ void load_zone(int zone_num) {
          room_list.set(tmp_v, k);
       }
 
-      room_list[k].read(rfile, FALSE);
+      room_list[k].read(rfile, read_all);
       room_list[k].setRoomNum(k); //just in case
 
       rfile >> k;
@@ -506,7 +509,7 @@ void load_boards() {
 	       sprintf(buf, "Reading message Number %i.\n", k);
 	       mudlog.log(DBG, buf);
 	       new_obj = new object;
-	       new_obj->read(rfile, FALSE);
+	       new_obj->read(rfile, TRUE);
 /*
                 cout << "Names:  ";
                 Cell<String*> nmcll(new_obj->ob->names);
@@ -545,7 +548,7 @@ void load_boards() {
 }//load_boardss
 
 
-void load_objects(int for_zone) {
+void load_objects(int for_zone, int read_all) {
   
    int k;
    char buf[100];
@@ -577,7 +580,7 @@ void load_objects(int for_zone) {
       sprintf(buf, "Reading Item Number %i.\n", k);
       mudlog.log(DBG, buf);
      
-      obj_list[k].read(rfile, FALSE);
+      obj_list[k].read(rfile, read_all);
       //normalize_obj(obj_list[k]); //make it normal as possible
       obj_list[k].OBJ_FLAGS.turn_off(70);   //doesn't need resetting
       obj_list[k].setZoneNum(for_zone);
@@ -589,7 +592,7 @@ void load_objects(int for_zone) {
 
 
 
-void load_critters(int for_zone) {
+void load_critters(int for_zone, int read_all) {
    int k;
    char buf[100];
    String sbuf(100);
@@ -621,7 +624,7 @@ void load_critters(int for_zone) {
       if (k > Cur_Max_Crit_Num)
          Cur_Max_Crit_Num = k;
 
-      mob_list[k].read(rfile, FALSE);
+      mob_list[k].read(rfile, read_all);
       if (mob_list[k].mob) {
          mob_list[k].MOB_FLAGS.turn_off(4); //init to !need_resetting
       }//if
@@ -633,7 +636,7 @@ void load_critters(int for_zone) {
 
 
 
-void load_doors(int for_zone) {
+void load_doors(int for_zone, int read_all) {
   
    int k;
    char temp_str[100];
@@ -662,7 +665,7 @@ void load_doors(int for_zone) {
       if (k > Cur_Max_Door_Num)
          Cur_Max_Door_Num = k;
     
-      door_list[k].read(rfile);
+      door_list[k].read(rfile, read_all);
 
       rfile >> k;
       rfile.getline(temp_str, 80);

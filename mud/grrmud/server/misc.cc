@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.34 1999/09/06 02:24:28 greear Exp $
-// $Revision: 1.34 $  $Author: greear $ $Date: 1999/09/06 02:24:28 $
+// $Id: misc.cc,v 1.35 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.35 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -167,6 +167,10 @@ float spell_objs_ratio(int spell_num) {
 
 const char* cstr(CSentryE e, critter& c) {
    return CSHandler::getString(e, c.getLanguageChoice());
+}
+
+const char* cstr(CSentryE e, LanguageE lang) {
+   return CSHandler::getString(e, lang);
 }
 
 
@@ -649,7 +653,7 @@ void do_regeneration_objects() {
 }//do_regeneration_objects
 
 
-int update_critters(int zone_num, short read_all) {
+int update_critters(int zone_num, int read_all) {
    SCell<object*> ocell;
    critter tmp_mob;
    int k, i;
@@ -682,17 +686,18 @@ int update_critters(int zone_num, short read_all) {
             mudlog << "ERROR: error reading critters for zone: " << zone_num
                    << " trying to read mob# " << k << endl;
          }//if
+         tmp_mob.setModified(TRUE); //make it Modified, so destructor fires correctly
          return -1;
       }//if
 
       tmp_mob.read(mobfile, read_all);
 
       if (!mob_list[k].mob) {
-         mudlog << "WARNING:  mob[" << k 
+         mudlog << "ERROR:  mob[" << k 
                 << "] is NULL in update critters." << endl;
       }//if
       else {
-         if (mob_list[k].MOB_FLAGS.get(4)) {
+         if (mob_list[k].needsResetting()) {
 
             //log("About to check if need to load more inv.\n");
             tmp_mob.inv.head(ocell);
@@ -721,12 +726,12 @@ int update_critters(int zone_num, short read_all) {
    }//while, the big loop, reads in a whole mob list
    //log("Done w/update critters.\n");
 
-   tmp_mob.CRITTER_TYPE = 1; //make it a SMOB, so destructor fires correctly
+   tmp_mob.setModified(TRUE); //make it Modified, so destructor fires correctly
    return 0;
 }//update_critters
 
 
-int update_objects(int zone_num, short read_all) {
+int update_objects(int zone_num, int read_all) {
    SCell<object*> ocell;
    int k;
    object temp_obj;
@@ -791,7 +796,7 @@ int update_objects(int zone_num, short read_all) {
 
 
 
-int update_zone(int zone_num, short read_all) {
+int update_zone(int zone_num, int read_all) {
    int k = 0;
    room tmp_room;
    vehicle tmp_veh;
@@ -1277,11 +1282,11 @@ void out_str(const List<String*>& lst, critter& pc) {
 /** Can over-ride the VIS/SEE bit stuff if you set see_all to true. */
 void out_crit(SafeList<critter*>& lst, critter& pc, int see_all = FALSE) {
    String buf(500);
-   do_out_crit_list(lst, pc, buf, see_all);
+   do_out_crit_list(lst, &pc, buf, see_all);
    pc.show(buf);
 }
 
-void do_out_crit_list(SafeList<critter*>& lst, critter& pc, String& rslt,
+void do_out_crit_list(SafeList<critter*>& lst, critter* pc, String& rslt,
                       int see_all = FALSE) {
    SCell<critter*> cell(lst);
    critter* crit_ptr;
@@ -1289,15 +1294,19 @@ void do_out_crit_list(SafeList<critter*>& lst, critter& pc, String& rslt,
 
    // log("In out_crit\n");
 
-   int see_bits = pc.getSeeBit();
+   int see_bits = ~0;
+   if (pc) {
+      see_bits = pc->getSeeBit();
+   }
+
    if (see_all) {
       see_bits = ~0;
    }
 
-   if (pc.isUsingClient())
+   if (!pc || pc->isUsingClient())
       rslt.append("<MOB_LIST>");
-   else if (pc.isUsingColor()) {
-      rslt.append(*(pc.getMobListColor()));
+   else if (pc && pc->isUsingColor()) {
+      rslt.append(*(pc->getMobListColor()));
    }
 
    while ((crit_ptr = cell.next())) {
@@ -1306,23 +1315,23 @@ void do_out_crit_list(SafeList<critter*>& lst, critter& pc, String& rslt,
                 << endl;
       }
       if (detect(see_bits, crit_ptr->VIS_BIT) &&
-          (crit_ptr != &pc)) { //can see it, not looker
-         if ((crit_ptr->isHiding()) && //if is hiding
-             (d(1, pc.LEVEL + 30) < 
+          (crit_ptr != pc)) { //can see it, not looker
+         if (pc && ((crit_ptr->isHiding()) && //if is hiding
+             (d(1, pc->LEVEL + 30) < 
               d(1, max(get_percent_lrnd(HIDE_SKILL_NUM, *crit_ptr) * 6,
-                       get_percent_lrnd(BLEND_SKILL_NUM, *crit_ptr) * 6)))) {
+                       get_percent_lrnd(BLEND_SKILL_NUM, *crit_ptr) * 6))))) {
             continue; //successful hide
          }//if
 
          SpellDuration* sd = crit_ptr->isAffectedBy(SANCTUARY_SKILL_NUM);
 
-         if (pc.isUsingClient()) {
+         if (!pc || pc->isUsingClient()) {
             rslt.append("<LI ");
             if (crit_ptr->isPc()) {
                rslt.append("PC ");
 
                Sprintf(buf, "<NAME>%S</NAME><SD>%S</SD><POSN>%s</POSN>",
-                       crit_ptr->getName(&pc), crit_ptr->getShortDesc(&pc),
+                       crit_ptr->getName(pc), crit_ptr->getShortDesc(pc),
                        crit_ptr->getPosnStr(pc));
             }
             else if (crit_ptr->isSmob() &&
@@ -1330,12 +1339,12 @@ void do_out_crit_list(SafeList<critter*>& lst, critter& pc, String& rslt,
                rslt.append("NPC ");
 
                Sprintf(buf, "<SD>%S</SD><POSN>%s</POSN>",
-                       crit_ptr->getName(&pc), crit_ptr->getPosnStr(pc));
+                       crit_ptr->getName(pc), crit_ptr->getPosnStr(pc));
             }
             else { //then it is a mob, or SMOB w/same posn as MOB
                rslt.append("NPC ");
                Sprintf(buf, "<NRD>%S</NRD>",
-                       crit_ptr->getName(&pc), crit_ptr->getPosnStr(pc));
+                       crit_ptr->getName(pc), crit_ptr->getPosnStr(pc));
             }
                
             if (crit_ptr->isInvisible()) {
@@ -1353,27 +1362,27 @@ void do_out_crit_list(SafeList<critter*>& lst, critter& pc, String& rslt,
          else {
             if (crit_ptr->isPc()) {
                Sprintf(buf, "     %S %S %s\n", 
-                       crit_ptr->getName(&pc), crit_ptr->getShortDesc(&pc),
+                       crit_ptr->getName(pc), crit_ptr->getShortDesc(pc),
                        crit_ptr->getPosnStr(pc));
             }
             else if (crit_ptr->isSmob() &&
                      (crit_ptr->POS != mob_list[crit_ptr->getIdNum()].POS)) {
-               if (pc.shouldShowVnums()) {
+               if (!pc || pc->shouldShowVnums()) {
                   Sprintf(buf, "     [%i]%P11 %S %s\n", crit_ptr->getIdNum(),
-                          crit_ptr->getName(&pc), crit_ptr->getPosnStr(pc));
+                          crit_ptr->getName(pc), crit_ptr->getPosnStr(pc));
                }
                else {
                   Sprintf(buf, "     %S %s\n",
-                          crit_ptr->getName(&pc), crit_ptr->getPosnStr(pc));
+                          crit_ptr->getName(pc), crit_ptr->getPosnStr(pc));
                }
             }
             else { //then it is a mob, or SMOB w/same posn as MOB
-               if (pc.shouldShowVnums()) {
+               if (!pc || pc->shouldShowVnums()) {
                   Sprintf(buf, "     [%i]%P11 %S\n", crit_ptr->MOB_NUM,
-                          crit_ptr->getInRoomDesc(&pc));
+                          crit_ptr->getInRoomDesc(pc));
                }//if
                else {
-                  Sprintf(buf, "       %S\n", crit_ptr->getInRoomDesc(&pc));
+                  Sprintf(buf, "       %S\n", crit_ptr->getInRoomDesc(pc));
                }
             }
             buf.Cap();
@@ -1384,8 +1393,8 @@ void do_out_crit_list(SafeList<critter*>& lst, critter& pc, String& rslt,
             
             rslt.append(buf);
 
-            if (sd) {
-               Sprintf(buf, cstr(CS_GLOWS_BRIGHTLY, pc),
+            if (sd && pc) {
+               Sprintf(buf, cstr(CS_GLOWS_BRIGHTLY, *pc),
                        get_he_she(*crit_ptr));
                buf.Cap();
                rslt.append(buf);
@@ -1393,11 +1402,11 @@ void do_out_crit_list(SafeList<critter*>& lst, critter& pc, String& rslt,
          }//else
       }//if
    }//while
-   if (pc.USING_CLIENT) {
+   if (!pc || pc->isUsingClient()) {
       rslt.append("</MOB_LIST>");
    }
-   else if (pc.isUsingColor()) {
-      rslt.append(*(pc.getDefaultColor()));
+   else if (pc && pc->isUsingColor()) {
+      rslt.append(*(pc->getDefaultColor()));
    }
 }//out_crit
 

@@ -1,5 +1,5 @@
-// $Id: Markup.cc,v 1.2 1999/08/29 01:17:15 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
+// $Id: Markup.cc,v 1.3 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -62,7 +62,7 @@ void Markup::toString(const char* pre, const bitfield& flags,
    String tmp(100);
    int sofar = 0;
 
-   if (!pc->isUsingClient()) {
+   if (pc && !pc->isUsingClient()) {
       Sprintf(rslt, "%s (SET)\n\t", flag_names.getHeader(pc));
 
       for (int i = 0; i <= k; i++) {
@@ -107,7 +107,7 @@ void Markup::toString(const char* pre, const bitfield& flags,
 
 
 void Markup::toString(SafeList<critter*>* lst, critter* viewer, String& rslt) {
-   do_out_crit_list(*lst, *viewer, rslt);
+   do_out_crit_list(*lst, viewer, rslt);
 }
 
 void Markup::toString(SafeList<object*>* lst, critter* viewer, 
@@ -120,9 +120,13 @@ void Markup::toString(PtrList<StatBonus>* lst, critter* viewer,
    Cell<StatBonus*> cll(*lst);
    StatBonus* ptr;
    String buf(100);
+
+   LanguageE lang = English;
+   if (viewer)
+      lang = viewer->getLanguage();
    
    if (lst->isEmpty()) {
-      rslt = cstr(CS_NONE, *viewer);
+      rslt = cstr(CS_NONE, lang);
       return;
    }
    else {
@@ -142,8 +146,12 @@ void Markup::toString(PtrList<SpellDuration>* lst, critter* viewer, String& rslt
    SpellDuration* ptr;
    String buf(100);
 
+   LanguageE lang = English;
+   if (viewer)
+      lang = viewer->getLanguage();
+
    if (lst->isEmpty()) {
-      rslt = cstr(CS_NONE, *viewer);
+      rslt = cstr(CS_NONE, lang);
       return;
    }
    else {

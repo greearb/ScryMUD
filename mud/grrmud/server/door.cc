@@ -1,5 +1,5 @@
-// $Id: door.cc,v 1.11 1999/09/06 02:24:27 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
+// $Id: door.cc,v 1.12 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -340,10 +340,13 @@ int door::read(istream& da_file, int read_all = TRUE) {
 
    if (!da_file) {
       if (mudlog.ofLevel(ERR)) {
-         mudlog << "ERROR:  da_file FALSE in door read." << endl;
+         mudlog << "ERROR:  da_file FALSE in door read, top" << endl;
       }
+      ::core_dump(__FUNCTION__);
       return -1;
    }
+
+   da_file >> buf;
 
    if (isnum(buf)) { //if _v2
       data_index = atoi(buf);
@@ -357,7 +360,6 @@ int door::read(istream& da_file, int read_all = TRUE) {
       da_file >> destination;
       da_file >> distance;
    
-      /* comment this out for reading original, DB_UPGRADE */
       buf.getLine(da_file, 80);
       da_file >> i;
       while (i != -1) { //affected by
@@ -365,6 +367,7 @@ int door::read(istream& da_file, int read_all = TRUE) {
             if (mudlog.ofLevel(ERR)) {
                mudlog << "ERROR:  da_file FALSE in door read." << endl;
             }
+            ::core_dump(__FUNCTION__);
             return -1;
          }
 
@@ -372,7 +375,8 @@ int door::read(istream& da_file, int read_all = TRUE) {
          SpellDuration* sd = new SpellDuration(i, tmp);
          addAffectedBy(sd);
          da_file >> i;
-      }//while   
+      }//while
+      buf.getLine(da_file, 80);
    }//if _v2
    else {
       MetaTags mt(buf, da_file);

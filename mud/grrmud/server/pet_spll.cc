@@ -1,5 +1,5 @@
-// $Id: pet_spll.cc,v 1.11 1999/09/06 07:12:52 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
+// $Id: pet_spll.cc,v 1.12 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -573,7 +573,7 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
 
          Sprintf(buf, "%S %S %s\n", 
                  pc.getShortName(&pc), pc.getShortDesc(&pc),
-                 pc.getPosnStr(pc));
+                 pc.getPosnStr(&pc));
          golem->addInRoomDesc(pc.getLanguage(), buf);
       }//if
       else {

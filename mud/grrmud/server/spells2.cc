@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.13 1999/09/01 06:00:04 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/09/01 06:00:04 $
+// $Id: spells2.cc,v 1.14 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -2162,11 +2162,11 @@ void do_locate_object(object &obj, const String* targ, critter& pc,
             if (pc.isImmort()) {
                Sprintf(buf, "ROOM: %i  [%i]%S:  %P40%S.\n", rm_num,
                        obj.getIdNum(), long_name_of_obj(obj, ~0),
-                       &(room_list[rm_num].short_desc));
+                       room_list[rm_num].getShortDesc(&pc));
             }
             else {
                Sprintf(buf, "%S:  %P40%S.\n", long_name_of_obj(obj, ~0),
-                       &(room_list[rm_num].short_desc));
+                       room_list[rm_num].getShortDesc(&pc));
             }
 
             buf.Cap();

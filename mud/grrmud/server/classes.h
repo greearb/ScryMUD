@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.30 1999/09/06 07:12:50 greear Exp $
-// $Revision: 1.30 $  $Author: greear $ $Date: 1999/09/06 07:12:50 $
+// $Id: classes.h,v 1.31 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -345,7 +345,8 @@ public:
       long_desc.becomeDeepCopyOf(ldesc);
    }
 
-   virtual String* getName(int c_bit = ~0);
+   virtual String* getName(int c_bit, LanguageE lang);
+   virtual String* getName(int c_bit = ~0) { return getName(c_bit, English); }
    virtual String* getFirstName(int c_bit = ~0);
    virtual String* getLastName(int c_bit = ~0);
    virtual String* getShortName(int c_bit = ~0);

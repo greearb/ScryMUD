@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.35 1999/09/06 07:12:52 greear Exp $
-// $Revision: 1.35 $  $Author: greear $ $Date: 1999/09/06 07:12:52 $
+// $Id: room.h,v 1.36 1999/09/07 07:00:27 greear Exp $
+// $Revision: 1.36 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
 
 //
 //ScryMUD Server Code
@@ -56,8 +56,9 @@ public:
 
    // These don't need changes from Entity at this time.
    //void clear();
-   //int write(ostream& dafile);
-   //int read(istream& dafile, int read_all = TRUE);
+   
+   int write(ostream& dafile);
+   int read(istream& dafile, int read_all = TRUE);
    
    // Don't call this one...use the one below.
    virtual void toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
@@ -110,9 +111,9 @@ protected:
 	   // 30 can_camp 31 !complete (olc wise) 32 has_keywords
            // 33 !mob_wander, 34 !foreign_mob_wander, 35 has_proc_script
 
+   LStringCollection short_desc;
    
 public:
-   LStringCollection short_desc;
 
    SafePtrList<door> doors;   
    SafePtrList<KeywordPair> keywords;

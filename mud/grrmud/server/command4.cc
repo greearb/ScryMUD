@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.36 1999/09/06 07:12:50 greear Exp $
-// $Revision: 1.36 $  $Author: greear $ $Date: 1999/09/06 07:12:50 $
+// $Id: command4.cc,v 1.37 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.37 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -713,7 +713,7 @@ int where(int i_th, const String* name, critter& pc) {
                    detect(pc.SEE_BIT, ptr->VIS_BIT | 
                           room_list[ptr->getCurRoomNum()].getVisBit())) {
                   Sprintf(buf, "%S%P20%S\n", name_of_crit(*ptr, pc.SEE_BIT),
-                          &(room_list[ptr->getCurRoomNum()].short_desc));
+                          room_list[ptr->getCurRoomNum()].getShortDesc(&pc));
                   show(buf, pc);
                }//if
             }//if
@@ -778,7 +778,7 @@ int where(int i_th, const String* name, critter& pc) {
              detect(pc.SEE_BIT, ptr->VIS_BIT | 
                     room_list[ptr->getCurRoomNum()].getVisBit())) {
             Sprintf(buf, "%S%P20%S\n", ptr->getName(pc.SEE_BIT),
-                    &(room_list[ptr->getCurRoomNum()].short_desc));
+                    room_list[ptr->getCurRoomNum()].getShortDesc(&pc));
             show(buf, pc);
          }//if
       }//if
@@ -1570,7 +1570,7 @@ int rlist(int start, int end, critter& pc) {
 
    for (int i = start; i<= end; i++) {
       if (room_list[i].isInUse()) {
-         Sprintf(buf, "\t%i\t%S\n", i, &(room_list[i].short_desc));
+         Sprintf(buf, "\t%i\t%S\n", i, room_list[i].getShortDesc(&pc));
          show(buf, pc);
       }//if
       else {

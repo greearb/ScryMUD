@@ -1,5 +1,5 @@
-// $Id: Scriptable.cc,v 1.6 1999/09/01 06:00:02 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/09/01 06:00:02 $
+// $Id: Scriptable.cc,v 1.7 1999/09/07 07:00:26 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
 
 //
 //ScryMUD Server Code
@@ -240,13 +240,17 @@ int Scriptable::read(istream& ofile, int read_all = TRUE) {
    int sent_;
    char tmp[100];
 
+   Scriptable::clear();
+
    GenScript* ptr = NULL;
 
    MetaTags mt(ofile);
 
    ofile >> pause;
-
+   
    ofile >> sent_;
+   mudlog << "Scriptable::read, got pause: " << pause << " sent_: "
+          << sent_ << endl;
    while (sent_ != -1) {
       if (mudlog.ofLevel(DB))
          mudlog << "\nReading script# " << sent_ << endl;
@@ -265,6 +269,9 @@ int Scriptable::read(istream& ofile, int read_all = TRUE) {
       if (mudlog.ofLevel(DB))
          mudlog << "Got rest of line -:" << tmp << ":-" << endl;
    }//while
+   ofile.getline(tmp, 80);
+   if (mudlog.ofLevel(DB))
+      mudlog << "Got rest of line -:" << tmp << ":-" << endl;
    return 0;
 }//read
 
