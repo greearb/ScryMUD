@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.14 1999/06/28 05:35:27 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/28 05:35:27 $
+// $Id: login.cc,v 1.15 1999/07/07 06:05:12 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/07/07 06:05:12 $
 
 //
 //ScryMUD Server Code
@@ -486,6 +486,12 @@ void critter::doLogin() {
                   PC_FLAGS.turn_on(27);
                   break;
                }
+            }
+            else if ((strcasecmp(string, "quit") == 0) ||
+                     (strcasecmp(string, "exit") == 0)) {
+               show("Bye!!\n\n");
+               setMode(MODE_LOGOFF_NEWBIE_PLEASE);
+               break;
             }
             show("Please pick a valid number.\n");
             break;

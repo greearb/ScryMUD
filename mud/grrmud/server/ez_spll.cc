@@ -1,5 +1,5 @@
-// $Id: ez_spll.cc,v 1.11 1999/07/05 22:32:07 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
+// $Id: ez_spll.cc,v 1.12 1999/07/07 06:05:11 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/07 06:05:11 $
 
 //
 //ScryMUD Server Code
@@ -2364,7 +2364,8 @@ void do_cast_calm(critter& agg, int is_canned, int lvl) {
      emote("brings peace to all!", agg, room_list[agg.getCurRoomNum()], TRUE);
    }//if canned
    else {//not canned 
-      if (!lost_concentration(agg, spell_num)) { 
+      // Immorts will always have this work...
+      if (!lost_concentration(agg, spell_num) || agg.isImmort()) { 
 	do_effects = TRUE;
 
 	show("You bring peace to the room!\n", agg);
@@ -2384,17 +2385,31 @@ void do_cast_calm(critter& agg, int is_canned, int lvl) {
       }//else
    }//else !canned
 
-   if (do_effects && !agg.isImmort()) {
-      List<critter*> tmp_lst(room_list[agg.getCurRoomNum()].getCrits());
+   if (do_effects) {
+      int rm_num = agg.getCurRoomNum();
+      List<critter*> tmp_lst(room_list[rm_num].getCrits());
       Cell<critter*> cll(tmp_lst);
       critter* ptr;
 
+      List<critter*> affected;
+
       while ((ptr = cll.next())) {
-         if (room_list[agg.getCurRoomNum()].haveCritter(ptr)) {
-            ptr->IS_FIGHTING.clear(); //no more battle
+         if (room_list[rm_num].haveCritter(ptr)) {
+            if (!ptr->IS_FIGHTING.isEmpty()) {
+               ptr->IS_FIGHTING.clear(); //no more battle
+               affected.append(ptr);
+            }
+         }//if
+      }//while
+
+      affected.head(cll);
+      while ((ptr = cll.next())) {
+         if ((room_list[rm_num].haveCritter(ptr)) &&
+             (room_list[rm_num].haveCritter(&agg))) {
             do_was_calmed_procs(*ptr, agg); //maybe they really don't like it!!
          }//if
       }//while
+
    }//if
 }//do_cast_calm
 

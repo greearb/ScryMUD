@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.10 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: skills.cc,v 1.11 1999/07/07 06:05:12 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/07 06:05:12 $
 
 //
 //ScryMUD Server Code
@@ -1456,13 +1456,16 @@ short skill_did_hit(critter& agg, int spell_num, critter& vict) {
 	    (spell_num == HURL_SKILL_NUM))
      return (d(1, vict.CRIT_WT_CARRIED) < d(1, percent_lrnd + agg.STR * 10));
    else if ((spell_num == BACKSTAB_SKILL_NUM) ||
-	    (spell_num == CIRCLE_SKILL_NUM))
-     return (d(1, (agg.HIT + agg.DEX * 10 + (percent_lrnd + vict.AC - 
-					     100))) >
-	     d(1, (2 * (vict.DEX + vict.LEVEL - agg.LEVEL) + 100)));
-   else
+	    (spell_num == CIRCLE_SKILL_NUM)) {
+      int rnd1 = d(1, (agg.HIT * 2 + agg.DEX * 5 + vict.AC - 80));
+      int rnd2  = d(1, (2 * vict.DEX + vict.LEVEL - agg.LEVEL + 100));
+      return (((float)(rnd1) * (float)(percent_lrnd) / 100.0) >
+              ((float)(rnd2)));
+   }
+   else {
      return (d(1, (agg.HIT + agg.DEX + 2 * agg.LEVEL * percent_lrnd)) >
 	     d(1, (vict.DEX + 2 * vict.LEVEL * 100)));
+   }
 }//skill_did_hit
 
 
@@ -1565,7 +1568,7 @@ int blend(critter& pc, int smob_too = FALSE) {
 
 int scan(critter& pc) {
 
-   if (!ok_to_do_action(NULL, "KSNPF", SCAN_SKILL_NUM, pc)) {
+   if (!ok_to_do_action(NULL, "KSPF", SCAN_SKILL_NUM, pc)) {
       return -1;
    }//if
 

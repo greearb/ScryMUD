@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.15 1999/06/25 04:02:54 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
+// $Id: const.h,v 1.16 1999/07/07 06:05:11 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/07/07 06:05:11 $
 
 //
 //ScryMUD Server Code
@@ -766,7 +766,6 @@ extern int EXP_DIVISOR;   // critter.exp/exp_divisor =>exp gained per kill
 #define MOV     	 short_cur_stats[17]
 #define ALIGN   	 short_cur_stats[18]
 #define LEVEL   	 short_cur_stats[19]
-//#define MISC  		 short_cur_stats[20] //is hometown now
 #define IN_ROOM 	 cur_stats[2]
 #define WIMPY            short_cur_stats[21]
 #define PRACS   	 short_cur_stats[22]
@@ -778,7 +777,6 @@ extern int EXP_DIVISOR;   // critter.exp/exp_divisor =>exp gained per kill
 #define DAM_GIV_MOD    	 short_cur_stats[28]
 #define HUNGER  	 pc->hunger
 #define THIRST  	 pc->thirst
-//#define CUR_IN_GAME  	 mob->cur_in_game
 #define MAX_IN_GAME  	 mob->max_in_game
 #define DRUGGED 	 pc->drugged
 #define CRIT_WT_CARRIED  	 getCurWeight()

@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.20 1999/06/25 04:49:56 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/25 04:49:56 $
+// $Id: battle.cc,v 1.21 1999/07/07 06:05:11 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/07/07 06:05:11 $
 
 //
 //ScryMUD Server Code
@@ -1315,6 +1315,10 @@ critter* mob_to_smob(critter& mob, room& rm, int suppress_sub_fail_msg) {
                 << crit_ptr->getIdNum() << "  name: " << *(crit_ptr->getName())
                 << " room# " << rm.getIdNum() << endl;
       }//if
+
+      // If couldn't substitute, then we need to increment it's
+      // CUR_IN_GAME
+      crit_ptr->incrementCurInGame();
    }//if
    
    affected_mobs.gainData(crit_ptr);  //basically a list of smobs

@@ -1,5 +1,5 @@
-// $Id: Filters.h,v 1.3 1999/06/23 04:16:06 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
+// $Id: Filters.h,v 1.4 1999/07/07 06:05:11 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/07/07 06:05:11 $
 
 //
 //ScryMUD Server Code
@@ -117,7 +117,7 @@ public:
 class SelectVisibleToActor : public CritterSelector {
 public:
    virtual int matches(const critter* pc, const critter* actor) {
-      return pc->canDetect(*actor);
+      return actor->canDetect(*pc);
    }
    virtual const char* name() { return "SelectVisibleToActor"; }
 };

@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.8 1999/07/05 22:32:06 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/05 22:32:06 $
+// $Id: batl_prc.cc,v 1.9 1999/07/07 06:05:11 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/07 06:05:11 $
 
 //
 //ScryMUD Server Code
@@ -827,22 +827,30 @@ short is_tank(critter& pc) {
 
 
 void do_was_calmed_procs(critter& calmed, critter& calmer) {
-  if (calmed.mob && calmed.mob->proc_data) {
-    if (calmed.mob->getBenevolence() <= 6) {
-      emote("looks very pissed!!\n", calmed, room_list[calmed.getCurRoomNum()],
-	    TRUE);
-      if (calmed.LEVEL > 20) {
-	do_body_slam(calmer, calmed);
+   if (!calmer.isImmort() && calmed.mob && calmed.mob->proc_data) {
+
+      //should range from 0-20, where higher is meaner.
+      int i = abs(calmed.mob->getBenevolence() - 10);
+      if (d(1, i) > 8) {
+         emote("looks very pissed!!\n", calmed, room_list[calmed.getCurRoomNum()],
+               TRUE);
+         if (!calmed.isAnimal()) {
+            if (calmed.LEVEL > 20) {
+               do_body_slam(calmer, calmed);
+            }//if
+            else if (calmed.LEVEL > 10) {
+               do_bash(calmer, calmed);
+            }//else
+            else {
+               do_kick(calmer, calmed);
+            }//else
+         }
+         else {
+            do_hit(calmer, calmed);
+         }
       }//if
-      else if (calmed.LEVEL > 10) {
-	do_bash(calmer, calmed);
-      }//else
-      else {
-	do_kick(calmer, calmed);
-      }//else
-    }//if
 	
-    return;
+      return;
   }//if it's a mob etc
 }//do_calmed_procs
 

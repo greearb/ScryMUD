@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.31 1999/07/05 22:32:06 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/07/05 22:32:06 $
+// $Id: command2.cc,v 1.32 1999/07/07 06:05:11 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/07/07 06:05:11 $
 
 //
 //ScryMUD Server Code
@@ -338,7 +338,7 @@ int exit(critter& pc) {
                dest = (-(dr_ptr->destination));
             else
                dest = dr_ptr->destination;
-            if (pc.pc->imm_data) {
+            if (pc.isImmort()) {
                Sprintf(buf, "%P07%S[%i]:%P27", direction_of_door(*dr_ptr),
                        dr_ptr->dr_data->door_num);
             }
@@ -357,7 +357,7 @@ int exit(critter& pc) {
                buf.Append("]");
             }//if
             buf += "\n";
-            show(buf, pc);
+            pc.show(buf);
          }//if its open, don't show closed exits
       }//if detect
    }//while
@@ -2129,7 +2129,7 @@ int do_mstat(critter& targ, critter& pc) {
 
       Sprintf(buf2, "Vmx: %i  CRITTER_TYPE: %i  dam_rec_mod: %i  DAM_GIV_MOD: %i\n",
               crit_ptr->MV_MAX, crit_ptr->CRITTER_TYPE,
-              crit_ptr->DAM_GIV_MOD, crit_ptr->DAM_REC_MOD);
+              crit_ptr->DAM_REC_MOD, crit_ptr->DAM_GIV_MOD);
       show(buf2, pc);
 
       Sprintf(buf2,

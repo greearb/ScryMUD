@@ -9,10 +9,39 @@ back up automatically!!
 Syntax:  shutdown <<complete>
 
 Example:  shutdown         // reboot the game, back in 1-3 minutes
-          shutdonw complete// down untill someone logs into the
+          shutdown complete// down untill someone logs into the
                            // server's account and starts
                            //   it with the 'startup' command.
-          shutdown NEW_DB  // Cause a new world to be loaded
+***       shutdown NEW_DB  // Cause a new world to be loaded
+
+***  The NEW_DB argument is very powerful.  It causes the startup
+script to look for a gmud.new file in the same directory as the
+gmud binary.  If found, it will be coppied over the gmud file.
+This argument also causes the startup script to look for a
+World/wrld.new.tar.gz file.  If that file is found, it will be
+un-compressed and un-tarred, over-writing any World files already
+in place.
+
+This was written so that I could minimize downtime to the server.
+
+Here are (roughly) the things I do to update my server:
+  * Build the new server code. (cvs update, make clean, make)
+  * Move the binary to the right place. (mv grrmud ~/mud/grrmud/gmud.new)
+  * Build the core files. (make scry_dist_core)
+  * Put core files in place. (cp XXX.tar.gz ~/mud/, un-tar it there)
+  * Go to my development server and build the new world DB.
+	(cd ~/mud_dev/grrmud/World, make new_db)
+  * Move the new world db to the production server.
+	(mv ../wrld.new.tar.gz ~/mud/grrmud/World)
+   
+Now, the new world DB should be in place, the new server should be in
+place, and I have just blasted the core files (ie help files) over the
+old ones.  Now I will shutdown the server and tell it to use the new
+files.
+
+  * Log onto the server and type:  shutdown NEW_DB
+
+NOTE: PLEASE BACK UP EVERYTHING BEFORE YOU TRY THIS!!!
 
 <color=red>
 See Also:  quit, save, write_zone, update_cig

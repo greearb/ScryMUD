@@ -1,5 +1,5 @@
-// $Id: Filters.cc,v 1.3 1999/06/23 04:16:06 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
+// $Id: Filters.cc,v 1.4 1999/07/07 06:05:11 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/07/07 06:05:11 $
 
 //
 //ScryMUD Server Code
@@ -102,7 +102,8 @@ Selectors::Selectors()
         CC_none(CSelectorColl::SELECTOR_AND, &selectNone),
         
         // If ALL of these are true, try you _may_ show message.
-        CC_mob_entry_allow(CSelectorColl::SELECTOR_AND, &selectActorEntryMsgs),
+        CC_mob_entry_allow(CSelectorColl::SELECTOR_AND, &selectActorEntryMsgs,
+                           &selectCanDetectActor),
 
         // If ANY of these are true, don't show message.
         CC_mob_entry_deny(CSelectorColl::SELECTOR_OR,

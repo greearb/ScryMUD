@@ -1,5 +1,5 @@
-// $Id: wep_skll.cc,v 1.3 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: wep_skll.cc,v 1.4 1999/07/07 06:05:12 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/07/07 06:05:12 $
 
 //
 //ScryMUD Server Code
@@ -224,8 +224,8 @@ int do_backstab(critter& vict, critter& pc) {
    }//if hit
    else {  //missed
       Sprintf(buf, 
-	"You whirl just in time to avoid %S's blade in your back.\n", 
-                 name_of_crit(pc, vict.SEE_BIT));
+              "You whirl just in time to avoid %S's blade in your back.\n", 
+              name_of_crit(pc, vict.SEE_BIT));
       show(buf, vict);
 
       Sprintf(buf, "You nearly cut your finger off trying to backstab %S.\n",
@@ -236,6 +236,8 @@ int do_backstab(critter& vict, critter& pc) {
 	      name_of_crit(pc, ~0), get_his_her(vict));
       emote(buf, vict, ROOM, TRUE, &pc);
    }//else
+
+   pc.PAUSE += d(1,3);
 
    if (do_fatality) {
       agg_kills_vict(pc, vict);
