@@ -176,10 +176,10 @@ return backstab(i, &(cooked_strs[1]), pc);
 # IMM Commands - B
 
 # Mortal Commands - C
-cackle socials ~
-cackle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 cast ~
 return cast(&(cooked_strs[1]), j, &(cooked_strs[2]), pc, was_ordered);
+cackle socials ~
+cackle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 cheer socials ~
 cheer(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 chomp socials ~
