@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.35 2002/01/12 20:54:06 eroper Exp $
-// $Revision: 1.35 $  $Author: eroper $ $Date: 2002/01/12 20:54:06 $
+// $Id: const.h,v 1.36 2002/08/13 08:57:53 eroper Exp $
+// $Revision: 1.36 $  $Author: eroper $ $Date: 2002/08/13 08:57:53 $
 
 //
 //ScryMUD Server Code
@@ -1337,11 +1337,11 @@ extern const String ANSI_BCYAN_S;
 extern const String ANSI_BWHITE_S;
 
 
-#define NUMBER_OF_ZONES                 80
-#define NUMBER_OF_ROOMS                 8000
-#define NUMBER_OF_MOBS                  1500
-#define NUMBER_OF_ITEMS                 1500
-#define NUMBER_OF_DOORS                 250
+#define NUMBER_OF_ZONES                 160 
+#define NUMBER_OF_ROOMS                 16000
+#define NUMBER_OF_MOBS                  3000
+#define NUMBER_OF_ITEMS                 3000
+#define NUMBER_OF_DOORS                 500
 
 #define OBJ_MAX_EXTRAS                         9
 #define OBJ_CUR_STATS                        4
