@@ -1,5 +1,5 @@
-// $Id: ActionFrame.java 685 2004-07-21 22:21:01Z eroper $
-// $Revision: 685 $  $Author: eroper $ $Date: 2004-07-21 18:21:01 -0400 (Wed, 21 Jul 2004) $
+// $Id$
+// $Revision$  $Author$ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code

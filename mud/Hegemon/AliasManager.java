@@ -1,5 +1,5 @@
-// $Id: AliasFrame.java 801 2004-12-21 03:42:24Z kaj $
-// $Revision: 801 $  $Author: kaj $ $Date: 2004-12-20 22:42:24 -0500 (Mon, 20 Dec 2004) $
+// $Id$
+// $Revision$  $Author$ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
