@@ -1362,7 +1362,6 @@ pc_data::~pc_data() {
 }//destructor
  
 void pc_data::Clear() {
-   int i;
 
    if (post_msg) {
       delete post_msg;
@@ -1430,13 +1429,8 @@ void pc_data::Clear() {
    bug_num = 0;
    bug_comment.Clear();
 
-   // Base stats
-   for (i = 0; i<PC_BASE_STATS; i++) {
-      short_base_stats[i] = 0;
-   }
-
    // Clear wanted_in[] data
-   for ( i = 0; i<NUMBER_OF_ZONES+1; i++ ) {
+   for (int i = 0; i<NUMBER_OF_ZONES+1; i++ ) {
       wanted_in[i] = 0;
    }
 
@@ -1582,13 +1576,6 @@ void pc_data::Write(ofstream& ofile) {
       ofile << (int)(preferred_language) << " -1 preferred_language\n";
    }
 
-   for (i = 0; i<PC_BASE_STATS; i++) {
-      if ((i + 1) % 20 == 0)
-         ofile << endl;
-      ofile << short_base_stats[i] << " ";
-   }//for
-   ofile << "\tshrt_base_stats\n";
-
    // store wanted_in[] information
    ii = 0;
    for (i = 0; i < NUMBER_OF_ZONES+1; i++) {
@@ -1726,12 +1713,6 @@ void pc_data::Read(ifstream& ofile) {
       preferred_language = (LanguageE)(t);
       ofile.getline(tmp, 80);
    }
-
-   // Read in base stats, used to prevent nerfing, etc.
-   for (i = 0; i<PC_BASE_STATS; i++) {
-      ofile >> short_base_stats[i];
-   }
-   ofile.getline(tmp, 80);
 
    // Read in wanted_in information
    ofile >> i;

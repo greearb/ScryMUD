@@ -567,15 +567,6 @@ public:
       // 30 is_remort, 31 has_sacrificed, 32 is_roleplaying,
       // 33 is_afk, 34 gold_only
 
-   // The following is used for fixing nerf screwups on remorting, etc.
-   short short_base_stats[PC_BASE_STATS + 1];
-   // 0 str, 1 int, 2 con, 3 cha, 4 wis, 5 dex, 6 hit, 7 dam,
-   // 8 ac, 9 attacks, 10 hp_max, 11 mana_max, 12 mov_max,
-   // 13 dam_received_divisor, 14 dam_given_multiplier,
-   // 15 heat_resis, 16 cold_resis, 17 elect_resis, 18 spell_resis,
-   // 19 bare_hand_dice_count, 20 bare_hand_dice_sides, 21 hp_regen,
-   // 22 mana_regen, 23 mov_regen
-
    // Is our PC wanted in any zones?
    int wanted_in[NUMBER_OF_ZONES +1];
 
