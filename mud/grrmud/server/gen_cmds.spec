@@ -520,10 +520,14 @@ mclear ~
 return mclear(i, pc);
 mclone ~
 return mclone(i, &(cooked_strs[1]), pc);
+mldsearch ~
+return mldsearch(&(cooked_strs[1]), pc);
 mlist ~
 return  mlist(i, j, pc);
 mload ~
 return mload(i, &(cooked_strs[1]), pc);
+msdsearch ~
+return msdsearch(&(cooked_strs[1]), pc);
 mset ~
 return mset(i, &(cooked_strs[1]), &(cooked_strs[2]), k, &(cooked_strs[3]), pc);
 mstat ~
@@ -570,12 +574,16 @@ oclone ~
 return oclone(i, &(cooked_strs[1]), pc);
 olc ~
 return handle_olc(pc, do_sub);
+oldsearch ~
+return oldsearch(&(cooked_strs[1]), pc);
 olist ~
 return olist(i, j, pc);
 oload ~
 return oload(i, &(cooked_strs[1]), pc);
 opurge ~
 return opurge(i, &(cooked_strs[1]), pc);
+osdsearch ~
+return osdsearch(&(cooked_strs[1]), pc);
 ostat ~
 return ostat(i, &(cooked_strs[1]), pc);
 oreload ~

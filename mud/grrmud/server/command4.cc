@@ -44,6 +44,7 @@
 #include <time.h>
 #include <unistd.h>
 #include "vehicle.h"
+#include "regex.h"
 
 
 int do_gecho(const char* msg) {
@@ -92,7 +93,7 @@ int poofin(String* pin, critter& pc) {
       return -1;
    }//if
 
-   for (int i = 0; i<pin->Strlen(); i++) {
+   for (unsigned int i = 0; i<pin->Strlen(); i++) {
       if (pin->charAt(i) == '\n') {
          pin->setCharAt(i, ' ');
       }//if
@@ -114,7 +115,7 @@ int poofout(String* pin, critter& pc) {
       return -1;
    }//if
    
-   for (int i = 0; i<pin->Strlen(); i++) {
+   for (unsigned int i = 0; i<pin->Strlen(); i++) {
       if (pin->charAt(i) == '\n') {
          pin->setCharAt(i, ' ');
       }//if
@@ -1602,6 +1603,55 @@ int olist(int start, int end, critter& pc) {
    return 0;
 }//olist
 
+int osdsearch(String *match_str, critter& pc) {
+   String buf(100);
+   regex my_regex;
+
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (! (my_regex = *match_str) ) {
+      pc.show(my_regex.getErr());
+      return -1;
+   }
+
+   for (int i=0;i<NUMBER_OF_ITEMS;i++) {
+      if ( obj_list[i].isInUse() ) {
+         if ( my_regex == obj_list[i].short_desc ) {
+            Sprintf(buf, "\t%i\t%S\n", i, &(obj_list[i].short_desc));
+            pc.show(buf);
+         }//if matches
+      }//if in use
+   }//for
+
+   return 0;
+}//osdsearch
+
+int oldsearch(String *match_str, critter& pc) {
+   String buf(100);
+   regex my_regex;
+
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (! (my_regex = *match_str) ) {
+      pc.show(my_regex.getErr());
+      return -1;
+   }
+
+   for (int i=0;i<NUMBER_OF_ITEMS;i++) {
+      if ( obj_list[i].isInUse() ) {
+         if ( my_regex == obj_list[i].long_desc ) {
+            Sprintf(buf, "\t%i\t%S\n", i, &(obj_list[i].short_desc));
+            pc.show(buf);
+         }//if matches
+      }//if in use
+   }//for
+
+   return 0;
+}//oldsearch
 
 int zlist(int start, int end, critter& pc) {
    if (!ok_to_do_action(NULL, "IF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -1631,6 +1681,53 @@ int zlist(int start, int end, critter& pc) {
    return 0;
 }//zlist
 
+int msdsearch(String *match_str, critter& pc) {
+   String buf(100);
+   regex my_regex;
+
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (! (my_regex = *match_str) ) {
+      pc.show(my_regex.getErr());
+      return -1;
+   }
+
+   for (int i=0;i<=NUMBER_OF_MOBS;i++) {
+      if (mob_list[i].isInUse()) {
+         if ( my_regex == mob_list[i].short_desc ) {
+         Sprintf(buf, "\t%i\t%S\n", i, &(mob_list[i].short_desc));
+         show(buf, pc);
+         }//if matches
+      }//if in use
+   }//for
+   return 0;
+}//msdsearch
+
+int mldsearch(String *match_str, critter& pc) {
+   String buf(100);
+   regex my_regex;
+
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (! (my_regex = *match_str) ) {
+      pc.show(my_regex.getErr());
+      return -1;
+   }
+
+   for (int i=0;i<=NUMBER_OF_MOBS;i++) {
+      if (mob_list[i].isInUse()) {
+         if ( my_regex == mob_list[i].long_desc ) {
+         Sprintf(buf, "\t%i\t%S\n", i, &(mob_list[i].short_desc));
+         show(buf, pc);
+         }//if matches
+      }//if in use
+   }//for
+   return 0;
+}//mldsearch
 
 int mlist(int start, int end, critter& pc) {
    String buf(100);
@@ -1665,7 +1762,6 @@ int mlist(int start, int end, critter& pc) {
    }//for
    return 0;
 }//mlist
-
 
 int rlist(int start, int end, critter& pc) {
    String buf(100);

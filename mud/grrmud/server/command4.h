@@ -74,6 +74,10 @@ int oclear(int i_th, critter& pc); //respectively.
 
 int brief(critter& pc);
 int olist(int start, int end, critter& pc);
+int oldsearch(String* match_str, critter& pc);
+int osdsearch(String* match_str, critter& pc);
+int msdsearch(String* match_str, critter& pc);
+int mldsearch(String* match_str, critter& pc);
 int mlist(int start, int end, critter& pc);
 int rlist(int start, int end, critter& pc);
 int dlist(int start, int end, critter& pc);
