@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.37 2002/01/29 18:22:13 gingon Exp $
-// $Revision: 1.37 $  $Author: gingon $ $Date: 2002/01/29 18:22:13 $
+// $Id: misc2.cc,v 1.38 2002/02/07 09:14:06 eroper Exp $
+// $Revision: 1.38 $  $Author: eroper $ $Date: 2002/02/07 09:14:06 $
 
 //
 //ScryMUD Server Code
@@ -1872,6 +1872,11 @@ int critter::doBecomeNonPet() {
 
    MASTER->PETS.loseData(this); //master no longer has pc as pet...
    MASTER = NULL;   // slave of none
+
+   // Takes care of guarding/shielding, etc.
+   if ( temp_crit ) {
+       temp_crit->Clear();
+   }
 
    return doUngroup(1, &NULL_STRING);
 }//unpet

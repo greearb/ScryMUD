@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.49 2002/02/07 08:32:58 eroper Exp $
-// $Revision: 1.49 $  $Author: eroper $ $Date: 2002/02/07 08:32:58 $
+// $Id: misc.cc,v 1.50 2002/02/07 09:14:05 eroper Exp $
+// $Revision: 1.50 $  $Author: eroper $ $Date: 2002/02/07 09:14:05 $
 
 //
 //ScryMUD Server Code
@@ -1392,6 +1392,10 @@ void decrease_timed_affecting_smobs() {  //will decrease all
       if (crit_ptr->master) {
          if (crit_ptr->mob->getTicksTillFreedom() <= 0) {
             crit_ptr->doFollow(*crit_ptr); //follow self
+            // Takes care of guarding/shielding, etc.
+            if ( crit_ptr->temp_crit ) {
+                crit_ptr->temp_crit->Clear();
+            }
          }//if
       }//if
 
