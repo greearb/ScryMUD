@@ -428,9 +428,11 @@ void critter::doLogin() {
                }
                /* the following code is to correct for an issue we had with
                 * runaway BHDC/BHDS. Eventually this code can go away.
+                * Discovered some people got negatively impacted, hence
+                * setting it regardless.
                 */
-               if ( getBHDC(false) > 2 ) { BH_DICE_COUNT = 2; }
-               if ( getBHDS(false) > 3 ) { BH_DICE_SIDES = 3; }
+               BH_DICE_COUNT = 2;
+               BH_DICE_SIDES = 3;
 
                // re-gain effects from worn gear
                   {

@@ -2319,7 +2319,7 @@ int do_mstat(critter& targ, critter& pc) {
               "RELIGION: %i  BH_dice_count: %i(%i)  BH_DICE_SIDES: %i(%i)\n",
               crit_ptr->RELIGION, crit_ptr->getBHDC(true),
               crit_ptr->getBHDC(false), crit_ptr->getBHDS(true),
-              crit_ptr->getBHDC(false));
+              crit_ptr->getBHDS(false));
       show(buf2, pc);
 
       Sprintf(buf2,
