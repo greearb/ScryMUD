@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.38 2002/02/07 09:14:06 eroper Exp $
-// $Revision: 1.38 $  $Author: eroper $ $Date: 2002/02/07 09:14:06 $
+// $Id: misc2.cc,v 1.39 2002/03/01 14:55:52 gingon Exp $
+// $Revision: 1.39 $  $Author: gingon $ $Date: 2002/03/01 14:55:52 $
 
 //
 //ScryMUD Server Code
@@ -2145,8 +2145,11 @@ critter* get_target_mob(int i_th, const String* target, critter& pc, char* diver
       vict = ROOM.haveCritNamed(i_th, target, pc);
 //   if (!vict) doFailureNoTarget();
 
-   if(vict) vict = check_for_diversions(*vict, diversions, pc);
-   return vict;
+   if(vict){
+      vict = check_for_diversions(*vict, diversions, pc);
+      return vict;
+   }
+   return NULL;
 }
 
 

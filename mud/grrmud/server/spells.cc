@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.25 2002/02/22 18:06:11 gingon Exp $
-// $Revision: 1.25 $  $Author: gingon $ $Date: 2002/02/22 18:06:11 $
+// $Id: spells.cc,v 1.26 2002/03/01 14:55:52 gingon Exp $
+// $Revision: 1.26 $  $Author: gingon $ $Date: 2002/03/01 14:55:52 $
 
 //
 //ScryMUD Server Code
@@ -249,13 +249,14 @@ void MobSpell::onCast(int i_th, const String* vict, critter& pc, int is_canned =
 //      return;
 //   }
 
+   agg = &pc;
 
    if (!(victim = get_target_mob(i_th, vict, pc, diversions))) {
       doFailureNoTarget();
       return;
    }
    
-   agg = &pc;
+//   agg = &pc;
    if (victim->isMob()) {
        victim = mob_to_smob(*victim, victim->getCurRoomNum(), TRUE);
    }//if
