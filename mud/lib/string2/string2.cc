@@ -1149,6 +1149,10 @@ void Sprintf(String& targ, const char* string, ... ) {
                case 'i':    /* int */  
                   targ.Append(va_arg(ap, int));
                   break;
+               case 'I':    /* ignore */
+                  va_arg(ap, void*);
+                  // Do nothing with it!!
+                  break;
                case 'd':     /* long, turn it into an int */
                   targ.Append(va_arg(ap, int));
                   break;

@@ -487,7 +487,7 @@ int bash(int i_th, const String* victim, critter& pc) {
 		pc.SEE_BIT, ROOM))
       return do_bash(*dptr, pc);
    else
-      show(NO_CAN_SEE_MSG, pc);
+      pc.show(CS_NO_CAN_SEE);
    return -1;
 }//bash
 
@@ -646,7 +646,7 @@ int block(int i_th, const String* victim, critter& pc) {
 		pc.SEE_BIT, ROOM))
       return do_block(*dptr, pc);
    else
-      show(NO_CAN_SEE_MSG, pc);
+      pc.show(CS_NO_CAN_SEE);
    return -1;
 }//block
 

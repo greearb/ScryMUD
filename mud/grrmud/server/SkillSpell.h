@@ -54,8 +54,9 @@ class SkillSpell {
    List<int> enables;  //spell/skill numbers it enables you to take
 
    SkillSpell();
-   SkillSpell(SkillSpell& source);
-   
+   SkillSpell(const SkillSpell& source);
+   SkillSpell& operator=(const SkillSpell& source);
+
    void Read(ifstream& da_file);
    void Write(ofstream& da_file);
    void Clear();

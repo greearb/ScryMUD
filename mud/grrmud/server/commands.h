@@ -33,6 +33,8 @@
 #include "object.h"
 #include "door.h"
 #include "room.h"
+#include "lang_strings.h"
+
 
 int show_eq(critter& pc);
 int drop(int i_th, const String* obj, const String* obj_all, critter& pc);
@@ -89,12 +91,17 @@ int examine(int i_th, const String* obj, critter& pc);
 //don't show msg to this last one if specified, wraps do_emote
 int emote(const char* msg, critter& pc, room& rm, short show_non_detects,
           critter* noshow = NULL);
+
+//don't show msg to this last one if specified, wraps do_emote
+int emote(CSentryE cs_entry, critter& pc, room& rm, short show_non_detects,
+          critter* noshow = NULL);
+
 // Possessive emote, wraps do_emote
 int pemote(const char* msg, critter& pc, room& rm, short show_non_detects,
            critter* noshow = NULL);
 // Worker method.
-int do_emote(const char* msg, critter& pc, room& rm, short show_non_detects,
-             int possessive, critter* crit = NULL);
+int do_emote(const char* msg, CSentryE cs_entry, critter& pc, room& rm,
+             short show_non_detects, int possessive, critter* crit = NULL);
 
 
 ///************************  login functions  ************************///

@@ -36,10 +36,24 @@ SkillSpell::SkillSpell() {
    scroll_num = 0;
 }//constructor
 
-SkillSpell::SkillSpell(SkillSpell& source) {
-   *this = source; //no need for overloaded = yet
+SkillSpell::SkillSpell(const SkillSpell& source) {
+   *this = source;
 }//copy constructor
 
+
+//Defining this may help with older compilers (2.7.2) and templates.
+SkillSpell& SkillSpell::operator=(const SkillSpell& source) {
+   if (&source != this) {
+      ss_num = source.ss_num;
+      name = source.name;
+      min_level = source.min_level;
+      difficulty = source.difficulty;
+      mana_cost = source.mana_cost;
+      scroll_num = source.scroll_num;
+      objs_casting_spell = source.objs_casting_spell;
+   }
+   return *this;
+}
 
 String SkillSpell::getHtml() {
    String buf(100);

@@ -605,7 +605,6 @@ extern const char* CensoredStrings[];
 extern const char* DARK_MSG;
 extern const char* SLEEP_MSG;
 extern const char* BLIND_MSG;
-extern const char* NO_CAN_SEE_MSG;
 extern const char* NOT_IN_HAVEN_MSG;
 extern const char* NOT_IN_NOMAG_RM_MSG;
 extern const char* SPELL_MUST_BE_STANDING_MSG;

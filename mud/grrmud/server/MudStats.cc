@@ -21,6 +21,7 @@
 //
 
 #include "MudStats.h"
+#include "critter.h"
 
 MudStats& MudStats::instance() {
    static MudStats self;

@@ -38,7 +38,12 @@ all: ${TARG}
 ${TARG}: libs ${GEN_TARGS} $(OBJS) 
 	$(CCC) $(CCFLAGS) $(LDFLAGS) -o ${TARG} $(OBJS) $(LDLIBS)
 
-${CODE_GEN_TARG}: libs ${CODE_GEN_OBJS}
+# This should really depend on libs too, but my libs make is lazy,
+# and that causes this to be rebuilt each time.  By making TARG,
+# as above, I think libs will be up to date, but you may have to
+# specifically re-build the CODE_GEN_TARG if changes to the libs
+# would have affected it. --BEN
+${CODE_GEN_TARG}: ${CODE_GEN_OBJS}
 	$(CCC) $(CCFLAGS) $(LDFLAGS) -o ${CODE_GEN_TARG} $(CODE_GEN_OBJS) $(LDLIBS)
 
 new_binary: ${TARG}

@@ -55,7 +55,7 @@ int inventory(critter& pc) {
              << endl;
    }//if
 
-   show("Your inventory:  \n", pc);
+   pc.show(CS_YOUR_INV);
    out_inv(pc.inv, pc, CRIT_INV);
    return 0;
 }//inventory
@@ -75,7 +75,7 @@ int drop(int i_th, const String* pre_obj, const String* obj_all,
    }
 
    if ((pre_obj->Strlen() == 0) && (obj_all->Strlen() == 0)) {
-      pc.show("Drop what??\n");
+      pc.show(CS_DROP_WHAT);
       return -1;
    }
 
@@ -111,7 +111,7 @@ int drop(int i_th, const String* pre_obj, const String* obj_all,
             obj_ptr = cell.next();
       }//while obj_ptr
       if (!flag1) {
-         show("Ok.\n", pc);
+         pc.show(CS_OK);
       }//if
    }//if "all"
    else if (i_th == -1) { //like drop all.sword
@@ -145,7 +145,7 @@ int drop(int i_th, const String* pre_obj, const String* obj_all,
       }//if
    }//if   
    else {
-         show("You don't seem to have that.\n", pc);
+         pc.show(CS_DONT_SEEM_TO_HAVE_THAT);
          return -1;
    }//else
    return 0;
@@ -166,7 +166,7 @@ int donate(int i_th, const String* pre_obj, const String* obj_all,
    }
 
    if ((pre_obj->Strlen() == 0) && (obj_all->Strlen() == 0)) {
-      pc.show("Donate what??\n");
+      pc.show(CS_DONATE_WHAT);
       return -1;
    }
 
@@ -202,7 +202,7 @@ int donate(int i_th, const String* pre_obj, const String* obj_all,
             obj_ptr = cell.next();
       }//while obj_ptr
       if (!flag1) {
-         show("Ok.\n", pc);
+         pc.show(CS_OK);
       }//if
    }//if "all"
    else if (i_th == -1) { //like donate all.sword
@@ -236,7 +236,7 @@ int donate(int i_th, const String* pre_obj, const String* obj_all,
       }//if
    }//if   
    else {
-      show("You don't seem to have that.\n", pc);
+      pc.show(CS_DONT_SEEM_TO_HAVE_THAT);
       return -1;
    }//else
    return 0;
@@ -248,7 +248,7 @@ int show_eq(critter& pc) {
 
    mudlog.log(DBG, "In eq.\n");
 
-   show("You are wearing:  \n", pc);
+   pc.show(CS_YOU_ARE_WEARING);
 
    out_eq(pc, pc);
    pc.show("\n");
@@ -268,7 +268,7 @@ int examine(int i_th, const String* obj, critter& pc) {
          obj_ptr = ROOM.haveObjNamed(i_th, obj, pc.SEE_BIT);
       }//if
       if (!obj_ptr) {
-         Sprintf(buf, "You can't find the %S.\n", obj);
+         Sprintf(buf, cstr(CS_YOU_CANT_FIND_THE, pc), obj);
          show(buf, pc);
       }//if
                    //is a container?
@@ -277,10 +277,10 @@ int examine(int i_th, const String* obj, critter& pc) {
          //show("That is not a container.\n", pc);
       }//if
       else if (obj_ptr->isClosed()) {
-         show("Its closed!\n", pc);
+         pc.show(CS_ITS_CLOSED);
       }//if
       else {
-         Sprintf(buf, "%S contains: \n\n", &(obj_ptr->short_desc));
+         Sprintf(buf, cstr(CS_CONTAINS, pc), &(obj_ptr->short_desc));
          buf.Cap();
          show(buf, pc);
          
@@ -309,7 +309,7 @@ int wear(int i_th, const String* obj, int j, const String* posn,
    }
 
    if (!obj->Strlen()) {
-      show("Wear what??\n", pc);
+      pc.show(CS_WEAR_WHAT);
       mudlog.log(DBG, "Wear failed, object not specified.\n");
    }//if
    else if ((strncasecmp(*obj, "all", obj->Strlen())) == 0) {
@@ -318,7 +318,7 @@ int wear(int i_th, const String* obj, int j, const String* posn,
       obj_ptr = cell.next();
     
       if (IsEmpty(pc.inv)) {
-         show("You have nothing to wear!\n", pc);
+         pc.show(CS_NOTHING_TO_WEAR);
       }//if
       else {
          int retval = -1;
@@ -337,7 +337,7 @@ int wear(int i_th, const String* obj, int j, const String* posn,
       mudlog.log(DBG, "Wear, no posn noted.\n");
       obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT, ROOM);
       if (!obj_ptr) {
-         show("You don't have that item.\n", pc);
+         pc.show(CS_DONT_SEEM_TO_HAVE_THAT);
          mudlog.log(DBG, "Wear failed, don't have item.\n");
       }//if
       else {
@@ -351,7 +351,7 @@ int wear(int i_th, const String* obj, int j, const String* posn,
       mudlog.log(DBG, "Wear, posn noted.\n");
       obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT, ROOM);
       if (!obj_ptr) {
-         show("You don't have that item.\n", pc);
+         pc.show(CS_DONT_SEEM_TO_HAVE_THAT);
          mudlog.log(DBG, "Wear failed, don't have object\n");
          return -1;
       }//if
@@ -411,7 +411,7 @@ int wear(int i_th, const String* obj, int j, const String* posn,
          //}//if
       }//else
       if (i == 0) { //not a valid key_word for posn
-         show("Wear it where??\n", pc);
+         pc.show(CS_WEAR_IT_WHERE);
          mudlog.log(DBG, "Wear failed, posn invalid.\n");
          return -1;
       }//if
@@ -426,7 +426,7 @@ int wear(int i_th, const String* obj, int j, const String* posn,
                }//if
             }//if
             else { //can go in neither posn
-               show("You are already using something there.\n", pc);
+               pc.show(CS_ALREADY_WEARING_THERE);
                mudlog.log(DBG, 
                           "Wear failed, already wearing something there.\n");
             }//else
@@ -456,7 +456,7 @@ int remove(int i_th, const String* obj, critter &pc) {
    }
 
    if (!obj->Strlen()) {
-      show("Remove what??\n", pc);
+      pc.show(CS_REMOVE_WHAT);
    }//if
    else if (strcasecmp(*obj, "all") == 0) {
       mudlog.log(DBG, "remove called like: remove all\n");
@@ -496,7 +496,7 @@ int remove(int i_th, const String* obj, critter &pc) {
       }//if i_th is good
    }//else
    if (!found_one) {
-      show("You don't seem to be wearing that.\n", pc);
+      pc.show(CS_NOT_WEARING_THAT);
    }//if
    return retval;
 }//remove
@@ -540,15 +540,14 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
 //    }//if
 
    if (pc.POS > POS_REST) {
-      show("\nYou aren't in a lively enough position to look something.\n", 
-            pc);
+      pc.show(CS_LOOK_TOO_RELAXED);
    }//if
             /* dark and cannot see in dark? */
    else if (!detect(pc.SEE_BIT, rm.getVisBit())) { 
-      show("All you see is darkness...\n", pc);
+      pc.show(CS_LOOK_ONLY_DARKNESS);
    }//if
    else if (pc.POS >= POS_DEAD) { //position
-      show("\nYou should not be able to see at all!\n", pc);      
+      pc.show(CS_LOOK_CANT_SEE);
    }//if
 
        /* just plain look? */
@@ -637,7 +636,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
          stat_spell_cell* sp;
          while ((sp = cll.next())) {
             if (sp->stat_spell == sanct_num) {
-               Sprintf(buf, "\t%s glows brightly.\n\n", 
+               Sprintf(buf, cstr(CS_LOOK_GLOWS_BRIGHTLY, pc),
                        get_he_she(*crit_ptr));
 	       buf.Cap();
                show(buf, pc);
@@ -679,14 +678,14 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
       }
       else if (strncasecmp(*obj, "sky", obj->Strlen()) == 0) {
          if (ROOM.canSeeSky()) {
-            pc.show("You look off into the great blue yonder!\n");
+            pc.show(CS_LOOK_SKY_CAN_SEE);
          }
          else {
-            pc.show("You can't see the sky from here!\n");
+            pc.show(CS_LOOK_SKY_CANT_SEE);
          }
       }//if
       else {
-         show(NO_CAN_SEE_MSG, pc);
+         pc.show(CS_NO_CAN_SEE);
       }//else
    }//else, look <thingie>
    return 0; //no real thought put into this at this time..
@@ -702,7 +701,7 @@ int hit(int i_th, const String* victim, critter &pc) {
    crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
 
    if (!crit_ptr) {
-      show("Fight who??\n", pc);
+      pc.show(CS_FIGHT_WHO);
       return -1;
    }//if
 
@@ -752,12 +751,12 @@ int assist(int i_th, const String* targ, critter &pc) {
    }
 
    if (!friendly) {
-     show("Assist who??\n", pc);
-     return -1;
+      pc.show(CS_ASSIST_WHO);
+      return -1;
    }//if
 
    if (friendly == &pc) {
-      pc.show("You're already giving it your all!\n");
+      pc.show(CS_ASSIST_ALREADY_TRYING);
       return -1;
    }
 
@@ -768,56 +767,56 @@ int assist(int i_th, const String* targ, critter &pc) {
          return -1;
 
       if (crit_ptr == &pc) {
-         pc.show("You start giving yourself a hard time!\n");
+         pc.show(CS_ASSIST_YOURSELF);
          return -1;
       }
 
-      Sprintf(buf, "You assist %S in fighting against %S!\n",
+      Sprintf(buf, cstr(CS_ASSIST_START, pc),
               friendly->getName(), crit_ptr->getName(pc.SEE_BIT));
       pc.show(buf);
 
       return do_hit(*crit_ptr, pc);
    }//if
    else {
-      pc.show("You cannot assist someone who is not fighting.\n");
+      pc.show(CS_ASSIST_CANT);
    }
    return -1;
 }//assist
 
 
 int do_hit(critter& vict, critter& pc) {
-  if (&vict == &pc) {
-     show("You rare back and smack the s**t out of yourself!\n", pc);
-     return -1;
-  }//if
-
-  join_in_battle(pc, vict);   
-
-  if (vict.isUsingClient()) {
-     show("<BATTLE>", vict);
-  }
-  else if (vict.isUsingColor()) {
-     show(*(vict.getBattleColor()), vict);
-  }
-
-  int show_vict_tags = TRUE;
-  do_battle_round(pc, vict, 9, show_vict_tags);   
-
-  // Tags will only be shown in do_battle_round if
-  // the victim died.
-  if (show_vict_tags) {
-     if (vict.isUsingClient()) {
-        show("</BATTLE>", vict);
-     }
-     else if (vict.isUsingColor()) {
-        show(*(vict.getDefaultColor()), vict);
-     }
-  }//if
-
-  String cmd = "hit";
-  ROOM.checkForProc(cmd, NULL_STRING, pc, vict.MOB_NUM);
-  show("Battle envelops you!\n", pc);
-  return 0;
+   if (&vict == &pc) {
+      pc.show(CS_HIT_SELF);
+      return -1;
+   }//if
+   
+   join_in_battle(pc, vict);   
+   
+   if (vict.isUsingClient()) {
+      show("<BATTLE>", vict);
+   }
+   else if (vict.isUsingColor()) {
+      show(*(vict.getBattleColor()), vict);
+   }
+   
+   int show_vict_tags = TRUE;
+   do_battle_round(pc, vict, 9, show_vict_tags);   
+   
+   // Tags will only be shown in do_battle_round if
+   // the victim died.
+   if (show_vict_tags) {
+      if (vict.isUsingClient()) {
+         show("</BATTLE>", vict);
+      }
+      else if (vict.isUsingColor()) {
+         show(*(vict.getDefaultColor()), vict);
+      }
+   }//if
+   
+   String cmd = "hit";
+   ROOM.checkForProc(cmd, NULL_STRING, pc, vict.MOB_NUM);
+   pc.show(CS_HIT_BATTLE_STARTS);
+   return 0;
 }//do_hit
 
 
@@ -832,7 +831,7 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
    }
 
    if (was_ordered) {
-      pc.show("You can't be ordered to cast a spell.\n");
+      pc.show(CS_CAST_NO_CAN_DO);
       return -1;
    }
 
@@ -840,6 +839,7 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
       return -1;
    }
 
+   // TODO:  Make this multi-lingual??
    if (strncasecmp(*spell, "absorb blows", len) == 0) 
       cast_absorb_blows(pc);
    else if (strncasecmp(*spell, "armor", len) == 0) 
@@ -1013,7 +1013,7 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
    else if (strncasecmp(*spell, "web", len) == 0) 
       cast_web(j_th, victim, pc);
    else {
-      show("That spell is in need of research.\n", pc);
+      pc.show(CS_SPELL_RESEARCH);
       return -1;
    }//else
    return 0;
@@ -1046,15 +1046,15 @@ int put(int i, const String* item, int j, const String* bag,
          bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
       }//if
       if (!bag_ptr) {
-         show("You don't seem to have that container.\n", pc);
+         pc.show(CS_NO_CONTAINER);
          return -1;
       }//if
       else if (!bag_ptr->bag) {
-         show("How are you gonna put something in THAT?\n", pc);
+         pc.show(CS_NOT_CONTAINER);
          return -1;
       }//if
       else if (bag_ptr->isClosed()) {
-         show("You need to open it first.\n\0", pc);
+         pc.show(CS_NOT_OPEN);
          return -1;
       }//if 
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
@@ -1083,7 +1083,7 @@ int put(int i, const String* item, int j, const String* bag,
                      vict_ptr = cell.next();
                }//if
                else {
-                  show("Attempt to self contain denied!!.\n", pc);
+                  pc.show(CS_NO_SELF_CONTAINMENT);
                   vict_ptr = cell.next();
                }//else
             }// if obj is named..
@@ -1094,8 +1094,8 @@ int put(int i, const String* item, int j, const String* bag,
             vict_ptr = cell.next();
          }//while vict_ptr
       if (!found_it) {
-         Sprintf(buf, "You neither see nor have the %S.\n", item);
-         show(buf, pc);
+         Sprintf(buf, cstr(CS_PUT_NO_SEE, pc), item);
+         pc.show(buf);
       }//if
    }//if "put all.waybread bag"
    else if (strncasecmp(*item, "all", item->Strlen()) == 0) {// put all bag
@@ -1109,15 +1109,15 @@ int put(int i, const String* item, int j, const String* bag,
          bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
       }//if
       if (!bag_ptr) {
-         show("You don't see that container.\n", pc);
+         pc.show(CS_NO_CONTAINER);
          return -1;
       }//if
       else if (!bag_ptr->bag) {
-         show("How can put something in THAT?\n", pc);
+         pc.show(CS_NOT_CONTAINER);
          return -1;
       }//if
       else if (bag_ptr->isClosed()) {
-         show("You need to open it first.\n", pc);
+         pc.show(CS_NOT_OPEN);
          return -1;
       }//if 
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
@@ -1147,7 +1147,7 @@ int put(int i, const String* item, int j, const String* bag,
                   vict_ptr = cell.next();
             }//if
             else {
-               show("Attempt to self contain denied!!\n", pc);
+               pc.show(CS_NO_SELF_CONTAINMENT);
                vict_ptr = cell.next();
             }//else
          }//if
@@ -1167,19 +1167,19 @@ int put(int i, const String* item, int j, const String* bag,
       }//if
 
       if (!bag_ptr) {
-         show("You do not see that container.\n", pc);
+         pc.show(CS_NO_CONTAINER);
          return -1;
       }//if
       else if (!vict_ptr) {
-         show("You do not see that item.\n", pc);
+         pc.show(CS_NO_CAN_SEE_ITEM);
          return -1;
       }//if
       else if (!bag_ptr->bag) {
-         show("How the hell are you gonna fit something in that???\n", pc);
+         pc.show(CS_NOT_CONTAINER);
          return -1;
       }//if
       else if (bag_ptr->isClosed()) {
-         show("You need to open it first.\n\0", pc);
+         pc.show(CS_NOT_OPEN);
          return -1;
       }//if 
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
@@ -1198,7 +1198,7 @@ int put(int i, const String* item, int j, const String* bag,
          item_in_inv = FALSE;
       }//if
       if (!vict_ptr) {
-         Sprintf(buf, "You do not see the %S.\n", item);
+         Sprintf(buf, cstr(CS_PUT_NO_SEE, pc), item);
          show(buf, pc);
          return -1;
       }//if
@@ -1211,7 +1211,7 @@ int put(int i, const String* item, int j, const String* bag,
          }//if
       }//if
       else {
-         show("Attempt to self contain aborted!!\n", pc);
+         pc.show(CS_NO_SELF_CONTAINMENT);
          return -1;
       }//else
    }//else
@@ -1233,7 +1233,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
    }
 
    if ((item->Strlen() == 0) && (bag->Strlen() == 0)) {
-      pc.show("Get what??\n");
+      pc.show(CS_GET_WHAT);
       return -1;
    }
 
@@ -1268,7 +1268,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
          }//else
       }//while
       if (!tst) {
-         show("You can't detect anything...\n", pc);
+         pc.show(CS_NO_DETECT_ANYTHING);
          return -1;
       }
       return 0;
@@ -1283,19 +1283,19 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
          bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
       }//if
       if (!bag_ptr) {
-         show("You don't seem to have that container.\n", pc);
+         pc.show(CS_NO_CONTAINER);
          return -1;
       }//if
       if (!bag_ptr->bag) {
-         show("How are you gonna get something from THAT?\n", pc);
+         pc.show(CS_NOT_CONTAINER);
          return -1;
       }//if
       if (bag_ptr->OBJ_FLAGS.get(59)) {
-         show("Try empty instead!\n", pc);
+         pc.show(CS_TRY_EMPTY);
          return -1;
       }//if
       if (bag_ptr->isClosed()) {
-         show("You need to open it first.\n\0", pc);
+         pc.show(CS_NOT_OPEN);
          return -1;
       }//if 
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
@@ -1324,7 +1324,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
             vict_ptr = cell.next();
       }//while obj_ptr
       if (!found_it) {
-         Sprintf(buf, "The %S doesn't seem to contain the %S.\n", bag, item);
+         Sprintf(buf, cstr(CS_NO_CONTAIN_OBJ, pc), bag, item);
          show(buf, pc);
       }//if
    }//if "get all.waybread bag"
@@ -1346,7 +1346,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
          }//if named right
       }//while obj_ptr
       if (!found_it) {
-         show("You don't see that here.\n", pc);
+         pc.show(CS_NO_SEE_THAT);
       }//if
    }//if     
    else if (strncasecmp(*item, "all", item->Strlen()) == 0){ // "get all bag"
@@ -1359,23 +1359,23 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
          bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
       }//if
       if (!bag_ptr) {
-         show("You don't see that container.\n", pc);
+         pc.show(CS_NO_CONTAINER);
          return -1;
       }//if
       else if (!bag_ptr->bag) {
-         show("How are you gonna get something from THAT?\n", pc);
+         pc.show(CS_NOT_CONTAINER);
          return -1;
       }//if
       else if (bag_ptr->isClosed()) {
-         show("You need to open it first.\n", pc);
+         pc.show(CS_NOT_OPEN);
          return -1;
       }//if 
       if (bag_ptr->OBJ_FLAGS.get(59)) {
-         show("Try empty instead!\n", pc);
+         pc.show(CS_TRY_EMPTY);
          return -1;
       }//if
       if (bag_ptr->isBulletinBoard()) {
-         pc.show("You cannot get things from that!\n");
+         pc.show(CS_NO_BULLETIN_BOARD);
          return -1;
       }
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
@@ -1409,7 +1409,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
                   vict_ptr = cell.next();
             }//
             else {
-               show("Attempt to self extract denied.\n", pc);
+               pc.show(CS_NO_SELF_REMOVAL);
                vict_ptr = cell.next();
             }//else
          }//if detect
@@ -1417,7 +1417,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
             vict_ptr = cell.next();         
       }//while
       if (!tst) {
-         Sprintf(buf, "The %S appears to be empty.\n", bag);
+         Sprintf(buf, cstr(CS_TARG_EMPTY, pc), bag);
          show(buf, pc);
       }//if
       tst = FALSE;
@@ -1434,7 +1434,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
          }//if obj_get_by
       }//if
       else {
-         show("You don't see that here.\n", pc);
+         pc.show(CS_NO_SEE_THAT);
       }//else
    }//if
 
@@ -1451,19 +1451,19 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
          bag_in_inv = FALSE;
       }//if
       if (!bag_ptr) {
-         show("You do not see that container.\n", pc);
+         pc.show(CS_NO_CONTAINER);
          return -1;
       }//if
       else if (!bag_ptr->bag) {
-         show("How are you gonna get something from THAT?\n", pc);
+         pc.show(CS_NOT_CONTAINER);
          return -1;
       }//if
       else if (bag_ptr->isClosed()) {
-         show("You need to open it first.\n", pc);
+         pc.show(CS_NOT_OPEN);
          return -1;
       }//if
       if (bag_ptr->OBJ_FLAGS.get(59)) {
-         show("Try empty instead!\n", pc);
+         pc.show(CS_TRY_EMPTY);
          return -1;
       }//if
 
@@ -1481,7 +1481,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
       }//if
       if (!(vict_ptr = have_obj_named(bag_ptr->inv, i, item, 
                             pc.SEE_BIT, ROOM))) {
-         Sprintf(buf, "The %S doesn't contain the %S.\n", bag, item);
+         Sprintf(buf, cstr(CS_NO_CONTAIN_OBJ, pc), bag, item);
          show(buf, pc);
          return -1;
       }//if
@@ -1495,7 +1495,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
             }//if
          }//if
          else {
-            show("Attempt to self extract denied.\n", pc);
+            pc.show(CS_NO_SELF_REMOVAL);
          }//else
       }//else
    }//else
@@ -1527,7 +1527,7 @@ int say(const char* message, critter& pc, room& rm) {
       object* optr;
       while ((optr = ocll.next())) {
          if (optr->obj_proc && optr->obj_proc->w_eye_owner) {
-            Sprintf(buf, "\n#####%S says, '%S'\n", 
+            Sprintf(buf, cstr(CS_SAY_OBJ_SPRINTF, *(optr->obj_proc->w_eye_owner)),
                     name_of_crit(pc, optr->obj_proc->w_eye_owner->SEE_BIT),
                     &msg);
             buf.setCharAt(7, toupper(buf[7]));
@@ -1595,17 +1595,26 @@ int say(const char* message, critter& pc, room& rm) {
 
 int pemote(const char* message, critter& pc, room& rm, short show_non_detects,
 	   critter* crit = NULL) {
-   return do_emote(message, pc, rm, show_non_detects, EMOTE_POSSESSIVE, crit);
+   return do_emote(message, CS_NONE, pc, rm, show_non_detects,
+                   EMOTE_POSSESSIVE, crit);
 }
 
 int emote(const char* message, critter& pc, room& rm, short show_non_detects,
           critter* crit = NULL) {
-   return do_emote(message, pc, rm, show_non_detects, EMOTE_NON_POSSESSIVE, crit);
+   return do_emote(message, CS_NONE, pc, rm, show_non_detects,
+                   EMOTE_NON_POSSESSIVE, crit);
 }
 
 
-int do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
-              int possessive, critter* crit = NULL) {
+int emote(CSentryE cs_entry, critter& pc, room& rm, short show_non_detects,
+          critter* crit = NULL) {
+   return do_emote("", cs_entry, pc, rm, show_non_detects,
+                   EMOTE_NON_POSSESSIVE, crit);
+}
+
+
+int do_emote(const char* message, CSentryE cs_entry, critter& pc, room& rm, 
+             short show_non_detects, int possessive, critter* crit = NULL) {
    List<critter*> tmp_lst(rm.getCrits());
    Cell<critter*> cell(tmp_lst);
    critter* crit_ptr;
@@ -1632,14 +1641,17 @@ int do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
    object* optr;
    while ((optr = ocll.next())) {
       if (optr->obj_proc && (crit_ptr = optr->obj_proc->w_eye_owner)) {
+         if (cs_entry != CS_NONE) {
+            msg = cstr(cs_entry, *optr->obj_proc->w_eye_owner);
+         }
          if (detect(crit_ptr->SEE_BIT, (pc.VIS_BIT | rm.getVisBit()))) {
             if (possessive == EMOTE_POSSESSIVE) {
-               Sprintf(buf, "#####%S's %S\n", 
+               Sprintf(buf, cstr(CS_PEMOTE_OBJ_SPRINTF, *crit_ptr),
                        name_of_crit(pc, crit_ptr->SEE_BIT), &msg);
                buf.setCharAt(4, toupper(buf[4]));
             }//if possessive
             else {
-               Sprintf(buf, "#####%S %S\n", 
+               Sprintf(buf, cstr(CS_EMOTE_OBJ_SPRINTF, *crit_ptr),
                        name_of_crit(pc, crit_ptr->SEE_BIT), &msg);
                buf.setCharAt(4, toupper(buf[4]));
             }
@@ -1648,10 +1660,10 @@ int do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
          else {
             if (show_non_detects) {
                if (possessive == EMOTE_POSSESSIVE) {
-                  Sprintf(buf, "#####Someone's %S\n", &msg);
+                  Sprintf(buf, cstr(CS_PEMOTE_SOMEONE, *crit_ptr), &msg);
                }
                else {
-                  Sprintf(buf, "#####Someone %S\n", &msg);
+                  Sprintf(buf, cstr(CS_EMOTE_SOMEONE, *crit_ptr), &msg);
                }
                show(buf, *crit_ptr);
             }//if
@@ -1665,14 +1677,18 @@ int do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
          continue;
       }
 
+      if (cs_entry != CS_NONE) {
+         msg = cstr(cs_entry, *crit_ptr);
+      }
+
       if ((crit_ptr != &pc) && (crit_ptr != crit)) { 
          if (detect(crit_ptr->SEE_BIT, (pc.VIS_BIT | rm.getVisBit()))) {
             if (possessive == EMOTE_POSSESSIVE) {
-               Sprintf(buf, "%S's %S\n", 
+               Sprintf(buf, cstr(CS_PEMOTE, *crit_ptr),
                        pc.getName(crit_ptr->SEE_BIT), &msg);
             }
             else {
-               Sprintf(buf, "%S %S\n", 
+               Sprintf(buf, cstr(CS_EMOTE, *crit_ptr),
                        pc.getName(crit_ptr->SEE_BIT), &msg);
             }
             buf.Cap();
@@ -1681,10 +1697,10 @@ int do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
          else {
             if (show_non_detects) {
                if (possessive == EMOTE_POSSESSIVE) {
-                  Sprintf(buf, "Someone's %S\n", &msg);
+                  Sprintf(buf, cstr(CS_PEMOTE_SOMEONE, *crit_ptr), &msg);
                }
                else {
-                  Sprintf(buf, "Someone %S\n", &msg);
+                  Sprintf(buf, cstr(CS_EMOTE_SOMEONE, *crit_ptr), &msg);
                }
                show(buf, *crit_ptr);
             }//if
@@ -1707,15 +1723,15 @@ int yell(const char* message, critter& pc) {
    pc.drunkifyMsg(msg);
    
    if (!pc.IS_YELL) {
-      show("You are deaf to yells.\n", pc);
+      pc.show(CS_DEAF_YELL);
       return -1;
    }//if
    else if (pc.pc && pc.PC_FLAGS.get(1)) {
-      show("You have been gagged.\n", pc);
+      pc.show(CS_YOU_GAGGED);
       return -1;
    }//if
    else if (pc.POS > POS_REST) {
-      show("\nYou roar in your sleep!\n", pc);
+      pc.show(CS_YELL_SLEEP);
       return -1;
    }//if
    else {
@@ -1739,7 +1755,7 @@ int yell(const char* message, critter& pc) {
                   untag = "";
                }
 
-               Sprintf(buf, "%S\n%S yells:  '%S'\n%S", 
+               Sprintf(buf, cstr(CS_YELL, *crit_ptr),
                        &tag, name_of_crit(pc, crit_ptr->SEE_BIT), &msg, &untag);
                buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
                show(buf, *crit_ptr);
@@ -1759,7 +1775,7 @@ int yell(const char* message, critter& pc) {
                untag = "";
             }
 
-            Sprintf(buf, "%SYou yell, '%S'\n%S", &tag, &msg, &untag);
+            Sprintf(buf, cstr(CS_YOU_YELL, pc), &tag, &msg, &untag);
             pc.show(buf);
          }//else
       }//while
@@ -1785,22 +1801,22 @@ int gossip(const char* message, critter& pc) {
    msg = message;
 
    if (msg.Strlen() == 0) {
-      pc.show("Gossip what??\n");
+      pc.show(CS_GOSSIP_WHAT);
       return -1;
    }
 
    pc.drunkifyMsg(msg);
    
    if (pc.isGagged()) {
-      show("You have been gagged.\n", pc);
+      pc.show(CS_YOU_GAGGED);
       return -1;
    }//if
    else if (!(pc.IS_GOSSIP)) {
-      show("You are not on the gossip channel.\n", pc);
+      pc.show(CS_GOSSIP_NOT_ON_CHANNEL);
       return -1;
    }//if
    else if (pc.POS > POS_REST) {
-      show("\nYou mutter in your sleep!\n", pc);
+      pc.show(CS_MUTTER_SLEEP);
       return -1;
    }//if
    else {
@@ -1831,7 +1847,7 @@ int gossip(const char* message, critter& pc) {
                   untag = "";
                }
 
-               Sprintf(buf, "%S\n%S gossips, '%S'\n%S", 
+               Sprintf(buf, cstr(CS_GOSSIP, *crit_ptr),
                        &tag, name_of_crit(pc, crit_ptr->SEE_BIT), &msg, &untag);
                buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
                show(buf, *crit_ptr); 
@@ -1852,7 +1868,7 @@ int gossip(const char* message, critter& pc) {
                untag = "";
             }
             
-            Sprintf(buf, "%SYou gossip, '%S'\n%S", &tag, &msg, &untag);
+            Sprintf(buf, cstr(CS_YOU_GOSSIP, pc), &tag, &msg, &untag);
             pc.show(buf);
          }//else
       }//while
@@ -1875,11 +1891,11 @@ int group_say(const char* message, critter& pc) {
    pc.drunkifyMsg(msg);
    
    if (pc.isGagged()) {
-      show("You have been gagged.\n", pc);
+      pc.show(CS_YOU_GAGGED);
       return -1;
    }//if
    else if (pc.POS > POS_REST) {
-      show("\nYou mutter in your sleep!\n", pc);
+      pc.show(CS_MUTTER_SLEEP);
       return -1;
    }//if
    else {
@@ -1914,7 +1930,7 @@ int group_say(const char* message, critter& pc) {
                untag = "";
             }
             
-            Sprintf(buf, "%S\n%S tells the group, '%S'\n%S", 
+            Sprintf(buf, cstr(CS_GS, *crit_ptr),
                     &tag, name_of_crit(pc, crit_ptr->SEE_BIT),
                     &msg, &untag);
             buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
@@ -1936,12 +1952,11 @@ int group_say(const char* message, critter& pc) {
             untag = "";
          }
          
-         Sprintf(buf, "%SYou tell the group, '%S'\n%S", &tag, &msg,
-                 &untag);
+         Sprintf(buf, cstr(CS_YOU_GS, pc), &tag, &msg, &untag);
          pc.show(buf);
       }//if
       else {
-         pc.show("There is no one in your group to talk to now!\n");
+         pc.show(CS_GS_NOONE_AROUND);
       }
    }//else
    return 0;
@@ -1958,15 +1973,15 @@ int wizchat(const char* message, critter& pc) {
    //pc.drunkifyMsg(msg);
    
    if (pc.isGagged()) {
-      show("You have been gagged.\n", pc);
+      pc.show(CS_YOU_GAGGED);
       return -1;
    }//if
    else if (!(pc.isWizchat())) {
-      show("You are not on the wizchat channel.\n", pc);
+      pc.show(CS_NO_WIZCHAT_CHANNEL);
       return -1;
    }//if
    else if (pc.POS > POS_REST) {
-      show("\nYou mutter in your sleep!\n", pc);
+      pc.show(CS_MUTTER_SLEEP);
       return -1;
    }//if
    else {
@@ -1992,7 +2007,7 @@ int wizchat(const char* message, critter& pc) {
                   untag = "";
                }
 
-               Sprintf(buf, "%S\n%S wizchats, '%S'\n%S", 
+               Sprintf(buf, cstr(CS_WC, *crit_ptr),
                        &tag, name_of_crit(pc, crit_ptr->SEE_BIT), &msg,
                        &untag);
                buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
@@ -2012,7 +2027,7 @@ int wizchat(const char* message, critter& pc) {
                tag = "";
                untag = "";
             }
-            Sprintf(buf, "%SYou wizchat, '%S'\n%S", &tag, &msg, &untag);
+            Sprintf(buf, cstr(CS_YOU_WC, pc), &tag, &msg, &untag);
             pc.show(buf);
          }//else
       }//while
@@ -2034,15 +2049,15 @@ int auction(const char* message, critter& pc) {
    pc.drunkifyMsg(msg);
    
    if (pc.isGagged()) {
-      show("You have been gagged.\n", pc);
+      pc.show(CS_YOU_GAGGED);
       return -1;
    }//if
    else if (!(pc.IS_AUCTION)) {
-      show("You are not on the auction channel.\n", pc);
+      pc.show(CS_NO_AUCTION_CHANNEL);
       return 1;
    }//if
    else if (pc.POS > POS_REST) {
-      show("\nYou mutter in your sleep!\n", pc);
+      pc.show(CS_MUTTER_SLEEP);
       return 1;
    }//if
    else {
@@ -2067,7 +2082,7 @@ int auction(const char* message, critter& pc) {
                   untag = "";
                }
 
-               Sprintf(buf, "%S\n%S auctions, '%S'\n%S",
+               Sprintf(buf, cstr(CS_AUCTION, *crit_ptr),
                        &tag, name_of_crit(pc, crit_ptr->SEE_BIT), &msg, &untag);
                buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
                show(buf, *crit_ptr); 
@@ -2087,7 +2102,7 @@ int auction(const char* message, critter& pc) {
                untag = "";
             }
 
-            Sprintf(buf, "%SYou auction, '%S'\n%S", &tag, &msg, &untag);
+            Sprintf(buf, cstr(CS_YOU_AUCTION, pc), &tag, &msg, &untag);
             pc.show(buf);
          }//else
       }//while
@@ -2118,15 +2133,15 @@ int shout(const char* message, critter& pc) {
    }
 
    if (pc.isGagged()) {
-      show("You have been gagged.\n", pc);
+      pc.show(CS_YOU_GAGGED);
       return -1;
    }//if
    else if (!(pc.IS_SHOUT)) {
-      show("You are not on the shout channel.\n", pc);
+      pc.show(CS_NO_SHOUT_CHANNEL);
       return -1;
    }//if
    else if (pc.POS > POS_REST) {
-      show("\nYou mutter in your sleep!\n", pc);
+      pc.show(CS_MUTTER_SLEEP);
       return -1;
    }//if
    else {
@@ -2150,7 +2165,7 @@ int shout(const char* message, critter& pc) {
                      untag = "";
                   }
 
-                  Sprintf(buf, "%S\n%S shouts, '%S'\n%S",
+                  Sprintf(buf, cstr(CS_SHOUT, *crit_ptr),
                           &tag, name_of_crit(pc, crit_ptr->SEE_BIT), &msg, &untag);
                   buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
                   show(buf, *crit_ptr); 
@@ -2171,7 +2186,7 @@ int shout(const char* message, critter& pc) {
                untag = "";
             }
 
-            Sprintf(buf, "%SYou shout, '%S'\n%S", &tag, &msg, &untag);
+            Sprintf(buf, cstr(CS_YOU_SHOUT, pc), &tag, &msg, &untag);
             pc.show(buf);
          }//else
       }//while
@@ -2229,14 +2244,13 @@ int rest(critter& pc) {
    }
 
    if (pc.POS == POS_REST) {
-      show("You're already resting.\n", pc);
+      pc.show(CS_RESTING_ALREADY);
       return 0;
    }//if
    if (pc.POS < POS_REST) {
       if (IsEmpty(pc.IS_FIGHTING)) {
-         show("You take off your boots and make yourself comfortable.\n", 
-              pc);
-         emote("sits down to take a breather.\n", pc, ROOM, FALSE);
+         pc.show(CS_DO_REST);
+         emote(CS_REST_EMOTE, pc, ROOM, FALSE);
          pc.setPosn(POS_REST); //rest
 
          String cmd = "rest";
@@ -2244,12 +2258,12 @@ int rest(critter& pc) {
 
       }//if
       else {
-         show("You can't rest now, you're fighting!!\n", pc);
+         pc.show(CS_REST_FIGHTING);
          return -1;
       }//else
    }//if
    else {
-      show("You're already way beyond resting!\n", pc);
+      pc.show(CS_BEYOND_RESTING);
       return -1;
    }//else
    return 0;
@@ -2264,25 +2278,25 @@ int sit(critter& pc) {
    }
 
    if (pc.POS == POS_SIT) {
-      show("You're already sitting.\n", pc);
+      pc.show(CS_RESTING_ALREADY);
       return 0;
    }//if
    if ((pc.POS < POS_REST) || (pc.POS == POS_PRONE)) {
       if (IsEmpty(pc.IS_FIGHTING)) {
-         show("You sit on your haunches, resting but wary.\n", pc);
-         emote("sits down.\n", pc, ROOM, FALSE);
+         pc.show(CS_DO_SIT);
+         emote(CS_SIT_EMOTE, pc, ROOM, FALSE);
          pc.setPosn(POS_SIT);
 
          String cmd = "sit";
          ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
       }//if
       else {
-         show("You can't sit now, you're fighting!!\n", pc);
+         pc.show(CS_SIT_FIGHTING);
          return -1;
       }//else
    }//if
    else {
-      show("You're already way beyond sitting!\n", pc);
+      pc.show(CS_BEYOND_SITTING);
       return -1;
    }//else
    return 0;
@@ -2299,26 +2313,26 @@ int stand(critter& pc) {
    }
 
    if (pc.POS == POS_STAND) {
-      show("You're already standing.\n", pc);
+      pc.show(CS_ALREADY_STANDING);
       return 0;
    }//if
 
    if ((pc.POS < POS_SLEEP) || (pc.POS == POS_PRONE)) {
       if (!(pc.CRIT_FLAGS.get(14))) {  //not paralyzed
-         show("You stand up ready to face the world once again.\n", pc);
-         emote("stands up.\n", pc, ROOM, FALSE);
+         pc.show(CS_DO_STAND);
+         emote(CS_STAND_EMOTE, pc, ROOM, FALSE);
          pc.setPosn(POS_STAND); //stand
 
          String cmd = "stand";
          ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
       }//if
       else {
-         show("You can't even FEEL your legs, how can you stand?\n", pc);
+         pc.show(CS_NO_STAND);
          return -1;
       }//else
    }//if
    else {
-      show("Maybe you should try to wake first.\n", pc);
+      pc.show(CS_WAKE_FIRST);
       return -1;
    }//else
    return 0;
@@ -2333,25 +2347,25 @@ int sleep(critter& pc) {
    }
 
    if (pc.POS == POS_SLEEP) {
-      show("You're already sleeping.\n", pc);
+      pc.show(CS_SLEEPING_ALREADY);
       return 0;
    }//if
    else if ((pc.POS <= POS_MED)) {
       if (IsEmpty(pc.IS_FIGHTING)) {
-         show("You lay yourself down to sleep.\n", pc);
-         emote("goes to sleep.\n", pc, ROOM, FALSE);
+         pc.show(CS_DO_SLEEP);
+         emote(CS_EMOTE_SLEEP, pc, ROOM, FALSE);
          pc.setPosn(POS_SLEEP);
 
          String cmd = "sleep";
          ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
       }//if
       else {
-         show("You can't sleep now, you're fighting!!\n", pc);
+         pc.show(CS_CANT_SLEEP);
          return -1;
       }//else
    }//if
    else {
-      show("You're already way beyond sleeping!\n", pc);
+      pc.show(CS_BEYOND_SLEEP);
       return -1;
    }//else
    return 0;
@@ -2366,14 +2380,14 @@ int meditate(critter& pc) {
    }
 
    if (pc.POS == POS_MED) {
-      show("You're already meditating.\n", pc);
+      pc.show(CS_ALREADY_MED);
       return 0;
    }//if
    else if ((pc.POS != POS_SLEEP)) {
       if (IsEmpty(pc.IS_FIGHTING)) {
          if (d(1, 75) < d(1, get_percent_lrnd(MEDITATION_SKILL_NUM, pc))) {
-            show("You relax into a deep trance.\n", pc);
-            emote("goes into a trance.\n", pc, ROOM, FALSE);
+            pc.show(CS_DO_MED);
+            emote(CS_MED_EMOTE, pc, ROOM, FALSE);
             pc.setPosn(POS_MED);
             
             String cmd = "meditate";
@@ -2381,16 +2395,16 @@ int meditate(critter& pc) {
             return 0;
          }//if
          else {
-            show("You just can't seem to concentrate...\n", pc);
+            pc.show(CS_MED_NO_CONCENTRATE);
             pc.PAUSE += 2;
          }//else
       }//if
       else {
-         show("You can't meditate now, you're fighting!!\n", pc);
+         pc.show(CS_MED_FIGHTING);
       }//else
    }//if
    else {
-      show("You must wake first.\n", pc);
+      pc.show(CS_MED_WAKE_FIRST);
    }//else
    return -1;
 }//meditate
@@ -2404,12 +2418,12 @@ int wake(critter& pc) {
    }
 
    if (pc.POS < POS_SLEEP) {
-      show("You're already awake.\n", pc);
+      pc.show(CS_AWAKE_ALREADY);
    }//if
    else if (pc.POS < POS_DEAD) {
       if (!(pc.CRIT_FLAGS.get(15))) { //not perm_sleeped by spell
-         show("You wake, sit up and stretch.\n", pc);
-         emote("wakes and sits.\n", pc, ROOM, FALSE);
+         pc.show(CS_DO_WAKE);
+         emote(CS_WAKE_EMOTE, pc, ROOM, FALSE);
          pc.setPosn(POS_SIT);
 
          String cmd = "wake";
@@ -2417,12 +2431,11 @@ int wake(critter& pc) {
          return 0;
       }//if
       else {
-         show("You can't wake up, don't you just hate that??!!\n", pc);
+         pc.show(CS_CANT_WAKE);
       }//else
    }//if
    else {
-      show("You see a flickering...REDISH??? light coming towards you!\n", 
-           pc);
+      pc.show(CS_WAKE_DEAD);
    }//else
    return -1;
 }//wake
@@ -2456,30 +2469,30 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
    String str_dir(direction);
 
    if (pc.MOV < 1) {
-      show("You can't take one more step!!\n", pc);
+      pc.show(CS_MOVE_NO_MOV);
    }//if
    else if (pc.POS != POS_STAND) {
-      show("You have to be standing in order to travel.\n", pc);
+      pc.show(CS_MOV_STANDING);
    }//if
    else if (!IsEmpty(pc.IS_FIGHTING)) { //if fighting
-      show("You are busy fighting.\n\0", pc);
+      pc.show(CS_MOV_FIGHTING);
    }//if
    else if ((door_ptr = door::findDoor(rm.DOORS, i_th, &str_dir, ~0, rm))) {
       dest = abs(door_ptr->destination);
 
       if (door_ptr->isSecret() && //secret and closed
 	  door_ptr->isClosed()) {
-         show("You can't discern an exit in that direction.\n\0", pc);
+         pc.show(CS_MOV_NO_EXIT);
       }//if
       else if (door_ptr->isClosed()) {
-         Sprintf(buf, "The %S is closed.\n", name_of_door(*door_ptr,
+         Sprintf(buf, cstr(CS_MOV_CLOSED, pc), name_of_door(*door_ptr,
                  pc.SEE_BIT));
          show(buf, pc);
       }//if
       else if (door_ptr->dr_data->door_data_flags.get(14) &&
 	       door_ptr->crit_blocking &&
 	       (door_ptr->crit_blocking != &pc)) {
-	Sprintf(buf, "The %S is blocked by %S.\n", 
+	Sprintf(buf, cstr(CS_MOV_BLOCKED, pc),
 		name_of_door(*door_ptr, pc.SEE_BIT),
 		name_of_crit(*(door_ptr->crit_blocking), pc.SEE_BIT));
 	show(buf, pc);
@@ -2501,10 +2514,11 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 			 (ptr2->FLAG1.get(4) && (ptr2->RACE == pc.RACE))) {
 		       break;  //its ok for them to pass
 		     }//if
-		     Sprintf(buf, "%S blocks your way.\n", 
+		     Sprintf(buf, cstr(CS_BLOCKS_WAY, pc),
 			     name_of_crit(*ptr2, pc.SEE_BIT));
 		     buf.Cap();
 		     show(buf, pc);
+                     //TODO:  Translation problem.
 		     Sprintf(buf, "blocks %S's way.\n", name_of_crit(pc, ~0));
 		     emote(buf, *ptr2, rm, TRUE, &pc);
 		     return -1;
@@ -2534,8 +2548,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 
             if (token) {
                if (door_ptr->consumesKey()) {
-                  Sprintf(buf, "As give up %S as you pass through.\n",
-                          token->getLongName());
+                  Sprintf(buf, cstr(CS_CONSUMES_KEY, pc), token->getLongName());
                   if (posn > 0) {
                      pc.EQ[posn] = NULL;
                      remove_eq_effects(*token, pc, FALSE, FALSE, posn);
@@ -2552,7 +2565,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
                }//if
             }//if
 	    else {
-               Sprintf(buf, "You must have %S in order to pass.\n",
+               Sprintf(buf, cstr(CS_MOV_NEED_KEY, pc),
                        obj_list[bound(1, NUMBER_OF_ITEMS,
                                       door_ptr->getTokenNum())].getLongName());
                pc.show(buf);
@@ -2573,6 +2586,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 	 }//if
          
 	 if (!sneak_worked) {
+            //TODO:  Tranlation problem.
             Sprintf(buf, "leaves %s.\n", direction);
             emote(buf, pc, rm, FALSE);
 	 }//if
@@ -2618,7 +2632,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
          }//if
          else {
             if (!sneak_worked) {
-               emote("has arrived.", pc, room_list[dest], FALSE);
+               emote(CS_HAS_ARRIVED, pc, room_list[dest], FALSE);
             }//if
          }//else
 
@@ -2626,7 +2640,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
             pc.FOLLOWERS.head(cell);
             while ((ptr2 = cell.next())) {
                if (room_list[old_room_num].haveCritter(ptr2)) {
-                  Sprintf(buf, "You follow %S %s.",
+                  Sprintf(buf, cstr(CS_YOU_FOLLOW, *ptr2),
                           pc.getName(ptr2->SEE_BIT), direction);
                   ptr2->show(buf);
                   int is_follower_dead;
@@ -2640,7 +2654,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
       }//else
    }//if
    else {
-      show("You can't discern an exit in that direction.\n\0", pc);
+      pc.show(CS_NO_FIND_EXIT);
    }//else
    return -1;
 }//move
@@ -2651,7 +2665,7 @@ int don_obj(object& obj, critter& pc) {
 
    mudlog.log(DBG, "In don_obj\n");
    if (obj.OBJ_FLAGS.get(21)) {
-      Sprintf(buf, "You can't wear %S.\n", &(obj.short_desc));
+      Sprintf(buf, cstr(CS_NO_WEAR, pc), &(obj.short_desc));
       mudlog.log(DBG, "don_obj failed, obj failed flag 21.\n");
       show(buf, pc);
    }//if
@@ -2666,13 +2680,11 @@ int don_obj(object& obj, critter& pc) {
                }//if
             }//if
             else {
-               Sprintf(buf, 
-                    "   %S:%P25You are already using something there.\n",
-                    name_of_obj(obj, pc.SEE_BIT));
+               Sprintf(buf, cstr(CS_ALREADY_WEARING, pc),
+                       name_of_obj(obj, pc.SEE_BIT));
                buf.Cap();
                show(buf, pc);
-               mudlog.log(DBG, 
-                          "don_obj failed, already using something there.\n");
+               mudlog.log(DBG, "don_obj failed, already using something there.\n");
             }//else
          }//if
       }//for
@@ -2694,65 +2706,65 @@ int out_eq(critter& targ, critter& looker) {
             //   wmsg = "     Worn on ears:";
             //   break;
             case 1:
-               wmsg = "     Worn on head:";
+               wmsg = cstr(CS_WOH, looker);
                break;
             case 2: case 3:
-               wmsg = "     Worn around neck:";
+               wmsg = cstr(CS_WON, looker);
                break;
             case 4:
-               wmsg = "     Worn around body:";
+               wmsg = cstr(CS_WAB, looker);
                break;
             case 5:
-               wmsg = "     Worn on arms:";
+               wmsg = cstr(CS_WOA, looker);
                break;
             case 6: case 7:
-               wmsg = "     Worn on wrist:";
+               wmsg = cstr(CS_WOW, looker);
                break;
             case 8:
-               wmsg = "     Worn on hands:";
+               wmsg = cstr(CS_WO_HANDS, looker);
                break;
             case 9:
-               wmsg = "     Wielded:";
+               wmsg = cstr(CS_WIELDED, looker);
                break;
             case 10:
-               wmsg = "     Held:";
+               wmsg = cstr(CS_HELD, looker);
                break;
             case 11:
-               wmsg = "     Used as light:";
+               wmsg = cstr(CS_LIGHT, looker);
                break;
             case 12:
-               wmsg = "     Worn on body:";
+               wmsg = cstr(CS_WOB, looker);
                break;
             case 13:
-               wmsg = "     Worn around waist:";
+               wmsg = cstr(CS_WAIST, looker);
                break;
             case 14:
-               wmsg = "     Worn on legs:";
+               wmsg = cstr(CS_WOL, looker);
                break;
             case 15:
-               wmsg = "     Worn on feet:";
+               wmsg = cstr(CS_WOF, looker);
                break;
             case 16: case 17:
-               wmsg = "     Worn on finger:";
+               wmsg = cstr(CS_WO_FINGER, looker);
                break;
             case 18:
-               wmsg = "     Used as shield:";
+               wmsg = cstr(CS_WO_SHIELD, looker);
                break;
             default:
                if (mudlog.ofLevel(ERR)) {
                   mudlog << "ERROR:  Default called in out_eq, i:  "
                          << i << "  MaxEQ:  " << MAX_EQ << endl;
                }
-               wmsg = "Used somewhere undefined:\t";
+               wmsg = cstr(CS_WO_UNDEFINED, looker);
                break;
          }//switch
 
          if (looker.shouldShowVnums()) {
-            Sprintf(buf, "%S%P30 [%i]%P37 %S.\n", &wmsg, targ.EQ[i]->getIdNum(),
+            Sprintf(buf, cstr(CS_WO_RSLT_VNUM, looker), &wmsg, targ.EQ[i]->getIdNum(),
                     long_name_of_obj(*(targ.EQ[i]), looker.SEE_BIT));
          }
          else {
-            Sprintf(buf, "%S%P30 %S.\n", &wmsg,
+            Sprintf(buf, cstr(CS_WO_RSLT, looker), &wmsg,
                     long_name_of_obj(*(targ.EQ[i]), looker.SEE_BIT));
          }
 
@@ -2770,7 +2782,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
 
    if (obj.OBJ_LEVEL > pc.LEVEL) {
       if (do_msg) {
-         Sprintf(buf, "You are not experienced enough to use %S.\n",
+         Sprintf(buf, cstr(CS_NOT_EXPERIENCED, pc),
                  long_name_of_obj(obj, pc.SEE_BIT));
          show(buf, pc);
       }//if
@@ -2790,7 +2802,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
 
    if ((obj.OBJ_CUR_WEIGHT > pc.STR) && ((posn == 9) || (posn == 10))) {
       if (do_msg) {
-	 Sprintf(buf, "%S is just too heavy for you!\n", 
+	 Sprintf(buf, cstr(CS_TOO_HEAVY, pc),
 		&(obj.short_desc));
          buf.Cap();
          show(buf, pc);
@@ -2801,7 +2813,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
 
    if (!obj.OBJ_FLAGS.get(21 + posn) || posn == 0) {
       if (do_msg) {
-	 show("You can't wear it there.\n", pc);
+	 pc.show(CS_CANT_WEAR_THERE);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, wrong posn.\n");
       return FALSE;
@@ -2813,7 +2825,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
 
    if ((obj.OBJ_FLAGS.get(1)) && (pc.ALIGN < -350)) {
       if (do_msg) {
-  	 Sprintf(buf, "You're too evil for your %S!\n", single_obj_name(obj, 
+  	 Sprintf(buf, cstr(CS_TOO_EVIL, pc), single_obj_name(obj, 
               pc.SEE_BIT));
          show(buf, pc);
       }//if
@@ -2823,7 +2835,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(2)) && ((pc.ALIGN >= -350) && (pc.ALIGN <= 
                                    350))) {
       if (do_msg) {
-         Sprintf(buf, "You're too neutral for your %S!\n", 
+         Sprintf(buf, cstr(CS_TOO_NEUTRAL, pc),
 	 single_obj_name(obj, pc.SEE_BIT));
          show(buf, pc);
       }//if
@@ -2832,8 +2844,8 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(3)) && (pc.ALIGN > 350)) {
       if (do_msg) {
-         Sprintf(buf, "You're too pleasant for your %S!\n",
-   	    single_obj_name(obj, pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_TOO_GOOD, pc),
+                 single_obj_name(obj, pc.SEE_BIT));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, pc to good.\n");
@@ -2841,7 +2853,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(7)) && (!pc.pc || !pc.pc->imm_data)) { 
       if (do_msg) {
-         Sprintf(buf, "%S belongs to an immortal!\n", 
+         Sprintf(buf, cstr(CS_IMM_ONLY, pc),
 		&(obj.short_desc));
          buf.Cap();
          show(buf, pc);
@@ -2852,7 +2864,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(8)) && (!pc.pc || !pc.pc->imm_data ||
 		!(pc.IMM_LEVEL > 5))) {
       if (do_msg) {
-         Sprintf(buf, "%S belongs to a demi-god!\n", 
+         Sprintf(buf, cstr(CS_DEMI_ONLY, pc),
 		&(obj.short_desc));
          buf.Cap();
          show(buf, pc);
@@ -2863,8 +2875,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(9)) && (!pc.pc || !pc.pc->imm_data ||
 		pc.IMM_LEVEL < 9)) {
       if (do_msg)  {
-         Sprintf(buf, "%S belongs to a god!\n", 
-		&(obj.short_desc));
+         Sprintf(buf, cstr(CS_GOD_ONLY, pc), &(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2873,7 +2884,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(11)) && (pc.CLASS == 1)) { //warrior
       if (do_msg) {
-         Sprintf(buf, "Silly warrior, %S is not for you!\n", 
+         Sprintf(buf, cstr(CS_NO_WARRIOR, pc),
               &(obj.short_desc));
          show(buf, pc);
       }//if
@@ -2882,8 +2893,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(12)) && (pc.CLASS == 2)) {  // sage
       if (do_msg) {
-         Sprintf(buf, "Silly sage, %S is not for you!\n", 
-              &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_SAGE, pc), &(obj.short_desc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !sage.\n");
@@ -2891,8 +2901,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(13)) && (pc.CLASS == 3)) { // wizard
       if (do_msg) {
-         Sprintf(buf, "Silly wizard, %S is not for you!\n", 
-              &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_WIZARD, pc), &(obj.short_desc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !wizard.\n");
@@ -2900,7 +2909,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(14)) && (pc.CLASS == 4)){ //ranger
       if (do_msg) {
-         Sprintf(buf, "Silly ranger, %S is not for you!\n", 
+         Sprintf(buf, cstr(CS_NO_RANGER, pc),
               &(obj.short_desc));
          show(buf, pc);
       }//if
@@ -2909,8 +2918,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(15)) && (pc.CLASS == 5)) {//thief
       if (do_msg) {
-         Sprintf(buf, "Silly thief, %S is not for you!\n", 
-              &(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_THIEF, pc), &(obj.short_desc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !thief.\n");
@@ -2918,8 +2926,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(16)) && (pc.CLASS == 6)){ //alchemist
       if (do_msg) {
-         Sprintf(buf, "Alchemists can't use %S!\n", 
-		&(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_ALCHEMISTS, pc), &(obj.short_desc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !alchemist.\n");
@@ -2927,7 +2934,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(17)) && (pc.CLASS == 7)){ //cleric
       if (do_msg) {
-         Sprintf(buf, "Silly cleric, %S is not for you!\n", 
+         Sprintf(buf, cstr(CS_NO_CLERIC, pc),
               &(obj.short_desc));
          show(buf, pc);
       }//if
@@ -2936,7 +2943,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(18)) && (pc.CLASS == 8)){ //bard
       if (do_msg) {
-         Sprintf(buf, "Silly bard, %S is not for you!\n", 
+         Sprintf(buf, cstr(CS_NO_BARD, pc),
               &(obj.short_desc));
          show(buf, pc);
       }//if
@@ -2945,8 +2952,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(19)) && (pc.isNPC())) {
       if (do_msg) {
-         Sprintf(buf, "%S is !MOB equipment!\n", 
-		&(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_MOB, pc), &(obj.short_desc));
          buf.Cap();
          show(buf, pc); //no-one should ever see this i believe
       }//if
@@ -2955,8 +2961,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(20)) && (pc.isPc())) { //!pc
       if (do_msg) {
-         Sprintf(buf, "%S is for mobs only!\n", 
-		&(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_PC, pc), &(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2977,7 +2982,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
 
    if (obj.OBJ_CUR_WEIGHT > (pc.CRIT_MAX_WT_CARRY - pc.CRIT_WT_CARRIED)) {
       if (do_msg) {
-         Sprintf(buf, "%S:\tYou can't carry that much weight.\n", 
+         Sprintf(buf, cstr(CS_TOO_MUCH_WT, pc),
               &(obj.short_desc));
          buf.Cap();
          show(buf, pc);
@@ -2986,8 +2991,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(7)) && (!pc.pc || !pc.pc->imm_data)) { 
       if (do_msg) {
-         Sprintf(buf, "%S belongs to an immortal!\n", 
-		&(obj.short_desc));
+         Sprintf(buf, cstr(CS_IMM_ONLY, pc), &(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2996,8 +3000,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    if ((obj.OBJ_FLAGS.get(8)) && (!pc.pc || !pc.pc->imm_data ||
 		!(pc.IMM_LEVEL > 5))) {
       if (do_msg) {
-         Sprintf(buf, "%S belongs to a demi-god!\n", 
-		&(obj.short_desc));
+         Sprintf(buf, cstr(CS_DEMI_ONLY, pc), &(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -3006,8 +3009,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    if ((obj.OBJ_FLAGS.get(9)) && (!pc.pc || !pc.pc->imm_data ||
 		pc.IMM_LEVEL < 9)) {
       if (do_msg)  {
-         Sprintf(buf, "%S belongs to a god!\n", 
-		&(obj.short_desc));
+         Sprintf(buf, cstr(CS_GOD_ONLY, pc), &(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -3015,8 +3017,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(19)) && (pc.isNPC())) {
       if (do_msg) {
-         Sprintf(buf, "%S is !MOB equipment!\n", 
-		&(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_MOB, pc), &(obj.short_desc));
          buf.Cap();
          show(buf, pc); //no-one should ever see this i believe
       }//if
@@ -3024,8 +3025,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    }//if
    if ((obj.OBJ_FLAGS.get(20)) && (pc.isPc())) { //!pc
       if (do_msg) {
-         Sprintf(buf, "%S is for mobs only!\n", 
-		&(obj.short_desc));
+         Sprintf(buf, cstr(CS_NO_PC, pc), &(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -3034,7 +3034,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    
    if (obj.isBulletinBoard() && (!(pc.isImmort() && (pc.IMM_LEVEL > 8)))) {
       if (do_msg) {
-         pc.show("You shouldn't be getting buletin boards, try opurge.\n");
+         pc.show(CS_NO_GET_BULLETIN);
       }
       return FALSE;
    }
@@ -3049,40 +3049,38 @@ int source_give_to(critter& pc, object& obj, critter& targ) {
 
    if (obj.OBJ_CUR_WEIGHT > (targ.CRIT_MAX_WT_CARRY - 
                              targ.CRIT_WT_CARRIED)) {
-      Sprintf(buf, "%S:\t%S can't carry that much weight.\n", 
+      Sprintf(buf, cstr(CS_SGT_TOO_MUCH_WT, pc),
               &(obj.short_desc), name_of_crit(targ, pc.SEE_BIT)); 
       buf.Cap();
       show(buf, pc);
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(7)) && (targ.LEVEL < 31)) { //!mort
-      Sprintf(buf, "%S is not for mortals!\n", &(obj.short_desc));
+      Sprintf(buf, cstr(CS_SGT_NO_MORTAL, pc), &(obj.short_desc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(8)) && ((targ.LEVEL <= 35) && (targ.LEVEL >= 31))){
-      Sprintf(buf, "%S is not for demi-gods!\n", 
-		&(obj.short_desc));
+      Sprintf(buf, cstr(CS_SGT_NO_DEMI, pc), &(obj.short_desc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(9)) && ((targ.LEVEL > 35) && (targ.LEVEL < 40))){
-      Sprintf(buf, "%S is not for gods!\n", &(obj.short_desc));
+      Sprintf(buf, cstr(CS_SGT_NO_GOD, pc), &(obj.short_desc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(19)) && (targ.isNPC())) {
-      Sprintf(buf, "%S is for players only!\n", 
-		&(obj.short_desc));
+      Sprintf(buf, cstr(CS_SGT_PC_ONLY, pc), &(obj.short_desc));
       buf.Cap();
       show(buf, pc); 
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(20)) && (targ.isPc())) { //!pc
-      Sprintf(buf, "%S is not for players!\n", &(obj.short_desc));
+      Sprintf(buf, cstr(CS_SGT_MOB_ONLY, pc), &(obj.short_desc));
       buf.Cap(); 
       show(buf, pc); //few should ever see this!!
       return FALSE;
@@ -3098,8 +3096,7 @@ int obj_remove_by(object& obj, critter& pc) {
    //mudlog.log(DBG, "In obj_remove_by.\n");
 
    if (obj.OBJ_FLAGS.get(6)) {
-      Sprintf(buf, "The %S seems to have grown very attached to you!!\n", 
-              &(obj.short_desc));
+      Sprintf(buf, cstr(CS_NO_REMOVE, pc), &(obj.short_desc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
@@ -3115,8 +3112,7 @@ int obj_drop_by(object& obj, critter& pc) {
    //mudlog.log(DBG, "In obj_drop_by.\n");
 
    if (obj.OBJ_FLAGS.get(5)) {
-      Sprintf(buf, "Yeech, you can't let go of %S!!\n", 
-              &(obj.short_desc));
+      Sprintf(buf, cstr(CS_NO_DROP, pc), &(obj.short_desc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
@@ -3150,7 +3146,7 @@ int gain_eq_effects(object& obj, object& bag, critter& pc,
    if (obj.OBJ_FLAGS.get(55)) { //coins
       pc.GOLD += obj.cur_stats[1];  //cost == # of coins
       if (do_msg) {
-         Sprintf(buf, "There were %i coins.\n", obj.cur_stats[1]);
+         Sprintf(buf, cstr(CS_THERE_WERE_COINS, pc), obj.cur_stats[1]);
          show(buf, pc);
       }//if
       pc.loseInv(&obj); 
@@ -3164,14 +3160,14 @@ int gain_eq_effects(object& obj, object& bag, critter& pc,
 
    else if (bag_in_inv == -1) {
       if (do_msg) {
-         Sprintf(buf, "You get %S.\n", long_name_of_obj(obj, pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_DO_GET, pc), long_name_of_obj(obj, pc.SEE_BIT));
          show(buf, pc);
    
          while ((crit_ptr = cell.next())) {
             if (crit_ptr != &pc) {
-               Sprintf(buf, "%S gets %S.\n", 
-                    name_of_crit(pc, crit_ptr->SEE_BIT), 
-                    long_name_of_obj(obj, crit_ptr->SEE_BIT));
+               Sprintf(buf, cstr(CS_DO_GET_O, *crit_ptr),
+                       name_of_crit(pc, crit_ptr->SEE_BIT), 
+                       long_name_of_obj(obj, crit_ptr->SEE_BIT));
                buf.Cap();
                show(buf, *crit_ptr);
             }//if
@@ -3181,18 +3177,18 @@ int gain_eq_effects(object& obj, object& bag, critter& pc,
 
    else if (bag_in_inv == 0) {
       if (do_msg) {
-         Sprintf(buf, "You get %S from %S.\n", 
-              long_name_of_obj(obj, pc.SEE_BIT),
-              long_name_of_obj(bag, pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_DO_GET_FROM, pc),
+                 long_name_of_obj(obj, pc.SEE_BIT),
+                 long_name_of_obj(bag, pc.SEE_BIT));
          show(buf, pc);
 
          tmp_lst.head(cell);
          while ((crit_ptr = cell.next())) {
             if (crit_ptr != &pc) {
-               Sprintf(buf, "%S gets %S from %s %S.\n", 
-                 name_of_crit(pc, crit_ptr->SEE_BIT), 
-                 long_name_of_obj(obj, crit_ptr->SEE_BIT), 
-                 get_his_her(pc), single_obj_name(bag, crit_ptr->SEE_BIT));
+               Sprintf(buf, cstr(CS_DO_GET_FROM_O, *crit_ptr),
+                       name_of_crit(pc, crit_ptr->SEE_BIT), 
+                       long_name_of_obj(obj, crit_ptr->SEE_BIT), 
+                       get_his_her(pc), single_obj_name(bag, crit_ptr->SEE_BIT));
                buf.Cap();
                show(buf, *crit_ptr);
             }//if
@@ -3201,18 +3197,18 @@ int gain_eq_effects(object& obj, object& bag, critter& pc,
    }//if
    else if (bag_in_inv == TRUE) {
       if (do_msg) {
-         Sprintf(buf, "You get %S from your %S.\n",
-              long_name_of_obj(obj, pc.SEE_BIT), 
-              single_obj_name(bag, pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_DO_GET_YOUR, pc),
+                 long_name_of_obj(obj, pc.SEE_BIT), 
+                 single_obj_name(bag, pc.SEE_BIT));
          show(buf, pc);
 
          tmp_lst.head(cell);
          while ((crit_ptr = cell.next())) {
             if (crit_ptr != &pc) {
-               Sprintf(buf, "%S gets %S from %S.\n", 
-                 name_of_crit(pc, crit_ptr->SEE_BIT), 
-                 long_name_of_obj(obj, crit_ptr->SEE_BIT), 
-                 long_name_of_obj(bag, crit_ptr->SEE_BIT));
+               Sprintf(buf, cstr(CS_DO_GET_YOUR_O, *crit_ptr),
+                       name_of_crit(pc, crit_ptr->SEE_BIT), 
+                       long_name_of_obj(obj, crit_ptr->SEE_BIT), 
+                       long_name_of_obj(bag, crit_ptr->SEE_BIT));
                buf.Cap();
                show(buf, *crit_ptr);
             }//if
@@ -3330,6 +3326,7 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
       }//for
    }//if
 
+   //TODO:  Translation problem.
    if (obj.OBJ_FLAGS.get(60)) { //liquid
       Sprintf(buf, "drinks %S.\n", &(obj.short_desc));
    }//if
@@ -3356,27 +3353,27 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
             if (pc.THIRST < 0)
                pc.THIRST = 0;
             if ((st_ptr->bonus_duration > 0) && (do_msg)) 
-               show("You feel less thirsty.\n", pc);
+               pc.show(CS_LESS_THIRSTY);
             else if (do_msg)
-               show("You feel even more thirsty.\n", pc);
+               pc.show(CS_MORE_THIRSTY);
             break;
          case HUNGER_ID: //hunger
             pc.HUNGER += (int)((float)(st_ptr->bonus_duration) * 2.5);
             if (pc.HUNGER < 0)
                pc.HUNGER = 0;
             if ((st_ptr->bonus_duration > 0) && (do_msg))
-               show("You feel less hungry.\n", pc);
+               pc.show(CS_LESS_HUNGRY);
             else if (do_msg)
-               show("You feel even hungrier.\n", pc);
+               pc.show(CS_MORE_HUNGRY);
             break;
          case DRUGGED_ID: //drugged
             pc.DRUGGED += (int)((float)(st_ptr->bonus_duration) * 2.5);
             if (pc.DRUGGED < 0)
                pc.DRUGGED = 0;
             if ((st_ptr->bonus_duration > 0) && (do_msg)) 
-               show("You feel a little higher.\n", pc);
+               pc.show(CS_MORE_DRUGGED);
             else if (do_msg)
-               show("Some feeling returns to your nose!.\n", pc);
+               pc.show(CS_LESS_DRUGGED);
             break;
 
          default:
@@ -3477,14 +3474,14 @@ int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk = FALS
    }//if
 
    if (do_msg) {
-      Sprintf(buf, "You drop %S.\n", long_name_of_obj(obj, pc.SEE_BIT));
+      Sprintf(buf, cstr(CS_YOU_DROP, pc), long_name_of_obj(obj, pc.SEE_BIT));
       show(buf, pc);
 
       while ((crit_ptr = cell.next())) {
          if (crit_ptr != &pc) {
-            Sprintf(buf, "%S drops %S.\n", 
-                 name_of_crit(pc, crit_ptr->SEE_BIT), 
-                 long_name_of_obj(obj, crit_ptr->SEE_BIT));
+            Sprintf(buf, cstr(CS_DROPS, *crit_ptr),
+                    name_of_crit(pc, crit_ptr->SEE_BIT), 
+                    long_name_of_obj(obj, crit_ptr->SEE_BIT));
             buf.Cap();
             show(buf, *crit_ptr);
          }//if
@@ -3538,14 +3535,14 @@ int donate_eq_effects(object& obj, critter& pc, short do_msg) {
    }//if
 
    if (do_msg) {
-      Sprintf(buf, "You donate %S.\n", long_name_of_obj(obj, pc.SEE_BIT));
+      Sprintf(buf, cstr(CS_YOU_DONATE, pc), long_name_of_obj(obj, pc.SEE_BIT));
       show(buf, pc);
 
       while ((crit_ptr = cell.next())) {
          if (crit_ptr != &pc) {
-            Sprintf(buf, "%S donates %S.\n", 
-                 name_of_crit(pc, crit_ptr->SEE_BIT), 
-                 long_name_of_obj(obj, crit_ptr->SEE_BIT));
+            Sprintf(buf, cstr(CS_DONATES, *crit_ptr),
+                    name_of_crit(pc, crit_ptr->SEE_BIT), 
+                    long_name_of_obj(obj, crit_ptr->SEE_BIT));
             buf.Cap();
             show(buf, *crit_ptr);
          }//if
@@ -3554,10 +3551,10 @@ int donate_eq_effects(object& obj, critter& pc, short do_msg) {
       List<critter*> lst2(room_list[DONATE_ROOM].getCrits());
       lst2.head(cell);
       while ((crit_ptr = cell.next())) {
-            Sprintf(buf, "%S appears in the room with a popping sound.\n", 
+         Sprintf(buf, cstr(CS_OBJ_APPEARS, *crit_ptr),
                  long_name_of_obj(obj, crit_ptr->SEE_BIT));
-            buf.Cap();
-            show(buf, *crit_ptr);
+         buf.Cap();
+         show(buf, *crit_ptr);
       }//while
    }//if
 
@@ -3603,17 +3600,17 @@ int eq_put_by(object& vict, object& bag, critter& pc, short bag_in_inv) {
    }//if
 
    if (bag.OBJ_FLAGS.get(59)) {
-      show("Try fill instead!\n", pc);
+      pc.show(CS_TRY_FILL);
       return FALSE;
    }//if
 
    if (bag.isBulletinBoard()) {
-      show("Try post instead.\n", pc);
+      pc.show(CS_TRY_POST);
       return FALSE;
    }
 
    if ((bag.OBJ_CUR_WEIGHT + vict.OBJ_CUR_WEIGHT) > bag.OBJ_MAX_WEIGHT) {
-      Sprintf(buf, "The %S can't hold the %S.\n", 
+      Sprintf(buf, cstr(CS_CANT_HOLD_WT, pc),
               name_of_obj(bag, pc.SEE_BIT), name_of_obj(vict, pc.SEE_BIT));
       show(buf, pc);
       return FALSE;
@@ -3622,24 +3619,24 @@ int eq_put_by(object& vict, object& bag, critter& pc, short bag_in_inv) {
       bag.gainInv(&vict);  //add it to the bag...
 
       if (!bag_in_inv) {
-         Sprintf(buf, "You put %S in %S.\n", 
+         Sprintf(buf, cstr(CS_YOU_PUT, pc),
                  long_name_of_obj(vict, pc.SEE_BIT), 
                  long_name_of_obj(bag, pc.SEE_BIT));
          show(buf, pc);
 
          while ((crit_ptr = cell.next())) {
             if (crit_ptr != &pc) {
-               Sprintf(buf, "%S puts %S in %S.\n", 
-                 name_of_crit(pc, crit_ptr->SEE_BIT), 
-                 long_name_of_obj(vict, crit_ptr->SEE_BIT),
-                 long_name_of_obj(bag, crit_ptr->SEE_BIT));
+               Sprintf(buf, cstr(CS_PUTS, *crit_ptr),
+                       name_of_crit(pc, crit_ptr->SEE_BIT), 
+                       long_name_of_obj(vict, crit_ptr->SEE_BIT),
+                       long_name_of_obj(bag, crit_ptr->SEE_BIT));
                buf.Cap();
                show(buf, *crit_ptr);
             }//if
          }//while
       }//if
       else {
-         Sprintf(buf, "You put %S in %S.\n", 
+         Sprintf(buf, cstr(CS_YOU_PUT, pc),
                  long_name_of_obj(vict, pc.SEE_BIT),
                  long_name_of_obj(bag, pc.SEE_BIT));
          show(buf, pc);
@@ -3647,7 +3644,7 @@ int eq_put_by(object& vict, object& bag, critter& pc, short bag_in_inv) {
          tmp_lst.head(cell);
          while ((crit_ptr = cell.next())) {
             if (crit_ptr != &pc) {
-               Sprintf(buf, "%S puts %S in %s %S.\n", 
+               Sprintf(buf, cstr(CS_PUTS_IN_OWN, *crit_ptr),
                        name_of_crit(pc, crit_ptr->SEE_BIT), 
                        long_name_of_obj(vict, crit_ptr->SEE_BIT),
                        get_his_her(pc),

@@ -492,7 +492,6 @@ const BitfieldNames STAT_AFFECT_NAMES(sizeof(sa_names)/sizeof(const char*),
 const char* DARK_MSG = "It is too dark to see.\n";
 const char* SLEEP_MSG = "Dream on, my friend.\n";
 const char* BLIND_MSG = "You are blind as a bat, and your ears are small.\n";
-const char* NO_CAN_SEE_MSG = "You do not see that here.\n";
 const char* NOT_IN_HAVEN_MSG =
             "This is much to nice a room to fill with gore!!\n";
 const char* NOT_IN_NOMAG_RM_MSG = 

@@ -249,6 +249,9 @@ public:
 
 };//ObjArray
 
+#ifndef __INCLUDE_PTR_ARRAY_CC__
+#define __INCLUDE_PTR_ARRAY_CC__
 #include "PtrArray.cc"
+#endif
 
 #endif
