@@ -115,16 +115,25 @@ int do_rescue(critter& vict, critter& pc) {
 }//do_rescue
 
 
-int shield(int i_th, const String* vict, critter& pc) {
+int shield(int i_th, const String* vict, critter& pc, int was_ordered) {
    int skill_num = SHIELD_SKILL_NUM;
    critter* ptr;
 
+   if (was_ordered) {
+      pc.show("You can't be ordered to shield someone.\n");
+      return -1;
+   }
    if (!ok_to_do_action(NULL, "mSKFP", skill_num, pc, pc.getCurRoom(),
                         NULL, TRUE)) {
       return -1;
    }
 
-   ptr = ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT); 
+   if (strcasecmp(*vict, "self") == 0) {
+      ptr = &pc;
+   }
+   else {
+      ptr = ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT); 
+   }
 
    if (!ptr) {
      show("Shield who??\n", pc);
@@ -146,6 +155,17 @@ int do_shield(critter& vict, critter& pc) {
       return -1;
    }//if
    
+   if (&vict == &pc) {
+      if (pc.temp_crit && pc.SHIELDING) {
+         pc.doUnShield();
+         pc.show("You shield only yourself now!\n");
+      }
+      else {
+         pc.show("You will continue to shield only yourself.\n");
+      }
+      return 0;
+   }
+
    if (pc.temp_crit && (pc.SHIELDING || pc.SHIELDED_BY)) {
       show("You are already shielding or shielded.\n", pc);
       return -1;
@@ -179,9 +199,10 @@ int do_shield(critter& vict, critter& pc) {
    Sprintf(buf, "starts shielding %S.", name_of_crit(vict, ~0));
    emote(buf, pc, ROOM, TRUE, &vict);
    Sprintf(buf, 
-           "%S starts shielding you.  You feel protected by %s strong arms!!\n", 
+           "%S starts shielding you.  You feel protected by %s arts!!\n", 
            name_of_crit(pc, vict.SEE_BIT), get_his_her(pc));
-   show(buf, pc);
+   buf.Cap();
+   show(buf, vict);
    return 0;
 }//do_shield
 

@@ -192,6 +192,7 @@ void lose_fly(critter& pc, short do_msg = FALSE) {
     show("Good thing gravity doesn't work all that well yet!\n", pc);
 }//lose_fly
 
+
 void show_stat_affects(object& obj, critter& pc) {
    Cell<stat_spell_cell*> cll(obj.stat_affects);
    stat_spell_cell* ptr;
@@ -1172,7 +1173,8 @@ int mob_can_enter(critter& pc, room& rm, short do_msg) {
 
 
 
-void out_stat_spell_list(const List<stat_spell_cell*>& lst, critter& pc) {
+void out_stat_list(const List<stat_spell_cell*>& lst, critter& pc,
+                   const BitfieldNames& names) {
    Cell<stat_spell_cell*> cll(lst);
    stat_spell_cell* ptr;
    String buf(100);
@@ -1184,12 +1186,35 @@ void out_stat_spell_list(const List<stat_spell_cell*>& lst, critter& pc) {
    }
 
    while ((ptr = cll.next())) {
-      Sprintf(buf, "(%i %i) ", ptr->stat_spell, ptr->bonus_duration);
+      Sprintf(buf, "(%s %i) ", names.getName(ptr->stat_spell),
+              ptr->bonus_duration);
       buf2.Append(buf);
    }//while
    buf2.Append("\n");
    pc.show(buf2);
-}//out_stat_spell
+}//out_stat_list
+
+
+void out_spell_list(const List<stat_spell_cell*>& lst, critter& pc) {
+   Cell<stat_spell_cell*> cll(lst);
+   stat_spell_cell* ptr;
+   String buf(100);
+   String buf2(100);
+
+   if (lst.isEmpty()) {
+      pc.show("NONE\n");
+      return;
+   }
+
+   while ((ptr = cll.next())) {
+      Sprintf(buf, "(%s %i) ",
+              SSCollection::instance().getNameForNum(ptr->stat_spell),
+              ptr->bonus_duration);
+      buf2.Append(buf);
+   }//while
+   buf2.Append("\n");
+   pc.show(buf2);
+}//out_spell_list
 
 
 object* have_obj_numbered(const List<object*>& lst, const int i_th,

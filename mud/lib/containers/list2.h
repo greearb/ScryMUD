@@ -137,6 +137,7 @@ protected:
 
 
    Node *header;
+   int sz;
    Cell<T>* cll_list[NUMBER_OF_CONCURENT_CELLS];
 
 public:
@@ -145,7 +146,7 @@ public:
    static int getListCnt() { return __list_cnt; }
    static int getCellCnt() { return __cell_cnt; }
 
-   List  (const List<T> &L) { //copy constructor
+   List(const List<T> &L) : sz(L.sz) { //copy constructor
       //mudlog << "In List<T> copy constructor, (L.this: " << (void*)(&L)
       //       << "): " << L.toString() << "\n" << flush;
       __list_cnt++;
@@ -180,7 +181,7 @@ public:
    } // copy constructor
 
 
-   List  (const T &Nil) {
+   List(const T &Nil) : sz(0) {
       __list_cnt++;
       header = new Node;
 
@@ -203,7 +204,7 @@ public:
    } // constructor
 
 
-   List  () {
+   List() : sz(0) {
       __list_cnt++;
       header = new Node;
 
@@ -247,6 +248,7 @@ public:
  
       if (this != &L) { // Don't copy yourself
          this->clear();       
+         sz = L.sz;
 
          Cell<T> cll(L);
          T datum; 
@@ -274,13 +276,14 @@ public:
       if (!header) {
          mudlog.log(ERR, "ERROR:  HEADER NULL in Clear.\n");
       }//if
+      sz = 0;
    }// clear
 
    String toString() const {
       String retval(200);
       String tmp(50);
 
-      Sprintf(retval, "this: %p  cells: ", this);
+      Sprintf(retval, "this: %p  sz: %i  size: %i cells: ", this, sz, size());
       for (int i = 0; i<NUMBER_OF_CONCURENT_CELLS; i++) {
          Sprintf(tmp, "[%i] %p ", i, cll_list[i]);
          retval.Append(tmp);
@@ -302,6 +305,7 @@ public:
          if (ldata == data) {
             handleLosingCell(cell);
             cell.lose();  //this WILL NOT delete the item pointed to.
+            sz--;
             return ldata;
          }//if
          ldata = cell.next();
@@ -366,6 +370,7 @@ public:
       Cell<T> cell(*this);
       Assert((int)data);
       cell.insertAfter(data);
+      sz++;
    }//push
  
    void pushBack(const T& data) {
@@ -376,11 +381,12 @@ public:
       Cell<T> C(*this);
       Assert((int)data);
       C.insertBefore(data);
+      sz++;
    }//put
 
    void gainData(const T& data) {
       if (!haveData(data)) {
-         pushBack(data);
+         append(data);
       }//if
    }//GainData
 
@@ -394,6 +400,7 @@ public:
    
       if (ret) {
          handleLosingCell(cll);
+         sz--;
          cll.lose();
       }//if
       return ret;
@@ -407,11 +414,11 @@ public:
       T ret = cll.prev();
       if (ret) {
          handleLosingCell(cll);
+         sz--;
          cll.lose();
       }//if
       return ret;
    }//Drag
-
 
 
    int insertAt(int posn, T& val) {
@@ -421,6 +428,7 @@ public:
       if (!val)
          return FALSE;
 
+      sz++;
       T ptr;
       while ((ptr = cll.next())) {
          if (i == posn) {
@@ -446,6 +454,7 @@ public:
          if (i == posn) {
             handleLosingCell(cll);
             cll.lose();
+            sz--;
             return ptr;
          }
          i++;
@@ -507,11 +516,13 @@ public:
 
    void insertBefore(Cell<T>& cll, const T& data) {
       Assert(cll.isInList(this));
+      sz++;
       cll.insertBefore(data);
    }//insertBefore
 
    void insertAfter(Cell<T>& cll, const T& data) {
       Assert(cll.isInList(this));
+      sz++;
       cll.insertAfter(data);
    }//insertBefore
 
@@ -519,6 +530,7 @@ public:
       if (cll.node != header) {
          Assert(cll.isInList(this));
          handleLosingCell(cll);
+         sz--;
          return cll.lose();
       }//if
       else {
@@ -533,7 +545,7 @@ public:
       return (header->next == header);
    }//IsEmpty
 
-   /*  SIZE--  Returns the number of cells contained in a List.  */
+   /*  size--  Returns the number of cells contained in a List.  */
    int size() const {
       class List<T>::Node* node_ptr = header->next;
       int count = 0;
@@ -542,8 +554,14 @@ public:
          count++;
          node_ptr = node_ptr->next;
       }//while
+
+      // Leave this in for a while till we're sure it's debugged!!
+      if (count != sz) {
+         mudlog << "ERROR: sz: " << sz << " does not match calculated size: "
+                << count << endl;
+      }
       return count;
-   }//size
+   }//sz
 
    int Assert(const int boolean_val) const {
       if (!boolean_val)

@@ -879,17 +879,22 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
             }//if wander
 	    if (ptr->isTracking() && room_list[i].haveCritter(ptr)) {
                is_dead = FALSE;
-	       ptr->doHuntProc(d(1,10), is_dead);
+	       ptr->doHuntProc(d(1, ptr->DEX/2), is_dead);
 	    }//if hunting
+            else if (ptr->shouldBeHoming() && room_list[i].haveCritter(ptr)) {
+               is_dead = FALSE;
+               ptr->travelToRoom( ptr->getHomeRoom(), d(1, ptr->DEX/2),
+                                 is_dead);
+            }
          }//while, won't leave a room untill all have been dealt with
       }//if room isn't locked
    }//for, loops through rooms
 
    First_Room = last_room;
-   Last_Room = last_room + 100;
-   if (First_Room >= (NUMBER_OF_ROOMS -1)) {
+   Last_Room = last_room + (Cur_Max_Room_Num / 10);
+   if (First_Room > Cur_Max_Room_Num) {
       First_Room = 0;
-      Last_Room = 100;
+      Last_Room = Cur_Max_Room_Num / 10;
    }//if
    return 0;
 }//do_pulsed

@@ -786,12 +786,15 @@ void game_loop(int s)  {
       /* pulsed processes */
 
       if (did_pulse) {
-	 if ((pulse % 11) == 0) { //4 is about right
+	 if ((pulse % 11) == 0) {
 	    if (!embattled_rooms.isEmpty()) { 
 	       do_battle();
             }
 	    do_mini_tick(); //decrements pause ect.
 	 }//if
+
+         // Will try to pulse the entire MUD ever 10 seconds.
+         // We will pulse one-tenth at a time (room wise).
 	 if ((pulse % 5) == 0)
 	   do_pulsed_spec_procs(First_Room, Last_Room);
 	 if ((pulse % 379) == 0)

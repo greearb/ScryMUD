@@ -81,6 +81,51 @@ String SkillSpell::getHtml() {
 
    
 
+String SkillSpell::toString() {
+   String buf(100);
+   String retval(500);
+
+   Sprintf(retval, "[%i]%P06 %S%P19 min lvl: %i  difficulty: %i/100  mana: %i  scroll# %i\n",
+           ss_num, &name, min_level, difficulty, mana_cost, scroll_num);
+
+   int tmp = 0;
+   if (!objs_casting_spell.isEmpty()) {
+      retval.Append("  Objects Casting:  ");
+      for (int i = objs_casting_spell.getNextIdx(-1); i != -1;
+           i = objs_casting_spell.getNextIdx(i)) {
+         tmp = objs_casting_spell.elementAt(i);
+         Sprintf(buf, "%i (%i), ", tmp, obj_list[tmp].getCurInGame());
+         retval.Append(buf);
+      }//for
+      retval.Append("\n");
+   }//if
+
+   Cell<int> cll(prereqs);
+   if (!prereqs.isEmpty()) {
+      retval.Append("  Prerequesites:    ");
+      while ((tmp = cll.next())) {
+         const char* foo = SSCollection::instance().getNameForNum(tmp);
+         Sprintf(buf, "%s [%i],  ", foo, tmp);
+         retval.Append(buf);
+      }//while
+   }//if
+
+   if (!enables.isEmpty()) {
+      retval.Append("\n  Prerequisite for: ");
+
+      enables.head(cll);
+      while ((tmp = cll.next())) {
+         const char* foo = SSCollection::instance().getNameForNum(tmp);
+         Sprintf(buf, "%s [%i],  ", foo, tmp);
+         retval.Append(buf);
+      }//while
+   }
+   retval.Append("\n\n");
+   return retval;
+}//toString;
+
+   
+
 void SkillSpell::Read(ifstream& da_file) {
    char buf[100];
    int tmp;
@@ -166,6 +211,7 @@ void SkillSpell::Clear() {
    
    enables.clear();
    prereqs.clear();
+   objs_casting_spell.clear();
 }//clear
 
  
@@ -203,6 +249,29 @@ scroll:  %i in get_number_of_scroll.\n", retval->getIdNum());
 }//getScroll()
 
 
+/** Return total numbers of objects in the game that can cast this
+ * spell.
+ */
+int SkillSpell::getSpellCastingCount() const {
+   int tmp = 0;
+   int retval = 0;
+   if (!objs_casting_spell.isEmpty()) {
+      for (int i = objs_casting_spell.getNextIdx(-1); i != -1;
+           i = objs_casting_spell.getNextIdx(i)) {
+         tmp = objs_casting_spell.elementAt(i);
+         retval += obj_list[tmp].getCurInGame();
+      }//for
+   }//if
+   return retval;
+}//getSpellCastingCount
+
+
+/** Will happily ignore duplicates. */
+void SkillSpell::addNewCaster(int obj_num) {
+   if (!objs_casting_spell.contains(obj_num)) {
+      objs_casting_spell.addElement(obj_num);
+   }//if
+}//addNewCaster
 
 
 ///***********************************************************************///

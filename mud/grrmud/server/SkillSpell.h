@@ -29,6 +29,7 @@
 #include <string2.h>
 #include <iostream.h>
 #include <rb_tree.h>
+#include <PtrArray.h>
 
 ///***********************  skill spell  *****************************///
 
@@ -45,7 +46,8 @@ class SkillSpell {
    short difficulty; //0-100, 100 is more difficult
    short mana_cost;  //baseline mana cost
    int scroll_num; //number of scroll it can be scribed to
-   
+   ObjArray<int> objs_casting_spell; //List of all objects casting this spell
+
  public:
 
    List<int> prereqs;  //spell/skill numbers of pre-requisites
@@ -59,6 +61,15 @@ class SkillSpell {
    void Clear();
 
    String getHtml();
+   String toString();
+
+   /** Return total numbers of objects in the game that can cast this
+    * spell.
+    */
+   int getSpellCastingCount() const;
+
+   /** Will happily ignore duplicates. */
+   void addNewCaster(int obj_num);
 
    object* getScroll(); //can return NULL
    int getScrollNum();
@@ -68,6 +79,7 @@ class SkillSpell {
    int getManaCost() const { return mana_cost; }
    int getIdNum() const { return ss_num; }
    int getSSNum() const { return ss_num; }
+   int isInUse() const { return (name.Strlen() > 0); }
 
    int isValid();
    void normalize();

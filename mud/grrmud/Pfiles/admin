@@ -8,19 +8,20 @@ problems for you.
 
 ~
 20 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
-975100 44785 0 	long_data
-0 17 17 16 12 17 16 0 0 65 1 0 2 3 1 75 500 500 -197 
-40 0 0 5 75 500 500 0 100 100 115 106 105 87 0 0 2 3 100 100 
+0 24115 450 	long_data
+0 17 17 16 12 17 16 0 0 65 1 0 2 3 1 1000 500 334 -189 
+40 0 0 5 1000 500 500 0 100 100 115 106 105 87 0 0 2 3 100 100 
 100 0 0 0 	shrt_cur_stats
 1024 2047 1 	cur_stats
 -1	eq: num, posn
 -1	affected_by
-26 26 26 26 358 -1	inv
+-1	inv
 bgio24h/ZwWLw	passwd
 26 25 19 16 14 11 10 6 2 -1  -:| bitfield |:-
-71 15 15 71 927082120 100		bday, byr, ryr, rday, llt, tto
-18 9920 9920 -2 1 0 0 age hgr thr drg pk died qp
-14 1 25 1 117 1 118 25 134 25 147 100 178 100 220 100 -1	ss_known
+71 15 15 71 927688344 100		bday, byr, ryr, rday, llt, tto
+18 18 18 -2 1 0 0 age hgr thr drg pk died qp
+1 100 12 100 14 1 25 1 30 1 92 100 94 1 117 1 118 25 134 25 
+147 100 165 100 178 100 188 100 189 1 200 1 220 100 -1	ss_known
 %N< %hH %mM %vV >  
 10	Imm level
 [36m Gos color

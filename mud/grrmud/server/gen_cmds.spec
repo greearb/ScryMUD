@@ -715,7 +715,7 @@ return scribe(&(cooked_strs[1]), pc);
 see_all ~
 return see_all(pc);
 shield ~
-return shield(i, &(cooked_strs[1]), pc);
+return shield(i, &(cooked_strs[1]), pc, was_ordered);
 shrug socials ~
 shrug(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 shake socials ~
@@ -743,7 +743,7 @@ return sleep(pc);
 slay ~
 return slay(i, &(cooked_strs[1]), pc);
 slist ~
-return slist(i, j, pc);
+return slist(i, cooked_strs[1], j, pc);
 smirk socials ~
 smirk(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 snicker socials ~

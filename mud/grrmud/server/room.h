@@ -220,6 +220,10 @@ public:
    virtual critter* haveCritter(critter* ptr);
    virtual object* haveObject(object* ptr);
    virtual critter* getLastCritter() { return critters.peekBack(); }
+   virtual critter* findFirstBanker();
+   virtual critter* findFirstShopKeeper();
+   virtual critter* findFirstTeacher();
+
    virtual void gainCritter(critter* crit);
    virtual critter* removeCritter(critter* crit);
 

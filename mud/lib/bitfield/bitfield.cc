@@ -38,7 +38,8 @@ int BitfieldNames::_cnt = 0;
 
 
 /** Constructor. */
-BitfieldNames::BitfieldNames(int length, const char** names, const char* col_name)
+BitfieldNames::BitfieldNames(int length, const char** names,
+                             const char* col_name)
       : len(length), bit_names(names), header(col_name) {
    bitlog << "BitfieldNames Constructor, length: " << length
           << " collection name -:" << col_name << ":-" << endl;
@@ -75,7 +76,53 @@ const char* BitfieldNames::getName(int idx) const {
    }
 }
 
+
+
+/** Returns -1 if no more. */
+int bitfield::nextSet(int from_this) const {
+   int mx = max_bit();
+   for (int i = from_this + 1; i<mx; i++) {
+      if (get(i)) {
+         return i;
+      }
+   }//for
+   return -1;
+}//nextSet
  
+/** Returns -1 if no more. */
+int bitfield::lastSet() const {
+   for (int i = max_bit(); i>= 0; i--) {
+      if (get(i)) {
+         return i;
+      }//if
+   }//for
+   return -1;
+}
+
+/** Returns -1 if no more. */
+int bitfield::firstSet() const {
+   int mx = max_bit();
+   for (int i = 0; i<mx; i++) {
+      if (get(i)) {
+         return i;
+      }
+   }//for
+   return -1;
+}
+
+
+int bitfield::firstClear() const {
+   int mx = MAX_BIT_ALLOWED;
+   for (int i = 0; i<mx; i++) {
+      if (!get(i)) {
+         return i;
+      }
+   }//for
+   return -1;
+}
+
+
+
 int bitfield::Assert(int boolean_val, const char* msg) {
    if (!boolean_val) {
       core_dump(msg);
@@ -87,16 +134,19 @@ void bitfield::Clear() {
    off_all();
 }//Clear()
 
+
 int figure_len(int max_flag) {
    return max_flag/int_len + 1;
 }
+
 
 int bitfield::max_bit() const {
    return ((vect_len * int_len) - 1);
 }//max_bit
 
+
 void bitfield::Read(ifstream& ifile) {
-   short flag;
+   int flag;
    char buf[81];
  
    Clear();
@@ -138,9 +188,9 @@ void bitfield::set(int i_th, int val) {
       turn_off(i_th);
 }
 
-void bitfield::ensureCapacity(short bit_posn) {
+void bitfield::ensureCapacity(int bit_posn) {
    //first, check for bogus values
-   Assert((bit_posn < MAX_BIT_ALLOWED), "ensureCapacity, out of range");
+   Assert((bit_posn <= MAX_BIT_ALLOWED), "ensureCapacity, out of range");
    
    if (bit_posn > max_bit()) {
       bitfield tmp(*this);
@@ -151,26 +201,38 @@ void bitfield::ensureCapacity(short bit_posn) {
    }
 }//ensureCapacity
 
-void bitfield::flip(short bit_posn) {
+void bitfield::flip(int bit_posn) {
    ensureCapacity(bit_posn);
+   if (get(bit_posn)) {
+      flags_on--;
+   }
+   else {
+      flags_on++;
+   }
    vector[(bit_posn / int_len)] ^=
          (1 << (bit_posn % int_len));
 }//flip()
 
 
-void bitfield::init(short num_bits) {
+void bitfield::init(int num_bits) {
    ensureCapacity(num_bits);
    off_all();
 }//init()
 
 
-void bitfield::turn_on(short bit_posn) {
+void bitfield::turn_on(int bit_posn) {
    ensureCapacity(bit_posn);
+   if (!get(bit_posn)) {
+      flags_on--;
+   }
    vector[(bit_posn / int_len)] |=
          (1 << (bit_posn % int_len));
 }//on()
 
-void bitfield::turn_off(short bit_posn) {
+void bitfield::turn_off(int bit_posn) {
+   if (get(bit_posn)) {
+      flags_on--;
+   }
    if ((bit_posn <= max_bit()) && (bit_posn >= 0)) {
       vector[(bit_posn / int_len)] &=
          ~(1 << (bit_posn % int_len));
@@ -182,10 +244,14 @@ void bitfield::flip_all() {
    for (int i = 0; i<vect_len; i++) {
       vector[i] = ~vector[i];
    }//for
+
+   //TODO:  Verify this some day!!
+   flags_on = max_bit() - flags_on + 1; // +1 because flags_on is ones based.
 }//flip_all()
 
 
 void bitfield::on_all() {
+   flags_on = max_bit() + 1;
    for (int i = 0; i<vect_len; i++) {
       vector[i] = ~(0);
    }//for
@@ -193,13 +259,14 @@ void bitfield::on_all() {
 
 
 void bitfield::off_all() {
+   flags_on = 0;
    for (int i = 0; i<vect_len; i++) {
       vector[i] = 0;
    }//for
 }//off_all
 
 
-short bitfield::get(short bit_posn) const {
+int bitfield::get(int bit_posn) const {
    if ((bit_posn > max_bit()) || (bit_posn < 0)) {
       return FALSE;
    }//if
@@ -211,16 +278,14 @@ short bitfield::get(short bit_posn) const {
 }// get()
 
 
-
-bitfield::bitfield() {  //default constructor
+bitfield::bitfield() : flags_on(0) {  //default constructor
    vector = new unsigned short int[1];
    vector[0] = 0;
    vect_len = 1;
 }//default constructor
 
 
-
-bitfield::bitfield(short bit_count) {
+bitfield::bitfield(int bit_count) : flags_on(0) {
    vect_len = figure_len(bit_count);
    vector = new unsigned short int[vect_len];
    for (int i = 0; i<vect_len; i++) {
@@ -232,6 +297,7 @@ bitfield::bitfield(short bit_count) {
 bitfield::bitfield(const bitfield& b) {
    vector = new unsigned short int[b.vect_len];
    vect_len = b.vect_len;
+   flags_on = b.flags_on;
    for (int i = 0; i<vect_len; i++) {
       vector[i] = b.vector[i];
    }//for
@@ -256,11 +322,11 @@ void bitfield::operator= (const bitfield& b) {
    for (int i = 0; i < b.vect_len; i++) {
       vector[i] = b.vector[i];
    }//for
+   flags_on = b.flags_on;
 }//operator=
 
 
-
-short bitfield::operator== (const bitfield& b) const {
+int bitfield::operator== (const bitfield& b) const {
    int min = b.vect_len;
    if (vect_len < b.vect_len)
       min = vect_len; 
@@ -273,13 +339,12 @@ short bitfield::operator== (const bitfield& b) const {
 }//operator==
 
 
-short bitfield::operator!= (const bitfield& b) const {
+int bitfield::operator!= (const bitfield& b) const {
    return (!(*this == b));
 }//operator!=
 
 
-
-short bitfield::is_zero() const {
+int bitfield::is_zero() const {
    for (int i = 0; i<vect_len; i++) {
       if (vector[i] != 0)
          return FALSE;

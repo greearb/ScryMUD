@@ -28,8 +28,9 @@
 #include <fstream.h>
 #include <string2.h> //my string class
 
-#define MAX_BIT_ALLOWED 256
+#define MAX_BIT_ALLOWED 65000
 
+/** Actually, these can be used for other similar classes too. */
 class BitfieldNames {
 protected:
    int len;
@@ -62,34 +63,52 @@ class bitfield {
 
 private:
    unsigned short int *vector;
-   short vect_len;
+   int vect_len;
+   int flags_on;
    int Assert(int boolean_val, const char* msg);
 
 public:
 
    void set(int i_th, int posn);
    void print() const;
-   void flip(short bit_posn);
-   void turn_on(short bit_posn);
-   void turn_off(short bit_posn);
+   void flip(int bit_posn);
+   void turn_on(int bit_posn);
+   void turn_off(int bit_posn);
    void flip_all();
    void on_all();
    void off_all();
-   short  get(short bit_posn) const;
-   short is_zero() const;
+   int  get(int bit_posn) const;
+   int is_zero() const;
    int max_bit() const; //returns highest bit posn that field contains
-   void ensureCapacity(short bit_posn);
+   void ensureCapacity(int bit_posn);
+
+   /** Returns -1 if no more. */
+   int nextSet(int from_this) const ;
+   
+   /** Returns -1 if no more. */
+   int firstSet() const ;
+
+   /** Returns -1 if bitfield is full (and cannot grow).  This should
+    * not happen!!
+    */
+   int firstClear() const ;
+
+   /** Returns -1 if no more. */
+   int lastSet() const ;
+
+   /** Number of turned-on flags. */
+   int flagsSet() const { return flags_on; };
 
    bitfield();  //default constructor
-   bitfield(short bit_count);
+   bitfield(int bit_count);
    bitfield(const bitfield& b); //copy constructor
    ~bitfield();
    
    void operator= (const bitfield& b);
-   short operator== (const bitfield& b) const;
-   short operator!= (const bitfield& b) const;
+   int operator== (const bitfield& b) const;
+   int operator!= (const bitfield& b) const;
    
-   void init(const short num_of_flags); //callable initializer
+   void init(const int num_of_flags); //callable initializer
    void Write(ofstream& ofile) const;
    void Read(ifstream& ifile);
    void Clear();

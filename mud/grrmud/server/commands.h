@@ -53,8 +53,11 @@ int put(int i, const String* object, int j, const String* bag, critter&
 int get(int i, const String* object, int j, const String* bag, critter& 
           getter);
 
+//Does some checking, similar in nature to hit
+int try_hit(critter& vict, critter& pc);
+
 int hit(int i_th, const String* victim, critter& hitter); 
-int assist(int i_th, const String* friendly, critter& hitter); 
+int assist(int i_th, const String* friendly, critter& hitter);
 int do_hit(critter& vict, critter& pc);
  
 int say(const char* message, critter& pc, room& rm);

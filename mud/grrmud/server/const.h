@@ -69,6 +69,7 @@ extern const BitfieldNames OBJ_FLAGS_NAMES;
 extern const BitfieldNames OBJ_SPEC_DATA_FLAGS_NAMES;
 extern const BitfieldNames BAG_FLAGS_NAMES;
 
+extern const BitfieldNames STAT_AFFECT_NAMES;
 
 extern LogStream mudlog;
 

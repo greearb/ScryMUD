@@ -605,6 +605,87 @@ int String::Contains(const char ch) const {
 }
 
 
+/** Reads untill it finds the delim, and then reads untill
+ * it finds another.  Escape the delim with a \ (backslash).
+ * This is not too efficient, as it reads one character at
+ * a time, btw.
+ */
+int String::readToken(char delim, ifstream& dafile, int include_delim) {
+   char ch;
+   int is_escaped = FALSE;
+
+   Vclear();
+
+   // Get to the beginning
+   while (dafile) {
+      dafile.get(ch);
+      if (ch == '\\') {
+         if (is_escaped) {
+            is_escaped = FALSE;
+         }
+         else {
+            is_escaped = TRUE;
+         }
+      }
+      else if (ch == delim) {
+         if (is_escaped) {
+            is_escaped = FALSE;
+         }
+         else {
+            break;
+         }
+      }
+      else {
+         is_escaped = FALSE;
+      }
+   }//while
+
+   if (!dafile)
+      return -1;
+
+   if (include_delim)
+      *this += delim;
+
+   while (dafile) {
+      dafile.get(ch);
+      if (ch == '\\') {
+         if (is_escaped) {
+            is_escaped = FALSE;
+            *this += ch;
+         }
+         else {
+            is_escaped = TRUE;
+         }
+      }
+      else if (ch == delim) {
+         if (is_escaped) {
+            is_escaped = FALSE;
+            *this += ch;
+         }
+         else {
+            break;
+         }
+      }
+      else {
+         // Only escape the delimiter at this time.
+         if (is_escaped) {
+            *this += '\\';
+         }
+         *this += ch;
+         is_escaped = FALSE;
+      }
+   }//while
+
+   if (!dafile)
+      return -1;
+
+   if (include_delim)
+      *this += delim;
+
+   return 0;
+}//readToken
+
+
 void String::Termed_Read(ifstream& da_file) { //reads lines untill it finds
 					      // a line containing only "~"
    char buf[182];
@@ -802,7 +883,7 @@ int String::Read(const int desc, const int max_to_read) {
 }//Read (from a descriptor)
 
 
-void String::Clear() {
+void String::purge() {
    total_bytes -= (max_len + 1);
    delete[] string;
    string = new char[2];
@@ -812,9 +893,11 @@ void String::Clear() {
    string[0] = '\0';
 }//Clear      
 
-void String::Vclear() {
-   *this = "\0";   // = overload
-}//Vclear      
+
+void String::Clear() {
+   *this = "\0";
+}//Clear
+
 
 void String::Cap() {
    for (int i = 0; i<cur_len; i++) {

@@ -722,7 +722,23 @@ int hit(int i_th, const String* victim, critter &pc) {
 }//hit
 
 
+
 /* hit is generic battle starter..same as kill */
+int try_hit(critter& vict, critter &pc) {
+   critter* crit_ptr;
+      
+   if (!ok_to_do_action(&vict, "mSVPF", -1, pc)) {
+      return -1;
+   }//if
+
+   if (!(crit_ptr = check_for_diversions(vict, "GSM", pc)))
+      return -1;
+
+   return do_hit(*crit_ptr, pc);
+}//try_hit
+
+
+/* assist is generic battle starter..same as kill */
 int assist(int i_th, const String* targ, critter &pc) {
    critter* crit_ptr;
    critter* friendly;
@@ -766,7 +782,7 @@ int assist(int i_th, const String* targ, critter &pc) {
       pc.show("You cannot assist someone who is not fighting.\n");
    }
    return -1;
-}//hit
+}//assist
 
 
 int do_hit(critter& vict, critter& pc) {
@@ -776,7 +792,27 @@ int do_hit(critter& vict, critter& pc) {
   }//if
 
   join_in_battle(pc, vict);   
-  do_battle_round(pc, vict, 9);   
+
+  if (vict.isUsingClient()) {
+     show("<BATTLE>", vict);
+  }
+  else if (vict.isUsingColor()) {
+     show(*(vict.getBattleColor()), vict);
+  }
+
+  int show_vict_tags = TRUE;
+  do_battle_round(pc, vict, 9, show_vict_tags);   
+
+  // Tags will only be shown in do_battle_round if
+  // the victim died.
+  if (show_vict_tags) {
+     if (vict.isUsingClient()) {
+        show("</BATTLE>", vict);
+     }
+     else if (vict.isUsingColor()) {
+        show(*(vict.getDefaultColor()), vict);
+     }
+  }//if
 
   String cmd = "hit";
   ROOM.checkForProc(cmd, NULL_STRING, pc, vict.MOB_NUM);
@@ -1479,11 +1515,11 @@ int say(const char* message, critter& pc, room& rm) {
    pc.drunkifyMsg(msg);
    
    if (pc.isGagged()) {
-      show("You have been gagged.\n", pc);
+      pc.show(CS_YOU_GAGGED);
       return -1;
    }//if
    else if (pc.POS > POS_REST) {
-      show("You mutter something in your sleep....\n", pc);
+      pc.show(CS_MUTTER_SLEEP);
       return -1;
    }//if
    else { //good to go
@@ -1520,7 +1556,7 @@ int say(const char* message, critter& pc, room& rm) {
                      untag = "";
                   }
 
-                  Sprintf(buf, "%S\n%S says, '%S'\n%S", 
+                  Sprintf(buf, cstr(CS_SAY_SPRINTF, *crit_ptr),
                           &tag, name_of_crit(pc, crit_ptr->SEE_BIT),
                           &msg, &untag);
                   buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
@@ -1543,7 +1579,7 @@ int say(const char* message, critter& pc, room& rm) {
                untag = "";
             }
 
-            Sprintf(buf, "%SYou say, '%S'\n%S", &tag, &msg, &untag);
+            Sprintf(buf, cstr(CS_SAY_SPRINTF_YOU, pc), &tag, &msg, &untag);
             pc.show(buf);
          }//else  
       }//while

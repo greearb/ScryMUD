@@ -80,7 +80,7 @@ steps to the Temple.
 1 2 14 0
 -1	door Affected_Bye
 -1	door#, dest
-4 -1	mobs
+-1	mobs
 End of Room
 4		Room Number
 Northern_Road_2 ~	names
@@ -160,7 +160,7 @@ DO NOT sell items you find here.  Its just plain Immoral.
 23 21 -1  -:| bitfield |:-
 1024 1 7 7 	cur_stats
 -1	affected_by
-4 358 -1	inv
+236 4 116 182 358 -1	inv
 1 4 2 0
 -1	door Affected_Bye
 -1	door#, dest
@@ -287,9 +287,10 @@ End of Room
 NW_Plaza ~	names
 The northwestern plaza.
 ~
-     The plaza stretches out to the south and east and you can also go
+    The plaza stretches out to the south and east and you can also go
 up the broad stairs to the temple.  Rose street can be seen to the north
-east.
+west.
+
 ~
 23 21 -1  -:| bitfield |:-
 1024 1 14 14 	cur_stats
@@ -430,6 +431,8 @@ stairs to the temple.
 -1	door Affected_Bye
 1 7 3 0
 -1	door Affected_Bye
+1 4 18 0
+-1	door Affected_Bye
 1 8 17 0
 -1	door Affected_Bye
 1 9 1 0
@@ -493,14 +496,30 @@ End of Room
 Central_Plaza ~	names
 The central plaza of Garland.
 ~
-     Due to the fact that this city was carefully designed around the
+    Due to the fact that this city was carefully designed around the
 structure of a flower by an ancient architect, you now find yourself in
 the exact center of Garland.  A beautiful temple with broad stairs leading
 to it from every direction stands here.  All the paths lead around it
 so there is a little confusion, but everyone around here seems to take
 life pretty slow so there are few accidents.
+A plaque with some directions has been fastened to a granite block.
+
 ~
-23 21 -1  -:| bitfield |:-
+32 23 21 -1  -:| bitfield |:-
+1   Start of KeywordPair
+sign map plaque ~
+One of the local artisans donated this plaque to the people of Garland
+so that they may better know their city and it's places of interests.  It
+is a short list of establishments found nearby.
+ 
+Academy of Physical Arts:  NW,   Mage Academy: NE,  Cleric Academy: NE,
+Guild for relieving people of their cumbersome possessions: South,
+Bakery: North
+ 
+Tyro:  East,  Elven Forest: North,  Citadel: West
+
+~
+-1  No more KeywordPairs
 1024 1 22 22 	cur_stats
 -1	affected_by
 10 -1	inv
@@ -524,7 +543,7 @@ life pretty slow so there are few accidents.
 -1	door Affected_Bye
 
 -1	door#, dest
-3 3 -1	mobs
+-1	mobs
 End of Room
 23		Room Number
 Lily_Lane ~	names
@@ -695,7 +714,7 @@ of samples on the counter, but the local children do a good job of keeping
 it empty!
 
 ~
-23 21 9 -1  -:| bitfield |:-
+27 23 21 10 9 -1  -:| bitfield |:-
 1024 1 31 31 	cur_stats
 -1	affected_by
 -1	inv
@@ -716,14 +735,14 @@ one young clerk blushes and looks away as you notice them staring at you.
 Hmmm, maybe you should visit here more often!
 
 ~
-27 25 23 21 -1  -:| bitfield |:-
+27 25 23 21 10 9 -1  -:| bitfield |:-
 1024 1 32 32 	cur_stats
 -1	affected_by
 -1	inv
 1 4 43 0
 -1	door Affected_Bye
 -1	door#, dest
-264 265 -1	mobs
+264 265 233 -1	mobs
 End of Room
 33		Room Number
 NW_Rose_Lane ~	names
@@ -860,7 +879,7 @@ you the destinations available, and a small sign posted by the ticket machine.
 -1	door#, dest
 -1	mobs
 End of Room
-16777255		Vehicle number
+16777255		Room Number
 train ~	names
 On the Silver Train.
 ~
@@ -1611,7 +1630,7 @@ violets on their open window, just makes you feel good about life!
 1 6 26 0
 -1	door Affected_Bye
 -1	door#, dest
-3 160 -1	mobs
+3 -1	mobs
 End of Room
 73		Room Number
 mage_academy ~	names
@@ -1819,7 +1838,7 @@ the large stone benches seem conveniently placed to make getting to the
 entrance of the building a slow affair.
 
 ~
-25 23 21 -1  -:| bitfield |:-
+33 25 23 21 -1  -:| bitfield |:-
 1024 1 82 0 	cur_stats
 -1	affected_by
 -1	inv
@@ -2071,14 +2090,14 @@ Balthazar, gleefully willing to add to his and Gryphon's collection of
 oddities, and even more willing for you to part with the ones he has.
 
 ~
-23 21 9 -1  -:| bitfield |:-
+27 23 21 10 9 -1  -:| bitfield |:-
 1024 1 94 29 	cur_stats
 -1	affected_by
 -1	inv
 1 4 29 0
 -1	door Affected_Bye
 -1	door#, dest
--1	mobs
+294 -1	mobs
 End of Room
 
 

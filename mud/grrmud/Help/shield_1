@@ -2,7 +2,8 @@
 
 Shield allows one to intercept many offenses aimed at a person. 
 You throw yourself in the path of whatever you intercept however,
-so be careful! 
+so be careful! If you want to stop shielding others, try:
+shield self
 
 Syntax:  shield <<i_th> [person]
 

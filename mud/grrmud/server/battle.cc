@@ -94,8 +94,6 @@ void do_battle() {
    Cell<critter*> crit_cell;
    critter* crit_ptr, *vict_ptr;
    short is_embattled, i;
-   short show_agg_client;
-   short show_vict_client;
    
    //log("In do_battle()\n");
    //   batlog << "Size of embattled_rooms:  " << Size(embattled_rooms) 
@@ -120,13 +118,15 @@ void do_battle() {
                    << crit_ptr->IS_FIGHTING.size() << endl << endl;
          }//if
 
+
+         // NOTE:  The aggressor can never die, but the HP can go
+         // as low as needed, so that the next round may kill.
+
          if (!crit_ptr->IS_FIGHTING.isEmpty()) {
             is_embattled = TRUE;
-            show_agg_client = FALSE;
             
-            if (crit_ptr->pc && crit_ptr->USING_CLIENT) {
+            if (crit_ptr->isUsingClient()) {
                show("<BATTLE>", *crit_ptr);
-               show_agg_client = TRUE;
             }
             else if (crit_ptr->isUsingColor()) {
                show(*(crit_ptr->getBattleColor()), *crit_ptr);
@@ -139,12 +139,12 @@ void do_battle() {
                atks = 1;
 
             for (i = 0; i< atks; i++) {
-               show_vict_client = FALSE;
 	             /* check for second attack */
 	       if ((i == 1) && (crit_ptr->pc) && (crit_ptr->PAUSE > 0)) {
 		  if (d(1, 100) > 
 		      d(1, get_percent_lrnd(SECOND_ATTACK_SKILL_NUM,
-                                       *(crit_ptr)) + crit_ptr->DEX * 2)) {
+                                       *(crit_ptr)) 
+                        * (int)((float)(crit_ptr->DEX) / 9.0))) {
 		    continue; //didn't get second hit
 		  }//if
 	       }//if
@@ -163,28 +163,35 @@ void do_battle() {
                             << *(name_of_crit(*vict_ptr, ~0)) << endl;
                   }
 
-                  if (vict_ptr->pc && vict_ptr->USING_CLIENT) {
-                     show("<BATTLE>", *vict_ptr);
-                     show_vict_client = TRUE;
-                  }
-                  else if (vict_ptr->isUsingColor()) {
-                     show(*(vict_ptr->getBattleColor()), *vict_ptr);
-                  }
-
+                  int show_vict_tags = TRUE;
 		  if ((vict_ptr = check_for_diversions(*vict_ptr, "GM", 
 						      *crit_ptr))) {
-                     do_battle_round(*crit_ptr, *vict_ptr, 9); //do reg attack
-                     if (!crit_ptr->pc) {
+
+                     if (vict_ptr->isUsingClient()) {
+                        vict_ptr->show("<BATTLE>");
+                     }
+                     else if (vict_ptr->isUsingColor()) {
+                        show(*(vict_ptr->getBattleColor()), *vict_ptr);
+                     }
+
+                     //do reg attack
+                     do_battle_round(*crit_ptr, *vict_ptr, 9, show_vict_tags);
+                     
+                     if (crit_ptr->isNpc()) {
                         do_battle_proc(*crit_ptr);
                      }//if
 		  }//if not a mirror
 
-                  if (vict_ptr && show_vict_client) {
-                     show("</BATTLE>", *vict_ptr);
-                  }
-                  else if (vict_ptr && vict_ptr->isUsingColor()) {
-                     show(*(vict_ptr->getDefaultColor()), *vict_ptr);
-                  }
+                  // NOTE:  vict_ptr could be deleted at this point!!
+                  if (vict_ptr && show_vict_tags) {
+                     //Vict CANNOT be deleted at this point..or you're screwed!
+                     if (vict_ptr->isUsingClient()) {
+                        show("</BATTLE>", *vict_ptr);
+                     }
+                     else if (vict_ptr->isUsingColor()) {
+                        show(*(vict_ptr->getDefaultColor()), *vict_ptr);
+                     }
+                  }//if
                }//if
             }//for		/* now check for dual wield */
 
@@ -196,27 +203,30 @@ void do_battle() {
                   
                   vict_ptr = Top(crit_ptr->IS_FIGHTING);
 
-                  show_vict_client = FALSE;
-                  if (vict_ptr->pc && vict_ptr->USING_CLIENT) {
+                  if (vict_ptr->isUsingClient()) {
                      show("<BATTLE>", *vict_ptr);
-                     show_vict_client = TRUE;
                   }
                   else if (vict_ptr->isUsingColor()) {
                      show(*(vict_ptr->getBattleColor()), *vict_ptr);
                   }
 
-                  do_battle_round(*crit_ptr, *vict_ptr, 10);
+                  int show_vict_tags = TRUE; //Show tags if needed.
+                  do_battle_round(*crit_ptr, *vict_ptr, 10, show_vict_tags);
 
-                  if (show_vict_client) {
-                     show("</BATTLE>", *vict_ptr);
-                  }
-                  else if (vict_ptr->isUsingColor()) {
-                     show(*(vict_ptr->getDefaultColor()), *vict_ptr);
-                  }
+                  // Tags will only be shown in do_battle_round if
+                  // the victim died.
+                  if (show_vict_tags) {
+                     if (vict_ptr->isUsingClient()) {
+                        show("</BATTLE>", *vict_ptr);
+                     }
+                     else if (vict_ptr->isUsingColor()) {
+                        show(*(vict_ptr->getDefaultColor()), *vict_ptr);
+                     }
+                  }//if
               }//if
             }//if
 
-            if (show_agg_client) {
+            if (crit_ptr->isUsingClient()) {
                show("</BATTLE>", *crit_ptr);
             }
             else if (crit_ptr->isUsingColor()) {
@@ -246,7 +256,8 @@ void gain_xp(critter& crit, const long exp, const short show_output) {
 }//gain_xp
 
 
-void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
+void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
+                     int& show_vict_tags) {
    float damage, weapon_dam, pos_mult;
    short  is_wielding = FALSE;
    short tp, td;
@@ -284,6 +295,8 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
              agg.emote("seems to come out of a deep slumber!\n");
              agg.setPosn(POS_STAND);
           }//if
+
+          // TODO:  Is this spell different from perm sleep??
           stat_spell_cell* ss_ptr = is_affected_by(SLEEP_SKILL_NUM, agg);
           if (ss_ptr) {
              agg.affected_by.loseData(ss_ptr);
@@ -314,7 +327,8 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
    int j = (vict.DEX * 3) - (vict.AC / 10) + vict.LEVEL + (agg.POS * 5);
    i = (agg.DEX * 3) + (agg.HIT * 2) + agg.LEVEL + (vict.POS * 5);
 
-   if ((!vict.isStunned() && (d(1, j) > d(1, i))) || (agg.POS == POS_STUN)) {  //missed, stunned
+   if ((!vict.isStunned() && (d(1, j) > d(1, i))) ||
+       (agg.POS == POS_STUN)) {  //missed, stunned
       if (agg.POS == POS_STUN) {
          show("You lie immobilized by the thought of imminent death.\n", 
               agg);
@@ -604,7 +618,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
    }//if
    else if (vict.HP <= 0) {
       //emote("is dead!!", vict, room_list[vict.getCurRoomNum()], TRUE);
-      agg_kills_vict(agg, vict);
+      agg_kills_vict(agg, vict, show_vict_tags);
    }//if
    else if (vict.HP <= vict.WIMPY) {
       int is_dead = FALSE;
@@ -613,7 +627,15 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
 }//do_battle_round
 
 
+// Convenience method for when we don't care about dealing
+// with tags.
 void agg_kills_vict(critter& agg, critter& vict) {
+   int show_vict_tags = FALSE;
+   agg_kills_vict(agg, vict, show_vict_tags);
+}
+
+
+void agg_kills_vict(critter& agg, critter& vict, int& show_vict_tags) {
    Cell<critter*> cll2(vict.IS_FIGHTING);
    critter *ptr2;
 
@@ -629,7 +651,7 @@ void agg_kills_vict(critter& agg, critter& vict) {
    }//while
 
    if (agg.mob && agg.mob->proc_data && 
-       agg.mob->proc_data->temp_proc) {  //rem from hunting
+       agg.mob->proc_data->temp_proc) {  //rem from hunting, tracking
 
       Cell<String*> cll(agg.HUNTING);
       String* ptr;
@@ -641,6 +663,10 @@ void agg_kills_vict(critter& agg, critter& vict) {
 	    break;
 	 }//if
       }//while
+
+      if (vict.isNamed(agg.TRACKING)) {
+         agg.setTrackingTarget(NULL_STRING);
+      }
    }//if
    
    agg.ALIGN -= ((agg.ALIGN + vict.ALIGN) / 15);
@@ -659,7 +685,7 @@ void agg_kills_vict(critter& agg, critter& vict) {
    }//if
 
    disburse_xp(agg, vict); //take care of xp
-   dead_crit_to_corpse(vict); //remove all traces of vict
+   dead_crit_to_corpse(vict, show_vict_tags); //remove all traces of vict
    do_just_killed_procs(agg); //autoloot etc
 }//agg_kills_vict;
 
@@ -798,7 +824,8 @@ void crit_dies(critter& pc) {
    }//while
 
    pc.is_fighting.clear(); //vict no longer fighting others
-   dead_crit_to_corpse(pc); //remove all traces of vict
+   int show_vict_tags = FALSE;
+   dead_crit_to_corpse(pc, show_vict_tags); //remove all traces of vict
 }//crit_dies;
 
 
@@ -908,7 +935,7 @@ void gain_level(critter& crit) {
 }//gain_level
 
 
-void dead_crit_to_corpse(critter& vict) {
+void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
    object *corpse, *gold;
    Cell<object*> ocell;
    object* o_ptr;
@@ -927,7 +954,8 @@ void dead_crit_to_corpse(critter& vict) {
    /* first, cut all links to critter */
 
    if (vict.temp_crit) {
-     vict.temp_crit->Clear();
+      //Takes care of shielding and so on.
+      vict.temp_crit->Clear();
    }//if
 
    int nrm = vict.getCurRoomNum();
@@ -970,7 +998,8 @@ void dead_crit_to_corpse(critter& vict) {
 
    // create corpse object.
    corpse = obj_to_sobj(obj_list[CORPSE_OBJECT], 
-                        room_list[vict.getCurRoomNum()].getInv(), vict.getCurRoomNum());
+                        room_list[vict.getCurRoomNum()].getInv(),
+                        vict.getCurRoomNum());
 
    recursive_init_loads(*corpse, 0);
 
@@ -1048,7 +1077,8 @@ void dead_crit_to_corpse(critter& vict) {
             corpse->obj_proc = new obj_spec_data;
          }//if
          object* ptr = corpse->obj_proc->skin_ptr = 
-            obj_to_sobj(obj_list[PC_SKIN_OBJECT], &(corpse->inv), vict.getCurRoomNum());
+            obj_to_sobj(obj_list[PC_SKIN_OBJECT], &(corpse->inv),
+                        vict.getCurRoomNum());
 
          recursive_init_loads(*ptr, 0);
 
@@ -1083,6 +1113,16 @@ a trophy--a symbol of %S's defeat.\n",
             vict.EXP -= (vict.EXP/13);
          else
             vict.EXP -= 500000;
+
+         if (show_vict_tags) {
+            show_vict_tags = FALSE; //Tell calling code not to show more tags.
+            if (vict.isUsingClient()) {
+               show("</BATTLE>", vict);
+            }
+            else if (vict.isUsingColor()) {
+               show(*(vict.getDefaultColor()), vict);
+            }
+         }//if we should show tags here...
          
          Cell<stat_spell_cell*> spcll(vict.affected_by);
          stat_spell_cell* sp_ptr;

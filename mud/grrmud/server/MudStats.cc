@@ -20,33 +20,14 @@
 //                                     greearb@agcs.com
 //
 
-#ifndef LOAD_WORLD_INCLUDE
-#define LOAD_WORLD_INCLUDE
+#include "MudStats.h"
 
-void writeSiteBanned();
-void readSiteBanned();
+MudStats& MudStats::instance() {
+   static MudStats self;
+   return self;
+}
 
-void recursive_init_loads(object& obj, int depth);
-void recursive_init_unload(object& obj, int depth);
+int MudStats::getPlayerCount() {
+   return pc_list.size();
+}
 
-void recursive_init_loads(critter& pc);
-void recursive_init_unload(critter& mob);
-
-void init_loads(); //count up things in game at start
-void init_casting_objs();
-
-void load_boards();
-void load_wld();
-void load_zone(int i_th); //read in i_th zone file
-void load_objects(int of_zone);
-void load_critters(int of_zone);
-void load_doors(int of_zone);
-void read_setup();
-void write_setup();
-void load_skill_spells();
-
-void write_all_zones(); //used for DB changeover mostly
-void write_all_doors(); //NOT CODED now
-void write_all_objects(); //NOT CODED now
-
-#endif

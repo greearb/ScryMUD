@@ -32,13 +32,17 @@
 
 
 void do_battle();
-void do_battle_round(critter& agg, critter& vict, int posn_of_weapon);
+void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
+                     int& show_vict_tags);
 
-void agg_kills_vict(critter& agg, critter& vict);  //death of a critter
+//Convenience method, calls the one below, with show_vict_tags == FALSE
+void agg_kills_vict(critter& agg, critter& vict);
+void agg_kills_vict(critter& agg, critter& vict,
+                    int& show_vict_tags);  //death of a critter
 void crit_dies(critter& pc); //indirect deaths
 
 void disburse_xp(critter& agg, const critter& vict);
-void dead_crit_to_corpse(critter& vict);
+void dead_crit_to_corpse(critter& vict, int& show_vict_tags);
 void gain_xp(critter& crit, const long xp, const short do_output); 
 void gain_level(critter& crit);
 short can_start_battle(critter& targ, critter& pc, short do_msg);

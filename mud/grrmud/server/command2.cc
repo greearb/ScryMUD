@@ -1374,7 +1374,7 @@ int buy(int i_th, const String* item, int j_th, const String* keeper,
    }//if
 
    if (keeper->Strlen() == 0) {
-      crit_ptr = ROOM.getLastCritter(); //most likely to be a shopkeeper
+      crit_ptr = ROOM.findFirstShopKeeper();
       if (crit_ptr) {
          if (crit_ptr->isMob()) {
             crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum());
@@ -1382,8 +1382,7 @@ int buy(int i_th, const String* item, int j_th, const String* keeper,
       }//if
    }//if
    else {
-      crit_ptr = 
-            ROOM.haveCritNamed(j_th, keeper, pc.SEE_BIT);
+      crit_ptr = ROOM.haveCritNamed(j_th, keeper, pc.SEE_BIT);
       if (crit_ptr) {
          if (crit_ptr->isMob()) {
             crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE, j_th, 
@@ -1440,8 +1439,7 @@ int sell(int i_th, const String* item, int j_th, const String* keeper,
    }//if
 
    if (keeper->Strlen() == 0) {
-      mudlog.log(TRC, "Setting crit_ptr == to Rear of ROOM.CRITTERS\n");
-      crit_ptr = ROOM.getLastCritter(); //most likely to be a shopkeeper
+      crit_ptr = ROOM.findFirstShopKeeper();
       if (crit_ptr) {
          if (crit_ptr->isMob()) {
             crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum());
@@ -1491,7 +1489,7 @@ int practice(const String* spell, int j_th, const String* master,
    if (ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
 
       if (master->Strlen() == 0) {
-         crit_ptr = ROOM.getLastCritter(); //get mob who has been there longest
+         crit_ptr = ROOM.findFirstTeacher();
       }//if
       else {
          crit_ptr = ROOM.haveCritNamed(j_th, master, pc.SEE_BIT);
@@ -1690,7 +1688,7 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
    if (ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
 
       if (keeper->Strlen() == 0) {
-         crit_ptr = ROOM.getLastCritter(); //get mob who has been there longest
+         crit_ptr = ROOM.findFirstShopKeeper();
       }//if
       else {
          crit_ptr = ROOM.haveCritNamed(i_th, keeper, pc.SEE_BIT);
@@ -1874,7 +1872,7 @@ int offer(int i_th, const String* item, int j_th, const String* keeper,
    if (ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
 
       if (keeper->Strlen() == 0) {
-         crit_ptr = ROOM.getLastCritter(); //get mob who has been there longest
+         crit_ptr = ROOM.findFirstShopKeeper();
       }//if
       else {
          crit_ptr = ROOM.haveCritNamed(j_th, keeper, pc.SEE_BIT);
@@ -2140,9 +2138,29 @@ int do_mstat(critter& targ, critter& pc) {
 	    show("It is a MOB, not a SMOB.\n", pc);
 	 }//else
 
-         Sprintf(buf2, "\tCur in game:  %i,  Max in game:  %i.\n",
-                 crit_ptr->getCurInGame(), crit_ptr->getMaxInGame());
+         Sprintf(buf2,
+                 "\tCur in game:  %i,  Max in game:  %i,  Home Room:  %i,  Is Sessile: %i.\n",
+                 crit_ptr->getCurInGame(), crit_ptr->getMaxInGame(),
+                 crit_ptr->mob->home_room, crit_ptr->isSessile());
 	 show(buf2, pc);
+
+         if (crit_ptr->isTracking()) {
+            Sprintf(buf2, "\tTracking target:  %S",
+                    crit_ptr->getTrackingTarget());
+            show(buf2, pc);
+         }
+         else {
+            pc.show("\tNot Tracking");
+         }
+
+         if (crit_ptr->shouldBeHoming()) {
+            Sprintf(buf2, "\t\tHoming to room:  %i\n",
+                    crit_ptr->getHomeRoom());
+            show(buf2, pc);
+         }
+         else {
+            pc.show("\t\tNot Homing\n");
+         }
 
          out_field(crit_ptr->MOB_FLAGS, pc, MOB_DATA_FLAGS_NAMES);
 
@@ -2388,10 +2406,10 @@ int do_lore(object& obj, critter& pc, int show_extra) {
    // Take care of stat affects.
    if (show_extra) {
       show("It is affected by:\n", pc);
-      out_stat_spell_list(obj.affected_by, pc);      
+      out_spell_list(obj.affected_by, pc);      
 
       show("It's stat affects are:\n", pc);
-      out_stat_spell_list(obj.stat_affects, pc);
+      show_stat_affects(obj, pc);
    }//if
 
    return 0;
@@ -2494,10 +2512,7 @@ int do_ostat(object& obj, critter& pc) {
       }//if
 
       show("It is affected by:\n", pc);
-      out_stat_spell_list(obj_ptr->affected_by, pc);      
-
-      show("It's stat affects are:\n", pc);
-      out_stat_spell_list(obj_ptr->stat_affects, pc);
+      out_spell_list(obj_ptr->affected_by, pc);      
 
       if (obj_ptr->obj_proc) {
          show("\tIt has SPEC PROCS.\n", pc);
@@ -2517,14 +2532,8 @@ int do_ostat(object& obj, critter& pc) {
          }//if construct data
          
          if (obj_ptr->CASTS_THESE_SPELLS.size() > 0) {
-            pc.show("\tCasts these spells:   (spell_level, spell_num)\n\t");
-            Cell<stat_spell_cell*> cll(obj_ptr->CASTS_THESE_SPELLS);
-            stat_spell_cell* ssptr;
-            while ((ssptr = cll.next())) {
-               Sprintf(buf2, "(%i, %i) ", ssptr->bonus_duration,
-                       ssptr->stat_spell);
-               pc.show(buf2);
-            }//while
+            pc.show("\tCasts these spells:\n\t ");
+            out_spell_list(obj_ptr->CASTS_THESE_SPELLS, pc);
             pc.show("\n");
          }//if
          else {
@@ -2532,6 +2541,7 @@ int do_ostat(object& obj, critter& pc) {
          }
       }//if obj proc
 
+      pc.show("Stat affects are:\n");
       show_stat_affects(*obj_ptr, pc);
 
       if (obj_ptr->in_list) 

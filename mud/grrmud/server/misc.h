@@ -34,6 +34,8 @@
 #include "script.h"
 #include "zone.h"
 #include "BugEntry.h"
+#include "SkillSpell.h"
+#include "MudStats.h"
 
 extern LazyPtrArray<room> room_list;
 extern List<room*> embattled_rooms; 
@@ -50,6 +52,15 @@ extern BugCollection bl_bugs;
 extern BugCollection bl_comp_ideas;
 extern BugCollection bl_comp_bugs;
 
+
+/** calculate the ratio between objects casting spell a spell and the
+ * number of players online.  It will be fudged so that 1 will be
+ * considered a 'fair' amount.  If > 1.0 then the spell should probably
+ * be weakened somewhat.  It will never be less than 1.0
+ */
+float spell_objs_ratio(int spell_num);
+
+const char* cstr(CSentryE e, critter& c);
 
 // Returns address of static member (not thread safe)
 String& getCurTime(); //in the real world (tm) :)

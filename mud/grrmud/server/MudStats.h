@@ -20,33 +20,21 @@
 //                                     greearb@agcs.com
 //
 
-#ifndef LOAD_WORLD_INCLUDE
-#define LOAD_WORLD_INCLUDE
 
-void writeSiteBanned();
-void readSiteBanned();
+#ifndef __BEN_MUD_STATS_H
+#define __BEN_MUD_STATS_H
 
-void recursive_init_loads(object& obj, int depth);
-void recursive_init_unload(object& obj, int depth);
+#include "const.h"
 
-void recursive_init_loads(critter& pc);
-void recursive_init_unload(critter& mob);
+// Good place to put global data...
+class MudStats {
+protected:
+   
+public:
+   static MudStats& instance(); //instance of self
 
-void init_loads(); //count up things in game at start
-void init_casting_objs();
+   int getPlayerCount();
+};
 
-void load_boards();
-void load_wld();
-void load_zone(int i_th); //read in i_th zone file
-void load_objects(int of_zone);
-void load_critters(int of_zone);
-void load_doors(int of_zone);
-void read_setup();
-void write_setup();
-void load_skill_spells();
-
-void write_all_zones(); //used for DB changeover mostly
-void write_all_doors(); //NOT CODED now
-void write_all_objects(); //NOT CODED now
 
 #endif

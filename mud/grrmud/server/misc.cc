@@ -42,6 +42,31 @@
 #include <time.h>
 
 
+
+/** calculate the ratio between objects casting spell a spell and the
+ * number of players online.  It will be fudged so that 1 will be
+ * considered a 'fair' amount.  If > 1.0 then the spell should probably
+ * be weakened somewhat.
+ */
+float spell_objs_ratio(int spell_num) {
+   // Take potions & scrolls into affect, all 2 per person.
+   float cnt = SSCollection::instance().getSS(spell_num).getSpellCastingCount();
+   if (cnt == 0)
+      cnt = 1.0;
+
+   float pcnt = (((float)(MudStats::instance().getPlayerCount()) 
+                 * 1.5 + 10.0) / cnt);
+   if (pcnt < 1.0)
+      pcnt = 1.0;
+   return pcnt;
+}//spell_objs_ratio
+
+
+const char* cstr(CSentryE e, critter& c) {
+   return CSHandler::getString(e, c.getLanguageChoice());
+}
+
+
 String& getCurTime() { //in the real world (tm) :)
    static String retval(100);
 
@@ -244,17 +269,28 @@ void join_in_battle(critter& agg, critter& vict) {
 
    //Some mobs will remember....
    if (vict.isNpc()) {
-      if ((((vict.getLevel() > 20) && vict.mob->getBadAssedness() > 0) ||
-          ((vict.mob->getBadAssedness() > 3))) ||
-          (((vict.getLevel() > 20) && vict.getBenevolence() <= 0) ||
-          ((vict.getBenevolence() < 0)))) {
-         vict.remember(agg);
-         do_tell(vict, "I'll remember that!!", agg, FALSE,
-                 agg.getCurRoomNum());
-      }//if
-      if ((vict.getBenevolence() <= -4) || (vict.mob->getBadAssedness() >= 5)) {
-         vict.setTrackingTarget(*(agg.getShortName()));
+      critter* virt_attacker = NULL;
+      if (agg.isPc()) {
+         virt_attacker = &agg;
       }
+      else {
+         virt_attacker = agg.getFollowerOf();
+      }
+
+      if (virt_attacker) {
+         if ((((vict.getLevel() > 20) && vict.mob->getBadAssedness() > 0) ||
+              ((vict.mob->getBadAssedness() > 3))) ||
+             (((vict.getLevel() > 20) && vict.getBenevolence() <= 0) ||
+              ((vict.getBenevolence() < 0)))) {
+            vict.remember(*virt_attacker);
+            do_tell(vict, "I'll remember that!!", *virt_attacker, FALSE,
+                    virt_attacker->getCurRoomNum());
+         }//if
+         if ((vict.getBenevolence() <= -4) ||
+             (vict.mob->getBadAssedness() >= 5)) {
+            vict.setTrackingTarget(*(virt_attacker->getShortName()));
+         }
+      }//if we found a PC responsible
    }//if
 
    agg.PAUSE += 1; //vict should get at least one hit in

@@ -312,6 +312,9 @@ void load_wld() {
 		//these values are stored in the CUR_IN_GAME fields
 		//as of now, shopkeeper's permanent inventory is not counted
 
+   init_casting_objs(); //Initialize the SkillSpell list
+
+
    cout << "The world has been constructed at least somewhat successfully!"
         << endl;
 
@@ -322,6 +325,21 @@ void load_wld() {
    //exit(100);
 
 }//load_wld
+
+
+void init_casting_objs() {
+   for (int i = 0; i<NUMBER_OF_ITEMS; i++) {
+      if (obj_list[i].isInUse()) {
+         if (obj_list[i].obj_proc) {
+            Cell<stat_spell_cell*> cll(obj_list[i].obj_proc->casts_these_spells);
+            stat_spell_cell* ptr;
+            while ((ptr = cll.next())) {
+               SSCollection::instance().getSS(ptr->stat_spell).addNewCaster(i);
+            }//while
+         }//if could cast spells
+      }//if in use
+   }//for all objects
+}//init_casting_objects
 
 
 void write_all_zones() {

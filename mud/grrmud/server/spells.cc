@@ -452,7 +452,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
                show(buf, vict);
                Sprintf(buf, "burns the flesh from %S's living bones!\n",
                        name_of_crit(vict, ~0));
-               emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+               emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
                do_fatality = TRUE;
             }//if
             else {
@@ -468,7 +468,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "singes %S with %s fireball!\n", 
                        name_of_crit(vict, ~0), 
                        get_his_her(agg));
-               emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+               emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
             }//else no fatality
          }//missed
          agg.MANA -= spell_mana;

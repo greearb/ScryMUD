@@ -37,7 +37,6 @@
 #include "batl_prc.h"
 #include "battle.h"
 
-
 const char* PcPositionStrings[] = {"stand", "sit", "rest", "sleep", "meditate",
                                    "stun", "dead", "prone"};
 
@@ -970,6 +969,19 @@ temp_crit_data::~temp_crit_data() {
    Clear();
 }//destructor
 
+int temp_crit_data::doUnShield() {
+   if (shielding) {
+      if (shielding->temp_crit && 
+          shielding->temp_crit->shielded_by) {
+         shielding->temp_crit->shielded_by = NULL;
+      }//if
+      shielding = NULL;
+      return 0;
+   }//if
+   return -1;
+}//doUnShield
+
+
 void temp_crit_data::Clear() {
    if (guarded_by) {
       if (guarded_by->temp_crit && guarded_by->temp_crit->guarding) {
@@ -990,13 +1002,8 @@ void temp_crit_data::Clear() {
       }//if
       shielded_by = NULL;
    }//if
-   if (shielding) {
-      if (shielding->temp_crit && 
-          shielding->temp_crit->shielded_by) {
-         shielding->temp_crit->shielded_by = NULL;
-      }//if
-      shielding = NULL;
-   }//if
+
+   doUnShield();
 }//Clear
 
 
@@ -1013,6 +1020,7 @@ mob_data::mob_data() {
    proc_data = NULL;
    cur_script = NULL;
    skin_num = 0;
+   home_room = 0;
 }//constructor
 
 mob_data::mob_data(mob_data& source) {
@@ -1041,6 +1049,7 @@ void mob_data::Clear() {
    clear_ptr_list(pending_scripts);
 
    cur_script = NULL; //its held in the mob_proc_scripts
+   home_room = 0;
 
 }//Clear, mob_data
 
@@ -1111,6 +1120,7 @@ mob_data& mob_data::operator= (mob_data& source) {
       proc_data = new spec_data(*(source.proc_data));
    }//if
    skin_num = source.skin_num;
+   home_room = source.home_room;
    
    Cell<MobScript*> cll;
    source.mob_proc_scripts.head(cll);
@@ -1187,9 +1197,6 @@ void mob_data::Read(ifstream& ofile, short read_all) {
    mob_data_flags.Read(ofile);
    
    // not currently used.
-   //mob_data_flags.turn_off(6);
-   mob_data_flags.turn_off(7);
-   mob_data_flags.turn_off(8);
    mob_data_flags.turn_off(9);
    mob_data_flags.turn_off(10);
    mob_data_flags.turn_off(11);
@@ -1401,6 +1408,8 @@ void pc_data::Clear() {
    user1_str = ANSI_BLACK;
    user2_str = ANSI_BLACK;
    user3_str = ANSI_BLACK;
+
+   preferred_language = English;
    
    last_login_time = 0; //in seconds, since 1970 etc...
    total_time_online = 0; //in seconds
@@ -1471,6 +1480,8 @@ pc_data& pc_data::operator=(const pc_data& source) {
    user1_str = source.user1_str;
    user2_str = source.user2_str;
    user3_str = source.user3_str;
+
+   preferred_language = source.preferred_language;
 
    return *this;
 }//operator=, pc_data
@@ -1546,6 +1557,10 @@ void pc_data::Write(ofstream& ofile) {
       ofile << user2_str << " User2 Color" << endl;
       ofile << user3_str << " User3 color" << endl;
    }//if
+
+   if (pc_data_flags.get(27)) {
+      ofile << (int)(preferred_language) << " -1 preferred_language\n" << endl;
+   }
 
    ofile << "*** end of pc data ***\n";
 }//Write()       
@@ -1659,6 +1674,13 @@ void pc_data::Read(ifstream& ofile) {
       ofile.getline(tmp, 80);
    }//if
 
+   if (pc_data_flags.get(27)) {
+      int t;
+      ofile >> t;
+      preferred_language = (LanguageE)(t);
+      ofile.getline(tmp, 80);
+   }
+
    ofile.getline(tmp, 80); //grabs extra line/comment
 }//Read()       
 
@@ -1680,8 +1702,6 @@ critter::critter() {
    temp_crit = NULL;
    Clear();
 } // crit constructor
-
-
 
 
 critter::critter(critter& source) {
@@ -1920,6 +1940,96 @@ void critter::Clear() {
    //mudlog.log(DBG, "Done w/clear.\n");
 }//crit Clear
 
+
+int critter::doUnShield() {
+   if (temp_crit) {
+      return temp_crit->doUnShield();
+   }
+   return -1;
+}
+
+
+int critter::travelToRoom(int targ_room_num, int num_steps, int& is_dead) {
+   List<int> path;
+
+   if (!isStanding()) {
+      //Try to get up...
+      wake(*this);
+      stand(*this);
+   }
+
+   path_from_a_to_b(getCurRoomNum(), targ_room_num, path);
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "travelToRoom: targ_room: " << targ_room_num << " num_steps: "
+             << num_steps << " from_room: " << getCurRoomNum() << endl;
+      Cell<int> cll(path);
+      int foo;
+      mudlog << "Path: ";
+      while ((foo = cll.next())) {
+         mudlog << " [" << foo << "] ";
+      }//while
+      mudlog << "\n\n";
+   }//if
+
+   if (path.isEmpty()) {
+      return -1; //couldn't find it
+   }//if
+   else { //got a valid path
+      // First, get rid of the first step, that is the current room.
+      path.popFront();
+
+      int iter = min(path.size(), num_steps);
+
+      for (int i = 0; ((i < iter) && (IsEmpty(IS_FIGHTING))); i++) {
+         int next_room = path.popFront();
+         String* dir = dir_of_room(*(getCurRoom()), next_room);
+
+         if (!dir) {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "WARNING: Could not find door to room: "
+                      << next_room << " from room: " << getCurRoomNum()
+                      << endl;
+            }//if
+            return -1;
+         }//if
+         else {
+            if (mudlog.ofLevel(DBG)) {
+               mudlog << "\ttravelToRoom, dir: " << *dir << endl;
+            }
+         }
+
+         door* dptr = door::findDoor(getCurRoom()->DOORS, 1, dir, ~0,
+                                     *(getCurRoom()));
+         
+         if (!dptr) {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "WARNING: Could not find door: " << *dir 
+                      << " to room: "
+                      << next_room << " from room: " << getCurRoomNum()
+                      << endl;
+            }//if
+            return -1;
+         }//if
+         
+         if (dptr->isClosed()) {
+            if (!open(1, dir, *this)) {
+               return -1;  //cant get there from here
+            }//if
+         }//if
+         
+         //move will take care of attack
+         move(*this, 1, *dir, TRUE, *(getCurRoom()), is_dead);
+         
+         if (is_dead) {
+            return -1;
+         }
+      }//for
+   }//else
+   return 0;
+}//travelToRoom
+
+
 int critter::getNakedWeight() const {
    if (short_cur_stats[41] == 0) {
       return 150;
@@ -1959,20 +2069,16 @@ void critter::checkForBattle(room& rm) {
 
    List<critter*> tmp_crits(rm.getCrits()); //just do shallow copy
    Cell<critter*> cll(tmp_crits);
-   String buf(50);
 
    critter* ptr;
-   Sprintf(buf, "hit %S\n", getShortName());
-   String buf2(50);
    while ((ptr = cll.next())) {
       if (!rm.haveCritter(this)) {
          return;
       }
       if (rm.haveCritter(ptr)) {
-         if (ptr->doesRemember(*this) && ptr->canDetect(*this) &&
-             (d(1, DEX) < (d(1, ptr->DEX * 2 + ptr->INT)))) {
+         if (ptr->doesRemember(*this) && ptr->canDetect(*this)) {
             say("There you are!!", *ptr, *(ptr->getCurRoom()));
-            ptr->processInput(buf, FALSE, TRUE);
+            try_hit(*this, *ptr);
          }//if
       }//if
 
@@ -1980,11 +2086,9 @@ void critter::checkForBattle(room& rm) {
          return;
       }
       if (rm.haveCritter(ptr)) { //make sure we're still there
-         if (doesRemember(*ptr) && canDetect(*ptr) &&
-             (d(1, ptr->DEX) < (d(1, DEX * 2 + INT)))) {
+         if (doesRemember(*ptr) && canDetect(*ptr)) {
             say("I've found you now!!", *this, *(getCurRoom()));
-            Sprintf(buf2, "hit %S\n", ptr->getShortName());
-            processInput(buf2, FALSE, TRUE);
+            try_hit(*ptr, *this);
          }//if
       }//if
    }//while
@@ -2303,6 +2407,13 @@ void critter::notifyHasBeenHurled() {
    }
 }
 
+
+int critter::shouldBeHoming() {
+   return (mob && isSmob() && !mob->isNoHoming() && !isTracking() &&
+           (getHomeRoom() != getCurRoomNum()));
+}
+
+
 int critter::canBeHurled() {
    return !(CRIT_FLAGS.get(25));
 }
@@ -2492,6 +2603,10 @@ void critter::trackToKill(critter& vict, int& is_dead) {
       return;
    }//if
 
+   // Not going to track non-player characters, don't move if sessile
+   if (vict.isNpc() || isSessile())
+      return;
+
    remember(vict);
 
    if (isSentinel())
@@ -2573,7 +2688,7 @@ void critter::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
    if (!is_dead) {
       look(1, &NULL_STRING, *this, FALSE); //don't ignore brief
    }
-}
+}//doGoToRoom
 
 
 void critter::breakEarthMeld() {
@@ -2669,6 +2784,17 @@ void critter::setMov(int i) {
 
 void critter::show(const char* msg) {
    ::show(msg, *this);
+}
+
+void critter::show(CSentryE which_string) {
+   show(CSHandler::getString(which_string, getLanguageChoice()));
+}
+
+LanguageE critter::getLanguageChoice() const {
+   if (pc) {
+      return pc->preferred_language;
+   }
+   return English;
 }
 
 void critter::setHP_MAX(int i) {
@@ -2824,6 +2950,13 @@ void critter::setCurRoomNum(int i) {
       i = 0;
 
    IN_ROOM = i;
+
+   // The first time we are placed in a room, lets remember it
+   // so we can get home once we've tracked down anybody that is
+   // bothering us!!
+   if (mob && (mob->home_room == 0)) {
+      mob->home_room = i;
+   }
 
    // So now I want to know the current room for all Objects that
    // may be scripting.  If they are scripting, then we know they
@@ -3294,7 +3427,7 @@ void critter::doScriptJump(int abs_index) {
 
 void critter::remember(critter& targ) {
 
-   if (isPc())
+   if (isPc() || targ.isNpc())
      return;
 
    if (doesRemember(targ))
@@ -3334,7 +3467,6 @@ int critter::doesRemember(critter& targ) {
 
 
 void critter::doHuntProc(int num_steps, int& is_dead) {
-   List<int> path;
    int targ_room_num;
 
    if (!mob || !mob->proc_data || 
@@ -3343,12 +3475,19 @@ void critter::doHuntProc(int num_steps, int& is_dead) {
       return;
    }//if
 
+   // If yer sessile, then you can't hunt!
+   if (isSessile()) {
+      return;
+   }
+
    critter* targ = have_crit_named(pc_list, 1, getTrackingTarget(),
                                    ~0, *(getCurRoom()));
-   if (!targ) {
-      targ = have_crit_named(affected_mobs, 1,
-                             getTrackingTarget(), ~0, *(getCurRoom()));
-   }//if
+
+   // No longer hunt MOBS
+   //if (!targ) {
+   //   targ = have_crit_named(affected_mobs, 1,
+   //                          getTrackingTarget(), ~0, *(getCurRoom()));
+   //}//if
 
    if (!targ) { //quit hunting that person (maybe)
       Cell<String*> cll(HUNTING);
@@ -3360,7 +3499,7 @@ void critter::doHuntProc(int num_steps, int& is_dead) {
          /* There is a chance we will forget if the target is not
           * logged on currently.
           */
-	 if ((strcasecmp(*sp, TRACKING) == 0) && (d(1,50) == 5)) {
+	 if ((strcasecmp(*sp, TRACKING) == 0) && (d(1,100) == 5)) {
 	    stp = sp;
 	    sp = HUNTING.lose(cll);
 	    delete stp;
@@ -3378,72 +3517,25 @@ void critter::doHuntProc(int num_steps, int& is_dead) {
 	 return;
       }//if
 
-      if (!targ->isStanding()) {
-         //Try to get up...
-         wake(*targ);
-         stand(*targ);
-      }
-
       targ_room_num = targ->getCurRoomNum();
 
       if (targ_room_num == getCurRoomNum()) {
          checkForBattle(*(getCurRoom()));
-         return; //already there!
       }
-
-      path_from_a_to_b(getCurRoomNum(), targ_room_num, path);
-
-      if (IsEmpty(path)) {
-	 return; //couldn't find it
-      }//if
-      else { //got a valid path
-         // First, get rid of the first step, that is the current room.
-         path.popFront();
-
-	 int iter = min(path.size(), num_steps);
-
-	 for (int i = 0; ((i < iter) && (IsEmpty(IS_FIGHTING))); i++) {
-            int next_room = path.popFront();
-	    String* dir = dir_of_room(*(getCurRoom()), next_room);
-
-            if (!dir) {
-               if (mudlog.ofLevel(WRN)) {
-                  mudlog << "WARNING: Could not find door to room: "
-                         << next_room << " from room: " << getCurRoomNum()
-                         << endl;
-               }//if
-               return;
-            }//if
-
-	    door* dptr = door::findDoor(getCurRoom()->DOORS, 1, dir, ~0,
-                                        *(getCurRoom()));
-
-            if (!dptr) {
-               if (mudlog.ofLevel(WRN)) {
-                  mudlog << "WARNING: Could not find door: " << *dir 
-                         << " to room: "
-                         << next_room << " from room: " << getCurRoomNum()
-                         << endl;
-               }//if
-               return;
-            }//if
-
-	    if (dptr->isClosed()) {
-	       if (!open(1, dir, *this)) {
-	          return;  //cant get there from here
-	       }//if
-	    }//if
-
-            //move will take care of attack
-	    move(*this, 1, *dir, TRUE, *(getCurRoom()), is_dead);
-            
-            if (is_dead) {
-               break;
-            }
-	 }//for
-      }//else
+      else {
+         travelToRoom(targ_room_num, num_steps, is_dead);
+      }
    }//else go get em
-}//do_hunt_proc
+}//doHuntProc
+
+
+int critter::isTeacher() {
+   return (mob && mob->proc_data && FLAG1.get(2));
+}
+
+int critter::isShopKeeper() {
+   return (mob && mob->proc_data && FLAG1.get(1));
+}
 
 
 int critter::isPlayerShopKeeper() {
@@ -3586,7 +3678,7 @@ int critter::withdrawCoins(int count, critter& banker) { //do messages
    if (long_data[2] >= count) {
       long_data[2] -= count;
       long_data[0] += count;
-      Sprintf(buf, "%S gives you %i coins.\n", banker.getName());
+      Sprintf(buf, "%S gives you %i coins.\n", banker.getName(), count);
       show(buf);
       Sprintf(buf, "Your balance now %i coins.\n", long_data[2]);
       do_tell(banker, buf, *this, FALSE, getCurRoomNum());
@@ -3611,7 +3703,8 @@ int critter::depositCoins(int count, critter& banker) { //do messages
    if (long_data[0] >= count) {
       long_data[0] -= count;
       long_data[2] += count;
-      Sprintf(buf, "%S puts %i coins into your account.\n", banker.getName());
+      Sprintf(buf, "%S puts %i coins into your account.\n", banker.getName(),
+              count);
       show(buf);
       Sprintf(buf, "Your balance now %i coins.\n", long_data[2]);
       do_tell(banker, buf, *this, FALSE, getCurRoomNum());

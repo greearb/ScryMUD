@@ -123,7 +123,9 @@ void clear_crit_list(List<critter*>& lst);
 void clear_obj_list(List<object*>& lst);
 
 void out_field(const bitfield& field, critter& pc, const BitfieldNames& names);
-void out_stat_spell_list(const List<stat_spell_cell*>& lst, critter& pc);
+void out_stat_list(const List<stat_spell_cell*>& lst, critter& pc,
+                   const BitfieldNames& names);
+void out_spell_list(const List<stat_spell_cell*>& lst, critter& pc);
 //void critter::doBecomeNonPet();
 const String* single_obj_name(object& obj, int see_bit);
 short name_is_secret(const String* name, door& dr);

@@ -1,13 +1,23 @@
 <help immortal slist>
 
 This function lists the spells and skills that may be learned. 
-Note that not all have been implemented.  I am trying to start at
-the beginning and work down.  UPDATE:  most are now coded, but
-all need testing still. 
+There should be a help file for each spell (fully specified, no
+abbreviation here).
+
+This also shows the pre-requisites and enables, as well as the
+objects which are able to cast this spell (and how many there are
+of them currently in the game).  Note that more and
+more spells will have their power modified (inversly) by the
+number of objects in the game that can cast them.  I am
+implementing this to balance the ability to brew potions and
+scribe scrolls.
 
 Syntax:  slist <<begin_number> <<amount_to_list>
+Syntax:  slist [skill/spell name]
 
 Example:  slist 0 20		//  Will list first 20 spells/skills
+Example:  slist heal
+
 <color=red>
 See Also:  teach, practice, abilities
 </color></help>

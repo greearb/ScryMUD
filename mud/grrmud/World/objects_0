@@ -46,7 +46,7 @@ You see a ghastly bug-ridden corpse!
 You ponder the sacralige and then manage to rationalize your steeling of this
 former being's belongings.  What would a dead person need with gold anyway??
 ~
-70 54 40 31 10 -1  -:| bitfield |:-
+54 40 31 10 -1  -:| bitfield |:-
 0 0 100 0 32000 150 0 0 0 	extras
 1024 100 3 0 	cur_stats
 128 -1  -:| bitfield |:-
@@ -85,7 +85,7 @@ A pile of gold lies here.
      You see a pile of gold lying on the ground, wish you could tell how
 big it was eh? :)
 ~
-70 55 40 10 -1  -:| bitfield |:-
+55 40 10 -1  -:| bitfield |:-
 0 0 100 0 32000 2 0 0 0 	extras
 1024 0 5 0 	cur_stats
 -1	affected_by
@@ -264,7 +264,8 @@ signature reads Don Quemar.
 -1	affected_by
 -1	inv
 -1	stat_affects
--1  -:| bitfield |:-
+10 -1  -:| bitfield |:-
+219 22 -1 spell#, level (casts)
 End of Object.
 
 
@@ -442,7 +443,8 @@ A scroll in a delicate hand lies here rolled up.
 -1	affected_by
 -1	inv
 -1	stat_affects
--1  -:| bitfield |:-
+10 -1  -:| bitfield |:-
+219 22 -1 spell#, level (casts)
 End of Object.
 
 
@@ -461,7 +463,8 @@ A tightly wrapped scroll lies here.
 -1	affected_by
 -1	inv
 -1	stat_affects
--1  -:| bitfield |:-
+10 -1  -:| bitfield |:-
+203 21 -1 spell#, level (casts)
 End of Object.
 
 
@@ -481,7 +484,8 @@ not exude evil however, but gives off instead an aura of peacefullness.
 -1	affected_by
 -1	inv
 -1	stat_affects
--1  -:| bitfield |:-
+10 -1  -:| bitfield |:-
+205 22 -1 spell#, level (casts)
 End of Object.
 
 
@@ -500,7 +504,8 @@ An evil looking scroll lies here.
 -1	affected_by
 -1	inv
 -1	stat_affects
--1  -:| bitfield |:-
+10 -1  -:| bitfield |:-
+226 20 -1 spell#, level (casts)
 End of Object.
 
 
@@ -519,7 +524,8 @@ type seems to permeate the scroll where the incantations are written.
 -1	affected_by
 -1	inv
 -1	stat_affects
--1  -:| bitfield |:-
+10 -1  -:| bitfield |:-
+218 20 -1 spell#, level (casts)
 End of Object.
 
 
@@ -540,7 +546,8 @@ filled with strange equations of some type.
 -1	affected_by
 -1	inv
 -1	stat_affects
--1  -:| bitfield |:-
+10 -1  -:| bitfield |:-
+179 20 -1 spell#, level (casts)
 End of Object.
 
 
@@ -852,7 +859,7 @@ protection to piercing weapons!
 ~
 56 40 35 10 -1  -:| bitfield |:-
 0 0 50 0 50 12 0 0 0 	extras
-0 2100 101 0 	cur_stats
+1024 2100 101 0 	cur_stats
 -1	affected_by
 -1	inv
 9 -15 -1	stat_affects
@@ -898,7 +905,8 @@ it guards him or her.
 -1	affected_by
 -1	inv
 -1	stat_affects
--1  -:| bitfield |:-
+10 -1  -:| bitfield |:-
+217 20 -1 spell#, level (casts)
 End of Object.
 
 
@@ -947,6 +955,26 @@ three inches of granite to it's hilt, itself hissing violently!
 End of Object.
 
 
+153	 Start of Object
+scroll healing ~	names
+a scroll of healing
+~
+A scroll of healing lies here tightly bound.
+~
+This soft scroll is covered with healing words and smells of ointment.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 8500 153 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+1 20 -1 spell#, level (casts)
+End of Object.
+
+
 155	 Start of Object
 key bronze ~	names
 a bronze key
@@ -966,6 +994,48 @@ goes to a door or a large chest.
 End of Object.
 
 
+160	 Start of Object
+scroll rainbow ~	names
+a rainbow colored scroll
+~
+A rainbow colored scroll lies here.
+~
+A beautiful rainbow colored scroll lies here.  An almost invisible, and
+cool, fire seems to burn around the edges...
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 6500 160 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+39 20 -1 spell#, level (casts)
+End of Object.
+
+
+162	 Start of Object
+scroll dart darkness ~	names
+a black scroll
+~
+A black scroll written in block letters lies here.
+~
+Looks like someone was just learning how to write scrolls when they
+fashioned this one!
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 500 162 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+139 20 -1 spell#, level (casts)
+End of Object.
+
+
 188	 Start of Object
 ringmail chainmail mail ~	names
 a ringmail shirt
@@ -978,7 +1048,7 @@ looks quite comfortable, and would no doubt protect you very well!
 ~
 56 40 33 10 0 -1  -:| bitfield |:-
 0 0 50 0 50 11 0 0 0 	extras
-0 2500 188 0 	cur_stats
+1024 2500 188 0 	cur_stats
 -1	affected_by
 -1	inv
 9 -13 -1	stat_affects
@@ -1021,6 +1091,27 @@ do a decent job of protecting it's owner.
 -1	affected_by
 -1	inv
 -1	stat_affects
+End of Object.
+
+
+196	 Start of Object
+scroll shadows ~	names
+a scroll of shadows
+~
+A dark scroll reminding you of smoke lies here.
+~
+This scroll seems to absorb all light, and yet remain almost translucent.
+When you are not staring straight at it, it almost seems to dissappear!
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 500 196 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+140 20 -1 spell#, level (casts)
 End of Object.
 
 
@@ -1096,7 +1187,7 @@ has been known to turn heads as the wearer walks by!
 ~
 56 40 22 10 0 -1  -:| bitfield |:-
 0 0 50 0 50 1 0 0 0 	extras
-0 300 224 0 	cur_stats
+1024 300 224 0 	cur_stats
 -1	affected_by
 -1	inv
 9 -3 -1	stat_affects
@@ -1424,7 +1515,7 @@ properties of any object.
 ~
 63 53 40 31 10 0 -1  -:| bitfield |:-
 0 0 50 0 50 1 0 0 0 	extras
-0 500 313 0 	cur_stats
+1024 500 313 0 	cur_stats
 -1	affected_by
 -1	inv
 -1	stat_affects
@@ -1623,6 +1714,48 @@ quite a lot!
 End of Object.
 
 
+361	 Start of Object
+scroll necromancy ~	names
+a scroll of necromancy
+~
+A scroll of the undead lies here.
+~
+This scroll can reach across the boundaries of life and breathe a tepid
+life into a corpse.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 10500 361 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+149 20 -1 spell#, level (casts)
+End of Object.
+
+
+362	 Start of Object
+scroll faerie fire ~	names
+a scroll of faerie fire
+~
+A scroll of faerie fire lies here.
+~
+This small scroll flickers with unseen colors at the edge of your
+vision.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 1500 362 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+151 20 -1 spell#, level (casts)
+End of Object.
+
+
 365	 Start of Object
 board bulletin cork ~	names
 a reading board
@@ -1644,6 +1777,173 @@ try 'read <number>'   Example:  read 1.
 -1	affected_by
 -1	inv
 -1	stat_affects
+End of Object.
+
+
+366	 Start of Object
+scroll invisibility ~	names
+a scroll of invisibility
+~
+A scroll of invisibility lies here.
+~
+The scroll is filled with spidery text talking of shadows and unseen
+beings.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 5500 366 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+152 20 -1 spell#, level (casts)
+End of Object.
+
+
+367	 Start of Object
+scroll detect magic ~	names
+a scroll of detect magic
+~
+A scroll for the detection of magical powers lies here.
+~
+Tiny lines appear on the scroll, pointing towards the northeast, no matter
+how you turn the scroll.  A small line across the top reads:
+On the Detection of Magical Forces.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 5500 367 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+154 20 -1 spell#, level (casts)
+End of Object.
+
+
+368	 Start of Object
+scroll detect hidden ~	names
+a scroll of detect hidden
+~
+A scroll for the detection of hidden beings lies here.
+~
+This scroll promises to widen your eyes a bit!
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 1500 368 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+162 20 -1 spell#, level (casts)
+End of Object.
+
+
+369	 Start of Object
+scroll detect invisibility ~	names
+a scroll of detect invisibility
+~
+A scroll for the detection of invisible beings lies here.
+~
+This scroll promises to open your eyes to powers beyond the
+physical realm!
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 1500 369 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+163 20 -1 spell#, level (casts)
+End of Object.
+
+
+370	 Start of Object
+scroll sleep ~	names
+a scroll of sleep
+~
+An extremely boring looking scroll lies here.
+~
+This scroll is boredom in words.  As you start to look at it your eyes
+glaze over and your senses begin to drift!
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 1500 370 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+171 20 -1 spell#, level (casts)
+End of Object.
+
+
+372	 Start of Object
+scroll recall ~	names
+a scroll of recall
+~
+A scroll of recall lies here.
+~
+This scroll is often used by adventureres who have no real idea of where
+they are going, or how they might be able to get back!
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 12500 372 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+180 20 -1 spell#, level (casts)
+End of Object.
+
+
+373	 Start of Object
+scroll curse ~	names
+a scroll of a horrible curse
+~
+A scroll filled with a horrible curse lies here.
+~
+This script calls down horrible luck on its victim.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 1500 373 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+196 20 -1 spell#, level (casts)
+End of Object.
+
+
+374	 Start of Object
+potion sight ~	names
+a potion of sight
+~
+A potion of sight lies here in a small vial.
+~
+This potion may cure you from blindness, if you can find it to
+quaf it!
+
+~
+63 52 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+0 3500 374 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+3 20 -1 spell#, level (casts)
 End of Object.
 
 

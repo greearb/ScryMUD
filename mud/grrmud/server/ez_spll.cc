@@ -34,6 +34,8 @@
 #include "skills.h"
 #include "spec_prc.h"
 #include <PtrArray.h>
+#include "MudStats.h"
+#include "SkillSpell.h"
 
 
 void cast_detect_alignment(int i_th, const String* victim,
@@ -1607,7 +1609,7 @@ void do_cast_cure_serious(critter& vict, critter& agg, int is_canned,
    agg.PAUSE++;
 
    if (do_effects) {
-      vict.HP += (10 + d(1,15));
+      vict.HP += (short)(((float)(10 + d(1,15)) / spell_objs_ratio(spell_num)));
       if (vict.HP > vict.HP_MAX)
 	 vict.HP = vict.HP_MAX;
    }//if

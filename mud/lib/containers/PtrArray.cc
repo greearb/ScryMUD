@@ -396,3 +396,108 @@ T* PtrArray<T>::operator[] (const int i) {
    return elementAt(i);
 }
 
+
+///**********************************************************************///
+///*********************  ObjArray  *************************************///
+///**********************************************************************///
+
+/** This should never be called more than once!! */
+template <class T>
+int ObjArray<T>::init(int sz) {
+   if (sz < 5) {
+      sz = 5;
+   }
+   _cnt++;
+
+   len = sz;
+   array = new T[sz];
+   return 0;
+}//constructor
+
+template <class T>
+ObjArray<T>::ObjArray(const ObjArray<T>& src)
+      : len(src.len), bf(src.bf) {
+   array = new T[len];
+   for (int i = 0; i<len; i++) {
+      array[i] = src.array[i];
+   }//for
+}//copy constructor
+
+template <class T>
+ObjArray<T>& ObjArray<T>::operator=(const ObjArray<T>& src) {
+   if (this != &src) {
+      ensureCapacity(src.len);
+      bf = src.bf;
+      
+      // TODO:  Skip un-used ones??
+      for (int i = 0; i<len; i++) {
+         array[i] = src.array[i];
+      }//for
+   }
+   return *this;
+}//operator=
+
+
+template <class T>
+ObjArray<T>::~ObjArray() {
+   delete[] array;
+   _cnt--;
+}//destructor
+
+
+template <class T>
+void ObjArray<T>::ensureCapacity(int cap) {
+   if (cap > len) {
+      T* tmp = array;
+      array = new T[cap + len];
+
+      // TODO:  Skip un-used ones??
+      for (int i = 0; i<len; i++) {
+         array[i] = tmp[i];
+      }//for
+      
+      delete[] tmp;
+      len += cap;
+   }//if
+}//ensureCapacity
+
+
+template <class T>
+void ObjArray<T>::addElement(T& val) {
+   int idx = bf.firstClear();
+   ensureCapacity(idx);
+   array[idx] = val;
+   bf.turn_on(idx);
+}//addElement
+
+template <class T>
+void ObjArray<T>::appendElement(T& val) {
+   int idx = bf.lastSet();
+   idx++;
+   ensureCapacity(idx);
+   array[idx] = val;
+   bf.turn_on(idx);
+}//appendElement
+
+
+template <class T>
+void ObjArray<T>::purge() {
+   delete[] array;
+   array = NULL;
+   butfield.off_all();
+   len = 0;
+}//purge
+
+/** Returns TRUE if the array contains the element 'val', as
+ * determined by operator=
+ */
+template <class T>
+int ObjArray<T>::contains(T& val) const {
+   for (int i = getNextIdx(-1); i != -1;
+        i = getNextIdx(i)) {
+      if (val == elementAt(i)) {
+         return TRUE;
+      }
+   }//for
+   return FALSE;
+}//contains

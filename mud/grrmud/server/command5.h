@@ -65,7 +65,7 @@ int list_obj_scripts(int obj_num, critter& pc);
 int stat_obj_script(int obj_num, int script_idx, critter& pc);
 int rem_obj_script(int obj_num, String& trigger, int i_th, critter& pc);
 
-int slist(int begin, int howmany, critter& pc);
+int slist(int begin, const String& name, int howmany, critter& pc);
 int teach(int i_th, const String* name, int prcnt, const String* skill, 
 	   critter& pc);
 int add_perm_inv(int i_th, const String* name, int obj_num, critter& pc);

@@ -87,7 +87,29 @@ int do_berserk(critter& pc) {
                if (!HaveData(ptr, pc.IS_FIGHTING)) {
                   join_in_battle(pc, *ptr);
                }//if
-               do_battle_round(pc, *ptr, 10);
+
+               if (ptr->isUsingClient()) {
+                  show("<BATTLE>", *ptr);
+               }
+               else if (ptr->isUsingColor()) {
+                  show(*(ptr->getBattleColor()), *ptr);
+               }
+               
+               int show_vict_tags = TRUE;
+
+               do_battle_round(pc, *ptr, 10, show_vict_tags);
+
+               // Tags will only be shown in do_battle_round if
+               // the victim died (and was a PC)
+               if (show_vict_tags) {
+                  if (ptr->isUsingClient()) {
+                     show("</BATTLE>", *ptr);
+                  }
+                  else if (ptr->isUsingColor()) {
+                     show(*(ptr->getDefaultColor()), *ptr);
+                  }
+               }//if
+
             }//if
          }//
       }//while

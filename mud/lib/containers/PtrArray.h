@@ -30,6 +30,10 @@
 #define TRUE 1
 #endif
 
+#include <bitfield.h>
+#include <assert.h>
+
+
 /**  An array of type class T pointers.  Does bounds checking
  * and will grow as needed. 
  */
@@ -175,6 +179,75 @@ public:
 
 };//LazyPtrArray<class T>
 
+
+template <class T> class ObjArray {
+private:
+   int _cnt;
+
+protected:
+   int len;
+   bitfield bf;
+   T* array;
+
+   int init(int sz);
+
+public:
+   ObjArray() { init(5); }
+   ObjArray(int sz) { init(sz); }
+   ObjArray(const ObjArray<T>& src);
+   ObjArray<T>& operator=(const ObjArray<T>& src);
+   ~ObjArray();
+
+   T& elementAt(int idx) const {
+      assert((idx >= 0) && (idx < len));
+      return array[idx];
+   }
+
+   void setElementAt(int idx, T& val) {
+      assert((idx >= 0) && (idx < len));
+      array[idx] = val;
+      bf.turn_on(idx);
+   }
+
+   void ensureCapacity(int sz);
+
+   int isEmpty() const { return bf.is_zero(); }
+
+   /** Get the next valid index.  Uses internal bitfield to walk
+    * over un-used spaces.  Returns -1 when there is no next.
+    */
+   int getNextIdx(int from_idx) const { return bf.nextSet(from_idx); }
+   
+   /** Insert in first free position. */
+   void addElement(T& val);
+   
+   /** Add to the end of the array. */
+   void appendElement(T& val);
+
+   /** Mark spot in array is un-used. */
+   void removeElement(int idx) {
+      assert((idx >= 0) && (idx < len));
+      bf.turn_off(idx);
+   }
+
+   /** Does not clean up memory, just marks all as un-used. */
+   void clear() { bf.off_all(); }
+
+   /** Cleans up all the memory it can. */
+   void purge();
+
+   /** How many elements are valid in our array. */
+   int getElementCount() const { return bf.flagsSet(); }
+
+   /** Get the maximum capacity available w/out grabbing more memory. */
+   int getCapacity() const { return len; }
+
+   /** Returns TRUE if the array contains the element 'val', as
+    * determined by operator=
+    */
+   int contains(T& val) const ;
+
+};//ObjArray
 
 #include "PtrArray.cc"
 

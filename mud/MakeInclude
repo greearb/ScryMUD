@@ -25,8 +25,8 @@ MAKE=make
 CUR_DATE=`date '+%y.%m.%d'`
 
 #  For distribution purposes
-SCRY_VERSION=1.9.2
-HEGEMON_VERSION=1.9.2
+SCRY_VERSION=1.9.3
+HEGEMON_VERSION=1.9.3
 
 LDFLAGS =  -L$(MUD_HOME)/lib #linker flaggs
 

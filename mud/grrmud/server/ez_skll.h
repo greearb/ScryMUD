@@ -36,7 +36,7 @@ int do_picklock(object& vict, critter& pc);
 
 int guard(int i_th, const String* vict, critter& pc);
 int do_guard(critter& vict, critter& pc);
-int shield(int i_th, const String* vict, critter& pc);
+int shield(int i_th, const String* vict, critter& pc, int was_ordered);
 int do_shield(critter& vict, critter& pc);
 int rescue(int i_th, const String* vict, critter& pc);
 int do_rescue(critter& vict, critter& pc);

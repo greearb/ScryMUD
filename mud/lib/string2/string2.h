@@ -111,7 +111,15 @@ public:
 
    char charAt(int idx) const ;
    void setCharAt(int idx, const char val);
+
+   /** Doesn't release memory, but virtually clears out the data. */
    void Clear();
+   void Vclear() { Clear(); } //Same as Clear now.. (Deprecated)
+   void clear() { Clear(); } //Should migrate to lower-case cmds some day.
+
+   /** Releases all the memory it can. */
+   void purge();
+
    void Prepend(const int source);
    void Prepend(const long source);
    void Prepend(const char* source);
@@ -125,7 +133,6 @@ public:
    void Getline(istream& stream, int max_len);
    void Cap();
    void Tolower(); //makes total string lowercase
-   void Vclear(); //virtually clears it, (copies '\0' into first posn)
    int  Strlen() const;
    void Report() const; //logs vital stats, for debugging.
    void ensureCapacity(int max_length);
@@ -135,6 +142,14 @@ public:
    //writes to a descriptor, deletes what it writes
 
    int  Read(const int desc, const int max_to_read); //reads from a desc
+
+   /** Reads untill it finds the delim, and then reads untill
+    * it finds another.  Escape the delim with a \ (backslash).
+    * This is not too efficient, as it reads one character at
+    * a time, btw.
+    */
+   int readToken(char delim, ifstream& dafile, int include_delim);
+
    void Termed_Read(ifstream& da_file);
    int Contains(const char ch) const;
    void  Refigure_strlen();			//bletcherous hack!

@@ -1766,7 +1766,9 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       show("bad_assedness (-10, 10)     skill_violence (-10, 10)\n", pc);
       show("defensiveness (-10, 10)     social_awareness (-10, 10)\n", pc);
       show("benevolence (-10, 10)       pause (0, 50)\n", pc);
-      show("manager\n", pc);
+      show("Language (0 English, 1 Spanish, 2 Portugues)\n", pc);
+      show("home_room (0 - MAX_ROOMS)\n", pc);
+      show("manager (of store)\n", pc);
       return 0;
    }//if
 
@@ -1845,6 +1847,12 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
           flag = TRUE;
 	}//if
       }//if
+      else if (strncasecmp(*targ, "home_room", len1) == 0) {
+	if (check_l_range(new_val, 0, NUMBER_OF_ROOMS - 1, pc, TRUE)) {
+           ptr->mob->home_room = new_val;
+           flag = TRUE;
+	}//if
+      }//if
       else if (strncasecmp(*targ, "defensiveness", len1) == 0) {
 	if (check_l_range(new_val, -10, 10, pc, TRUE)) {
 	  ptr->mob->setDefensiveness(new_val);
@@ -1908,6 +1916,12 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       else if (strncasecmp(*targ, "practices", len1) == 0) {
 	if (check_l_range(new_val, 0, 100, pc, TRUE)) {
 	  ptr->PRACS = new_val;
+	  flag = TRUE;
+	}//if
+      }//if
+      else if (strncasecmp(*targ, "language", len1) == 0) {
+	if (check_l_range(new_val, 0, 2, pc, TRUE)) {
+	  ptr->pc->preferred_language = (LanguageE)(new_val);
 	  flag = TRUE;
 	}//if
       }//if
@@ -2649,7 +2663,7 @@ int tog_oflag(int flagnum, const String* flag_type,
    
 
 int tog_mflag(int flagnum, const String* flag_type, 
-               int i_th, const String* mob, critter& pc) {
+              int i_th, const String* mob, critter& pc) {
    String buf(50);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -2701,6 +2715,7 @@ int tog_mflag(int flagnum, const String* flag_type,
 
    if ((strncasecmp(*flag_type, "mob_flag", 1) == 0) ||
        (strncasecmp(*flag_type, "crit_flag", 1) == 0) ||
+       (strncasecmp(*flag_type, "teach_flag", 1) == 0) ||
        (strncasecmp(*flag_type, "shop_flag", 1) == 0)) {
       if (mob_ptr->isMob()) {
          Sprintf(buf, "Toggling flag#:  %i on MOB:  %S.\n", flagnum,
@@ -2726,7 +2741,7 @@ int tog_mflag(int flagnum, const String* flag_type,
 
    if (strncasecmp(*flag_type, "mob_flag", 1) == 0) {
       if ((flagnum == 1) || (flagnum == 2) || (flagnum == 5) ||
-         (flagnum == 6)) {
+         (flagnum == 6) || (flagnum == 7) || (flagnum == 8)) {
          if (mob_ptr->isNpc()) {
             mob_ptr->MOB_FLAGS.flip(flagnum);
             return 0;
@@ -2747,6 +2762,15 @@ int tog_mflag(int flagnum, const String* flag_type,
       }
       else {
          pc.show("OOPS:  That critter is not a shop owner.\n");
+         return -1;
+      }
+   }
+   else if (strncasecmp(*flag_type, "teach_flag", 1) == 0) {
+      if (mob_ptr->isTeacher()) {
+         return mob_ptr->mob->togTeachFlag(flagnum);
+      }
+      else {
+         pc.show("OOPS:  That critter is not a teacher.\n");
          return -1;
       }
    }

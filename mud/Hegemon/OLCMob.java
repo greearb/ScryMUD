@@ -366,6 +366,8 @@ class MobPanel2 extends Panel {
       mob_data_flags.addBox(new NumCheckbox("wander", false, 2));
       mob_data_flags.addBox(new NumCheckbox("edible corpse", false, 5));
       mob_data_flags.addBox(new NumCheckbox("is_banker", false, 6));
+      mob_data_flags.addBox(new NumCheckbox("is_sessile", false, 7));
+      mob_data_flags.addBox(new NumCheckbox("NO Homing", false, 8));
       mob_data_flags.addBox(new NumCheckbox("HAS SKIN", false, 16));
       
       gridbag.setConstraints(mob_data_flags, c);

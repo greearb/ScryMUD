@@ -32,6 +32,7 @@
 #include "door.h"
 #include "room.h"
 #include "const.h"
+#include "lang_strings.h"
 
 ///********************  temp crit data  *****************************///
 
@@ -89,6 +90,8 @@ public:
    temp_crit_data(const temp_crit_data& source);
    ~temp_crit_data();
 
+   int doUnShield();
+
    static int getInstanceCount() { return _cnt; }
 
    void Clear();
@@ -135,11 +138,18 @@ protected:
    static int _cnt;
 
 public:
-   bitfield teach_data_flags; 
+   bitfield teach_data_flags; // Same as classes
+   // 1 Warrior, 2 Sage, 3 Wizard, 4 Ranger, 5 Thief, 6 Alchemist
+   // 7 Cleric, 8 Bard
    
    teacher_data(); //constructor
    teacher_data(const teacher_data& source); // copy constructor
    ~teacher_data() { _cnt--; }
+
+   int togTeachFlag(int flag) {
+      teach_data_flags.flip(flag);
+      return 0;
+   }
 
    void Read(ifstream& da_file);
    void Write(ofstream& da_file) const;
@@ -406,6 +416,13 @@ public:
    void setDefensiveness(int i) { defensiveness = i; auditAI(); }
    void setBadAssedness(int i) { bad_assedness = i; auditAI(); }
 
+   int togTeachFlag(int flag) {
+      if (teach_data) {
+         return teach_data->togTeachFlag(flag);
+      }
+      return -1;
+   }
+
    int togShopFlag(int flag) {
       if (sh_data)
          return sh_data->togShopFlag(flag);
@@ -432,8 +449,10 @@ public:
    // methods to make sure the flag is not reset or ignored.
    bitfield mob_data_flags; //all the proc bits
      // 0 has_proc_data, 1 scavenge, 2 wander, 3 should_do_procs,
-     // 4 need_resetting, 5 edible_corpse, 6 is_banker, 7 NULL,
-     // 8 NULL, 9 NULL, 10 NULL, 11 NULL, 12 NULL, 13 NULL, 14 NULL, 15 NULL,
+     // 4 need_resetting, 5 edible_corpse, 6 is_banker,
+     // 7 sessile (won't track out of current room)
+     // 8 !homing (won't come home after tracking),
+     // 9 NULL, 10 NULL, 11 NULL, 12 NULL, 13 NULL, 14 NULL, 15 NULL,
      // 16 has_skin, 17 has_mob_script
      //
 
@@ -443,6 +462,8 @@ public:
    List<MobScript*> mob_proc_scripts;
    MobScript* cur_script; // a pointer into the List of MobScripts.
    List<MobScript*> pending_scripts;
+
+   int home_room; /* set when first placed in a room. */
 
    mob_data();
    mob_data(mob_data& source);  //copy constructor
@@ -477,6 +498,7 @@ public:
    int hasProcData() const { return mob_data_flags.get(0); } 
    int hasMobScript() const { return mob_data_flags.get(17); }
    int isRunningScript() const { return cur_script != 0; }
+   int isNoHoming() const { return mob_data_flags.get(8); }
 
    void Clear();
    mob_data& operator= (mob_data& source);
@@ -491,6 +513,12 @@ public:
    int togShopFlag(int flag) {
       if (proc_data)
          return proc_data->togShopFlag(flag);
+      return -1;
+   }
+
+   int togTeachFlag(int flag) {
+      if (proc_data)
+         return proc_data->togTeachFlag(flag);
       return -1;
    }
 
@@ -520,6 +548,7 @@ public:
       // 17 is_blocking_door, 18 can_det_magic, 19 detect_inventory
       // 20 show_vnums, 21 has_poofin_poofout_msg, 22 page_output
       // 23 in_page_break_mode, 24 !wizchat, 25 has_colors, 26 use_color
+      // 27 has_language_choice
 
    short birth_day; //day born
    short birth_year; //year born
@@ -565,6 +594,8 @@ public:
    String user1_str;
    String user2_str;
    String user3_str;
+
+   LanguageE preferred_language; //ie English, spanish...
 
    // Volatile variables, ie not saved to disk.
    int bug_num; //used when commenting on bugs or ideas.
@@ -661,7 +692,7 @@ public:
    critter* master;      //NULL if not charmed in some way
    List<critter*> pets; 
    List<critter*> followers;
-   List<critter*> groupees; 
+   List<critter*> groupees;
    List<critter*> is_fighting;
    temp_crit_data* temp_crit;
    int mirrors;
@@ -725,6 +756,7 @@ public:
    void addProcScript(const String& txt, MobScript* script_data);
    void remember(critter& pc);
    void trackToKill(critter& vict, int& is_dead);
+   int travelToRoom(int targ_room_num, int num_steps, int& is_dead);
    int doesRemember(critter& pc);
 
    int doesOwnObject(object& obj);
@@ -747,11 +779,14 @@ public:
 
    int isWeakerThan(critter& pc) { return (compareTo(pc) < 0); }
    int isStrongerThan(critter& pc) { return (compareTo(pc) > 0); }
-
+   int isSessile() const { return mob && mob->mob_data_flags.get(7); }
+   
    void doHuntProc(int steps, int& is_dead); //found in batl_prc.cc
    void finishedMobProc() { if (mob) mob->finishedMobProc();}
    int getIdNum() const;
    int getImmLevel();
+   int getHomeRoom() { if (mob) return mob->home_room; return 0; }
+   int shouldBeHoming();
 
    // Where the mob is from, not what area it belongs to.
    int getHomeTown() const { return short_cur_stats[20]; }
@@ -774,7 +809,9 @@ public:
    int doBecomeNonPet(); //misc2.cc
    int doUngroup(int i_th, const String* vict); //command2.cc
    int doFollow(critter& pc, int do_msgs = TRUE);
+   int doUnShield();
 
+   critter* getFollowerOf() const { return follower_of; }
    int getNakedWeight() const;
    PcMode getMode() { return pc->mode; }
    int getDescriptor() { return pc->descriptor; }
@@ -790,6 +827,7 @@ public:
    int getMov() const { return short_cur_stats[17]; }
    int getMovMax() const { return short_cur_stats[25]; }
    int getAlignment() const { return short_cur_stats[18]; }
+   LanguageE getLanguageChoice() const ;
 
    const ScriptCmd* getNextScriptCmd() {
       if (mob) {
@@ -864,7 +902,7 @@ public:
    int isTracking() const { return mob && mob->proc_data &&
                                mob->proc_data->temp_proc &&
                                mob->proc_data->temp_proc->tracking.Strlen(); }
-
+   
    int getBenevolence() const;
    int isSentinel() const;
 
@@ -925,6 +963,8 @@ public:
    int isBanker() { return mob && MOB_FLAGS.get(6); }
    int isOpen(int cur_military_time) const;
 
+   int isTeacher();
+   int isShopKeeper();
    int isPlayerShopKeeper();
    int isManagedBy(critter& pc);
 
@@ -957,6 +997,7 @@ public:
    int isInPageBreak() const { return (pc && PC_FLAGS.get(23)); }
 
    void show(const char* msg);
+   void show(CSentryE); //Pick language of choice, if available.
 
    object* loseInv(object* obj); //returns the object removed. (or NULL)
    void loseObjectFromGame(object* obj);

@@ -1450,6 +1450,49 @@ object* room::haveObjNamed(int i_th, const String* name, int see_bit) {
    return ::have_obj_named(inv, i_th, name, see_bit, *this);
 }
 
+critter* room::findFirstBanker() {
+   Cell<critter*> cell(critters);
+   critter* crit_ptr;
+
+   while ((crit_ptr = cell.next())) { 
+      if (crit_ptr->isBanker()) {
+         return crit_ptr;
+      }//if
+   }//while
+   
+   return NULL;
+}//findFirstBanker
+
+
+critter* room::findFirstShopKeeper() {
+   Cell<critter*> cell(critters);
+   critter* crit_ptr;
+
+   while ((crit_ptr = cell.next())) { 
+      if (crit_ptr->isShopKeeper()) {
+         return crit_ptr;
+      }//if
+   }//while
+   
+   return NULL;
+}//findFirstShopOwner
+
+
+critter* room::findFirstTeacher() {
+   Cell<critter*> cell(critters);
+   critter* crit_ptr;
+
+   while ((crit_ptr = cell.next())) { 
+      if (crit_ptr->isTeacher()) {
+         return crit_ptr;
+      }//if
+   }//while
+   
+   return NULL;
+}//findFirstTeacher
+
+
+
 void room::showAllCept(const char* msg, critter* pc) const {
    Cell<critter*> cell(critters);
    critter* crit_ptr;

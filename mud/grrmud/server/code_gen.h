@@ -25,8 +25,10 @@
 
 #include <string2.h>
 #include <fstream.h>
+#include <list2.h>
 
 #define ALIASES_ARRAY_LEN 50
+#define NUM_LANGUAGES 3
 
 class GenCmdInput {
 public:
@@ -39,5 +41,37 @@ public:
    void print();
 
 };
+
+class LVPair {
+public:
+   LVPair(String l, String v) : lang(l), val(v) { }
+   String lang;
+   String val;
+};
+
+class LanguageEntry {
+private:
+   LanguageEntry& operator=(const LanguageEntry& src);
+
+protected:
+   String enum_name;
+   List<LVPair*> vals;
+
+public:
+   LanguageEntry() {;}
+   LanguageEntry(const LanguageEntry& src);
+   void clear();
+   int read(ifstream& dafile);
+   
+   String getEnumName() const { return enum_name; }
+   
+   String getConstArray() const;
+};
+   
+
+int code_gen_language(ifstream& input_file, ofstream& of_cc,
+                      ofstream& of_h);
+int code_gen_commands(ifstream& input_file, ofstream& of_cc,
+                      ofstream& of_h);
 
 #endif

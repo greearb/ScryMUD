@@ -1285,34 +1285,57 @@ int arlist(int zone, int how_many, critter& pc) {
 }//arlist
 
 
-int slist(int begin, int how_many, critter& pc) {
+int slist(int begin, const String& name, int how_many, critter& pc) {
    String buf(100);
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
 
-   if (how_many == 1)
-      how_many = 20;
+   int end;
+   if (name.Strlen() > 0) {
+      how_many = 1;
+      begin = SSCollection::instance().getNumForName(name);
+      if (begin < 0) {
+         pc.show("Can't find that spell or skill.\n");
+         return -1;
+      }//if
+      end = begin + 1;
+   }//if specified a spell
+   else {
+      if (how_many == 1)
+         how_many = 20;
+      
+      if ((begin == 1) && (how_many == 1)) {
+         begin = 0;
+      }//if
+      
+      if ((begin >= NUMBER_OF_SKILL_SPELLS) || (begin < 0))
+         begin = 0;
 
-   if ((begin == 1) && (how_many == 1)) {
-      begin = 0;
-   }//if
+      end = begin + how_many;
 
-   if ((begin >= NUMBER_OF_SKILL_SPELLS) || (begin < 0))
-      begin = 0;
+      if ((end > NUMBER_OF_SKILL_SPELLS) || (end < 0))
+         end = NUMBER_OF_SKILL_SPELLS;
+   }//else
 
-   int end = begin + how_many;
-
-   if ((end >= NUMBER_OF_SKILL_SPELLS) || (end < 0))
-      end = NUMBER_OF_SKILL_SPELLS -1;
    show("Here is the spell list you requested:\n", pc);
 
+   int did_one = FALSE;
    for (int i = begin; i < end; i++) {
-      Sprintf(buf, "\t%i:  %S\n", i, 
-              &(SSCollection::instance().getSS(i).getName()));
-      show(buf, pc);
+      if (SSCollection::instance().getSS(i).isInUse()) {
+         did_one = TRUE;
+         pc.show(SSCollection::instance().getSS(i).toString());
+      }
+      else {
+         //Sprintf(buf, "Skill/Spell [%i] is NOT IN USE.\n", i);
+         //pc.show(buf);
+      }//else
    }//for
+
+   if (!did_one) {
+      pc.show("You did not specify any skill/spell that actually exists.\n");
+   }
    return 0;
 }//slist
 
@@ -1652,10 +1675,10 @@ int withdraw(int i_th, const String& coins, int j_th,
    critter* crit = ROOM.haveCritNamed(j_th, &banker, pc.SEE_BIT);
 
    if (!crit) {
-      crit = ROOM.getLastCritter(); //most likely to be a banker, if one exists
+      crit = ROOM.findFirstBanker();
    }//if
 
-   if (crit == &pc) {
+   if (!crit) {
       pc.show("Looks like the banker is not around right now!\n");
       return -1;
    }
@@ -1670,6 +1693,7 @@ int withdraw(int i_th, const String& coins, int j_th,
    return pc.withdrawCoins(i_th, *crit);
 }//withdraw
 
+
 int balance(int i_th, const String* banker, critter& pc) {
    String buf(100);
 
@@ -1680,10 +1704,10 @@ int balance(int i_th, const String* banker, critter& pc) {
    critter* crit = ROOM.haveCritNamed(i_th, banker, pc.SEE_BIT);
 
    if (!crit) {
-      crit = ROOM.getLastCritter(); //most likely to be a banker, if one exists
+      crit = ROOM.findFirstBanker();
    }//if
 
-   if (crit == &pc) {
+   if (!crit) {
       pc.show("Looks like the banker is not around right now!\n");
       return -1;
    }
@@ -1720,10 +1744,10 @@ int deposit(int i_th, const String* coins, int j_th,
    critter* crit = ROOM.haveCritNamed(j_th, banker, pc.SEE_BIT);
 
    if (!crit) {
-      crit = ROOM.getLastCritter(); //most likely to be a banker, if one exists
+      crit = ROOM.findFirstBanker();
    }//if
 
-   if (crit == &pc) {
+   if (!crit) {
       pc.show("Looks like the banker is not around right now!\n");
       return -1;
    }

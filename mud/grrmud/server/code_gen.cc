@@ -26,6 +26,12 @@
 #include <string.h>
 #include "code_gen.h"
 #include <fstream.h>
+#include <PtrArray.h>
+
+LogStream mudlog("/tmp/code_gen.log", 65535);
+int __node_cnt;
+int __list_cnt;
+int __cell_cnt;
 
 char* header =
 "//
@@ -62,6 +68,116 @@ int core_dump(const char* msg) {
    cerr << "ERROR:  " << msg << endl;
    exit(1);
 }
+
+LanguageEntry::LanguageEntry(const LanguageEntry& src)
+      : enum_name(src.enum_name) {
+   Cell<LVPair*> cll(src.vals);
+   LVPair* ptr;
+   while ((ptr = cll.next())) {
+      vals.append(new LVPair(*ptr));
+   }
+}//copy constructor
+
+
+void LanguageEntry::clear() {
+   enum_name = "";
+   clear_ptr_list(vals);
+}//clear
+
+int LanguageEntry::read(ifstream& dafile) {
+   char junk[200];
+   String tmp_lang(50);
+   String tmp_val;
+
+   // Grab comments, if there are any.
+   while (TRUE) {
+      dafile >> enum_name;
+      if (!dafile)
+         return -1; //EOF
+      if (enum_name.charAt(0) == '#') {
+         dafile.getline(junk, 200);
+      }
+      else {
+         break;
+      }
+   }//while
+   
+   dafile >> tmp_lang; //Language type
+   while (tmp_lang != "~") {
+
+      if (!dafile)
+         return -1; //EOF
+
+      tmp_val.Clear();
+      if (tmp_val.readToken('\"', dafile, TRUE) < 0) {
+         cerr << "ERROR: trying to read token: -:" << tmp_val
+              << ":-  Exiting." << endl;
+         exit(2);
+      }//if
+      vals.append(new LVPair(tmp_lang, tmp_val));
+      
+      dafile >> tmp_lang;
+   }//while
+   return 0;
+}//read
+
+
+String LanguageEntry::getConstArray() const {
+   String retval(500);
+   String translations[NUM_LANGUAGES];
+/*
+enum LanguageE {
+   English,
+   Spanish,
+   Portugues,
+   LastLanguage
+};
+*/
+   retval = "   {\n      ";
+   int slen;
+
+   // NOTE:  To add a new language, modify the while loop below
+   // to contain the ones you want to support.  Then make additions
+   // to the translation.spec file.
+   Cell<LVPair*> cll(vals);
+   LVPair* ptr;
+   while ((ptr = cll.next())) {
+      slen = ptr->lang.Strlen();
+      if (strncasecmp(ptr->lang, "English", slen) == 0) {
+         translations[0] = ptr->val;
+      }
+      else if (strncasecmp(ptr->lang, "Spanish", slen) == 0) {
+         translations[1] = ptr->val;
+      }
+      else if (strncasecmp(ptr->lang, "Portugues", slen) == 0) {
+         translations[2] = ptr->val;
+      }
+      else {
+         cerr << "WARNING: Unknown language: -:" << ptr->lang << ":-" << endl;
+      }
+   }//while
+
+   for (int i = 0; i<NUM_LANGUAGES; i++) {
+      if (translations[i].Strlen()) {
+         retval += translations[i];
+         if ((i + 1) != NUM_LANGUAGES)
+            retval += ",\n      ";
+         else
+            retval += "\n";
+      }
+      else {
+         if ((i + 1) != NUM_LANGUAGES)
+            retval += "NULL,\n      ";
+         else
+            retval += "NULL\n";
+      }//else
+   }//for
+
+   retval += "   }";
+
+   return retval;
+}//getConstArray
+
 
 void GenCmdInput::clear() {
    for (int i = 0; i<ALIASES_ARRAY_LEN; i++) {
@@ -137,38 +253,158 @@ int GenCmdInput::read(ifstream& dafile) {
 
 
 int main(int argc, char** argv) {
+   const char* usage = "code_gen -[CL] [input_file_name] [out.cc] [out.h]\n";
+
+   if (argc != 5) {
+      cerr << usage << endl;
+      cerr << "ERROR:  argc should be 5, but was: " << argc << endl;
+      exit(1);
+   }
+   
+   ifstream input_file(argv[2]);
+   if (!input_file) {
+      cerr << "ERROR:  could not open input_file." << endl;
+      exit(1);
+   }
+
+   ofstream of_cc(argv[3]);
+   if (!of_cc) {
+      cerr << "ERROR:  could not open output .cc file." << endl;
+      exit(1);
+   }
+
+   ofstream of_h(argv[4]);
+   if (!of_h) {
+      cerr << "ERROR:  could not open output .h file." << endl;
+      exit(1);
+   }
+
+   if (strcasecmp(argv[1], "-C") == 0) {
+      // Then create some commands
+      return code_gen_commands(input_file, of_cc, of_h);
+   }
+   else if (strcasecmp(argv[1], "-L") == 0) {
+      // Create the language array and code
+      return code_gen_language(input_file, of_cc, of_h);
+   }
+   else {
+      cerr << usage << endl;
+      exit(1);
+   }
+}//main
+
+
+int code_gen_language(ifstream& input_file, ofstream& of_cc,
+                      ofstream& of_h) {
+   // First, lets parse the incomming file and make sure it's OK.
+   PtrArray<LanguageEntry> language_entries;
+   LanguageEntry le;
+
+   // If there is a read or parse error, the program will exit
+   // inside the le.read() call.
+   int cnt = 0;
+   while (le.read(input_file) >= 0) {
+      cnt++;
+      language_entries.appendShallowCopy(new LanguageEntry(le));
+   }
+      
+   // If we got to here, then we were able to parse and read the file.
+
+   //First, get the headers out of the way
+   of_h << header;
+
+   // NOTE:  If you change the language enum below, you will need to
+   // modify the LanguageEntry code, especially the NUM_LANGUAGES #define
+   // and the getConstArray() method. --BEN
+   of_h << "
+#ifndef __INCLUDE_AUTOGEN_LANGUAGE_H__
+#define __INCLUDE_AUTOGEN_LANGUAGE_H__
+
+#include <string2.h>
+
+// I expect this may grow.
+enum LanguageE {
+   English,
+   Spanish,
+   Portugues,
+   LastLanguage
+};\n\n";
+
+   // If the ENUM above changes, change this 3 to be equal to
+   // the number of languages.
+   of_h << "#define LS_PER_ENTRY 3  /* same as LastLanguage */" << endl;
+   of_h << "#define LS_ENTRIES " << cnt 
+        << " /* Number of Translation groupings */\n\n";
+   of_h << "extern const char* language_strings[LS_ENTRIES][LS_PER_ENTRY];\n";
+
+   of_h << "\nenum CSentryE {\n";
+
+   for (int i = 0; i<cnt; i++) {
+      of_h << "   " << language_entries[i]->getEnumName();
+      if ((i + 1) != cnt)
+         of_h << "," << endl;
+      else
+         of_h << endl;
+   }
+
+   of_h << "};//CSentryE enum\n\n";
+   of_h << "
+class CSHandler {
+public:
+   static const char* getString(CSentryE which_string, LanguageE language);
+};
+
+
+#endif\n";
+   of_h << flush;
+
+   // Done with .h file, lets start on the .cc file
+   of_cc << header;
+   of_cc << "
+
+#include \"lang_strings.h\"
+
+const char* language_strings[LS_ENTRIES][LS_PER_ENTRY] = {\n";
+
+   for (int i = 0; i<cnt; i++) {
+      of_cc << " /* " << language_entries[i]->getEnumName() << " */" << endl;
+      of_cc << language_entries[i]->getConstArray();
+      if ((i + 1) != cnt)
+         of_cc << ",\n\n";
+      else
+         of_cc << endl;
+   }//for
+   
+   of_cc << "}; //language_strings\n\n";
+
+   of_cc << "
+const char* CSHandler::getString(CSentryE which_string, LanguageE language) {
+   const char* retval = language_strings[(int)(which_string)][(int)(language)];
+   if (retval) {
+      return retval;
+   }
+   else {
+      // Default to English...
+      // TODO:  Be smarter here, ie Portuguese defaults to Spanish??
+      return language_strings[(int)(which_string)][0];
+   }//else
+}//getString\n\n";
+
+   of_cc << flush;
+
+   return 0;
+}//code_gen_language
+
+
+   
+int code_gen_commands(ifstream& input_file, ofstream& of_cc,
+                      ofstream& of_h) {
    String buf(200);
    String tmp(200);
    String cmd_enum(1000);
    String cmd_instantiations(10000);
    String exe_cmds(5000);
    String cmd_array(1000);
-
-   const char* usage = "code_gen [input_file_name] [out.cc] [out.h]\n";
-
-   if (argc != 4) {
-      cerr << usage << endl;
-      cerr << "ERROR:  argc should be 4, but was: " << argc << endl;
-      exit(1);
-   }
-   
-   ifstream input_file(argv[1]);
-   if (!input_file) {
-      cerr << "ERROR:  could not open input_file." << endl;
-      exit(1);
-   }
-
-   ofstream of_cc(argv[2]);
-   if (!of_cc) {
-      cerr << "ERROR:  could not open output .cc file." << endl;
-      exit(1);
-   }
-
-   ofstream of_h(argv[3]);
-   if (!of_h) {
-      cerr << "ERROR:  could not open output .h file." << endl;
-      exit(1);
-   }
 
    of_h << header;
    of_h << "
@@ -323,5 +559,5 @@ public:
    of_cc << cmd_instantiations << endl;
    of_cc << cmd_array << endl;
 
-
-}//main
+   return 0;
+}//code_gen_commands

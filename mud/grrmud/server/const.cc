@@ -158,7 +158,17 @@ const char* sd_names[] = {
 const BitfieldNames SHOP_DATA_FLAGS_NAMES(sizeof(sd_names)/sizeof(const char*),
                                           sd_names, "Shop Data Flags (Trades):");
 
-const char* td_names[] = { "NULL" };
+const char* td_names[] = {
+   "NULL",
+   "Warrior",
+   "Sage",
+   "Wizard",
+   "Ranger",
+   "Thief",
+   "Alchemist",
+   "Cleric",
+   "Bard"
+};
 const BitfieldNames TEACH_DATA_FLAGS_NAMES(sizeof(td_names)/sizeof(const char*),
                                            td_names, "Teach Data Flags:");
 
@@ -220,8 +230,8 @@ const char* md_names[] = {
    "need_resetting", //4
    "edible_corpse", //5
    "is_banker", //6,
-   "NULL", //7
-   "NULL", //8
+   "is_sessile", //7
+   "!homing", //8
    "NULL", //9
    "NULL", //10
    "NULL", //11
@@ -262,7 +272,8 @@ const char* pcd_names[] = {
    "in_page_break_mode",//23
    "!wizchat",//24
    "has_colors",//25
-   "use_color" //26
+   "use_color", //26
+   "has_language_choice" //27
 };
 const BitfieldNames PC_DATA_FLAGS_NAMES(sizeof(pcd_names)/sizeof(const char*),
                                         pcd_names, "PC Data Flags:");
@@ -427,6 +438,56 @@ const char* o_names[] = {
 
 const BitfieldNames OBJ_FLAGS_NAMES(sizeof(o_names)/sizeof(const char*),
                                     o_names, "Object Flags:");
+
+/** Stat Affect names */
+const char* sa_names[] = {
+   "position",
+   "Strength",
+   "Inteligence",
+   "Constitution",
+   "Charisma",
+   "Wisdom",
+   "Dexterity",
+   "HIT",
+   "Damage",
+   "AC",
+   "Attacks", //10
+   "PAUSE_CNT",
+   "SEX",
+   "CLASS",
+   "RACE",
+   "Current HP",
+   "Current MANA",
+   "Current Movement",
+   "Alignment",
+   "Level",
+   "hometown", //20
+   "wimpy",
+   "practices",
+   "MAX HP",
+   "MAX MANA",
+   "MAX Movement",
+   "PC/SMOB/MOB",
+   "DAM_RECV_Modifier",
+   "DAM_Given_Modifier",
+   "Head Resistance",
+   "Cold Resistance",
+   "Electrical Resistance",
+   "Spell Resistance",
+   "Religion",
+   "Belongs to Zone",
+   "Bare Hand Dice Count",
+   "Bare Hand Dice Sides",
+   "HP Regeneration",
+   "MANA Regeneration",
+   "Movement Regeneration",
+   "Guild",
+   "Naked Weight",
+   "NULL"
+};
+const BitfieldNames STAT_AFFECT_NAMES(sizeof(sa_names)/sizeof(const char*),
+                                      sa_names, "Stat Affects:");
+
 
 const char* DARK_MSG = "It is too dark to see.\n";
 const char* SLEEP_MSG = "Dream on, my friend.\n";
@@ -863,7 +924,8 @@ a -1 terminates.
 
 0 has_proc_data, (teacher, shopkeeper, discuss, bow, curse, give procs,
                   PERSONALITY),
-1 scavenge, 2 wander, 5 edible_corpse, 6 is_banker, 16 has_skin. \n",
+1 scavenge, 2 wander, 5 edible_corpse, 6 is_banker, 7 is_sessile,
+8 !homing 16 has_skin. \n",
 
 /* 31 spec_data: int1 */
 "\nIf mob is to be a sentinel, give direction guarding:
