@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.18 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: room.h,v 1.19 1999/08/01 08:40:23 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
 
 //
 //ScryMUD Server Code
@@ -65,16 +65,16 @@ public:
 };//KeywordPair
 
 
-class room : public Entity {
+class room : public Entity, public Scriptable {
 private:
    static int _cnt;
 
 protected:
    int pause;
 
-   ObjectContainer critters;
+   SafeList<critter*> critters;
 
-   ObjectContainer inv;
+   SafeList<object*> inv;
 
    int cur_stats[ROOM_CUR_STATS + 1];  
 	   // 0 vis_bit {1 dark, 2 invis, 4 hidden,
@@ -101,17 +101,12 @@ protected:
            // 33 !mob_wander, 34 !foreign_mob_wander, 35 has_proc_script
 
    
+public:
    LStringCollection short_desc;
 
-   PtrList<door> doors;   
-   ObjectContainer keywords;
+   SafeList<door*> doors;   
+   List<KeywordPair*> keywords;
 
-   void gainObject_(critter& pc);
-   void gainObject_(object& obj);
-   void loseObject_(critter& pc);
-   void loseObject_(object& obj);
-
-public:
    room();
    room(room& source);
    room(int rm_num);
@@ -125,17 +120,22 @@ public:
 
    static int getInstanceCount() { return _cnt; }
 
-   const ObjectContainer* peekInv() const { return &inv; }
-   ObjectContainer* getInv() { return &inv; }
+   const SafeList<object*>* peekInv() { return &inv; }
+   SafeList<object*>* getInv() { return &inv; }
 
-   int getPause() const { return pause; }
-   int decrementPause() { if (pause > 0) pause--; return pause; }
+   void listScripts(critter& pc);
 
-   virtual LEtypeE getEntityType() const { return LE_ROOM; }
-   virtual int getEntityCount(LEtypeE type, int id_num, int sanity);
+   /** Attempt to trigger a room script directly.  So far, we support only
+    * pull and push, but more can easily be added.
+    */
+   int attemptExecuteUnknownScript(String& cmd, int i_th, String& arg1,
+                                   critter& actor);
 
+   int getVisBit() const { return cur_stats[0]; }
    int getMovCost() const { return cur_stats[1]; }
-   int getRoomNum() const { return getIdNum(); }
+   int getRoomNum() const { return cur_stats[2]; }
+   int getIdNum() const { return getRoomNum(); }
+   void setVisBit(int i) { cur_stats[0] = i; }
    void setMovCost(int i) { cur_stats[1] = i; }
    void setRoomNum(int i) { cur_stats[2] = i; }   
    void setComplete() { room_flags.turn_off(31); }
@@ -177,10 +177,12 @@ public:
    void setFlag(int flg, int posn) { room_flags.set(flg, posn); }
    int getFlag(int flg) { return room_flags.get(flg); }
 
-   const ObjectContainer& getCrits() const { return critters; }
+   const SafeList<critter*>& getCrits() { return critters; }
 
    void resetProcMobs();
    void purgeCritter(int mob_num, critter& pc);
+
+   int processInput(String& input); /* for room scripts */
 
    int sub_a_4_b(critter* crit_ptr, int i_th, const String& name,
                  int see_bit);
@@ -189,8 +191,10 @@ public:
    virtual int isVehicle() { return FALSE; }
 
    virtual void Clear();
-   virtual void Read(ifstream& da_file, short read_all);
-   virtual void Write(ofstream& da_file);
+   virtual int write(ostream& dafile);
+   virtual int read(istream& dafile, int read_all = TRUE);
+   /** Stuff used to generate meta data. */
+   virtual LEtypeE getEntityType() { return LE_ROOM; }
 
    virtual void checkForProc(String& cmd, String& arg1, critter& actor,
                              int targ);
@@ -207,20 +211,24 @@ public:
    virtual critter* haveCritNamed(int i_th, const String* name, critter& pc);
    virtual critter* haveCritter(critter* ptr);
    virtual object* haveObject(object* ptr);
-   virtual critter* getLastCritter() { return (critter*)(critters.getInv().peekBack()); }
+   virtual critter* getLastCritter() { return critters.peekRear(); }
    virtual critter* findFirstBanker();
    virtual critter* findFirstShopKeeper();
    virtual critter* findFirstTeacher();
 
-   virtual void gainObject(Entity* le);
-   virtual Entity* loseObject(Entity* le);
-   virtual int getCurRoomNum() const { return getIdNum(); }
+   virtual void gainCritter(critter* crit);
+   virtual critter* removeCritter(critter* crit);
+
+   virtual void gainObject(object* obj) { gainInv(obj); }
+   virtual object* removeObject(object* obj) { return loseInv(obj); }
 
    virtual void getPetsFor(critter& owner, List<critter*>& rslts);
    virtual int getCritCount(critter& pc);
 
    virtual void showCritters(critter& pc);
    virtual void outInv(critter& pc); //show inv to pc (use out_inv method)
+   virtual void gainInv(object* obj); //set IN_LIST if needed
+   virtual object* loseInv(object* obj);
    virtual void showAllCept(const char* msg, critter* pc = NULL) const;
    virtual void recursivelyLoad(); //mobs and objects
 

@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.11 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: classes.h,v 1.12 1999/08/01 08:40:22 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/01 08:40:22 $
 
 //
 //ScryMUD Server Code
@@ -34,11 +34,12 @@
 #include <string2.h>
 #include <bitfield.h>
 #include <list2.h>
-#include "script.h"
+#include <SafeList.h>
 #include "lang_strings.h"
 
 
 class critter;  //foward declaration
+class Scriptable;
 
 ///************************  StatBonus  ************************///
  
@@ -77,18 +78,70 @@ public:
 /** I'd wrather not do it this way, but I can't find a better solution.
  * So, I'm going to make the LogicalEntity's aware of what kind of object
  * they are.
+ *
+ * NOTE:  It is extremely important to assign numbers to these, as they will
+ * be written into the database/world files, and should not change values
+ * with the code.
  */
 enum LEtypeE {
-   LE_CRITTER,
-   LE_OBJECT,
-   LE_BAG_OBJ,
-   LE_ROOM,
-   LE_VEHICLE,
-   LE_DOOR_DATA,
-   LE_DOOR,
-   LE_UNKNOWN,
-   LE_ANY
+   LE_ENTITY = 0,
+   LE_CRITTER = 1,
+   LE_OBJECT = 2,
+   LE_BAG_OBJ = 3,
+   LE_ROOM = 4,
+   LE_VEHICLE = 5,
+   LE_DOOR_DATA = 6,
+   LE_DOOR = 7,
+   LE_OSCRIPT = 8,
+   LE_RSCRIPT = 9,
+   LE_MSCRIPT = 10,
+   LE_LS_COLLECTION = 11,
+   LE_SCRIPT_COLL = 12,
+   LE_CLOSABLE = 13,
+   LE_UNKNOWN = 0xFFFFFFE,
+   LE_ANY = 0xFFFFFFF
 };
+
+class Serialized {
+protected:
+   
+public:
+   virtual int write(ostream& dafile) = 0;
+   virtual int read(istream& dafile, int read_all = TRUE) = 0;
+
+   /** Stuff used to generate meta data. */
+   virtual LEtypeE getEntityType() = 0;
+   virtual const char* getVersion() { return "3.0"; }
+   virtual String getOptionalMetaTags() { String r; return r; } //ie blank
+};
+
+class MTPair {
+public:
+   String key;
+   String val;
+   MTPair(String& k, String& v) : key(k), val(v) { }
+   MTPair(const MTPair& src) : key(src.key), val(src.val) { }
+   MTPair();
+};
+
+class MetaTags {
+protected:
+   PtrList<MTPair> lst;
+
+public:
+   MetaTags(const char* first_tag, istream& dafile);
+   MetaTags(istream& dafile);
+   MetaTags(MetaTags& src) { lst.becomeDeepCopyOf(src.lst); }
+   MetaTags(Serialized& obj) { generateTags(*this, obj); }
+   virtual ~MetaTags() { lst.clearAndDestroy(); }
+
+   virtual int read(istream& dafile);
+   virtual int write(ostream& dafile);
+   virtual String& getValue(const char* key);
+
+   static void generateTags(MetaTags& rslt, Serialized& obj);
+   
+};//MetaTags
 
 
 class LString : public String {
@@ -108,7 +161,7 @@ public:
    int isLanguage(LanguageE l) const { return lang == l; }
 };
 
-class LStringCollection : public PtrList<LString> {
+class LStringCollection : public PtrList<LString>, public Serialized {
 public:
    LStringCollection() : PtrList<LString>() { }
    virtual ~LStringCollection();
@@ -121,52 +174,38 @@ public:
     * for example, is a real bad idea.
     */
    void addLstring(LString* new_string);
+
+   virtual int write(ostream& dafile);
+   virtual int read(istream& dafile, int read_all = TRUE);
+
+   /** Stuff used to generate meta data. */
+   virtual LEtypeE getEntityType() { return LE_LS_COLLECTION; }
 };
 
-
-class ContainedObject;
-
-/**  This class contains objects.  The container knows all of its
- * objects, and the objects know all of their containers, so hopefully
- * memory management will be cleaner and wrapped up at this lower layer.
- */
-class ObjectContainer {
-   friend class ContainedObject;
-public:
-   virtual ~ObjectContainer();
-
-   virtual int append(ContainedObject* o);
-   virtual int prepend(ContainedObject* o);
-   virtual int insertUnique(ContainedObject* o);
-   virtual ContainedObject* remove(ContainedObject* o);
-   PtrList<ContainedObject>& getInv() { return inv; }
-   const PtrList<ContainedObject>& peekInv() const { return inv; }
-   virtual int isEmpty() const { return inv.isEmpty(); }
-   int haveData(ContainedObject* obj) const { return (inv.haveData(obj) || 0); }
-   virtual void clear() { inv.clear(); }
-
-private:
-   PtrList<ContainedObject> inv;
-   ContainedObject* privRemoveObject(ContainedObject* o) { return inv.loseData(o); }
-
-};//ObjectContainer
 
 /** Keeps a list of what contains it so it can clean up easily upon
  * destruction and hopefully not leak memory or dangle pointers.
  */
 class ContainedObject {
-   friend class ObjectContainer;
 public:
-   ContainedObject() { }
+   ContainedObject() : contained_by(NULL) { }
 
    /** Remove from all containers. */
    virtual ~ContainedObject();
-   PtrList<ObjectContainer>& getContainerList() { return contained_by; }
 
+   List<SafeList<ContainedObject*>*>& getContainerList() {
+      return contained_by;
+   }
+
+   // Don't call these from 'user' code.
+   void privAddToContainer(SafeList<ContainedObject*>* ptr) {
+      contained_by.gainData(ptr);
+   }
+   void privRemoveFromContainer(SafeList<ContainedObject*>* ptr) {
+      contained_by.loseData(ptr);
+   }
 private:
-   void privAddToContainer(ObjectContainer* ptr) { contained_by.gainData(ptr); }
-   void privRemoveFromContainer(ObjectContainer* ptr) { contained_by.loseData(ptr); }
-   PtrList<ObjectContainer> contained_by;
+   List<SafeList<ContainedObject*>*> contained_by;
 
 };//ContainedObject
 
@@ -176,7 +215,7 @@ class SpellDuration;
 
 /** This will be the base class for all objects, doors, critters, and rooms.
  */
-class Entity : public ContainedObject {
+class Entity : public ContainedObject, public Serialized {
 protected:
    Entity* container;
    int vis_bit;
@@ -190,11 +229,8 @@ protected:
 public:
    Entity() : container(NULL) { }
    virtual ~Entity() { }
+   virtual void clear();
 
-   virtual LEtypeE getEntityType() const = 0;
-   virtual int getEntityCount(LEtypeE type, int id_num, int sanity) = 0;
-   virtual void gainObject(Entity* le) = 0;
-   virtual Entity* loseObject(Entity* le) = 0;
    /** Returns zero if we can't find anything better. */
    virtual int getCurRoomNum() = 0;
 
@@ -203,14 +239,18 @@ public:
 
    virtual const String* getName(int c_bit = ~0);
    virtual const String* getLongName(int c_bit = ~0);
-
    /**  These will take care of language translation and see-bits. */
    virtual const String* getName(critter* observer);
    virtual const String* getLongName(critter* observer);
    virtual const String* getLongDesc(critter* observer);
-
-   virtual int isEntityType(LEtypeE le);
    virtual int isNamed(const String& name) const;
+   void appendName(String* nm);
+   void appendName(LString* nm);
+
+   void setLongDesc(LString& new_val);
+   void setLongDesc(String& new_val);
+
+   void addAffectedBy(SpellDuration* new_affect);
 
    virtual SpellDuration* isAffectedBy(int spell_num);
 
@@ -220,13 +260,18 @@ public:
    int getZoneNum() const { return zone_num; }
    void setZoneNum(int z) { zone_num = z; }
    void setIdNum(int i) { id_num = i; }
+
+   virtual int write(ostream& dafile);
+   virtual int read(istream& dafile, int read_all = TRUE);
+   /** Stuff used to generate meta data. */
+   virtual LEtypeE getEntityType() { return LE_ENTITY; }
 };
 
 
 /**  This class holds a bitfield that concentrates all of the flags
  * that relate to all closable objects, including doors and containers.
  */
-class Closable {
+class Closable : public Serialized {
 protected:
    // When modifying this, modify CLOSABLE_FLAGS_NAMES in const.cc
    bitfield flags;
@@ -238,8 +283,11 @@ protected:
 	      // 12 is_vehicle_exit, 13 is_secret, 14 is_blocked,
               // 15 !complete, 16 secret_when_open_too, 17 consume_key
               // 18 !passdoor, 19 is_corpse
+   int key;
 
 public:
+   virtual ~Closable() { }
+
    int isOpen() const { return !(flags.get(2)); }
    int canClose() const { return canOpen(); }
    int isVehicleExit() const { return flags.get(12); }
@@ -263,6 +311,24 @@ public:
    void open() { flags.turn_off(2); }
    void lock() { close(); flags.turn_on(3); }
    void unlock() { flags.turn_off(3); }
+
+   void setClosed(int val) { flags.set(2, val); }
+   void setLocked(int val) { flags.set(3, val); }
+   void setPickable(int val) { flags.set(4, val); }
+   void setMagLockable(int val) { flags.set(5, val); }
+   void setMagLocked(int val) { flags.set(6, val); }
+   void setIsDestructable(int val) { flags.set(7, val); }
+   void setIsCorpse(int val) { flags.set(19, val); }
+   void setIsNoClose(int val) { flags.set(8, !val); }
+   void setConsumesKey(int val) { flags.set(17, val); }
+
+   int getKey() const { return key; }
+   void setKey(int k) { key = k; }
+
+   virtual int write(ostream& dafile);
+   virtual int read(istream& dafile, int read_all = TRUE);
+   /** Stuff used to generate meta data. */
+   virtual LEtypeE getEntityType() { return LE_CLOSABLE; }
 };//class Closable   
 
 #endif

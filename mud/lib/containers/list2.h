@@ -1,5 +1,5 @@
-// $Id: list2.h,v 1.11 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: list2.h,v 1.12 1999/08/01 08:40:24 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/01 08:40:24 $
 
 //
 //ScryMUD Server Code
@@ -62,12 +62,6 @@ extern int core_dump(const char* msg); //misc2.cc
 extern int __node_cnt;
 extern int __list_cnt;
 extern int __cell_cnt;
-
- 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
 
 template <class T> class Cell;
 
@@ -149,6 +143,8 @@ public:
    static int getListCnt() { return __list_cnt; }
    static int getCellCnt() { return __cell_cnt; }
 
+   const T getNil() const { return header->item; }
+
    List(const List<T> &L) : sz(L.sz) { //copy constructor
       //mudlog << "In List<T> copy constructor, (L.this: " << (void*)(&L)
       //       << "): " << L.toString() << "\n" << flush;
@@ -157,11 +153,6 @@ public:
       header = new Node;
       memset(cll_list, 0, NUMBER_OF_CONCURENT_CELLS * sizeof(Cell<T>*));
       
-      //for (int i = 0; i<NUMBER_OF_CONCURENT_CELLS; i++) {
-      //   cll_list[i] = NULL;
-      //}
-
-
       if (!header) {
          //log("ERROR:  out of Memory: List2 constructor, exiting!\n");
          exit (101);
@@ -170,7 +161,7 @@ public:
          Cell<T> cll(L); 
          T ptr;
 
-         header->item = (T)(NULL);
+         header->item = L.getNil();
          header->next = header;
          header->prev = header;
   
@@ -229,7 +220,6 @@ public:
  
       if (this != &L) { // Don't copy yourself
          this->clear();       
-         sz = L.sz;
 
          Cell<T> cll(L);
          T datum; 
@@ -786,6 +776,5 @@ public:
       insertBefore(cll, val);
    }//insertSorted
 };//SortedValList
-
 
 #endif

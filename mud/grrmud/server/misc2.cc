@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.24 1999/07/12 07:14:32 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
+// $Id: misc2.cc,v 1.25 1999/08/01 08:40:23 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
 
 //
 //ScryMUD Server Code
@@ -1635,8 +1635,8 @@ int crit_count(List<critter*>& lst, critter& src) {
 }//crit_count
 
 
-void clear_crit_list(List<critter*>& lst) {
-   Cell<critter*> cll(lst);
+void clear_crit_list(SafeList<critter*>& lst) {
+   SCell<critter*> cll(lst);
    critter* ptr;
    //log("In clear_crit_list.\n");
 
@@ -1650,8 +1650,8 @@ void clear_crit_list(List<critter*>& lst) {
 }//clear_crit_list
 
 
-void clear_obj_list(List<object*>& lst) {
-   Cell<object*> cll(lst);
+void clear_obj_list(SafeList<object*>& lst) {
+   SCell<object*> cll(lst);
    object* ptr;
 
    //log("In clear_obj_list.\n");

@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.38 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.38 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: critter.cc,v 1.39 1999/08/01 08:40:22 greear Exp $
+// $Revision: 1.39 $  $Author: greear $ $Date: 1999/08/01 08:40:22 $
 
 //
 //ScryMUD Server Code
@@ -1565,7 +1565,7 @@ void pc_data::Write(ofstream& ofile) {
 }//Write()       
 
 
-void pc_data::Read(ifstream& ofile) {
+void pc_data::read(ifstream& ofile) {
    int i;
    char tmp[81];
    

@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.15 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: misc2.h,v 1.16 1999/08/01 08:40:23 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
 
 //
 //ScryMUD Server Code
@@ -121,8 +121,8 @@ void increment_percent_lrnd(int skill_num, critter& pc);
 void init_masks();
 int obj_count(List<object*>& lst, object& src);
 int crit_count(List<critter*>& lst, critter& src);
-void clear_crit_list(List<critter*>& lst);
-void clear_obj_list(List<object*>& lst);
+void clear_crit_list(SafeList<critter*>& lst);
+void clear_obj_list(SafeList<object*>& lst);
 
 void out_field(const bitfield& field, critter& pc, const BitfieldNames& names);
 void out_stat_list(const List<SpellDuration*>& lst, critter& pc,

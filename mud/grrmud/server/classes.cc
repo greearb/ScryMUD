@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.8 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: classes.cc,v 1.9 1999/08/01 08:40:22 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/01 08:40:22 $
 
 //
 //ScryMUD Server Code
@@ -58,50 +58,13 @@ String HegemonMarkup::makeSafeForHegTag(const char* str) {
    return retval;
 }//convertToHeg
 
-ObjectContainer::~ObjectContainer() {
-   ContainedObject* ptr;
-   while (!inv.isEmpty()) {
-      ptr = inv.popFront();
-      ptr->privRemoveFromContainer(this);
-   }//while
-}//destructor
-
-
-int ObjectContainer::append(ContainedObject* o) {
-   o->privAddToContainer(this);
-   inv.append(o);
-   return TRUE;
-}
-
-int ObjectContainer::prepend(ContainedObject* o) {
-   o->privAddToContainer(this);
-   inv.prepend(o);
-   return TRUE;
-}
-
-int ObjectContainer::insertUnique(ContainedObject* o) {
-   o->privAddToContainer(this);
-   inv.gainData(o); //puts in unique copy
-   return TRUE;
-}
-
-ContainedObject* ObjectContainer::remove(ContainedObject* o) {
-   o->privRemoveFromContainer(this);
-   return inv.loseData(o);
-}
-
 ContainedObject::~ContainedObject() {
-   ObjectContainer* ptr;
+   SafeList<ContainedObject*>* ptr;
    while (!contained_by.isEmpty()) {
       ptr = contained_by.popFront();
-      ptr->privRemoveObject(this);
+      ptr->privRemoveObject__((ContainedObject*)(this));
    }//while
 }//destructor
-
-
-int Entity::isEntityType(LEtypeE le) {
-   return ((le == LE_ANY) || (getEntityType() == le));
-}
 
 
 int StatBonus::_cnt = 0;

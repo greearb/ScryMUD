@@ -1,5 +1,5 @@
-// $Id: script.cc,v 1.15 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: script.cc,v 1.16 1999/08/01 08:40:23 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
 
 //
 //ScryMUD Server Code
@@ -1904,6 +1904,82 @@ void GenScript::doScriptJump(int abs_offset) {
    if (cur_script)
       cur_script->doScriptJump(abs_offset);
 }
+
+int Scriptable::read(istream& ofile, int read_all = TRUE) {
+   int sent_;
+   int script_type;
+
+   GenScript* ptr = NULL;
+
+   ofile >> script_type;
+
+   MetaTags mt;
+   mt.read(ofile);
+
+   ofile >> pause >> endl;
+
+   ofile >> sent_;
+   while (sent_ != -1) {
+      if (mudlog.ofLevel(DB))
+         mudlog << "\nReading script# " << sent_ << endl;
+      if (!ofile) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  reading script da_file FALSE." << endl;
+         }
+         return;
+      }
+
+      switch (script_type) {
+      case LE_OSCRIPT:
+         ptr = new ObjectScript(); break;
+      case LE_MSCRIPT:
+         ptr = new MobScript(); break;
+      case LE_RSCRIPT:
+         ptr = new RoomScript(); break;
+      default:
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  unknown type in Scriptable::read, type: "
+                   << sent_ << endl;
+         }
+         return -1;
+      }//switch
+
+      ptr->read(ofile);
+      obj_proc_scripts.append(ptr);
+      ofile >> sent_;
+      ofile.getline(tmp, 80);
+      if (mudlog.ofLevel(DB))
+         mudlog << "Got rest of line -:" << tmp << ":-" << endl;
+   }//while
+}//read
+
+
+int Scriptable::write(ostream& ofile) {
+   if (!scripts.isEmpty()) {
+      ofile << scripts.peekFront()->getEntityType();
+   }
+   else {
+      ofile << LE_UNKNOWN;
+   }
+
+   // Write out the meta data
+   MetaTags mt(this);
+   mt.write(ofile);
+
+   ofile << pause << endl;
+
+   Cell<GenScript*> cll;
+   scripts.head(cll);
+   GenScript* ptr;
+
+   int i = 1;
+   while ((ptr = cll.next())) {
+      ofile << i++ <<  "  Start of a room proc script\n";
+      ptr->write(ofile);
+   }
+      
+   ofile << "-1  End of room proc scripts" << endl;
+}//write
 
 
 // NOTE:  The script owner is *this.  It is likely, but not necessary

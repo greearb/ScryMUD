@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.29 1999/07/28 05:57:05 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 1999/07/28 05:57:05 $
+// $Id: room.cc,v 1.30 1999/08/01 08:40:23 greear Exp $
+// $Revision: 1.30 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
 
 //
 //ScryMUD Server Code
@@ -348,7 +348,7 @@ room& room::operator=(room& source) {
    source.critters.head(crit_cll);
    while ((crit_ptr = crit_cll.next())) {
       if (crit_ptr->isMob()) { //only copy MOB's
-         gainObject(crit_ptr); //will increment cur_in_game
+         gainCritter(crit_ptr); //will increment cur_in_game
       }//if
    }//while
 
@@ -535,7 +535,7 @@ void room::Read(ifstream& ofile, short read_all) {
             if (read_all || 
                 ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
                 d(1,100)) {
-               gainObject(&(obj_list[i]));    //add it to inventory
+               gainInv(&(obj_list[i]));    //add it to inventory
 //               obj_list[i].OBJ_CUR_IN_GAME++; //increment cur_in_game
             }//if
          }//if
@@ -606,11 +606,11 @@ void room::Read(ifstream& ofile, short read_all) {
          if (mob_list[i].isPlayerShopKeeper()) {
             critter* shop_owner = load_player_shop_owner(i);
             if (shop_owner) {
-               gainObject(shop_owner);
+               gainCritter(shop_owner);
             }//if
          }//if
          else { //regular case
-            gainObject(&(mob_list[i])); //this will increment cur_in_game
+            gainCritter(&(mob_list[i])); //this will increment cur_in_game
          }
       }//if
       else {
@@ -749,6 +749,9 @@ void room::Write(ofstream& ofile) {
 
    normalize(); //make sure everything jives!
    
+   Entity::write();
+   Scriptable::write();
+
    if (room_flags.get(22)) { //totaly read flag
       was_totally_read = TRUE;
       room_flags.turn_off(22); // this flag is purely temp, don't write
@@ -836,20 +839,6 @@ void room::Write(ofstream& ofile) {
          ofile << c_ptr->MOB_NUM << " ";
    }//while
    ofile << -1 << "\tmobs\n";
-
-   if (room_flags.get(35)) {
-      Cell<RoomScript*> cll;
-      room_proc_scripts.head(cll);
-      RoomScript* ptr;
-
-      int i = 1;
-      while ((ptr = cll.next())) {
-         ofile << i++ <<  "  Start of a room proc script\n";
-         ptr->write(ofile);
-      }
-      
-      ofile << "-1  End of room proc scripts" << endl;
-   }
 
    ofile << "End of Room\n";
  
@@ -1395,38 +1384,27 @@ int room::sub_a_4_b(critter* a, critter* b, int i_th) {
 
    // Don't want to add it if we can't substitute it, but the list<>
    // method does indeed append if it's not already there.
-   if (critters.getInv().haveData(b)) {
-      return critters.getInv().substituteData(b, a, i_th);
+   if (critters.haveData(b)) {
+      return critters.substituteData(b, a, i_th);
    }
    return FALSE;
 }
 
-void room::gainObject(Entity* le) {
-   switch (le->getEntityType()) {
-      case LE_OBJECT:
-         gainObject_((object&)(*le));
-         break;
-      case LE_CRITTER:
-         gainObject_((critter&)(*le));
-         break;
-      default:
-         core_dump("DEFAULT CASE in room::gainObject");
-         break;
-   }//switch
-}//gainObject
+void room::gainCritter(critter* crit) {
+   if (crit->isNpc()) {
+      crit->incrementCurInGame();
+   }
+   critters.prepend(crit);
 
-Entity* room::loseObject(Entity* le) {
-   switch (le->getEntityType()) {
-      case LE_OBJECT:
-         return loseObject_((object&)(*le));
-      case LE_CRITTER:
-         return loseObject_((critter&)(*le));
-      default:
-         core_dump("DEFAULT CASE in room::loseObject");
-         return NULL; //will never get here.
-   }//switch
-}//loseObject
-
+   // This nips a bunch of bugs in the bud.  No more will we have
+   // MOB's running around in the game.  If it's in the game, it will
+   // be a SMOB, which for reasons lost in antiquity, means it is a
+   // unique Instance and may be modified independently of the database.
+   if (crit->isMob()) {
+      crit = mob_to_smob(*crit, *this);
+   }//if
+   crit->setCurRoomNum(getRoomNum());
+}
 
 void room::loseObjectFromGame(object& which_un) {
    Cell<object*> ocll(inv);
@@ -1455,6 +1433,33 @@ void room::loseObjectFromGame(object& which_un) {
    }//while
 }//loseObjectFromGame
 
+critter* room::removeCritter(critter* crit) {
+   critter* retval;
+
+   retval = critters.loseData(crit);
+
+   if (retval) {
+      if (crit->isNpc()) {
+         crit->decrementCurInGame();
+      }
+   }//if
+   else {
+      // We use room 0 for newbies logging in and such...will get boundary
+      // case errors here in some instances...
+      if (getIdNum() != 0) {
+         if (mudlog.ofLevel(WRN)) {
+            mudlog << "WARNING:  could not remove the critter in"
+                   << " room::removeCrit(), crit_name: " << *(crit->getName()) 
+                   << " num: " << crit->getIdNum() << " room: "
+                   << getIdNum() << endl;
+            core_dump("removeCritter");
+         }//if
+      }//if
+   }//else
+
+   return retval;
+}//removeCritter
+
 
 void room::getPetsFor(critter& owner, List<critter*>& rslts) {
    critter* ptr;
@@ -1473,6 +1478,30 @@ void room::showCritters(critter& pc) {
 //show inv to pc (use out_inv method)
 void room::outInv(critter& pc) {
    out_inv(inv, pc, ROOM_INV);
+}
+
+void room::gainInv(object* obj) {
+   if (obj->obj_flags.get(55)) { //if it's coins
+      if (obj->cur_stats[1] == 0) {
+         if (obj->IN_LIST) {
+            mudlog << "ERROR:  Possible memory leak, gainInv:  obj is SOBJ"
+                   << " but has zero coins, obj#" << obj->getIdNum()
+                   << " room# " << getIdNum() << endl;
+         }
+         return; //don't add it, it had zero coins
+      }//if
+   }//if
+         
+   inv.prepend(obj);
+   if (obj->IN_LIST) {
+      obj->IN_LIST = &inv;
+      obj->setCurRoomNum(getIdNum(), 0);
+   }
+}
+
+object* room::loseInv(object* obj) {
+   obj->setCurRoomNum(0, 0);
+   return inv.loseData(obj);
 }
 
 int room::canSeeSky() {
@@ -1756,72 +1785,3 @@ int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
    }//while
    return 0;
 }//vDoEmote
-
-
-
-void room::gainObject_(object& obj) {
-   if (obj.isCoins()) {
-      if (obj.getCoinCount() == 0) {
-         if (obj.isModified()) {
-            mudlog << "ERROR:  Possible memory leak, gainInv:  obj is SOBJ"
-                   << " but has zero coins, obj#" << obj.getIdNum()
-                   << " room# " << getIdNum() << endl;
-         }
-         return; //don't add it, it had zero coins
-      }//if
-   }//if
-         
-   inv.prependObject(&obj);
-   if (obj->isModified()) {
-      obj->setContainer(this);
-   }
-}//gainObject
-
-
-void room::gainObject_(critter& crit) {
-   if (crit.isNpc()) {
-      crit.incrementCurInGame();
-   }
-   critters.prependObject(crit);
-
-   // This nips a bunch of bugs in the bud.  No more will we have
-   // MOB's running around in the game.  If it's in the game, it will
-   // be a SMOB, which for reasons lost in antiquity, means it is a
-   // unique Instance and may be modified independently of the database.
-   if (crit.isMob()) {
-      crit = mob_to_smob(crit, *this);
-   }//if
-   crit->setContainer(this);
-}//gainObject
-
-
-critter* room::loseCritter_(critter& crit) {
-   critter* retval;
-
-   retval = (critter*)(critters.loseData(&crit));
-
-   if (retval) {
-      if (crit.isNpc()) {
-         crit.decrementCurInGame();
-      }
-   }//if
-   else {
-      // We use room 0 for newbies logging in and such...will get boundary
-      // case errors here in some instances...
-      if (getIdNum() != 0) {
-         if (mudlog.ofLevel(WRN)) {
-            mudlog << "WARNING:  could not remove the critter in"
-                   << " room::removeCrit(), crit_name: " << *(crit->getName()) 
-                   << " num: " << crit->getIdNum() << " room: "
-                   << getIdNum() << endl;
-            core_dump("removeCritter");
-         }//if
-      }//if
-   }//else
-
-   return retval;
-}//loseCritter
-
-object* room::loseObject_(object& obj) {
-   return (*object)(inv.loseData(&obj));
-}

@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.3 1999/06/05 23:29:16 greear Exp $
-# $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:16 $
+# $Id: Makefile,v 1.4 1999/08/01 08:40:24 greear Exp $
+# $Revision: 1.4 $  $Author: greear $ $Date: 1999/08/01 08:40:24 $
 
 include ../../MakeInclude
 
@@ -9,6 +9,7 @@ INC_FILES = \
 	PtrArray.cc \
 	ProtectedList.h \
 	list2.h \
+	SafeList.h \
 	rb_tree.h \
 	rb_tree.cc \
 	tree2.h

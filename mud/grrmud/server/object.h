@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.19 1999/07/30 06:42:23 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/07/30 06:42:23 $
+// $Id: object.h,v 1.20 1999/08/01 08:40:23 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
 
 //
 //ScryMUD Server Code
@@ -35,8 +35,10 @@
 #include "critter.h"
 
 class object;
-class Pc;
  
+extern String* long_name_of_obj(object& obj, int see_bit); //misc.h
+extern const String* single_obj_name(object& obj, int see_bit); //misc2.h
+
 enum ComponentEnum {
    CONSTRUCTION = 0,
    CONCOCTION = 1
@@ -45,11 +47,11 @@ enum ComponentEnum {
 
 ///********************  obj construct data  **********************///
 
-class ConstructData {
-private:
+class obj_construct_data {
+protected:
    static int _cnt;
 
-protected:
+public:
    int target_object; //obj_num of object it is component of
    /* companion components */
    int item1;
@@ -58,39 +60,92 @@ protected:
    int item4;
    int item5;
    
-public:
-   ConstructData();
-   ConstructData(const ConstructData& source); //copy constuctr
-   ~ConstructData() { _cnt--; }
+   obj_construct_data();
+   obj_construct_data(const obj_construct_data& source); //copy constuctr
+   ~obj_construct_data() { _cnt--; }
 
    //void Clear();
    void Read(ifstream& da_file);
    void Write(ofstream& da_file) const;
-   void makeComponent(int targ, int comp1, int comp2, int comp3, int comp4,
-                      int comp5);
-   int getTarget() const { return target_object; }
-   int getItem1() const { return item1; }
-   int getItem2() const { return item2; }
-   int getItem3() const { return item3; }
-   int getItem4() const { return item4; }
-   int getItem5() const { return item5; }
+   static int getInstanceCount() { return _cnt; }
+}; //obj_construct_data
+
+
+///**********************  obj spec data  *****************///
+
+class obj_spec_data {
+protected:
+   static int _cnt;
+
+public:
+   bitfield obj_spec_data_flags; // 0 consume_teleport, 
+   // 1 has_construct_data, 2 has_skin, 3 consume_poison,
+   // 4 NULL, 5 NULL, 6 NULL,
+   // 7 NULL, 8 NULL, 9 NULL,
+   // 10 casts_spells
+   //
+   obj_construct_data* construct_data;
+   object* skin_ptr;
+   critter* w_eye_owner;
+   PtrList<SpellDuration> casts_these_spells;
+   
+   
+   obj_spec_data();
+   obj_spec_data(const obj_spec_data& source);  //copy constructor
+   ~obj_spec_data();
+
+   obj_spec_data& operator=(const obj_spec_data& source);
+
+   void Clear();
+   void Read(ifstream& da_file);
+   void Write(ofstream& da_file) const;
+   static int getInstanceCount() { return _cnt; }
+};//obj_spec_data
+
+
+
+///********************** bag struct ***********************************/// 
+class bag_struct : public Closable {
+private:
+   static int _cnt;
+protected:
+   short max_weight;
+   short percentage_weight; //1 to 100, ie 50 bag makes objs half as heavy
+   short time_till_disolve; //for corpse, in ticks, -1 if not disolving
+
+public:
+   bag_struct(const bag_struct& source); //copy constructor
+   bag_struct(); //default constructor
+   virtual ~bag_struct() { _cnt--; }
+
+   int getMaxWeight() const { return max_weight; }
+   int getPercentWeight() const { return percentage_weight; }
+   int getTimeTillDisolve() const { return time_till_disolve; }
+
+   void setMaxWeight(int i) { max_weight = i; }
+   void setPercentWeight() { percentage_weight = i; }
+   void setTimeTillDisolve() { time_till_disolve = i; }
+
+   virtual int read(istream& da_file, int read_all = TRUE);
+   virtual int write(ostream& da_file);
+   virtual LEtypeE getEntityType() { return LE_BAG_OBJ; }
 
    static int getInstanceCount() { return _cnt; }
-}; //ConstructData
-
-
+}; // bag_class
+ 
 
 ///*********************  object  ******************************///
 
-class object : public Entity {
+class object : public Entity, public Scriptable {
 private:
    static int _cnt;
 
 protected:
-   int is_modified; //takes the place of what IN_LIST used to do for us.
+   int is_modified;
 
-   LString short_desc;
-   LString in_room_desc;
+public:
+   LStringCollection short_desc;
+   LStringCollection in_room_desc;
    
    bitfield obj_flags; 
 	   // 0 no_rest,  1 !evil, 2 !neutral, 3 !good, 
@@ -124,36 +179,71 @@ protected:
 	   // 2 item_num;
 	   // 3 in_zone  //as in olc purposes, its origin
 
+   bag_struct* bag; //NULL if not a bag
+  
+   SafeList<object*> inv; //empty if not a bag
+ 
    PtrList<StatBonus> stat_affects;  
 
-public:
+   obj_spec_data* obj_proc;
+   
    object (object& source); //copy constructor
    object();			     //default constructor
-   virtual ~object();                     //destructor
+   ~object();                     //destructor
    object& operator= (object& source);
 
    void Clear();
-   void Read(ifstream& da_file, short read_all);
-   void Write(ofstream& da_file);
+   int read(istream& da_file, short read_all);
+   int write(ostream& da_file);
+   int read_v3(istream& da_file, short read_all);
+   int read_v2(istream& da_file, String& name, short read_all);
+
    int isMagic();
 
-   virtual Entity* loseObject(Entity* le);
-   virtual void gainObject(Entity* le);
-   virtual int getCurRoomNum();
+   object* loseInv(object* obj);
+   void gainInv(object* obj);
 
+   int getIdNum();
+   int getKeyNum();
    int getLevel() const { return extras[8]; }
-
-   virtual int getCurWeight() const { return getEmptyWeight(); }
+   int getMaxWeight() const;
+   int getCurWeight() const;
    int getEmptyWeight() const { return extras[5]; }
-   void setEmptyWeight(int wt) { extras[5] = wt; }
-   virtual int getEntityCount(LEtypeE type, int id_num, int sanity) { return 0; }
    
+   void setEmptyWeight(int wt) { extras[5] = wt; }
+   
+   void lock();
+   void unlock();
+   void open();
+   int consumesKey();
+
    int doGoToRoom(int dest_room, const char* from_dir, door* by_door,
                   int cur_room, int sanity);
 
    int getZoneNum() const;
+
+   /** These default to english. */
+   void setShortDesc(String& new_val);
+   void setInRoomDesc(String& new_val);
+
+   void setShortDesc(LString& new_val);
+   void setInRoomDesc(LString& new_val);
+
+   int insertNewScript(GenScript* script);
+
    int getDefaultPrice() { return cur_stats[1]; }
+   int getPause() const { return pause; }
    
+   void setPause(int i) { pause = i; }
+   void decrementPause() { if (pause > 0) pause--; }
+
+   void makeComponent(int targ, int comp1, int comp2, int comp3, int comp4,
+                      int comp5, ComponentEnum con_type);
+
+   int isNamed(const String& name) const;
+   int isLocked() const;
+   int isMagLocked() const;
+   int isClosed() const;
    int isPotion() const;
    int isFood() const ;
    int isInUse() const ;
@@ -165,14 +255,14 @@ public:
    int isCoins() const { return OBJ_FLAGS.get(55); }
    int isHerb() const;
    int isPaused() const { return pause > 0; }
-   int isModified() const { return is_modified; } //ie isSOBJ
+   int isModified() const { return is_modified; }
    int hasScript() const { return obj_flags.get(76); }
    int isLiquid() const;
    int isCanteen() const;
 
-   void setModified(int mod) { is_modified = mod; }
    void setComplete();
    void setIncomplete();
+   void setIdNum(int i);
    void setButcherable(int val);
 
    // These return the current value after the operation
@@ -186,7 +276,10 @@ public:
 
    static int getInstanceCount() { return _cnt; }
 
-   int getObjCountByNumber(LEtypeE type, int onum, int sanity);
+   int getObjCountByNumber(int onum, int sanity);
+
+   void setCurRoomNum(int i, int sanity);
+   int getCurRoomNum();
 
    /* Found in obj_cmds.cc */
    /**  Move all in room out some door.  Does no checks, just puts em
@@ -215,120 +308,7 @@ public:
    void checkForProc(String& cmd, String& arg1, critter& actor,
                      int targ, room& cur_room);
 
-   virtual LEtypeE getEntityType() const { return LE_OBJECT; }
 }; // class object
 
-
-/** Special Procedure extensions to an object. */
-class ProcObject : public object, public Scriptable {
-private:
-   static int _cnt;
-
-protected:
-   bitfield proc_flags; // 0 consume_teleport, 
-   // 1 has_construct_data, 2 has_skin, 3 consume_poison,
-   // 4 NULL, 5 NULL, 6 NULL,
-   // 7 NULL, 8 NULL, 9 NULL,
-   // 10 casts_spells
-   //
-   ConstructData* construct_data;
-   object* skin_ptr;
-   Pc* w_eye_owner;
-   PtrList<SpellDuration> casts_these_spells;
-
-public:
-   ProcObject();
-   ProcObject(const ProcObject& source);  //copy constructor
-   ~ProcObject();
-
-   ProcObject& operator=(const ProcObject& source);
-
-   void makeComponent(int targ, int comp1, int comp2, int comp3, int comp4,
-                      int comp5, ComponentEnum con_type);
-
-   int castsSpells() { return proc_flags.get(10); }
-   int consumeTeleport() { return proc_flags.get(0); }
-   int hasConstructData() { return proc_flags.get(1); }
-   int hasSkin() { return proc_flags.get(2); }
-   int consumePoison() { return proc_flags.get(3); }
-   object* getSkin() { return skin_ptr; }
-   void setSkin(object* sk) { skin_ptr = sk; }
-   Pc* getWizardEyeOwner() { return w_eye_owner; }
-   void setWizardEyeOwner(Pc* cr) { w_eye_owner = cr; }
-
-   virtual int insertNewScript(GenScript* original);
-
-   bitfield& getFlags() { return proc_flags; }
-   PtrList<SpellDuration>& getSpellsCast() { return casts_these_spells; }
-
-   void Clear();
-   void Read(ifstream& da_file);
-   void Write(ofstream& da_file) const;
-   static int getInstanceCount() { return _cnt; }
-};//ProcObject
-
-
-
-
-///********************** Bag  ***********************************/// 
-class BaseBag : public ObjectContainer, public Closable {
-private:
-   static int _cnt;
-
-protected:
-   // bag_flags are now in the Closable class.
-   short max_weight;
-   short percentage_weight; //1 to 100, ie 50 bag makes objs half as heavy
-   short time_till_disolve; //for corpse, in ticks, -1 if not disolving
-
-   virtual void loseObject_(object* obj);
-
-public:
-   BaseBag(BaseBag& source); //copy constructor
-   BaseBag(); //default constructor
-   BaseBag& operator=(BaseBag& src);
-   ~BaseBag() { _cnt--; }
-
-   void Read(ifstream& da_file);
-   void Write(ofstream& da_file) const;
-
-   virtual PtrList<object>& getInv() { return (PtrList<object>&)(getInv()); }
-   int getMaxWeight() const { return max_weight; }
-   int getPercentWeight() const { return percentage_weight; }
-   int getTimeTillDisolve() const { return time_till_disolve; }
-
-   void setMaxWeight(int i) { max_weight = i; }
-   void setPercentWeight(int i) { percentage_weight = i; }
-   void setTimeTillDisolve(int i) { time_till_disolve = i; }
-
-   virtual int getEntityCount(LEtypeE type, int id_num, int sanity);
-
-   virtual int getCurWeight();
-
-   static int getInstanceCount() { return _cnt; }
-
-   virtual LEtypeE getEntityType() const { return LE_BAG_OBJ; }
-}; // BaseBag
-
-class Bag : public object, public BaseBag {
-protected:
-   virtual void gainObject_(object* obj);
-
-public:
-   virtual int getCurWeight() { return BaseBag::getCurWeight() +
-                                         object::getCurWeight(); }
-   virtual void gainObject(Entity* obj);
-};
-
-class ProcBag : public ProcObject, public BaseBag {
-protected:
-   virtual void gainObject_(object* obj);
-
-public:
-
-   virtual int getCurWeight() { return BaseBag::getCurWeight() +
-                                         object::getCurWeight(); }
-   virtual void gainObject(Entity* obj);
-};
 
 #endif
