@@ -453,7 +453,10 @@ int main() {
    signal(SIGSTOP, (&sig_term_handler));
    //signal(SIGSYS, (&sig_term_handler));
    signal(SIGTERM, (&sig_term_handler));
-   signal(SIGTRAP, (&sig_term_handler));
+   
+   // This is like: ctrl-z, no need to catch it.
+   //signal(SIGTRAP, (&sig_term_handler));
+
    signal(SIGTSTP, (&sig_term_handler));
    signal(SIGTTIN, (&sig_term_handler));
    signal(SIGTTOU, (&sig_term_handler));
@@ -1057,10 +1060,13 @@ void game_loop(int s)  {
       /* Object action procs */
       object* o_ptr;
       for (int cnt = 0; cnt < proc_action_objs.getCurLen(); cnt++) {
+         //mudlog << "Searching for proc objs, cnt: " << cnt << endl;
          if (!(o_ptr = proc_action_objs.elementAt(cnt))) {
+            //mudlog << "Was null.\n";
             continue;
          }//if
          else {
+            //mudlog << "Found one: " << o_ptr->getIdNum() << endl;
             if (o_ptr->getPause() > 0) {
                continue;
             }
@@ -1080,7 +1086,7 @@ void game_loop(int s)  {
                if ((script_ret_val = ObjectScript::parseScriptCommand(*cmd_ptr,
                                                                       *o_ptr)) < 0) {
                   if (mudlog.ofLevel(WRN)) {
-                     mudlog << "ObjectScript command: target -:" 
+                     mudlog << "WARNING:  ObjectScript command: target -:" 
                             << cmd_ptr->getTarget() << ":-  cmd -:"
                             << cmd_ptr->getCommand() << " for object# "
                             << o_ptr->getIdNum() << " returned negative value: "
@@ -1090,6 +1096,8 @@ void game_loop(int s)  {
                delete cmd_ptr;
             }
             else {
+               mudlog << "Could not get another command, must be done."
+                      << endl;
                o_ptr->finishedObjProc();
 
                // it may have started another one

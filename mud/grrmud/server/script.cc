@@ -509,7 +509,7 @@ String GenScript::toStringBrief(int client_format, int mob_num,
       return buf;
    }
    else {
-      Sprintf(buf, "Trigger:  %S  Actor Mob:  %i  Target Mob:  %i  Precedence: %i\n\tDiscriminator:  %S.\n", 
+      Sprintf(buf, "Trigger:  %S  Actor Mob:  %i  Target #:  %i  Precedence: %i\n\tDiscriminator:  %S.\n", 
               &trigger_cmd, actor, target, precedence, &trig_discriminator);
    }
    return buf;
@@ -584,17 +584,19 @@ String GenScript::getRunningScript() {
 
 /**  Should these arguments trigger this command? */
 int GenScript::matches(const String& cmd, String& arg1, critter& act,
-                       int targ) {
-   //if (mudlog.ofLevel(DBG)) {
-      //mudlog << "GenScript::Matches(args....)" << endl;
-      //mudlog << "Cmd:  " << cmd << "  arg1:  " << arg1 << "  act:  "
-      //       <<  *(name_of_crit(act, ~0))
-      //       << "  targ:  " << targ << endl;
+                       int targ, int obj_actor_num = -1) {
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "GenScript::Matches(args....)" << endl;
+      mudlog << "Cmd:  " << cmd << "  arg1 -:" << arg1 << ":- act:  "
+             <<  *(name_of_crit(act, ~0))
+             << "  targ:  " << targ << "obj_actor_num: "
+             << obj_actor_num << endl;
       //mudlog << "this:  " << toStringBrief(0, 0) << endl;
-   //}
+   }
 
    if (strcasecmp(cmd, trigger_cmd) == 0) {
-      //mudlog.log("commands are equal...");
+      mudlog.log("commands are equal...");
       // now check to see if arg1 is found ANYWHERE in the
       // discriminator (if it exists)
       if (trig_discriminator.Strlen() > 0) {
@@ -607,12 +609,20 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
                int obj_num = atoi(arg1);
                if ((obj_num > 1) && (obj_num < NUMBER_OF_ITEMS)) {
                   if (!strstr(trig_discriminator, arg1)) {
+                     if (mudlog.ofLevel(DBG)) {
+                        mudlog << "Returning false, give, target not right."
+                               << endl;
+                     }
                      return FALSE;
                   }//if
                }//if
             }//if
             else if (strcasecmp(cmd, "enter") == 0) {
                if (!strstr(trig_discriminator, arg1)) {
+                  if (mudlog.ofLevel(DBG)) {
+                     mudlog << "Returning false, enter, descrim wrong."
+                            << endl;
+                  }
                   return FALSE;
                }
             }//else
@@ -620,6 +630,10 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
                int obj_num = atoi(arg1); //bag
                if ((obj_num > 1) && (obj_num < NUMBER_OF_ITEMS)) {
                   if (!strstr(trig_discriminator, arg1)) {
+                     if (mudlog.ofLevel(DBG)) {
+                        mudlog << "Returning false, put, descrim wrong."
+                               << endl;
+                     }
                      return FALSE;
                   }//if
                }//if
@@ -629,7 +643,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "FEM")) {
                if (!act.isFemale()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not FEMALE" << endl;
+                     mudlog << "Returning false, not FEMALE" << endl;
                   }
                   return FALSE;
                }//if
@@ -638,7 +652,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "MALE")) {
                if (!act.isMale()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not MALE" << endl;
+                     mudlog << "Returning false, not MALE" << endl;
                   }
                   return FALSE;
                }//if
@@ -647,7 +661,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "NEUTER")) {
                if (!act.isNeuter()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not MALE" << endl;
+                     mudlog << "Returning false, not MALE" << endl;
                   }
                   return FALSE;
                }//if
@@ -656,7 +670,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "BARD")) {
                if (!act.isBard()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not BARD" << endl;
+                     mudlog << "Returning false, not BARD" << endl;
                   }
                   return FALSE;
                }//if
@@ -665,7 +679,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "WARRIOR")) {
                if (!act.isWarrior()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not Warrior" << endl;
+                     mudlog << "Returning false, not Warrior" << endl;
                   }
                   return FALSE;
                }//if
@@ -674,7 +688,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "SAGE")) {
                if (!act.isSage()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not SAGE" << endl;
+                     mudlog << "Returning false, not SAGE" << endl;
                   }
                   return FALSE;
                }//if
@@ -683,7 +697,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "WIZARD")) {
                if (!act.isWizard()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not wizard" << endl;
+                     mudlog << "Returning false, not wizard" << endl;
                   }
                   return FALSE;
                }//if
@@ -692,7 +706,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "THIEF")) {
                if (!act.isThief()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not THIEF" << endl;
+                     mudlog << "Returning false, not THIEF" << endl;
                   }
                   return FALSE;
                }//if
@@ -701,7 +715,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "ALCHEMIST")) {
                if (!act.isAlchemist()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not ALCHEMIST" << endl;
+                     mudlog << "Returning false, not ALCHEMIST" << endl;
                   }
                   return FALSE;
                }//if
@@ -710,7 +724,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "CLERIC")) {
                if (!act.isCleric()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not CLERIC" << endl;
+                     mudlog << "Returning false, not CLERIC" << endl;
                   }
                   return FALSE;
                }//if
@@ -719,7 +733,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "HUMAN")) {
                if (!act.isHuman()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not Human" << endl;
+                     mudlog << "Returning false, not Human" << endl;
                   }
                   return FALSE;
                }//if
@@ -728,7 +742,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "ANITRE")) {
                if (!act.isAnitre()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not ANITRE" << endl;
+                     mudlog << "Returning false, not ANITRE" << endl;
                   }
                   return FALSE;
                }//if
@@ -737,7 +751,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "DARKLING")) {
                if (!act.isDarkling()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not DARKLING" << endl;
+                     mudlog << "Returning false, not DARKLING" << endl;
                   }
                   return FALSE;
                }//if
@@ -746,7 +760,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "DRAGON")) {
                if (!act.isDragon()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not DRAGON" << endl;
+                     mudlog << "Returning false, not DRAGON" << endl;
                   }
                   return FALSE;
                }//if
@@ -755,7 +769,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "DWARF")) {
                if (!act.isDwarf()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not DWARF" << endl;
+                     mudlog << "Returning false, not DWARF" << endl;
                   }
                   return FALSE;
                }//if
@@ -764,7 +778,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "OGRUE")) {
                if (!act.isOgrue()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not OGRUE" << endl;
+                     mudlog << "Returning false, not OGRUE" << endl;
                   }
                   return FALSE;
                }//if
@@ -773,7 +787,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "ELF")) {
                if (!act.isElf()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not ELF" << endl;
+                     mudlog << "Returning false, not ELF" << endl;
                   }
                   return FALSE;
                }//if
@@ -782,7 +796,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "UNDEAD")) {
                if (!act.isUndead()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not UNDEAD" << endl;
+                     mudlog << "Returning false, not UNDEAD" << endl;
                   }
                   return FALSE;
                }//if
@@ -791,7 +805,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "ANIMAL")) {
                if (!act.isAnimal()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not ANIMAL" << endl;
+                     mudlog << "Returning false, not ANIMAL" << endl;
                   }
                   return FALSE;
                }//if
@@ -800,7 +814,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (strstr(trig_discriminator, "MONSTER")) {
                if (!act.isMonster()) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, not MONSTER" << endl;
+                     mudlog << "Returning false, not MONSTER" << endl;
                   }
                   return FALSE;
                }//if
@@ -811,7 +825,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
             if (trig_discriminator.Strlen() >= 5) {
                if (arg1.Strlen() < 3) {
                   if (mudlog.ofLevel(DBG)) {
-                     //mudlog << "Returning false, arg1.strlen < 3" << endl;
+                     mudlog << "Returning false, arg1.strlen < 3" << endl;
                   }
                   return FALSE;
                }
@@ -838,8 +852,9 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
 
                   if (!strstr(tmp_arg1, trig_discriminator)) {
                      if (mudlog.ofLevel(DBG)) {
-                        //mudlog << "Returning false, strstr failed." << endl;
-                     }   
+                        mudlog << "Returning false, discrim, strstr failed."
+                               << endl;
+                     }
                      return FALSE;
                   }//if
                }//if
@@ -853,29 +868,40 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
       if (target > 1) {
          if (targ != target) {
             if (mudlog.ofLevel(DBG)) {
-               //mudlog << "Returning false, target != targ" << endl;
+               mudlog << "Returning false, target != targ" << endl;
             }
             return FALSE;
          }//if
       }
 
       if (actor > 1) {
-         if (act.MOB_NUM != actor) {
-            if (mudlog.ofLevel(DBG)) {
-               //mudlog << "Returning false, MOB_NUM != actor" << endl;
+         // Objects can be the 'actor' for object scripts (only)
+         if (obj_actor_num > 0) {
+            if (obj_actor_num != actor) {
+               if (mudlog.ofLevel(DBG)) {
+                  mudlog << "Returning false, OBJ_NUM != actor" << endl;
+               }
+               return FALSE;
             }
-            return FALSE;
          }
+         else {
+            if (act.MOB_NUM != actor) {
+               if (mudlog.ofLevel(DBG)) {
+                  mudlog << "Returning false, MOB_NUM != actor" << endl;
+               }
+               return FALSE;
+            }
+         }//else
       }//if
 
       if (mudlog.ofLevel(DBG)) {
-         //mudlog << "Returning TRUE" << endl;
+         mudlog << "Returning TRUE" << endl;
       }
       return TRUE;
    }//if
 
    if (mudlog.ofLevel(DBG)) {
-      //mudlog << "Returning FALSE, commands not equal." << endl;
+      mudlog << "Returning FALSE, commands not equal." << endl;
    }
    return FALSE;
 }//matches

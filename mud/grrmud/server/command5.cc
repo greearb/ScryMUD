@@ -2234,8 +2234,8 @@ int dsys(critter& pc) {
            pulsed_proc_rooms.size(), pulsed_proc_objects.size());
    pc.show(buf);
 
-   Sprintf(buf, "\tproc_action_rooms: %i\n",
-           proc_action_rooms.getCurLen());
+   Sprintf(buf, "\tproc_action_rooms: %i \t proc_action_objs: %i\n",
+           proc_action_rooms.getCurLen(), proc_action_objs.getCurLen());
    pc.show(buf);
 
    return 0;

@@ -1,0 +1,12 @@
+<help olc list_obj_scripts>
+
+List every script that an object has.  It only shows headers, so you have to
+do a stat_obj_script command to get a verbose description of each.
+
+usage:  list_obj_scripts [obj_num] 
+
+Example:  list_obj_scripts 69       // List scripts for object 69
+
+<color=red>
+See Also:  stat_obj_script add_mob_script rm_obj_script
+</color></help>

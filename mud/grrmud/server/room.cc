@@ -805,19 +805,22 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
    
    mudlog.log("room::checkForProc.");
    while ((ptr = cll.next())) {
-      if (!ptr->pc) { //SMOB (not a PC)
-         if (ptr->mob->mob_data_flags.get(17)) { //ok then, it has data
-            if (mudlog.ofLevel(DBG)) {
-               mudlog << "room::checkForProc, found a mob: " 
-                      << ptr->getName() << endl;
-            }
-            if (ptr->isMob()) { //if it's a MOB
-               //mudlog.log("Doing mob_to_smob..");
-               ptr = mob_to_smob(*ptr, getRoomNum());
-            }
-            ptr->checkForProc(cmd, arg1, actor, targ, *this);
-         }//if
-      }//if
+      //if (!ptr->pc) { //SMOB (not a PC)
+      //   if (ptr->mob->mob_data_flags.get(17)) { //ok then, it has data
+      //      if (mudlog.ofLevel(DBG)) {
+      //         mudlog << "room::checkForProc, found a mob: " 
+      //                << ptr->getName() << endl;
+      //      }
+
+      // Have to check all, because mob also checks objects that
+      // the mob owns.
+      if (ptr->isMob()) { //if it's a MOB
+         //mudlog.log("Doing mob_to_smob..");
+         ptr = mob_to_smob(*ptr, getRoomNum());
+      }
+      ptr->checkForProc(cmd, arg1, actor, targ, *this);
+      //   }//if
+      //}//if
    }//while
 
 
@@ -831,7 +834,7 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
          }
          if (!optr->isModified()) {
             //mudlog.log("Doing obj_to_sobj..");
-            optr = obj_to_sobj(*optr, &inv, getRoomNum());
+            optr = obj_to_sobj(*optr, &inv, getIdNum());
          }
          optr->checkForProc(cmd, arg1, actor, targ, *this);
       }//if

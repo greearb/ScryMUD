@@ -35,7 +35,7 @@
 #include "command3.h"
 #include "command5.h"
 #include "batl_prc.h"
-
+#include "battle.h"
 
 
 const char* PcPositionStrings[] = {"stand", "sit", "rest", "sleep", "meditate",
@@ -2377,11 +2377,11 @@ int critter::getIdNum() const {
 // is wearing.
 void critter::checkForProc(String& cmd, String& arg1, critter& actor,
                            int targ, room& rm) {
-   mudlog.log("In critter::checkForProc.");
-
-   if (isMob()) {
-      mudlog.log(ERR, "ERROR:  critter::checkForProc, got a MOB.");
-      return;
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In critter::checkForProc, this#: " << getIdNum()
+             << " actor#: " << actor.getIdNum() << " cmd -:"
+             << cmd << ":- arg1 -:" << arg1 << ":-  targ: "
+             << targ << " room#: " << rm.getIdNum() << endl;
    }
 
    if (mob) {
@@ -2400,7 +2400,7 @@ void critter::checkForProc(String& cmd, String& arg1, critter& actor,
          if (ptr->matches(cmd, arg1, actor, targ)) {
             //mudlog.log("Matches..");
             if (mob->pending_scripts.size() >= 10) { //only queue 10 scripts
-               return; //do nothing, don't want to get too much backlog.
+               break; //do nothing, don't want to get too much backlog.
             }
             else {
                // add it to the pending scripts.
@@ -2424,15 +2424,23 @@ void critter::checkForProc(String& cmd, String& arg1, critter& actor,
                   mob->cur_script->resetStackPtr(); //get ready to start
                }
 
-               return;
+               break;
             }//else
          }//if matches
       }//while
    }//if
 
    // Look through all objects the person is using.
-   for (int i =1; i<MAX_EQ; i++) {
+   for (int i = 1; i < MAX_EQ; i++) {
+      //if (mudlog.ofLevel(DBG)) 
+      //   mudlog << "Checking EQ[" << i << "] == " << EQ[i] << "\n";
       if (EQ[i] && (EQ[i]->hasScript())) {
+         //if (mudlog.ofLevel(DBG)) 
+         //  mudlog << "Found an object with a script: EQ[" << i << "]\n";
+         // make it modified, if it is not already so.
+         if (!(EQ[i]->isModified())) {
+            EQ[i] = obj_to_sobj(*(EQ[i]), &inv, rm.getIdNum());
+         }
          EQ[i]->checkForProc(cmd, arg1, actor, targ, rm);
       }//if
    }//for

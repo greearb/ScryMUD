@@ -165,7 +165,7 @@ int room::processInput(String& input) {
       
       //max input is RAW_MAX words/numbers
       if ((count >= (RAW_MAX - 1)) && (!eos)) {
-	 return 0;
+	 return -1;
       }//if
    }//while
    //   log("Done w/while loop.\n");
@@ -228,7 +228,7 @@ int room::processInput(String& input) {
    /********************************************************/
 
    if ((len1 = cooked_strs[0].Strlen()) == 0) {
-      return 0;
+      return -1;
    }//if
 
    i = cooked_ints[1];
@@ -289,8 +289,8 @@ int room::processInput(String& input) {
       case 'Y':
       case 'Z':
       default:   
-	 return 0;
+	 return -1;
    }//switch
 
-   return 0;
+   return -1;
 }// process input

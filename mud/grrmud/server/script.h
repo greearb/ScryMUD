@@ -156,7 +156,7 @@ public:
    virtual void read(ifstream& da_file);
    virtual void write(ofstream& da_file) const;
    virtual int matches(const String& cmd, String& arg1, critter& act,
-                       int targ);
+                       int targ, int obj_actor_num = -1);
    virtual int matches(const GenScript& src);
    virtual void generateScript(String& cmd, String& arg1, critter& act,
                                int targ, room& rm, critter* script_owner,

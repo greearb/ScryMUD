@@ -955,12 +955,21 @@ grip is made of wrapped leather, with a small guard to protect
 the fingers.
 
 ~
-57 41 31 30 10 0 -1  -:| bitfield |:-
+76 57 41 31 30 10 0 -1  -:| bitfield |:-
 0 0 100 0 200 8 4 3 0 	extras
 1024 500 190 0 	cur_stats
 -1	affected_by
 -1	inv
 7 1 8 1 -1	stat_affects
+1  Start of a object proc script
+wield 190 -1 0	 Trigger Command, targ, actor 
+
+ say I've been wielded!!;
+ pause 4;
+ say yep;
+
+~
+-1  End of object proc scripts
 End of Object.
 
 

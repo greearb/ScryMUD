@@ -51,7 +51,7 @@ int object::processInput(String& input, room& rm) {
    }
 
    if (mudlog.ofLevel(INF)) {
-      mudlog << "OBJ INPUT:  room:  " << getIdNum() << "  input -:"
+      mudlog << "OBJ INPUT:  room:  " << rm.getIdNum() << "  input -:"
              << input << ":-\n" << flush;
    }
 
@@ -165,7 +165,7 @@ int object::processInput(String& input, room& rm) {
       
       //max input is RAW_MAX words/numbers
       if ((count >= (RAW_MAX - 1)) && (!eos)) {
-	 return 0;
+	 return -1;
       }//if
    }//while
    //   log("Done w/while loop.\n");
@@ -228,7 +228,7 @@ int object::processInput(String& input, room& rm) {
    /********************************************************/
 
    if ((len1 = cooked_strs[0].Strlen()) == 0) {
-      return 0;
+      return -1;
    }//if
 
    i = cooked_ints[1];
@@ -289,8 +289,8 @@ int object::processInput(String& input, room& rm) {
       case 'Y':
       case 'Z':
       default:   
-	 return 0;
+	 return -1;
    }//switch
 
-   return 0;
+   return -1;
 }// process input

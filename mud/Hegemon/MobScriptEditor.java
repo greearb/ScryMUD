@@ -45,7 +45,7 @@ class MobScriptEditor extends Frame {
                     "look", "meditate", "nod", "open", "order",
                     "pay", "prone", "remove", "rest", "say", "shake",
                     "shoot", "sit", "slap", "sleep", "stand", "tell",
-                    "throw", "ungroup", "unlock", "wake", "wear",
+                    "throw", "ungroup", "unlock", "wake", "wear", "wield",
                     "yell" };
    
    String[] discrims = { "FEM", "MALE", "NEUTER", "BARD", "CLERIC",

@@ -1,0 +1,16 @@
+<help olc stat_obj_script>
+
+This function allows you to list a single script in it's entirety.  The
+client will be able to recognize this and have a menu specially designed to
+help you edit the script.
+
+usage:  stat_obj_script [obj_num] [script_index]
+
+Example:
+	stat_obj_script 89 0   // view script[0] in object 89
+	stat_obj_script 99 5   // view script[5] in object 99
+
+
+<color=red>
+See Also:  list_obj_scripts add_room_script rm_obj_script
+</color></help>

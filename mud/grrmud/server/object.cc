@@ -400,6 +400,14 @@ object& object::operator= (object& source) {
    if (source.obj_proc) {
       obj_proc = new obj_spec_data(*(source.obj_proc));
    }//if
+
+   // Don't copy pending scripts, can't see any reason to.
+   Cell<ObjectScript*> oscll(source.obj_proc_scripts);
+   ObjectScript* osptr;
+   
+   while ((osptr = oscll.next())) {
+      obj_proc_scripts.append(new ObjectScript(*osptr));
+   }
    
    return *this;
 }//operator= overload
@@ -431,6 +439,11 @@ void object::Clear() {
    
    delete obj_proc;
    obj_proc = NULL;
+
+   clear_ptr_list(obj_proc_scripts);
+   clear_ptr_list(pending_scripts);
+   delete cur_script;
+   cur_script = NULL;
 
 }//Clear
 
@@ -1191,16 +1204,15 @@ void object::doScriptJump(int abs_offset) {
 // NOTE:  The script owner is *this.  It is likely, but not necessary
 // that targ is also *this
 void object::checkForProc(String& cmd, String& arg1, critter& actor,
-                           int targ, room& rm) {
-   mudlog.log("In object::checkForProc.");
+                          int targ, room& rm) {
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In object::checkForProc, size of scripts: "
+             << obj_proc_scripts.size() << endl;
+   }
 
    if (!isModified()) {
       mudlog.log(ERR, "ERROR:  object::checkForProc, got an OBJ (not modified).");
       return;
-   }
-
-   if (mudlog.ofLevel(DBG)) {
-      mudlog << "Was a mob, mob#:  " << MOB_NUM << endl;
    }
 
    Cell<ObjectScript*> cll;
@@ -1209,10 +1221,10 @@ void object::checkForProc(String& cmd, String& arg1, critter& actor,
    obj_proc_scripts.head(cll);
 
    while ((ptr = cll.next())) {
-      //mudlog.log("In while.");
-      //mudlog.log(ptr->toStringBrief(0, 0));
-      if (ptr->matches(cmd, arg1, actor, targ)) {
-         //mudlog.log("Matches..");
+      mudlog.log("In while.");
+      mudlog.log(ptr->toStringBrief(0, 0, ENTITY_OBJECT, 0));
+      if (ptr->matches(cmd, arg1, actor, targ, getIdNum())) {
+         mudlog.log("Matches..");
          if (pending_scripts.size() >= 10) { //only queue 10 scripts
             return; //do nothing, don't want to get too much backlog.
          }
