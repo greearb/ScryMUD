@@ -1,5 +1,5 @@
 # $Id$
-# $Revision: 1.2 $  $Author$ $Date$
+# $Revision$  $Author$ $Date$
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will

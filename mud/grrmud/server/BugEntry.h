@@ -1,8 +1,8 @@
 // $Id$
-// $Revision: 1.8 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 // $Id$
-// $Revision: 1.8 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //ScryMUD Server Code

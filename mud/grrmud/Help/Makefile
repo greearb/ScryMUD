@@ -1,5 +1,5 @@
 # $Id$
-# $Revision: 1.9 $  $Author$ $Date$
+# $Revision$  $Author$ $Date$
 
 
 IMM_FILES=IMM_active_zones_1 \

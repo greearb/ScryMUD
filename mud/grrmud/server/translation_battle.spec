@@ -1,5 +1,5 @@
 # $Id$
-# $Revision: 1.2 $  $Author$ $Date$
+# $Revision$  $Author$ $Date$
 
 # The syntax is as follows:
 # ENUM_NAME LANGUAGE "TEXT" LANGUAGE "TEXT" ... ~

@@ -1,5 +1,5 @@
 # $Id$
-# $Revision: 1.4 $  $Author$ $Date$
+# $Revision$  $Author$ $Date$
 
 
 include ../../MakeInclude

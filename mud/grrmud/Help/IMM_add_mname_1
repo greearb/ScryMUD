@@ -8,5 +8,5 @@ Syntax:  add_mname [mob_num] [name to be added]
 Example:  add_mname 55 guard
 	  
 <color=red>
-See Also:  ch_rname, ch_odesc, add_oname, rem_mname, rem_oname
+See Also:  ch_rname, ch_odesc, add_oname, rem_mname, rem_oname, clear_mname
 </color></help>

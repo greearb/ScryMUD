@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.25 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //ScryMUD Server Code
