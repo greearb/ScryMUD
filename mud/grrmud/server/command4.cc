@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.40 2001/04/07 22:31:55 greear Exp $
-// $Revision: 1.40 $  $Author: greear $ $Date: 2001/04/07 22:31:55 $
+// $Id: command4.cc,v 1.41 2001/06/10 21:49:07 justin Exp $
+// $Revision: 1.41 $  $Author: justin $ $Date: 2001/06/10 21:49:07 $
 
 //
 //ScryMUD Server Code
@@ -300,12 +300,7 @@ int passwd(const String* old, const String* new1, const String* new2,
 int unpost(int i_th, const String* post, critter& pc) {
    String buf(100);
 
-   if (!ok_to_do_action(NULL, "IF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
-      return -1;
-   }
-
-   if (pc.getImmLevel() < 8) {
-      pc.show("Eh??");
+   if (!ok_to_do_action(NULL, "FPSB", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
 
@@ -336,6 +331,18 @@ int unpost(int i_th, const String* post, critter& pc) {
       return -1;
    }//if
 
+   Cell<object*> mcll(ptr->inv);
+   object* iptr;
+   int i;
+   for (i=0; iptr != NULL; i++, iptr = mcll.next()) {
+      if (iptr == msg)
+         break;
+   }//for
+   Sprintf(buf, "message_%i from %S:", i, pc.getName());
+   if (pc.getImmLevel() < 8 && strncmp(msg->short_desc, buf, buf.Strlen())!=0) {
+      pc.show("It wouldn't be right to take someone else's message down.");
+      return -1;
+   }
 
    // NOTE:  Don't ever decrementCurInGame or anything, post objects
    //        are screwy in that they never have a counterpart in the
@@ -345,7 +352,7 @@ int unpost(int i_th, const String* post, critter& pc) {
 
         /* update the numbers and short_descs for asthetic reasons */
    short eos, term_by_period;
-   int i = 1;
+   i = 0;
    ptr->inv.head(cll);
    while ((msg = cll.next())) {
       msg->names.clearAndDestroy();
