@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.35 2001/03/29 03:02:32 eroper Exp $
-// $Revision: 1.35 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
+// $Id: grrmud.cc,v 1.36 2001/10/27 02:17:29 greear Exp $
+// $Revision: 1.36 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
 
 //
 //ScryMUD Server Code
@@ -1661,7 +1661,10 @@ int critter::doLogOffInactive() {
    }
    
    emote("has left the game.");
-   
+
+   leave_room_effects(*(getCurRoom()), *this, FALSE);
+   breakEarthMeld();
+
    doLeaveRoom();
    
    recursive_init_unload(*this); //take eq out of circulation

@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.14 2001/03/29 03:02:28 eroper Exp $
-// $Revision: 1.14 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
+// $Id: batl_prc.cc,v 1.15 2001/10/27 02:17:29 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
 
 //
 //ScryMUD Server Code
@@ -162,6 +162,19 @@ void do_battle_proc(critter& pc) {
     return;
 
   chance = d(1, 10); //expand this for more cases            
+
+  if (lvl > 30) {
+     if (chance > 5) {
+        if (pc.IS_FIGHTING.size() > 6) {
+           if (violence > 4) {
+              if (pc.MOV > 0) {
+                 do_berserk(pc);
+                 pc.PAUSE--; // evil, eh? :)
+              }
+           }
+        }
+     }
+  }
 
   if (lvl > 20) {
     if (cls == THIEF) {

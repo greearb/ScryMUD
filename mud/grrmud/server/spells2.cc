@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.20 2001/10/07 23:00:37 justin Exp $
-// $Revision: 1.20 $  $Author: justin $ $Date: 2001/10/07 23:00:37 $
+// $Id: spells2.cc,v 1.21 2001/10/27 02:17:29 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
 
 //
 //ScryMUD Server Code
@@ -918,6 +918,22 @@ void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
 
      if (ptr) {
        ptr->bonus_duration += lvl / 2;
+
+       if (ptr->bonus_duration > 40) {
+          if (agg.STR > 20) {
+             if (d(1,13) == 13) { //ouch, lost some CON!!
+                agg.show("Oops...somehow you think that spell might have backfired!!\n");
+                agg.STR--;
+             }
+          }//if
+          else if (agg.DEX > 20) {
+             if (d(1,13) == 13) { //ouch, lost some CON!!
+                agg.show("Oops...somehow you think that spell might have backfired!!\n");
+                agg.DEX--;
+             }
+          }//if
+       }
+
        show("Ok.\n", agg);
      }//if
      else {
@@ -1571,11 +1587,16 @@ void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
      if (!is_canned)
        agg.MANA -= spell_mana;
      
-     if (d(1,15) == 15) { //ouch, lost some CON!!
-       show(
-     "As you cast the spell you feel it tear something from your very soul!\n",
-     agg);
-       agg.CON--;
+     if (d(1,13) == 13) { //ouch, lost some CON!!
+        if (agg.ATTACKS >= 3) {
+           agg.ATTACKS--;
+           agg.show("You fall too your knees in pain..feeling momentarily lost in your limbs!\n");
+           agg.ATTACKS--;
+        }
+        else {
+           agg.show("As you cast the spell you feel it tear something from your very soul!\n");
+           agg.CON--;
+        }
      }//if
 
      if (ptr) {

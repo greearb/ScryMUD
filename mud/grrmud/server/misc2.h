@@ -1,5 +1,5 @@
-// $Id: misc2.h,v 1.26 2001/03/29 03:02:32 eroper Exp $
-// $Revision: 1.26 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
+// $Id: misc2.h,v 1.27 2001/10/27 02:17:29 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
 
 //
 //ScryMUD Server Code
@@ -63,7 +63,7 @@ stat_spell_cell* is_affected_by(int spell_num, object& obj);
 
 stat_spell_cell* has_stat_affect(int affect_num, object& obj);
 
-void leave_room_effects(room& rm, critter& pc);
+void leave_room_effects(room& rm, critter& pc, int check_proc);
 void leave_room_effects(room& rm, object& obj);
 
 int is_grouped(critter& crit, critter& pc);

@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.33 2001/10/09 05:44:57 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 2001/10/09 05:44:57 $
+// $Id: misc2.cc,v 1.34 2001/10/27 02:17:29 greear Exp $
+// $Revision: 1.34 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
 
 //
 //ScryMUD Server Code
@@ -779,7 +779,7 @@ const char* get_opposite_dir(const char* dir) {
 }//get_opposite_dir
 
 
-void leave_room_effects(room& rm, critter& pc) {
+void leave_room_effects(room& rm, critter& pc, int check_proc) {
    Cell<door*> cll(rm.DOORS);
    door* ptr;
 
@@ -797,9 +797,10 @@ void leave_room_effects(room& rm, critter& pc) {
    }//if
    rm.checkLight(FALSE);
 
-   String cmd = "exit";
-   rm.checkForProc(cmd, NULL_STRING, pc, -1);
-
+   if (check_proc) {
+      String cmd = "exit";
+      rm.checkForProc(cmd, NULL_STRING, pc, -1);
+   }
 }//leave_room_effects
 
 

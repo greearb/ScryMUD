@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.63 2001/06/11 02:19:15 justin Exp $
-// $Revision: 1.63 $  $Author: justin $ $Date: 2001/06/11 02:19:15 $
+// $Id: critter.cc,v 1.64 2001/10/27 02:17:29 greear Exp $
+// $Revision: 1.64 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
 
 //
 //ScryMUD Server Code
@@ -3776,7 +3776,7 @@ void critter::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
 
    doRemoveFromBattle();
 
-   leave_room_effects(room_list[cur_room], *this);
+   leave_room_effects(room_list[cur_room], *this, TRUE);
 
    // If we are in earth-meld, break it.
    breakEarthMeld();

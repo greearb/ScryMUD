@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.32 2001/06/10 18:05:15 justin Exp $
-// $Revision: 1.32 $  $Author: justin $ $Date: 2001/06/10 18:05:15 $
+// $Id: battle.cc,v 1.33 2001/10/27 02:17:29 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 2001/10/27 02:17:29 $
 
 //
 //ScryMUD Server Code
@@ -1365,7 +1365,7 @@ a trophy--a symbol of %S's defeat.\n",
          
          int nrm = vict.getCurRoomNum();
          room_list[nrm].removeCritter(&vict); //decrement's cur in game if NPC
-         leave_room_effects(room_list[nrm], vict); //takes care of blocking
+         leave_room_effects(room_list[nrm], vict, TRUE); //takes care of blocking
 
          room_list[config.loginRoom].gainCritter(&vict);
          Sprintf(buf, "%S appears in the room looking quite dead!\n", 
@@ -1400,7 +1400,7 @@ a trophy--a symbol of %S's defeat.\n",
       show_vict_tags = FALSE;
       int nrm = vict.getCurRoomNum();
       room_list[nrm].removeCritter(&vict); //decrement's cur in game if NPC
-      leave_room_effects(room_list[nrm], vict); //takes care of blocking
+      leave_room_effects(room_list[nrm], vict, TRUE); //takes care of blocking
 
       if (vict.possessed_by) {
          vict.possessed_by->show("Your possessed victim has died.\n");
