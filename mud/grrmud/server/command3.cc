@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.37 2002/01/23 08:43:09 eroper Exp $
-// $Revision: 1.37 $  $Author: eroper $ $Date: 2002/01/23 08:43:09 $
+// $Id: command3.cc,v 1.38 2002/01/28 23:43:26 eroper Exp $
+// $Revision: 1.38 $  $Author: eroper $ $Date: 2002/01/28 23:43:26 $
 
 //
 //ScryMUD Server Code
@@ -2650,7 +2650,7 @@ int who(critter& pc) {
          afk_str = "";
       }
 
-      Sprintf(buf, "%S%S %P45%S(%S) %S%S\n",
+      Sprintf(buf, "%S%S ^0%P45%S(%S) %S%S\n",
               ptr->getName(pc.SEE_BIT), &(ptr->short_desc),
               &class_str, &lvl_str, &rp_str, &afk_str);
       show(buf, pc);
