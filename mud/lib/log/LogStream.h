@@ -1,5 +1,5 @@
-// $Id: LogStream.h,v 1.10 2003/02/25 04:14:44 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 2003/02/25 04:14:44 $
+// $Id: LogStream.h,v 1.11 2004/07/06 10:38:14 eroper Exp $
+// $Revision: 1.11 $  $Author: eroper $ $Date: 2004/07/06 10:38:14 $
 
 //
 //Copyright (C) 2001  Ben Greear
@@ -25,11 +25,22 @@
 //  roll logs after a certain amount of usage, and it's verbosity
 //  level can be adjusted on the fly.
 
-#include <strstream.h>
-#include <iostream.h>
-#include <fstream.h>
+/*
+#ifdef HAVE_NEW_IOSTREAMS
+#include <sstream>
+typedef std::stringstream my_sstream;
+#else
+#include <strstream>
+typedef strstream my_sstream;
+#endif
+*/
+#include <sstream>
+typedef std::stringstream my_sstream;
+
+#include <iostream>
+#include <fstream>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
 #include <stdio.h>
 
 #ifndef LOG_STREAM_INCLUDE
@@ -66,7 +77,7 @@ typedef LogStream& (*__ls_manip)(LogStream&);
 
 LogStream& endl(LogStream& lstr);
 
-class LogStream : public ofstream {
+class LogStream : public std::ofstream {
 protected:
    char* filename;
    int log_level;
@@ -111,6 +122,7 @@ public:
       }
 
       close();
+      clear();
 
       if (fname) {
          filename = strdup(fname);
@@ -118,7 +130,7 @@ public:
             open(filename);
          }
          else {
-            open(filename, ios::app);
+            open(filename, std::ios::app);
          }
          //cout << "Opening log-str -:" << filename << ":-\n";
 
@@ -130,6 +142,7 @@ public:
       sofar = 0;
       if (file_action & OVERWRITE) {
          close();
+         clear();
          char buf[strlen(filename) * 2 + 100];
          sprintf(buf, "mv -f %s %s.old", filename, filename);
          system(buf);
@@ -156,7 +169,7 @@ public:
    }
 
    LogStream& operator<< (const char* msg) {
-      *((ofstream*)this) << msg;
+      *((std::ofstream*)this) << msg;
       sofar += strlen(msg);
       if (sofar > max_logfile_sz) {
          rollFile();
@@ -165,79 +178,79 @@ public:
    }//operator overload      
 
    LogStream& operator<< (const void* ptr) { 
-      *((ofstream*)this) << ptr;
+      *((std::ofstream*)this) << ptr;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (short int i) { 
-      *((ofstream*)this) << i;
+      *((std::ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (unsigned char i) { 
-      *((ofstream*)this) << i;
+      *((std::ofstream*)this) << i;
       sofar += 1; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (char i) { 
-      *((ofstream*)this) << i;
+      *((std::ofstream*)this) << i;
       sofar += 1; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (unsigned short int i) { 
-      *((ofstream*)this) << i;
+      *((std::ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
       
    LogStream& operator<< (int i) { 
-      *((ofstream*)this) << i;
+      *((std::ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (unsigned int i) { 
-      *((ofstream*)this) << i;
+      *((std::ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (unsigned long int i) { 
-      *((ofstream*)this) << i;
+      *((std::ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (long int i) { 
-      *((ofstream*)this) << i;
+      *((std::ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (unsigned long long int i) { 
-      *((ofstream*)this) << i;
+      *((std::ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (long long int i) { 
-      *((ofstream*)this) << i;
+      *((std::ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (double d) { 
-      *((ofstream*)this) << d;
+      *((std::ofstream*)this) << d;
       sofar += 8; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (float d) { 
-      *((ofstream*)this) << d;
+      *((std::ofstream*)this) << d;
       sofar += 8; //guess how long it might be...
       return *this;
    }
