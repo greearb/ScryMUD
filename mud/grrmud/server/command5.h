@@ -32,6 +32,14 @@
 
 
 
+int withdraw(int i_th, const String* coins, int j_th,
+             const String* banker, critter& pc);
+
+int balance(int i_th, const String* banker, critter& pc);
+
+int deposit(int i_th, const String* coins, int j_th,
+            const String* banker, critter& pc);
+
 // SMOB only, used in scripts
 int pause(int rounds, critter& pc);
 

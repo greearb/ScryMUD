@@ -1,0 +1,12 @@
+<help general balance>
+
+Lets you check your bank balance if you can find a banker.
+
+Syntax:  balance <<i_th> <<banker>
+
+Example:  balance
+Example:  balance 2.banker
+
+<color=red>
+See Also:  withdraw deposit
+</color></help>

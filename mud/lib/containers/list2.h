@@ -311,7 +311,7 @@ public:
  
    // Substitute_Data //
    /* If it doesn't find the target data, it will insert anyway 
-      (at the beginning).  It returns FALSE if no substitution was made,
+      (at the end).  It returns FALSE if no substitution was made,
       TRUE otherwise.  Does not delete what it replaced. */
    int substituteData(const T& targ, const T& source, int j) {
       Cell<T> cell(*this);

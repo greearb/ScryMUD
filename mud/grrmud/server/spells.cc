@@ -182,6 +182,11 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
      if (do_msg)
        show("Your bandage wears away.\n", pc);
    }//if
+   else if (spell_num == BLESS_SKILL_NUM) {
+     pc.HIT -= BLESS_EFFECTS;
+     if (do_msg)
+       show("You feel slightly less blessed in the eyes of your lord.\n", pc);
+   }//if
    else if ((spell_num == CHARM_SKILL_NUM) || 
 	    (spell_num == MASS_CHARM_SKILL_NUM)) {
      follow(1, &NULL_STRING, pc, do_msg);

@@ -1,0 +1,11 @@
+<help general rem_zone>
+
+Allows you to remove a zone from the 'active' database.
+
+Syntax:  rem_zone [i_th]
+
+Examples:  rem_zone 5  # remove zone 5 from the playable zones.
+
+<color=red>
+See Also:  add_zone, list_zones
+</color></help>

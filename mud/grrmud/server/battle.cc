@@ -281,7 +281,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
           if (d(1,4) == 2) {
              agg.CRIT_FLAGS.turn_off(15);
              agg.emote("seems to come out of a deep slumber!\n");
-             agg.POS = POS_STAND;
+             agg.setPosn(POS_STAND);
           }//if
           stat_spell_cell* ss_ptr = is_affected_by(SLEEP_SKILL_NUM, agg);
           if (ss_ptr) {
@@ -290,7 +290,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
           }//if
       }//if
       else if (!agg.isParalyzed() && (!agg.PAUSE > 0)) {
-         agg.POS = POS_STAND; //auto stand if possible
+         agg.setPosn(POS_STAND); //auto stand if possible
       }//if
    }//if
 
@@ -596,7 +596,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
    
    //  log("Testing for consequences..\n");
    if ((vict.HP <= 0) && (vict.POS != POS_STUN)) {
-      vict.POS = POS_STUN;
+      vict.setPosn(POS_STUN);
       emote("is stunned.", vict, room_list[vict.getCurRoomNum()], TRUE);
       show("You are stunned!!\n", vict);
    }//if
@@ -1040,7 +1040,7 @@ a trophy--a symbol of %S's defeat.\n",
          vict.MANA = 1;
          vict.HP   = 1;
          vict.MOV  = 1;
-         vict.POS  = POS_REST; //resting
+         vict.setPosn(POS_REST);
          if (vict.EXP < 5000000)
             vict.EXP -= (vict.EXP/13);
          else
@@ -1137,7 +1137,8 @@ critter* mob_to_smob(critter& mob, const int room_num, int do_sub,
 
    if (do_sub) {
       if (!room_list[room_num].sub_a_4_b(crit_ptr, i_th, *name, see_bit)) {
-         mudlog.log(ERR, "ERROR:  crit_sub_a_4_b failed in mob_to_smob.\n");
+         mudlog << "ERROR: crit_sub_a_4_b failed in mob_to_smob, rm# "
+                << room_num << " i_th: " << i_th << " name: " << *name << endl;
       }//if
    }//if
    else {
@@ -1204,8 +1205,8 @@ critter* mob_to_smob(critter& mob, room& rm, int suppress_sub_fail_msg) {
          effects, so this error message has been commented out. */
       if (!suppress_sub_fail_msg) {
          mudlog << "ERROR:  SubstituteData failed in mob_to_smob, mob#: "
-                << crit_ptr->getIdNum() << "  name: " << crit_ptr->getName()
-                << endl;
+                << crit_ptr->getIdNum() << "  name: " << *(crit_ptr->getName())
+                << " room# " << rm.getIdNum() << endl;
       }//if
    }//if
    

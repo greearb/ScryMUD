@@ -135,8 +135,8 @@ int Load_Modifier; //this will change after initial boot up
 int Regular_Load_Modifier;
 
 bitfield Obj_Wear_Flags_Mask;
-bitfield Obj_Wear_Procs_Mask;
-bitfield Obj_Remove_Procs_Mask;
+//bitfield Obj_Wear_Procs_Mask;
+//bitfield Obj_Remove_Procs_Mask;
 bitfield Obj_Consume_Procs_Mask;
 //bitfield Shop_Data_Buy_Procs_Mask;
 //bitfield Shop_Data_Sell_Procs_Mask;

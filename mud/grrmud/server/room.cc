@@ -1254,7 +1254,13 @@ int room::sub_a_4_b(critter* crit_ptr, int i_th, const String& name,
 }
 
 int room::sub_a_4_b(critter* a, critter* b, int i_th) {
-   return critters.substituteData(b, a, i_th);
+
+   // Don't want to add it if we can't substitute it, but the list<>
+   // method does indeed append if it's not already there.
+   if (critters.haveData(b)) {
+      return critters.substituteData(b, a, i_th);
+   }
+   return FALSE;
 }
 
 void room::gainCritter(critter* crit) {

@@ -809,11 +809,13 @@ void decrease_timed_affecting_pcs() {  //will decrease all
 	    if (crit_ptr->EQ[11]->ob->extras[0] == 0) {
 	       crit_ptr->EQ[11]->ob->extras[0] = -2;
 	       Sprintf(buf, "%S dims and glows its last.\n", 
-		    long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
+                       long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
 	       show(buf, *crit_ptr);
 	       crit_ptr->crit_flags.turn_off(USING_LIGHT_SOURCE);
 	       room_list[crit_ptr->getCurRoomNum()].checkLight(FALSE);
+               crit_ptr->EQ[11]->ob->short_desc += "(OUT)";
+               crit_ptr->EQ[11]->ob->in_room_desc += "(OUT)";
 	    }//if
          }//if
       }//if

@@ -1,0 +1,13 @@
+<help general withdraw>
+
+The deposit command allows you to remove some of your gold
+from your bank account.
+
+Syntax:  withdraw [amount] <<'gold'> <<j_th> <<banker>
+
+Example:  withdraw 5000                # assumes there is a banker nearby
+Example:  withdraw 5000 gold 2.banker  # specify which banker.
+
+<color=red>
+See Also:  balance deposit
+</color></help>

@@ -358,13 +358,14 @@ class MobPanel2 extends Panel {
       gridbag.setConstraints(mob_flags, c);
       add(mob_flags);
       
-      mob_data_flags = new LabeledCheckBoxGlob("Mob Data Flags", 1, 5);
+      mob_data_flags = new LabeledCheckBoxGlob("Mob Data Flags", 2, 4);
       mob_data_flags.setListener(cb_listener);
       
       mob_data_flags.addBox(new NumCheckbox("HAS PROC DATA", false, 0));
       mob_data_flags.addBox(new NumCheckbox("scavenge", false, 1));
       mob_data_flags.addBox(new NumCheckbox("wander", false, 2));
       mob_data_flags.addBox(new NumCheckbox("edible corpse", false, 5));
+      mob_data_flags.addBox(new NumCheckbox("is_banker", false, 6));
       mob_data_flags.addBox(new NumCheckbox("HAS SKIN", false, 16));
       
       gridbag.setConstraints(mob_data_flags, c);

@@ -391,7 +391,7 @@ int  quit_do_login_new(critter& pc) {
    
    pc.PC_FLAGS.turn_on(6); //auto-exits
 
-   pc.POS = POS_STAND;
+   pc.setPosn(POS_STAND);
    // con, cha, int, wis.......
    for (i = 1; i<7; i++) {
       pc.short_cur_stats[i] = (d(1,8) + 10);

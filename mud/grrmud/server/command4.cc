@@ -141,8 +141,9 @@ int read(int i_th, const String* post, critter& pc) {
    }//while
 
    if (!ptr) {
-      show("You don't see a bulletin board here.\n", pc);
-      return -1;
+      return look(i_th, post, pc);
+      //show("You don't see a bulletin board here.\n", pc);
+      //return -1;
    }//if
 
    object* msg;
@@ -2007,8 +2008,8 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
      }//if
    }//if
    else if (strncasecmp(*targ, "position", len1) == 0) {
-     if (check_l_range(new_val, 0, 6, pc, TRUE)) {
-       ptr->POS = new_val;
+     if (check_l_range(new_val, POS_STAND, POS_PRONE, pc, TRUE)) {
+       ptr->setPosn(new_val);
        flag = TRUE;
      }//if
    }//if

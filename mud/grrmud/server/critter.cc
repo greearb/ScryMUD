@@ -31,9 +31,10 @@
 #include "room.h"
 #include "const.h"
 #include "commands.h"
+#include "command2.h"
+#include "command3.h"
 #include "command5.h"
 #include "batl_prc.h"
-#include "command2.h"
 
 
 
@@ -1894,7 +1895,7 @@ void critter::Clear() {
 
       if (mudlog.ofLevel(ERR)) {
          mudlog << "ERROR:  followers not empty in Clear, for mob: "
-                << getName() << " follower: " << ptr->getName() << endl;
+                << *(getName()) << " follower: " << *(ptr->getName()) << endl;
       }//if
 
       ptr->FOLLOWER_OF = NULL;
@@ -2177,8 +2178,8 @@ void critter::Read(ifstream& ofile, short read_all) {
       ofile >> z;
       if (!check_l_range(z, 1, MAX_EQ, mob_list[0], FALSE)) {
          if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  z out of range, crit.Read():  " << z
-                   << "short desc:  " << short_desc << endl;
+            mudlog << "ERROR:  wear_posn out of range, crit.Read():  " << z
+                   << " short desc:  " << short_desc << endl;
          }
          ofile >> i;
          continue;
@@ -3520,3 +3521,47 @@ int critter::isManagedBy(critter& pc) {
    return (isPlayerShopKeeper() &&
            (strcasecmp(mob->proc_data->sh_data->manager, *(pc.getName())) == 0));
 }//isManagedBy
+
+
+int critter::withdrawCoins(int count, critter& banker) { //do messages
+   String buf(100);
+
+   if (long_data[2] >= count) {
+      long_data[2] -= count;
+      long_data[0] += count;
+      Sprintf(buf, "%S gives you %i coins.\n", banker.getName());
+      show(buf);
+      Sprintf(buf, "Your balance now %i coins.\n", long_data[2]);
+      do_tell(banker, buf, *this, FALSE, getCurRoomNum());
+      return 0;
+   }
+   Sprintf(buf, "Your balance is only %i coins.\n", long_data[2]);
+
+   do_tell(banker, buf, *this, FALSE, getCurRoomNum());
+   return -1;
+}
+
+int critter::balanceCoins(critter& banker) {
+   String buf(100);
+   Sprintf(buf, "Your balance %i coins.\n", long_data[2]);
+   do_tell(banker, buf, *this, FALSE, getCurRoomNum());
+   return 0;
+}
+
+int critter::depositCoins(int count, critter& banker) { //do messages
+   String buf(100);
+
+   if (long_data[0] >= count) {
+      long_data[0] -= count;
+      long_data[2] += count;
+      Sprintf(buf, "%S puts %i coins into your account.\n", banker.getName());
+      show(buf);
+      Sprintf(buf, "Your balance now %i coins.\n", long_data[2]);
+      do_tell(banker, buf, *this, FALSE, getCurRoomNum());
+      return 0;
+   }
+   Sprintf(buf, "Your have only %i coins.\n", long_data[0]);
+
+   do_tell(banker, buf, *this, FALSE, getCurRoomNum());
+   return -1;
+}

@@ -391,9 +391,9 @@ int do_wand_scroll_proc(door* dr_ptr, int proc_num, critter& pc,
    /*  return value determines if should decrement the wand. */
 
    if (!dr_ptr) {
-      mudlog << "ERROR:  otarg is NULL in do_wand_scroll_proc"
+      mudlog << "ERROR:  dr_ptr is NULL in do_wand_scroll_proc"
              << endl;
-      show("What do you wish to target?\n", pc);
+      show("What door do you wish to target?\n", pc);
       return -1;
    }//if
 
@@ -520,7 +520,7 @@ int do_wand_scroll_proc(object* otarg, int proc_num, critter& pc,
    if (!otarg) {
       mudlog << "ERROR:  otarg is NULL in do_wand_scroll_proc"
              << endl;
-      show("What do you wish to target?\n", pc);
+      show("What object do you wish to target?\n", pc);
       return -1;
    }//if
 
@@ -578,7 +578,7 @@ int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
 /*  If targ is NOT NULL, then it is a SMOB or PC.         */
 /*  return value determines if should decrement the wand. */
    if (!targ) {
-      mudlog << "ERROR:  targ is NULL in do_wand_scroll_proc"
+      mudlog << "ERROR:  targ is NULL in do_wand_scroll_proc (critter target)"
              << endl;
       show("Who do you wish to target?\n", pc);
       return -1;
@@ -870,6 +870,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
 }//do_pulsed
 
 
+// Just does messages, no real actions.
 int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
                      object& obj, int posn) {
    //log("In do_this_obj_proc.\n");

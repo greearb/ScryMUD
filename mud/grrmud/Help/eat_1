@@ -1,6 +1,6 @@
 <help general eat>
 
-Attempt to consume some (eddible??) food source.
+Attempt to consume some (edible??) food source.
 
 Syntax:  eat <<i_th> [food_item]
 <color=red>

@@ -273,7 +273,8 @@ int examine(int i_th, const String* obj, critter& pc) {
       }//if
                    //is a container?
       else if (!obj_ptr->OBJ_FLAGS.get(54) || !obj_ptr->ob->bag) {
-         show("That is not a container.\n", pc);
+         return look(i_th, obj, pc);
+         //show("That is not a container.\n", pc);
       }//if
       else if (obj_ptr->isClosed()) {
          show("Its closed!\n", pc);
@@ -409,7 +410,7 @@ int wear(int i_th, const String* obj, int j, const String* posn,
          //   i = 19;
          //}//if
       }//else
-      if (!i) { //not a valid key_word for posn
+      if (i == 0) { //not a valid key_word for posn
          show("Wear it where??\n", pc);
          mudlog.log(DBG, "Wear failed, posn invalid.\n");
          return -1;
@@ -2174,7 +2175,7 @@ int rest(critter& pc) {
          show("You take off your boots and make yourself comfortable.\n", 
               pc);
          emote("sits down to take a breather.\n", pc, ROOM, FALSE);
-         pc.POS = POS_REST; //rest
+         pc.setPosn(POS_REST); //rest
 
          String cmd = "rest";
          ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
@@ -2208,7 +2209,7 @@ int sit(critter& pc) {
       if (IsEmpty(pc.IS_FIGHTING)) {
          show("You sit on your haunches, resting but wary.\n", pc);
          emote("sits down.\n", pc, ROOM, FALSE);
-         pc.POS = POS_SIT; //sit
+         pc.setPosn(POS_SIT);
 
          String cmd = "sit";
          ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
@@ -2244,7 +2245,7 @@ int stand(critter& pc) {
       if (!(pc.CRIT_FLAGS.get(14))) {  //not paralyzed
          show("You stand up ready to face the world once again.\n", pc);
          emote("stands up.\n", pc, ROOM, FALSE);
-         pc.POS = POS_STAND; //stand
+         pc.setPosn(POS_STAND); //stand
 
          String cmd = "stand";
          ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
@@ -2277,7 +2278,7 @@ int sleep(critter& pc) {
       if (IsEmpty(pc.IS_FIGHTING)) {
          show("You lay yourself down to sleep.\n", pc);
          emote("goes to sleep.\n", pc, ROOM, FALSE);
-         pc.POS = POS_SLEEP; //sleep
+         pc.setPosn(POS_SLEEP);
 
          String cmd = "sleep";
          ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
@@ -2311,7 +2312,7 @@ int meditate(critter& pc) {
          if (d(1, 75) < d(1, get_percent_lrnd(MEDITATION_SKILL_NUM, pc))) {
             show("You relax into a deep trance.\n", pc);
             emote("goes into a trance.\n", pc, ROOM, FALSE);
-            pc.POS = POS_MED; //sleep
+            pc.setPosn(POS_MED);
             
             String cmd = "meditate";
             ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
@@ -2347,7 +2348,7 @@ int wake(critter& pc) {
       if (!(pc.CRIT_FLAGS.get(15))) { //not perm_sleeped by spell
          show("You wake, sit up and stretch.\n", pc);
          emote("wakes and sits.\n", pc, ROOM, FALSE);
-         pc.POS = POS_SIT; //sit
+         pc.setPosn(POS_SIT);
 
          String cmd = "wake";
          ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
@@ -2736,7 +2737,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
       return FALSE;
    }//if
 
-   if (!obj.OBJ_FLAGS.get(21 + posn)) {
+   if (!obj.OBJ_FLAGS.get(21 + posn) || posn == 0) {
       if (do_msg) {
 	 show("You can't wear it there.\n", pc);
       }//if
@@ -3181,7 +3182,6 @@ int gain_eq_effects(object& obj, object& bag, critter& pc,
 int wear_eq_effects(object& obj, critter& pc, int posn, short do_msg) { 
             //lights, stat adjusts
    String buf(100);
-   short flag = FALSE;
 
    //  mudlog.log(DBG, "In wear_eq_effects.\n");
 
@@ -3231,20 +3231,8 @@ int wear_eq_effects(object& obj, critter& pc, int posn, short do_msg) {
       }//if
    }//if wield or holding
 
-            /* do spec_procs, takes care of ww_descs etc */
-   if (obj.OBJ_FLAGS.get(63)) { //if has spec_data
-      int k = Obj_Wear_Procs_Mask.max_bit();
-      for (int i = 0; i < k ; i++) {
-         if (Obj_Wear_Procs_Mask.get(i) && obj.OBJ_SPEC_FLAGS.get(i)) {
-            flag = TRUE;
-            do_this_obj_proc(OBJ_WEAR_PROC, i, pc, obj, posn);
-         }//if
-      }//for
-   }//if
    if (do_msg) {
-      if (!flag) {   //default wear proc
-         do_this_obj_proc(OBJ_WEAR_PROC, -1, pc, obj, posn); 
-      }//if
+      do_this_obj_proc(OBJ_WEAR_PROC, -1, pc, obj, posn); 
    }//if
 
    String cmd = "wear";
@@ -3400,18 +3388,8 @@ int remove_eq_effects(object& obj, critter& pc, short from_corpse,
 
    //mudlog.log(DBG, "Doing spec procs.. ");
                     /* do spec_procs */
-   if (obj.OBJ_FLAGS.get(63)) { //if has spec_data
-      int k = Obj_Remove_Procs_Mask.max_bit();
-      for (int i = 0; i < k ; i++) {
-         if (Obj_Remove_Procs_Mask.get(i) && obj.OBJ_SPEC_FLAGS.get(i)) {
-            flag = TRUE;
-            do_this_obj_proc(OBJ_REMOVE_PROC, i, pc, obj, FALSE);
-         }//if
-      }//for
-   }//if
-
    if (do_msg) {
-      if (!flag && !from_corpse) {   /* do generic rem proc */
+      if (!from_corpse) {   /* do generic rem proc */
          do_this_obj_proc(OBJ_REMOVE_PROC, -2, pc, obj, FALSE);
       }//if
    }//if

@@ -38,7 +38,7 @@ Arguments:
    trigger_cmd:  Should be one of the commands we support:
    	close, donate, drop, eat, enter, examine, exit, fill, follow,
    	get, give, group, hit, list, lock, "look, meditate, open, order,
-	pay, prone, remove, rest, say, shoot, sit, sleep, stand, tell,
+	pay, prone, remove, rest, say, shoot, sit, slap, sleep, stand, tell,
         throw, ungroup, unlock, wake, wear, yell
    actor_num:  The mob which can trigger this script, if -1 then it can be
 	anyone

@@ -44,7 +44,7 @@ class MobScriptEditor extends Frame {
                     "get", "give", "group", "hit", "list", "lock",
                     "look", "meditate", "nod", "open", "order",
                     "pay", "prone", "remove", "rest", "say", "shake",
-                    "shoot", "sit", "sleep", "stand", "tell",
+                    "shoot", "sit", "slap", "sleep", "stand", "tell",
                     "throw", "ungroup", "unlock", "wake", "wear",
                     "yell" };
    

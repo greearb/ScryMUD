@@ -1524,6 +1524,116 @@ int make_builder(int i_th, const String* name, critter& pc) {
 }//make_builder
 
 
+
+int withdraw(int i_th, const String* coins, int j_th,
+             const String* banker, critter& pc) {
+   String buf(100);
+
+   if (!ok_to_do_action(NULL, "SBFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (coins->Strlen() && (strncasecmp(*coins, "coins", coins->Strlen()) != 0) &&
+       (strncasecmp(*coins, "gold", coins->Strlen()) != 0)) {
+      pc.show("You must withdraw 'gold' or 'coins'.\n");
+      return -1;
+   }
+
+   if (i_th < 0) {
+      pc.show("Nice try, maybe you want to deposit??\n");
+      return -1;
+   }
+
+   critter* crit = ROOM.haveCritNamed(j_th, banker, pc.SEE_BIT);
+
+   if (!crit) {
+      crit = ROOM.getLastCritter(); //most likely to be a banker, if one exists
+   }//if
+
+   if (crit == &pc) {
+      pc.show("Looks like the banker is not around right now!\n");
+      return -1;
+   }
+
+   if (!crit->isBanker()) {
+      Sprintf(buf, "%S is not a banker.\n", crit->getName());
+      buf.Cap();
+      pc.show(buf);
+      return -1;
+   }//if
+
+   return pc.withdrawCoins(i_th, *crit);
+}//withdraw
+
+int balance(int i_th, const String* banker, critter& pc) {
+   String buf(100);
+
+   if (!ok_to_do_action(NULL, "SBFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   critter* crit = ROOM.haveCritNamed(i_th, banker, pc.SEE_BIT);
+
+   if (!crit) {
+      crit = ROOM.getLastCritter(); //most likely to be a banker, if one exists
+   }//if
+
+   if (crit == &pc) {
+      pc.show("Looks like the banker is not around right now!\n");
+      return -1;
+   }
+
+   if (!crit->isBanker()) {
+      Sprintf(buf, "%S is not a banker.\n", crit->getName());
+      buf.Cap();
+      pc.show(buf);
+      return -1;
+   }//if
+
+   return pc.balanceCoins(*crit);
+}//balance
+
+int deposit(int i_th, const String* coins, int j_th,
+            const String* banker, critter& pc) {
+   String buf(100);
+
+   if (!ok_to_do_action(NULL, "SBFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (coins->Strlen() && (strncasecmp(*coins, "coins", coins->Strlen()) != 0) &&
+       (strncasecmp(*coins, "gold", coins->Strlen()) != 0)) {
+      pc.show("You must deposit 'gold' or 'coins'.\n");
+      return -1;
+   }
+
+   if (i_th < 0) {
+      pc.show("Nice try, maybe you want to withdraw??\n");
+      return -1;
+   }
+
+   critter* crit = ROOM.haveCritNamed(j_th, banker, pc.SEE_BIT);
+
+   if (!crit) {
+      crit = ROOM.getLastCritter(); //most likely to be a banker, if one exists
+   }//if
+
+   if (crit == &pc) {
+      pc.show("Looks like the banker is not around right now!\n");
+      return -1;
+   }
+
+   if (!crit->isBanker()) {
+      Sprintf(buf, "%S is not a banker.\n", crit->getName());
+      buf.Cap();
+      pc.show(buf);
+      return -1;
+   }//if
+
+   return pc.depositCoins(i_th, *crit);
+}//deposit
+
+
 int gag(int i_th, const String* targ, critter& pc) {
    String buf(100);
 
@@ -2271,7 +2381,7 @@ int prone(critter& pc) {
 
    emote("drops to the ground in a prone position.", pc, ROOM, TRUE);
    show("You drop to the prone position.\n", pc);
-   pc.POS = POS_PRONE;
+   pc.setPosn(POS_PRONE);
 
    String cmd = "prone";
    ROOM.checkForProc(cmd, NULL_STRING, pc, -1);

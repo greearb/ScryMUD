@@ -393,7 +393,7 @@ int do_kick(critter& vict, critter& pc) {
 
    if (skill_did_hit(pc, KICK_SKILL_NUM, vict)) {
 
-      pc.PAUSE += 2; //increment pause_count
+      pc.PAUSE += d(1,2); //increment pause_count
       float d1 = (((float)(pc.STR)) * (float)(pc.getLevel()) + 5.0) / 60.0;
       exact_raw_damage(d((int)d1, 5), NORMAL, vict, pc);
       vict.PAUSE += d(1,3);
@@ -540,7 +540,7 @@ int do_bash(door& vict, critter& pc) { //bash for doors
       emote(buf, pc, ROOM, TRUE);
    }//else  
    
-   pc.PAUSE += d(1,3); //increment pause_count
+   pc.PAUSE += d(2,2); //increment pause_count
    return 0;
 }//do_bash()//door
 
@@ -606,7 +606,7 @@ int do_bash(critter& vict, critter& pc) {
                  name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
 
-      pc.PAUSE += d(1,3); //increment pause_count
+      pc.PAUSE += d(2,2); //increment pause_count
       return -1;
    }//else
    if (do_fatality) {

@@ -1,0 +1,14 @@
+<help skills skills>
+
+ScryMUD has a (unique??) skill system.  It is tree-based, meaning you
+must learn the prerequisites before you can learn the next skill or
+spell.  For instance, you can't very well write scrolls untill you can
+read, so LITERACY is a prerequisite for SCRIBE.  For more information
+on the various skills, try help [skill/spell name], or better yet,
+look at ScryMUD's web page, where every skill is listed.
+
+www.primenet.com/~greear/ScryMUD/scry.html
+
+<color=red>
+See Also:  abilities
+</color></help>

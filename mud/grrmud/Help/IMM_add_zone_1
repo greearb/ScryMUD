@@ -1,0 +1,14 @@
+<help general add_zone>
+
+Allows you to add a zone to the 'active' database.  This is
+different from create_zone by the way.  Active zones mean that
+by default they will be zunlocked and ready for mortal players
+when the mud starts up.
+
+Syntax:  add_zone [i_th]
+
+Examples:  add_zone 5  # add zone 5 to the playable zones.
+
+<color=red>
+See Also:  rem_zone, list_zones
+</color></help>

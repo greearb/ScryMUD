@@ -1990,7 +1990,7 @@ int do_mstat(critter& targ, critter& pc) {
 
 MOB FLAGS Definitions:
 0 has_proc_data, 1 scavenge, 2 wander, 3 should_do_procs,
-4 need_resetting, 5 edible_corpse, 6 NULL, 7 NULL, 8 NULL, 9 NULL
+4 need_resetting, 5 edible_corpse, 6 is_banker, 7 NULL, 8 NULL, 9 NULL
 10 NULL, 11 NULL, 12 NULL, 13 NULL, 14 NULL, 15 NULL, 16 has_skin
 17 has_mob_script\n\n");
 

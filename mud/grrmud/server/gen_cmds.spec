@@ -122,6 +122,8 @@ NOP
 # case B
 bug typo *bug ~
 NOP
+balance ~
+return balance(i, &(cooked_strs[1]), pc);
 backstab bs ~
 return backstab(i, &(cooked_strs[1]), pc);
 bash ~
@@ -132,6 +134,8 @@ beckon socials ~
 beckon(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 berserk ~
 return berserk(pc);
+block ~
+return block(i, &(cooked_strs[1]), pc);
 blush socials ~
 blush(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 blend ~
@@ -174,7 +178,7 @@ clear_onames ~
 return clear_onames(i, pc);
 close ~
 return close(i, &(cooked_strs[1]), pc);
-color ~
+color ansi color ~
 return color((cooked_strs[1]), (cooked_strs[2]), pc);
 consider ~
 return consider(i, &(cooked_strs[1]), pc);
@@ -232,6 +236,8 @@ date ~
 return date(pc);
 dance socials ~
 dance(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+deposit ~
+return deposit(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
 describe ~
 return describe(pc);
 delete_door ~
@@ -358,7 +364,7 @@ hide ~
 return hide(pc);
 hit kill attack murder hit ~
 return hit(i, &(cooked_strs[1]), pc);
-help ~
+help man help ~
 return help(i, &(cooked_strs[1]), pc);
 hehe socials ~
 hehe(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
@@ -399,7 +405,7 @@ return kick(i, &(cooked_strs[1]), pc);
 keywords *keyword ~
 NOP
 
-look ~
+look ls look ~
 return look(i, &(cooked_strs[1]), pc);
 lag socials ~
 lag(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
@@ -457,6 +463,8 @@ muahaha socials ~
 muahaha(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 mvnum ~
 return mvnum(i, &(cooked_strs[1]), pc);
+move *move ~
+NOP
 
 # case N
 north ~
@@ -751,7 +759,9 @@ shout *shout ~
 NOP
 self *possess ~
 NOP
-say *say ~
+say talk *say ~
+NOP
+skills *skills ~
 NOP
 
 # case T
@@ -786,6 +796,8 @@ return thaw(i, &(cooked_strs[1]), pc);
 topics *topics ~
 NOP
 title *title ~
+NOP
+theme *theme ~
 NOP
 
 # case U

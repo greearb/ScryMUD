@@ -716,7 +716,7 @@ extern int EXP_DIVISOR;   // critter.exp/exp_divisor =>exp gained per kill
 #define AGE     	 pc->age
 #define SEE_BIT 	 cur_stats[1]
 #define VIS_BIT 	 cur_stats[0]
-#define POS     	 short_cur_stats[0]
+#define POS     	 getPosn()
 #define STR     	 short_cur_stats[1]
 #define INT     	 short_cur_stats[2]
 #define CON     	 short_cur_stats[3]

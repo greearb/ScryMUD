@@ -35,6 +35,8 @@
 
 ///********************  temp crit data  *****************************///
 
+extern int bound(int l, int h, int v); //misc.h
+
 class critter;
 class room;
 
@@ -408,7 +410,7 @@ public:
    int tmp_num; //not used now
    bitfield mob_data_flags; //all the proc bits
      // 0 has_proc_data, 1 scavenge, 2 wander, 3 should_do_procs,
-     // 4 need_resetting, 5 edible_corpse, 6 NULL, 7 NULL,
+     // 4 need_resetting, 5 edible_corpse, 6 is_banker, 7 NULL,
      // 8 NULL, 9 NULL, 10 NULL, 11 NULL, 12 NULL, 13 NULL, 14 NULL, 15 NULL,
      // 16 has_skin, 17 has_mob_script
      //
@@ -746,6 +748,13 @@ public:
    int getPause() const { return short_cur_stats[11]; }
    void setPause(int i) { short_cur_stats[11] = i; }
 
+   int getPosn() { return bound(POS_STAND, POS_PRONE, short_cur_stats[0]); }
+   void setPosn(int i) {
+      if ((i >= POS_STAND) && (i <= POS_PRONE)) {
+         short_cur_stats[0] = i;
+      }
+   }//setPosn
+
    critter* getFirstFighting();
    String& getPoofin();
    String& getPoofout();
@@ -858,6 +867,8 @@ public:
    int isMonster() { return RACE == MONSTER; }
    int isCharmed() { return master != NULL; }
    int isWanderer() { return mob && MOB_FLAGS.get(2); }
+   int isBanker() { return mob && MOB_FLAGS.get(6); }
+ 
 
    int isPlayerShopKeeper();
    int isManagedBy(critter& pc);
@@ -910,6 +921,10 @@ public:
    void valueAdd(object& obj, critter& manager);
    void valueList(int i_th, const String* targ, critter& manager);
    void valueSet(int val_idx, int sell_val, int buy_val, critter& manager);
+
+   int withdrawCoins(int count, critter& banker); //do messages
+   int depositCoins(int count, critter& banker); //do messages
+   int balanceCoins(critter& banker);
 
    /** Assume we are removing this object at this posn. */
    void checkLight(object* obj = NULL, int posn = -1);

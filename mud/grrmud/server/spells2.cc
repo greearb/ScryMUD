@@ -680,7 +680,7 @@ void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl) {
        Put(new stat_spell_cell(spell_num, lvl/3), 
 	   vict.affected_by);
        vict.CRIT_FLAGS.turn_on(15); //is perm_sleeped
-       vict.POS = POS_SLEEP;
+       vict.setPosn(POS_SLEEP);
 
        if (&vict == &agg) {
 	 show("You put yourself to sleep!\n", agg);

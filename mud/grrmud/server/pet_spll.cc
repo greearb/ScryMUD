@@ -206,8 +206,8 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
          return;
       }//if
       
-      ROOM.gainCritter(&(mob_list[RAISED_CORPSE_NUM]));
       pet = mob_to_smob(mob_list[RAISED_CORPSE_NUM], pc.getCurRoomNum());
+      ROOM.gainCritter(pet);
       
       recursive_init_loads(*pet);
       
@@ -303,8 +303,8 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
        return;
      }//if
 
-     ROOM.gainCritter(&(mob_list[EARTH_GOLEM_NUMBER]));
      golem = mob_to_smob(mob_list[EARTH_GOLEM_NUMBER], pc.getCurRoomNum());
+     ROOM.gainCritter(golem);
      recursive_init_loads(*golem);
 
      show("You create a golem of animated earth.\n", pc);
@@ -539,12 +539,14 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       if (!is_canned)
          pc.MANA -= spell_mana;
       
-      if (!mob_list[ILLUSION_NUMBER].CRIT_FLAGS.get(18)) {
-         mudlog.log(ERR, "ERROR:  need to create an ILLUSION_MOB.\n");
+      if (!mob_list[ILLUSION_NUMBER].isInUse()) {
+         mudlog << "ERROR:  need to create an ILLUSION_MOB# " << ILLUSION_NUMBER << endl;
          return;
       }//if
       
       golem = mob_to_smob(mob_list[ILLUSION_NUMBER], pc.getCurRoomNum());
+      ROOM.gainCritter(golem);
+
       recursive_init_loads(mob_list[ILLUSION_NUMBER]);
       
       show("You create an illusion of yourself.\n", pc);
@@ -556,7 +558,7 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       golem->setHP_MAX(1);
       golem->STR = 1;
       golem->LEVEL = pc.LEVEL;
-      golem->POS = pc.POS;
+      golem->setPosn(pc.getPosn());
       golem->SEX = pc.SEX;
       golem->CLASS = pc.CLASS;
       golem->RACE = pc.RACE;
@@ -566,10 +568,17 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       if (pc.pc) {
          Sprintf(buf, "%S %S", name_of_crit(pc, ~0), &(pc.short_desc));
          golem->short_desc = buf;
+
+         Sprintf(buf, "%S %S %s\n", 
+                 pc.getShortName(), &(pc.short_desc), 
+                 critter_positions[pc.getPosn()]);
+         golem->in_room_desc = buf;      
       }//if
       else {
          golem->short_desc = pc.short_desc;
+         golem->in_room_desc = pc.in_room_desc;
       }//
+
       
       golem->long_desc = pc.long_desc;
    }//if canned or didn't lose concentration
@@ -635,8 +644,8 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
          return;
       }//if
 
-      ROOM.gainCritter(&(mob_list[which_un]));
       golem = mob_to_smob(mob_list[which_un], pc.getCurRoomNum());
+      ROOM.gainCritter(golem);
 
       recursive_init_loads(mob_list[which_un]);
       
@@ -733,12 +742,14 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
        }//switch
 
        if (!mob_list[which_un].CRIT_FLAGS.get(10)) {
-          mudlog.log(ERR, "ERROR:  need to create MINIONS.\n");
+          if (mudlog.ofLevel(ERR)) {
+             mudlog << "ERROR:  need to create MINION# " << which_un << endl;
+          }
           return;
        }//if
 
-       ROOM.gainCritter(&(mob_list[which_un]));
        golem = mob_to_smob(mob_list[which_un], pc.getCurRoomNum());
+       ROOM.gainCritter(golem);
        recursive_init_loads(mob_list[which_un]);
 
        if (pc.PETS.size() < (pc.CHA/4 + 1) && 

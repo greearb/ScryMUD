@@ -157,8 +157,10 @@ int critter::processInput(String& input, short do_sub,
    }
 
    /* any input causes you to un-meditate */
-   if (POS == POS_MED) 
-     POS = POS_REST;
+   if (POS == POS_MED) {
+      show("You break your meditative reverie.\n");
+      setPosn(POS_REST);
+   }
 
    if (isMob()) { //not gonna parse for MOB's, but will for SMOBs btw
       mudlog.log(ERR, "ERROR:  MOB tried to process_input, parse.cc.\n");
@@ -166,7 +168,10 @@ int critter::processInput(String& input, short do_sub,
    }//if
 
    if (PAUSE > 0) {
-      buf = input.Look_Command();
+      buf = input.Look_Command(TRUE); //look at the first one
+      if (buf == "\'") {
+         buf = "say";
+      }
       if (!((buf == "say") || (buf == "gossip") || (buf == "yell") ||
             (buf == "tell") || (buf == ":") || (buf == "/"))) {
          //show("DEBUG:  You are in pause mode.\n", pc); 
@@ -219,7 +224,10 @@ int critter::processInput(String& input, short do_sub,
       }//if quitting
 
       if (MODE == MODE_OLC) {
-         String first_cmd = input.Look_Command(); 
+         String first_cmd = input.Look_Command(TRUE); 
+         if (first_cmd == "\'") {
+            first_cmd = "say";
+         }
          if (first_cmd == ":") {
             first_cmd = input.Get_Command(eos, term_by_period);
             first_cmd = input.Look_Command();
@@ -280,7 +288,7 @@ int critter::processInput(String& input, short do_sub,
       }//if
    }//if a pc
 
-   raw_strings[0] = input.Get_Command(eos, term_by_period); 
+   raw_strings[0] = input.Get_Command(eos, term_by_period, TRUE); 
 
    if (raw_strings[0].Strlen() == 0) {
       return -1;
@@ -479,7 +487,8 @@ int critter::processInput(String& input, short do_sub,
    }//if 'self'
 
    if ((strncasecmp(raw_strings[0], "say", max(3, len1)) == 0)
-       || (raw_strings[0] == "\"")) {
+       || (raw_strings[0] == "\"") || (raw_strings[0] == "\'")
+       || (strncasecmp(raw_strings[0], "talk", max(3, len1)) == 0)) {
       buf = input.Get_Rest();
       parse_communication(buf);
       return say(buf, *this, *(getCurRoom()));

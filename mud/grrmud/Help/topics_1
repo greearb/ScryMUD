@@ -15,21 +15,22 @@ flee             follow           get              give
 group            guard            help             hit              
 human            hurl             idea             inventory        
 junk             list             lock             look             
-move             nogossip         north            northeast        
-offer            ogrue            open             order            
-passwd           pay              pemote           picklock         
-practice         prompt           prone            put              
-quit             races            read             recite           
-remove           reply            rest             roll             
-say              scan             score            scribe           
-shield           shoot            shout            sit              
-sleep            sneak            socials          sombre           
-southeast        southwest        stand            suicide          
-tell             theme            throw            time             
-toggle           topics           track            ungroup          
-up               use              value_add        value_list       
-value_set        wake             wear             west             
-who              wield            wimpy            wizlist          
+meditate         move             nogossip         north            
+northwest        offer            ogrue            open             
+page_break       passwd           pay              pemote           
+post             practice         prompt           prone            
+quaf             quit             races            read             
+regeneration     remove           reply            rest             
+save             say              scan             score            
+sell             shield           shoot            shout            
+skin             sleep            sneak            socials          
+south            southeast        southwest        stand            
+tail             tell             theme            throw            
+title            toggle           topics           track            
+unlock           up               use              value_add        
+value_rem        value_set        wake             wear             
+where            who              wield            wimpy            
+
 
 <color=red>
 See Also:  commands, wizhelp

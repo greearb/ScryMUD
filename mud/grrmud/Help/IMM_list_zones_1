@@ -1,0 +1,13 @@
+<help general list_zones>
+
+Allows you to list the active zones. Active zones mean that
+by default they will be zunlocked and ready for mortal players
+when the mud starts up.
+
+Syntax:  list_zones
+
+Examples:  list_zones  # Shows active zones.
+
+<color=red>
+See Also:  rem_zone, add_zone
+</color></help>

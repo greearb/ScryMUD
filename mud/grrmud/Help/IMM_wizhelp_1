@@ -25,10 +25,10 @@ rm_casts_spell   rm_curse_proc    rm_discuss_proc  rm_give_proc
 rm_move          rm_move_all      rm_omove         rm_omove_all     
 rm_script        rm_stat_affect   rset             rstat            
 save_obj         see_all          set_path_dir     set_path_pointer 
-shutdown         siteban          slay             slist            
-snoop            sockets          stat_keyword     stat_path        
-stat_script      teach            thaw             tog_mflag        
-tog_rflag        tog_veh_stop     tog_zflag        total_rezone     
+set_zflag        shutdown         siteban          slay             
+smob             snoop            sockets          stat_keyword     
+stat_room_script stat_script      teach            thaw             
+tog_oflag        tog_rflag        tog_veh_stop     total_rezone     
 unpossess        unpost           unsiteban        unsnoop          
 update_cig       uptime           visible          wizhelp          
 write_world      write_zone       zcreate          zdisable         

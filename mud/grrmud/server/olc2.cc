@@ -129,7 +129,7 @@ int normalize_mob(critter& crit) {
    crit.SEE_BIT |= 1024;
 
    crit.ATTACKS = bound(1, 4, crit.ATTACKS);
-   crit.POS = bound(0, 7, crit.POS);
+   crit.setPosn(bound(POS_STAND, POS_PRONE, crit.POS));
 
    int i;
    for (i = 1; i<9; i++) {

@@ -323,7 +323,7 @@ void String::Report() const {
 }//Report
  
 
-String String::Look_Command() const {
+String String::Look_Command(short is_first = 0) const {
    String temp(100);
    int i = 0; 
    char a;
@@ -343,6 +343,10 @@ String String::Look_Command() const {
    int in_quotes = FALSE;
 
    if (a == '\'') {
+      if (is_first) {
+         temp = '\'';
+         return temp;
+      }
       if (string[i+1] == '\'') {
          temp.Append(a);
          i += 2;
@@ -388,7 +392,7 @@ String String::Look_Command() const {
 }//look_command
 
 
-String String::Get_Command(short& eos, short& term_by_period) {
+String String::Get_Command(short& eos, short& term_by_period, short is_first = 0) {
    String temp(100);
    int i = 0, k = 0;
    eos = term_by_period = FALSE;
@@ -407,46 +411,52 @@ String String::Get_Command(short& eos, short& term_by_period) {
 
       //LOGFILE << "a -:" << a << ":-  i:" << i << endl;
 
-      if ((a == '\'') && (string[i+1] != '\''))  { // in quotes
-
-         //LOGFILE << "In quotes." << endl;
-
-         i++;
-         a = string[i];
-         while (a && (a != '\n')) {
-            if (a == '\'') {
-               if (string[i+1] == '\'') { //then escape it.
-                  temp += a;
-                  i += 2;
-               }//if
-               else {
-                  break;
-               }
-            }//if
-            else {
-               temp += a;
-               i++;
-            }//else
-            a = string[i];
-         }//while
-         if (a == '\'') { //closing quote
-            i++; //move past it
-         }//if
-      }//if
+      if (is_first && (a == '\'')) {
+         temp = '\'';
+         i++; //move to the next one
+      }
       else {
-         if ((a == '\'') && (string[i+1] == '\'')) {
-            temp.Append(a);
-            i += 2;
-            a = string[i];
-         }//if
+         if ((a == '\'') && (string[i+1] != '\''))  { // in quotes
 
-         while (!(isspace(a) || a == '.' || !a)) {
-            temp += a;
+            //LOGFILE << "In quotes." << endl;
+            
             i++;
             a = string[i];
-         }//while
-         if (a == '.')
-            term_by_period = TRUE;
+            while (a && (a != '\n')) {
+               if (a == '\'') {
+                  if (string[i+1] == '\'') { //then escape it.
+                     temp += a;
+                     i += 2;
+                  }//if
+                  else {
+                     break;
+                  }
+               }//if
+               else {
+                  temp += a;
+                  i++;
+               }//else
+               a = string[i];
+            }//while
+            if (a == '\'') { //closing quote
+               i++; //move past it
+            }//if
+         }//if
+         else {
+            if ((a == '\'') && (string[i+1] == '\'')) {
+               temp.Append(a);
+               i += 2;
+               a = string[i];
+            }//if
+            
+            while (!(isspace(a) || a == '.' || !a)) {
+               temp += a;
+               i++;
+               a = string[i];
+            }//while
+            if (a == '.')
+               term_by_period = TRUE;
+         }//else
       }//else
    }//if
    else {

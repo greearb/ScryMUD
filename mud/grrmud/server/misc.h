@@ -43,7 +43,9 @@ extern List<room*> pulsed_proc_rooms;
 extern List<object*> pulsed_proc_objects;
 extern PtrArray<room> proc_action_rooms;
 
+// Inclusive.
 int bound(int low, int high, int val);
+
 int  d(const int num_rolls, const int dice_sides); 
 //void critter::save();
 

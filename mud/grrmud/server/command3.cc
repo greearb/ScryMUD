@@ -457,7 +457,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
            }
            if (do_wand_scroll_proc(targ, ptr->stat_spell, pc,
                                    ptr->bonus_duration) >= 0) {
-             junk_scroll = TRUE;
+              junk_scroll = TRUE;
            }
 
           break;
@@ -544,7 +544,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
               }
            }//else
 
-           if (ob_ptr) {
+           if (!ob_ptr) {
               pc.show("Which object shall the scroll be used on?\n");
            }
            else {
@@ -1729,6 +1729,10 @@ int addZone(int i, critter& pc) {
 // from active zones
 int remZone(int i, critter& pc) {
    if (pc.isImmort() && (pc.getImmLevel() > 8)) {
+      if ((i == 1) && (pc.getCurZoneNum() != 1)) {
+         pc.show("You have to be in zone 1 to remove it.\n");
+         return -1;
+      }
       ZoneList::instance().remove(i);
       ZoneList::instance().writeSelf();
       ZoneCollection::instance().zlock(i);

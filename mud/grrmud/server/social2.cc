@@ -1328,11 +1328,11 @@ void whistle(int i_th, const String* vict, critter& pc, room& rm) {
 void slap(int i_th, const String* vict, critter& pc, room& rm) {
    String buf(100);
    Cell<critter*> cll(rm.getCrits());
-   critter* ptr;
+   critter* ptr = NULL;
+   critter* crit_ptr = NULL;
 
    if (vict->Strlen()) {
-      critter* crit_ptr =
-           ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+      crit_ptr = ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
 
       if (!crit_ptr)
          show("You don't see that person.\n", pc);
@@ -1368,6 +1368,15 @@ void slap(int i_th, const String* vict, critter& pc, room& rm) {
       show("You slap the wall.\n", pc);
       emote("slaps the ground in anger.", pc, rm, TRUE);
    }//else
+
+   String cmd = "slap";
+   if (crit_ptr) {
+      rm.checkForProc(cmd, NULL_STRING, pc, crit_ptr->getIdNum());
+   }
+   else {
+      rm.checkForProc(cmd, NULL_STRING, pc, 0);
+   }
+
 }//slap
 
 

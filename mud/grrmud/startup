@@ -6,16 +6,6 @@ if [ ! -d ./log ]; then
     mkdir ./log
 fi
 
-if [ ! -f ./World/critters_0 ]; then
-    echo "Could not find ./World/critters_0, attempting to"
-    echo "extract the distribution world files."
-
-    cd ./World
-    gunzip ./scry_dist_world*.tar.gz
-    tar -xvf ./scry_dist_world*.tar
-    cd ..
-fi
-
 #  Make sure this directory exists...
 if [ ! -d ./PlayerShops ]; then
     mkdir ./PlayerShops

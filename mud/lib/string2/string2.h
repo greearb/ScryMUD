@@ -147,14 +147,14 @@ public:
    
    /* Both of these next two delete what they grab from the string. */
    
-   String Get_Command(short& eos, short& term_by_period);	
+   String Get_Command(short& eos, short& term_by_period, short is_first = 0);	
 				//grabs first word or number deliminated
 				//by space, a '.' or null char
    
    String Get_Rest(short destruct = TRUE);	//grabs phrase, deliminated 
    //by a newline or null char
    
-   String Look_Command() const; //grabs first word or number deliminated
+   String Look_Command(short is_first = 0) const; //grabs first word or number deliminated
 				//by space, a '.' or null char, does not 
 				//delete it from the string.
 

@@ -1,0 +1,13 @@
+<help general deposit>
+
+The deposit command allows you to place some of your gold
+into a bank account.
+
+Syntax:  deposit [amount] <<'gold'> <<j_th> <<banker>
+
+Example:  deposit 5000                # assumes there is a banker nearby
+Example:  deposit 5000 gold 2.banker  # specify which banker.
+
+<color=red>
+See Also:  balance withdraw
+</color></help>

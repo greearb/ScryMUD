@@ -142,7 +142,8 @@ char* critter_positions[10] = {
    "is meditating here.",
    "is lying here barely breathing.",
    "is lying here utterly dead!.",
-   "is lying here prone."
+   "is lying here prone.",
+   NULL
 };// critter_positions
 
 char* critter_conditions[11] = {
@@ -460,7 +461,7 @@ a -1 terminates.
 
 0 has_proc_data, (teacher, shopkeeper, discuss, bow, curse, give procs,
                   PERSONALITY),
-1 scavenge, 2 wander, 5 edible_corpse, 16 has_skin. \n",
+1 scavenge, 2 wander, 5 edible_corpse, 6 is_banker, 16 has_skin. \n",
 
 /* 31 spec_data: int1 */
 "\nIf mob is to be a sentinel, give direction guarding:

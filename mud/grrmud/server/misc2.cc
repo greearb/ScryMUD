@@ -411,10 +411,10 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
            return FALSE;
         }//if
      }//if
-     else if (chr == 'P') {
-        if (pc.CRIT_FLAGS.get(14)) {
+     else if (chr == 'r') {
+        if (pc.POS > POS_REST) {
            if (do_msg) {
-              show("You are completely paralyzed!\n", pc);
+              show("You must be in a more lively position!\n", pc);
            }//if
            return FALSE;
         }//if
@@ -1436,7 +1436,7 @@ void increment_percent_lrnd(int skill_num, critter& pc) {
 void init_masks() {
             /*  OBJ_WEAR_FLAGS  */
    int i;
-   for (i = 22; i < 21 + MAX_EQ; i++) { 
+   for (i = 22; i < (21 + MAX_EQ); i++) { 
       Obj_Wear_Flags_Mask.turn_on(i);
    }
 

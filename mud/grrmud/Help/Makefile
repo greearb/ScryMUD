@@ -106,6 +106,7 @@ IMM_see_all_1 \
 IMM_set_path_dir_1 \
 IMM_set_path_pointer_1 \
 IMM_set_veh_stop_1 \
+IMM_set_zflag_1 \
 IMM_shutdown_1 \
 IMM_siteban_1 \
 IMM_slay_1 \
@@ -122,7 +123,6 @@ IMM_tog_mflag_1 \
 IMM_tog_oflag_1 \
 IMM_tog_rflag_1 \
 IMM_tog_veh_stop_1 \
-IMM_tog_zflag_1 \
 IMM_total_rezone_1 \
 IMM_ungag_1 \
 IMM_unpossess_1 \
@@ -151,6 +151,7 @@ adjust_register_1 \
 anitre_1 \
 assist_1 \
 backstab_1 \
+balance_1 \
 bash_1 \
 beep_1 \
 berserk_1 \
@@ -173,6 +174,7 @@ credits_1 \
 curse_1 \
 darkling_1 \
 date_1 \
+deposit_1 \
 disarm_1 \
 discuss_1 \
 donate_1 \
@@ -209,6 +211,7 @@ junk_1 \
 list_1 \
 lock_1 \
 look_1 \
+lore_1 \
 meditate_1 \
 move_1 \
 nogossip_1 \
@@ -281,6 +284,7 @@ where_1 \
 who_1 \
 wield_1 \
 wimpy_1 \
+withdraw_1 \
 wizlist_1
 
 
