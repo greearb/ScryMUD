@@ -159,7 +159,7 @@ const BitfieldNames SHOP_DATA_FLAGS_NAMES(sizeof(sd_names)/sizeof(const char*),
                                           sd_names, "Shop Data Flags (Trades):");
 
 const char* td_names[] = { "NULL" };
-const BitfieldNames TEACH_DATA_FLAGS_NAMES(sizeof(osd_names)/sizeof(const char*),
+const BitfieldNames TEACH_DATA_FLAGS_NAMES(sizeof(td_names)/sizeof(const char*),
                                            td_names, "Teach Data Flags:");
 
 /** FLAG1 */

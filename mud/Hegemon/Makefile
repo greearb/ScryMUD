@@ -151,7 +151,7 @@ BuildInfo.java: $(SRCS) Makefile BuildInfo.prefix BuildInfo.suffix
 	echo "\"On machine: `uname -mrspn` \\n\" +" >> BuildInfo.java
 	cat BuildInfo.suffix >> BuildInfo.java
 
-all: tar jar release
+all: heg.tar heg.jar release
 
 
 heg.tar: $(OBJS)

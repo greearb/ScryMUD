@@ -60,6 +60,7 @@ public class InputArea extends Panel {
                   cd.getHegemonScroll().pushColor(c);
                }
                cd.getHegemonScroll().append(" >>" + str + "\n");
+               cd.getOutput().paintScroll(); //flush 
 
                if (f != null) {
                   cd.getHegemonScroll().popFont();
