@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.23 1999/06/28 05:35:27 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/28 05:35:27 $
+// $Id: command4.cc,v 1.24 1999/06/30 01:57:28 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/06/30 01:57:28 $
 
 //
 //ScryMUD Server Code
@@ -1426,7 +1426,7 @@ int do_give(critter& targ, critter& pc, object& obj) {
    int deleted_obj = FALSE;
 
    drop_eq_effects(obj, pc, FALSE); //don't do msgs
-   gain_eq_effects(obj, obj_list[0], targ, -1, FALSE, deleted_obj); //don't do msgs
+   gain_eq_effects(obj, NULL, targ, -1, FALSE, deleted_obj); //don't do msgs
 
    if (!deleted_obj) {
       do_domob_give_proc(targ, pc, obj); //this can recurse but twice I believe

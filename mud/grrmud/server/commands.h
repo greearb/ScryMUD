@@ -1,5 +1,5 @@
-// $Id: commands.h,v 1.14 1999/06/25 04:02:54 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
+// $Id: commands.h,v 1.15 1999/06/30 01:57:29 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/30 01:57:29 $
 
 //
 //ScryMUD Server Code
@@ -135,7 +135,8 @@ int wear_eq_effects(object& obj, critter& pc, int posn, short do_msg);
 int remove_eq_effects(object& obj, critter& pc, short from_corpse, 
                        short do_msg, int posn);
 
-int gain_eq_effects(object& obj, object& bag, critter& pc, short 
+/** bag may be NULL, btw. */
+int gain_eq_effects(object& obj, object* bag, critter& pc, short 
                     obj_in_bag, short do_msg, int& deleted_obj); 
 int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk = FALSE);
 int donate_eq_effects(object& obj, critter& pc, short do_msg);

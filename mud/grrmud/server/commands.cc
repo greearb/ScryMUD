@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.25 1999/06/25 04:02:54 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
+// $Id: commands.cc,v 1.26 1999/06/30 01:57:28 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/06/30 01:57:28 $
 
 //
 //ScryMUD Server Code
@@ -1259,8 +1259,9 @@ int put(int i, const String* item, int j, const String* bag,
 int get(int i, const String* item, int j, const String* bag, critter& pc,
         int do_msg) {
    String buf(100);
-   object* bag_ptr;
-   object* vict_ptr, *tmp;
+   object* bag_ptr = NULL;
+   object* vict_ptr = NULL;
+   object* tmp = NULL;;
    short bag_in_inv = TRUE, found_it = FALSE;
    Cell<object*>  cell;
    short tst = FALSE;
@@ -1294,7 +1295,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
             if (obj_get_by(*vict_ptr, pc, TRUE)) {
                pc.gainInv(vict_ptr);
                int deleted_obj;
-               gain_eq_effects(*vict_ptr, obj_list[0], pc, -1, TRUE,
+               gain_eq_effects(*vict_ptr, NULL, pc, -1, TRUE,
                                deleted_obj);
                vict_ptr = ROOM.getInv()->lose(cell);
             }//if obj_get_by
@@ -1362,7 +1363,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
                found_it = TRUE;
                pc.gainInv(vict_ptr);
                int deleted_obj;
-               gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE,
+               gain_eq_effects(*vict_ptr, bag_ptr, pc, bag_in_inv, TRUE,
                                deleted_obj); 
                //gold ect
                vict_ptr = bag_ptr->inv.lose(cell);
@@ -1390,7 +1391,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
                found_it = TRUE;
                pc.gainInv(vict_ptr);
                int deleted_obj;
-               gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE,
+               gain_eq_effects(*vict_ptr, NULL, pc, -1, TRUE,
                                deleted_obj); 
                //gold ect
                vict_ptr = ROOM.getInv()->lose(cell);
@@ -1398,6 +1399,9 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
             else
                vict_ptr = cell.next();
          }//if named right
+         else {
+            vict_ptr = cell.next();
+         }
       }//while obj_ptr
       if (!found_it && do_msg) {
          pc.show(CS_NO_SEE_THAT);
@@ -1461,7 +1465,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
                if (obj_get_by(*vict_ptr, pc, TRUE)) {
                   pc.gainInv(vict_ptr);
                   int deleted_obj;
-                  gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE,
+                  gain_eq_effects(*vict_ptr, bag_ptr, pc, bag_in_inv, TRUE,
                                   deleted_obj);
                   vict_ptr = bag_ptr->inv.lose(cell);
                }//if
@@ -1491,7 +1495,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
             pc.gainInv(vict_ptr);
             ROOM.loseInv(vict_ptr);
             int deleted_obj;
-            gain_eq_effects(*vict_ptr, obj_list[0], pc, -1, TRUE,
+            gain_eq_effects(*vict_ptr, NULL, pc, -1, TRUE,
                             deleted_obj);
          }//if obj_get_by
       }//if
@@ -1560,7 +1564,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
                pc.gainInv(vict_ptr);
                bag_ptr->loseInv(vict_ptr);
                int deleted_obj;
-               gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE,
+               gain_eq_effects(*vict_ptr, bag_ptr, pc, bag_in_inv, TRUE,
                                deleted_obj); 
             }//if
          }//if
@@ -3195,7 +3199,8 @@ int obj_drop_by(object& obj, critter& pc) {
 
 
 // BEWARE:  This method can delete obj, if it's coins for instance.
-int gain_eq_effects(object& obj, object& bag, critter& pc,
+// NOTE:  bag may be NULL.
+int gain_eq_effects(object& obj, object* bag, critter& pc,
                     short bag_in_inv, short do_msg, int& deleted_obj) { 
    String buf(100);
    List<critter*> tmp_lst(ROOM.getCrits());
@@ -3251,41 +3256,38 @@ int gain_eq_effects(object& obj, object& bag, critter& pc,
          }//while
       }//if
    }//if
-
-   else if (bag_in_inv == 0) {
+   else if (bag && (bag_in_inv == 0)) {
       if (do_msg) {
-         Sprintf(buf, cstr(CS_DO_GET_FROM, pc),
-                 long_name_of_obj(obj, pc.SEE_BIT),
-                 long_name_of_obj(bag, pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_DO_GET_FROM, pc), obj.getLongName(pc.SEE_BIT),
+                 bag->getLongName(pc.SEE_BIT));
          show(buf, pc);
-
+         
          tmp_lst.head(cell);
          while ((crit_ptr = cell.next())) {
             if (crit_ptr != &pc) {
                Sprintf(buf, cstr(CS_DO_GET_FROM_O, *crit_ptr),
-                       name_of_crit(pc, crit_ptr->SEE_BIT), 
-                       long_name_of_obj(obj, crit_ptr->SEE_BIT), 
-                       get_his_her(pc), single_obj_name(bag, crit_ptr->SEE_BIT));
+                       pc.getName(crit_ptr->SEE_BIT),
+                       obj.getLongName(crit_ptr->SEE_BIT), 
+                       get_his_her(pc), bag->getShortName(crit_ptr->SEE_BIT));
                buf.Cap();
                show(buf, *crit_ptr);
             }//if
          }//while
-      }//if
+      }
    }//if
-   else if (bag_in_inv == TRUE) {
+   else if ( bag && (bag_in_inv == TRUE)) {
       if (do_msg) {
          Sprintf(buf, cstr(CS_DO_GET_YOUR, pc),
-                 long_name_of_obj(obj, pc.SEE_BIT), 
-                 single_obj_name(bag, pc.SEE_BIT));
+                 obj.getLongName(pc.SEE_BIT), bag->getShortName(pc.SEE_BIT));
          show(buf, pc);
 
          tmp_lst.head(cell);
          while ((crit_ptr = cell.next())) {
             if (crit_ptr != &pc) {
                Sprintf(buf, cstr(CS_DO_GET_YOUR_O, *crit_ptr),
-                       name_of_crit(pc, crit_ptr->SEE_BIT), 
-                       long_name_of_obj(obj, crit_ptr->SEE_BIT), 
-                       long_name_of_obj(bag, crit_ptr->SEE_BIT));
+                       pc.getName(crit_ptr->SEE_BIT),
+                       obj.getLongName(crit_ptr->SEE_BIT),
+                       bag->getLongName(crit_ptr->SEE_BIT));
                buf.Cap();
                show(buf, *crit_ptr);
             }//if

@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.23 1999/06/26 06:14:17 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
+// $Id: command5.cc,v 1.24 1999/06/30 01:57:28 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/06/30 01:57:28 $
 
 //
 //ScryMUD Server Code
@@ -2875,7 +2875,7 @@ int do_throw(critter& targ, critter& pc) {
             
             targ.gainInv(pc.EQ[posn]); //item is now (in) the target
             int deleted_obj;
-            gain_eq_effects(*(pc.EQ[posn]), obj_list[0], targ, FALSE, FALSE,
+            gain_eq_effects(*(pc.EQ[posn]), NULL, targ, -1, FALSE,
                             deleted_obj);
             
             if (deleted_obj) {
