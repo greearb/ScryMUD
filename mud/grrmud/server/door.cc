@@ -1,5 +1,5 @@
-// $Id: door.cc,v 1.9 1999/08/20 06:20:05 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/20 06:20:05 $
+// $Id: door.cc,v 1.10 1999/08/30 06:30:41 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
 
 //
 //ScryMUD Server Code
@@ -336,7 +336,7 @@ int door::write(ostream& da_file) {
 
 
 String* door_data::getName(critter* viewer, int dest) {
-   LStringCollection* ls_coll = getNamesCollection(viewer->getLanguage());
+   KeywordEntry* ls_coll = getNamesCollection(viewer->getLanguage());
 
    if (!ls_coll || ls_coll->isEmpty()) {
       return &UNKNOWN;
@@ -377,14 +377,14 @@ String* door_data::getName(critter* viewer, int dest) {
        
 
 int door::nameIsSecret(const String* name) {
-   Cell<LStringCollection*> col_cell(getNames());
+   Cell<KeywordEntry*> col_cell(getNames());
    String* ptr;
    int len = name->Strlen();
 
    if (len == 0)
       return FALSE;
 
-   LStringCollection* coll;
+   KeywordEntry* coll;
    while ((coll = col_cell.next())) {
       Cell<LString*> cll(*coll);
 
@@ -432,7 +432,7 @@ door* door::findDoor(SafePtrList<door> &lst, const int i_th,
    door* door_ptr;
    int count = 0, ptr_v_bit, len;
    LString *string;
-   LStringCollection* col_ptr;
+   KeywordEntry* col_ptr;
 
    //log("in have_door_named");
 

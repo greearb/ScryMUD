@@ -1,5 +1,5 @@
-// $Id: olc.cc,v 1.17 1999/08/29 01:17:17 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/29 01:17:17 $
+// $Id: olc.cc,v 1.18 1999/08/30 06:30:41 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
 
 //
 //ScryMUD Server Code
@@ -521,7 +521,7 @@ void do_olc(critter& pc) {
          }//else
       }//while
       show("These flags are set so far:\n", pc);
-      Markup::toString(OLC_OBJ->bag->getFlags(), BAG_FLAGS_NAMES,
+      Markup::toString(OLC_OBJ->bag->getFlags(), CLOSABLE_FLAGS_NAMES,
                        &pc, buf);
       pc.show(buf);
       break;

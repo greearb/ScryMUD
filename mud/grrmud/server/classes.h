@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.26 1999/08/29 01:17:15 greear Exp $
-// $Revision: 1.26 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
+// $Id: classes.h,v 1.27 1999/08/30 06:30:40 greear Exp $
+// $Revision: 1.27 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
 
 //
 //ScryMUD Server Code
@@ -88,6 +88,8 @@ public:
    MTPair(String& k, String& v) : key(k), val(v) { }
    MTPair(const MTPair& src) : key(src.key), val(src.val) { }
    MTPair();
+
+   int write(ostream& dafile);
 };
 
 class MetaTags {
@@ -95,15 +97,23 @@ protected:
    PtrList<MTPair> lst;
 
 public:
+   /** first_tag should be <META */
    MetaTags(const char* first_tag, istream& dafile);
    MetaTags(istream& dafile);
    MetaTags(MetaTags& src) { lst.becomeDeepCopyOf(src.lst); }
    MetaTags(Serialized& obj) { generateTags(*this, obj); }
    virtual ~MetaTags() { lst.clearAndDestroy(); }
+   int construct(const char* first_tag, istream& dafile);
 
    virtual int read(istream& dafile);
+   virtual int readTag(String& key, String& val, istream& dafile);
    virtual int write(ostream& dafile);
+   virtual void clear();
+
    virtual String& getValue(const char* key);
+
+   virtual void addTag(String& key, String& val);
+   
 
    static void generateTags(MetaTags& rslt, Serialized& obj);
    
@@ -113,20 +123,24 @@ public:
 class LString : public String {
 protected:
    LanguageE lang;
-
 public:
    LString() : String(5), lang(English) { }
    LString(int len) : String(len), lang(English) { }
    LString(LanguageE language, int len) : String(len), lang(language) { }
-   LString(const LString& src);
+   LString(const LString& src) : String((String)(src)), lang(src.lang) { }
    LString(LanguageE language, const String& s) : String(s), lang(language) { }
    LString(LanguageE language, const char* s) : String(s), lang(language) { }
    virtual ~LString() { }
    virtual LString& operator=(const String& src); //default to english
    
+   friend ostream& operator<< (ostream& stream, const LString& str);
+   friend istream& operator>> (istream& stream, LString& str);
+
    LanguageE getLanguage() const { return lang; }
    void setLanguage(LanguageE l) { lang = l; }
    int isLanguage(LanguageE l) const { return lang == l; }
+
+   static LString NULL_STRING;
 };
 
 class LstrArray {
@@ -162,13 +176,11 @@ public:
    virtual ~LStringCollection();
 
    LString* getString(LanguageE for_lang = English);
-   LString* getString(critter* viewer); //just call the one above.
+   inline LString* getString(critter* viewer);
 
    /** This will add the new string to the collection.  If a string with the
-    * same language is already in it, then the old one will be deleted and
-    * replaced by the new one.  The collection takes ownership of the memory
-    * when new_string is passed in, so passing a reference to a stack variable,
-    * for example, is a real bad idea.
+    * same language is already in it, then the old one will be
+    * replaced by the new one.
     */
    virtual void addLstring(LString& new_string);
    virtual void addString(LanguageE lang, String& buf);
@@ -181,6 +193,9 @@ public:
     */
    virtual void toStringStat(const char* pre, const char* post, 
                              critter* viewer, String& rslt);
+   virtual void toStringStat(critter* viewer, String& rslt) {
+      toStringStat(NULL, NULL, viewer, rslt);
+   }
 
    virtual void appendString(LanguageE lang, String& buf);
    virtual void appendString(LString& ls);
@@ -190,21 +205,40 @@ public:
 };//LStringCollection
 
 
-/** This will be a list of single words, like names (keywords) for an
+class KeywordEntry : public PtrList<LString> {
+protected:
+   LanguageE lang;
+public:
+   KeywordEntry() : lang(English) { }
+   KeywordEntry(LanguageE l) : lang(l) { };
+   KeywordEntry(KeywordEntry& src) : PtrList<LString>(src), lang(src.lang) { }
+   virtual ~KeywordEntry() { clearAndDestroy(); }
+
+   virtual void toStringStat(critter* viewer, String& rslt);
+   virtual int write(ostream& dafile);
+   virtual int read(istream& dafile, int read_all = TRUE);
+
+   LanguageE getLanguage() { return lang; }
+};//KeywordEntry
+
+/** This will be a list of lists of single words, like names (keywords) for an
  * object.  The LStringCollection above is more general in that it
  * will take whole lines or more.
  */
-class LKeywordCollection : public PtrList<LStringCollection>, public Serialized {
+class LKeywordCollection : public PtrList<KeywordEntry>, public Serialized {
 public:
    LKeywordCollection() { }
-   virtual ~LKeywordCollection();
-   LKeywordCollection& getCollection(LanguageE for_lang);
+   virtual ~LKeywordCollection() { clearAndDestroy(); }
 
-   /** This will add the new string to the collection.  If a string with the
-    * same language is already in it, then the old one will be deleted and
-    * replaced by the new one.  The collection takes ownership of the memory
-    * when new_string is passed in, so passing a reference to a stack variable,
-    * for example, is a real bad idea.
+   /** Will default to english if it has to, and if no entry is found at all,
+    * it will return NULL.
+    */
+   KeywordEntry* getCollection(LanguageE for_lang);
+
+   /** This will add the new string to the collection.  The collection takes
+    * ownership of the memory when new_string is passed in, so passing a
+    * reference to a stack variable, for example, is a real bad idea.
+    * Duplicate languages are accepted.
     */
    void addLstring(LString* new_string);
 
@@ -213,6 +247,8 @@ public:
 
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
+
+   virtual void toStringStat(critter* viewer, String& rslt);
 
    /** First keyword is default 'shortName' for PC's, but for mobiles,
     * we often use the short_desc.
@@ -269,7 +305,7 @@ protected:
 
 public:
    Entity() : container(NULL), vis_bit(0), id_num(0), zone_num(0) { }
-   virtual ~Entity() { }
+   virtual ~Entity();
    virtual void clear();
 
    /** Returns zero if we can't find anything better. */
@@ -279,13 +315,19 @@ public:
    virtual void setContainer(Entity* cont) { container = cont; }
    Entity* getContainer() { return container; }
 
-   virtual LStringCollection* getNamesCollection(LanguageE forLang);
+   virtual KeywordEntry* getNamesCollection(LanguageE forLang) {
+      return names.getCollection(forLang);
+   }
 
    LKeywordCollection& getNames() { return names; }
-   virtual void setNames(LKeywordCollection& incoming_names);
+   virtual void setNames(LKeywordCollection& incoming_names) {
+      names.becomeDeepCopyOf(incoming_names);
+   }
 
    virtual LStringCollection* getLongDescColl() { return &long_desc; }
-   virtual void setLongDescColl(LStringCollection& ldesc);
+   virtual void setLongDescColl(LStringCollection& ldesc) {
+      long_desc.becomeDeepCopyOf(ldesc);
+   }
 
    virtual String* getName(int c_bit = ~0);
    virtual String* getFirstName(int c_bit = ~0);
@@ -363,6 +405,9 @@ public:
  * that relate to all closable objects, including doors and containers.
  */
 class Closable : public Serialized {
+private:
+   static int _cnt;
+
 protected:
    // When modifying this, modify CLOSABLE_FLAGS_NAMES in const.cc
    bitfield flags;
@@ -378,7 +423,11 @@ protected:
    int token;
 
 public:
-   virtual ~Closable() { }
+   Closable() : key(0), token(0) { _cnt++; }
+   Closable(const Closable& src) : flags(src.flags), key(src.key), token(src.token) {
+      _cnt++; 
+   }
+   virtual ~Closable() { _cnt--; }
    virtual void clear() { flags.clear(); key = 0; }
 
    /** Returns TRUE if we could flip it, false otherwise.  We will not let

@@ -1,5 +1,5 @@
-// $Id: string2.cc,v 1.14 1999/08/10 07:06:21 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/10 07:06:21 $
+// $Id: string2.cc,v 1.15 1999/08/30 06:30:41 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
 
 //
 //ScryMUD Server Code
@@ -609,12 +609,48 @@ int String::contains(const char ch) const {
 }
 
 
+/**  Reads in bytes untill it gets to the dlm.  It does NOT include the
+ * delimiter.  A backslash escapes the delimiter.
+ */
+void String::readUntil(char delim, istream& dafile) {
+   int is_escaped = FALSE;
+   char ch;
+   clear();
+   // Get to the beginning
+   while (dafile) {
+      dafile.get(ch);
+      if (ch == '\\') {
+         if (is_escaped) {
+            is_escaped = FALSE;
+            this->append(ch);
+         }
+         else {
+            is_escaped = TRUE;
+         }
+      }
+      else if (ch == delim) {
+         if (is_escaped) {
+            is_escaped = FALSE;
+            this->append(ch);
+         }
+         else {
+            return;
+         }
+      }
+      else {
+         is_escaped = FALSE;
+         this->append(ch);
+      }
+   }//while
+}//readUntil
+
+
 /** Reads untill it finds the delim, and then reads untill
  * it finds another.  Escape the delim with a \ (backslash).
  * This is not too efficient, as it reads one character at
  * a time, btw.
  */
-int String::readToken(char delim, ifstream& dafile, int include_delim) {
+int String::readToken(char delim, istream& dafile, int include_delim) {
    char ch;
    int is_escaped = FALSE;
 
@@ -1229,10 +1265,9 @@ void vSprintf(String& targ, const char* string, va_list ap) {
    }//for
 }//vSprintf
 
-		/* WARNING:  this will fail if input is > 99 chars. */
-
+/* WARNING:  this will fail if input is > 299 chars. */
 istream& operator>> (istream& stream, String& str) {
-   char buf[100];
+   char buf[300];
    stream >> buf;
    str = buf;
    return stream;

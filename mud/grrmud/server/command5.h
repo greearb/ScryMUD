@@ -1,5 +1,5 @@
-// $Id: command5.h,v 1.14 1999/08/25 06:35:11 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/25 06:35:11 $
+// $Id: command5.h,v 1.15 1999/08/30 06:30:40 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
 
 //
 //ScryMUD Server Code
@@ -55,10 +55,10 @@ int using_client(critter& pc);
 
 int update_cur_in_game(critter& pc);
 
-int list_scripts(int mob_num, critter& pc);
+int list_mob_scripts(int mob_num, critter& pc);
 int do_list_scripts(critter& targ, critter& pc);
-int stat_script(int mob_num, int script_idx, critter& pc);
-int rem_script(int mob_num, String& trigger, int i_th, critter& pc);
+int stat_mob_script(int mob_num, int script_idx, critter& pc);
+int rem_mob_script(int mob_num, String& trigger, int i_th, critter& pc);
 
 int list_room_scripts(int rm_num, critter& pc);
 int stat_room_script(int rm_num, int script_idx, critter& pc);

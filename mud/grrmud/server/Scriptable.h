@@ -1,5 +1,5 @@
-// $Id: Scriptable.h,v 1.7 1999/08/27 03:10:03 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
+// $Id: Scriptable.h,v 1.8 1999/08/30 06:30:40 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
 
 //
 //ScryMUD Server Code
@@ -44,7 +44,7 @@ protected:
    int pause;
 
 public:
-   Scriptable() : pause(0) { _cnt++; }
+   Scriptable() : cur_script(NULL), pause(0) { _cnt++; }
    virtual ~Scriptable();
 
    virtual int write(ostream& dafile);

@@ -1,5 +1,5 @@
-// $Id: Serialized.h,v 1.5 1999/08/29 01:17:15 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
+// $Id: Serialized.h,v 1.6 1999/08/30 06:30:40 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
 
 //
 //ScryMUD Server Code
@@ -71,7 +71,7 @@ protected:
    
 public:
    virtual int write(ostream& dafile) = 0;
-   virtual int read(istream& dafile, int read_all = TRUE);
+   virtual int read(istream& dafile, int read_all = TRUE) = 0;
 
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() = 0;

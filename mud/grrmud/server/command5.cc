@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.32 1999/08/29 01:17:15 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
+// $Id: command5.cc,v 1.33 1999/08/30 06:30:40 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
 
 //
 //ScryMUD Server Code
@@ -351,8 +351,8 @@ int pause(int rounds, critter& pc) {
   return 0;
 }//pause
 
-	  
-int list_scripts(int mob_num, critter& pc) {
+
+int list_mob_scripts(int mob_num, critter& pc) {
 
    if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
@@ -2101,7 +2101,7 @@ int dsys(int i, const String& cmd, const String& arg1, critter& pc) {
          pc.show(buf);
          
          pc.show("\n");
-         BAG_FLAGS_NAMES.listNames(buf, &pc);
+         CLOSABLE_FLAGS_NAMES.listNames(buf, &pc);
          pc.show(buf);
          
          pc.show("\n");

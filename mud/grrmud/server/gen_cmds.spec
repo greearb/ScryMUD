@@ -113,8 +113,6 @@ alist zlist zlist ~
 return zlist(i, j, pc); 
 amlist ~
 return amlist(i, j, pc);
-add_proc ~
-return add_proc(i, pc);
 add_path ~
 return add_path(i, j, pc);
 amsave ~
@@ -458,8 +456,8 @@ list_obj_scripts ~
 return list_obj_scripts(i, pc);
 list_paths ~
 return list_paths(i, pc);
-list_scripts ~
-return list_scripts(i, pc);
+list_mob_scripts ~
+return list_mob_scripts(i, pc);
 list_room_scripts ~
 return list_room_scripts(i, pc);
 list_site_bans ~
@@ -642,20 +640,12 @@ rstat ~
 return rstat(i, pc);
 rset ~
 return rset(&(cooked_strs[1]), j, pc);
-rm_give_proc ~
-return rm_give_proc(i, pc);
-rm_discuss_proc ~
-return rm_discuss_proc(i, pc);
-rm_bow_proc ~
-return rm_bow_proc(i, pc);
-rm_curse_proc ~
-return rm_curse_proc(i, pc);
 rm_obj_script rem_obj_script rm_obj_script ~
 return rem_obj_script(i, cooked_strs[1], j, pc);
 rm_room_script rem_room_script rm_room_script ~
 return rem_room_script(i, cooked_strs[1], j, pc);
-rm_script rem_script rm_script ~
-return rem_script(i, (cooked_strs[1]), j, pc);
+rm_mob_script rem_mob_script rm_script ~
+return rem_mob_script(i, (cooked_strs[1]), j, pc);
 rm_stat_affect rem_stat_affect rm_stat_affect ~
 return rm_stat_affect(i, j, pc);
 rm_casts_spell rem_casts_spell rm_casts_spell ~
@@ -766,8 +756,8 @@ snoop ~
 return snoop(i, &(cooked_strs[1]), pc);
 sob socials ~
 sob(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
-stat_script ~
-return stat_script(i, j, pc);
+stat_mob_script stat_script ~
+return stat_mob_script(i, j, pc);
 splash socials ~
 splash(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 stand ~

@@ -1,5 +1,5 @@
-// $Id: Scriptable.cc,v 1.4 1999/08/27 03:10:03 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/08/27 03:10:03 $
+// $Id: Scriptable.cc,v 1.5 1999/08/30 06:30:40 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
 
 //
 //ScryMUD Server Code
@@ -28,6 +28,11 @@
 #include "misc.h"
 #include "battle.h"
 
+
+Scriptable::~Scriptable() {
+   scripts.clearAndDestroy();
+   pending_scripts.clearAndDestroy();
+}
 
 void Scriptable::finishedScript() {
    if (cur_script) {

@@ -1,5 +1,5 @@
-// $Id: olc2.h,v 1.10 1999/08/22 07:16:20 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/22 07:16:20 $
+// $Id: olc2.h,v 1.11 1999/08/30 06:30:41 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
 
 //
 //ScryMUD Server Code
@@ -63,7 +63,7 @@ int set_path_dir(int veh_id, int path_cell_num, int i_th,
 int add_keyword(critter& pc);
 int rm_keyword(int idx, critter& pc);
 int clear_keyword(int idx, critter& pc);
-int add_kname(int idx, String* name, critter& pc);
+int add_kname(int idx, const String* name, critter& pc);
 int stat_keyword(int kwd_num, critter& pc);
 
 // inserts an empty path in the slot:  path_cell_num

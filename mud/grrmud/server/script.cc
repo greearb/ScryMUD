@@ -1,5 +1,5 @@
-// $Id: script.cc,v 1.19 1999/08/27 03:10:04 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/08/27 03:10:04 $
+// $Id: script.cc,v 1.20 1999/08/30 06:30:41 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
 
 //
 //ScryMUD Server Code
@@ -577,13 +577,13 @@ GenScript::~GenScript() {
 
 // Static Class Data
 char* GenScript::triggers[] = {
-   "close", "donate",
-   "drop", "eat", "enter", "examine", "exit", "fill", "follow",
-   "get", "give", "group",
-   "hit", "junk", "list", "lock", "look", "meditate", "nod",
-   "open", "order", "pay", "prone", "pull", "push", "put", 
+   "break", "close", "discuss", "donate",
+   "drop", "eat", "enter", "examine", "exit", "fill", "flip", "follow",
+   "get", "give", "grab", "group",
+   "hit", "insert", "junk", "list", "lock", "look", "meditate", "nod",
+   "open", "order", "pay", "pick", "prone", "pull", "push", "put", 
    "remove", "rest", "say", "shake", "shoot", "sit", "slap", "sleep", "stand",
-   "tell", "throw", "ungroup", "unlock", "wake", "wear",
+   "tell", "throw", "turn", "twist", "ungroup", "unlock", "wake", "wear",
    "wield", "yell", NULL };
 
 

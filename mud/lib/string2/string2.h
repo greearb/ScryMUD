@@ -1,5 +1,5 @@
-// $Id: string2.h,v 1.14 1999/08/10 07:06:22 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/10 07:06:22 $
+// $Id: string2.h,v 1.15 1999/08/30 06:30:41 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
 
 //
 //ScryMUD Server Code
@@ -177,7 +177,7 @@ public:
     * This is not too efficient, as it reads one character at
     * a time, btw.
     */
-   int readToken(char delim, ifstream& dafile, int include_delim);
+   int readToken(char delim, istream& dafile, int include_delim);
 
    void termedRead(istream& da_file);
    int contains(const char ch) const;
@@ -227,6 +227,8 @@ public:
    // Returned pointer is to a String allocated off of the Heap..ie delete it
    // eventually if that makes sense.
    String* getUntil(char dlm);
+
+   void readUntil(char dlm, istream& dafile);
    
 };
 #endif

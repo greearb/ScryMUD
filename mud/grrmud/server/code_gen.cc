@@ -1,5 +1,5 @@
-// $Id: code_gen.cc,v 1.11 1999/08/10 07:06:17 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/10 07:06:17 $
+// $Id: code_gen.cc,v 1.12 1999/08/30 06:30:40 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
 
 //
 //ScryMUD Server Code
@@ -336,6 +336,8 @@ enum LanguageE {\n";
    
    of_h <<"   LastLanguage\n};\n\n";
 
+   of_h << "extern const char* LanguageNames[" << NUM_LANGUAGES + 1 << "];\n\n";
+
    // If the ENUM above changes, change this 3 to be equal to
    // the number of languages.
    of_h << "#define LS_PER_ENTRY " << NUM_LANGUAGES 
@@ -361,6 +363,7 @@ public:
    static const char* getString(CSentryE which_string, LanguageE language);
 };
 
+const char* str(LanguageE lang);
 
 #endif\n";
    of_h << flush;
@@ -396,6 +399,17 @@ const char* CSHandler::getString(CSentryE which_string, LanguageE language) {
       return language_strings[(int)(which_string)][0];
    }//else
 }//getString\n\n";
+
+   of_cc << "const char* LanguageNames[" << NUM_LANGUAGES + 1 << "] = {\n";
+   for (int j = 0; j<NUM_LANGUAGES; j++) {
+      of_cc << "   \"" << languages[j] << "\"," << endl;
+   }
+   of_cc << "   NULL\n};\n\n";
+
+   of_cc << "
+const char* str(LanguageE lang) {
+   return LanguageNames[lang];
+}//str\n\n";
 
    of_cc << flush;
 

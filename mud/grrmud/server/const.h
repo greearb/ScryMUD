@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.23 1999/08/29 01:17:16 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
+// $Id: const.h,v 1.24 1999/08/30 06:30:41 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/30 06:30:41 $
 
 //
 //ScryMUD Server Code
@@ -70,7 +70,7 @@ extern const LstrArray VEHICLE_FLAGS_NAMES;
 extern const LstrArray ROOM_FLAGS_NAMES;
 extern const LstrArray OBJ_FLAGS_NAMES;
 extern const LstrArray OBJ_SPEC_DATA_FLAGS_NAMES;
-extern const LstrArray BAG_FLAGS_NAMES;
+extern const LstrArray CLOSABLE_FLAGS_NAMES;
 
 extern const LstrArray STAT_AFFECT_NAMES;
 

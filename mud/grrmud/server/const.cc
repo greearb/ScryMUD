@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.23 1999/08/29 01:17:16 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/08/29 01:17:16 $
+// $Id: const.cc,v 1.24 1999/08/30 06:30:40 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
 
 //
 //ScryMUD Server Code
@@ -93,8 +93,8 @@ CSentryE bf_names[] = {
    CS_NO_PASSDOOR_F,
    CS_IS_CORPSE_F
 };
-const LstrArray BAG_FLAGS_NAMES(sizeof(bf_names)/sizeof(CSentryE),
-                                    bf_names, CS_CONTAINER_FLAGS);
+const LstrArray CLOSABLE_FLAGS_NAMES(sizeof(bf_names)/sizeof(CSentryE),
+                                     bf_names, CS_CONTAINER_FLAGS);
 
 CSentryE sd_names[] = {
    CS_BUY_ZERO_F,

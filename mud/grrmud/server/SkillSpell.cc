@@ -1,5 +1,5 @@
-// $Id: SkillSpell.cc,v 1.14 1999/08/29 01:17:15 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/29 01:17:15 $
+// $Id: SkillSpell.cc,v 1.15 1999/08/30 06:30:40 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/30 06:30:40 $
 
 //
 //ScryMUD Server Code
@@ -27,6 +27,8 @@
 
 #include "object.h"
 #include "misc.h"
+
+int SpellDuration::_cnt = 0;
 
 ///******************************************************************///
 ///*********************  skill spell  ******************************///
