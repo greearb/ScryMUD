@@ -1,5 +1,5 @@
-// $Id: ez_skll.cc,v 1.10 2001/03/29 03:02:31 eroper Exp $
-// $Revision: 1.10 $  $Author: eroper $ $Date: 2001/03/29 03:02:31 $
+// $Id: ez_skll.cc,v 1.11 2001/03/29 07:05:35 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 2001/03/29 07:05:35 $
 
 //
 //ScryMUD Server Code
@@ -85,10 +85,12 @@ int do_rescue(critter& vict, critter& pc) {
   /*  good to go as far as I can tell */
 
   if (skill_did_hit(pc, RESCUE_SKILL_NUM, vict)) {
-     Cell<critter*> cll(vict.IS_FIGHTING);
-     critter* ptr;
 
-     while ((ptr = cll.next())) {
+     // NOTE:  This can lead to a player attacking themselves...will leave that
+     // for now...but may have to remove it if it remains unstable.
+     critter* ptr;
+     while (!vict.IS_FIGHTING.isEmpty()) {
+        ptr = vict.IS_FIGHTING.popFront();
         ptr->IS_FIGHTING.loseData(&vict); //rescued no longer in target list
         ptr->IS_FIGHTING.gainData(&pc);   //rescuer in target list
         pc.IS_FIGHTING.gainData(ptr);   //attacker in rescuer's list

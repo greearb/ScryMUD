@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.57 2001/03/29 03:02:30 eroper Exp $
-// $Revision: 1.57 $  $Author: eroper $ $Date: 2001/03/29 03:02:30 $
+// $Id: critter.cc,v 1.58 2001/03/29 07:05:35 greear Exp $
+// $Revision: 1.58 $  $Author: greear $ $Date: 2001/03/29 07:05:35 $
 
 //
 //ScryMUD Server Code
@@ -3745,13 +3745,10 @@ int critter::isSentinel() const {
 
 
 void critter::doRemoveFromBattle() {
-   if (!IS_FIGHTING.isEmpty()) {
-      Cell<critter*> cll(IS_FIGHTING);
-      critter* crit_ptr;
-      while ((crit_ptr = cll.next())) {
-         crit_ptr->IS_FIGHTING.loseData(this);
-      }//while
-      IS_FIGHTING.clear();
+   critter* crit_ptr;
+   while (!IS_FIGHTING.isEmpty()) {
+      crit_ptr = IS_FIGHTING.popFront();
+      crit_ptr->IS_FIGHTING.loseData(this);
    }//if
 }//doRemoveFromBattle
 

@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.30 2001/03/29 03:02:28 eroper Exp $
-// $Revision: 1.30 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
+// $Id: battle.cc,v 1.31 2001/03/29 07:05:35 greear Exp $
+// $Revision: 1.31 $  $Author: greear $ $Date: 2001/03/29 07:05:35 $
 
 //
 //ScryMUD Server Code
@@ -282,6 +282,9 @@ void gain_xp(critter& crit, const long exp, const short show_output) {
 }//gain_xp
 
 
+/** NOTE:  In strange cases (Thanks MiniShamu & Shea), agg can be
+ * the same as vict...so be wary!
+ */
 void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
                      int& show_vict_tags) {
    float damage, weapon_dam, pos_mult, xp_damage;
@@ -358,8 +361,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    if ((!vict.isStunned() && (d(1, j) > d(1, i))) ||
        (agg.POS == POS_STUN)) {  //missed, stunned
       if (agg.POS == POS_STUN) {
-         agg.show("You lie immobilized by the thought of imminent death.\n"
-              );
+         agg.show("You lie immobilized by the thought of imminent death.\n");
       }//if
       else {
          //         log("In the else, missed.\n");
@@ -713,17 +715,13 @@ void agg_kills_vict(critter* agg, critter& vict, int do_msg = TRUE) {
 
 void agg_kills_vict(critter* agg, critter& vict, int& show_vict_tags,
                     int do_msg) {
-   Cell<critter*> cll2(vict.IS_FIGHTING);
-   critter *ptr2;
    String buf(100);
 
    if (do_msg) {
       emote("is dead!", vict, room_list[vict.getCurRoomNum()], TRUE);
    }
 
-   while ((ptr2 = cll2.next())) { // others no longer fighting vict.
-      ptr2->IS_FIGHTING.loseData(&vict); 
-   }//while
+   vict.doRemoveFromBattle();
 
    if (agg && agg->mob && agg->mob->proc_data && 
        agg->mob->proc_data->temp_proc) {  //rem from hunting, tracking
@@ -755,8 +753,6 @@ void agg_kills_vict(critter* agg, critter& vict, int& show_vict_tags,
          agg->ALIGN = 1000;
    }
 
-   vict.IS_FIGHTING.clear(); //vict no longer fighting others
-
    if (vict.pc && agg && agg->pc) {
       doShowList(&vict, Selectors::instance().CC_gets_info_allow,
                  Selectors::instance().CC_none, pc_list,
@@ -784,14 +780,19 @@ void agg_kills_vict(critter* agg, critter& vict, int& show_vict_tags,
    }
 }//agg_kills_vict;
 
+
 void damage_magic_shields(float damage, critter& vict) {
    float dam=(float)damage;
    int spells_used=0;
 
-   if (is_affected_by(STONE_SKIN_SKILL_NUM, vict)) { spells_used++;
-      dam*=(100.0+STONE_SKIN_EFFECT_DRM)/100.0; }
-   if (is_affected_by(SANCTUARY_SKILL_NUM, vict)) { spells_used++;
-      dam*=(100.0+SANCTUARY_EFFECT_DRM)/100.0; }
+   if (is_affected_by(STONE_SKIN_SKILL_NUM, vict)) {
+      spells_used++;
+      dam*=(100.0+STONE_SKIN_EFFECT_DRM)/100.0;
+   }
+   if (is_affected_by(SANCTUARY_SKILL_NUM, vict)) {
+      spells_used++;
+      dam*=(100.0+SANCTUARY_EFFECT_DRM)/100.0;
+   }
    if (is_affected_by(ARMOR_SKILL_NUM, vict)) spells_used++;
    if (is_affected_by(MAGIC_SHIELD_SKILL_NUM, vict)) spells_used++;
    if (is_affected_by(SHADOWS_BLESSING_SKILL_NUM, vict)) spells_used++;
