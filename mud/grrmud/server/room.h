@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.37 2001/03/29 03:02:34 eroper Exp $
-// $Revision: 1.37 $  $Author: eroper $ $Date: 2001/03/29 03:02:34 $
+// $Id: room.h,v 1.38 2001/06/10 18:05:15 justin Exp $
+// $Revision: 1.38 $  $Author: justin $ $Date: 2001/06/10 18:05:15 $
 
 //
 //ScryMUD Server Code
@@ -104,7 +104,8 @@ protected:
            // 25 !vehicle (vehicles can't drive here), 26 cramped (!huge)
            // 27 !ranged, 28 need_dive_ability, 29 used_in_track
            // 30 can_camp 31 !complete (olc wise) 32 has_keywords
-           // 33 !mob_wander, 34 !foreign_mob_wander, 35 has_proc_script
+           // 33 !mob_wander, 34 !foreign_mob_wander, 35 has_proc_script,
+           // 36 coliseum
 
    
 public:
@@ -196,6 +197,7 @@ public:
    int isTotalLoaded() const { return room_flags.get(22); }
    int isNoWanderMob() const { return room_flags.get(33); }
    int isNoWanderForeignMob() const { return room_flags.get(34); }
+   int isColiseum() const { return room_flags.get(36); }
 
    void unlock() { room_flags.turn_off(21); }
    void lock() { room_flags.turn_on(21); }

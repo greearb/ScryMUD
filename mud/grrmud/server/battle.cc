@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.31 2001/03/29 07:05:35 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 2001/03/29 07:05:35 $
+// $Id: battle.cc,v 1.32 2001/06/10 18:05:15 justin Exp $
+// $Revision: 1.32 $  $Author: justin $ $Date: 2001/06/10 18:05:15 $
 
 //
 //ScryMUD Server Code
@@ -282,9 +282,6 @@ void gain_xp(critter& crit, const long exp, const short show_output) {
 }//gain_xp
 
 
-/** NOTE:  In strange cases (Thanks MiniShamu & Shea), agg can be
- * the same as vict...so be wary!
- */
 void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
                      int& show_vict_tags) {
    float damage, weapon_dam, pos_mult, xp_damage;
@@ -361,7 +358,8 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    if ((!vict.isStunned() && (d(1, j) > d(1, i))) ||
        (agg.POS == POS_STUN)) {  //missed, stunned
       if (agg.POS == POS_STUN) {
-         agg.show("You lie immobilized by the thought of imminent death.\n");
+         agg.show("You lie immobilized by the thought of imminent death.\n"
+              );
       }//if
       else {
          //         log("In the else, missed.\n");
@@ -648,7 +646,9 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    }//else
 
    // changed to reflect only actual hp lost, not damage inflicted
-   gain_xp(agg, (int)(xp_damage * 1.5), FALSE);  //fighting xp 
+   if (!agg.getCurRoom()->isColiseum()) { // no xp gain in a coliseum
+      gain_xp(agg, (int)(xp_damage * 1.5), FALSE);  //fighting xp 
+   }
 
    buf = aggbuf;
    buf+= aggendbuf;
@@ -715,13 +715,17 @@ void agg_kills_vict(critter* agg, critter& vict, int do_msg = TRUE) {
 
 void agg_kills_vict(critter* agg, critter& vict, int& show_vict_tags,
                     int do_msg) {
+   Cell<critter*> cll2(vict.IS_FIGHTING);
+   critter *ptr2;
    String buf(100);
 
    if (do_msg) {
       emote("is dead!", vict, room_list[vict.getCurRoomNum()], TRUE);
    }
 
-   vict.doRemoveFromBattle();
+   while ((ptr2 = cll2.next())) { // others no longer fighting vict.
+      ptr2->IS_FIGHTING.loseData(&vict); 
+   }//while
 
    if (agg && agg->mob && agg->mob->proc_data && 
        agg->mob->proc_data->temp_proc) {  //rem from hunting, tracking
@@ -753,6 +757,8 @@ void agg_kills_vict(critter* agg, critter& vict, int& show_vict_tags,
          agg->ALIGN = 1000;
    }
 
+   vict.IS_FIGHTING.clear(); //vict no longer fighting others
+
    if (vict.pc && agg && agg->pc) {
       doShowList(&vict, Selectors::instance().CC_gets_info_allow,
                  Selectors::instance().CC_none, pc_list,
@@ -780,19 +786,14 @@ void agg_kills_vict(critter* agg, critter& vict, int& show_vict_tags,
    }
 }//agg_kills_vict;
 
-
 void damage_magic_shields(float damage, critter& vict) {
    float dam=(float)damage;
    int spells_used=0;
 
-   if (is_affected_by(STONE_SKIN_SKILL_NUM, vict)) {
-      spells_used++;
-      dam*=(100.0+STONE_SKIN_EFFECT_DRM)/100.0;
-   }
-   if (is_affected_by(SANCTUARY_SKILL_NUM, vict)) {
-      spells_used++;
-      dam*=(100.0+SANCTUARY_EFFECT_DRM)/100.0;
-   }
+   if (is_affected_by(STONE_SKIN_SKILL_NUM, vict)) { spells_used++;
+      dam*=(100.0+STONE_SKIN_EFFECT_DRM)/100.0; }
+   if (is_affected_by(SANCTUARY_SKILL_NUM, vict)) { spells_used++;
+      dam*=(100.0+SANCTUARY_EFFECT_DRM)/100.0; }
    if (is_affected_by(ARMOR_SKILL_NUM, vict)) spells_used++;
    if (is_affected_by(MAGIC_SHIELD_SKILL_NUM, vict)) spells_used++;
    if (is_affected_by(SHADOWS_BLESSING_SKILL_NUM, vict)) spells_used++;
@@ -958,26 +959,29 @@ void disburse_xp(critter& agg, const critter& vict) {
              << " " << vict.getIdNum() << endl;
    }
 
-   if (IsEmpty(agg.GROUPEES)) { //solitary person
-      gain_xp(agg, xp_to_be_gained, TRUE);
-   }//if
-   else { //in a group
-      agg.GROUPEES.head(cll);
-      while ((crit_ptr = cll.next())) {
-         if (crit_ptr->getCurRoomNum() == agg.getCurRoomNum()) {
-            tot_levs += crit_ptr->getLevel();
-         }
-      }//while
- 
-      xp_per_level = (xp_to_be_gained / tot_levs);
-      
-      agg.GROUPEES.head(cll);
-      while ((crit_ptr = cll.next())) {
-         if (crit_ptr->getCurRoomNum() == agg.getCurRoomNum()) {
-            gain_xp(*crit_ptr, xp_per_level * (crit_ptr->LEVEL), TRUE);
-         }
-      }//while
-   }//in a group
+   // no exp gain in a coliseum
+   if (!agg.getCurRoom()->isColiseum()) {
+      if (IsEmpty(agg.GROUPEES)) { //solitary person
+         gain_xp(agg, xp_to_be_gained, TRUE);
+      }//if
+      else { //in a group
+         agg.GROUPEES.head(cll);
+         while ((crit_ptr = cll.next())) {
+            if (crit_ptr->getCurRoomNum() == agg.getCurRoomNum()) {
+               tot_levs += crit_ptr->getLevel();
+            }
+         }//while
+    
+         xp_per_level = (xp_to_be_gained / tot_levs);
+         
+         agg.GROUPEES.head(cll);
+         while ((crit_ptr = cll.next())) {
+            if (crit_ptr->getCurRoomNum() == agg.getCurRoomNum()) {
+               gain_xp(*crit_ptr, xp_per_level * (crit_ptr->LEVEL), TRUE);
+            }
+         }//while
+      }//in a group
+   }
 }//disburse_xp
 
 
@@ -1321,17 +1325,19 @@ a trophy--a symbol of %S's defeat.\n",
 
             /* punish and re-enter the pc into the game, if its a pc  */
    if (vict.pc) {
-      if (vict.CON > 0) {
+      if (vict.CON > 0 || vict.getCurRoom()->isColiseum()) {
          vict.MANA = 1;
          vict.HP   = 1;
          vict.MOV  = 1;
          vict.HUNGER = 20;
          vict.THIRST = 20;
          vict.setPosn(POS_REST);
-         if (vict.EXP < 5000000)
-            vict.EXP -= (vict.EXP/13);
-         else
-            vict.EXP -= 500000;
+
+         // No loss of experience in a coliseum
+         if (!vict.getCurRoom()->isColiseum()) {
+            if (vict.EXP < 5000000) vict.EXP -= (vict.EXP/13);
+            else vict.EXP -= 500000;
+         }
 
          if (show_vict_tags) {
             show_vict_tags = FALSE; //Tell calling code not to show more tags.
