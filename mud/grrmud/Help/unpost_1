@@ -1,0 +1,13 @@
+<help communications unpost>
+
+This removes a message from a board.  You may only remove your own messages
+from a board for moral reasons.
+
+Syntax:  unpost [message_number]
+	 unpost <<i_th> message
+
+Example:  unpost 45
+	  unpost 3.message
+<color=red>
+See Also:  post, read, examine
+</color></help>

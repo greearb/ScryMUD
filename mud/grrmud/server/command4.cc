@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.42 2001/06/24 05:45:55 greear Exp $
-// $Revision: 1.42 $  $Author: greear $ $Date: 2001/06/24 05:45:55 $
+// $Id: command4.cc,v 1.43 2001/07/07 20:45:14 justin Exp $
+// $Revision: 1.43 $  $Author: justin $ $Date: 2001/07/07 20:45:14 $
 
 //
 //ScryMUD Server Code
@@ -340,7 +340,7 @@ int unpost(int i_th, const String* post, critter& pc) {
    }//for
    Sprintf(buf, "message_%i from %S:", i, pc.getName());
    if (pc.getImmLevel() < 8 && strncmp(msg->short_desc, buf, buf.Strlen())!=0) {
-      pc.show("It wouldn't be right to take someone else's message down.");
+      pc.show("It wouldn't be right to take someone else's message down.\n");
       return -1;
    }
 
