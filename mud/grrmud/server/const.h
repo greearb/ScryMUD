@@ -663,17 +663,6 @@ extern int EXP_DIVISOR;   // critter.exp/exp_divisor =>exp gained per kill
 #define SEX_NEUTER              2
 
 
-//#define POS_STAND		0
-//#define POS_PRONE		1
-//#define POS_SIT      		2
-//#define POS_REST		3
-//#define POS_MEDITATE		4
-//#define POS_SLEEP		5
-//#define POS_STUNNED		6
-//#define POS_DEAD		7
-
-
-
 #define DOOR_NORTH              3
 #define DOOR_SOUTH              4
 #define DOOR_EAST               1
