@@ -1,5 +1,5 @@
-// $Id: dam_spll.cc,v 1.14 2002/01/31 15:01:03 gingon Exp $
-// $Revision: 1.14 $  $Author: gingon $ $Date: 2002/01/31 15:01:03 $
+// $Id: dam_spll.cc,v 1.15 2002/02/05 05:03:33 gingon Exp $
+// $Revision: 1.15 $  $Author: gingon $ $Date: 2002/02/05 05:03:33 $
 
 //
 //ScryMUD Server Code
@@ -38,6 +38,10 @@
 SpellSpearOfDarkness spellSpearOfDarkness;
 SpellOrbOfPower spellOrbOfPower;
 SpellHolyWord spellHolyWord;
+SpellDispelEvil spellDispelEvil;
+SpellDispelGood spellDispelGood;
+SpellHarm spellHarm;
+SpellCauseCritical spellCauseCritical;
 
 
 void SpellSpearOfDarkness::doSpellEffects(){
@@ -326,7 +330,6 @@ void SpellHolyWord::doSpellEffects() {
    }//did_miss
 
 
-
    if (!do_fatality && do_join_in_battle && 
        !HaveData(&vict, agg.IS_FIGHTING)) {
       join_in_battle(agg, vict);
@@ -335,528 +338,38 @@ void SpellHolyWord::doSpellEffects() {
    if (do_fatality) {
       agg_kills_vict(&agg, vict);
    }
-}
+}//spellHolyWord
 
 
+void SpellDispelEvil::doSpellEffects() {
 
-/*
-void do_cast_dark_spear(critter& vict, critter& agg, int is_canned,
-                       int lvl) {
-   String buf(100);
-   short did_hit = TRUE;
-   short do_join_in_battle = TRUE;
-   short do_fatality = FALSE;
-   int spell_num = SOD_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num, agg);
-
-   if (!is_canned)
-      lvl = agg.LEVEL;
-
-   int lost_con = FALSE;
-   if ((is_canned && (did_hit =
-     do_cast_dark_spear(critter& vict, critter& agg, int is_canned,
-                       int lvl)                 did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
-       (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) &&
-         (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
-
-      float dmg = (float)(d(7, (10 + lvl/5 - agg.ALIGN/200)));
-      if ((agg.ALIGN < -350) && (vict.ALIGN > 350)) {
-         dmg *= 1.5;
-      }
-
-      exact_raw_damage((int)(dmg), NORMAL, vict, agg);
-      if (!is_canned)
-        agg.MANA -= spell_mana;
-
-      if (&vict == &agg) {
-         if (vict.HP < 0) {
-            show("You pierce your own heart!!\n", agg);
-            Sprintf(buf, "pierces %s own heart with %s spear of darkness!\n",
-                    get_his_her(agg), get_his_her(agg));
-            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
-            do_fatality = TRUE;
-         }//if
-         else {
-            show("You impale yourself with your spear of darkness!\n",
-                 agg);
-            Sprintf(buf, "impales %s with %s spear of dark energy.\n",
-                    get_himself_herself(vict),
-                    get_his_her(agg));
-            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
-         }//else
-         do_join_in_battle = FALSE;
-      }//if agg == vict
-      else { //agg is NOT the victim
-         if (vict.HP < 0) {
-            Sprintf(buf,
-         "Your spear of dark energy protrudes from %S's unbeating heart!\n",
-                 name_of_crit(vict, agg.SEE_BIT));
-            show(buf, agg);
-            Sprintf(buf,
-                    "%S pierces your heart with %s spear of dark energy!\n",
-                    name_of_crit(agg, vict.SEE_BIT),
-                    get_his_her(agg));
-            buf.Cap();
-            show(buf, vict);
-            Sprintf(buf, "impales %S's throat with %s spear of dark energy!\n",
-                    name_of_crit(vict, ~0),
-                    get_his_her(vict));
-            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-            do_fatality = TRUE;
-         }//if fatality
-         else { //no fatality
-            Sprintf(buf,
-                    "You conjure a spear of pure darkness and impale %S with it!.\n"
-,
-                    name_of_crit(vict, agg.SEE_BIT));
-            show(buf, agg);
-            Sprintf(buf, "%S's spear of dark energy slams into your chest!!\n",
-                    name_of_crit(agg, vict.SEE_BIT));
-            buf.Cap();
-            show(buf, vict);
-            Sprintf(buf, "impales %S with %s spear of dark energy!\n",
-                    name_of_crit(vict, ~0),
-                    get_his_her(agg));
-            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-         }//else, no fatality
-      }//agg is NOT victim
-   }//if all went well, else test these cases
-   else if (!did_hit) { //missed
-     if (!is_canned)
-       agg.MANA -= spell_mana;
-     if (&agg == &vict) {
-       show("Your spear circles towards you but misses!\n", agg);
-       Sprintf(buf, "misses %s with %s spear of dark energy!!\n",
-               get_himself_herself(vict),
-               get_his_her(vict));
-       emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
-       do_join_in_battle = FALSE;
-     }//if
-     else { //missed, and agg does NOT equal vict
-       Sprintf(buf, "You miss %S with your spear of dark energy.\n",
-               name_of_crit(vict, agg.SEE_BIT));
-       show(buf, agg);String buf(100);
-       Sprintf(buf,
-               "You narrowly elude %S's spear of dark energy!\n",
-               name_of_crit(agg, vict.SEE_BIT));
-       buf.Cap();
-       show(buf, vict);
-       Sprintf(buf, "misses %S with %s spear of dark energy!\n",
-               name_of_crit(vict, ~0),
-               get_his_her(agg));
-       emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-     }//else did miss AND vict NOT equal to agg
-   }//did_miss
-   else if (lost_con) {
-      show(LOST_CONCENTRATION_MSG_SELF, agg);
-      emote("obviously forgot something!", agg,
-            room_list[agg.getCurRoomNum()], TRUE);
-      if (!is_canned)
-        agg.MANA -= spell_mana / 2;
-      do_join_in_battle = FALSE;
-   }//else lost concentration
-   else {
-      mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
-   }//else
-   agg.PAUSE += 1;
-
-   if (!do_fatality && do_join_in_battle &&
-       !HaveData(&vict, agg.IS_FIGHTING)) {
-      join_in_battle(agg, vict);
-   }//if
-
-   if (do_fatality) {
-      agg_kills_vict(&agg, vict);
-   }//if
-}//do_cast_dark_spear
-
-
-void cast_dark_spear(int i_th, const String* victim, critter& pc) {
-   critter* vict = NULL;
-   int spell_num = SOD_SKILL_NUM;
-
-   if (victim->Strlen() == 0) {
-      vict = Top(pc.is_fighting);
-      if (vict && !detect(pc.SEE_BIT, vict->VIS_BIT))
-         vict = NULL;
-   }
-   else
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
-   if (!vict) {
-      show("Whom do you wish to impale??\n", pc);
-      return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-
-   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
-     return;
-   }//if
-
-   if (!(vict = check_for_diversions(*vict, "GSM", pc)))
-     return;
-
-   do_cast_dark_spear(*vict, pc, FALSE, 0);
-}//cast_dark_spear */
-
-
-
-/*void do_cast_orb_of_power(critter& vict, critter& agg, int is_canned, int lvl) {
-   String buf(100);
-   short did_hit = TRUE;
-   short do_join_in_battle = TRUE;
-   short do_fatality = FALSE;
-   int   spell_num = ORB_OF_POWER_SKILL_NUM;
-   int   spell_mana = get_mana_cost(spell_num, agg);
-   
-   if (!is_canned)
-      lvl = agg.LEVEL;
-   
-   int   lost_con = FALSE;
-   if ((is_canned && (did_hit = did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
-      (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) &&
-        (did_hit = did_spell_hit(agg, NORMAL, vict)))) { // Did hit
-      int dmg = d(10, lvl + 10);
-      
-      exact_raw_damage(dmg, FIRE, vict, agg);
-      
-      if (!is_canned)
-         agg.MANA -= spell_mana;
-      
-      if (&vict == &agg) { // Critter attacked itself...
-         if (vict.HP < 0) { // Fatality
-            show("Your power consumes you!\n", agg);
-            Sprintf(buf, "invokes powers %s cannot controll!", get_he_she(agg));
-            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
-            do_fatality = TRUE;
-         } // if fatality
-         else { // Survived their foolish act
-            show("Your orb crushes itself into your body!\n", agg);
-            Sprintf(buf, "orb crushes itself into %s body!", get_his_her(agg));
-            pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
-         } // survived
-         do_join_in_battle = FALSE;
-      } // if agg == vict
-      else { // agg not the victim
-         if (vict.HP < 0) { // Fatality
-            Sprintf(buf, "Your orb tears the flesh from %S's body!\n",
-                    name_of_crit(vict, agg.SEE_BIT));
-            show(buf, agg);
-            Sprintf(buf, "%S's orb tears the flesh from your body!\n",
-                    name_of_crit(agg, vict.SEE_BIT));
-            show(buf, vict);
-            Sprintf(buf, "orb rips the flesh from %S's body!",
-                    name_of_crit(vict, ~0));
-            pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-            do_fatality = TRUE;
-         } //if fatality
-         else { // survived
-            if (dmg <= 5*(lvl+10)) { // kinda wimpy, average or worse damage...
-               Sprintf(buf, "Your orb slams into %S!\n",
-                       name_of_crit(vict, agg.SEE_BIT));
-               show(buf, agg);
-               Sprintf(buf, "%S's orb slams into you!!\n",
-                       name_of_crit(agg, vict.SEE_BIT));
-               show(buf, vict);
-               Sprintf(buf, "orb slams into %S!",
-                       name_of_crit(vict, ~0));
-               pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
- 
-            } // if kinda wimpy
-
-            else {  // oh yeah, that's the stuff...
-               Sprintf(buf, "Your orb crushes itself into %S's body!\n",
-                       name_of_crit(vict, agg.SEE_BIT));
-               show(buf, agg);
-               Sprintf(buf, "%S's orb crushes itself into your body!\n",
-                       name_of_crit(agg, vict.SEE_BIT));
-               show(buf, vict);
-               Sprintf(buf, "orb crushes itself into %S's body!",
-                       name_of_crit(vict, ~0));
-               pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-
-               // Kinda stops you in yer tracks, don't it?
-               vict.PAUSE+=d(1,3);
-            } // if nasty gaping wound time
-         }
-      } // agg not victim
-      agg.PAUSE++;
-   } // did hit
-   else if (!did_hit) { // missed
-      if (!is_canned)
-         agg.MANA -= spell_mana;
-      if (&agg == &vict) { // couldn't even hit yourself!?
-         show("Your orb passes harmlessly through your body.\n",agg);
-         Sprintf(buf, "orb passes harmlessly through %s body.", get_his_her(vict));
-         pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
-         do_join_in_battle = FALSE;
-      } // missed self
-      else { // missed somebody else...
-         Sprintf(buf, "%S dodges your orb just before %s is struck!\n",
-                 name_of_crit(vict, agg.SEE_BIT), get_he_she(vict));
-         show(buf, agg);
-         Sprintf(buf, "You duck out of the path of %S's orb just in time!\n",
-                 name_of_crit(agg, vict.SEE_BIT));
-         show(buf, vict);
-         Sprintf(buf, "orb blasts past %S, missing by mere inches!",
-                 name_of_crit(vict, ~0));
-         pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-      } // missed somebody
-   } // missed
-   else if (lost_con) { // lost concentration
-      show(LOST_CONCENTRATION_MSG_SELF, agg);
-      emote("obviously forgot something!", agg, room_list[agg.getCurRoomNum()],
-            TRUE);
-      if (!is_canned)
-         agg.MANA -= spell_mana / 2;
-      do_join_in_battle = FALSE;
-   }  // lost concentration
-   else {
-      mudlog.log(ERROR, "ERROR: in default of a spell.\n");
-   }
-
-   if (!do_fatality && do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING))
-      join_in_battle(agg, vict);
-   
-   if (do_fatality) {
-      if (vict.mob && vict.MOB_FLAGS.get(16)) {
-         vict.MOB_FLAGS.turn_off(16);
-         room_list[vict.getCurRoomNum()].gainInv(&obj_list[vict.mob->skin_num]);
-      }
-      agg_kills_vict(&agg, vict);
-   }
-} // do_cast_orb_of_power*/
-
-/*void cast_orb_of_power(int i_th, const String* victim, critter& pc) {
-   critter* vict = NULL;
-   int spell_num = ORB_OF_POWER_SKILL_NUM;
-   
-   if (victim->Strlen() == 0) {
-      vict = Top(pc.is_fighting);
-      if (vict && !detect(pc.SEE_BIT, vict->VIS_BIT))
-         vict = NULL;
-   }
-   else
-      vict = ROOM.haveCritNamed(i_th, victim, pc);
-   
-   if (!vict) {
-      show("Whom do you wish to disintegrate?\n", pc);
-      return;
-   }
-  
-   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc))
-      return;
-
-   do_cast_orb_of_power(*vict, pc, FALSE, 0);
-} // cast_orb_of_power */
-/*
-void do_cast_holy_word(critter& vict, critter& agg, int is_canned,
-                      int lvl) {
-   String buf(100);
-   short did_hit = TRUE;
-   short do_join_in_battle = TRUE;
-   short do_fatality = FALSE;
-   int spell_num = HOLY_WORD_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num, agg);
- 
-   if (!is_canned)
-      lvl = agg.LEVEL;
-
-   int lost_con = FALSE;
-   if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
-       (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
-         (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
-
-      int dmg = d(7, lvl + 5);
-
-      exact_raw_damage(dmg, NORMAL, vict, agg);
-
-      if (!is_canned)
-        agg.MANA -= spell_mana;
-
-      if (&vict == &agg) {
-         if (vict.HP < 0) {
-            show("You god destroys you!\n", agg);
-            Sprintf(buf, "is destroyed by %s own god!!",
-                    get_his_her(agg));
-            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
-            do_fatality = TRUE;
-         }//if
-         else {
-            show("Your god wreaks vengeance upon you!\n", agg);
-            Sprintf(buf, "god wreaks vengeance upon %s.", 
-                    get_him_her(vict));
-            pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
-         }//else
-         do_join_in_battle = FALSE;
-      }//if agg == vict
-      else { //agg is NOT the victim
-         if (vict.HP < 0) {
-            Sprintf(buf, 
-                  "Your god destroys %S at your behest!\n",
-                    name_of_crit(vict, agg.SEE_BIT));
-            show(buf, agg);
-            Sprintf(buf, 
-                    "%S's god destroys you at %s behest!!\n",
-                    name_of_crit(agg, vict.SEE_BIT),
-                    get_his_her(agg));
-            show(buf, vict);
-            Sprintf(buf, "god destroys %S at %s behest!",
-                    name_of_crit(vict, ~0),
-                    get_his_her(agg));
-            pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-            do_fatality = TRUE;
-         }//if fatality
-         else { //no fatality
-            Sprintf(buf, "Your god greatly injures %S at your behest!.\n",
-                    name_of_crit(vict, agg.SEE_BIT));
-            show(buf, agg);
-            Sprintf(buf, 
-                    "%S calls the wrath of %s god down upon you!!\n",
-                    name_of_crit(agg, vict.SEE_BIT),
-                    get_his_her(agg));
-            buf.Cap();
-            show(buf, vict);
-            Sprintf(buf, "god wreaks vengeance upon %S at %s behest!", 
-                    name_of_crit(vict, ~0),
-                    get_his_her(agg));
-            pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-         }//else, no fatality
-      }//agg is NOT victim
-   }//if all went well, else test these cases
-   else if (!did_hit) { //missed
-     if (!is_canned)
-       agg.MANA -= spell_mana;
-     if (&agg == &vict) {
-       show("Your god does not listen.\n", agg);
-       Sprintf(buf, "prays in vain to %s god!!", 
-               get_him_her(vict));
-       emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
-       do_join_in_battle = FALSE;
-     }//if
-     else { //missed, and agg does NOT equal vict
-       show("Your god does not listen!\n", agg);
-       Sprintf(buf, "%S prays for your demise in vain!!\n",
-               name_of_crit(agg, vict.SEE_BIT));
-       buf.Cap();
-       show(buf, vict);
-       Sprintf(buf, "prays for %S's demise in vain!", 
-               name_of_crit(vict, ~0));
-       emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-     }//else did miss AND vict NOT equal to agg
-   }//did_miss
-   else if (lost_con) {
-      show(LOST_CONCENTRATION_MSG_SELF, agg);
-      emote("obviously forgot something!", agg, 
-            room_list[agg.getCurRoomNum()], TRUE);
-      if (!is_canned)
-        agg.MANA -= spell_mana / 2;
-      do_join_in_battle = FALSE;
-   }//else lost concentration
-   else {
-      mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
-   }//else
-   agg.PAUSE += 1; 
-
-   if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
-      join_in_battle(agg, vict);
-   }//if
-
-   if (do_fatality) {
-      agg_kills_vict(&agg, vict);
-   }//if
-}//do_cast_holy_word
-*/ 
-/*
-void cast_holy_word(int i_th, const String* victim, critter& pc) {
-   critter* vict = NULL;
-   int spell_num = HOLY_WORD_SKILL_NUM;
-
-   if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
-   else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
-   if (!vict) {
-      show("Whom do you wish to destroy??\n", pc);
-      return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-
-   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
-      return;
-   }//if
-   
-   do_cast_holy_word(*vict, pc, FALSE, 0);
-}//cast_holy_word
-*/
-
-void cast_dispel_evil(int i_th, const String* victim, critter& pc) {
-   critter* vict = NULL;
-   int spell_num = DISPEL_EVIL_SKILL_NUM;
-
-   if (victim->Strlen() == 0) {
-      vict = Top(pc.is_fighting);
-      if (vict && !detect(pc.SEE_BIT, vict->VIS_BIT))
-         vict = NULL;
-   }
-   else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
-   if (!vict) {
-      show("Whom do you wish to harm??\n", pc);
-      return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-
-   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
-     return;
-   }//if
-   
-   /* dispel good/evil messages and damage are the same */
-   if ((pc.ALIGN < -350) || (vict->ALIGN > 350)) {
-      show("OOPS!!\n", pc);
-      do_cast_dispel_good(pc, pc, FALSE, 0);
-   }//if
-   else
-     do_cast_dispel_good(*vict, pc, FALSE, 0);
+   spellDispelGood.agg = agg;
+   spellDispelGood.victim = victim;
+   spellDispelGood.clvl = clvl; 
+   spellDispelGood.doSpellEffects(); //already did doCastEffects()
 
 }//cast_dispel_evil
 
 
-void do_cast_dispel_good(critter& vict, critter& agg, int is_canned, int lvl) {
+
+void SpellDispelGood::doSpellEffects() {
    String buf(100);
-   short did_hit = TRUE;
    short do_join_in_battle = TRUE;
    short do_fatality = FALSE;
-   int spell_num = DISPEL_GOOD_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num, agg);
- 
-   if (!is_canned)
-      lvl = agg.LEVEL;
+   
+   critter& agg = *(spellDispelGood.agg);
+   critter& vict = *(spellDispelGood.victim);
 
-   short lost_con = FALSE;
-   if ((is_canned && (did_hit = did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
-       (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
-         (did_hit = did_spell_hit(agg, FIRE, vict)))) {
+   if (&agg != &vict && ((agg.ALIGN < -350) || (vict.ALIGN > 350) ||(agg.ALIGN < 350) || (vict.ALIGN > -350))) {
+      show("OOPS!!\n", agg);
+      spellDispelGood.onCast(agg, agg, TRUE, 0);
+   }
+   
 
-      int dmg = d(5, lvl + 5);
+   if( did_spell_hit(vict, NORMAL, agg, clvl, TRUE)){
+      int dmg = d(5, clvl + 5);
 
       exact_raw_damage(dmg, NORMAL, vict, agg);
-
-      if (!is_canned)
-        agg.MANA -= spell_mana;
 
       if (&vict == &agg) {
          if (vict.HP < 0) {
@@ -903,9 +416,7 @@ void do_cast_dispel_good(critter& vict, critter& agg, int is_canned, int lvl) {
          }//else, no fatality
       }//agg is NOT victim
    }//if all went well, else test these cases
-   else if (!did_hit) { //missed
-     if (!is_canned)
-       agg.MANA -= spell_mana;
+   else { //missed
      if (&agg == &vict) {
        show("You can't find your own soul!\n", agg);
        Sprintf(buf, "tries to harm %s own soul in vain!!", get_his_her(vict));
@@ -929,18 +440,6 @@ void do_cast_dispel_good(critter& vict, critter& agg, int is_canned, int lvl) {
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
      }//else did miss AND vict NOT equal to agg
    }//did_miss
-   else if (lost_con) {
-      show(LOST_CONCENTRATION_MSG_SELF, agg);
-      emote("obviously forgot something!", agg, 
-            room_list[agg.getCurRoomNum()], TRUE);
-      if (!is_canned)
-        agg.MANA -= spell_mana / 2;
-      do_join_in_battle = FALSE;
-   }//else lost concentration
-   else {
-      mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
-   }//else
-   agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
        !HaveData(&vict, agg.IS_FIGHTING)) {
@@ -953,66 +452,20 @@ void do_cast_dispel_good(critter& vict, critter& agg, int is_canned, int lvl) {
 }//do_cast_dispel_good
  
 
-void cast_dispel_good(int i_th, const String* victim, critter& pc) {
-   critter* vict = NULL;
-   int spell_num = DISPEL_GOOD_SKILL_NUM;
-
-   if (victim->Strlen() == 0) {
-      vict = Top(pc.is_fighting);
-      if (vict && !detect(pc.SEE_BIT, vict->VIS_BIT))
-         vict = NULL;
-   }
-   else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
-   if (!vict) {
-      show("Whom do you wish to harm??\n", pc);
-      return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-
-   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
-     return;
-   }//if
-   
-   if ((pc.ALIGN > 350) || (vict->ALIGN < -350)) {
-     show("OOPS!!\n", pc);
-     do_cast_dispel_good(pc, pc, FALSE, 0);
-   }//if
-   else
-     do_cast_dispel_good(*vict, pc, FALSE, 0);
-
-}//cast_dispel_good
-
-
-
-void do_cast_harm(critter& vict, critter& agg, int is_canned,
-                      int lvl) {
+void SpellHarm::doSpellEffects() {
    String buf(100);
-   short did_hit = TRUE;
-   short lost_con = FALSE;
    short do_join_in_battle = TRUE;
    short do_fatality = FALSE;
-   int spell_num = HARM_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num, agg);
- 
-   if (!is_canned)
-      lvl = agg.LEVEL;
+   critter& agg = *(spellHarm.agg);
+   critter& vict = *(spellHarm.victim);
 
-   if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
-       (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
-         (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 
-      int dmg = d(5, lvl + 5);
+   
+   if(did_spell_hit(agg, NORMAL, vict)) {
+
+      int dmg = d(5, clvl + 5);
 
       exact_raw_damage(dmg, NORMAL, vict, agg);
-
-      if (!is_canned)
-        agg.MANA -= spell_mana;
 
       if (&vict == &agg) {
          if (vict.HP < 0) {
@@ -1069,9 +522,7 @@ void do_cast_harm(critter& vict, critter& agg, int is_canned,
          }//else, no fatality
       }//agg is NOT victim
    }//if all went well, else test these cases
-   else if (!did_hit) { //missed
-     if (!is_canned)
-       agg.MANA -= spell_mana;
+   else { //missed
      if (&agg == &vict) {
        show("You fail to harm yourself.\n", agg);
        Sprintf(buf, "tries to harm %s in vain!!", 
@@ -1093,18 +544,6 @@ void do_cast_harm(critter& vict, critter& agg, int is_canned,
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
      }//else did miss AND vict NOT equal to agg
    }//did_miss
-   else if (lost_con) {
-      show(LOST_CONCENTRATION_MSG_SELF, agg);
-      emote("obviously forgot something!", agg, 
-            room_list[agg.getCurRoomNum()], TRUE);
-      if (!is_canned)
-        agg.MANA -= spell_mana / 2;
-      do_join_in_battle = FALSE;
-   }//else lost concentration
-   else {
-      mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
-   }//else
-   agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
        !HaveData(&vict, agg.IS_FIGHTING)) {
@@ -1117,60 +556,19 @@ void do_cast_harm(critter& vict, critter& agg, int is_canned,
 }//do_cast_harm
  
 
-void cast_harm(int i_th, const String* victim, critter& pc) {
-   critter* vict = NULL;
-   int spell_num = HARM_SKILL_NUM;
-
-   if (victim->Strlen() == 0) {
-      vict = Top(pc.is_fighting);
-      if (vict && !detect(pc.SEE_BIT, vict->VIS_BIT))
-         vict = NULL;
-   }
-   else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
-   if (!vict) {
-      show("Whom do you wish to harm??\n", pc);
-      return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-
-   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
-     return;
-   }//if
-   
-   do_cast_harm(*vict, pc, FALSE, 0);
-
-}//cast_harm
-
-
-void do_cast_cause_critical(critter& vict, critter& agg, int is_canned,
-                      int lvl) {
+void SpellCauseCritical::doSpellEffects() {
    String buf(100);
-   short did_hit = TRUE;
-   short lost_con = FALSE;
    short do_join_in_battle = TRUE;
    short do_fatality = FALSE;
-   int spell_num = CAUSE_CRITICAL_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num, agg);
- 
-   if (!is_canned)
-      lvl = agg.LEVEL;
+   critter& agg = *(spellCauseCritical.agg);
+   critter& vict = *(spellCauseCritical.victim);
 
-   if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
-       (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
-         (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
+   if((did_spell_hit(agg, NORMAL, vict))) {
 
-      int dmg = d(5, lvl + 5);
+      int dmg = d(5, clvl + 5);
 
       exact_raw_damage(dmg, CRONIC, vict, agg);
 
-      if (!is_canned)
-        agg.MANA -= spell_mana;
 
       if (&vict == &agg) {
          if (vict.HP < 0) {
@@ -1223,9 +621,7 @@ void do_cast_cause_critical(critter& vict, critter& agg, int is_canned,
          }//else, no fatality
       }//agg is NOT victim
    }//if all went well, else test these cases
-   else if (!did_hit) { //missed
-     if (!is_canned)
-       agg.MANA -= spell_mana;
+   else{ //missed
      if (&agg == &vict) {
        show("You fail to harm yourself.\n", agg);
        Sprintf(buf, "tries to harm %s in vain!!", 
@@ -1247,19 +643,7 @@ void do_cast_cause_critical(critter& vict, critter& agg, int is_canned,
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
      }//else did miss AND vict NOT equal to agg
    }//did_miss
-   else if (lost_con) {
-      show(LOST_CONCENTRATION_MSG_SELF, agg);
-      emote("obviously forgot something!", agg, 
-            room_list[agg.getCurRoomNum()], TRUE);
-      if (!is_canned)
-        agg.MANA -= spell_mana / 2;
-      do_join_in_battle = FALSE;
-   }//else lost concentration
-   else {
-      mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
-   }//else
-   agg.PAUSE += 1; 
-
+  
    if (!do_fatality && do_join_in_battle && 
        !HaveData(&vict, agg.IS_FIGHTING)) {
       join_in_battle(agg, vict);
@@ -1270,37 +654,6 @@ void do_cast_cause_critical(critter& vict, critter& agg, int is_canned,
    }//if
 }//do_cast_cause_critical
  
-
-void cast_cause_critical(int i_th, const String* victim, critter& pc) {
-   critter* vict = NULL;
-   int spell_num = CAUSE_CRITICAL_SKILL_NUM;
-
-   if (victim->Strlen() == 0) {
-      vict = Top(pc.is_fighting);
-      if (vict && !detect(pc.SEE_BIT, vict->VIS_BIT))
-         vict = NULL;
-   }
-   else 
-      vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
-   if (!vict) {
-      show("Whom do you wish to hurt??\n", pc);
-      return;
-   }//if
-
-   if (vict->isMob()) {
-      vict = mob_to_smob(*vict, pc.getCurRoomNum(), TRUE, i_th,
-              victim, pc.SEE_BIT);
-   }//if
-
-   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
-     return;
-   }//if
-   
-   do_cast_cause_critical(*vict, pc, FALSE, 0);
-
-}//cast_cause_critical
-
-
 
 void do_cast_cause_sickness(critter& vict, critter& agg, int is_canned,
                       int lvl) {

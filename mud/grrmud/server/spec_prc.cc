@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.29 2002/01/31 15:01:04 gingon Exp $
-// $Revision: 1.29 $  $Author: gingon $ $Date: 2002/01/31 15:01:04 $
+// $Id: spec_prc.cc,v 1.30 2002/02/05 05:03:33 gingon Exp $
+// $Revision: 1.30 $  $Author: gingon $ $Date: 2002/02/05 05:03:33 $
 
 //
 //ScryMUD Server Code
@@ -729,10 +729,10 @@ int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
          do_cast_remove_curse(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 195: 
-         do_cast_dispel_good(*targ, pc, TRUE, spell_lvl);
+         spellDispelGood.onCast(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 197: 
-         do_cast_harm(*targ, pc, TRUE, spell_lvl);
+         spellHarm.onCast(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 199: 
          spellHolyWord.onCast(*targ, pc, TRUE, spell_lvl);
@@ -771,7 +771,7 @@ int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
          do_cast_cause_sickness(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 224: 
-         do_cast_cause_critical(*targ, pc, TRUE, spell_lvl);
+         spellCauseCritical.onCast(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 225: 
          do_cast_weaken(*targ, pc, TRUE, spell_lvl);
@@ -782,8 +782,8 @@ int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
          //case 227: //TODO:  code this up! 
          //do_cast_plague(*targ, pc, TRUE, spell_lvl);
          //return 0;
-       case 228: //this is not the error it looks like, see dam_spll.cc
-         do_cast_dispel_good(*targ, pc, TRUE, spell_lvl);
+       case 228: //this is not the error it looks like, see dam_spll.cc. dispel evil and dispel good call same doSpellEffects
+         spellDispelGood.onCast(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 233:
          //do_cast_orb_of_power(*targ, pc, TRUE, spell_lvl);

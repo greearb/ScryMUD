@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.23 2002/01/31 15:01:04 gingon Exp $
-// $Revision: 1.23 $  $Author: gingon $ $Date: 2002/01/31 15:01:04 $
+// $Id: spells.cc,v 1.24 2002/02/05 05:03:33 gingon Exp $
+// $Revision: 1.24 $  $Author: gingon $ $Date: 2002/02/05 05:03:33 $
 
 //
 //ScryMUD Server Code
@@ -53,9 +53,16 @@
 //
 
 void config_spells(){
-	spellOrbOfPower.setupSpell(ORB_OF_POWER_SKILL_NUM,1, "KMSNV", NULL, "Orb of Power", "Whom do you wish to disintegrate?\n");
-	spellSpearOfDarkness.setupSpell(SOD_SKILL_NUM, 1, "KMSNV", "GSM", "Spear of Darkness", "Whom do you wish to impale?\n");
-	spellHolyWord.setupSpell(HOLY_WORD_SKILL_NUM, 1, "KMSNV", NULL, "Holy Word", "Whom do you wish to destroy?\n");
+   spellOrbOfPower.setupSpell(ORB_OF_POWER_SKILL_NUM,1, "KMSNV", NULL, "Orb of Power", "Whom do you wish to disintegrate?\n");
+   spellSpearOfDarkness.setupSpell(SOD_SKILL_NUM, 1, "KMSNV", "GSM", "Spear of Darkness", "Whom do you wish to impale?\n");
+   spellHolyWord.setupSpell(HOLY_WORD_SKILL_NUM, 1, "KMSNV", NULL, "Holy Word", "Whom do you wish to destroy?\n");
+   spellDispelEvil.setupSpell(DISPEL_EVIL_SKILL_NUM, 1, "KMSNV", NULL, "Dispel Evil", "Whom do you wish to harm??\n");
+   spellDispelGood.setupSpell(DISPEL_GOOD_SKILL_NUM, 1, "KMSNV", NULL, "Dispel Good", "Whom do you wish to harm??\n");
+   spellHarm.setupSpell(HARM_SKILL_NUM, 1, "KMSNV", "GSM", "Harm", "Whom do you wish to harm??\n");
+   //harm was not originally GSM, but i felt it should be
+   spellCauseCritical.setupSpell(CAUSE_CRITICAL_SKILL_NUM, 1, "KMSNV", "GSM", "Cause Critical", "Whom do you wish to hurt??\n");
+
+   
 
 }
 
@@ -216,8 +223,12 @@ void MobSpell::onCast(critter& vict, critter& pc, int is_canned = FALSE, int lvl
       clvl = lvl;
    }
    
-   agg = &pc;
+   
    victim = check_for_diversions(vict, diversions, pc);
+   if (victim->isMob()) { // is this really needed here? couldn't it be put in exact_raw_damage? seems a better place for it
+       victim = mob_to_smob(*victim, victim->getCurRoomNum(), TRUE);
+   }//if
+   agg = &pc;
    if(doCastEffects()){
       doSpellEffects();
    }
@@ -232,11 +243,16 @@ void MobSpell::onCast(int i_th, const String* vict, critter& pc, int is_canned =
       clvl = lvl;
    }
 
-   agg = &pc;
+
 	if (!getSpellTarget(i_th, vict, pc)){
       doFailureNoTarget();
       return;
    }
+   
+   agg = &pc;
+   if (victim->isMob()) {
+       victim = mob_to_smob(*victim, victim->getCurRoomNum(), TRUE);
+   }//if
       
    if (doCastEffects()){
          

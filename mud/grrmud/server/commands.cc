@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.49 2002/01/31 15:01:03 gingon Exp $
-// $Revision: 1.49 $  $Author: gingon $ $Date: 2002/01/31 15:01:03 $
+// $Id: commands.cc,v 1.50 2002/02/05 05:03:32 gingon Exp $
+// $Revision: 1.50 $  $Author: gingon $ $Date: 2002/02/05 05:03:32 $
 
 //
 //ScryMUD Server Code
@@ -1044,7 +1044,7 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
    else if (strncasecmp(*spell, "calm", len) == 0) 
       cast_calm(pc);
    else if (strncasecmp(*spell, "cause critical", len) == 0) 
-      cast_cause_critical(j_th, victim, pc);
+      spellCauseCritical.onCast(j_th, victim, pc);
    else if (strncasecmp(*spell, "cause sickness", len) == 0) 
       cast_cause_sickness(j_th, victim, pc);
    else if (strncasecmp(*spell, "charm", len) == 0) 
@@ -1086,9 +1086,9 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
    else if (strncasecmp(*spell, "detect resistances", len) == 0) 
       cast_detect_resistances(j_th, victim, pc);
    else if (strncasecmp(*spell, "dispel evil", len) == 0) 
-      cast_dispel_evil(j_th, victim, pc);
+      spellDispelEvil.onCast(j_th, victim, pc);
    else if (strncasecmp(*spell, "dispel good", len) == 0) 
-      cast_dispel_good(j_th, victim, pc);
+      spellDispelGood.onCast(j_th, victim, pc);
    else if (strncasecmp(*spell, "dispel magic", len) == 0) 
       cast_dispel_magic(j_th, victim, pc);
    else if (strncasecmp(*spell, "distortion wall", len) == 0) 
@@ -1126,7 +1126,7 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
    else if (strncasecmp(*spell, "group heal", len) == 0) 
       cast_group_heal(pc);
    else if (strncasecmp(*spell, "harm", len) == 0) 
-      cast_harm(j_th, victim, pc);
+      spellHarm.onCast(j_th, victim, pc);
    else if (strncasecmp(*spell, "haste", len) == 0) 
       cast_haste(j_th, victim, pc);
    else if (strncasecmp(*spell, "heal", len) == 0) 

@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.47 2002/01/14 21:53:01 eroper Exp $
-// $Revision: 1.47 $  $Author: eroper $ $Date: 2002/01/14 21:53:01 $
+// $Id: misc.cc,v 1.48 2002/02/05 05:03:33 gingon Exp $
+// $Revision: 1.48 $  $Author: gingon $ $Date: 2002/02/05 05:03:33 $
 
 //
 //ScryMUD Server Code
@@ -2070,18 +2070,18 @@ void out_inv(const List<object*>& lst, critter& pc,
                if (obj_ptr->isHerb()) {
                   if (d(1, 100) <= 
                       d(1, 2 * get_percent_lrnd(HERBALISM_SKILL_NUM, pc))) {
-                     buf.Append("(herb)");
+                     buf.Append("(^Gherb^0)");
                   }//if
                }//if
 
                if (pc.canDetectMagic() &&
                    (!IsEmpty(obj_ptr->affected_by) ||
                     !IsEmpty(obj_ptr->stat_affects))) {
-                  buf.Append(" {Blue Glow}\n");
+                  buf.Append("^B{Blue Glow}^0\n");
                }//if
-               else {
-                  buf.Append("\n");
-               }
+	       else {
+	          buf.Append("\n");
+	       }
 
                if (obj_ptr->OBJ_VIS_BIT & 2) {
                   buf.Prepend("*");
@@ -2109,19 +2109,20 @@ void out_inv(const List<object*>& lst, critter& pc,
                if (obj_ptr->isHerb()) {
                   if (d(1, 100) <= 
                       d(1, 2 * get_percent_lrnd(HERBALISM_SKILL_NUM, pc))) {
-                     buf.Append("(herb)");
+                     buf.Append("(^Gherb^0)");
                   }//if
                }//if
 
                if  (pc.canDetectMagic() &&
                     (!IsEmpty(obj_ptr->affected_by) ||
                      !IsEmpty(obj_ptr->stat_affects))) {
-                  buf.Append(" {Blue Glow}\n");
+                     buf.Append("^B{Blue Glow}^0\n");
+		     
+                 
                }//if
-               else {
-                  buf.Append("\n");
+	       else {
+	          buf.Append("\n");
                }
-
                if (obj_ptr->OBJ_VIS_BIT & 2) {
                   buf.Prepend("*");
                }//if

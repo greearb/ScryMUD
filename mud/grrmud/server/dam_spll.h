@@ -1,5 +1,5 @@
-// $Id: dam_spll.h,v 1.6 2002/01/31 15:01:04 gingon Exp $
-// $Revision: 1.6 $  $Author: gingon $ $Date: 2002/01/31 15:01:04 $
+// $Id: dam_spll.h,v 1.7 2002/02/05 05:03:33 gingon Exp $
+// $Revision: 1.7 $  $Author: gingon $ $Date: 2002/02/05 05:03:33 $
 
 //
 //ScryMUD Server Code
@@ -54,9 +54,34 @@ class SpellHolyWord : public MobSpell{
 	void doSpellEffects();
 };
 
+class SpellDispelEvil : public MobSpell{
+	public:
+	void doSpellEffects();
+};
+
+class SpellDispelGood : public MobSpell{
+	public:
+	void doSpellEffects();
+};
+
+class SpellHarm : public MobSpell{
+	public:
+	void doSpellEffects();
+};
+
+class SpellCauseCritical : public MobSpell{
+	public:
+	void doSpellEffects();
+};
+
+
 extern SpellSpearOfDarkness spellSpearOfDarkness;
 extern SpellHolyWord spellHolyWord;
 extern SpellOrbOfPower spellOrbOfPower;
+extern SpellDispelEvil spellDispelEvil;
+extern SpellDispelGood spellDispelGood;
+extern SpellHarm spellHarm;
+extern SpellCauseCritical spellCauseCritical;
 
 //void cast_orb_of_power(int i_th, const String* dr, critter& agg);
 //void do_cast_orb_of_power(critter& vict, critter& pc, int is_canned, int lvl);
@@ -89,10 +114,6 @@ void do_cast_burning_hands(critter& vict, critter& pc, int is_canned,
                            int lvl);
 void cast_dark_dart(int i_th, const String* dr, critter& agg);
 void do_cast_dark_dart(critter& vict, critter& pc, int is_canned, int lvl);
-
-void cast_dispel_evil(int i_th, const String* dr, critter& agg);
-void cast_dispel_good(int i_th, const String* dr, critter& agg);
-void do_cast_dispel_good(critter& vict, critter& pc, int is_canned, int lvl);
 
 
 ///********** effects of passive spells (when triggered **********///

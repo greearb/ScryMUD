@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.17 2002/01/31 15:01:03 gingon Exp $
-// $Revision: 1.17 $  $Author: gingon $ $Date: 2002/01/31 15:01:03 $
+// $Id: batl_prc.cc,v 1.18 2002/02/05 05:03:32 gingon Exp $
+// $Revision: 1.18 $  $Author: gingon $ $Date: 2002/02/05 05:03:32 $
 
 //
 //ScryMUD Server Code
@@ -230,7 +230,7 @@ void do_battle_proc(critter& pc) {
             if (cls == CLERIC)
 	     spellHolyWord.onCast(*primary_targ, pc, FALSE, 0);
             else
-              do_cast_harm(*primary_targ, pc, FALSE, 0);            
+              spellHarm.onCast(*primary_targ, pc, FALSE, 0);            
           }//if
         }//if very violent
         else if (violence > 3) {
@@ -247,7 +247,7 @@ void do_battle_proc(critter& pc) {
             }//else
           }//if
           else if (chance > 4) {
-            do_cast_harm(*primary_targ, pc, FALSE, 0);
+            spellHarm.onCast(*primary_targ, pc, FALSE, 0);
           }//if
         }//if not so violent
         else if (violence >= 0) {
@@ -283,7 +283,7 @@ void do_battle_proc(critter& pc) {
             if (cls == CLERIC)
 	      spellHolyWord.onCast(*primary_targ, pc, FALSE, 0);
             else
-              do_cast_harm(*primary_targ, pc, FALSE, 0);            
+              spellHarm.onCast(*primary_targ, pc, FALSE, 0);            
           }//if
         }//if very violent
         else if (violence > 3) {
@@ -300,7 +300,7 @@ void do_battle_proc(critter& pc) {
             }//else
           }//if
           else if ((chance > 4) && ((pc.HP + 100) < pc.HP_MAX)) {
-            do_cast_harm(*primary_targ, pc, FALSE, 0);
+            spellHarm.onCast(*primary_targ, pc, FALSE, 0);
           }//if
         }//if not so violent
         else if (violence >= 0) {
@@ -416,7 +416,7 @@ void do_battle_proc(critter& pc) {
           }//if
           else if (chance > 2) {
             if (cls == CLERIC)
-              do_cast_harm(*primary_targ, pc, FALSE, 0);
+              spellHarm.onCast(*primary_targ, pc, FALSE, 0);
             else
               do_cast_blindness(*primary_targ, pc, FALSE, 0);            
           }//if
@@ -468,7 +468,7 @@ void do_battle_proc(critter& pc) {
           }//if
           else if (chance > 2) {
             if (cls == CLERIC)
-              do_cast_cause_critical(*primary_targ, pc, FALSE, 0);
+              spellCauseCritical.onCast(*primary_targ, pc, FALSE, 0);
             else
               do_cast_burning_hands(*primary_targ, pc, FALSE, 0);    
           }//if
