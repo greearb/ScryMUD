@@ -350,6 +350,7 @@ void ServerConfig::write(char* filename) {
    file << "corpseObject " << corpseObject << '\n';
    file << "goldCoinsObject " << goldCoinsObject << '\n';
    file << "pcSkinObject " << pcSkinObject << '\n';
+   file << "HeadObject" << HeadObject << '\n';
    file << "meatObject " << meatObject << '\n';
    file << "createFoodObject1 " << createFoodObject1 << '\n';
    file << "createFoodObject2 " << createFoodObject2 << '\n';
@@ -395,6 +396,13 @@ void ServerConfig::write(char* filename) {
    else {
       file << "newSummon false\n";
    }
+   if (useViolenceTimer) {
+      file << "useViolenceTimer true\n";
+   }
+   else {
+      file << "useViolenceTimer false\n";
+   }
+
    file << "maxRedundantDonates " << maxRedundantDonates << '\n';
 
    if (useMySQL) {
