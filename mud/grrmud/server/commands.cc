@@ -627,10 +627,16 @@ void do_look(int i_th, const String* obj, critter& pc, room& rm) {
          show(buf, pc);
       }//if
 
-      if (pc.USING_CLIENT) {
-         Sprintf(buf, "<RM_SHORT_DESC %i>", pc.getCurRoomNum());
-         show(buf, pc);
+      if (pc.isUsingClient()) {
+         if (pc.shouldShowVnums()) {
+            Sprintf(buf, "<RM_SHORT_DESC %i>", pc.getCurRoomNum());
+            show(buf, pc);
+         }
+         else {
+            pc.show("<RM_SHORT_DESC 0>");
+         }
       }
+
       show(rm.short_desc, pc);
       if (pc.USING_CLIENT) 
          show("</RM_SHORT_DESC>\n", pc);

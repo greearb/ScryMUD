@@ -250,7 +250,7 @@ class ClientDisplay extends Frame {
 
 
       MenuItem ms_editor;
-      olc_m.add((ms_editor = new MenuItem("Mob Script Editor")));
+      olc_m.add((ms_editor = new MenuItem("Mob/Room Script Editor")));
       
       ms_editor.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {

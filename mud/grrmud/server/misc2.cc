@@ -336,13 +336,17 @@ void show_stat_affects(object& obj, critter& pc) {
 }//show_stat_affects
 
 
-/** Tests this performs:  K(know spell), M(has mana), S(is_standing),
- *                        V(!violence), N(!magic), B(!pc in_battle),
- *                        P(paralyzed), F(frozen)
+/** Tests this performs:  B(!pc in_battle)  C(owns aux_crit) F(frozen)
+ *                        I(is immort) K(know spell), M(has mana), 
+ *                        m(!mob, smob ok), N(!magic),
+ *                        P(paralyzed), R(owns aux_rm)
+ *                        S(is_standing), V(!violence), 
+ *                                                
  *  Case matters.
  */
-short ok_to_cast_spell(critter* vict, const char* flags, int spell_num,
-		       critter& pc, int do_msg = TRUE) {
+int ok_to_do_action(critter* vict, const char* flags, int spell_num,
+                    critter& pc, room* aux_rm = NULL, critter* aux_crit = NULL,
+                    int do_msg = TRUE) {
   String buf(100);
   int len = strlen(flags);  
   char chr;
@@ -370,6 +374,15 @@ short ok_to_cast_spell(critter* vict, const char* flags, int spell_num,
         if (get_percent_lrnd(spell_num, pc) <= 0) {
            if (do_msg) {
               show("You don't know where to begin!\n", pc);
+           }//if
+           return FALSE;
+        }//if
+     }//if    
+     else if (chr == 'm') {
+        if (pc.isMob()) {
+           if (do_msg) {
+              mudlog << "ERROR: ok_to_do_action, got a MOB (not SMOB).\n";
+              pc.show("ERROR:  mob trying to do an action.\n");
            }//if
            return FALSE;
         }//if
@@ -426,6 +439,30 @@ short ok_to_cast_spell(critter* vict, const char* flags, int spell_num,
         if (pc.POS != POS_STAND) {
            if (do_msg) {
               show("You must be standing in order to do this.\n", pc);
+           }//if
+           return FALSE;
+        }//if
+     }//if
+     else if (chr == 'R') {
+        if (!pc.doesOwnRoom(*aux_rm)) {
+           if (do_msg) {
+              pc.show("You do not own that room.\n");
+           }//if
+           return FALSE;
+        }//if
+     }//if
+     else if (chr == 'C') {
+        if (!pc.doesOwnCrit(*aux_crit)) {
+           if (do_msg) {
+              pc.show("You do not own that critter.\n");
+           }//if
+           return FALSE;
+        }//if
+     }//if
+     else if (chr == 'I') {
+        if (!pc.isImmort()) {
+           if (do_msg) {
+              pc.show("Ehh??\n");
            }//if
            return FALSE;
         }//if

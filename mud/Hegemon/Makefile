@@ -44,6 +44,7 @@ HostDialog.class \
 InputArea.class \
 KeywordEditor.class \
 LabeledCheckBoxGlob.class \
+LabeledChoice.class \
 LabeledTextArea.class \
 LabeledTextBoxGlob.class \
 LabeledTextField.class \

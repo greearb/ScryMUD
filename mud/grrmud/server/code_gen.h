@@ -20,11 +20,24 @@
 //                                     greearb@agcs.com
 //
 
-#ifndef ROOM_PARSE_INCLUDE_H
-#define ROOM_PARSE_INCLUDE_H
+#ifndef __CODE_GEN_H__
+#define __CODE_GEN_H__
 
 #include <string2.h>
-#include "classes.h"
+#include <fstream.h>
 
+#define ALIASES_ARRAY_LEN 50
+
+class GenCmdInput {
+public:
+   String aliases[ALIASES_ARRAY_LEN];
+   String help;
+   String cmd;
+
+   int read(ifstream& dafile);
+   void clear();
+   void print();
+
+};
 
 #endif

@@ -42,8 +42,8 @@ critter* check_for_diversions(critter& pc, char* tests, critter& agg);
 
 //Tests this performs:  K(know spell), M(has mana), S(is_standing),
 //                      V(!violence), N(!magic)
-short ok_to_cast_spell(critter* vict, const char* flags, int mana_cost, 
-		       critter& pc, int do_msg = TRUE);
+int ok_to_do_action(critter* vict, const char* flags, int mana_cost, 
+                    critter& pc, int do_msg = TRUE);
 
 stat_spell_cell* is_affected_by(int spell_num, critter& pc);
 stat_spell_cell* is_affected_by(int spell_num, object& obj);

@@ -34,81 +34,81 @@
 #include "door.h"
 #include "room.h"
 
-void show_eq(critter& pc);
-void drop(int i_th, const String* obj, const String* obj_all, critter& pc);
-void donate(int i_th, const String* obj, const String* obj_all, critter& pc);
+int show_eq(critter& pc);
+int drop(int i_th, const String* obj, const String* obj_all, critter& pc);
+int donate(int i_th, const String* obj, const String* obj_all, critter& pc);
 
-void wear(int i_th, const String* obj, int j, const String* posn, critter& 
+int wear(int i_th, const String* obj, int j, const String* posn, critter& 
           pc); 
-void inventory(critter& pc);
-void look(int i_th, const String* object, critter& looker);
-void do_look(int i_th, const String* obj, critter& pc, room& rm);
+int inventory(critter& pc);
+int look(int i_th, const String* object, critter& looker);
+int do_look(int i_th, const String* obj, critter& pc, room& rm);
 
-void cast(const String* spell_name, int j, const String* victim, critter& 
+int cast(const String* spell_name, int j, const String* victim, critter& 
           caster); 
-void put(int i, const String* object, int j, const String* bag, critter& 
+int put(int i, const String* object, int j, const String* bag, critter& 
           putter); 
-void get(int i, const String* object, int j, const String* bag, critter& 
+int get(int i, const String* object, int j, const String* bag, critter& 
           getter);
 
-void hit(int i_th, const String* victim, critter& hitter); 
-void assist(int i_th, const String* friendly, critter& hitter); 
-void do_hit(critter& vict, critter& pc);
+int hit(int i_th, const String* victim, critter& hitter); 
+int assist(int i_th, const String* friendly, critter& hitter); 
+int do_hit(critter& vict, critter& pc);
  
-void say(const char* message, critter& pc, room& rm);
-void yell(const char* message, critter& pc);
-void shout(const char* message, critter& pc);
-void gossip(const char* message, critter& pc);
-void group_say(const char* message, critter& pc);
-void wizchat(const char* message, critter& pc);
-void auction(const char* message, critter& pc);
-void west(critter& pc, room& rm);
-void east(critter& pc, room& rm);
-void south(critter& pc, room& rm);
-void north(critter& pc, room& rm);
-void northwest(critter& pc, room& rm);
-void southwest(critter& pc, room& rm);
-void southeast(critter& pc, room& rm);
-void northeast(critter& pc, room& rm);
-void up(critter& pc, room& rm);
-void down(critter& pc, room& rm);
-void remove(int i_th, const String* obj, critter& pc); 
-void rest(critter& pc);
-void sleep(critter& pc);
-void meditate(critter& pc);
-void stand(critter& pc);
-void wake(critter& pc);
-void sit(critter& pc);
-void examine(int i_th, const String* obj, critter& pc);
+int say(const char* message, critter& pc, room& rm);
+int yell(const char* message, critter& pc);
+int shout(const char* message, critter& pc);
+int gossip(const char* message, critter& pc);
+int group_say(const char* message, critter& pc);
+int wizchat(const char* message, critter& pc);
+int auction(const char* message, critter& pc);
+int west(critter& pc, room& rm);
+int east(critter& pc, room& rm);
+int south(critter& pc, room& rm);
+int north(critter& pc, room& rm);
+int northwest(critter& pc, room& rm);
+int southwest(critter& pc, room& rm);
+int southeast(critter& pc, room& rm);
+int northeast(critter& pc, room& rm);
+int up(critter& pc, room& rm);
+int down(critter& pc, room& rm);
+int remove(int i_th, const String* obj, critter& pc); 
+int rest(critter& pc);
+int sleep(critter& pc);
+int meditate(critter& pc);
+int stand(critter& pc);
+int wake(critter& pc);
+int sit(critter& pc);
+int examine(int i_th, const String* obj, critter& pc);
 
 //don't show msg to this last one if specified, wraps do_emote
-void emote(const char* msg, critter& pc, room& rm, short show_non_detects,
+int emote(const char* msg, critter& pc, room& rm, short show_non_detects,
 	   critter* noshow = NULL);
 // Possessive emote, wraps do_emote
-void pemote(const char* msg, critter& pc, room& rm, short show_non_detects,
+int pemote(const char* msg, critter& pc, room& rm, short show_non_detects,
             critter* noshow = NULL);
 // Worker method.
-void do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
+int do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
               int possessive, critter* crit = NULL);
 
 
 ///************************  login functions  ************************///
 
-void start_login(critter& pc);
-void do_login(critter& pc);
-void quit_do_login_new(critter& pc);
-void quit_do_login_old(critter& pc);
+int start_login(critter& pc);
+int do_login(critter& pc);
+int quit_do_login_new(critter& pc);
+int quit_do_login_old(critter& pc);
 
 
 
 ///*********************  auxillary functions  ***********************///
 
 int source_give_to(critter& pc, object& obj, critter& targ); //does msgs
-short detect(int see_bit, int vis_bit); //does bit comparison
+int detect(int see_bit, int vis_bit); //does bit comparison
 int move(critter& pc, int i_th, const char* direction, short do_followers,
           room& cur_room, int& is_dead);
 int don_obj(object& obj, critter& pc);
-void out_eq(critter& targ, critter& looker);
+int out_eq(critter& targ, critter& looker);
 
 int obj_wear_by(object& obj, critter& pc, int posn, short do_msg);
 int obj_get_by(object& obj, critter& pc, short do_msg);
@@ -116,16 +116,16 @@ int obj_drop_by(object& obj, critter& pc);
 int obj_remove_by(object& obj, critter& pc);
 int eq_put_by(object& obj, object& bag, critter& pc, short obj_in_bag); 
 
-void wear_eq_effects(object& obj, critter& pc, int posn, short do_msg);
+int wear_eq_effects(object& obj, critter& pc, int posn, short do_msg);
 
-void remove_eq_effects(object& obj, critter& pc, short from_corpse, 
+int remove_eq_effects(object& obj, critter& pc, short from_corpse, 
                        short do_msg, int posn);
 
-void gain_eq_effects(object& obj, object& bag, critter& pc, short 
+int gain_eq_effects(object& obj, object& bag, critter& pc, short 
                      obj_in_bag, short do_msg); 
-void drop_eq_effects(object& obj, critter& pc, short do_msg);
-void donate_eq_effects(object& obj, critter& pc, short do_msg);
-void consume_eq_effects(object& obj, critter& pc, short do_msg);
+int drop_eq_effects(object& obj, critter& pc, short do_msg);
+int donate_eq_effects(object& obj, critter& pc, short do_msg);
+int consume_eq_effects(object& obj, critter& pc, short do_msg);
 
 
 #endif //include

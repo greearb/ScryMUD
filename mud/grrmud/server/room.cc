@@ -292,8 +292,16 @@ room& room::operator=(room& source) {
       }//if
    }//while
 
+   Cell<RoomScript*> script_cll(room_proc_scripts);
+   RoomScript* script_ptr;
+   while ((script_ptr = script_cll.next())) {
+      room_proc_scripts.append(new RoomScript(*script_ptr));
+   }
+
+   // Don't copy pending scripts.
+
    return *this;
-}//rm::operator= overload
+}//room::operator= overload
 
 
 void room::Clear() {
@@ -337,6 +345,9 @@ void room::Clear() {
       mudlog << "room::Clear...  DONE." << endl;
    }
 
+   clear_ptr_list(pending_scripts);
+   clear_ptr_list(room_proc_scripts);
+   cur_script = NULL; // points into the pending_scripts
 }// Clear
 
 
@@ -791,11 +802,15 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
                         int targ) {
    Cell<critter*> cll(critters);
    critter* ptr;
-   //mudlog.log("room::checkForProc.");
+   
+   mudlog.log("room::checkForProc.");
    while ((ptr = cll.next())) {
       if (!ptr->pc) { //SMOB (not a PC)
-         //mudlog.log("Wasn't a pc..");
          if (ptr->mob->mob_data_flags.get(17)) { //ok then, it has data
+            if (mudlog.ofLevel(DBG)) {
+               mudlog << "room::checkForProc, found a mob: " 
+                      << ptr->getName() << endl;
+            }
             if (ptr->isMob()) { //if it's a MOB
                //mudlog.log("Doing mob_to_smob..");
                ptr = mob_to_smob(*ptr, getRoomNum());
@@ -812,26 +827,46 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
    room_proc_scripts.head(rcll);
 
    while ((rptr = rcll.next())) {
-      //mudlog.log("In while.");
-      //mudlog.log(ptr->toStringBrief(0, 0));
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "room::checkForProc, found room script: " 
+                << rptr->toStringBrief(0, getIdNum(), ENTITY_ROOM) << endl;
+      }
       if (rptr->matches(cmd, arg1, actor, targ)) {
-         //mudlog.log("Matches..");
-         if (!isInProcNow() || rptr->takesPrecedence()) {
-            //mudlog.log("Not in a proc now.");
-            // Generate a script, talored to the actors....
-            if (cur_script) {
-               cur_script->clean();
-            }//if
-
+         mudlog.log("Script matches..\n");
+         if (pending_scripts.size() >= 10) { //only queue 10 scripts
+            return; //do nothing, don't want to get too much backlog.
+         }
+         else {
+            // add it to the pending scripts.
+            mudlog.log("Generating script.\n");
             rptr->generateScript(cmd, arg1, actor, targ, *this, NULL);
-            cur_script = rptr;
 
-            // Ok then, lets start the script
-            proc_action_rooms.gainData(this);
-            cur_script->resetStackPtr(); //get ready to start
+            mudlog.log("Inserting new script.\n");
+            insertNewScript(new RoomScript(*rptr));
+
+            if (cur_script) {
+               mudlog.log("Had a cur_script.\n");
+               if (cur_script->getPrecedence() <
+                   pending_scripts.peekFront()->getPrecedence()) {
+                  
+                  mudlog.log("Junking cur_script because of precedence.\n");
+                  pending_scripts.loseData(cur_script); //take it out of queue
+                  delete cur_script; //junk it!
+                  cur_script = pending_scripts.peekFront();
+                  cur_script->resetStackPtr(); //get ready to start
+               }//if
+               // else, it just goes into the queue
+            }//if we currently have a script.
+            else { //there was none, so grab the first one.
+               mudlog.log("Was no cur_script, taking top of pending stack.\n");
+               cur_script = pending_scripts.peekFront();
+               proc_action_rooms.gainData(this);
+               cur_script->resetStackPtr(); //get ready to start
+            }
+
             return;
-         }//if
-      }//if
+         }//else
+      }//if matches
    }//while
 }//checkForMobAction
 
@@ -891,8 +926,13 @@ void room::stat(critter& pc) {
            getVisBit(), getMovCost(), getRoomNum());
    show(buf2, pc);
 
-   Sprintf(buf2, "Number of critters:  %i\n", critters.size());
+   Sprintf(buf2, "Number of critters:  %i  Number of Scripts Pending: %i\n\n",
+           critters.size(), pending_scripts.size());
    show(buf2, pc);
+
+   if (room_proc_scripts.size() > 0) {
+      listScripts(pc);
+   }
 }//stat
 
 
@@ -1359,9 +1399,12 @@ void room::showAllCept(const char* msg, critter* pc) const {
 
 void room::finishedRoomProc() {
    if (cur_script) {
-      cur_script->clean();
-      cur_script = NULL;
+      pending_scripts.loseData(cur_script);
+      delete cur_script;
    }
+
+   // This could easily end up being NULL, that's OK!
+   cur_script = pending_scripts.peekFront();
 }//finishedRoomProc
 
 void room::addProcScript(const String& txt, RoomScript* script_data) {
@@ -1456,3 +1499,34 @@ void room::removeScript(String& trigger, int i_th, critter& pc) {
 
    show("Didn't find that script..\n", pc);
 }//removeScript
+
+
+int room::insertNewScript(RoomScript* script) {
+   RoomScript* ptr;
+   Cell<RoomScript*> cll(pending_scripts);
+
+   // Don't append scripts that have a zero precedence, if there
+   // are other scripts in the queue.
+   if ((script->getPrecedence() == 0) && (!pending_scripts.isEmpty())) {
+      delete script;
+      return 0;
+   }
+
+   while ((ptr = cll.next())) {
+      if (ptr->getPrecedence() < script->getPrecedence()) {
+         // Then insert it
+         pending_scripts.insertBefore(cll, script);
+         return 0;
+      }//if
+   }//while
+
+   // If here, then we need to place it at the end.
+   pending_scripts.append(script);
+   return 0;
+}
+
+
+void room::doScriptJump(int abs_offset) {
+   if (cur_script)
+      cur_script->doScriptJump(abs_offset);
+}

@@ -2,8 +2,10 @@ Category:  OLC  Topic:  add_mob_script
 
 
 
-This function, though a bit unwieldy, allows you to add, or modify an
-existing mob script to a give mob.  If the mob already has a script
+(Can be used on rooms too now!!)
+
+This function, though a bit unwieldy, allows you to add or modify a
+script for some room or mob.  If the entity already has a script
 triggered by what you specify here, then it will be over-written.  After
 entering this command, you will be prompted to input the script.  In your
 script, there are certain variables you can put in: 
@@ -13,7 +15,7 @@ script, there are certain variables you can put in:
 %o                             Target's Name, if target is an Object
 %S                             The Entity 'executing' the script.
 
-An example script might be:  
+An example script for a mob might be:  
 (Suppose the trigger is when the actor types wear dagger, and the
 dagger's Vnum is the same as the target number for the script.) 
 
@@ -28,9 +30,12 @@ NOTE:  Enter all this at once, on one line.
 usage:  add_mob_script [mob_num] [trigger_cmd] [actor_num]
 		       ['discriminator_string'] [target_num]
 		       [takes_precedence]
+usage:  add_room_script [rm_num] [trigger_cmd] [actor_num]
+		       ['discriminator_string'] [target_num]
+		       [takes_precedence]
 
 Arguments:
-   mob_num is the number of the mob which should get this script
+   mob_num/rm_num is the number of the entity which should get this script
 
    trigger_cmd:  Should be one of the commands we support:
    	close, donate, drop, eat, enter, examine, exit, fill, follow,
@@ -77,9 +82,9 @@ Arguments:
 to space out the mobs actions.  The pauses are the length of a round of
 battle, about 2-3 seconds each. 
 
-   NOTE 2:  You must do an amsave in the zone that the mob belongs to in
-order to have your changes made permanent through a reboot.  mstat will
-give you the zone that the mob belongs to. 
+   NOTE 2:  You must do an amsave/asave in the zone that the mob/room
+belongs to in order to have your changes made permanent through a reboot.
+mstat/rstat will give you the zone that the mob belongs to. 
 ------------------------------------------------------------------------
 
 Caveats:  Only one command per line.  Comments not implemented at
@@ -100,7 +105,7 @@ are just used to delineate commands in the examples below.
 
 Defining what Entity is to take the script action:
 --------------------------------------------------
-Currently all commands are from the perspective of the mob that
+Currently all commands are from the perspective of the mob/room that
 'owns' the script.  Now you may specify the commands to be 'executed'
 by other actors.  For instance, suppose you wanted to check if the
 actor had a specific piece of eq in his/her inventory?  The answer
@@ -162,7 +167,7 @@ recho:          Room wide echo.
 silent_junk:    Junk object without any external messages.
 oload:          Load an object from nowhere.
 
-Example Script:
+Example Mob Script:
 ===============
 
 
@@ -181,6 +186,18 @@ end;;
 say Hrm....;;
 say End of script..;;
 
+==============================
+NEW:  Room Scripting Commands:
+------------------------------
+recho:          Echo a message to the room.
+tell:           The room tells a player a message.
+zecho:          Cause a message to be echoed across the entire zone.
+wizchat:        Cause a message to be sent to the wizchat channel.
+rm_move_all:    Force all players to exit in a certain direction.
+rm_move:        Force one player to exit in a certain direction.
+neighbor_echo:  Echo a message to a neighboring room (like after a move).
+rm_omove_all:   Force all objects to exit in a certain direction.
+rm_omove:       Force one object to exit in a certain direction.
 
 
 See Also:  olc amsave mstat rm_script list_scripts stat_script

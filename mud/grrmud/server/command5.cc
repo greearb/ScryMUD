@@ -2109,11 +2109,14 @@ void dsys(critter& pc) {
    Sprintf(buf, "[%i]%P10 door_data %P30[%i] %P42 ScriptCmd\n",
            door_data::getInstanceCount(), ScriptCmd::getInstanceCount());
    pc.show(buf);
-   Sprintf(buf, "[%i]%P10 MobScript \n",
-           MobScript::getInstanceCount());
+   Sprintf(buf, "[%i]%P10 GenScript  %P30[%i] %P42 MobScript\n",
+           GenScript::getInstanceCount(), MobScript::getInstanceCount());
+   pc.show(buf);
+   Sprintf(buf, "[%i]%P10 RoomScript\n",
+           RoomScript::getInstanceCount());
    pc.show(buf);
 
-   Sprintf(buf, "\nSize of:\n\tembattled_rooms: %i \t affected_doors: %i\n",
+   Sprintf(buf, "\nSize (length) of:\n\tembattled_rooms: %i \t affected_doors: %i\n",
            embattled_rooms.size(), affected_doors.size());
    pc.show(buf);
    
@@ -2133,8 +2136,26 @@ void dsys(critter& pc) {
            pulsed_proc_rooms.size(), pulsed_proc_objects.size());
    pc.show(buf);
 
+   Sprintf(buf, "\tproc_action_rooms: %i\n",
+           proc_action_rooms.getCurLen());
+   pc.show(buf);
+
 
 }//dsys
+
+
+int handle_olc(critter& pc, int do_sub) {
+   if (!pc->isImmort()) {
+      show("You are not cleared to build, talk to a god.\n");
+   }
+   else if (pc->imm_data->olc_counter > 0) {
+      restart_olc(pc);
+   }
+   else {
+      start_olc(pc);
+      processInput(pc->input, do_sub);
+   }//else
+}
 
 
 /* this is the command called by the player, it parses and calls emote() */

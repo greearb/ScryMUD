@@ -335,7 +335,7 @@ Daisy Lane leads off to the east towards some shops.
 1 2 25 0
 -1	door Affected_Bye
 -1	door#, dest
-3 204 4 -1	mobs
+4 204 3 -1	mobs
 End of Room
 16		Room Number
 SW_Plaza ~	names
@@ -439,7 +439,7 @@ stairs to the temple.
 1 2 22 0
 -1	door Affected_Bye
 -1	door#, dest
-3 204 -1	mobs
+204 3 -1	mobs
 End of Room
 20		Room Number
 NE_Plaza ~	names
@@ -585,7 +585,7 @@ lined with all sorts of shops and filled with people going this way and that.
 1 2 36 0
 -1	door Affected_Bye
 -1	door#, dest
-3 3 4 204 -1	mobs
+204 4 3 3 -1	mobs
 End of Room
 26		Room Number
 SW_Violet_Drive ~	names
@@ -723,7 +723,7 @@ Hmmm, maybe you should visit here more often!
 1 4 43 0
 -1	door Affected_Bye
 -1	door#, dest
-265 264 -1	mobs
+264 265 -1	mobs
 End of Room
 33		Room Number
 NW_Rose_Lane ~	names
@@ -991,7 +991,7 @@ Gimbal, the local lawyer, has his office to the south.
 1 2 29 0
 -1	door Affected_Bye
 -1	door#, dest
-3 204 -1	mobs
+204 3 -1	mobs
 End of Room
 44		Room Number
 north_gate ~	names
@@ -1013,7 +1013,7 @@ because it is the main trade route to the northeast.
 1 4 23 0
 -1	door Affected_Bye
 -1	door#, dest
-204 216 204 204 204 -1	mobs
+204 204 204 216 204 -1	mobs
 End of Room
 45		Room Number
 traderoad ~	names
@@ -1409,7 +1409,7 @@ a door to the east leads out into the courtyard.
 1 9 63 0
 -1	door Affected_Bye
 -1	door#, dest
-81 79 -1	mobs
+79 81 -1	mobs
 End of Room
 63		Room Number
 NW_Violet_Drive ~	names
@@ -1608,7 +1608,7 @@ violets on their open window, just makes you feel good about life!
 1 6 26 0
 -1	door Affected_Bye
 -1	door#, dest
-160 3 -1	mobs
+3 160 -1	mobs
 End of Room
 73		Room Number
 mage_academy ~	names
@@ -1695,7 +1695,7 @@ this one still mostly intact.
 1 2 77 0
 -1	door Affected_Bye
 -1	door#, dest
-160 3 204 204 -1	mobs
+204 204 3 160 -1	mobs
 End of Room
 77		Room Number
 W_Daisy_Lane ~	names
@@ -1719,7 +1719,7 @@ huge collection of rubble from which the pillars were extracted.
 1 2 78 0
 -1	door Affected_Bye
 -1	door#, dest
-3 204 -1	mobs
+204 3 -1	mobs
 End of Room
 78		Room Number
 W_Daisy_Lane ~	names
@@ -1794,7 +1794,7 @@ you, and you can't tell if the whispering sounds from above are of man,
 beast or wind!
 
 ~
-25 23 21 -1  -:| bitfield |:-
+35 25 23 21 -1  -:| bitfield |:-
 1024 1 81 0 	cur_stats
 -1	affected_by
 12 -1	inv
@@ -1804,6 +1804,16 @@ beast or wind!
 -1	door Affected_Bye
 -1	door#, dest
 -1	mobs
+1  Start of a room proc script
+enter -1 -1 1	 Trigger Command, targ, actor 
+ east 
+ tell %M Your momentum and the slick rocks send you skidding to the southwest!;
+ pause 1;
+ rm_move %M southwest;
+ neighbor_echo southwest %M comes skidding into view!;
+
+~
+-1  End of room proc scripts
 End of Room
 82		Room Number
 alley ~	names
@@ -1872,7 +1882,7 @@ of stairs descending into the darkness.
 1 4 83 1
 -1	door Affected_Bye
 -1	door#, dest
-196 195 -1	mobs
+195 196 -1	mobs
 End of Room
 85		Room Number
 tavern ~	names

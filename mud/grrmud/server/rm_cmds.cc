@@ -57,8 +57,8 @@ int room::do_tell(const char* msg, critter& targ) {
       untag = *(targ.getDefaultColor());
    }
 
-   Sprintf(buf, "%SThe surroundings whisper to you, '%S'\n%S",
-           &tag, &msg, &untag);
+   Sprintf(buf, "%SThe surroundings whisper to you, '%s'\n%S",
+           &tag, msg, &untag);
    show(buf, targ);
 
    return 0;
@@ -200,8 +200,22 @@ int room::omove_all(int i_th, const String* dir) {
 int room::move(int i_th, const String* pc, int j_th, const String* dir) {
    String buf(100);
    critter* ptr;
-   door* door_ptr = door::findDoor(DOORS, i_th, dir, ~0, *this);
+   
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "room::move:  i_th: " << i_th
+             << " pc -:" << *pc << ":- j_th: " << j_th
+             << "  dir -:" << dir << ":- in room:  " << getIdNum()
+             << endl;
+   }
+
+
+   door* door_ptr = door::findDoor(DOORS, j_th, dir, ~0, *this);
    if (!door_ptr || !door_ptr->getDestRoom()) {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "room::move:  could not find door, j_th: " << j_th
+                << "  dir -:" << dir << ":- in room:  " << getIdNum()
+                << endl;
+      }
       return -1;
    }
 
@@ -223,17 +237,24 @@ int room::move(int i_th, const String* pc, int j_th, const String* dir) {
    }
 
    if (!ptr) {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "room::move:  could not find critter, i_th: "
+                << i_th << " name -:" << *pc << ":-" << endl;
+      }
       return -1;
    }
 
    if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS)) {
       int is_dead;
       ptr->doGoToRoom(dest_rm, NULL, NULL, is_dead, getIdNum());
-         
-      if (!is_dead) {
-         look(1, &NULL_STRING, *ptr);
-      }//if
    }//if
+   else {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "room::move:  dest_rm: " << dest_rm << " is out of range."
+                << endl;
+      }
+      return -1;
+   }
    return 0;
 }//move
 
@@ -289,3 +310,13 @@ int room::neighbor_echo(int i_th, const String* dir, const String& buf) {
 
    return -1;
 }//neighbor_echo
+
+
+int room::rm_pause(int ticks) {
+   pause += ticks;
+
+   if (pause < 0)
+      pause = 0;
+
+   return 0;
+}

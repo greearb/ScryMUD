@@ -989,7 +989,10 @@ void game_loop(int s)  {
             }
             else {
                pc_ptr->finishedMobProc();
-               proc_action_mobs.set((critter*)NULL, cnt);
+
+               if (!pc_ptr->isInProcNow()) {
+                  proc_action_mobs.set((critter*)NULL, cnt);
+               }
             }
          }//else
       }//for
@@ -1008,15 +1011,34 @@ void game_loop(int s)  {
             ScriptCmd* tmp_cmd_ptr;
             // Cast away const'ness, but still use it as if it's const.
             if ((tmp_cmd_ptr = (ScriptCmd*)(rm_ptr->getNextScriptCmd()))) {
+
+               if (mudlog.ofLevel(DBG)) {
+                  mudlog << "grrmud.cc:  got a room script command -:"
+                         << tmp_cmd_ptr->getCommand() << ":-" << endl;
+               }
                cmd_ptr = new ScriptCmd(*tmp_cmd_ptr);
 
                // rm_ptr is the script owner.
-               RoomScript::parseScriptCommand(*cmd_ptr, *rm_ptr);
+               int script_ret_val;
+               if ((script_ret_val = RoomScript::parseScriptCommand(*cmd_ptr,
+                                                                    *rm_ptr)) < 0) {
+                  if (mudlog.ofLevel(WRN)) {
+                     mudlog << "RoomScript command: target -:" 
+                            << cmd_ptr->getTarget() << ":-  cmd -:"
+                            << cmd_ptr->getCommand() << " for room# "
+                            << rm_ptr->getIdNum() << " returned negative value: "
+                            << script_ret_val << endl;
+                  }
+               }
                delete cmd_ptr;
             }
             else {
                rm_ptr->finishedRoomProc();
-               proc_action_rooms.set((room*)NULL, cnt);
+
+               // it may have started another one
+               if (!rm_ptr->isInProcNow()) {
+                  proc_action_rooms.set((room*)NULL, cnt);
+               }
             }
          }//else
       }//for

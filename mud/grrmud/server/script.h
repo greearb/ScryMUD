@@ -41,14 +41,17 @@ class room;
  * Branches when the command evaluates to true.
  */
 void script_jump_true(String* cooked_strs, int* cooked_ints,
-                      critter& script_targ, critter& script_owner);
+                      critter& script_targ, critter* c_script_owner,
+                      room* r_script_owner);
 
 void script_jump_false(String* cooked_strs, int* cooked_ints,
-                       critter& script_targ, critter& script_owner);
+                       critter& script_targ, critter* c_script_owner,
+                       room* r_script_owner);
 
 // The other two call this one with the first argument set accordingly.
 void script_jump(int on_test, String* cooked_strs, int* cooked_ints,
-                 critter& script_targ, critter& script_owner);
+                 critter& script_targ, critter* c_script_owner,
+                 room* r_script_owner);
 
 
 ///*************************  Conditionals  *************************///
@@ -111,7 +114,7 @@ private:
    static int _cnt;
 
 protected:
-   int takes_precedence;
+   int precedence;
    String trigger_cmd;
    int target;
    int actor;
@@ -142,7 +145,7 @@ public:
 
    GenScript();
    GenScript(String& trig, int targ, int act, String& discriminator,
-             int takes_precedence);
+             int precedence);
    GenScript(const GenScript& src);
    virtual ~GenScript();
 
@@ -155,7 +158,7 @@ public:
    virtual int matches(const GenScript& src);
    virtual void generateScript(String& cmd, String& arg1, critter& act,
                                int targ, room& rm, critter* script_owner);
-   virtual int takesPrecedence() { return takes_precedence; }
+   virtual int getPrecedence() { return precedence; }
    virtual void compile(); //compile into script assembly...
    virtual void setScript(const String& txt);
    virtual const String* getTrigger() { return &trigger_cmd; }
@@ -198,8 +201,8 @@ protected:
 public:
    MobScript() : GenScript() { _cnt++; };
    MobScript(String& trig, int targ, int act, String& discriminator,
-             int takes_precedence) : GenScript(trig, targ, act,
-                                               discriminator, takes_precedence) {
+             int precedence) : GenScript(trig, targ, act,
+                                         discriminator, precedence) {
       _cnt++;
    }
 
@@ -228,8 +231,8 @@ protected:
 public:
    RoomScript() : GenScript() { _cnt++; };
    RoomScript(String& trig, int targ, int act, String& discriminator,
-             int takes_precedence) : GenScript(trig, targ, act,
-                                               discriminator, takes_precedence) {
+             int precedence) : GenScript(trig, targ, act,
+                                         discriminator, precedence) {
       _cnt++;
    }
 
@@ -245,7 +248,7 @@ public:
    }
 
    static int getInstanceCount() { return _cnt; }
-   static void parseScriptCommand(ScriptCmd& cmd, room& owner);
+   static int parseScriptCommand(ScriptCmd& cmd, room& owner);
 };//RoomScript
 
 

@@ -1037,16 +1037,19 @@ void mob_data::Clear() {
    mob_data_flags.Clear();
    skin_num = 0;
    clear_ptr_list(mob_proc_scripts);
-   
+   clear_ptr_list(pending_scripts);
+
    cur_script = NULL; //its held in the mob_proc_scripts
 
 }//Clear, mob_data
 
 void mob_data::finishedMobProc() {
    if (cur_script) {
-      cur_script->clean();
-      cur_script = NULL;
+      pending_scripts.loseData(cur_script);
+      delete cur_script;
    }
+
+   cur_script = pending_scripts.peekFront();
 }//finishedMobProc
 
 
@@ -2403,25 +2406,66 @@ void critter::checkForProc(String& cmd, String& arg1, critter& actor,
          //mudlog.log(ptr->toStringBrief(0, 0));
          if (ptr->matches(cmd, arg1, actor, targ)) {
             //mudlog.log("Matches..");
-            if (!mob->isInProcNow() || ptr->takesPrecedence()) {
-               //mudlog.log("Not in a proc now.");
-               // Generate a script, talored to the actors....
-               if (mob->cur_script) {
-                  mob->cur_script->clean();
-               }//if
-
+            if (mob->pending_scripts.size() >= 10) { //only queue 10 scripts
+               return; //do nothing, don't want to get too much backlog.
+            }
+            else {
+               // add it to the pending scripts.
                ptr->generateScript(cmd, arg1, actor, targ, rm, this);
-               mob->cur_script = ptr;
+               insertNewScript(new MobScript(*ptr));
 
-               // Ok then, lets start the script
-               proc_action_mobs.gainData(this);
-               mob->cur_script->resetStackPtr(); //get ready to start
+               if (mob->cur_script) {
+                  if (mob->cur_script->getPrecedence() <
+                      mob->pending_scripts.peekFront()->getPrecedence()) {
+                  
+                     mob->pending_scripts.loseData(mob->cur_script); //take it out of queue
+                     delete mob->cur_script; //junk it!
+                     mob->cur_script = mob->pending_scripts.peekFront();
+                     mob->cur_script->resetStackPtr(); //get ready to start
+                  }//if
+                  // else, it just goes into the queue
+               }//if we currently have a script.
+               else { //there was none, so grab the first one.
+                  mob->cur_script = mob->pending_scripts.peekFront();
+                  proc_action_mobs.gainData(this);
+                  mob->cur_script->resetStackPtr(); //get ready to start
+               }
+
                return;
-            }//if
-         }//if
+            }//else
+         }//if matches
       }//while
    }//if
 }//checkForProcAction
+
+
+int critter::insertNewScript(MobScript* script) {
+
+   if (!mob)
+      return -1;
+
+   // Don't append scripts that have a zero precedence, if there
+   // are other scripts in the queue.
+   if ((script->getPrecedence() == 0) && (!mob->pending_scripts.isEmpty())) {
+      delete script;
+      return 0;
+   }
+
+   MobScript* ptr;
+   Cell<MobScript*> cll(mob->pending_scripts);
+
+   while ((ptr = cll.next())) {
+      if (ptr->getPrecedence() < script->getPrecedence()) {
+         // Then insert it
+         mob->pending_scripts.insertBefore(cll, script);
+         return 0;
+      }//if
+   }//while
+
+   // If here, then we need to place it at the end.
+   mob->pending_scripts.append(script);
+   return 0;
+}
 
 
 void critter::trackToKill(critter& vict, int& is_dead) {

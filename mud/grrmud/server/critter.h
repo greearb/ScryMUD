@@ -418,7 +418,8 @@ public:
 
    List<MobScript*> mob_proc_scripts;
    MobScript* cur_script; // a pointer into the List of MobScripts.
-   
+   List<MobScript*> pending_scripts;
+
    mob_data();
    mob_data(mob_data& source);  //copy constructor
    ~mob_data();
@@ -640,11 +641,12 @@ public:
    void Read(ifstream& da_file, short read_all);
    void Write(ofstream& da_file);
 
-   /** For scripts, the script_targ is always *this, the script_owner
+   /** For scripts, the script_targ is always *this.  The script_owner
     * will be null (for non-script specific stuff) and should be specified
     * if it relates to scripting of course.
     */
-   int processInput(String& input, short do_sub, critter* script_owner = NULL);
+   int processInput(String& input, short do_sub, critter* c_script_owner = NULL,
+                    room* r_script_owner = NULL);
 
    int writeOutput();
    int readInput();
@@ -895,6 +897,7 @@ public:
    void doGoToRoom(int dest_room, const char* from_dir, door* by_door,
                    int& is_dead, int cur_room);
    void doScriptJump(int abs_index);
+   int insertNewScript(MobScript* script);
 
    void breakEarthMeld();
 

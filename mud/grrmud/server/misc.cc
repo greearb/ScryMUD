@@ -289,7 +289,7 @@ void do_mini_tick() { // decrement pause count ect
    Cell<stat_spell_cell*> scell;
    stat_spell_cell* sc_ptr;
 
-   /*DEBUG*/ do_vehicle_moves();  //in misc2.cc
+   do_vehicle_moves();  //in misc2.cc
 
    while ((crit_ptr = cll.next())) {
 
@@ -343,6 +343,18 @@ void do_mini_tick() { // decrement pause count ect
             sc_ptr = scell.next();
       }//while
    }//while
+
+   // Decrease pause count for rooms that are running scripts.
+   room* rm_ptr;
+   for (int cnt = 0; cnt < proc_action_rooms.getCurLen(); cnt++) {
+      if (!(rm_ptr = proc_action_rooms.elementAt(cnt))) {
+         continue;
+      }//if
+      else {
+         rm_ptr->decrementPause();
+      }
+   }//for
+
 
 }//do_mini_tick
 
@@ -1302,7 +1314,7 @@ void out_crit(const List<critter*>& lst, critter& pc) {  //outs the names
 
    // log("In out_crit\n");
 
-   if (pc.USING_CLIENT)
+   if (pc.isUsingClient())
       show("<MOB_LIST>", pc);
    else if (pc.isUsingColor()) {
       pc.show(*(pc.getMobListColor()));

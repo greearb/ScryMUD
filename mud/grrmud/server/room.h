@@ -69,8 +69,9 @@ private:
 
 protected:
    int pause;
-   RoomScript* cur_script;
-   List<RoomScript*> room_proc_scripts;
+   RoomScript* cur_script;             /* currently executing script */
+   List<RoomScript*> pending_scripts;  /* queue holds scripts to be run */
+   List<RoomScript*> room_proc_scripts; /* Scripts this room has. */
 
    List<critter*> critters;
 
@@ -125,6 +126,9 @@ public:
    static int getInstanceCount() { return _cnt; }
 
    int getPause() const { return pause; }
+   int decrementPause() { if (pause > 0) pause--; return pause; }
+
+   int insertNewScript(RoomScript* ptr);
    const ScriptCmd* getNextScriptCmd() { return cur_script->getNextCommand(); }
    void finishedRoomProc();
    int isInProcNow() { return (cur_script && (cur_script->isInProgress())); }
@@ -271,6 +275,7 @@ public:
    int com_recho(const String* msg);
    int com_zecho(const String* msg);
    int wizchat(const char* message);
+   int rm_pause(int ticks);
 
 }; // class room
 

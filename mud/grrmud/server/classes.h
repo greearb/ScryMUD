@@ -45,7 +45,7 @@ enum class_id_enum {
 ///************************  stat_cell  ************************///
  
 class stat_spell_cell {
-protected:
+private:
    static int _cnt;
 
 public:

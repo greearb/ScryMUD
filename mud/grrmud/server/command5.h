@@ -132,6 +132,9 @@ void value_add(int i_th, const String* targ, int j_th,
 void value_rem(int i_th, const String* targ, int val_idx, critter& pc);
 void adjust_register(int i_th, const String* targ, int new_balance, critter& pc);
 
+
+int handle_olc(critter& pc, int do_sub);
+
 #endif
 
 

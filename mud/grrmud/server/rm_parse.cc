@@ -37,7 +37,7 @@
 #include <PtrArray.h>
 #include "script.h"
 #include "rm_cmds.h"
-
+#include "parse.h"
 
 	     /******************************************/
 int room::processInput(String& input) {
@@ -53,8 +53,8 @@ int room::processInput(String& input) {
    }
 
    if (mudlog.ofLevel(INF)) {
-      mudlog << "INPUT:  room:  " << getIdNum() << "  input -:"
-             << input << ":-\n";
+      mudlog << "ROOM INPUT:  room:  " << getIdNum() << "  input -:"
+             << input << ":-\n" << flush;
    }
 
    if (getPause() > 0) {
@@ -72,6 +72,10 @@ int room::processInput(String& input) {
       input += "\n";
    }//if
 
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "Getting raw_strings[0]" << endl;
+   }
+   
    raw_strings[0] = input.Get_Command(eos, term_by_period); 
 
    if (raw_strings[0].Strlen() == 0) {
@@ -255,17 +259,6 @@ int room::processInput(String& input) {
       case 'K':
       case 'L':
       case 'M':
-         if (strncasecmp(str1, "rm_move", len1) == 0) { 
-	    return this->move(i, &str2, j, &str3);
-	 }//if
-         else if (strncasecmp(str1, "rm_move_all", len1) == 0) { 
-	    return this->move_all(i, &str2);
-	 }//if
-         else {
-            return -1;
-         }
-         return 0;
-
       case 'N':
       case 'O':
          if (strncasecmp(str1, "rm_omove", len1) == 0) { 
@@ -277,12 +270,27 @@ int room::processInput(String& input) {
          else {
             return -1;
          }
-         return 0;
 
       case 'P': 
+         if (strncasecmp(str1, "pause", len1) == 0) { 
+	    return this->rm_pause(i);
+	 }//if
+         else {
+            return -1;
+         }
       case 'Q':
       case 'R':
-      case 'S': 
+         if (strncasecmp(str1, "rm_move", len1) == 0) { 
+	    return this->move(i, &str2, j, &str3);
+	 }//if
+         else if (strncasecmp(str1, "rm_move_all", len1) == 0) { 
+	    return this->move_all(i, &str2);
+	 }//if
+         else {
+            return -1;
+         }
+
+      case 'S':
       case 'T':
       case 'U':
       case 'V':

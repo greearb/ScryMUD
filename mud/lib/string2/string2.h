@@ -129,6 +129,7 @@ public:
    int  Strlen() const;
    void Report() const; //logs vital stats, for debugging.
    void ensureCapacity(int max_length);
+   unsigned int hash(); // return a value that should be pretty unique.
 
    int  Write(const int desc, const int max_to_write);
    //writes to a descriptor, deletes what it writes

@@ -1,5 +1,5 @@
 //
-//ScryMUD Server Code
+//Hegemon Client Code:  Java Client for ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
 //
 //This program is free software; you can redistribute it and/or
@@ -20,11 +20,29 @@
 //                                     greearb@agcs.com
 //
 
-#ifndef ROOM_PARSE_INCLUDE_H
-#define ROOM_PARSE_INCLUDE_H
+import java.awt.*;
+import java.util.*;
+import java.awt.event.*;
 
-#include <string2.h>
-#include "classes.h"
+class LabeledChoice extends Panel {
+   public Label lbl;
+   public Choice c;
+   
+   public LabeledChoice(String name) {
+      super();
 
+      lbl = new Label(name);
+      c = new Choice();
+    
+      BorderLayout bl = new BorderLayout();
+      setLayout(bl);
 
-#endif
+      add(lbl, "North");
+      add(c, "South");
+   }//constructor
+
+   String getText() {
+      return c.getSelectedItem();
+   }
+
+}//LabeledChoice

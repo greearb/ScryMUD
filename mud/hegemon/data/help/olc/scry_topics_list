@@ -68,6 +68,7 @@ rm_bow_proc
 rm_curse_proc
 rm_discuss_proc
 rm_give_proc
+rm_move
 rm_script
 rm_stat_affect
 rset

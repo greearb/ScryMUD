@@ -175,7 +175,7 @@ void cast_holy_word(int i_th, const String* victim, critter& pc) {
               victim, pc.SEE_BIT);
    }//if
 
-   if (!ok_to_cast_spell(vict, "KMSNV", spell_num, pc)) {
+   if (!ok_to_do_action(vict, "KMSNV", spell_num, pc)) {
      return;
    }//if
    

@@ -28,34 +28,75 @@ import java.io.*;
 // mobs, and rooms.  It auto-captures the info for easy editing...
 
 class MobScriptEditor extends Frame {
-   LabeledTextField trigger;
+   LabeledChoice trigger;
    LabeledTextField discrim;
    LabeledTextField target;
    LabeledTextField actor;
-   LabeledTextField precedence;
+   LabeledChoice precedence;
    LabeledTextArea script;
    LabeledTextField mob_num;
-   LabeledTextField entity;
+   LabeledChoice entity;
+   LabeledChoice discrim_choice;
 
-   Checkbox is_frozen;
+   String[] cmds = {"close", "donate", "drop", "eat", "enter",
+                    "examine", "exit", "fill", "follow",
+                    "get", "give", "group", "hit", "list", "lock",
+                    "look", "meditate", "open", "order",
+                    "pay", "prone", "remove", "rest", "say", "shoot",
+                    "sit", "sleep", "stand", "tell",
+                    "throw", "ungroup", "unlock", "wake", "wear",
+                    "yell" };
+   
+   String[] discrims = { "FEM", "MALE", "NEUTER", "BARD", "CLERIC",
+                         "WARRIOR", "SAGE", "WIZARD", "THIEF", "ALCHEMIST",
+                         "HUMAN", "ANITRE", "DARKLING", "DRAGON", "DWARF",
+                         "OGRUE", "ELF", "UNDEAD", "ANIMAL", "MONSTER" };
+
    HegemonManager hm;
+   MSButtons oeb;
 
    public MobScriptEditor(HegemonManager h) {
       super("Script Editor");
       hm = h;
       Log.instance().init("Constructing ScriptEditor..");
 
-      is_frozen = new Checkbox("Is Frozen", false);
-      trigger = new LabeledTextField("Trigger Command", "", 20);
-      entity = new LabeledTextField("Entity", "", 10);
-      discrim = new LabeledTextField("Optional Discriminator", "NA", 20);
+      trigger = new LabeledChoice("Trigger Command");
+      entity = new LabeledChoice("Entity");
+      discrim = new LabeledTextField("Optional Discriminator (Special tags have syntax: 'only')",
+                                     "NA", 20);
       target = new LabeledTextField("Target #", "", 10);
       actor = new LabeledTextField("Actor #", "", 10);
-      precedence = new LabeledTextField("Precedence (0 no, other yes)",
-                                        "", 10);
+      precedence = new LabeledChoice("Precedence (0 == none)");
       script = new LabeledTextArea("Script (double semicolons necessaary)",
                                    "", 10, 80);
       mob_num = new LabeledTextField("Entity # (Script Owner)", "0", 10);
+      discrim_choice = new LabeledChoice("Special Descrim.");
+      oeb = new MSButtons(this);
+
+      entity.c.add("ROOM");
+      entity.c.add("MOB");
+      setEntity("MOB");
+
+      /* add triggers, will need to update this often. */
+      for (int i = 0; i < cmds.length; i++) {
+         trigger.c.add(cmds[i]);
+      }
+
+      for (int i = 0; i<10; i++) {
+         precedence.c.add(i + "");
+      }
+
+      for (int i = 0; i<10; i++) {
+         discrim_choice.c.add(discrims[i]);
+      }
+
+      discrim_choice.c.addItemListener(new ItemListener() {
+         public void itemStateChanged(ItemEvent e) {
+            if (discrim.getText().equals("NA")) {
+               discrim.clear();
+            }
+            discrim.append(discrim_choice.getText());
+         }});
 
       int REM = GridBagConstraints.REMAINDER;
       GridBagLayout gridbag = new GridBagLayout();
@@ -72,31 +113,30 @@ class MobScriptEditor extends Frame {
       gridbag.setConstraints(trigger, c);
       add(trigger);
 
+      gridbag.setConstraints(precedence, c);
+      add(precedence);
+
       gridbag.setConstraints(mob_num, c);
       add(mob_num);
 
       c.gridwidth = REM;
-      gridbag.setConstraints(discrim, c);
-      add(discrim);
+      gridbag.setConstraints(discrim_choice, c);
+      add(discrim_choice);
 
       c.gridwidth = 1;
       gridbag.setConstraints(actor, c);
       add(actor);
 
-      gridbag.setConstraints(is_frozen, c);
-      add(is_frozen);
-
       gridbag.setConstraints(target, c);
       add(target);
       
       c.gridwidth = REM;
-      gridbag.setConstraints(precedence, c);
-      add(precedence);
+      gridbag.setConstraints(discrim, c);
+      add(discrim);
       
       gridbag.setConstraints(script, c);
       add(script);
 
-      MSButtons oeb = new MSButtons(this);
       gridbag.setConstraints(oeb, c);
       add(oeb);
 /*
@@ -114,7 +154,7 @@ class MobScriptEditor extends Frame {
 
 
    public boolean isFrozen() {
-      return is_frozen.getState();
+      return oeb.isFrozen();
    }
    
    public void do_close() {
@@ -141,8 +181,7 @@ class MobScriptEditor extends Frame {
    public void setEntity(String d) {
       if (isFrozen())
         return;
-      entity.clear();
-      entity.append(d);
+      entity.c.select(d);
    }
 
    public void setMobScriptData(String trig, String mnum, String actor_num,
@@ -151,10 +190,10 @@ class MobScriptEditor extends Frame {
         return;
 
       mob_num.append(mnum);
-      trigger.append(trig);
+      trigger.c.select(trig);
       actor.append(actor_num);
       target.append(target_num);
-      precedence.append(pd);
+      precedence.c.select(pd);
    }
 
    public void appendScript(String str) {
@@ -164,26 +203,27 @@ class MobScriptEditor extends Frame {
    }
 
    public void do_clear() {
-      trigger.clear();
+      trigger.c.select(cmds[0]);
       discrim.clear();
-      is_frozen.setState(false);
+      oeb.setFrozen(false);
       target.clear();
       actor.clear();
-      precedence.clear();
+      precedence.c.select("0");
       script.clear();
       mob_num.clear();
    }//
 
    public void do_update() {
-      is_frozen.setState(false);
+      oeb.setFrozen(false);
       String cmd = null;
 
       if (entity.getText().equalsIgnoreCase("ROOM")) {
-         cmd = "add_room_script";
+         cmd = "add_room_script ";
       }
       else if (entity.getText().equalsIgnoreCase("MOB")) {
          cmd = "add_mob_script ";
       }
+
       else {
          MessageDialog md = new MessageDialog("Update Error",
                                               "Was neither ROOM nor MOB entity",
@@ -216,10 +256,14 @@ class MobScriptEditor extends Frame {
 
 class MSButtons extends Panel {
    MobScriptEditor parent;
+   Button freeze_b;
    
    public MSButtons(MobScriptEditor par) {
       super();
       parent = par;
+
+      freeze_b = new Button("  FREEZE ");
+      freeze_b.setBackground(new Color(0, 255,0));
 
       Button clear_b = new Button("Clear");
       Button cancel_b = new Button("Cancel");
@@ -230,6 +274,18 @@ class MSButtons extends Panel {
       done_b.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             parent.do_close();
+         }});
+
+      freeze_b.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            if (freeze_b.getLabel().equals("  FREEZE ")) {
+               freeze_b.setLabel("UN-FREEZE");
+               freeze_b.setBackground(new Color(255,0,0));
+            }
+            else {
+               freeze_b.setLabel("  FREEZE ");
+               freeze_b.setBackground(new Color(0,255,0));
+            }
          }});
 
       clear_b.addActionListener(new ActionListener() {
@@ -256,10 +312,27 @@ class MSButtons extends Panel {
       FlowLayout fl = new FlowLayout();
       setLayout(fl);
 
+      add(freeze_b);
       add(update_b);
       add(cancel_b);
       add(clear_b);
       add(done_b);
       add(help_b);
    }//MSButtons constructor
+
+   public boolean isFrozen() {
+      return freeze_b.getLabel().equals("UN-FREEZE");
+   }
+
+   public void setFrozen(boolean val) {
+      if (val) {
+         freeze_b.setLabel("UN-FREEZE");
+         freeze_b.setBackground(new Color(255,0,0));
+      }
+      else {
+         freeze_b.setLabel("  FREEZE ");
+         freeze_b.setBackground(new Color(0,255,0));
+      }
+   }//setFrozen
+
 }//MSButtons

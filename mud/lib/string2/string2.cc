@@ -39,6 +39,19 @@ LogStream* String::logfile = NULL;
 int String::string_cnt = 0;
 int String::total_bytes = 0;
 
+// return a value that should be pretty unique.
+// This is basically lame, do some research if you want a real
+// hash function!! --BLG
+unsigned int String::hash() {
+   unsigned int retval = 0;
+
+   for (int i = 0; i<cur_len; i++) {
+      retval += (int)(string[i]);
+   }
+   retval += cur_len;
+   return retval;
+}
+
 int String::Assert(int boolean_val, const char* msg) const {
    if (!boolean_val) {
       core_dump(msg);
