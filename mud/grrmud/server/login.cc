@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.23 2002/01/11 19:29:15 eroper Exp $
-// $Revision: 1.23 $  $Author: eroper $ $Date: 2002/01/11 19:29:15 $
+// $Id: login.cc,v 1.24 2002/01/12 20:56:13 eroper Exp $
+// $Revision: 1.24 $  $Author: eroper $ $Date: 2002/01/12 20:56:13 $
 
 //
 //ScryMUD Server Code
@@ -774,6 +774,7 @@ int  quit_do_login_new(critter& pc) {
       case NECROMANCER:
          pc.SKILLS_KNOWN.Insert(CURSING_SKILL_NUM, 25);
          pc.SKILLS_KNOWN.Insert(CONJURING_SKILL_NUM, 10);
+         pc.SKILLS_KNOWN.Insert(NECROPHILIA_SKILL_NUM, 25);
          pc.STR-=2;
          pc.DEX-=2;
          pc.INT+=4;
