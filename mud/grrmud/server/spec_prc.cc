@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.28 2002/01/31 11:45:55 gingon Exp $
-// $Revision: 1.28 $  $Author: gingon $ $Date: 2002/01/31 11:45:55 $
+// $Id: spec_prc.cc,v 1.29 2002/01/31 15:01:04 gingon Exp $
+// $Revision: 1.29 $  $Author: gingon $ $Date: 2002/01/31 15:01:04 $
 
 //
 //ScryMUD Server Code
@@ -735,7 +735,7 @@ int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
          do_cast_harm(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 199: 
-         do_cast_holy_word(*targ, pc, TRUE, spell_lvl);
+         spellHolyWord.onCast(*targ, pc, TRUE, spell_lvl);
          return 0;
        case 201:
          do_cast_divine_protection(*targ, pc, TRUE, spell_lvl);

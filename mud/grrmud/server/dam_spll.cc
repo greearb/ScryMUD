@@ -1,5 +1,5 @@
-// $Id: dam_spll.cc,v 1.13 2002/01/31 11:45:54 gingon Exp $
-// $Revision: 1.13 $  $Author: gingon $ $Date: 2002/01/31 11:45:54 $
+// $Id: dam_spll.cc,v 1.14 2002/01/31 15:01:03 gingon Exp $
+// $Revision: 1.14 $  $Author: gingon $ $Date: 2002/01/31 15:01:03 $
 
 //
 //ScryMUD Server Code
@@ -37,6 +37,7 @@
 
 SpellSpearOfDarkness spellSpearOfDarkness;
 SpellOrbOfPower spellOrbOfPower;
+SpellHolyWord spellHolyWord;
 
 
 void SpellSpearOfDarkness::doSpellEffects(){
@@ -238,6 +239,104 @@ void SpellOrbOfPower::doSpellEffects() {
       agg_kills_vict(&agg, victim);
    }
 }
+
+
+void SpellHolyWord::doSpellEffects() {
+   String buf(100);
+   short do_join_in_battle = TRUE;
+   short do_fatality = FALSE;
+   critter& vict = *(spellHolyWord.victim);
+   critter& agg = *(spellHolyWord.agg);
+
+   
+   if( did_spell_hit(vict, NORMAL, agg, clvl, TRUE)){
+
+      int dmg = d(7, clvl + 5);
+
+      exact_raw_damage(dmg, NORMAL, vict, agg);
+
+      if (&vict == &agg) {
+         if (vict.HP < 0) {
+            show("You god destroys you!\n", agg);
+            Sprintf(buf, "is destroyed by %s own god!!",
+                    get_his_her(agg));
+            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+            do_fatality = TRUE;
+         }//if
+         else {
+            show("Your god wreaks vengeance upon you!\n", agg);
+            Sprintf(buf, "god wreaks vengeance upon %s.", 
+                    get_him_her(vict));
+            pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+         }//else
+         do_join_in_battle = FALSE;
+      }//if agg == vict
+      else { //agg is NOT the victim
+         if (vict.HP < 0) {
+            Sprintf(buf, 
+                  "Your god destroys %S at your behest!\n",
+                    name_of_crit(vict, agg.SEE_BIT));
+            show(buf, agg);
+            Sprintf(buf, 
+                    "%S's god destroys you at %s behest!!\n",
+                    name_of_crit(agg, vict.SEE_BIT),
+                    get_his_her(agg));
+            show(buf, vict);
+            Sprintf(buf, "god destroys %S at %s behest!",
+                    name_of_crit(vict, ~0),
+                    get_his_her(agg));
+            pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+            do_fatality = TRUE;
+         }//if fatality
+         else { //no fatality
+            Sprintf(buf, "Your god greatly injures %S at your behest!.\n",
+                    name_of_crit(vict, agg.SEE_BIT));
+            show(buf, agg);
+            Sprintf(buf, 
+                    "%S calls the wrath of %s god down upon you!!\n",
+                    name_of_crit(agg, vict.SEE_BIT),
+                    get_his_her(agg));
+            buf.Cap();
+            show(buf, vict);
+            Sprintf(buf, "god wreaks vengeance upon %S at %s behest!", 
+                    name_of_crit(vict, ~0),
+                    get_his_her(agg));
+            pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+         }//else, no fatality
+      }//agg is NOT victim
+   }//if all went well, else test these cases
+   else { //missed
+     if (&agg == &vict) {
+       show("Your god does not listen.\n", agg);
+       Sprintf(buf, "prays in vain to %s god!!", 
+               get_him_her(vict));
+       emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
+       do_join_in_battle = FALSE;
+     }//if
+     else { //missed, and agg does NOT equal vict
+       show("Your god does not listen!\n", agg);
+       Sprintf(buf, "%S prays for your demise in vain!!\n",
+               name_of_crit(agg, vict.SEE_BIT));
+       buf.Cap();
+       show(buf, vict);
+       Sprintf(buf, "prays for %S's demise in vain!", 
+               name_of_crit(vict, ~0));
+       emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+     }//else did miss AND vict NOT equal to agg
+   }//did_miss
+
+
+
+   if (!do_fatality && do_join_in_battle && 
+       !HaveData(&vict, agg.IS_FIGHTING)) {
+      join_in_battle(agg, vict);
+   }//if
+
+   if (do_fatality) {
+      agg_kills_vict(&agg, vict);
+   }
+}
+
 
 
 /*
@@ -553,7 +652,7 @@ void cast_dark_spear(int i_th, const String* victim, critter& pc) {
 
    do_cast_orb_of_power(*vict, pc, FALSE, 0);
 } // cast_orb_of_power */
-
+/*
 void do_cast_holy_word(critter& vict, critter& agg, int is_canned,
                       int lvl) {
    String buf(100);
@@ -672,8 +771,8 @@ void do_cast_holy_word(critter& vict, critter& agg, int is_canned,
       agg_kills_vict(&agg, vict);
    }//if
 }//do_cast_holy_word
- 
-
+*/ 
+/*
 void cast_holy_word(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;
    int spell_num = HOLY_WORD_SKILL_NUM;
@@ -698,7 +797,7 @@ void cast_holy_word(int i_th, const String* victim, critter& pc) {
    
    do_cast_holy_word(*vict, pc, FALSE, 0);
 }//cast_holy_word
-
+*/
 
 void cast_dispel_evil(int i_th, const String* victim, critter& pc) {
    critter* vict = NULL;

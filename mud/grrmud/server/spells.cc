@@ -1,5 +1,5 @@
-// $Id: spells.cc,v 1.22 2002/01/31 11:45:55 gingon Exp $
-// $Revision: 1.22 $  $Author: gingon $ $Date: 2002/01/31 11:45:55 $
+// $Id: spells.cc,v 1.23 2002/01/31 15:01:04 gingon Exp $
+// $Revision: 1.23 $  $Author: gingon $ $Date: 2002/01/31 15:01:04 $
 
 //
 //ScryMUD Server Code
@@ -55,10 +55,11 @@
 void config_spells(){
 	spellOrbOfPower.setupSpell(ORB_OF_POWER_SKILL_NUM,1, "KMSNV", NULL, "Orb of Power", "Whom do you wish to disintegrate?\n");
 	spellSpearOfDarkness.setupSpell(SOD_SKILL_NUM, 1, "KMSNV", "GSM", "Spear of Darkness", "Whom do you wish to impale?\n");
+	spellHolyWord.setupSpell(HOLY_WORD_SKILL_NUM, 1, "KMSNV", NULL, "Holy Word", "Whom do you wish to destroy?\n");
 
 }
 
-
+/*
 void Spell::onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
                   int lvl = 0){
    
@@ -77,7 +78,7 @@ void Spell::onCast(int i_th, const String* vict, critter& pc, int is_canned = FA
          
       doSpellEffects();
    }
-}
+}*/
 
 	
 int Spell::doCastEffects(){
@@ -222,6 +223,27 @@ void MobSpell::onCast(critter& vict, critter& pc, int is_canned = FALSE, int lvl
    }
    
 } 
+
+void MobSpell::onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
+                  int lvl = 0){
+   
+   if(is_canned){
+      canned = TRUE;
+      clvl = lvl;
+   }
+
+   agg = &pc;
+	if (!getSpellTarget(i_th, vict, pc)){
+      doFailureNoTarget();
+      return;
+   }
+      
+   if (doCastEffects()){
+         
+      doSpellEffects();
+   }
+}
+
 
 
 

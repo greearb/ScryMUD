@@ -1,5 +1,5 @@
-// $Id: dam_spll.h,v 1.5 2002/01/31 11:45:54 gingon Exp $
-// $Revision: 1.5 $  $Author: gingon $ $Date: 2002/01/31 11:45:54 $
+// $Id: dam_spll.h,v 1.6 2002/01/31 15:01:04 gingon Exp $
+// $Revision: 1.6 $  $Author: gingon $ $Date: 2002/01/31 15:01:04 $
 
 //
 //ScryMUD Server Code
@@ -43,13 +43,19 @@ class SpellSpearOfDarkness : public MobSpell{
 	void doSpellEffects(); // effects of spell
 };
 
-extern SpellSpearOfDarkness spellSpearOfDarkness;
 
 class SpellOrbOfPower : public MobSpell{
 	public:
 	void doSpellEffects(); // effects of spell
 };
 
+class SpellHolyWord : public MobSpell{
+	public:
+	void doSpellEffects();
+};
+
+extern SpellSpearOfDarkness spellSpearOfDarkness;
+extern SpellHolyWord spellHolyWord;
 extern SpellOrbOfPower spellOrbOfPower;
 
 //void cast_orb_of_power(int i_th, const String* dr, critter& agg);
@@ -73,10 +79,6 @@ void do_cast_cause_sickness(critter& vict, critter& pc, int is_canned,
 
 void cast_cause_critical(int i_th, const String* dr, critter& agg);
 void do_cast_cause_critical(critter& vict, critter& pc, int is_canned,
-                            int lvl);
-
-void cast_holy_word(int i_th, const String* dr, critter& agg);
-void do_cast_holy_word(critter& vict, critter& pc, int is_canned,
                             int lvl);
 
 void cast_shocking_grasp(int i_th, const String* dr, critter& agg);

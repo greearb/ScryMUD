@@ -1,5 +1,5 @@
-// $Id: batl_prc.cc,v 1.16 2001/11/13 04:37:09 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 2001/11/13 04:37:09 $
+// $Id: batl_prc.cc,v 1.17 2002/01/31 15:01:03 gingon Exp $
+// $Revision: 1.17 $  $Author: gingon $ $Date: 2002/01/31 15:01:03 $
 
 //
 //ScryMUD Server Code
@@ -228,7 +228,7 @@ void do_battle_proc(critter& pc) {
           }//if
           else if (chance > 2) {
             if (cls == CLERIC)
-              do_cast_holy_word(*primary_targ, pc, FALSE, 0);
+	     spellHolyWord.onCast(*primary_targ, pc, FALSE, 0);
             else
               do_cast_harm(*primary_targ, pc, FALSE, 0);            
           }//if
@@ -281,7 +281,7 @@ void do_battle_proc(critter& pc) {
           }//if
           else if (chance > 2) {
             if (cls == CLERIC)
-              do_cast_holy_word(*primary_targ, pc, FALSE, 0);
+	      spellHolyWord.onCast(*primary_targ, pc, FALSE, 0);
             else
               do_cast_harm(*primary_targ, pc, FALSE, 0);            
           }//if

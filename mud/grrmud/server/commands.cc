@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.48 2002/01/31 11:45:54 gingon Exp $
-// $Revision: 1.48 $  $Author: gingon $ $Date: 2002/01/31 11:45:54 $
+// $Id: commands.cc,v 1.49 2002/01/31 15:01:03 gingon Exp $
+// $Revision: 1.49 $  $Author: gingon $ $Date: 2002/01/31 15:01:03 $
 
 //
 //ScryMUD Server Code
@@ -1134,7 +1134,7 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
    else if (strncasecmp(*spell, "heros feast", len) == 0) 
       cast_heros_feast(pc);
    else if (strncasecmp(*spell, "holy word", len) == 0) 
-      cast_holy_word(j_th, victim, pc);
+      spellHolyWord.onCast(j_th, victim, pc);
    else if (strncasecmp(*spell, "icestorm", len) == 0) 
       cast_icestorm(pc);
    else if (strncasecmp(*spell, "identify", len) == 0) 

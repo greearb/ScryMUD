@@ -1,5 +1,5 @@
-// $Id: spells.h,v 1.8 2002/01/31 11:45:55 gingon Exp $
-// $Revision: 1.8 $  $Author: gingon $ $Date: 2002/01/31 11:45:55 $
+// $Id: spells.h,v 1.9 2002/01/31 15:01:04 gingon Exp $
+// $Revision: 1.9 $  $Author: gingon $ $Date: 2002/01/31 15:01:04 $
 
 //
 //ScryMUD Server Code
@@ -147,8 +147,8 @@ class Spell
 	char* diversions;// string passed to check_for_diversions
 	int canned;
 
-	virtual void onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
-                  int lvl = 0); // checks to see if the spell can be cast, if the target is correct, and if the casting fails
+//	virtual void onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
+//                  int lvl = 0); // checks to see if the spell can be cast, if the target is correct, and if the casting fails
 	virtual int doCastEffects();// imediate effects, fireball, buff etc...
 	virtual void doSpellEffects(); // not used by any spells, may remove it later
 	virtual void doWearOffEffects();// what to do when it wears off
@@ -185,6 +185,9 @@ class MobSpell : public Spell {
     int getSpellTarget(int i_th, const String* vict, critter& pc);
     void onCast(critter& vict, critter& pc, int is_canned = FALSE,
                        int lvl = 0);
+   void onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
+                  int lvl = 0);
+    
     
 //	int doCastEffects(critter& victim, critter& agg, int lvl); //don't bother defining this here
 };    
