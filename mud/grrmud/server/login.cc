@@ -416,6 +416,16 @@ void critter::doLogin() {
                   break;
                }
 
+               // re-gain effects from worn gear
+               {
+                  int i;
+                  for(i=0;i<MAX_EQ;i++) {
+                     if (EQ[i]) {
+                        wear_eq_effects(*(EQ[i]), *this, i, FALSE);
+                     }
+                  }
+               }
+
                setNoClient(); //turn off by default
 
                if (using_hegemon) {
