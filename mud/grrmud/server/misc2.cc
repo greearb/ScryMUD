@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.32 2001/10/03 07:23:03 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
+// $Id: misc2.cc,v 1.33 2001/10/09 05:44:57 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 2001/10/09 05:44:57 $
 
 //
 //ScryMUD Server Code
@@ -681,7 +681,7 @@ critter* check_for_diversions(critter& pc, char* tests, critter& agg) {
     }//if
     else if (chr == 'G') {
       if (pc.temp_crit) {
-        if (pc.GUARDED_BY && !pc.SHIELDED_BY->isSleeping()) {
+        if (pc.GUARDED_BY && !pc.GUARDED_BY->isSleeping()) {
           if (d(1, 175) > pc.GUARDED_BY->DEX +
               get_percent_lrnd(GUARD_SKILL_NUM, *(pc.GUARDED_BY))) {
             if (ROOM.haveCritter(pc.GUARDED_BY)) {
