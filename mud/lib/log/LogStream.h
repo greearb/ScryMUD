@@ -1,5 +1,5 @@
-// $Id: LogStream.h,v 1.7 1999/07/16 06:12:53 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
+// $Id: LogStream.h,v 1.8 1999/07/18 00:59:23 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
 
 //
 //ScryMUD Server Code
@@ -62,10 +62,22 @@ protected:
    char buf[LOG_STREAM_BUF_SIZE];
    char* filename;
    int log_level;
-
+   int file_action;
 public:
-   LogStream(const char* fname, int lvl) : ostrstream(buf, LOG_STREAM_BUF_SIZE),
-      log_level(lvl) { filename = strdup(fname); }
+   enum actionE {
+      APPEND = 0,
+      OVERWRITE = 1
+   };
+
+   LogStream(const char* fname, int lvl, actionE fileAction)
+         : ostrstream(buf, LOG_STREAM_BUF_SIZE),
+           log_level(lvl), file_action(fileAction)
+      { filename = strdup(fname); }
+
+   LogStream(const char* fname, int lvl)
+         : ostrstream(buf, LOG_STREAM_BUF_SIZE),
+           log_level(lvl), file_action(OVERWRITE)
+      { filename = strdup(fname); }
 
    ~LogStream() { 
       flushToFile(filename);
@@ -76,15 +88,21 @@ public:
 
    int flushToFile(const char* fname) {
       *((ostrstream*)this) << ends;
-      ofstream ofile(fname);
-      ofile << str() << flush();
-
       // Allow some outside filtering...
-      char buf[200];
-      sprintf(buf, "truncate_log %s", fname);
-      system(buf);
+      if (file_action == OVERWRITE) {
+         ofstream ofile(fname);
+         ofile << str() << flush();
 
-      seekp(0); //TODO:  This reset's it, no?
+         char buf[200];
+         sprintf(buf, "truncate_log %s", fname);
+         system(buf);
+      }
+      else if (file_action == APPEND) {
+         ofstream ofile(fname, ios::app);
+         ofile << str() << flush();
+      }
+
+      seekp(0); //Reset the streambuf
       return 0;
    }
 

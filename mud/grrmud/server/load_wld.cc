@@ -1,5 +1,5 @@
-// $Id: load_wld.cc,v 1.4 1999/06/05 23:29:14 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+// $Id: load_wld.cc,v 1.5 1999/07/18 00:59:23 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
 
 //
 //ScryMUD Server Code
@@ -262,6 +262,7 @@ void write_setup() {
 
 void load_wld() {
    int i;
+   String buf(100);
 
    ZoneCollection::instance().readSelf();
 
@@ -311,12 +312,26 @@ void load_wld() {
    cout << "Max_Crit# is:  " << Cur_Max_Crit_Num << endl;
    cout << "Max_Room# is:  " << Cur_Max_Room_Num << endl;
    
-   init_loads(); //calculate how many of each item is in game.
-		//these values are stored in the CUR_IN_GAME fields
-		//as of now, shopkeeper's permanent inventory is not counted
+   init_loads(); /* calculate how many of each item is in game.
+                  *these values are stored in the CUR_IN_GAME fields
+                  *as of now, shopkeeper's permanent inventory is
+                  * not counted. */
+
+   // Write out addresses of all objects in the object list.
+   for (int i = 0; i<Cur_Max_Crit_Num; i++) {
+      if (obj_list[i].isInUse()) {
+         obj_ptr_log << "OBJ_LST " << i << " " << &(obj_list[i]) << "\n";
+      }//if
+   }//for
+
+   // Write out addresses of all critters in the object list.
+   for (int i = 0; i<Cur_Max_Crit_Num; i++) {
+      if (mob_list[i].isInUse()) {
+         obj_ptr_log << "CRI_LST " << i << " " << &(mob_list[i]) << "\n";
+      }//if
+   }//for
 
    init_casting_objs(); //Initialize the SkillSpell list
-
 
    cout << "The world has been constructed at least somewhat successfully!"
         << endl;

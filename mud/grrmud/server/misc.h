@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.10 1999/06/23 04:16:07 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/23 04:16:07 $
+// $Id: misc.h,v 1.11 1999/07/18 00:59:23 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
 
 //
 //ScryMUD Server Code
@@ -109,7 +109,7 @@ int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
                List<critter*>& lst, CSentryE cs_entry, ...);
 
 void out_str(const List<String*>& lst, critter& pc); 
-void out_crit(const List<critter*>& lst, critter& pc);  
+void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE);
 void out_inv(const List<object*>& lst, critter& pc, const short l_type); 
          //outs the names object*, formats according to l_type
 

@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.22 1999/07/12 01:16:51 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/07/12 01:16:51 $
+// $Id: battle.cc,v 1.23 1999/07/18 00:59:22 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/07/18 00:59:22 $
 
 //
 //ScryMUD Server Code
@@ -1236,6 +1236,8 @@ critter* mob_to_smob(critter& mob, const int room_num, int do_sub,
 
    critter* crit_ptr = new critter(mob);
 
+   obj_ptr_log << "CRI_CR " << mob.getIdNum() << " " << crit_ptr << "\n";
+
    if (!name || ((room_num < 0) || (room_num > NUMBER_OF_ROOMS))) {
       mudlog.log(ERR,
                  "ERROR:  name NULL  or room_num out of range in mob_to_smob.\n");
@@ -1308,6 +1310,8 @@ critter* mob_to_smob(critter& mob, room& rm, int suppress_sub_fail_msg) {
 
    critter* crit_ptr = new critter(mob);
 
+   obj_ptr_log << "CRI_CR " << mob.getIdNum() << " " << crit_ptr << "\n";
+
    crit_ptr->setCurRoomNum(rm.getIdNum());
 
    if (!rm.sub_a_4_b(crit_ptr, (critter*)(&mob), 1)) {
@@ -1342,26 +1346,23 @@ object* obj_to_sobj(object& obj, List<object*>* in_list,
    //log("In obj_to_sobj.\n");
 
    if (!name || !in_list) {
-      mudlog.log(ERR, "ERROR:  name or in_list NULL in obj_to_sobj.\n");
-      do_shutdown = TRUE;
-      exit(100);
+      core_dump("ERROR:  name or in_list NULL in obj_to_sobj.\n");
    }//if
 
    if (obj.IN_LIST) {
-      mudlog.log(ERR, "ERROR:  obj_to_sobj called on SOBJ, version 1.\n");
-      do_shutdown = TRUE;
-      exit(100);
+      core_dump("ERROR:  obj_to_sobj called on SOBJ, version 1.\n");
    }//if
 
    if (!in_list) {
-      mudlog.log(ERR, "ERROR:  in_list is NULL in obj_to_sobj, version 1!!\n");
-      do_shutdown = TRUE;
-      exit(100);
+      core_dump("ERROR:  in_list is NULL in obj_to_sobj, version 1!!\n");
    }//if
 
    obj.OBJ_FLAGS.turn_on(70); //now it can be/should be reset when pulsed
 
    object* obj_ptr = new object(obj);
+
+   obj_ptr_log << "OBJ_CR " << obj.getIdNum() << " " << obj_ptr << "\n";
+
    obj_ptr->IN_LIST = in_list;
    obj_ptr->setCurRoomNum(rm.getIdNum(), 0);
 
@@ -1388,20 +1389,19 @@ object*  obj_to_sobj(object& obj, List<object*>* in_list, int rm_num) {
              explicitly in the calling code. */
 
    if (obj.IN_LIST) {
-      mudlog.log(ERR, "ERROR:  obj_to_sobj called on SOBJ, version 2.\n");
-      do_shutdown = TRUE;
-      exit(100);
+      core_dump("ERROR:  obj_to_sobj called on SOBJ, version 2.\n");
    }//if
 
    if (!in_list) {
-      mudlog.log(ERR, "ERROR:  in_list is NULL in obj_to_sobj, version 2!!\n");
-      do_shutdown = TRUE;
-      exit(100);
+      core_dump("ERROR:  in_list is NULL in obj_to_sobj, version 2!!\n");
    }//if
 
    obj.OBJ_FLAGS.turn_on(70); //now it can be/should be reset when pulsed
 
    object* obj_ptr = new object(obj);
+   
+   obj_ptr_log << "OBJ_CR " << obj.getIdNum() << " " << obj_ptr << "\n";
+   
    obj_ptr->IN_LIST = in_list;
    obj_ptr->setCurRoomNum(rm_num, 0);
 

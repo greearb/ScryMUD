@@ -1,5 +1,5 @@
-// $Id: spec_prc.cc,v 1.21 1999/06/26 06:14:17 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
+// $Id: spec_prc.cc,v 1.22 1999/07/18 00:59:23 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
 
 //
 //ScryMUD Server Code
@@ -874,7 +874,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
             }// if scavenge
             if (ptr->isWanderer() && !ptr->isTracking() &&
                 room_list[i].haveCritter(ptr)) {
-               if (d(1, 10) > 6) {
+               if (d(1, 10) > 8) {
                   //log("Doing wander spec_prc.\n");
                   // This can be fatal..though rarely is.  So, don't use *ptr
                   // any more after this..as it could be deleted already.

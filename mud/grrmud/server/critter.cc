@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.31 1999/07/16 02:10:56 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/07/16 02:10:56 $
+// $Id: critter.cc,v 1.32 1999/07/18 00:59:22 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/07/18 00:59:22 $
 
 //
 //ScryMUD Server Code
@@ -1699,6 +1699,9 @@ critter::critter() {
 //      mudlog << "MEMORY:  creating crit:  " << this << endl;
 //   }
    _cnt++;
+
+   obj_ptr_log << "CRI_CON 0 " << this << "\n";
+
    pc = NULL;
    mob = NULL;
    possessed_by = NULL;
@@ -1713,6 +1716,9 @@ critter::critter(critter& source) {
 //      mudlog << "MEMORY:  copy constructing crit:  " << this << endl;
 //   }
    _cnt++;
+
+   obj_ptr_log << "CRI_CC " << getIdNum() << " " << this << "\n";
+
    pc = NULL;
    mob = NULL;
    possessed_by = NULL;
@@ -1728,9 +1734,10 @@ critter::~critter() {
 //   }
    _cnt--;
 
+   obj_ptr_log << "CRI_DES " << getIdNum() << " " << this << "\n";
+
    if (isMob() && (!do_shutdown)) {
-      mudlog.log(ERR, "ERROR:  trying to delete a MOB before shutdown.\n");
-      exit(100);
+      core_dump("ERROR:  trying to delete a MOB before shutdown.\n");
    }//if
 
    if (! do_shutdown) {
@@ -2599,13 +2606,14 @@ void critter::checkForProc(String& cmd, String& arg1, critter& actor,
    // Look through all objects the person is using.
    for (int i = 1; i < MAX_EQ; i++) {
       // TODO:  Demote these logging msgs when we find the bug.
-      if (mudlog.ofLevel(INF)) 
+      if (mudlog.ofLevel(INF)) {
          mudlog << "Critter [" << getIdNum() << "] " << *(getName())
                 << ":  Checking EQ[" << i << "] == " << EQ[i] << ", in rm: "
                 << rm.getIdNum() << endl;
+      }
       if (EQ[i] && (EQ[i]->hasScript())) {
-         //if (mudlog.ofLevel(INF)) 
-         //   mudlog << "Found an object with a script: EQ[" << i << "]\n";
+         if (mudlog.ofLevel(INF)) 
+            mudlog << "Found an object with a script: EQ[" << i << "]\n";
          // make it modified, if it is not already so.
          if (!(EQ[i]->isModified())) {
             EQ[i] = obj_to_sobj(*(EQ[i]), &inv, rm.getIdNum());
@@ -3591,7 +3599,7 @@ void critter::doHuntProc(int num_steps, int& is_dead) {
          checkForBattle(*(getCurRoom()));
       }
       else {
-         mudlog << "WARNING:  travelToRoom from doHuntProc" << endl;
+         //mudlog << "WARNING:  travelToRoom from doHuntProc" << endl;
          travelToRoom(targ_room_num, num_steps, is_dead);
       }
    }//else go get em

@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.18 1999/06/23 04:16:07 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/23 04:16:07 $
+// $Id: misc.cc,v 1.19 1999/07/18 00:59:23 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
 
 //
 //ScryMUD Server Code
@@ -1419,7 +1419,8 @@ void out_str(const List<String*>& lst, critter& pc) {
 }//out_str
 
 
-void out_crit(const List<critter*>& lst, critter& pc) {  //outs the names
+/** Can over-ride the VIS/SEE bit stuff if you set see_all to true. */
+void out_crit(const List<critter*>& lst, critter& pc, int see_all = FALSE) {
    Cell<critter*> cell(lst);
    Cell<stat_spell_cell*> cell2;
    stat_spell_cell* sp;
@@ -1427,6 +1428,11 @@ void out_crit(const List<critter*>& lst, critter& pc) {  //outs the names
    String buf(100);
 
    // log("In out_crit\n");
+
+   int see_bits = pc.getSeeBit();
+   if (see_all) {
+      see_bits = ~0;
+   }
 
    if (pc.isUsingClient())
       show("<MOB_LIST>", pc);
@@ -1439,7 +1445,7 @@ void out_crit(const List<critter*>& lst, critter& pc) {  //outs the names
          mudlog << "out_crit: got critter:  " << *(crit_ptr->getName())
                 << endl;
       }
-      if (detect(pc.SEE_BIT, crit_ptr->VIS_BIT) &&
+      if (detect(see_bits, crit_ptr->VIS_BIT) &&
           (crit_ptr != &pc)) { //can see it, not looker
          if ((crit_ptr->isHiding()) && //if is hiding
              (d(1, pc.LEVEL + 30) < 
@@ -1455,7 +1461,7 @@ void out_crit(const List<critter*>& lst, critter& pc) {  //outs the names
             }
 
             Sprintf(buf, "     %S %S %s\n", 
-                    name_of_crit(*crit_ptr, pc.SEE_BIT), 
+                    name_of_crit(*crit_ptr, see_bits), 
                     &(crit_ptr->short_desc), crit_ptr->getPosnStr(pc));
             buf.Cap();
             if (crit_ptr->VIS_BIT & 2) {
@@ -1483,12 +1489,12 @@ void out_crit(const List<critter*>& lst, critter& pc) {  //outs the names
 
             if (pc.shouldShowVnums()) {
                Sprintf(buf, "     [%i]%P11 %S %s\n", crit_ptr->MOB_NUM,
-                       name_of_crit(*crit_ptr, pc.SEE_BIT), 
+                       name_of_crit(*crit_ptr, see_bits), 
                        crit_ptr->getPosnStr(pc));
             }
             else {
                Sprintf(buf, "     %S %s\n",
-                       name_of_crit(*crit_ptr, pc.SEE_BIT), 
+                       name_of_crit(*crit_ptr, see_bits), 
                        crit_ptr->getPosnStr(pc));
             }
             buf.Cap();

@@ -1,5 +1,5 @@
-// $Id: string2.h,v 1.11 1999/06/22 05:33:09 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/22 05:33:09 $
+// $Id: string2.h,v 1.12 1999/07/18 00:59:24 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/18 00:59:24 $
 
 //
 //ScryMUD Server Code
@@ -136,8 +136,13 @@ public:
    void Append(const char source);
    void appendHex(const long l);
    void Getline(istream& stream, int max_len);
+   void getLine(istream& stream, int max_len) {
+      Getline(stream, max_len);
+   }
    void Cap();
    void Tolower(); //makes total string lowercase
+   void toLower() { Tolower(); } //makes total string lowercase
+   void toUpper(); //makes total string lowercase
    int  Strlen() const;
    void Report() const; //logs vital stats, for debugging.
    void ensureCapacity(int max_length);
@@ -167,12 +172,18 @@ public:
    void dropFromEnd(int num_chards); //drop a few off the end of the string
    String sterilizeForHtml() const;
 
-   /* Both of these next two delete what they grab from the string. */
-   
-   String Get_Command(short& eos, short& term_by_period, short is_first = 0);	
-				//grabs first word or number deliminated
-				//by space, a '.' or null char
-   
+   /* Both of these next two delete what they grab from the string.
+    * grabs first word or number deliminated
+    * by space, a '.' or null char
+    */
+   String Get_Command(short& eos, short& term_by_period, short is_first = 0);
+
+   /** Grabs first token deliminated by a space, period, or null character.*/
+   String getToken() {
+      short eos, tbp;
+      return Get_Command(eos, tbp);
+   }
+
    String Get_Rest(short destruct = TRUE);	//grabs phrase, deliminated 
    //by a newline or null char
    

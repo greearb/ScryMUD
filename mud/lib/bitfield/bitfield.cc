@@ -1,5 +1,5 @@
-// $Id: bitfield.cc,v 1.4 1999/06/05 23:29:16 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:16 $
+// $Id: bitfield.cc,v 1.5 1999/07/18 00:59:23 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
 
 //
 //ScryMUD Server Code
@@ -157,6 +157,10 @@ void bitfield::Read(ifstream& ifile) {
    while (flag != -1) {
       turn_on(flag);
       ifile >> flag;
+      
+      if (!ifile) {
+         Assert(0, "bitfield::Read");
+      }
    }//while
    ifile.getline(buf,80);  //read rest of line
 }//Read

@@ -1,5 +1,5 @@
-// $Id: list2.h,v 1.7 1999/06/26 06:14:17 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
+// $Id: list2.h,v 1.8 1999/07/18 00:59:23 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
 
 //
 //ScryMUD Server Code
@@ -539,6 +539,7 @@ public:
       else {
          mudlog << "ERROR:  Trying to lose header, this: " << this
                 << " Cell<T>: " << (void*)(&cll) << endl;
+         Assert(0); //Dump core, need to debug this.
          return (T)(0);
       }//else
    }//insertBefore

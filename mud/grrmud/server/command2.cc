@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.35 1999/07/14 02:10:07 greear Exp $
-// $Revision: 1.35 $  $Author: greear $ $Date: 1999/07/14 02:10:07 $
+// $Id: command2.cc,v 1.36 1999/07/18 00:59:22 greear Exp $
+// $Revision: 1.36 $  $Author: greear $ $Date: 1999/07/18 00:59:22 $
 
 //
 //ScryMUD Server Code
@@ -87,7 +87,7 @@ int score_long(critter& pc) {
 
    if (!IsEmpty(pc.pets)) {
       pc.show(CS_HAVE_PETS);
-      out_crit(pc.pets, pc);
+      out_crit(pc.pets, pc, TRUE); //show them all, detect or not.
    }//if
    show("\n", pc);
 

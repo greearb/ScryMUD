@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.15 1999/06/14 06:05:43 greear Exp $
-# $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/14 06:05:43 $
+# $Id: Makefile,v 1.16 1999/07/18 00:59:22 greear Exp $
+# $Revision: 1.16 $  $Author: greear $ $Date: 1999/07/18 00:59:22 $
 
 # makefile template
 include ../../MakeInclude
@@ -8,6 +8,10 @@ include ../../MakeInclude
 CODE_GEN_SRCS = code_gen.cc
 CODE_GEN_OBJS = code_gen.o
 CODE_GEN_TARG = ./code_gen
+
+AUDIT_SRCS = audit.cc
+AUDIT_OBJS = audit.o
+AUDIT_TARG = ./audit
 
 GEN_TARGS = lang_strings.h parse_gen.h lang_strings.cc parse_gen.cc
 
@@ -36,7 +40,7 @@ LANG_SPEC = translations.spec translation2.spec
 
 TARG = grrmud                                 #program to be created
 
-all: ${TARG}
+all: ${TARG} ${AUDIT_TARG}
 
 ${TARG}: libs ${GEN_TARGS} $(OBJS) 
 	$(CCC) $(CCFLAGS) $(LDFLAGS) -o ${TARG} $(OBJS) $(LDLIBS)
@@ -48,6 +52,10 @@ ${TARG}: libs ${GEN_TARGS} $(OBJS)
 # would have affected it. --BEN
 ${CODE_GEN_TARG}: ${CODE_GEN_OBJS}
 	$(CCC) $(CCFLAGS) $(LDFLAGS) -o ${CODE_GEN_TARG} $(CODE_GEN_OBJS) $(LDLIBS)
+
+${AUDIT_TARG}: libs ${AUDIT_OBJS}
+	$(CCC) $(CCFLAGS) $(LDFLAGS) -o ${AUDIT_TARG} $(AUDIT_OBJS) $(LDLIBS)
+	cp ${AUDIT_TARG} ${TOOL_BIN_DIR}/
 
 new_binary: ${TARG}
 	rm -f ${MUD_HOME}/grrmud/gmud.new
@@ -85,6 +93,11 @@ $(CODE_GEN_OBJS): %.o: %.cc %.h
 	@echo "Making $<"
 	$(CC) $(CCFLAGS) -c $<
 
+$(AUDIT_OBJS): %.o: %.cc %.h
+	@echo " "
+	@echo "Making $<"
+	$(CC) $(CCFLAGS) -c $<
+
 libs:
 	${MAKE} -C ${MUD_HOME}/lib all
 
@@ -93,13 +106,14 @@ depend:
 	makedepend $(SRCS)
 
 clean:
-	rm -f *.o ${GEN_TARGS} BuildInfo.cc
+	rm -f *.o ${GEN_TARGS} BuildInfo.cc parse_gen.cc parse_gen.h
+	rm -f lang_strings.h lang_strings.cc
 	${MAKE} -C ../../lib clean
 
 purge: clean
 	rm -f *~
 	rm -f *.flc
-	rm -f ${TARG}
+	rm -f ${TARG} ${CODE_GEN_TARG} ${AUDIT_TARG}
 
 
 #DO NOT DELETE THIS LINE -- make depend depends on it.

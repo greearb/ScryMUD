@@ -25,7 +25,10 @@ while ( : ) do
     
     if [ -x ./gmud ]; then
        ./gmud >& gmud.log
+    else
+	exit 2
     fi
+    
     RETVAL=$?
 
     echo "ScryMUD stopped at: `date`"

@@ -1,5 +1,5 @@
-// $Id: string2.cc,v 1.11 1999/06/15 04:45:13 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/15 04:45:13 $
+// $Id: string2.cc,v 1.12 1999/07/18 00:59:23 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
 
 //
 //ScryMUD Server Code
@@ -736,6 +736,12 @@ void String::Termed_Read(ifstream& da_file) { //reads lines untill it finds
 void String::Tolower() {
    for (int i = 0; i < cur_len; i++) {
       string[i] = tolower(string[i]);
+   }//for
+}//Tolower
+
+void String::toUpper() {
+   for (int i = 0; i < cur_len; i++) {
+      string[i] = toupper(string[i]);
    }//for
 }//Tolower
 

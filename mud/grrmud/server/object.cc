@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.15 1999/07/12 07:14:32 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
+// $Id: object.cc,v 1.16 1999/07/18 00:59:23 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
 
 //
 //ScryMUD Server Code
@@ -286,6 +286,8 @@ object::object (object& source) { //copy constructor
    obj_proc = NULL;
 
    *this = source;
+
+   obj_ptr_log << "OBJ_CC " << getIdNum() << " " << this << "\n";
 }//obj copy constructor
 
 
@@ -305,12 +307,16 @@ object::object() {
    in_list = NULL;
    bag = NULL;
    obj_proc = NULL;
-
+   
+   // Can't have an obj# at this point.
+   obj_ptr_log << "OBJ_CON 0 " << this << "\n";
 }//default constructor
 
 
 object::~object() {
    _cnt--;
+
+   obj_ptr_log << "OBJ_DES " << getIdNum() << " " << this << "\n";
 
    if ((!in_list) && (!do_shutdown)) {
       mudlog.log(ERR, "ERROR:  trying to delete OBJ before shutdown.\n");

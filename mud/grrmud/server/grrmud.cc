@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.24 1999/07/16 06:12:53 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/16 06:12:53 $
+// $Id: grrmud.cc,v 1.25 1999/07/18 00:59:23 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
 
 //
 //ScryMUD Server Code
@@ -100,6 +100,7 @@ int __cell_cnt = 0;
 
 
 LogStream            mudlog("./log/logfile.txt", ERR | DIS | WRN | SEC | DB | DBG);
+LogStream            obj_ptr_log("./log/obj_ptr.log", ALL, LogStream::APPEND);
 
 List<String*>        banned_hosts;
 class critter        mob_list[NUMBER_OF_MOBS + 1];
@@ -447,6 +448,8 @@ void sig_term_handler(int signo) {
       char buf[100];
       sprintf(buf, "%s.CRASH.%i", mudlog.getFileName(), getpid());
       mudlog.flushToFile(buf);
+      sprintf(buf, "%s.CRASH.%i", obj_ptr_log.getFileName(), getpid());
+      obj_ptr_log.flushToFile(buf);
       abort();
       //do_shutdown = TRUE;
    }
@@ -457,6 +460,8 @@ void sig_term_handler(int signo) {
       char buf[100];
       sprintf(buf, "%s.CRASH.%i", mudlog.getFileName(), getpid());
       mudlog.flushToFile(buf);
+      sprintf(buf, "%s.CRASH.%i", obj_ptr_log.getFileName(), getpid());
+      obj_ptr_log.flushToFile(buf);
       abort();
       //do_shutdown = TRUE;
    }

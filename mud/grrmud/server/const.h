@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.16 1999/07/07 06:05:11 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/07/07 06:05:11 $
+// $Id: const.h,v 1.17 1999/07/18 00:59:22 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/07/18 00:59:22 $
 
 //
 //ScryMUD Server Code
@@ -77,6 +77,7 @@ extern const BitfieldNames BAG_FLAGS_NAMES;
 extern const BitfieldNames STAT_AFFECT_NAMES;
 
 extern LogStream mudlog;
+extern LogStream obj_ptr_log;
 
 extern bitfield Obj_Wear_Flags_Mask;
 extern bitfield Obj_Consume_Procs_Mask;
