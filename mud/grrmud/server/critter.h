@@ -29,6 +29,7 @@
 #define GRRMUD_CRITTER_INCLUDE_H
 
 #define CRITTER_FORMAT_VERSION 1
+#define PC_DATA_FORMAT_VERSION 1
 
 #include <bitfield.h>
 #include <string2.h>
@@ -602,7 +603,6 @@ public:
    int last_login_time; //in seconds, since 1970 etc...
    int total_time_online; //in seconds
 
-   Tree<int, int> skills_spells_known; 
    object* w_eye_obj; //wizard's eye object
 
    // Ansi color codes.
@@ -638,7 +638,7 @@ public:
 
    void Clear();
    void Write(ofstream& ofile);
-   void Read(ifstream& ofile, int format_version);
+   void Read(critter* parent, ifstream& ofile);
    static int getInstanceCount() { return _cnt; }
 
    int client;
@@ -714,6 +714,7 @@ public:
    PtrList<stat_spell_cell> mini_affected_by; //decreased every battle
    //round
    PtrList<object> inv; // array of items in inventory
+   Tree<int, int> skills_spells_known; 
    
    pc_data* pc; //NULL if not a pc
    mob_data* mob; //null if not a mob

@@ -1684,7 +1684,7 @@ int get_percent_lrnd(int skill_num, const critter& pc, short automatic) {
    }//if not a pc
    
    int retval;
-   if (pc.SKILLS_KNOWN.Find(skill_num, retval)) {
+   if (static_cast< Tree<int,int> >(pc.SKILLS_KNOWN).Find(skill_num, retval)) {
       return retval;
    }//if
    

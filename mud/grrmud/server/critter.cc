@@ -1395,7 +1395,6 @@ void pc_data::Clear() {
    }
 
    pc_data_flags.Clear();
-   skills_spells_known.Clear();
    prompt.Clear();
    poofout.Clear();
    poofin.Clear();
@@ -1470,7 +1469,6 @@ pc_data& pc_data::operator=(const pc_data& source) {
    died_count = source.died_count;
    quest_points = source.quest_points;
    idle_ticks = source.idle_ticks;
-   skills_spells_known = source.skills_spells_known; //overload operator
    prompt = source.prompt;
    w_eye_obj = source.w_eye_obj;
    last_login_time = source.last_login_time;
@@ -1502,6 +1500,8 @@ pc_data& pc_data::operator=(const pc_data& source) {
 
 void pc_data::Write(ofstream& ofile) {
    int i, ii;
+
+   ofile << "%" << PC_DATA_FORMAT_VERSION << "\tpc_data format version" << endl;
    
    ofile << password << "\tpasswd\n";
    
@@ -1519,25 +1519,6 @@ void pc_data::Write(ofstream& ofile) {
    ofile << age << " " << hunger << " " << thirst << " " << drugged
          << " " << pk_count << " " << died_count << " " << quest_points
          << " age hgr thr drg pk died qp\n";
-   
-   int key;
-   i = 1;
-   int retval = 0;
-   if (skills_spells_known.Min(key)) {//if it isn't empty
-      ofile << key << " ";
-      skills_spells_known.Find(key, retval);
-      ofile << retval << " ";
-      while (skills_spells_known.Next(key)) {
-         ofile << key << " ";
-         skills_spells_known.Find(key, retval);
-         ofile << retval << " ";
-         if (++i > 9) {
-            ofile << endl;
-            i = 0;
-         }//if
-      }//while
-   }//if
-   ofile << -1 << "\tss_known\n";         
    
    ofile << prompt << endl;
 
@@ -1592,9 +1573,10 @@ void pc_data::Write(ofstream& ofile) {
 }//Write()       
 
 
-void pc_data::Read(ifstream& ofile, int format_version) {
+void pc_data::Read(critter* parent, ifstream& ofile) {
    int i;
    char tmp[81];
+   int format_version;
    
    Clear();
 
@@ -1603,6 +1585,20 @@ void pc_data::Read(ifstream& ofile, int format_version) {
          mudlog << "ERROR:  da_file FALSE in pc_data read." << endl;
       }
       return;
+   }
+
+   // look for a file-version identifier
+   {
+      char tst_char;
+      ofile.get(tst_char);
+      if ( tst_char != '%' ) {
+         // no file version 
+         ofile.putback(tst_char);
+         format_version = 0;
+      } else {
+         ofile >> format_version;
+         ofile.getline(tmp, 80);
+      }
    }
    
    ofile >> password;
@@ -1624,21 +1620,23 @@ void pc_data::Read(ifstream& ofile, int format_version) {
          >> quest_points;
    ofile.getline(tmp, 80);
    
-   /* skills spells known */
-   ofile >> i;
-   int tmp_int;
-   while (i != -1) {
-      if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
-            mudlog << "ERROR:  da_file FALSE in pc_data read." << endl;
-         }
-         return;
-      }
-      ofile >> tmp_int;
-      skills_spells_known.Insert(i, tmp_int);
+   if ( format_version == 0 ) {
+      /* skills spells known */
       ofile >> i;
-   }//while
-   ofile.getline(tmp, 80);
+      int tmp_int;
+      while (i != -1) {
+         if (!ofile) {
+            if (mudlog.ofLevel(ERROR)) {
+               mudlog << "ERROR:  da_file FALSE in pc_data read." << endl;
+            }
+            return;
+         }
+         ofile >> tmp_int;
+         parent->skills_spells_known.Insert(i, tmp_int);
+         ofile >> i;
+      }//while
+      ofile.getline(tmp, 80);
+   }//if format_version == 0
    
    ofile.getline(tmp, 80); //grabs prompt
    prompt = tmp;
@@ -1837,6 +1835,7 @@ critter& critter::operator=(critter& source) { //automagically makes SMOB
    short_desc = source.short_desc;
    in_room_desc = source.in_room_desc;
    long_desc = source.long_desc;
+   skills_spells_known = source.skills_spells_known; //overload operator
 
    if (source.pc) {
       pc = new pc_data(*(source.pc));
@@ -2044,6 +2043,7 @@ void critter::Clear() {
    short_desc.Clear();
    in_room_desc.Clear();
    long_desc.Clear();
+   skills_spells_known.Clear();
 
    crit_flags.Clear();
    spam_cnt = 0;
@@ -2519,6 +2519,26 @@ void critter::Write(ofstream& ofile) {
          ofile << endl;
    }//while
    ofile << -1 << "\taffected_by\n";
+
+   //Skills&Spells
+   int key;
+   i = 1;
+   int retval = 0;
+   if (skills_spells_known.Min(key)) {//if it isn't empty
+      ofile << key << " ";
+      skills_spells_known.Find(key, retval);
+      ofile << retval << " ";
+      while (skills_spells_known.Next(key)) {
+         ofile << key << " ";
+         skills_spells_known.Find(key, retval);
+         ofile << retval << " ";
+         if (++i > 9) {
+            ofile << endl;
+            i = 0;
+         }//if
+      }//while
+   }//if
+   ofile << -1 << "\tss_known\n";         
 
                 /*  Inventory */
    
@@ -3575,6 +3595,24 @@ void critter::fileRead(ifstream& ofile, short read_all) {
    }//while
    ofile.getline(tmp, 80);
 
+   if ( format_version > 0 ) {
+      /* skills spells known */
+      ofile >> i;
+      int tmp_int;
+      while (i != -1) {
+         if (!ofile) {
+            if (mudlog.ofLevel(ERROR)) {
+               mudlog << "ERROR:  da_file FALSE in pc_data read." << endl;
+            }
+            return;
+         }
+         ofile >> tmp_int;
+         skills_spells_known.Insert(i, tmp_int);
+         ofile >> i;
+      }//while
+      ofile.getline(tmp, 80);
+   }//format_version > 0
+
                 /*  Inventory */
    ofile >> i;
    while (i != -1) {
@@ -3620,7 +3658,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
       if (!(pc)) {
          pc = new pc_data;
       }//if
-      pc->Read(ofile, format_version);  
+      pc->Read(this, ofile);  
       pc->file_format_version = format_version;
    }//if
    else { //its a mob

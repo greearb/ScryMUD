@@ -1419,7 +1419,7 @@ extern const String ANSI_BWHITE_S;
 #define FOLLOWER_OF         follower_of
 #define MASTER                 master
 #define EQ                 eq
-#define SKILLS_KNOWN         pc->skills_spells_known
+#define SKILLS_KNOWN      skills_spells_known
 #define FOLLOWERS         followers
 #define FLAG1                 mob->proc_data->flag1
 #define INT1                 mob->proc_data->int1
