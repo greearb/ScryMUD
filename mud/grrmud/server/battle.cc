@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.16 1999/06/16 06:43:26 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
+// $Id: battle.cc,v 1.17 1999/06/23 04:16:06 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
 
 //
 //ScryMUD Server Code
@@ -43,6 +43,7 @@
 #include <PtrArray.h>
 #include "load_wld.h"
 #include "const.h"
+#include "Filters.h"
 
 
 short can_start_battle(critter& targ, critter& pc, short do_msg) {
@@ -686,17 +687,20 @@ void agg_kills_vict(critter& agg, critter& vict, int& show_vict_tags) {
    vict.IS_FIGHTING.clear(); //vict no longer fighting others
 
    if (vict.pc && agg.pc) {
-      Sprintf(buf, "  INFO:  %S has P-KILLED %S in room %i!!\n",
-              agg.getName(), vict.getName(), vict.getCurRoomNum());
-      show_all_info(buf);
+      doShowList(&vict, Selectors::instance().CC_gets_info_allow,
+                 Selectors::instance().CC_none, pc_list,
+                 CS_PKILLED_INFO,
+                 agg.getName(), vict.getName(), vict.getCurRoomNum());
 
       agg.pc->pk_count++;
       vict.pc->pk_count--;
    }//if
    else if (vict.pc) {
-      Sprintf(buf, "  INFO:  %S was killed by %S in room: %i\n",
-              vict.getName(), agg.getName(), vict.getCurRoomNum());
-      show_all_info(buf);
+      doShowList(&vict, Selectors::instance().CC_gets_info_allow,
+                 Selectors::instance().CC_none, pc_list,
+                 CS_PKILLED_INFO,
+                 vict.getName(), agg.getName(), vict.getCurRoomNum());
+
       vict.pc->died_count++;
    }
 
@@ -1188,9 +1192,10 @@ next time.  Please feel free to rejoin the Realm in another mortal coil!\n",
          buf.Prepend("rm ./Pfiles/");
          system(buf);
        
-         Sprintf(buf, "%S has permanently died for lack of constitution!\n",
-                 name_of_crit(vict, ~0));
-         show_all_info(buf);
+         doShowList(&vict, Selectors::instance().CC_gets_info_allow,
+                    Selectors::instance().CC_none, pc_list,
+                    CS_PERM_DEATH_INFO,
+                    vict.getName());
 
          vict.doSuicide(); //poor bastard!
       }//if perm con death

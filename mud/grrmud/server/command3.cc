@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.18 1999/06/22 05:33:08 greear Exp $
-// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/22 05:33:08 $
+// $Id: command3.cc,v 1.19 1999/06/23 04:16:06 greear Exp $
+// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
 
 //
 //ScryMUD Server Code
@@ -1804,11 +1804,6 @@ int force(String* str, critter& pc) {
       return -1;
    }
 
-   if (pc.IMM_LEVEL < 5) {
-      show("You are not yet worthy of the force.\n", pc);
-      return -1;
-   }//if
-  
    str1 = str->Get_Command(eos, term_by_period);
    if (str1.Strlen() != 0) {
       if (isnum(str1)) {
@@ -1838,6 +1833,11 @@ int force(String* str, critter& pc) {
 	  ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i, &name, pc.SEE_BIT);
 	}//if
         
+        if ((pc.IMM_LEVEL < 5) && (!pc.doesOwnCritter(*ptr))) {
+           show("You are not yet worthy of the force.\n", pc);
+           return -1;
+        }//if
+  
         if (ptr->pc && ptr->pc->imm_data &&
 	    ptr->IMM_LEVEL >= pc.IMM_LEVEL) {
 	  show("Heh, don't you WISH you could force them!!\n", pc);

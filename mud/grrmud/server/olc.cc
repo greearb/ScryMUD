@@ -1,5 +1,5 @@
-// $Id: olc.cc,v 1.13 1999/06/16 06:43:27 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+// $Id: olc.cc,v 1.14 1999/06/23 04:16:07 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/23 04:16:07 $
 
 //
 //ScryMUD Server Code
@@ -1819,6 +1819,12 @@ void do_olc(critter& pc) {
                   break;
                }
             }//if
+
+            if (i <= 0) {
+               pc.show("A bug has been encountered, tell the IMP.  Rclone should work though>\n");
+               quit_olc(pc);
+               break;
+            }
 
             mudlog << "OLC:  using room#  " << i << endl;
 

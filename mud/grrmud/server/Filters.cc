@@ -1,5 +1,5 @@
-// $Id: Filters.cc,v 1.2 1999/06/16 06:43:26 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
+// $Id: Filters.cc,v 1.3 1999/06/23 04:16:06 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
 
 //
 //ScryMUD Server Code
@@ -99,7 +99,8 @@ int CSelectorColl::matches(critter* pc, critter* actor) const {
 /** Constructor */
 Selectors::Selectors() 
       : CC_all(CSelectorColl::SELECTOR_OR, &selectAll),
-
+        CC_none(CSelectorColl::SELECTOR_AND, &selectNone),
+        
         // If ALL of these are true, try you _may_ show message.
         CC_mob_entry_allow(CSelectorColl::SELECTOR_AND, &selectActorEntryMsgs),
 
@@ -107,7 +108,11 @@ Selectors::Selectors()
         CC_mob_entry_deny(CSelectorColl::SELECTOR_OR,
                           &selectNPC_Possessed, &selectAreSame,
                           &selectIsSleeping, &selectIsMeditating,
-                          &selectActorSneakWorked) {
+                          &selectActorSneakWorked),
+        CC_gets_info_allow(CSelectorColl::SELECTOR_AND, &selectGetsInfo),
+        CC_using_client(CSelectorColl::SELECTOR_AND, &selectUsingClient),
+        CC_not_using_client(CSelectorColl::SELECTOR_AND, &selectNotUsingClient)
+{
 }//Constructor
 
 /** Singleton thingie. */

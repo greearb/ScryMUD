@@ -1,5 +1,5 @@
-// $Id: ConnectionManager.java,v 1.5 1999/06/05 23:29:12 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+// $Id: ConnectionManager.java,v 1.6 1999/06/23 04:16:05 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/23 04:16:05 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -98,7 +98,7 @@ class ConnectionManager extends Frame {
          return ha.getHostName();
       }
       catch (Exception e) {
-         return "mud.primenet.com"; //hard code a working value
+         return "scry.wanfear.com"; //hard code a working value
       }
    }//getHostName
 

@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.17 1999/06/18 06:52:38 greear Exp $
-// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
+// $Id: misc.cc,v 1.18 1999/06/23 04:16:07 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/23 04:16:07 $
 
 //
 //ScryMUD Server Code
@@ -43,6 +43,7 @@
 #include "command3.h"
 #include "skills.h"
 #include <time.h>
+#include "Filters.h"
 
 
 
@@ -1348,7 +1349,46 @@ void show_all_but_2(critter& A, critter& B, const char* msg,
 }//show_all_but_2
 
 
-void show_all_info(const char* msg) {
+int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
+               List<critter*>& lst, CSentryE cs_entry, ...) {
+   va_list argp;
+   va_start(argp, cs_entry);
+   int retval = 0;
+   retval = vDoShowList(pc, includes, denies, lst, cs_entry, argp);
+   va_end(argp);
+   return retval;
+}
+
+
+int vDoShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
+                List<critter*>& lst, CSentryE cs_entry, va_list argp) {
+   Cell<critter*> cll(lst);
+   critter* ptr;
+   String buf(100);
+   String buf2(100);
+
+   while ((ptr = cll.next())) {
+      if (!(denies.matches(ptr, pc))) {
+         if (includes.matches(ptr, pc)) {
+            if (mudlog.ofLevel(DBG)) {
+               mudlog << "vDoShowList, includes matched." << endl;
+               mudlog << "cstr of " << (int)(cs_entry) << "-:"
+                      << cstr(cs_entry, *ptr) << ":-" <<  endl;
+            }
+
+            vSprintf(buf, cstr(cs_entry, *ptr), argp);
+            if (mudlog.ofLevel(DBG)) {
+               mudlog << endl << "buf -:" << buf << ":-" << endl << endl;
+            }
+            ptr->show(buf);
+         }//if
+      }//if
+   }//while
+   return 0;
+}//voDoShowList
+
+
+void show_all(const char* msg) {
    Cell<critter*> cell(pc_list);
    critter* crit_ptr;
 

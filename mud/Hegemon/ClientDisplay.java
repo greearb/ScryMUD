@@ -1,5 +1,5 @@
-// $Id: ClientDisplay.java,v 1.10 1999/06/05 23:29:12 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+// $Id: ClientDisplay.java,v 1.11 1999/06/23 04:16:05 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/23 04:16:05 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -184,10 +184,11 @@ class ClientDisplay extends Frame {
       
       ///********************  connection menu ****************///
       
-      MenuItem open_connect_mi, select_connect_mi;
+      MenuItem open_connect_mi, select_connect_mi, disconnect_mi;
       connections_m = new Menu("Connections");
       connections_m.add((open_connect_mi = new MenuItem("Open Connection")));
       connections_m.add((select_connect_mi = new MenuItem("Select Server")));
+      connections_m.add((disconnect_mi = new MenuItem("Close Connection")));
       
       open_connect_mi.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
@@ -198,6 +199,11 @@ class ClientDisplay extends Frame {
       select_connect_mi.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             do_select_connection(); //pops up Connection Manager
+         }});
+
+      disconnect_mi.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            do_disconnect();
          }});
       
       ///******************  olc_menu  ********************************///
@@ -392,6 +398,10 @@ class ClientDisplay extends Frame {
 
    void do_open_connection() {
       hm.openConnection();
+   }//open_connection
+
+   void do_disconnect() {
+      hm.closeConnection();
    }//open_connection
 
    void do_select_connection() {

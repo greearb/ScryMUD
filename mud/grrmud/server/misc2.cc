@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.22 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: misc2.cc,v 1.23 1999/06/23 04:16:07 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/23 04:16:07 $
 
 //
 //ScryMUD Server Code
@@ -1441,6 +1441,7 @@ room* get_next_room(int zone_num) {
         i <= ZoneCollection::instance().elementAt(zone_num).getEndRoomNum();
         i++) {
       if (!room_list[i].isInUse()) { //if room is not used
+         room_list[i].setRoomNum(i); //This really shouldn't be needed!
          return &(room_list[i]); //ptr to that room
       }//if
    }//for

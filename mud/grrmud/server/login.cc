@@ -1,5 +1,5 @@
-// $Id: login.cc,v 1.12 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: login.cc,v 1.13 1999/06/23 04:16:06 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
 
 //
 //ScryMUD Server Code
@@ -37,6 +37,8 @@
 #include <PtrArray.h>
 #include <unistd.h>
 #include "const.h"
+#include "Filters.h"
+
 
 extern List<critter*> new_pc_list;
 
@@ -449,10 +451,10 @@ void critter::doLogin() {
                         old_ptr->show("You take over a body already in use.\n");
                      }//else
 
-                     String buf(100);
-                     Sprintf(buf, "  INFO:  %S has regained connection from: %S\n",
-                             old_ptr->getName(), old_ptr->getHostName());
-                     show_all_info(buf);
+                     doShowList(this, Selectors::instance().CC_gets_info_allow,
+                                Selectors::instance().CC_none, pc_list,
+                                CS_PLAYER_REGAINED_INFO,
+                                getName(), getHostName());
                   }//if was link dead
                   else {
                      /* regular logging in */
@@ -645,12 +647,13 @@ int  quit_do_login_new(critter& pc) {
 
    String buf(100);
 
-   Sprintf(buf, "   INFO: [NEW PLAYER]  %S connecting from: %S\n",
-	   name_of_crit(pc, ~0), pc.getHostName());
-   buf.setCharAt(0, 7); //beep
-   buf.setCharAt(1, 7); //beep
-   buf.setCharAt(2, 7); //beep
-   show_all_info(buf);
+   doShowList(&pc, Selectors::instance().CC_gets_info_allow,
+              Selectors::instance().CC_using_client, pc_list,
+              CS_NEW_PLAYER_INFO_NC, pc.getName(), pc.getHostName());
+   
+   doShowList(&pc, Selectors::instance().CC_gets_info_allow,
+              Selectors::instance().CC_not_using_client, pc_list,
+              CS_NEW_PLAYER_INFO_C, pc.getName(), pc.getHostName());
 
    pc.pc->last_login_time = time(NULL);
    
@@ -733,10 +736,11 @@ int  quit_do_login_old(critter& pc) {
    //if (pc.USING_CLIENT) {
    //   show("\n</PRE>\n", pc);
    //}
-   
-   Sprintf(temp_str, "   INFO:  %S has connected from: %S\n",
-	   name_of_crit(pc, ~0), pc.getHostName());
-   show_all_info(temp_str);
+                 
+   doShowList(&pc, Selectors::instance().CC_gets_info_allow,
+              Selectors::instance().CC_none, pc_list,
+              CS_PLAYER_HAS_CONNECTED_INFO,
+              pc.getName(), pc.getHostName());
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "Logging on existing character:  "

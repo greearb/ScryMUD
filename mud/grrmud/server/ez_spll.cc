@@ -1,5 +1,5 @@
-// $Id: ez_spll.cc,v 1.9 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: ez_spll.cc,v 1.10 1999/06/23 04:16:06 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
 
 //
 //ScryMUD Server Code
@@ -2384,7 +2384,7 @@ void do_cast_calm(critter& agg, int is_canned, int lvl) {
       }//else
    }//else !canned
 
-   if (do_effects) {
+   if (do_effects && !agg.isImmort()) {
       List<critter*> tmp_lst(room_list[agg.getCurRoomNum()].getCrits());
       Cell<critter*> cll(tmp_lst);
       critter* ptr;

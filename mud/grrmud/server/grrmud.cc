@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.20 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: grrmud.cc,v 1.21 1999/06/23 04:16:06 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
 
 //
 //ScryMUD Server Code
@@ -69,6 +69,8 @@
 #include "SkillSpell.h"
 #include "BuildInfo.h"
 #include "BugEntry.h"
+#include "Filters.h"
+
 
 #define MAX_HOSTNAME    256
 
@@ -1572,9 +1574,10 @@ int critter::doLogOffInactive() {
       SNOOPED_BY->SNOOPING = NULL;
    }
 
-   Sprintf(buf, " INFO:  %S has been taken off the link-dead list.\n",
-           getName());
-   show_all_info(buf); //notify imms flagged for extra_info
+   doShowList(this, Selectors::instance().CC_gets_info_allow,
+              Selectors::instance().CC_none, pc_list,
+              CS_PLAYER_OFF_LD_LIST_INFO,
+              getName());
 
    emote("has left the game.");
    
@@ -1616,8 +1619,10 @@ int critter::doGoLinkdead() {
       possessed_by = NULL;
    }
 
-   Sprintf(buf, " INFO:  %S has lost connection.\n", getName());
-   show_all_info(buf); //notify imms flagged for extra_info
+   doShowList(this, Selectors::instance().CC_gets_info_allow,
+              Selectors::instance().CC_none, pc_list,
+              CS_PLAYER_LOST_CON_INFO,
+              getName());
    
    if (MASTER) {
       Sprintf(buf, "%S has lost link.\n", getName());

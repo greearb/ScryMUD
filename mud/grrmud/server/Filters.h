@@ -1,5 +1,5 @@
-// $Id: Filters.h,v 1.2 1999/06/16 06:43:26 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/16 06:43:26 $
+// $Id: Filters.h,v 1.3 1999/06/23 04:16:06 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
 
 //
 //ScryMUD Server Code
@@ -40,6 +40,13 @@ class CritterSelector {
 public:
    virtual int matches(const critter* pc, const critter* b) { USE_VARS; return TRUE; }
    virtual const char* name() { return "CritterSelector"; }
+};
+
+/** Matches None. */
+class SelectNone : public CritterSelector {
+public:
+   virtual int matches(const critter* pc, const critter* b) { USE_VARS; return FALSE; }
+   virtual const char* name() { return "SelectNone"; }
 };
 
 /** matches when pc is an NPC */
@@ -132,6 +139,35 @@ public:
 };
 
 
+/** returns true if pc should get extra info (imm only for now) */
+class SelectGetsInfo : public CritterSelector {
+public:
+   virtual int matches(const critter* pc, const critter* b) {
+      USE_VARS; return (pc->isPc() && pc->PC_FLAGS.get(14));
+   }
+   virtual const char* name() { return "SelectGetsInfo"; }
+};
+
+
+/** returns true if pc is using the Hegemon Client */
+class SelectUsingClient : public CritterSelector {
+public:
+   virtual int matches(const critter* pc, const critter* b) {
+      USE_VARS; return (pc->isUsingClient());
+   }
+   virtual const char* name() { return "SelectUsingClient"; }
+};
+
+/** returns true if pc is NOT using the Hegemon Client */
+class SelectNotUsingClient : public CritterSelector {
+public:
+   virtual int matches(const critter* pc, const critter* b) {
+      USE_VARS; return (!pc->isUsingClient());
+   }
+   virtual const char* name() { return "SelectNotUsingClient"; }
+};
+
+
 class CSelectorColl {
 public:
    enum SelectorRule {
@@ -183,6 +219,7 @@ protected:
 
 public:
    CritterSelector selectAll;
+   SelectNone selectNone;
    SelectCanDetectActor selectCanDetectActor;
    SelectNPC selectNPC;
    SelectNPC_Possessed selectNPC_Possessed;
@@ -191,10 +228,17 @@ public:
    SelectActorSneakWorked selectActorSneakWorked;
    SelectIsSleeping selectIsSleeping;
    SelectIsMeditating selectIsMeditating;
+   SelectGetsInfo selectGetsInfo;
+   SelectUsingClient selectUsingClient;
+   SelectNotUsingClient selectNotUsingClient;
 
    CSelectorColl CC_all;
+   CSelectorColl CC_none;
    CSelectorColl CC_mob_entry_allow;
    CSelectorColl CC_mob_entry_deny;
+   CSelectorColl CC_gets_info_allow;
+   CSelectorColl CC_using_client;
+   CSelectorColl CC_not_using_client;
 
    static Selectors& instance();
 

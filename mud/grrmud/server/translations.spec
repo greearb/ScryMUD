@@ -1,5 +1,5 @@
-# $Id: translations.spec,v 1.9 1999/06/16 06:43:27 greear Exp $
-# $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/16 06:43:27 $
+# $Id: translations.spec,v 1.10 1999/06/23 04:16:07 greear Exp $
+# $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/23 04:16:07 $
 
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
@@ -35,19 +35,56 @@ CS_YOU_GAGGED
 	English "You have been gagged."
 	Spanish "Esta no hace hablar." ~
 
+CS_SAY_SPRINTF
+	eng "%S\\n%S says, '%S'\\n%S"
+	spa "%S\\n%S habla, '%S'\\n%S"
+	~ 
+
 # Shown when you try to communicate in your sleep.
 CS_MUTTER_SLEEP
 	Eng "You mutter in your sleep."
 	~
 
+CS_NEW_PLAYER_INFO_NC
+	eng "\007\007\007 INFO: [NEW PLAYER]  %S connecting from: %S\n"
+	~
+
+CS_NEW_PLAYER_INFO_C
+	eng "<BEEP> INFO: [NEW PLAYER]  %S connecting from: %S\n"
+	~
+
+CS_PLAYER_REGAINED_INFO
+	eng "  INFO:  %S has regained connection from: %S\n"
+	~
+
+CS_PLAYER_HAS_CONNECTED_INFO
+	eng "   INFO:  %S has connected from: %S\n"
+	~
+
+CS_PLAYER_OFF_LD_LIST_INFO
+	eng " INFO:  %S has been taken off the link-dead list.\n"
+	~
+
+CS_PLAYER_LOST_CON_INFO
+	eng " INFO:  %S has lost connection.\n"
+	~
+
+CS_PKILLED_INFO
+	eng "  INFO:  %S has P-KILLED %S in room %i!!\n"
+	~
+
+CS_KILLED_INFO
+	eng "  INFO:  %S was killed by %S in room: %i\n"
+	~
+
+CS_PERM_DEATH_INFO
+	eng "%S has permanently died for lack of constitution!\n"
+	~
+
+
 CS_YELL_SLEEP
 	eng "You roar in your sleep!\n"
 	~
-
-CS_SAY_SPRINTF
-	eng "%S\\n%S says, '%S'\\n%S"
-	spa "%S\\n%S habla, '%S'\\n%S"
-	~ 
 
 CS_SAY_OBJ_SPRINTF
 	eng "\n####%S says, '%S'\n"

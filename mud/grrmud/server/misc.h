@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.9 1999/06/18 06:52:38 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/18 06:52:38 $
+// $Id: misc.h,v 1.10 1999/06/23 04:16:07 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/23 04:16:07 $
 
 //
 //ScryMUD Server Code
@@ -101,8 +101,12 @@ int detect(int see_bit, int vis_bit); //does bit comparison
 void show(const char* message, critter& pc);
 void show_all_but_2(critter& A, critter& B, const char* message, 
                     room& rm); 
-void show_all_info(const char* msg); //to entire pc_list flaged for info
 void show_all(const char* msg, const room& rm);
+
+int vDoShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
+                List<critter*>& lst, CSentryE cs_entry, va_list argp);
+int doShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,
+               List<critter*>& lst, CSentryE cs_entry, ...);
 
 void out_str(const List<String*>& lst, critter& pc); 
 void out_crit(const List<critter*>& lst, critter& pc);  

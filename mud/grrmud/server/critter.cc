@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.27 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: critter.cc,v 1.28 1999/06/23 04:16:06 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
 
 //
 //ScryMUD Server Code
@@ -3081,7 +3081,7 @@ void critter::unPossess() {
    }
 }//unpossess
 
-int critter::isUsingClient() {
+int critter::isUsingClient() const {
    return ((pc && pc->pc_data_flags.get(5)) || 
            (possessed_by && possessed_by->pc->pc_data_flags.get(5)));
 }//isUsingClient

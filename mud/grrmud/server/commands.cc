@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.23 1999/06/22 05:33:09 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/22 05:33:09 $
+// $Id: commands.cc,v 1.24 1999/06/23 04:16:06 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
 
 //
 //ScryMUD Server Code
@@ -267,7 +267,7 @@ int show_eq(critter& pc) {
 int examine(int i_th, const String* obj, critter& pc) {
    String buf(100);
 
-   if (ok_to_do_action(NULL, "mSFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+   if (ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
    
       object* obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT, 
                                        ROOM);

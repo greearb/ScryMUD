@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.21 1999/06/20 02:01:44 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/20 02:01:44 $
+// $Id: critter.h,v 1.22 1999/06/23 04:16:06 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
 
 //
 //ScryMUD Server Code
@@ -892,7 +892,7 @@ public:
    int canDetectMagic() { return (mob || (pc && PC_FLAGS.get(18))); }
    int canDetect(const critter& other) const;
    int canDive() const { return CRIT_FLAGS.get(19); }
-   int isUsingClient();
+   int isUsingClient() const ;
    int isUsingColor();
    int isBrief();
    int shouldSeeInventory();

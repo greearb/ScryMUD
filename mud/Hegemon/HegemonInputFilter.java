@@ -1,5 +1,5 @@
-// $Id: HegemonInputFilter.java,v 1.13 1999/06/05 23:29:12 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+// $Id: HegemonInputFilter.java,v 1.14 1999/06/23 04:16:05 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/06/23 04:16:05 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -107,6 +107,12 @@ class HegemonInputFilter extends Object {
               heg_scroll.getProperties().popColor();
             if (color_mgr.getBattleFont() != null)
               heg_scroll.getProperties().popFont();
+            return true;
+         }});
+
+      tag_hash.put("BEEP", new TagCommand() {
+         public boolean run(Vector args) {
+            java.awt.Toolkit.getDefaultToolkit().beep();
             return true;
          }});
 

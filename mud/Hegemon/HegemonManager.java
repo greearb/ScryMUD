@@ -1,5 +1,5 @@
-// $Id: HegemonManager.java,v 1.9 1999/06/05 23:29:12 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+// $Id: HegemonManager.java,v 1.10 1999/06/23 04:16:05 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/23 04:16:05 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -188,7 +188,8 @@ class HegemonManager extends Object {
 
    public void closeConnection() {
       if (socket_mgr != null) {
-         socket_mgr.close();
+         socket_mgr.signalWriterDeath(); //modify Title & stuff
+         socket_mgr.destroy();
       }
       socket_mgr = null;
    }//closeConnection
