@@ -1,5 +1,5 @@
-// $Id: spells2.cc,v 1.15 2001/03/29 03:02:35 eroper Exp $
-// $Revision: 1.15 $  $Author: eroper $ $Date: 2001/03/29 03:02:35 $
+// $Id: spells2.cc,v 1.16 2001/06/10 23:01:25 justin Exp $
+// $Revision: 1.16 $  $Author: justin $ $Date: 2001/06/10 23:01:25 $
 
 //
 //ScryMUD Server Code
@@ -2593,7 +2593,7 @@ void do_cast_sober(critter& vict, critter& agg, int is_canned, int lvl) {
 	  vict.DRUGGED = -2;
           show("You feel great except for a splitting headache!\n",
                agg);
-          Sprintf(buf, "clears %s head.", get_himself_herself(agg));
+          Sprintf(buf, "clears %s head.", get_his_her(agg));
           emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, NULL);
        }//if
        else {
