@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.53 2002/03/03 20:16:53 gingon Exp $
-// $Revision: 1.53 $  $Author: gingon $ $Date: 2002/03/03 20:16:53 $
+// $Id: misc.cc,v 1.54 2002/08/08 04:22:58 jpiper Exp $
+// $Revision: 1.54 $  $Author: jpiper $ $Date: 2002/08/08 04:22:58 $
 
 //
 //ScryMUD Server Code
@@ -442,7 +442,7 @@ void do_mini_tick() { // decrement pause count ect
 
 
 void do_regeneration_pcs() {
-   float adj = 1.0, posn_mod;
+   float adj = 1.0, posn_mod, align_mod = 1.0;
    Cell<critter*> crit_cell;
    pc_list.head(crit_cell);
    critter* crit_ptr;
@@ -479,26 +479,22 @@ void do_regeneration_pcs() {
                             * adj + 10.0);
       }
 
-      // if we are a necromancer we have to stay evil or we don't regen mana
-      // poo-poo.
-      if ( crit_ptr->isNecromancer() && crit_ptr->getLevel() >= 5 &&
-              (crit_ptr->getAlignment() > (crit_ptr->getLevel()*15*-1)) ) {
-          crit_ptr->show("You are not evil enough for your deity.\n", HL_DEF);
-      }
       // if we are affected by remove karma we get no mana
-      else if ( ! (is_affected_by(REMOVE_KARMA_SKILL_NUM, *crit_ptr)) ) {
+      if ( ! (is_affected_by(REMOVE_KARMA_SKILL_NUM, *crit_ptr)) ) {
 
+         // Adjust regeneration for necromancers.
          if(crit_ptr->isNecromancer()){
-      
-            int zero_point = crit_ptr->LEVEL*15*-1;
-            adj *= (1.73123*log((float)1+((crit_ptr->ALIGN - zero_point) / 
-                   (-1000 - zero_point))));
+            // Break even point: -220 at level 1, -800 at level 30.
+            int breakeven = 200 + (20 * crit_ptr->LEVEL);
+            // Regeneration can be up to 10x the normal rate.
+            align_mod = 1/pow(10, (breakeven+crit_ptr->ALIGN)/(1000-breakeven));
          }
       
          crit_ptr->MANA += (int)(((((float)(crit_ptr->INT)) + 5.0) / 16.0) *
                               posn_mod *
                               (((float)(crit_ptr->MA_MAX)) / 7.0) *
                               (((float)(crit_ptr->MA_REGEN)) / 100.0) *
+                              align_mod *
                               adj + 4.0);
       }
 
