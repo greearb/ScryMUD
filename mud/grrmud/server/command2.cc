@@ -2316,9 +2316,10 @@ int do_mstat(critter& targ, critter& pc) {
       show(buf2, pc);
 
       Sprintf(buf2,
-              "RELIGION: %i  BH_dice_count: %i  BH_DICE_SIDES: %i\n",
-              crit_ptr->RELIGION, crit_ptr->BH_DICE_COUNT,
-              crit_ptr->BH_DICE_SIDES);
+              "RELIGION: %i  BH_dice_count: %i(%i)  BH_DICE_SIDES: %i(%i)\n",
+              crit_ptr->RELIGION, crit_ptr->getBHDC(true),
+              crit_ptr->getBHDC(false), crit_ptr->getBHDS(true),
+              crit_ptr->getBHDC(false));
       show(buf2, pc);
 
       Sprintf(buf2,

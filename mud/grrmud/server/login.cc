@@ -422,15 +422,15 @@ void critter::doLogin() {
                   int i;
                   for(i=0;i<MAX_EQ;i++) {
                      if (EQ[i]) {
-                        remove_eq_effects(*(EQ[i]), *this, i, FALSE);
+                        remove_eq_effects(*(EQ[i]), *this, FALSE, FALSE, i);
                      }
                   }
                }
                /* the following code is to correct for an issue we had with
                 * runaway BHDC/BHDS. Eventually this code can go away.
                 */
-               if ( pc->getBHDC(false) > 2 ) { pc->BH_DICE_COUNT = 2; }
-               if ( pc->getBHDS(false) > 3 ) { pc->BH_DICE_SIDES = 3; }
+               if ( getBHDC(false) > 2 ) { BH_DICE_COUNT = 2; }
+               if ( getBHDS(false) > 3 ) { BH_DICE_SIDES = 3; }
 
                // re-gain effects from worn gear
                   {
