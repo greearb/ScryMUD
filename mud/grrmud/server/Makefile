@@ -4,7 +4,7 @@ include ../../MakeInclude
 
 CODE_GEN_SRCS = code_gen.cc
 CODE_GEN_OBJS = code_gen.o
-CODE_GEN_TARG = code_gen
+CODE_GEN_TARG = ./code_gen
 
 
 SRCS  = parse_gen.cc classes.cc object.cc critter.cc \

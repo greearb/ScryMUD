@@ -1,6 +1,6 @@
 #
 # ScryMUD Server Code
-# Copyright (C) 1998  Ben Greear
+# Copyright (C) 1998-1999  Ben Greear
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
