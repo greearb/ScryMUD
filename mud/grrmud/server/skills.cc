@@ -1,5 +1,5 @@
-// $Id: skills.cc,v 1.22 2002/08/27 21:44:35 eroper Exp $
-// $Revision: 1.22 $  $Author: eroper $ $Date: 2002/08/27 21:44:35 $
+// $Id: skills.cc,v 1.23 2002/08/29 21:30:52 eroper Exp $
+// $Revision: 1.23 $  $Author: eroper $ $Date: 2002/08/29 21:30:52 $
 
 //
 //ScryMUD Server Code
@@ -591,8 +591,10 @@ int do_bash(critter& vict, critter& pc) {
 
       wd = pc.DAM + d(pc.BH_DICE_COUNT, pc.BH_DICE_SIDES);
 
-      exact_raw_damage( (d(pc.STR/2, 5) + pc.DEX/2)+(wd*2), NORMAL, vict, pc);
-      vict.PAUSE += 1;
+      exact_raw_damage( (d(pc.STR/2, 5) + pc.DEX/2)+(wd*2) + (int)(pc.LEVEL/5),
+            NORMAL, vict, pc);
+      pc.PAUSE += 1;
+      vict.PAUSE += d(1,2);
 
       if (vict.HP < 0) {
          Sprintf(buf, "crushes the skull of %S with %s fist!!\n", 
