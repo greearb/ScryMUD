@@ -1,5 +1,5 @@
-// $Id: socials.cc,v 1.10 2002/02/07 08:51:49 eroper Exp $
-// $Revision: 1.10 $  $Author: eroper $ $Date: 2002/02/07 08:51:49 $
+// $Id: socials.cc,v 1.11 2002/08/27 07:54:57 gingon Exp $
+// $Revision: 1.11 $  $Author: gingon $ $Date: 2002/08/27 07:54:57 $
 
 //
 //ScryMUD Server Code
@@ -651,9 +651,14 @@ void social_jump(int i_th, const String* vict, critter& pc, room& rm) {
                  long_name_of_obj(*obj_ptr, ~0));
          pc.emote(buf);
       }
-      else {
-         pc.show(CS_DONT_SEEM_TO_HAVE_THAT);
+     
+      else if((obj_ptr = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT))){
+         Sprintf(buf, "You jump around on %S.", long_name_of_obj(*obj_ptr, ~0));
+         pc.show(buf);
+         Sprintf(buf, "jumps up and down on %S.", long_name_of_obj(*obj_ptr, ~0));
+         pc.emote(buf);
       }
+      else pc.show(CS_DONT_SEEM_TO_HAVE_THAT);
    }
    else {
       pc.show("You jump up and down in frustration.\n");
