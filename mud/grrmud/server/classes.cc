@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.9 1999/08/01 08:40:22 greear Exp $
-// $Revision: 1.9 $  $Author: greear $ $Date: 1999/08/01 08:40:22 $
+// $Id: classes.cc,v 1.10 1999/08/09 06:00:39 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
 
 //
 //ScryMUD Server Code
@@ -62,7 +62,8 @@ ContainedObject::~ContainedObject() {
    SafeList<ContainedObject*>* ptr;
    while (!contained_by.isEmpty()) {
       ptr = contained_by.popFront();
-      ptr->privRemoveObject__((ContainedObject*)(this));
+      ContainedObject* tmp_ptr = this;
+      ptr->privRemoveObject__(tmp_ptr);
    }//while
 }//destructor
 

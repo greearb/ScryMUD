@@ -1,5 +1,5 @@
-// $Id: door.h,v 1.11 1999/08/04 06:29:17 greear Exp $
-// $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/04 06:29:17 $
+// $Id: door.h,v 1.12 1999/08/09 06:00:39 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
 
 //
 //ScryMUD Server Code
@@ -79,7 +79,7 @@ class critter;
  * several of Entity's methods, especially those dealing with
  * name and description data.
  */
-class door : Entity {
+class door : public Entity {
 private:
    static int _cnt;
 
@@ -131,6 +131,8 @@ public:
          return dr_data->getTokenNum();
       return 0;
    }
+
+   int getCurRoomNum();
 
    room* getDestRoom();
    String* getDirection();

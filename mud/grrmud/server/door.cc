@@ -1,5 +1,5 @@
-// $Id: door.cc,v 1.3 1999/06/22 05:33:09 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/22 05:33:09 $
+// $Id: door.cc,v 1.4 1999/08/09 06:00:39 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
 
 //
 //ScryMUD Server Code
@@ -185,6 +185,17 @@ door::~door() {
    affected_doors.loseData(this);
    Clear();
 }//destructor
+
+int door::getCurRoomNum() {
+   if (getContainer()) {
+      return getContainer()->getCurRoomNum();
+   }
+   if (mudlog.ofLevel(WRN)) {
+      mudlog << "WARNING:  door::getCurRoomNum failed\n";
+   }
+   return 0;
+}//getCurRoomNum
+
 
 void door::Clear() {
    dr_data = NULL; //do not delete data pointed too, its in static arrays

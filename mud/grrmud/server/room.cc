@@ -1,5 +1,5 @@
-// $Id: room.cc,v 1.32 1999/08/05 05:48:17 greear Exp $
-// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/05 05:48:17 $
+// $Id: room.cc,v 1.33 1999/08/09 06:00:39 greear Exp $
+// $Revision: 1.33 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
 
 //
 //ScryMUD Server Code
@@ -64,6 +64,16 @@ KeywordPair::KeywordPair(const KeywordPair& src) {
    *this = src;
 }
 
+int KeywordPair::getCurRoomNum() {
+   if (getContainer()) {
+      return getContainer()->getCurRoomNum();
+   }
+   if (mudlog.ofLevel(WRN)) {
+      mudlog << "WARNING:  KeywordPair::getCurRoomNum failed\n";
+   }
+   return 0;
+}//getCurRoomNum
+
 KeywordPair& KeywordPair::operator=(const KeywordPair& rhs) {
    if (&rhs != this) {
       *((Entity*)(this)) = (Entity)(rhs);
@@ -75,7 +85,7 @@ KeywordPair& KeywordPair::operator=(const KeywordPair& rhs) {
 
 KeywordPair* room::haveKeyword(int i_th, const String* name, critter* viewer) {
    int cnt = 0;
-   Cell<KeywordPair*> cll(keywords);
+   SCell<KeywordPair*> cll(keywords);
    KeywordPair* ptr;
 
    while ((ptr = cll.next())) {
@@ -93,7 +103,7 @@ KeywordPair* room::haveKeyword(int i_th, const String* name, critter* viewer) {
 
 int room::_cnt = 0;
 
-room::room() : critters(NULL), inv(NULL), doors(NULL) {
+room::room() : critters(NULL), inv(NULL) {
    _cnt++;
    for (int i = 0; i<ROOM_CUR_STATS; i++) {
       cur_stats[i] = 0;
@@ -103,7 +113,7 @@ room::room() : critters(NULL), inv(NULL), doors(NULL) {
    obj_ptr_log << "RM_CON " << getIdNum() << " " << this << "\n";
 } // sub_room constructor
 
-room::room(int rm_num) : critters(NULL), inv(NULL), doors(NULL) {
+room::room(int rm_num) : critters(NULL), inv(NULL) {
    _cnt++;
    for (int i = 0; i<ROOM_CUR_STATS; i++) {
       cur_stats[i] = 0;
@@ -180,7 +190,7 @@ void room::recursivelyLoad() { //mobs and objects
 }//recursivelyLoad()
 
 
-room::room(room& source) : critters(NULL), inv(NULL), doors(NULL) {
+room::room(room& source) : critters(NULL), inv(NULL) {
    _cnt++;
    *this = source; //overloaded = operator
    
@@ -209,7 +219,6 @@ room& room::operator=(room& source) {
       return *this;
 
    int i;
-   String* string;
    SCell<object*> obj_cll;
    object* obj_ptr;
    SCell<critter*> crit_cll;
@@ -238,11 +247,7 @@ room& room::operator=(room& source) {
       }//if
    }//while
 
-   SCell<door*> dcell(source.doors);
-   door* dptr;
-   while ((dptr = dcell.next())) {
-      doors.append(new door(*dptr));
-   }//while
+   doors.becomeDeepCopyOf(source.doors);
    
    source.critters.head(crit_cll);
    while ((crit_ptr = crit_cll.next())) {
@@ -296,19 +301,18 @@ int room::read(istream& ifile, int read_all = TRUE) {
    // Grab the first token, if it's <META then we're V3+, otherwise
    // we're V2.
    String str(50);
-   ofile >> str; //grab the first token, if V2.x it not be <META
+   ifile >> str; //grab the first token, if V2.x it not be <META
 
    if (str == "<META") {
-      read_v3(ifile, read_all);
+      return read_v3(ifile, read_all);
    }
    else {
-      read_v2(ifile, read_all, str);
+      return read_v2(ifile, read_all, str);
    }
 }//read
 
 int room::read_v2(istream& ofile, int read_all, String& firstName) {
    int i, test = TRUE;
-   stat_spell_cell* ss_ptr;
    char tmp[81];
    String tmp_str(80);
    String* string;
@@ -324,7 +328,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
       if (mudlog.ofLevel(ERR)) {
          mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
       }
-      return;
+      return -1;
    }
 
    while (test) {
@@ -332,7 +336,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in room read." << endl;
          }
-         return;
+         return -1;
       }
       ofile >> tmp_str;
       if (strcmp(tmp_str, "~") == 0) {
@@ -340,17 +344,18 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
       }//if
       else {
          string = new String(tmp_str);
-         Put(string, names);
+         appendName(string);
       }//else
    }//while            
    ofile.getline(tmp, 80);         
 
-   short_desc.Termed_Read(ofile);
-   //mudlog.log(DBG, short_desc);
+   tmp_str.termedRead(ofile);
+   addShortDesc(tmp_str);
 
-   long_desc.Termed_Read(ofile);
+   tmp_str.termedRead(ofile);
+   addLongDesc(tmp_str);
 
-   room_flags.Read(ofile);
+   room_flags.read(ofile);
    room_flags.turn_on(23); //turn on in_use flag for CERTAIN
    if (room_flags.get(21)) { //if zlocked
       read_all = TRUE;
@@ -365,7 +370,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
          ofile.getline(tmp, 80);
          if (i != -1) {
             kwd_ptr = new KeywordPair();
-            kwd_ptr->read(ofile);
+            kwd_ptr->read(ofile, read_all);
             keywords.append(kwd_ptr);
          }
          else { //read line, then read desc
@@ -386,19 +391,21 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
 
 
                 /*  Affected By */
+   SpellDuration* sd_ptr = NULL;
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in room read." << endl;
          }
-         return;
+         return -1;
       }
       
-      ss_ptr = new stat_spell_cell;
-      ss_ptr->stat_spell = i;
-      ofile >> ss_ptr->bonus_duration;
-      Put(ss_ptr, affected_by);
+      sd_ptr = new SpellDuration();
+      sd_ptr->spell = i;
+      ofile >> sd_ptr->duration;
+      
+      addAffectedBy(sd_ptr);
       
       ofile >> i;
    }//while
@@ -421,7 +428,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
             mudlog << "ERROR:  da_file FALSE in room read, inv."
               << endl;
          }
-         return;
+         return -1;
       }
       if (check_l_range(i, 0, NUMBER_OF_ITEMS, mob_list[0], FALSE)) {
          if (obj_list[i].isInUse()) {
@@ -444,7 +451,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
    ofile.getline(tmp, 80);   
 
                        /*  Doors  */
-   Cell<door*> cll;
+   SCell<door*> cll;
    door* walker;
    short did_insert = FALSE;
    ofile >> i; //check for terminal value
@@ -453,14 +460,15 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
          }
-         return;
+         return -1;
       }
 
       dr_ptr = new door;
-      dr_ptr->Read(ofile);
-      dr_ptr->in_room = cur_stats[2]; //RM_NUM
+      dr_ptr->read(ofile);
+      dr_ptr->setContainer(this);
       doors.head(cll);
       String* dr_name = name_of_door(*dr_ptr, ~0);
+
       if (!dr_name) {
          mudlog.log(ERR, "ERROR:  dr_name is NULL.");
       }//if
@@ -492,7 +500,7 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
          }
-         return;
+         return -1;
       }
 
       if (mob_list[i].isInUse()) {
@@ -538,12 +546,12 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
             if (mudlog.ofLevel(ERR)) {
                mudlog << "ERROR:  mob_data reading script da_file FALSE." << endl;
             }
-            return;
+            return -1;
          }
 
          ptr = new RoomScript();
          ptr->read(ofile);
-         Put(ptr, room_proc_scripts);
+         addProcScript(ptr);
          ofile >> sent_;
          ofile.getline(tmp, 80);
          if (mudlog.ofLevel(DB))
@@ -563,8 +571,8 @@ int room::read_v2(istream& ofile, int read_all, String& firstName) {
    if (mudlog.ofLevel(DB)) {
       mudlog << "Done reading room, number:  " << getRoomNum() << endl;
    }
+   return 0;
 }//read_v2
-
 
 
 //TODO
@@ -572,7 +580,6 @@ int room::read_v3(istream& ofile, int read_all = TRUE) {
    int i;
    char tmp[81];
    String tmp_str(80);
-   String* string;
    door* dr_ptr;
 
    if (mudlog.ofLevel(DB)) {
@@ -667,7 +674,7 @@ int room::read_v3(istream& ofile, int read_all = TRUE) {
    ofile.getline(tmp, 80);   
 
                        /*  Doors  */
-   Cell<door*> cll;
+   SCell<door*> cll;
    door* walker;
    short did_insert = FALSE;
    ofile >> i; //check for terminal value
@@ -676,18 +683,19 @@ int room::read_v3(istream& ofile, int read_all = TRUE) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
          }
-         return;
+         return -1;
       }
 
-      dr_ptr = new door;
+      dr_ptr = new door();
       dr_ptr->read(ofile, read_all);
       dr_ptr->setContainer(this);
       doors.head(cll);
+      tmp_str = *(dr_ptr->getDirection());
 
-      String* walk_name;
+      const String* walk_name;
       while ((walker = cll.next())) {
 	 walk_name = walker->getName();
-         if (*walk_name > *dr_name) {
+         if (*walk_name > tmp_str) {
             doors.insertBefore(cll, dr_ptr);
             did_insert = TRUE;
             break;
@@ -711,7 +719,7 @@ int room::read_v3(istream& ofile, int read_all = TRUE) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
          }
-         return;
+         return -1;
       }
 
       if (mob_list[i].isInUse()) {
@@ -746,20 +754,8 @@ int room::read_v3(istream& ofile, int read_all = TRUE) {
    if (mudlog.ofLevel(DB)) {
       mudlog << "Done reading room, number:  " << getRoomNum() << endl;
    }
+   return 0;
 }//read_v3
-
-
-stat_spell_cell* room::isAffectedBy(int spell_num) {
-   Cell<stat_spell_cell*> cll(affected_by);
-   stat_spell_cell* ptr;
-   
-   while ((ptr = cll.next())) {
-      if (ptr->stat_spell == spell_num)
-         return ptr;
-   }//while
-
-   return NULL;
-}//is_affected_by
 
 
 void room::checkLight(int do_msg) {

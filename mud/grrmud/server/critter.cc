@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.42 1999/08/05 05:48:17 greear Exp $
-// $Revision: 1.42 $  $Author: greear $ $Date: 1999/08/05 05:48:17 $
+// $Id: critter.cc,v 1.43 1999/08/09 06:00:39 greear Exp $
+// $Revision: 1.43 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
 
 //
 //ScryMUD Server Code
@@ -184,7 +184,7 @@ int PlayerShopData::write(ostream& da_file) {
 
 int shop_data::_cnt = 0;
 
-shop_data::shop_data() : perm_inv(NULL) {
+shop_data::shop_data() : perm_inv((object*)(NULL)) {
    _cnt++;
    markup = buy_percentage = open_time = close_time = 0;
 }//constructor;

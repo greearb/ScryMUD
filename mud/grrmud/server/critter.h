@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.34 1999/08/05 05:48:17 greear Exp $
-// $Revision: 1.34 $  $Author: greear $ $Date: 1999/08/05 05:48:17 $
+// $Id: critter.h,v 1.35 1999/08/09 06:00:39 greear Exp $
+// $Revision: 1.35 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
 
 //
 //ScryMUD Server Code
@@ -816,6 +816,7 @@ public:
    int isSneaking() const;
    int isHiding() const;
    
+   int isModified() const { return isSmob(); }
    int isMob() const { return (CRITTER_TYPE == 2); }
    int isNPC() const { return (isMob() || isSmob()); }
    int isSmob() const { return (CRITTER_TYPE == 1); }

@@ -1,5 +1,5 @@
-// $Id: SafeList.h,v 1.2 1999/08/03 05:55:34 greear Exp $
-// $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/03 05:55:34 $
+// $Id: SafeList.h,v 1.3 1999/08/09 06:00:40 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/08/09 06:00:40 $
 
 //
 //ScryMUD Server Code
@@ -119,7 +119,7 @@ public:
    const T getNil() const { return header->item; }
 
    /**  Only makes a shallow copy. */
-   SafeList(const SafeList<T> &L) : sz(0) { //copy constructor
+   SafeList(SafeList<T> &L) : sz(0) { //copy constructor
       __s_list_cnt++;
 
       header = new Node;
@@ -136,7 +136,7 @@ public:
    } // copy constructor
 
 
-   SafeList(const T &Nil) : sz(0) {
+   SafeList(T Nil) : sz(0) { //Compiler doesn't like T& Nil
       __s_list_cnt++;
       header = new Node;
       header->item = Nil;
@@ -164,7 +164,7 @@ public:
    } //destructor 
 
    /** Shallow copy of data contained, full copy of all cells. */
-   virtual SafeList<T> &operator= (const SafeList &L) {
+   virtual SafeList<T> &operator= (SafeList &L) {
       
       if (this != &L) { // Don't copy yourself
          this->clear();       
@@ -191,7 +191,7 @@ public:
       sz = 0;
    }// clear
 
-   virtual String toString() const {
+   virtual String toString() {
       String retval(200);
       String tmp(50);
 
@@ -231,7 +231,7 @@ public:
     *  NOTE:  The 'const' is a lie, but it makes the compiler not put
     *  out a warning about passing references of lvalues. --Ben
     */
-   virtual T privRemoveObject__(const T& data) {
+   virtual T privRemoveObject__(T& data) {
       SCell<T> cell(*this);
       T ldata;
 
@@ -275,7 +275,7 @@ public:
    }//SubstituteData   
 
 
-   virtual int haveData (const T& data) const {
+   virtual int haveData (const T& data) {
       SCell<T> cell(*this);
       T ldata;
       
@@ -287,7 +287,7 @@ public:
       return FALSE;
    }//HaveData   
 
-   virtual int dataCount(const T& data) const {
+   virtual int dataCount(T& data) {
       SCell<T> cell(*this);
       T ldata;
       int retval = 0;
@@ -388,7 +388,7 @@ public:
       return getNil();
    }//removeAt
 
-   virtual T elementAt(int index) const {
+   virtual T elementAt(int index) {
       SCell<T> cll(*this);
       int i = 0;
 
@@ -407,13 +407,13 @@ public:
 
    /**  Returns the item contained at the End of the list, it
        DOES NOT delete the item from the list.  */
-   virtual T peekRear() const {
+   virtual T peekRear() {
       return header->prev->item; 
    }//
 
    /**  Returns the item contained at the Beginning of the list, it
        DOES NOT delete the item from the list.  */
-   virtual T peekFront() const {
+   virtual T peekFront() {
       return header->next->item; 
    }//top
  
@@ -431,19 +431,19 @@ public:
       }//else
    }//head
 
-   virtual int assign(SCell<T>& cll, const T& data) {
+   virtual int assign(SCell<T>& cll, T& data) {
       Assert(cll.isInSafeList(this));
       cll.assign(data);
       return TRUE;
    }//Assign
 
-   virtual void insertBefore(SCell<T>& cll, const T& data) {
+   virtual void insertBefore(SCell<T>& cll, T& data) {
       Assert(cll.isInSafeList(this));
       sz++;
       cll.insertBefore(data);
    }//insertBefore
 
-   virtual void insertAfter(SCell<T>& cll, const T& data) {
+   virtual void insertAfter(SCell<T>& cll, T& data) {
       Assert(cll.isInSafeList(this));
       sz++;
       cll.insertAfter(data);
@@ -470,7 +470,7 @@ public:
    }//IsEmpty
 
    /*  size--  Returns the number of cells contained in a SafeList.  */
-   virtual int size() const {
+   virtual int size() {
       class SafeList<T>::Node* node_ptr = header->next;
       int count = 0;
    
@@ -582,7 +582,7 @@ protected:
 
 public:
    SCell () : node(NULL), in_lst(NULL) { __s_cell_cnt++; }
-   SCell (const SafeList<T>& L) : node(L.header) {
+   SCell (SafeList<T>& L) : node(L.header) {
       __s_cell_cnt++;
       in_lst = (SafeList<T>*)(&L);
       in_lst->handleAddSCell(*this);
@@ -640,19 +640,21 @@ public:
 template <class T> class SafePtrList : public SafeList<T*> {
 public:
    SafePtrList() : SafeList<T*>((T*)NULL) { }
-   SafePtrList(const SafePtrList<T> &L) : SafeList<T*>(L) { }
-   SafePtrList(const T &Nil) : List<T*>(Nil) { }
+   SafePtrList(SafePtrList<T> &L) : SafeList<T*>(L) { }
+   SafePtrList(T &Nil) : List<T*>(Nil) { }
    virtual ~SafePtrList() { }
 
    /** NOTE:  does a clearAndDestroy on self before starting on copying
     * the other.
     */
-   void becomeDeepCopyOf(const SafePtrList<T>& lst) {
+   void becomeDeepCopyOf(SafePtrList<T>& lst) {
       clearAndDestroy();
-      Cell<T*> cll(lst);
+      SCell<T*> cll(lst);
       T* ptr;
+      T* ptr2;
       while ((ptr = cll.next())) {
-         append(new T(*ptr));
+         ptr2 = new T(*ptr); //Adding this extra line makes the compiler happier.
+         append(ptr2);
       }//while
    }//becomeDeepCopyOf
 

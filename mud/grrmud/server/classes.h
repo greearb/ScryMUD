@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.15 1999/08/05 05:48:17 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 1999/08/05 05:48:17 $
+// $Id: classes.h,v 1.16 1999/08/09 06:00:39 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
 
 //
 //ScryMUD Server Code
@@ -244,8 +244,8 @@ public:
    void appendName(String* nm);
    void appendName(LString* nm);
 
-   void setLongDesc(LString& new_val);
-   void setLongDesc(String& new_val);
+   void addLongDesc(LString& new_val);
+   void addLongDesc(String& new_val);
 
    void addAffectedBy(SpellDuration* new_affect);
 

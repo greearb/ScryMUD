@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.22 1999/08/05 05:48:17 greear Exp $
-// $Revision: 1.22 $  $Author: greear $ $Date: 1999/08/05 05:48:17 $
+// $Id: room.h,v 1.23 1999/08/09 06:00:39 greear Exp $
+// $Revision: 1.23 $  $Author: greear $ $Date: 1999/08/09 06:00:39 $
 
 //
 //ScryMUD Server Code
@@ -62,6 +62,7 @@ public:
 
    KeywordPair& operator=(const KeywordPair& rhs);
    
+   int getCurRoomNum();
    virtual LEtypeE getEntityType() { return LE_RM_KEYWORD; }
    static int getInstanceCount() { return _cnt; }
 };//KeywordPair
@@ -106,8 +107,8 @@ protected:
 public:
    LStringCollection short_desc;
 
-   SafeList<door*> doors;   
-   PtrList<KeywordPair> keywords;
+   SafePtrList<door> doors;   
+   SafePtrList<KeywordPair> keywords;
 
    room();
    room(room& source);
@@ -196,6 +197,11 @@ public:
    virtual void clear();
    virtual int write(ostream& dafile);
    virtual int read(istream& dafile, int read_all = TRUE);
+   virtual int read_v2(istream& dafile, int read_all, String& firstName);
+   virtual int read_v3(istream& dafile, int read_all = TRUE);
+   virtual void addShortDesc(String& str);
+   virtual void addShortDesc(LString& str);
+
    /** Stuff used to generate meta data. */
    virtual LEtypeE getEntityType() { return LE_ROOM; }
 
