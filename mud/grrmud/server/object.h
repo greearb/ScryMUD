@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.39 2002/08/28 06:32:30 eroper Exp $
-// $Revision: 1.39 $  $Author: eroper $ $Date: 2002/08/28 06:32:30 $
+// $Id: object.h,v 1.40 2002/09/12 03:41:07 eroper Exp $
+// $Revision: 1.40 $  $Author: eroper $ $Date: 2002/09/12 03:41:07 $
 
 //
 //ScryMUD Server Code
@@ -296,8 +296,8 @@ public:
    int decrementCurInGame();
    int incrementCurInGame();
    int getMaxInGame();
-   int getDiceCnt() const { return extras[6]; }
-   int getDiceSides() const { return extras[7]; }
+   int getDiceCnt() const { return extras[7]; }
+   int getDiceSides() const { return extras[6]; }
 
    static int getInstanceCount() { return _cnt; }
 
