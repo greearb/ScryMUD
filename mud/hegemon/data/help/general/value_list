@@ -1,0 +1,17 @@
+Category:  General  Topic:  value_list
+
+
+
+This allows someone to list the buy and sell values for
+a player-run shopkeeper.  It does not necessarily imply that
+the shopkeeper has these items for sale at the current time.
+If you are using Hegemon, this command will fill out a nice
+editor GUI so that you can manipulate the values easily
+(if you are the manager of course!)
+
+Syntax:  value_list <i_th> [shopkeeper_name]
+         
+Example:  value_list shopkeeper  # Shows you a listing...
+
+
+See Also:  value_add, value_set, value_rem, adjust_register

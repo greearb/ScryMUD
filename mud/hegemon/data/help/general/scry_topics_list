@@ -1,4 +1,5 @@
 abilities
+adjust_register
 anitre
 balance
 brief
@@ -70,6 +71,9 @@ ungroup
 unlock
 up
 use
+value_list
+value_rem
+value_set
 wake
 wear
 west
