@@ -1228,10 +1228,14 @@ void fill(int i_th, const String* targ, int j_th, const String* source,
    source_obj = have_obj_named(ROOM.inv, j_th, source, pc.SEE_BIT, 
                                ROOM);
    if (!source_obj) {
-      in_inv_source = FALSE;
       source_obj = 
              have_obj_named(pc.inv, i_th, source, pc.SEE_BIT, ROOM);
+      in_inv_source = TRUE;
    }//if
+   else {
+      in_inv_source = FALSE;
+   }
+
    if (!targ_obj) {
       Sprintf(buf, "You don't seem to have the %S.\n", targ);
       show(buf, pc);
@@ -1302,8 +1306,16 @@ void fill(int i_th, const String* targ, int j_th, const String* source,
       targ_obj->gainInv(&(obj_list[Top(source_obj->ob->inv)->getIdNum()]));
 
                   /* test for infinite source */
-      if (source_obj->ob->extras[0] == -1) {
-	 mudlog.log(TRC, "Was an infinite source.\n");
+      if (source_obj->ob->extras[0] <= -1) {
+	 if (source_obj->ob->extras[0] < -1) {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "WARNING: Was an infinite source, < -1: "
+                      << source_obj->ob->extras[0] << endl;
+            }
+         }
+         else {
+            mudlog.log(TRC, "Was an infinite source.\n");
+         }
          targ_obj->ob->extras[0] = targ_obj->ob->bag->max_weight;
       }//if
                      /* not an infinite source */

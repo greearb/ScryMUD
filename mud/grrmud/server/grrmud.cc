@@ -485,7 +485,7 @@ any strange occurances.
    readSiteBanned();
 
    // By default, turn off logging specific to the DATABASE.
-   mudlog.setLevel(mudlog.getLevel() & ~DB);
+   mudlog.setLevel(79);
 
    // Drop into our endless loop.
    run_the_game(DFLT_PORT);

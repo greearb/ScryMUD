@@ -170,6 +170,8 @@ public:
    void resetProcMobs();
    void purgeCritter(int mob_num, critter& pc);
 
+   int processInput(String& input); /* for room scripts */
+
    int sub_a_4_b(critter* crit_ptr, int i_th, const String& name,
                  int see_bit);
    int sub_a_4_b(critter* a, critter* b, int i_th);

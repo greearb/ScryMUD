@@ -655,6 +655,11 @@ void obj::Read(ifstream& ofile, short read_all) {
       obj_proc->Read(ofile);
    }//if
 
+   /* if charges < -1, make them -1 (infinity) */
+   if (extras[0] < -1) {
+      extras[0] = -1;
+   }
+
    //mudlog.log(DBG, "Done reading in obj.\n");
    ofile.getline(tmp, 80); //junk end of obj msg
    ofile.getline(tmp, 80); //junk end of obj space

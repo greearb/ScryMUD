@@ -2559,7 +2559,7 @@ void oset(int i_th, const String* vict, const String* targ, int new_val,
    }//bag only
 
    if (strncasecmp(*targ, "charges", len1) == 0) {
-      if (check_l_range(new_val, 0, 100, pc, TRUE)) {
+      if (check_l_range(new_val, -1, 100, pc, TRUE)) {
          ptr->ob->extras[0] = new_val;
          flag = TRUE;
       }//if

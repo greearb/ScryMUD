@@ -2229,7 +2229,7 @@ void com_pecho(int i_th, const String* targ, const String* msg, critter& pc) {
 }//com_pecho
    
 
-/* command called by pc as recho(), zone echo */
+/* command called by pc as zecho(), zone echo */
 void com_zecho(const String* msg, critter& pc) {
    String buf2(100);
 
