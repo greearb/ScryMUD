@@ -1,0 +1,27 @@
+<help olc neighbor_echo>
+
+There are several ways to make a room communicate in a script.
+
+neighbor_echo:  Echo's a string to another room, shows all in the room.
+Syntax:  neighbor_echo <<j_th> [direction] [Message text]
+
+other_room_echo:  Similar to neighbor echo, but based on VNUM.
+Syntax:  neighbor_echo [ROOM VNUM] [Message text]
+
+tell:  Shows the player the EXACT STRING that is passed to it.
+Syntax:  tell <<i_th> [player] [Message Text]
+Example: tell 2.guard "The room trembles as you enter."
+
+recho:  Show all in the room a message.
+Syntax: recho [Message Text]
+
+zecho:  Show all in zone a message.
+Syntax: zecho [Message Text]
+
+wizchat: Show message to all listening on the wizchat channel.
+Syntax: wizchat [Message Text]
+Example: wizchat "Enjoy this, %M has just entered the dragon's lair!!"
+
+<color=red>
+See Also:  add_mob_script channels
+</color></help>

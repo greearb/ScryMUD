@@ -1,5 +1,5 @@
-// $Id: rm_parse.cc,v 1.8 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: rm_parse.cc,v 1.9 1999/07/12 07:14:32 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
 
 //
 //ScryMUD Server Code
@@ -137,6 +137,26 @@ int room::processInput(String& input) {
 
       return -1;
    }//if neighbor_echo
+
+
+   if (strncasecmp(raw_strings[0], "other_room_echo", 15) == 0) {
+      buf = input.Get_Command(eos, term_by_period);
+      if (buf.Strlen() != 0) {
+         if (isnum(buf)) {
+            i = atoi(buf);
+            buf = input.Get_Rest();
+            parse_communication(buf);
+            return this->other_room_echo(i, buf);
+         }//if is number
+         else {
+            if (mudlog.ofLevel(WRN)) {
+               mudlog << "WARNING:  No room number in other_room_echo, rm#"
+                      << this->getIdNum() << endl;
+            }
+         }//else
+      }//if
+      return -1;
+   }//if other_room_echo
 
    
    if (strcasecmp(raw_strings[0], "recho") == 0) {
@@ -287,6 +307,18 @@ int room::processInput(String& input) {
 	 }//if
          else if (strncasecmp(cooked_strs[0], "rm_move_all", len1) == 0) { 
 	    return this->move_all(i, &(cooked_strs[1]));
+	 }//if
+         else if (strncasecmp(cooked_strs[0], "rm_transport_all", len1) == 0) { 
+	    return this->transport_all(i);
+	 }//if
+         else if (strncasecmp(cooked_strs[0], "rm_transport", len1) == 0) { 
+	    return this->transport(i, &(cooked_strs[1]), j);
+	 }//if
+         else if (strncasecmp(cooked_strs[0], "rm_otransport_all", len1) == 0) { 
+	    return this->otransport_all(i);
+	 }//if
+         else if (strncasecmp(cooked_strs[0], "rm_otransport", len1) == 0) { 
+	    return this->otransport(i, &(cooked_strs[1]), j);
 	 }//if
          else if (strncasecmp(cooked_strs[0], "rm_omove", len1) == 0) { 
 	    return this->omove(i, &(cooked_strs[1]), j, &(cooked_strs[2]));

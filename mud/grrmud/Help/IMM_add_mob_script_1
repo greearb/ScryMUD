@@ -203,15 +203,20 @@ say End of script..;;
 ==============================
 NEW:  Room Scripting Commands:
 ------------------------------
-recho:          Echo a message to the room.
-tell:           The room tells a player a message.
-zecho:          Cause a message to be echoed across the entire zone.
-wizchat:        Cause a message to be sent to the wizchat channel.
-rm_move_all:    Force all players to exit in a certain direction.
-rm_move:        Force one player to exit in a certain direction.
-neighbor_echo:  Echo a message to a neighboring room (like after a move).
-rm_omove_all:   Force all objects to exit in a certain direction.
-rm_omove:       Force one object to exit in a certain direction.
+recho:            Echo a message to the room.
+tell:             The room tells a player a message.
+zecho:            Cause a message to be echoed across the entire zone.
+wizchat:          Cause a message to be sent to the wizchat channel.
+rm_move_all:      Force all players to exit in a certain direction.
+rm_move:          Force one player to exit in a certain direction.
+rm_transport_all: Move all mobs to another room.
+rm_transport:     Move one mob to another room.
+neighbor_echo:    Echo a message to a neighboring room (like after a move).
+other_room_echo:  Echo a message to a different room, by VNUM.
+rm_omove_all:     Force all objects to exit in a certain direction.
+rm_omove:         Force one object to exit in a certain direction.
+rm_otransport:    Force an object to go to another room.
+rm_otransport_all: Force all objecs to go to another room.
 
 ==============================
 NEW:  Object Scripting Commands:
@@ -230,5 +235,5 @@ push:           Triggered by: push [descriminator], see help for push.
 
 <color=red>
 See Also:  olc amsave mstat rm_script list_scripts stat_script affect_hp
-See Also:  affect_mana affect_mov comparators
+See Also:  affect_mana affect_mov comparators rm_comm
 </color></help>

@@ -4,10 +4,15 @@ Script command that allows a room to forcefully move all players out
 a certain exit.  It does not matter what state the player is in,
 and it does not matter if the exit is closed or not.
 
+A similar command:  rm_transport_all is also available.  It lets you
+specify the destination room by VNUM:  No doors are needed.
+
 usage:  rm_move_all <<i_th> [direction]
+usage:  rm_transport_all [DEST_ROOM_NUM]
 
 Example:  rm_move_all east     // Move all players to the east.
-
+Example:  rm_transport_all 21  // Move all players to room 21.
 <color=red>
 See Also:  rm_move rm_omove rm_omove_all add_mob_script neighbor_echo
+See Also:  rm_otransport_all
 </color></help>

@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.19 1999/06/23 04:16:06 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/06/23 04:16:06 $
+// $Id: command3.cc,v 1.20 1999/07/12 07:14:31 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/07/12 07:14:31 $
 
 //
 //ScryMUD Server Code
@@ -2297,9 +2297,9 @@ int who(critter& pc) {
          }
       }//else
 
-      Sprintf(buf, "%S%P11 %S(%S)%P25 %S\n",
-              name_of_crit(*ptr, pc.SEE_BIT),
-              &class_str, &lvl_str, &(ptr->short_desc));
+      Sprintf(buf, "%S %S %P45%S(%S)%P25\n",
+              ptr->getName(pc.SEE_BIT), &(ptr->short_desc),
+              &class_str, &lvl_str);
       show(buf, pc);
    }//while
    Sprintf(buf, "\nThere are currently %i people actively playing.\n",

@@ -7,12 +7,16 @@ special features:
       __TOP__           Choose the first.
       __BOTTOM__        Chose the last.
 
+A similar command:  rm_transport is also available.  It lets you
+specify the destination room by VNUM:  No doors are needed.
+
 usage:  rm_move <<i_th> [player/selection] <<j_th> [direction]
+usage:  rm_move <<i_th> [player/selection] [DEST_ROOM_NUM]
 
 Example:  rm_move __RANDOM__ east    // Move a random character east
 Example:  rm_move 2.guard 2.west     // Move the second guard out the
                                      // second west exit.
-
+Example:  rm_transport 2.guard 455   // Move guard to room 455
 <color=red>
-See Also:  rm_move_all add_mob_script rm_omove neighbor_echo
+See Also:  rm_move_all add_mob_script rm_omove neighbor_echo rm_otransport
 </color></help>

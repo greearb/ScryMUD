@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.27 1999/07/05 22:32:07 greear Exp $
-// $Revision: 1.27 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
+// $Id: commands.cc,v 1.28 1999/07/12 07:14:31 greear Exp $
+// $Revision: 1.28 $  $Author: greear $ $Date: 1999/07/12 07:14:31 $
 
 //
 //ScryMUD Server Code
@@ -58,6 +58,10 @@ int inventory(critter& pc) {
       mudlog << "In inventory, size of inv:  " << pc.inv.size()
              << endl;
    }//if
+
+   Sprintf(buf, "  GOLD:  %i  Gold Weight: %i\n",
+           pc.GOLD, pc.GOLD / GOLD_PER_LB);
+   pc.show(buf);
 
    pc.show(CS_YOUR_INV);
    out_inv(pc.inv, pc, CRIT_INV);
@@ -861,6 +865,11 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
       mudlog << "In cast, spell:  " << *spell << "  j:  " << j_th
              << "  vict:  " << *victim << " was_ordered: " <<
              was_ordered << endl;
+   }
+
+   if (len == 0) {
+      pc.show("Cast what??\n");
+      return -1;
    }
 
    if (was_ordered) {

@@ -306,7 +306,7 @@ eat ~
 return eat(i, &(cooked_strs[1]), pc);
 earthmeld ~
 return earthmeld(pc);
-equipment ~
+equipment eq ~
 return show_eq(pc);
 empty ~
 return empty(i, &(cooked_strs[1]), pc);
@@ -515,7 +515,7 @@ nogossip ~
 return nogossip(pc);
 nod socials ~
 nod(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
-neighbor_echo *add_mob_script ~
+neighbor_echo other_room_echo rm_comm *rm_comm ~
 NOP
 
 # case O
@@ -671,13 +671,13 @@ races *races ~
 NOP
 regeneration *regeneration ~
 NOP
-rm_omove *rm_omove ~
+rm_omove rm_otransport *rm_omove ~
 NOP
-rm_omove_all *rm_omove_all ~
+rm_omove_all rm_otransport_all *rm_omove_all ~
 NOP
-rm_move *rm_move ~
+rm_move rm_transport *rm_move ~
 NOP
-rm_move_all *rm_move_all ~
+rm_move_all rm_transport_all *rm_move_all ~
 NOP
 
 # case S

@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.25 1999/07/05 22:32:07 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
+// $Id: command5.cc,v 1.26 1999/07/12 07:14:31 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/07/12 07:14:31 $
 
 //
 //ScryMUD Server Code
@@ -944,6 +944,11 @@ int beep(int i_th, const String* name, critter& pc) {
       show("That person is not logged on.\n", pc);
       return -1;
    }//if
+
+   if (!ptr->canBeBeeped()) {
+      pc.show("That person cannot be beeped.\n");
+      return -1;
+   }
 
    if (ptr->MODE == MODE_NORMAL) {
       if (ptr->isUsingClient()) {

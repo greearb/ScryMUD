@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.33 1999/07/08 04:42:16 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 1999/07/08 04:42:16 $
+// $Id: command2.cc,v 1.34 1999/07/12 07:14:30 greear Exp $
+// $Revision: 1.34 $  $Author: greear $ $Date: 1999/07/12 07:14:30 $
 
 //
 //ScryMUD Server Code
@@ -1613,7 +1613,8 @@ int toggle_prompt(const String* field, critter& pc) {
               (int)(pc.PC_FLAGS.get(16)), (int)(pc.PC_FLAGS.get(15)));
       show(buf, pc);
 
-      Sprintf(buf, cstr(CS_TOG4_1, pc), (int)(pc.PC_FLAGS.get(28)));
+      Sprintf(buf, cstr(CS_TOG4_1, pc), (int)(pc.PC_FLAGS.get(28)),
+              (int)(pc.canBeBeeped()));
       show(buf, pc);
 
       if (pc.isImmort()) {
@@ -1658,6 +1659,8 @@ int toggle_prompt(const String* field, critter& pc) {
 
    if (strncasecmp(*field, cstr(CS_TOG_TG, pc), len1) == 0) 
       pc.PC_FLAGS.flip(4);
+   else if (strncasecmp(*field, cstr(CS_TOG_NO_BEEP, pc), len1) == 0) 
+      pc.PC_FLAGS.flip(29); //no_beep
    else if (strncasecmp(*field, cstr(CS_TOG_CT, pc), len1) == 0) 
       pc.PC_FLAGS.flip(5);
    else if (strncasecmp(*field, cstr(CS_TOG_CLOAKED, pc), len1) == 0) 

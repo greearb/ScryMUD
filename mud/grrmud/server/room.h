@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.13 1999/06/26 06:14:17 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/26 06:14:17 $
+// $Id: room.h,v 1.14 1999/07/12 07:14:32 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
 
 //
 //ScryMUD Server Code
@@ -277,7 +277,11 @@ public:
     * through the door, even if it's closed??!!
     */
    int move_all(int i_th, const String* dir);
-   int omove_all(int i_th, const String* dir);
+   int omove_all(int i_th, const String* dir); //objects
+
+   /** No door needed for these. */
+   int otransport_all(int dest_rm); //objects
+   int transport_all(int dest_rm);
 
    /**  Move all in room out some door.  Does no checks, just puts em
     * through the door, even if it's closed!!??
@@ -285,8 +289,15 @@ public:
    int move(int i_th, const String* pc, int j_th, const String* dir);
    int omove(int i_th, const String* obj, int j_th, const String* dir);
 
+   /** No door needed for these. */
+   int transport(int i_th, const String* pc, int dest_rm);
+   int otransport(int i_th, const String* pc, int dest_rm); //objects
+
    /** Echo message into the room in this direction */
    int neighbor_echo(int i_th, const String* dir, const String& buf);
+
+   /** No door needed for this one. */
+   int other_room_echo(int dest_rm, const String& buf);
 
    int tell(int i, const String* name, String& msg);
    int do_tell(const char* msg, critter& targ); /* room tells targ */

@@ -1,5 +1,5 @@
-// $Id: rm_cmds.cc,v 1.8 1999/07/05 22:32:08 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/05 22:32:08 $
+// $Id: rm_cmds.cc,v 1.9 1999/07/12 07:14:32 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
 
 //
 //ScryMUD Server Code
@@ -164,20 +164,54 @@ int room::move_all(int i_th, const String* dir) {
    int dest_rm = door_ptr->getDestRoom()->getIdNum();
    int is_dead;
 
-   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS)) {
+   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS) && room_list[dest_rm].isInUse()) {
       while (!critters.isEmpty()) {
          ptr = critters.peekFront();
          is_dead = FALSE;
 
          ptr->doGoToRoom(dest_rm, NULL, NULL, is_dead, getIdNum(), 1);
          
-         if (!is_dead) {
-            look(1, &NULL_STRING, *ptr, FALSE);
-         }//if
       }//while
    }//if
    return 0;
 }//move_all
+
+/**  Move all in room out some door.  Does no checks, just puts em
+ * through the door, even if it's closed??!!
+ */
+int room::transport_all(int dest_rm) {
+   String buf(100);
+   critter* ptr;
+
+   int is_dead;
+
+   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS) && room_list[dest_rm].isInUse()) {
+      while (!critters.isEmpty()) {
+         ptr = critters.peekFront();
+         is_dead = FALSE;
+
+         ptr->doGoToRoom(dest_rm, NULL, NULL, is_dead, getIdNum(), 1);
+         
+      }//while
+   }//if
+   return 0;
+}//transport_all
+
+/**  Move all objects in room to some other room.  Does no checks, just puts em
+ * in the new room.
+ */
+int room::otransport_all(int dest_rm) {
+   String buf(100);
+   object* ptr;
+
+   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS) && room_list[dest_rm].isInUse()) {
+      while (!inv.isEmpty()) {
+         ptr = inv.peekFront();
+         ptr->doGoToRoom(dest_rm, NULL, NULL, getIdNum(), 1);
+      }//while
+   }//if
+   return 0;
+}//omove_all
 
 
 /**  Move all objects in room out some door.  Does no checks, just puts em
@@ -230,7 +264,7 @@ int room::move(int i_th, const String* pc, int j_th, const String* dir) {
    /* deal with some special cases */
 
    if (*pc == "__RANDOM__") {
-      ptr = critters.elementAt(d(1, doors.size()) - 1);
+      ptr = critters.elementAt(d(1, critters.size()) - 1);
    }//if pick a random one
    else if (*pc == "__TOP__") {
       ptr = critters.peekFront();
@@ -250,7 +284,7 @@ int room::move(int i_th, const String* pc, int j_th, const String* dir) {
       return -1;
    }
 
-   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS)) {
+   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS) && room_list[dest_rm].isInUse()) {
       int is_dead;
       ptr->doGoToRoom(dest_rm, NULL, NULL, is_dead, getIdNum(), 1);
    }//if
@@ -263,6 +297,54 @@ int room::move(int i_th, const String* pc, int j_th, const String* dir) {
    }
    return 0;
 }//move
+
+
+int room::transport(int i_th, const String* pc, int dest_rm) {
+   String buf(100);
+   critter* ptr;
+   
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "room::move:  i_th: " << i_th
+             << " pc -:" << *pc << ":- in room:  " << getIdNum()
+             << endl;
+   }
+
+   /* deal with some special cases */
+
+   if (*pc == "__RANDOM__") {
+      ptr = critters.elementAt(d(1, critters.size()) - 1);
+   }//if pick a random one
+   else if (*pc == "__TOP__") {
+      ptr = critters.peekFront();
+   }
+   else if (*pc == "__BOTTOM__") {
+      ptr = critters.peekBack();
+   }
+   else {
+      ptr = haveCritNamed(i_th, pc, ~0);
+   }
+
+   if (!ptr) {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "room::transport:  could not find critter, i_th: "
+                << i_th << " name -:" << *pc << ":-" << endl;
+      }
+      return -1;
+   }
+
+   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS) && room_list[dest_rm].isInUse()) {
+      int is_dead;
+      ptr->doGoToRoom(dest_rm, NULL, NULL, is_dead, getIdNum(), 1);
+   }//if
+   else {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "room::transport:  dest_rm: " << dest_rm << " is out of range."
+                << endl;
+      }
+      return -1;
+   }
+   return 0;
+}//transport
 
 
 int room::omove(int i_th, const String* obj, int j_th, const String* dir) {
@@ -278,7 +360,7 @@ int room::omove(int i_th, const String* obj, int j_th, const String* dir) {
    /* deal with some special cases */
 
    if (*obj == "__RANDOM__") {
-      ptr = inv.elementAt(d(1, doors.size()) - 1);
+      ptr = inv.elementAt(d(1, inv.size()) - 1);
    }//if pick a random one
    else if (*obj == "__TOP__") {
       ptr = inv.peekFront();
@@ -294,11 +376,41 @@ int room::omove(int i_th, const String* obj, int j_th, const String* dir) {
       return -1;
    }
 
-   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS)) {
+   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS) && room_list[dest_rm].isInUse()) {
       return ptr->doGoToRoom(dest_rm, NULL, NULL, getIdNum(), 1);
    }//if
    return -1;
 }//omove
+
+
+int room::otransport(int i_th, const String* obj, int dest_rm) {
+   String buf(100);
+   object* ptr;
+
+   /* deal with some special cases */
+
+   if (*obj == "__RANDOM__") {
+      ptr = inv.elementAt(d(1, inv.size()) - 1);
+   }//if pick a random one
+   else if (*obj == "__TOP__") {
+      ptr = inv.peekFront();
+   }
+   else if (*obj == "__BOTTOM__") {
+      ptr = inv.peekBack();
+   }
+   else {
+      ptr = haveObjNamed(i_th, obj, ~0);
+   }
+
+   if (!ptr) {
+      return -1;
+   }
+
+   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS) && room_list[dest_rm].isInUse()) {
+      return ptr->doGoToRoom(dest_rm, NULL, NULL, getIdNum(), 1);
+   }//if
+   return -1;
+}//otransport
 
 
 /** Echo message into the room in this direction */
@@ -314,6 +426,16 @@ int room::neighbor_echo(int i_th, const String* dir, const String& buf) {
       return dest_rm->com_recho(&buf);
    }
 
+   return -1;
+}//neighbor_echo
+
+
+/** Echo message into the room in this direction */
+int room::other_room_echo(int dest_rm, const String& buf) {
+
+   if ((dest_rm >= 0) && (dest_rm < NUMBER_OF_ROOMS) && room_list[dest_rm].isInUse()) {
+      return room_list[dest_rm].com_recho(&buf);
+   }
    return -1;
 }//neighbor_echo
 

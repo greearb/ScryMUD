@@ -7,12 +7,17 @@ special features:
       __TOP__           Choose the first.
       __BOTTOM__        Chose the last.
 
+A similar command:  rm_otransport is also available.  It lets you
+specify the destination room by VNUM:  No doors are needed.
+
 usage:  rm_omove <<i_th> [object/selection] <<j_th> [direction]
+usage:  rm_otransport <<i_th> [object/selection] [DEST_ROOM_NUM]
 
 Example:  rm_omove __RANDOM__ east    // Move a random object east
 Example:  rm_omove 2.sword 2.west     // Move the second sword out the
                                       // second west exit.
-
+Example:  rm_otransport 2.sword 455   // Move the sword to room 455
 <color=red>
 See Also:  rm_move_all add_mob_script rm_move rm_omove_all neighbor_echo
+See Also:  rm_transport
 </color></help>

@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.24 1999/07/05 22:32:07 greear Exp $
-// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
+// $Id: critter.h,v 1.25 1999/07/12 07:14:32 greear Exp $
+// $Revision: 1.25 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
 
 //
 //ScryMUD Server Code
@@ -552,7 +552,7 @@ public:
       // 17 is_blocking_door, 18 can_det_magic, 19 detect_inventory
       // 20 show_vnums, 21 has_poofin_poofout_msg, 22 page_output
       // 23 in_page_break_mode, 24 !wizchat, 25 has_colors, 26 use_color
-      // 27 has_language_choice, 28 !show_mob_entry
+      // 27 has_language_choice, 28 !show_mob_entry, 29 no_beep
 
    short birth_day; //day born
    short birth_year; //year born
@@ -611,6 +611,8 @@ public:
    ~pc_data();
 
    pc_data& operator= (const pc_data& source);
+
+   int canBeBeeped() const { return pc_data_flags.get(29); }
 
    void Clear();
    void Write(ofstream& ofile);
@@ -749,6 +751,7 @@ public:
 
    void notifyHasBeenHurled();
    int canBeHurled();
+   int canBeBeeped() const { return pc && pc->canBeBeeped(); }
 
    int logOff();
    void doPrompt();

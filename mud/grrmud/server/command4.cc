@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.25 1999/07/05 22:32:07 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
+// $Id: command4.cc,v 1.26 1999/07/12 07:14:31 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/07/12 07:14:31 $
 
 //
 //ScryMUD Server Code
@@ -869,6 +869,8 @@ int zgoto(int i_th, critter& pc) {
 
 int rclear(int i_th, critter& pc) {
    int rm_num;
+   String buf(100);
+
    mudlog.log(TRC, "In rclear.\n");
 
    if (!ok_to_do_action(NULL, "BIFR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -906,7 +908,11 @@ int rclear(int i_th, critter& pc) {
 
    room_list[rm_num].doRclear(new_rm_num);
    room_list.setAndDestroy(NULL, rm_num);
-   return -1;
+
+   Sprintf(buf, "Cleared room# %i\n", rm_num);
+   pc.show(buf);
+
+   return 0;
 }// rclear
 
 
@@ -1231,7 +1237,9 @@ int write_zone(int znum, critter& pc) {
       return -1;
    }//if
 
-   show("Your zone is being written.\n", pc);
+   Sprintf(buf, "Your zone# %i is being written.\n", znum);
+   pc.show(buf);
+
    return do_write_zone(znum);
 }//write_zone
 

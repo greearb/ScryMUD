@@ -1,5 +1,5 @@
-# $Id: translation2.spec,v 1.7 1999/06/25 04:02:55 greear Exp $
-# $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/25 04:02:55 $
+# $Id: translation2.spec,v 1.8 1999/07/12 07:14:32 greear Exp $
+# $Revision: 1.8 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
 
 # See translations.spec for more information.
 
@@ -488,7 +488,7 @@ CS_TOG4
 	eng "carriage-return(%i)%P20cr behind (default is behind)(%i)\n"
 	~
 CS_TOG4_1
-	eng "no_show_NPC_entry(%i)\n"
+	eng "no_show_NPC_entry(%i) no_beep(%i)\n"
 	~
 
 CS_TOG5
@@ -565,6 +565,10 @@ CS_TOG_ANSI
 
 CS_TOG_MOB_ENTRY
 	eng "no_show_NPC_entry"
+	~
+
+CS_TOG_NO_BEEP
+	eng "no_beep"
 	~
 
 CS_NO_FIND_TOGGLE

@@ -4,10 +4,14 @@ Script command that allows a room to forcefully move all objects out
 a certain exit.  It does not matter what state the object is in,
 and it does not matter if the exit is closed or not.
 
+A similar command:  rm_otransport_all is also available.  It lets you
+specify the destination room by VNUM:  No doors are needed.
+
 usage:  rm_omove_all <<i_th> [direction]
+usage:  rm_otransport_all [DEST_ROOM_NUM]
 
 Example:  rm_omove_all east     // Move all objects to the east.
-
+Example:  rm_otransport_all 300 // Move all objects to rom 300
 <color=red>
-See Also:  rm_omove rm_move_all add_mob_script neighbor_echo
+See Also:  rm_omove rm_move_all add_mob_script neighbor_echo rm_transport_all
 </color></help>

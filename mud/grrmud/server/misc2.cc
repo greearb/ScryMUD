@@ -1,5 +1,5 @@
-// $Id: misc2.cc,v 1.23 1999/06/23 04:16:07 greear Exp $
-// $Revision: 1.23 $  $Author: greear $ $Date: 1999/06/23 04:16:07 $
+// $Id: misc2.cc,v 1.24 1999/07/12 07:14:32 greear Exp $
+// $Revision: 1.24 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
 
 //
 //ScryMUD Server Code
@@ -1186,12 +1186,12 @@ int mob_can_enter(critter& pc, room& rm, short do_msg) {
          show("That room doesn't really exist!!\n", pc);
    }//if
    else if ((rm.needsBoat()) && //need boat
-               (!(pc.CRIT_FLAGS.get(4) || pc.CRIT_FLAGS.get(3)))) {
+            (!(pc.CRIT_FLAGS.get(4) || pc.CRIT_FLAGS.get(3)))) {
       if (do_msg)
          show("You need a boat to go there.\n", pc);
    }//if
    else if ((rm.needsDive()) && //need underwater ability
-               (!pc.canDive())) {
+            (!pc.canDive())) {
       if (do_msg)
          show("You must be able to dive to go there.\n", pc);
    }//if
@@ -1216,7 +1216,7 @@ int mob_can_enter(critter& pc, room& rm, short do_msg) {
    else if (rm.isZlocked()) {
       if (pc.isImmort()) {
          if (rm.getZoneNum() != 0) {
-            if ((pc.getImmLevel() <= 5) &&
+            if ((pc.getImmLevel() <= 2) &&
                 (!ZoneCollection::instance().elementAt(rm.getZoneNum()).isOwnedBy(pc))) {
                if (do_msg) {
                   pc.show("Immorts may no longer visit other areas that are\n");

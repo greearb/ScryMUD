@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.14 1999/07/12 01:16:51 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 1999/07/12 01:16:51 $
+// $Id: object.cc,v 1.15 1999/07/12 07:14:32 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/07/12 07:14:32 $
 
 //
 //ScryMUD Server Code
@@ -466,7 +466,7 @@ int object::getCurWeight() const {
    }//else
 }//cur_weight
 
-int object::getMaxWeight() {
+int object::getMaxWeight() const {
    if (bag) 
       return bag->max_weight;
    else
