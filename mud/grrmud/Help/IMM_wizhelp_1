@@ -2,39 +2,3 @@
 
 Here is a list of all immortal/builder help topics.
 
-active_zones     add_casts_spell  add_keyword      add_kname        
-add_mob_script   add_oname        add_path         add_perm_inv     
-add_rem_names    add_stat_affect  add_zone         adlist           
-amlist           amsave           aolist           aosave           
-ch_ddesc         ch_kdesc         ch_mdesc         ch_mndesc        
-ch_odesc         ch_ondesc        ch_osdesc        ch_path_desc     
-ch_rname         ch_zname         classes          clear_keyword    
-clear_onames     create_conct     create_constrct  dclear           
-dlist            door_to          dset             dstat            
-dvnum            enslave          flip_door        force            
-freeze           gag              gecho            goto             
-keyword          ldwho            list_paths       list_room_scripts 
-list_site_bans   list_zones       log_level        make_builder     
-mclear           mclone           mlist            mload            
-mset             mstat            mvnum            oclear           
-olc              olist            oload            opurge           
-oset             ostat            ovnum            poofin           
-rclear           rclone           rem_mname        rem_oname        
-rem_perm_inv     rem_zone         replace_door     reset_olc        
-rinit            rlist            rm_bow_proc      rm_casts_spell   
-rm_discuss_proc  rm_give_proc     rm_keyword       rm_move          
-rm_omove         rm_omove_all     rm_room_script   rm_script        
-rset             rstat            save_mob         save_obj         
-set_path_dir     set_path_pointer set_veh_stop     set_zflag        
-siteban          slay             slist            smob             
-sockets          stat_keyword     stat_path        stat_room_script 
-teach            thaw             tog_mflag        tog_oflag        
-tog_veh_stop     total_rezone     ungag            unpossess        
-unsiteban        unsnoop          update_CIG       update_cig       
-visible          wizhelp          wizinvis         write_world      
-zcreate          zdisable         zenable          zgoto            
-zlock            zunlock          
-
-<color=red>
-See Also:  commands, topics
-</color></help>

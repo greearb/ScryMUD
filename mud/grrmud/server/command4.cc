@@ -132,7 +132,7 @@ int mreload(critter& pc) {
 int read(int i_th, const String* post, critter& pc) {
    String buf(100);
 
-   Cell<object*> cll(ROOM.inv);
+   Cell<object*> cll(*(ROOM.getInv()));
    object* ptr;
 
    while ((ptr = cll.next())) {
@@ -148,11 +148,11 @@ int read(int i_th, const String* post, critter& pc) {
 
    object* msg;
    if (post->Strlen() > 0) {
-      msg = have_obj_named(ptr->ob->inv, i_th, post, ~0, ROOM);
+      msg = have_obj_named(ptr->inv, i_th, post, ~0, ROOM);
    }//if
    else { //by number only
       Sprintf(buf, "%i", i_th);
-      msg = have_obj_named(ptr->ob->inv, 1, &buf, ~0, ROOM);
+      msg = have_obj_named(ptr->inv, 1, &buf, ~0, ROOM);
    }//else
 
    if (!msg) {
@@ -160,9 +160,9 @@ int read(int i_th, const String* post, critter& pc) {
       return -1;
    }//if
 
-   show(msg->ob->short_desc, pc);
+   show(msg->short_desc, pc);
    show("\n\n", pc);
-   show(msg->ob->long_desc, pc);
+   show(msg->long_desc, pc);
    return 0;
 }//read
 
@@ -277,7 +277,7 @@ int unpost(int i_th, const String* post, critter& pc) {
       return -1;
    }
 
-   Cell<object*> cll(ROOM.inv);
+   Cell<object*> cll(*(ROOM.getInv()));
    object* ptr;
 
    while ((ptr = cll.next())) {
@@ -292,11 +292,11 @@ int unpost(int i_th, const String* post, critter& pc) {
 
    object* msg;
    if (post->Strlen() > 0) {
-      msg = have_obj_named(ptr->ob->inv, i_th, post, ~0, ROOM);
+      msg = have_obj_named(ptr->inv, i_th, post, ~0, ROOM);
    }//if
    else { //by number only
       Sprintf(buf, "%i", i_th);
-      msg = have_obj_named(ptr->ob->inv, 1, &buf, ~0, ROOM);
+      msg = have_obj_named(ptr->inv, 1, &buf, ~0, ROOM);
    }//else
 
    if (!msg) {
@@ -308,21 +308,21 @@ int unpost(int i_th, const String* post, critter& pc) {
    // NOTE:  Don't ever decrementCurInGame or anything, post objects
    //        are screwy in that they never have a counterpart in the
    //        obj_list.
-   ptr->ob->inv.loseData(msg);
+   ptr->inv.loseData(msg);
    delete msg;
 
 	/* update the numbers and short_descs for asthetic reasons */
    short eos, term_by_period;
    int i = 1;
-   ptr->ob->inv.head(cll);
+   ptr->inv.head(cll);
    while ((msg = cll.next())) {
-      clear_ptr_list(msg->ob->names);
+      clear_ptr_list(msg->names);
       Sprintf(buf, "%i", i);
-      Put(new String(buf), msg->ob->names);
-      msg->ob->names.append(new String("message"));
-      buf = msg->ob->short_desc.Get_Command(eos, term_by_period);
+      Put(new String(buf), msg->names);
+      msg->names.append(new String("message"));
+      buf = msg->short_desc.Get_Command(eos, term_by_period);
       Sprintf(buf, "Message_%i", i);
-      msg->ob->short_desc.Prepend(buf);
+      msg->short_desc.Prepend(buf);
       i++;
    }//while
 
@@ -342,7 +342,7 @@ int write_board(object& obj) {
       return -1;
    }//if
 
-   Cell<object*> cll(obj.ob->inv);
+   Cell<object*> cll(obj.inv);
    object* ptr;
 
    while ((ptr = cll.prev())) {
@@ -362,7 +362,7 @@ int post(const String* title, critter& pc) {
    }
    
    object* ptr;
-   Cell<object*> cll(ROOM.inv);
+   Cell<object*> cll(*(ROOM.getInv()));
    while ((ptr = cll.next())) {
       if (ptr->OBJ_FLAGS.get(74)) {
          break;
@@ -379,7 +379,7 @@ int post(const String* title, critter& pc) {
    show("Enter your message to be posted.\n", pc);
    show("Use a solitary '~' on a line by itself to end.\n", pc);
    pc.pc->post_msg = new object;
-   pc.pc->post_msg->ob->short_desc = *title;
+   pc.pc->post_msg->short_desc = *title;
    pc.setMode(MODE_WRITING_POST); 
    return 0;
 }//post
@@ -396,7 +396,7 @@ int do_post(critter& pc) {
    if (buf == "~") {
       show("Your message has been posted.\n", pc);
 
-      Cell<object*> cll(ROOM.inv);
+      Cell<object*> cll(*(ROOM.getInv()));
       object* ptr;
       while ((ptr = cll.next())) {
          if (ptr->OBJ_FLAGS.get(74)) {
@@ -412,24 +412,24 @@ int do_post(critter& pc) {
          pc.pc->post_msg = NULL;
       }//if
       else {		/* good to go, save to disk */
-         pc.pc->post_msg->ob->in_list = &(ptr->ob->inv);  //make it SOBJ
+         pc.pc->post_msg->in_list = &(ptr->inv);  //make it SOBJ
 	 pc.pc->post_msg->OBJ_FLAGS.turn_on(7); //!mort
 	 int i = get_next_msg_num(*ptr);
 	 pc.pc->post_msg->OBJ_NUM = i;
 
          String* name = new String(20);
 	 Sprintf(*name, "%i", i);
-         Put(name, (pc.pc->post_msg->ob->names));
+         Put(name, (pc.pc->post_msg->names));
          Sprintf(buf, "message_%i", i);
          name = new String(buf);
-         pc.pc->post_msg->ob->names.append(name);
+         pc.pc->post_msg->names.append(name);
 
-	 String tmp_desc((pc.pc->post_msg->ob->short_desc));
-   	 Sprintf((pc.pc->post_msg->ob->short_desc),
+	 String tmp_desc((pc.pc->post_msg->short_desc));
+   	 Sprintf((pc.pc->post_msg->short_desc),
 		 "message_%i from %S:  ", i, name_of_crit(pc, ~0));
-         pc.pc->post_msg->ob->short_desc.Append(tmp_desc);
+         pc.pc->post_msg->short_desc.Append(tmp_desc);
 
-   	 Sprintf((pc.pc->post_msg->ob->in_room_desc),
+   	 Sprintf((pc.pc->post_msg->in_room_desc),
 		 "A message from %S lies here.", name_of_crit(pc, ~0));
 
 
@@ -456,7 +456,7 @@ int do_post(critter& pc) {
 		    ptr->OBJ_NUM); //move it back to right name
 	 system(buf);
 
-         Put(pc.pc->post_msg, ptr->ob->inv);
+         Put(pc.pc->post_msg, ptr->inv);
 	 pc.pc->post_msg = NULL;
       }//else
 
@@ -464,8 +464,8 @@ int do_post(critter& pc) {
       return 0;
    }//if
 
-   (pc.pc->post_msg->ob->long_desc) += buf;
-   (pc.pc->post_msg->ob->long_desc) += "\n";
+   (pc.pc->post_msg->long_desc) += buf;
+   (pc.pc->post_msg->long_desc) += "\n";
    return 0;
 }//do_post
 
@@ -745,7 +745,7 @@ int where(int i_th, const String* name, critter& pc) {
          int end = ZoneCollection::instance().elementAt(pc.getCurZoneNum()).getEndRoomNum();
             for (int i = start; i<= end; i++) {
                if (room_list.elementAtNoCreate(i)) {
-                  Cell<object*> ocll(room_list[i].inv);
+                  Cell<object*> ocll(*(room_list[i].getInv()));
                   object* optr;
                   while ((optr = ocll.next())) {
                      Sprintf(buf, "[Room %i] %P11[%i]%P20%S.\n",
@@ -1389,7 +1389,7 @@ int do_give(critter& targ, critter& pc, object& obj) {
 
    /* this may fail silently with some mob procs, however, it should be
       harmless. */
-   pc.loseInv(&obj); 
+   pc.loseInv(&obj);
 
    drop_eq_effects(obj, pc, FALSE); //don't do msgs
    gain_eq_effects(obj, obj_list[0], targ, -1, FALSE); //don't do msgs
@@ -1408,7 +1408,7 @@ int do_give(critter& targ, critter& pc, object& obj) {
       }//if
    }//while
 
-   Sprintf(buf, "You give %S to %S.\n", &(obj.ob->short_desc),
+   Sprintf(buf, "You give %S to %S.\n", &(obj.short_desc),
         name_of_crit(targ, pc.SEE_BIT));
    show(buf, pc);
 
@@ -1450,7 +1450,7 @@ int olist(int start, int end, critter& pc) {
 
    for (int i = start; i<= end; i++) {
       if (obj_list[i].OBJ_FLAGS.get(10)) {
-         Sprintf(buf, "\t%i\t%S\n", i, &(obj_list[i].ob->short_desc));
+         Sprintf(buf, "\t%i\t%S\n", i, &(obj_list[i].short_desc));
          show(buf, pc);
       }//if
       else {
@@ -2311,8 +2311,7 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
    object* ptr = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT,
 				ROOM);
    if (!ptr) {
-      ptr = have_obj_named(ROOM.inv, i_th, vict, pc.SEE_BIT,
-			   ROOM);      
+      ptr = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);      
    }//if
 
    if (!ptr) {
@@ -2344,28 +2343,28 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
 
    short flag = FALSE; //did it work
 
-   if (ptr->ob->bag) { //thingies for bags
+   if (ptr->bag) { //thingies for bags
       if (strncasecmp(*targ, "key_num", len1) == 0) {
 	if (check_l_range(new_val, 0, NUMBER_OF_ITEMS, pc, TRUE)) {
-	  ptr->ob->bag->key_num = new_val;
+	  ptr->bag->key_num = new_val;
 	  flag = TRUE;
 	}//if
       }//if
       else if (strncasecmp(*targ, "max_weight", len1) == 0) {
 	if (check_l_range(new_val, 0, 9999, pc, TRUE)) {
-	  ptr->ob->bag->max_weight = new_val;
+	  ptr->bag->max_weight = new_val;
           flag = TRUE;
 	}//if
       }//if
       else if (strncasecmp(*targ, "percentage_weight", len1) == 0) {
 	if (check_l_range(new_val, 1, 1000, pc, TRUE)) {
-	  ptr->ob->bag->percentage_weight = new_val;
+	  ptr->bag->percentage_weight = new_val;
 	  flag = TRUE;
 	}//if
       }//if
       else if (strncasecmp(*targ, "time_till_disolve", len1) == 0) {
 	if (check_l_range(new_val, 0, 500, pc, TRUE)) {
-	  ptr->ob->bag->time_till_disolve = new_val;
+	  ptr->bag->time_till_disolve = new_val;
 	  flag = TRUE;
 	}//if
       }//if
@@ -2373,50 +2372,50 @@ int oset(int i_th, const String* vict, const String* targ, int new_val,
 
    if (strncasecmp(*targ, "charges", len1) == 0) {
       if (check_l_range(new_val, -1, 100, pc, TRUE)) {
-         ptr->ob->extras[0] = new_val;
+         ptr->extras[0] = new_val;
          flag = TRUE;
       }//if
    }//if
    else if (strncasecmp(*targ, "obj_name", len1) == 0) {
-      clear_ptr_list(ptr->ob->names);
-      ptr->ob->names.append(new String(*new_val_string));
+      clear_ptr_list(ptr->names);
+      ptr->names.append(new String(*new_val_string));
       flag = TRUE;
    }//if
    else if (strncasecmp(*targ, "short_desc", len1) == 0) {
-      ptr->ob->short_desc = *new_val_string;
+      ptr->short_desc = *new_val_string;
       flag = TRUE;
    }//if
    else if (strncasecmp(*targ, "in_room_desc", len1) == 0) {
-      ptr->ob->in_room_desc = *new_val_string;
+      ptr->in_room_desc = *new_val_string;
       flag = TRUE;
    }//if
    else if (strncasecmp(*targ, "percent_load", len1) == 0) {
       if (check_l_range(new_val, 0, 100, pc, TRUE)) {
-         ptr->ob->extras[2] = new_val;
+         ptr->extras[2] = new_val;
          flag = TRUE;
       }//if
    }//if
    else if (strncasecmp(*targ, "weight", len1) == 0) {
       if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
-         ptr->ob->extras[5] = new_val;
+         ptr->extras[5] = new_val;
          flag = TRUE;
       }//if
    }//if
    else if (strncasecmp(*targ, "max_in_game", len1) == 0) {
       if (check_l_range(new_val, 0, 1000, pc, TRUE)) {
-         ptr->ob->extras[4] = new_val;
+         ptr->extras[4] = new_val;
          flag = TRUE;
       }//if
    }//if
    else if (strncasecmp(*targ, "dice_sides", len1) == 0) {
       if (check_l_range(new_val, 0, 50, pc, TRUE)) {
-         ptr->ob->extras[6] = new_val;
+         ptr->extras[6] = new_val;
          flag = TRUE;
       }//if
    }//if
    else if (strncasecmp(*targ, "dice_count", len1) == 0) {
       if (check_l_range(new_val, 0, 50, pc, TRUE)) {
-         ptr->ob->extras[7] = new_val;
+         ptr->extras[7] = new_val;
          flag = TRUE;
       }//if
    }//if
@@ -2573,8 +2572,7 @@ int tog_oflag(int flagnum, const String* flag_type,
       obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT,
                                ROOM);
       if (!obj_ptr) {
-         obj_ptr = have_obj_named(ROOM.inv, i_th, obj, pc.SEE_BIT,
-                                  ROOM);
+         obj_ptr = ROOM.haveObjNamed(i_th, obj, pc.SEE_BIT);
       }
    }//if
    else { 
@@ -2604,12 +2602,12 @@ int tog_oflag(int flagnum, const String* flag_type,
        (strncasecmp(*flag_type, "bag_flag", 1) == 0)) {
       if (obj_ptr->IN_LIST) {
          Sprintf(buf, "Toggling obj_flag#:  %i on SOBJ:  %S.\n", flagnum, 
-                 &(obj_ptr->ob->short_desc));
+                 &(obj_ptr->short_desc));
          show(buf, pc);
       }//if SOBJ
       else {
          Sprintf(buf, "Toggling obj_flag#:  %i on OBJ:  %S.\n", flagnum, 
-                 &(obj_ptr->ob->short_desc));
+                 &(obj_ptr->short_desc));
          show(buf, pc);
       }//else
    }//if
@@ -2632,12 +2630,12 @@ int tog_oflag(int flagnum, const String* flag_type,
       }//else
    }//if
    else { //bag flags
-      if (!obj_ptr->ob->bag) {
+      if (!obj_ptr->bag) {
          show("Doh, thats not a bag!!\n", pc);
          return -1;
       }//if
       if (flagnum != 8) {
-         obj_ptr->ob->bag->bag_flags.flip(flagnum);
+         obj_ptr->bag->bag_flags.flip(flagnum);
          return 0;
       }//if
       else {

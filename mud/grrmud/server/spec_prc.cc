@@ -759,7 +759,6 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
    Cell<critter*> cll;
    critter* ptr;
    int sz, i;
-   int i_th;
    Cell<object*> cll2;
    object* obj_ptr;
 
@@ -806,17 +805,13 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
             }
             if (ptr->MOB_FLAGS.get(1)) { //scavenge
                if (d(1,100) <= 10) {
-                  if ((sz = room_list[i].inv.size())) { //objs to pick up?
+                  if ((sz = room_list[i].getInv()->size())) { //objs to pick up?
                      
                      if (ptr->isMob()) { //if its a MOB
                         ptr = mob_to_smob(*ptr, i);
                      }//if
 
-                     i_th = d(1,sz);
-                     room_list[i].inv.head(cll2);
-                     for (int j = 0; j<i_th; j++) {
-                        obj_ptr = cll2.next();
-                     }//for
+                     obj_ptr = room_list[i].getInv()->elementAt(d(1,sz));
  
                      if (!obj_ptr) {
                         mudlog.log(ERR,
@@ -824,7 +819,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
                         return -1;
                      }//if
   
-                     Sprintf(gtobj, "get %S\n", Top(obj_ptr->ob->names));
+                     Sprintf(gtobj, "get %S\n", Top(obj_ptr->names));
  
                      ptr->processInput(gtobj, FALSE);
                      ptr->processInput(wr_all, FALSE);
@@ -883,103 +878,103 @@ int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
          //log("Doing generic wear proc.\n");
          if (posn == 1) {
             Sprintf(tmp_str, "You start wearing %S on your head.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S on %s head.\n", 
-                    &(obj.ob->short_desc), get_his_her(pc));
+                    &(obj.short_desc), get_his_her(pc));
          }//if
          else if (posn == 2 || posn == 3) {
             Sprintf(tmp_str, "You start wearing %S around your neck.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S around %s neck.\n", 
-                    &(obj.ob->short_desc), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 4) {
             Sprintf(tmp_str, "You start wearing %S about your body.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S about %s body.\n", 
-                    &(obj.ob->short_desc), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 5) {
             Sprintf(tmp_str, "You start wearing %S on your arms.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S on %s arms.\n", 
-                    &(obj.ob->short_desc),
+                    &(obj.short_desc),
                     get_his_her(pc));
          }//if
          else if (posn == 6 || posn == 7) {
             Sprintf(tmp_str, "You start wearing %S around your wrist.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S around %s wrist.\n", 
-                    &(obj.ob->short_desc), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 8) {
             Sprintf(tmp_str, "You place %S on your hands.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "places %S on %s hands.\n", 
-                    &(obj.ob->short_desc), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 9) {
             Sprintf(tmp_str, "You wield %S.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "wields %S.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
          }//if
          else if (posn == 10) {
             Sprintf(tmp_str, "You grab %S.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "grabs %S.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
          }//if
          else if (posn == 11) {
             Sprintf(tmp_str, "You start using %S as a light.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts using %S as a light.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
          }//if
          else if (posn == 12) {
             Sprintf(tmp_str, "You wear %S on your body.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "wears %S on %s body.\n", 
-                    &(obj.ob->short_desc), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 13) {
             Sprintf(tmp_str, "You start wearing %S around your waist.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S around %s waist.\n", 
-                    &(obj.ob->short_desc), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 14) {
             Sprintf(tmp_str, "You start wearing %S on your legs.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts wearing %S on %s legs.\n", 
-                    &(obj.ob->short_desc), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 15) {
             Sprintf(tmp_str, "You put %S on your feet.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "puts %S on %s feet.\n", 
-                    &(obj.ob->short_desc), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 16 || posn == 17) {
             Sprintf(tmp_str, "You place %S on your finger.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "places %S on %s finger.\n", 
-                    &(obj.ob->short_desc), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else if (posn == 18) {
             Sprintf(tmp_str, "You start using %S as a shield.\n", 
-                    &(obj.ob->short_desc));
+                    &(obj.short_desc));
             Sprintf(other_msg, "starts using %S as a shield.\n", 
-                    &(obj.ob->short_desc), 
+                    &(obj.short_desc), 
                     get_his_her(pc));
          }//if
          else {
@@ -999,9 +994,9 @@ int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
    else if (type_of_proc == OBJ_REMOVE_PROC) {
       if (proc_num == -2) { //rem_prc1, default
          Sprintf(tmp_str, "You stop using %S.\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          Sprintf(other_msg, "stops using %S.", 
-              &(obj.ob->short_desc));
+              &(obj.short_desc));
          emote(other_msg, pc, ROOM, TRUE);
          show(tmp_str, pc);
       }//if proc -2
@@ -1176,8 +1171,7 @@ int do_vend_buy(object& vendor, int i_th, const String* item, critter& pc) {
       return -1;
    }//if
 
-   obj_ptr = have_obj_named(vendor.ob->inv, i_th, item, pc.SEE_BIT,
-                               ROOM);
+   obj_ptr = have_obj_named(vendor.inv, i_th, item, pc.SEE_BIT, ROOM);
    if (!obj_ptr) {
       Sprintf(buf, "%S doesn't dispense that.\n",
               long_name_of_obj(vendor, pc.SEE_BIT));
@@ -1397,7 +1391,7 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
          keeper.gainInv(obj_ptr);
 
          Sprintf(buf, "You now have %S.\n", 
-		&(obj_ptr->ob->short_desc));
+		&(obj_ptr->short_desc));
          show(buf, keeper);
          Sprintf(buf, "Here's %i coins.", price);
          do_tell(keeper, buf, pc, FALSE, pc.getCurRoomNum());

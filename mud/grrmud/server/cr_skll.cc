@@ -48,7 +48,7 @@ int skin(int i_th, const String* vict, critter& pc) {
    obj = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT, ROOM);
    if (!obj) {
       in_rm = TRUE;
-      obj = have_obj_named(ROOM.inv, i_th, vict, pc.SEE_BIT, ROOM);
+      obj = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);
    }//if
    if (!obj) {
       show("You don't see that here.\n", pc); 
@@ -57,7 +57,7 @@ int skin(int i_th, const String* vict, critter& pc) {
 
    if (!obj->IN_LIST) {
       if (in_rm) 
-	 obj = obj_to_sobj(*obj, &(ROOM.inv), TRUE, i_th, vict,
+	 obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, vict,
 			   pc.SEE_BIT, ROOM);
       else
 	 obj = obj_to_sobj(*obj, &(pc.inv), TRUE, i_th, vict,
@@ -71,20 +71,20 @@ int skin(int i_th, const String* vict, critter& pc) {
 int do_skin(object& obj, critter& pc) {
    String buf(100);
 
-   if ((obj.ob->obj_proc && obj.ob->obj_proc->skin_ptr &&
-	obj.ob->obj_proc->skin_ptr->OBJ_NUM == PC_SKIN_OBJECT) || 
+   if ((obj.obj_proc && obj.obj_proc->skin_ptr &&
+	obj.obj_proc->skin_ptr->OBJ_NUM == PC_SKIN_OBJECT) || 
 	skill_did_hit(pc, SKIN_SKILL_NUM, pc)) {
-      if (!obj.ob->obj_proc ||
-	  !obj.ob->obj_proc->obj_spec_data_flags.get(2) || 
-	  !obj.ob->obj_proc->skin_ptr ||
-	  !obj.ob->obj_proc->skin_ptr->OBJ_FLAGS.get(10)) { //not in use?
+      if (!obj.obj_proc ||
+	  !obj.obj_proc->obj_spec_data_flags.get(2) || 
+	  !obj.obj_proc->skin_ptr ||
+	  !obj.obj_proc->skin_ptr->OBJ_FLAGS.get(10)) { //not in use?
 	 show("This thing doesn't have a skin!.\n", pc);
 	 return -1;
       }//if
 
-      pc.gainInv(obj.ob->obj_proc->skin_ptr);
-      obj.ob->obj_proc->obj_spec_data_flags.turn_off(2);
-      obj.ob->obj_proc->skin_ptr = NULL;
+      pc.gainInv(obj.obj_proc->skin_ptr);
+      obj.obj_proc->obj_spec_data_flags.turn_off(2);
+      obj.obj_proc->skin_ptr = NULL;
 
       Sprintf(buf, "skins %S.", long_name_of_obj(obj, ~0));
       emote(buf, pc, ROOM, TRUE);
@@ -92,19 +92,19 @@ int do_skin(object& obj, critter& pc) {
       show(buf, pc);
    }//if
    else {
-      if (!obj.ob->obj_proc ||
-		!obj.ob->obj_proc->obj_spec_data_flags.get(2)) {
+      if (!obj.obj_proc ||
+		!obj.obj_proc->obj_spec_data_flags.get(2)) {
 	 show("It doesn't have a skin.\n", pc);
 	 return -1;
       }//if
 
-      obj.ob->obj_proc->obj_spec_data_flags.turn_off(2);
-      obj.ob->obj_proc->skin_ptr->decrementCurInGame();
+      obj.obj_proc->obj_spec_data_flags.turn_off(2);
+      obj.obj_proc->skin_ptr->decrementCurInGame();
 
-      if (obj.ob->obj_proc->skin_ptr->IN_LIST) {
-	delete obj.ob->obj_proc->skin_ptr;
+      if (obj.obj_proc->skin_ptr->IN_LIST) {
+	delete obj.obj_proc->skin_ptr;
       }//if
-      obj.ob->obj_proc->skin_ptr = NULL;
+      obj.obj_proc->skin_ptr = NULL;
 
       Sprintf(buf, "tries to skin %S but only makes a bloody mess!",
 		long_name_of_obj(obj, ~0));
@@ -130,7 +130,7 @@ int butcher(int i_th, const String* vict, critter& pc) {
    obj = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT, ROOM);
    if (!obj) {
       in_rm = TRUE;
-      obj = have_obj_named(ROOM.inv, i_th, vict, pc.SEE_BIT, ROOM);
+      obj = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);
    }//if
    if (!obj) {
       show("You don't see that here.\n", pc); 
@@ -144,7 +144,7 @@ int butcher(int i_th, const String* vict, critter& pc) {
 
    if (!obj->IN_LIST) {
       if (in_rm) 
-	 obj = obj_to_sobj(*obj, &(ROOM.inv), TRUE, i_th, vict,
+	 obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, vict,
 			   pc.SEE_BIT, ROOM);
       else
 	 obj = obj_to_sobj(*obj, &(pc.inv), TRUE, i_th, vict,

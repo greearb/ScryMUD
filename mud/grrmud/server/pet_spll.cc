@@ -193,7 +193,7 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
    object* corpse = NULL;
    critter* pet = NULL;
 
-   if (!(corpse = have_obj_numbered(ROOM.inv, 1, CORPSE_OBJECT,
+   if (!(corpse = have_obj_numbered(*(ROOM.getInv()), 1, CORPSE_OBJECT,
 				    pc.SEE_BIT, ROOM))) {
       show("You need a corpse in order to animate it!\n", pc);
       return;
@@ -211,8 +211,8 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
       
       recursive_init_loads(*pet);
       
-      pet->inv = corpse->ob->inv; //transfer inventory
-      corpse->ob->inv.clear();
+      pet->inv = corpse->inv; //transfer inventory
+      corpse->inv.clear();
 
       ROOM.loseInv(corpse);
       corpse->decrementCurInGame(); //no recursive unload, stuff transferred

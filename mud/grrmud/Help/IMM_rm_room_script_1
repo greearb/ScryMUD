@@ -7,7 +7,7 @@ changes permanent.
 usage:  rm_room_script [rm_num] [trigger_name] <<i_th trigger>
 
 Example:
-	rm_room_script 50 say     // remove that script on room# 50
+	rm_room_script 50 say     // remove that script from room# 50
 	rm_room_script 50 say 3   // remove the third say script
 
 

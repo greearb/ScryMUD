@@ -243,12 +243,12 @@ void do_olc(critter& pc) {
 	    }//if
 	    else {
 	       if (string == "~") {
-                  if (!IsEmpty((OLC_OBJ->ob->names)))
+                  if (!IsEmpty((OLC_OBJ->names)))
   		     O_COUNT = 3;
 	       }//if
 	       else {
 		  tmp_str = new String(string);
-		  Put(tmp_str, (OLC_OBJ->ob->names));
+		  Put(tmp_str, (OLC_OBJ->names));
 	       }//else
 	    }//else
 	 }//while
@@ -275,7 +275,7 @@ void do_olc(critter& pc) {
 	    break;
 	 }//if
 	 else {
-            (OLC_OBJ->ob->short_desc) = string;
+            (OLC_OBJ->short_desc) = string;
 	    O_COUNT = 4; 
 	 }//else
 	 break;
@@ -299,7 +299,7 @@ void do_olc(critter& pc) {
 	    break;
 	 }//if
 	 else {
-            (OLC_OBJ->ob->in_room_desc) = string;
+            (OLC_OBJ->in_room_desc) = string;
 	    O_COUNT = 5; 
 	 }//else
 	 break;
@@ -316,14 +316,14 @@ void do_olc(critter& pc) {
 	    break;
          }//if
 	 if (string == "~") {
-	    if (OLC_OBJ->ob->long_desc.Strlen() > 0) {
+	    if (OLC_OBJ->long_desc.Strlen() > 0) {
    	       O_COUNT = 6;
  	       break;
 	    }//if
 	 }//if
 	 else {
-            (OLC_OBJ->ob->long_desc) += string;
-            (OLC_OBJ->ob->long_desc) += "\n"; 
+            (OLC_OBJ->long_desc) += string;
+            (OLC_OBJ->long_desc) += "\n"; 
 	 }//else
         }//while TRUE
 	 break;
@@ -365,36 +365,36 @@ void do_olc(critter& pc) {
          OLC_OBJ->OBJ_FLAGS.turn_off(68); //no concoction here
          //OLC_OBJ->OBJ_FLAGS.turn_off(72); //not used
 
-         if (OLC_OBJ->ob->obj_flags.get(59)) {
-            OLC_OBJ->ob->obj_flags.turn_on(54); //canteens are containers
+         if (OLC_OBJ->obj_flags.get(59)) {
+            OLC_OBJ->obj_flags.turn_on(54); //canteens are containers
          }//if
-         if (OLC_OBJ->ob->obj_flags.get(64)) {
-            OLC_OBJ->ob->obj_flags.turn_on(54); //toolboxes are containers
+         if (OLC_OBJ->obj_flags.get(64)) {
+            OLC_OBJ->obj_flags.turn_on(54); //toolboxes are containers
          }//if
 
-         if (OLC_OBJ->ob->obj_flags.get(40)) {
-            OLC_OBJ->ob->obj_flags.turn_off(57);
+         if (OLC_OBJ->obj_flags.get(40)) {
+            OLC_OBJ->obj_flags.turn_off(57);
          }
-         if (OLC_OBJ->ob->obj_flags.get(57)) {
-            OLC_OBJ->ob->obj_flags.turn_off(40);
+         if (OLC_OBJ->obj_flags.get(57)) {
+            OLC_OBJ->obj_flags.turn_off(40);
          }
-         if ((OLC_OBJ->ob->obj_flags.get(52)) ||
-             (OLC_OBJ->ob->obj_flags.get(51)) ||
-             (OLC_OBJ->ob->obj_flags.get(53))) { //wands, potions, scrolls
+         if ((OLC_OBJ->obj_flags.get(52)) ||
+             (OLC_OBJ->obj_flags.get(51)) ||
+             (OLC_OBJ->obj_flags.get(53))) { //wands, potions, scrolls
 
-            OLC_OBJ->ob->obj_flags.turn_on(63); //potions have spec_proc_data
+            OLC_OBJ->obj_flags.turn_on(63); //potions have spec_proc_data
          }
-         if (OLC_OBJ->ob->obj_flags.get(65)) {
-            OLC_OBJ->ob->obj_flags.turn_on(54); //cauldrons are containers
+         if (OLC_OBJ->obj_flags.get(65)) {
+            OLC_OBJ->obj_flags.turn_on(54); //cauldrons are containers
          }//if
-         if (OLC_OBJ->ob->obj_flags.get(73)) {
-            OLC_OBJ->ob->obj_flags.turn_on(54); //vend machines are containers
+         if (OLC_OBJ->obj_flags.get(73)) {
+            OLC_OBJ->obj_flags.turn_on(54); //vend machines are containers
          }//if
-         if (OLC_OBJ->ob->obj_flags.get(74)) {
-            OLC_OBJ->ob->obj_flags.turn_on(54); //bulletin boards are bags
+         if (OLC_OBJ->obj_flags.get(74)) {
+            OLC_OBJ->obj_flags.turn_on(54); //bulletin boards are bags
          }//if
          show("These flags are set so far:\n", pc);
-         out_field(OLC_OBJ->ob->obj_flags, pc);
+         out_field(OLC_OBJ->obj_flags, pc);
 	 break;
 
       case 7:  //extras
@@ -418,7 +418,7 @@ void do_olc(critter& pc) {
                   OLC_OBJ->setCurInGame(0);
                   z++;
                }//if
-               OLC_OBJ->ob->extras[z] = i;
+               OLC_OBJ->extras[z] = i;
                z++;
                if (z >= OBJ_MAX_EXTRAS) { //only way to get out!
                   O_COUNT = 8; //move on to next
@@ -480,7 +480,7 @@ void do_olc(critter& pc) {
 	 OLC_OBJ->OBJ_IN_ZONE = ROOM.getZoneNum();
 
 			/* check if we should do bag next */
-         if (OLC_OBJ->ob->obj_flags.get(54)) {
+         if (OLC_OBJ->obj_flags.get(54)) {
             O_COUNT = 9; //read in a bag
          }//if
          else {
@@ -489,8 +489,8 @@ void do_olc(critter& pc) {
 	 break;
 
       case 9: //bag  flags
-         if (!OLC_OBJ->ob->bag) {
-            OLC_OBJ->ob->bag = new bag_struct;
+         if (!OLC_OBJ->bag) {
+            OLC_OBJ->bag = new bag_struct;
          }//if
          eos = FALSE;
          while (!eos) {
@@ -510,7 +510,7 @@ void do_olc(critter& pc) {
                   break;
                }//if
                if (check_l_range(i, 0, 100, pc, TRUE))
-                  OLC_OBJ->ob->bag->bag_flags.flip(i);
+                  OLC_OBJ->bag->bag_flags.flip(i);
 	    }//if
 	    else {
                show("Need a number here.\n", pc);
@@ -518,7 +518,7 @@ void do_olc(critter& pc) {
 	    }//else
          }//while
          show("These flags are set so far:\n", pc);
-         out_field(OLC_OBJ->ob->bag->bag_flags, pc);
+         out_field(OLC_OBJ->bag->bag_flags, pc);
 	 break;
 
       case 10:  //other bag data, numbers only
@@ -531,7 +531,7 @@ void do_olc(critter& pc) {
 	    i = atoi(string);
             if (!check_l_range(i, 0, NUMBER_OF_ITEMS, pc, TRUE))
                break;
-            OLC_OBJ->ob->bag->key_num = i;
+            OLC_OBJ->bag->key_num = i;
 	 }//if
 	 else {
 	    if (string == quitter) {
@@ -552,7 +552,7 @@ void do_olc(critter& pc) {
 	    i = atoi(string);
             if (!check_l_range(i, 0, 32000, pc, TRUE))
                break;
-            OLC_OBJ->ob->bag->max_weight = i;
+            OLC_OBJ->bag->max_weight = i;
 	 }//if
 	 else {
 	    if (string == quitter) {
@@ -573,7 +573,7 @@ void do_olc(critter& pc) {
 	    i = atoi(string);
             if (!check_l_range(i, 0, 32000, pc, TRUE))
                break;
-            OLC_OBJ->ob->bag->percentage_weight = i;
+            OLC_OBJ->bag->percentage_weight = i;
 	 }//if
 	 else {
 	    if (string == quitter) {
@@ -594,7 +594,7 @@ void do_olc(critter& pc) {
 	    i = atoi(string);
             if (!check_l_range(i, -1, 32000, pc, TRUE))
                break;
-            OLC_OBJ->ob->bag->time_till_disolve = i;
+            OLC_OBJ->bag->time_till_disolve = i;
 	 }//if
 	 else {
 	    if (string == quitter) {
@@ -629,7 +629,7 @@ void do_olc(critter& pc) {
 
 	    if (j == TRUE) { //ie read in first in pair
 	       if (i == -1) {
-		 if (OLC_OBJ->ob->obj_flags.get(54)) { //if container
+		 if (OLC_OBJ->obj_flags.get(54)) { //if container
 		   O_COUNT = 12; //do inventory
 		 }//if
 		 else {
@@ -640,12 +640,12 @@ void do_olc(critter& pc) {
 		 sp_ptr = new stat_spell_cell;
 		 sp_ptr->stat_spell = i;
 		 sp_ptr->bonus_duration = 0; //init just in case
-		 OLC_OBJ->ob->affected_by.prepend(sp_ptr);
+		 OLC_OBJ->affected_by.prepend(sp_ptr);
 		 j = FALSE; //now looking for the second
 	       }//else
 	    }//if
 	    else {
-	      sp_ptr = Top(OLC_OBJ->ob->affected_by);
+	      sp_ptr = Top(OLC_OBJ->affected_by);
 	      sp_ptr->bonus_duration = i;
 	      j = TRUE; //once again looking for first..
 	    }//if
@@ -719,12 +719,12 @@ void do_olc(critter& pc) {
                   sp_ptr = new stat_spell_cell;
                   sp_ptr->stat_spell = i;
                   sp_ptr->bonus_duration = 0; //init just in case
-                  OLC_OBJ->ob->stat_affects.prepend(sp_ptr);
+                  OLC_OBJ->stat_affects.prepend(sp_ptr);
                   j = FALSE; //now looking for the second
 	       }//else
 	    }//if
 	    else {
-               sp_ptr = Top(OLC_OBJ->ob->stat_affects);
+               sp_ptr = Top(OLC_OBJ->stat_affects);
                sp_ptr->bonus_duration = i;
                j = TRUE; //once again looking for first..
 	    }//if
@@ -734,8 +734,8 @@ void do_olc(critter& pc) {
       case 14:  //obj spec data flags
          eos = FALSE;
 
-         if (!(OLC_OBJ->ob->obj_proc)) {
-            OLC_OBJ->ob->obj_proc = new obj_spec_data;
+         if (!(OLC_OBJ->obj_proc)) {
+            OLC_OBJ->obj_proc = new obj_spec_data;
          }//if
 
          while (!eos) {
@@ -2979,8 +2979,8 @@ void do_olc(critter& pc) {
 	 break;
 
       case 78: //obj_spec_data: skin_num
-         if (!OLC_OBJ->ob->obj_proc) {
-	    OLC_OBJ->ob->obj_proc = new obj_spec_data;
+         if (!OLC_OBJ->obj_proc) {
+	    OLC_OBJ->obj_proc = new obj_spec_data;
          }//if            
 	 string = pc.pc->input.Get_Command(eos, tp);
 
@@ -2999,7 +2999,7 @@ void do_olc(critter& pc) {
          i = atoi(string);
     	 if (!check_l_range(i, 0, NUMBER_OF_ITEMS, pc, TRUE))
   	    break;
-	 OLC_OBJ->ob->obj_proc->skin_ptr = &(obj_list[i]);
+	 OLC_OBJ->obj_proc->skin_ptr = &(obj_list[i]);
 
 	 if (OLC_OBJ->OBJ_SPEC_FLAGS.get(10)) {
 	   O_COUNT = 79;
@@ -3109,7 +3109,7 @@ void finish_olc_obj(critter& pc) {
      /* first normalize this puppy as much as possible */
       normalize_obj(*(OLC_OBJ));
 
-      ofile << OLC_OBJ->ob->cur_stats[2];
+      ofile << OLC_OBJ->cur_stats[2];
       ofile << "  // Begin of an object\n";
       OLC_OBJ->Write(ofile);
       ofile << "\n" << flush; 

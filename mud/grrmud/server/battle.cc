@@ -420,23 +420,23 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
       pos_mult;
 
    if (is_wielding) {
-      if (((agg.EQ[posn_of_weapon])->ob->obj_flags).get(41))
+      if (((agg.EQ[posn_of_weapon])->obj_flags).get(41))
          wmsg = "slash";
-      else if (((agg.EQ[posn_of_weapon])->ob->obj_flags).get(42))
+      else if (((agg.EQ[posn_of_weapon])->obj_flags).get(42))
          wmsg = "smash";
-      else if (((agg.EQ[posn_of_weapon])->ob->obj_flags).get(43))
+      else if (((agg.EQ[posn_of_weapon])->obj_flags).get(43))
          wmsg = "pierce";
-      else if (((agg.EQ[posn_of_weapon])->ob->obj_flags).get(44))
+      else if (((agg.EQ[posn_of_weapon])->obj_flags).get(44))
          wmsg = "whip";
-     else if (((agg.EQ[posn_of_weapon])->ob->obj_flags).get(45))
+     else if (((agg.EQ[posn_of_weapon])->obj_flags).get(45))
         wmsg = "shoot";
-      else if (((agg.EQ[posn_of_weapon])->ob->obj_flags).get(46))
+      else if (((agg.EQ[posn_of_weapon])->obj_flags).get(46))
          wmsg = "sting";
-      else if (((agg.EQ[posn_of_weapon])->ob->obj_flags).get(47))
+      else if (((agg.EQ[posn_of_weapon])->obj_flags).get(47))
          wmsg = "sting";
-     else if (((agg.EQ[posn_of_weapon])->ob->obj_flags).get(48))
+     else if (((agg.EQ[posn_of_weapon])->obj_flags).get(48))
         wmsg = "sting";
-      else if (((agg.EQ[posn_of_weapon])->ob->obj_flags).get(49))
+      else if (((agg.EQ[posn_of_weapon])->obj_flags).get(49))
          wmsg = "jab";
       else {
          wmsg = "injure";
@@ -934,7 +934,7 @@ void dead_crit_to_corpse(critter& vict) {
 
    // create corpse object.
    corpse = obj_to_sobj(obj_list[CORPSE_OBJECT], 
-                        &(room_list[vict.getCurRoomNum()].inv));
+                        room_list[vict.getCurRoomNum()].getInv(), vict.getCurRoomNum());
 
    recursive_init_loads(*corpse, 0);
 
@@ -943,23 +943,23 @@ void dead_crit_to_corpse(critter& vict) {
       corpse->setButcherable(TRUE);
    }
 
-   corpse->ob->bag->time_till_disolve = 10; // in ticks
+   corpse->bag->time_till_disolve = 10; // in ticks
    Sprintf(buf, "The corpse of %S lies here.",
                 name_of_crit(vict, ~0));
-   corpse->ob->in_room_desc = buf;
+   corpse->in_room_desc = buf;
    room_list[vict.getCurRoomNum()].gainInv(corpse);
 
          /*  gold  */
 
    if (vict.GOLD > 0) {
-      gold = obj_to_sobj(obj_list[GOLD_OBJECT], &(corpse->ob->inv));
+      gold = obj_to_sobj(obj_list[GOLD_OBJECT], &(corpse->inv), vict.getCurRoomNum());
       
       obj_list[GOLD_OBJECT].incrementCurInGame();
       
-      gold->ob->cur_stats[1] = vict.GOLD; //transfer gold
+      gold->cur_stats[1] = vict.GOLD; //transfer gold
       vict.GOLD = 0;
       
-      Put(gold, corpse->ob->inv);
+      Put(gold, corpse->inv);
    }//if
 
          /* eq  */
@@ -967,8 +967,8 @@ void dead_crit_to_corpse(critter& vict) {
       if (vict.EQ[i]) {
          remove_eq_effects(*(vict.EQ[i]), vict, TRUE, FALSE, i);
          if (vict.EQ[i]->IN_LIST)
-            vict.EQ[i]->IN_LIST = &(corpse->ob->inv);
-         Put(vict.EQ[i], corpse->ob->inv);
+            vict.EQ[i]->IN_LIST = &(corpse->inv);
+         Put(vict.EQ[i], corpse->inv);
          vict.EQ[i] = NULL;
       }//if
    }//for
@@ -978,7 +978,7 @@ void dead_crit_to_corpse(critter& vict) {
    while ((o_ptr = ocell.next())) {
       drop_eq_effects(*o_ptr, vict, FALSE);
       if (o_ptr->IN_LIST) 
-         o_ptr->IN_LIST = &(corpse->ob->inv);
+         o_ptr->IN_LIST = &(corpse->inv);
       corpse->gainInv(o_ptr);
    }//while
    vict.inv.clear();
@@ -990,8 +990,8 @@ void dead_crit_to_corpse(critter& vict) {
             vict.PERM_INV.head(ocell);
             while ((o_ptr = ocell.next())) {
                if (o_ptr->IN_LIST) 
-                  o_ptr->IN_LIST = &(corpse->ob->inv);
-               Put(o_ptr, corpse->ob->inv);
+                  o_ptr->IN_LIST = &(corpse->inv);
+               Put(o_ptr, corpse->inv);
             }//while
             vict.PERM_INV.clear(); //should NEVER be SOBJ's
          }//if
@@ -999,29 +999,29 @@ void dead_crit_to_corpse(critter& vict) {
    }//if
 
    if (vict.mob && vict.MOB_FLAGS.get(16)) { //if has skin
-      if (!corpse->ob->obj_proc) {
-         corpse->ob->obj_proc = new obj_spec_data;
+      if (!corpse->obj_proc) {
+         corpse->obj_proc = new obj_spec_data;
       }//if
-      corpse->ob->obj_proc->skin_ptr = &(obj_list[vict.mob->skin_num]);
-      recursive_init_loads(*(corpse->ob->obj_proc->skin_ptr), 0);
-      corpse->ob->obj_proc->obj_spec_data_flags.turn_on(2);
+      corpse->obj_proc->skin_ptr = &(obj_list[vict.mob->skin_num]);
+      recursive_init_loads(*(corpse->obj_proc->skin_ptr), 0);
+      corpse->obj_proc->obj_spec_data_flags.turn_on(2);
    }//if
    else {
       if (vict.pc) {
-         if (!corpse->ob->obj_proc) {
-            corpse->ob->obj_proc = new obj_spec_data;
+         if (!corpse->obj_proc) {
+            corpse->obj_proc = new obj_spec_data;
          }//if
-         object* ptr = corpse->ob->obj_proc->skin_ptr = 
-            obj_to_sobj(obj_list[PC_SKIN_OBJECT], &(corpse->ob->inv));
+         object* ptr = corpse->obj_proc->skin_ptr = 
+            obj_to_sobj(obj_list[PC_SKIN_OBJECT], &(corpse->inv), vict.getCurRoomNum());
 
          recursive_init_loads(*ptr, 0);
 
-         ptr->ob->names.append(new String(*(Top(vict.names))));
+         ptr->names.append(new String(*(Top(vict.names))));
          Sprintf(buf, "the tattered skin of %S", Top(vict.names));
-         ptr->ob->short_desc = buf;
+         ptr->short_desc = buf;
          Sprintf(buf, "The tattered skin of %S lies here.", 
                  Top(vict.names));
-         ptr->ob->in_room_desc = buf;
+         ptr->in_room_desc = buf;
          Sprintf(buf,
 "This large piece of %s skin was recently hacked from the corpse of %S.
 You wonder why anyone would want the skin of a %s, but perhaps it is just
@@ -1029,8 +1029,8 @@ a trophy--a symbol of %S's defeat.\n",
                  get_race_name(vict.RACE),
                  name_of_crit(vict, ~0), get_race_name(vict.RACE),
                  name_of_crit(vict, ~0));
-         ptr->ob->long_desc = buf;
-         corpse->ob->obj_proc->obj_spec_data_flags.turn_on(2);
+         ptr->long_desc = buf;
+         corpse->obj_proc->obj_spec_data_flags.turn_on(2);
       }//if
    }//else
 
@@ -1222,9 +1222,9 @@ critter* mob_to_smob(critter& mob, room& rm, int suppress_sub_fail_msg) {
 
 
 
-object*  obj_to_sobj(const object& obj, List<object*>* in_list,
-            int do_sub, int i_th, const String* name, int see_bit, 
-            room& rm) {
+object* obj_to_sobj(object& obj, List<object*>* in_list,
+                    int do_sub, int i_th, const String* name, int see_bit, 
+                    room& rm) {
    //log("In obj_to_sobj.\n");
 
    if (!name || !in_list) {
@@ -1249,6 +1249,7 @@ object*  obj_to_sobj(const object& obj, List<object*>* in_list,
 
    object* obj_ptr = new object(obj);
    obj_ptr->IN_LIST = in_list;
+   obj_ptr->setCurRoomNum(rm.getIdNum(), 0);
 
    if (do_sub) {
       if (!obj_sub_a_4_b(obj_ptr, *in_list, i_th, name, see_bit, rm)) {
@@ -1266,7 +1267,7 @@ object*  obj_to_sobj(const object& obj, List<object*>* in_list,
 }//obj_to_sobj
 
 
-object*  obj_to_sobj(const object& obj, List<object*>* in_list) {
+object*  obj_to_sobj(object& obj, List<object*>* in_list, int rm_num) {
    //log("In obj_to_sobj, part two.\n");
 
 /* WARNING:  this function does NO SUBSTITUTION, you must do it 
@@ -1288,6 +1289,7 @@ object*  obj_to_sobj(const object& obj, List<object*>* in_list) {
 
    object* obj_ptr = new object(obj);
    obj_ptr->IN_LIST = in_list;
+   obj_ptr->setCurRoomNum(rm_num, 0);
 
    affected_objects.gainData(obj_ptr);  //basically a list of sobjs
    return obj_ptr;

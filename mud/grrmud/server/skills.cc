@@ -800,8 +800,8 @@ int do_claw(critter& vict, critter& pc) {
                  name_of_crit(vict, ~0), get_his_her(pc));
          emote(buf, pc, ROOM, TRUE);
          Sprintf(buf, 
-          "You are supprised to see %S holding your larynx!!\n",
-          name_of_crit(pc, vict.SEE_BIT));
+                 "You are supprised to see %S holding your larynx!!\n",
+                 name_of_crit(pc, vict.SEE_BIT));
          show(buf, vict);
          Sprintf(buf, 
           "You rip out %S's larynx with a quick swipe of your hand.\n",
@@ -874,18 +874,18 @@ int construct(critter& pc, short do_mob = FALSE) {
       return -1;
    }//if
 
-   if (toolbox->ob->inv.isEmpty()) {
+   if (toolbox->inv.isEmpty()) {
       show("You need components in your toolbox to work with!\n", 
            pc);
       return -1;
    }//if
 
 		/* found a tool box, make sure its clear of junk */
-   toolbox->ob->inv.head(cll);
+   toolbox->inv.head(cll);
    while ((ptr = cll.next())) {
       if (!(ptr->OBJ_FLAGS.get(67))) {
          Sprintf(buf, "%S is not a component to any construction.\n",
-                 &(ptr->ob->short_desc));
+                 &(ptr->short_desc));
          buf.Cap();
          show(buf, pc);
          show("You have to have a clean toolbox in order to work!!\n", 
@@ -894,7 +894,7 @@ int construct(critter& pc, short do_mob = FALSE) {
       }//if
       if (ptr->OBJ_LEVEL > pc.LEVEL) {
          Sprintf(buf, "%S is too advanced for you to work with it.\n",
-                 &(ptr->ob->short_desc));
+                 &(ptr->short_desc));
          buf.Cap();
          show(buf, pc);
          show("You must remove it from your work ", pc);
@@ -903,17 +903,17 @@ int construct(critter& pc, short do_mob = FALSE) {
       }//if
    }//while
 
-   ptr = Top(toolbox->ob->inv);
+   ptr = Top(toolbox->inv);
 
-   if (!ptr->ob->obj_proc) {
+   if (!ptr->obj_proc) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL obj_proc.\n", 
-              &(ptr->ob->short_desc));
+              &(ptr->short_desc));
       mudlog.log(ERR, buf);
       return -1;
    }//if
-   if (!ptr->ob->obj_proc->construct_data) {
+   if (!ptr->obj_proc->construct_data) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL construct_data.\n", 
-              &(ptr->ob->short_desc));
+              &(ptr->short_desc));
       mudlog.log(ERR, buf);
       return -1;
    }//if
@@ -921,11 +921,11 @@ int construct(critter& pc, short do_mob = FALSE) {
                   /* check for all components available */
    if (check_l_range(ptr->COMPONENT_ITEM1, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item1 = have_obj_numbered(toolbox->ob->inv, 1, 
+      if (!(item1 = have_obj_numbered(toolbox->inv, 1, 
                    ptr->COMPONENT_ITEM1, pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM1].ob->short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
+                 &(obj_list[ptr->COMPONENT_ITEM1].short_desc),
+                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
          show(buf, pc);
          return -1;
       }//if
@@ -933,11 +933,11 @@ int construct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM2, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item2 = have_obj_numbered(toolbox->ob->inv, 1, 
+      if (!(item2 = have_obj_numbered(toolbox->inv, 1, 
                    ptr->COMPONENT_ITEM2, pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM2].ob->short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
+                 &(obj_list[ptr->COMPONENT_ITEM2].short_desc),
+                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
          show(buf, pc);
          return -1;
       }//if
@@ -945,11 +945,11 @@ int construct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM3, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item3 = have_obj_numbered(toolbox->ob->inv, 1, 
+      if (!(item3 = have_obj_numbered(toolbox->inv, 1, 
                    ptr->COMPONENT_ITEM3, pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM3].ob->short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
+                 &(obj_list[ptr->COMPONENT_ITEM3].short_desc),
+                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
          show(buf, pc);
          return -1;
       }//if
@@ -957,11 +957,11 @@ int construct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM4, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item4 = have_obj_numbered(toolbox->ob->inv, 1, 
+      if (!(item4 = have_obj_numbered(toolbox->inv, 1, 
                    ptr->COMPONENT_ITEM4, pc.SEE_BIT, ROOM))) { 
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM4].ob->short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
+                 &(obj_list[ptr->COMPONENT_ITEM4].short_desc),
+                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
          show(buf, pc);
          return -1;
       }//if
@@ -969,11 +969,11 @@ int construct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM5, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item5 = have_obj_numbered(toolbox->ob->inv, 1, 
+      if (!(item5 = have_obj_numbered(toolbox->inv, 1, 
                    ptr->COMPONENT_ITEM5, pc.SEE_BIT, ROOM))) { 
          Sprintf(buf, "You need %S in order to construct %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM5].ob->short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
+                 &(obj_list[ptr->COMPONENT_ITEM5].short_desc),
+                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
          show(buf, pc);
          return -1;
       }//if
@@ -983,7 +983,7 @@ int construct(critter& pc, short do_mob = FALSE) {
 
    if (item1) {
       toolbox->loseInv(item1);
-      drop_eq_effects(*item1, pc, FALSE);
+      drop_eq_effects(*item1, pc, FALSE, FALSE);
       recursive_init_unload(*item1, 0);
       if (item1->IN_LIST) {
          delete item1;
@@ -993,7 +993,7 @@ int construct(critter& pc, short do_mob = FALSE) {
    
    if (item2) {
       toolbox->loseInv(item2);
-      drop_eq_effects(*item2, pc, FALSE);
+      drop_eq_effects(*item2, pc, FALSE, FALSE);
       recursive_init_unload(*item2, 0);
       if (item2->IN_LIST) {
          delete item2;
@@ -1003,7 +1003,7 @@ int construct(critter& pc, short do_mob = FALSE) {
    
    if (item3) {
       toolbox->loseInv(item3);
-      drop_eq_effects(*item3, pc, FALSE);
+      drop_eq_effects(*item3, pc, FALSE, FALSE);
       recursive_init_unload(*item3, 0);
       if (item3->IN_LIST) {
          delete item3;
@@ -1013,7 +1013,7 @@ int construct(critter& pc, short do_mob = FALSE) {
    
    if (item4) {
       toolbox->loseInv(item4);
-      drop_eq_effects(*item4, pc, FALSE);
+      drop_eq_effects(*item4, pc, FALSE, FALSE);
       recursive_init_unload(*item4, 0);
       if (item4->IN_LIST) {
          delete item4;
@@ -1023,7 +1023,7 @@ int construct(critter& pc, short do_mob = FALSE) {
    
    if (item5) {
       toolbox->loseInv(item5);
-      drop_eq_effects(*item5, pc, FALSE);
+      drop_eq_effects(*item5, pc, FALSE, FALSE);
       recursive_init_unload(*item5, 0);
       if (item5->IN_LIST) {
          delete item5;
@@ -1035,7 +1035,7 @@ int construct(critter& pc, short do_mob = FALSE) {
       pc.gainInv(&(obj_list[ptr->COMPONENT_TARG]));
       recursive_init_loads(obj_list[ptr->COMPONENT_TARG], 0);
       Sprintf(buf, "You have successfully constructed %S.\n",
-              &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
+              &(obj_list[ptr->COMPONENT_TARG].short_desc));
       show(buf, pc);
    }//if skill_did_hit, ie if pc knew it well enuf not to fail
    else {
@@ -1078,19 +1078,19 @@ int concoct(critter& pc, short do_mob = FALSE) {
       return -1;
    }//if
 
-   if (IsEmpty(cauldron->ob->inv)) {
+   if (IsEmpty(cauldron->inv)) {
       show("You need ingredients in your cauldron to brew with!\n", 
            pc);
       return -1;
    }//if
 
 		/* found a cauldron, make sure its clear of junk */
-   cauldron->ob->inv.head(cll);
+   cauldron->inv.head(cll);
    while ((ptr = cll.next())) {
       if (!(ptr->OBJ_FLAGS.get(68))) { //concoct component
          Sprintf(buf, 
              "%S will certainly distort the properties of your brew.  ",
-             &(ptr->ob->short_desc));
+             &(ptr->short_desc));
          buf.Cap();
          show(buf, pc);
          show("You'd better take it out.\n", pc);
@@ -1098,7 +1098,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
       }//if
       if (ptr->OBJ_LEVEL > pc.LEVEL) {
          Sprintf(buf, "You do not yet fully comprehend the power of %S.\n",
-                 &(ptr->ob->short_desc));
+                 &(ptr->short_desc));
          buf.Cap();
          show(buf, pc);
          show("Until you better understand it, you shouldn't include", pc);
@@ -1107,17 +1107,17 @@ int concoct(critter& pc, short do_mob = FALSE) {
       }//if
    }//while
 
-   ptr = Top(cauldron->ob->inv);
+   ptr = Top(cauldron->inv);
 
-   if (!ptr->ob->obj_proc) {
+   if (!ptr->obj_proc) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL obj_proc.\n", 
-             &( ptr->ob->short_desc));
+             &( ptr->short_desc));
       mudlog.log(ERR, buf);
       return -1;
    }//if
-   if (!ptr->ob->obj_proc->construct_data) {
+   if (!ptr->obj_proc->construct_data) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL construct_data.\n", 
-              &(ptr->ob->short_desc));
+              &(ptr->short_desc));
       mudlog.log(ERR, buf);
       return -1;
    }//if
@@ -1125,11 +1125,11 @@ int concoct(critter& pc, short do_mob = FALSE) {
                   /* check for all components available */
    if (check_l_range(ptr->COMPONENT_ITEM1, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item1 = have_obj_numbered(cauldron->ob->inv, 1, 
+      if (!(item1 = have_obj_numbered(cauldron->inv, 1, 
                    ptr->COMPONENT_ITEM1, pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to brew %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM1].ob->short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
+                 &(obj_list[ptr->COMPONENT_ITEM1].short_desc),
+                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
          show(buf, pc);
          return -1;
       }//if
@@ -1137,11 +1137,11 @@ int concoct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM2, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item2 = have_obj_numbered(cauldron->ob->inv, 1, 
+      if (!(item2 = have_obj_numbered(cauldron->inv, 1, 
                    ptr->COMPONENT_ITEM2, pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to brew %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM2].ob->short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
+                 &(obj_list[ptr->COMPONENT_ITEM2].short_desc),
+                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
          show(buf, pc);
          return -1;
       }//if
@@ -1149,11 +1149,11 @@ int concoct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM3, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item3 = have_obj_numbered(cauldron->ob->inv, 1, 
+      if (!(item3 = have_obj_numbered(cauldron->inv, 1, 
                    ptr->COMPONENT_ITEM3, pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "You need %S in order to brew %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM3].ob->short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
+                 &(obj_list[ptr->COMPONENT_ITEM3].short_desc),
+                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
          show(buf, pc);
          return -1;
       }//if
@@ -1161,11 +1161,11 @@ int concoct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM4, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item4 = have_obj_numbered(cauldron->ob->inv, 1, 
+      if (!(item4 = have_obj_numbered(cauldron->inv, 1, 
                    ptr->COMPONENT_ITEM4, pc.SEE_BIT, ROOM))) { 
          Sprintf(buf, "You need %S in order to brew %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM4].ob->short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
+                 &(obj_list[ptr->COMPONENT_ITEM4].short_desc),
+                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
          show(buf, pc);
          return -1;
       }//if
@@ -1173,11 +1173,11 @@ int concoct(critter& pc, short do_mob = FALSE) {
 
    if (check_l_range(ptr->COMPONENT_ITEM5, 1, NUMBER_OF_ITEMS, pc, 
        FALSE)) {
-      if (!(item5 = have_obj_numbered(cauldron->ob->inv, 1, 
+      if (!(item5 = have_obj_numbered(cauldron->inv, 1, 
                    ptr->COMPONENT_ITEM5, pc.SEE_BIT, ROOM))) { 
          Sprintf(buf, "You need %S in order to brew %S.\n",
-                 &(obj_list[ptr->COMPONENT_ITEM5].ob->short_desc),
-                 &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
+                 &(obj_list[ptr->COMPONENT_ITEM5].short_desc),
+                 &(obj_list[ptr->COMPONENT_TARG].short_desc));
          show(buf, pc);
          return -1;
       }//if
@@ -1239,7 +1239,7 @@ int concoct(critter& pc, short do_mob = FALSE) {
       pc.gainInv(&(obj_list[ptr->COMPONENT_TARG]));
       recursive_init_loads(obj_list[ptr->COMPONENT_TARG], 0);
       Sprintf(buf, "You have successfully brewed %S.\n",
-              &(obj_list[ptr->COMPONENT_TARG].ob->short_desc));
+              &(obj_list[ptr->COMPONENT_TARG].short_desc));
       show(buf, pc);
    }//if skill_did_hit, ie if pc knew it well enuf not to fail
    else {
@@ -1340,7 +1340,7 @@ int scribe(const String* spell, critter& pc, short do_mob = FALSE) {
          recursive_init_loads(obj_list[scroll_num], 0);
 
          Sprintf(buf, "You have successfully scribed %S.\n",
-              &(obj_list[scroll_num].ob->short_desc));
+              &(obj_list[scroll_num].short_desc));
          show(buf, pc);
          pc.MANA -= get_mana_cost(spell_num);
          pc.PAUSE += 4;

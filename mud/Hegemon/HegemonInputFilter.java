@@ -719,6 +719,17 @@ class HegemonInputFilter extends Object {
                              (String)(args.elementAt(6)));
             valid = true;
          }//if
+         else if (cmd.equalsIgnoreCase("OBJ_SCRIPT")) {
+            hm.getMobScriptEditor().do_clear();
+            setMobScriptData((String)(args.elementAt(1)),
+                             (String)(args.elementAt(2)),
+                             (String)(args.elementAt(3)),
+                             (String)(args.elementAt(4)),
+                             (String)(args.elementAt(5)),
+                             "OBJECT",
+                             (String)(args.elementAt(6)));
+            valid = true;
+         }//if
       }//if
          
       return valid;

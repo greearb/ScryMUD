@@ -474,7 +474,7 @@ void room::Read(ifstream& ofile, short read_all) {
             if (read_all || 
                 ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
                 d(1,100)) {
-               Put(&(obj_list[i]), inv);    //add it to inventory
+               gainInv(&(obj_list[i]));    //add it to inventory
 //               obj_list[i].OBJ_CUR_IN_GAME++; //increment cur_in_game
             }//if
          }//if
@@ -817,6 +817,23 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
             }
             ptr->checkForProc(cmd, arg1, actor, targ, *this);
          }//if
+      }//if
+   }//while
+
+
+   Cell<object*> ocll(inv);
+   object* optr;
+   while ((optr = ocll.next())) {
+      if (optr->obj_flags.get(76)) {
+         if (mudlog.ofLevel(DBG)) {
+            mudlog << "room::checkForProc, found an object: " 
+                   << optr->getName() << endl;
+         }
+         if (!optr->isModified()) {
+            //mudlog.log("Doing obj_to_sobj..");
+            optr = obj_to_sobj(*optr, &inv, getRoomNum());
+         }
+         optr->checkForProc(cmd, arg1, actor, targ, *this);
       }//if
    }//while
 
@@ -1276,8 +1293,8 @@ void room::gainCritter(critter* crit) {
    if (crit->isMob()) {
       crit = mob_to_smob(*crit, *this);
    }//if
-
    crit->setCurRoomNum(getRoomNum());
+
 }
 
 void room::loseObjectFromGame(object& which_un) {
@@ -1352,11 +1369,14 @@ void room::outInv(critter& pc) {
 
 void room::gainInv(object* obj) {
    inv.prepend(obj);
-   if (obj->IN_LIST)
+   if (obj->IN_LIST) {
       obj->IN_LIST = &inv;
+      obj->setCurRoomNum(getIdNum(), 0);
+   }
 }
 
 object* room::loseInv(object* obj) {
+   obj->setCurRoomNum(0, 0);
    return inv.loseData(obj);
 }
 
@@ -1377,6 +1397,12 @@ critter* room::haveCritter(critter* ptr) {
    return NULL;
 }
 
+object* room::haveObject(object* ptr) {
+   if (inv.haveData(ptr)) {
+      return ptr;
+   }
+   return NULL;
+}
 
 object* room::haveObjNamed(int i_th, const String* name, int see_bit) {
    return ::have_obj_named(inv, i_th, name, see_bit, *this);
@@ -1396,7 +1422,7 @@ void room::showAllCept(const char* msg, critter* pc) const {
    object* obj;
 
    while ((obj = cll.next())) {
-     if (obj->ob->obj_proc && (crit_ptr = obj->ob->obj_proc->w_eye_owner)) {
+     if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
        if (crit_ptr != pc) {
 	 if (crit_ptr->POS < POS_SLEEP) {
 	   show("#####", *crit_ptr);

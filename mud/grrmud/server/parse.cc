@@ -277,6 +277,10 @@ int critter::processInput(String& input, short do_sub,
          return do_add_room_script(*this);
       }
 
+      if (MODE == MODE_ADD_OBJECT_SCRIPT) {
+         return do_add_obj_script(*this);
+      }
+
       if (MODE == MODE_WRITING_POST) {
          return do_post(*this);
       }//if

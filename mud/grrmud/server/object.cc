@@ -236,15 +236,63 @@ void obj_spec_data::Write(ofstream& da_file) const {
 }//Write
 
 
-//************************************************************// 
-///*********************  obj  ******************************///
+//******************************************************************//
+///***********************  bag struct  ***************************///
 
-int obj::_cnt = 0;
- 
-obj::obj() {
+int bag_struct::_cnt = 0;
+
+bag_struct::bag_struct() {
    _cnt++;
+}//constructor
 
+bag_struct::bag_struct(const bag_struct& source) {
+   _cnt++;
+   *this = source; //a shallow copy should work
+}//copy constructor
+
+void bag_struct::Write(ofstream& ofile) const {
+   bag_flags.Write(ofile);
+   ofile << key_num << " " << max_weight << " " << percentage_weight << " "
+         << time_till_disolve << " " << "\t bag_stuff\n";
+}//Write()
+
+
+void bag_struct::Read(ifstream& ofile) {
+   char buf[81];
+   
+   bag_flags.Read(ofile);
+   ofile >> key_num >> max_weight >> percentage_weight 
+         >> time_till_disolve;
+   ofile.getline(buf, 80);
+}//Read()
+
+
+//*************************************************************//
+///**********************  object  ***************************///
+
+int object::_cnt = 0;
+
+object::object (object& source) { //copy constructor
+   _cnt++;
+   pause = source.pause;
+   in_room = source.in_room;
+   cur_script = NULL;
+
+   in_list = NULL;
+   bag = NULL;
+   obj_proc = NULL;
+
+   *this = source;
+}//obj copy constructor
+
+
+object::object() {
    int i;
+
+   _cnt++;
+   pause = 0;
+   in_room = 0;
+   cur_script = NULL;
   
    for (i = 0; i<OBJ_MAX_EXTRAS; i++)
       extras[i] = 0;       
@@ -254,35 +302,33 @@ obj::obj() {
    in_list = NULL;
    bag = NULL;
    obj_proc = NULL;
-} // obj constructor
+
+}//default constructor
 
 
-obj::obj(obj& source) {
-   _cnt++;
-   in_list = NULL;
-   bag = NULL;
-   obj_proc = NULL;
-   
-   *this = source; //operator= overload
-} // obj copy constructor
-
-
-obj::~obj() {
+object::~object() {
    _cnt--;
+
    if ((!in_list) && (!do_shutdown)) {
       mudlog.log(ERR, "ERROR:  trying to delete OBJ before shutdown.\n");
       //do_shutdown = TRUE;
       //exit(2);
    }//if
+
+   if (!do_shutdown) {
+      affected_objects.loseData(this);
+      pulsed_proc_objects.loseData(this);
+   }//if
+
    Clear();
-}//obj deconstructor
+}//destructor
 
 
-obj& obj::operator=(obj& source) { 
+object& object::operator= (object& source) {
 
    if (this == &source)
       return *this;
-
+   
    Cell<stat_spell_cell*> cell;
    stat_spell_cell *tmp_stat, *tmp_stat2;
    Cell<object*> cll;
@@ -297,6 +343,9 @@ obj& obj::operator=(obj& source) {
    
    Clear();
    
+   pause = source.pause;
+   in_room = source.in_room;
+
    String* ptr;
    Cell<String*> scll(source.names);
    while ((ptr = scll.next())) {
@@ -353,10 +402,17 @@ obj& obj::operator=(obj& source) {
    }//if
    
    return *this;
-}//obj::operator= overload
+}//operator= overload
+	    
 
+void object::Clear() {
+   pause = 0;
+   in_room = 0;
 
-void obj::Clear() {
+   if (cur_script) {
+      delete cur_script;
+      cur_script = NULL;
+   }
 
    clear_ptr_list(names);
    short_desc.Clear();
@@ -375,9 +431,11 @@ void obj::Clear() {
    
    delete obj_proc;
    obj_proc = NULL;
-}//obj Clear
 
-int obj::cur_weight() {
+}//Clear
+
+
+int object::getCurWeight() {
    if (inv.isEmpty()) 
       return extras[5];
    else {
@@ -385,21 +443,21 @@ int obj::cur_weight() {
       object* tmp_obj;
       int tmp_wt = 0;
       while ((tmp_obj = cll.next())) {
-         tmp_wt += tmp_obj->ob->cur_weight();
+         tmp_wt += tmp_obj->getCurWeight();
       }//while
       return tmp_wt + extras[5];  // weight of inv, plus container's wt
    }//else
 }//cur_weight
 
-int obj::max_weight() {
+int object::getMaxWeight() {
    if (bag) 
       return bag->max_weight;
    else
-      return cur_weight();
+      return getMaxWeight();
 }//max_weight
 
 
-void obj::Write(ofstream& ofile) {
+void object::Write(ofstream& ofile) {
    int i;
    Cell<stat_spell_cell*> ss_cell;
    stat_spell_cell* ss_ptr;
@@ -491,11 +549,26 @@ void obj::Write(ofstream& ofile) {
       }//if
       obj_proc->Write(ofile);
    }//if has spec_data
+
+   if (obj_flags.get(76)) {
+      Cell<ObjectScript*> cll;
+      obj_proc_scripts.head(cll);
+      ObjectScript* ptr;
+
+      int i = 1;
+      while ((ptr = cll.next())) {
+         ofile << i++ <<  "  Start of a object proc script\n";
+         ptr->write(ofile);
+      }
+      
+      ofile << "-1  End of object proc scripts" << endl;
+   }
+
    ofile << "End of Object.\n\n";
 }//Write...obj
 
 
-void obj::Read(ifstream& ofile, short read_all) {
+void object::Read(ifstream& ofile, short read_all) {
    int i, test = TRUE;
    stat_spell_cell* ss_ptr;
    char tmp[81];
@@ -595,13 +668,9 @@ void obj::Read(ifstream& ofile, short read_all) {
          ofile.getline(tmp, 80);  //junk message
          new_obj->Read(ofile, TRUE);
 
-         if (!obj_list[new_obj->OBJ_NUM].ob) { //if it's OBJ doesn't exist, create it
-            obj_list[new_obj->getIdNum()] = *new_obj; //it may be written over later
-         }
-         else {
-            inv.append(new_obj);    //add it to inventory
-            affected_objects.append(new_obj);
-         }
+         inv.append(new_obj);    //add it to inventory
+         affected_objects.append(new_obj);
+
          new_obj->IN_LIST = &(inv); //make sure its a SOBJ
       }//if
       else {
@@ -655,6 +724,41 @@ void obj::Read(ifstream& ofile, short read_all) {
       obj_proc->Read(ofile);
    }//if
 
+   /* read procs, if we have them. */
+   if (obj_flags.get(76)) {
+      //mudlog.log("Object has proc scripts...");
+      int sent_;
+      ObjectScript* ptr;
+
+      ofile >> sent_;
+      ofile.getline(tmp, 80);
+
+      if (mudlog.ofLevel(DB)) {
+         mudlog << "Tmp, after script#: " << sent_ << " -:" << tmp
+                << ":-\n";
+      }
+
+      while (sent_ != -1) {
+         if (mudlog.ofLevel(DB))
+            mudlog << "\nReading script# " << sent_ << endl;
+         if (!ofile) {
+            if (mudlog.ofLevel(ERR)) {
+               mudlog << "ERROR:  object reading script da_file FALSE." << endl;
+            }
+            return;
+         }
+
+         ptr = new ObjectScript();
+         ptr->read(ofile);
+         obj_proc_scripts.append(ptr);
+         ofile >> sent_;
+         ofile.getline(tmp, 80);
+         if (mudlog.ofLevel(DB))
+            mudlog << "Got rest of line -:" << tmp << ":-" << endl;
+      }//while
+   }//if it had proc scripts
+
+
    /* if charges < -1, make them -1 (infinity) */
    if (extras[0] < -1) {
       extras[0] = -1;
@@ -663,115 +767,29 @@ void obj::Read(ifstream& ofile, short read_all) {
    //mudlog.log(DBG, "Done reading in obj.\n");
    ofile.getline(tmp, 80); //junk end of obj msg
    ofile.getline(tmp, 80); //junk end of obj space
-}//Read....obj
 
+   OBJ_VIS_BIT |= 1024; //hack, turn on 'normal' bit
+   pause = 0;
+   in_room = 0;
 
-//******************************************************************//
-///***********************  bag struct  ***************************///
+}//Read....object
 
-int bag_struct::_cnt = 0;
-
-bag_struct::bag_struct() {
-   _cnt++;
-}//constructor
-
-bag_struct::bag_struct(const bag_struct& source) {
-   _cnt++;
-   *this = source; //a shallow copy should work
-}//copy constructor
-
-void bag_struct::Write(ofstream& ofile) const {
-   bag_flags.Write(ofile);
-   ofile << key_num << " " << max_weight << " " << percentage_weight << " "
-         << time_till_disolve << " " << "\t bag_stuff\n";
-}//Write()
-
-
-void bag_struct::Read(ifstream& ofile) {
-   char buf[81];
-   
-   bag_flags.Read(ofile);
-   ofile >> key_num >> max_weight >> percentage_weight 
-         >> time_till_disolve;
-   ofile.getline(buf, 80);
-}//Read()
-
-
-//*************************************************************//
-///**********************  object  ***************************///
-
-int object::_cnt = 0;
-
-object::object (const object& source) { //copy constructor
-   _cnt++;
-   ob = new obj(*(source.ob));
-}//obj copy constructor
-
-
-object::object() {
-   _cnt++;
-   ob = new obj;
-}//default constructor
-
-
-object::~object() {
-   _cnt--;
-   if (!do_shutdown) {
-      affected_objects.loseData(this);
-      pulsed_proc_objects.loseData(this);
-   }//if
-   delete ob;
-   ob = NULL;
-//   objs_in_game--;
-}//destructor
-
-
-object& object::operator= (const object& source) {
-
-   if (this == &source)
-      return *this;
-
-   *ob = *(source.ob);
-   return *this;
-}//operator= overload
-	    
-
-void object::Clear() {
-  ob->Clear(); //obj's Clear function
-}//Clear
-
-void object::Read(ifstream& da_file, short read_all) {
-  if (!ob)
-    ob = new obj;
-  ob->Read(da_file, read_all);
-  OBJ_VIS_BIT |= 1024; //hack, turn on 'normal' bit
-}//Read
-
-void object::Write(ofstream& da_file) const {
-  if (!ob) {
-    mudlog.log(ERR, "ERROR:  trying to write a NULL ob.\n");
-    return;
-  }//if
-  ob->Write(da_file);
-}//Write
-
-
-int object::is_magic() {
-  if (!ob->stat_affects.isEmpty() || !ob->affected_by.isEmpty())
-    return TRUE;
-  else
-     return FALSE;
+int object::isMagic() {
+   if (!stat_affects.isEmpty() || !affected_by.isEmpty())
+      return TRUE;
+   else
+      return FALSE;
 }//is_magic
 
 object* object::loseInv(object* obj) {
-   return ob->inv.loseData(obj);
+   return inv.loseData(obj);
 }
 
 
 void object::gainInv(object* obj) {
-   ob->inv.append(obj);
+   inv.append(obj);
    if (obj->IN_LIST)
-      obj->IN_LIST = &(ob->inv);
+      obj->IN_LIST = &(inv);
 }//gainInv
 
 int object::getIdNum() {
@@ -788,165 +806,141 @@ int object::getZoneNum() const {
 }
 
 int object::isFood() const {
-   return (ob && OBJ_FLAGS.get(61));
+   return (OBJ_FLAGS.get(61));
 }
 
 int object::isLocked() const {
-   return (ob && ob->bag && BAG_FLAGS.get(3));
+   return (bag && BAG_FLAGS.get(3));
 }
 
 
 int object::isMagLocked() const {
-   return (ob && ob->bag && BAG_FLAGS.get(6));
+   return (bag && BAG_FLAGS.get(6));
 }
 
 int object::isClosed() const {
-   return (ob && ob->bag && BAG_FLAGS.get(2));
+   return (bag && BAG_FLAGS.get(2));
 }
 
 
 int object::isPotion() const {
-   return (ob && OBJ_FLAGS.get(52) && ob->obj_proc);
+   return (OBJ_FLAGS.get(52) && obj_proc);
 }
 
 int object::isScroll() const {
-   return (ob && OBJ_FLAGS.get(53) && ob->obj_proc);
+   return (OBJ_FLAGS.get(53) && obj_proc);
 }
 
 int object::isHerb() const {
-   return (ob && OBJ_FLAGS.get(72));
+   return (OBJ_FLAGS.get(72));
 }
 
 
 
 int object::isInUse() const {
-   return (ob && OBJ_FLAGS.get(10));
+   return (OBJ_FLAGS.get(10));
 }
 
 int object::isNotComplete() const {
-   return (ob && OBJ_FLAGS.get(71));
+   return (OBJ_FLAGS.get(71));
 }
 
 void object::setComplete() {
-   if (ob)
-      OBJ_FLAGS.turn_off(71);
+   OBJ_FLAGS.turn_off(71);
 }
 
 void object::setIncomplete() {
-   if (ob)
-      OBJ_FLAGS.turn_on(71);
+   OBJ_FLAGS.turn_on(71);
 }
 
 // These return the current value after the operation
 int object::setCurInGame(int i) {
-   if (ob && obj_list[getIdNum()].ob) {
-      obj_list[getIdNum()].ob->extras[3] = i;
-      return i;
-   }
-   return 0;
+   obj_list[getIdNum()].extras[3] = i;
+   return i;
 }
 
 int object::getCurInGame() {
-   if (ob && obj_list[getIdNum()].ob) {
-      return obj_list[getIdNum()].ob->extras[3];
-   }
-   return 0;
+   return obj_list[getIdNum()].extras[3];
 }
 
 int object::getMaxInGame() {
-   if (ob && obj_list[getIdNum()].ob) {
-      return obj_list[getIdNum()].ob->extras[4];
-   }
-   return 0;
+   return obj_list[getIdNum()].extras[4];
 }
 
 int object::getKeyNum() {
-   if (ob && ob->bag) {
-      return ob->bag->key_num;
+   if (bag) {
+      return bag->key_num;
    }
    return 0;
 }
 
 void object::setButcherable(int val) {
-   if (ob) {
-      if (val)
-         OBJ_FLAGS.turn_on(75);
-      else
-         OBJ_FLAGS.turn_off(75);
-   }
+   if (val)
+      OBJ_FLAGS.turn_on(75);
+   else
+      OBJ_FLAGS.turn_off(75);
 }
 
 int object::isLightSource() const {
-   return (ob && ob->obj_flags.get(58));
+   return (obj_flags.get(58));
 }
 
 int object::isBulletinBoard() const {
-   return (ob && ob->obj_flags.get(74));
+   return (obj_flags.get(74));
 }
 
 
 int object::isLit() const {
-   return (ob && ob->obj_flags.get(58) &&
-           ((ob->extras[0] == -1) || (ob->extras[0] > 0)));
+   return (obj_flags.get(58) &&
+           ((extras[0] == -1) || (extras[0] > 0)));
 }
 
    
 void object::lock() {
-   if (ob && ob->bag) {
-      ob->bag->lock();
+   if (bag) {
+      bag->lock();
    }
 }//lock
 
 int object::consumesKey() {
-   if (ob && ob->bag) {
-      return ob->bag->consumesKey();
+   if (bag) {
+      return bag->consumesKey();
    }
    return FALSE;
 }//lock
 
 void object::unlock() {
-   if (ob && ob->bag) {
-      ob->bag->unlock();
+   if (bag) {
+      bag->unlock();
    }
 }//lock
 
 void object::open() {
-   if (ob && ob->bag) {
-      ob->bag->open();
+   if (bag) {
+      bag->open();
    }
 }//lock
 
 
 int object::decrementCurInGame() {
-   if (ob && obj_list[getIdNum()].ob) {
-      return --(obj_list[getIdNum()].ob->extras[3]);
-   }
-   return 0;
+   return --(obj_list[getIdNum()].extras[3]);
 }
 
 int object::incrementCurInGame() {
-   if (ob && obj_list[getIdNum()].ob) {
-      return ++(obj_list[getIdNum()].ob->extras[3]);
-   }
-   return 0;
+   return ++(obj_list[getIdNum()].extras[3]);
 }
-
 
 
 void object::makeComponent(int targ, int comp1, int comp2, int comp3,
                            int comp4, int comp5, ComponentEnum con_type) {
-   if (!ob) {
-      mudlog << "ERROR:  ob NULL in makeComponent..." << endl;
-      return;
-   }
 
-   if (!ob->obj_proc) {
-      ob->obj_proc = new obj_spec_data();
+   if (!obj_proc) {
+      obj_proc = new obj_spec_data();
    }
    OBJ_FLAGS.turn_on(63); //has spec proc data
 
-   if (!ob->obj_proc->construct_data) {
-      ob->obj_proc->construct_data = new obj_construct_data();
+   if (!obj_proc->construct_data) {
+      obj_proc->construct_data = new obj_construct_data();
    }
    OBJ_SPEC_FLAGS.turn_on(1); //set the flag to make it a construct object
 
@@ -970,6 +964,31 @@ void object::makeComponent(int targ, int comp1, int comp2, int comp3,
    }
 }//makeComponent
 
+void object::setCurRoomNum(int i, int sanity) {
+   in_room = i;
+
+   if (inv.isEmpty()) {
+      return;
+   }
+   else {
+      Cell<object*> cll(inv);
+      object* ptr;
+
+      if (sanity > 20) {
+         mudlog << "WARNING:  object::setCurInRoom, sanity over-run, obj#: "
+                << getIdNum() << endl;
+         return;
+      }
+
+      while ((ptr = cll.next())) {
+         if (ptr->isModified()) {
+            ptr->setCurRoomNum(i, sanity + 1);
+         }
+      }//while
+   }//if
+}//setCurInRoom
+
+
 int object::getObjCountByNumber(int onum, int sanity) {
 
    if (mudlog.ofLevel(DBG)) {
@@ -977,14 +996,14 @@ int object::getObjCountByNumber(int onum, int sanity) {
              << sanity << " Obj_NUM: " << getIdNum() << endl;
    }
 
-   if (ob->inv.isEmpty()) {
+   if (inv.isEmpty()) {
       if (mudlog.ofLevel(DBG)) {
          mudlog << "Inventory is empty, returning zero." << endl;
       }
       return 0;
    }
    else {
-      Cell<object*> cll(ob->inv);
+      Cell<object*> cll(inv);
       object* ptr;
       int count = 0;
 
@@ -1032,3 +1051,195 @@ int object::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
 
    return 0;
 }//doGoToRoom
+
+
+void object::finishedObjProc() {
+   if (cur_script) {
+      pending_scripts.loseData(cur_script);
+      delete cur_script;
+   }
+
+   // This could easily end up being NULL, that's OK!
+   cur_script = pending_scripts.peekFront();
+}//finishedRoomProc
+
+void object::addProcScript(const String& txt, ObjectScript* script_data) {
+   //similar to reading it in...
+   //first, see if we are over-writing one...
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In object::addProcScript, txt:  \n" << txt
+             << "\nscript data:  "
+             << script_data->toStringBrief(0, 0, ENTITY_ROOM, 0) << endl;
+   }
+
+   obj_flags.turn_on(76);
+
+   Cell<ObjectScript*> cll;
+   ObjectScript* ptr;
+   obj_proc_scripts.head(cll);
+
+   while ((ptr = cll.next())) {
+      if (ptr->matches(*script_data)) {
+         //got a match.
+         mudlog.log("object::addProcScript, they match.");
+         *ptr = *script_data;
+         ptr->setScript(txt);
+         delete script_data;
+         return;
+      }//if
+   }//while
+   
+   mudlog.log(DBG, "About to setScript.");
+   
+   script_data->setScript(txt);
+   mudlog.log(DBG, "done with setScript.");
+
+   if (!script_data) {
+      mudlog.log(ERR, "script_data is NULL, object::addProcScript.");
+      return;
+   }
+
+   obj_proc_scripts.append(script_data);
+}//addProcScript
+
+
+void object::listScripts(critter& pc) {
+   String buf(500);
+   buf.Append("These scripts are defined for this object, the actual scripts
+may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n");
+
+   pc.show(buf);
+
+   String tmp(100);
+   int found_one = FALSE;
+   Cell<ObjectScript*> cll(obj_proc_scripts);
+   ObjectScript* ptr;
+   int idx = 0;
+   while ((ptr = cll.next())) {
+      found_one = TRUE;
+      tmp = ptr->toStringBrief(FALSE, 0, ENTITY_OBJECT, idx);
+      Sprintf(buf, "[%i] %S\n", idx, &(tmp));
+      pc.show(buf);
+      idx++;
+   }
+
+   if (!found_one) {
+      buf.Append("No scripts defined for this object.\n");
+      show(buf, pc);
+   }
+}//listScripts
+
+void object::removeScript(String& trigger, int i_th, critter& pc) {
+   int sofar = 1;
+   String buf(500);
+ 
+   Cell<ObjectScript*> cll(obj_proc_scripts);
+   ObjectScript* ptr;
+   ptr = cll.next();
+   while (ptr) {
+      if (strcasecmp(*(ptr->getTrigger()), trigger) == 0) {
+         if (sofar == i_th) {
+            delete ptr;
+            ptr = obj_proc_scripts.lose(cll);
+            show("Deleted it...\n", pc);
+            return;
+         }//if
+         else {
+            ptr = cll.next();
+         }
+         sofar++;
+      }//if
+      else {
+         ptr = cll.next();
+      }
+   }//while
+
+   show("Didn't find that script..\n", pc);
+}//removeScript
+
+
+int object::insertNewScript(ObjectScript* script) {
+   ObjectScript* ptr;
+   Cell<ObjectScript*> cll(pending_scripts);
+
+   // Don't append scripts that have a zero precedence, if there
+   // are other scripts in the queue.
+   if ((script->getPrecedence() == 0) && (!pending_scripts.isEmpty())) {
+      delete script;
+      return 0;
+   }
+
+   while ((ptr = cll.next())) {
+      if (ptr->getPrecedence() < script->getPrecedence()) {
+         // Then insert it
+         pending_scripts.insertBefore(cll, script);
+         return 0;
+      }//if
+   }//while
+
+   // If here, then we need to place it at the end.
+   pending_scripts.append(script);
+   return 0;
+}
+
+
+void object::doScriptJump(int abs_offset) {
+   if (cur_script)
+      cur_script->doScriptJump(abs_offset);
+}
+
+// NOTE:  The script owner is *this.  It is likely, but not necessary
+// that targ is also *this
+void object::checkForProc(String& cmd, String& arg1, critter& actor,
+                           int targ, room& rm) {
+   mudlog.log("In object::checkForProc.");
+
+   if (!isModified()) {
+      mudlog.log(ERR, "ERROR:  object::checkForProc, got an OBJ (not modified).");
+      return;
+   }
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "Was a mob, mob#:  " << MOB_NUM << endl;
+   }
+
+   Cell<ObjectScript*> cll;
+   ObjectScript* ptr;
+         
+   obj_proc_scripts.head(cll);
+
+   while ((ptr = cll.next())) {
+      //mudlog.log("In while.");
+      //mudlog.log(ptr->toStringBrief(0, 0));
+      if (ptr->matches(cmd, arg1, actor, targ)) {
+         //mudlog.log("Matches..");
+         if (pending_scripts.size() >= 10) { //only queue 10 scripts
+            return; //do nothing, don't want to get too much backlog.
+         }
+         else {
+            // add it to the pending scripts.
+            ptr->generateScript(cmd, arg1, actor, targ, rm, NULL, this);
+            insertNewScript(new ObjectScript(*ptr));
+
+            if (cur_script) {
+               if (cur_script->getPrecedence() <
+                   pending_scripts.peekFront()->getPrecedence()) {
+                  
+                  pending_scripts.loseData(cur_script); //take it out of queue
+                  delete cur_script; //junk it!
+                  cur_script = pending_scripts.peekFront();
+                  cur_script->resetStackPtr(); //get ready to start
+               }//if
+               // else, it just goes into the queue
+            }//if we currently have a script.
+            else { //there was none, so grab the first one.
+               cur_script = pending_scripts.peekFront();
+               proc_action_objs.gainData(this);
+               cur_script->resetStackPtr(); //get ready to start
+            }
+
+            return;
+         }//else
+      }//if matches
+   }//while
+}//checkForProcAction

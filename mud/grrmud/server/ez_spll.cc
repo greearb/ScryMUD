@@ -116,10 +116,9 @@ void cast_detect_poison(int i_th, const String* victim, critter& pc) {
    object* vict = NULL;
    int spell_num = DETECT_POISON_SKILL_NUM;
 
-   if (!(vict = have_obj_named(ROOM.inv, i_th, victim, 
-				pc.SEE_BIT, ROOM))) {
+   if (!(vict = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT))) {
       vict = have_obj_named(pc.inv, i_th, victim, 
-				pc.SEE_BIT, ROOM);
+                            pc.SEE_BIT, ROOM);
       if (!vict) {
          show("You don't see that person.\n", pc);
          return;
@@ -151,8 +150,8 @@ void do_cast_detect_poison(object& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     if (vict.ob->obj_proc &&
-	 vict.ob->obj_proc->obj_spec_data_flags.get(3)) {
+     if (vict.obj_proc &&
+	 vict.obj_proc->obj_spec_data_flags.get(3)) {
        Sprintf(buf, "You get a STRONG reaction from %S!\n",
 	       long_name_of_obj(vict, agg.SEE_BIT));
        show(buf, agg);
@@ -782,7 +781,7 @@ void cast_create_water(int i_th, const String* victim, critter& pc) {
 		       pc.SEE_BIT, ROOM);
    }//if
 
-   if (!obj->OBJ_FLAGS.get(59) && obj->ob->bag) {
+   if (!obj->OBJ_FLAGS.get(59) && obj->bag) {
      show("That cannot hold water!\n", pc);
      return;
    }//if
@@ -808,13 +807,13 @@ void do_cast_create_water(object& vict, critter& agg, int is_canned,
 
    short lost_con = TRUE;
 
-   if (!vict.ob->bag) {
+   if (!vict.bag) {
      mudlog.log(ERR, "ERROR:  non-bag sent to do_cast_create_water.");
      return;
    }//if
 
    if (is_canned || (!(lost_con = lost_concentration(agg, spell_num)))) {
-      object* obj_ptr = Top(vict.ob->inv);
+      object* obj_ptr = Top(vict.inv);
       if (obj_ptr && obj_ptr->OBJ_NUM != 7) {
          show("You need to empty it first!\n", agg);
          return;
@@ -849,7 +848,7 @@ void do_cast_create_water(object& vict, critter& agg, int is_canned,
    agg.PAUSE++;
    
    if (do_effects) {
-      clear_obj_list(vict.ob->inv);
+      clear_obj_list(vict.inv);
       vict.CHARGES = 0;
       vict.CHARGES = vict.OBJ_MAX_WEIGHT - vict.OBJ_CUR_WEIGHT;
       vict.gainInv(&(obj_list[7]));
@@ -877,7 +876,7 @@ void cast_enchant_weapon(int i_th, const String* victim, critter& pc) {
 		       pc.SEE_BIT, ROOM);
    }//if
 
-   if (obj->is_magic()) {
+   if (obj->isMagic()) {
      show("That cannot hold any more magic!\n", pc);
      return;
    }//if
@@ -948,13 +947,13 @@ void do_cast_enchant_weapon(object& vict, critter& agg, int is_canned,
      for (i = 0; i<4; i++) {
        if (d(1,2) == 2) {
 	 if (!dm_ptr)
-	   Put((dm_ptr = new stat_spell_cell(8, 1)), vict.ob->stat_affects);
+	   Put((dm_ptr = new stat_spell_cell(8, 1)), vict.stat_affects);
 	 else
 	   dm_ptr->bonus_duration++;
        }//if
        else {
 	 if (!ht_ptr)
-	   Put((ht_ptr = new stat_spell_cell(7, 1)), vict.ob->stat_affects);
+	   Put((ht_ptr = new stat_spell_cell(7, 1)), vict.stat_affects);
 	 else
 	   ht_ptr->bonus_duration++;
        }//else
@@ -983,7 +982,7 @@ void cast_enchant_armor(int i_th, const String* victim, critter& pc) {
 		       pc.SEE_BIT, ROOM);
    }//if
 
-   if (obj->is_magic()) {
+   if (obj->isMagic()) {
      show("That cannot hold any more magic!\n", pc);
      return;
    }//if
@@ -1041,13 +1040,13 @@ void do_cast_enchant_armor(object& vict, critter& agg, int is_canned,
 
      /* first do AC decrementation */
      if (!ac_ptr)
-       Put(new stat_spell_cell(9, -(lvl/3)), vict.ob->stat_affects);
+       Put(new stat_spell_cell(9, -(lvl/3)), vict.stat_affects);
      else
        ac_ptr->bonus_duration -= (lvl/3);
 
      /* spell resistance decrementation (less is good) */ 
      if (!spll_ptr)
-       Put(new stat_spell_cell(32, -(lvl/3)), vict.ob->stat_affects);
+       Put(new stat_spell_cell(32, -(lvl/3)), vict.stat_affects);
      else
        spll_ptr->bonus_duration -= (lvl/3);
 
@@ -1128,7 +1127,7 @@ void do_cast_fire_blade(object& vict, critter& agg, int is_canned,
 
    if (do_effects) {
      if ((sp = is_affected_by(FROST_BLADE_SKILL_NUM, vict))) {
-       vict.ob->affected_by.loseData(sp);
+       vict.affected_by.loseData(sp);
        delete sp;
      }//if
 
@@ -1136,7 +1135,7 @@ void do_cast_fire_blade(object& vict, critter& agg, int is_canned,
      if (sp)
        sp->bonus_duration += lvl/3;
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2), vict.ob->affected_by);
+       Put(new stat_spell_cell(spell_num, lvl/2), vict.affected_by);
      }//else
    }//if
 }//do_cast_fire_blade
@@ -1215,7 +1214,7 @@ void do_cast_frost_blade(object& vict, critter& agg, int is_canned,
 
    if (do_effects) {
      if ((sp = is_affected_by(FIRE_BLADE_SKILL_NUM, vict))) {
-       vict.ob->affected_by.loseData(sp);
+       vict.affected_by.loseData(sp);
        delete sp;
        sp = is_affected_by(FROST_BLADE_SKILL_NUM, vict);
      }//if
@@ -1223,7 +1222,7 @@ void do_cast_frost_blade(object& vict, critter& agg, int is_canned,
      if (sp)
        sp->bonus_duration += lvl/3;
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2), vict.ob->affected_by);
+       Put(new stat_spell_cell(spell_num, lvl/2), vict.affected_by);
      }//else
    }//if
 }//do_cast_frost_blade
@@ -1309,7 +1308,7 @@ void do_cast_rune_edge(object& vict, critter& agg, int is_canned,
       if (sp)
 	sp->bonus_duration += lvl/3;
       else {
-	Put(new stat_spell_cell(spell_num, lvl/2), vict.ob->affected_by);
+	Put(new stat_spell_cell(spell_num, lvl/2), vict.affected_by);
 	vict.OBJ_DAM_DICE_SIDES += RUNE_EDGE_EFFECTS;
       }//else
    }//if
@@ -1326,8 +1325,7 @@ void cast_invisibility(int i_th, const String* victim, critter& pc) {
    }//if
 
    if (!(vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT))) {
-     object* obj = have_obj_named(ROOM.inv, i_th, victim, pc.SEE_BIT,
-				  ROOM);
+     object* obj = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
      if (!obj) {
        obj = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT,
 			    ROOM);
@@ -1473,7 +1471,7 @@ void do_cast_invisibility(object& vict, critter& agg, int is_canned,
       if (sp)
 	sp->bonus_duration += lvl/3;
       else
-	Put(new stat_spell_cell(spell_num, lvl/3), vict.ob->affected_by);
+	Put(new stat_spell_cell(spell_num, lvl/3), vict.affected_by);
 
       vict.OBJ_VIS_BIT |= 2;
    }//if

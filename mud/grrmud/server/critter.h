@@ -54,7 +54,8 @@ enum PcMode {
    MODE_QUIT_ME_PLEASE = 7,         // purposeful quit
    MODE_LOGOFF_NEWBIE_PLEASE = 9,    // pre-login socket problem
    MODE_LOG_OFF_LINKDEAD_PLEASE = 10, //to deal with chars on the linkdead list
-   MODE_ADD_ROOM_SCRIPT = 11
+   MODE_ADD_ROOM_SCRIPT = 11,
+   MODE_ADD_OBJECT_SCRIPT = 12
 };//PcMode
 
 enum PcPosition {
@@ -638,8 +639,8 @@ public:
    void Clear();
    critter& operator= (critter& source);
    
-   int cur_weight();
-   int max_weight();
+   int getCurWeight();
+   int getMaxWeight();
    void Read(ifstream& da_file, short read_all);
    void Write(ofstream& da_file);
 

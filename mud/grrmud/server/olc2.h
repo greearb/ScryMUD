@@ -101,6 +101,11 @@ int add_room_script(critter& pc, int rm_num, String& trigger_cmd,
                      int takes_precedence);
 int do_add_room_script(critter& pc);
 
+int add_obj_script(critter& pc, int obj_num, String& trigger_cmd,
+                   int actor_num, String& descriminator, int target_num,
+                   int takes_precedence);
+int do_add_obj_script(critter& pc);
+
 
 int clear_mnames(int obj_num, critter& pc);
 int clear_onames(int obj_num, critter& pc);

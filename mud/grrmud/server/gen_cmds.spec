@@ -72,6 +72,8 @@ add_mname ~
 return add_mname(i, &(cooked_strs[1]), pc);
 add_mob_script ~
 return add_mob_script(pc, i, (cooked_strs[1]), j, (cooked_strs[2]), k, l);
+add_obj_script add_mob_script ~
+return add_obj_script(pc, i, (cooked_strs[1]), j, (cooked_strs[2]), k, l);
 add_room_script add_mob_script ~
 return add_room_script(pc, i, (cooked_strs[1]), j, (cooked_strs[2]), k, l);
 add_oname ~
@@ -296,6 +298,8 @@ exits ~
 return exit(pc);
 examine ~
 return examine(i, &(cooked_strs[1]), pc);
+exact_damage ~
+return exact_damage(i, j, cooked_strs[2], pc);
 elf *elf ~
 NOP
 elves *elves ~
@@ -417,6 +421,8 @@ lick socials ~
 lick(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 list ~
 return list_merchandise(i, &(cooked_strs[1]), pc);
+list_obj_scripts ~
+return list_obj_scripts(i, pc);
 list_paths ~
 return list_paths(i, pc);
 list_scripts ~
@@ -609,8 +615,10 @@ rm_bow_proc ~
 return rm_bow_proc(i, pc);
 rm_curse_proc ~
 return rm_curse_proc(i, pc);
+rm_obj_script rem_obj_script rm_obj_script ~
+return rem_obj_script(i, cooked_strs[1], j, pc);
 rm_room_script rem_room_script rm_room_script ~
-return rem_room_script(i, (cooked_strs[1]), j, pc);
+return rem_room_script(i, cooked_strs[1], j, pc);
 rm_script rem_script rm_script ~
 return rem_script(i, (cooked_strs[1]), j, pc);
 rm_stat_affect rem_stat_affect rm_stat_affect ~
@@ -731,6 +739,8 @@ stand ~
 return stand(pc);
 stat_keyword ~
 return stat_keyword(i, pc);
+stat_obj_script ~
+return stat_obj_script(i, j, pc);
 stat_path ~
 return stat_path(i, j, pc);
 stat_room_script ~

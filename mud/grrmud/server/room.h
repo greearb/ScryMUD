@@ -75,6 +75,8 @@ protected:
 
    List<critter*> critters;
 
+   List<object*> inv;
+
    int cur_stats[ROOM_CUR_STATS + 1];  
 	   // 0 vis_bit {1 dark, 2 invis, 4 hidden,
 	   //            8 imm_invis1, 16 imm_invis3, 32 link_dead_invis
@@ -103,8 +105,6 @@ protected:
 public:
    List<stat_spell_cell*> affected_by;
    
-   List<object*> inv;   
-
    List<String*> names;
    String short_desc;
    String long_desc;
@@ -124,6 +124,9 @@ public:
    KeywordPair* haveKeyword(int i_th, const String* str);
 
    static int getInstanceCount() { return _cnt; }
+
+   const List<object*>* peekInv() { return &inv; }
+   List<object*>* getInv() { return &inv; }
 
    int getPause() const { return pause; }
    int decrementPause() { if (pause > 0) pause--; return pause; }
@@ -216,6 +219,7 @@ public:
    virtual object* haveObjNamed(int i_th, const String* name, int see_bit);
    virtual critter* haveCritNamed(int i_th, const String* name, int see_bit);
    virtual critter* haveCritter(critter* ptr);
+   virtual object* haveObject(object* ptr);
    virtual critter* getLastCritter() { return critters.peekBack(); }
    virtual void gainCritter(critter* crit);
    virtual critter* removeCritter(critter* crit);

@@ -1,0 +1,16 @@
+<help battle exact_damage>
+
+This command, written with scripting in mind, exacts a certain
+amount of damage from the caller.  It also causes the caller to
+emote a message, if one is specified.
+
+NOTE:  Need single quotes around the message.
+
+Syntax:  exact_damage [dice_count] [dice_sides] <<'command'>
+
+Example:  exact_damage 5 6	# Does 5d6 damage to caller, no msg is emoted.
+Example:  exact_damage 4 4 'is consumed in a flash of white heat.'
+
+<color = blue>
+See Also:  add_mob_script, hit, slay
+</color></help>

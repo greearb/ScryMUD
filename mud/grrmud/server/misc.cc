@@ -355,6 +355,16 @@ void do_mini_tick() { // decrement pause count ect
       }
    }//for
 
+   // Decrease pause count for objects that are running scripts.
+   object* o_ptr;
+   for (int cnt = 0; cnt < proc_action_objs.getCurLen(); cnt++) {
+      if (!(o_ptr = proc_action_objs.elementAt(cnt))) {
+         continue;
+      }//if
+      else {
+         o_ptr->decrementPause();
+      }
+   }//for
 
 }//do_mini_tick
 
@@ -569,8 +579,8 @@ void update_objects(int zone_num, short read_all) {
       buf.Prepend("cp ./World/DEFAULT_OBJECTS ");
       system(buf);
       mudlog.log(ERR, "WARNING:  created new OBJECT_FILE in update_objects");
-      temp_obj.IN_LIST = &(room_list[0].inv); //hack to let destructor fire
-                                              //happily, turn it into a SOBJ
+      temp_obj.IN_LIST = room_list[0].getInv(); //hack to let destructor fire
+                                                //happily, turn it into a SOBJ
       return;
    }//if
 
@@ -584,28 +594,26 @@ void update_objects(int zone_num, short read_all) {
 
       temp_obj.Read(objfile, read_all);
 
-      if (obj_list[k].ob) {
-         if (obj_list[k].OBJ_FLAGS.get(70)) {
+      if (obj_list[k].OBJ_FLAGS.get(70)) {
 
-            //log("About to check if need to load more inv.\n");
-            temp_obj.ob->inv.head(ocell);
-            while ((obj_ptr = ocell.next())) {
-               if ((obj_count(temp_obj.ob->inv, *obj_ptr) >
-                   obj_count(obj_list[k].ob->inv, *obj_ptr))
-                  && (obj_ptr->getCurInGame() < obj_ptr->getMaxInGame())) {
-                  Put(&(obj_list[obj_ptr->getIdNum()]), obj_list[k].ob->inv);
-                  recursive_init_loads(obj_list[obj_ptr->getIdNum()], 0);
-               }//if
-            }//while      
-         }//if should update
-      }//if
+         //log("About to check if need to load more inv.\n");
+         temp_obj.inv.head(ocell);
+         while ((obj_ptr = ocell.next())) {
+            if ((obj_count(temp_obj.inv, *obj_ptr) >
+                 obj_count(obj_list[k].inv, *obj_ptr))
+                && (obj_ptr->getCurInGame() < obj_ptr->getMaxInGame())) {
+               Put(&(obj_list[obj_ptr->getIdNum()]), obj_list[k].inv);
+               recursive_init_loads(obj_list[obj_ptr->getIdNum()], 0);
+            }//if
+         }//while      
+      }//if should update
 
       objfile >> k;
       objfile.getline(temp_str, 80);
    }//while, the big loop, reads in a whole mob list
 
-   temp_obj.IN_LIST = &(room_list[0].inv); //hack to let destructor fire
-                                           //happily, turn it into a SOBJ
+   temp_obj.IN_LIST = room_list[0].getInv(); //hack to let destructor fire
+                                             //happily, turn it into a SOBJ
    //log("Done w/update objects.\n");
 }//update_objects
 
@@ -676,15 +684,15 @@ void update_zone(int zone_num, short read_all) {
       }//if
 
       //log("About to check if need to load more inv into the room.\n");
-      room_ptr->inv.head(ocell);
+      room_ptr->getInv()->head(ocell);
       while ((obj_ptr = ocell.next())) {
-         if ((obj_count(room_ptr->inv, *obj_ptr) >
-              obj_count(room_list[k].inv, *obj_ptr)) &&
+         if ((obj_count(*(room_ptr->getInv()), *obj_ptr) >
+              obj_count(*(room_list[k].getInv()), *obj_ptr)) &&
 	     (obj_ptr->getCurInGame()
               < obj_list[obj_ptr->getIdNum()].getMaxInGame())) {
 
             //points into object array
-            Put(&(obj_list[obj_ptr->getIdNum()]), room_list[k].inv);
+            room_list[k].gainObject(&(obj_list[obj_ptr->getIdNum()]));
 	    recursive_init_loads(obj_list[obj_ptr->getIdNum()], 0);
          }//if
       }//while      
@@ -794,11 +802,11 @@ void decrease_timed_affecting_pcs() {  //will decrease all
          if (crit_ptr->EQ[11]) {
 	    if (!crit_ptr->EQ[11]->IN_LIST) {
 	       crit_ptr->EQ[11] = obj_to_sobj(*(crit_ptr->EQ[11]), 
-					      &(crit_ptr->inv));
+					      &(crit_ptr->inv), crit_ptr->getCurRoomNum());
 	    }//if
-	    if (crit_ptr->EQ[11]->ob->extras[0] == 1) {
+	    if (crit_ptr->EQ[11]->extras[0] == 1) {
 	       Sprintf(buf, "%S flickers.\n", 
-		    long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
+                       long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
 	       show(buf, *crit_ptr);
 	    }//if
@@ -806,16 +814,16 @@ void decrease_timed_affecting_pcs() {  //will decrease all
 
 		/* check for lights gone out */
          if (crit_ptr->EQ[11]) {
-	    if (crit_ptr->EQ[11]->ob->extras[0] == 0) {
-	       crit_ptr->EQ[11]->ob->extras[0] = -2;
+	    if (crit_ptr->EQ[11]->extras[0] == 0) {
+	       crit_ptr->EQ[11]->extras[0] = -2;
 	       Sprintf(buf, "%S dims and glows its last.\n", 
                        long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
 	       show(buf, *crit_ptr);
 	       crit_ptr->crit_flags.turn_off(USING_LIGHT_SOURCE);
 	       room_list[crit_ptr->getCurRoomNum()].checkLight(FALSE);
-               crit_ptr->EQ[11]->ob->short_desc += "(OUT)";
-               crit_ptr->EQ[11]->ob->in_room_desc += "(OUT)";
+               crit_ptr->EQ[11]->short_desc += "(OUT)";
+               crit_ptr->EQ[11]->in_room_desc += "(OUT)";
 	    }//if
          }//if
       }//if
@@ -879,9 +887,9 @@ void decrease_timed_affecting_lds() {
          if (crit_ptr->EQ[11]) {
 	    if (!crit_ptr->EQ[11]->IN_LIST) {
 	       crit_ptr->EQ[11] = obj_to_sobj(*(crit_ptr->EQ[11]), 
-					      &(crit_ptr->inv));
+					      &(crit_ptr->inv), crit_ptr->getCurRoomNum());
 	    }//if
-	    if (crit_ptr->EQ[11]->ob->extras[0] == 1) {
+	    if (crit_ptr->EQ[11]->extras[0] == 1) {
 	       Sprintf(buf, "%S flickers.\n", 
 		    long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
@@ -891,8 +899,8 @@ void decrease_timed_affecting_lds() {
 
 		/* check for lights gone out */
          if (crit_ptr->EQ[11]) {
-	    if (crit_ptr->EQ[11]->ob->extras[0] == 0) {
-	       crit_ptr->EQ[11]->ob->extras[0] = -2;
+	    if (crit_ptr->EQ[11]->extras[0] == 0) {
+	       crit_ptr->EQ[11]->extras[0] = -2;
 	       Sprintf(buf, "%S dims and glows its last.\n", 
 		    long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
@@ -983,13 +991,13 @@ void decrease_timed_affecting_objects() {
                 << obj_ptr->OBJ_NUM << endl;
       }
 
-      obj_ptr->ob->affected_by.head(sp_cell);
+      obj_ptr->affected_by.head(sp_cell);
       sp_ptr = sp_cell.next();
       while (sp_ptr) {
 	 if (sp_ptr->bonus_duration == 0) {
 	    rem_effects_obj(sp_ptr->stat_spell, *obj_ptr);
             delete sp_ptr;
-            sp_ptr = obj_ptr->ob->affected_by.lose(sp_cell);
+            sp_ptr = obj_ptr->affected_by.lose(sp_cell);
 	 }//if
 	 else { 
 	   if (sp_ptr->bonus_duration != -1)
@@ -1005,8 +1013,8 @@ void decrease_timed_affecting_objects() {
 		    /* take care of lights */
 
       if (obj_ptr->OBJ_FLAGS.get(OBJ_LIGHT_SOURCE)) {
-	 if (obj_ptr->ob->extras[0] > -1) { //is not perm
-	   obj_ptr->ob->extras[0]--;
+	 if (obj_ptr->extras[0] > -1) { //is not perm
+	   obj_ptr->extras[0]--;
 	 }//if
       }//if
 
@@ -1017,14 +1025,14 @@ void decrease_timed_affecting_objects() {
       }
 
       if (obj_ptr->OBJ_NUM == CORPSE_OBJECT) { //if is corpse
-	 if (obj_ptr->ob->bag && 
-	     obj_ptr->ob->bag->time_till_disolve == 0) { //disolve it!!
+	 if (obj_ptr->bag && 
+	     obj_ptr->bag->time_till_disolve == 0) { //disolve it!!
 	    disolve_object(*obj_ptr);
 	    obj_ptr = affected_objects.lose(cell);
 	 }//if
 	 else {
-	   if (obj_ptr->ob->bag->time_till_disolve != -1) {
-	     obj_ptr->ob->bag->time_till_disolve--;
+	   if (obj_ptr->bag->time_till_disolve != -1) {
+	     obj_ptr->bag->time_till_disolve--;
 	     obj_ptr = cell.next();
 	   }//if
            else {
@@ -1098,12 +1106,12 @@ void disolve_object(object& obj) {
 
 
 void do_disolve_object(object& obj) {
-   Cell<object*> cell(obj.ob->inv);
+   Cell<object*> cell(obj.inv);
    object *obj_ptr;
 
    //log("In disolve_object\n");
 
-   if (!obj.ob->in_list) {
+   if (!obj.in_list) {
       mudlog.log(ERR, "ERROR:  disolve_object called on non-sobj.\n");
       do_shutdown = TRUE;
       exit(100);
@@ -1111,14 +1119,14 @@ void do_disolve_object(object& obj) {
 
    //log("Before while\n");
    while ((obj_ptr = cell.next())) {
-      if (obj_ptr->ob->in_list)
-         obj_ptr->ob->in_list = obj.ob->in_list;
-      obj.ob->in_list->append(obj_ptr);
+      if (obj_ptr->in_list)
+         obj_ptr->in_list = obj.in_list;
+      obj.in_list->append(obj_ptr);
    }//while
    //log("Before Clear()\n");
-   obj.ob->inv.clear();
+   obj.inv.clear();
 
-   obj.ob->in_list->loseData(&obj); //delete the original 
+   obj.in_list->loseData(&obj); //delete the original 
 				       //obj to be disolved
    //log("Lost data.\n");
    delete &obj; //should fire deconstructors
@@ -1206,7 +1214,7 @@ void add_spell_affecting_obj(int spell, int duration, object& vict) {
 
    spcell->stat_spell = spell;
    spcell->bonus_duration = duration; 
-   Put(spcell, vict.ob->affected_by);
+   Put(spcell, vict.affected_by);
 }//gain spell_affected_by    
 
 
@@ -1261,11 +1269,11 @@ void show_all_but_2(critter& A, critter& B, const char* msg,
 	    show(msg, *crit_ptr);
    }//while
 
-   Cell<object*> cll(rm.inv);
+   Cell<object*> cll(*(rm.getInv()));
    object* obj;
 
    while ((obj = cll.next())) {
-     if (obj->ob->obj_proc && (crit_ptr = obj->ob->obj_proc->w_eye_owner)) {
+     if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
        if (crit_ptr->POS < POS_SLEEP) {
 	 show("#####", *crit_ptr);
 	 show(msg, *crit_ptr);
@@ -1474,18 +1482,14 @@ void out_inv(const List<object*>& lst, critter& pc,
       {
       case ROOM_INV:
          while ((obj_ptr = cell.next())) {
-            if (!obj_ptr->ob) {
-               mudlog << "ERROR:  ob NULL in out_inv." << endl;
-               continue;
-            }
 
 	    if (detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
                if (pc.shouldShowVnums()) {
                   Sprintf(buf, "     [%i] %P11 %S", obj_ptr->OBJ_NUM,
-                          &(obj_ptr->ob->in_room_desc));
+                          &(obj_ptr->in_room_desc));
                }
                else {
-                  Sprintf(buf, "\t%S", &(obj_ptr->ob->in_room_desc));
+                  Sprintf(buf, "\t%S", &(obj_ptr->in_room_desc));
                }
                buf.Cap();
 
@@ -1497,8 +1501,8 @@ void out_inv(const List<object*>& lst, critter& pc,
                }//if
 
                if (pc.canDetectMagic() &&
-                   (!IsEmpty(obj_ptr->ob->affected_by) ||
-                    !IsEmpty(obj_ptr->ob->stat_affects))) {
+                   (!IsEmpty(obj_ptr->affected_by) ||
+                    !IsEmpty(obj_ptr->stat_affects))) {
                   buf.Append(" {Blue Glow}\n");
                }//if
                else {
@@ -1515,10 +1519,6 @@ void out_inv(const List<object*>& lst, critter& pc,
          break;
       case OBJ_INV: case CRIT_INV:
          while ((obj_ptr = cell.next())) {
-            if (!obj_ptr->ob) {
-               mudlog << "ERROR:  ob NULL in out_inv." << endl;
-               continue;
-            }
 	    if (detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
                if (pc.shouldShowVnums()) {
                   Sprintf(buf, "     [%i]%P11 %S", obj_ptr->OBJ_NUM,
@@ -1538,8 +1538,8 @@ void out_inv(const List<object*>& lst, critter& pc,
                }//if
 
                if  (pc.canDetectMagic() &&
-                    (!IsEmpty(obj_ptr->ob->affected_by) ||
-                     !IsEmpty(obj_ptr->ob->stat_affects))) {
+                    (!IsEmpty(obj_ptr->affected_by) ||
+                     !IsEmpty(obj_ptr->stat_affects))) {
                   buf.Append(" {Blue Glow}\n");
                }//if
                else {
@@ -1681,7 +1681,7 @@ int obj_sub_a_4_b(object* a, List<object*>& lst, const int i_th,
    while ((obj_ptr = cell.next())) {
       ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | rm.getVisBit()); 
       if (detect(see_bit, ptr_v_bit)) {
-         obj_ptr->ob->names.head(char_cell);
+         obj_ptr->names.head(char_cell);
 	 while ((string = char_cell.next())) {
 	    if (strncasecmp(*string, *name, name->Strlen()) == 0){ 
 	       count++;
@@ -1719,7 +1719,7 @@ object* have_obj_named(const List<object*>& lst, const int i_th,
    while ((obj_ptr = cell.next())) {
       ptr_v_bit = (obj_ptr->OBJ_VIS_BIT | rm.getVisBit());
       if (detect(see_bit, ptr_v_bit)) {
-	 obj_ptr->ob->names.head(char_cell);
+	 obj_ptr->names.head(char_cell);
 	 while ((string = char_cell.next())) {
 	    if (strncasecmp(*string, *name, name->Strlen()) == 0){ 
 	       count++;
@@ -1735,7 +1735,7 @@ object* have_obj_named(const List<object*>& lst, const int i_th,
 
 
 int  obj_is_named(const object& obj, const String& name) {
-   Cell<String*> char_cell(obj.ob->names);
+   Cell<String*> char_cell(obj.names);
    String *string;
    int len;
 
@@ -1788,7 +1788,7 @@ String* name_of_obj(const object& obj, int see_bit) {
       return &SOMETHING;
    }//if
    else {
-      String* tmp = Top(obj.ob->names);
+      String* tmp = Top(obj.names);
       if (tmp)
          return tmp;
       else
@@ -1797,13 +1797,13 @@ String* name_of_obj(const object& obj, int see_bit) {
 }//name_of_obj
 
 
-String* long_name_of_obj(const object& obj, int see_bit) {
-   if (obj.ob->short_desc.Strlen() == 0 ||
+String* long_name_of_obj(object& obj, int see_bit) {
+   if (obj.short_desc.Strlen() == 0 ||
 	!detect(see_bit, obj.OBJ_VIS_BIT)) {
       return &SOMETHING;
    }//if
    else {
-      return &(obj.ob->short_desc);
+      return &(obj.short_desc);
    }//else
 }//long name_of_obj
 

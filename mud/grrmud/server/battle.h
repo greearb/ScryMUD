@@ -56,9 +56,9 @@ critter* mob_to_smob(critter& mob, const int room_num,
 critter* mob_to_smob(critter& mob, room& rm,
                      int supress_sub_fail_msg = FALSE);
 
-object*  obj_to_sobj(const object& obj, List<object*>* in_list, int do_sub,
+object*  obj_to_sobj(object& obj, List<object*>* in_list, int do_sub,
                      int i_th, const String* name, int see_bit, room& rm);
-object*  obj_to_sobj(const object& obj, List<object*>* in_list);
+object*  obj_to_sobj(object& obj, List<object*>* in_list, int rm_num);
 
 
 #endif

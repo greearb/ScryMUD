@@ -50,6 +50,29 @@
 int ScriptCmd::_cnt = 0;
 
 
+
+/** Exact some damage. */
+int exact_damage(int dice_cnt, int dice_sides, String& msg, critter& pc) {
+   
+   if (pc.isMob()) {
+      mudlog << "ERROR:  MOB sent to exact_damage, should be pc or SMOB.\n";
+      return -1;
+   }
+
+   dice_cnt = bound(0, 20, dice_cnt);
+   dice_sides = bound(0, 100, dice_sides);
+
+   pc.emote(msg);
+
+   exact_raw_damage(d(dice_cnt, dice_sides), NORMAL, pc);
+
+   if (pc.HP < 0) { //was a fatality
+      agg_kills_vict(pc, pc);
+   }
+
+   return 0;
+}//exact_damage
+
 /** Used to provide branching in scripts..  The lengths of the
  * cooked* arrays passed in are directly related to the cooked*
  * arrays found in parse.cc. 
@@ -425,10 +448,11 @@ char* GenScript::triggers[] = {
    "close", "donate",
    "drop", "eat", "enter", "examine", "exit", "fill", "follow",
    "get", "give", "group",
-   "hit", "list", "lock", "look", "meditate", "nod",
-   "open", "order", "pay", "prone",
+   "hit", "junk", "list", "lock", "look", "meditate", "nod",
+   "open", "order", "pay", "prone", "put", 
    "remove", "rest", "say", "shake", "shoot", "sit", "sleep", "stand",
-   "tell", "throw", "ungroup", "unlock", "wake", "wear", "yell", NULL };
+   "tell", "throw", "ungroup", "unlock", "wake", "wear",
+   "wield", "yell", NULL };
 
 
 // Static function, maybe should really check it in the future!
@@ -472,6 +496,10 @@ String GenScript::toStringBrief(int client_format, int mob_num,
       }
       else if (entity == ENTITY_ROOM) {
          Sprintf(buf, "<ROOM_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
+                 mob_num, actor, target, precedence, idx);
+      }
+      else if (entity == ENTITY_OBJECT) {
+         Sprintf(buf, "<OBJ_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
                  mob_num, actor, target, precedence, idx);
       }
 
@@ -588,6 +616,14 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
                   return FALSE;
                }
             }//else
+            else if (strcasecmp(cmd, "put") == 0) {
+               int obj_num = atoi(arg1); //bag
+               if ((obj_num > 1) && (obj_num < NUMBER_OF_ITEMS)) {
+                  if (!strstr(trig_discriminator, arg1)) {
+                     return FALSE;
+                  }//if
+               }//if
+            }
 
             // Checks for normal discriminators.
             if (strstr(trig_discriminator, "FEM")) {
@@ -882,9 +918,10 @@ void GenScript::clear() {
 }//clear
 
 int MobScript::_cnt = 0;
-void MobScript::parseScriptCommand(ScriptCmd& cmd, critter& owner) {
+int MobScript::parseScriptCommand(ScriptCmd& cmd, critter& owner) {
    // Look at first command and see if it has non-standard actors.
    critter* script_actor = NULL;
+   object* obj_script_actor = NULL;
 
    //Sprintf(tmp_buf, "**M@%ul_%i ", (unsigned int)(&act), rm.getIdNum());
    String targ(100);
@@ -902,13 +939,31 @@ void MobScript::parseScriptCommand(ScriptCmd& cmd, critter& owner) {
          script_actor = room_list[rm_num].haveCritter((critter*)(mob_ptr));
       }
    }//if
-   
-   if (!script_actor) {
+   else if (targ.Strlen() && strncmp("**O@", targ, 4) == 0) {
+      //we will assume it's right, make the compiler fix it otherwise.
+      char* foo = (char*)((const char*)targ); //do type conversion.
+      foo[12] = 0;
+      unsigned int obj_ptr = strtoul(foo + 4, NULL, 16);
+      foo[12] = '_'; //put it back like it was, for now
+      int rm_num = strtol(foo + 13, NULL, 10);
+
+      if (obj_ptr != 0) {
+         rm_num = bound(0, NUMBER_OF_ROOMS, rm_num);
+         obj_script_actor = room_list[rm_num].haveObject((object*)(obj_ptr));
+      }
+   }//if
+
+   if (obj_script_actor) {
+      mudlog.log("Had an obj_script_actor.\n");
+      targ = cmd.getCommand(); //reuse targ, it should contain the command now.
+      return obj_script_actor->processInput(targ, room_list[obj_script_actor->getCurRoomNum()]);
+   }
+   else if (!script_actor) {
       script_actor = &owner;
    }//if
 
    targ = cmd.getCommand(); //reuse targ, it should contain the command now.
-   script_actor->processInput(targ, FALSE, &owner, NULL);
+   return script_actor->processInput(targ, FALSE, &owner, NULL);
 }//parseScriptCommand
 
 
@@ -941,7 +996,8 @@ void GenScript::appendCmd(String& str) {
  * Also
  */
 void GenScript::generateScript(String& cmd, String& arg1, critter& act,
-                               int targ, room& rm, critter* script_owner) {
+                               int targ, room& rm, critter* script_owner,
+                               object* object_owner = NULL) {
 
    //mudlog << "GenScript::generateScript, compiled_cmds.cur_len: "
    //       << compiled_cmds.getCurLen() << endl;
@@ -1002,7 +1058,19 @@ void GenScript::generateScript(String& cmd, String& arg1, critter& act,
          targ_str = tmp_buf;
       }//if
       else if (strncmp("**%S", targ_str, 4) == 0) { //script owner, default
-         sprintf(tmp_buf, "**M@%8X_%i ", (unsigned int)(script_owner),
+         if (object_owner) {
+            // For Object Scripts
+            sprintf(tmp_buf, "**O@%8X_%i ", (unsigned int)(object_owner),
+                    rm.getIdNum());
+         }
+         else {
+            sprintf(tmp_buf, "**M@%8X_%i ", (unsigned int)(script_owner),
+                    rm.getIdNum());
+         }
+         targ_str = tmp_buf;
+      }//if
+      else if (strncmp("**%o", targ_str, 4) == 0) { //target
+         sprintf(tmp_buf, "**O@%8X_%i ", (unsigned int)(targ_obj),
                  rm.getIdNum());
          targ_str = tmp_buf;
       }//if
@@ -1050,6 +1118,9 @@ void GenScript::generateScript(String& cmd, String& arg1, critter& act,
                if (script_owner) {
                   buf.Append(*(script_owner->getName(~0)));
                }//if
+               else if (object_owner) {
+                  buf.Append(*(object_owner->getName(~0)));
+               }
                break;
             default:
                buf.Append("__PARSE ERROR__");
@@ -1409,6 +1480,7 @@ int RoomScript::parseScriptCommand(ScriptCmd& cmd, room& owner) {
    String command(cmd.getCommand());
    // Look at first command and see if it has non-standard actors.
    critter* script_actor = NULL;
+   object* obj_script_actor = NULL;
 
    // This is how the target is created, btw.
    //Sprintf(tmp_buf, "**M@%ul_%i ", (unsigned int)(&act), rm.getIdNum());
@@ -1428,8 +1500,26 @@ int RoomScript::parseScriptCommand(ScriptCmd& cmd, room& owner) {
          script_actor = room_list[rm_num].haveCritter((critter*)(mob_ptr));
       }
    }//if
-   
-   if (script_actor) {
+   else if (targ.Strlen() && strncmp("**O@", targ, 4) == 0) {
+      //we will assume it's right, make the compiler fix it otherwise.
+      char* foo = (char*)((const char*)targ); //do type conversion.
+      foo[12] = 0;
+      unsigned int obj_ptr = strtoul(foo + 4, NULL, 16);
+      foo[12] = '_'; //put it back like it was, for now
+      int rm_num = strtol(foo + 13, NULL, 10);
+
+      if (obj_ptr != 0) {
+         rm_num = bound(0, NUMBER_OF_ROOMS, rm_num);
+         obj_script_actor = room_list[rm_num].haveObject((object*)(obj_ptr));
+      }
+   }//if
+
+   if (obj_script_actor) {
+      mudlog.log("Had an obj_script_actor.\n");
+      targ = cmd.getCommand(); //reuse targ, it should contain the command now.
+      return obj_script_actor->processInput(targ, room_list[obj_script_actor->getCurRoomNum()]);
+   }
+   else if (script_actor) {
       mudlog.log("Had a script_actor.\n");
       targ = cmd.getCommand(); //reuse targ, it should contain the command now.
       return script_actor->processInput(targ, FALSE, NULL, &owner);
@@ -1438,6 +1528,71 @@ int RoomScript::parseScriptCommand(ScriptCmd& cmd, room& owner) {
       mudlog.log("Room was the owner.\n");
       targ = cmd.getCommand(); //reuse targ, it should contain the command now.
       return owner.processInput(targ);
+   }
+}//parseScriptCommand
+
+int ObjectScript::_cnt = 0;
+int ObjectScript::parseScriptCommand(ScriptCmd& cmd, object& owner) {
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "ObjectScript::parseScriptCommand, target -:"
+             << cmd.getTarget() << ":-  cmd -:"
+             << cmd.getCommand() << ":-  owner id: "
+             << owner.getIdNum() << " obj_cur_room# " << owner.getCurRoomNum()
+             << endl;
+   }
+
+   String command(cmd.getCommand());
+   // Look at first command and see if it has non-standard actors.
+   critter* script_actor = NULL;
+   object* obj_script_actor = NULL;
+
+   // This is how the target is created, btw.
+   //Sprintf(tmp_buf, "**M@%ul_%i ", (unsigned int)(&act), rm.getIdNum());
+
+   String targ(50);
+   targ = cmd.getTarget();
+   if (targ.Strlen() && strncmp("**M@", targ, 4) == 0) {
+      //we will assume it's right, make the compiler fix it otherwise.
+      char* foo = (char*)((const char*)targ); //do type conversion.
+      foo[12] = 0;
+      unsigned int mob_ptr = strtoul(foo + 4, NULL, 16);
+      foo[12] = '_'; //put it back like it was, for now
+      int rm_num = strtol(foo + 13, NULL, 10);
+
+      if (mob_ptr != 0) {
+         rm_num = bound(0, NUMBER_OF_ROOMS, rm_num);
+         script_actor = room_list[rm_num].haveCritter((critter*)(mob_ptr));
+      }
+   }//if
+   else if (targ.Strlen() && strncmp("**O@", targ, 4) == 0) {
+      //we will assume it's right, make the compiler fix it otherwise.
+      char* foo = (char*)((const char*)targ); //do type conversion.
+      foo[12] = 0;
+      unsigned int obj_ptr = strtoul(foo + 4, NULL, 16);
+      foo[12] = '_'; //put it back like it was, for now
+      int rm_num = strtol(foo + 13, NULL, 10);
+
+      if (obj_ptr != 0) {
+         rm_num = bound(0, NUMBER_OF_ROOMS, rm_num);
+         obj_script_actor = room_list[rm_num].haveObject((object*)(obj_ptr));
+      }
+   }//if
+
+   if (obj_script_actor) {
+      mudlog.log("Had an obj_script_actor.\n");
+      targ = cmd.getCommand(); //reuse targ, it should contain the command now.
+      return obj_script_actor->processInput(targ, room_list[obj_script_actor->getCurRoomNum()]);
+   }
+   else if (script_actor) {
+      mudlog.log("Had a script_actor.\n");
+      targ = cmd.getCommand(); //reuse targ, it should contain the command now.
+      return script_actor->processInput(targ, FALSE, NULL, &(room_list[owner.getCurRoomNum()]));
+   }
+   else {
+      mudlog.log("Room was the owner.\n");
+      targ = cmd.getCommand(); //reuse targ, it should contain the command now.
+      return owner.processInput(targ, room_list[owner.getCurRoomNum()]);
    }
 }//parseScriptCommand
 

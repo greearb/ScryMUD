@@ -122,7 +122,7 @@ int remove_eq_effects(object& obj, critter& pc, short from_corpse,
 
 int gain_eq_effects(object& obj, object& bag, critter& pc, short 
                      obj_in_bag, short do_msg); 
-int drop_eq_effects(object& obj, critter& pc, short do_msg);
+int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk = FALSE);
 int donate_eq_effects(object& obj, critter& pc, short do_msg);
 int consume_eq_effects(object& obj, critter& pc, short do_msg);
 

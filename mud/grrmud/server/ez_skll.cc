@@ -269,7 +269,7 @@ int picklock(int i_th, const String* vict, critter& pc) {
    if (!dr) {
       obj = have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT, ROOM);
       if (!obj) {
-         obj = have_obj_named(ROOM.inv, i_th, vict, pc.SEE_BIT, ROOM);
+         obj = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);
       }//if
       if (!obj) {
          show("You don't see that here.\n", pc); 
@@ -311,7 +311,7 @@ int do_picklock(door& dr, critter& pc) {
 int do_picklock(object& obj, critter& pc) { //for objects
 
    if (skill_did_hit(pc, PICKLOCK_SKILL_NUM, pc)) {
-      if (!obj.ob->bag)
+      if (!obj.bag)
 	 show("That is not a container.\n", pc);
       else if (!obj.BAG_FLAGS.get(2))
          show("It isn't even closed.\n", pc);

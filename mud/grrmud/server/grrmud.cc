@@ -118,6 +118,8 @@ List<object*>         affected_objects;
       off of their queues untill queues are empty. */
 PtrArray<critter>        proc_action_mobs;
 PtrArray<room>           proc_action_rooms;
+PtrArray<object>         proc_action_objs;
+
 
 List<critter*>        pulsed_proc_mobs; 
 List<room*>           pulsed_proc_rooms; 
@@ -1051,6 +1053,54 @@ void game_loop(int s)  {
          }//else
       }//for
 
+
+      /* Object action procs */
+      object* o_ptr;
+      for (int cnt = 0; cnt < proc_action_objs.getCurLen(); cnt++) {
+         if (!(o_ptr = proc_action_objs.elementAt(cnt))) {
+            continue;
+         }//if
+         else {
+            if (o_ptr->getPause() > 0) {
+               continue;
+            }
+
+            ScriptCmd* tmp_cmd_ptr;
+            // Cast away const'ness, but still use it as if it's const.
+            if ((tmp_cmd_ptr = (ScriptCmd*)(o_ptr->getNextScriptCmd()))) {
+
+               if (mudlog.ofLevel(DBG)) {
+                  mudlog << "grrmud.cc:  got an object script command -:"
+                         << tmp_cmd_ptr->getCommand() << ":-" << endl;
+               }
+               cmd_ptr = new ScriptCmd(*tmp_cmd_ptr);
+
+               // rm_ptr is the script owner.
+               int script_ret_val;
+               if ((script_ret_val = ObjectScript::parseScriptCommand(*cmd_ptr,
+                                                                      *o_ptr)) < 0) {
+                  if (mudlog.ofLevel(WRN)) {
+                     mudlog << "ObjectScript command: target -:" 
+                            << cmd_ptr->getTarget() << ":-  cmd -:"
+                            << cmd_ptr->getCommand() << " for object# "
+                            << o_ptr->getIdNum() << " returned negative value: "
+                            << script_ret_val << endl;
+                  }
+               }
+               delete cmd_ptr;
+            }
+            else {
+               o_ptr->finishedObjProc();
+
+               // it may have started another one
+               if (!o_ptr->isInProcNow()) {
+                  proc_action_objs.set((object*)NULL, cnt);
+               }
+            }
+         }//else
+      }//for
+
+
       //log("At end of while loop.\n");
    }//while
 }// game_loop
@@ -1477,7 +1527,7 @@ int critter::doLogOffInactive() {
    tmp_list.clear();
 
    if (pc->w_eye_obj) {
-      pc->w_eye_obj->ob->obj_proc->w_eye_owner = NULL;
+      pc->w_eye_obj->obj_proc->w_eye_owner = NULL;
       pc->w_eye_obj = NULL;
    }//if
 

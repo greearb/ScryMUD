@@ -42,7 +42,7 @@ void recursive_init_loads(object& obj, int depth) {
       return;
    }
 
-   Cell<object*> cll(obj.ob->inv);
+   Cell<object*> cll(obj.inv);
    object* ptr;
    while ((ptr = cll.next())) {
       recursive_init_loads(*ptr, ++depth);
@@ -77,7 +77,7 @@ void recursive_init_unload(object& obj, int depth) {
       return;
    }
 
-   Cell<object*> cll(obj.ob->inv);
+   Cell<object*> cll(obj.inv);
    object* ptr;
    while ((ptr = cll.next())) {
       recursive_init_unload(*ptr, ++depth);
@@ -468,7 +468,7 @@ void load_boards() {
                    cout << *ssptr << " ";
                 }
 */
-               Cell<object*> sort_cll(obj_list[i].ob->inv);
+               Cell<object*> sort_cll(obj_list[i].inv);
                object* tmp_optr;
                int inserted = FALSE;
                while ((tmp_optr = sort_cll.next())) {
@@ -476,18 +476,18 @@ void load_boards() {
                   //     << atoi(*(tmp_optr->ob->names.peekBack()))
                   //     << " " << *(new_obj->ob->names.peekFront()) << " "
                   //     << atoi(*(new_obj->ob->names.peekFront())) << endl;
-                  if (atoi(*(tmp_optr->ob->names.peekFront())) > 
-                      (atoi(*(new_obj->ob->names.peekFront())))) {
+                  if (atoi(*(tmp_optr->names.peekFront())) > 
+                      (atoi(*(new_obj->names.peekFront())))) {
                      inserted = TRUE;
-                     obj_list[i].ob->inv.insertBefore(sort_cll, new_obj);
+                     obj_list[i].inv.insertBefore(sort_cll, new_obj);
                      break;
                   }//if
                }//while
                if (!inserted) {
-                  obj_list[i].ob->inv.append(new_obj);
+                  obj_list[i].inv.append(new_obj);
                }
 
-	       new_obj->ob->in_list = &(obj_list[i].ob->inv); //make it SOBJ	    
+	       new_obj->in_list = &(obj_list[i].inv); //make it SOBJ	    
        	       rfile >> k;
       	       rfile.getline(buf, 80);
    	    }//while, the big loop, reads in a whole room

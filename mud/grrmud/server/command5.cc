@@ -414,6 +414,25 @@ int list_room_scripts(int rm_num, critter& pc) {
 }//list_room_scripts
 
 
+int list_obj_scripts(int obj_num, critter& pc) {
+
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+   
+   if (!check_l_range(obj_num, 1, NUMBER_OF_ITEMS, pc, TRUE))
+      return -1;
+
+   if (!obj_list[obj_num].isInUse()) {
+      show("That Object does not exist.", pc);
+      return -1;
+   }
+
+   obj_list[obj_num].listScripts(pc);
+   return 0;
+}//list_obj_scripts
+
+
 
 int stat_script(int mob_num, int script_idx, critter& pc) {
 
@@ -513,6 +532,55 @@ int stat_room_script(int rm_num, int script_idx, critter& pc) {
 }//stat_room_script
 
 
+int stat_obj_script(int obj_num, int script_idx, critter& pc) {
+
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In stat_obj_script:  obj_num:  " << obj_num << " script_idx:  "
+             << script_idx << endl;
+   }
+
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (!check_l_range(obj_num, 1, NUMBER_OF_ITEMS, pc, TRUE))
+      return -1;
+
+   if (!obj_list[obj_num].isInUse()) {
+      show("That object does not exist.", pc);
+      return -1;
+   }
+
+   String buf(500);
+ 
+   ObjectScript* ptr = obj_list[obj_num].getScriptAt(script_idx);
+   if (ptr) {
+      buf.Append(ptr->toStringBrief(pc.USING_CLIENT, obj_num, ENTITY_OBJECT,
+                                    script_idx));
+      if (pc.isUsingClient())
+         buf.Append("\n<SCRIPT_DATA>");
+      else
+         buf.Append("\n");
+      buf.Append(ptr->getScript());
+      
+      if (pc.USING_CLIENT)
+         buf.Append("</SCRIPT_DATA>\nCompiled Script:\n");
+      else
+         buf.Append("\nCompiled Script:\n");
+      
+      buf.Append(ptr->getCompiledScript());
+      
+      show(buf, pc);
+      return 0;
+   }//if
+
+   Sprintf(buf, "Object: %i does not have a script of index: %i",
+           obj_num, script_idx);
+   show(buf, pc);
+   return -1;
+}//stat_obj_script
+
+
 
 int rem_script(int mob_num, String& trigger, int i_th, critter& pc) {
    if (mudlog.ofLevel(DBG)) {
@@ -582,7 +650,7 @@ int rem_room_script(int rm_num, String& trigger, int i_th, critter& pc) {
    }
 
    if (trigger.Strlen() == 0) {
-      show("Which trigger do you want to stat??\n", pc);
+      show("Which trigger do you want to remove??\n", pc);
       return -1;
    }
 
@@ -606,6 +674,39 @@ int rem_room_script(int rm_num, String& trigger, int i_th, critter& pc) {
    room_list[rm_num].removeScript(trigger, i_th, pc);
    return 0;
 }//rem_room_script
+
+
+int rem_obj_script(int obj_num, String& trigger, int i_th, critter& pc) {
+   if (mudlog.ofLevel(DBG)) {
+      mudlog << "In rem_obj_script:  obj_num:  " << obj_num << "  trigger:  "
+             << trigger << "  i_th:  " << i_th << endl;
+   }
+
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if (trigger.Strlen() == 0) {
+      show("Which trigger do you want to remove??\n", pc);
+      return -1;
+   }
+
+   if (!check_l_range(obj_num, 1, NUMBER_OF_ITEMS, pc, TRUE))
+      return -1;
+
+   if (!obj_list[obj_num].isInUse()) {
+      show("That object does not exist.\n", pc);
+      return -1;
+   }
+
+   if (!pc.doesOwnObject(obj_list[obj_num])) {
+      show("You don't own that object...\n", pc);
+      return -1;
+   }
+
+   obj_list[obj_num].removeScript(trigger, i_th, pc);
+   return 0;
+}//rem_obj_script
 
 
 int teach(int i_th, const String* name, int prcnt, const String* skill, 
@@ -703,14 +804,13 @@ int add_perm_inv(int i_th, const String* name, int obj_num,
       }//else
    }//if a mob ptr found
    else {
-      object* optr = have_obj_named(ROOM.inv, i_th, name, 
-                                    pc.SEE_BIT, ROOM);
+      object* optr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
       if (!optr) {
          optr =  have_obj_named(pc.inv, i_th, name, 
                                 pc.SEE_BIT, ROOM);
       }//if
       if (optr) {
-         if (optr->ob->bag) {
+         if (optr->bag) {
             optr->gainInv(&(obj_list[obj_num])); 
             Sprintf(buf, "%S added to %S's inventory.\n",
                     long_name_of_obj(obj_list[obj_num], ~0),
@@ -794,14 +894,13 @@ int rem_perm_inv(int j_th, const String* obj_name, int i_th,
       }//else
    }//if a mob ptr found
    else {
-      object* optr = have_obj_named(ROOM.inv, i_th, targ, 
-                                    pc.SEE_BIT, ROOM);
+      object* optr = ROOM.haveObjNamed(i_th, targ, pc.SEE_BIT);
       if (!optr) {
          optr =  have_obj_named(pc.inv, i_th, targ, 
                                 pc.SEE_BIT, ROOM);
       }//if
       if (optr) {
-         if ((inv_obj = have_obj_named(optr->ob->inv, j_th, obj_name, 
+         if ((inv_obj = have_obj_named(optr->inv, j_th, obj_name, 
                                        pc.SEE_BIT, ROOM))) {
             optr->gainInv(inv_obj);
             Sprintf(buf, "%S deleted from %S's inventory.\n",
@@ -859,7 +958,7 @@ int opurge(int i_th, const String* name, critter& pc) {
       return -1;
    }
 
-   obj = have_obj_named(ROOM.inv, i_th, name, pc.SEE_BIT, ROOM);
+   obj = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
    if (!obj) {
       show("You don't see that here.\n", pc);
    }//if
@@ -1110,7 +1209,7 @@ int ovnum(int i_th, const String* name, critter& pc) {
 
    for (i = i_th; i<NUMBER_OF_ITEMS; i++) {
       if (obj_is_named(obj_list[i], *name)) {
-	 Sprintf(buf, "[%i] %S\n", i, &(obj_list[i].ob->short_desc));
+	 Sprintf(buf, "[%i] %S\n", i, &(obj_list[i].short_desc));
 	 show(buf, pc);
       }//if
    }//for
@@ -1241,7 +1340,7 @@ int aolist(int zone, int how_many, critter& pc) {
    for (int i = 0; (i < NUMBER_OF_ITEMS && count < how_many); i++) {
       if (obj_list[i].OBJ_FLAGS.get(10)) {
 	 if (obj_list[i].OBJ_IN_ZONE == zone) {
-	    Sprintf(buf, "[%i]\t%S\n", i, &(obj_list[i].ob->short_desc));
+	    Sprintf(buf, "[%i]\t%S\n", i, &(obj_list[i].short_desc));
 	    count++;
 	    show(buf, pc);
 	 }//if
@@ -2102,8 +2201,8 @@ int dsys(critter& pc) {
            obj_construct_data::getInstanceCount(),
            obj_spec_data::getInstanceCount());
    pc.show(buf);
-   Sprintf(buf, "[%i]%P10 bag_struct %P30[%i] %P42 obj\n",
-           bag_struct::getInstanceCount(), obj::getInstanceCount());
+   Sprintf(buf, "[%i]%P10 bag_struct %P30[%i] %P42 object\n", //NOTE:  Re-use this one!
+           bag_struct::getInstanceCount(), object::getInstanceCount());
    pc.show(buf);
    Sprintf(buf, "[%i]%P10 door_data %P30[%i] %P42 ScriptCmd\n",
            door_data::getInstanceCount(), ScriptCmd::getInstanceCount());
@@ -2514,9 +2613,9 @@ int do_shoot(critter& targ, critter& pc) {
 	 do_shot_proc(targ, pc, FALSE, targ_is_dead);
       }//if
       else {
-         int damage = d(pc.EQ[9]->ob->extras[7], pc.EQ[9]->ob->extras[6]);
+         int damage = d(pc.EQ[9]->extras[7], pc.EQ[9]->extras[6]);
          if (ammo) {
-   	    damage += d(ammo->ob->extras[7], ammo->ob->extras[6]);
+   	    damage += d(ammo->extras[7], ammo->extras[6]);
 	 }//if
          exact_raw_damage(damage, NORMAL, targ);
 
@@ -2660,8 +2759,8 @@ int do_throw(critter& targ, critter& pc) {
             do_shot_proc(targ, pc, FALSE, is_dead); //same response as being shot
          }//if
          else { //did hit
-            int damage = d(pc.EQ[posn]->ob->extras[7], 
-                           pc.EQ[posn]->ob->extras[6]);
+            int damage = d(pc.EQ[posn]->extras[7], 
+                           pc.EQ[posn]->extras[6]);
             
             exact_raw_damage(damage, NORMAL, targ, pc);
             

@@ -85,6 +85,8 @@ int stop_script(critter& pc);
 /** Go some random direction. */
 int wander(critter& pc);
 
+/** Exact some damage. */
+int exact_damage(int dice_cnt, int dice_sides, String& msg, critter& pc);
 
 class ScriptCmd {
 private:
@@ -157,7 +159,8 @@ public:
                        int targ);
    virtual int matches(const GenScript& src);
    virtual void generateScript(String& cmd, String& arg1, critter& act,
-                               int targ, room& rm, critter* script_owner);
+                               int targ, room& rm, critter* script_owner,
+                               object* object_owner = NULL);
    virtual int getPrecedence() { return precedence; }
    virtual void compile(); //compile into script assembly...
    virtual void setScript(const String& txt);
@@ -219,7 +222,7 @@ public:
    }
 
    static int getInstanceCount() { return _cnt; }
-   static void parseScriptCommand(ScriptCmd& cmd, critter& owner);
+   static int parseScriptCommand(ScriptCmd& cmd, critter& owner);
 };//MobScript
 
 
@@ -251,6 +254,36 @@ public:
    static int getInstanceCount() { return _cnt; }
    static int parseScriptCommand(ScriptCmd& cmd, room& owner);
 };//RoomScript
+
+
+class ObjectScript : public GenScript {
+private:
+   static int _cnt;
+
+protected:
+
+public:
+   ObjectScript() : GenScript() { _cnt++; };
+   ObjectScript(String& trig, int targ, int act, String& discriminator,
+             int precedence) : GenScript(trig, targ, act,
+                                         discriminator, precedence) {
+      _cnt++;
+   }
+
+   ObjectScript(const ObjectScript& src) : GenScript((GenScript)src) { _cnt++; }
+
+   virtual ~ObjectScript() { _cnt--; }
+
+   ObjectScript& operator=(const ObjectScript& src) {
+      if (this != &src) {
+         *((GenScript*)(this)) = (GenScript)(src);
+      }//if
+      return *this;
+   }
+
+   static int getInstanceCount() { return _cnt; }
+   static int parseScriptCommand(ScriptCmd& cmd, object& owner);
+};//ObjectScript
 
 
 #endif

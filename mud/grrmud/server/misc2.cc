@@ -193,7 +193,7 @@ void lose_fly(critter& pc, short do_msg = FALSE) {
 }//lose_fly
 
 void show_stat_affects(object& obj, critter& pc) {
-   Cell<stat_spell_cell*> cll(obj.ob->stat_affects);
+   Cell<stat_spell_cell*> cll(obj.stat_affects);
    stat_spell_cell* ptr;
    String buf(100);
    
@@ -561,7 +561,7 @@ stat_spell_cell* is_affected_by(int spell_num, critter& pc) {
 
 
 stat_spell_cell* is_affected_by(int spell_num, object& obj) {
-  Cell<stat_spell_cell*> cll(obj.ob->affected_by);
+  Cell<stat_spell_cell*> cll(obj.affected_by);
   stat_spell_cell* ptr;
 
   while ((ptr = cll.next())) {
@@ -574,7 +574,7 @@ stat_spell_cell* is_affected_by(int spell_num, object& obj) {
 
 
 stat_spell_cell* has_stat_affect(int stat_num, object& obj) {
-  Cell<stat_spell_cell*> cll(obj.ob->stat_affects);
+  Cell<stat_spell_cell*> cll(obj.stat_affects);
   stat_spell_cell* ptr;
 
   while ((ptr = cll.next())) {
@@ -651,7 +651,7 @@ void leave_room_effects(room& rm, object& obj) {
 
 const String* single_obj_name(object& obj, int see_bit) {
    if (detect(see_bit, obj.OBJ_VIS_BIT))
-      return Top(obj.ob->names);
+      return Top(obj.names);
    else
       return &SOMETHING; //global 'someone' String
 }//single_obj_name
@@ -884,7 +884,7 @@ void parse_communication(String& str) {
    int sofar = 0;
    int len = str.Strlen();
    char ch;
-   int max_len = 80;
+   int max_len = 380;
    
    String retval(len + 5);
 
@@ -897,14 +897,14 @@ void parse_communication(String& str) {
          for (int j = retval_len; j > (retval_len - max_len); j--) {
             if (isspace(retval[j])) {
                retval.setCharAt(j, '\n');
-               max_len = 80;
+               max_len = 380;
                sofar = 0;
                break;
             }//if
          }//for
          if (sofar > 0) { //didn't find a space
             retval += '\n';
-            max_len = 80;
+            max_len = 380;
             sofar = 0;
          }
       }//if
@@ -913,7 +913,7 @@ void parse_communication(String& str) {
       }
       else {
          if (ch == '\n') {
-            max_len = 80;
+            max_len = 380;
             sofar = 0;
          }
          retval += ch;
@@ -1022,13 +1022,13 @@ String* dir_of_room(room& rm, int dest_rm_num) {
 
 
 int get_next_msg_num(object& board) {
-   Cell<object*> cll(board.ob->inv);
+   Cell<object*> cll(board.inv);
    object* ptr;
    int sofar = 0;
    int i;
 
    while ((ptr = cll.next())) {
-      i = atoi(*(ptr->ob->names.peekFront()));
+      i = atoi(*(ptr->names.peekFront()));
       if (i > sofar)
 	 sofar = i;
    }//while
@@ -1389,24 +1389,24 @@ int get_next_mob() {
 
 
 int get_percent_lrnd(int skill_num, critter& pc, short automatic = FALSE) {
-  if (!pc.pc) {
-    if (automatic && pc.mob && pc.mob->proc_data) {
-      if (pc.FLAG1.get(12)) { //evasive maneuvers flag
-	if (skill_num == DODGE_SKILL_NUM)
-	  return (70 + pc.LEVEL);
-	if (skill_num == PARRY_SKILL_NUM)
-	  return (70 + pc.LEVEL);
-      }//if
-    }//if automatic (ie should search)
-    return (70 + pc.LEVEL);
-  }//if not a pc
-
-  int retval;
-  if (pc.SKILLS_KNOWN.Find(skill_num, retval)) {
-    return retval;
-  }//if
-
-  return -1;
+   if (!pc.pc) {
+      if (automatic && pc.mob && pc.mob->proc_data) {
+         if (pc.FLAG1.get(12)) { //evasive maneuvers flag
+            if (skill_num == DODGE_SKILL_NUM)
+               return (70 + pc.LEVEL);
+            if (skill_num == PARRY_SKILL_NUM)
+               return (70 + pc.LEVEL);
+         }//if
+      }//if automatic (ie should search)
+      return (70 + pc.LEVEL);
+   }//if not a pc
+   
+   int retval;
+   if (pc.SKILLS_KNOWN.Find(skill_num, retval)) {
+      return retval;
+   }//if
+   
+   return -1;
 }//%lrnd_skill
 
 
@@ -1418,7 +1418,9 @@ void increment_percent_lrnd(int skill_num, critter& pc) {
    float inc;
    int dif = SSCollection::instance().getSS(skill_num).getDifficulty();
    
-   inc = (dif/50.0) * ((pc.INT/4.0) * (pc.INT/4.0) + pc.INT/2 + 10.0);
+   inc = (33.0/(float)dif) * (((float)(pc.INT)/4.0) * ((float)(pc.INT)/4.0) +
+                              (float)(pc.INT)/2.0);
+   inc = max((int)(inc), 1);
 
    int p_lrnt;
    if (pc.SKILLS_KNOWN.Find(skill_num, p_lrnt)) {
@@ -1565,11 +1567,10 @@ void clear_obj_list(List<object*>& lst) {
    ptr = cll.next();
    while (ptr) {
       //log("In while loop.\n");
-      if (ptr->ob) {  //some wierd bug? requires this.
-         if (ptr->ob->in_list) { //if its a SOBJ 
-            delete ptr;   //delete it for sure
-         }//if
+      if (ptr->in_list) { //if its a SOBJ
+         delete ptr;   //delete it for sure
       }//if
+      
       ptr = lst.lose(cll);
    }//while
 }//clear_obj_list

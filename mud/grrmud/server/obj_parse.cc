@@ -20,8 +20,8 @@
 //                                     greearb@agcs.com
 //
 
-/********************  rm_parse.cc  ***************/
-/* this holds the calls to every function that a 'room' can call.
+/********************  obj_parse.cc  ***************/
+/* this holds the calls to every function that an 'object' can call.
  * If you wish to add another 
  * function, you better add it in the switch statement.
  */
@@ -34,11 +34,11 @@
 #include "rm_parse.h"
 #include <PtrArray.h>
 #include "script.h"
-#include "rm_cmds.h"
+#include "obj_cmds.h"
 #include "parse.h"
 
 	     /******************************************/
-int room::processInput(String& input) {
+int object::processInput(String& input, room& rm) {
    String raw_strings[RAW_MAX];
    String cooked_strs[COOKED_MAX];
    int cooked_ints[COOKED_MAX];
@@ -51,7 +51,7 @@ int room::processInput(String& input) {
    }
 
    if (mudlog.ofLevel(INF)) {
-      mudlog << "ROOM INPUT:  room:  " << getIdNum() << "  input -:"
+      mudlog << "OBJ INPUT:  room:  " << getIdNum() << "  input -:"
              << input << ":-\n" << flush;
    }
 
@@ -97,14 +97,14 @@ int room::processInput(String& input) {
                (cooked_strs[1]) = buf;
                buf = input.Get_Rest();
                parse_communication(buf);
-               return this->tell(i, &(cooked_strs[1]), buf);
+               return this->tell(i, &(cooked_strs[1]), buf, rm);
             }//if
          }//if is number
          else {
             (cooked_strs[1]) = buf;
             buf = input.Get_Rest();
             parse_communication(buf);
-            return this->tell(1, &(cooked_strs[1]), buf);
+            return this->tell(1, &(cooked_strs[1]), buf, rm);
          }//else
       }//if
       return -1;
@@ -121,14 +121,14 @@ int room::processInput(String& input) {
                (cooked_strs[1]) = buf;
                buf = input.Get_Rest();
                parse_communication(buf);
-               return this->neighbor_echo(i, &(cooked_strs[1]), buf);
+               return this->neighbor_echo(i, &(cooked_strs[1]), buf, rm);
             }//if
          }//if is number
          else {
             (cooked_strs[1]) = buf;
             buf = input.Get_Rest();
             parse_communication(buf);
-            return this->neighbor_echo(1, &(cooked_strs[1]), buf);
+            return this->neighbor_echo(1, &(cooked_strs[1]), buf, rm);
          }//else
       }//if
 
@@ -139,19 +139,19 @@ int room::processInput(String& input) {
    if (strcasecmp(raw_strings[0], "recho") == 0) {
       buf = input.Get_Rest();
       parse_communication(buf);
-      return this->com_recho(&buf);
+      return this->com_recho(&buf, rm);
    }//if
 
    if (strcasecmp(raw_strings[0], "zecho") == 0) {
       buf = input.Get_Rest();
       parse_communication(buf);
-      return this->com_zecho(&buf);
+      return this->com_zecho(&buf, rm);
    }//if
    
    if (strncasecmp(raw_strings[0], "wizchat", max(3, len1)) == 0) {
       buf = input.Get_Rest();
       parse_communication(buf);
-      return this->wizchat(buf);
+      return this->wizchat(buf, rm);
    }//if auction
 
    mudlog.log(DBG, "Entering the while loop.\n");   
@@ -255,31 +255,31 @@ int room::processInput(String& input) {
       case 'M':
       case 'N':
       case 'O':
+         if (strncasecmp(cooked_strs[0], "obj_move", len1) == 0) { 
+	    return move(i, &(cooked_strs[1]), j, &(cooked_strs[2]), rm);
+	 }//if
+         else if (strncasecmp(cooked_strs[0], "obj_move_all", len1) == 0) { 
+	    return move_all(i, &(cooked_strs[1]), rm);
+	 }//if
+         else if (strncasecmp(cooked_strs[0], "obj_omove", len1) == 0) { 
+	    return omove(i, &(cooked_strs[1]), j, &(cooked_strs[2]), rm);
+	 }//if
+         else if (strncasecmp(cooked_strs[0], "obj_omove_all", len1) == 0) { 
+	    return omove_all(i, &(cooked_strs[1]), rm);
+	 }//if
+         else {
+            return -1;
+         }
+
       case 'P': 
          if (strncasecmp(cooked_strs[0], "pause", len1) == 0) { 
-	    return this->rm_pause(i);
+	    return this->obj_pause(i);
 	 }//if
          else {
             return -1;
          }
       case 'Q':
       case 'R':
-         if (strncasecmp(cooked_strs[0], "rm_move", len1) == 0) { 
-	    return this->move(i, &(cooked_strs[1]), j, &(cooked_strs[2]));
-	 }//if
-         else if (strncasecmp(cooked_strs[0], "rm_move_all", len1) == 0) { 
-	    return this->move_all(i, &(cooked_strs[1]));
-	 }//if
-         else if (strncasecmp(cooked_strs[0], "rm_omove", len1) == 0) { 
-	    return this->omove(i, &(cooked_strs[1]), j, &(cooked_strs[2]));
-	 }//if
-         else if (strncasecmp(cooked_strs[0], "rm_omove_all", len1) == 0) { 
-	    return this->omove_all(i, &(cooked_strs[1]));
-	 }//if
-         else {
-            return -1;
-         }
-
       case 'S':
       case 'T':
       case 'U':

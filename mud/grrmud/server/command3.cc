@@ -59,7 +59,7 @@ int use(int i_th, const String* target, critter& pc) { //for wands
 
    if (pc.EQ[10]) { //if holding ANY object
       if (pc.EQ[10]->OBJ_FLAGS.get(51) &&
-	  pc.EQ[10]->ob->obj_proc) { //if a wand
+	  pc.EQ[10]->obj_proc) { //if a wand
          wand = pc.EQ[10];
          is_holding = TRUE;
       }//if
@@ -68,7 +68,7 @@ int use(int i_th, const String* target, critter& pc) { //for wands
    if (!wand) { //check wielding position
       if (pc.EQ[9]) {
          if (pc.EQ[9]->OBJ_FLAGS.get(51) && 
-	     pc.EQ[9]->ob->obj_proc) { //if a wand
+	     pc.EQ[9]->obj_proc) { //if a wand
             wand = pc.EQ[9];
             is_holding = FALSE;
          }//if
@@ -90,9 +90,9 @@ int use(int i_th, const String* target, critter& pc) { //for wands
       
    if (!wand->IN_LIST) {
       if (is_holding) 
-         pc.EQ[10] = wand = obj_to_sobj(*(pc.EQ[10]), &(pc.inv));
+         pc.EQ[10] = wand = obj_to_sobj(*(pc.EQ[10]), &(pc.inv), pc.getCurRoomNum());
       else
-         pc.EQ[9] = wand = obj_to_sobj(*(pc.EQ[9]), &(pc.inv));
+         pc.EQ[9] = wand = obj_to_sobj(*(pc.EQ[9]), &(pc.inv), pc.getCurRoomNum());
    }//if
 
                 /* wand is ready, check for target */
@@ -103,7 +103,7 @@ int use(int i_th, const String* target, critter& pc) { //for wands
 
    short found_proc = TRUE;
    short do_dec = FALSE;
-   Cell<stat_spell_cell*> cll(wand->ob->obj_proc->casts_these_spells);
+   Cell<stat_spell_cell*> cll(wand->obj_proc->casts_these_spells);
    stat_spell_cell* ptr;
 
    while ((ptr = cll.next())) {
@@ -211,11 +211,10 @@ int use(int i_th, const String* target, critter& pc) { //for wands
               }
            }
            else {
-              ob_ptr = have_obj_named(ROOM.inv, i_th, target,
-                                      pc.SEE_BIT, ROOM);
+              ob_ptr = ROOM.haveObjNamed(i_th, target, pc.SEE_BIT);
               
               if (ob_ptr && !ob_ptr->IN_LIST) {
-                 ob_ptr = obj_to_sobj(*ob_ptr, &(ROOM.inv), TRUE,
+                 ob_ptr = obj_to_sobj(*ob_ptr, ROOM.getInv(), TRUE,
                                       i_th, target, pc.SEE_BIT, ROOM);
               }
            }//else
@@ -391,7 +390,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
    for (int i = 9; i<11; i++) {
       if (pc.EQ[i]) { //if holding ANY object
          if (pc.EQ[i]->OBJ_FLAGS.get(53) &&
-             pc.EQ[i]->ob->obj_proc) { //if a scroll
+             pc.EQ[i]->obj_proc) { //if a scroll
             if (obj_is_named(*(pc.EQ[i]), *item)) {
                if (detect(pc.SEE_BIT, 
                           pc.EQ[i]->OBJ_VIS_BIT & ROOM.getVisBit())) {
@@ -535,11 +534,10 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
               }
            }
            else {
-              ob_ptr = have_obj_named(ROOM.inv, i_th, vict,
-                                      pc.SEE_BIT, ROOM);
+              ob_ptr = ROOM.haveObjNamed(i_th, vict, pc.SEE_BIT);
               
               if (ob_ptr && !ob_ptr->IN_LIST) {
-                 ob_ptr = obj_to_sobj(*ob_ptr, &(ROOM.inv), TRUE,
+                 ob_ptr = obj_to_sobj(*ob_ptr, ROOM.getInv(), TRUE,
                                       i_th, vict, pc.SEE_BIT, ROOM);
               }
            }//else
@@ -678,11 +676,11 @@ int oclone(int i_th, const String* item, critter& pc) {
          return -1;
       }//if
       obj_list[new_obj] = obj_list[obj_ptr->OBJ_NUM];
-      Sprintf(buf, "CLONE OF:  %S.", Top(obj_ptr->ob->names));
-      obj_list[new_obj].ob->in_room_desc = buf;
-      obj_list[new_obj].ob->short_desc = buf;
+      Sprintf(buf, "CLONE OF:  %S.", Top(obj_ptr->names));
+      obj_list[new_obj].in_room_desc = buf;
+      obj_list[new_obj].short_desc = buf;
       obj_list[new_obj].OBJ_NUM = new_obj;
-      obj_list[new_obj].ob->cur_stats[3] = ROOM.getZoneNum();
+      obj_list[new_obj].cur_stats[3] = ROOM.getZoneNum();
       obj_list[new_obj].IN_LIST = NULL;
       pc.gainInv(&(obj_list[new_obj]));
    }//else
@@ -1804,11 +1802,11 @@ int do_junk(int do_msg, int i_th, const String* str1,
                   obj_ptr = cll.next();
 	       }//if
 	       else { //can junk
-                  drop_eq_effects(*obj_ptr, pc, FALSE);
+                  drop_eq_effects(*obj_ptr, pc, FALSE, TRUE);
 
                   if (do_msg) {
                      Sprintf(buf, "You junk %S.\n", 
-                             &(obj_ptr->ob->short_desc));
+                             &(obj_ptr->short_desc));
                      show(buf, pc);
                   }//if
 
@@ -1825,8 +1823,8 @@ int do_junk(int do_msg, int i_th, const String* str1,
                      }
 		     obj_list[obj_ptr->OBJ_NUM].setCurInGame(0);
 		  }//if
-                  if (obj_ptr->ob->in_list) { //if a SOBJ
-		    delete obj_ptr;
+                  if (obj_ptr->isModified()) {
+                     delete obj_ptr;
                   }//if is a SOBJ
                   obj_ptr = pc.inv.lose(cll);
                }//else
@@ -1861,11 +1859,11 @@ int do_junk(int do_msg, int i_th, const String* str1,
             }//if
          }//if
          else {
-            drop_eq_effects(*obj_ptr, pc, FALSE);
+            drop_eq_effects(*obj_ptr, pc, FALSE, TRUE);
             pc.loseInv(obj_ptr);
             if (do_msg) {
                Sprintf(buf, "You junk %S.\n", 
-                       &(obj_ptr->ob->short_desc));
+                       &(obj_ptr->short_desc));
                show(buf, pc);
                show("The gods reward your for your sacrifice.\n", pc);
             }//if
@@ -1886,7 +1884,7 @@ int do_junk(int do_msg, int i_th, const String* str1,
                }
 	       obj_list[obj_ptr->OBJ_NUM].setCurInGame(0);
 	    }//if
-            if (obj_ptr->ob->in_list) {
+            if (obj_ptr->isModified()) {
                delete obj_ptr;
             }//if is a SOBJ
          }//else

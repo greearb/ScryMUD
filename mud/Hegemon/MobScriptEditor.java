@@ -41,7 +41,7 @@ class MobScriptEditor extends Frame {
 
    String[] cmds = {"close", "donate", "drop", "eat", "enter",
                     "examine", "exit", "fill", "follow",
-                    "get", "give", "group", "hit", "list", "lock",
+                    "get", "give", "group", "hit", "junk", "list", "lock",
                     "look", "meditate", "nod", "open", "order",
                     "pay", "prone", "remove", "rest", "say", "shake",
                     "shoot", "sit", "slap", "sleep", "stand", "tell",
@@ -78,6 +78,7 @@ class MobScriptEditor extends Frame {
 
       entity.c.add("ROOM");
       entity.c.add("MOB");
+      entity.c.add("OBJECT");
       setEntity("MOB");
 
       /* add triggers, will need to update this often. */
@@ -234,10 +235,13 @@ class MobScriptEditor extends Frame {
       else if (entity.getText().equalsIgnoreCase("MOB")) {
          cmd = "stat_script ";
       }
+      else if (entity.getText().equalsIgnoreCase("OBJECT")) {
+         cmd = "stat_obj_script ";
+      }
 
       else {
          MessageDialog md = new MessageDialog("Refresh Error",
-                                              "Was neither ROOM nor MOB entity",
+                                              "Was neither ROOM, OBJECT nor MOB entity",
                                               "red", "black");
          return;
       }
@@ -267,10 +271,13 @@ class MobScriptEditor extends Frame {
       else if (entity.getText().equalsIgnoreCase("MOB")) {
          cmd = "add_mob_script ";
       }
+      else if (entity.getText().equalsIgnoreCase("OBJECT")) {
+         cmd = "add_obj_script ";
+      }
 
       else {
          MessageDialog md = new MessageDialog("Update Error",
-                                              "Was neither ROOM nor MOB entity",
+                                              "Was neither ROOM, OBJECT nor MOB entity",
                                               "red", "black");
          return;
       }

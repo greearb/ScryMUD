@@ -262,17 +262,56 @@ class HegemonScroll extends Panel {
             }
          }//while true
       }//if not in MODE_PRE
-      else { //IN MODE PRE
+      else { //IN MODE PRE (we'll do line wrapping at least now)
          int len = txt.length();
          StringBuffer sb = new StringBuffer(100);
          char ch;
+         int comp_len_sofar = 0;
+         if (comp_in_progress != null) {
+            comp_len_sofar = comp_in_progress.getWidth();
+         }
+         FontMetrics fm = props.getFontMetrics();
+         Font font = props.getFont();
+         int sz = font.getSize();
+         int mx_size = parent.getSize().width - 40; //-20 is for scroll bar
+         int last_ws_idx = 0;
+
          for (int i = 0; i<len; i++) {
             ch = txt.charAt(i);
+
+            if (Character.isWhitespace(ch)) {
+               last_ws_idx = i;
+            }
+
+            if (fm == null) {
+               /* gotta guestimate it then */
+               comp_len_sofar += (sz >> 1);
+            }//if
+            else {
+               comp_len_sofar += fm.charWidth(ch);
+            }
+
             if (ch == '\t') { //if a tab
                sb.append("        ");
             }
             else if (ch == '\r') { //carriage return
                continue;
+            }
+            else if (comp_len_sofar > mx_size) {
+               int my_len = sb.length();
+               if (last_ws_idx > 0) {
+                  my_len = sb.length() - (i - last_ws_idx);
+                  i = last_ws_idx;
+               }
+
+               //Log.it("\tLength > 0");
+               char[] buf = new char[my_len + 1];
+               sb.getChars(0, my_len, buf, 0);
+               comp_in_progress.addChars(buf, 0, my_len, props);
+               addComponent(comp_in_progress);
+               comp_in_progress = new ScrollComponentText(vert_spacing, props);
+               sb = new StringBuffer(100);
+               comp_len_sofar = 0;
             }
             else if (ch == '\n') { //newline
                //Log.it("Found a newline...\n");
@@ -281,7 +320,6 @@ class HegemonScroll extends Panel {
                   //Log.it("\tLength > 0");
                   char[] buf = new char[my_len + 1];
                   sb.getChars(0, my_len, buf, 0);
-                  //FontMetrics fm = props.getFontMetrics();
                   comp_in_progress.addChars(buf, 0, my_len, props);
                   addComponent(comp_in_progress);
                   comp_in_progress = new ScrollComponentText(vert_spacing,
@@ -297,6 +335,7 @@ class HegemonScroll extends Panel {
                   }//if
                   addComponent(new ScrollComponentNewline(12, vert_spacing));
                }
+               comp_len_sofar = 0;
             }
             else {
                sb.append(ch);

@@ -272,7 +272,7 @@ int examine(int i_th, const String* obj, critter& pc) {
          show(buf, pc);
       }//if
                    //is a container?
-      else if (!obj_ptr->OBJ_FLAGS.get(54) || !obj_ptr->ob->bag) {
+      else if (!obj_ptr->OBJ_FLAGS.get(54) || !obj_ptr->bag) {
          return look(i_th, obj, pc);
          //show("That is not a container.\n", pc);
       }//if
@@ -280,11 +280,11 @@ int examine(int i_th, const String* obj, critter& pc) {
          show("Its closed!\n", pc);
       }//if
       else {
-         Sprintf(buf, "%S contains: \n\n", &(obj_ptr->ob->short_desc));
+         Sprintf(buf, "%S contains: \n\n", &(obj_ptr->short_desc));
          buf.Cap();
          show(buf, pc);
          
-         out_inv(obj_ptr->ob->inv, pc, OBJ_INV);
+         out_inv(obj_ptr->inv, pc, OBJ_INV);
          
          String cmd = "examine";
          ROOM.checkForProc(cmd, NULL_STRING, pc, obj_ptr->OBJ_NUM);
@@ -599,7 +599,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm) {
       }
       if (obj_ptr) { //so it was in rooms inv, or pc's inv
          show("\n\n", pc);
-         show((obj_ptr->ob->long_desc), pc);
+         show((obj_ptr->long_desc), pc);
          show("\n", pc);
 
          String cmd = "look";
@@ -1000,7 +1000,7 @@ int put(int i, const String* item, int j, const String* bag,
          show("You don't seem to have that container.\n", pc);
          return -1;
       }//if
-      else if (!bag_ptr->ob->bag) {
+      else if (!bag_ptr->bag) {
          show("How are you gonna put something in THAT?\n", pc);
          return -1;
       }//if
@@ -1014,7 +1014,7 @@ int put(int i, const String* item, int j, const String* bag,
                    bag, pc.SEE_BIT, ROOM);
          }//if
          else {
-            tmp = obj_to_sobj(*bag_ptr, &(ROOM.inv), TRUE, j,
+            tmp = obj_to_sobj(*bag_ptr, ROOM.getInv(), TRUE, j,
                    bag, pc.SEE_BIT, ROOM);
          }//else
          bag_ptr = tmp;
@@ -1057,13 +1057,13 @@ int put(int i, const String* item, int j, const String* bag,
 
       if (!bag_ptr) {
          bag_in_inv = FALSE;
-         bag_ptr = have_obj_named(ROOM.inv, j, bag, pc.SEE_BIT, ROOM);
+         bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
       }//if
       if (!bag_ptr) {
          show("You don't see that container.\n", pc);
          return -1;
       }//if
-      else if (!bag_ptr->ob->bag) {
+      else if (!bag_ptr->bag) {
          show("How can put something in THAT?\n", pc);
          return -1;
       }//if
@@ -1074,11 +1074,11 @@ int put(int i, const String* item, int j, const String* bag,
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
          if (bag_in_inv) { 
             tmp = obj_to_sobj(*bag_ptr, &(pc.inv), TRUE, j,
-                   bag, pc.SEE_BIT, ROOM);
+                              bag, pc.SEE_BIT, ROOM);
          }//if
          else {
-            tmp = obj_to_sobj(*bag_ptr, &(ROOM.inv), TRUE, j,
-                   bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, ROOM.getInv(), TRUE, j,
+                              bag, pc.SEE_BIT, ROOM);
          }//else
          bag_ptr = tmp;
       }//if
@@ -1113,7 +1113,7 @@ int put(int i, const String* item, int j, const String* bag,
       bag_ptr = have_obj_named(pc.inv, j, bag, pc.SEE_BIT, ROOM);
    
       if (!bag_ptr) {     
-         bag_ptr = have_obj_named(ROOM.inv, j, bag, pc.SEE_BIT, ROOM);
+         bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
          bag_in_inv = FALSE;
       }//if
 
@@ -1125,7 +1125,7 @@ int put(int i, const String* item, int j, const String* bag,
          show("You do not see that item.\n", pc);
          return -1;
       }//if
-      else if (!bag_ptr->ob->bag) {
+      else if (!bag_ptr->bag) {
          show("How the hell are you gonna fit something in that???\n", pc);
          return -1;
       }//if
@@ -1136,16 +1136,16 @@ int put(int i, const String* item, int j, const String* bag,
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
          if (bag_in_inv) { 
             tmp = obj_to_sobj(*bag_ptr, &(pc.inv), TRUE, j,
-                   bag, pc.SEE_BIT, ROOM);
+                              bag, pc.SEE_BIT, ROOM);
          }//if
          else {
-            tmp = obj_to_sobj(*bag_ptr, &(ROOM.inv), TRUE, j,
-                   bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, ROOM.getInv(), TRUE, j,
+                              bag, pc.SEE_BIT, ROOM);
          }//else
          bag_ptr = tmp;
       }//if
       if (!vict_ptr) {
-         vict_ptr = have_obj_named(ROOM.inv, i, item, pc.SEE_BIT, ROOM);
+         vict_ptr = ROOM.haveObjNamed(i, item, pc.SEE_BIT);
          item_in_inv = FALSE;
       }//if
       if (!vict_ptr) {
@@ -1193,14 +1193,14 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
                    (!bag->Strlen())) {
               //corresponds to "get all"
       mudlog.log(DBG, "get called like: get all\n");
-      ROOM.inv.head(cell);
+      ROOM.getInv()->head(cell);
       vict_ptr = cell.next();
       while (vict_ptr) {
          if (detect(pc.SEE_BIT, (vict_ptr->OBJ_VIS_BIT | 
                                  ROOM.getVisBit()))) {
             tst = TRUE; //Something is there....
             if (mudlog.ofLevel(DBG)) {
-               mudlog << "detected object:  " << vict_ptr->ob->short_desc
+               mudlog << "detected object:  " << vict_ptr->short_desc
                       << endl;
             }
 
@@ -1208,7 +1208,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
                pc.gainInv(vict_ptr);
                gain_eq_effects(*vict_ptr, obj_list[0], pc, -1, TRUE); 
                                //gold ect
-               vict_ptr = ROOM.inv.lose(cell);
+               vict_ptr = ROOM.getInv()->lose(cell);
             }//if obj_get_by
             else {
                vict_ptr = cell.next();         
@@ -1231,13 +1231,13 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
       bag_in_inv = FALSE;
       if (!bag_ptr) {
          bag_in_inv = TRUE;
-         bag_ptr = have_obj_named(ROOM.inv, j, bag, pc.SEE_BIT, ROOM);
+         bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
       }//if
       if (!bag_ptr) {
          show("You don't seem to have that container.\n", pc);
          return -1;
       }//if
-      if (!bag_ptr->ob->bag) {
+      if (!bag_ptr->bag) {
          show("How are you gonna get something from THAT?\n", pc);
          return -1;
       }//if
@@ -1252,16 +1252,16 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
          if (bag_in_inv) { 
             tmp = obj_to_sobj(*bag_ptr, &(pc.inv), TRUE, j,
-                   bag, pc.SEE_BIT, ROOM);
+                              bag, pc.SEE_BIT, ROOM);
          }//if
          else {
-            tmp = obj_to_sobj(*bag_ptr, &(ROOM.inv), TRUE, j,
-                   bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, ROOM.getInv(), TRUE, j,
+                              bag, pc.SEE_BIT, ROOM);
          }//else
          bag_ptr = tmp;
       }//if
 
-      bag_ptr->ob->inv.head(cell);
+      bag_ptr->inv.head(cell);
       vict_ptr = cell.next();
       while (vict_ptr) {
          if (obj_get_by(*vict_ptr, pc, TRUE)) {
@@ -1269,7 +1269,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
             pc.gainInv(vict_ptr);
             gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE); 
                            //gold ect
-            vict_ptr = bag_ptr->ob->inv.lose(cell);
+            vict_ptr = bag_ptr->inv.lose(cell);
          }//if obj_get_by
          else
             vict_ptr = cell.next();
@@ -1281,20 +1281,20 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
    }//if "get all.waybread bag"
    else if (i == -1) {
      // called as:  get all.gold  (from the room)
-      ROOM.inv.head(cell);
+      ROOM.getInv()->head(cell);
       vict_ptr = cell.next();
       while (vict_ptr) {
-	if (obj_is_named(*vict_ptr, *item)) {
-	  if (obj_get_by(*vict_ptr, pc, TRUE)) {
-            found_it = TRUE;
-            pc.gainInv(vict_ptr);
-            gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE); 
-	              //gold ect
-            vict_ptr = ROOM.inv.lose(cell);
-	  }//if obj_get_by
-	  else
-            vict_ptr = cell.next();
-	}//if named right
+         if (obj_is_named(*vict_ptr, *item)) {
+            if (obj_get_by(*vict_ptr, pc, TRUE)) {
+               found_it = TRUE;
+               pc.gainInv(vict_ptr);
+               gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE); 
+               //gold ect
+               vict_ptr = ROOM.getInv()->lose(cell);
+            }//if obj_get_by
+            else
+               vict_ptr = cell.next();
+         }//if named right
       }//while obj_ptr
       if (!found_it) {
          show("You don't see that here.\n", pc);
@@ -1307,13 +1307,13 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
      
       if (!bag_ptr) {
          bag_in_inv = FALSE;
-         bag_ptr = have_obj_named(ROOM.inv, j, bag, pc.SEE_BIT, ROOM);
+         bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
       }//if
       if (!bag_ptr) {
          show("You don't see that container.\n", pc);
          return -1;
       }//if
-      else if (!bag_ptr->ob->bag) {
+      else if (!bag_ptr->bag) {
          show("How are you gonna get something from THAT?\n", pc);
          return -1;
       }//if
@@ -1332,16 +1332,16 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
          if (bag_in_inv) { 
             tmp = obj_to_sobj(*bag_ptr, &(pc.inv), TRUE, j,
-                   bag, pc.SEE_BIT, ROOM);
+                              bag, pc.SEE_BIT, ROOM);
          }//if
          else {
-            tmp = obj_to_sobj(*bag_ptr, &(ROOM.inv), TRUE, j,
-                   bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, ROOM.getInv(), TRUE, j,
+                              bag, pc.SEE_BIT, ROOM);
          }//else
          bag_ptr = tmp;
       }//if
 
-      bag_ptr->ob->inv.head(cell);
+      bag_ptr->inv.head(cell);
       vict_ptr = cell.next();
       tst = FALSE;
       while (vict_ptr) {
@@ -1354,7 +1354,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
                   pc.gainInv(vict_ptr);
                   
                   gain_eq_effects(*vict_ptr, *bag_ptr, pc, bag_in_inv, TRUE);
-                  vict_ptr = bag_ptr->ob->inv.lose(cell);
+                  vict_ptr = bag_ptr->inv.lose(cell);
                }//if
                else
                   vict_ptr = cell.next();
@@ -1376,7 +1376,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
           /* Should be done with all instances of "all" */
    else if (!bag->Strlen()) {  // get 2.sword or get sword
       mudlog.log(DBG, "get called like:  get 2.sword or get sword\n");
-      vict_ptr = have_obj_named(ROOM.inv, i, item, pc.SEE_BIT, ROOM);
+      vict_ptr = ROOM.haveObjNamed(i, item, pc.SEE_BIT);
       if (vict_ptr) {
          if (obj_get_by(*vict_ptr, pc, TRUE)) {
             pc.gainInv(vict_ptr);
@@ -1398,14 +1398,14 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
       bag_ptr = have_obj_named(pc.inv, j, bag, pc.SEE_BIT, ROOM);
 
       if (!bag_ptr) {     
-         bag_ptr = have_obj_named(ROOM.inv, j, bag, pc.SEE_BIT, ROOM);
+         bag_ptr = ROOM.haveObjNamed(j, bag, pc.SEE_BIT);
          bag_in_inv = FALSE;
       }//if
       if (!bag_ptr) {
          show("You do not see that container.\n", pc);
          return -1;
       }//if
-      else if (!bag_ptr->ob->bag) {
+      else if (!bag_ptr->bag) {
          show("How are you gonna get something from THAT?\n", pc);
          return -1;
       }//if
@@ -1422,15 +1422,15 @@ int get(int i, const String* item, int j, const String* bag, critter& pc) {
       if (!bag_ptr->IN_LIST) { //its not a SOBJ
          if (bag_in_inv) { 
             tmp = obj_to_sobj(*bag_ptr, &(pc.inv), TRUE, j,
-                   bag, pc.SEE_BIT, ROOM);
+                              bag, pc.SEE_BIT, ROOM);
          }//if
          else {
-            tmp = obj_to_sobj(*bag_ptr, &(ROOM.inv), TRUE, j,
-                   bag, pc.SEE_BIT, ROOM);
+            tmp = obj_to_sobj(*bag_ptr, ROOM.getInv(), TRUE, j,
+                              bag, pc.SEE_BIT, ROOM);
          }//else
          bag_ptr = tmp;
       }//if
-      if (!(vict_ptr = have_obj_named(bag_ptr->ob->inv, i, item, 
+      if (!(vict_ptr = have_obj_named(bag_ptr->inv, i, item, 
                             pc.SEE_BIT, ROOM))) {
          Sprintf(buf, "The %S doesn't contain the %S.\n", bag, item);
          show(buf, pc);
@@ -1474,15 +1474,15 @@ int say(const char* message, critter& pc, room& rm) {
       return -1;
    }//if
    else { //good to go
-      Cell<object*> ocll(rm.inv);
+      Cell<object*> ocll(*(rm.getInv()));
       object* optr;
       while ((optr = ocll.next())) {
-         if (optr->ob->obj_proc && optr->ob->obj_proc->w_eye_owner) {
+         if (optr->obj_proc && optr->obj_proc->w_eye_owner) {
             Sprintf(buf, "\n#####%S says, '%S'\n", 
-                    name_of_crit(pc, optr->ob->obj_proc->w_eye_owner->SEE_BIT),
+                    name_of_crit(pc, optr->obj_proc->w_eye_owner->SEE_BIT),
                     &msg);
             buf.setCharAt(7, toupper(buf[7]));
-            show(buf, *(optr->ob->obj_proc->w_eye_owner));	  
+            show(buf, *(optr->obj_proc->w_eye_owner));	  
          }//if
       }//while
 
@@ -1579,10 +1579,10 @@ int do_emote(const char* message, critter& pc, room& rm, short show_non_detects,
    msg = message;
    //   pc.drunkifyMsg(msg);
 
-   Cell<object*> ocll(rm.inv);
+   Cell<object*> ocll(*(rm.getInv()));
    object* optr;
    while ((optr = ocll.next())) {
-      if (optr->ob->obj_proc && (crit_ptr = optr->ob->obj_proc->w_eye_owner)) {
+      if (optr->obj_proc && (crit_ptr = optr->obj_proc->w_eye_owner)) {
          if (detect(crit_ptr->SEE_BIT, (pc.VIS_BIT | rm.getVisBit()))) {
             if (possessive == EMOTE_POSSESSIVE) {
                Sprintf(buf, "#####%S's %S\n", 
@@ -2589,7 +2589,7 @@ int don_obj(object& obj, critter& pc) {
 
    mudlog.log(DBG, "In don_obj\n");
    if (obj.OBJ_FLAGS.get(21)) {
-      Sprintf(buf, "You can't wear %S.\n", &(obj.ob->short_desc));
+      Sprintf(buf, "You can't wear %S.\n", &(obj.short_desc));
       mudlog.log(DBG, "don_obj failed, obj failed flag 21.\n");
       show(buf, pc);
    }//if
@@ -2729,7 +2729,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_CUR_WEIGHT > pc.STR) && ((posn == 9) || (posn == 10))) {
       if (do_msg) {
 	 Sprintf(buf, "%S is just too heavy for you!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2780,7 +2780,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(7)) && (!pc.pc || !pc.pc->imm_data)) { 
       if (do_msg) {
          Sprintf(buf, "%S belongs to an immortal!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2791,7 +2791,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
 		!(pc.IMM_LEVEL > 5))) {
       if (do_msg) {
          Sprintf(buf, "%S belongs to a demi-god!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2802,7 +2802,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
 		pc.IMM_LEVEL < 9)) {
       if (do_msg)  {
          Sprintf(buf, "%S belongs to a god!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2812,7 +2812,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(11)) && (pc.CLASS == 1)) { //warrior
       if (do_msg) {
          Sprintf(buf, "Silly warrior, %S is not for you!\n", 
-              &(obj.ob->short_desc));
+              &(obj.short_desc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !warrior.\n");
@@ -2821,7 +2821,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(12)) && (pc.CLASS == 2)) {  // sage
       if (do_msg) {
          Sprintf(buf, "Silly sage, %S is not for you!\n", 
-              &(obj.ob->short_desc));
+              &(obj.short_desc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !sage.\n");
@@ -2830,7 +2830,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(13)) && (pc.CLASS == 3)) { // wizard
       if (do_msg) {
          Sprintf(buf, "Silly wizard, %S is not for you!\n", 
-              &(obj.ob->short_desc));
+              &(obj.short_desc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !wizard.\n");
@@ -2839,7 +2839,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(14)) && (pc.CLASS == 4)){ //ranger
       if (do_msg) {
          Sprintf(buf, "Silly ranger, %S is not for you!\n", 
-              &(obj.ob->short_desc));
+              &(obj.short_desc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !ranger.\n");
@@ -2848,7 +2848,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(15)) && (pc.CLASS == 5)) {//thief
       if (do_msg) {
          Sprintf(buf, "Silly thief, %S is not for you!\n", 
-              &(obj.ob->short_desc));
+              &(obj.short_desc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !thief.\n");
@@ -2857,7 +2857,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(16)) && (pc.CLASS == 6)){ //alchemist
       if (do_msg) {
          Sprintf(buf, "Alchemists can't use %S!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !alchemist.\n");
@@ -2866,7 +2866,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(17)) && (pc.CLASS == 7)){ //cleric
       if (do_msg) {
          Sprintf(buf, "Silly cleric, %S is not for you!\n", 
-              &(obj.ob->short_desc));
+              &(obj.short_desc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !cleric.\n");
@@ -2875,7 +2875,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(18)) && (pc.CLASS == 8)){ //bard
       if (do_msg) {
          Sprintf(buf, "Silly bard, %S is not for you!\n", 
-              &(obj.ob->short_desc));
+              &(obj.short_desc));
          show(buf, pc);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, obj is !bard.\n");
@@ -2884,7 +2884,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(19)) && (pc.isNPC())) {
       if (do_msg) {
          Sprintf(buf, "%S is !MOB equipment!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          buf.Cap();
          show(buf, pc); //no-one should ever see this i believe
       }//if
@@ -2894,7 +2894,7 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
    if ((obj.OBJ_FLAGS.get(20)) && (pc.isPc())) { //!pc
       if (do_msg) {
          Sprintf(buf, "%S is for mobs only!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2916,7 +2916,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    if (obj.OBJ_CUR_WEIGHT > (pc.CRIT_MAX_WT_CARRY - pc.CRIT_WT_CARRIED)) {
       if (do_msg) {
          Sprintf(buf, "%S:\tYou can't carry that much weight.\n", 
-              &(obj.ob->short_desc));
+              &(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2925,7 +2925,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    if ((obj.OBJ_FLAGS.get(7)) && (!pc.pc || !pc.pc->imm_data)) { 
       if (do_msg) {
          Sprintf(buf, "%S belongs to an immortal!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2935,7 +2935,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
 		!(pc.IMM_LEVEL > 5))) {
       if (do_msg) {
          Sprintf(buf, "%S belongs to a demi-god!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2945,7 +2945,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
 		pc.IMM_LEVEL < 9)) {
       if (do_msg)  {
          Sprintf(buf, "%S belongs to a god!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2954,7 +2954,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    if ((obj.OBJ_FLAGS.get(19)) && (pc.isNPC())) {
       if (do_msg) {
          Sprintf(buf, "%S is !MOB equipment!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          buf.Cap();
          show(buf, pc); //no-one should ever see this i believe
       }//if
@@ -2963,7 +2963,7 @@ int obj_get_by(object& obj, critter& pc, short do_msg) {
    if ((obj.OBJ_FLAGS.get(20)) && (pc.isPc())) { //!pc
       if (do_msg) {
          Sprintf(buf, "%S is for mobs only!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
          buf.Cap();
          show(buf, pc);
       }//if
@@ -2988,39 +2988,39 @@ int source_give_to(critter& pc, object& obj, critter& targ) {
    if (obj.OBJ_CUR_WEIGHT > (targ.CRIT_MAX_WT_CARRY - 
                              targ.CRIT_WT_CARRIED)) {
       Sprintf(buf, "%S:\t%S can't carry that much weight.\n", 
-              &(obj.ob->short_desc), name_of_crit(targ, pc.SEE_BIT)); 
+              &(obj.short_desc), name_of_crit(targ, pc.SEE_BIT)); 
       buf.Cap();
       show(buf, pc);
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(7)) && (targ.LEVEL < 31)) { //!mort
-      Sprintf(buf, "%S is not for mortals!\n", &(obj.ob->short_desc));
+      Sprintf(buf, "%S is not for mortals!\n", &(obj.short_desc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(8)) && ((targ.LEVEL <= 35) && (targ.LEVEL >= 31))){
       Sprintf(buf, "%S is not for demi-gods!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(9)) && ((targ.LEVEL > 35) && (targ.LEVEL < 40))){
-      Sprintf(buf, "%S is not for gods!\n", &(obj.ob->short_desc));
+      Sprintf(buf, "%S is not for gods!\n", &(obj.short_desc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(19)) && (targ.isNPC())) {
       Sprintf(buf, "%S is for players only!\n", 
-		&(obj.ob->short_desc));
+		&(obj.short_desc));
       buf.Cap();
       show(buf, pc); 
       return FALSE;
    }//if
    if ((obj.OBJ_FLAGS.get(20)) && (targ.isPc())) { //!pc
-      Sprintf(buf, "%S is not for players!\n", &(obj.ob->short_desc));
+      Sprintf(buf, "%S is not for players!\n", &(obj.short_desc));
       buf.Cap(); 
       show(buf, pc); //few should ever see this!!
       return FALSE;
@@ -3037,7 +3037,7 @@ int obj_remove_by(object& obj, critter& pc) {
 
    if (obj.OBJ_FLAGS.get(6)) {
       Sprintf(buf, "The %S seems to have grown very attached to you!!\n", 
-              &(obj.ob->short_desc));
+              &(obj.short_desc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
@@ -3054,7 +3054,7 @@ int obj_drop_by(object& obj, critter& pc) {
 
    if (obj.OBJ_FLAGS.get(5)) {
       Sprintf(buf, "Yeech, you can't let go of %S!!\n", 
-              &(obj.ob->short_desc));
+              &(obj.short_desc));
       buf.Cap();
       show(buf, pc);
       return FALSE;
@@ -3086,9 +3086,9 @@ int gain_eq_effects(object& obj, object& bag, critter& pc,
                 /* effects for getting gold coins */
 
    if (obj.OBJ_FLAGS.get(55)) { //coins
-      pc.GOLD += obj.ob->cur_stats[1];  //cost == # of coins
+      pc.GOLD += obj.cur_stats[1];  //cost == # of coins
       if (do_msg) {
-         Sprintf(buf, "There were %i coins.\n", obj.ob->cur_stats[1]);
+         Sprintf(buf, "There were %i coins.\n", obj.cur_stats[1]);
          show(buf, pc);
       }//if
       pc.loseInv(&obj); 
@@ -3191,7 +3191,7 @@ int wear_eq_effects(object& obj, critter& pc, int posn, short do_msg) {
       ROOM.checkLight(FALSE);
    }//if
                       /* do stat_affects now */
-   Cell<stat_spell_cell*> cell(obj.ob->stat_affects);
+   Cell<stat_spell_cell*> cell(obj.stat_affects);
    stat_spell_cell* st_ptr;
    while ((st_ptr = cell.next())) {
       if (st_ptr->stat_spell <= MOB_SHORT_CUR_STATS) //ignore food/drink/drug
@@ -3229,6 +3229,9 @@ int wear_eq_effects(object& obj, critter& pc, int posn, short do_msg) {
          if ((pl = get_percent_lrnd(BOW_SKILL_NUM, pc)) > -1)
 	    pc.DAM += (pl / 20);
       }//if
+
+      String cmd = "wield";
+      ROOM.checkForProc(cmd, NULL_STRING, pc, obj.OBJ_NUM);
    }//if wield or holding
 
    if (do_msg) {
@@ -3266,10 +3269,10 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
    }//if
 
    if (obj.OBJ_FLAGS.get(60)) { //liquid
-      Sprintf(buf, "drinks %S.\n", &(obj.ob->short_desc));
+      Sprintf(buf, "drinks %S.\n", &(obj.short_desc));
    }//if
    else {
-      Sprintf(buf, "eats %S.\n", &(obj.ob->short_desc));
+      Sprintf(buf, "eats %S.\n", &(obj.short_desc));
    }//else
    emote(buf, pc, ROOM, FALSE);
 
@@ -3282,7 +3285,7 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
    //   mudlog.log(DBG, "About to do stat_affects.\n");
 
                       /* do stat_affects now */
-   Cell<stat_spell_cell*> cell(obj.ob->stat_affects);
+   Cell<stat_spell_cell*> cell(obj.stat_affects);
    stat_spell_cell* st_ptr;
    while ((st_ptr = cell.next())) {
       switch (st_ptr->stat_spell) {
@@ -3327,7 +3330,6 @@ int remove_eq_effects(object& obj, critter& pc, short from_corpse,
                        short do_msg, int posn) { 
                       //lights, stat adjusts
    String buf(100);
-   short flag = FALSE;
 
    //mudlog.log(DBG, "In remove_eq_effects...");
    
@@ -3343,7 +3345,7 @@ int remove_eq_effects(object& obj, critter& pc, short from_corpse,
    }//if light_source
 
                       /* do stat_affects now */
-   Cell<stat_spell_cell*> cell(obj.ob->stat_affects);
+   Cell<stat_spell_cell*> cell(obj.stat_affects);
    stat_spell_cell* st_ptr;
    while ((st_ptr = cell.next())) {
       if (st_ptr->stat_spell <= MOB_SHORT_CUR_STATS) { //ignore food/drink/drug
@@ -3396,11 +3398,12 @@ int remove_eq_effects(object& obj, critter& pc, short from_corpse,
 
    String cmd = "remove";
    ROOM.checkForProc(cmd, NULL_STRING, pc, obj.OBJ_NUM);
+
    return 0;
 }//remove_eq_effects
 
 
-int drop_eq_effects(object& obj, critter& pc, short do_msg) {
+int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk = FALSE) {
    String buf(100);
    List<critter*> tmp_lst(ROOM.getCrits());
    Cell<critter*> cell(tmp_lst);
@@ -3448,8 +3451,14 @@ int drop_eq_effects(object& obj, critter& pc, short do_msg) {
       }//if
    }//if obj was a boat
 
-   String cmd = "drop";
+   String cmd(20);
+   if (is_junk)
+      cmd = "junk";
+   else
+      cmd = "drop";
+
    ROOM.checkForProc(cmd, NULL_STRING, pc, obj.OBJ_NUM);
+
    return 0;
 }//drop_eq_effects
 
@@ -3462,7 +3471,7 @@ int donate_eq_effects(object& obj, critter& pc, short do_msg) {
    critter* crit_ptr;
 
    if (pc.isMob()) {
-      mudlog.log(ERR, "ERROR:  MOB in drop_eq_effects.\n");
+      mudlog.log(ERR, "ERROR:  MOB in donate_eq_effects.\n");
       return -1;
    }//if
 
@@ -3514,6 +3523,7 @@ int donate_eq_effects(object& obj, critter& pc, short do_msg) {
 
    String cmd = "donate";
    ROOM.checkForProc(cmd, NULL_STRING, pc, obj.OBJ_NUM);
+
    return 0;
 }//donate_eq_effects
 
@@ -3586,5 +3596,11 @@ int eq_put_by(object& vict, object& bag, critter& pc, short bag_in_inv) {
          }//while
       }//else 
    }//else
+
+   String cmd = "put";
+   String bag_num;
+   bag_num = bag.getIdNum();
+   ROOM.checkForProc(cmd, bag_num, pc, vict.OBJ_NUM);
+
    return TRUE;
 }//eq_put_by

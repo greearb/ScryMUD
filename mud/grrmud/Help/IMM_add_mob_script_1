@@ -1,9 +1,9 @@
 <help olc add_mob_script>
 
-(Can be used on rooms too now!!)
+(Can now be used on rooms and objects too!!)
 
 This function, though a bit unwieldy, allows you to add or modify a
-script for some room or mob.  If the entity already has a script
+script for some room, object or mob.  If the entity already has a script
 triggered by what you specify here, then it will be over-written.  After
 entering this command, you will be prompted to input the script.  In your
 script, there are certain variables you can put in: 
@@ -17,12 +17,9 @@ An example script for a mob might be:
 (Suppose the trigger is when the actor types wear dagger, and the
 dagger's Vnum is the same as the target number for the script.) 
 
-NOTE:  Expanded functionality implemented, and will be expanded
-	soon.  See end for details.
-
-say %M, that's a sharp %o you have there, better be careful!;
-pause 1;
-emote glances again at the dagger and starts hammering on his latest sword.;
+say %M, that's a sharp %o you have there, better be careful!;;
+pause 1;;
+emote glances again at the dagger and starts hammering on his latest sword.;;
 
 NOTE:  Enter all this at once, on one line.
 usage:  add_mob_script [mob_num] [trigger_cmd] [actor_num]
@@ -31,6 +28,12 @@ usage:  add_mob_script [mob_num] [trigger_cmd] [actor_num]
 usage:  add_room_script [rm_num] [trigger_cmd] [actor_num]
 		       ['discriminator_string'] [target_num]
 		       [takes_precedence]
+usage:  add_obj_script [obj_num] [trigger_cmd] [actor_num]
+		       ['discriminator_string'] [target_num]
+		       [takes_precedence]
+
+NOTE:  If 'discriminator_string' is a number, prepend DESCRIM_ to it or
+       it will not work, for example:  DESCRIM_55
 
 Arguments:
    mob_num/rm_num is the number of the entity which should get this script
@@ -70,19 +73,27 @@ Arguments:
 	        above, below, north, northwest, northeast, east, southeast,
 		south, southwest, west
 
+	put:    The discriminator is the object number of the bag.  Enter
+		-1 if it can be any container.
+
    target_num:  This can be a MOB or OBJECT number, which ever makes sense
 	to the trigger command.
    takes_precedence:  If this action should pre-empt already-running
 	scripts, enter anything but zero (0), if NOT, then enter a zero
 	(0).
 
+-----------------------------------------------------------------------
+Special Scripting Commands:
+	pause, exact_damage, oload, mload
+-----------------------------------------------------------------------
+
    NOTE:  the use of the 'pause' command can be very useful, as it helps
 to space out the mobs actions.  The pauses are the length of a round of
 battle, about 2-3 seconds each. 
 
-   NOTE 2:  You must do an amsave/asave in the zone that the mob/room
+   NOTE 2:  You must do an amsave/asave/aosave in the zone that the entity
 belongs to in order to have your changes made permanent through a reboot.
-mstat/rstat will give you the zone that the mob belongs to. 
+mstat/rstat/ostat will give you the zone that the entity belongs to. 
 ------------------------------------------------------------------------
 
 Caveats:  Only one command per line.  Comments not implemented at
@@ -103,7 +114,7 @@ are just used to delineate commands in the examples below.
 
 Defining what Entity is to take the script action:
 --------------------------------------------------
-Currently all commands are from the perspective of the mob/room that
+Currently all commands are from the perspective of the mob/room/obj that
 'owns' the script.  Now you may specify the commands to be 'executed'
 by other actors.  For instance, suppose you wanted to check if the
 actor had a specific piece of eq in his/her inventory?  The answer
@@ -120,6 +131,9 @@ syntax:
 
 	Action to be taken by script owner (this is the default).
 **%S [normal script command]
+
+	Action to be taken by target, if target is an object.
+**%o [normal script command]
 
 For instance, in this example we query whether or not the actor has
 object #44 in his/her possession.
@@ -196,6 +210,20 @@ rm_move:        Force one player to exit in a certain direction.
 neighbor_echo:  Echo a message to a neighboring room (like after a move).
 rm_omove_all:   Force all objects to exit in a certain direction.
 rm_omove:       Force one object to exit in a certain direction.
+
+==============================
+NEW:  Object Scripting Commands:
+------------------------------
+recho:          Echo a message to the room.
+tell:           The room tells a player a message.
+zecho:          Cause a message to be echoed across the entire zone.
+wizchat:        Cause a message to be sent to the wizchat channel.
+obj_move_all:   Force all players to exit in a certain direction.
+obj_move:       Force one player to exit in a certain direction.
+neighbor_echo:  Echo a message to a neighboring room (like after a move).
+obj_omove_all:  Force all objects to exit in a certain direction.
+obj_omove:      Force one object to exit in a certain direction.
+
 
 <color=red>
 See Also:  olc amsave mstat rm_script list_scripts stat_script

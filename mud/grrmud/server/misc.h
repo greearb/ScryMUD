@@ -42,6 +42,7 @@ extern List<critter*> pulsed_proc_mobs;
 extern List<room*> pulsed_proc_rooms;
 extern List<object*> pulsed_proc_objects;
 extern PtrArray<room> proc_action_rooms;
+extern PtrArray<object> proc_action_objs;
 
 // Inclusive.
 int bound(int low, int high, int val);
@@ -100,7 +101,7 @@ const String* name_of_crit(critter& pc, int see_bit);
 String* name_of_door(const door& dr, int see_bit);
 String* name_of_dr_data(const door_data& dr, int see_bit, int dest);
 String* name_of_obj(const object& obj, int see_bit);
-String* long_name_of_obj(const object& obj, int see_bit);
+String* long_name_of_obj(object& obj, int see_bit);
 String* name_of_room(const room& rm, int see_bit);
 char* get_his_her(const critter& crit);
 char* get_hisself_herself(const critter& crit);

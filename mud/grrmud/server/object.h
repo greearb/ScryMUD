@@ -33,7 +33,7 @@
 
 class object;
  
-extern String* long_name_of_obj(const object& obj, int see_bit);
+extern String* long_name_of_obj(object& obj, int see_bit); //misc.h
 extern const String* single_obj_name(object& obj, int see_bit); //misc2.h
 
 enum ComponentEnum {
@@ -137,12 +137,19 @@ public:
    static int getInstanceCount() { return _cnt; }
 }; // bag_class
  
- 
-///**************************  obj  ******************************///
- 
-class obj {
-protected:
+
+///*********************  object  ******************************///
+
+class object {
+private:
    static int _cnt;
+
+protected:
+   int pause;
+   int in_room;
+   ObjectScript* cur_script;  /* currently executing script */
+   List<ObjectScript*> pending_scripts;  /* queue holds scripts to be run */
+   List<ObjectScript*> obj_proc_scripts; /* Scripts this object has. */
 
 public:
    List<String*> names;
@@ -169,8 +176,7 @@ public:
            // 64 toolbox, 65 cauldron, 66 pen, 67 construct_component
            // 68 concoct_component, 69 parchment, 70 needs_resetting
            // 71 !complete, 72 herb, 73 vend_machine, 74 bulletin_board
-           // 75 is_butcherable
-   /* modify OLC when assigning 72 again --BEN */
+           // 75 is_butcherable, 76 has_obj_script
    
    short extras[OBJ_MAX_EXTRAS + 1]; 
 		// 0 charges, light_count, 1 rechargeable, (wands), 2 %load,
@@ -199,47 +205,25 @@ public:
    obj_spec_data* obj_proc;
 
    
-   obj ();                     //default constructor
-   obj (obj& source);    //copy constructor
-   ~obj();                     //destructor
-
-   void Clear();
-   obj& operator=(obj& source);
-
-   int getLevel() const { return extras[8]; }
-   int max_weight();
-   int cur_weight();
-   void Read(ifstream& da_file, short read_all);
-   void Write(ofstream& da_file);
-   static int getInstanceCount() { return _cnt; }
-}; //class obj
-
-
-///*********************  object  ******************************///
-
-//static objs_in_game = 0;
-
-class object {
-protected:
-   static int _cnt;
-
-public:
-   obj* ob; 
-   
-   object (const object& source); //copy constructor
+   object (object& source); //copy constructor
    object();			     //default constructor
    ~object();                     //destructor
-   object& operator= (const object& source);
+   object& operator= (object& source);
 
    void Clear();
    void Read(ifstream& da_file, short read_all);
-   void Write(ofstream& da_file) const;
-   int is_magic();
+   void Write(ofstream& da_file);
+   int isMagic();
 
    object* loseInv(object* obj);
    void gainInv(object* obj);
+
    int getIdNum();
    int getKeyNum();
+   int getLevel() const { return extras[8]; }
+   int getMaxWeight();
+   int getCurWeight();
+   
    
    void lock();
    void unlock();
@@ -255,10 +239,12 @@ public:
    const String* getName() { return getName(~0); };
    const String* getName(int c_bit) { return single_obj_name(*this, c_bit); }
    const String* getLongName() { return getLongName(~0); }
-   const String* getLongName(int c_bit) { return long_name_of_obj(*this,
-                                                                  c_bit); }
-   int getLevel() const { if (ob) return ob->getLevel(); return 0; }
-   int getDefaultPrice() { return ob->cur_stats[1]; }
+   const String* getLongName(int c_bit) { return long_name_of_obj(*this, c_bit); }
+   int getDefaultPrice() { return cur_stats[1]; }
+   int getPause() const { return pause; }
+   
+   void setPause(int i) { pause = i; }
+   void decrementPause() { if (pause > 0) pause--; }
 
    void makeComponent(int targ, int comp1, int comp2, int comp3, int comp4,
                       int comp5, ComponentEnum con_type);
@@ -275,6 +261,9 @@ public:
    int isBulletinBoard() const;
    int isScroll() const; 
    int isHerb() const;
+   int isPaused() const { return pause > 0; }
+   int isModified() const { return (in_list && 1); } //ie is it a SOBJ
+   int hasScript() const { return obj_flags.get(76); }
 
    void setComplete();
    void setIncomplete();
@@ -287,12 +276,55 @@ public:
    int decrementCurInGame();
    int incrementCurInGame();
    int getMaxInGame();
-   int getDiceCnt() const { return ob->extras[6]; }
-   int getDiceSides() const { return ob->extras[7]; }
+   int getDiceCnt() const { return extras[6]; }
+   int getDiceSides() const { return extras[7]; }
 
    static int getInstanceCount() { return _cnt; }
 
    int getObjCountByNumber(int onum, int sanity);
+
+   void setCurRoomNum(int i, int sanity);
+   int getCurRoomNum() const { return in_room; }
+
+   const ScriptCmd* getNextScriptCmd() { return cur_script->getNextCommand(); }
+   void finishedObjProc();
+   int isInProcNow() { return (cur_script && (cur_script->isInProgress())); }
+   void addProcScript(const String& txt, ObjectScript* script_data);
+   void doScriptJump(int abs_offset);
+   void listScripts(critter& pc);
+   ObjectScript* getScriptAt(int idx) { return obj_proc_scripts.elementAt(idx); }
+   void removeScript(String& trigger, int i_th, critter& pc);
+   int insertNewScript(ObjectScript* script);
+
+   int processInput(String& input, room& rm); /* for object scripts */
+
+   /* Found in obj_cmds.cc */
+   /**  Move all in room out some door.  Does no checks, just puts em
+    * through the door, even if it's closed??!!
+    */
+   int move_all(int i_th, const String* dir, room& rm);
+   int omove_all(int i_th, const String* dir, room& rm);
+
+   /**  Move all in room out some door.  Does no checks, just puts em
+    * through the door, even if it's closed!!??
+    */
+   int move(int i_th, const String* pc, int j_th, const String* dir, room& rm);
+   int omove(int i_th, const String* obj, int j_th, const String* dir, room& rm);
+
+   /** Echo message into the room in this direction */
+   int neighbor_echo(int i_th, const String* dir, const String& buf, room& rm);
+
+   int tell(int i, const String* name, String& msg, room& rm);
+   int do_tell(const char* msg, critter& targ); /* room tells targ */
+
+   int com_recho(const String* msg, room& rm);
+   int com_zecho(const String* msg, room& rm);
+   int wizchat(const char* message, room& rm);
+   int obj_pause(int ticks);
+
+   void checkForProc(String& cmd, String& arg1, critter& actor,
+                     int targ, room& cur_room);
+
 }; // class object
 
 

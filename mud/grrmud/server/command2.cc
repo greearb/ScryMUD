@@ -475,26 +475,25 @@ int lock(int i_th, const String* name, critter& pc) {
          ob_ptr = have_obj_named(pc.inv, i_th, name,
                                  pc.SEE_BIT, ROOM);
          if (ob_ptr) {
-            if (ob_ptr->ob->bag && !ob_ptr->IN_LIST) {
+            if (ob_ptr->bag && !ob_ptr->IN_LIST) {
                ob_ptr = obj_to_sobj(*ob_ptr, &(pc.inv), TRUE,
                                     i_th, name, pc.SEE_BIT, ROOM);
             }
          }
          else {
-            ob_ptr = have_obj_named(ROOM.inv, i_th, name, pc.SEE_BIT,
-                                    ROOM);
+            ob_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
             
-            if (ob_ptr && ob_ptr->ob->bag && !ob_ptr->IN_LIST) {
-               ob_ptr = obj_to_sobj(*ob_ptr, &(ROOM.inv), TRUE,
+            if (ob_ptr && ob_ptr->bag && !ob_ptr->IN_LIST) {
+               ob_ptr = obj_to_sobj(*ob_ptr, ROOM.getInv(), TRUE,
                                     i_th, name, pc.SEE_BIT, ROOM);
             }
          }//else
          
          if (ob_ptr) {
-            if (!ob_ptr->ob->bag) {
+            if (!ob_ptr->bag) {
                show("That isn't a container.\n", pc);
             }//if
-            else if (ob_ptr->ob->bag->key_num == 0) {
+            else if (ob_ptr->bag->key_num == 0) {
                show("That container can't be locked.\n", pc);
             }//if
             else if (ob_ptr->isClosed()) { //is closed
@@ -650,22 +649,21 @@ int unlock(int i_th, const String* name, critter& pc) {
          ob_ptr = have_obj_named(pc.inv, i_th, name,
                                  pc.SEE_BIT, ROOM);
          if (ob_ptr) {
-            if (ob_ptr->ob->bag && !ob_ptr->IN_LIST) {
+            if (ob_ptr->bag && !ob_ptr->IN_LIST) {
                ob_ptr = obj_to_sobj(*ob_ptr, &(pc.inv), TRUE,
                                     i_th, name, pc.SEE_BIT, ROOM);
             }
          }
          else {
-            ob_ptr = have_obj_named(ROOM.inv, i_th, name, pc.SEE_BIT,
-                                    ROOM);
+            ob_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
             
-            if (ob_ptr && ob_ptr->ob->bag && !ob_ptr->IN_LIST) {
-               ob_ptr = obj_to_sobj(*ob_ptr, &(ROOM.inv), TRUE,
+            if (ob_ptr && ob_ptr->bag && !ob_ptr->IN_LIST) {
+               ob_ptr = obj_to_sobj(*ob_ptr, ROOM.getInv(), TRUE,
                                     i_th, name, pc.SEE_BIT, ROOM);
             }
          }//else
          if (ob_ptr) {
-            if (!ob_ptr->ob->bag) {
+            if (!ob_ptr->bag) {
                show("That isn't a container.\n", pc);
             }//if
             else if (ob_ptr->isClosed()) { //is closed
@@ -796,22 +794,22 @@ int open(int i_th, const String* name, critter& pc) {
          ob_ptr = have_obj_named(pc.inv, i_th, name,
                                  pc.SEE_BIT, ROOM);
          if (ob_ptr) {
-            if (ob_ptr->ob->bag && !ob_ptr->IN_LIST) {
+            if (ob_ptr->bag && !ob_ptr->IN_LIST) {
                ob_ptr = obj_to_sobj(*ob_ptr, &(pc.inv), TRUE,
                                     i_th, name, pc.SEE_BIT, ROOM);
             }
          }
          else {
-            ob_ptr = have_obj_named(ROOM.inv, i_th, name, pc.SEE_BIT, ROOM);
+            ob_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
             
-            if (ob_ptr && ob_ptr->ob->bag && !ob_ptr->IN_LIST) {
-               ob_ptr = obj_to_sobj(*ob_ptr, &(ROOM.inv), TRUE,
+            if (ob_ptr && ob_ptr->bag && !ob_ptr->IN_LIST) {
+               ob_ptr = obj_to_sobj(*ob_ptr, ROOM.getInv(), TRUE,
                                     i_th, name, pc.SEE_BIT, ROOM);
             }
          }//else
          
          if (ob_ptr) {
-            if (!ob_ptr->ob->bag) {
+            if (!ob_ptr->bag) {
                show("That isn't a container.\n", pc);
                return -1;
             }//if
@@ -891,22 +889,21 @@ int close(int i_th, const String* name, critter& pc) {
          ob_ptr = have_obj_named(pc.inv, i_th, name,
                                  pc.SEE_BIT, ROOM);
          if (ob_ptr) {
-            if (ob_ptr->ob->bag && !ob_ptr->IN_LIST) {
+            if (ob_ptr->bag && !ob_ptr->IN_LIST) {
                ob_ptr = obj_to_sobj(*ob_ptr, &(pc.inv), TRUE,
                                     i_th, name, pc.SEE_BIT, ROOM);
             }
          }
          else {
-            ob_ptr = have_obj_named(ROOM.inv, i_th, name, pc.SEE_BIT,
-                                    ROOM);
+            ob_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
             
-            if (ob_ptr && ob_ptr->ob->bag && !ob_ptr->IN_LIST) {
-               ob_ptr = obj_to_sobj(*ob_ptr, &(ROOM.inv), TRUE,
+            if (ob_ptr && ob_ptr->bag && !ob_ptr->IN_LIST) {
+               ob_ptr = obj_to_sobj(*ob_ptr, ROOM.getInv(), TRUE,
                                     i_th, name, pc.SEE_BIT, ROOM);
             }
          }//else
          if (ob_ptr) {
-            if (!ob_ptr->ob->bag) {
+            if (!ob_ptr->bag) {
                show("That isn't a container.\n", pc);
             }//if
             else if (!ob_ptr->BAG_FLAGS.get(2)) { //is open
@@ -1017,7 +1014,7 @@ int drink(int i_th, const String* name, critter& pc) {
       obj_ptr = have_obj_named(pc.inv, i_th, name, pc.SEE_BIT, ROOM);
       
       if (!obj_ptr) {
-         obj_ptr = have_obj_named(ROOM.inv, i_th, name, pc.SEE_BIT, ROOM);
+         obj_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
          in_inv = FALSE;
       }//if
       if (!obj_ptr) {
@@ -1025,7 +1022,7 @@ int drink(int i_th, const String* name, critter& pc) {
          show(buf, pc);
       }//if
       else {  //ok, got some kind of object...lets test it
-         if (IsEmpty(obj_ptr->ob->inv)) 
+         if (IsEmpty(obj_ptr->inv)) 
             mudlog.log(INF,
                        "INFO:  container has no inventory...may be a problem.\n");
          
@@ -1036,14 +1033,14 @@ int drink(int i_th, const String* name, critter& pc) {
          else if (pc.pc && pc.THIRST > THIRST_MAX) {
             show("You are too full to drink any more.\n", pc);
          }//if
-         else if (obj_ptr->ob->extras[0] == 0) { 
+         else if (obj_ptr->extras[0] == 0) { 
             Sprintf(buf, "You can't shake another drop out of %S.\n", 
-                    &(obj_ptr->ob->short_desc));
+                    &(obj_ptr->short_desc));
             show(buf, pc);
          }//if 
-         else if (IsEmpty(obj_ptr->ob->inv)) {
+         else if (IsEmpty(obj_ptr->inv)) {
             Sprintf(buf, "%S has no trace of liquid in it.\n", 
-                    &(obj_ptr->ob->short_desc));
+                    &(obj_ptr->short_desc));
             buf.Cap();
             show(buf, pc);
          }//if 
@@ -1053,16 +1050,16 @@ int drink(int i_th, const String* name, critter& pc) {
                                   name, pc.SEE_BIT, ROOM);
             }//if
             else {
-               obj2 = obj_to_sobj(*obj_ptr, &(ROOM.inv), TRUE, i_th,
+               obj2 = obj_to_sobj(*obj_ptr, ROOM.getInv(), TRUE, i_th,
                                   name, pc.SEE_BIT, ROOM);
             }//else
-            object* obj3 = Top(obj2->ob->inv);
+            object* obj3 = Top(obj2->inv);
             obj2->CHARGES--;
             consume_eq_effects(*obj3, pc, TRUE);
             return 0;
          }//if
          else {
-            obj2 = Top(obj_ptr->ob->inv);
+            obj2 = Top(obj_ptr->inv);
             obj_ptr->CHARGES--;
             consume_eq_effects(*obj2, pc, TRUE);
             return 0;
@@ -1094,8 +1091,7 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
 
       targ_obj = have_obj_named(pc.inv, i_th, targ, pc.SEE_BIT, ROOM);
    
-      source_obj = have_obj_named(ROOM.inv, j_th, source, pc.SEE_BIT, 
-                                  ROOM);
+      source_obj = ROOM.haveObjNamed(j_th, source, pc.SEE_BIT);
       if (!source_obj) {
          source_obj = 
             have_obj_named(pc.inv, i_th, source, pc.SEE_BIT, ROOM);
@@ -1116,44 +1112,44 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
       else if (source_obj == targ_obj) {
          show("You empty it into itself.... *duh*.\n", pc);
       }//if
-      else if (!(source_obj->OBJ_FLAGS.get(59)) || !(source_obj->ob->bag)) {
+      else if (!(source_obj->OBJ_FLAGS.get(59)) || !(source_obj->bag)) {
          Sprintf(buf, "Nice try, but %S is not a liquid container!!\n", 
-                 &(source_obj->ob->short_desc));
+                 &(source_obj->short_desc));
          show(buf, pc);
       }//if      
-      else if (!(targ_obj->OBJ_FLAGS.get(59)) || !(targ_obj->ob->bag)) {
+      else if (!(targ_obj->OBJ_FLAGS.get(59)) || !(targ_obj->bag)) {
          Sprintf(buf, "Nice try, but %S is not a liquid container!!\n", 
-                 &(targ_obj->ob->short_desc));
+                 &(targ_obj->short_desc));
          show(buf, pc);
       }//if      
                   /* so both are containers */
 
-      else if ((Top(targ_obj->ob->inv) != Top(source_obj->ob->inv)) && 
-               (targ_obj->ob->extras[0] != 0)) {
+      else if ((Top(targ_obj->inv) != Top(source_obj->inv)) && 
+               (targ_obj->extras[0] != 0)) {
          Sprintf(buf, "You need to empty your %S first.\n", 
                  name_of_obj(*targ_obj, pc.SEE_BIT));
          show(buf, pc);
       }//if
                   /* ok, liquids are the same */
 
-      else if (source_obj->ob->extras[0] == 0) {
+      else if (source_obj->extras[0] == 0) {
          Sprintf(buf, "The %S is empty already!!\n", name_of_obj(*source_obj,
                                                                  pc.SEE_BIT));
          show(buf, pc);
       }//if
-      else if (targ_obj->ob->extras[0] >= targ_obj->ob->bag->max_weight) {
+      else if (targ_obj->extras[0] >= targ_obj->bag->max_weight) {
          Sprintf(buf, "The %S is already full!!\n", name_of_obj(*targ_obj,
                                                                 pc.SEE_BIT));
          show(buf, pc);
       }//if
-      else if (targ_obj->ob->extras[0] == -1) {
+      else if (targ_obj->extras[0] == -1) {
          pc.show("That container will never need filling!\n");
       }
                    /* All clear to exchange liquids ;) */
 
       else {		/* take care of Obj to Sobj if needed. */
          mudlog.log(TRC, "About to take care of obj to sobj.\n");
-         if (!targ_obj->ob->in_list) {
+         if (!targ_obj->in_list) {
             targ_obj = obj_to_sobj(*targ_obj, &(pc.inv), TRUE, i_th,
                                    targ, pc.SEE_BIT, ROOM);
          }//if
@@ -1164,48 +1160,48 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
                    << source_obj->getName() << endl;
          }
          
-         Cell<object*> cll(targ_obj->ob->inv);
+         Cell<object*> cll(targ_obj->inv);
          object* ptr;
          while ((ptr = cll.next())) {
             recursive_init_unload(*ptr, 0);
          }//while
-         clear_obj_list(targ_obj->ob->inv);
+         clear_obj_list(targ_obj->inv);
          
          //TODO, check for SOBJ:  Answer, allways use OBJ, not SOBJ
-         targ_obj->gainInv(&(obj_list[Top(source_obj->ob->inv)->getIdNum()]));
+         targ_obj->gainInv(&(obj_list[Top(source_obj->inv)->getIdNum()]));
          
          /* test for infinite source */
-         if (source_obj->ob->extras[0] <= -1) {
-            if (source_obj->ob->extras[0] < -1) {
+         if (source_obj->extras[0] <= -1) {
+            if (source_obj->extras[0] < -1) {
                if (mudlog.ofLevel(WRN)) {
                   mudlog << "WARNING: Was an infinite source, < -1: "
-                         << source_obj->ob->extras[0] << endl;
+                         << source_obj->extras[0] << endl;
                }
             }
             else {
                mudlog.log(TRC, "Was an infinite source.\n");
             }
-            targ_obj->ob->extras[0] = targ_obj->ob->bag->max_weight;
+            targ_obj->extras[0] = targ_obj->bag->max_weight;
          }//if
                      /* not an infinite source */
          else {
             mudlog.log(TRC, "Not an infinite source.\n");
-            if (!source_obj->ob->in_list) {
+            if (!source_obj->in_list) {
                if (in_inv_source) {
                   source_obj = obj_to_sobj(*source_obj, &(pc.inv), TRUE, i_th,
                                            source, pc.SEE_BIT, ROOM);
                }//if in inv
                else {
-                  source_obj = obj_to_sobj(*source_obj, &(ROOM.inv), TRUE, i_th,
+                  source_obj = obj_to_sobj(*source_obj, ROOM.getInv(), TRUE, i_th,
                                            source, pc.SEE_BIT, ROOM);
                }//else
             }//if
             /* this next bit is badly innefficient. */
-            while ((targ_obj->ob->extras[0] != 
-                    targ_obj->ob->bag->max_weight) &&
-                   (source_obj->ob->extras[0] > 0)) {
-               targ_obj->ob->extras[0]++;
-               source_obj->ob->extras[0]--;
+            while ((targ_obj->extras[0] != 
+                    targ_obj->bag->max_weight) &&
+                   (source_obj->extras[0] > 0)) {
+               targ_obj->extras[0]++;
+               source_obj->extras[0]--;
             }//while
          }//else
          Sprintf(buf, "You fill your %S from %S.\n", 
@@ -1236,19 +1232,19 @@ int empty(int i_th, const String* canteen, critter& pc) {
       }//if
       else if (!(obj_ptr->OBJ_FLAGS.get(59))) {
          Sprintf(buf, "The %S is not a liquid container.\n", 
-                 Top(obj_ptr->ob->names));
+                 Top(obj_ptr->names));
          show(buf, pc);
       }//if
                   /* got a valid canteen */
    
-      else if (obj_ptr->ob->extras[0] == 0) {
+      else if (obj_ptr->extras[0] == 0) {
          Sprintf(buf, "Your %S is already empty.\n", 
-                 Top(obj_ptr->ob->names));
+                 Top(obj_ptr->names));
          show(buf, pc);
       }//if
-      else if (obj_ptr->ob->extras[0] == -1) {
+      else if (obj_ptr->extras[0] == -1) {
          Sprintf(buf, "You could NEVER empty this %S!!\n", 
-                 Top(obj_ptr->ob->names));
+                 Top(obj_ptr->names));
          show(buf, pc);
       }//if
                    /* ok, procede w/emptying */
@@ -1260,16 +1256,16 @@ int empty(int i_th, const String* canteen, critter& pc) {
             obj_ptr = obj2;
          }//if
          
-         Cell<object*> cll(obj_ptr->ob->inv);
+         Cell<object*> cll(obj_ptr->inv);
          object* ptr;      
-         while ((ptr = obj_ptr->ob->inv.lose(cll))) {
+         while ((ptr = obj_ptr->inv.lose(cll))) {
             recursive_init_unload(*ptr, 0);
             if (ptr->IN_LIST) {
                delete ptr;
             }
          }//while
 
-         obj_ptr->ob->extras[0] = 0; //no charges
+         obj_ptr->extras[0] = 0; //no charges
          Sprintf(buf, "You empty your %S onto the ground.\n", 
                  obj_ptr->getName());
          show(buf, pc);
@@ -1395,7 +1391,7 @@ int buy(int i_th, const String* item, int j_th, const String* keeper,
          }//if
       }//if
       else {  //check for vending machine of some type
-         Cell<object*> cll(ROOM.inv);
+         Cell<object*> cll(*(ROOM.getInv()));
          object* ptr;
          while ((ptr = cll.prev())) {
             if (ptr->OBJ_FLAGS.get(73)) { //if its a vend machine
@@ -1738,7 +1734,7 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
             
             id_num = obj_ptr->getIdNum();
             
-            if (!obj_ptr->ob->in_list &&
+            if (!obj_ptr->in_list &&
                 (item_counts[id_num] == -1)) { //already done it
                continue;
             }
@@ -1751,23 +1747,23 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
                }//if
                
                if (pc.shouldShowVnums()) {
-                  if (obj_ptr->ob->in_list || (item_counts[id_num] == 1)) {
+                  if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
                      Sprintf(buf, " [%i]%P06 %S%P50%i", id_num,
-                             &(obj_ptr->ob->short_desc), price);
+                             &(obj_ptr->short_desc), price);
                   }
                   else {
                      Sprintf(buf, " [%i]%P06 [*%i]%P12 %S%P50%i", id_num,
-                             item_counts[id_num], &(obj_ptr->ob->short_desc), price);
+                             item_counts[id_num], &(obj_ptr->short_desc), price);
                   }
                }
                else {
-                  if (obj_ptr->ob->in_list || (item_counts[id_num] == 1)) {
-                     Sprintf(buf, "%P12 %S%P50%i", &(obj_ptr->ob->short_desc),
+                  if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
+                     Sprintf(buf, "%P12 %S%P50%i", &(obj_ptr->short_desc),
                              price);
                   }
                   else {
                      Sprintf(buf, "  [*%i]%P12 %S%P50%i", item_counts[id_num],
-                             &(obj_ptr->ob->short_desc), price);
+                             &(obj_ptr->short_desc), price);
                   }
                }
 
@@ -1790,7 +1786,7 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
             
             id_num = obj_ptr->getIdNum();
             
-            if (!obj_ptr->ob->in_list &&
+            if (!obj_ptr->in_list &&
                 (item_counts[id_num] == -1)) { //already done it
                continue;
             }
@@ -1803,23 +1799,23 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
                }//if
                
                if (pc.shouldShowVnums()) {
-                  if (obj_ptr->ob->in_list || (item_counts[id_num] == 1)) {
+                  if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
                      Sprintf(buf, " [%i]%P06 %S%P50%i", id_num,
-                             &(obj_ptr->ob->short_desc), price);
+                             &(obj_ptr->short_desc), price);
                   }
                   else {
                      Sprintf(buf, " [%i]%P06 [*%i]%P12 %S%P50%i", id_num,
-                             item_counts[id_num], &(obj_ptr->ob->short_desc), price);
+                             item_counts[id_num], &(obj_ptr->short_desc), price);
                   }
                }
                else {
-                  if (obj_ptr->ob->in_list || (item_counts[id_num] == 1)) {
-                     Sprintf(buf, "%P12 %S%P50%i", &(obj_ptr->ob->short_desc),
+                  if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
+                     Sprintf(buf, "%P12 %S%P50%i", &(obj_ptr->short_desc),
                              price);
                   }
                   else {
                      Sprintf(buf, "  [*%i]%P12 %S%P50%i", item_counts[id_num],
-                             &(obj_ptr->ob->short_desc), price);
+                             &(obj_ptr->short_desc), price);
                   }
                }
 
@@ -2240,8 +2236,7 @@ int ostat(int i_th, const String* name, critter& pc) {
       else {
          obj_ptr = have_obj_named(pc.inv, i_th, name, pc.SEE_BIT, ROOM);
          if (!obj_ptr)
-            obj_ptr = have_obj_named(ROOM.inv, i_th, name, pc.SEE_BIT, 
-                                     ROOM);
+            obj_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
          if (!obj_ptr) {
             show("You neither see nor have that object.\n", pc);
             return -1;
@@ -2266,8 +2261,7 @@ int lore(int i_th, const String* name, critter& pc, int show_extra = FALSE) {
 
       obj_ptr = have_obj_named(pc.inv, i_th, name, pc.SEE_BIT, ROOM);
       if (!obj_ptr)
-         obj_ptr = have_obj_named(ROOM.inv, i_th, name, pc.SEE_BIT, 
-                                  ROOM);
+         obj_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
       if (!obj_ptr) {
          show("You neither see nor have that object.\n", pc);
          return -1;
@@ -2283,9 +2277,9 @@ int lore(int i_th, const String* name, critter& pc, int show_extra = FALSE) {
 int do_lore(object& obj, critter& pc, int show_extra) {
    String buf(100);
 
-   show((obj.ob->short_desc), pc);
+   show((obj.short_desc), pc);
    show("\n", pc);
-   show((obj.ob->long_desc), pc);
+   show((obj.long_desc), pc);
    show("\n", pc);
   
    buf = NULL_STRING;
@@ -2382,10 +2376,10 @@ int do_lore(object& obj, critter& pc, int show_extra) {
    // Take care of stat affects.
    if (show_extra) {
       show("It is affected by:\n", pc);
-      out_stat_spell_list(obj.ob->affected_by, pc);      
+      out_stat_spell_list(obj.affected_by, pc);      
 
       show("It's stat affects are:\n", pc);
-      out_stat_spell_list(obj.ob->stat_affects, pc);
+      out_stat_spell_list(obj.stat_affects, pc);
    }//if
 
    return 0;
@@ -2416,7 +2410,7 @@ int do_ostat(object& obj, critter& pc) {
      64 toolbox, 65 cauldron, 66 pen, 67 construct_component
      68 concoct_component, 69 parchment, 70 needs_resetting
      71 vid_screen, 72 herb, 73 vend_machine, 74 bulletin_board
-     75 is_butcherable
+     75 is_butcherable, 76 has_obj_proc
 
 Bag Flag Definitions:
 
@@ -2432,25 +2426,25 @@ Bag Flag Definitions:
    else {
       if (!pc.isUsingClient()) {
          show("\n", pc);
-         show((obj_ptr->ob->short_desc), pc);
+         show((obj_ptr->short_desc), pc);
          show("\n", pc);
-         show((obj_ptr->ob->long_desc), pc);
+         show((obj_ptr->long_desc), pc);
          show("\n", pc);
-         show((obj_ptr->ob->in_room_desc), pc);
+         show((obj_ptr->in_room_desc), pc);
       }
       else {
          Sprintf(buf2, "<OSTAT %i>", obj_ptr->OBJ_NUM);
          show(buf2, pc);
          show("\n<STAT_SD>", pc);
-         show((obj_ptr->ob->short_desc), pc);
+         show((obj_ptr->short_desc), pc);
          show("</STAT>\n<STAT_LD>", pc);
-         show((obj_ptr->ob->long_desc), pc);
+         show((obj_ptr->long_desc), pc);
          show("</STAT>\n<STAT_ND>", pc);
-         show((obj_ptr->ob->in_room_desc), pc);
+         show((obj_ptr->in_room_desc), pc);
          show("</STAT>", pc);
       }
 
-      Cell<String*> cll(obj_ptr->ob->names);
+      Cell<String*> cll(obj_ptr->names);
       String* ptr;
       buf2 = "";
       while ((ptr = cll.next())) {
@@ -2472,70 +2466,74 @@ Bag Flag Definitions:
       show(buf2, pc);
 
       show("\nobj flags set:", pc);
-      k = obj_ptr->ob->obj_flags.max_bit();
+      k = obj_ptr->obj_flags.max_bit();
       for (i = 0; i <= k; i++) {
-         if (obj_ptr->ob->obj_flags.get(i)) {
+         if (obj_ptr->obj_flags.get(i)) {
             Sprintf(buf2, "%i ", i);
             show(buf2, pc);
          }//if
       }//for
       show("\n", pc);
       Sprintf(buf2, "chrgs: %i  rechrg: %i  p_load: %i  cur_in_game: %i.\n", 
-           (int)(obj_ptr->ob->extras[0]), (int)(obj_ptr->ob->extras[1]), 
-           (int)(obj_ptr->ob->extras[2]), (int)(obj_ptr->getCurInGame()));
+              (int)(obj_ptr->extras[0]), (int)(obj_ptr->extras[1]), 
+              (int)(obj_ptr->extras[2]), (int)(obj_ptr->getCurInGame()));
       show(buf2, pc);
       Sprintf(buf2, "max_in_game: %i  wt: %i  dice_sides: %i  #dice: %i.\n", 
-           (int)(obj_ptr->ob->extras[4]), (int)(obj_ptr->ob->cur_weight()), 
-           (int)(obj_ptr->ob->extras[6]), (int)(obj_ptr->ob->extras[7])); 
+              (int)(obj_ptr->extras[4]), (int)(obj_ptr->getCurWeight()), 
+              (int)(obj_ptr->extras[6]), (int)(obj_ptr->extras[7])); 
       show(buf2, pc);
       Sprintf(buf2, "lvl: %i  v_bit: %i  price: %i  item#: %i zone# %i.\n", 
-           (int)(obj_ptr->ob->extras[8]), obj_ptr->ob->cur_stats[0], 
-           obj_ptr->ob->cur_stats[1], obj_ptr->ob->cur_stats[2], 
-           obj_ptr->ob->cur_stats[3]);
+              (int)(obj_ptr->extras[8]), obj_ptr->cur_stats[0], 
+              obj_ptr->cur_stats[1], obj_ptr->cur_stats[2], 
+              obj_ptr->cur_stats[3]);
       show(buf2, pc);
 
-      if (obj_ptr->ob->bag) {
+      Sprintf(buf2, "cur_room_num: %i  pause: %i\n",
+              obj_ptr->getCurRoomNum(), obj_ptr->getPause());
+      pc.show(buf2);
+
+      if (obj_ptr->bag) {
          show("\tIt's a bag, here is inventory:\n", pc);
-         Cell<object*> ob_cll(obj_ptr->ob->inv);
+         Cell<object*> ob_cll(obj_ptr->inv);
          object* ob_ptr;
          while ((ob_ptr = ob_cll.next())) {
-            Sprintf(buf2, "\t\t%S\n", &(ob_ptr->ob->short_desc));
+            Sprintf(buf2, "\t\t%S\n", &(ob_ptr->short_desc));
             show(buf2, pc);
          }//while
          Sprintf(buf2, "max weight:  %i,  percentate weight:  %i  ", 
-                 obj_ptr->ob->bag->max_weight, 
-                 obj_ptr->ob->bag->percentage_weight);
+                 obj_ptr->bag->max_weight, 
+                 obj_ptr->bag->percentage_weight);
          show(buf2, pc);
          Sprintf(buf2, "time till disolve:  %i.\n",
-                 obj_ptr->ob->bag->time_till_disolve);
+                 obj_ptr->bag->time_till_disolve);
          show(buf2, pc);
          show("Bag flags set:\n", pc);
-         out_field(obj_ptr->ob->bag->bag_flags, pc);
+         out_field(obj_ptr->bag->bag_flags, pc);
          Sprintf(buf2, "Key number (zero is NO KEY): %i.\n", 
-                 obj_ptr->ob->bag->key_num);
+                 obj_ptr->bag->key_num);
          show(buf2, pc);
       }//if
 
       show("It is affected by:\n", pc);
-      out_stat_spell_list(obj_ptr->ob->affected_by, pc);      
+      out_stat_spell_list(obj_ptr->affected_by, pc);      
 
       show("It's stat affects are:\n", pc);
-      out_stat_spell_list(obj_ptr->ob->stat_affects, pc);
+      out_stat_spell_list(obj_ptr->stat_affects, pc);
 
-      if (obj_ptr->ob->obj_proc) {
+      if (obj_ptr->obj_proc) {
          show("It has SPEC PROCS.\n", pc);
          show("\tHere is obj_spec_data_flags:\n", pc);
-         out_field(obj_ptr->ob->obj_proc->obj_spec_data_flags, pc);
-         if (obj_ptr->ob->obj_proc->construct_data) {
+         out_field(obj_ptr->obj_proc->obj_spec_data_flags, pc);
+         if (obj_ptr->obj_proc->construct_data) {
             show("\tIt has construct data.\n", pc);
             Sprintf(buf2, 
        "\tTarget: %i, item1: %i, item2: %i, item3: %i, item4: %i, item5: %i\n",
-                    obj_ptr->ob->obj_proc->construct_data->target_object,
-                    obj_ptr->ob->obj_proc->construct_data->item1,
-                    obj_ptr->ob->obj_proc->construct_data->item2,
-                    obj_ptr->ob->obj_proc->construct_data->item3,
-                    obj_ptr->ob->obj_proc->construct_data->item4,
-                    obj_ptr->ob->obj_proc->construct_data->item5);
+                    obj_ptr->obj_proc->construct_data->target_object,
+                    obj_ptr->obj_proc->construct_data->item1,
+                    obj_ptr->obj_proc->construct_data->item2,
+                    obj_ptr->obj_proc->construct_data->item3,
+                    obj_ptr->obj_proc->construct_data->item4,
+                    obj_ptr->obj_proc->construct_data->item5);
             show(buf2, pc);
          }//if construct data
          
@@ -2554,7 +2552,7 @@ Bag Flag Definitions:
 
       show_stat_affects(*obj_ptr, pc);
 
-      if (obj_ptr->ob->in_list) 
+      if (obj_ptr->in_list) 
          show("It IS a SOBJ.\n", pc);
       else 
          show("Its NOT a SOBJ.\n", pc); 

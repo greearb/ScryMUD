@@ -76,7 +76,7 @@ void do_cast_locate(const String* targ, critter& agg, int is_canned,
          while ((ptr = ccll.next())) {
             do_locate_object(*ptr, targ, agg, i, 0, lvl);
          }//while
-         room_list[i].inv.head(ocll);
+         room_list[i].getInv()->head(ocll);
          while ((ptr = ccll.next())) {
             do_locate_object(*ptr, targ, agg, i, 0, lvl);
          }//while
@@ -127,11 +127,11 @@ void do_cast_wizard_eye(object& vict, critter& pc, int is_canned,
      if (!is_canned)
        pc.MANA -= spell_mana;
 
-     if (!vict.ob->obj_proc) {
-       vict.ob->obj_proc = new obj_spec_data;
+     if (!vict.obj_proc) {
+       vict.obj_proc = new obj_spec_data;
        vict.OBJ_FLAGS.turn_on(63);
      }//if
-     if (vict.ob->obj_proc->w_eye_owner) {
+     if (vict.obj_proc->w_eye_owner) {
        show("That object is already being used for a wizard's eye!\n", pc);
        return;
      }//if
@@ -140,7 +140,7 @@ void do_cast_wizard_eye(object& vict, critter& pc, int is_canned,
        return;
      }//if
      else {
-       vict.ob->obj_proc->w_eye_owner = &pc;
+       vict.obj_proc->w_eye_owner = &pc;
        pc.pc->w_eye_obj = &vict;
      }//
    }//if it worked
@@ -163,7 +163,7 @@ void cast_wizard_eye(int i_th, const String* victim, critter& pc) {
 
    if (!(vict = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT, 
 			       ROOM))) {
-     vict = have_obj_named(ROOM.inv, i_th, victim, pc.SEE_BIT, ROOM);
+     vict = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
    }//if
 
    if (!vict) {
@@ -297,7 +297,7 @@ void cast_identify(int i_th, const String* victim, critter& pc) {
 
    if (!(vict = have_obj_named(pc.inv, i_th, victim, pc.SEE_BIT, 
 			       ROOM))) {
-     vict = have_obj_named(ROOM.inv, i_th, victim, pc.SEE_BIT, ROOM);
+      vict = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
    }//if
 
    if (!vict) {
@@ -910,7 +910,7 @@ void do_cast_remove_curse(object& vict, critter& agg, int is_canned,
        agg.MANA -= spell_mana;
 
      rem_effects_obj(CURSE_SKILL_NUM, vict);
-     vict.ob->affected_by.loseData(ptr); //might be redundant
+     vict.affected_by.loseData(ptr); //might be redundant
 
      Sprintf(buf, "You lift a curse from %S!\n", 
 	     long_name_of_obj(vict, agg.SEE_BIT));
@@ -950,10 +950,10 @@ void cast_remove_curse(int i_th, const String* victim, critter& pc) {
        }//if
      }//if
      else {
-       obj = have_obj_named(ROOM.inv, i_th, victim, pc.SEE_BIT, ROOM);
+       obj = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
        if (obj) {
 	 if (!obj->IN_LIST) {
-	   obj = obj_to_sobj(*obj, &(ROOM.inv), TRUE, i_th, victim,
+	   obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, victim,
 			     pc.SEE_BIT, ROOM);
 	 }//if
        }//if
@@ -991,10 +991,10 @@ void cast_curse(int i_th, const String* victim, critter& pc) {
        }//if
      }//if
      else {
-       obj = have_obj_named(ROOM.inv, i_th, victim, pc.SEE_BIT, ROOM);
+       obj = ROOM.haveObjNamed(i_th, victim, pc.SEE_BIT);
        if (obj) {
 	 if (!obj->IN_LIST) {
-	   obj = obj_to_sobj(*obj, &(ROOM.inv), TRUE, i_th, victim,
+	   obj = obj_to_sobj(*obj, ROOM.getInv(), TRUE, i_th, victim,
 			     pc.SEE_BIT, ROOM);
 	 }//if
        }//if
@@ -1116,7 +1116,7 @@ void do_cast_curse(object& vict, critter& agg, int is_canned, int lvl) {
      }//if
      else {
        Put(new stat_spell_cell(spell_num, lvl/2 + 5), 
-	   vict.ob->affected_by);
+	   vict.affected_by);
        vict.OBJ_FLAGS.turn_on(5); //no_drop
 
        Sprintf(buf, "You lay a curse on %S!\n", 
@@ -2255,8 +2255,8 @@ void do_locate_object(object &obj, const String* targ, critter& pc,
       return;
   }//if
 
-   if (!IsEmpty(obj.ob->inv)) {
-      Cell<object*> cll(obj.ob->inv);
+   if (!IsEmpty(obj.inv)) {
+      Cell<object*> cll(obj.inv);
       object* ptr;
       while ((ptr = cll.next())) {
          do_locate_object(*ptr, targ, pc, rm_num, sanity + 1, lvl);
@@ -2265,7 +2265,7 @@ void do_locate_object(object &obj, const String* targ, critter& pc,
 
    /* Must be magical (affect stats) before you can locate it. */
 
-   if (!obj.is_magic()) {
+   if (!obj.isMagic()) {
       if (obj.getLevel() <= lvl) {
          String buf(100);
          Sprintf(buf, "%S:  %P40%S.\n", long_name_of_obj(obj, ~0),

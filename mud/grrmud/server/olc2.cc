@@ -48,7 +48,7 @@ int normalize_obj(object& obj) {
              << obj_list[obj.OBJ_NUM].OBJ_NUM << endl;
    }//if
 
-   Cell<stat_spell_cell*> cll(obj.ob->stat_affects);
+   Cell<stat_spell_cell*> cll(obj.stat_affects);
    stat_spell_cell* ptr, *tptr;
    int ss, bd;
    ptr = cll.next();
@@ -63,7 +63,7 @@ int normalize_obj(object& obj) {
           ((ss >= MOB_SHORT_CUR_STATS) && (ss != 100) &&
            (ss != 101) && (ss != 102))) {
          tptr = ptr;
-         ptr = obj.ob->stat_affects.lose(cll);
+         ptr = obj.stat_affects.lose(cll);
          delete tptr;
       }//if
       else {
@@ -115,8 +115,8 @@ int normalize_obj(object& obj) {
    }//while
 
    // no more than 5
-   while (obj.ob->stat_affects.size() > 5) {
-      delete (obj.ob->stat_affects.popBack());
+   while (obj.stat_affects.size() > 5) {
+      delete (obj.stat_affects.popBack());
    }
    return 0;
 }//normalize_obj
@@ -371,7 +371,7 @@ int rm_stat_affect(int onum, int stat_num, critter& pc) {
       return -1;
    }//if
 
-   Cell<stat_spell_cell*> cll(obj_ptr->ob->stat_affects);
+   Cell<stat_spell_cell*> cll(obj_ptr->stat_affects);
    stat_spell_cell* ptr;
    ptr = cll.next();
    while (ptr) {
@@ -379,7 +379,7 @@ int rm_stat_affect(int onum, int stat_num, critter& pc) {
          delete ptr;
          pc.show("Removed that stat affect...\n");
          pc.show("Don't forget to aosave.\n");
-         ptr = obj_ptr->ob->stat_affects.lose(cll);
+         ptr = obj_ptr->stat_affects.lose(cll);
          return 0;
       }
       else {
@@ -411,7 +411,7 @@ int add_stat_affect(int onum, int stat_num, int val, critter& pc) {
       return -1;
    }//if
 
-   obj_ptr->ob->stat_affects.append(new stat_spell_cell(stat_num, val));
+   obj_ptr->stat_affects.append(new stat_spell_cell(stat_num, val));
    normalize_obj(*obj_ptr);
    pc.show("Was added..now normalizing object to weed out bad values...\n");
    pc.show("Don't forget to aosave.\n");
@@ -439,7 +439,7 @@ int rm_casts_spell(int onum, int spell_num, critter& pc) {
       return -1;
    }//if
 
-   if (!obj_ptr->ob->obj_proc) {
+   if (!obj_ptr->obj_proc) {
       pc.show("That object cannot have any spells to remove.\n");
       return -1;
    }
@@ -492,8 +492,8 @@ int add_casts_spell(int onum, int level, int spell, critter& pc) {
       return -1;
    }//if
 
-   if (!obj_ptr->ob->obj_proc) {
-      obj_ptr->ob->obj_proc = new obj_spec_data();
+   if (!obj_ptr->obj_proc) {
+      obj_ptr->obj_proc = new obj_spec_data();
    }
 
    //turn on appropriate flags
@@ -1168,6 +1168,65 @@ int add_room_script(critter& pc, int rm_num, String& trigger_cmd,
 }//add_room_script
 
 
+int add_obj_script(critter& pc, int obj_num, String& trigger_cmd,
+                   int actor_num, String& descriminator, int target_num,
+                   int takes_precedence) {
+   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+      return -1;
+   }
+
+   if ((obj_num < 2) || (obj_num > NUMBER_OF_ITEMS)) {
+      show("That object number is out of range.", pc);
+      return -1;
+   }
+
+   if (!pc.doesOwnObject(obj_list[obj_num])) {
+      show("You don't own that object.\n", pc);
+      return -1;
+   }//if
+
+   if (!GenScript::validTrigger(trigger_cmd)) {
+      show("That is not a valid trigger command.", pc);
+      return -1;
+   }
+
+   // We prepend text to it so it's never a number as far as parsing
+   // is concerned.  It's embarrasing, I know! Can't spell either!
+   if (strncasecmp(descriminator, "DISCRIM_", 8) == 0) {
+      String tmp = (((const char*)(descriminator)) + 8);
+      descriminator = tmp;
+   }
+
+   if (descriminator == "NA") {
+      descriminator.Clear();
+   }
+
+   String buf(200);
+   Sprintf(buf, "Creating a script for object:  %i, trigger -:%S:-, actor:  %i, \ndescriminator -:%S:-, target:  %i, takes_precedence:  %i\n",
+           obj_num, &trigger_cmd, actor_num, &descriminator, target_num,
+           takes_precedence);
+   show(buf, pc);
+
+   show("Enter a script for this object. If the object already has a\n", pc);
+   show("proc for the specified trigger, then it will be over-written.\n", pc);
+   show("Remember to end each statement with a double semicolon,\n", pc);
+   show("which will be treated as a single semicolon by the parser.\n", pc);
+   show("Use a solitary '~' on a line by itself to end.\n", pc);
+
+   pc.pc->imm_data->tmp_proc_script
+      = new ObjectScript(trigger_cmd, target_num, actor_num, descriminator,
+                         takes_precedence);
+   pc.pc->imm_data->proc_script_buffer.Clear();
+   pc.pc->imm_data->tmp_script_entity_num = obj_num;
+
+   pc.pc->imm_data->edit_string 
+      = &(pc.pc->imm_data->proc_script_buffer);
+
+   pc.setMode(MODE_ADD_OBJECT_SCRIPT);
+   return 0;
+}//add_obj_script
+
+
 int create_concoction(int rslt, int comp1, int comp2, int comp3, int comp4,
                        int comp5, critter& pc) {
 
@@ -1344,8 +1403,8 @@ int ch_odesc(int which_un, critter& pc) {
    show("You may now paste descs up to 2k, ';' acts as a newline btw.\n",
 	pc);
 
-   obj_list[which_un].ob->long_desc.Clear();
-   pc.pc->imm_data->edit_string = &(obj_list[which_un].ob->long_desc);
+   obj_list[which_un].long_desc.Clear();
+   pc.pc->imm_data->edit_string = &(obj_list[which_un].long_desc);
    pc.setMode(MODE_CH_DESC);
    return 0;
 }//ch_odesc
@@ -1390,8 +1449,7 @@ int save_obj(int i_th, String* obj_name, critter& pc) {
 			 ROOM);
    
    if (!vict) {
-      vict = have_obj_named(ROOM.inv, i_th, obj_name, pc.SEE_BIT, 
-                            ROOM);
+      vict = ROOM.haveObjNamed(i_th, obj_name, pc.SEE_BIT);
    }
 
    if (!vict) {
@@ -1676,6 +1734,61 @@ int do_add_room_script(critter& pc) {
 }//do_add_room_script
 
 
+int do_add_obj_script(critter& pc) {
+   String buf = pc.pc->input.Get_Rest();
+   mudlog.log(TRC, "In do_add_obj_script...");
+
+   while (TRUE) {
+      if (buf.Strlen() == 0) {
+         return 0;
+      }//if
+
+      if (buf == "~") {
+         mudlog.log(TRC, "Script completed...");
+         show("Script completed.\n", pc);
+         pc.setMode(MODE_NORMAL);
+         parse_for_max_80(*(pc.pc->imm_data->edit_string));
+
+         if (GenScript::checkScript(*(pc.pc->imm_data->edit_string))) {
+            show("It's too hard to check the script, we'll assume you", pc);
+            show("\nknow what you're doing.  If not, edit it again!", pc);
+
+            // Now, lets add it to the mob already!
+            // First, make sure the obj still exists
+            int obj_num = pc.pc->imm_data->tmp_script_entity_num;
+            if (obj_list[obj_num].isInUse()) {
+               mudlog.log(TRC, "About to addProcScript");
+
+               obj_list[obj_num].
+                  addProcScript(*(pc.pc->imm_data->edit_string),
+                                (ObjectScript*)(pc.pc->imm_data->tmp_proc_script));
+               pc.pc->imm_data->tmp_proc_script = NULL;
+            }//if
+         }//if script checks out ok
+         else {
+            mudlog.log(TRC, "Script failed check!!!");
+
+            show("There was an ERROR IN THE SCRIPT.\n", pc);
+            show(*(pc.pc->imm_data->edit_string), pc);
+
+            delete pc.pc->imm_data->tmp_proc_script;
+            pc.pc->imm_data->tmp_proc_script = NULL;
+         }
+
+         mudlog.log(TRC, "setting edit string to NULL");
+
+	 pc.pc->imm_data->edit_string = NULL;
+         return 0;
+      }//if
+
+      *(pc.pc->imm_data->edit_string) += buf;  //append the line to desc
+      *(pc.pc->imm_data->edit_string) += "\n";
+      buf = pc.pc->input.Get_Rest();
+   }//while
+   return 0;
+}//do_add_obj_script
+
+
 int ch_rname(const String* rname, critter& pc) {
    String buf(100);
 
@@ -1721,7 +1834,7 @@ int ch_osdesc(int which_un, const String* name, critter& pc) {
       return -1;
    }//if
 
-   obj_list[which_un].ob->short_desc = *name;
+   obj_list[which_un].short_desc = *name;
 
    show("Object's short desc changed.\n", pc);
    return 0;
@@ -1753,7 +1866,7 @@ int ch_ondesc(int which_un, const String* rname, critter& pc) {
       return -1;
    }//if
 
-   obj_list[which_un].ob->in_room_desc = *rname;
+   obj_list[which_un].in_room_desc = *rname;
 
    show("Object's in_room desc changed.\n", pc);
    return 0;
@@ -1908,7 +2021,7 @@ int add_oname(int which_un, const String* name, critter& pc) {
       return -1;
    }//if
 
-   Put(new String(*name), obj_list[which_un].ob->names);
+   obj_list[which_un].names.append(new String(*name));
 
    show("Added a name to the object.\n", pc);
    return 0;
@@ -1935,7 +2048,7 @@ int clear_onames(int which_un, critter& pc) {
       return -1;
    }//if
 
-   clear_ptr_list(obj_list[which_un].ob->names); //all gone!
+   clear_ptr_list(obj_list[which_un].names); //all gone!
 
    show("Cleared the names from the object.\n", pc);
    return 0;
@@ -1967,14 +2080,14 @@ int rem_oname(int which_un, const String* name, critter& pc) {
       return -1;
    }//if
 
-   Cell<String*> cll(obj_list[which_un].ob->names);
+   Cell<String*> cll(obj_list[which_un].names);
    String* ptr;
 
    while ((ptr = cll.next())) {
       if (*ptr == *name) {
          show("OK, name removed.\n", pc);
          delete ptr;
-         ptr = obj_list[which_un].ob->names.lose(cll);
+         ptr = obj_list[which_un].names.lose(cll);
          return 0;
       }//if
    }//while

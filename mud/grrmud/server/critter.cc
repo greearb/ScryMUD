@@ -1360,7 +1360,7 @@ pc_data::~pc_data() {
    snoop_by = NULL;
    snooping = NULL;
    if (w_eye_obj) {
-      w_eye_obj->ob->obj_proc->w_eye_owner = NULL;
+      w_eye_obj->obj_proc->w_eye_owner = NULL;
       w_eye_obj = NULL;
    }//if
 }//destructor
@@ -1406,7 +1406,7 @@ void pc_data::Clear() {
    total_time_online = 0; //in seconds
    lines_on_page = 20;
    if (w_eye_obj) {
-      w_eye_obj->ob->obj_proc->w_eye_owner = NULL;
+      w_eye_obj->obj_proc->w_eye_owner = NULL;
       w_eye_obj = NULL;
    }//if
 }//Clear, pc_data
@@ -1923,17 +1923,17 @@ int critter::getNakedWeight() const {
 }//getNakedWeight
 
 
-int critter::cur_weight() {// of inv...eq not taken into account here
+int critter::getCurWeight() {// of inv...eq not taken into account here
    Cell<object*> cll(inv);
    object* tmp_obj;
    int retval = 0;
    while ((tmp_obj = cll.next())) {
-      retval += tmp_obj->ob->cur_weight();
+      retval += tmp_obj->getCurWeight();
    }//while
 
    for (int i = 1; i<MAX_EQ; i++) {
       if (EQ[i]) {
-         retval += EQ[i]->ob->cur_weight() / 2;
+         retval += EQ[i]->getCurWeight() / 2;
       }//if
    }//for
 
@@ -1942,7 +1942,7 @@ int critter::cur_weight() {// of inv...eq not taken into account here
    return retval + getNakedWeight();
 } // cur_weight
 
-int critter::max_weight() {
+int critter::getMaxWeight() {
    return (short_cur_stats[1] * 10 + getNakedWeight());  // 10 times their str
 }//max_weight
 
@@ -2012,7 +2012,7 @@ void critter::Write(ofstream& ofile) {
    ofile << "~" << "\tnames";
 
    if (pc) {
-      ofile << " " << pc->host;
+      ofile << " " << pc->host << " __LEVEL__ " << getLevel();
    }
 
    ofile << "\n";
@@ -2190,13 +2190,9 @@ void critter::Read(ifstream& ofile, short read_all) {
          new_obj->Read(ofile, TRUE);
          new_obj->IN_LIST = &(inv); //make sure its a SOBJ
 
-         if (!obj_list[new_obj->OBJ_NUM].ob) { //if it's OBJ doesn't exist, junk it
-            delete new_obj;
-         }
-         else {
-            eq[z] = new_obj;      //now it wears it
-            affected_objects.append(new_obj);
-         }
+         eq[z] = new_obj;      //now it wears it
+         affected_objects.append(new_obj);
+ 
       }//if
       else {
          if (obj_list[i].isInUse()) {  //exists?
@@ -2251,13 +2247,8 @@ void critter::Read(ifstream& ofile, short read_all) {
          new_obj->Read(ofile, TRUE);
          new_obj->IN_LIST = &(inv); //make sure its a SOBJ
 
-         if (!obj_list[new_obj->OBJ_NUM].ob) { //if it's OBJ doesn't exist, junk it
-            delete new_obj;
-         }
-         else {
-            Put(new_obj, inv);    //add it to inventory
-            affected_objects.append(new_obj);
-         }
+         Put(new_obj, inv);    //add it to inventory
+         affected_objects.append(new_obj);
 
       }//if
       else {
@@ -2382,7 +2373,8 @@ int critter::getIdNum() const {
 
 
 // NOTE:  The script owner is *this.  It is likely, but not necessary
-// that targ is also *this
+// that targ is also *this.  Looks through all the objects the critter
+// is wearing.
 void critter::checkForProc(String& cmd, String& arg1, critter& actor,
                            int targ, room& rm) {
    mudlog.log("In critter::checkForProc.");
@@ -2437,6 +2429,13 @@ void critter::checkForProc(String& cmd, String& arg1, critter& actor,
          }//if matches
       }//while
    }//if
+
+   // Look through all objects the person is using.
+   for (int i =1; i<MAX_EQ; i++) {
+      if (EQ[i] && (EQ[i]->hasScript())) {
+         EQ[i]->checkForProc(cmd, arg1, actor, targ, rm);
+      }//if
+   }//for
 }//checkForProcAction
 
 
@@ -2629,8 +2628,10 @@ void critter::loseObjectFromGame(object* obj) {
 
 void critter::gainInv(object* obj) {
    inv.prepend(obj);
-   if (obj->IN_LIST)
+   if (obj->IN_LIST) {
       obj->IN_LIST = &inv;
+      obj->setCurRoomNum(getCurRoomNum(), 0);
+   }
 }
 
 void critter::setHP(int i) {
@@ -2789,6 +2790,28 @@ void critter::setCurRoomNum(int i) {
       i = 0;
 
    IN_ROOM = i;
+
+   // So now I want to know the current room for all Objects that
+   // may be scripting.  If they are scripting, then we know they
+   // have an IN_LIST (ie they are a SOBJ (more antiquity)).
+   
+   // First, check all equipment.  Remember to check inside containers
+   // too.
+
+   for (int z = 1; z < MAX_EQ; z++) {
+      if (EQ[z] && EQ[z]->isModified()) {
+         EQ[z]->setCurRoomNum(i, 0); //will recurse if needed
+      }
+   }
+
+   Cell<object*> cll(inv);
+   object* ptr;
+   
+   while ((ptr = cll.next())) {
+      if (ptr->isModified()) {
+         ptr->setCurRoomNum(i, 0); //is recursive if needed
+      }
+   }//while
 }//setCurRoomNum
 
 void critter::addProcScript(const String& txt, MobScript* script_data) {
