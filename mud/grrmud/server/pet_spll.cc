@@ -1,5 +1,5 @@
-// $Id: pet_spll.cc,v 1.14 2001/04/07 22:31:55 greear Exp $
-// $Revision: 1.14 $  $Author: greear $ $Date: 2001/04/07 22:31:55 $
+// $Id: pet_spll.cc,v 1.15 2002/01/18 00:10:38 justin Exp $
+// $Revision: 1.15 $  $Author: justin $ $Date: 2002/01/18 00:10:38 $
 
 //
 //ScryMUD Server Code
@@ -820,7 +820,7 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       golem->SEX = pc.SEX;
       golem->CLASS = pc.CLASS;
       golem->RACE = pc.RACE;
-      golem->ALIGN = pc.ALIGN;
+      golem->ALIGN = 0;
       
       golem->names.prepend(new String(*(Top(pc.names)))); 
       if (pc.pc) {
