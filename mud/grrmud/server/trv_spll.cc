@@ -135,21 +135,16 @@ void do_cast_flame_strike(critter& agg, int is_canned, int lvl) {
    }//else !canned
 
    if (do_affects) {
-      List<critter*> tmp_lst(room_list[agg.getCurRoomNum()].getCrits());
-     
-      Cell<critter*> cll(tmp_lst);
       critter* ptr;
+      room* rm = room_list.elementAt(agg.getCurRoomNum());
 
-      while ((ptr = cll.next())) {
-         ptr->CRIT_FLAGS.turn_off(20); //spell_tested flag
-      }
+      rm->makeReadyForAreaSpell();
 
       show_all("Pillars of crimson fire spurt up from below!!\n", 
                room_list[agg.getCurRoomNum()]);
 
-      while ((ptr = find_next_spell_mob(tmp_lst))) {
-         if ((ptr == &agg) || is_grouped(*ptr, agg) ||
-            (!room_list[agg.getCurRoomNum()].haveCritter(ptr))) {
+      while ((ptr = rm->findNextSpellCritter())) {
+         if ((ptr == &agg) || is_grouped(*ptr, agg)) {
             continue;
          }//if
        
@@ -227,55 +222,51 @@ void do_cast_meteorstorm(critter& agg, int is_canned, int lvl) {
    }//else !canned
 
    if (do_affects) {
-     List<critter*> tmp_lst(room_list[agg.getCurRoomNum()].getCrits());
-     
-     Cell<critter*> cll(tmp_lst);
-     critter* ptr;
+      critter* ptr;
+      room* rm = room_list.elementAt(agg.getCurRoomNum());
 
-     while ((ptr = cll.next())) {
-        ptr->CRIT_FLAGS.turn_off(20); // spell/skill tested
-     }
+      rm->makeReadyForAreaSpell();
 
-     show_all("Sonic booms rend the air asunder!!\n", 
-	      room_list[agg.getCurRoomNum()]);
+      show_all("Sonic booms rend the air asunder!!\n", 
+               room_list[agg.getCurRoomNum()]);
 
-     while ((ptr = find_next_spell_mob(tmp_lst))) {
-       if ((ptr == &agg) || is_grouped(*ptr, agg) ||
-          (!room_list[agg.getCurRoomNum()].haveCritter(ptr))) {
-          continue;
-       }//if
-       
-       if (ptr->isMob()) {
-          mudlog << "ERROR:  was MOB in do_cast_meteor_storm, mob: "
-                 << ptr->getName() << " agg: " << agg.getName() << endl;
-          continue;
-       }//if
+      while ((ptr = rm->findNextSpellCritter())) {
+         if ((ptr == &agg) || is_grouped(*ptr, agg)) {
+            continue;
+         }//if
+         
+         
+         if (ptr->isMob()) {
+            mudlog << "ERROR:  was MOB in do_cast_meteor_storm, mob: "
+              << ptr->getName() << " agg: " << agg.getName() << endl;
+            continue;
+         }//if
 
-       if (TRUE) { 
-          exact_raw_damage(d(5, lvl), NORMAL, *ptr, agg);
-          if (ptr->HP < 0) {
-             Sprintf(buf, "You are crushed beyond repair by %S's meteor.\n",
-                     name_of_crit(agg, ptr->SEE_BIT));
-             show(buf, *ptr);
-             Sprintf(buf, "is crushed by %S's meteor!", 
-                     name_of_crit(agg, ~0));
-             emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-             agg_kills_vict(agg, *ptr);
-          }//if
-          else {
-             Sprintf(buf, "You are struck by %S's meteor.\n",
-                     name_of_crit(agg, ptr->SEE_BIT));
-             show(buf, *ptr);
-             Sprintf(buf, "is struck by %S's meteor!", 
-                     name_of_crit(agg, ~0));
-             emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-             if (!HaveData(&agg, ptr->IS_FIGHTING)) {
-                join_in_battle(*ptr, agg);
-             }//if
-          }//else
-       }//if TRUE
-     }//while
-     agg.PAUSE += 1;   // increment pause_count
+         if (TRUE) { 
+            exact_raw_damage(d(5, lvl), NORMAL, *ptr, agg);
+            if (ptr->HP < 0) {
+               Sprintf(buf, "You are crushed beyond repair by %S's meteor.\n",
+                       name_of_crit(agg, ptr->SEE_BIT));
+               show(buf, *ptr);
+               Sprintf(buf, "is crushed by %S's meteor!", 
+                       name_of_crit(agg, ~0));
+               emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
+               agg_kills_vict(agg, *ptr);
+            }//if
+            else {
+               Sprintf(buf, "You are struck by %S's meteor.\n",
+                       name_of_crit(agg, ptr->SEE_BIT));
+               show(buf, *ptr);
+               Sprintf(buf, "is struck by %S's meteor!", 
+                       name_of_crit(agg, ~0));
+               emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
+               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
+                  join_in_battle(*ptr, agg);
+               }//if
+            }//else
+         }//if TRUE
+      }//while
+      agg.PAUSE += 1;   // increment pause_count
    }//if do_affects
 }//do_cast_meteorstorm
 
@@ -319,55 +310,51 @@ void do_cast_icestorm(critter& agg, int is_canned, int lvl) {
    }//else !canned
 
    if (do_affects) {
-     List<critter*> tmp_lst(room_list[agg.getCurRoomNum()].getCrits());
-     
-     Cell<critter*> cll(tmp_lst);
-     critter* ptr;
+      critter* ptr;
+      room* rm = room_list.elementAt(agg.getCurRoomNum());
 
-     while ((ptr = cll.next()))
-        ptr->CRIT_FLAGS.turn_off(20);
+      rm->makeReadyForAreaSpell();
 
-     show_all("Large shards of ice start falling from the sky!!\n", 
-	      room_list[agg.getCurRoomNum()]);
+      show_all("Large shards of ice start falling from the sky!!\n", 
+               room_list[agg.getCurRoomNum()]);
 
-     while ((ptr = find_next_spell_mob(tmp_lst))) {
-        if ((ptr == &agg) || is_grouped(*ptr, agg) ||
-           (!room_list[agg.getCurRoomNum()].haveCritter(ptr))) {
-           continue;
-        }//if
-       
-        if (ptr->isMob()) {
-           mudlog << "ERROR:  was MOB in do_cast_meteor_storm, mob: "
-                  << ptr->getName() << " agg: " << agg.getName() << endl;
-           continue;
-        }//if
+      while ((ptr = rm->findNextSpellCritter())) {
+         if ((ptr == &agg) || is_grouped(*ptr, agg)) {
+            continue;
+         }//if
 
-        if (TRUE) { 
-           exact_raw_damage(d(4, lvl), NORMAL, *ptr, agg);
-           if (ptr->HP < 0) {
-              Sprintf(buf,
-                      "You are crushed beyond repair by %S's ice shard.\n",
-                      name_of_crit(agg, ptr->SEE_BIT));
-              show(buf, *ptr);
-              Sprintf(buf, "is crushed by %S's ice shard!", 
-                      name_of_crit(agg, ~0));
-              emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-              agg_kills_vict(agg, *ptr);
-           }//if
-           else {
-              Sprintf(buf, "You are struck by %S's ice shard.\n",
-                      name_of_crit(agg, ptr->SEE_BIT));
-              show(buf, *ptr);
-              Sprintf(buf, "is struck by %S's ice shard!", 
-                      name_of_crit(agg, ~0));
-              emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-              if (!HaveData(&agg, ptr->IS_FIGHTING)) {
-                 join_in_battle(*ptr, agg);
-              }//if
-           }//else
-        }//if TRUE
-     }//while
-     agg.PAUSE += 1;   // increment pause_count
+         if (ptr->isMob()) {
+            mudlog << "ERROR:  was MOB in do_cast_meteor_storm, mob: "
+                   << ptr->getName() << " agg: " << agg.getName() << endl;
+            continue;
+         }//if
+         
+         if (TRUE) { 
+            exact_raw_damage(d(4, lvl), NORMAL, *ptr, agg);
+            if (ptr->HP < 0) {
+               Sprintf(buf,
+                       "You are crushed beyond repair by %S's ice shard.\n",
+                       name_of_crit(agg, ptr->SEE_BIT));
+               show(buf, *ptr);
+               Sprintf(buf, "is crushed by %S's ice shard!", 
+                       name_of_crit(agg, ~0));
+               emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
+               agg_kills_vict(agg, *ptr);
+            }//if
+            else {
+               Sprintf(buf, "You are struck by %S's ice shard.\n",
+                       name_of_crit(agg, ptr->SEE_BIT));
+               show(buf, *ptr);
+               Sprintf(buf, "is struck by %S's ice shard!", 
+                       name_of_crit(agg, ~0));
+               emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
+               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
+                  join_in_battle(*ptr, agg);
+               }//if
+            }//else
+         }//if TRUE
+      }//while
+      agg.PAUSE += 1;   // increment pause_count
    }//if do_affects
 }//do_cast_icestorm
 
@@ -377,7 +364,7 @@ void cast_firestorm(critter& pc) {
    int spell_num = FIRESTORM_SKILL_NUM;
 
    if (!ok_to_do_action(NULL, "KMSNV", spell_num, pc)) {
-     return;
+      return;
    }//if
 
    do_cast_firestorm(pc, FALSE, 0);  //does no error checking
@@ -411,54 +398,50 @@ void do_cast_firestorm(critter& agg, int is_canned, int lvl) {
    }//else !canned
 
    if (do_affects) {
-     List<critter*> tmp_lst(room_list[agg.getCurRoomNum()].getCrits());
-     
-     Cell<critter*> cll(tmp_lst);
-     critter* ptr;
+      critter* ptr;
+      room* rm = room_list.elementAt(agg.getCurRoomNum());
 
-     while ((ptr = cll.next()))
-        ptr->CRIT_FLAGS.turn_off(20);
+      rm->makeReadyForAreaSpell();
 
-     show_all("Globs of flaming vitrol start falling from the sky!!\n", 
-	      room_list[agg.getCurRoomNum()]);
-
-     while ((ptr = find_next_spell_mob(tmp_lst))) {
-       if ((ptr == &agg) || is_grouped(*ptr, agg) ||
-           (!room_list[agg.getCurRoomNum()].haveCritter(ptr))) {
-          continue;
-       }//if
+      show_all("Globs of flaming vitrol start falling from the sky!!\n", 
+               room_list[agg.getCurRoomNum()]);
+      
+      while ((ptr = rm->findNextSpellCritter())) {
+         if ((ptr == &agg) || is_grouped(*ptr, agg)) {
+            continue;
+         }//if
        
-       if (ptr->isMob()) {
-          mudlog << "ERROR:  was MOB in do_cast_fire_storm, mob: "
-                 << ptr->getName() << " agg: " << agg.getName() << endl;
-          continue;
-       }//if
-
-       if (TRUE) { 
-          exact_raw_damage(d(4, lvl), FIRE, *ptr, agg);
-          if (ptr->HP < 0) {
-             Sprintf(buf, "You are burned to a crisp by %S's fire storm.\n",
-                     name_of_crit(agg, ptr->SEE_BIT));
-             show(buf, *ptr);
-             Sprintf(buf, "is burned to a crisp by %S's fire storm!", 
-                     name_of_crit(agg, ~0));
-             emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-             agg_kills_vict(agg, *ptr);
-          }//if
-          else {
-             Sprintf(buf, "You are burned by %S's fire storm.\n",
-                     name_of_crit(agg, ptr->SEE_BIT));
-             show(buf, *ptr);
-             Sprintf(buf, "is burned by %S's fire storm!", 
-                     name_of_crit(agg, ~0));
-             emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-             if (!HaveData(&agg, ptr->IS_FIGHTING)) {
-                join_in_battle(*ptr, agg);
-             }//if
-          }//else
-       }//if TRUE
-     }//while
-     agg.PAUSE += 1;   // increment pause_count
+         if (ptr->isMob()) {
+            mudlog << "ERROR:  was MOB in do_cast_fire_storm, mob: "
+              << ptr->getName() << " agg: " << agg.getName() << endl;
+            continue;
+         }//if
+         
+         if (TRUE) { 
+            exact_raw_damage(d(4, lvl), FIRE, *ptr, agg);
+            if (ptr->HP < 0) {
+               Sprintf(buf, "You are burned to a crisp by %S's fire storm.\n",
+                       name_of_crit(agg, ptr->SEE_BIT));
+               show(buf, *ptr);
+               Sprintf(buf, "is burned to a crisp by %S's fire storm!", 
+                       name_of_crit(agg, ~0));
+               emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
+               agg_kills_vict(agg, *ptr);
+            }//if
+            else {
+               Sprintf(buf, "You are burned by %S's fire storm.\n",
+                       name_of_crit(agg, ptr->SEE_BIT));
+               show(buf, *ptr);
+               Sprintf(buf, "is burned by %S's fire storm!", 
+                       name_of_crit(agg, ~0));
+               emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
+               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
+                  join_in_battle(*ptr, agg);
+               }//if
+            }//else
+         }//if TRUE
+      }//while
+      agg.PAUSE += 1;   // increment pause_count
    }//if do_affects
 }//do_cast_firestorm
 
@@ -489,49 +472,45 @@ void do_cast_lightning_storm(critter& agg, int is_canned, int lvl) {
    }//else !canned
 
    if (do_affects) {
-     List<critter*> tmp_lst(room_list[agg.getCurRoomNum()].getCrits());
+      critter* ptr;
+      room* rm = room_list.elementAt(agg.getCurRoomNum());
 
-     Cell<critter*> cll(tmp_lst);
-     critter* ptr;
+      rm->makeReadyForAreaSpell();
 
-     while ((ptr = cll.next()))
-       ptr->CRIT_FLAGS.turn_off(20);
-
-     show("A huge broiling cloud gathers overhead!!\n", agg);
-
-     while ((ptr = find_next_spell_mob(tmp_lst))) {
-       if ((ptr == &agg) || is_grouped(*ptr, agg) ||
-          (!room_list[agg.getCurRoomNum()].haveCritter(ptr))) {
-          continue;
-       }//if
+      show("A huge broiling cloud gathers overhead!!\n", agg);
+      
+      while ((ptr = rm->findNextSpellCritter())) {
+         if ((ptr == &agg) || is_grouped(*ptr, agg)) {
+            continue;
+         }//if
        
-       if (ptr->isMob()) {
-          mudlog << "ERROR:  was MOB in do_cast_lightning_storm, mob: "
-                 << ptr->getName() << " agg: " << agg.getName() << endl;
-          continue;
-       }//if
-
-       if (TRUE) { 
-          emote("is toasted by a blinding bolt of lightning!", *ptr, 
-                room_list[agg.getCurRoomNum()], TRUE);
-          exact_raw_damage(d(5, lvl), ELECTRICITY, *ptr, agg);
-          if (ptr->HP < 0) {
-             show("You are exploded by the bolt of lightning.\n", *ptr);
-             emote("explodes in the bolt of lightning.", *ptr, 
-                   room_list[ptr->getCurRoomNum()], TRUE);
-             agg_kills_vict(agg, *ptr);
-          }//if
-          else {
-             show("You are fried by the bolt of lightning!\n", *ptr);
-             emote("is struck by the lightning bolt.", *ptr,
-                   room_list[ptr->getCurRoomNum()], TRUE);
-             if (!HaveData(&agg, ptr->IS_FIGHTING)) {
-                join_in_battle(*ptr, agg);
-             }//if
-          }//else
-       }//if TRUE
-     }//while
-     agg.PAUSE += 1;   // increment pause_count
+         if (ptr->isMob()) {
+            mudlog << "ERROR:  was MOB in do_cast_lightning_storm, mob: "
+                   << ptr->getName() << " agg: " << agg.getName() << endl;
+            continue;
+         }//if
+         
+         if (TRUE) { 
+            emote("is toasted by a blinding bolt of lightning!", *ptr, 
+                  room_list[agg.getCurRoomNum()], TRUE);
+            exact_raw_damage(d(5, lvl), ELECTRICITY, *ptr, agg);
+            if (ptr->HP < 0) {
+               show("You are exploded by the bolt of lightning.\n", *ptr);
+               emote("explodes in the bolt of lightning.", *ptr, 
+                     room_list[ptr->getCurRoomNum()], TRUE);
+               agg_kills_vict(agg, *ptr);
+            }//if
+            else {
+               show("You are fried by the bolt of lightning!\n", *ptr);
+               emote("is struck by the lightning bolt.", *ptr,
+                     room_list[ptr->getCurRoomNum()], TRUE);
+               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
+                  join_in_battle(*ptr, agg);
+               }//if
+            }//else
+         }//if TRUE
+      }//while
+      agg.PAUSE += 1;   // increment pause_count
    }//if do_affects
 }//do_cast_lightning_storm
  
@@ -573,21 +552,16 @@ void do_cast_quake(critter& agg, int is_canned, int lvl) {
    }//else !canned
 
    if (do_affects) {
-      List<critter*> tmp_lst(room_list[agg.getCurRoomNum()].getCrits());
-
-      Cell<critter*> cll(tmp_lst);
       critter* ptr;
-      
-      while ((ptr = cll.next()))
-         ptr->CRIT_FLAGS.turn_off(20);
+      room* rm = room_list.elementAt(agg.getCurRoomNum());
+
+      rm->makeReadyForAreaSpell();
 
       show_all("The earth heaves violently!!\n",
                room_list[agg.getCurRoomNum()]);
-
-      while ((ptr = find_next_spell_mob(tmp_lst))) {
-         
-         if ((ptr == &agg) || is_grouped(*ptr, agg) ||
-             (!room_list[agg.getCurRoomNum()].haveCritter(ptr))) {
+      
+      while ((ptr = rm->findNextSpellCritter())) {
+         if ((ptr == &agg) || is_grouped(*ptr, agg)) {
             continue;
          }//if
 
@@ -668,14 +642,11 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
    }//else !canned
    
    if (do_affects) {
-      List<critter*> tmp_lst(room_list[agg.getCurRoomNum()].getCrits());
-      
-      Cell<critter*> cll(tmp_lst);
       critter* ptr;
-      
-      while ((ptr = cll.next()))
-         ptr->CRIT_FLAGS.turn_off(20);
-      
+      room* rm = room_list.elementAt(agg.getCurRoomNum());
+
+      rm->makeReadyForAreaSpell();
+
       show_all("The skies grow dark and the wind begins to howl!\n", 
                room_list[agg.getCurRoomNum()]);
       
@@ -685,8 +656,8 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
       int zon = room_list[agg.getCurRoomNum()].getZoneNum();
       begin_rm = ZoneCollection::instance().elementAt(zon).getBeginRoomNum();
       end_rm = ZoneCollection::instance().elementAt(zon).getEndRoomNum();
-      
-      while ((ptr = find_next_spell_mob(tmp_lst))) {
+
+      while ((ptr = rm->findNextSpellCritter())) {
          if (ptr == &agg) {
             if (d(1,50) > 25) {
                continue;
@@ -806,24 +777,20 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
    }//else !canned
    
    if (do_affects) {
-      List<critter*> tmp_lst(room_list[agg.getCurRoomNum()].getCrits());
-      
-      Cell<critter*> cll(tmp_lst);
       critter* ptr;
-      
-      while ((ptr = cll.next())) {
-         ptr->CRIT_FLAGS.turn_off(20);
-      }
+      room* rm = room_list.elementAt(agg.getCurRoomNum());
+
+      rm->makeReadyForAreaSpell();
+
       show_all("The skies grow dark and the wind begins to howl!\n",
                room_list[agg.getCurRoomNum()]);
-      
       
       int begin_rm, end_rm;
       int zon = room_list[agg.getCurRoomNum()].getZoneNum();
       begin_rm = ZoneCollection::instance().elementAt(zon).getBeginRoomNum();
       end_rm = ZoneCollection::instance().elementAt(zon).getEndRoomNum();
       
-      while ((ptr = find_next_spell_mob(tmp_lst))) {
+      while ((ptr = rm->findNextSpellCritter())) {
          if (ptr == &agg) {
             if (d(1,50) > 25) {
                continue;

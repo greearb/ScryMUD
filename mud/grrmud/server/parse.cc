@@ -286,6 +286,14 @@ int critter::processInput(String& input, short do_sub, int script_driven,
          return do_post(*this);
       }//if
 
+      if (MODE == MODE_ADD_BUG_COMMENT) {
+         return do_add_bug_comment(*this);
+      }//if
+
+      if (MODE == MODE_ADD_IDEA_COMMENT) {
+         return do_add_idea_comment(*this);
+      }//if
+
 		     /* copy entry to last_input */
       if ((input.Look_Command() != "!") && do_sub) {
 	pc->last_input = input.Get_Rest(FALSE); //get till newline

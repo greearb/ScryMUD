@@ -191,6 +191,53 @@ room::room(int rm_num) {
 } // sub_room constructor
 
 
+int room::makeReadyForAreaSpell() {
+   Cell<critter*> cll(critters);
+   critter* ptr;
+   
+   while ((ptr = cll.next())) {
+      ptr->CRIT_FLAGS.turn_off(20);
+   }
+   return 0;
+}
+
+critter* room::findNextSpellCritter() {
+   Cell<critter*> cll(critters);
+   critter* ptr;
+
+   while ((ptr = cll.next())) {
+      if (!ptr->CRIT_FLAGS.get(20)) { //if spell_tested
+         ptr->CRIT_FLAGS.turn_on(20);
+         return ptr;
+      }//if not affected yet
+   }//while
+
+   return NULL;
+}//findNextSpellCritter
+
+
+critter* room::findNextProcMob() {
+   Cell<critter*> cll(critters);
+   critter* ptr;
+   
+   while ((ptr = cll.next())) {
+      if (!(ptr->pc)) {
+         if (ptr->mob) {
+            if (!ptr->master) {
+               if (ptr->MOB_FLAGS.get(3)) {
+                  ptr->MOB_FLAGS.turn_off(3);
+                  return ptr;
+               }//if haven't done procs yet
+            }//if
+         }//if a mob
+      }//needed if obj has BOTH mob and pc data fields
+   }//while
+
+   return NULL;
+}//findNextProcMob
+
+
+
 void room::recursivelyLoad() { //mobs and objects
    Cell<critter*> ccll(critters);
    critter* cptr;
@@ -1010,10 +1057,6 @@ int room::getCritCount(critter& pc) {
    return crit_count(critters, pc);
 }
 
-
-critter* room::findNextProcMob() {
-   return find_next_proc_mob(critters);
-}
 
 /* this returns the critter if exists.  rm_num is the number of
  * the room we found it in.  Returns NULL if not found.

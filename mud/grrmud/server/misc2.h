@@ -106,8 +106,6 @@ room* get_next_room(int zone);
 int get_next_obj(); // returns # of first un-used obj in obj_list
 int get_next_mob(); // returns # of first un-used mob in obj_list
 int get_next_door(); // returns # of first un-used door in obj_list
-critter* find_next_proc_mob(List<critter*>& lst);
-critter* find_next_spell_mob(List<critter*>& lst);
 
 int get_game_time(); //returns current game time
 const char* get_month(int day);

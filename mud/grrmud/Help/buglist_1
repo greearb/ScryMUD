@@ -1,24 +1,16 @@
 <help general buglist>
 
 This shows the current listing of bugs and ideas that users
-have entered.  Only immortals can remove bugs and ideas.
+have entered.  Only high level immorts, or the player assigned to
+the bug can change it's state.
 
-NOTE:  The description should be (at least) the first 5 characters
-of the report.  That should help keep you from making mistakes
-when removing entries.  The Notes will be appended to the entry.
-This should contain info about why it was closed.  Be sure to put
-it in single quotes!!
-
-Commands:  remove, completed
-
-syntax:  buglist <<CMD> <<i_th> <<'description'> <<'Notes'>
-syntax:  idealist <<CMD> <<i_th> <<'description'> <<'Notes'>
-
-example:  buglist    # List all un-fixed bugs.
-example:  idealist   # List all ideas the admins haven't addressed.
-example:  buglist remove 333 'The bug command' 'Fixed it in the code.'
-example:  buglist completed  # Show's all bugs that have been addressed.
-example:  idealist completed # Show's all ideas that have been addressed.
+buglist                     #  List all bugs in all states.  
+buglist [state]             #  Lists bugs in that state.
+buglist assign [new assignee]  # Assign someone to be responsible.
+buglist chstate [bug#] [new state] [notes]  # Change the state of a bug.
+buglist comment [bug#]              # Puts you into a state in which
+                                    # you can add a comment to the bug.
+buglist purge [bug#]        #  Remove a bug from the list entirely.
 
 <color=red>
 See Also:  idea bug

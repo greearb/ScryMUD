@@ -644,76 +644,219 @@ int bug(const String& str, critter& pc) {
 }//bug
 
 
+/** Uses:
+ *   buglist                     #  List all bugs in all states.  
+ *   buglist [state]             #  Lists bugs in that state.
+ *   buglist stat [bug#]         #  List a particular bug
+ *   buglist chstate [bug#] [new state]  # Change the state of a bug.
+ *   buglist assign [new assignee]  # Assign someone to be responsible.
+ *   buglist comment [bug#]              # Puts you into a state in which
+ *                                       # you can add a comment to the bug.
+ *   buglist purge [bug#]        #  Remove a bug from the list entirely.
+ */
 int buglist(BugTypeE bt, int i, const String& cmd, int j, const String& mod,
             const String& notes, critter& pc) {
-   if (!pc.isPc()) {
+   if (!pc.isPc() && &(notes)) { //using notes here stops compiler warnings.
       return -1;
    }
 
-   if (cmd.Strlen() == 0) {
+   if ((cmd.Strlen() == 0) ||
+       (strcasecmp(cmd, "open") == 0) ||
+       (strcasecmp(cmd, "closed") == 0) ||
+       (strcasecmp(cmd, "assigned") == 0) ||
+       (strcasecmp(cmd, "retest") == 0)) {
       if (bt == BT_BUGS) {
          pc.show("Bug Listing:\n");
-         pc.show(bl_bugs.toString());
+         pc.show(bl_bugs.toString(cmd, pc.isUsingClient()));
       }
       else if (bt == BT_IDEAS) {
          pc.show("Idea Listing:\n");
-         pc.show(bl_ideas.toString());
+         pc.show(bl_ideas.toString(cmd, pc.isUsingClient()));
       }
       return 0;
    }
 
-   if (strncasecmp(cmd, "completed", cmd.Strlen()) == 0) {
-      if (bt == BT_BUGS) {
-         pc.show("Bug Listing (Completed):\n");
-         pc.show(bl_comp_bugs.toString());
-      }
-      else if (bt == BT_IDEAS) {
-         pc.show("Idea Listing (Completed):\n");
-         pc.show(bl_comp_ideas.toString());
-      }
-      return 0;
-   }
-   else if (strncasecmp(cmd, "remove", cmd.Strlen()) == 0) {
-
-      if (pc.getImmLevel() < 9) {
-         pc.show("You must be level 9 IMMORT or higher to remove bug/idea postings.\n");
-         return -1;
-      }
-
-      if (notes.Strlen() < 10) {
-         pc.show("Notes must be at least 10 characters.  Be sure to put them in
-single quotes.\n");
-         return -1;
-      }
-
-      String my_notes(100);
-      Sprintf(my_notes, "%S %S: %S\n", &(getCurTime()), pc.getName(), &notes);
+   if (strncasecmp(cmd, "chstate", cmd.Strlen()) == 0) {
 
       if (bt == BT_BUGS) {
-         if (bl_bugs.removeBug(j, mod, my_notes, bl_comp_bugs) < 0) {
-            pc.show("Could not remove that bug.\n");
+         if (bl_bugs.changeState(j, mod, pc.getImmLevel(),
+                                 *(pc.getName())) < 0) {
+            pc.show("Could not make that state transition.\n");
             return -1;
          }
          else {
-            pc.show("Removed the bug from the listing.\n");
+            pc.show("State transition for bug accomplished.\n");
             return 0;
          }
       }
       else if (bt == BT_IDEAS) {
-         if (bl_ideas.removeBug(j, mod, my_notes, bl_comp_ideas) < 0) {
-            pc.show("Could not remove that idea.\n");
+         if (bl_ideas.changeState(j, mod, pc.getImmLevel(), *(pc.getName())) < 0) {
+            pc.show("Could not make that state transition.\n");
             return -1;
          }
          else {
-            pc.show("Removed the idea from the listing.\n");
+            pc.show("State transition for idea accomplished.\n");
             return 0;
          }
       }
    }
+   else if (strncasecmp(cmd, "purge", cmd.Strlen()) == 0) {
+
+      if (pc.getImmLevel() < 10) {
+         pc.show("You must be level 10 IMMORT or higher to purge bug/idea postings.\n");
+         return -1;
+      }
+
+      if (bt == BT_BUGS) {
+         if (bl_bugs.purgeBug(j) < 0) {
+            pc.show("Could not purge that bug.\n");
+            return -1;
+         }
+         else {
+            pc.show("Purged the bug from the listing.\n");
+            return 0;
+         }
+      }
+      else if (bt == BT_IDEAS) {
+         if (bl_ideas.purgeBug(j) < 0) {
+            pc.show("Could not purge that idea.\n");
+            return -1;
+         }
+         else {
+            pc.show("Purged the idea from the listing.\n");
+            return 0;
+         }
+      }
+   }
+   else if (strncasecmp("comment", cmd, cmd.Strlen()) == 0) {
+      if (bt == BT_BUGS) {
+         if (bl_bugs.canComment(j, pc.getImmLevel(), *(pc.getName()))) {
+            pc.show("Enter text for your description.  Terminate with a ~\n");
+            pc.show("on a line BY ITSELF.\n");
+            pc.pc->bug_num = j;
+            pc.pc->bug_comment = "";
+            pc.setMode(MODE_ADD_BUG_COMMENT);
+            return 0;
+         }
+         else {
+            pc.show("You can't add a comment to that bug.\n");
+            return 0;
+         }
+      }
+      else if (bt == BT_IDEAS) {
+         if (bl_ideas.canComment(j, pc.getImmLevel(), *(pc.getName()))) {
+            pc.show("Enter text for your description.  Terminate with a ~\n");
+            pc.show("on a line BY ITSELF.\n");
+            pc.pc->bug_num = j;
+            pc.pc->bug_comment = "";
+            pc.setMode(MODE_ADD_IDEA_COMMENT);
+            return 0;
+         }
+         else {
+            pc.show("You can't add a comment to that idea.\n");
+            return 0;
+         }
+      }
+   }//comment
+   else if (strncasecmp("assign", cmd, cmd.Strlen()) == 0) {
+      if (bt == BT_BUGS) {
+         if (bl_bugs.reAssign(j, mod, pc.getImmLevel(), *(pc.getName())) < 0) {
+            pc.show("Could not re-assign that bug.\n");
+            return -1;
+         }
+         else {
+            pc.show("Bug re-assigned.\n");
+            return 0;
+         }
+      }
+      else if (bt == BT_IDEAS) {
+         if (bl_ideas.reAssign(j, mod, pc.getImmLevel(), *(pc.getName())) < 0) {
+            pc.show("Could not re-assign that idea.\n");
+            return -1;
+         }
+         else {
+            pc.show("Idea re-assigned.\n");
+            return 0;
+         }
+      }
+   }//if assign
+   else if (strncasecmp("stat", cmd, cmd.Strlen()) == 0) {
+      BugEntry* be;
+      const char* ct;
+      if (bt == BT_BUGS) {
+         be = bl_bugs.getBugEntry(j);
+         ct = bl_bugs.getColTypeName();
+      }
+      else {
+         be = bl_ideas.getBugEntry(j);
+         ct = bl_ideas.getColTypeName();
+      }
+
+      if (be) {
+         if (pc.isUsingClient()) {
+            pc.show(be->toStringHeg(ct));
+         }
+         else {
+            pc.show(be->toString());
+         }
+         return 0;
+      }//if
+      else {
+         pc.show("Could not find that bug in the buglist.\n");
+         return -1;
+      }
+   }//if assign
 
    pc.show("Bug/Idea list command not recognized, see help for buglist.\n");
    return -1;
 }//buglist
+
+
+int do_add_idea_comment(critter& pc) {
+   return do_add_comment(BT_IDEAS, pc);
+}//do_add_idea_comment
+
+int do_add_bug_comment(critter& pc) {
+   return do_add_comment(BT_BUGS, pc);
+}//do_add_idea_comment
+
+
+int do_add_comment(BugTypeE bt, critter& pc) {
+   String buf = pc.pc->input.Get_Rest();
+
+   while (TRUE) {
+      if (buf.Strlen() == 0) {
+         return 0;
+      }//if
+
+      if (buf == "~") {
+         show("Comment added.\n", pc);
+         pc.setMode(MODE_NORMAL);
+         parse_for_max_80(pc.pc->bug_comment);
+
+         CommentEntry re(getCurTime(), *(pc.getName()), pc.pc->bug_comment);
+
+         if (bt == BT_BUGS) {
+            bl_bugs.addComment(pc.pc->bug_num, re, pc.getImmLevel(),
+                               *(pc.getName()));
+         }
+         else if (bt == BT_IDEAS) {
+            bl_ideas.addComment(pc.pc->bug_num, re, pc.getImmLevel(),
+                                *(pc.getName()));
+         }
+         pc.pc->bug_comment = "";
+         return 0;
+      }//if
+
+      pc.pc->bug_comment += buf;  //append the line to desc
+      pc.pc->bug_comment += "\n";
+
+      buf = pc.pc->input.Get_Rest();
+   }//while
+   return 0;
+}//do_add_comment
+
+
 
 
 int oclone(int i_th, const String* item, critter& pc) {
@@ -1946,7 +2089,7 @@ int do_junk(int do_msg, int i_th, const String* str1,
                Sprintf(buf, "You junk %S.\n", 
                        &(obj_ptr->short_desc));
                show(buf, pc);
-               show("The gods reward your for your sacrifice.\n", pc);
+               show("The gods reward you for your sacrifice.\n", pc);
             }//if
             pc.GOLD += ((obj_ptr->PRICE / 50) + 1);
 

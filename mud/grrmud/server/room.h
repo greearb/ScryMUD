@@ -189,7 +189,6 @@ public:
 
    const List<critter*>& getCrits() { return critters; }
 
-   critter* findNextProcMob();
    void resetProcMobs();
    void purgeCritter(int mob_num, critter& pc);
 
@@ -281,6 +280,9 @@ public:
    int wizchat(const char* message);
    int rm_pause(int ticks);
 
+   int makeReadyForAreaSpell();
+   critter* findNextProcMob();
+   critter* findNextSpellCritter();
 }; // class room
 
 #endif

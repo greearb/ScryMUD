@@ -43,6 +43,7 @@ class HegemonManager extends Object {
    CommandHistory cmd_history;
    hegemon mother_class;
    PsoEditor pso_editor; //player-run shop keeper editor
+   BugListEditor bl_editor;
 
    public static boolean IS_APPLET;
    
@@ -87,6 +88,7 @@ class HegemonManager extends Object {
       cmd_history = new CommandHistory(this);
       path_editor = new PathCellEditor(this);
       pso_editor = new PsoEditor(this);
+      bl_editor = new BugListEditor(this);
       olc_editor = new OlEditor(this);
       ms_editor = new MobScriptEditor(this);
       k_editor = new KeywordEditor(this);
@@ -117,6 +119,10 @@ class HegemonManager extends Object {
 
    public final PsoEditor getPsoEditor() {
       return pso_editor;
+   }
+
+   public final BugListEditor getBugListEditor() {
+      return bl_editor;
    }
    
    public final OlEditor getOlEditor() {
@@ -212,7 +218,15 @@ class HegemonManager extends Object {
       if (socket_mgr != null) {
          socket_mgr.flush();
       }
+
       if (mother_class != null) {
+         // Not that I don't trust Java's garbage collection or anything... :P
+
+         pso_editor.dispose();
+         pso_editor = null;
+         bl_editor.dispose();
+         bl_editor = null;
+         olc_mgr.dispose();
          olc_mgr = null;
          action_mgr.dispose();
          action_mgr = null;
@@ -225,6 +239,7 @@ class HegemonManager extends Object {
          props= null;
          alias_mgr.dispose();
          alias_mgr = null;
+         //scroll.dispose();
          scroll = null;
          color_mgr.dispose();
          color_mgr = null;
@@ -238,8 +253,10 @@ class HegemonManager extends Object {
          ms_editor = null;
          k_editor.dispose();
          k_editor = null;
+         cmd_history.dispose();
          cmd_history = null;
          mother_class.destroy();
+         mother_class = null;
       }
       else {
          System.exit(0); //should flush first...

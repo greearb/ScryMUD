@@ -39,6 +39,7 @@ class HegemonInputFilter extends Object {
    boolean last_tag_was_space;
    boolean last_was_lt;
    boolean in_tag;
+   boolean last_was_gt;
 
    Integer context_mode;
 
@@ -50,11 +51,16 @@ class HegemonInputFilter extends Object {
    public static final Integer MODE_STAT_LD           = new Integer(4);
    public static final Integer MODE_MSCRIPT_DATA      = new Integer(5);
    public static final Integer MODE_PATH_CELL_STAT_LD = new Integer(6);
-   public static final Integer MODE_KEYWORD_LD = new Integer(7);
+   public static final Integer MODE_KEYWORD_LD        = new Integer(7);
+   public static final Integer MODE_BUG_TITLE         = new Integer(8);
+   public static final Integer MODE_BUG_COMMENT_ENTRY = new Integer(9);
+   public static final Integer MODE_BUG_ENTRY         = new Integer(10);
    
 
    StringBuffer tag_sofar;
    StringBuffer disp_sofar;
+
+   Hashtable len1_hash; //hash table for tags w/no arguments
    
    public HegemonInputFilter(OlcStore os, SocketWriter snk,
                              ActionFrame acts, HegemonManager h,
@@ -75,9 +81,386 @@ class HegemonInputFilter extends Object {
       
       last_tag_was_space = false;
       last_was_lt = false;
+      last_was_gt = false;
       in_tag = false;
       tag_sofar = new StringBuffer(50);
       disp_sofar = new StringBuffer(1000);
+
+
+      len1_hash = new Hashtable();
+      len1_hash.put("BATTLE", new TagCommand() {
+         public boolean run() {
+            Color c = color_mgr.getBattleSelection();
+            if (c != null)
+               heg_scroll.pushColor(c);
+            Font f = color_mgr.getBattleFont();
+            if (f != null)
+               heg_scroll.pushFont(f);
+            return true;
+         }});
+           
+      len1_hash.put("/BATTLE", new TagCommand() {
+         public boolean run() {
+            if (color_mgr.getBattleSelection() != null) 
+              heg_scroll.getProperties().popColor();
+            if (color_mgr.getBattleFont() != null)
+              heg_scroll.getProperties().popFont();
+            return true;
+         }});
+
+      len1_hash.put("/BUG_ENTRY", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().popContextMode();
+            context_mode = heg_scroll.getProperties().getContextMode();
+            hm.getBugListEditor().signalEntryDone();
+            return true;
+         }});
+
+      len1_hash.put("BUG_TITLE", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().pushContextMode(MODE_BUG_TITLE);
+            context_mode = MODE_BUG_TITLE;
+            return true;
+         }});
+
+      len1_hash.put("/BUG_TITLE", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().popContextMode();
+            context_mode = heg_scroll.getProperties().getContextMode();
+            return true;
+         }});
+
+      len1_hash.put("TELL", new TagCommand() {
+         public boolean run() {
+            Color c = color_mgr.getTellSelection();
+            if (c != null)
+              heg_scroll.pushColor(c);
+            Font f = color_mgr.getTellFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
+            return true;
+         }});
+
+      len1_hash.put("/TELL", new TagCommand() {
+         public boolean run() {
+            if (color_mgr.getGossipSelection() != null) 
+              heg_scroll.getProperties().popColor();
+            if (color_mgr.getTellFont() != null)
+              heg_scroll.getProperties().popFont();
+            return true;
+         }});
+
+      len1_hash.put("/BUG_COMMENT_ENTRY", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().popContextMode();
+            context_mode = heg_scroll.getProperties().getContextMode();
+            hm.getBugListEditor().signalCommentDone();
+            return true;
+         }});
+
+      len1_hash.put("DOOR_LIST", new TagCommand() {
+         public boolean run() {
+            Color c = color_mgr.getDoorListSelection();
+            if (c != null)
+              heg_scroll.pushColor(c);
+            Font f = color_mgr.getDoorListFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
+            return true;
+         }});
+
+      len1_hash.put("/DOOR_LIST", new TagCommand() {
+         public boolean run() {
+            if (color_mgr.getDoorListSelection() != null) 
+              heg_scroll.getProperties().popColor();
+            if (color_mgr.getDoorListFont() != null)
+              heg_scroll.getProperties().popFont();
+            return true;
+         }});
+      
+      len1_hash.put("MOB_LIST", new TagCommand() {
+         public boolean run() {
+            Color c = color_mgr.getMobListSelection();
+            if (c != null)
+              heg_scroll.pushColor(c);
+            Font f = color_mgr.getMobListFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
+            return true;
+         }});
+
+      len1_hash.put("/MOB_LIST", new TagCommand() {
+         public boolean run() {
+          if (color_mgr.getMobListSelection() != null) 
+              heg_scroll.getProperties().popColor();
+            if (color_mgr.getMobListFont() != null)
+              heg_scroll.getProperties().popFont();
+            return true;
+         }});
+
+      len1_hash.put("ITEM_LIST", new TagCommand() {
+         public boolean run() {
+            Color c = color_mgr.getItemListSelection();
+            if (c != null)
+              heg_scroll.pushColor(c);
+            Font f = color_mgr.getItemListFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
+            return true;
+         }});
+
+      len1_hash.put("/ITEM_LIST", new TagCommand() {
+         public boolean run() {
+            if (color_mgr.getItemListSelection() != null) 
+              heg_scroll.getProperties().popColor();
+            if (color_mgr.getItemListFont() != null)
+              heg_scroll.getProperties().popFont();
+            return true;
+         }});
+      
+      len1_hash.put("RM_DESC", new TagCommand() {
+         public boolean run() {
+            Color c = color_mgr.getRoomDescSelection();
+            heg_scroll.getProperties().pushContextMode(MODE_STAT_LD);
+            context_mode = MODE_STAT_LD;
+            if (c != null)
+              heg_scroll.pushColor(c);
+            Font f = color_mgr.getRoomDescFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
+            return true;
+         }});
+
+      len1_hash.put("/RM_DESC", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().popContextMode();
+            context_mode = heg_scroll.getProperties().getContextMode();
+            if (color_mgr.getRoomDescSelection() != null) 
+              heg_scroll.getProperties().popColor();
+            if (color_mgr.getRoomDescFont() != null)
+              heg_scroll.getProperties().popFont();
+            return true;
+         }});
+
+      len1_hash.put("/RM_SHORT_DESC", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().popContextMode();
+            context_mode = heg_scroll.getProperties().getContextMode();
+            if (color_mgr.getRoomShortDescSelection() != null) 
+              heg_scroll.getProperties().popColor();
+            if (color_mgr.getRoomShortDescFont() != null)
+              heg_scroll.getProperties().popFont();
+            return true;
+         }});
+
+      len1_hash.put("GOSSIP", new TagCommand() {
+         public boolean run() {
+            Color c = color_mgr.getGossipSelection();
+            if (c != null)
+              heg_scroll.pushColor(c);
+            Font f = color_mgr.getGossipFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
+            return true;
+         }});
+
+      len1_hash.put("/GOSSIP", new TagCommand() {
+         public boolean run() {
+            if (color_mgr.getGossipSelection() != null) 
+              heg_scroll.getProperties().popColor();
+            if (color_mgr.getGossipFont() != null)
+              heg_scroll.getProperties().popFont();
+            return true;
+         }});
+
+      len1_hash.put("SAY", new TagCommand() {
+         public boolean run() {
+            Color c = color_mgr.getSaySelection();
+            if (c != null)
+              heg_scroll.pushColor(c);
+            Font f = color_mgr.getSayFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
+            return true;
+         }});
+
+      len1_hash.put("/SAY", new TagCommand() {
+         public boolean run() {
+            if (color_mgr.getSaySelection() != null) 
+              heg_scroll.getProperties().popColor();
+            if (color_mgr.getSayFont() != null)
+              heg_scroll.getProperties().popFont();
+            return true;
+         }});
+
+      len1_hash.put("YELL", new TagCommand() {
+         public boolean run() {
+            Color c = color_mgr.getYellSelection();
+            if (c != null)
+              heg_scroll.pushColor(c);
+            Font f = color_mgr.getYellFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
+            return true;
+         }});
+
+      len1_hash.put("/YELL", new TagCommand() {
+         public boolean run() {
+            if (color_mgr.getYellSelection() != null) 
+              heg_scroll.getProperties().popColor();
+            if (color_mgr.getYellFont() != null)
+              heg_scroll.getProperties().popFont();
+            return true;
+         }});
+
+      len1_hash.put("AUCTION", new TagCommand() {
+         public boolean run() {
+            Color c = color_mgr.getAuctionSelection();
+            if (c != null)
+              heg_scroll.pushColor(c);
+            Font f = color_mgr.getAuctionFont();
+            if (f != null)
+              heg_scroll.pushFont(f);
+            return true;
+         }});
+
+      len1_hash.put("/AUCTION", new TagCommand() {
+         public boolean run() {
+            if (color_mgr.getAuctionSelection() != null) 
+              heg_scroll.getProperties().popColor();
+            if (color_mgr.getAuctionFont() != null)
+              heg_scroll.getProperties().popFont();
+            return true;
+         }});
+
+      len1_hash.put("TAB", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().pushTab();
+            return true;
+         }});
+
+      len1_hash.put("/TAB", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().popTab();
+            return true;
+         }});
+
+      len1_hash.put("/HELP", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().popContextMode();
+            context_mode = heg_scroll.getProperties().getContextMode();
+            hm.getHelpFrame().saveHelpText(); //write it to disk
+            return true;
+         }});
+
+      len1_hash.put("P", new TagCommand() {
+         public boolean run() {
+            heg_scroll.drawNewline();
+            return true;
+         }});
+
+      len1_hash.put("PRE", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().pushMode(heg_scroll.
+                                                getProperties().MODE_PRE);
+            return true;
+         }});
+
+
+      len1_hash.put("/PRE", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().popMode();
+            return true;
+         }});
+
+      len1_hash.put("/COLOR", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().popColor();
+            return true;
+         }});
+
+      len1_hash.put("STAT_SD", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().pushContextMode(MODE_STAT_SD);
+            context_mode = MODE_STAT_SD;
+            return true;
+         }});
+
+      len1_hash.put("STAT_ND", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().pushContextMode(MODE_STAT_ND);
+            context_mode = MODE_STAT_ND;
+            return true;
+         }});
+
+      len1_hash.put("STAT_LD", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().pushContextMode(MODE_STAT_LD);
+            context_mode = MODE_STAT_LD;
+            return true;
+         }});
+
+      len1_hash.put("KEYWORD_DESC", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().pushContextMode(MODE_KEYWORD_LD);
+            context_mode = MODE_KEYWORD_LD;
+            return true;
+         }});
+
+      len1_hash.put("PSTAT_LD", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().pushContextMode(MODE_PATH_CELL_STAT_LD);
+            context_mode = MODE_PATH_CELL_STAT_LD;
+            return true;
+         }});
+
+      len1_hash.put("SCRIPT_DATA", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().pushContextMode(MODE_MSCRIPT_DATA);
+            context_mode = MODE_MSCRIPT_DATA;
+            return true;
+         }});
+
+      len1_hash.put("/KEYWORD_DESC", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().popContextMode();
+            context_mode = heg_scroll.getProperties().getContextMode();
+            return true;
+         }});
+
+      len1_hash.put("/SCRIPT_DATA", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().popContextMode();
+            context_mode = heg_scroll.getProperties().getContextMode();
+            return true;
+         }});
+
+      len1_hash.put("/STAT", new TagCommand() {
+         public boolean run() {
+            heg_scroll.getProperties().popContextMode();
+            context_mode = heg_scroll.getProperties().getContextMode();
+            return true;
+         }});
+
+      len1_hash.put("ENGAGE_HEGEMON", new TagCommand() {
+         public boolean run() {
+            try {
+               hm.getSocketManager().write("using_client\n");
+            } catch (Exception e) { e.printStackTrace(); }
+            return true;
+         }});
+
+      len1_hash.put("__SCRY__", new TagCommand() {
+         public boolean run() {
+            try {
+               /* let the server know what we are.
+                */
+               hm.getSocketManager().write("__HEGEMON__\n");
+            } catch (Exception e) { e.printStackTrace(); }
+            return true;
+         }});
+
+      // Would be nice to force the hash-table to optimize itself at this point.
    }//constructor
 
    public final void setOutput(HegemonScroll disp) {
@@ -163,14 +546,17 @@ class HegemonInputFilter extends Object {
    }
 
    void displayInput(String txt) {
-      //Log.it("in displayInput, txt:  -:" + txt + ":-");
+      Log.instance().io("\nin displayInput, last_was_lt: " + last_was_lt
+                        + " last_was_gt: " + last_was_gt + " disp_sofar -:"
+                        + disp_sofar + " tag_sofar: " + tag_sofar + " in_tag: "
+                        + in_tag + " txt:  -:" + txt + ":-");
       int len = txt.length();
       char ch;
 
       for (int i = 0; i<len; i++) {
          ch = txt.charAt(i);
 
-         if (last_was_lt) {
+         if (last_was_lt && !in_tag) {
             if (ch == '<') {
                disp_sofar.append(ch);
                last_was_lt = false;
@@ -184,36 +570,46 @@ class HegemonInputFilter extends Object {
          }//if last was a less-than
          
          if (in_tag) {
-
-            if ((ch == '=') || (Character.isWhitespace(ch))) {
-               if (!last_tag_was_space)
-                 tag_sofar.append(' ');
-
-               last_tag_was_space = true;
-               continue;
-            }
-            else {
-               last_tag_was_space = false;
-            }
-         
-            if (ch == '>') {
-               if (processTag((tag_sofar.toString()).trim())) {
-                  //Log.it("Could process tag:  " + tag_sofar);
-                  tag_sofar = new StringBuffer(50);
-                  last_was_lt = false;
-                  in_tag = false;
+            if (last_was_gt) {
+               if (ch == '>') {
+                  tag_sofar.append(ch);
+                  last_was_gt = false;
                }
                else {
-                  //Log.it("Could not process tag:  " + tag_sofar);
-                  dispenseText("<" + tag_sofar.toString() + ">");
+                  // When here, we got a tag...
+                  if (processTag((tag_sofar.toString()).trim())) {
+                     //Log.it("Could process tag:  " + tag_sofar);
+                  }
+                  else {
+                     //Log.it("Could not process tag:  " + tag_sofar);
+                     dispenseText("<" + tag_sofar.toString() + ">");
+                  }
+
+                  // Clear the slate, ready to start over...
                   tag_sofar = new StringBuffer(50);
                   last_was_lt = false;
                   in_tag = false;
-               }
-            }//if going out of a tag
+                  last_was_gt = false;
+                  i--; //need to re-look at this character...
+               }//if last was greater-than.
+            }//if last was greater-than
             else {
-               tag_sofar.append(ch);
-            }
+               if ((ch == '=') || (Character.isWhitespace(ch))) {
+                  if (!last_tag_was_space)
+                     tag_sofar.append(' ');
+                  last_tag_was_space = true;
+               }
+               else {
+                  last_tag_was_space = false;
+                  if (ch == '>') {
+                     last_was_gt = true;
+                  }
+                  else {
+                     last_was_gt = false;
+                     tag_sofar.append(ch);
+                  }
+               }//else
+            }//else
          }//if in_tag
          else {
             if (ch == '<') {
@@ -224,7 +620,7 @@ class HegemonInputFilter extends Object {
                last_was_lt = false;
             }
          }//else, not in tag
-      }//if
+      }//for
       
       if (disp_sofar.length() > 0) {
          dispenseText(disp_sofar.toString());
@@ -237,7 +633,8 @@ class HegemonInputFilter extends Object {
 
    // Depending on which case we're in, send text to certain places..
    void dispenseText(String txt) {
-      Log.instance().dbg("DispenseText, context_mode: " + context_mode + "\n");
+      Log.instance().dbg("DispenseText, context_mode: " + context_mode 
+                         + " text -:" + txt + ":-\n");
       if (context_mode.equals(MODE_NORMAL)) {
          heg_scroll.append(txt);
          return;
@@ -287,23 +684,58 @@ class HegemonInputFilter extends Object {
     else returns false. */
    
    private final boolean processTag(String tag) {
-      Log.instance().dbg("in processTag, tag:  -:" + tag + ":-");
-      
-      int idx;
-      int last_idx = 0;
-      
+      Log.instance().io("in processTag, tag:  -:" + tag + ":-");
+
       Vector args = new Vector();
-      
-      idx = tag.indexOf(' ', last_idx);
-      while (idx != -1) {
-         args.addElement(tag.substring(last_idx, idx));
-         last_idx = idx + 1; //walk past terminating space
-         idx = tag.indexOf(' ', last_idx);
-      }//while
-      
-      args.addElement(tag.substring(last_idx,
-                                    tag.length())); /* last one not terminated
-                                                       by a space... */
+
+      int len = tag.length();
+      boolean in_quotes = false;
+      StringBuffer sb = new StringBuffer(50);
+      char ch;
+      boolean is_escaped = false;
+      for (int i = 0; i<len; i++) {
+         ch = tag.charAt(i);
+         if (ch == '\\') {
+            if (is_escaped) {
+               sb.append(ch);
+            }
+            else {
+               is_escaped = true;
+            }
+         }
+         else if (ch == '\"') {
+            if (is_escaped) {
+               sb.append(ch);
+            }
+            else {
+               //end or beginning of quoted tag
+               if (in_quotes) { //at the end then
+                  args.addElement(sb.toString());
+                  sb = new StringBuffer(50);
+               }
+               else {
+                  in_quotes = true;
+               }
+            }//else
+         }//if got a quote
+         else if (ch == ' ') {
+            if (in_quotes) {
+               sb.append(ch);
+            }
+            else {
+               args.addElement(sb.toString());
+               sb = new StringBuffer(50);
+            }
+         }//if
+         else {
+            sb.append(ch);
+         }
+      }//for
+
+      // Get the last one...
+      if (sb.length() > 0) {
+         args.addElement(sb.toString());
+      }
 
       /* when here, got all our args in a row. */
       return processArgs(args);
@@ -317,8 +749,8 @@ class HegemonInputFilter extends Object {
       boolean valid = false;
       
       String cmd = (String)(args.elementAt(0));
-      Log.instance().dbg("\nin processArgs(), COMMAND:  -:" + cmd 
-                         + ":- len: " + len + "\n");
+      Log.instance().io("\nin processArgs(), COMMAND:  -:" + cmd 
+                        + ":- len: " + len + "\n");
 
       //First of all, lets deal with variable length ones (puke!)
       if (cmd.equalsIgnoreCase("DISCRIM")) {
@@ -371,269 +803,12 @@ class HegemonInputFilter extends Object {
 
       /* now our large switch of different commands... */
       if (len == 1) {
-         if (cmd.equalsIgnoreCase("BATTLE")) {
-            Color c = color_mgr.getBattleSelection();
-            if (c != null)
-              heg_scroll.pushColor(c);
-            Font f = color_mgr.getBattleFont();
-            if (f != null)
-              heg_scroll.pushFont(f);
-            valid = true;
+         TagCommand tg = (TagCommand)(len1_hash.get(cmd.toUpperCase()));
+         if (tg != null) {
+            valid = tg.run();
          }
-         else if (cmd.equalsIgnoreCase("/BATTLE")) {
-            if (color_mgr.getBattleSelection() != null) 
-              heg_scroll.getProperties().popColor();
-            if (color_mgr.getBattleFont() != null)
-              heg_scroll.getProperties().popFont();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("TELL")) {
-            Color c = color_mgr.getTellSelection();
-            if (c != null)
-              heg_scroll.pushColor(c);
-            Font f = color_mgr.getTellFont();
-            if (f != null)
-              heg_scroll.pushFont(f);
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/TELL")) {
-            if (color_mgr.getGossipSelection() != null) 
-              heg_scroll.getProperties().popColor();
-            if (color_mgr.getTellFont() != null)
-              heg_scroll.getProperties().popFont();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("DOOR_LIST")) {
-            Color c = color_mgr.getDoorListSelection();
-            if (c != null)
-              heg_scroll.pushColor(c);
-            Font f = color_mgr.getDoorListFont();
-            if (f != null)
-              heg_scroll.pushFont(f);
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/DOOR_LIST")) {
-            if (color_mgr.getDoorListSelection() != null) 
-              heg_scroll.getProperties().popColor();
-            if (color_mgr.getDoorListFont() != null)
-              heg_scroll.getProperties().popFont();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("MOB_LIST")) {
-            Color c = color_mgr.getMobListSelection();
-            if (c != null)
-              heg_scroll.pushColor(c);
-            Font f = color_mgr.getMobListFont();
-            if (f != null)
-              heg_scroll.pushFont(f);
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/MOB_LIST")) {
-            if (color_mgr.getMobListSelection() != null) 
-              heg_scroll.getProperties().popColor();
-            if (color_mgr.getMobListFont() != null)
-              heg_scroll.getProperties().popFont();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("ITEM_LIST")) {
-            Color c = color_mgr.getItemListSelection();
-            if (c != null)
-              heg_scroll.pushColor(c);
-            Font f = color_mgr.getItemListFont();
-            if (f != null)
-              heg_scroll.pushFont(f);
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/ITEM_LIST")) {
-            if (color_mgr.getItemListSelection() != null) 
-              heg_scroll.getProperties().popColor();
-            if (color_mgr.getItemListFont() != null)
-              heg_scroll.getProperties().popFont();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("RM_DESC")) {
-            Color c = color_mgr.getRoomDescSelection();
-            heg_scroll.getProperties().pushContextMode(MODE_STAT_LD);
-            context_mode = MODE_STAT_LD;
-            if (c != null)
-              heg_scroll.pushColor(c);
-            Font f = color_mgr.getRoomDescFont();
-            if (f != null)
-              heg_scroll.pushFont(f);
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/RM_DESC")) {
-            heg_scroll.getProperties().popContextMode();
-            context_mode = heg_scroll.getProperties().getContextMode();
-            if (color_mgr.getRoomDescSelection() != null) 
-              heg_scroll.getProperties().popColor();
-            if (color_mgr.getRoomDescFont() != null)
-              heg_scroll.getProperties().popFont();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/RM_SHORT_DESC")) {
-            heg_scroll.getProperties().popContextMode();
-            context_mode = heg_scroll.getProperties().getContextMode();
-            if (color_mgr.getRoomShortDescSelection() != null) 
-              heg_scroll.getProperties().popColor();
-            if (color_mgr.getRoomShortDescFont() != null)
-              heg_scroll.getProperties().popFont();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("GOSSIP")) {
-            Color c = color_mgr.getGossipSelection();
-            if (c != null)
-              heg_scroll.pushColor(c);
-            Font f = color_mgr.getGossipFont();
-            if (f != null)
-              heg_scroll.pushFont(f);
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/GOSSIP")) {
-            if (color_mgr.getGossipSelection() != null) 
-              heg_scroll.getProperties().popColor();
-            if (color_mgr.getGossipFont() != null)
-              heg_scroll.getProperties().popFont();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("SAY")) {
-            Color c = color_mgr.getSaySelection();
-            if (c != null)
-              heg_scroll.pushColor(c);
-            Font f = color_mgr.getSayFont();
-            if (f != null)
-              heg_scroll.pushFont(f);
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/SAY")) {
-            if (color_mgr.getSaySelection() != null) 
-              heg_scroll.getProperties().popColor();
-            if (color_mgr.getSayFont() != null)
-              heg_scroll.getProperties().popFont();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("YELL")) {
-            Color c = color_mgr.getYellSelection();
-            if (c != null)
-              heg_scroll.pushColor(c);
-            Font f = color_mgr.getYellFont();
-            if (f != null)
-              heg_scroll.pushFont(f);
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/YELL")) {
-            if (color_mgr.getYellSelection() != null) 
-              heg_scroll.getProperties().popColor();
-            if (color_mgr.getYellFont() != null)
-              heg_scroll.getProperties().popFont();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("AUCTION")) {
-            Color c = color_mgr.getAuctionSelection();
-            if (c != null)
-              heg_scroll.pushColor(c);
-            Font f = color_mgr.getAuctionFont();
-            if (f != null)
-              heg_scroll.pushFont(f);
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/AUCTION")) {
-            if (color_mgr.getAuctionSelection() != null) 
-              heg_scroll.getProperties().popColor();
-            if (color_mgr.getAuctionFont() != null)
-              heg_scroll.getProperties().popFont();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("TAB")) {
-            heg_scroll.getProperties().pushTab();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/TAB")) {
-            heg_scroll.getProperties().popTab();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/HELP")) {
-            heg_scroll.getProperties().popContextMode();
-            context_mode = heg_scroll.getProperties().getContextMode();
-            hm.getHelpFrame().saveHelpText(); //write it to disk
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("P")) {
-            heg_scroll.drawNewline();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("PRE")) {
-            heg_scroll.getProperties().pushMode(heg_scroll.
-                                                getProperties().MODE_PRE);
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/PRE")) {
-            heg_scroll.getProperties().popMode();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/COLOR")) {
-            heg_scroll.getProperties().popColor();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("STAT_SD")) {
-            heg_scroll.getProperties().pushContextMode(MODE_STAT_SD);
-            context_mode = MODE_STAT_SD;
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("STAT_ND")) {
-            heg_scroll.getProperties().pushContextMode(MODE_STAT_ND);
-            context_mode = MODE_STAT_ND;
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("STAT_LD")) {
-            heg_scroll.getProperties().pushContextMode(MODE_STAT_LD);
-            context_mode = MODE_STAT_LD;
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("KEYWORD_DESC")) {
-            heg_scroll.getProperties().pushContextMode(MODE_KEYWORD_LD);
-            context_mode = MODE_KEYWORD_LD;
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("PSTAT_LD")) {
-            heg_scroll.getProperties().pushContextMode(MODE_PATH_CELL_STAT_LD);
-            context_mode = MODE_PATH_CELL_STAT_LD;
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("SCRIPT_DATA")) {
-            heg_scroll.getProperties().pushContextMode(MODE_MSCRIPT_DATA);
-            context_mode = MODE_MSCRIPT_DATA;
-            valid = true;
-
-         }
-         else if (cmd.equalsIgnoreCase("/KEYWORD_DESC")) {
-            heg_scroll.getProperties().popContextMode();
-            context_mode = heg_scroll.getProperties().getContextMode();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/SCRIPT_DATA")) {
-            heg_scroll.getProperties().popContextMode();
-            context_mode = heg_scroll.getProperties().getContextMode();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("/STAT")) {
-            heg_scroll.getProperties().popContextMode();
-            context_mode = heg_scroll.getProperties().getContextMode();
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("ENGAGE_HEGEMON")) {
-            try {
-               hm.getSocketManager().write("using_client\n");
-            } catch (Exception e) { e.printStackTrace(); }
-            valid = true;
-         }
-         else if (cmd.equalsIgnoreCase("__SCRY__")) {
-            try {
-               /* let the server know what we are.
-                */
-               hm.getSocketManager().write("__HEGEMON__\n");
-            } catch (Exception e) { e.printStackTrace(); }
-            valid = true;
+         else {
+            valid = false;
          }
       }//if len == 1
       else if (len == 2) { //all these require exactly two
@@ -730,6 +905,14 @@ class HegemonInputFilter extends Object {
                                           (String)(args.elementAt(2)));
             valid = true;
          }
+         else if (cmd.equalsIgnoreCase("BUG_COMMENT_ENTRY")) {
+            hm.getBugListEditor().newEntry((String)(args.elementAt(1)),
+                                           (String)(args.elementAt(2)));
+            heg_scroll.getProperties().pushContextMode(MODE_BUG_COMMENT_ENTRY);
+            context_mode = MODE_BUG_COMMENT_ENTRY;
+            
+            valid = true;
+         }
       }//if len == 3
       else if (len == 4) {
          if (cmd.equalsIgnoreCase("VALUE_LIST")) {
@@ -791,6 +974,18 @@ class HegemonInputFilter extends Object {
                              (String)(args.elementAt(6)));
             valid = true;
          }//if
+         else if (cmd.equalsIgnoreCase("BUG_ENTRY")) {
+            hm.getBugListEditor().setBugEntry((String)(args.elementAt(1)), //num
+                                              (String)(args.elementAt(2)), //state
+                                              (String)(args.elementAt(3)), //cr_date
+                                              (String)(args.elementAt(4)), //reporter
+                                              (String)(args.elementAt(5)), //room_num
+                                              (String)(args.elementAt(6)), //assigned_to
+                                              (String)(args.elementAt(7))); //col_type
+            heg_scroll.getProperties().pushContextMode(MODE_BUG_ENTRY);
+            context_mode = MODE_BUG_ENTRY;
+            valid = true;
+         }
       }//if
          
       return valid;

@@ -55,7 +55,9 @@ enum PcMode {
    MODE_LOGOFF_NEWBIE_PLEASE = 9,    // pre-login socket problem
    MODE_LOG_OFF_LINKDEAD_PLEASE = 10, //to deal with chars on the linkdead list
    MODE_ADD_ROOM_SCRIPT = 11,
-   MODE_ADD_OBJECT_SCRIPT = 12
+   MODE_ADD_OBJECT_SCRIPT = 12,
+   MODE_ADD_BUG_COMMENT = 13,
+   MODE_ADD_IDEA_COMMENT = 14
 };//PcMode
 
 enum PcPosition {
@@ -536,7 +538,6 @@ public:
    String prompt;
    String poofin;
    String poofout;
-   object* post_msg;
    short pk_count;
    short died_count;
    short quest_points;
@@ -562,6 +563,11 @@ public:
    String user1_str;
    String user2_str;
    String user3_str;
+
+   // Volatile variables, ie not saved to disk.
+   int bug_num; //used when commenting on bugs or ideas.
+   object* post_msg;
+   String bug_comment;
 
    pc_data();
    pc_data(const pc_data& source);  //copy constructor
@@ -727,6 +733,7 @@ public:
 
    int isCloaked() { return (pc && PC_FLAGS.get(3)); }
    int isInProcNow() { return (mob && mob->isInProcNow()); }
+   int isInBattle() { return !(is_fighting.isEmpty()); }
 
    int haveObjNumbered(int count, int obj_num);
 

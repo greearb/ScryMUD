@@ -42,6 +42,18 @@ enum class_id_enum {
    VEHICLE_CLASS_ID = 1
 };//class_id_enum
 
+
+class HegemonMarkup {
+public:
+   /**  Turn any hot characters, such as <,> into Hegemon
+    * markup characters.  This will make this string safe for
+    * inclusion in hegemon markup text.
+    */
+   static String makeSafeForHegTag(const char* string);
+}; 
+
+
+
 ///************************  stat_cell  ************************///
  
 class stat_spell_cell {

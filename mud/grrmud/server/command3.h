@@ -30,6 +30,10 @@
 #include "const.h"
 #include "classes.h"
 
+int do_add_comment(BugTypeE bt, critter& pc);
+int do_add_idea_comment(critter& pc);
+int do_add_bug_comment(critter& pc);
+
 int oclone(int i_th, const String* name, critter& pc);
 int mclone(int i_th, const String* name, critter& pc);
 int oload(int i_th, const String* name, critter& pc);

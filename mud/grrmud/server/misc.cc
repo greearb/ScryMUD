@@ -305,6 +305,11 @@ void do_mini_tick() { // decrement pause count ect
 
    while ((crit_ptr = cll.next())) {
 
+      // Turn un-blocked, if not in battle.
+      if (!crit_ptr->isInBattle()) {
+         crit_ptr->crit_flags.turn_off(21);
+      }
+
       /* Take care of round-by-round affects on other spells/skills. */
       if ((sc_ptr = is_affected_by(EARTHMELD_SKILL_NUM, *crit_ptr))) {
          if (crit_ptr->isFighting()) {
@@ -339,6 +344,12 @@ void do_mini_tick() { // decrement pause count ect
 
    affected_mobs.head(cll);
    while ((crit_ptr = cll.next())) {
+
+      // Turn un-blocked, if not in battle.
+      if (!crit_ptr->isInBattle()) {
+         crit_ptr->crit_flags.turn_off(21);
+      }
+
       if (crit_ptr->PAUSE > 0)
 	 crit_ptr->PAUSE--;
 

@@ -24,6 +24,7 @@ AliasFrame.class \
 BuildInfo.class \
 BIStream.class \
 BOStream.class \
+BugListEditor.class \
 ClientDisplay.class \
 ColorChoicesFrame.class \
 ColorNameException.class \
@@ -74,7 +75,8 @@ ScrollComponentNewline.class \
 SocketManager.class \
 SocketReader.class \
 SocketWriter.class \
-StringUtils.class
+StringUtils.class \
+TagCommand.class
 
 
 SRCS=hegemon.java \
@@ -86,6 +88,7 @@ AliasDialog.java \
 AliasFrame.java \
 BIStream.java \
 BOStream.java \
+BugListEditor.java \
 ClientDisplay.java \
 ColorChoicesFrame.java \
 ColorNameException.java \
@@ -136,7 +139,8 @@ ScrollComponentNewline.java \
 SocketManager.java \
 SocketReader.java \
 SocketWriter.java \
-StringUtils.java
+StringUtils.java \
+TagCommand.java
 
 
 release:  $(OBJS)

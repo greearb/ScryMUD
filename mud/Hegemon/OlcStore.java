@@ -37,6 +37,13 @@ class OlcStore extends Object {
 
    String case0;
 
+   public void dispose() {
+      door = null;
+      rm = null;
+      mob = null;
+      obj = null;
+   }
+
    
    public OlcStore(HegemonManager h) {
       hm = h;

@@ -349,6 +349,11 @@ class HegemonScroll extends Panel {
          int mx_size = parent.getSize().width - 40; //-20 is for scroll bar
          int last_ws_idx = 0;
 
+         // Sanity checks for problems with closed frames and so on.
+         if (mx_size < 200) {
+            mx_size = 200;
+         }
+
          for (int i = 0; i<len; i++) {
             ch = txt.charAt(i);
 

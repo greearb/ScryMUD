@@ -132,7 +132,8 @@ class ClientDisplay extends Frame {
       file_m.add((action_turn_on_mi = new MenuItem("Enable Actions")));
       file_m.add((action_turn_off_mi = new MenuItem("Disable Actions")));
       
-      action_turn_on_mi.setEnabled(false); //they start out ON already
+      action_turn_on_mi.setEnabled(true); //they start out ON already
+      action_turn_off_mi.setEnabled(false);
       
       action_edit_mi.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
@@ -370,6 +371,9 @@ class ClientDisplay extends Frame {
       c.fill = GridBagConstraints.BOTH;
       gridbag.setConstraints(input_field, c);
       add(input_field);
+
+      // Actions off by default now...
+      do_actions_disable();
       
       this.pack();
       setSize(650, 600);

@@ -34,6 +34,28 @@
 #include "command4.h"
 
 
+
+
+
+/** Static method */
+String HegemonMarkup::makeSafeForHegTag(const char* str) {
+   int len = strlen(str);
+   char c;
+   String retval(len + 50);
+
+   for (int i = 0; i<len; i++) {
+      c = str[i];
+      if (c == '>') {
+         retval += ">>";
+      }
+      else {
+         retval += c;
+      }
+   }//for
+   return retval;
+}//convertToHeg
+
+
 int stat_spell_cell::_cnt = 0;
 
 

@@ -1409,6 +1409,11 @@ void pc_data::Clear() {
       w_eye_obj->obj_proc->w_eye_owner = NULL;
       w_eye_obj = NULL;
    }//if
+
+   // Volatile members (not saved to disk).
+   bug_num = 0;
+   bug_comment.Clear();
+
 }//Clear, pc_data
 
 
@@ -2770,7 +2775,7 @@ void critter::doPrompt() {
 
    if (isUsingClient()) {
       // HP, HP-MAX, MANA, MANA-MAX, MOV, MOV-MAX
-      Sprintf(targ, "<PROMPT %i %i %i %i %i %i>",
+      Sprintf(targ, "<PROMPT %i %i %i %i %i %i> ", // the trailing space is important.
               getHP(), getHP_MAX(), getMana(), getManaMax(),
               getMov(), getMovMax());
       show(targ);

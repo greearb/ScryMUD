@@ -24,64 +24,116 @@
 #define __BUG_ENTRY_INCLUDE_GRRMUD__
 
 #include "critter.h"
+#include <errno.h>
 
+
+class CommentEntry {
+public:
+   String date;
+   String reporter;
+   String report;
+
+   CommentEntry() { }; //Strings initialize themselves...
+   CommentEntry(const char* d, const char* rr, const char* r)
+     : date(d), reporter(rr), report(r) { }
+   CommentEntry(const CommentEntry& src)
+     : date(src.date), reporter(src.reporter), report(src.report) { }
+
+   int read(ifstream& dafile);
+   int write(ofstream& dafile);
+   int writeHtml(ofstream& dafile);
+   String toString();
+   String toStringHeg(); //Hegemon markup
+};
 
 class BugEntry {
-private:
-   static int _cnt;
-
-protected:
-   int bug_num;
-   String reporter;
-   String date;
-   String report;
-   int room_num;
-
 public:
+
+   enum state {
+      open,
+      assigned,
+      retest,
+      closed,
+      all,
+      none,
+      high_state
+   };
+
    BugEntry()
          : bug_num(0), room_num(0) {
       _cnt++;
    }
 
    BugEntry(int bn, const char* _reporter, const char* _date, 
-            const char* _report, int rn)
-         : bug_num(bn), reporter(_reporter), date(_date),
-           report(_report), room_num(rn) {
+            const char* _title, int rn)
+         : bug_num(bn), room_num(rn), cur_state(open), 
+           create_date(_date), reporter(_reporter),
+           assigned_to("ADMIN"), title(_title) {
       _cnt++;
    }
 
    /** Copy constructor */
-   BugEntry(const BugEntry& src)
-         : bug_num(src.bug_num), reporter(src.reporter),
-           date(src.date), report(src.report), room_num(src.room_num) {
-      _cnt++;
-   }
-    
-   //operator=(const BugEntry& src);  //not needed at this time.
-
+   BugEntry(const BugEntry& src);
+   BugEntry& operator=(const BugEntry& src);
    ~BugEntry() { _cnt--; }
 
+   int clear();
    int read(ifstream& dafile);
    int write(ofstream& dafile);
    int writeHtml(ofstream& dafile);
 
+   //does checking needed
+   int changeState(state new_state, int imm_level, const String& name);
+
    String toStringBrief();
    String toString();
+   String toStringHeg(const char* col_name);
 
    int getBugNum() const { return bug_num; }
    int getRoomNum() const { return room_num; }
    String& getReporter() { return reporter; }
-   String& getReport() { return report; }
-   String& getDate() { return date; }
+   String& getCreateDate() { return create_date; }
+   state getState() const { return cur_state; }
 
    void setBugNum(int i) { bug_num = i; }
-   void appendNote(const String& note);
+   void appendComment(const CommentEntry& re);
+   void appendComment(const char* date, const char* report,
+                      const char* reporter);
 
+   int canComment(int imm_level, const String& name);
+   int reAssign(const String& new_name, int imm_level, const String& name);
+
+   BugEntry* getBugEntry(int bug_num);
+
+   static state getState(const String& fer_state);
    static int getInstanceCount() { return _cnt; }
+   static char* state_str[];
+   static char* html_color[];
+
+protected:
+   int bug_num;
+   int room_num;
+   state cur_state;
+   bitfield flags; /* none defined yet */
+   String create_date; //it was created.
+   String reporter;
+   String assigned_to; /* name of person asigned to fix it */
+   List<CommentEntry*> reports;
+   String title;
+
+private:
+   static int _cnt;
+
 };
 
 
 class BugCollection {
+public:
+   enum CollectionType {
+      BUGS,
+      IDEAS
+   };
+
 private:
    static int _cnt;
 
@@ -89,11 +141,20 @@ protected:
    int next_bug_num;
    String file_name;
    String coll_name;
+   CollectionType type;
    List<BugEntry*> bugs;
 
+   static char* ct_strs[];
+
+   // Causes it to write it's self to disk for storage and in html.
+   int notifyModified();
+
 public:
-   BugCollection(const char* fname, const char* _coll_name) 
-         : next_bug_num(0), file_name(fname), coll_name(_coll_name) {
+
+   BugCollection(const char* fname, const char* _coll_name,
+                 CollectionType ct) 
+         : next_bug_num(0), file_name(fname), coll_name(_coll_name),
+           type(ct) {
       _cnt++;
    }
 
@@ -102,19 +163,28 @@ public:
    String& getFileName() { return file_name; }
 
    static int getInstanceCount() { return _cnt; }
+   const char* getColTypeName();
 
    int read();
    int write();
    int writeHtml();
 
-   int removeBug(int num, const String& name, const String& notes,
-                 BugCollection& completed_bc);
+   BugEntry* getBugEntry(int bug_num);
+
+   int canComment(int bug, int imm_level, const String& name);
+   int changeState(int bug, const String& new_state, int imm_level,
+                   const String& name);
+   int reAssign(int bug, const String& new_name, int imm_level,
+                const String& name);
+   int purgeBug(int num);
    int addBug(const char* cur_time, int rnum, const String& reporter,
               const String& report);
 
    int addBug(BugEntry* be);
+   int addComment(int bug, const CommentEntry& re, int imm_level,
+                  const String& name);
+   String toString(const String& in_state, int use_heg_markup);
 
-   String toString(); //print em all out
 };
 
 #endif

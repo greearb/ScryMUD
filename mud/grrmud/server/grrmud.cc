@@ -103,11 +103,10 @@ class door_data      door_list[NUMBER_OF_DOORS + 1];
 LazyPtrArray<room>   room_list;
 
 
-BugCollection bl_ideas("./World/BC_IDEAS", "Idea Listing");
-BugCollection bl_bugs("./World/BC_BUGS", "Bug Listing");
-BugCollection bl_comp_ideas("./World/BC_CLOSED_IDEAS", "Idea Listing (Completed)");
-BugCollection bl_comp_bugs("./World/BC_CLOSED_BUGS", "Bug Listing (Completed)");
-
+BugCollection bl_ideas("./World/BC_IDEAS", "Idea Listing",
+                       BugCollection::IDEAS);
+BugCollection bl_bugs("./World/BC_BUGS", "Bug Listing",
+                      BugCollection::BUGS);
 
 List<critter*>        linkdead_list; 
 List<critter*>        pc_list;  
@@ -553,11 +552,6 @@ void run_the_game(int port) {
    // Read in the bug and idea list.
    bl_bugs.read();
    bl_ideas.read();
-
-   //completed ones
-   bl_comp_bugs.read();
-   bl_comp_ideas.read();
-
 
    Load_Modifier = Regular_Load_Modifier;
    //cout << "The Universe has been created, but it took me more than \n";

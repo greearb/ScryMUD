@@ -1180,44 +1180,6 @@ void out_stat_spell_list(const List<stat_spell_cell*>& lst, critter& pc) {
 }//out_stat_spell
 
 
-critter* find_next_proc_mob(List<critter*>& lst) {
-   Cell<critter*> cll(lst);
-   critter* ptr;
-
-   while ((ptr = cll.next())) {
-      if (!(ptr->pc)) {
-         if (ptr->mob) {
-            if (!ptr->master) {
-               if (ptr->MOB_FLAGS.get(3)) {
-                  ptr->MOB_FLAGS.turn_off(3);
-                  return ptr;
-               }//if haven't done procs yet
-            }//if
-         }//if a mob
-      }//needed if obj has BOTH mob and pc data fields
-   }//while
-
-   return NULL;
-}//find_next_proc_mob
-
-
-critter* find_next_spell_mob(List<critter*>& lst) {
-   Cell<critter*> cll(lst);
-   critter* ptr;
-
-   while ((ptr = cll.next())) {
-      if (!ptr->CRIT_FLAGS.get(20)) { //if spell_tested
-         ptr->CRIT_FLAGS.turn_on(20);
-         return ptr;
-      }//if not affected yet
-   }//while
-
-   return NULL;
-}//find_next_spell_mob
-
-
-
-
 object* have_obj_numbered(const List<object*>& lst, const int i_th,
                           const int obj_num, const int see_bit,
                           const room& rm) {

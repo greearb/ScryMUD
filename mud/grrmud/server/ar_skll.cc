@@ -60,18 +60,14 @@ int do_berserk(critter& pc) {
       return -1;
    }//if
 
-   List<critter*> tmp_lst(ROOM.getCrits());
-   Cell<critter*> cll(tmp_lst);
    critter* ptr;
-
-   while ((ptr = cll.next()))
-      ptr->CRIT_FLAGS.turn_off(20); //turn off done_already 
-                                    //flag for all in rm
+   
+   ROOM.makeReadyForAreaSpell();
 
    int flag = FALSE;
 
    if (skill_did_hit(pc, BERZERK_SKILL_NUM, pc)) {
-      while ((ptr = find_next_spell_mob(tmp_lst))) {
+      while ((ptr = ROOM.findNextSpellCritter())) {
          if (ptr != &pc) {
             if (ptr->mob || 
                  (ptr->pc && HaveData(ptr, pc.IS_FIGHTING))) {
@@ -80,10 +76,6 @@ int do_berserk(critter& pc) {
                   continue;
                }//if
                
-               if (!ROOM.haveCritter(ptr)) {
-                  continue;
-               }
-
                if (ptr->isMob()) {
                   ptr = mob_to_smob(*ptr, pc.getCurRoomNum());
                }//if
