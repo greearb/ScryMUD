@@ -1183,7 +1183,7 @@ void mob_data::doScriptJump(int abs_offset) {
 }
 
 
-void mob_data::Read(ifstream& ofile, short read_all) {
+void mob_data::Read(ifstream& ofile, short read_all, int format_version) {
    char tmp[81];
    
    Clear();
@@ -1588,12 +1588,11 @@ void pc_data::Write(ofstream& ofile) {
    }//for
    ofile << "-1 \twanted in\n";
    
-   ofile << endl;
    ofile << "*** end of pc data ***\n";
 }//Write()       
 
 
-void pc_data::Read(ifstream& ofile) {
+void pc_data::Read(ifstream& ofile, int format_version) {
    int i;
    char tmp[81];
    
@@ -1714,13 +1713,15 @@ void pc_data::Read(ifstream& ofile) {
       ofile.getline(tmp, 80);
    }
 
-   // Read in wanted_in information
-   ofile >> i;
-   while (i != -1) {
-      wanted_in[i] = 1;
+   if ( format_version > 0 ) {
+      // Read in wanted_in information
       ofile >> i;
+      while (i != -1) {
+         wanted_in[i] = 1;
+         ofile >> i;
+      }
+      ofile.getline(tmp, 80);
    }
-   ofile.getline(tmp, 80);
 
    ofile.getline(tmp, 80); //grabs extra line/comment
 }//Read()       
@@ -2446,6 +2447,8 @@ void critter::Write(ofstream& ofile) {
    Cell<String*> st_cell(names);
    String* st_ptr;
    String tmp_str(100);
+
+   ofile << "%" << CRITTER_FORMAT_VERSION << "\tcritter format version" << endl;
 
    int len = 0;
    while ((st_ptr = st_cell.next())) {
@@ -3433,6 +3436,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
    char tmp[81];
    String tmp_str(80);
    String* string;
+   int format_version;
 
    Clear();
 
@@ -3441,6 +3445,20 @@ void critter::fileRead(ifstream& ofile, short read_all) {
          mudlog << "ERROR:  da_file FALSE in crit read." << endl;
       }
       return;
+   }
+
+   // look for a file-version identifier
+   {
+      char tst_char;
+      ofile.get(tst_char);
+      if ( tst_char != '%' ) {
+         // no file version 
+         ofile.putback(tst_char);
+         format_version = 0;
+      } else {
+         ofile >> format_version;
+         ofile.getline(tmp, 80);
+      }
    }
 
    test = TRUE;
@@ -3548,7 +3566,9 @@ void critter::fileRead(ifstream& ofile, short read_all) {
       ss_ptr = new stat_spell_cell;
       ss_ptr->stat_spell = i;
       ofile >> ss_ptr->bonus_duration;
-      ofile >> ss_ptr->bonus_value;
+      if ( format_version > 0 ) {
+         ofile >> ss_ptr->bonus_value;
+      }
 
       Put(ss_ptr, affected_by);
       ofile >> i;
@@ -3600,13 +3620,14 @@ void critter::fileRead(ifstream& ofile, short read_all) {
       if (!(pc)) {
          pc = new pc_data;
       }//if
-      pc->Read(ofile);  
+      pc->Read(ofile, format_version);  
+      pc->file_format_version = format_version;
    }//if
    else { //its a mob
       if (!(mob)) {
          mob = new mob_data;
       }//if
-      mob->Read(ofile, read_all); 
+      mob->Read(ofile, read_all, format_version); 
    }//else
    ofile.getline(tmp, 80);      
    //mudlog.log(DBG, "Done w/read crit.\n");

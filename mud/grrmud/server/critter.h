@@ -28,6 +28,8 @@
 #ifndef GRRMUD_CRITTER_INCLUDE_H
 #define GRRMUD_CRITTER_INCLUDE_H
 
+#define CRITTER_FORMAT_VERSION 1
+
 #include <bitfield.h>
 #include <string2.h>
 #include "classes.h"
@@ -519,7 +521,7 @@ public:
    void Clear();
    mob_data& operator= (mob_data& source);
    void Write(ofstream& ofile);
-   void Read(ifstream& ofile, short read_all);
+   void Read(ifstream& ofile, short read_all, int format_version);
    int isInProcNow() { return (cur_script && (cur_script->isInProgress())); }
    void addProcScript(const String& txt, MobScript* script_data);
    void finishedMobProc();
@@ -554,6 +556,7 @@ public:
    String last_input;
    String rep_to;
    int descriptor;    //socket descriptor
+   int file_format_version; //used for login sanity
 
    // When modifying this, modify PC_DATA_FLAGS_NAMES in const.cc
    bitfield pc_data_flags;
@@ -635,7 +638,7 @@ public:
 
    void Clear();
    void Write(ofstream& ofile);
-   void Read(ifstream& ofile);
+   void Read(ifstream& ofile, int format_version);
    static int getInstanceCount() { return _cnt; }
 
    int client;

@@ -417,7 +417,7 @@ void critter::doLogin() {
                }
 
                // re-gain effects from worn gear
-               {
+               if ( pc->file_format_version > 0 ) {
                   int i;
                   for(i=0;i<MAX_EQ;i++) {
                      if (EQ[i]) {
