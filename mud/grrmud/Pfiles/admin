@@ -12,7 +12,7 @@
 -1
 -1 end of keyword_coll
 1
-0    Admin is a fine fellow, always fixing problems for others and making
+0     Admin is a fine fellow, always fixing problems for others and making
 problems for you.
 
 ~
@@ -22,12 +22,12 @@ problems for you.
 0
 -1  End of room proc scripts
 1
-0    the IMP Supreme
+0     the IMP Supreme
 ~
 
 -1
 1
-0    
+0     
 ~
 
 -1
@@ -55,7 +55,7 @@ problems for you.
 -1
 -1 end of keyword_coll
 1
-0    This staff, made from the heart wood of an ancient ash split asunder by
+0     This staff, made from the heart wood of an ancient ash split asunder by
 lightning, has been carefully carved with runes of power.  The staff is
 the symbol of the acadamy and the Grand Mage guards it closely, even as
 it guards him or her.
@@ -67,12 +67,12 @@ it guards him or her.
 0
 -1  End of room proc scripts
 1
-0    an ashen staff
+0     an ashen staff
 ~
 
 -1
 1
-0    A staff of carved ash lies here.
+0     A staff of carved ash lies here.
 ~
 
 -1
@@ -101,7 +101,7 @@ End of Object.
 -1
 -1 end of keyword_coll
 1
-0         This is a simple canteen with a canvas covering.  There is a metal
+0          This is a simple canteen with a canvas covering.  There is a metal
 chain connecting the lid to the canteen so you will be sure not to lose
 it!
 ~
@@ -111,12 +111,12 @@ it!
 0
 -1  End of room proc scripts
 1
-0    a canteen
+0     a canteen
 ~
 
 -1
 1
-0    A small metal canvas covered canteen sits here.
+0     A small metal canvas covered canteen sits here.
 ~
 
 -1
@@ -150,7 +150,7 @@ End of Object.
 -1
 -1 end of keyword_coll
 1
-0    This staff, made from the heart wood of an ancient ash split asunder by
+0     This staff, made from the heart wood of an ancient ash split asunder by
 lightning, has been carefully carved with runes of power.  The staff is
 the symbol of the acadamy and the Grand Mage guards it closely, even as
 it guards him or her.
@@ -162,12 +162,12 @@ it guards him or her.
 0
 -1  End of room proc scripts
 1
-0    an ashen staff
+0     an ashen staff
 ~
 
 -1
 1
-0    A staff of carved ash lies here.
+0     A staff of carved ash lies here.
 ~
 
 -1
@@ -198,7 +198,7 @@ End of Object.
 -1
 -1 end of keyword_coll
 1
-0         You see a pile of gold lying on the ground, wish you could tell how
+0          You see a pile of gold lying on the ground, wish you could tell how
 big it was eh? :)
 ~
 
@@ -207,12 +207,12 @@ big it was eh? :)
 0
 -1  End of room proc scripts
 1
-0    some gold
+0     some gold
 ~
 
 -1
 1
-0    A pile of gold lies here. 
+0     A pile of gold lies here. 
 ~
 
 -1
@@ -225,8 +225,8 @@ End of Object.
 
 1 4 -1	inv
 bgio24h/ZwWLw	passwd
-27 26 25 21 19 16 14 11 10 6 5 2 -1  -:| bitfield |:-
-71 15 15 71 936764745 100		bday, byr, ryr, rday, llt, tto
+27 26 25 21 19 16 14 11 10 6 2 -1  -:| bitfield |:-
+71 15 15 71 936941896 100		bday, byr, ryr, rday, llt, tto
 18 9988 9553 -2 1 34 0 age hgr thr drg pk died qp
 1 100 12 100 13 100 14 1 21 100 25 1 30 1 92 100 94 1 101 100 
 103 1 105 100 107 1 117 1 118 25 134 25 147 100 152 100 153 1 159 100 

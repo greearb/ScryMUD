@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.55 1999/09/08 06:11:36 greear Exp $
-// $Revision: 1.55 $  $Author: greear $ $Date: 1999/09/08 06:11:36 $
+// $Id: critter.cc,v 1.56 1999/09/11 06:12:16 greear Exp $
+// $Revision: 1.56 $  $Author: greear $ $Date: 1999/09/11 06:12:16 $
 
 //
 //ScryMUD Server Code
@@ -1083,7 +1083,7 @@ void mob_data::toStringStat(critter* viewer, String& rslt) {
 
    Sprintf(buf, "\tCur in game: %i,  Max in game: %i, Home Room: %i, Sessile: %i.\n",
            getCurInGame(), getMaxInGame(), home_room, isSessile());
-   rslt.append(rslt);
+   rslt.append(buf);
 
    if (isTracking()) {
       Sprintf(buf, "\tTracking target:  %S", getTrackingTarget());
@@ -1100,7 +1100,6 @@ void mob_data::toStringStat(critter* viewer, String& rslt) {
 
    Sprintf(buf, "Skin num: %i\n\n", skin_num);
    rslt.append(buf);
-
 
    if (viewer->isUsingClient()) {
       rslt = "</MOB_DATA>\n";

@@ -1,5 +1,5 @@
-// $Id: command2.cc,v 1.46 1999/09/06 07:12:50 greear Exp $
-// $Revision: 1.46 $  $Author: greear $ $Date: 1999/09/06 07:12:50 $
+// $Id: command2.cc,v 1.47 1999/09/11 06:12:16 greear Exp $
+// $Revision: 1.47 $  $Author: greear $ $Date: 1999/09/11 06:12:16 $
 
 //
 //ScryMUD Server Code
@@ -1397,7 +1397,8 @@ int toggle_prompt(const String* field, critter& pc) {
 		 (int)(pc.PC_FLAGS.get(20)));
 	 show(buf, pc);
          Sprintf(buf, cstr(CS_TOG6, pc),
-                 (int)(pc.PC_FLAGS.get(19)), (int)(pc.PC_FLAGS.get(24)));
+                 (int)(pc.PC_FLAGS.get(19)), (int)(pc.PC_FLAGS.get(24)),
+                 (int)(pc.PC_FLAGS.get(30)));
 	 show(buf, pc);
       }//if
       return 0;

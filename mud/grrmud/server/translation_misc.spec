@@ -1,5 +1,5 @@
-# $Id: translation_misc.spec,v 1.3 1999/08/29 01:17:17 greear Exp $
-# $Revision: 1.3 $  $Author: greear $ $Date: 1999/08/29 01:17:17 $
+# $Id: translation_misc.spec,v 1.4 1999/09/11 06:12:16 greear Exp $
+# $Revision: 1.4 $  $Author: greear $ $Date: 1999/09/11 06:12:16 $
 
 # The syntax is as follows:
 # ENUM_NAME LANGUAGE "TEXT" LANGUAGE "TEXT" ... ~
@@ -607,6 +607,10 @@ CS_NO_SHOW_NPC_ENTRY_F
 
 CS_NO_BEEP_F
 	eng "no_beep"
+	~
+
+CS_SHOW_DBG_F
+	eng "show_debug"
 	~
 
 CS_PC_DATA_FLAGS

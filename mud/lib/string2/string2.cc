@@ -1,5 +1,5 @@
-// $Id: string2.cc,v 1.16 1999/09/07 07:00:27 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/09/07 07:00:27 $
+// $Id: string2.cc,v 1.17 1999/09/11 06:12:17 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/09/11 06:12:17 $
 
 //
 //ScryMUD Server Code
@@ -994,9 +994,15 @@ void String::append(const char c) {
 
 
 void String::append(const String& S) {
-   ensureCapacity(cur_len + S.cur_len);
-   strcat(string, S.string);
-   cur_len += S.cur_len;
+   if (&S != this) {
+      ensureCapacity(cur_len + S.cur_len);
+      strcat(string, S.string);
+      cur_len += S.cur_len;
+   }
+   else {
+      String tmp(S);
+      append(tmp);
+   }
 }//append      
 
 
@@ -1189,6 +1195,7 @@ void vSprintf(String& targ, const char* string, va_list ap) {
    char* tmp_chr_str;
    String* tmp_str;
    void* junk;
+   char ch_buf[50];
 
    targ = "\0"; //initialize targ
 
@@ -1245,8 +1252,15 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                   }//while
                   i--;  //slight hack
                   break;
+               case 'x':
+                  i = va_arg(ap, int);
+                  sprintf(ch_buf, "0x%lx", i);
+                  targ.append(ch_buf);
+                  break;
                default:
-                  targ.Assert(FALSE, "ERROR: default called in Sprintf.\n");
+                  sprintf(ch_buf, "ERROR: default (%c) called in Sprintf.\n",
+                          string[i]);
+                  targ.Assert(FALSE, ch_buf);
             }//switch
             i++;
          }//if

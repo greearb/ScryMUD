@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.20 1999/09/08 06:11:36 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/09/08 06:11:36 $
+// $Id: classes.cc,v 1.21 1999/09/11 06:12:16 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/09/11 06:12:16 $
 
 //
 //ScryMUD Server Code
@@ -213,12 +213,20 @@ void Closable::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
    String buf(200);
    if (!viewer || viewer->isUsingClient()) {
       Sprintf(rslt, "<CLOSABLE %i %i>", key, token);
+      if (!viewer || viewer->showDebug()) {
+         Sprintf(buf, "this: %x\n", this);
+         rslt.append(buf);
+      }
       Markup::toString(flags, CLOSABLE_FLAGS_NAMES, viewer, buf);
       rslt.append(buf);
       rslt.append("</CLOSABLE>\n");
    }
    else {
       Sprintf(rslt, "Key#: %i  Token#: %i\n", key, token);
+      if (!viewer || viewer->showDebug()) {
+         Sprintf(buf, "this: %x\n", this);
+         rslt.append(buf);
+      }
       Markup::toString(flags, CLOSABLE_FLAGS_NAMES, viewer, buf);
       rslt.append(buf);
       rslt.append("\n");
@@ -659,10 +667,17 @@ int LKeywordCollection::read(istream& dafile, int read_all) {
 
 
 ContainedObject::~ContainedObject() {
+   if (obj_ptr_log.ofLevel(DBG)) {
+      obj_ptr_log << "~ContainedObject, this: " << this << endl;
+   }
    SafeList<ContainedObject*>* ptr;
    while (!contained_by.isEmpty()) {
       ptr = contained_by.popFront();
       ContainedObject* tmp_ptr = this;
+      if (obj_ptr_log.ofLevel(DBG)) {
+         obj_ptr_log << "~ContainedObject, this: " << this << " tmp_ptr: "
+                     << tmp_ptr << " ptr: " << ptr << endl;
+      }
       ptr->privRemoveObject__(tmp_ptr);
    }//while
 }//destructor
@@ -990,8 +1005,14 @@ void Entity::toStringStat(critter* viewer, String& rslt, ToStringTypeE st) {
    rslt.append(buf);
 
    if ((st | ST_IDENTIFY) || (!viewer || viewer->isImmort())) {
-      Sprintf(buf, "\nid_num: %i  vis_bits: %i  zone_num: %i\n",
-              id_num, vis_bit, zone_num);
+      if (!viewer || viewer->showDebug()) {
+         Sprintf(buf, "\nthis: %x  id_num: %i  vis_bits: %i  zone_num: %i\n",
+                 this, id_num, vis_bit, zone_num);
+      }
+      else {
+         Sprintf(buf, "\nid_num: %i  vis_bits: %i  zone_num: %i\n",
+                 id_num, vis_bit, zone_num);
+      }
       rslt.append(buf);
       affectedByToString(viewer, buf);
       rslt.append(buf);

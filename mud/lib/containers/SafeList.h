@@ -1,5 +1,5 @@
-// $Id: SafeList.h,v 1.4 1999/09/08 06:11:37 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/09/08 06:11:37 $
+// $Id: SafeList.h,v 1.5 1999/09/11 06:12:17 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/09/11 06:12:17 $
 
 //
 //ScryMUD Server Code
@@ -31,6 +31,7 @@
 #define NUMBER_OF_CONCURENT_SCELLS 10
 
 extern LogStream mudlog;
+extern LogStream obj_ptr_log;
 extern int core_dump(const char* msg); //misc2.cc
 extern int __s_node_cnt;
 extern int __s_list_cnt;
@@ -228,17 +229,20 @@ public:
 
 
    /*  Don't call this unless you really understand what it does.
-    *  NOTE:  The 'const' is a lie, but it makes the compiler not put
-    *  out a warning about passing references of lvalues. --Ben
     */
    virtual T privRemoveObject__(T& data) {
       SCell<T> cell(*this);
       T ldata;
 
-      Assert(data != getNil(), (const char*)"privRemoveObject__, data == getNil()");
+      Assert(data != getNil(),
+             (const char*)"privRemoveObject__, data == getNil()");
 
       ldata = cell.next();
       while (ldata != getNil()) {
+         if (obj_ptr_log.ofLevel(DBG)) {
+            obj_ptr_log << "privRemoveObject__, this: " << this
+                        << " data: " << data << " ldata: " << ldata << endl;
+         }
          if (ldata == data) {
             handleLosingSCell(cell);
             cell.lose(TRUE);  //this WILL NOT delete the item pointed to.

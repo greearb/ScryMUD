@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.33 1999/09/07 07:00:26 greear Exp $
-// $Revision: 1.33 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
+// $Id: grrmud.cc,v 1.34 1999/09/11 06:12:16 greear Exp $
+// $Revision: 1.34 $  $Author: greear $ $Date: 1999/09/11 06:12:16 $
 
 //
 //ScryMUD Server Code
@@ -506,8 +506,8 @@ int main() {
    
    // This is like: ctrl-z, no need to catch it.
    //signal(SIGTRAP, (&sig_term_handler));
+   //signal(SIGTSTP, (&sig_term_handler));
 
-   signal(SIGTSTP, (&sig_term_handler));
    signal(SIGTTIN, (&sig_term_handler));
    signal(SIGTTOU, (&sig_term_handler));
    signal(SIGUSR1, (&sig_term_handler));

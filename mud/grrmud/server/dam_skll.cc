@@ -1,5 +1,5 @@
-// $Id: dam_skll.cc,v 1.8 1999/09/06 02:24:27 greear Exp $
-// $Revision: 1.8 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
+// $Id: dam_skll.cc,v 1.9 1999/09/11 06:12:16 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/09/11 06:12:16 $
 
 //
 //ScryMUD Server Code
@@ -62,7 +62,7 @@ int hurl(int i_th, const String* victim, critter& pc) {
 
       if (!crit_ptr->canBeHurled()) {
          Sprintf(buf, "%S is wary to that particular trick now!\n",
-                 crit_ptr->getLongName());
+                 crit_ptr->getLongName(&pc));
          pc.show(buf);
          return -1;
       }//if

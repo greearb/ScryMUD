@@ -1,5 +1,5 @@
-# $Id: translation2.spec,v 1.11 1999/08/19 06:34:36 greear Exp $
-# $Revision: 1.11 $  $Author: greear $ $Date: 1999/08/19 06:34:36 $
+# $Id: translation2.spec,v 1.12 1999/09/11 06:12:16 greear Exp $
+# $Revision: 1.12 $  $Author: greear $ $Date: 1999/09/11 06:12:16 $
 
 # See translations.spec for more information.
 
@@ -515,7 +515,7 @@ CS_TOG5
 	~
 
 CS_TOG6
-	eng "detect_inventory(%i)%P20wizchat(%i)\n"
+	eng "detect_inventory(%i)%P20wizchat(%i)%P45show_dbg(%i)\n"
 	~
 
 CS_TOG_EXTRA

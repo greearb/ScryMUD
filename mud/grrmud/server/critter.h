@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.49 1999/09/07 07:00:26 greear Exp $
-// $Revision: 1.49 $  $Author: greear $ $Date: 1999/09/07 07:00:26 $
+// $Id: critter.h,v 1.50 1999/09/11 06:12:16 greear Exp $
+// $Revision: 1.50 $  $Author: greear $ $Date: 1999/09/11 06:12:16 $
 
 //
 //ScryMUD Server Code
@@ -504,6 +504,7 @@ public:
       // 20 show_vnums, 21 has_poofin_poofout_msg, 22 page_output
       // 23 in_page_break_mode, 24 !wizchat, 25 has_colors, 26 use_color
       // 27 has_language_choice, 28 !show_mob_entry, 29 no_beep
+      // 30 show_dbg
 
    short birth_day; //day born
    short birth_year; //year born
@@ -671,6 +672,8 @@ public:
     * --Ben */
    virtual String* getName(int c_bit = ~0) { return Entity::getName(c_bit); }
    virtual String* getName(critter* viewer); //overload Entity
+   virtual String* getLongName(critter* viewer) { return getShortDesc(viewer); }
+
    int getCurWeight();
    int getMaxWeight();
 
@@ -729,6 +732,7 @@ public:
    int doesOwnDoor(door& dr);
    int doesOwnDoor(door_data& dd);
 
+   int showDebug() { return (pc && PC_FLAGS.get(30)); }
    int isCloaked() { return (pc && PC_FLAGS.get(3)); }
    int isInBattle() { return !(is_fighting.isEmpty()); }
 

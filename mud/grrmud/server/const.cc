@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.25 1999/09/06 02:24:27 greear Exp $
-// $Revision: 1.25 $  $Author: greear $ $Date: 1999/09/06 02:24:27 $
+// $Id: const.cc,v 1.26 1999/09/11 06:12:16 greear Exp $
+// $Revision: 1.26 $  $Author: greear $ $Date: 1999/09/11 06:12:16 $
 
 //
 //ScryMUD Server Code
@@ -294,7 +294,8 @@ CSentryE pcd_names[] = {
    CS_USE_COLOR_F,
    CS_HAS_LANG_CHOICE_F,
    CS_NO_SHOW_NPC_ENTRY_F,
-   CS_NO_BEEP_F
+   CS_NO_BEEP_F,
+   CS_SHOW_DBG_F
 };
 const LstrArray PC_DATA_FLAGS_NAMES(sizeof(pcd_names)/sizeof(CSentryE),
                                     pcd_names, CS_PC_DATA_FLAGS);
