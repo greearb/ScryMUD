@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.38 2002/01/08 03:59:52 justin Exp $
-// $Revision: 1.38 $  $Author: justin $ $Date: 2002/01/08 03:59:52 $
+// $Id: object.h,v 1.39 2002/08/28 06:32:30 eroper Exp $
+// $Revision: 1.39 $  $Author: eroper $ $Date: 2002/08/28 06:32:30 $
 
 //
 //ScryMUD Server Code
@@ -82,10 +82,11 @@ public:
    // 1 has_construct_data, 2 has_skin, 3 consume_poison,
    // 4 NULL, 5 NULL, 6 NULL,
    // 7 NULL, 8 NULL, 9 NULL,
-   // 10 casts_spells
+   // 10 casts_spells, 11 has_head
    //
    obj_construct_data* construct_data;
    object* skin_ptr;
+   object* head_ptr;
    critter* w_eye_owner;
    PtrList<stat_spell_cell> casts_these_spells;
    

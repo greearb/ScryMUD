@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.36 2002/01/05 01:42:38 eroper Exp $
-// $Revision: 1.36 $  $Author: eroper $ $Date: 2002/01/05 01:42:38 $
+// $Id: object.cc,v 1.37 2002/08/28 06:32:30 eroper Exp $
+// $Revision: 1.37 $  $Author: eroper $ $Date: 2002/08/28 06:32:30 $
 
 //
 //ScryMUD Server Code
@@ -85,6 +85,7 @@ obj_spec_data::obj_spec_data() { //constructor
    _cnt++;
    construct_data = NULL;
    skin_ptr = NULL;
+   head_ptr = NULL;
    w_eye_owner = NULL;
 }//constructor
 
@@ -92,6 +93,7 @@ obj_spec_data::obj_spec_data(const obj_spec_data& source) { //copy constructr
    _cnt++;
    construct_data = NULL;
    skin_ptr = NULL;
+   head_ptr = NULL;
    w_eye_owner = NULL;
    *this = source;
 }//constructor
@@ -102,6 +104,10 @@ obj_spec_data::~obj_spec_data() { //destructor
    if (skin_ptr && skin_ptr->IN_LIST) {
       delete skin_ptr;
       skin_ptr = NULL;
+   }//if
+   if (head_ptr && head_ptr->IN_LIST) {
+      delete head_ptr;
+      head_ptr = NULL;
    }//if
    construct_data = NULL;
    if (w_eye_owner) {
@@ -128,6 +134,14 @@ obj_spec_data& obj_spec_data::operator=(const obj_spec_data& source) {
    else {
       skin_ptr = NULL;
    }//else
+
+   if (source.head_ptr && !source.head_ptr->IN_LIST) {
+      head_ptr = source.head_ptr;
+   }//if
+   else {
+      head_ptr = NULL;
+   }//else
+
    w_eye_owner = source.w_eye_owner;
 
    casts_these_spells.clearAndDestroy();
@@ -148,6 +162,12 @@ void obj_spec_data::Clear() {
       delete skin_ptr;
    }//if
    skin_ptr = NULL;
+
+   if (head_ptr && head_ptr->IN_LIST) {
+      delete head_ptr;
+   }//if
+   head_ptr = NULL;
+
 
    w_eye_owner = NULL;
    casts_these_spells.clearAndDestroy();

@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.35 2002/03/01 17:28:16 gingon Exp $
-// $Revision: 1.35 $  $Author: gingon $ $Date: 2002/03/01 17:28:16 $
+// $Id: const.cc,v 1.36 2002/08/28 06:32:30 eroper Exp $
+// $Revision: 1.36 $  $Author: eroper $ $Date: 2002/08/28 06:32:30 $
 
 //
 //ScryMUD Server Code
@@ -54,7 +54,8 @@ const char* osd_names[] = {
    "NULL",
    "NULL",
    "NULL",
-   "casts_spells"
+   "casts_spells",
+   "has_head"
 };
 const BitfieldNames OBJ_SPEC_DATA_FLAGS_NAMES(sizeof(osd_names)/sizeof(const char*),
                                               osd_names, "Obj Spec Data Flags:");
@@ -787,7 +788,7 @@ WARNING:  Once again, moderation is needed, if it is too extreme it will be
 a -1 terminates.
 
 0 consume_teleport, 1 (DO NOT USE, cannot be set here)
-2 has_skin, 3 consume_poison
+2 has_skin, 3 consume_poison, 11 has_head
 
 Other spells that it can CAST will be specified later.\n",
 
