@@ -78,7 +78,8 @@ const char* bf_names[] = {
    "NULL",
    "NULL",
    "NULL",
-   "consume_key"//17
+   "consume_key",//17
+   "is_factory"//18
 };
 const BitfieldNames BAG_FLAGS_NAMES(sizeof(bf_names)/sizeof(const char*),
                                     bf_names, "Bag Flags:");

@@ -116,7 +116,8 @@ public:
                  // 5 is_mag_lockable, 6 is_mag_locked 
                  // 7 is_destructable 
                  //    {bash, fireball may open it till reset}
-                 // 8 is_corpse, 9 !close, 10 player_owned, 17 consume_key
+                 // 8 is_corpse, 9 !close, 10 player_owned, 17 consume_key,
+                 // 18 is_factory
    int key_num;  //0 if no key needed
    short max_weight;
    short percentage_weight; //1 to 100, ie 50 bag makes objs half as heavy
@@ -139,6 +140,7 @@ public:
    int isOpen() const { return !bag_flags.get(2); }
    int isLocked() const { return bag_flags.get(3); }
    int isPlayerOwned() const { return bag_flags.get(10); }
+   int isFactory() const { return bag_flags.get(18); }
    static int getInstanceCount() { return _cnt; }
 }; // bag_class
  
@@ -286,6 +288,7 @@ public:
    int isTwoHanded() const;
    int isBoat() const { return OBJ_FLAGS.get(62); }
    int isContainer() const { return obj_flags.get(54); }
+   int needsResetting() const { return obj_flags.get(70); }
 
    void setComplete();
    void setIncomplete();
