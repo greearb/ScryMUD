@@ -1,5 +1,5 @@
-// $Id: const.h,v 1.27 2001/03/29 03:02:30 eroper Exp $
-// $Revision: 1.27 $  $Author: eroper $ $Date: 2001/03/29 03:02:30 $
+// $Id: const.h,v 1.28 2001/10/15 22:11:32 eroper Exp $
+// $Revision: 1.28 $  $Author: eroper $ $Date: 2001/10/15 22:11:32 $
 
 //
 //ScryMUD Server Code
@@ -299,7 +299,8 @@ enum obj_flags {
    OBJFLAG_VENDING_MACHINE,
    OBJFLAG_BULLETIN_BOARD,
    OBJFLAG_IS_BUTCHERABLE,
-   OBJFLAG_HAS_OBJ_SCRIPT
+   OBJFLAG_HAS_OBJ_SCRIPT,
+   OBJFLAG_IS_TWO_HANDED
 };
 
 enum bag_flags {

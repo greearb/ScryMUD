@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.34 2001/03/29 03:02:32 eroper Exp $
-// $Revision: 1.34 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
+// $Id: object.cc,v 1.35 2001/10/15 22:11:32 eroper Exp $
+// $Revision: 1.35 $  $Author: eroper $ $Date: 2001/10/15 22:11:32 $
 
 //
 //ScryMUD Server Code
@@ -1399,6 +1399,9 @@ int object::isLit() const {
            ((extras[0] == -1) || (extras[0] > 0)));
 }
 
+int object::isTwoHanded() const {
+   return (obj_flags.get(77));
+}
    
 void object::lock() {
    if (bag) {

@@ -1,5 +1,5 @@
-// $Id: const.cc,v 1.29 2001/06/10 20:20:56 greear Exp $
-// $Revision: 1.29 $  $Author: greear $ $Date: 2001/06/10 20:20:56 $
+// $Id: const.cc,v 1.30 2001/10/15 22:11:31 eroper Exp $
+// $Revision: 1.30 $  $Author: eroper $ $Date: 2001/10/15 22:11:31 $
 
 //
 //ScryMUD Server Code
@@ -445,7 +445,8 @@ const char* o_names[] = {
    "vend_machine",
    "bulletin_board",
    "is_butcherable",
-   "has_obj_script"//76
+   "has_obj_script",//76
+   "is_two_handed" //77
 };
 
 const BitfieldNames OBJ_FLAGS_NAMES(sizeof(o_names)/sizeof(const char*),
@@ -705,7 +706,9 @@ a -1 terminates.
 63 has_spec_proc_data { flag for scrolls, potions, wands...}
 64 toolbox, 65 cauldron, 66 pen, 67 (DO NOT USE),
 68 (DO NOT USE), 69 parchment (for scribing), 71 (DO NOT USE),
-72 herb, 73 vend_machine, 74 bulletin_board
+72 herb, 73 vend_machine, 74 bulletin_board, 75 is_butcherable,
+76 has_obj_script, 77 is_two_handed
+
 
 ***  If you're making a weapon, please consider flagging a flag between
      41 and 49 inclusive.  This will help determine damage messages.

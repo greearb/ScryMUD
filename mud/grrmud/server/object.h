@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.36 2001/03/29 03:02:32 eroper Exp $
-// $Revision: 1.36 $  $Author: eroper $ $Date: 2001/03/29 03:02:32 $
+// $Id: object.h,v 1.37 2001/10/15 22:11:32 eroper Exp $
+// $Revision: 1.37 $  $Author: eroper $ $Date: 2001/10/15 22:11:32 $
 
 //
 //ScryMUD Server Code
@@ -180,7 +180,7 @@ public:
            // 64 toolbox, 65 cauldron, 66 pen, 67 construct_component
            // 68 concoct_component, 69 parchment, 70 needs_resetting
            // 71 !complete, 72 herb, 73 vend_machine, 74 bulletin_board
-           // 75 is_butcherable, 76 has_obj_script
+           // 75 is_butcherable, 76 has_obj_script 77 is_two_handed
    
    short extras[OBJ_MAX_EXTRAS + 1]; 
                 // 0 charges, light_count, 1 rechargeable, (wands), 2 %load,
@@ -281,6 +281,7 @@ public:
    int hasScript() const { return obj_flags.get(76); }
    int isLiquid() const;
    int isCanteen() const;
+   int isTwoHanded() const;
 
    void setComplete();
    void setIncomplete();
