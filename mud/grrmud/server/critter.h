@@ -868,12 +868,12 @@ public:
    int getCharisma() const { return short_cur_stats[4]; }
    int getHP() const { return short_cur_stats[15]; }
    int getHP_MAX() const { return short_cur_stats[23]; }
-   int getDEX(char include_modifiers);
-   int getWIS(char include_modifiers);
-   int getCHA(char include_modifiers);
-   int getBHDC(char include_modifiers);
-   int getBHDS(char include_modifiers);
-   int getDAM(char include_modifiers);
+   int getDEX(bool include_modifiers);
+   int getWIS(bool include_modifiers);
+   int getCHA(bool include_modifiers);
+   int getBHDC(bool include_modifiers);
+   int getBHDS(bool include_modifiers);
+   int getDAM(bool include_modifiers);
    int getMana() const { return short_cur_stats[16]; }
    int getManaMax() const { return short_cur_stats[24]; }
    int getMov() const { return short_cur_stats[17]; }

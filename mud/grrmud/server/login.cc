@@ -416,15 +416,31 @@ void critter::doLogin() {
                   break;
                }
 
-               // re-gain effects from worn gear
-               if ( pc->file_format_version > 0 ) {
+               // if it's the old version remove everything so we can force
+               // correct nasties that ran away with us.
+               if ( pc->file_format_version == 0 ) {
                   int i;
                   for(i=0;i<MAX_EQ;i++) {
                      if (EQ[i]) {
-                        wear_eq_effects(*(EQ[i]), *this, i, FALSE);
+                        remove_eq_effects(*(EQ[i]), *this, i, FALSE);
                      }
                   }
                }
+               /* the following code is to correct for an issue we had with
+                * runaway BHDC/BHDS. Eventually this code can go away.
+                */
+               if ( pc->getBHDC(false) > 2 ) { pc->BH_DICE_COUNT = 2; }
+               if ( pc->getBHDS(false) > 3 ) { pc->BH_DICE_SIDES = 3; }
+
+               // re-gain effects from worn gear
+                  {
+                     int i;
+                     for(i=0;i<MAX_EQ;i++) {
+                        if (EQ[i]) {
+                           wear_eq_effects(*(EQ[i]), *this, i, FALSE);
+                        }
+                     }
+                  }
 
                setNoClient(); //turn off by default
 

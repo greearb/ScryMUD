@@ -2296,7 +2296,7 @@ int critter::getCurRoomNum() {
    return IN_ROOM;
 }
 
-int critter::getDEX(char include_modifiers=FALSE) {
+int critter::getDEX(bool include_modifiers=false) {
    int p_lrnd;
    int modifier = 0;
 
@@ -2310,7 +2310,7 @@ int critter::getDEX(char include_modifiers=FALSE) {
    return DEX+modifier;
 }
 
-int critter::getWIS(char include_modifiers=FALSE) {
+int critter::getWIS(bool include_modifiers=false) {
    int p_lrnd;
    int modifier = 0;
 
@@ -2324,7 +2324,7 @@ int critter::getWIS(char include_modifiers=FALSE) {
    return WIS+modifier;
 }
 
-int critter::getCHA(char include_modifiers=FALSE) {
+int critter::getCHA(bool include_modifiers=false) {
    int p_lrnd;
    int modifier = 0;
 
@@ -2343,7 +2343,7 @@ int critter::getCHA(char include_modifiers=FALSE) {
    return CHA+modifier;
 }
 
-int critter::getBHDC(char include_modifiers=FALSE) {
+int critter::getBHDC(bool include_modifiers=false) {
    int p_lrnd;
    int modifier = 0;
 
@@ -2362,7 +2362,7 @@ int critter::getBHDC(char include_modifiers=FALSE) {
    return BH_DICE_COUNT+modifier;
 }
 
-int critter::getBHDS(char include_modifiers=FALSE) {
+int critter::getBHDS(bool include_modifiers=false) {
    int p_lrnd;
    int modifier = 0;
 
@@ -2376,7 +2376,7 @@ int critter::getBHDS(char include_modifiers=FALSE) {
    return BH_DICE_SIDES+modifier;
 }
 
-int critter::getDAM(char include_modifiers=FALSE) {
+int critter::getDAM(bool include_modifiers=false) {
    int p_lrnd;
    int modifier = 0;
 
