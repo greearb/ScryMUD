@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.20 1999/07/18 04:16:41 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/07/18 04:16:41 $
+// $Id: misc.cc,v 1.21 1999/07/18 19:25:21 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/07/18 19:25:21 $
 
 //
 //ScryMUD Server Code
@@ -1053,7 +1053,7 @@ void decrease_timed_affecting_objects() {
    while (obj_ptr) {
       if (mudlog.ofLevel(DBG)) {
          mudlog << "decrease_timed_affecting_objects, obj_number:  "
-                << obj_ptr->OBJ_NUM << endl;
+                << obj_ptr->OBJ_NUM << " obj_ptr: " << obj_ptr << endl;
       }
 
       obj_ptr->affected_by.head(sp_cell);
@@ -1110,6 +1110,11 @@ void decrease_timed_affecting_objects() {
       else {
 	 obj_ptr = cell.next(); //couldn't have disolved
       }//else
+
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "At end of while loop." << endl;
+      }
+
    }//while
 }//decrease_timed_affecting_objects
 
