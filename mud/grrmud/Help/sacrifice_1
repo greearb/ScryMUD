@@ -4,7 +4,7 @@ This command is used to allow a person ready for level 31 to sacrifice
 a certain 'worth' of items in order to be able to remort.  The worth is
 calculated based on the stat-modifiers of the objects.  For instance,
 a +10HP, -5MANA shield would have a worth of +5.  Curently, you must
-have at least 100 points in order to sacrifice.  If you use the sacrifice
+have at least 150 points in order to sacrifice.  If you use the sacrifice
 command with no arguments, it will just report on your current number
 of sac points.  If you are ready to really sacrifice, then you should
 use the syntax:  sacrifice DO_IT
