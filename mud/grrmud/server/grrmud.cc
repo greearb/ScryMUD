@@ -1,5 +1,5 @@
-// $Id: grrmud.cc,v 1.42 2002/02/07 05:28:33 eroper Exp $
-// $Revision: 1.42 $  $Author: eroper $ $Date: 2002/02/07 05:28:33 $
+// $Id: grrmud.cc,v 1.43 2002/02/07 06:35:59 eroper Exp $
+// $Revision: 1.43 $  $Author: eroper $ $Date: 2002/02/07 06:35:59 $
 
 //
 //ScryMUD Server Code
@@ -1056,10 +1056,10 @@ void game_loop(int s)  {
 
                         // Colorized tank graph
                         if (tank->getHP() >
-                              (int)((float)(tank->getHP_MAX())*0.70)) {
+                              (int)((float)(tank->getHP_MAX())*0.70) ) {
                            prompt += "^g";
                         } else if (tank->getHP() >
-                              (int)((float)(tank->getHP_MAX())*0.30)) {
+                              (int)((float)(tank->getHP_MAX())*0.30) ) {
                            prompt += "^Y";
                         } else {
                            prompt += "^R";
@@ -1077,22 +1077,19 @@ void game_loop(int s)  {
                         // Colorized victim graph
                         // we have a random 30% skew when you yourself are <
                         // 50% health.
-                        int victim_hp;
-                       
-                        if ( tank->getHP() <
-                                (int)((float)tank->getHP_MAX()/2.0) ) {
-                           int random_skew = (int)((float)85+d(1,30)/100.0);
-                           victim_hp = (int)((float)victim->getHP()*((float)
-                                       random_skew/100.0));
-                        } else {
-                            victim_hp = victim->getHP();
+                        int victim_hp = victim->getHP();
+                        if ( pc_ptr->getHP() <
+                                (int)( (float)pc_ptr->getHP_MAX() / 2.0) ) {
+
+                           victim_hp = (int)( (float)victim_hp *
+                                 (( 85.0 + (float)d(1,40) ) / 100.0 ) );
                         }
 
                         if (victim_hp >
-                              (int)((float)(victim->getHP_MAX())*0.70)) {
+                              (int)((float)(victim->getHP_MAX())*0.70) ) {
                            prompt += "^g";
                         } else if (victim_hp >
-                              (int)((float)(victim->getHP_MAX())*0.30)) {
+                              (int)((float)(victim->getHP_MAX())*0.30) ) {
                            prompt += "^Y";
                         } else {
                            prompt += "^R";
