@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.45 2002/01/12 02:40:17 eroper Exp $
-// $Revision: 1.45 $  $Author: eroper $ $Date: 2002/01/12 02:40:17 $
+// $Id: misc.cc,v 1.46 2002/01/14 21:04:37 eroper Exp $
+// $Revision: 1.46 $  $Author: eroper $ $Date: 2002/01/14 21:04:37 $
 
 //
 //ScryMUD Server Code
@@ -2558,8 +2558,12 @@ String *colorize(const char *message, critter &pc, hilite_type hl_type)
 {
 
    static String output;
-   char *i;
+   char *i, *colstrWhich;
    short dont_reset = FALSE;
+
+   const char *validFGColorCodes = "0nrgybmcwNRGYBMCW";
+   const char *validBGColorCodes = "0nrgybmcw";
+   const char *col_comp_ptr;
 
    output = "";
    
@@ -2757,6 +2761,7 @@ String *colorize(const char *message, critter &pc, hilite_type hl_type)
                   break;
 
                default:
+                  output.Append(*(i-1));
                   output.Append(*i);
 
             } // case
@@ -2811,6 +2816,7 @@ String *colorize(const char *message, critter &pc, hilite_type hl_type)
                   break;
 
                default:
+                  output.Append(*(i-1));
                   output.Append(*i);
             } // case
          } // & encountered 
@@ -2833,14 +2839,34 @@ String *colorize(const char *message, critter &pc, hilite_type hl_type)
          }
          
          if ( *i == '^' || *i == '&' ) {
+
             i++;
             if (! *i) {
                break;
             }
             if ( *i == '^' || *i == '&' ) {
                output.Append(*i);
+            } else {
+
+               if ( *(i-1) == '^' ) {
+                  colstrWhich = (char *)validFGColorCodes;
+               } else if ( *(i-1) == '&' ) {
+                  colstrWhich = (char *)validBGColorCodes;
+               }
+
+               // Walk until we run out of valid colors or we hit a match
+               for ( col_comp_ptr = colstrWhich;
+                     *col_comp_ptr && *col_comp_ptr != *i; col_comp_ptr++ ); 
+
+               // If there's no match print the literal ^ or & and following
+               // character.
+               if ( ! (*col_comp_ptr == *i) ) {
+                  output.Append(*(i-1));
+                  output.Append(*i);
+               }
             }
          } else {
+            // If it's not remotely a color code print it literally
             output.Append(*i);
          }
       }
