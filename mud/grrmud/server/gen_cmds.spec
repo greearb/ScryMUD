@@ -129,8 +129,6 @@ arlist ~
 return arlist(i, j, pc);
 
 # Mortal Commands - B
-backstab bs ~
-return backstab(i, &(cooked_strs[1]), pc);
 bah socials ~
 bah(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 balance ~
@@ -155,8 +153,6 @@ block ~
 return block(i, &(cooked_strs[1]), pc);
 blush socials ~
 blush(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
-body_slam bodyslam bodyslam ~
-return body_slam(i, &(cooked_strs[1]), pc, was_ordered);
 bonk socials ~
 bonk(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 bounce socials ~
@@ -173,6 +169,10 @@ butcher ~
 return butcher(i, &(cooked_strs[1]), pc);
 buy ~
 return buy(i, &(cooked_strs[1]), j, &(cooked_strs[2]), pc);
+body_slam bodyslam bodyslam ~
+return body_slam(i, &(cooked_strs[1]), pc, was_ordered);
+backstab bs ~
+return backstab(i, &(cooked_strs[1]), pc);
 # IMM Commands - B
 
 # Mortal Commands - C
