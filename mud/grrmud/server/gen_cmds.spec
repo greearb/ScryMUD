@@ -149,8 +149,8 @@ beep ~
 return beep(i, &(cooked_strs[1]), pc);
 berserk ~
 return berserk(pc);
-behead ~
-return behead(i, &(cooked_strs[1]), pc);
+# behead ~
+# return behead(i, &(cooked_strs[1]), pc);
 bite socials ~
 bite(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 blend ~
