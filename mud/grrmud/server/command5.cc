@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.21 1999/06/25 04:02:54 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/06/25 04:02:54 $
+// $Id: command5.cc,v 1.22 1999/06/25 04:07:52 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/06/25 04:07:52 $
 
 //
 //ScryMUD Server Code
@@ -946,13 +946,13 @@ int beep(int i_th, const String* name, critter& pc) {
    }//if
 
    if (ptr->isUsingClient()) {
+      ptr->show("<BEEP>"); //hegemon tag
+   }
+   else {
       buf[0] = 7; //beep
       buf[1] = 7;
       buf[2] = 7;
       buf[3] = 0; //terminate it
-      ptr->show("<BEEP>"); //hegemon tag
-   }
-   else {
       show(buf, *ptr);
    }
 

@@ -382,12 +382,12 @@ gs *channels ~
 NOP
 
 # case H
+help man help ~
+return help(i, &(cooked_strs[1]), &(cooked_strs[2]), pc);
 hide ~
 return hide(pc);
 hit kill attack murder hit ~
 return hit(i, &(cooked_strs[1]), pc);
-help man help ~
-return help(i, &(cooked_strs[1]), &(cooked_strs[2]), pc);
 hehe socials ~
 hehe(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 hold grab hold ~
