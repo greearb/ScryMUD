@@ -1,5 +1,5 @@
 // $Id: command5.h,v 1.19 2002/08/23 21:46:47 gingon Exp $
-// $Revision: 1.19 $  $Author: gingon $ $Date: 2002/08/23 21:46:47 $
+// $Revision: 1.19 $  $Author: gingon $ $Date$
 
 //
 //ScryMUD Server Code

@@ -1,5 +1,5 @@
 # $Id: translation5.spec,v 1.2 2001/03/29 03:02:36 eroper Exp $
-# $Revision: 1.2 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
+# $Revision: 1.2 $  $Author: eroper $ $Date$
 
 # The syntax is as follows:
 # ENUM_NAME LANGUAGE "TEXT" LANGUAGE "TEXT" ... ~

@@ -1,5 +1,5 @@
 // $Id: batl_prc.cc,v 1.18 2002/02/05 05:03:32 gingon Exp $
-// $Revision: 1.18 $  $Author: gingon $ $Date: 2002/02/05 05:03:32 $
+// $Revision: 1.18 $  $Author: gingon $ $Date$
 
 //
 //ScryMUD Server Code

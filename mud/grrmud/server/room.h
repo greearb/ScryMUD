@@ -1,5 +1,5 @@
 // $Id: room.h,v 1.39 2002/03/01 17:28:16 gingon Exp $
-// $Revision: 1.39 $  $Author: gingon $ $Date: 2002/03/01 17:28:16 $
+// $Revision: 1.39 $  $Author: gingon $ $Date$
 
 //
 //ScryMUD Server Code

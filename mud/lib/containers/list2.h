@@ -1,5 +1,5 @@
 // $Id: list2.h,v 1.15 2003/05/08 21:01:07 eroper Exp $
-// $Revision: 1.15 $  $Author: eroper $ $Date: 2003/05/08 21:01:07 $
+// $Revision: 1.15 $  $Author: eroper $ $Date$
 
 //
 //ScryMUD Server Code

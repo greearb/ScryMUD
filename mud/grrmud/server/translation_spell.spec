@@ -1,5 +1,5 @@
 # $Id: translation_spell.spec,v 1.4 2001/03/29 03:02:36 eroper Exp $
-# $Revision: 1.4 $  $Author: eroper $ $Date: 2001/03/29 03:02:36 $
+# $Revision: 1.4 $  $Author: eroper $ $Date$
 
 
 # See translations.spec for more information.

@@ -1,5 +1,5 @@
 // $Id: spells.cc,v 1.30 2004/07/09 08:56:14 eroper Exp $
-// $Revision: 1.30 $  $Author: eroper $ $Date: 2004/07/09 08:56:14 $
+// $Revision: 1.30 $  $Author: eroper $ $Date$
 
 //
 //ScryMUD Server Code

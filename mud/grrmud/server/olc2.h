@@ -1,5 +1,5 @@
 // $Id: olc2.h,v 1.12 2001/03/29 03:02:33 eroper Exp $
-// $Revision: 1.12 $  $Author: eroper $ $Date: 2001/03/29 03:02:33 $
+// $Revision: 1.12 $  $Author: eroper $ $Date$
 
 //
 //ScryMUD Server Code

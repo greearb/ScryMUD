@@ -1,5 +1,5 @@
 // $Id: skills.h,v 1.5 2001/03/29 03:02:34 eroper Exp $
-// $Revision: 1.5 $  $Author: eroper $ $Date: 2001/03/29 03:02:34 $
+// $Revision: 1.5 $  $Author: eroper $ $Date$
 
 //
 //ScryMUD Server Code

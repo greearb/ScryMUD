@@ -1,5 +1,5 @@
 // $Id: cr_skll.cc,v 1.7 2002/08/28 07:23:29 eroper Exp $
-// $Revision: 1.7 $  $Author: eroper $ $Date: 2002/08/28 07:23:29 $
+// $Revision: 1.7 $  $Author: eroper $ $Date$
 
 //
 //ScryMUD Server Code

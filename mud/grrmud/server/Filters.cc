@@ -1,5 +1,5 @@
 // $Id: Filters.cc,v 1.6 2001/03/29 03:02:27 eroper Exp $
-// $Revision: 1.6 $  $Author: eroper $ $Date: 2001/03/29 03:02:27 $
+// $Revision: 1.6 $  $Author: eroper $ $Date$
 
 //
 //ScryMUD Server Code

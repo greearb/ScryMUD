@@ -1,5 +1,5 @@
 // $Id: LogFrame.java,v 1.4 2001/03/31 07:05:59 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 2001/03/31 07:05:59 $
+// $Revision: 1.4 $  $Author: greear $ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code

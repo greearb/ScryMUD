@@ -1,5 +1,5 @@
 // $Id: wep_skll.cc,v 1.12 2002/09/08 02:00:16 eroper Exp $
-// $Revision: 1.12 $  $Author: eroper $ $Date: 2002/09/08 02:00:16 $
+// $Revision: 1.12 $  $Author: eroper $ $Date$
 
 //
 //ScryMUD Server Code

@@ -1,5 +1,5 @@
 // $Id: object.cc,v 1.39 2004/07/05 23:06:35 eroper Exp $
-// $Revision: 1.39 $  $Author: eroper $ $Date: 2004/07/05 23:06:35 $
+// $Revision: 1.39 $  $Author: eroper $ $Date$
 
 //
 //ScryMUD Server Code

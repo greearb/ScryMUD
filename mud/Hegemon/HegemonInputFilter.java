@@ -1,5 +1,5 @@
 // $Id: HegemonInputFilter.java,v 1.15 2001/03/31 07:05:59 greear Exp $
-// $Revision: 1.15 $  $Author: greear $ $Date: 2001/03/31 07:05:59 $
+// $Revision: 1.15 $  $Author: greear $ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code

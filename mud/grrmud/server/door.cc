@@ -1,5 +1,5 @@
 // $Id: door.cc,v 1.13 2001/03/29 03:02:31 eroper Exp $
-// $Revision: 1.13 $  $Author: eroper $ $Date: 2001/03/29 03:02:31 $
+// $Revision: 1.13 $  $Author: eroper $ $Date$
 
 //
 //ScryMUD Server Code

@@ -1,5 +1,5 @@
 // $Id: classes.h,v 1.34 2003/05/05 22:04:00 eroper Exp $
-// $Revision: 1.34 $  $Author: eroper $ $Date: 2003/05/05 22:04:00 $
+// $Revision: 1.34 $  $Author: eroper $ $Date$
 
 //
 //ScryMUD Server Code

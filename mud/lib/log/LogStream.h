@@ -1,5 +1,5 @@
 // $Id: LogStream.h,v 1.11 2004/07/06 10:38:14 eroper Exp $
-// $Revision: 1.11 $  $Author: eroper $ $Date: 2004/07/06 10:38:14 $
+// $Revision: 1.11 $  $Author: eroper $ $Date$
 
 //
 //Copyright (C) 2001  Ben Greear
