@@ -1,5 +1,5 @@
-// $Id: string2.h,v 1.12 1999/07/18 00:59:24 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/18 00:59:24 $
+// $Id: string2.h,v 1.13 1999/08/03 05:55:34 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/03 05:55:34 $
 
 //
 //ScryMUD Server Code
@@ -160,7 +160,7 @@ public:
     */
    int readToken(char delim, ifstream& dafile, int include_delim);
 
-   void Termed_Read(ifstream& da_file);
+   void termedRead(istream& da_file);
    int Contains(const char ch) const;
    void  Refigure_strlen();			//bletcherous hack!
    void parse_show(short posn);  //specific to ScryMUD program

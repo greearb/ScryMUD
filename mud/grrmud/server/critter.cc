@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.39 1999/08/01 08:40:22 greear Exp $
-// $Revision: 1.39 $  $Author: greear $ $Date: 1999/08/01 08:40:22 $
+// $Id: critter.cc,v 1.40 1999/08/03 05:55:32 greear Exp $
+// $Revision: 1.40 $  $Author: greear $ $Date: 1999/08/03 05:55:32 $
 
 //
 //ScryMUD Server Code
@@ -284,7 +284,7 @@ void shop_data::Read(ifstream& da_file, short read_all) {
    if (isPlayerRun()) {
       PlayerShopData* ps_data = new PlayerShopData();
       while (ps_data->read(da_file)) {
-         ps_data_list.pushBack(ps_data);
+         ps_data_list.append(ps_data);
          ps_data = new PlayerShopData();
       }//while
 
@@ -365,9 +365,9 @@ void shop_data::valueAdd(object& obj, critter& manager) {
       manager.show("That object has already been added.\n");
    }
    else {
-      ps_data_list.pushBack(new PlayerShopData(obj.getIdNum(),
-                                               obj.getDefaultPrice() * 3 / 2,
-                                               obj.getDefaultPrice() * 2 / 3));
+      ps_data_list.append(new PlayerShopData(obj.getIdNum(),
+                                             obj.getDefaultPrice() * 3 / 2,
+                                             obj.getDefaultPrice() * 2 / 3));
       manager.show("Value added, you will probably want to set it next.\n");
    }//else
 }//valueAdd
@@ -2617,35 +2617,6 @@ void critter::checkForProc(String& cmd, String& arg1, critter& actor,
 }//checkForProcAction
 
 
-int critter::insertNewScript(MobScript* script) {
-
-   if (!mob)
-      return -1;
-
-   // Don't append scripts that have a zero precedence, if there
-   // are other scripts in the queue.
-   if ((script->getPrecedence() == 0) && (!mob->pending_scripts.isEmpty())) {
-      delete script;
-      return 0;
-   }
-
-   MobScript* ptr;
-   Cell<MobScript*> cll(mob->pending_scripts);
-
-   while ((ptr = cll.next())) {
-      if (ptr->getPrecedence() < script->getPrecedence()) {
-         // Then insert it
-         mob->pending_scripts.insertBefore(cll, script);
-         return 0;
-      }//if
-   }//while
-
-   // If here, then we need to place it at the end.
-   mob->pending_scripts.append(script);
-   return 0;
-}
-
-
 void critter::trackToKill(critter& vict, int& is_dead) {
    if ((isMob()) || (vict.isMob())) {
       mudlog.log(ERR, "ERROR:  MOB's in trackToKill.\n");
@@ -3688,7 +3659,7 @@ void critter::transferShopDataTo(critter& sink) {
    PlayerShopData* ptr;
 
    while ((ptr = cll.next())) {
-      sink.mob->proc_data->sh_data->ps_data_list.pushBack(new PlayerShopData(*ptr));
+      sink.mob->proc_data->sh_data->ps_data_list.append(new PlayerShopData(*ptr));
    }//while
 
 }//transferShopDataTo

@@ -1,5 +1,5 @@
-// $Id: critter.h,v 1.31 1999/08/01 08:40:23 greear Exp $
-// $Revision: 1.31 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
+// $Id: critter.h,v 1.32 1999/08/03 05:55:32 greear Exp $
+// $Revision: 1.32 $  $Author: greear $ $Date: 1999/08/03 05:55:32 $
 
 //
 //ScryMUD Server Code
@@ -127,9 +127,9 @@ public:
    immort_data(const immort_data& source);   // copy constructor
    ~immort_data();
 
-   void Read(ifstream& dafile);
-   void Write(ofstream& dafile);
-   void Clear();
+   void read(istream& dafile);
+   void write(ostream& dafile);
+   void clear();
    static int getInstanceCount() { return _cnt; }
 };//immort_data
 
@@ -155,8 +155,8 @@ public:
       return 0;
    }
 
-   void Read(ifstream& da_file);
-   void Write(ofstream& da_file) const;
+   void read(ifstream& da_file);
+   void write(ofstream& da_file) const;
    static int getInstanceCount() { return _cnt; }
 }; //teacher_data
 
@@ -207,9 +207,9 @@ public:
    void clear() { object_num = buy_price = sell_price = 0; }
 
    // Returns false when there are no more, object_num otherwise.
-   int read(ifstream& da_file);
+   int read(istream& da_file);
       
-   void write(ofstream& da_file) const ;
+   void write(ostream& da_file) const ;
 
 }; // PlayerShopData
 
@@ -229,10 +229,10 @@ public:
    // 3 Player-run shopkeeper
    // 40-73 type to trade flags, same as obj_flags
    //
-   List<object*> perm_inv; //holds perm inventory
+   SafeList<object*> perm_inv; //holds perm inventory
 
    // Holds extra info for player run shops.
-   List<PlayerShopData*> ps_data_list;
+   PtrList<PlayerShopData> ps_data_list;
    String manager;
 
 
@@ -242,9 +242,9 @@ public:
 
    int isPlayerRun() const { return shop_data_flags.get(3); }
 
-   void Clear();
-   void Read(ifstream& da_file, short read_all);
-   void Write(ofstream& da_file) const ;
+   void clear();
+   void read(istream& da_file, short read_all);
+   void write(ostream& da_file) const ;
    shop_data& operator=(const shop_data& src);
 
    static int getInstanceCount() { return _cnt; }
@@ -280,7 +280,7 @@ protected:
    static int _cnt;
 
 public:
-   List<String*> hunting;
+   PtrList<String> hunting;
    String tracking;
    
    temp_proc_data();
@@ -315,9 +315,9 @@ public:
    ~say_proc_cell() { _cnt--; }
    // say_proc_cell& operator=(const say_proc_cell& source);
    
-   void Clear();
-   void Read(ifstream& da_file);
-   void Write(ofstream& da_file);
+   void clear();
+   void read(ifstream& da_file);
+   void write(ofstream& da_file);
    static int getInstanceCount() { return _cnt; }
 };//say_proc_cell
 
@@ -347,9 +347,9 @@ public:
    action_proc_data& operator=(const action_proc_data& source); //op overload
    ~action_proc_data();
    
-   void Clear();
-   void Read(ifstream& da_file);
-   void Write(ofstream& da_file);
+   void clear();
+   void read(ifstream& da_file);
+   void write(ofstream& da_file);
    static int getInstanceCount() { return _cnt; }
 };//action_proc_data
 
@@ -382,23 +382,13 @@ public:
    teacher_data* teach_data;
    temp_proc_data* temp_proc;   //holds tracking and other info
    
-   action_proc_data* give_proc;
-   action_proc_data* bow_proc;
-   action_proc_data* curse_proc;
-   
-   List<say_proc_cell*> topics; //used for say_procs (discuss)
-   
-   String wrong_align_msg; // these 3 are used with action/say procs
-   String wrong_class_msg;
-   String wrong_race_msg;
-   
    spec_data();
    spec_data(const spec_data& source);   //copy constructor
    ~spec_data();
 
-   void Clear();
-   void Read(ifstream& da_file, short read_all);
-   void Write(ofstream& da_file);
+   void vlear();
+   void tead(istream& da_file, short read_all);
+   void write(ostream& da_file);
    spec_data& operator=(const spec_data& source);
 
    static int getInstanceCount() { return _cnt; }
@@ -438,7 +428,7 @@ public:
 
 ///*********************** mob data ***************************///
  
-class mob_data {
+class mob_data : public Serialized {
 protected:
    int cur_in_game;
    int max_in_game;
@@ -462,10 +452,6 @@ public:
 
    spec_data* proc_data;
    int skin_num;
-
-   List<MobScript*> mob_proc_scripts;
-   MobScript* cur_script; // a pointer into the List of MobScripts.
-   List<MobScript*> pending_scripts;
 
    int home_room; /* set when first placed in a room. */
 
@@ -504,10 +490,10 @@ public:
    int isRunningScript() const { return cur_script != 0; }
    int isNoHoming() const { return mob_data_flags.get(8); }
 
-   void Clear();
+   void clear();
    mob_data& operator= (mob_data& source);
-   void Write(ofstream& ofile);
-   void Read(ifstream& ofile, short read_all);
+   void write(ostream& ofile);
+   void read(istream& ofile, int read_all = TRUE);
    int isInProcNow() { return (cur_script && (cur_script->isInProgress())); }
    void addProcScript(const String& txt, MobScript* script_data);
    void finishedMobProc();
@@ -531,7 +517,7 @@ public:
 
 ///*********************** pc data  ***********************///
  
-class pc_data {
+class pc_data : public Serialized {
 protected:
    static int _cnt;
 
@@ -628,8 +614,8 @@ protected:
    static int _cnt;
 
 public:
-   LString short_desc;
-   LString in_room_desc;
+   LStringContainer short_desc;
+   LStringContainer in_room_desc;
    
    bitfield crit_flags;
    // 0 can_see_inv, 1 using_light_src, 2 NULL, 3 is_flying,           
@@ -693,10 +679,10 @@ public:
    critter* follower_of; //pointer to who one is following
    //NULL if following self
    critter* master;      //NULL if not charmed in some way
-   List<critter*> pets; 
-   List<critter*> followers;
-   List<critter*> groupees;
-   List<critter*> is_fighting;
+   SafeList<critter*> pets; 
+   SafeList<critter*> followers;
+   SafeList<critter*> groupees;
+   SafeList<critter*> is_fighting;
    temp_crit_data* temp_crit;
    int mirrors;
    critter* possessing; //ptr to who we are possessing
@@ -706,13 +692,13 @@ public:
    critter();
    critter(critter& source); //copy constructor
    ~critter();
-   void Clear();
+   void clear();
    critter& operator= (critter& source);
    
    int getCurWeight();
    int getMaxWeight();
-   void Read(ifstream& da_file, short read_all);
-   void Write(ofstream& da_file);
+   void read(istream& da_file, short read_all);
+   void write(ostream& da_file);
 
    /** For scripts, the script_targ is always *this.  The script_owner
     * will be null (for non-script specific stuff) and should be specified
@@ -1024,8 +1010,6 @@ public:
    void doGoToRoom(int dest_room, const char* from_dir, door* by_door,
                    int& is_dead, int cur_room, int sanity,
                    int do_msgs = TRUE);
-   void doScriptJump(int abs_index);
-   int insertNewScript(MobScript* script);
 
    void breakEarthMeld();
 

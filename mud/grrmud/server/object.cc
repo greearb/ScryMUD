@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.20 1999/08/01 08:40:23 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
+// $Id: object.cc,v 1.21 1999/08/03 05:55:32 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/03 05:55:32 $
 
 //
 //ScryMUD Server Code
@@ -52,7 +52,7 @@ obj_construct_data::obj_construct_data(const obj_construct_data& source) {
    item5 = source.item5;
 }//copy constructor
 
-void obj_construct_data::Read(ifstream& da_file) {
+void obj_construct_data::read(istream& da_file, int read_all = TRUE) {
    char buf[100];
 
    if (!da_file) {
@@ -66,7 +66,7 @@ void obj_construct_data::Read(ifstream& da_file) {
    da_file.getline(buf, 99);
 }//Read
 
-void obj_construct_data::Write(ofstream& da_file) const {
+void obj_construct_data::write(ostream& da_file) const {
    da_file << target_object << " " << item1 << " " << item2 << " "
            << item3 << " " << item4 << " " << item5;
    da_file << "\t target object, companions\n";
@@ -113,7 +113,7 @@ obj_spec_data& obj_spec_data::operator=(const obj_spec_data& source) {
    if (this == &source)
       return *this;
 
-   Clear();  //clear current mess
+   clear();  //clear current mess
    obj_spec_data_flags = source.obj_spec_data_flags;
    if (source.construct_data) {
       construct_data = new obj_construct_data(*(source.construct_data));
@@ -132,7 +132,7 @@ obj_spec_data& obj_spec_data::operator=(const obj_spec_data& source) {
    return *this;
 }// operator= overload
 
-void obj_spec_data::Clear() {
+void obj_spec_data::clear() {
    obj_spec_data_flags.Clear();
    delete construct_data;
    construct_data = NULL;
@@ -147,20 +147,20 @@ void obj_spec_data::Clear() {
 }//clear
 
 
-void obj_spec_data::Read(ifstream& da_file) {
+int obj_spec_data::read(istream& da_file, int read_all = TRUE) {
    char buf[82];
    int tmp;
 
-   Clear();
+   clear();
 
    if (!da_file) {
       if (mudlog.ofLevel(ERR)) {
          mudlog << "ERROR:  da_file FALSE in obj_spec_data read." << endl;
       }
-      return;
+      return -1;
    }
 
-   obj_spec_data_flags.Read(da_file);
+   obj_spec_data_flags.read(da_file);
 
    obj_spec_data_flags.turn_off(4); //hack!!
    obj_spec_data_flags.turn_off(5);
@@ -173,7 +173,7 @@ void obj_spec_data::Read(ifstream& da_file) {
       if (!construct_data) {
          construct_data = new obj_construct_data;
       }//if
-      construct_data->Read(da_file);
+      construct_data->read(da_file);
    }//if
 
    if (obj_spec_data_flags.get(2)) {
@@ -198,17 +198,18 @@ void obj_spec_data::Read(ifstream& da_file) {
       }//while
       da_file.getline(buf, 80);
    }//if
-}//Read
+   return 0;
+}//read
 
 
-void obj_spec_data::Write(ofstream& da_file) const {
-   obj_spec_data_flags.Write(da_file);
+int obj_spec_data::write(ostream& da_file) {
+   obj_spec_data_flags.write(da_file);
    if (obj_spec_data_flags.get(1)) { //if have construct data
       if (!construct_data) {
          mudlog.log(ERR, "ERROR:  trying to write NULL construct data.\n");
-         return;
+         return -1;
       }//if
-      construct_data->Write(da_file);
+      construct_data->write(da_file);
    }//if
    if (obj_spec_data_flags.get(2)) {
      if (!skin_ptr) {
@@ -232,6 +233,7 @@ void obj_spec_data::Write(ofstream& da_file) const {
      }//while
      da_file << "-1 spell#, level (casts)\n";
    }//if
+   return 0;
 }//Write
 
 
@@ -269,7 +271,7 @@ int bag_struct::read(istream& ofile, int read_all = TRUE) {
    if (isnum(str)) {
       if (strcmp(str, "-1") != 0) {
          bitfield bf;
-         bf.Read(ofile);
+         bf.read(ofile);
          bf.turn_on(atoi(buf));
 
          // Now, set all these flags.  Hateful, but we gotta translate them to
@@ -457,7 +459,6 @@ int object::write(ostream& ofile) {
    int i;
    Cell<SpellDuration*> sd_cell;
    Cell<StatBonus*> sb_cell;
-   SpellDuration* sd_ptr;
    StatBonus* sb_ptr;
    SCell<object*> ob_cell;
    object* ob_ptr;
@@ -470,7 +471,7 @@ int object::write(ostream& ofile) {
    short_desc.write(ofile);
    in_room_desc.write(ofile);
    
-   obj_flags.Write(ofile);
+   obj_flags.write(ofile);
    
    int n_game = extras[3];
    extras[3] = 0;
@@ -520,25 +521,26 @@ int object::write(ostream& ofile) {
    if (obj_flags.get(63)) { //if has spec_data
       if (!obj_proc) {
          mudlog.log(ERR, "ERROR:  trying to write a NULL obj_proc.\n");
-         return;
+         return -1;
       }//if
       obj_proc->write(ofile);
    }//if has spec_data
 
    ofile << "End of Object.\n\n";
+   return 0;
 }//Write...obj
 
 
-int object::read_v2(ifstream& ofile, String& first_name, short read_all) {
+int object::read_v2(istream& ofile, String& first_name, short read_all) {
    int i, test = TRUE;
-   StatBonus* ss_ptr;
+   StatBonus* sb_ptr;
    SpellDuration* sd_ptr;
    char tmp[81];
    String tmp_str(280);
    
    Clear();  //stop up any memory leaks etc.
 
-   mudlog.log(DB, "In obj::Read.\n");
+   mudlog.log(DB, "In obj::read.\n");
 
    if (!ofile) {
       if (mudlog.ofLevel(ERR)) {
@@ -570,18 +572,18 @@ int object::read_v2(ifstream& ofile, String& first_name, short read_all) {
 
    mudlog.log(DB, "About to do termed read..");
 
-   tmp_str.Termed_Read(ofile);
-   setShortDest(tmp_str);
+   tmp_str.termedRead(ofile);
+   setShortDesc(tmp_str);
    
-   tmp_str.Termed_Read(ofile);
+   tmp_str.termedRead(ofile);
    setInRoomDesc(tmp_str);
 
-   tmp_str.Termed_Read(ofile);
+   tmp_str.termedRead(ofile);
    setLongDesc(tmp_str);
    
    mudlog.log(DB, "Done with termed read..");
 
-   obj_flags.Read(ofile);
+   obj_flags.read(ofile);
    obj_flags.turn_on(10); //in_use
    obj_flags.turn_off(71); //if we can read it, it's complete!
    if (obj_flags.get(30)) {
@@ -600,7 +602,7 @@ int object::read_v2(ifstream& ofile, String& first_name, short read_all) {
    if (obj_flags.get(54)) { //is a container
       if (!bag)
          bag = new bag_struct;
-      bag->Read(ofile);
+      bag->read(ofile);
    }//if
    
    /*  Affected By */
@@ -610,7 +612,7 @@ int object::read_v2(ifstream& ofile, String& first_name, short read_all) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in obj read." << endl;
          }
-         return;
+         return -1;
       }
       sd_ptr = new SpellDuration();
       sd_ptr->spell = i;
@@ -627,172 +629,13 @@ int object::read_v2(ifstream& ofile, String& first_name, short read_all) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in obj read." << endl;
          }
-         return;
+         return -1;
       }
 
       if (i == -2) { //assume its supposed to load, gonna load fer sure
          object* new_obj = new object;
          ofile.getline(tmp, 80);  //junk message
-         new_obj->Read(ofile, TRUE);
-
-         inv.append(new_obj);    //add it to inventory
-         affected_objects.append(new_obj);
-
-         new_obj->isModified() = &(inv); //make sure its a SOBJ
-      }//if
-      else {
-         if (obj_list[i].isInUse()) {
-            if (read_all || ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
-                d(1,100)) {
-               mudlog << "INFO:  Loading inventory object: " << i << " on object: "
-                      << cur_stats[2] << endl;
-               inv.append(&(obj_list[i]));    //add it to inventory
-            }//if
-            else {
-               if (mudlog.ofLevel(DB)) {
-                  mudlog << "INFO:  Not loading object: " << i << " on object: "
-                         << cur_stats[2] << " because %load check failed."
-                         << endl;
-               }
-            }//else
-         }//if
-         else { //TODO:  load percentage ignored here....need a fix!
-            inv.append(&(obj_list[i]));    //add it to inventory
-         }//if
-      }//else
-      ofile >> i;
-   }//while
-   ofile.getline(tmp, 80);   
-
-   // stat affects
-
-   int bonus;
-   ofile >> i;
-   while (i != -1) {
-      if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
-         }
-         return;
-      }
-
-      ofile >> bonus;
-      sb_ptr = new StatBonus();
-      sb_ptr->stat = i;
-      sb_ptr->bonus = bonus;
-
-      addStatAffect(sb_ptr);
-      ofile >> i;
-   }//while
-   ofile.getline(tmp, 80);
-   
-   if (obj_flags.get(63)) {   // if it has spec data
-      if (!obj_proc)
-         obj_proc = new obj_spec_data;
-      obj_proc->Read(ofile);
-   }//if
-
-   /* read procs, if we have them. */
-   if (obj_flags.get(76)) {
-      //mudlog.log("Object has proc scripts...");
-      int sent_;
-      ObjectScript* ptr;
-
-      ofile >> sent_;
-      ofile.getline(tmp, 80);
-
-      if (mudlog.ofLevel(DB)) {
-         mudlog << "Tmp, after script#: " << sent_ << " -:" << tmp
-                << ":-\n";
-      }
-
-      while (sent_ != -1) {
-         if (mudlog.ofLevel(DB))
-            mudlog << "\nReading script# " << sent_ << endl;
-         if (!ofile) {
-            if (mudlog.ofLevel(ERR)) {
-               mudlog << "ERROR:  object reading script da_file FALSE." << endl;
-            }
-            return;
-         }
-
-         ptr = new ObjectScript();
-         ptr->read(ofile);
-         addProcScript(ptr);
-         ofile >> sent_;
-         ofile.getline(tmp, 80);
-         if (mudlog.ofLevel(DB))
-            mudlog << "Got rest of line -:" << tmp << ":-" << endl;
-      }//while
-   }//if it had proc scripts
-
-
-   /* if charges < -1, make them -1 (infinity) */
-   if (extras[0] < -1) {
-      extras[0] = -1;
-   }
-
-   //mudlog.log(DBG, "Done reading in obj.\n");
-   ofile.getline(tmp, 80); //junk end of obj msg
-   ofile.getline(tmp, 80); //junk end of obj space
-
-   OBJ_VIS_BIT |= 1024; //hack, turn on 'normal' bit
-}//Read_v2
-
-
-int object::read_v3(ifstream& ofile, short read_all) {
-   int i, test = TRUE;
-   StatBonus* ss_ptr;
-   char tmp[81];
-   String tmp_str(80);
-   String* string;
-   
-   Clear();  //stop up any memory leaks etc.
-
-   mudlog.log(DB, "In obj::Read_v3.\n");
-
-   Entity::read(ofile);
-   Scriptable::read(ofile);
-
-   short_desc.read(ofile);
-   in_room_desc.read(ofile);
-   
-   obj_flags.Read(ofile);
-   obj_flags.turn_on(10); //in_use
-   obj_flags.turn_off(71); //if we can read it, it's complete!
-   if (obj_flags.get(30)) {
-      obj_flags.turn_on(57); //all wieldables are weapons now
-   }//if
-   
-   for (i = 0; i<OBJ_MAX_EXTRAS; i++)
-      ofile >> extras[i];
-   ofile.getline(tmp, 80);
-   
-   for (i = 0; i<OBJ_CUR_STATS; i++)
-      ofile >> cur_stats[i];
-   ofile.getline(tmp, 80);
-   
-   /*  bag  */
-   if (obj_flags.get(54)) { //is a container
-      if (!bag)
-         bag = new bag_struct;
-      bag->Read(ofile);
-   }//if
-   
-   /*  Inventory */
-   ofile >> i;
-   while (i != -1) {
-      if (!ofile) {
-         if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
-         }
-         return;
-      }
-
-      if (i == -2) { //assume its supposed to load, gonna load fer sure
-         object* new_obj = new object;
-         ofile.getline(tmp, 80);  //junk message
-         new_obj->Read(ofile, TRUE);
+         new_obj->read(ofile, TRUE);
 
          inv.append(new_obj);    //add it to inventory
          affected_objects.append(new_obj);
@@ -833,7 +676,167 @@ int object::read_v3(ifstream& ofile, short read_all) {
          if (mudlog.ofLevel(ERR)) {
             mudlog << "ERROR:  da_file FALSE in obj read." << endl;
          }
-         return;
+         return -1;
+      }
+
+      ofile >> bonus;
+      sb_ptr = new StatBonus();
+      sb_ptr->stat = i;
+      sb_ptr->bonus = bonus;
+
+      addStatAffect(sb_ptr);
+      ofile >> i;
+   }//while
+   ofile.getline(tmp, 80);
+   
+   if (obj_flags.get(63)) {   // if it has spec data
+      if (!obj_proc)
+         obj_proc = new obj_spec_data;
+      obj_proc->read(ofile);
+   }//if
+
+   /* read procs, if we have them. */
+   if (obj_flags.get(76)) {
+      //mudlog.log("Object has proc scripts...");
+      int sent_;
+      ObjectScript* ptr;
+
+      ofile >> sent_;
+      ofile.getline(tmp, 80);
+
+      if (mudlog.ofLevel(DB)) {
+         mudlog << "Tmp, after script#: " << sent_ << " -:" << tmp
+                << ":-\n";
+      }
+
+      while (sent_ != -1) {
+         if (mudlog.ofLevel(DB))
+            mudlog << "\nReading script# " << sent_ << endl;
+         if (!ofile) {
+            if (mudlog.ofLevel(ERR)) {
+               mudlog << "ERROR:  object reading script da_file FALSE." << endl;
+            }
+            return -1;
+         }
+
+         ptr = new ObjectScript();
+         ptr->read(ofile);
+         addProcScript(ptr);
+         ofile >> sent_;
+         ofile.getline(tmp, 80);
+         if (mudlog.ofLevel(DB))
+            mudlog << "Got rest of line -:" << tmp << ":-" << endl;
+      }//while
+   }//if it had proc scripts
+
+
+   /* if charges < -1, make them -1 (infinity) */
+   if (extras[0] < -1) {
+      extras[0] = -1;
+   }
+
+   //mudlog.log(DBG, "Done reading in obj.\n");
+   ofile.getline(tmp, 80); //junk end of obj msg
+   ofile.getline(tmp, 80); //junk end of obj space
+
+   OBJ_VIS_BIT |= 1024; //hack, turn on 'normal' bit
+   return 0;
+}//read_v2
+
+
+int object::read_v3(istream& ofile, int read_all) {
+   int i;
+   StatBonus* ss_ptr;
+   char tmp[81];
+   String tmp_str(80);
+   
+   Clear();  //stop up any memory leaks etc.
+
+   mudlog.log(DB, "In obj::read_v3.\n");
+
+   Entity::read(ofile);
+   Scriptable::read(ofile);
+
+   short_desc.read(ofile);
+   in_room_desc.read(ofile);
+   
+   obj_flags.read(ofile);
+   obj_flags.turn_on(10); //in_use
+   obj_flags.turn_off(71); //if we can read it, it's complete!
+   if (obj_flags.get(30)) {
+      obj_flags.turn_on(57); //all wieldables are weapons now
+   }//if
+   
+   for (i = 0; i<OBJ_MAX_EXTRAS; i++)
+      ofile >> extras[i];
+   ofile.getline(tmp, 80);
+   
+   for (i = 0; i<OBJ_CUR_STATS; i++)
+      ofile >> cur_stats[i];
+   ofile.getline(tmp, 80);
+   
+   /*  bag  */
+   if (obj_flags.get(54)) { //is a container
+      if (!bag)
+         bag = new bag_struct;
+      bag->read(ofile);
+   }//if
+   
+   /*  Inventory */
+   ofile >> i;
+   while (i != -1) {
+      if (!ofile) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
+         }
+         return -1;
+      }
+
+      if (i == -2) { //assume its supposed to load, gonna load fer sure
+         object* new_obj = new object;
+         ofile.getline(tmp, 80);  //junk message
+         new_obj->read(ofile, TRUE);
+
+         inv.append(new_obj);    //add it to inventory
+         affected_objects.append(new_obj);
+
+         new_obj->setContainer(this);
+         new_obj->setModified(TRUE);
+      }//if
+      else {
+         if (obj_list[i].isInUse()) {
+            if (read_all || ((obj_list[i].OBJ_PRCNT_LOAD * Load_Modifier) / 100) > 
+                d(1,100)) {
+               mudlog << "INFO:  Loading inventory object: " << i << " on object: "
+                      << cur_stats[2] << endl;
+               inv.append(&(obj_list[i]));    //add it to inventory
+            }//if
+            else {
+               if (mudlog.ofLevel(DB)) {
+                  mudlog << "INFO:  Not loading object: " << i << " on object: "
+                         << cur_stats[2] << " because %load check failed."
+                         << endl;
+               }
+            }//else
+         }//if
+         else { //TODO:  load percentage ignored here....need a fix!
+            inv.append(&(obj_list[i]));    //add it to inventory
+         }//if
+      }//else
+      ofile >> i;
+   }//while
+   ofile.getline(tmp, 80);   
+
+   // stat affects
+
+   int bonus;
+   ofile >> i;
+   while (i != -1) {
+      if (!ofile) {
+         if (mudlog.ofLevel(ERR)) {
+            mudlog << "ERROR:  da_file FALSE in obj read." << endl;
+         }
+         return -1;
       }
 
       ofile >> bonus;
@@ -848,7 +851,7 @@ int object::read_v3(ifstream& ofile, short read_all) {
    if (obj_flags.get(63)) {   // if it has spec data
       if (!obj_proc)
          obj_proc = new obj_spec_data;
-      obj_proc->Read(ofile);
+      obj_proc->read(ofile);
    }//if
 
    /* if charges < -1, make them -1 (infinity) */
@@ -861,7 +864,8 @@ int object::read_v3(ifstream& ofile, short read_all) {
    ofile.getline(tmp, 80); //junk end of obj space
 
    OBJ_VIS_BIT |= 1024; //hack, turn on 'normal' bit
-}//Read_v3
+   return 0;
+}//read_v3
 
 int object::isMagic() {
    if (!stat_affects.isEmpty() || !affected_by.isEmpty())
@@ -899,16 +903,16 @@ int object::isFood() const {
 }
 
 int object::isLocked() const {
-   return (bag && BAG_FLAGS.get(3));
+   return (bag && bag->isLocked());
 }
 
 
 int object::isMagLocked() const {
-   return (bag && BAG_FLAGS.get(6));
+   return (bag && bag->isMagLocked());
 }
 
 int object::isClosed() const {
-   return (bag && BAG_FLAGS.get(2));
+   return (bag && bag->isClosed());
 }
 
 
@@ -968,7 +972,7 @@ int object::getMaxInGame() {
 
 int object::getKeyNum() {
    if (bag) {
-      return bag->key_num;
+      return bag->getKey();
    }
    return 0;
 }
@@ -1062,30 +1066,6 @@ void object::makeComponent(int targ, int comp1, int comp2, int comp3,
    }
 }//makeComponent
 
-void object::setCurRoomNum(int i, int sanity) {
-   in_room = i;
-
-   if (inv.isEmpty()) {
-      return;
-   }
-   else {
-      Cell<object*> cll(inv);
-      object* ptr;
-
-      if (sanity > 20) {
-         mudlog << "WARNING:  object::setCurInRoom, sanity over-run, obj#: "
-                << getIdNum() << endl;
-         return;
-      }
-
-      while ((ptr = cll.next())) {
-         if (ptr->isModified()) {
-            ptr->setCurRoomNum(i, sanity + 1);
-         }
-      }//while
-   }//if
-}//setCurInRoom
-
 
 int object::getObjCountByNumber(int onum, int sanity) {
 
@@ -1101,7 +1081,7 @@ int object::getObjCountByNumber(int onum, int sanity) {
       return 0;
    }
    else {
-      Cell<object*> cll(inv);
+      SCell<object*> cll(inv);
       object* ptr;
       int count = 0;
 
@@ -1155,194 +1135,3 @@ int object::doGoToRoom(int dest_room, const char* from_dir, door* by_door,
 
    return 0;
 }//doGoToRoom
-
-
-void object::finishedObjProc() {
-   if (cur_script) {
-      pending_scripts.loseData(cur_script);
-      delete cur_script;
-   }
-
-   // This could easily end up being NULL, that's OK!
-   cur_script = pending_scripts.peekFront();
-}//finishedRoomProc
-
-void object::addProcScript(const String& txt, ObjectScript* script_data) {
-   //similar to reading it in...
-   //first, see if we are over-writing one...
-   if (mudlog.ofLevel(DBG)) {
-      mudlog << "In object::addProcScript, txt:  \n" << txt
-             << "\nscript data:  "
-             << script_data->toStringBrief(0, 0, ENTITY_ROOM, 0) << endl;
-   }
-
-   obj_flags.turn_on(76);
-
-   Cell<ObjectScript*> cll;
-   ObjectScript* ptr;
-   obj_proc_scripts.head(cll);
-
-   while ((ptr = cll.next())) {
-      if (ptr->matches(*script_data)) {
-         //got a match.
-         mudlog.log("object::addProcScript, they match.");
-         *ptr = *script_data;
-         ptr->setScript(txt);
-         delete script_data;
-         return;
-      }//if
-   }//while
-   
-   mudlog.log(DBG, "About to setScript.");
-   
-   script_data->setScript(txt);
-   mudlog.log(DBG, "done with setScript.");
-
-   if (!script_data) {
-      mudlog.log(ERR, "script_data is NULL, object::addProcScript.");
-      return;
-   }
-
-   obj_proc_scripts.append(script_data);
-}//addProcScript
-
-
-void object::listScripts(critter& pc) {
-   String buf(500);
-   buf.Append("These scripts are defined for this object, the actual scripts
-may be seen by using the stat_room_script [rm_num] [script_index] command.\n\n");
-
-   pc.show(buf);
-
-   String tmp(100);
-   int found_one = FALSE;
-   Cell<ObjectScript*> cll(obj_proc_scripts);
-   ObjectScript* ptr;
-   int idx = 0;
-   while ((ptr = cll.next())) {
-      found_one = TRUE;
-      tmp = ptr->toStringBrief(FALSE, 0, ENTITY_OBJECT, idx);
-      Sprintf(buf, "[%i] %S\n", idx, &(tmp));
-      pc.show(buf);
-      idx++;
-   }
-
-   if (!found_one) {
-      buf.Append("No scripts defined for this object.\n");
-      show(buf, pc);
-   }
-}//listScripts
-
-void object::removeScript(String& trigger, int i_th, critter& pc) {
-   int sofar = 1;
-   String buf(500);
- 
-   Cell<ObjectScript*> cll(obj_proc_scripts);
-   ObjectScript* ptr;
-   ptr = cll.next();
-   while (ptr) {
-      if (strcasecmp(*(ptr->getTrigger()), trigger) == 0) {
-         if (sofar == i_th) {
-            delete ptr;
-            ptr = obj_proc_scripts.lose(cll);
-            show("Deleted it...\n", pc);
-            return;
-         }//if
-         else {
-            ptr = cll.next();
-         }
-         sofar++;
-      }//if
-      else {
-         ptr = cll.next();
-      }
-   }//while
-
-   show("Didn't find that script..\n", pc);
-}//removeScript
-
-
-int object::insertNewScript(ObjectScript* script) {
-   ObjectScript* ptr;
-   Cell<ObjectScript*> cll(pending_scripts);
-
-   // Don't append scripts that have a zero precedence, if there
-   // are other scripts in the queue.
-   if ((script->getPrecedence() == 0) && (!pending_scripts.isEmpty())) {
-      delete script;
-      return 0;
-   }
-
-   while ((ptr = cll.next())) {
-      if (ptr->getPrecedence() < script->getPrecedence()) {
-         // Then insert it
-         pending_scripts.insertBefore(cll, script);
-         return 0;
-      }//if
-   }//while
-
-   // If here, then we need to place it at the end.
-   pending_scripts.append(script);
-   return 0;
-}
-
-
-void object::doScriptJump(int abs_offset) {
-   if (cur_script)
-      cur_script->doScriptJump(abs_offset);
-}
-
-// NOTE:  The script owner is *this.  It is likely, but not necessary
-// that targ is also *this
-void object::checkForProc(String& cmd, String& arg1, critter& actor,
-                          int targ, room& rm) {
-   if (mudlog.ofLevel(DBG)) {
-      mudlog << "In object::checkForProc, size of scripts: "
-             << obj_proc_scripts.size() << endl;
-   }
-
-   if (!isModified()) {
-      mudlog.log(ERR, "ERROR:  object::checkForProc, got an OBJ (not modified).");
-      return;
-   }
-
-   Cell<ObjectScript*> cll;
-   ObjectScript* ptr;
-         
-   obj_proc_scripts.head(cll);
-
-   while ((ptr = cll.next())) {
-      mudlog.log("In while.");
-      mudlog.log(ptr->toStringBrief(0, 0, ENTITY_OBJECT, 0));
-      if (ptr->matches(cmd, arg1, actor, targ, getIdNum())) {
-         mudlog.log("Matches..");
-         if (pending_scripts.size() >= 10) { //only queue 10 scripts
-            return; //do nothing, don't want to get too much backlog.
-         }
-         else {
-            // add it to the pending scripts.
-            ptr->generateScript(cmd, arg1, actor, targ, rm, NULL, this);
-            insertNewScript(new ObjectScript(*ptr));
-
-            if (cur_script) {
-               if (cur_script->getPrecedence() <
-                   pending_scripts.peekFront()->getPrecedence()) {
-                  
-                  pending_scripts.loseData(cur_script); //take it out of queue
-                  delete cur_script; //junk it!
-                  cur_script = pending_scripts.peekFront();
-                  cur_script->resetStackPtr(); //get ready to start
-               }//if
-               // else, it just goes into the queue
-            }//if we currently have a script.
-            else { //there was none, so grab the first one.
-               cur_script = pending_scripts.peekFront();
-               proc_action_objs.gainData(this);
-               cur_script->resetStackPtr(); //get ready to start
-            }
-
-            return;
-         }//else
-      }//if matches
-   }//while
-}//checkForProcAction

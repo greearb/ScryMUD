@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.12 1999/08/01 08:40:22 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/08/01 08:40:22 $
+// $Id: classes.h,v 1.13 1999/08/03 05:55:32 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/03 05:55:32 $
 
 //
 //ScryMUD Server Code
@@ -98,6 +98,7 @@ enum LEtypeE {
    LE_LS_COLLECTION = 11,
    LE_SCRIPT_COLL = 12,
    LE_CLOSABLE = 13,
+   LE_OBJ_PROC = 14,
    LE_UNKNOWN = 0xFFFFFFE,
    LE_ANY = 0xFFFFFFF
 };

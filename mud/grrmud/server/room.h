@@ -1,5 +1,5 @@
-// $Id: room.h,v 1.19 1999/08/01 08:40:23 greear Exp $
-// $Revision: 1.19 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
+// $Id: room.h,v 1.20 1999/08/03 05:55:33 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/03 05:55:33 $
 
 //
 //ScryMUD Server Code
@@ -135,6 +135,7 @@ public:
    int getMovCost() const { return cur_stats[1]; }
    int getRoomNum() const { return cur_stats[2]; }
    int getIdNum() const { return getRoomNum(); }
+   int getCurRoomNum() { return getRoomNum(); } //bleh, TODO:  consolidate this.
    void setVisBit(int i) { cur_stats[0] = i; }
    void setMovCost(int i) { cur_stats[1] = i; }
    void setRoomNum(int i) { cur_stats[2] = i; }   

@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.20 1999/08/01 08:40:23 greear Exp $
-// $Revision: 1.20 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
+// $Id: object.h,v 1.21 1999/08/03 05:55:33 greear Exp $
+// $Revision: 1.21 $  $Author: greear $ $Date: 1999/08/03 05:55:33 $
 
 //
 //ScryMUD Server Code
@@ -65,15 +65,15 @@ public:
    ~obj_construct_data() { _cnt--; }
 
    //void Clear();
-   void Read(ifstream& da_file);
-   void Write(ofstream& da_file) const;
+   void read(istream& da_file, int read_all = TRUE);
+   void write(ostream& da_file) const;
    static int getInstanceCount() { return _cnt; }
 }; //obj_construct_data
 
 
 ///**********************  obj spec data  *****************///
 
-class obj_spec_data {
+class obj_spec_data : public Serialized {
 protected:
    static int _cnt;
 
@@ -92,13 +92,15 @@ public:
    
    obj_spec_data();
    obj_spec_data(const obj_spec_data& source);  //copy constructor
-   ~obj_spec_data();
-
+   virtual ~obj_spec_data();
+   
    obj_spec_data& operator=(const obj_spec_data& source);
 
-   void Clear();
-   void Read(ifstream& da_file);
-   void Write(ofstream& da_file) const;
+   void clear();
+   virtual int read(istream& da_file, int read_all = TRUE);
+   virtual int write(ostream& da_file);
+   virtual LEtypeE getEntityType() { return LE_OBJ_PROC; }
+   
    static int getInstanceCount() { return _cnt; }
 };//obj_spec_data
 
@@ -123,8 +125,8 @@ public:
    int getTimeTillDisolve() const { return time_till_disolve; }
 
    void setMaxWeight(int i) { max_weight = i; }
-   void setPercentWeight() { percentage_weight = i; }
-   void setTimeTillDisolve() { time_till_disolve = i; }
+   void setPercentWeight(int i) { percentage_weight = i; }
+   void setTimeTillDisolve(int i) { time_till_disolve = i; }
 
    virtual int read(istream& da_file, int read_all = TRUE);
    virtual int write(ostream& da_file);
@@ -193,9 +195,9 @@ public:
    object& operator= (object& source);
 
    void Clear();
-   int read(istream& da_file, short read_all);
+   int read(istream& da_file, int read_all = TRUE);
    int write(ostream& da_file);
-   int read_v3(istream& da_file, short read_all);
+   int read_v3(istream& da_file, int read_all);
    int read_v2(istream& da_file, String& name, short read_all);
 
    int isMagic();
@@ -210,6 +212,8 @@ public:
    int getCurWeight() const;
    int getEmptyWeight() const { return extras[5]; }
    
+   /** ptr will be consumed by this call, ie takes charge of memory. */
+   void addStatAffect(StatBonus* ptr);
    void setEmptyWeight(int wt) { extras[5] = wt; }
    
    void lock();
@@ -228,8 +232,6 @@ public:
 
    void setShortDesc(LString& new_val);
    void setInRoomDesc(LString& new_val);
-
-   int insertNewScript(GenScript* script);
 
    int getDefaultPrice() { return cur_stats[1]; }
    int getPause() const { return pause; }
@@ -260,6 +262,7 @@ public:
    int isLiquid() const;
    int isCanteen() const;
 
+   void setModified(int val) { is_modified = val; }
    void setComplete();
    void setIncomplete();
    void setIdNum(int i);

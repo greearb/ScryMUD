@@ -1,5 +1,5 @@
-// $Id: script.cc,v 1.16 1999/08/01 08:40:23 greear Exp $
-// $Revision: 1.16 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
+// $Id: script.cc,v 1.17 1999/08/03 05:55:33 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/08/03 05:55:33 $
 
 //
 //ScryMUD Server Code
@@ -1553,7 +1553,7 @@ void GenScript::parseBlockFP(int& start_idx,
 }//parseBlockFP
 
 
-void GenScript::read(ifstream& da_file) {
+void GenScript::read(istream& da_file) {
    char buf[100];
    clear();
    mudlog.log(DB, "in GenScript::Read()");
@@ -1619,7 +1619,7 @@ void GenScript::read(ifstream& da_file) {
 }//Read
 
 
-void GenScript::write(ofstream& da_file) const {
+void GenScript::write(ostream& da_file) const {
    da_file << trigger_cmd << " " << target 
            << " " << actor << " " << precedence 
            << "\t Trigger Command, targ, actor \n";
@@ -2011,6 +2011,8 @@ void Scriptable::checkForProc(String& cmd, String& arg1, critter* actor,
          }
          else {
             // add it to the pending scripts.
+            // TODO:  Need to fix this probably, cast to specific object
+            // type at least, based on getEntityId?? --Ben
             ptr->generateScript(cmd, arg1, actor, targ, rm, NULL, this);
             insertNewScript(ptr);
 
@@ -2036,3 +2038,29 @@ void Scriptable::checkForProc(String& cmd, String& arg1, critter* actor,
       }//if matches
    }//while
 }//checkForProcAction
+
+
+int Scriptable::insertNewScript(MobScript* script) {
+
+   // Don't append scripts that have a zero precedence, if there
+   // are other scripts in the queue.
+   if ((script->getPrecedence() == 0) && (!pending_scripts.isEmpty())) {
+      delete script;
+      return 0;
+   }
+
+   GenScript* ptr;
+   Cell<GenScript*> cll(pending_scripts);
+
+   while ((ptr = cll.next())) {
+      if (ptr->getPrecedence() < script->getPrecedence()) {
+         // Then insert it
+         pending_scripts.insertBefore(cll, script);
+         return 0;
+      }//if
+   }//while
+
+   // If here, then we need to place it at the end.
+   pending_scripts.append(script);
+   return 0;
+}

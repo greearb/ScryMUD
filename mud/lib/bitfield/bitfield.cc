@@ -1,5 +1,5 @@
-// $Id: bitfield.cc,v 1.7 1999/08/01 08:40:23 greear Exp $
-// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
+// $Id: bitfield.cc,v 1.8 1999/08/03 05:55:33 greear Exp $
+// $Revision: 1.8 $  $Author: greear $ $Date: 1999/08/03 05:55:33 $
 
 //
 //ScryMUD Server Code
@@ -148,7 +148,7 @@ int bitfield::max_bit() const {
 }//max_bit
 
 
-int bitfield::Read(istream& ifile) {
+int bitfield::read(istream& ifile) {
    int flag;
    char buf[81];
 
@@ -172,7 +172,7 @@ int bitfield::Read(istream& ifile) {
 }//Read
 
 
-void bitfield::Write(ostream& ofile) const {
+void bitfield::write(ostream& ofile) const {
    for (int i = max_bit(); i >= 0; i--) {
       if (get(i)) {
          ofile << i << " ";

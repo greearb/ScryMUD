@@ -1,5 +1,5 @@
-// $Id: string2.cc,v 1.12 1999/07/18 00:59:23 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 1999/07/18 00:59:23 $
+// $Id: string2.cc,v 1.13 1999/08/03 05:55:34 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/03 05:55:34 $
 
 //
 //ScryMUD Server Code
@@ -689,7 +689,7 @@ int String::readToken(char delim, ifstream& dafile, int include_delim) {
 }//readToken
 
 
-void String::Termed_Read(ifstream& da_file) { //reads lines untill it finds
+void String::termedRead(istream& da_file) { //reads lines untill it finds
 					      // a line containing only "~"
    char buf[182];
    short test;

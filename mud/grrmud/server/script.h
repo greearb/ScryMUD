@@ -1,5 +1,5 @@
-// $Id: script.h,v 1.13 1999/08/01 08:40:23 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
+// $Id: script.h,v 1.14 1999/08/03 05:55:33 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/08/03 05:55:33 $
 
 //
 //ScryMUD Server Code
@@ -180,8 +180,8 @@ public:
 
    virtual void clear();
    virtual void appendCmd(String& cmd);
-   virtual void read(ifstream& da_file);
-   virtual void write(ofstream& da_file) const;
+   virtual void read(istream& da_file);
+   virtual void write(ostream& da_file) const;
    virtual int matches(const String& cmd, String& arg1, critter& act,
                        int targ, int obj_actor_num = -1);
    virtual int matches(const GenScript& src);
@@ -364,7 +364,7 @@ public:
    void setPause(int i) { pause = i; }
    void decrementPause() { if (pause > 0) pause--; }
    void doScriptJump(int abs_index);
-   virtual int insertNewScript(GenScript* original) = 0;
+   virtual int insertNewScript(GenScript* original);
    GenScript* getScriptAt(int idx) { return scripts.elementAt(idx); }
 
    /** Attempt to trigger a room script directly.  So far, we support only

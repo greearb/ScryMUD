@@ -1,5 +1,5 @@
-// $Id: bitfield.h,v 1.6 1999/08/01 08:40:23 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/08/01 08:40:23 $
+// $Id: bitfield.h,v 1.7 1999/08/03 05:55:33 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/08/03 05:55:33 $
 
 //
 //ScryMUD Server Code
@@ -112,8 +112,8 @@ public:
    int operator!= (const bitfield& b) const;
    
    void init(const int num_of_flags); //callable initializer
-   void Write(ostream& ofile) const;
-   int Read(istream& ifile);
+   void write(ostream& ofile) const;
+   int read(istream& ifile);
    void Clear();
 }; //class bitfield
 

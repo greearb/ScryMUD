@@ -1,5 +1,5 @@
-// $Id: SafeList.h,v 1.1 1999/08/01 08:40:24 greear Exp $
-// $Revision: 1.1 $  $Author: greear $ $Date: 1999/08/01 08:40:24 $
+// $Id: SafeList.h,v 1.2 1999/08/03 05:55:34 greear Exp $
+// $Revision: 1.2 $  $Author: greear $ $Date: 1999/08/03 05:55:34 $
 
 //
 //ScryMUD Server Code
@@ -270,7 +270,7 @@ public:
             }//if
          }//if
       }//while
-      pushBack(source);
+      append(source);
       return FALSE; //no substitution
    }//SubstituteData   
 
