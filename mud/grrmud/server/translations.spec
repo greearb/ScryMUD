@@ -1,3 +1,6 @@
+# $Id: translations.spec,v 1.4 1999/06/05 23:29:15 greear Exp $
+# $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+
 # This should grow to contain almost all constant strings and patterns
 # given to Sprintf.  To add support for a new language, then, you will
 # just have to modify the code_gen files a bit and then add the
@@ -309,6 +312,18 @@ CS_SPELL_RESEARCH
 
 CS_NO_CONTAINER	
 	eng "You don't seem to have that container.\n"
+	~
+
+CS_TOO_LITTLE_GOLD
+	eng "You don't have that much gold.\n"
+	~
+
+CS_MUST_DROP_MORE_GOLD
+	eng "You must drop more than that!!\n"
+	~
+	
+CS_DROP_I_COINS
+	eng "You drop %i coins."
 	~
 
 CS_NOT_CONTAINER_PUT

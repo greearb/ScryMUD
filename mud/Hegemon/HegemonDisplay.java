@@ -1,3 +1,6 @@
+// $Id: HegemonDisplay.java,v 1.3 1999/06/05 23:29:12 greear Exp $
+// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear

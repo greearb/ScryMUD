@@ -1,3 +1,6 @@
+// $Id: login.cc,v 1.10 1999/06/05 23:29:14 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -229,6 +232,9 @@ void critter::doLogin() {
                   help(1, &string, *this);
                }//else
             }//if
+            else {
+               help(1, &string, *this);
+            }
             break;
             
          case 4: //get class

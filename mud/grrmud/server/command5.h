@@ -1,3 +1,6 @@
+// $Id: command5.h,v 1.11 1999/06/05 23:29:13 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear

@@ -1,3 +1,6 @@
+// $Id: spells2.cc,v 1.7 1999/06/05 23:29:15 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear

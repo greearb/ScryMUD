@@ -1,3 +1,6 @@
+# $Id: Makefile,v 1.11 1999/06/05 23:29:12 greear Exp $
+# $Revision: 1.11 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+
 # Makefile for Hegemon project
 
 # Dependiencias por mano:  javac no funciona bien

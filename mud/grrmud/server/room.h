@@ -1,3 +1,6 @@
+// $Id: room.h,v 1.10 1999/06/05 23:29:15 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -217,6 +220,7 @@ public:
                               * possible. */
    virtual object* haveObjNamed(int i_th, const String* name, int see_bit);
    virtual critter* haveCritNamed(int i_th, const String* name, int see_bit);
+   virtual critter* haveCritNamed(int i_th, const String* name, critter& pc);
    virtual critter* haveCritter(critter* ptr);
    virtual object* haveObject(object* ptr);
    virtual critter* getLastCritter() { return critters.peekBack(); }

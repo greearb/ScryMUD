@@ -1,3 +1,6 @@
+// $Id: string2.cc,v 1.9 1999/06/05 23:29:16 greear Exp $
+// $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/05 23:29:16 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear

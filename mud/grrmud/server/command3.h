@@ -1,3 +1,6 @@
+// $Id: command3.h,v 1.5 1999/06/05 23:29:13 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -79,7 +82,7 @@ int who(critter& pc);
 int ldwho(critter& pc);
 int sockets(critter& pc);  //verbose who/ldwho
 
-int buglist(BugTypeE bt, int i, const String& cmd, int j, const String& mod,
+int buglist(BugTypeE bt, int i, String& cmd, int j, const String& mod,
             const String& notes, critter& pc);
 
 int idea(const String& str, critter& pc);

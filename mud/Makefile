@@ -1,3 +1,6 @@
+# $Id: Makefile,v 1.9 1999/06/05 23:29:11 greear Exp $
+# $Revision: 1.9 $  $Author: greear $ $Date: 1999/06/05 23:29:11 $
+
 #  Makefile for Hegemon and ScryMUD
 
 # NOTE:  Much of this script assumes you have ./ in your PATH.  Please

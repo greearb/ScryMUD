@@ -1,3 +1,6 @@
+# $Id: Makefile,v 1.3 1999/06/05 23:29:16 greear Exp $
+# $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:16 $
+
 #ARCHIVE      = /home/greear/mud/lib/liblog.a
 
 # ADD YOUR .o FILE to those listed here and

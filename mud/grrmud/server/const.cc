@@ -1,3 +1,6 @@
+// $Id: const.cc,v 1.12 1999/06/05 23:29:13 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -581,14 +584,14 @@ const char* Opening_Screen = "<__SCRY__>\n\n\n
 
                 Code:  Ben Greear AKA Grock
         Head Builder:  Shamu
-            Web Page:  http://www.primenet.com/~greear/ScryMUD/scry.html
+            Web Page:  http://scry.WANfear.com
                Email:  greear@cyberhighway.net
 
-       Thanks to the kind folks at primenet.com (www.primenet.com) for
-       the site.  $21 a month gets unlimited usage, and they will give
-       you a static login account for a one time fee.
-
-
+       Thanks to the kind folks at WANfear for hosting the ScryMUD site.
+       WANfear offers:
+          Virtual-Domain Web Site Hosting: (http://www.your-company.com/),
+          CVS repositories, and other hosting and consulting services.
+          Check them out at: http://www.WANfear.com
 ";
 //Opening_Screen
 

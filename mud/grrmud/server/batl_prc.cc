@@ -1,3 +1,6 @@
+// $Id: batl_prc.cc,v 1.4 1999/06/05 23:29:13 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -112,6 +115,10 @@ void do_battle_proc(critter& pc) {
 
   if (!pc.mob)
     return;
+
+  // Animals won't do spec procs now. (a kicking snake looks funny!)
+  if (pc.isAnimal())
+     return;
 
   String buf(100);
 

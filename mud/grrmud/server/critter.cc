@@ -1,3 +1,6 @@
+// $Id: critter.cc,v 1.20 1999/06/05 23:29:14 greear Exp $
+// $Revision: 1.20 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -3067,10 +3070,17 @@ int critter::canClimb() {
 
 
 void critter::drunkifyMsg(String& msg) {
+   char ch;
    if (pc && (pc->drugged > 0)) {
       for (int i = 0; i<msg.Strlen(); i++) {
-         if (d(1, 15) < d(1, pc->drugged)) {
-            msg.setCharAt(i, (char)(d(1, 52) + 41));
+         if ((msg.charAt(i) != '<') && (d(1, 15) < d(1, pc->drugged))) {
+            ch = (char)(d(1, 52) + 41);
+
+            // Don't want to translate < in case of hegemon markup messups.
+            if (ch == '<') {
+               ch = '!';
+            }
+            msg.setCharAt(i, ch);
          }//if
       }//for
    }//if
@@ -3756,3 +3766,30 @@ int critter::isOpen(int cmt) const {
    return FALSE;
 }//isOpen
 
+/** Can fail if cnt is bad, does all messages. */
+int critter::doDropCoins(int cnt) {
+   if (GOLD < cnt) {
+      show(CS_TOO_LITTLE_GOLD);
+      return -1;
+   }
+   else if (cnt <= 0) {
+      show(CS_MUST_DROP_MORE_GOLD);
+      return -1;
+   }
+   else {
+      String buf(100);
+      Sprintf(buf, cstr(CS_DROP_I_COINS, *this), cnt);
+      show(buf);
+
+      object* gold;
+      gold = obj_to_sobj(obj_list[GOLD_OBJECT], getCurRoom()->peekInv(),
+                         getCurRoomNum());
+      
+      obj_list[GOLD_OBJECT].incrementCurInGame();
+      
+      gold->cur_stats[1] = cnt;
+      GOLD -= cnt;
+      
+      getCurRoom()->gainObject(gold);
+   }//all is well
+}//doDropCoins

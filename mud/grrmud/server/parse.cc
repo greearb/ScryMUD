@@ -1,3 +1,6 @@
+// $Id: parse.cc,v 1.17 1999/06/05 23:29:14 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -175,7 +178,8 @@ int critter::processInput(String& input, short do_sub, int script_driven,
          buf = "say";
       }
       if (!((buf == "say") || (buf == "gossip") || (buf == "yell") ||
-            (buf == "tell") || (buf == ":") || (buf == "/"))) {
+            (buf == "tell") || (buf == ":") || (buf == "/") ||
+            (buf == "ask"))) {
          //show("DEBUG:  You are in pause mode.\n", pc); 
          if (!(pc && (getLinkCond() == CON_LINKDEAD)))
             return -1;
@@ -323,7 +327,8 @@ int critter::processInput(String& input, short do_sub, int script_driven,
 
    len1 = raw_strings[0].Strlen();
 
-   if (strncasecmp(raw_strings[0], "tell", max(3, len1)) == 0) {
+   if ((strncasecmp(raw_strings[0], "tell", max(3, len1)) == 0) ||
+       (strncasecmp(raw_strings[0], "ask", max(3, len1)) == 0)) {
       buf = input.Get_Command(eos, term_by_period);
       if (buf.Strlen() != 0) {
          if (isnum(buf)) {

@@ -1,3 +1,6 @@
+// $Id: skills.cc,v 1.10 1999/06/05 23:29:15 greear Exp $
+// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear

@@ -1,3 +1,6 @@
+// $Id: BugEntry.cc,v 1.7 1999/06/05 23:29:13 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -238,7 +241,7 @@ int BugEntry::changeState(state new_state, int imm_level, const String& name) {
    }
 
    // Don't restrict me cause I'm lazy!!
-   if (imm_level == 10) {
+   if (imm_level > 5) {
       cur_state = new_state;
       return 0;
    }

@@ -237,7 +237,7 @@ commands *commands ~
 NOP
 classes *classes ~
 NOP
-channels tell gt gc *channels ~
+channels tell ask gt gc *channels ~
 NOP
 
 # case D

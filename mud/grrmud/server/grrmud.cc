@@ -1,3 +1,6 @@
+// $Id: grrmud.cc,v 1.18 1999/06/05 23:29:14 greear Exp $
+// $Revision: 1.18 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -1572,7 +1575,7 @@ int critter::doLogOffInactive() {
            getName());
    show_all_info(buf); //notify imms flagged for extra_info
 
-   emote("Has left the game.");
+   emote("has left the game.");
    
    doLeaveRoom();
    

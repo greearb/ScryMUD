@@ -1,3 +1,6 @@
+# $Id: Makefile,v 1.2 1999/06/05 23:29:15 greear Exp $
+# $Revision: 1.2 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+
 include ../MakeInclude
 
 all:

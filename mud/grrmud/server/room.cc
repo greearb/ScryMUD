@@ -1,3 +1,6 @@
+// $Id: room.cc,v 1.17 1999/06/05 23:29:15 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -1430,6 +1433,14 @@ int room::canSeeSky() {
 
 critter* room::haveCritNamed(int i_th, const String* name, int see_bit) {
    return ::have_crit_named(critters, i_th, name, see_bit, *this);
+}
+
+critter* room::haveCritNamed(int i_th, const String* name, critter& pc) {
+   if ((strcasecmp(*name, "me") == 0) ||
+       (strcasecmp(*name, "self") == 0)) {
+      return &pc;
+   }
+   return ::have_crit_named(critters, i_th, name, pc.SEE_BIT, *this);
 }
 
 critter* room::haveCritter(critter* ptr) {

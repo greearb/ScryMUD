@@ -1,3 +1,6 @@
+# $Id: Makefile,v 1.7 1999/06/05 23:29:12 greear Exp $
+# $Revision: 1.7 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+
 
 IMM_FILES=IMM_active_zones_1 \
 IMM_add_casts_spell_1 \

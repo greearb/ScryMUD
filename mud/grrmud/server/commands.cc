@@ -1,3 +1,6 @@
+// $Id: commands.cc,v 1.17 1999/06/05 23:29:13 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -143,10 +146,14 @@ int drop(int i_th, const String* pre_obj, const String* obj_all,
          ROOM.gainInv(obj_ptr);
          drop_eq_effects(*obj_ptr, pc, TRUE);
       }//if
-   }//if   
+   }//if
+   else if ((strcasecmp(obj, "gold") == 0) ||
+            (strncasecmp(obj, "coins", 4) == 0)) {
+      return pc.doDropCoins(i_th);
+   }
    else {
-         pc.show(CS_DONT_SEEM_TO_HAVE_THAT);
-         return -1;
+      pc.show(CS_DONT_SEEM_TO_HAVE_THAT);
+      return -1;
    }//else
    return 0;
 }//drop
@@ -610,7 +617,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
          String cmd = "look";
          rm.checkForProc(cmd, NULL_STRING, pc, obj_ptr->OBJ_NUM);
       }//if
-      else if ((crit_ptr = rm.haveCritNamed(i_th, obj, pc.SEE_BIT))) {
+      else if ((crit_ptr = rm.haveCritNamed(i_th, obj, pc))) {
 
          show("\n\n", pc);
          show((crit_ptr->long_desc), pc);

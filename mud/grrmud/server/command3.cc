@@ -1,3 +1,6 @@
+// $Id: command3.cc,v 1.13 1999/06/05 23:29:13 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -662,7 +665,7 @@ int bug(const String& str, critter& pc) {
  *                                       # you can add a comment to the bug.
  *   buglist purge [bug#]        #  Remove a bug from the list entirely.
  */
-int buglist(BugTypeE bt, int i, const String& cmd, int j, const String& mod,
+int buglist(BugTypeE bt, int i, String& cmd, int j, const String& mod,
             const String& notes, critter& pc) {
    if (!pc.isPc()) { 
       i = notes.Strlen(); //using notes here stops compiler warnings.
@@ -673,7 +676,17 @@ int buglist(BugTypeE bt, int i, const String& cmd, int j, const String& mod,
        (strcasecmp(cmd, "open") == 0) ||
        (strcasecmp(cmd, "closed") == 0) ||
        (strcasecmp(cmd, "assigned") == 0) ||
-       (strcasecmp(cmd, "retest") == 0)) {
+       (strcasecmp(cmd, "retest") == 0) ||
+       (strcasecmp(cmd, "all") == 0)) {
+
+      // Default now is open
+      if (cmd.Strlen() == 0) {
+         cmd = "open";
+      }
+      else if (strcasecmp(cmd, "all") == 0) {
+         cmd = "";
+      }
+
       if (bt == BT_BUGS) {
          pc.show("Bug Listing:\n");
          pc.show(bl_bugs.toStringBrief(cmd)); // FALSE == No Hegemon Tagging
@@ -1480,7 +1493,7 @@ int follow(int i_th, const String* vict, critter& pc, int do_msg = TRUE) {
       ptr = &pc;
    }//if
    else {
-      ptr = ROOM.haveCritNamed(i_th, vict, pc.SEE_BIT);
+      ptr = ROOM.haveCritNamed(i_th, vict, pc);
    }//if
 
    if (!ptr) {

@@ -1,3 +1,6 @@
+// $Id: misc.cc,v 1.15 1999/06/05 23:29:14 greear Exp $
+// $Revision: 1.15 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -824,6 +827,7 @@ void decrease_timed_affecting_pcs() {  //will decrease all
          }
          log_out(*crit_ptr);
       }//if
+
       if (TRUE /*crit_ptr->pc->mode == MODE_NORMAL*/) {
          crit_ptr->affected_by.head(sp_cell);
          sp_ptr = sp_cell.next();
@@ -909,6 +913,7 @@ void decrease_timed_affecting_lds() {
                 << "  address:  " << crit_ptr << endl;
          log_out(*crit_ptr);
       }//if
+
       if (TRUE /*crit_ptr->pc->mode == MODE_NORMAL*/) {
          crit_ptr->affected_by.head(sp_cell);
          sp_ptr = sp_cell.next();
@@ -1627,7 +1632,6 @@ void out_inv(const List<object*>& lst, critter& pc,
    mudlog.log(DBG, "Done with out_inv.\n");
 
 }//out_inv
-
 
 
 critter* have_crit_named(List<critter*>& lst, const int i_th,

@@ -1,3 +1,6 @@
+// $Id: critter.h,v 1.17 1999/06/05 23:29:14 greear Exp $
+// $Revision: 1.17 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -1028,6 +1031,9 @@ public:
    int withdrawCoins(int count, critter& banker); //do messages
    int depositCoins(int count, critter& banker); //do messages
    int balanceCoins(critter& banker);
+
+   /** Can fail if cnt is bad, does all messages. */
+   int doDropCoins(int cnt);
 
    /** Assume we are removing this object at this posn. */
    void checkLight(object* obj = NULL, int posn = -1);

@@ -1,3 +1,6 @@
+// $Id: classes.h,v 1.6 1999/06/05 23:29:13 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear

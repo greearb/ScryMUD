@@ -1,3 +1,6 @@
+// $Id: command4.cc,v 1.16 1999/06/05 23:29:13 greear Exp $
+// $Revision: 1.16 $  $Author: greear $ $Date: 1999/06/05 23:29:13 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -1719,7 +1722,7 @@ int rset(const String* targ, int new_val, critter& pc) {
 
 /* vict is the name of the mob you wish to mset, targ is thing to set */
 int mset(int i_th, const String* vict, const String* targ, int new_val,
-          const String* new_val_string, critter& pc) {
+         const String* new_val_string, critter& pc) {
    String buf(50);
 
    if (!ok_to_do_action(NULL, "IFPR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
@@ -1794,9 +1797,13 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    }
 
    if (!ptr->pc) {
-      if (!pc.doesOwnCritter(*ptr)) {
-	show("You don't have permission to edit this mob.\n", pc);
-	return -1;
+      if ((pc.doesOwnCritter(*ptr)) ||
+          (!(ROOM.isZlocked()) && pc.getImmLevel() > 5)) {
+         //ok
+      }
+      else {
+         show("You don't have permission to edit this mob.\n", pc);
+         return -1;
       }//if
    }//if
    else {

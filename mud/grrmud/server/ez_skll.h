@@ -1,3 +1,6 @@
+// $Id: ez_skll.h,v 1.5 1999/06/05 23:29:14 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/05 23:29:14 $
+
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
