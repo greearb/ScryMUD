@@ -717,6 +717,7 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
                      emote("is crushed into the earth.", *ptr, 
                            room_list[ptr->getCurRoomNum()], TRUE);
                      agg_kills_vict(&agg, *ptr);
+                     ptr = NULL;
                   }//if
                   else {
                      show("You land painfully on the ground.\n", *ptr);
@@ -729,7 +730,10 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
                   emote("lands lightly on the ground.", *ptr,
                         room_list[ptr->getCurRoomNum()], TRUE);
                }//else
-               look(1, &NULL_STRING, *ptr, TRUE);
+               // Make sure they haven't died
+               if ( ptr ) {
+                  look(1, &NULL_STRING, *ptr, TRUE);
+               }
             }//if
             if (count++ > 9) { //can't spin for too long
                break;
@@ -851,6 +855,7 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
                      emote("is crushed into the earth.", *ptr, 
                            room_list[ptr->getCurRoomNum()], TRUE);
                      agg_kills_vict(&agg, *ptr);
+                     ptr = NULL;
                   }//if
                   else {
                      show("You land painfully on the ground.\n", *ptr);
@@ -863,7 +868,10 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
                   emote("lands lightly on the ground.", *ptr,
                         room_list[ptr->getCurRoomNum()], TRUE);
                }//else
-               look(1, &NULL_STRING, *ptr, TRUE);
+               // Make sure they haven't died
+               if ( ptr ) {
+                  look(1, &NULL_STRING, *ptr, TRUE);
+               }
             }//if
          }//while
       }//while
