@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.46 2002/01/14 21:04:37 eroper Exp $
-// $Revision: 1.46 $  $Author: eroper $ $Date: 2002/01/14 21:04:37 $
+// $Id: misc.cc,v 1.47 2002/01/14 21:53:01 eroper Exp $
+// $Revision: 1.47 $  $Author: eroper $ $Date: 2002/01/14 21:53:01 $
 
 //
 //ScryMUD Server Code
@@ -2648,6 +2648,13 @@ String *colorize(const char *message, critter &pc, hilite_type hl_type)
             if (! *i) {
                break;
             }
+
+            // handle ^^ or &&
+            if ( *i == *(i-1) ) {
+               output.Append(*i);
+               continue;
+            }
+
             switch (*i) {
                case '0':
                   break;
@@ -2771,6 +2778,13 @@ String *colorize(const char *message, critter &pc, hilite_type hl_type)
             if (! *i) {
                break;
             }
+
+            // handle ^^ or &&
+            if ( *i == *(i-1) ) {
+               output.Append(*i);
+               continue;
+            }
+
             switch (*i) {
                case '0':
                   break;
