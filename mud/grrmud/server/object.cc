@@ -1,5 +1,5 @@
-// $Id: object.cc,v 1.13 1999/07/05 22:32:07 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
+// $Id: object.cc,v 1.14 1999/07/12 01:16:51 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/07/12 01:16:51 $
 
 //
 //ScryMUD Server Code
@@ -451,9 +451,10 @@ void object::Clear() {
 }//Clear
 
 
-int object::getCurWeight() {
-   if (inv.isEmpty()) 
+int object::getCurWeight() const {
+   if (inv.isEmpty()) {
       return extras[5];
+   }
    else {
       Cell<object*> cll(inv);
       object* tmp_obj;

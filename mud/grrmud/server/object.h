@@ -1,5 +1,5 @@
-// $Id: object.h,v 1.13 1999/07/05 22:32:07 greear Exp $
-// $Revision: 1.13 $  $Author: greear $ $Date: 1999/07/05 22:32:07 $
+// $Id: object.h,v 1.14 1999/07/12 01:16:51 greear Exp $
+// $Revision: 1.14 $  $Author: greear $ $Date: 1999/07/12 01:16:51 $
 
 //
 //ScryMUD Server Code
@@ -224,9 +224,11 @@ public:
    int getIdNum();
    int getKeyNum();
    int getLevel() const { return extras[8]; }
-   int getMaxWeight();
-   int getCurWeight();
+   int getMaxWeight() const;
+   int getCurWeight() const;
+   int getEmptyWeight() const { return extras[5]; }
    
+   int setEmptyWeight(int wt) { extras[5] = wt; }
    
    void lock();
    void unlock();

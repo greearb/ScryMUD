@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.21 1999/07/07 06:05:11 greear Exp $
-// $Revision: 1.21 $  $Author: greear $ $Date: 1999/07/07 06:05:11 $
+// $Id: battle.cc,v 1.22 1999/07/12 01:16:51 greear Exp $
+// $Revision: 1.22 $  $Author: greear $ $Date: 1999/07/12 01:16:51 $
 
 //
 //ScryMUD Server Code
@@ -1041,6 +1041,9 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
                 name_of_crit(vict, ~0));
    corpse->in_room_desc = buf;
    room_list[vict.getCurRoomNum()].gainInv(corpse);
+
+   /* Set the weight to that of the living being. */
+   corpse->setEmptyWeight(vict.getNakedWeight());
 
          /*  gold  */
 

@@ -1,5 +1,5 @@
-// $Id: rm_spll.cc,v 1.3 1999/06/05 23:29:15 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:15 $
+// $Id: rm_spll.cc,v 1.4 1999/07/12 01:16:51 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 1999/07/12 01:16:51 $
 
 //
 //ScryMUD Server Code
@@ -249,13 +249,13 @@ void do_cast_distortion_wall(door& dr, critter& agg, int is_canned,
 
    if (is_canned) {
       do_effects = TRUE;
-      show("A shimmering sheet of energy coveres the enterance!\n", agg); 
+      show("A shimmering sheet of energy covers the entrance!\n", agg); 
       emote("calls forth a shimmering wall of energy.", agg, *rm, TRUE); 
    }//if canned
    else {//not canned 
       if (!lost_concentration(agg, spell_num)) { 
          do_effects = TRUE;
-         show("A shimmering sheet of energy coveres the enterance!\n", agg); 
+         show("A shimmering sheet of energy covers the entrance!\n", agg); 
          emote("calls forth a shimmering wall of energy.", agg, *rm, TRUE); 
          agg.MANA -= spell_mana;
       }//if ! lost concentration
