@@ -1032,7 +1032,7 @@ int mob_can_enter(critter& pc, room& rm, short do_msg) {
          show("You need a boat to go there.\n", pc);
    }//if
    else if ((rm.needsDive()) && //need underwater ability
-               (!(pc.CRIT_FLAGS.get(19)))) {
+               (!pc.canDive())) {
       if (do_msg)
          show("You must be able to dive to go there.\n", pc);
    }//if

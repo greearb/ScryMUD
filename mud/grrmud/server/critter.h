@@ -562,7 +562,7 @@ public:
    // 10 shout, 11 say, 12 tell, 13 wiznet, 14 is_paralyzed,
    // 15 is_perm_sleeped, 16 is_dual_wielding, 17 is_sneak,
    // 18 in_use, 19 can_dive, 20 spell_tested_yet, 21 is_blocked,
-   // 22 is_hide, 23 is_tailing 24 !complete
+   // 22 is_hide, 23 is_tailing 24 !complete, 25 already_hurled
 
    long long_data[MOB_LONG_DATA + 1]; 
    // 0 gold 
@@ -661,6 +661,9 @@ public:
    int doLogOffInactive();
    int doLogOffNewLogin();
    void unPossess();
+
+   void notifyHasBeenHurled();
+   int canBeHurled();
 
    int logOff();
    void doPrompt();
@@ -769,6 +772,7 @@ public:
    int shouldDoTank() { return PC_FLAGS.get(4); }
    int canDetectMagic() { return (mob || (pc && PC_FLAGS.get(18))); }
    int canDetect(const critter& other) const;
+   int canDive() const { return CRIT_FLAGS.get(19); }
    int isUsingClient();
    int isUsingColor();
    int isBrief();

@@ -379,8 +379,13 @@ SkillSpell& SSCollection::getSS(int i) {
       return ss_list[i];
    }
 
-   mudlog << "ERROR:  Returning DUMMY in SSCollection::getSS, for spll: "
-          << i << endl;
+   if (i != -1) {
+      if (mudlog.ofLevel(ERR)) {
+         mudlog << "ERROR:  Returning DUMMY in SSCollection::getSS, for spll: "
+                << i << endl;
+      }//if
+   }//if
+
    return dummy;
 }//getSS
 
@@ -780,7 +785,8 @@ void SSCollection::read() {
          else if (strcasecmp("wrestling", getSS(i).getName()) == 0)
             WRESTLING_SKILL_NUM = i;
          else {
-            mudlog << "ERROR:  could not match the spell with a constant." << endl;
+            mudlog << "ERROR:  could not match the spell with a constant, spell_num:" 
+                   << i << "  name -:" << getSS(i).getName() << ":- " << endl;
          }
          SSCollection::instance().treeInsert(getSS(i).getName(), i);
       }//if

@@ -524,14 +524,12 @@ void zone::stat(critter& pc) {
    Cell<String*> cll;
    String* ptr;
 
-   Sprintf(buf, "[%i]\t%S\n", zone_num, &(zone_name));
-   show(buf, pc);
-   Sprintf(buf, "\tBegin#  %i, End#  %i, Ticks in Regen:  %i\n",
-           begin_room_num, end_room_num,
+   Sprintf(buf, "[%i]  %S  %P35 Begin#  %i, End#  %i, Ticks in Regen:  %i\n",
+           zone_num, &(zone_name), begin_room_num, end_room_num,
            ticks_in_regen_cycle);
    show(buf, pc);
 
-   show("Owners:  ", pc);
+   show("    Owners:  ", pc);
    
    owners.head(cll);
    buf = "";

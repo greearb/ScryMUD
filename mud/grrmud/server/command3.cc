@@ -2058,6 +2058,10 @@ void who(critter& pc) {
          continue;
       }//if
 
+      if ((ptr->getMode() ==  MODE_LOGGING_IN) && (!pc.isImmort())) {
+         continue;
+      }
+
       String class_str;
       String lvl_str;
 

@@ -2142,6 +2142,8 @@ void critter::Read(ifstream& ofile, short read_all) {
 
    crit_flags.Read(ofile);
    crit_flags.turn_on(18); //always in use
+   crit_flags.turn_off(25); // Never been hurled before.
+
    setComplete(); //if we can read it, it's complete enough!
 
    for (i = 0; i<MOB_LONG_DATA; i++)
@@ -2171,8 +2173,8 @@ void critter::Read(ifstream& ofile, short read_all) {
       ofile >> z;
       if (!check_l_range(z, 1, MAX_EQ, mob_list[0], FALSE)) {
          if (mudlog.ofLevel(ERR)) {
-            mudlog << "ERROR:  z out of range, crit.Read():  " << z << endl;
-            mudlog << "short desc:  " << short_desc << endl;
+            mudlog << "ERROR:  z out of range, crit.Read():  " << z <<
+                   << "short desc:  " << short_desc << endl;
          }
          ofile >> i;
          continue;
@@ -2293,6 +2295,16 @@ void critter::Read(ifstream& ofile, short read_all) {
       SEE_BIT |= 1024; //another bletcherous kludge
 
 }//Read....crit
+
+void critter::notifyHasBeenHurled() {
+   if ((getLevel() > 10) || (INT > 14)) { //experienced and smart folks remember
+      CRIT_FLAGS.turn_on(25);
+   }
+}
+
+int canBeHurled() {
+   return !(CRIT_FLAGS.get(25));
+}
 
 
 void critter::setIdNum(int i) {

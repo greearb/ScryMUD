@@ -542,7 +542,7 @@ Note:  You can choose more than one.\n",
 //**********************************************************************//
 
 /* 38 */	
-"\nInput the room number:  ",
+"\nInput the room number (enter 1 for next available room):  ",
 
 /* 39 */
 "\nInput a name, one word, '~' terminates.  Note:  This will rarely be seen.

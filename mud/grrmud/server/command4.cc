@@ -1145,15 +1145,22 @@ void flip_door(int i_th, const String* name, critter& pc) {
 
 
 int door_to(int room_num, int dist, const String* direction, critter& pc) {
-
    if (!pc.pc)
       return FALSE;
-   if (!pc.PC_FLAGS.get(11)) {
+
+   if (!pc.isImmort()) {
       show("Huh??\n", pc);
       return FALSE;
    }//if
 
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
+   if (mudlog.ofLevel(DBG)) {
+      String buf(100);
+      Sprintf(buf, "DEBUG:  door_to:  Room_num: %i dist: %i dir -:%S:-\n",
+              room_num, dist, direction);
+      pc.show(buf);
+   }
+
+   if (pc.isFrozen()) {
       show("You are too frozen to do anything.\n", pc);
       return FALSE;
    }//if
@@ -1167,10 +1174,12 @@ int door_to(int room_num, int dist, const String* direction, critter& pc) {
       show("Distance is out of range, must be between 0 and 25.\n", pc);
       return FALSE;
    }//if
+
    if (room_num <= 1) {
-      show("You cannot build a door to that room.\n", pc);
+      show("You cannot build a door to that room ( room# <= 1).\n", pc);
       return FALSE;
    }//if
+
    if (room_num > NUMBER_OF_ROOMS) {
       show("Your stated room number is too high.\n", pc);
       return FALSE;

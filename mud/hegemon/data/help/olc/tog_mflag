@@ -2,15 +2,27 @@ Category:  OLC  Topic:  tog_mflag
 
 
 
-Used to toggle critter flags, including mob flags.
+Used to toggle critter flags, including mob flags.  The mstat command
+lists the flags' definitions.  If you want to change the permanent
+database, be sure to do an 'amsave' in the zone that the critter belongs
+to after making your changes.
 
-syntax:  tog_mflag [flag_num] [Crit_flag/Mob_flag] <n_th> [crit name]
+If you want to change the database without worrying about whether or
+not your target is a MOB or SMOB, then use the second version of
+the syntax.  See note at bottom.
+
+Syntax:  tog_mflag [flag_num] [Crit_flag/Mob_flag] <n_th> [crit name]
+Syntax:  tog_mflag [flag_num] [Crit_flag/Mob_flag] [mob_num]
 
 example:  tog_mflag 3 mob_flag 2.guard 	Toggles mob_flags # 3
           tog_mflag 5 crit_f 3.citizen 	Toggles 5_th critter flag
+          tog_mflag 17 crit 195         Toggles crit flag 17 on mob# 195
 
-Bugs:  Some flags are (and should be) restricted from toggling.  As
-       an Imp adds/deletes/changes flags, he/she should check this
-       and similar functions for possible tweaking.
+NOTE:  If your target is a MOB as apposed to a SMOB 
+        (mstat will tell you)
+        then you will be changing the database, otherwise, only that
+       	particular target will be affected, not the database.
+       	You still must do an amsave to make changes to DB permanent.
 
-See also:  olc, tog_oflag, tog_rflag, mclone, mstat
+
+See also:  amsave, mset, tog_oflag, tog_rflag, mclone, mstat

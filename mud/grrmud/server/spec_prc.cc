@@ -178,8 +178,10 @@ void do_domob_say_proc(critter& targ, critter& pc, const String& msg) {
       if (ptr->skill_name.Strlen()) { //if should teach something
          int spell_num = SSCollection::instance().getNumForName(ptr->skill_name);
          if (spell_num == -1) { // if it didn't exist
-            mudlog.log(ERR, "ERROR:  spell unknown in do_domob_say.\n");
-            mudlog.log(ERR, ptr->skill_name);
+            if (mudlog.ofLevel(ERR)) {
+               mudlog << "ERROR:  spell unknown in do_domob_say, name -:"
+                      << ptr->skill_name << ":-" << endl;
+            }
          }//if
          else {
             int retval;

@@ -526,11 +526,11 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon) {
               name_of_crit(vict, ~0));
    }//if
    else if (damage >= 36) {
-      Sprintf(aggbuf, "You ANNHIALATE %S ", name_of_crit(vict, 
+      Sprintf(aggbuf, "You ANNIHILATE %S ", name_of_crit(vict, 
                                                          agg.SEE_BIT));
-      Sprintf(victbuf, "%S ANNHIALATES you ", name_of_crit(agg, 
+      Sprintf(victbuf, "%S ANNIHILATES you ", name_of_crit(agg, 
                                                            vict.SEE_BIT));
-      Sprintf(otherbuf, "%S ANNHIALATES %S ", name_of_crit(agg, ~0), 
+      Sprintf(otherbuf, "%S ANNIHILATES %S ", name_of_crit(agg, ~0), 
               name_of_crit(vict, ~0));
    }//if
    

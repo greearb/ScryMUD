@@ -1791,7 +1791,8 @@ void do_olc(critter& pc) {
                    << endl;
 
     	    if ((!check_l_range(i, ZoneCollection::instance().elementAt(j).getBeginRoomNum(),
-                                ZoneCollection::instance().elementAt(j).getEndRoomNum(), pc, TRUE) ||
+                                ZoneCollection::instance().elementAt(j).getEndRoomNum(),
+                                pc, TRUE) ||
                  room_list[i].isInUse())) {
                tmp_rm = get_next_room(j);
                if (tmp_rm) {
@@ -2090,10 +2091,12 @@ void do_olc(critter& pc) {
             OLC_ROOM->setTotalLoaded(TRUE); //make it totally_loaded
 
             if (door_to(OLC_ROOM->getRoomNum(), j, &string, pc)) {
-               if (!OLC_ROOM->isVehicle()) 
+               if (!OLC_ROOM->isVehicle()) {
                   finish_olc_room(pc);
-               else
+               }
+               else {
                   O_COUNT = 52;  //go do vehicle
+               }
                
                break;
             }//if

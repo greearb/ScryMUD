@@ -2358,12 +2358,12 @@ void sit(critter& pc) {
       return;
    }//if
 
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed
+   if (pc.isParalyzed()) {
       show("You can't move a muscle.\n", pc);
       return;
    }//if
    
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
+   if (pc.isFrozen()) {
       show("You are too frozen to do anything.\n", pc);
       return;
    }//if
@@ -2372,7 +2372,7 @@ void sit(critter& pc) {
       show("You're already sitting.\n", pc);
       return;
    }//if
-   if (pc.POS < POS_REST) {
+   if ((pc.POS < POS_REST) || (pc.POS == POS_PRONE)) {
       if (IsEmpty(pc.IS_FIGHTING)) {
          show("You sit on your haunches, resting but wary.\n", pc);
          emote("sits down.\n", pc, ROOM, FALSE);
@@ -2401,12 +2401,12 @@ void stand(critter& pc) {
       return;
    }//if
 
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed
+   if (pc.isParalyzed()) {
       show("You can't move a muscle.\n", pc);
       return;
    }//if
    
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
+   if (pc.isFrozen()) {
       show("You are too frozen to do anything.\n", pc);
       return;
    }//if
@@ -2415,7 +2415,8 @@ void stand(critter& pc) {
       show("You're already standing.\n", pc);
       return;
    }//if
-   if (pc.POS < POS_SLEEP) {
+
+   if ((pc.POS < POS_SLEEP) || (pc.POS == POS_PRONE)) {
       if (!(pc.CRIT_FLAGS.get(14))) {  //not paralyzed
          show("You stand up ready to face the world once again.\n", pc);
          emote("stands up.\n", pc, ROOM, FALSE);

@@ -1067,7 +1067,7 @@ void dvnum(int i_th, const String* name, critter& pc) {
 void arlist(int zone, int how_many, critter& pc) {
    String buf(100);
 
-   if (!pc.pc || !pc.pc->imm_data) {
+   if (!pc.isImmort()) {
       show("Eh?\n", pc);
       return;
    }//if
@@ -1076,6 +1076,10 @@ void arlist(int zone, int how_many, critter& pc) {
       zone = ROOM.getZoneNum();
       how_many = 100; //all
    }//if
+   else if ((zone > 1) && (how_many == 1)) {
+      how_many = 100;
+   }
+
 
    if (!check_l_range(zone, 0, NUMBER_OF_ZONES, pc, FALSE)) {
       show("Zone is out of range.\n", pc);

@@ -33,8 +33,8 @@
 #include "object.h"
 #include "door.h"
 
-#define SHADOWS_BLESSING_EFFECT           15
-#define ARMOR_EFFECT		          30
+#define SHADOWS_BLESSING_EFFECT          -15
+#define ARMOR_EFFECT		         -30
 #define POISON_HP_REGEN_AUGMENTATION     -75
 #define POISON_MV_REGEN_AUGMENTATION     -75
 #define POISON_MA_REGEN_AUGMENTATION     -75

@@ -2027,11 +2027,13 @@ void do_cast_armor(critter& vict, critter& agg, int is_canned, int lvl) {
      }//if
      else if ((ptr = is_affected_by(DIVINE_PROTECTION_SKILL_NUM,
                                     vict))) {
-       show("Ok.\n", agg); //can't be affected by both at once
+       show("You are already protected by divine protection.\n",
+            agg); //can't be affected by both at once
      }//if divine_protection already
      else {
        Put(new stat_spell_cell(spell_num, lvl + 5), 
 	   vict.affected_by);
+
        vict.AC += ARMOR_EFFECT;
 
        if (&vict == &agg) {

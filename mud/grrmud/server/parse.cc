@@ -1044,6 +1044,9 @@ int critter::processInput(String& input, short do_sub, critter* script_owner) {
 	 else if (strncasecmp(str1, "list_site_bans", len1) == 0) { 
 	    list_site_bans(*this);
 	 }//if
+	 else if (strncasecmp(str1, "list_zones", len1) == 0) { 
+	    showZones(*this);
+	 }//if
 	 else if (strncasecmp(str1, "listen", len1) == 0) { 
 	    listen(i, &str2, (*this), (*(getCurRoom())));
 	 }//if

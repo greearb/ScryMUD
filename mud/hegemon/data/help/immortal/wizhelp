@@ -16,24 +16,24 @@ door_to          dset             dstat            dsys
 enslave          flip_door        force            force_all        
 gag              gecho            goto             itrans           
 ldwho            list_paths       list_scripts     list_site_bans   
-make_builder     mclear           mclone           mlist            
-mreload          mset             mstat            mvnum            
-oclone           olc              olist            oload            
-oreload          oset             ostat            ovnum            
-possess          rclear           rclone           rem_mname        
-rem_path         rem_perm_inv     replace_door     reset_olc        
-rinit            rlist            rm_bow_proc      rm_casts_spell   
-rm_discuss_proc  rm_give_proc     rm_keyword       rm_script        
-rset             rstat            save_mob         save_obj         
-set_path_dir     set_path_pointer set_veh_stop     shutdown         
-slay             slist            smob             snoop            
-stat_keyword     stat_path        stat_script      teach            
-tog_mflag        tog_oflag        tog_rflag        tog_veh_stop     
-total_rezone     ungag            unpossess        unpost           
-unsnoop          update_CIG       update_cig       uptime           
-wizhelp          wizinvis         write_world      write_zone       
-zdisable         zenable          zgoto            zlist            
-zunlock          
+make_builder     make_pso         mclear           mclone           
+mload            mreload          mset             mstat            
+oclear           oclone           olc              olist            
+opurge           oreload          oset             ostat            
+poofin           possess          rclear           rclone           
+rem_oname        rem_path         rem_perm_inv     replace_door     
+rezone           rinit            rlist            rm_bow_proc      
+rm_curse_proc    rm_discuss_proc  rm_give_proc     rm_keyword       
+rm_stat_affect   rset             rstat            save_mob         
+see_all          set_path_dir     set_path_pointer set_veh_stop     
+siteban          slay             slist            smob             
+sockets          stat_keyword     stat_path        stat_script      
+thaw             tog_mflag        tog_oflag        tog_rflag        
+tog_zflag        total_rezone     ungag            unpossess        
+unsiteban        unsnoop          update_CIG       update_cig       
+visible          wizhelp          wizinvis         write_world      
+zcreate          zdisable         zenable          zgoto            
+zlock            zunlock          
 
 
 See Also:  commands, topics

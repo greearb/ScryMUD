@@ -1184,7 +1184,7 @@ void drink(int i_th, const String* name, critter& pc) {
 void fill(int i_th, const String* targ, int j_th, const String* source, 
           critter& pc) {
    String buf(100);
-   object* targ_obj, *source_obj, *obj2;
+   object* targ_obj, *source_obj;
    short in_inv_source = TRUE;
                     /* get pointers to each */
 
@@ -1198,12 +1198,12 @@ void fill(int i_th, const String* targ, int j_th, const String* source,
      return;
    }//if
 
-   if (pc.pc && pc.PC_FLAGS.get(0)) { //if frozen
+   if (pc.isFrozen()) {
       show("You are too frozen to do anything.\n", pc);
       return;
    }//if
 
-   if (pc.CRIT_FLAGS.get(14)) { //if paralyzed
+   if (pc.isParalyzed()) {
       show("You can't move a muscle.\n", pc);
       return;
    }//if
@@ -1268,24 +1268,28 @@ void fill(int i_th, const String* targ, int j_th, const String* source,
               pc.SEE_BIT));
       show(buf, pc);
    }//if
-   else if (targ_obj->ob->extras[0] > targ_obj->ob->bag->max_weight) {
+   else if (targ_obj->ob->extras[0] >= targ_obj->ob->bag->max_weight) {
       Sprintf(buf, "The %S is already full!!\n", name_of_obj(*targ_obj,
               pc.SEE_BIT));
       show(buf, pc);
    }//if
+   else if (targ_obj->ob->extras[0] == -1) {
+      pc.show("That container will never need filling!\n");
+   }
                    /* All clear to exchange liquids ;) */
 
    else {		/* take care of Obj to Sobj if needed. */
       mudlog.log(TRC, "About to take care of obj to sobj.\n");
       if (!targ_obj->ob->in_list) {
-         obj2 = obj_to_sobj(*targ_obj, &(pc.inv), TRUE, i_th,
+         targ_obj = obj_to_sobj(*targ_obj, &(pc.inv), TRUE, i_th,
                                targ, pc.SEE_BIT, ROOM);
-         targ_obj = obj2;
       }//if
 
-      mudlog << "in fill, targ: " << targ_obj->getName() << " num: " 
-             << targ_obj->getIdNum() << "  source: "
-             << source_obj->getName() << endl;
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "in fill, targ: " << targ_obj->getName() << " num: " 
+                << targ_obj->getIdNum() << "  source: "
+                << source_obj->getName() << endl;
+      }
 
       Cell<object*> cll(targ_obj->ob->inv);
       object* ptr;
@@ -1299,6 +1303,7 @@ void fill(int i_th, const String* targ, int j_th, const String* source,
 
                   /* test for infinite source */
       if (source_obj->ob->extras[0] == -1) {
+	 mudlog.log(TRC, "Was an infinite source.\n");
          targ_obj->ob->extras[0] = targ_obj->ob->bag->max_weight;
       }//if
                      /* not an infinite source */
@@ -1306,14 +1311,13 @@ void fill(int i_th, const String* targ, int j_th, const String* source,
 	 mudlog.log(TRC, "Not an infinite source.\n");
          if (!source_obj->ob->in_list) {
             if (in_inv_source) {
-               obj2 = obj_to_sobj(*source_obj, &(pc.inv), TRUE, i_th,
-                               source, pc.SEE_BIT, ROOM);
+               source_obj = obj_to_sobj(*source_obj, &(pc.inv), TRUE, i_th,
+                                        source, pc.SEE_BIT, ROOM);
             }//if in inv
             else {
-               obj2 = obj_to_sobj(*source_obj, &(ROOM.inv), TRUE, i_th,
-                               source, pc.SEE_BIT, ROOM);
+               source_obj = obj_to_sobj(*source_obj, &(ROOM.inv), TRUE, i_th,
+                                        source, pc.SEE_BIT, ROOM);
             }//else
-            targ_obj = obj2;
          }//if
 			/* this next bit is badly innefficient. */
          while ((targ_obj->ob->extras[0] != 
@@ -1324,8 +1328,8 @@ void fill(int i_th, const String* targ, int j_th, const String* source,
          }//while
       }//else
       Sprintf(buf, "You fill your %S from %S.\n", 
-              Top(targ_obj->ob->names),
-              &(source_obj->ob->short_desc));
+              targ_obj->getShortName(),
+              source_obj->getLongName());
       show(buf, pc);
 
       String cmd = "fill";
@@ -1884,54 +1888,132 @@ void list_merchandise(int i_th, const String* keeper, critter& pc) {
    }//if
    else {                  /* ok, is a shopkeeper */
       show("These items are for sale:\n", pc);
+
       Cell<object*> cell(crit_ptr->inv);
+      static int item_counts[NUMBER_OF_ITEMS + 1];
+
+      memset(item_counts, 0, sizeof(int) * (NUMBER_OF_ITEMS + 1));
+
+      // Now, find the instance count.
       while ((obj_ptr = cell.next())) {
+         item_counts[obj_ptr->getIdNum()]++;
+      }//while
+
+      crit_ptr->PERM_INV.head(cell);
+      while ((obj_ptr = cell.next())) {
+         item_counts[obj_ptr->getIdNum()]++;
+      }//while
+
+      crit_ptr->inv.head(cell);
+      int id_num;
+
+      while ((obj_ptr = cell.next())) {
+
+         id_num = obj_ptr->getIdNum();
+
+         if (!obj_ptr->ob->in_list &&
+             (item_counts[id_num] == -1)) { //already done it
+            continue;
+         }
+
          if (detect(pc.SEE_BIT, (obj_ptr->OBJ_VIS_BIT | ROOM.getVisBit()))) {
-            price = crit_ptr->findItemBuyPrice(*obj_ptr, pc);
+            price = crit_ptr->findItemSalePrice(*obj_ptr, pc);
 
             if (price < 0) {
                continue; //buf = "  NOT FOR SALE NOW.";
             }//if
 
-            Sprintf(buf, "  %S%P50%i", &(obj_ptr->ob->short_desc),
-                    price);
+            if (pc.shouldShowVnums()) {
+               if (obj_ptr->ob->in_list || (item_counts[id_num] == 1)) {
+                  Sprintf(buf, " [%i]%P06 %S%P50%i", id_num,
+                          &(obj_ptr->ob->short_desc), price);
+               }
+               else {
+                  Sprintf(buf, " [%i]%P06 [*%i]%P12 %S%P50%i", id_num,
+                          item_counts[id_num], &(obj_ptr->ob->short_desc), price);
+               }
+            }
+            else {
+               if (obj_ptr->ob->in_list || (item_counts[id_num] == 1)) {
+                  Sprintf(buf, "%P12 %S%P50%i", &(obj_ptr->ob->short_desc),
+                          price);
+               }
+               else {
+                  Sprintf(buf, "  [*%i]%P12 %S%P50%i", item_counts[id_num],
+                          &(obj_ptr->ob->short_desc), price);
+               }
+            }
+
+            item_counts[id_num] = -1;
       
             //if ((!obj_wear_by(*obj_ptr, pc, -1, FALSE)) &&
             //    (!obj_ptr->isFood())) 
             //   buf.Prepend("**");
 
             if (obj_ptr->OBJ_VIS_BIT & 2)  //if invisible
-               buf.Append("*\n");
+               buf.Append(" *\n");
             else 
                buf.Append("\n");
             show(buf, pc);
          }//if detectable
       }//while
+
       crit_ptr->PERM_INV.head(cell);
       while ((obj_ptr = cell.next())) {
-         price = (int)((crit_ptr->MARKUP/100.0) * 
-                   obj_ptr->OBJ_PRICE);
-         
-         if (pc.getHomeTown() != crit_ptr->getHomeTown())
-            price = (int)(((float)(price))  * OUT_OF_TOWN_MODIFIER);
-         
-         if (pc.pc && (d(1, 100) <
-                       get_percent_lrnd(COMMERCE_SKILL_NUM, pc))) {
-            price = (int)((float)price * COMMERCE_SKILL_EFFECT_BUY);
-         }//if
 
-         Sprintf(buf, "%S%P45%i\n", &(obj_ptr->ob->short_desc), 
-                 price);
+         id_num = obj_ptr->getIdNum();
 
-         //if (!obj_wear_by(*obj_ptr, pc, -1, FALSE)) 
-         //   buf.Prepend("** ");
+         if (!obj_ptr->ob->in_list &&
+             (item_counts[id_num] == -1)) { //already done it
+            continue;
+         }
 
-         show(buf, pc);
+         if (detect(pc.SEE_BIT, (obj_ptr->OBJ_VIS_BIT | ROOM.getVisBit()))) {
+            price = crit_ptr->findItemSalePrice(*obj_ptr, pc);
 
-         String cmd = "list";
-         ROOM.checkForProc(cmd, NULL_STRING, pc, crit_ptr->MOB_NUM);
+            if (price < 0) {
+               continue; //buf = "  NOT FOR SALE NOW.";
+            }//if
+
+            if (pc.shouldShowVnums()) {
+               if (obj_ptr->ob->in_list || (item_counts[id_num] == 1)) {
+                  Sprintf(buf, " [%i]%P06 %S%P50%i", id_num,
+                          &(obj_ptr->ob->short_desc), price);
+               }
+               else {
+                  Sprintf(buf, " [%i]%P06 [*%i]%P12 %S%P50%i", id_num,
+                          item_counts[id_num], &(obj_ptr->ob->short_desc), price);
+               }
+            }
+            else {
+               if (obj_ptr->ob->in_list || (item_counts[id_num] == 1)) {
+                  Sprintf(buf, "%P12 %S%P50%i", &(obj_ptr->ob->short_desc),
+                          price);
+               }
+               else {
+                  Sprintf(buf, "  [*%i]%P12 %S%P50%i", item_counts[id_num],
+                          &(obj_ptr->ob->short_desc), price);
+               }
+            }
+
+            item_counts[id_num] = -1;
+      
+            //if ((!obj_wear_by(*obj_ptr, pc, -1, FALSE)) &&
+            //    (!obj_ptr->isFood())) 
+            //   buf.Prepend("**");
+
+            if (obj_ptr->OBJ_VIS_BIT & 2)  //if invisible
+               buf.Append(" *\n");
+            else 
+               buf.Append("\n");
+            show(buf, pc);
+         }//if detectable
 
       }//while
+
+      String cmd = "list";
+      ROOM.checkForProc(cmd, NULL_STRING, pc, crit_ptr->MOB_NUM);
+
    }//else, is shopkeeper
 }//list()
 
@@ -2144,8 +2226,8 @@ MOB FLAGS Definitions:
       }//if
       else { //then show tags...
          Sprintf(buf, "<NAMES %S>\n", &buf2);
-         pc.show(buf2); //output that they can read
          pc.show(buf); //output the client deals with
+         pc.show(buf2); //output that they can read
       }//else
 
       show("\nCRIT_FLAGS: ", pc);

@@ -1463,9 +1463,10 @@ void out_inv(const List<object*>& lst, critter& pc,
                mudlog << "ERROR:  ob NULL in out_inv." << endl;
                continue;
             }
+
 	    if (detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
                if (pc.shouldShowVnums()) {
-                  Sprintf(buf, "     [%i]%P11 %S", obj_ptr->OBJ_NUM,
+                  Sprintf(buf, "     [%i] %P11 %S", obj_ptr->OBJ_NUM,
                           &(obj_ptr->ob->in_room_desc));
                }
                else {

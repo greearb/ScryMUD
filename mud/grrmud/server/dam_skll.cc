@@ -75,6 +75,13 @@ void hurl(int i_th, const String* victim, critter& pc) {
          return;
       }//if
 
+      if (!crit_ptr->canBeHurled()) {
+         Sprintf(buf, "%S is wary to that particular trick now!\n",
+                 crit_ptr->getLongName());
+         pc.show(buf);
+         return;
+      }//if
+
       if (crit_ptr->isMob()) {
          crit_ptr = mob_to_smob(*crit_ptr, pc.getCurRoomNum(), TRUE, i_th, victim,
                                pc.SEE_BIT);
@@ -122,6 +129,7 @@ void do_hurl(critter& vict, critter& pc) {
 			/* affects */
       door* dptr;
 
+      vict.notifyHasBeenHurled();
       vict.doRemoveFromBattle();
       vict.PAUSE += d(1,4) + 2;
       pc.PAUSE += d(1,3);

@@ -247,6 +247,8 @@ public:
    int consumesKey();
 
    int getZoneNum() const;
+   const String* getShortName() { return getName(); }
+   const String* getShortName(int c_bit) { return getName(c_bit); }
    const String* getName() { return getName(~0); };
    const String* getName(int c_bit) { return single_obj_name(*this, c_bit); }
    const String* getLongName() { return getLongName(~0); }
