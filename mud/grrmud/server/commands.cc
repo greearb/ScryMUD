@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.43 2002/01/05 02:10:06 eroper Exp $
-// $Revision: 1.43 $  $Author: eroper $ $Date: 2002/01/05 02:10:06 $
+// $Id: commands.cc,v 1.44 2002/01/05 19:40:40 eroper Exp $
+// $Revision: 1.44 $  $Author: eroper $ $Date: 2002/01/05 19:40:40 $
 
 //
 //ScryMUD Server Code
@@ -714,7 +714,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
       if (!pc.IS_BRIEF || ignore_brief) { //isn't brief
          if (pc.USING_CLIENT) 
             show("<RM_DESC>", pc);
-         show(rm.long_desc, pc);
+         pc.show(rm.long_desc, HL_DESC);
          if (pc.USING_CLIENT) 
             show("</RM_DESC>\n", pc);
          else
@@ -1735,10 +1735,12 @@ int do_say(const char* message, critter& pc, room& rm, int is_ooc) {
                      tag = CTAG_SAY(crit_ptr->whichClient());
                      untag = CTAG_END_SAY(crit_ptr->whichClient());
                   }
+                  /* KHAAVREN DELETION MARKER
                   else if (crit_ptr->isUsingColor()) {
                      tag = *(crit_ptr->getSayColor());
                      untag = *(crit_ptr->getDefaultColor());
                   }
+                  */
                   else {
                      tag = "";
                      untag = "";
@@ -1759,7 +1761,7 @@ int do_say(const char* message, critter& pc, room& rm, int is_ooc) {
                            toupper(buf[tag.Strlen() + 1]));
                   }
 
-                  show(buf, *crit_ptr);
+                  crit_ptr->show(buf, HL_SAY);
                }//if is a pc              
             }//if channel say is on
          }//if not self
@@ -1768,10 +1770,12 @@ int do_say(const char* message, critter& pc, room& rm, int is_ooc) {
                tag = CTAG_SAY(pc.whichClient());
                untag = CTAG_END_SAY(pc.whichClient());
             }
+            /* KHAAVREN DELETION MARKER
             else if (pc.isUsingColor()) {
                tag = *(pc.getSayColor());
                untag = *(pc.getDefaultColor());
             }
+            */
             else {
                tag = "";
                untag = "";
@@ -1783,7 +1787,7 @@ int do_say(const char* message, critter& pc, room& rm, int is_ooc) {
             else {
                Sprintf(buf, cstr(CS_SAY_SPRINTF_YOU, pc), &tag, &msg, &untag);
             }
-            pc.show(buf);
+            pc.show(buf, HL_SAY);
          }//else  
       }//while
       
@@ -2005,10 +2009,12 @@ int yell(const char* message, critter& pc) {
                      tag = CTAG_YELL(crit_ptr->whichClient());
                      untag = CTAG_END_YELL(crit_ptr->whichClient());
                   }
+                  /* KHAAVREN DELETE MARKER
                   else if (crit_ptr->isUsingColor()) {
                      tag = *(crit_ptr->getYellColor());
                      untag = *(crit_ptr->getDefaultColor());
                   }
+                  */
                   else {
                      tag = "";
                      untag = "";
@@ -2017,7 +2023,7 @@ int yell(const char* message, critter& pc) {
                   Sprintf(buf, cstr(CS_YELL, *crit_ptr),
                           &tag, name_of_crit(pc, crit_ptr->SEE_BIT), &msg, &untag);
                   buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
-                  show(buf, *crit_ptr);
+                  crit_ptr->show(buf, HL_YELL);
                }//if channel yell is open
             }//if not equal to self
             else {
@@ -2025,17 +2031,19 @@ int yell(const char* message, critter& pc) {
                   tag = CTAG_YELL(pc.whichClient());
                   untag = CTAG_END_YELL(pc.whichClient());
                }
+               /* KHAAVREN DELETE MARKER
                else if (pc.isUsingColor()) {
                   tag = *(pc.getYellColor());
                   untag = *(pc.getDefaultColor());
                }
+               */
                else {
                   tag = "";
                   untag = "";
                }
                
                Sprintf(buf, cstr(CS_YOU_YELL, pc), &tag, &msg, &untag);
-               pc.show(buf);
+               pc.show(buf, HL_YELL);
             }//else
          }//while
          
@@ -2109,10 +2117,12 @@ int gossip(const char* message, critter& pc) {
                   tag = CTAG_GOSSIP(crit_ptr->whichClient());
                   untag = CTAG_END_GOSSIP(crit_ptr->whichClient());
                }
+               /* KHAAVREN DELETE MARKER
                else if (crit_ptr->isUsingColor()) {
                   tag = *(crit_ptr->getGossipColor());
                   untag = *(crit_ptr->getDefaultColor());
                }
+               */
                else {
                   tag = "";
                   untag = "";
@@ -2121,7 +2131,7 @@ int gossip(const char* message, critter& pc) {
                Sprintf(buf, cstr(CS_GOSSIP, *crit_ptr),
                        &tag, name_of_crit(pc, crit_ptr->SEE_BIT), &msg, &untag);
                buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
-               show(buf, *crit_ptr); 
+               crit_ptr->show(buf, HL_GOSSIP); 
             }//if
          }//if
          else {
@@ -2130,17 +2140,19 @@ int gossip(const char* message, critter& pc) {
                tag = CTAG_GOSSIP(pc.whichClient());
                untag = CTAG_END_GOSSIP(pc.whichClient());
             }
+            /* KHAAVREN DELETE MARKER
             else if (pc.isUsingColor()) {
                tag = *(pc.getGossipColor());
                untag = *(pc.getDefaultColor());
             }
+            */
             else {
                tag = "";
                untag = "";
             }
             
             Sprintf(buf, cstr(CS_YOU_GOSSIP, pc), &tag, &msg, &untag);
-            pc.show(buf);
+            pc.show(buf, HL_GOSSIP);
          }//else
       }//while
    }//else
@@ -2367,10 +2379,12 @@ int auction(const char* message, critter& pc) {
                   tag = CTAG_AUCTION(crit_ptr->whichClient());
                   untag = CTAG_END_AUCTION(crit_ptr->whichClient());
                }
+               /* KHAAVREN DELETE MARKER
                else if (crit_ptr->isUsingColor()) {
                   tag = *(crit_ptr->getGossipColor());
                   untag = *(crit_ptr->getDefaultColor());
                }
+               */
                else {
                   tag = "";
                   untag = "";
@@ -2379,7 +2393,7 @@ int auction(const char* message, critter& pc) {
                Sprintf(buf, cstr(CS_AUCTION, *crit_ptr),
                        &tag, name_of_crit(pc, crit_ptr->SEE_BIT), &msg, &untag);
                buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
-               show(buf, *crit_ptr); 
+               crit_ptr->show(buf, HL_GOSSIP); 
             }//if
          }//if
          else {
@@ -2387,17 +2401,19 @@ int auction(const char* message, critter& pc) {
                tag = CTAG_GOSSIP(pc.whichClient());
                untag = CTAG_END_GOSSIP(pc.whichClient());
             }
+            /* KHAAVREN DELETE MARKER
             else if (pc.isUsingColor()) {
                tag = *(pc.getGossipColor());
                untag = *(pc.getDefaultColor());
             }
+            */
             else {
                tag = "";
                untag = "";
             }
 
             Sprintf(buf, cstr(CS_YOU_AUCTION, pc), &tag, &msg, &untag);
-            pc.show(buf);
+            pc.show(buf, HL_GOSSIP);
          }//else
       }//while
    }//else

@@ -1,5 +1,5 @@
-// $Id: command3.cc,v 1.35 2001/04/21 08:02:11 eroper Exp $
-// $Revision: 1.35 $  $Author: eroper $ $Date: 2001/04/21 08:02:11 $
+// $Id: command3.cc,v 1.36 2002/01/05 19:40:40 eroper Exp $
+// $Revision: 1.36 $  $Author: eroper $ $Date: 2002/01/05 19:40:40 $
 
 //
 //ScryMUD Server Code
@@ -2284,15 +2284,17 @@ int do_tell(critter& pc, const char* message, critter& targ,
       tag = "<TELL>";
       untag = "</TELL>";
    }
+   /* KHAAVREN DELETE MARKER
    else if (targ.isUsingColor()) {
       tag = *(targ.getTellColor());
       untag = *(targ.getDefaultColor());
    }
+   */
 
    Sprintf(buf, "%S%S tells you, '%S'\n%S",
            &tag, name_of_crit(pc, targ.SEE_BIT), &msg, &untag);
    buf.setCharAt(tag.Strlen(), toupper(buf[tag.Strlen()]));
-   show(buf, targ);
+   targ.show(buf, HL_TELL);
 
    if (targ.pc) {
       targ.pc->rep_to = *(name_of_crit(pc, targ.SEE_BIT));
@@ -2304,10 +2306,12 @@ int do_tell(critter& pc, const char* message, critter& targ,
          tag = "<TELL>";
          untag = "</TELL>";
       }
+      /* KHAAVREN DELETE MARKER
       else if (pc.isUsingColor()) {
          tag = *(pc.getTellColor());
          untag = *(pc.getDefaultColor());
       }
+      */
       else {
          tag = "";
          untag = "";
@@ -2315,7 +2319,7 @@ int do_tell(critter& pc, const char* message, critter& targ,
 
       Sprintf(buf, "%SYou tell %S, '%S'\n%S",
               &tag, name_of_crit(targ, pc.SEE_BIT), &msg, &untag);
-      show(buf, pc);
+      pc.show(buf, HL_TELL);
    }//if
 
    String cmd = "tell";
