@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.44 2002/01/05 19:40:40 eroper Exp $
-// $Revision: 1.44 $  $Author: eroper $ $Date: 2002/01/05 19:40:40 $
+// $Id: commands.cc,v 1.45 2002/01/05 23:40:56 eroper Exp $
+// $Revision: 1.45 $  $Author: eroper $ $Date: 2002/01/05 23:40:56 $
 
 //
 //ScryMUD Server Code
@@ -975,9 +975,11 @@ int do_hit(critter& vict, critter& pc) {
    if (vict.isUsingClient()) {
       show(CTAG_BATTLE(vict.whichClient()), vict);
    }
+   /* KHAAVREN DELETE MARKER
    else if (vict.isUsingColor()) {
       show(*(vict.getBattleColor()), vict);
    }
+   */
    
    int show_vict_tags = TRUE;
    do_battle_round(pc, vict, 9, show_vict_tags);   
@@ -988,14 +990,16 @@ int do_hit(critter& vict, critter& pc) {
       if (vict.isUsingClient()) {
          show(CTAG_BATTLE(vict.whichClient()), vict);
       }
+      /* KHAAVREN DELETE MARKER
       else if (vict.isUsingColor()) {
          show(*(vict.getDefaultColor()), vict);
       }
+      */
    }//if
    
    String cmd = "hit";
    ROOM.checkForProc(cmd, NULL_STRING, pc, vict.MOB_NUM);
-   pc.show(CS_HIT_BATTLE_STARTS);
+   pc.show(CS_HIT_BATTLE_STARTS, HL_BATTLE);
    return 0;
 }//do_hit
 

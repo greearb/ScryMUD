@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.34 2001/10/30 04:38:52 justin Exp $
-// $Revision: 1.34 $  $Author: justin $ $Date: 2001/10/30 04:38:52 $
+// $Id: battle.cc,v 1.35 2002/01/05 23:40:56 eroper Exp $
+// $Revision: 1.35 $  $Author: eroper $ $Date: 2002/01/05 23:40:56 $
 
 //
 //ScryMUD Server Code
@@ -136,9 +136,11 @@ void do_battle() {
                crit_ptr->show(CTAG_BATTLE(crit_ptr->whichClient() ));
             }
             
+            /* KHAAVREN DELETE MARKER
             else if (crit_ptr->isUsingColor()) {
                crit_ptr->show(*(crit_ptr->getBattleColor()));
             }
+            */
 
             int atks = crit_ptr->ATTACKS;
             if (crit_ptr->ATTACKS > 4)
@@ -174,9 +176,11 @@ void do_battle() {
                      if (vict_ptr->isUsingClient()) {
                         vict_ptr->show(CTAG_BATTLE(vict_ptr->whichClient()));
                      }
+                     /* KHAAVREN DELETE MARKER
                      else if (vict_ptr->isUsingColor()) {
                         show(*(vict_ptr->getBattleColor()), *vict_ptr);
                      }
+                     */
 
                      //do reg attack
                      do_battle_round(*crit_ptr, *vict_ptr, 9, show_vict_tags);
@@ -192,9 +196,11 @@ void do_battle() {
                      if (vict_ptr->isUsingClient()) {
                         vict_ptr->show(CTAG_END_BATTLE(vict_ptr->whichClient()));
                      }
+                     /* KHAAVREN DELETE MARKER
                      else if (vict_ptr->isUsingColor()) {
                         vict_ptr->show(*(vict_ptr->getDefaultColor()));
                      }
+                     */
                   }//if
                }//if
             }//for                /* now check for dual wield */
@@ -209,9 +215,11 @@ void do_battle() {
                   if (vict_ptr->isUsingClient()) {
                      vict_ptr->show(CTAG_BATTLE(vict_ptr->whichClient()));
                   }
+                  /* KHAAVREN DELETE MARKER
                   else if (vict_ptr->isUsingColor()) {
                      vict_ptr->show(*(vict_ptr->getBattleColor()));
                   }
+                  */
 
                   int show_vict_tags = TRUE; //Show tags if needed.
                   do_battle_round(*crit_ptr, *vict_ptr, 10, show_vict_tags);
@@ -222,9 +230,11 @@ void do_battle() {
                      if (vict_ptr->isUsingClient()) {
                         vict_ptr->show(CTAG_END_BATTLE(vict_ptr->whichClient()));
                      }
+                     /* KHAAVREN DELETE MARKER
                      else if (vict_ptr->isUsingColor()) {
                         vict_ptr->show(*(vict_ptr->getDefaultColor()));
                      }
+                     */
                   }//if
               }//if
             }//if
@@ -232,9 +242,11 @@ void do_battle() {
             if (crit_ptr->isUsingClient()) {
                crit_ptr->show(CTAG_END_BATTLE(crit_ptr->whichClient()));
             }
+            /* KHAAVREN DELETE MARKER
             else if (crit_ptr->isUsingColor()) {
                crit_ptr->show(*(crit_ptr->getDefaultColor()));
             }
+            */
          }//if
       }//while
 
@@ -365,10 +377,10 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
          //         log("In the else, missed.\n");
          Sprintf(buf, "%S misses you.\n", name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
-         vict.show(buf);
+         vict.show(buf, HL_BATTLE);
 
          Sprintf(buf, "You miss %S.\n", name_of_crit(vict, agg.SEE_BIT));
-         agg.show(buf);
+         agg.show(buf, HL_BATTLE);
 
          Sprintf(buf, "misses %S.", name_of_crit(vict, ~0));
          emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -402,10 +414,10 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
      
       Sprintf(buf, "%S dodges your blow.\n", name_of_crit(vict, agg.SEE_BIT));
       buf.Cap();
-      agg.show(buf);
+      agg.show(buf, HL_BATTLE);
      
       Sprintf(buf, "You dodge %S's blow.\n", name_of_crit(agg, vict.SEE_BIT));
-      vict.show(buf);
+      vict.show(buf, HL_BATTLE);
       
       return;
    }//if td
@@ -417,11 +429,11 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       Sprintf(buf, "%S parries your blow.\n", 
               name_of_crit(vict, agg.SEE_BIT));
       buf.Cap();
-      agg.show(buf);
+      agg.show(buf, HL_BATTLE);
       
       Sprintf(buf, "You parry %S's blow.\n", 
               name_of_crit(agg, vict.SEE_BIT));
-      vict.show(buf);
+      vict.show(buf, HL_BATTLE);
       
       return;
    }//if tp
@@ -507,7 +519,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       if (d(1, 600) < 
           (agg.getLevel() / 5) *
           (get_percent_lrnd(CRITICAL_STRIKE_SKILL_NUM, agg))) {
-         agg.show("You score a critical strike!!\n");
+         agg.show("You score a critical strike!!\n", HL_BATTLE);
          damage *= 2.0;
       }//if
    }//if
@@ -653,12 +665,12 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    buf = aggbuf;
    buf+= aggendbuf;
    buf.Cap();
-   agg.show(buf);
+   agg.show(buf, HL_BATTLE);
    
    buf = victbuf;
    buf+= victendbuf;
    buf.Cap();
-   vict.show(buf);
+   vict.show(buf, HL_BATTLE);
    
    buf = otherbuf;
    buf+= victendbuf;
