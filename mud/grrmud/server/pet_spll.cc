@@ -1,5 +1,5 @@
-// $Id: pet_spll.cc,v 1.15 2002/01/18 00:10:38 justin Exp $
-// $Revision: 1.15 $  $Author: justin $ $Date: 2002/01/18 00:10:38 $
+// $Id: pet_spll.cc,v 1.16 2002/08/23 18:47:58 gingon Exp $
+// $Revision: 1.16 $  $Author: gingon $ $Date: 2002/08/23 18:47:58 $
 
 //
 //ScryMUD Server Code
@@ -104,7 +104,7 @@ void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
          /* now figure out it's strength, and HP and other stuff*/
          golem->HP = d(5, lvl * 3)+200+lvl*2;
          golem->setHP_MAX(golem->HP);
-         golem->STR = d(2, lvl/3) + (lvl/5);
+         golem->STR = 10 + d(1, lvl/3);
          golem->LEVEL = pc.LEVEL;
          golem->setHomeTown(ROOM.getZoneNum()); //belong to current zone
 
@@ -166,14 +166,14 @@ void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
              
 
           case 2:
-             golem->HP -=200;
+             golem->HP -=75;
              golem->MANA = d(5, lvl * 2)+(pc.INT/2)+lvl/2;
              golem->STR -= 6 ;
              golem->DEX = lvl/2;
              golem->INT = pc.INT/3+lvl/3 + d(2,2);
              golem->WIS = pc.INT/3+lvl/3 + d(2,2);
-             golem->HIT = lvl/3;
-             golem->DAM = lvl/4;
+             golem->HIT = lvl/3 - 1;
+             golem->DAM = lvl/4 - 1;
              golem->DAM_GIV_MOD = 100;
              golem->DAM_REC_MOD = 100;
              golem->AC = 50-d(10,lvl/5);
@@ -189,7 +189,7 @@ void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
              golem->mob->setBenevolence(-10);
              golem->mob->setBadAssedness(-10);
              golem->mob->setSocialAwareness(-10);
-             golem->BH_DICE_COUNT = lvl/6;
+             golem->BH_DICE_COUNT = lvl/5;
              golem->BH_DICE_SIDES = lvl/5;
              break;
              
@@ -197,7 +197,7 @@ void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
              golem->STR += 2;
              golem->DEX = lvl/2 + d(2,2) + 1;
              golem->HIT = lvl/3+d(1,2);
-             golem->DAM = lvl/4 + d(2,2);
+             golem->DAM = lvl/4 + d(2,4);
              golem->DAM_GIV_MOD = 100 + lvl/2;
              golem->DAM_REC_MOD = 100;
              golem->AC = 50-d(10,lvl/5);
@@ -213,7 +213,7 @@ void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
              golem->mob->setBenevolence(-10);
              golem->mob->setBadAssedness(-10);
              golem->mob->setSocialAwareness(-10);
-             golem->BH_DICE_COUNT = lvl/5;
+             golem->BH_DICE_COUNT = lvl/4;
              golem->BH_DICE_SIDES = lvl/4;
              break;
 
