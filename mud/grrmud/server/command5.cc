@@ -1,5 +1,5 @@
-// $Id: command5.cc,v 1.42 2002/01/03 19:31:10 eroper Exp $
-// $Revision: 1.42 $  $Author: eroper $ $Date: 2002/01/03 19:31:10 $
+// $Id: command5.cc,v 1.43 2002/01/25 22:39:40 eroper Exp $
+// $Revision: 1.43 $  $Author: eroper $ $Date: 2002/01/25 22:39:40 $
 
 //
 //ScryMUD Server Code
@@ -282,6 +282,7 @@ See 'help color' for more information.\n";
          pc.pc->user1_str = ANSI_WHITE;
          pc.pc->user2_str = ANSI_WHITE;
          pc.pc->user3_str = ANSI_WHITE;
+         pc.pc->room_str = ANSI_CYAN;
          pc.show(ANSI_WHITE);
          pc.show(ANSI_BBLACK);
          pc.PC_FLAGS.turn_on(26); //start using them
