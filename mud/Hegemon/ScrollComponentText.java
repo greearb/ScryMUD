@@ -78,16 +78,17 @@ class ScrollComponentText extends ScrollComponent {
       
 
    public void paint(Graphics g, int x, int y) {
-      
-      int len = segments.size();
-      int x_val = x_offset;
-      TextSegment ts;
-
-      for (int i = 0; i<len; i++) {
-         ts = (TextSegment)(segments.elementAt(i));
-         ts.draw(g, x + x_val, y);
-         x_val += ts.getWidth();
-      }//for
+      if (enabled) {
+         int len = segments.size();
+         int x_val = x_offset;
+         TextSegment ts;
+         
+         for (int i = 0; i<len; i++) {
+            ts = (TextSegment)(segments.elementAt(i));
+            ts.draw(g, x + x_val, y);
+            x_val += ts.getWidth();
+         }//for
+      }
    }//draw
 
    final public int getWidth() {

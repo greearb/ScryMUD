@@ -100,6 +100,8 @@ class HegemonManager extends Object {
       client_display.show();
       scroll = client_display.getHegemonScroll();
 
+      scroll.setBackground(color_mgr.getBackgroundSelection());
+
       if (is_applet) {
          heg.setOperStatus(hegemon.RUNNING);
          heg.repaint();

@@ -697,7 +697,16 @@ class HegemonInputFilter extends Object {
          }//if
       }//if len == 5
       else if (len == 7) {
-         if (cmd.equalsIgnoreCase("MOB_SCRIPT")) {
+         if (cmd.equalsIgnoreCase("PROMPT")) {
+            heg_scroll.setPrompt(Integer.parseInt((String)(args.elementAt(1))),
+                                 Integer.parseInt((String)(args.elementAt(2))),
+                                 Integer.parseInt((String)(args.elementAt(3))),
+                                 Integer.parseInt((String)(args.elementAt(4))),
+                                 Integer.parseInt((String)(args.elementAt(5))),
+                                 Integer.parseInt((String)(args.elementAt(6))));
+            valid = true;
+         }
+         else if (cmd.equalsIgnoreCase("MOB_SCRIPT")) {
             hm.getMobScriptEditor().do_clear();
             setMobScriptData((String)(args.elementAt(1)),
                              (String)(args.elementAt(2)),

@@ -177,6 +177,10 @@ class ColorSelectionManager extends Frame {
       return say.getColor();
    }
 
+   public final Color getBackgroundSelection() {
+      return back_ground.getColor();
+   }
+
    
    public void do_close() {
       setVisible(false);

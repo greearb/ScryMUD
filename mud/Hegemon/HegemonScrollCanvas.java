@@ -29,6 +29,7 @@ class HegemonScrollCanvas extends Canvas {
    boolean do_paint;
    int x_offset = 0;
    HegemonDisplay display;
+   Vector non_scrollables = null;
 
    public HegemonScrollCanvas(HegemonDisplay d) {
       super();
@@ -46,7 +47,25 @@ class HegemonScrollCanvas extends Canvas {
             else
               super.keyPressed(e);
          }});
-   
+
+      addComponentListener(new ComponentListener() {
+         public void componentResized(ComponentEvent e) {
+            display.getScroll().notifyScrollCanvasResized();
+         }
+         
+         public void componentMoved(ComponentEvent e) {
+            return;
+         }
+
+         public void componentHidden(ComponentEvent e) {
+            return;
+         }
+
+         public void componentShown(ComponentEvent e) {
+            return;
+         }
+      });
+
    }
 
    public void clear() {
@@ -58,9 +77,10 @@ class HegemonScrollCanvas extends Canvas {
       x_offset = x;
    }
    
-   public void setComponents(Vector t_comp) {
+   public void setComponents(Vector t_comp, Vector non_scrolls) {
       //Log.it("Set components:  " + t_comp);
       text_components = t_comp;
+      non_scrollables = non_scrolls;
    }
 
    public void paint() {
@@ -89,7 +109,16 @@ class HegemonScrollCanvas extends Canvas {
          Log.instance().dbg("text_components g is NULL.");
          return;
       }//if
-      
+
+      /* take care of our non-scrollable items.  These components
+       * will not scroll with the rest of the stuff.
+       */
+      if (non_scrollables != null) {
+         for (int i = 0; i < non_scrollables.size(); i++) {
+            ((ScrollComponent)(non_scrollables.elementAt(i))).paint(g);
+         }
+      }
+
       int sz = text_components.size();
       int y = 15;
       

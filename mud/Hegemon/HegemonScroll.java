@@ -41,7 +41,15 @@ class HegemonScroll extends Panel {
    int left_x;
    int top_y;
    boolean auto_scroll;
-   
+   Vector non_scrollables; /* vector of objects which are not
+                              intended to scroll with the rest of
+                              the text.
+                           */
+
+   ScrollComponentGraph hp;
+   ScrollComponentGraph mana;
+   ScrollComponentGraph mov;
+
    public HegemonScroll(HegemonManager h, HegemonDisplay par) {
       super();
 
@@ -59,8 +67,73 @@ class HegemonScroll extends Panel {
       
       props = new HegemonDisplayProperties(hm, canvas.getGraphics());
       comp_in_progress = new ScrollComponentText(vert_spacing, props);
+      hp = new ScrollComponentGraph(5, canvas.getSize().height - 5,
+                                    8, 55, 4, new Color(50, 0, 0),
+                                    ScrollComponentGraph.O_EAST);
+      mana = new ScrollComponentGraph(65, canvas.getSize().height - 5,
+                                      8, 55, 4, new Color(0, 0, 50),
+                                      ScrollComponentGraph.O_EAST);
+      mov = new ScrollComponentGraph(125, canvas.getSize().height - 5,
+                                     8, 55, 4, new Color(0, 50, 0),
+                                     ScrollComponentGraph.O_EAST);
+
+      non_scrollables = new Vector();
+      non_scrollables.addElement(hp);
+      non_scrollables.addElement(mana);
+      non_scrollables.addElement(mov);
       
    }//constructor
+
+   public void notifyScrollCanvasResized() {
+      Dimension d = canvas.getSize();
+      hp.setDefaultCoords(5, d.height - 10);
+      mana.setDefaultCoords(65, d.height - 10);
+      mov.setDefaultCoords(125, d.height - 10);
+   }
+
+   public void setPrompt(int h, int hm, int m, int mm,
+                         int v, int vm) {
+      int cc; /* color component */
+      Color c;
+
+      hp.setEnabled(true);
+      mana.setEnabled(true);
+      mov.setEnabled(true);
+
+      hp.setPercent((float)h / (float)hm);
+      cc = Math.max(200, 255 - Math.max(0, (hm / 8)));
+      c = hp.getColor();
+      if (c.getRed() != cc) {
+         hp.setColor(new Color(cc, calcOtherColor(cc), calcOtherColor(cc)));
+      }
+
+      mana.setPercent((float)m / (float)mm);
+      cc = Math.max(200, 255 - Math.max(0, (mm / 8)));
+      c = mana.getColor();
+      if (c.getBlue() != cc) {
+         mana.setColor(new Color(calcOtherColor(cc), cc, calcOtherColor(cc)));
+      }
+
+      mov.setPercent((float)v / (float)vm);
+      cc = Math.max(200, 255 - Math.max(0, (vm / 8)));
+      c = mov.getColor();
+      if (c.getGreen() != cc) {
+         mov.setColor(new Color(calcOtherColor(cc), calcOtherColor(cc), cc));
+      }
+   }//setPrompt
+
+   /** The other color component should always be less than the primary
+    * color.  Also, as the primary reaches its strongest (200),
+    * the other colors should drop to zero.  The goal is to go from
+    * light shades for weaker players to deep, strong colors for more
+    * powerful players.  However, the general hue:  Red==HP, Blue=MANA,
+    * Green==MOVE, should remain the same.  p should range from 255
+    * at the weakest, to 200 at the strongest.
+    */
+   protected int calcOtherColor(int p) {
+      return (p - 200) * 2; //Yeesh, is it that simple!! 
+   }
+
 
    public void clear() {
       props.reset();
@@ -96,17 +169,17 @@ class HegemonScroll extends Panel {
       //       + top_y + " height:  " + canvas.getSize().height);
       
       if (auto_scroll) {
-         comps = components.getBottomPage(canvas.getSize().height - 15);
+         comps = components.getBottomPage(canvas.getSize().height - 25);
       }
       else {
          comps = components.getVector(top_y, top_y +
-                                      canvas.getSize().height - 15);
+                                      canvas.getSize().height - 25);
       }
          
 
       //Log.it("In HegemonScroll.paint(), component's size: "
       //     + comps.size());
-      canvas.setComponents(comps);
+      canvas.setComponents(comps, non_scrollables);
       canvas.paint();
    }//paint    
    
@@ -131,7 +204,7 @@ class HegemonScroll extends Panel {
                                       canvas.getSize().height - 15);
       }
 
-      canvas.setComponents(comps);
+      canvas.setComponents(comps, non_scrollables);
       super.paint(g);
    }//paint
 

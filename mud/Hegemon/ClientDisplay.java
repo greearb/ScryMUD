@@ -299,23 +299,23 @@ class ClientDisplay extends Frame {
       
       help_m = new Menu("Help");
 
-      MenuItem help_intro_mi = new MenuItem("Intro");
-      MenuItem help_view_mi;
+      MenuItem help_intro_mi = new MenuItem("View Topics");
+      MenuItem help_view_mi, help_about_mi;
 
       if (!hm.IS_APPLET) {
          help_m.add(help_intro_mi);
       }
 
-      help_m.add((help_view_mi = new MenuItem("View")));
+      help_m.add((help_about_mi = new MenuItem("About")));
       
-      help_view_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            doViewHelp();
-         }});
-
       help_intro_mi.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             doIntroHelp();
+         }});
+
+      help_about_mi.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            doHegemonHelp();
          }});
 
 
@@ -522,6 +522,11 @@ class ClientDisplay extends Frame {
    void doIntroHelp() {
       hf.setVisible(true);
       hf.show("opening_page.bml");
+   }
+
+   void doHegemonHelp() {
+      hf.setVisible(true);
+      hf.show("hegemon.bml");
    }
    
    void doViewColors() {

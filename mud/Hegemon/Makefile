@@ -2,6 +2,8 @@
 
 # Dependiencias por mano:  javac no funciona bien
 
+CUR_DATE=`date '+%y.%m.%d %h:%m:%s'`
+
 JHOME=/usr/local/jdk
 JBIN=${JHOME}/bin
 JAVAC=${JBIN}/javac
@@ -35,6 +37,7 @@ HegemonDisplayProperties.class \
 HegemonInputFilter.class \
 HelpFrame.class \
 HelpIndex.class \
+ScrollComponentGraph.class \
 ScrollComponentVector.class \
 HegemonScrollCanvas.class \
 HegemonScroll.class \
@@ -72,22 +75,32 @@ SocketReader.class \
 SocketWriter.class \
 StringUtils.class
 
-release: $(OBJS)
+release: $(OBJS) ../hegemon/data/help/hegemon.bml
 	rm -f ../hegemon/*.class
 	cp *.class ../hegemon/
+
+../hegemon/data/help/hegemon.bml: $(OBJS) Makefile ../hegemon/data/help/hegemon.ORIG
+	echo "<color red>" > ../hegemon/data/help/hegemon.bml
+	echo "Built on: `date`" >> ../hegemon/data/help/hegemon.bml
+	echo "By: `whoami`" >> ../hegemon/data/help/hegemon.bml
+	echo "On machine: `uname -mrspn`" >> ../hegemon/data/help/hegemon.bml
+	echo "</color><color blue>" >> ../hegemon/data/help/hegemon.bml
+
+	cat ../hegemon/data/help/hegemon.ORIG >> ../hegemon/data/help/hegemon.bml
+
 
 all: tar jar release
 
 
-tar: $(OBJS)
+tar: $(OBJS) ../hegemon/data/help/hegemon.bml
 	rm -f heg.tar
 	rm -f heg.tar.gz
 	tar -cvf heg.tar *.class
 	gzip heg.tar
 
-jar: $(OBJS)
+jar: $(OBJS) ../hegemon/data/help/hegemon.bml
 	rm -f heg.jar
 	${JAR} -cvf heg.jar *.class
 
 clean: 
-	rm -f *.class
+	rm -f *.class ../hegemon/data/help/hegemon.bml

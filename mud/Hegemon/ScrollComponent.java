@@ -27,16 +27,31 @@ import java.awt.*;
 class ScrollComponent extends Object {
    protected int height;
    protected int vert_spacing;
-   
+   protected boolean enabled; /* should we show it or not? */
+
    public ScrollComponent(int vertical_spacing) {
       super();
       vert_spacing = vertical_spacing;
       height = 0;
+      enabled = true;
    }//constructor
+
+   public boolean isEnabled() {
+      return enabled;
+   }
+
+   public void setEnabled(boolean en) {
+      enabled = en;
+   }
 
    public void paint(Graphics g, int x, int y) {
       return;
    }//draw
+
+   /** Used when the component knows where it should be */
+   public void paint(Graphics g) {
+      return;
+   }
 
    public int getHeight() {
       return (height + vert_spacing);
