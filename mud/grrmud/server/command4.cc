@@ -1,5 +1,5 @@
-// $Id: command4.cc,v 1.44 2001/07/19 02:21:23 justin Exp $
-// $Revision: 1.44 $  $Author: justin $ $Date: 2001/07/19 02:21:23 $
+// $Id: command4.cc,v 1.45 2001/09/10 01:57:02 justin Exp $
+// $Revision: 1.45 $  $Author: justin $ $Date: 2001/09/10 01:57:02 $
 
 //
 //ScryMUD Server Code
@@ -1955,10 +1955,10 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
       show("ac (-200, 200)              attacks (1, 4)\n", pc);
       show("class (100, 108)            race (0, 17)\n", pc);
       show("level (0, 40)               imm_level (0, 10)\n", pc);
-      show("practices (0, 100)          mana (0, 10000)\n", pc);
-      show("mov (0, 10000)              hp (0, 10000)\n", pc);
-      show("hp_max (0, 10000)           mana_max (0, 10000)\n", pc);
-      show("mov_max (0, 10000)          religion (0, 6)\n", pc);
+      show("practices (0, 100)          mana (0, 32000)\n", pc);
+      show("mov (0, 32000)              hp (0, 32000)\n", pc);
+      show("hp_max (0, 32000)           mana_max (0, 32000)\n", pc);
+      show("mov_max (0, 32000)          religion (0, 6)\n", pc);
       show("guild (0, 10)               vis_bit (0, 2 billion)\n", pc);
       show("see_bit (0, 2 billion)      max_in_game, for MOBS (0-200)\n", pc);
       show("heat_resis (-100, 200)      cold_resis (-100, 200)\n", pc);
@@ -2322,7 +2322,7 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
      }//if
    }//if
    else if (strncasecmp(*targ, "exp_worth", len1) == 0) {
-     if (check_l_range(new_val, 0, 500000, pc, TRUE)) {
+     if (check_l_range(new_val, 0, 100000000/config.experienceDivisor, pc, TRUE)) {
        ptr->EXP = new_val * config.experienceDivisor;
        flag = TRUE;
      }//if
@@ -2497,37 +2497,37 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
      }//if
    }//if
    else if (strncasecmp(*targ, "hp", len1) == 0) {
-     if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
+     if (check_l_range(new_val, 0, 32000, pc, TRUE)) {
        ptr->HP = new_val;
        flag = TRUE;
      }//if
    }//if
    else if (strncasecmp(*targ, "mana", len1) == 0) {
-     if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
+     if (check_l_range(new_val, 0, 32000, pc, TRUE)) {
        ptr->MANA = new_val;
        flag = TRUE;
      }//if
    }//if
    else if (strncasecmp(*targ, "mov", len1) == 0) {
-     if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
+     if (check_l_range(new_val, 0, 32000, pc, TRUE)) {
        ptr->MOV = new_val;
        flag = TRUE;
      }//if
    }//if
    else if (strncasecmp(*targ, "hp_max", max(len1, 4)) == 0) {
-     if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
+     if (check_l_range(new_val, 0, 32000, pc, TRUE)) {
        ptr->setHP_MAX(new_val);
        flag = TRUE;
      }//if
    }//if
    else if (strncasecmp(*targ, "mana_max", max(len1, 5)) == 0) {
-     if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
+     if (check_l_range(new_val, 0, 32000, pc, TRUE)) {
        ptr->MA_MAX = new_val;
        flag = TRUE;
      }//if
    }//if
    else if (strncasecmp(*targ, "mov_max", max(len1, 5)) == 0) {
-     if (check_l_range(new_val, 0, 10000, pc, TRUE)) {
+     if (check_l_range(new_val, 0, 32000, pc, TRUE)) {
        ptr->MV_MAX = new_val;
        flag = TRUE;
      }//if
