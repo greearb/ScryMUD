@@ -6,7 +6,7 @@ TOOL_BIN_DIR=${HOME}/bin
 
 #  This should be the directory that you unzip the distribution
 #  in.
-MUD_HOME=${HOME}/mud
+MUD_HOME=${HOME}/dev/ScryMUD/mud
 #MUD_HOME=${HOME}/mud_dev
 
 #  This is the version of the make utility you wish to use.
@@ -28,17 +28,16 @@ HEGEMON_VERSION=1.8.2
 
 LDFLAGS =  -L$(MUD_HOME)/lib #linker flaggs
 
-# These are for egcs
+# NOTE:  Use these variables if you are using EGCS
 
- #compiler flags
-#CCFLAGS = -g -D_GNU_SOURCE -fguiding-decls\
-#          -Wall -I$(MUD_HOME)/include
-#LDLIBS =  -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
+CCFLAGS = -g -D_GNU_SOURCE -fguiding-decls\
+          -Wall -I$(MUD_HOME)/include
+LDLIBS =  -lm -lstring2 -lbitfield -lcrypt #-lnsl # -lsocket
 
 
-# This is for gcc (g++)
-CCFLAGS = -g -Wall -I$(MUD_HOME)/include #compiler flags-fguiding-decl
-LDLIBS =  -lm -lstring2 -lbitfield #-lnsl # -lsocket
+# NOTE:  Uncomment these if you are using the older g++
+#CCFLAGS = -g -Wall -I$(MUD_HOME)/include #compiler flags-fguiding-decl
+#LDLIBS =  -lm -lstring2 -lbitfield #-lnsl # -lsocket
 
 
 

@@ -6,14 +6,14 @@ if [ ! -d ./log ]; then
     mkdir ./log
 fi
 
-if [ ! -f ./grrmud/World/critters_0 ]; then
-    echo "Could not find grrmud/World/critters_0, attempting to"
+if [ ! -f ./World/critters_0 ]; then
+    echo "Could not find ./World/critters_0, attempting to"
     echo "extract the distribution world files."
 
-    cd ./grrmud/World
+    cd ./World
     gunzip ./scry_dist_world*.tar.gz
     tar -xvf ./scry_dist_world*.tar
-    cd ../..
+    cd ..
 fi
 
 while ( : ) do

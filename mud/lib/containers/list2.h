@@ -37,6 +37,7 @@
 #include <iostream.h>
 #include <fstream.h>
 #include <LogStream.h>
+#include <string2.h>
 
 #ifndef TRUE
 
