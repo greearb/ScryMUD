@@ -1080,7 +1080,7 @@ int remort(int i_th, const String* v, const String* new_race,
          switch (race) {
          case HUMAN: case ANITRE: case AVINTRE: case DARKLING: case DROW:
          case DRAGON: case DWARF: case IRONCLAD: case OGRUE: case ROCKTROLL:
-         case ELF: case FAERIE: case ENTITY: case SOMBRIAN: {
+         case ELF: case FAERIE: case ENTITY: case SOMBRIAN: case AVIAN: {
             if (race == vict->getRace()) {
                pc.show("INFO: That person is already of that race, continuing.\n");
             }

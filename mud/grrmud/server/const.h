@@ -1531,25 +1531,25 @@ extern const char* HUH_MSG;
 
 //  RACES
 
-#define OTHER_RACE                0
-#define HUMAN                        1
-#define ANITRE                        2
-#define AVINTRE                        3
-#define DARKLING                4
-#define DROW                        5
-#define DRAGON                        6
-#define DWARF                        7
-#define IRONCLAD                8
-#define OGRUE                        9
-#define ROCKTROLL                10
-#define ELF                        11
-#define FAERIE                        12
-#define ENTITY                        13
-#define SOMBRIAN                14
-#define UNDEAD                        15
-#define ANIMAL                        16
-#define MONSTER                        17
-#define AVIAN                   18
+#define OTHER_RACE      0
+#define HUMAN           1
+#define ANITRE          2
+#define AVINTRE         3 
+#define DARKLING        4
+#define DROW            5
+#define DRAGON          6
+#define DWARF           7
+#define IRONCLAD        8
+#define OGRUE           9
+#define ROCKTROLL       10
+#define ELF             11
+#define FAERIE          12
+#define ENTITY          13
+#define SOMBRIAN        14
+#define UNDEAD          15
+#define ANIMAL          16
+#define MONSTER         17
+#define AVIAN           18
 
 // PLAYER CLASSES
 #define NUMBER_OF_CLASSES       10

@@ -679,7 +679,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    }
    else {
       if ((agg.RACE == DRAGON) || (agg.RACE == ANIMAL) || 
-          (agg.RACE == MONSTER)) {
+          (agg.RACE == MONSTER) || (agg.RACE == DRAGON)) {
          aggbuf.dropFromEnd(1); //rid of trailing space
          aggendbuf = ".\n";
          victbuf.dropFromEnd(1); //rid of trailing space
@@ -1215,7 +1215,7 @@ void gain_level(critter& crit) {
    crit.MV_MAX += d(1, crit.getDEX(TRUE));
    crit.show("You rise a level.\n");
 
-   if ( crit.RACE == DRAGON )
+   if ( crit.RACE == AVIAN )
       avian_gain_level(crit);
 }//gain_level
 
