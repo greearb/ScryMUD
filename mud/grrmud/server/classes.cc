@@ -1,5 +1,5 @@
-// $Id: classes.cc,v 1.22 2001/03/29 03:02:28 eroper Exp $
-// $Revision: 1.22 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
+// $Id: classes.cc,v 1.23 2003/05/05 22:04:00 eroper Exp $
+// $Revision: 1.23 $  $Author: eroper $ $Date: 2003/05/05 22:04:00 $
 
 //
 //ScryMUD Server Code
@@ -169,8 +169,8 @@ int stat_spell_cell::_cnt = 0;
 
 String stat_spell_cell::toString() const {
    String retval(100);
-   Sprintf(retval, "stat_spell: %i  bonus_duration: %i", stat_spell,
-           bonus_duration);
+   Sprintf(retval, "stat_spell: %i  bonus_duration: %i bonus_value %i",
+         stat_spell, bonus_duration, bonus_value);
    return retval;
 }
 

@@ -1,5 +1,5 @@
-// $Id: classes.h,v 1.33 2001/03/29 03:02:28 eroper Exp $
-// $Revision: 1.33 $  $Author: eroper $ $Date: 2001/03/29 03:02:28 $
+// $Id: classes.h,v 1.34 2003/05/05 22:04:00 eroper Exp $
+// $Revision: 1.34 $  $Author: eroper $ $Date: 2003/05/05 22:04:00 $
 
 //
 //ScryMUD Server Code
@@ -133,14 +133,17 @@ private:
 public:
    int stat_spell;
    int bonus_duration;
+   int bonus_value;
    
-   stat_spell_cell() : stat_spell(0), bonus_duration(0) { _cnt++; }
-   stat_spell_cell(int ss, int bd) :
+   stat_spell_cell() : stat_spell(0), bonus_duration(0), bonus_value(0) { _cnt++; }
+   stat_spell_cell(int ss, int bd, int bv = 0) :
          stat_spell(ss),
-         bonus_duration(bd) { _cnt++; }
+         bonus_duration(bd),
+         bonus_value(bv) { _cnt++; }
    stat_spell_cell(const stat_spell_cell& src) :
          stat_spell(src.stat_spell),
-         bonus_duration(src.bonus_duration) { _cnt++; }
+         bonus_duration(src.bonus_duration),
+         bonus_value(src.bonus_value) { _cnt++; }
    ~stat_spell_cell() { _cnt--; }
 
    String toString() const ;

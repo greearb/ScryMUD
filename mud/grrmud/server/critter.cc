@@ -1,5 +1,5 @@
-// $Id: critter.cc,v 1.75 2003/05/05 19:54:19 eroper Exp $
-// $Revision: 1.75 $  $Author: eroper $ $Date: 2003/05/05 19:54:19 $
+// $Id: critter.cc,v 1.76 2003/05/05 22:04:00 eroper Exp $
+// $Revision: 1.76 $  $Author: eroper $ $Date: 2003/05/05 22:04:00 $
 
 //
 //ScryMUD Server Code
@@ -2426,6 +2426,7 @@ void critter::Write(ofstream& ofile) {
    affected_by.head(ss_cell);
    while ((ss_ptr = ss_cell.next())) {
       ofile << ss_ptr->stat_spell << " " << ss_ptr->bonus_duration << " ";
+      ofile << ss_ptr->bonus_value << " ";
       if ((++num_written % 20) == 0)
          ofile << endl;
    }//while
@@ -3462,6 +3463,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
       ss_ptr = new stat_spell_cell;
       ss_ptr->stat_spell = i;
       ofile >> ss_ptr->bonus_duration;
+      ofile >> ss_ptr->bonus_value;
       Put(ss_ptr, affected_by);
       ofile >> i;
    }//while
