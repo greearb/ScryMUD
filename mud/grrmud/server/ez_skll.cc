@@ -1,5 +1,5 @@
-// $Id: ez_skll.cc,v 1.12 2001/10/03 07:23:03 greear Exp $
-// $Revision: 1.12 $  $Author: greear $ $Date: 2001/10/03 07:23:03 $
+// $Id: ez_skll.cc,v 1.13 2002/01/15 06:27:18 eroper Exp $
+// $Revision: 1.13 $  $Author: eroper $ $Date: 2002/01/15 06:27:18 $
 
 //
 //ScryMUD Server Code
@@ -79,6 +79,13 @@ int do_rescue(critter& vict, critter& pc) {
 
   if (&vict == &pc) {
      show("There's no help for that poor fool!!\n", pc);
+     return -1;
+  }//if
+
+  // prevent a player from attacking themselves... hehe that always always
+  // sucks. -- khaav (blame me if'n this blows up)
+  if (vict.IS_FIGHTING.haveData(&pc)) {
+     show("You can't rescue someone from yourself!!\n", pc);
      return -1;
   }//if
 
