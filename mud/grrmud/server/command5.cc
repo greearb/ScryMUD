@@ -48,6 +48,7 @@
 #include "BuildInfo.h"
 #include "clients.h"
 #include "vehicle.h"
+#include "regex.h"
 
 int test(critter& pc) {
    String buf;
@@ -155,27 +156,13 @@ const String* getColorName(const char* ansi_code) {
 }//getColorName
 
 
-int isValidColor(const char* color) {
-   return ((strcasecmp(color, ANSI_BLACK_S) == 0) ||
-           (strcasecmp(color, ANSI_RED_S) == 0) ||
-           (strcasecmp(color, ANSI_GREEN_S) == 0) ||
-           (strcasecmp(color, ANSI_YELLOW_S) == 0) ||
-           (strcasecmp(color, ANSI_BLUE_S) == 0) ||
-           (strcasecmp(color, ANSI_MAGENTA_S) == 0) ||
-           (strcasecmp(color, ANSI_CYAN_S) == 0) ||
-           (strcasecmp(color, ANSI_WHITE_S) == 0) ||
-
-           // Special terminal defaults color string.
-           (strcasecmp(color, ANSI_NONE_S) == 0) ||
-
-           (strcasecmp(color, ANSI_BBLACK_S) == 0) ||
-           (strcasecmp(color, ANSI_BRED_S) == 0) ||
-           (strcasecmp(color, ANSI_BGREEN_S) == 0) ||
-           (strcasecmp(color, ANSI_BYELLOW_S) == 0) ||
-           (strcasecmp(color, ANSI_BBLUE_S) == 0) ||
-           (strcasecmp(color, ANSI_BMAGENTA_S) == 0) ||
-           (strcasecmp(color, ANSI_BCYAN_S) == 0) ||
-           (strcasecmp(color, ANSI_BWHITE_S) == 0));
+bool isValidColor(const char* color) {
+   String regex_str =  "^((&[0nrgybmcw])?|(\\^[0nrgybmcwNRGYBMCW])?){0,2}$";
+   regex color_regex;
+   if ( ! ( color_regex = regex_str ) ) {
+      return 0;
+   }
+   return (color_regex == color);
 }//isValidColor
 
 
@@ -232,25 +219,15 @@ int color(String& var, String& val_rough, critter& pc) {
       ln = max(var.Strlen(), 3);
 
       if (var.Strlen() == 0) {
-         Sprintf(buf, "Say: %P18 %S %P35 Yell: %P53 %S\n",
-                 getColorName(pc.pc->say_str), getColorName(pc.pc->yell_str));
+         Sprintf(buf, "%Ssay %Syell %Sgossip %Stell %Sdesc %Sobjects\n"
+                      "%Scritters %Sbattle %Sroom name %Sdefault\n",
+                      &(pc.pc->say_str), &(pc.pc->yell_str), &(pc.pc->gos_str),
+                      &(pc.pc->tell_str), &(pc.pc->desc_str),
+                      &(pc.pc->obj_list_str), &(pc.pc->mob_list_str),
+                      &(pc.pc->battle_str), &(pc.pc->room_str),
+                      &(pc.pc->dflt_str));
          pc.show(buf);
-         Sprintf(buf, "Gossip: %P18 %S %P35 Tell: %P53 %S\n",
-                 getColorName(pc.pc->gos_str), getColorName(pc.pc->tell_str));
-         pc.show(buf);
-         Sprintf(buf, "Desc: %P18 %S %P35 Objects: %P53 %S\n",
-                 getColorName(pc.pc->desc_str),
-                 getColorName(pc.pc->obj_list_str));
-         pc.show(buf);
-         Sprintf(buf, "Critters: %P18 %S %P35 Default: %P53 %S\n",
-                 getColorName(pc.pc->mob_list_str), getColorName(pc.pc->dflt_str));
-         pc.show(buf);
-         Sprintf(buf, "Battle: %P18 %S %P35 Background: %P53 %S\n",
-                 getColorName(pc.pc->battle_str), getColorName(pc.pc->bk_str));
-         pc.show(buf);
-         Sprintf(buf, "Room Name: %P18 %S %P35 %P53\n",
-                 getColorName(pc.pc->room_str));
-         pc.show(buf);
+
       }//if
       else if (strncasecmp("OFF", var, 3) == 0) {
          pc.PC_FLAGS.turn_off(26); //stop using them
@@ -303,7 +280,8 @@ int color(String& var, String& val_rough, critter& pc) {
       }
       else if (isValidColor(val_rough)) {
 
-         val = colorToAnsiCode(val_rough);
+         val = *(colorize((const char*)val_rough, pc, HL_DEF));
+
          pc.PC_FLAGS.turn_on(25); //save colors
 
          if (strncasecmp(var, "Say", ln) == 0) {

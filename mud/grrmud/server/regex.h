@@ -40,6 +40,7 @@ class regex {
       ~regex();
       regex* operator=(String &new_pat);
       bool operator==(String &match_str);
+      bool operator==(const char* match_str);
       String &getErr(void) { return err_msg; }
 };
 

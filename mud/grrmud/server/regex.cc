@@ -56,7 +56,7 @@ regex *regex::operator=(String &new_pat) {
    return this;
 }//regex::operator=
 
-bool regex::operator==(String &match_str) {
+bool regex::operator==(const char* match_str) {
 
    int rc;
 
@@ -68,8 +68,8 @@ bool regex::operator==(String &match_str) {
    rc = pcre_exec(
          re,
          NULL,
-         (const char*)match_str,
-         match_str.Strlen(),
+         match_str,
+         strlen(match_str),
          0,
          0,
          NULL,
@@ -79,4 +79,8 @@ bool regex::operator==(String &match_str) {
       return false;
    }
    return true;
+}//regex::operator==
+
+bool regex::operator==(String &match_str) {
+   return (*this == (const char*)match_str);
 }//regex::operator==
