@@ -1,5 +1,5 @@
-// $Id: misc.cc,v 1.48 2002/02/05 05:03:33 gingon Exp $
-// $Revision: 1.48 $  $Author: gingon $ $Date: 2002/02/05 05:03:33 $
+// $Id: misc.cc,v 1.49 2002/02/07 08:32:58 eroper Exp $
+// $Revision: 1.49 $  $Author: eroper $ $Date: 2002/02/07 08:32:58 $
 
 //
 //ScryMUD Server Code
@@ -1739,7 +1739,7 @@ void show_all(const char* msg, const room& rm) {
 
 
 void show_all_but_2(critter& A, critter& B, const char* msg,
-                    room& rm) {
+                    room& rm, hilite_type hl_type = HL_DEF) {
    Cell<critter*> cell(rm.getCrits());
    critter* crit_ptr;
 
@@ -1747,7 +1747,7 @@ void show_all_but_2(critter& A, critter& B, const char* msg,
    while ((crit_ptr = cell.next()))  { 
       if ((crit_ptr != &A) && (crit_ptr != &B)) 
          if (crit_ptr->POS < POS_SLEEP)  
-            crit_ptr->show(msg);
+            crit_ptr->show(msg, hl_type);
    }//while
 
    Cell<object*> cll(*(rm.getInv()));
@@ -1757,7 +1757,7 @@ void show_all_but_2(critter& A, critter& B, const char* msg,
      if (obj->obj_proc && (crit_ptr = obj->obj_proc->w_eye_owner)) {
        if (crit_ptr->POS < POS_SLEEP) {
          crit_ptr->show("#####");
-         crit_ptr->show(msg);
+         crit_ptr->show(msg, hl_type);
        }//if
      }//if
    }//while

@@ -1,5 +1,5 @@
-// $Id: misc.h,v 1.23 2002/01/05 01:42:38 eroper Exp $
-// $Revision: 1.23 $  $Author: eroper $ $Date: 2002/01/05 01:42:38 $
+// $Id: misc.h,v 1.24 2002/02/07 08:32:58 eroper Exp $
+// $Revision: 1.24 $  $Author: eroper $ $Date: 2002/02/07 08:32:58 $
 
 //
 //ScryMUD Server Code
@@ -100,7 +100,7 @@ int detect(int see_bit, int vis_bit); //does bit comparison
 
 void show(const char* message, critter& pc, hilite_type hl_type = HL_DEF);
 void show_all_but_2(critter& A, critter& B, const char* message, 
-                    room& rm); 
+                    room& rm, hilite_type hl_type = HL_DEF); 
 void show_all(const char* msg, const room& rm);
 
 int vDoShowList(critter* pc, CSelectorColl& includes, CSelectorColl& denies,

@@ -1,5 +1,5 @@
-// $Id: battle.cc,v 1.39 2002/01/29 02:15:28 eroper Exp $
-// $Revision: 1.39 $  $Author: eroper $ $Date: 2002/01/29 02:15:28 $
+// $Id: battle.cc,v 1.40 2002/02/07 08:32:58 eroper Exp $
+// $Revision: 1.40 $  $Author: eroper $ $Date: 2002/02/07 08:32:58 $
 
 //
 //ScryMUD Server Code
@@ -676,7 +676,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    buf = otherbuf;
    buf+= victendbuf;
    buf.Cap();
-   show_all_but_2(agg, vict, buf, room_list[agg.getCurRoomNum()]);
+   show_all_but_2(agg, vict, buf, room_list[agg.getCurRoomNum()], HL_BATTLE);
 
    // In theory, any damage higher than 40 will have a chance of breaking
    // the spell, with damage much higher having a better chance
@@ -705,7 +705,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
                           || (vict.POS == POS_STAND))) {
       vict.setPosn(POS_STUN);
       emote("is stunned.", vict, room_list[vict.getCurRoomNum()], TRUE);
-      vict.show("You are stunned!!\n");
+      vict.show("You are stunned!!\n", HL_BATTLE);
    }//if
    else if (vict.HP <= 0) {
       //emote("is dead!!", vict, room_list[vict.getCurRoomNum()], TRUE);
