@@ -1,0 +1,140 @@
+1	Start of Door Data
+1024 1 0 0 0	vbit, door#, token#, key#
+10 0 -1  -:| bitfield |:-
+east ~	names
+You see nothing special to the east.
+~
+
+2	Start of Door Data
+1024 2 0 0 0	vbit, door#, token#, key#
+10 0 -1  -:| bitfield |:-
+west ~	names
+You see nothing special to the west.
+~
+
+3	Start of Door Data
+1024 3 0 0 0	vbit, door#, token#, key#
+10 0 -1  -:| bitfield |:-
+north ~	names
+You see nothing special to the north.
+~
+
+4	Start of Door Data
+1024 4 0 0 0	vbit, door#, token#, key#
+10 0 -1  -:| bitfield |:-
+south ~	names
+You see nothing special to the south.
+~
+
+5	Start of Door Data
+1024 5 0 0 0	vbit, door#, token#, key#
+10 0 -1  -:| bitfield |:-
+southeast ~	names
+You see nothing special to the southeast.
+~
+
+6	Start of Door Data
+1024 6 0 0 0	vbit, door#, token#, key#
+10 0 -1  -:| bitfield |:-
+northeast ~	names
+You see nothing special to the northeast.
+~
+
+7	Start of Door Data
+1024 7 0 0 0	vbit, door#, token#, key#
+10 0 -1  -:| bitfield |:-
+northwest ~	names
+You see nothing special to the northwest.
+~
+
+8	Start of Door Data
+1024 8 0 0 0	vbit, door#, token#, key#
+10 0 -1  -:| bitfield |:-
+southwest ~	names
+You see nothing special to the southwest.
+~
+
+9	Start of Door Data
+1024 9 0 0 0	vbit, door#, token#, key#
+10 0 -1  -:| bitfield |:-
+up ~	names
+You see nothing special.
+~
+
+10	Start of Door Data
+1024 10 0 0 0	vbit, door#, token#, key#
+10 0 -1  -:| bitfield |:-
+down ~	names
+You see nothing special.
+~
+
+11	Start of Door Data
+1024 11 0 0 0	vbit, door#, token#, key#
+10 8 2 -1  -:| bitfield |:-
+west door oak # oak door east ~	names
+     You see a sturdy oaken door banded with ornamental iron work.
+~
+
+12	Start of Door Data
+1024 12 0 0 0	vbit, door#, token#, key#
+12 11 10 9 8 -1  -:| bitfield |:-
+east train silver # silver train west ~	names
+These are some strong silvery doors.
+
+~
+
+27	Start of Door Data
+1024 27 0 0 0	vbit, door#, token#, key#
+10 9 8 -1  -:| bitfield |:-
+north screen door # door screen south ~	names
+The screen door connects Kaela's flower shop with the picknick area to the
+south of it.  Kaela asks that you keep it closed as much as possible to keep
+the bugs out of her shop.
+
+~
+
+29	Start of Door Data
+1024 29 0 0 0	vbit, door#, token#, key#
+10 9 8 2 -1  -:| bitfield |:-
+west door wood # wood door east ~	names
+This is a simple wooden door.  You could easily go through it, even if it
+were not unlocked.  A sour smell seems to originate on the far side.
+
+~
+
+31	Start of Door Data
+1024 31 0 401 0	vbit, door#, token#, key#
+10 9 8 5 4 -1  -:| bitfield |:-
+east gate # gate west ~	names
+	These are the eastern gates of Garland.  They are quite low and would
+be little use in a serious battle.  They are usually open.
+
+~
+
+44	Start of Door Data
+1024 44 0 0 0	vbit, door#, token#, key#
+10 9 -1  -:| bitfield |:-
+portal shimmering # shimmering portal ~	names
+A shimmering portal stands here before you.  You don't know how long it will
+last, or where it leads to, so you better hurry!
+
+~
+
+46	Start of Door Data
+1024 46 0 0 0	vbit, door#, token#, key#
+10 9 8 2 -1  -:| bitfield |:-
+east dorkie # dorkie west ~	names
+This is a grand dorkie
+
+~
+
+47	Start of Door Data
+1024 47 0 155 0	vbit, door#, token#, key#
+10 9 8 5 3 2 -1  -:| bitfield |:-
+north door wooden # wooden door south ~	names
+This is a stout door with bronze hinges and a bronze keyhole.
+
+~
+
+
+-1 END OF DOOR FILE

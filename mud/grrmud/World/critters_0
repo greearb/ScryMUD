@@ -1,0 +1,1222 @@
+1	Start of Mob
+camlor owner ~	names
+Camlor
+~
+Camlor wipes a glass clean with his apron.
+~
+	Camlor is a largish man with red hair and beard.  He has a scar on
+his cheek which leads you to believe that he once lead a much more active
+life.  He still looks like he could put up a pretty good fight, and some
+of the local boys can attest to that, having been hurled bodily from the
+tavern after a few too many!
+
+~
+18 12 11 10 7 6 -1  -:| bitfield |:-
+4355 1100000 0 	long_data
+0 17 14 10 14 14 13 5 5 60 1 0 1 1 0 435 100 100 250 
+18 0 0 0 435 100 100 2 100 100 0 80 100 80 6 0 5 5 110 80 
+80 0 0 0 	shrt_cur_stats
+1024 1028 851 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 1 0 1	mob#, tmp_num, max_n_game
+1 0 -1  -:| bitfield |:-
+1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 200 75 12 3	shop_data shorts
+61 59 2 1 0 -1  -:| bitfield |:-
+65 -1	perm_inv
+	end_of_crit
+
+2	Start of Mob
+priest high ~	names
+the High Priest of Garland
+~
+The High Priest of Garland walks among his faithful.
+~
+     You see a middle aged man in a very utilitarian brown robe.  By the 
+size of his arms you can tell that he takes a hands on approach to life.
+The local legends would have you believe that in his younger days he and
+his brother journeyed to the top of Dragon's Spire, the highest peak of the
+mountain range to the east.  He does not deny it, but neither has he ever
+described his journey.
+~
+18 12 11 8 7 6 -1  -:| bitfield |:-
+4000 250000 0 	long_data
+0 18 17 13 17 18 14 20 7 20 2 0 1 1 1 701 401 100 925 
+25 1 0 0 701 401 100 2 100 100 50 50 50 50 0 0 4 8 150 125 
+100 0 0 0 	shrt_cur_stats
+1024 1029 1 	cur_stats
+6 1 -1	eq: num, posn
+-1	affected_by
+-1	inv
+ 2 0 1	mob#, tmp_num, max_n_game
+17 -1  -:| bitfield |:-
+1  Start of a mob proc script
+say 0 0 0	 Trigger Command, targ, actor 
+ god 
+ say I hope you do not use that name in vain, %M...;
+ pause 2;
+ say  We take that topic very seriously here in the temple.;
+ pause 1;
+ emote makes a slight gesture towards the altar.;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+3	Start of Mob
+citizen ~	names
+a citizen
+~
+A citizen walks along, his destination sure.
+~
+     This man is walking along enjoying some time outdoors.  He has a 
+contented look on his face and waves as he passes you.
+~
+18 12 11 8 7 6 -1  -:| bitfield |:-
+100 2500 0 	long_data
+0 13 12 13 11 10 14 2 1 75 1 0 1 4 1 31 101 100 123 
+4 1 0 0 31 101 100 2 100 100 70 70 70 70 0 0 2 4 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1025 0 	cur_stats
+1 9 -1	eq: num, posn
+-1	affected_by
+4 -1	inv
+ 3 0 25	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+4	Start of Mob
+sweeper man street ~	names
+a street sweeper
+~
+A street sweeper is here diligently cleaning.
+~
+	You see an oldish man with a funny looking stick with a grabber
+on the end of it.  He has a somewhat stained bag hung over his shoulder
+that never seems to quite get full, no matter how much junk he picks up.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+85 15000 0 	long_data
+0 15 12 12 10 14 10 1 1 60 1 0 1 6 0 65 100 100 0 
+5 1 20 0 65 100 100 2 100 100 0 80 80 80 0 0 2 3 100 50 
+100 0 0 0 	shrt_cur_stats
+1024 1031 1 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 4 0 10	mob#, tmp_num, max_n_game
+2 1 -1  -:| bitfield |:-
+	end_of_crit
+
+10	Start of Mob
+natasa princess beauty ~	names
+Princeza Natasa
+~
+Princeza Natasa walks seductively down the street.
+~
+	You see a beautiful black haired woman from the East.  She is soft
+in some places, but hard in others.  You better watch out!
+
+~
+18 5 -1  -:| bitfield |:-
+5542 1200000 0 	long_data
+1 18 18 15 18 18 15 6 5 35 1 0 0 6 0 312 250 100 950 
+21 1 0 0 312 250 100 2 100 100 0 20 50 50 0 0 5 5 140 130 
+100 0 0 0 	shrt_cur_stats
+1024 1031 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 10 0 1	mob#, tmp_num, max_n_game
+2 -1  -:| bitfield |:-
+	end_of_crit
+
+11	Start of Mob
+baker ~	names
+the baker
+~
+The baker dusts his hands.
+~
+	You see a large baker all covered in flour.  Those hands which
+have kneaded bread for all these years could definately knead your head!
+
+~
+18 12 11 -1  -:| bitfield |:-
+3000 150000 0 	long_data
+0 15 15 15 15 15 15 5 5 25 1 0 1 6 0 275 200 50 350 
+21 1 0 0 275 200 50 2 80 100 0 85 80 60 0 0 5 5 175 100 
+75 0 0 0 	shrt_cur_stats
+1024 1027 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 11 0 1	mob#, tmp_num, max_n_game
+0 -1  -:| bitfield |:-
+1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 100 50 5 23	shop_data shorts
+61 59 54 52 2 1 0 -1  -:| bitfield |:-
+14 11 13 -1	perm_inv
+	end_of_crit
+
+16	Start of Mob
+wizard man ~	names
+a bitter old wizard
+~
+A bitter old wizard is sitting here looking for something to get ill about.
+~
+This old fellow knows his mediocrity, and hates himself for it.  He was always
+pretty good, but never great.  Always in the shadow of others.  He could 
+retire if he wished, but he derives pleasure from teaching, as those are the
+only people who ever look up to him and take interest in his knowledge.  He
+sits here with a tired look on his face, not expecting anything good to happen,
+so nothing ever does...
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+4500 950000 0 	long_data
+2 13 17 11 9 16 14 10 10 0 1 0 1 3 1 500 850 100 -450 
+22 0 0 0 500 850 100 2 100 100 80 80 100 30 0 0 5 5 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 16 0 1	mob#, tmp_num, max_n_game
+1 0 -1  -:| bitfield |:-
+13 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+0 -4 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+19	Start of Mob
+shaman man ~	names
+an old shaman
+~
+An old shaman is searching for an herb called Goldenseal.
+~
+	You see an old, but sturdy man.  He has traveled far if the dust upon
+his clothes speaks truly.  He has come in search of the Goldenseal plant, a
+rare herb with almost magical healing powers.  He looks as if he could 
+bestow great wisdom on those who were kind, and patient enough listen.
+
+~
+18 12 11 6 5 -1  -:| bitfield |:-
+4000 850000 0 	long_data
+0 14 18 12 14 18 12 5 5 45 1 0 1 2 0 356 455 100 850 
+23 0 0 0 356 455 100 2 75 100 0 50 50 30 0 0 5 4 125 150 
+100 0 0 0 	shrt_cur_stats
+1024 1031 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 19 0 1	mob#, tmp_num, max_n_game
+0 -1  -:| bitfield |:-
+7 6 5 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+60	 test_num, valid for give_proc mostly
+The old shaman says, "Thanks, this will allow me to cure my ailing father.
+If you are ever in Daemon Rhea, be sure to look us up!  I'll tell you of the
+secrets of curing disease, they may help you in your journies..."
+
+~
+cure disease
+0 0	obj_num, trans_room#
+Thanks, but what I would really like is a living specimen of the Goldenseal
+plant.
+
+~
+end action_proc_data
+0	 test_num, valid for give_proc mostly
+The man says, "Thank you for humoring an old man.  I am searching for an
+herb known as Goldenseal.  It is very important for me to find this herb."; 
+
+~
+	 Skill name
+0 0	obj_num, trans_room#
+
+~
+end action_proc_data
+1    here starts a valid say_proc_cell.
+goldenseal
+The old man looks at you and says, "I seek a goldenseal plant which I must have
+in order to heal my father.  I would be happy to share some of my knowledge
+with you in return for this living treasure."
+
+~
+na
+0 0	 end of say_proc_cell
+-1    end of say_proc_cells
+The old shaman scowls, "I will neither accept nor give help to those who do
+not follow a life of goodness.
+
+~
+BUG::  REPORT ME
+
+~
+BUG:: REPORT ME
+
+~
+	end_of_crit
+
+37	Start of Mob
+golem earth ~	names
+an earth golem
+~
+An earthen golem stands here immobile.
+~
+Someone has caused a piece of the earth to become animate.  This being
+is vaguely humanoid, but the lack of a real face and the protrusions of rocks
+and organic material make it a hideous sight.  Still, this thing that was 
+unliving not long ago seems like it might be pretty hard to hack back into
+its constituent parts!
+
+~
+18 -1  -:| bitfield |:-
+0 10000 0 	long_data
+0 10 5 15 5 5 10 0 5 80 1 0 2 1 0 100 100 100 0 
+10 0 0 0 100 100 100 2 70 100 0 20 20 100 0 0 4 5 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 37 0 100	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+38	Start of Mob
+minion ~	names
+a minion of Hell
+~
+A minion of Hell stands here smelling of sulphur.
+~
+This tortured being is quite seductive at first sight.  She has perfectly
+smooth skin, dark as ebony.  Her eyes are completely black, except for the
+pupils, which are a flickering red.  Her skin-tight clothing shows off the
+hardness of her body, but it is a hardness that kills.  Her razor sharp
+finger nails and pointed teeth would quickly teach anyone who got too
+close the error of their foolish ways.
+
+~
+19 18 12 11 10 7 6 5 -1  -:| bitfield |:-
+0 125000 0 	long_data
+0 18 10 10 17 10 18 8 4 50 2 0 0 1 0 145 100 100 -750 
+12 0 0 0 145 100 100 2 100 100 0 80 80 30 1 0 3 4 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1027 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 38 0 20	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+39	Start of Mob
+minion dwarf ~	names
+a dwarven devil
+~
+A small, sweating man with a charred leather apron stands here.
+~
+This hellish dwarf has slaved long in the bowels of hell.  He has been
+around forges and fire so long that his body constantly radiates a 
+tremendous heat.  His arms are knotted and scarred and his bare legs are 
+covered with small scars from red-hot fragments of metal and coal.  This man
+looks quite ornery and ready to fight.
+
+~
+18 12 11 10 7 6 -1  -:| bitfield |:-
+0 230000 0 	long_data
+0 20 10 15 7 12 15 0 5 50 1 0 1 1 0 185 100 100 -545 
+15 0 0 0 185 100 100 2 80 100 0 50 80 80 1 0 5 5 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1027 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 39 0 20	mob#, tmp_num, max_n_game
+0 -1  -:| bitfield |:-
+13 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+0 -7 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+41	Start of Mob
+minion wizard ~	names
+an evil wizard
+~
+A wizard robed in black stands here brooding.
+~
+This man, this minion of Hell, traded his immortal soul for dark powers.
+These powers served him well while he did live in the mortal realm, and now,
+as was the deal, they serve Hell.  He looks up at you for an instant with his
+fire-filled eyes, and then his face is once more lost within the shadow of
+his robe.
+
+~
+18 12 11 7 6 -1  -:| bitfield |:-
+0 430000 0 	long_data
+0 10 18 7 9 18 13 2 2 50 1 0 1 3 0 205 300 100 -1000 
+21 0 0 0 205 300 100 2 100 100 0 80 80 20 1 0 4 4 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1031 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 41 0 20	mob#, tmp_num, max_n_game
+0 -1  -:| bitfield |:-
+13 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+0 -9 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+42	Start of Mob
+minion thief woman ~	names
+a lithe woman
+~
+A lithe woman with quick hands and fiery eyes stands here easily.
+~
+This woman is darkly beautiful.  Her hair is pitch black and shoulder 
+length. She is dressed in loose fitting garb that allows easy movement.  She
+watches everything, without seeming too, and you never really notice her moving
+at all;  she just seems materialize in different places.
+
+~
+18 17 12 11 10 7 6 5 -1  -:| bitfield |:-
+0 540000 0 	long_data
+0 13 13 10 15 15 19 8 5 40 2 0 0 5 0 310 50 150 -775 
+25 0 60 0 310 50 150 2 80 100 0 80 80 70 1 0 5 5 100 100 
+100 0 0 0 	shrt_cur_stats
+1028 1031 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 42 0 20	mob#, tmp_num, max_n_game
+0 -1  -:| bitfield |:-
+13 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+0 -6 0 0 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+55	Start of Mob
+illusion ~	names
+an illusion
+~
+An illusion stands here looking like someone else.
+~
+An illusion looks just like someone you know.
+
+~
+18 -1  -:| bitfield |:-
+0 0 0 	long_data
+0 2 2 2 16 2 2 0 20 0 0 2 1 1 0 20 20 100 0 
+1 0 0 0 20 20 100 2 100 100 0 50 50 50 0 0 1 6 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 55 0 300	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+57	Start of Mob
+zombie undead dead corpse ~	names
+a walking corpse
+~
+A re-animated corpse stands here listlessly.
+~
+This once dead being looks as if it wished it were still so.  The eyes are
+a sickly, pasty white color and it's skin is a mottled mess of black,
+blue, white and a tinge or two of green.  This is clearly an unhealthy way
+to not live!
+
+~
+18 -1  -:| bitfield |:-
+0 0 0 	long_data
+0 2 2 2 2 2 10 2 1 80 1 0 2 1 0 135 10 100 0 
+0 0 0 0 135 10 100 2 100 100 0 50 10 80 4 0 4 3 50 50 
+50 0 0 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 57 0 200	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+76	Start of Mob
+Shawna ~	names
+the grand mage Shawna
+~
+A beautiful woman with long brown wavy hair looks up as you enter.
+~
+Shawna is the grand mage of the Academy in Garland.  She is the first woman to
+be granted the post in three generations, and one of the youngest ever.  She
+is dressed in green robes befitting one of her status, and beauty!  Most of
+the young students fall in love with her upon meeting her, but none but one
+ever caught her eye.  She has been more somber since he left for parts unknown
+last spring.  Korg's picture sits on her private desk at all times.  She hopes
+for the best, but his quest was dangerous, and she fears for the worst.
+
+~
+18 12 11 10 9 8 7 6 5 -1  -:| bitfield |:-
+8750 1245000 0 	long_data
+0 18 20 15 19 19 18 15 15 -60 1 0 0 3 1 950 1000 300 650 
+28 0 0 0 950 1000 100 2 70 100 50 50 100 0 0 0 6 6 100 150 
+100 0 0 0 	shrt_cur_stats
+1024 1039 73 	cur_stats
+202 2 144 10 -1	eq: num, posn
+-1	affected_by
+-1	inv
+ 76 0 1	mob#, tmp_num, max_n_game
+17 0 -1  -:| bitfield |:-
+13 4 3 2 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+6 3 2 -1  -:| bitfield |:-
+10 0 0 9 5  sk_viol, benev, def, bad_assed, soc_aware
+1  Start of a mob proc script
+give 76 -1 1	 Trigger Command, targ, actor 
+ 334 
+ if does_own 334 335;
+ say Thank you, %M, these are the keys to my love's freedom!  Let
+me concentrate for a minute.;
+ pause 1;
+ emote raises her hands, a broken heart in each.;
+ pause 1;
+ recho The skies begin revolve, all light focussed above the
+Grand Mistress!;
+ pause 1;
+ emote intones, "By the power of my love and my lore, I unite
+the hearts of light and darkness!";
+ recho Twin bolts of pure white lightening arc from Shawna's
+outstretched arms, entwining as they meet their counterparts from above.;
+ pause 1;
+ emote tremble's visibly and brings her glowing hands together,
+producing a single pendant from the sundered halves.;
+ pause 1;
+ junk heart;
+ junk heart;
+ oload 219;
+ give heart %M;
+ say Take this to Korg, it has the power to free him from his
+dark bonds!;
+ else;
+ say The light half of our heart pendant!  If only I had the other
+part I could free my dear friend!;
+ end;
+
+~
+2  Start of a mob proc script
+give 76 -1 1	 Trigger Command, targ, actor 
+ 335 
+ if does_own 334 335;
+ say Thank you, %M, these are the keys to my love's freedom!  Let
+me concentrate for a minute.;
+ pause 1;
+ emote raises her hands, a broken heart in each.;
+ pause 1;
+ recho The skies begin revolve, all light focussed above the
+Grand Mistress!;
+ pause 1;
+ emote intones, "By the power of my love and my lore, I unite
+the hearts of light and darkness!";
+ recho Twin bolts of pure white lightening arc from Shawna's
+outstretched arms, entwining as they meet their counterparts from above.;
+ pause 1;
+ emote tremble's visibly and brings her glowing hands together,
+producing a single pendant from the sundered halves.;
+ pause 1;
+ junk heart;
+ junk heart;
+ oload 219;
+ give heart %M;
+ say Take this to Korg, it has the power to free him from his
+dark bonds!;
+ else;
+ say The dark half of our heart pendant!  If only I had the other
+part I could free my dear friend!;
+ end;
+
+~
+3  Start of a mob proc script
+say -1 -1 0	 Trigger Command, targ, actor 
+ korg 
+ emote smiles sadly.;
+ pause 1;
+ say Korg was the one man who treated me as an equal from the first.  He was my
+greatest student, and though I was a year or two older, we became great
+friends,
+and then more.;
+ pause 1;
+ say He has traveled to seek knowledge of those who came before us, the 
+Builders.  I would give almost anything for word of him, though I fear the news
+will not be good.;
+
+~
+4  Start of a mob proc script
+give 76 -1 0	 Trigger Command, targ, actor 
+ 281 
+ if does_own 281;
+ say Thank you %M.  I have already dispatched someone to help rescue
+my beloved Korg.  If you wish to join them, please journey to Mount
+Null...  I am sure they could use your help!;
+ else;
+ say Where did you get this??  Is he still OK??;
+ emote unrolls the parchment...;
+ pause 1;
+ say Oh my...he is indeed in great trouble!  His captors are playing
+with him!  They keep him on the edge of death, cut off from his
+great powers...;
+ pause 1;
+ say They will know immediately if I should arrive to rescue him...;
+ pause 1;
+ say You, %M, must organize a party to rescue him!  If you can bring
+me the sundered halves of the heart pendant, I may be able to
+enjoin it once again, and it's great power can free Korg!;
+ pause 1;
+ remove medallion;
+ if does_own 202;
+ say Here, take this, it may help you in your quest!;
+ give medallion %M;
+ else;
+ say Good luck, know that all my hopes ride on your shoulders!;
+ end;
+ cast strength %M;
+ cast stregnth %M;
+ end;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+78	Start of Mob
+student mage ~	names
+a student of the academy
+~
+A young man with a satchel is lost in thought.
+~
+This young man is slightly built, but handsome.  His features are slightly
+elven,
+but his manner is that of a city dweller.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+235 75000 0 	long_data
+0 15 14 15 14 14 14 3 2 60 1 0 1 3 11 100 100 100 50 
+5 1 0 0 100 100 100 2 100 100 80 80 100 90 0 0 2 2 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 78 0 5	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+79	Start of Mob
+student mage ~	names
+a harried student
+~
+A frightened young man cringes he passes you.
+~
+This young man looks completely disheveled and confused!  His hands are visibly
+shaking, and he is a pasty shade of off white.  You're afraid to ask what is
+wrong, but you suspect he just had a meeting that didn't go so well!
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+235 75000 0 	long_data
+0 15 14 15 14 14 14 3 2 60 1 0 1 3 11 100 100 100 50 
+5 1 0 0 100 100 100 2 100 100 80 80 100 90 0 0 2 2 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 79 0 5	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+81	Start of Mob
+student mage woman ~	names
+a young woman
+~
+A young woman smiles as she passes you.
+~
+This young woman carries herself with confidence and glances briefly at
+you as you pass.  She is carrying a small leather satchel.  It catches your
+attention because several sprigs of some strange plant are poking out of
+the top.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+235 75000 0 	long_data
+0 15 14 15 14 14 14 3 2 60 1 0 0 3 11 100 100 100 50 
+5 1 0 0 100 100 100 2 100 100 80 80 100 90 0 0 2 2 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 81 0 5	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+154	Start of Mob
+Korg magician mage ~	names
+Korg
+~
+A young mage lies here manacled with mighty bands of dark magic.
+~
+By the looks of this poor man, he is, or was a magician.  His grey
+robe, though torn in places, remains free of all contamination.
+The bonds that hold him are not ordinary metal, but some living
+thing, some pure energy, made to hold a physical form.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+0 7500 0 	long_data
+2 15 21 15 14 21 18 1 1 60 1 0 1 1 1 100 400 100 50 
+29 0 0 0 100 400 100 2 100 100 80 80 0 0 0 0 3 2 100 100 
+100 5 0 0 	shrt_cur_stats
+1024 1031 4033 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 154 0 1	mob#, tmp_num, max_n_game
+17 0 -1  -:| bitfield |:-
+13 4 3 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+0 0 9 5 7  sk_viol, benev, def, bad_assed, soc_aware
+1  Start of a mob proc script
+enter -1 -1 0	 Trigger Command, targ, actor 
+
+ pause 1;
+ emote looks up as you enter, as if doing so pained him greatly.;
+ say Beware what you seek in this dark place.;
+ pause 2;
+ say You look as young and foolish as I myself once was,
+so I know you will not turn back!  However, you cannot...
+proceed without my help!;
+ pause 2;
+ say Take this letter to Shawna, the high Mage of Garland...;
+ say It will give her the knowledge she needs to free me!;
+ oload 281;
+ pause 2;
+ give parchment %M;
+ say When I am free, I will create for you the key to this dark place!;
+ pause 2;
+ emote shudders visibly and sinks back to the floor.;
+ emote whispers, "Go now...the pain is horrible!";
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+160	Start of Mob
+dog stray ~	names
+a stray dog
+~
+A stray dog slinks into the shadows.
+~
+This poor beast has been abandoned by it's owner and now lives off
+the kindness of strangers.  It is not starving to death, but it has
+lost all self respect, and hides in the shadows when you come near.
+
+~
+18 12 11 8 7 6 -1  -:| bitfield |:-
+0 2500 0 	long_data
+0 13 7 13 11 10 14 -1 0 75 1 0 1 4 1 18 101 100 123 
+1 1 0 0 18 101 100 2 100 100 70 70 70 70 0 0 2 4 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1025 2079 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 160 0 25	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+164	Start of Mob
+kid teenager child ~	names
+a young teenager
+~
+A young teenager is chomping on a snack.
+~
+This young man is enjoying a danish from one of the fine bakers in town.
+He completely ignores you, absorbed in his own little world.
+
+~
+18 12 11 8 7 6 -1  -:| bitfield |:-
+100 2500 0 	long_data
+0 13 12 13 11 10 14 -1 -8 75 1 0 1 4 1 31 101 100 123 
+4 1 0 0 31 101 100 2 100 100 70 70 70 70 0 0 2 4 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1025 46 	cur_stats
+1 9 -1	eq: num, posn
+-1	affected_by
+4 -1	inv
+ 164 0 25	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+186	Start of Mob
+Maedon master ~	names
+Maedon Thane
+~
+Maedon Thane, prince of thieves, stands at ease.
+~
+Maedon is a middle aged man with a slightly greying beard and fierce
+black eyes.  He was outcast from his family in Dar Thane because
+he tried to promote more honour in the family business.  He has
+established his inn in Garland to try to civilize the often petty
+criminals and give them a sense of honour.  He is well loved in
+Garland, but lately the tidings from Dar Thane have not been good.
+It appears his father was murdered by one of Maedon's brothers,
+and one old friend brought news of a bounty for Maedon's head in
+Dar Thane.  He lives here as he can, surrounded by trusted friends
+and family, but one day he will have to deal with his estranged
+and treacherous family in Dar Thane.
+
+~
+18 16 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+18000 3900000 0 	long_data
+0 22 22 20 18 20 24 45 55 -30 2 0 1 5 1 2500 100 100 100 
+30 0 0 0 2500 100 100 2 50 100 80 80 100 90 0 0 8 7 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1024 85 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 186 0 1	mob#, tmp_num, max_n_game
+0 -1  -:| bitfield |:-
+13 4 3 2 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+5 -1  -:| bitfield |:-
+9 2 4 9 5  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+195	Start of Mob
+waitress woman ~	names
+a lithe waitress
+~
+A lithe waitress balances a huge platter of food and drink on her shoulder.
+~
+This young woman is darkly beautiful with short black hair and strong
+shoulders.  She wears a well cut leather top and leggings, tucked into
+her high boots.  She has a fine scar across her right cheek, but it
+only seems to accentuate her charms.  As your eyes drop down, you notice
+a fine dagger sheathed in her belt, swaying with her every step.
+
+~
+20 18 12 11 10 7 -1  -:| bitfield |:-
+325 150000 0 	long_data
+0 16 15 12 18 13 19 2 8 10 1 1 0 5 0 275 175 190 600 
+9 4 20 0 275 175 190 2 100 100 0 90 90 75 0 0 1 4 5 5 
+10 0 0 0 	shrt_cur_stats
+1024 1031 84 	cur_stats
+37 15 -1	eq: num, posn
+-1	affected_by
+50 50 -1	inv
+ 195 0 1	mob#, tmp_num, max_n_game
+17 3 1 -1  -:| bitfield |:-
+1  Start of a mob proc script
+hit 197 -1 1	 Trigger Command, targ, actor 
+
+ say We've got a disturbance here!;
+ wield dagger;
+ hold dagger;
+ backstab %M;
+
+~
+2  Start of a mob proc script
+hit 196 -1 1	 Trigger Command, targ, actor 
+
+ say We've got a disturbance here!;
+ wield dagger;
+ hold dagger;
+ backstab %M;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+196	Start of Mob
+bodyguard guard man ~	names
+A stout man with watchful eyes
+~
+A stout man sips tea and keeps an eye on the croud.
+~
+This fellow is six feet tall and built like a wall.  His biceps ripple
+noticeably as he brings a cup of tea to his lips, and his eyes never
+stray from the croud.  He sits with his back to the counter, near the
+stairs.  Occasionally he and the bartender exchange a few words
+as people come and go.
+
+~
+18 16 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+6500 1350000 0 	long_data
+0 20 16 15 14 14 21 18 18 0 2 0 1 5 1 750 100 200 -50 
+25 0 0 0 750 100 200 2 60 110 80 80 100 90 0 0 7 4 120 100 
+100 0 0 0 	shrt_cur_stats
+1024 1031 84 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 196 0 1	mob#, tmp_num, max_n_game
+17 0 -1  -:| bitfield |:-
+13 3 -1  -:| bitfield |:-
+10	int1, above bitfield started spec_data
+9 -6 0 8 5  sk_viol, benev, def, bad_assed, soc_aware
+1  Start of a mob proc script
+hit 197 -1 1	 Trigger Command, targ, actor 
+
+ say We've got a disturbance here!;
+ wield dagger;
+ hold dagger;
+ backstab %M;
+
+~
+2  Start of a mob proc script
+hit 195 -1 1	 Trigger Command, targ, actor 
+
+ say We've got a disturbance here!;
+ wield dagger;
+ hold dagger;
+ backstab %M;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+197	Start of Mob
+waiter man ~	names
+a deft waiter
+~
+A deft man with a quick step brings food and drink to the customers.
+~
+This young man looks remarkably similar to the young woman who works
+with him.  He is dressed in a fine leather vest and supple pants of the
+same color.  His eyes are dark, and smile as quick as his service.  He
+seems to know most of his customers by name.  Matching daggers are
+strapped to each thigh.
+
+~
+20 18 17 12 11 10 7 -1  -:| bitfield |:-
+300 150000 0 	long_data
+0 15 15 12 18 13 19 2 10 10 1 0 1 5 0 275 175 190 600 
+9 4 20 0 275 175 190 2 100 100 0 90 90 75 0 0 1 4 5 5 
+10 0 0 0 	shrt_cur_stats
+1024 1031 2 	cur_stats
+37 15 -1	eq: num, posn
+-1	affected_by
+50 50 -1	inv
+ 197 0 1	mob#, tmp_num, max_n_game
+17 2 1 -1  -:| bitfield |:-
+1  Start of a mob proc script
+hit 196 -1 1	 Trigger Command, targ, actor 
+
+ say We've got a disturbance here!;
+ wield dagger;
+ hold dagger;
+ backstab %M;
+
+~
+2  Start of a mob proc script
+hit 195 -1 1	 Trigger Command, targ, actor 
+
+ say We've got a disturbance here!;
+ wield dagger;
+ hold dagger;
+ backstab %M;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+199	Start of Mob
+master battlemaster guildmaster ~	names
+The Battle Master
+~
+The battle master of Garland stands here ready to give you a lesson.
+~
+This man is of indeterminable age, somewhere above 30 and under 60.
+His massive arms are covered in scars and his hands are curled
+into semblances of claws though long years of holding a sword.  This
+man knows a trick or two, and will be happy to pass that knowledge
+along!
+
+~
+18 16 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+18000 2900000 0 	long_data
+0 21 16 18 14 20 18 50 35 0 1 0 1 1 1 1100 100 100 295 
+30 0 0 0 1100 100 100 2 60 110 80 80 100 90 0 0 6 8 130 100 
+100 5 0 0 	shrt_cur_stats
+1024 1029 839 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 199 0 1	mob#, tmp_num, max_n_game
+0 -1  -:| bitfield |:-
+13 4 3 2 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+8 4 1 -1  -:| bitfield |:-
+9 0 6 0 2  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+201	Start of Mob
+generic cleric elder ~	names
+the Elder Cleric
+~
+The Elder Cleric of the Garland guild stands here ready to teach you.
+~
+This old man is well versed in the ways of God and Man.  He has been
+known to make life pretty difficult for those who do not pay
+attention to his lectures, but he is always willing to help those
+who ask for, and will accept, his teachings.
+
+~
+20 18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+400 2100000 0 	long_data
+0 15 20 15 14 21 14 20 20 -100 1 0 1 7 1 700 1100 100 50 
+30 0 0 0 700 1100 100 2 50 100 10 10 10 -20 0 0 6 6 100 130 
+100 5 0 0 	shrt_cur_stats
+1024 1031 89 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 201 0 1	mob#, tmp_num, max_n_game
+0 -1  -:| bitfield |:-
+13 4 3 2 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+7 -1  -:| bitfield |:-
+9 9 8 0 7  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+204	Start of Mob
+guard ~	names
+a city guard
+~
+A city guard in a crisp uniform looks around for trouble.
+~
+This fellow is young and good natured.  He spends as much of his time
+talking to the locals as doing any real work, but no one seems to mind.
+
+~
+18 16 -1  -:| bitfield |:-
+1200 480000 0 	long_data
+0 12 12 12 12 12 12 9 17 10 2 0 1 1 11 600 200 200 100 
+17 5 0 0 600 200 200 2 100 110 0 50 50 50 0 0 4 4 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1027 1 	cur_stats
+1 9 193 12 -1	eq: num, posn
+-1	affected_by
+-1	inv
+ 204 0 15	mob#, tmp_num, max_n_game
+2 0 -1  -:| bitfield |:-
+13 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+0 0 0 -5 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+205	Start of Mob
+blacksmith smith ~	names
+the blacksmith
+~
+A friendly man with huge arms greets you with a toothy smile.
+~
+The local blacksmith is a wonder to behold.  His dark arms are covered in
+small burn marks from the cinders.  His shoulders are wider than any you
+have ever seen.  As he carefully swings his 10 pound hammer, you begin to
+understand the source of such strength!
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+9500 1200000 0 	long_data
+0 23 14 15 14 14 20 20 30 10 1 0 1 1 1 1100 100 100 150 
+25 0 0 0 1100 100 100 2 100 100 -20 80 100 90 0 0 4 8 100 100 
+100 5 0 0 	shrt_cur_stats
+1024 1024 55 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 205 0 1	mob#, tmp_num, max_n_game
+0 -1  -:| bitfield |:-
+13 4 3 1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 200 75 7 21	shop_data shorts
+2 1 0 -1  -:| bitfield |:-
+190 87 -1	perm_inv
+0 0 0 4 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+216	Start of Mob
+noble man ~	names
+a spoiled noble
+~
+A young noble swaggers down the street.
+~
+This young fellow, dressed in tomorrows fashion, walks with a swagger,
+though he has no place to go.  He looks around, trying to find something,
+anything to occupy his rich, but empty life.
+
+~
+18 16 -1  -:| bitfield |:-
+1200 100000 0 	long_data
+0 17 12 12 18 12 12 9 17 10 2 0 1 1 11 600 200 200 100 
+12 5 0 0 600 200 200 2 100 110 0 50 50 50 0 0 4 4 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1027 44 	cur_stats
+1 9 -1	eq: num, posn
+-1	affected_by
+-1	inv
+ 216 0 1	mob#, tmp_num, max_n_game
+17 2 -1  -:| bitfield |:-
+1  Start of a mob proc script
+enter -1 -1 0	 Trigger Command, targ, actor 
+ FEM 
+ say Hey baby, how's it going?;
+ wink %M;
+
+~
+-1  End of mob proc scripts
+	end_of_crit
+
+264	Start of Mob
+guard guardsman ~	names
+a fierce guard
+~
+A fierce guard scowles at anyone who looks him in the eyes.
+~
+This man is definately the bad cop.  He watches everyone closely, offering
+only a thin grimmace as acknowledgement of their existence.  Though not as
+big as his partner, he is nearly as strong, and twice as fast!
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+5000 3000000 0 	long_data
+0 16 16 15 14 16 20 10 8 0 1 0 1 1 1 1000 800 100 50 
+25 1 0 0 1000 800 100 2 80 100 50 50 80 70 0 0 4 8 100 100 
+100 5 0 0 	shrt_cur_stats
+1024 1024 32 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 264 0 1	mob#, tmp_num, max_n_game
+0 -1  -:| bitfield |:-
+13 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+0 4 0 7 0  sk_viol, benev, def, bad_assed, soc_aware
+	end_of_crit
+
+265	Start of Mob
+guard guardsman ~	names
+a large guard
+~
+A large Ogrue guardsman stands watch over the bank.
+~
+This man easily tops seven feet, and his wide shoulders are matched only
+by his rippling fore-arms.  For all his imposing girth, he seems a friendly
+man, nodding to the customers as he looks out for trouble.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+2500 900000 0 	long_data
+0 21 16 15 14 16 16 10 6 20 1 0 1 1 9 750 500 100 50 
+21 1 0 0 750 500 100 2 100 100 80 80 100 90 0 0 4 7 100 100 
+100 5 0 0 	shrt_cur_stats
+1024 1024 4267 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 265 0 1	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+278	Start of Mob
+manager ~	names
+store manager
+~
+A stout store manager sweeps the floor as he greets you.
+~
+You see here a short, burly man - strong but intelligent. He sells everything
+you need to continue on your journey.
+
+~
+18 -1  -:| bitfield |:-
+54 190000 0 	long_data
+0 3 5 2 2 3 2 5 4 50 1 0 1 2 0 300 200 200 0 
+10 0 0 0 300 200 200 2 100 100 0 90 90 90 0 0 2 4 90 90 
+90 0 0 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 278 0 100	mob#, tmp_num, max_n_game
+0 -1  -:| bitfield |:-
+1 -1  -:| bitfield |:-
+0	int1, above bitfield started spec_data
+ 100 50 5 23	shop_data shorts
+64 62 61 59 58 54 2 1 0 -1  -:| bitfield |:-
+91 11 4 79 -1	perm_inv
+	end_of_crit
+
+400	Start of Mob
+kaela ~	names
+Kaela
+~
+Kaela looks up from here boquet as you enter.
+~
+	Kaela is a middle aged woman with dark hair and an olive complextion.
+She is strangely beautiful, but every now and then an aching sadness seems to
+cloud her face.  An old scar mars an otherwise perfect cheek, but even the
+disfigurement tends to lend a sort of power to her beauty.  She grew up in the
+streets of Dar Thane, far to the east, but few have had the honor of her
+story.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+5400 1400 0 	long_data
+0 14 15 14 15 15 14 4 4 45 1 0 0 2 0 245 180 100 999 
+14 0 60 0 245 180 100 2 80 100 0 80 80 70 0 0 4 5 100 100 
+100 0 0 0 	shrt_cur_stats
+1024 1024 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 400 0 1	mob#, tmp_num, max_n_game
+-1  -:| bitfield |:-
+	end_of_crit
+
+401	Start of Mob
+Gimbal ~	names
+Gimbal  
+~
+Gimbal stands here sizing you up.
+~
+	Gimbal is a large, and quite smelly man.  He is the town lawyer, and
+also the bail bondsman and the local bounty hunter.  It is rumored that he 
+likes this last profession the best!  He looks you over and seems to relax
+visibly.
+
+~
+18 12 11 10 9 8 7 6 -1  -:| bitfield |:-
+855 650000 0 	long_data
+0 18 10 12 10 10 15 8 8 20 2 0 1 1 0 435 100 100 0 
+18 0 0 0 435 100 100 2 80 100 0 50 60 70 0 0 6 7 125 80 
+80 0 0 0 	shrt_cur_stats
+1024 1028 0 	cur_stats
+-1	eq: num, posn
+-1	affected_by
+-1	inv
+ 401 0 1	mob#, tmp_num, max_n_game
+1 -1  -:| bitfield |:-
+	end_of_crit
+
+
+-1 END OF MOB FILE

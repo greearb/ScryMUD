@@ -1,0 +1,2093 @@
+1		Room Number
+Temple_Garland ~	names
+The Temple of Garland.
+~
+	You find yourself inside a huge, circular room.  Great columns of 
+white granite support the vaulted ceiling.  An altar carved from a greenish
+stone stands in the middle of the room all covered with small boquets of
+dried flowers.  A set of oaken doors leads west to what seems to be the
+fellowship hall.  Large arches lead out of the temple to the north and
+south.
+
+~
+23 21 10 -1  -:| bitfield |:-
+1024 1 1 1 	cur_stats
+-1	affected_by
+145 31 32 -1	inv
+1 10 22 0
+-1	door Affected_Bye
+1 3 22 0
+-1	door Affected_Bye
+1 4 22 0
+-1	door Affected_Bye
+1 2 2 0
+-1	door Affected_Bye
+1 1 95 0
+-1	door Affected_Bye
+-1	door#, dest
+2 -1	mobs
+End of Room
+2		Room Number
+Temple_Hall_1 ~	names
+The fellowship hall.
+~
+  You find yourself in a large room.  The decor is not as nice as the
+main temple, but the atmosphere is more relaxed.  Wooden tables and benches
+fill the area and a large stone fireplace is built in to the south wall.  
+There are two exits to the north and there is a fine wooden door to the west.
+To the east you can see main congregation area of the temple.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 2 2 	cur_stats
+-1	affected_by
+-1	inv
+1 11 11 0
+-1	door Affected_Bye
+1 1 1 0
+-1	door Affected_Bye
+1 3 7 0
+-1	door Affected_Bye
+1 7 12 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+3		Room Number
+Plaza_North ~	names
+The northern plaza.
+~
+Broad stone walkways and a neatly trimmed lawn make this a nice place
+to hang out.  A road begins to the north and the center of the plaza is
+directly to the south.  If you're feeling pious, you can go up the marble
+steps to the Temple.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 3 3 	cur_stats
+-1	affected_by
+-1	inv
+1 1 20 0
+-1	door Affected_Bye
+1 3 21 0
+-1	door Affected_Bye
+1 4 22 0
+-1	door Affected_Bye
+1 5 19 0
+-1	door Affected_Bye
+1 8 15 0
+-1	door Affected_Bye
+1 9 1 0
+-1	door Affected_Bye
+1 2 14 0
+-1	door Affected_Bye
+-1	door#, dest
+4 -1	mobs
+End of Room
+4		Room Number
+Northern_Road_2 ~	names
+Northern Lily Lane.
+~
+   You find yourself on Lily Lane just west of Kaela's flower shop.  The
+humid air inside it has fogged over the windows in places, but from the
+potted plants outside you can tell she knows her way with plants.  The road
+leads south towards the center of town, and north towards the gates.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 4 4 	cur_stats
+-1	affected_by
+-1	inv
+1 1 47 0
+-1	door Affected_Bye
+1 3 5 0
+-1	door Affected_Bye
+1 4 21 0
+-1	door Affected_Bye
+-1	door#, dest
+3 -1	mobs
+End of Room
+5		Room Number
+Lily_Lane_North ~	names
+Northern Lily Lane.
+~
+	Lily Lane continues north towards the gates, and south towards 
+the center of Garland.  Looking to the south you can see a large, bright
+collection of potted plants on your left.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 5 5 	cur_stats
+-1	affected_by
+-1	inv
+1 3 23 0
+-1	door Affected_Bye
+1 4 4 0
+-1	door Affected_Bye
+-1	door#, dest
+204 -1	mobs
+End of Room
+6		Room Number
+Newbie_Room ~	names
+The Newbie Room.
+~
+	WELCOME TO GARLAND!!! 
+This room is dedicated to the comfort of Newbies.  There should be lots
+of help booklets lying around the room, but in fact there is only one.  This
+is pre-beta still so things are not as complete as one might wish.  Read
+the manual, and check out help, and the web page... If you have any 
+questions you can't find an answer two, send me mail (greear@cyberhighway.net)
+or ask someone online if there is anyone.
+Check out our web page at:  
+www.primenet.com/~greear/ScryMUD/scry.html
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 6 6 	cur_stats
+-1	affected_by
+31 31 31 -1	inv
+1 1 8 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+7		Room Number
+Donation_Room_Garland ~	names
+The Garland donation room.
+~
+     This is a place for the richer to help those in need.  You are
+welcome to drop any of your excess equipment, and get any you need, but
+DO NOT sell items you find here.  Its just plain Immoral.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 7 7 	cur_stats
+-1	affected_by
+358 4 -1	inv
+1 4 2 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+8		Room Number
+Upstairs ~	names
+The upstairs hall.
+~
+    You find yourself in a hallway with oak floors.  There are exits
+in all of the cardinal directions, or you can go down the stairs towards
+the main hall of the temple.  To the west you hear people bumping into
+walls, and it sounds as if someone just cut themselves with their knife!!
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 8 8 	cur_stats
+-1	affected_by
+-1	inv
+1 10 12 0
+-1	door Affected_Bye
+1 1 10 0
+-1	door Affected_Bye
+1 3 9 0
+-1	door Affected_Bye
+1 4 13 0
+-1	door Affected_Bye
+1 2 6 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+9		Room Number
+Adventurers_meeting_room ~	names
+The Adventurers meeting room.
+~
+    This room is a quiet place where folks gather to plan their epic
+journeys.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 9 9 	cur_stats
+-1	affected_by
+-1	inv
+1 4 8 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+10		Room Number
+Library_Garland ~	names
+The library.
+~
+     This is a quiet room filled with books of all kinds.  Several pamphlets
+are strewn about on the tables.  They might just be useful!!
+~
+23 21 5 -1  -:| bitfield |:-
+1024 1 10 10 	cur_stats
+-1	affected_by
+-1	inv
+1 2 8 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+11		Room Number
+Priest_Quarters ~	names
+The private study of the High Priest.
+~
+     You find yourself in the quarters of the High Priest.  The book cases
+that cover every wall are filled with a huge assortment of books.  Light 
+comes from a crystal suspended from the ceiling, well out of your reach.
+There is a large oak desk in the center of the room.  It is quite neat
+with only a pen and some blank paper on it.
+~
+23 21 5 -1  -:| bitfield |:-
+1024 1 11 11 	cur_stats
+-1	affected_by
+-1	inv
+1 11 -2 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+12		Room Number
+Stairs_Temple ~	names
+In the stairwell.
+~
+     This is the stairwell that leads up to the second floor.  You can
+also exit through the door to the south into the fellowship hall.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 12 12 	cur_stats
+-1	affected_by
+-1	inv
+1 4 2 0
+-1	door Affected_Bye
+1 5 2 0
+-1	door Affected_Bye
+1 9 8 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+13		Room Number
+News_Room ~	names
+The reading room.
+~
+    This is a quiet place where you can catch up on the news.  A large
+bulletin board is tacked to the wall and covered with articles people have
+written.
+
+~
+23 21 5 -1  -:| bitfield |:-
+1024 1 13 13 	cur_stats
+-1	affected_by
+-1	inv
+1 3 8 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+14		Room Number
+NW_Plaza ~	names
+The northwestern plaza.
+~
+     The plaza stretches out to the south and east and you can also go
+up the broad stairs to the temple.  Rose street can be seen to the north
+east.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 14 14 	cur_stats
+-1	affected_by
+-1	inv
+1 1 3 0
+-1	door Affected_Bye
+1 7 24 0
+-1	door Affected_Bye
+1 4 15 0
+-1	door Affected_Bye
+1 5 22 0
+-1	door Affected_Bye
+-1	door#, dest
+3 -1	mobs
+End of Room
+15		Room Number
+Western_Plaza ~	names
+The western Plaza.
+~
+     This is the western part of the Plaza.  It has been designed for both
+beauty and utility.  The paths are wide and paved with stone and there are
+small plots of flowering hedges and neatly trimmed grass around them.  Wide
+steps lead up to the temple and the central plaza is just to the east.  
+Daisy Lane leads off to the east towards some shops.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 15 15 	cur_stats
+-1	affected_by
+-1	inv
+1 1 22 0
+-1	door Affected_Bye
+1 3 14 0
+-1	door Affected_Bye
+1 6 3 0
+-1	door Affected_Bye
+1 4 16 0
+-1	door Affected_Bye
+1 5 17 0
+-1	door Affected_Bye
+1 2 25 0
+-1	door Affected_Bye
+-1	door#, dest
+4 204 3 -1	mobs
+End of Room
+16		Room Number
+SW_Plaza ~	names
+The southwest plaza.
+~
+     The plaza spreads out to the north and east and Violet Drive begins
+to the south west.  You can also go up the steps to the temple.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 16 16 	cur_stats
+-1	affected_by
+-1	inv
+1 1 17 0
+-1	door Affected_Bye
+1 3 15 0
+-1	door Affected_Bye
+1 6 22 0
+-1	door Affected_Bye
+1 8 26 0
+-1	door Affected_Bye
+-1	door#, dest
+3 -1	mobs
+End of Room
+17		Room Number
+South_Plaza ~	names
+The southern plaza.
+~
+      You find yourself at the south end of the central plaza in Garland.
+To the north you see the central plaza and to the south Lily Lane begins.
+You can also go up the wide stairs to the temple.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 17 17 	cur_stats
+-1	affected_by
+-1	inv
+1 1 18 0
+-1	door Affected_Bye
+1 3 22 0
+-1	door Affected_Bye
+1 6 19 0
+-1	door Affected_Bye
+1 7 15 0
+-1	door Affected_Bye
+1 4 27 0
+-1	door Affected_Bye
+1 9 1 0
+-1	door Affected_Bye
+1 2 16 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+18		Room Number
+SE_Plaza ~	names
+The southeast plaza.
+~
+     This is the south eastern part of the large central plaza of Garland.
+The plaza continues to the north and west, or you can go up the steps
+to the temple.  To the southeast is Rose Drive.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 18 18 	cur_stats
+-1	affected_by
+-1	inv
+1 3 19 0
+-1	door Affected_Bye
+1 7 22 0
+-1	door Affected_Bye
+1 5 28 0
+-1	door Affected_Bye
+1 9 1 0
+-1	door Affected_Bye
+1 2 17 0
+-1	door Affected_Bye
+-1	door#, dest
+3 -1	mobs
+End of Room
+19		Room Number
+Eastern_Plaza ~	names
+The eastern plaza.
+~
+    You are in the renowned central plaza of Garland.  It spreads out to the
+east and Daisy Lane begins to the east.  You can also go up the marble
+stairs to the temple.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 19 19 	cur_stats
+-1	affected_by
+-1	inv
+1 1 29 0
+-1	door Affected_Bye
+1 3 20 0
+-1	door Affected_Bye
+1 7 3 0
+-1	door Affected_Bye
+1 8 17 0
+-1	door Affected_Bye
+1 9 1 0
+-1	door Affected_Bye
+1 2 22 0
+-1	door Affected_Bye
+-1	door#, dest
+204 3 -1	mobs
+End of Room
+20		Room Number
+NE_Plaza ~	names
+The northeast plaza.
+~
+     The central plaza of Garland stretches out to the south and east or
+you can go up the stairs to the temple.  Violate Drive leads off to the
+northeast.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 20 20 	cur_stats
+-1	affected_by
+-1	inv
+1 6 30 0
+-1	door Affected_Bye
+1 4 19 0
+-1	door Affected_Bye
+1 8 22 0
+-1	door Affected_Bye
+1 9 1 0
+-1	door Affected_Bye
+1 2 3 0
+-1	door Affected_Bye
+-1	door#, dest
+3 -1	mobs
+End of Room
+21		Room Number
+Lily_Lane ~	names
+Northern Lily Lane.
+~
+    You are on a well paved road leading north out of town and south
+towards the plaza.  THe wonderful scent of freshly baked bread comes from
+the west, and some happy customers are sitting to the east in a small
+courtyard.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 21 21 	cur_stats
+-1	affected_by
+-1	inv
+1 1 46 1
+-1	door Affected_Bye
+1 3 4 0
+-1	door Affected_Bye
+1 4 3 0
+-1	door Affected_Bye
+1 2 31 0
+-1	door Affected_Bye
+-1	door#, dest
+3 3 -1	mobs
+End of Room
+22		Room Number
+Central_Plaza ~	names
+The central plaza of Garland.
+~
+     Due to the fact that this city was carefully designed around the
+structure of a flower by an ancient architect, you now find yourself in
+the exact center of Garland.  A beautiful temple with broad stairs leading
+to it from every direction stands here.  All the paths lead around it
+so there is a little confusion, but everyone around here seems to take
+life pretty slow so there are few accidents.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 22 22 	cur_stats
+-1	affected_by
+10 -1	inv
+1 1 19 0
+-1	door Affected_Bye
+1 3 3 0
+-1	door Affected_Bye
+1 6 20 0
+-1	door Affected_Bye
+1 7 14 0
+-1	door Affected_Bye
+1 4 17 0
+-1	door Affected_Bye
+1 5 18 0
+-1	door Affected_Bye
+1 8 16 0
+-1	door Affected_Bye
+1 9 1 0
+-1	door Affected_Bye
+1 2 15 0
+-1	door Affected_Bye
+
+-1	door#, dest
+3 3 -1	mobs
+End of Room
+23		Room Number
+Lily_Lane ~	names
+Just south of the Gates.
+~
+  This is the northern end of Lily Lane.  The gates are in just to the north
+and the road continues to the south towards the center of town.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 23 23 	cur_stats
+-1	affected_by
+-1	inv
+1 3 44 0
+-1	door Affected_Bye
+1 4 5 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+24		Room Number
+NW_Rose_Lane ~	names
+Northwest Rose Lane.
+~
+     You are at the beginning of Rose Lane, which continues to the north
+west.  The plaza lies to the south east.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 24 24 	cur_stats
+-1	affected_by
+-1	inv
+1 7 33 0
+-1	door Affected_Bye
+1 5 14 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+25		Room Number
+W_Daisy_Lane ~	names
+Western Daisy Lane.
+~
+   This is the beginning of the broad street known as Daisy Lane.  It is
+lined with all sorts of shops and filled with people going this way and that.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 25 25 	cur_stats
+-1	affected_by
+-1	inv
+1 1 15 0
+-1	door Affected_Bye
+1 3 57 0
+-1	door Affected_Bye
+1 4 58 0
+-1	door Affected_Bye
+1 2 36 0
+-1	door Affected_Bye
+-1	door#, dest
+204 4 3 3 -1	mobs
+End of Room
+26		Room Number
+SW_Violet_Drive ~	names
+Southwest Violet Drive.
+~
+     This road leads to the southwest towards some shops and northeast
+towards the central plaza.  Someone has placed a container of potted
+violets on their open window, just makes you feel good about life!
+~
+23 21 -1  -:| bitfield |:-
+1024 1 26 26 	cur_stats
+-1	affected_by
+-1	inv
+1 6 16 0
+-1	door Affected_Bye
+1 8 72 0
+-1	door Affected_Bye
+-1	door#, dest
+3 -1	mobs
+End of Room
+27		Room Number
+S_Lily_Lane ~	names
+Southern Lily Lane.
+~
+     This cheerful lane continues to the south and north.  A few shops
+can be seen but it is not as comercialized as Daisy Drive.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 27 27 	cur_stats
+-1	affected_by
+-1	inv
+1 3 17 0
+-1	door Affected_Bye
+1 4 70 0
+-1	door Affected_Bye
+-1	door#, dest
+3 -1	mobs
+End of Room
+28		Room Number
+SW_Rose_Lane ~	names
+Southeastern Rose Lane.
+~
+     This is the main route to Jakarta and is thus heavily traveled.  The
+central plaza can be seen to the northwest.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 28 28 	cur_stats
+-1	affected_by
+-1	inv
+1 7 18 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+29		Room Number
+E_Daisy_Drive ~	names
+Eastern Daisy Drive.
+~
+    This is one of the main roads of Garland.  The braver of the travelers
+often use this route to travel to Jakarta and beyond.  This is the shortest
+way, but the appearance of dragons and cut-throats of all kinds has recently
+made many people go back to the longer northern route that runs by the elven
+woods.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 29 29 	cur_stats
+-1	affected_by
+-1	inv
+1 1 43 0
+-1	door Affected_Bye
+1 4 54 0
+-1	door Affected_Bye
+1 2 19 0
+-1	door Affected_Bye
+-1	door#, dest
+10 -1	mobs
+End of Room
+30		Room Number
+NW_Violet_Drive ~	names
+Northeast Violet Drive.
+~
+This lane runs in a diagonal direction to the northeast towards a few of
+the guilds, and joins the northeast portion of the central plaza.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 30 30 	cur_stats
+-1	affected_by
+-1	inv
+1 6 53 0
+-1	door Affected_Bye
+1 8 20 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+31		Room Number
+bakery ~	names
+The bakery
+~
+	You find yourself in the most popular bakery in Garland.  The air is
+filled with the smell of cinamon, cloves, apples, and the indescribably good
+smell of freshly baked bread.  Dorian, the baker, moves briskly about from the
+huge stone oven to the counter and back again as duty calls.  There is a basket
+of samples on the counter, but the local children do a good job of keeping
+it empty!
+
+~
+23 21 9 -1  -:| bitfield |:-
+1024 1 31 31 	cur_stats
+-1	affected_by
+-1	inv
+1 1 21 0
+-1	door Affected_Bye
+-1	door#, dest
+11 -1	mobs
+End of Room
+32		Room Number
+garland_bank ~	names
+The Bank of Garland
+~
+	This is the main commercial center of Garland and the surrounding
+area.  Two, very big, guards, one appearing to be of Ogrue descent stand
+watch for the thieves that have lately started plagueing this once
+peaceful city.  The cashiers at their desks are as friendly as ever, and
+one young clerk blushes and looks away as you notice them staring at you.
+Hmmm, maybe you should visit here more often!
+
+~
+27 25 23 21 -1  -:| bitfield |:-
+1024 1 32 32 	cur_stats
+-1	affected_by
+-1	inv
+1 4 43 0
+-1	door Affected_Bye
+-1	door#, dest
+264 265 -1	mobs
+End of Room
+33		Room Number
+NW_Rose_Lane ~	names
+Northwest Rose Lane.
+~
+     You are at the beginning of Rose Lane, which continues to the north
+west.  The plaza lies to the south east.
+~
+23 21 -1  -:| bitfield |:-
+1024 1 33 33 	cur_stats
+-1	affected_by
+-1	inv
+1 7 34 0
+-1	door Affected_Bye
+1 5 24 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+34		Room Number
+NW_Rose_Lane ~	names
+Northwest Rose Lane.
+~
+	You are at the edge of town right outside the Grapes of Wrath tavern.
+The cheerful noise draws you toward the entrance to the north east, but you
+know you should probably continue back south east, towards the center of
+Garland.  Perhaps just one drink wouldn't hurt...
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 34 34 	cur_stats
+-1	affected_by
+-1	inv
+1 6 35 0
+-1	door Affected_Bye
+1 7 86 0
+-1	door Affected_Bye
+1 5 33 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+35		Room Number
+tavern ~	names
+The Grapes of Wrath Tavern
+~
+This fine establishment serves great beer and every now and then
+Camlor, the sturdy owner, cooks up a decent meal.  Unfortunately, it
+seems you have come on one of those days in which the food isn't so good!
+    
+
+~
+23 21 0 -1  -:| bitfield |:-
+1024 1 35 35 	cur_stats
+-1	affected_by
+-1	inv
+1 8 34 0
+-1	door Affected_Bye
+-1	door#, dest
+1 -1	mobs
+End of Room
+36		Room Number
+W_Daisy_Lane ~	names
+Western Daisy Lane.
+~
+You find yourself just west of the center of town on Daisy Lane.  The road
+continues to the west towards a massive gate which you can see even from this
+distance.  To the north is a strange looking building.  The huge pillars
+made of concrete are scarred horribly with large chunks of them missing
+in places.  In a few places rusted metal can be seen exposed where the 
+concrete has been chipped away.  You can only marvel at the ancients, who
+could afford the steel, and then build the structure in front of you..
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 36 36 	cur_stats
+-1	affected_by
+-1	inv
+1 1 25 0
+-1	door Affected_Bye
+1 3 37 0
+-1	door Affected_Bye
+1 2 76 0
+-1	door Affected_Bye
+-1	door#, dest
+3 -1	mobs
+End of Room
+37		Room Number
+ruins_garland ~	names
+Entrance to the Tubes
+~
+  This building has obviously been here a long time.  The walls are over
+four feet thick, poured concrete.  It has undergone some tremendous stress, as
+one of the supporting pillars has a chunk taken out bigger than your head,
+revealing the rusting iron underneath.  The roof was a later addition
+of more contemporary materials.  A strange set of iron steps leads down
+into a cavernous room.  
+
+~
+25 23 21 0 -1  -:| bitfield |:-
+1024 1 37 37 	cur_stats
+-1	affected_by
+-1	inv
+1 10 38 0
+-1	door Affected_Bye
+1 4 36 0
+-1	door Affected_Bye
+-1	door#, dest
+204 -1	mobs
+End of Room
+38		Room Number
+garland_tube_stop ~	names
+Garland station
+~
+    This room, much like the room above it, is constructed mostly of concrete,
+much more than even the largest guild could provide in these times.  Some of
+the supports have scars which could be caused by things you can only imagine.
+There is a strange silvery wall with automatic doors to the east.  One local
+entrepreneur has obtained the rights to make you pay to get on the tube-trains
+that arrive periodically.  There is a map on the wall that tries to show
+you the destinations available, and a small sign posted by the ticket machine.
+
+~
+23 21 0 -1  -:| bitfield |:-
+1024 1 38 38 	cur_stats
+-1	affected_by
+-1	inv
+1 12 39 0
+-1	door Affected_Bye
+1 4 40 0
+-1	door Affected_Bye
+1 9 37 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+16777255		Vehicle number
+train ~	names
+On the Silver Train.
+~
+   This is a marvel of a previous era.  The ancients, for all their flaws
+and violence, and perhaps because of it, were excellent engineers.  The tube
+train networks are a prime example of this fact.  When the ancients destroyed
+themselves with their own fire, the tube trains were some of the few artifacts
+that remained intact.  Many tubes have collapsed, but the trains seem smart
+enough to route around these obstacles when they can.  The tech has
+outlasted their extinct creators, a sad but powerful testament to the
+power of man.  
+
+~
+23 21 0 -1  -:| bitfield |:-
+1024 1 39 0 	cur_stats
+-1	affected_by
+-1	inv
+1 12 -38 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+7 2 0 -1  -:| bitfield |:-
+
+1  Beginning of PathCell
+At Garland Central.
+
+~
+1 1 south is_dest, i_th, dir, End of PathCell..
+1  Beginning of PathCell
+Within the dark tube.
+
+~
+0 1 south is_dest, i_th, dir, End of PathCell..
+1  Beginning of PathCell
+Within the dark tunnel.
+
+~
+0 1 south is_dest, i_th, dir, End of PathCell..
+1  Beginning of PathCell
+At the southern station.
+
+~
+1 1 north is_dest, i_th, dir, End of PathCell..
+1  Beginning of PathCell
+Gliding through the dark tunnel.
+
+~
+0 1 north is_dest, i_th, dir, End of PathCell..
+1  Beginning of PathCell
+Gliding through the dark tunnel.
+
+~
+0 1 north is_dest, i_th, dir, End of PathCell..
+-1 End of PathCells..
+8 38 300 300 8  End of Vehicle
+40		Room Number
+tube_tunnel ~	names
+The tube
+~
+     You are moving quietly and smoothly down the tube towards your
+destination.  You are near Garland Station.
+
+~
+23 21 14 13 10 -1  -:| bitfield |:-
+1025 1 40 40 	cur_stats
+-1	affected_by
+-1	inv
+1 3 38 0
+-1	door Affected_Bye
+1 4 41 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+41		Room Number
+tube_tunnel ~	names
+The tube
+~
+The tube is almost totally dark.  It's smooth to the touch and is
+covered with very fine dust.
+
+~
+23 21 14 13 10 -1  -:| bitfield |:-
+1025 1 41 41 	cur_stats
+-1	affected_by
+-1	inv
+1 3 40 0
+-1	door Affected_Bye
+1 4 42 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+42		Room Number
+tube_tunnel ~	names
+The tube
+~
+You find yourself at the southern Station in Garland.
+
+~
+23 21 14 13 10 -1  -:| bitfield |:-
+1025 1 42 42 	cur_stats
+-1	affected_by
+-1	inv
+1 3 41 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+43		Room Number
+east_daisy_lane ~	names
+Eastern Daisy Lane
+~
+	The lane continues to the east toward Garland's eastern gates, and
+west toward the central plaza.  The Bank of Garland is to the north and
+Gimbal, the local lawyer, has his office to the south.
+
+~
+23 21 4 0 -1  -:| bitfield |:-
+1024 1 43 43 	cur_stats
+-1	affected_by
+-1	inv
+1 1 50 0
+-1	door Affected_Bye
+1 3 32 0
+-1	door Affected_Bye
+1 4 48 0
+-1	door Affected_Bye
+1 2 29 0
+-1	door Affected_Bye
+-1	door#, dest
+204 3 -1	mobs
+End of Room
+44		Room Number
+north_gate ~	names
+The northern gates of Garland
+~
+	These gates are quite low, and in fact they are often left open
+for convenience.  There are a few guards around, but they mostly just
+gossip with the townspeople who come and go.  The road continues to the
+north towards Glenwood Forrest.  The road is quite wide and well kept
+because it is the main trade route to the northeast.
+
+~
+23 21 0 -1  -:| bitfield |:-
+1024 1 44 44 	cur_stats
+-1	affected_by
+-1	inv
+1 3 45 0
+-1	door Affected_Bye
+1 4 23 0
+-1	door Affected_Bye
+-1	door#, dest
+204 204 204 216 204 -1	mobs
+End of Room
+45		Room Number
+traderoad ~	names
+Outside the northern gates
+~
+	You are just outside the thriving city of Garland.  The northern
+gates are to your south and the road continues to the north towards 
+Glenwood.
+
+~
+23 21 0 -1  -:| bitfield |:-
+1024 1 45 45 	cur_stats
+-1	affected_by
+-1	inv
+1 3 352 0
+-1	door Affected_Bye
+1 4 44 0
+-1	door Affected_Bye
+-1	door#, dest
+204 204 -1	mobs
+End of Room
+46		Room Number
+pick_nick_area ~	names
+Dorian's picknick tables.
+~
+	There are several picknick tables aranged on a brick patio here.  To
+the south there is a small hedge wall seperating the square from the dining
+area.  The back of a building blocks the east and Kaela's Flowers is to the
+north.  The patio is made of red bricks placed closely together and grouted
+with a fine with sand.  Dorian is sure to pull any weed that dare intrude
+and keeps the tables and benches in good repair.  This is a popular place
+for the young people to spend their evenings when the weather is pleasant.
+
+~
+25 23 21 4 -1  -:| bitfield |:-
+1024 1 46 46 	cur_stats
+-1	affected_by
+-1	inv
+1 27 47 0
+-1	door Affected_Bye
+1 2 21 0
+-1	door Affected_Bye
+-1	door#, dest
+164 164 164 -1	mobs
+End of Room
+47		Room Number
+flower_shop ~	names
+Kaela
+~
+	Kaela, despite her childhood has created a small piece of heaven here.
+Beautiful boquets in baskets bequeath an air of eternal life, even in the
+darkest days of winter.  The building is both a shop and a greenhouse.  The
+moist air is filled with the fragrance of exotic flowers from the elven woods
+to the north, and the indestructable cacti of the southern deserts.  A pair
+of colorful birds, a gift from an Anitre nobleman, flit around making an
+astonishing amount of noise.  Kaela smiles in greeting and offers her help
+in finding the perfect flower for the occasion.
+
+~
+25 23 21 4 -1  -:| bitfield |:-
+1024 1 47 47 	cur_stats
+-1	affected_by
+-1	inv
+1 27 -46 0
+-1	door Affected_Bye
+1 2 4 0
+-1	door Affected_Bye
+-1	door#, dest
+400 -1	mobs
+End of Room
+48		Room Number
+gimbal_shop ~	names
+Gimbal's Justice
+~
+	This is the dimly lit office of Gimbal.  The place is not exactly
+clean, and while you might expect a few leather bound books of law, or at
+least some handsomely printed scrolls, there is nothing scholarly about this
+place.  There is a nice set of leg irons in the corner, and a broad sword
+worthy of a large man!  That man would have to be Gimbal, who has just
+walked out of his back office.  
+
+~
+27 25 23 21 -1  -:| bitfield |:-
+1024 1 48 48 	cur_stats
+-1	affected_by
+-1	inv
+1 29 49 0
+-1	door Affected_Bye
+1 3 43 0
+-1	door Affected_Bye
+-1	door#, dest
+401 -1	mobs
+End of Room
+49		Room Number
+gimbals_office ~	names
+Gimbal's office
+~
+	This room is cluttered beyond belief.  Three of the corners are piled
+high with junk, and a third holds a low mattress, which may have once been
+clean.  It becomes clear that Gimbal actually lives in this hole, and you
+no longer wonder why he keeps the door closed!
+
+~
+27 25 23 21 -1  -:| bitfield |:-
+1024 2 49 49 	cur_stats
+-1	affected_by
+-1	inv
+1 29 -48 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+50		Room Number
+east_daisy ~	names
+Eastern Daisy Lane
+~
+The street leads east towards the gates, and west towards the town proper.
+The sounds of steel on steel resound from the north, which proves to be
+a blacksmith's store.  The armory is to the south.
+
+~
+23 21 4 -1  -:| bitfield |:-
+1024 1 50 50 	cur_stats
+-1	affected_by
+-1	inv
+1 1 51 0
+-1	door Affected_Bye
+1 3 55 1
+-1	door Affected_Bye
+1 4 56 0
+-1	door Affected_Bye
+1 2 43 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+51		Room Number
+east_gates ~	names
+Eastern Gates of Garland
+~
+These are the eastern gates of Garland.  A great expanse of rolling plains
+and small forests stretches out to the east as far as you can see.  A decent
+sized road winds along the outside of the city walls to the south, leading
+out across the plains.
+
+~
+23 21 4 0 -1  -:| bitfield |:-
+1024 1 51 51 	cur_stats
+-1	affected_by
+-1	inv
+1 31 52 0
+-1	door Affected_Bye
+1 2 50 0
+-1	door Affected_Bye
+-1	door#, dest
+3 3 -1	mobs
+End of Room
+52		Room Number
+outside_gates ~	names
+Before the Eastern Gates
+~
+The beautiful city of Garland lies to the west, and a road continues
+east across a small field.  To the south another road snakes around the
+outside of the crumbling city walls.
+
+~
+23 21 4 0 -1  -:| bitfield |:-
+1024 1 52 52 	cur_stats
+-1	affected_by
+-1	inv
+1 1 4197 1
+-1	door Affected_Bye
+1 31 -51 0
+-1	door Affected_Bye
+1 4 2085 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+53		Room Number
+NW_Violet_Drive ~	names
+Northeast Violet Drive.
+~
+This lane runs in a diagonal direction to the northeast towards a few of
+the guilds, and southwest back towards the center of town.  Farther to the
+north east, a bunch of young adults are standing around talking and laughing.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 53 53 	cur_stats
+-1	affected_by
+-1	inv
+1 6 59 0
+-1	door Affected_Bye
+1 8 30 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+54		Room Number
+garlandstore ~	names
+General Store
+~
+Here is a quaint store run by one of Garlands friendliest folk. The shop is
+loaded, shelf to shelf, of useful items that many take with them on their
+journey to unknown lands. Many people rush in to find the best prices as you
+gaze around.  The shop keeper is always willing to buy from you, if you have
+something of interest. The exit is to the north.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 54 54 	cur_stats
+-1	affected_by
+-1	inv
+1 3 29 1
+-1	door Affected_Bye
+-1	door#, dest
+278 -1	mobs
+End of Room
+55		Room Number
+garlandweaponsmith ~	names
+Weaponsmith
+~
+With a 'clink' and a 'clank' you see a weaponsmith over in a corner shaping a
+sword with his hammer. With a rolling, joyfully laugh, he greets you and
+persuades you to have a look around. There are weapons of all sorts here, from
+swords to whips, from hammers to axes. They all very beautiful for the
+weaponsmith takes great care in his work.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 55 55 	cur_stats
+-1	affected_by
+-1	inv
+1 4 50 1
+-1	door Affected_Bye
+-1	door#, dest
+205 -1	mobs
+End of Room
+56		Room Number
+garlandarmory ~	names
+Armory
+~
+In this dark and mysterious shop, armor of all types can be found. Some hang
+from the walls to the ceiling with chains. At the front desk, a shadowy figure
+grunts at your entrance and shows you some fine pieces of armor for sell.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 56 56 	cur_stats
+-1	affected_by
+-1	inv
+1 3 50 1
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+57		Room Number
+garlandmagic ~	names
+Magic Shop
+~
+A kind, and gentle wizard greets you at the door. He is not ugly or wrinkled,
+but very handsome and intelligent for good magic is his way. On the side
+counter are scrolls of incantations used for a variety of spells. Magic potions
+bubble in flasks as a homely aroma fills the room. This small store enchants
+you and you feel compelled to stay a bit longer.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 57 57 	cur_stats
+-1	affected_by
+-1	inv
+1 4 25 1
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+58		Room Number
+garlandjewelers ~	names
+Jewelers
+~
+Jewels and diamonds lighten the store with a glorious light. Rubies and
+emeralds and sapphires and stones fill the room in baskets and shelves. A
+small, homely lady sings a little ditty to herself as she polishes her
+necklaces of gold. Beautiful and enchanting rings twinkle in your eye as golden
+and silver bracelets compel you to stay and look.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 58 58 	cur_stats
+-1	affected_by
+-1	inv
+1 3 25 1
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+59		Room Number
+NW_Violet_Drive ~	names
+Northeast Violet Drive.
+~
+You are on Violet drive in the north eastern quadrant of Garland.  The mage 
+guild is to the north and the clerics have set up an academy to the southeast.
+The two schools of thought share an interest in magical powers, and a powerful
+rivalry. Often the elders of both schools sit outside their academies and
+discuss the shortcommings of their neighbors with zest!
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 59 59 	cur_stats
+-1	affected_by
+-1	inv
+1 3 60 0
+-1	door Affected_Bye
+1 6 90 0
+-1	door Affected_Bye
+1 5 61 0
+-1	door Affected_Bye
+1 8 53 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+60		Room Number
+NW_Violet_Drive ~	names
+Before the Mage Academy.
+~
+This is the enterance to the Mage academy.  Magic has lately become a 
+respected art and there are many young people hanging around.  In fact, the
+mage students' parties have actually started rivaling the parties held over
+in the trade school in the northwestern quarter, no doubt helped by the fact
+that the cleric academy to the south has recently been very successful in
+recruiting some of the brighter young ladies.  The two schools have some
+idealogical differences, but the students seem to be able to put those aside,
+and it must be said that the mages do put on a pretty good show at times!
+
+~
+33 23 21 -1  -:| bitfield |:-
+1024 1 60 60 	cur_stats
+-1	affected_by
+143 -1	inv
+1 3 62 0
+-1	door Affected_Bye
+1 4 59 0
+-1	door Affected_Bye
+-1	door#, dest
+16 -1	mobs
+End of Room
+61		Room Number
+NW_Violet_Drive ~	names
+Before the Cleric academy.
+~
+This has a peaceful atmosphere.  The walkway leading to the low stone buildings
+are lined with shrubbery and an occasional bench on which the more serious
+students often have quite animated discussions.  There are three buildings in
+sight, one to the east, southeast, and south.  A small fountain contains
+a teeming variety of life, including some brightly colored fish from foreign
+waters.  
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 61 61 	cur_stats
+-1	affected_by
+-1	inv
+1 1 89 0
+-1	door Affected_Bye
+1 7 59 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+62		Room Number
+NW_Violet_Drive ~	names
+In the main hall.
+~
+This is a large room with a high, arched ceiling.  The general impression is
+that it is quite dark.  The walls and beams are all made of a dark, polished
+wood and the floor is mostly of large stone slabs set in mortar.  There is a
+large fireplace that is putting out much more light and heat than you would
+expect from some mundane fire, but then you realize where you are at!  A
+large staircase leads up to a second floor on the west side of the room and
+a door to the east leads out into the courtyard. 
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 62 62 	cur_stats
+-1	affected_by
+-1	inv
+1 1 64 0
+-1	door Affected_Bye
+1 4 60 0
+-1	door Affected_Bye
+1 9 63 0
+-1	door Affected_Bye
+-1	door#, dest
+79 81 -1	mobs
+End of Room
+63		Room Number
+NW_Violet_Drive ~	names
+The upstairs hallway.
+~
+This narrow hall leads a short distance to the north and the large staircase
+leads back down to the main fellowship hall.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 63 63 	cur_stats
+-1	affected_by
+-1	inv
+1 10 62 0
+-1	door Affected_Bye
+1 3 65 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+64		Room Number
+NW_Violet_Drive ~	names
+In the courtyard.
+~
+This is where the largest parties are held.  The courtyard has some large,
+stone paved walkways and some benches around the edge.  It is entirely walled
+in so the light and sound is somewhat muffled, although the neighbors still
+complain, and once an elder mage was so upset the cast a spell of silence
+over the area that lasted 2 weeks.  A large stone slab stands in the middle of
+the yard, and on this the more advanced students put on shows and exhibitions.
+
+~
+23 21 4 -1  -:| bitfield |:-
+1024 1 64 64 	cur_stats
+-1	affected_by
+-1	inv
+1 3 68 0
+-1	door Affected_Bye
+1 2 62 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+65		Room Number
+NW_Violet_Drive ~	names
+End of the hall.
+~
+The hallway leads back towards the south from whence you came and two doors
+lead to rooms to the east and west.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 65 65 	cur_stats
+-1	affected_by
+-1	inv
+1 1 66 0
+-1	door Affected_Bye
+1 4 63 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+66		Room Number
+NW_Violet_Drive ~	names
+A larger classroom.
+~
+This is one of the large classrooms on the premises and thankfully, for the
+students at least, it has several windows on the eastern side.  The northern
+wall is taken up by the stone chimney of the fireplace in the hall below and
+keeps this room warm on even the coldest days.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 66 66 	cur_stats
+-1	affected_by
+-1	inv
+1 2 65 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+67		Room Number
+NW_Violet_Drive ~	names
+In a classroom.
+~
+This is a fairly small classroom, and the space isn't helped by the fact that
+the western side of the ceiling slants down almost to the floor due to the
+roof.  Much to your dismay, there are no windows here, but there is some kind
+of glowing bulb attached, or suspended just below, the sloping ceiling that
+gives off quite a bit of light.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 67 67 	cur_stats
+-1	affected_by
+-1	inv
+1 1 65 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+68		Room Number
+NW_Violet_Drive ~	names
+In the courtyard.
+~
+This is the northern part of the courtyard.  This area is mostly grassed and
+a few bushes or shrubs, depending on your view, grow here and there.  A large,
+very sturdy looking building lies directly to the north.
+
+~
+23 21 4 -1  -:| bitfield |:-
+1024 1 68 68 	cur_stats
+-1	affected_by
+-1	inv
+1 3 69 0
+-1	door Affected_Bye
+1 4 64 0
+-1	door Affected_Bye
+1 2 73 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+69		Room Number
+NW_Violet_Drive ~	names
+In the practice barn.
+~
+This is the place the mages actually practice their spells.  The walls are
+made of whole logs, carried from Glenwood forest to the north, and some of
+the more advanced mages have made them as immune to magic as possible.  It
+looks as if they did their job well, for though there are large burn marks
+and bits of melted glass on the floor, the walls standing without hardly
+a scratch.  The one exception is the name K-O-R-G etched deeply into the
+wood.  Korg has since left the academy, but he has made his mark in other
+lands as well..  
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 69 69 	cur_stats
+-1	affected_by
+-1	inv
+1 4 68 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+70		Room Number
+S_Lily_Lane ~	names
+Southern Lily Lane.
+~
+    This cheerful lane continues to the south and north.  Just to the
+south the road gets a little narrower, and to make things worse, there is a
+broken down cart against the righthand wall.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 70 70 	cur_stats
+-1	affected_by
+-1	inv
+1 3 27 0
+-1	door Affected_Bye
+1 4 79 0
+-1	door Affected_Bye
+1 2 80 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+71		Room Number
+SW_Violet_Drive ~	names
+Southwest Violet Drive.
+~
+     This road leads to the southwest towards some shops and northeast
+towards the central plaza.  Someone has placed a container of potted
+violets on their open window, just makes you feel good about life!
+~
+23 21 -1  -:| bitfield |:-
+1024 1 71 71 	cur_stats
+-1	affected_by
+-1	inv
+-1	door#, dest
+3 -1	mobs
+End of Room
+72		Room Number
+SW_Violet_Drive ~	names
+Southwest Violet Drive.
+~
+     This road leads to the southwest towards some shops and northeast
+towards the central plaza.  Someone has placed a container of potted
+violets on their open window, just makes you feel good about life!
+~
+23 21 -1  -:| bitfield |:-
+1024 1 72 72 	cur_stats
+-1	affected_by
+-1	inv
+1 6 26 0
+-1	door Affected_Bye
+-1	door#, dest
+3 160 -1	mobs
+End of Room
+73		Room Number
+mage_academy ~	names
+Grand Mage's Quarters
+~
+These are the quarters of the Grand Mage, the master of the academy.  In the
+two hundred years since it's founding, this room has housed some of the
+brightest minds in this part of the realm.  The walls are panelled with dark
+wood, but the large exposed beams support some unnatural lights that keep 
+the place brightly lit.  Large bookcases fill the wall to your left and a
+large desk is positioned so that Shawna can look out at the yard.  A stout
+door lies to the north.
+
+~
+27 23 21 0 -1  -:| bitfield |:-
+1024 1 73 73 	cur_stats
+-1	affected_by
+-1	inv
+1 47 74 0
+-1	door Affected_Bye
+1 1 68 0
+-1	door Affected_Bye
+-1	door#, dest
+76 -1	mobs
+End of Room
+74		Room Number
+bedroom ~	names
+Bedroom of the Master's Quarters
+~
+These are the private quarters of the Grand Mage Shawna.  She often retreats
+to here for some peace and quiet.  A smaller, and much more cluttered desk
+can be seen across the room to the north by a small window.  A scroll of
+parchment lies on the desk, beside a framed sketch of a striking young man.
+
+~
+27 23 21 -1  -:| bitfield |:-
+1024 1 74 74 	cur_stats
+-1	affected_by
+-1	inv
+1 47 -73 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+75		Room Number
+W_Daisy_Lane ~	names
+Western Daisy Lane.
+~
+You find yourself just west of the center of town on Daisy Lane.  The road
+continues to the west towards a massive gate which you can see even from this
+distance.  To the north is a strange looking building.  The huge pillars
+made of concrete are scarred horribly with large chunks of them missing
+in places.  In a few places rusted metal can be seen exposed where the 
+concrete has been chipped away.  You can only marvel at the ancients, who
+could afford the steel, and then build the structure in front of you..
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 75 75 	cur_stats
+-1	affected_by
+-1	inv
+-1	door#, dest
+3 -1	mobs
+End of Room
+76		Room Number
+W_Daisy_Lane ~	names
+Inside the Western Gates.
+~
+You are just inside the magnificant Western Gates of Garland.  To the north
+is an impressive mound of broken concrete and tortured steel.  The years have
+blunted the edges, and much of the exposed steel has been extracted over the
+aeons, but the heap of strange materials, many of them impossible to cut or
+break, continues to arouse speculation and yearnings for knowledge of the
+past.  Western Daisy lane continues to the east past another ancient structure,
+this one still mostly intact.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 76 76 	cur_stats
+-1	affected_by
+-1	inv
+1 1 36 0
+-1	door Affected_Bye
+1 2 77 0
+-1	door Affected_Bye
+-1	door#, dest
+204 204 3 160 -1	mobs
+End of Room
+77		Room Number
+W_Daisy_Lane ~	names
+At the Western Gates.
+~
+These gates are one of the prides of Garland.  They were constructed several
+years ago as a symbol of the city's prosperity.  The local colleges helped
+with the excavation and erection of the huge pillars of ancient steel and
+concrete.  The pillars' original purpose remains unknown but it could not
+have been nobler than serving as fifty foot sentinals to a town priding
+itself on scholarship and noble deeds.  To the east you catch a glimpse of the
+huge collection of rubble from which the pillars were extracted.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 77 77 	cur_stats
+-1	affected_by
+-1	inv
+1 1 76 0
+-1	door Affected_Bye
+1 2 78 0
+-1	door Affected_Bye
+-1	door#, dest
+204 3 -1	mobs
+End of Room
+78		Room Number
+W_Daisy_Lane ~	names
+West of the Gate.
+~
+The magnificant gates to the east signify the offical start of Garland,
+the City of Light.  Small farm houses dot the surrounding country side giving
+it a peaceful, if somewhat desolate look.  The road continues to the south
+west across the plains.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 78 78 	cur_stats
+-1	affected_by
+-1	inv
+1 1 77 0
+-1	door Affected_Bye
+1 2 2096 1
+-1	door Affected_Bye
+-1	door#, dest
+3 -1	mobs
+End of Room
+79		Room Number
+S_Lily_Lane ~	names
+Southern Lily Lane.
+~
+Lily lane contines to the north towards the center of town, and south towards
+the gates.  The road is pretty narrow here, and the buildings are mostly old
+and in disrepair.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 79 70 	cur_stats
+-1	affected_by
+-1	inv
+1 3 70 0
+-1	door Affected_Bye
+1 4 92 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+80		Room Number
+alley ~	names
+In the narrow alley.
+~
+The alley is narrow and filled with debris, which almost seems to be placed to
+slow you down on purpose!  There are numerous places for would be attackers to
+hide, and the uneven cobblestones would make battle treacherous.  To the east
+the alley opens into a larger road, and to the west it continues into darkness.
+
+~
+25 23 21 -1  -:| bitfield |:-
+1024 1 80 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 70 0
+-1	door Affected_Bye
+1 2 81 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+81		Room Number
+alley ~	names
+In the narrow alley.
+~
+The narrow alley turns to the southwest and continues to the east in
+shadows.  A smashed cart lies against the north wall of stone, leaving you
+to squeeze through the narrow path to the southwest.  You feel eyes watching
+you, and you can't tell if the whispering sounds from above are of man,
+beast or wind!
+
+~
+25 23 21 -1  -:| bitfield |:-
+1024 1 81 0 	cur_stats
+-1	affected_by
+12 -1	inv
+1 1 80 0
+-1	door Affected_Bye
+1 8 82 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+82		Room Number
+alley ~	names
+In the narrow alley.
+~
+You are at the east edge of a large stone courtyard.  Small groups of
+people congregate near the door of the large, dark building to the north.
+The courtyard is about 50 paces across, and relatively clean, although
+the large stone benches seem conveniently placed to make getting to the
+entrance of the building a slow affair.
+
+~
+25 23 21 -1  -:| bitfield |:-
+1024 1 82 0 	cur_stats
+-1	affected_by
+-1	inv
+1 6 81 0
+-1	door Affected_Bye
+1 2 83 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+83		Room Number
+alley ~	names
+In the courtyard.
+~
+You are in the store courtyard that seems to be the hub of many small
+paths and alleys.  You can be sure that there are more than you see at
+first glance!  To the north is a large tavern, and it's large fireplace
+casts dancing shadows through the door and onto the surrounding
+buildings.  
+
+~
+25 23 21 -1  -:| bitfield |:-
+1024 1 83 0 	cur_stats
+-1	affected_by
+-1	inv
+1 1 82 0
+-1	door Affected_Bye
+1 3 84 1
+-1	door Affected_Bye
+-1	door#, dest
+197 -1	mobs
+End of Room
+84		Room Number
+tavern ~	names
+Maedon
+~
+The tavern is quite large, with huge exposed oak beams to support the roof
+and thik stone walls all around.  There is a large fireplace on the western
+side of the room, with a large iron spit for roasting large chunks of meat.
+Several clusters of oil-burning lamps are located on the walls to give off
+light for the many customers.  Waiters and waitresses keep the flagons full,
+and laughter can be heard often.  Along the northern wall is a large bar
+crowded with stools and patrons, and a stout railing protects a flight
+of stairs descending into the darkness.
+
+~
+25 23 21 -1  -:| bitfield |:-
+1024 1 84 0 	cur_stats
+-1	affected_by
+-1	inv
+1 10 85 0
+-1	door Affected_Bye
+1 4 83 1
+-1	door Affected_Bye
+-1	door#, dest
+195 196 -1	mobs
+End of Room
+85		Room Number
+tavern ~	names
+A darkly lit room.
+~
+This is both the living quarters and meeting room of Maedon.  The actual
+size of the room is hard to judge because of the shadows and thick hanging
+curtains that hide the walls.  A large table dominates the center of the
+room and stout chairs are arranged around the perimeter.  Stout stairs
+lead up to the tavern above.
+
+~
+25 23 21 -1  -:| bitfield |:-
+1024 1 85 0 	cur_stats
+-1	affected_by
+-1	inv
+1 9 84 0
+-1	door Affected_Bye
+-1	door#, dest
+186 -1	mobs
+End of Room
+86		Room Number
+NW_Rose_Lane ~	names
+Northwest Rose Lane.
+~
+To the northeast are the practice yards of the local constabulary.
+Rose lane continues to run northwest to southeast, back towards the
+center of town.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 86 34 	cur_stats
+-1	affected_by
+-1	inv
+1 6 87 0
+-1	door Affected_Bye
+1 5 34 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+87		Room Number
+NW_Rose_Lane ~	names
+In the large practice yard.
+~
+This is the headquarters of the local constabulary.  Many of the young
+men and women of the area come here for basic self defense training, and
+a few go on to become masters of their trade.  A low building lies to the
+west, where final examinations are given.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 87 34 	cur_stats
+-1	affected_by
+-1	inv
+1 8 86 0
+-1	door Affected_Bye
+1 2 88 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+88		Room Number
+NW_Violet_Drive ~	names
+A large practice hall.
+~
+This is where more serious students come to test their skills and learn
+new ones.  The room is plain and sparsely decorated.  The ceiling is higher
+than it looked from outside because the floor is recessed into the ground.
+It is covered with sawdust, and shows signs of strenous combat.  The wide
+door leads back to the yard to the east.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 88 66 	cur_stats
+-1	affected_by
+-1	inv
+1 1 87 0
+-1	door Affected_Bye
+-1	door#, dest
+199 -1	mobs
+End of Room
+89		Room Number
+NW_Violet_Drive ~	names
+In the chapel.
+~
+This is the chapel in which the students can come and discuss many
+of the great secrets and teachings with the elders of the order.
+The room is light and airy, and there is almost always someone around
+to teach those who are in need.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 89 66 	cur_stats
+-1	affected_by
+-1	inv
+1 2 61 0
+-1	door Affected_Bye
+-1	door#, dest
+201 -1	mobs
+End of Room
+90		Room Number
+NW_Violet_Drive ~	names
+Northeast Violet Drive.
+~
+You are on Violet drive in the north eastern quadrant of Garland.  A
+tinker's shop can be seen to the east, where the lore master tries to
+learn of the ancient peoples. The road continues back to the southwest
+towards the center of town.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 90 59 	cur_stats
+-1	affected_by
+-1	inv
+1 1 91 0
+-1	door Affected_Bye
+1 8 59 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+91		Room Number
+tavern ~	names
+The Tinkerer
+~
+This shop, or study as the owner refers to it, is packed with strange
+contraptions and broken artifacts from all over the known (and unknown)
+world.  The Lore Master has gathered all of these in an effort to understand
+those who came before.  It will be a slow task, but he takes pains to teach
+those who are interested, so that his knowledge will not die with him.
+
+~
+25 23 21 -1  -:| bitfield |:-
+1024 1 91 0 	cur_stats
+-1	affected_by
+-1	inv
+1 2 90 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+92		Room Number
+S_Lily_Lane ~	names
+North of the Gates.
+~
+Lily lane narrows here and the shops become more sparse.  To the south
+a semblance of a gate can be seen, but it is beyond repair.  A small path
+leads to the northeast where there is a meeting hall of some kind, and
+Lily lane continues north towards the center of town.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 92 70 	cur_stats
+-1	affected_by
+-1	inv
+1 3 79 0
+-1	door Affected_Bye
+1 6 2923 0
+-1	door Affected_Bye
+1 4 93 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+93		Room Number
+S_Lily_Lane ~	names
+At the Southern Gates.
+~
+The dusty road from the south becomes slightly paved as it turns north
+through some broken gates into the city of Garland.  To the south
+the rolling hills covered with grass and trees continue out of sight.
+
+~
+23 21 -1  -:| bitfield |:-
+1024 1 93 70 	cur_stats
+-1	affected_by
+-1	inv
+1 3 92 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+94		Room Number
+foo ~	names
+A test room
+~
+Test room
+
+~
+23 21 -1  -:| bitfield |:-
+1024 0 94 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	door#, dest
+-1	mobs
+End of Room
+95		Room Number
+generic ~	names
+The temple of Korg.
+~
+You see yourself in an incomplete room.
+
+~
+23 21 0 -1  -:| bitfield |:-
+1024 1 95 0 	cur_stats
+-1	affected_by
+-1	inv
+1 2 1 0
+-1	door Affected_Bye
+-1	door#, dest
+-1	mobs
+End of Room
+
+
+-1		END OF FILE MARKER

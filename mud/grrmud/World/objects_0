@@ -1,0 +1,1585 @@
+1	 Start of Object
+sword long longsword ~	names
+a long sword
+~
+There is a long sword lying here rusting.
+~
+     You see a very utilitarian sword of bright steel.  It has two small,
+curved hand guards and its grip is of tightly wrapped leather.  It's
+pommel has a falcon stamped into it.
+~
+57 41 30 10 -1  -:| bitfield |:-
+0 0 100 0 200 11 2 6 1 	extras
+1024 85 1 0 	cur_stats
+-1	affected_by
+-1	inv
+7 3 8 3 -1	stat_affects
+End of Object.
+
+
+2	 Start of Object
+ring pewter ~	names
+a pewter ring
+~
+There is a pewter ring lying here.
+~
+     The pewter ring looks pretty ordinary, but then looks can be 
+deceiving.  It is a simple band of silvery metal wrapped in a pattern of 
+interlinking loops.
+~
+40 38 37 10 -1  -:| bitfield |:-
+0 0 50 0 3 1 0 0 1 	extras
+1024 3185 2 0 	cur_stats
+-1	affected_by
+-1	inv
+23 10 -1	stat_affects
+End of Object.
+
+
+3	 Start of Object
+corpse ~	names
+a corpse
+~
+You see a ghastly bug-ridden corpse!
+~
+     This testament to the inherent violence of the universe saddens you.  
+You ponder the sacralige and then manage to rationalize your steeling of this
+former being's belongings.  What would a dead person need with gold anyway??
+~
+54 40 31 10 -1  -:| bitfield |:-
+0 0 100 0 32000 150 0 0 0 	extras
+1024 100 3 0 	cur_stats
+128 -1  -:| bitfield |:-
+0 200 100 10 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+4	 Start of Object
+bag ~	names
+a bag
+~
+A small bag lies here discarded. 
+~
+     You see a small bag sewn from canvas.  It is ordinary, but quite strong.
+~
+54 40 31 10 -1  -:| bitfield |:-
+0 0 100 0 32000 5 0 0 1 	extras
+1024 29 4 0 	cur_stats
+-1  -:| bitfield |:-
+0 75 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+5	 Start of Object
+gold coins coin ~	names
+some gold
+~
+A pile of gold lies here. 
+~
+     You see a pile of gold lying on the ground, wish you could tell how
+big it was eh? :)
+~
+55 40 10 -1  -:| bitfield |:-
+0 0 100 0 32000 2 0 0 0 	extras
+1024 0 5 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+6	 Start of Object
+garland rose ~	names
+a garland
+~
+A garland of roses lies here.
+~
+    You see a delicately woven garland of roses with the thorns removed.
+~
+56 40 22 10 1 -1  -:| bitfield |:-
+0 0 75 0 5 2 0 0 1 	extras
+1024 6500 6 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+7	 Start of Object
+water ~	names
+some water
+~
+Some water sloshes around here.
+~
+     Some water sloshes around, concentric circles marking it's
+perturbations.
+~
+60 40 10 -1  -:| bitfield |:-
+0 0 100 0 9999 1 0 0 1 	extras
+1024 25 7 0 	cur_stats
+-1	affected_by
+-1	inv
+101 8 -1	stat_affects
+End of Object.
+
+
+8	 Start of Object
+skin ~	names
+a ragged skin
+~
+A bug-ridden skin lies here.
+~
+You see a nasty, not-long-dead skin here!!
+
+~
+50 33 31 29 28 27 23 22 10 0 -1  -:| bitfield |:-
+0 0 100 0 500 10 0 0 0 	extras
+1024 35 8 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+10	 Start of Object
+fountain ~	names
+the fountain
+~
+A sparkling fountain gurgles and splashes happily.
+~
+     This marble fountain stands here providing water for all who are in
+need.  The water pours down out of a sculpted trumpet flower into a shallow
+pool and then cascades down into the main basin.  Although you might expect
+the walls to be green and slimy, it is remarkably clean.  Perhaps this
+is because the water is so cold!!
+~
+59 54 40 31 19 10 7 4 -1  -:| bitfield |:-
+-1 0 100 0 32000 985 0 0 1 	extras
+1024 25000 10 0 	cur_stats
+-1  -:| bitfield |:-
+0 2000 100 -1 	 bag_stuff
+-1	affected_by
+7 -1	inv
+-1	stat_affects
+End of Object.
+
+
+11	 Start of Object
+canteen water ~	names
+a canteen
+~
+A small metal canvas covered canteen sits here.
+~
+     This is a simple canteen with a canvas covering.  There is a metal
+chain connecting the lid to the canteen so you will be sure not to lose
+it!
+~
+59 54 40 31 10 -1  -:| bitfield |:-
+1 0 100 0 32000 5 0 0 1 	extras
+1024 39 11 0 	cur_stats
+-1  -:| bitfield |:-
+0 25 100 -1 	 bag_stuff
+-1	affected_by
+7 -1	inv
+-1	stat_affects
+End of Object.
+
+
+12	 Start of Object
+wagon wheel wagonwheel ~	names
+a wagon wheel
+~
+A wagon wheel lies on its side in the dust.
+~
+     This wheel has done its time.  It's metal band is pitted and scratched
+and the oaken spokes are old and grey.  The hub is cracked, which is why
+it is no longer on the wagon, and covered with black grease.
+~
+40 39 14 10 -1  -:| bitfield |:-
+0 0 75 0 45 33 0 0 1 	extras
+1024 149 12 0 	cur_stats
+-1	affected_by
+-1	inv
+9 -10 -1	stat_affects
+End of Object.
+
+
+13	 Start of Object
+bread ~	names
+a small loaf of bread
+~
+A small loaf of bread sits here.
+~
+     You see a small round loaf of bread.  It's crust is baked to a crusty
+golden brown.  Just looking at it makes you drool!
+~
+61 40 31 10 -1  -:| bitfield |:-
+10 0 75 0 9999 2 0 0 1 	extras
+1024 25 13 0 	cur_stats
+-1	affected_by
+-1	inv
+100 8 101 -2 -1	stat_affects
+End of Object.
+
+
+14	 Start of Object
+pill green ~	names
+a large green pill
+~
+A large green pill lies here.
+~
+	You see a huge green pill with a dullish sheen to it.  Looks
+like it could choke a small horse!
+
+~
+63 61 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 1 	extras
+1024 73 14 0 	cur_stats
+-1	affected_by
+-1	inv
+100 1 -1	stat_affects
+3 -1  -:| bitfield |:-
+End of Object.
+
+
+15	 Start of Object
+sulphur scroll ~	names
+an oderous yellow scroll
+~
+A smelly yellow scroll lies here.
+~
+	You see a scroll of coarse, yellow paper.  Some spidery writing
+covers it almost entirely.  The whole thing smells like sulphur and the
+signature reads Don Quemar.
+~
+66 65 63 53 40 31 13 10 -1  -:| bitfield |:-
+1 0 100 0 20 1 0 0 5 	extras
+1024 4500 15 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+-1  -:| bitfield |:-
+End of Object.
+
+
+16	 Start of Object
+flight cap ~	names
+a leather flight cap
+~
+A polished leather flight cap with ear flaps lies here.
+~
+	You see a nicely oiled leather flight cap.  It looks as if it
+could keep your head warm even in extreme cold.
+
+~
+66 65 56 40 22 10 0 -1  -:| bitfield |:-
+0 0 100 0 9999 2 0 0 1 	extras
+1024 65 16 0 	cur_stats
+-1	affected_by
+-1	inv
+30 -20 -1	stat_affects
+End of Object.
+
+
+17	 Start of Object
+willow shoot ~	names
+a willow shoot
+~
+A green willow shoot lies here.
+~
+	You see a springy green willow shoot.  It looks flexible enough
+to be made into all kinds of neat things.
+
+~
+67 63 50 40 31 10 0 -1  -:| bitfield |:-
+0 0 25 0 20 2 0 0 1 	extras
+1024 15 17 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+1 -1  -:| bitfield |:-
+19 17 18 0 0 0	 target object, companions
+End of Object.
+
+
+18	 Start of Object
+hide bull ~	names
+a tough bull hide
+~
+A tough bull hide lies here.
+~
+	You see a tough hide rolled up tightly and tied with a string.
+
+~
+67 63 50 40 21 10 0 -1  -:| bitfield |:-
+0 0 25 0 20 3 0 0 1 	extras
+1024 15 18 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+1 -1  -:| bitfield |:-
+19 17 18 0 0 0	 target object, companions
+End of Object.
+
+
+19	 Start of Object
+shield bull ~	names
+a bull hide shield
+~
+A bull hide shield lies in the dust.
+~
+	You see a fairly inexpertly crafted shield made of a willow
+branch and a bull hide.  
+
+~
+56 40 39 15 10 -1  -:| bitfield |:-
+0 0 100 0 25 4 0 0 1 	extras
+1024 45 19 0 	cur_stats
+-1	affected_by
+-1	inv
+9 -5 -1	stat_affects
+End of Object.
+
+
+20	 Start of Object
+toolbox wooden ~	names
+a rough wooden toolbox
+~
+A rough wooden toolbox filled with inconsequential tools sits here.
+~
+	You see a sturdy, if wrather small wooden toolbox.  If you wanted
+to construct a true masterpiece, then perhaps you would desire something 
+finer, but for simple projects this should do just fine.
+
+~
+64 54 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 250 15 0 0 1 	extras
+1024 45 20 0 	cur_stats
+-1  -:| bitfield |:-
+0 30 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+21	 Start of Object
+gloves black leather ~	names
+some black leather gloves
+~
+A pair of black leather gloves lies here forgotten.
+~
+	These gloves are soft, comfortable, and amazingly resistent to
+stains and scuffing.
+
+~
+56 40 29 10 0 -1  -:| bitfield |:-
+0 0 25 0 200 2 0 0 1 	extras
+1024 50 21 0 	cur_stats
+-1	affected_by
+-1	inv
+30 -5 9 -4 -1	stat_affects
+End of Object.
+
+
+22	 Start of Object
+parchment blank ~	names
+a blank parchment
+~
+A blank parchment lies here, tabala rasa.
+~
+	You see a fine piece of parchment ready to be written on.
+
+~
+69 63 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 20 2 0 0 1 	extras
+1024 1000 22 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+-1  -:| bitfield |:-
+End of Object.
+
+
+23	 Start of Object
+pen felt ~	names
+a felt tipped pen
+~
+A felt tipped pen lies here with the cap on it.
+~
+	You see a fairly nice pen.  It will serve for communications and
+minor spells, but you somehow doubt that it would be worthy of a truly
+powerful spell.
+
+~
+66 57 43 30 10 0 -1  -:| bitfield |:-
+0 0 25 0 25 2 2 3 15 	extras
+1024 35 23 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+25	 Start of Object
+scroll fireball ~	names
+a fireball scroll
+~
+A scroll in a delicate hand lies here rolled up.
+~
+	You see a scroll scribed in a beautiful but almost illegible hand.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+1 0 100 0 50 2 0 0 15 	extras
+1024 4500 25 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+-1  -:| bitfield |:-
+End of Object.
+
+
+26	 Start of Object
+scroll armor ~	names
+a scroll of armor
+~
+A tightly wrapped scroll lies here.
+~
+	This scroll makes you feel safe as you run your hands along it.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+1 0 100 0 15 2 0 0 10 	extras
+1024 4150 26 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+-1  -:| bitfield |:-
+End of Object.
+
+
+27	 Start of Object
+scroll sanctuary ~	names
+a scroll of sanctuary
+~
+A softly glowing scroll lies here.
+~
+	You see a scroll that seems to glow with an inner light.  It does
+not exude evil however, but gives off instead an aura of peacefullness.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+1 0 100 0 20 2 0 0 15 	extras
+1024 8300 27 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+-1  -:| bitfield |:-
+End of Object.
+
+
+28	 Start of Object
+scroll poison ~	names
+a poisonous scroll
+~
+An evil looking scroll lies here.
+~
+	You see a scroll filled with poisonous words.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+1 0 100 0 25 2 0 0 5 	extras
+1024 3215 28 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+-1  -:| bitfield |:-
+End of Object.
+
+
+29	 Start of Object
+scroll illuminate ~	names
+an oily scroll
+~
+An oily scroll lies here.
+~
+	This scroll is made of regular parchment, but a light oil of some
+type seems to permeate the scroll where the incantations are written.
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+1 0 100 0 25 2 0 0 5 	extras
+1024 425 29 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+-1  -:| bitfield |:-
+End of Object.
+
+
+30	 Start of Object
+scroll teleport ~	names
+a scroll of teleportation
+~
+An scroll with a strange sort of map drawn on it lies here.
+~
+	You see a scroll filled with a fine map of the world.  It is 
+covered with an overlay of intersecting vectors and the margins are 
+filled with strange equations of some type.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+1 0 100 0 25 2 0 0 13 	extras
+1024 4215 30 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+-1  -:| bitfield |:-
+End of Object.
+
+
+31	 Start of Object
+manual newbie ~	names
+a newbie manual
+~
+A newbie manual lies here unread.
+~
+You see the keys to happiness and addiction.
+It reads:
+	Welcome to ScryMUD, coded by Ben Greear(currently 
+greear@cyberhighway.net).  The game has a long way to go yet, in fact unless
+you are an immortal you probably can't even move around.  You can check out
+help for some hint as to how it will be.
+	I suppose only a select few will be reading this, so
+if you would like to become builder, mail me your desired name and I'll advance
+him/her and give you permission to build in the test zone (10).  Many changes
+and additions still need to take place so have patience.  The bug and idea
+commands work just fine, or you can email me.  Next time you log in you will
+be in a more hospitible room, where you can read the message board, and even
+post if you wish.  Also, please check out the web page for news and
+information:  www.primenet.com/~greear/ScryMUD/scry.html
+...
+If you are using the client, type:  toggle client to turn on the client
+effects (ie colors, etc)....
+
+~
+40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 9999 3 0 0 0 	extras
+1024 50 31 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+32	 Start of Object
+board bulletin cork ~	names
+a bulletin board
+~
+A bulletin board hangs on the wall.
+~
+	You see a cork bulletin board hanging on the wall.  It is covered with
+notes that other people have written.  To see the messages you should
+'examine' it.  To write one of your own, try post.  To read a message 
+try 'read <number>.
+
+~
+74 54 40 21 10 7 -1  -:| bitfield |:-
+0 0 100 0 50 45 0 0 0 	extras
+1024 5000 32 0 	cur_stats
+-1  -:| bitfield |:-
+0 500 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+33	 Start of Object
+bow locust ~	names
+a locust bow
+~
+A yellow lucust bow lies here.
+~
+	This fine bow is made of a very fine grained piece of a locust trunk.
+It glows golden in the light.
+
+~
+57 47 30 17 10 -1  -:| bitfield |:-
+0 0 25 0 20 14 4 5 5 	extras
+1024 3100 33 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+34	 Start of Object
+mug ale ~	names
+a wooden mug of ale
+~
+A wooden mug of ale sits here slowly leaking.
+~
+The mug is of shoddy wooden construct, while the ale inside foams over
+the top and runs down the side.  Wherever the mug sits, a ring of ale is
+left behind.      
+
+~
+59 54 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 2 0 0 0 	extras
+1024 25 34 0 	cur_stats
+9 -1  -:| bitfield |:-
+0 4 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+35	 Start of Object
+board immort ~	names
+the immort board
+~
+A cork board hangs here with messages posted on it.
+~
+This board is quite messy, but thats how we are!
+
+~
+74 54 40 21 10 7 -1  -:| bitfield |:-
+0 0 100 0 1 35 0 0 1 	extras
+1024 35000 35 0 	cur_stats
+-1  -:| bitfield |:-
+0 100 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+37	 Start of Object
+boots leather ~	names
+black leather boots
+~
+A supple pair of black leather boots lie here.
+~
+These boots were well made and cared for.  They come about half way up your
+calf
+and feel very supportive.  They are light and comfortable, but sturdy enough to
+last a life time.
+
+~
+56 40 36 10 0 -1  -:| bitfield |:-
+0 0 50 0 20 4 0 0 0 	extras
+1024 495 37 0 	cur_stats
+-1	affected_by
+-1	inv
+7 0 -1	stat_affects
+End of Object.
+
+
+38	 Start of Object
+tea ~	names
+some dark tea
+~
+Some dark tea sloshes slightly in it's container.
+~
+This tea has a dark color and smells faintly of Sumaac.
+
+~
+60 40 21 10 0 -1  -:| bitfield |:-
+0 0 100 0 200 1 0 0 0 	extras
+1024 12 38 0 	cur_stats
+-1	affected_by
+-1	inv
+100 2 101 8 -1	stat_affects
+End of Object.
+
+
+40	 Start of Object
+sash ~	names
+a black silk sash
+~
+A fine black silk sash lies here.
+~
+You see a fine black sash of silk, embroidered with an emerald
+serpent.
+
+~
+56 40 34 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+1024 895 40 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+41	 Start of Object
+juice grape ~	names
+some grape juice
+~
+Some grape juice sits here.
+~
+Dark purple grape juice waits for it's transformation into wine.
+
+~
+60 40 21 10 0 -1  -:| bitfield |:-
+0 0 100 0 500 1 0 0 0 	extras
+1024 8 41 0 	cur_stats
+-1	affected_by
+-1	inv
+100 1 101 7 -1	stat_affects
+End of Object.
+
+
+45	 Start of Object
+rod ash ashen ~	names
+a blackened ash rod
+~
+A charred limb of an ash tree lies here.
+~
+	You see a short section of an ash limb that has some how been
+charred.  The fire has made it extremely hard, but the runes carved along
+its length lead you to believe that it is more than just a handy cudgel.
+
+~
+63 57 51 42 31 30 14 10 -1  -:| bitfield |:-
+3 0 25 0 20 8 4 3 1 	extras
+1024 5100 45 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+-1  -:| bitfield |:-
+End of Object.
+
+
+50	 Start of Object
+dagger steel ~	names
+a gleaming dagger
+~
+A dagger of gleaming steel lies here.
+~
+A finely crafted dagger with a dark hangle and gleaming steel blade
+fits nicely into your hand.  It is relatively simple, though well made,
+and in the right hands, it could be deadly.
+
+~
+57 43 31 30 10 0 -1  -:| bitfield |:-
+0 0 100 0 0 10 4 4 5 	extras
+1024 3500 50 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+60	 Start of Object
+goldenseal herb plant ~	names
+a goldenseal plant
+~
+A goldenseal plant grows in the shade.
+~
+You see a Goldenseal plant growing here in the shade.  This powerful herb
+is admired by many physicians for it's antibiotic healing properties.
+
+~
+40 10 0 -1  -:| bitfield |:-
+0 0 25 0 5 2 0 0 1 	extras
+1028 7500 60 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+97	 Start of Object
+meat ~	names
+a piece of meat
+~
+A piece of meat lies here.
+~
+You see small piece of meat recently hacked off some corpse.  It looks 
+edible enough, but you remain convinced there are better ways to feed
+yourself.
+
+~
+61 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 200 1 0 0 0 	extras
+1024 15 97 0 	cur_stats
+-1	affected_by
+-1	inv
+100 6 101 -1 -1	stat_affects
+End of Object.
+
+
+99	 Start of Object
+belt leather ~	names
+a brown leather belt
+~
+A brown leather belt, creased and well oiled, lies here.
+~
+You see a nice leather belt.  It doesn't look too special, but it sure
+would be a stylish way to hold up your pants!
+
+~
+56 40 34 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 2 0 0 0 	extras
+1024 75 99 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+143	 Start of Object
+bench wooden ~	names
+a wooden bench
+~
+A wooden bench is anchored to the pavement with large bolts.
+~
+This humble wooden bench often seats some of the finest magicians
+in the realm.  It is simply constructed of iron and oak, but just
+being around so much magic seems to have imbued it with an 
+impervious sheen.
+
+~
+50 40 21 10 7 -1  -:| bitfield |:-
+0 0 100 0 0 1 1000 0 0 	extras
+1024 500 143 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+144	 Start of Object
+staff runed ash ~	names
+an ashen staff
+~
+A staff of carved ash lies here.
+~
+This staff, made from the heart wood of an ancient ash split asunder by
+lightning, has been carefully carved with runes of power.  The staff is
+the symbol of the acadamy and the Grand Mage guards it closely, even as
+it guards him or her.
+
+~
+63 57 51 42 31 30 15 11 10 1 -1  -:| bitfield |:-
+4 0 50 0 0 5 5 5 4 	extras
+1024 5500 144 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+-1  -:| bitfield |:-
+End of Object.
+
+
+145	 Start of Object
+altar marble ~	names
+a marble altar
+~
+A large, extremely heavy, marble altar stands in the center of the temple.
+~
+The altar contains many gifts that people offer as tokens to the
+powers of good.  Fortunately, temple attendants regularly clean the
+altar out, because food is a typical offering!  Flowers also can be
+seen from time to time.
+
+~
+54 40 21 10 7 -1  -:| bitfield |:-
+0 0 100 0 0 5000 0 0 0 	extras
+1024 500 145 0 	cur_stats
+9 -1  -:| bitfield |:-
+0 6000 100 -1 	 bag_stuff
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+146	 Start of Object
+dagger fang maedon ~	names
+Meadon's Fang
+~
+A beautiful dagger of blue steel inscribed with a serpent's image lies here.
+~
+This dagger has always served it's owner well.  Maedon Thane was
+given this dagger as a gift of gratitude from Shiva, one of the
+most well known blade makers in the realm.  Once, in a mighty rage,
+Maedon struck a stone table with this dagger.  The dagger pierced
+three inches of granite to it's hilt, itself hissing violently!
+
+~
+57 43 30 17 16 14 12 11 10 5 -1  -:| bitfield |:-
+0 0 10 0 3 8 4 7 4 	extras
+1024 500000 146 0 	cur_stats
+-1	affected_by
+-1	inv
+8 0 -1	stat_affects
+End of Object.
+
+
+155	 Start of Object
+key bronze ~	names
+a bronze key
+~
+A large bronze key lies here.
+~
+This sturdy key is made of highly polished bronze.  It looks like it
+goes to a door or a large chest.
+
+~
+50 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 0 5 1 0 0 	extras
+1024 5 155 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+190	 Start of Object
+sword steel shortsword ~	names
+a steel shortsword
+~
+A steel shortsword lies here.
+~
+This is a fine steel sword about two feet long.  It's
+grip is made of wrapped leather, with a small guard to protect
+the fingers.
+
+~
+57 41 31 30 10 0 -1  -:| bitfield |:-
+0 0 100 0 200 8 4 3 0 	extras
+1024 500 190 0 	cur_stats
+-1	affected_by
+-1	inv
+7 1 8 1 -1	stat_affects
+End of Object.
+
+
+193	 Start of Object
+vest ~	names
+a thick leather vest
+~
+A stiff leather vest lies abandoned.
+~
+This vest of thick bull-hide is not extremely comfortable, but it does
+do a decent job of protecting it's owner.
+
+~
+56 33 10 -1  -:| bitfield |:-
+0 0 50 0 30 2 0 0 12 	extras
+1024 100 193 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+201	 Start of Object
+letter parchment ~	names
+a letter on thin parchment
+~
+A rolled parchment, tied with a lock of hair, lies here.
+~
+Written in a shaky hand, or perhaps by another means altogether,
+this letter reads as follows:
+	Whomever shall find this letter, please deliver it to Shawna
+	of Garland.  She is my only hope for salvation.
+       
+Dearest Shawna,
+	I miss you so much!  I have been captured, overwhelmed by
+such evil as you cannot imagine.  They, the dark ones of Mount Null,
+would not kill me, but instead keep me bound in coils of their
+vile magic as a warning to others.  I am almost completely severed
+from the magics that used to course my body so readily, but I
+believe I have found a weakness in their bindings.
+	I fear this letter may never reach you, instead falling into
+the hands of my captors or others who mean us no good.  You, and only
+you may decipher the rest of this text.  If never do we meet again,
+you must know that I will love and honor your memory untill the end
+of my days!
+With never-ending love,
+Korg
+...
+	The letter continues in a script that weaves before your eyes,
+it's meaning totally lost on your eyes and mind!
+
+~
+50 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 5 1 0 0 0 	extras
+1024 30 201 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+202	 Start of Object
+medallion jade ~	names
+a jade medallion
+~
+A medallion of a strange silvery metal encasing a jade stone lies here.
+~
+The medallion is of an almost white metal, encasing a well cut jade stone.  It
+seems almost more than just a sum of it's parts though, and it's warmth against
+your skin gives you a feeling of security.
+
+~
+56 40 24 23 10 1 -1  -:| bitfield |:-
+0 0 100 0 0 5 1 0 0 	extras
+1024 15495 202 0 	cur_stats
+-1	affected_by
+-1	inv
+27 -10 -1	stat_affects
+End of Object.
+
+
+246	 Start of Object
+white potion ~	names
+a white potion
+~
+A white potion froths slightly in it's glass bottle.
+~
+This potion seems to give off an aura of peace and protection.
+
+~
+63 52 40 21 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+1024 35000 246 0 	cur_stats
+-1	affected_by
+-1	inv
+15 5 -1	stat_affects
+10 -1  -:| bitfield |:-
+204 20 188 21 -1 spell#, level (casts)
+End of Object.
+
+
+247	 Start of Object
+green potion ~	names
+a light green potion
+~
+A light green potion is confined in a small bottle.
+~
+This thing doesn't look like something you would want to drink,
+but perhaps it isn't so bad!
+
+~
+63 52 40 31 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+1024 1500 247 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+163 25 -1 spell#, level (casts)
+End of Object.
+
+
+248	 Start of Object
+golden potion ~	names
+a golden potion
+~
+A golden potion sticks to the sides of it's container.
+~
+This thick, syrupy concoction looks like it would be good
+for you!
+
+~
+63 52 40 31 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+1024 2500 248 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+1 20 -1 spell#, level (casts)
+End of Object.
+
+
+249	 Start of Object
+black pitch potion ~	names
+a pitch black liquid
+~
+A pitch black liquid sloshes slowly in it's jar.
+~
+This stuff looks like tar, and smells evil!
+
+~
+63 52 40 31 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+1024 500 249 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+228 25 -1 spell#, level (casts)
+End of Object.
+
+
+268	 Start of Object
+clear potion ~	names
+a clear potion
+~
+A clear potion smelling of alcohol lies here.
+~
+This powerful smelling concoction looks like it could purge you
+of the evils of this world!
+
+~
+63 52 40 31 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+1024 75 268 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+176 25 -1 spell#, level (casts)
+End of Object.
+
+
+269	 Start of Object
+blue potion ~	names
+a thick blue potion
+~
+A thick blue potion sticks to it's container walls.
+~
+This potion looks a little chalky, like you might want something
+to chase it with, but you've heard it's good for your senses.
+
+~
+63 52 40 31 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+1024 4530 269 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+155 30 156 30 -1 spell#, level (casts)
+End of Object.
+
+
+277	 Start of Object
+potion honey brown ~	names
+a honey brown potion
+~
+A honey brown potion is secured in a small flask.
+~
+This syruppy liquid looks like it could sooth your aches and pains.
+
+~
+63 52 40 31 10 0 -1  -:| bitfield |:-
+0 0 40 0 50 1 0 0 0 	extras
+1024 8500 277 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+189 25 -1 spell#, level (casts)
+End of Object.
+
+
+281	 Start of Object
+letter parchment ~	names
+a letter on thin parchment
+~
+A lost letter lies here forgotten.
+~
+Written in a shaky hand, or perhaps by another means altogether,
+this letter reads as follows:
+	Whomever shall find this letter, please deliver it to Shawna
+	of Garland.  She is my only hope for salvation.
+      
+Dearest Shawna,
+	I miss you so much!  I have been captured, overwhelmed by
+such evil as you cannot imagine.  They, the dark ones of Mount Null,
+would not kill me, but instead keep me bound in coils of their
+vile magic as a warning to others.  I am almost completely severed
+from the magics that used to course my body so readily, but I
+believe I have found a weakness in their bindings.
+	I fear this letter may never reach you, instead falling into
+the hands of my captors or others who mean us no good.  You, and only
+you may decipher the rest of this text.  If never do we meet again,
+you must know that I will love and honor your memory untill the end
+of my days!
+With never-ending love,
+Korg
+...
+	The letter continues in a script that weaves before your eyes,
+it's meaning totally lost on your eyes and mind!
+
+~
+50 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 5 1 0 0 0 	extras
+1024 30 281 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+282	 Start of Object
+potion red bright ~	names
+a bright red potion
+~
+A bright red potion looks a little evil!
+~
+This red potion sloshes angrily in it's container, waiting to escape.
+
+~
+63 52 40 31 10 0 -1  -:| bitfield |:-
+0 0 50 0 50 1 0 0 0 	extras
+1024 6770 282 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+197 20 -1 spell#, level (casts)
+End of Object.
+
+
+295	 Start of Object
+scroll illuminate ~	names
+a scroll of illumination
+~
+A scroll of illumination is penned in a fine hand.
+~
+This piece of parchment is covered with neat writing containing words
+of power.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 650 295 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+4 25 -1 spell#, level (casts)
+End of Object.
+
+
+296	 Start of Object
+scroll firewall ~	names
+a scroll of firewall
+~
+A scroll of firewall is penned in a fine hand.
+~
+This piece of parchment is covered with neat writing containing words
+of power, traced in bright red ink.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 8650 296 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+6 25 -1 spell#, level (casts)
+End of Object.
+
+
+297	 Start of Object
+scroll web ~	names
+a scroll of web
+~
+A scroll of web is penned in a fine hand, and signed, Fat Basselope.
+~
+This piece of parchment is covered with neat writing containing words
+of power, traced in bright red ink.  The signature, unlike any you have
+seen before, reads, 'Fat Basselope'.  You can only wonder!
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 650 297 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+10 25 -1 spell#, level (casts)
+End of Object.
+
+
+298	 Start of Object
+scroll entangle ~	names
+a scroll of entanglement
+~
+A sticky scroll lies here gathering dust and everything else!
+~
+This piece of parchment is covered with neat writing containing words
+of power.  The parchment, especially around the letters is very sticky.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 650 298 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+11 25 -1 spell#, level (casts)
+End of Object.
+
+
+299	 Start of Object
+scroll calm ~	names
+a scroll of calm
+~
+A soothing scroll on fine parchment is tied with a white ribon.
+~
+This piece of parchment is covered with neat writing containing soothing
+words.  A powerful argument for the pen, over the sword!
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 650 299 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+12 25 -1 spell#, level (casts)
+End of Object.
+
+
+318	 Start of Object
+scroll charm ~	names
+a scroll of mass charm
+~
+A slick scroll begs you to look at it.
+~
+This slick parchment is covered with the words that cloud your
+mind.  After glancing over it, you feel as if you would do anything
+for the author!
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 650 318 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+14 25 -1 spell#, level (casts)
+End of Object.
+
+
+319	 Start of Object
+scroll typhoon ~	names
+a scroll of typhoon
+~
+A damp scroll sends a gentle breeze as it is opened.
+~
+This parchment is penned in a fine hand, but the ink has mysteriously
+bled into the paper making it almost illegible in places.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 650 319 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+18 25 -1 spell#, level (casts)
+End of Object.
+
+
+320	 Start of Object
+scroll tornado ~	names
+a scroll of tornado
+~
+A small scroll creates a small whirlwind when opened.
+~
+This parchment is covered with wild, wavery writing, barely
+legible in fact!
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 650 320 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+18 25 -1 spell#, level (casts)
+End of Object.
+
+
+321	 Start of Object
+scroll quake earthquake ~	names
+a scroll of earthquake
+~
+A small scroll shakes perceptibly as you stroke it.
+~
+This parchment is covered with wild, wavery writing, barely
+legible in fact!  
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 650 321 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+20 25 -1 spell#, level (casts)
+End of Object.
+
+
+322	 Start of Object
+scroll distortion wall ~	names
+a scroll of distortion wall
+~
+A scroll offers glimpses of other worlds as you peer at it.
+~
+This fine parchment seems to offer means to other dimensions!
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 650 322 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+21 25 -1 spell#, level (casts)
+End of Object.
+
+
+323	 Start of Object
+scroll lightning ~	names
+a scroll of lightning
+~
+A crackles with electricity as you un-roll it.
+~
+This fine parchment is covered with a strange blue script that
+crawls across the page as you try to read it.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 650 323 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+22 25 -1 spell#, level (casts)
+End of Object.
+
+
+324	 Start of Object
+scroll meteorstorm ~	names
+a scroll of fire and brimstone!
+~
+A blood red scroll of hellfire and damnation lies here.
+~
+This fine parchment look as if it has the power to call down
+fiery wrath from on high!  One might even say, armageddon.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 650 324 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+25 25 -1 spell#, level (casts)
+End of Object.
+
+
+325	 Start of Object
+scroll restore ~	names
+a scroll of restore
+~
+A scroll of a soothing blue color lies here.
+~
+This fine, baby blue, parchment is covered with the scrawl that
+could only come from a doctor.  The scroll gives off a pungent odor,
+reminding you of medicine.
+
+~
+63 53 40 31 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 650 325 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+10 -1  -:| bitfield |:-
+30 25 -1 spell#, level (casts)
+End of Object.
+
+
+358	 Start of Object
+bag sack ~	names
+a large canvas sack
+~
+A large sack lies here unwanted.
+~
+This large sack is by no means beautiful, but it looks like it could hold
+quite a lot!
+
+~
+54 40 31 10 -1  -:| bitfield |:-
+0 0 100 0 32000 5 0 0 1 	extras
+1024 29 358 0 	cur_stats
+-1  -:| bitfield |:-
+0 75 100 -1 	 bag_stuff
+-1	affected_by
+13 13 13 13 13 37 99 4 87 342 182 -1	inv
+-1	stat_affects
+End of Object.
+
+
+400	 Start of Object
+pastry apple danish ~	names
+an apple-cinamon danish
+~
+A danish wrapped in a white paper lies here.
+~
+	This circular pastry is filled with a wonderful combination of 
+cinamon, sugar, apples and some kind of nut.  It makes your mouth water just
+thinking about it.
+
+~
+61 21 10 0 -1  -:| bitfield |:-
+0 0 100 0 100 1 0 0 0 	extras
+1024 75 400 0 	cur_stats
+-1	affected_by
+-1	inv
+100 5 101 -2 -1	stat_affects
+End of Object.
+
+
+401	 Start of Object
+key gate ~	names
+the key to Garland
+~
+The key to Garland's gates lies here.
+~
+	This is a large sturdy key, which is hardly ever used.  The guards
+rarely lock the gates, as the citizens regard the inconvenience as being more
+of a problem than a possible raid.
+
+~
+40 31 19 10 -1  -:| bitfield |:-
+0 0 100 0 50 2 0 0 0 	extras
+1024 435 401 0 	cur_stats
+-1	affected_by
+-1	inv
+-1	stat_affects
+End of Object.
+
+
+
+-1 END OF FILE
