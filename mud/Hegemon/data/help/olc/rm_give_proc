@@ -1,9 +1,0 @@
-Category:  OLC  Topic:  rm_give_proc
-
-
-
-This removes a give proc from any mob which has it.
-
-Syntax:  rm_give_proc [mob_num]
-
-See Also:  rm_bow_proc, rm_discuss_proc, rm_curse_proc, add_proc

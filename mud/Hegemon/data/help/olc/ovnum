@@ -1,9 +1,0 @@
-Category:  OLC  Topic:  ovnum
-
-
-
-List all objects with a given name.
-
-Syntax:   ovnum <starting_number> [name]
-
-See Also:  olist, dvnum, mvnum, olist, aolist
