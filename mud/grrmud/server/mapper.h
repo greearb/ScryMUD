@@ -2,7 +2,7 @@
 
 //
 //ScryMUD Server Code
-//Copyright (C) 1998  Ben Greear
+//Copyright (C) 2005  Edward Roper
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
-//                                     greearb@agcs.com
+// To contact the Author, Edward Roper: eroper@wanfear.com
 //
 
 #ifndef GRRMUD_MAPPER_INCLUDE_H

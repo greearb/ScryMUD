@@ -2511,6 +2511,11 @@ int do_junk(int do_msg, int i_th, const String* str1,
             }//if
             pc.GOLD += ((obj_ptr->PRICE / 50) + 1);
 
+            /* This special case is handled because bulletin board postings
+             * have post numbers which are treated like obj nums and therefore
+             * we'd accidently reduce cur_in_game counts for whatever objects
+             * the posting numbers coincided with
+             */
             if (!obj_ptr->isBulletinBoard()) {
                recursive_init_unload(*obj_ptr, 0);
             }

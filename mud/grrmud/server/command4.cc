@@ -3093,7 +3093,24 @@ int tog_oflag(int flagnum, const String* flag_type,
             case 54: //container
                if ( ! obj_ptr->isContainer() ) {
                   // was a container, now it's not.
-                  obj_ptr->inv.clearAndDestroy();
+                  Cell<object*> inv_cll(obj_ptr->inv);
+                  object* o_ptr;
+
+                  //reduce cur_in_game counts.
+                  while ( o_ptr = inv_cll.next() ) {
+                     recursive_init_unload(*o_ptr, 0);
+
+                     if (obj_ptr->isModified()) {
+                        delete obj_ptr;
+                     }//if is a SOBJ
+                     obj_ptr->inv.lose(inv_cll);
+                  }
+
+                  // clear_obj_list(inv); <-- Think this is missing
+                  // recursive_init_unloads. Maybe it shouldn't have it
+                  // though. If it should in fact call recursive_init_unloads,
+                  // I should fix it and use it instead of the above.
+
                   delete obj_ptr->bag;
                   obj_ptr->bag = NULL;
                } else {
