@@ -1,0 +1,18 @@
+Category:  OLC  Topic:  dset
+
+
+
+Dset is a command that allows you to set specific values on a door.
+It produces changes that can be permanent if one does a adsave AND
+an asave afterwords.
+
+Syntax:  dset <i_th> [door_name] [field_to_change] [new_value]
+
+Example: dset			// Lists all fields that can be set
+	 dset north key_num 5  	//keynum is now 5
+
+See Also:  mset, oset, rset, ch_rname, ch_rdesc, adsave, asave
+
+NOTE:  You must own the underlying door structure (ie have built it)
+	in order to change it.  However, if you are uncertain,
+	it won't hurt to try!

@@ -1,0 +1,19 @@
+Category:  Skills  Topic:  bash
+
+
+
+Bash is a fairly simplistic skill learned by some people interested
+in armed combat.  It attempts to stun a person for a short time.  During
+this time the opponent, if the attack is successful, will be unable to
+issue any commands.  The flip side is that the person who instigates the
+attack will also be immobile for one to three rounds of battle.  You can
+now bash doors (not all will open though).
+
+Syntax:  bash <i_th> target
+
+Example:  bash 2.guard
+	  bash gate
+
+Notes:  You don't have to specify a target if you are already fighting.
+
+See Also:  hit, skills

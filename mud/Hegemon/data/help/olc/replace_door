@@ -1,0 +1,15 @@
+Category:  OLC  Topic:  replace_door
+
+
+
+Replace an existing door in your current room with another.  This is the
+tool you use to make rooms with unique (hand made) doors.
+
+syntax: replace_door [new_door_num] [name_of_door_replacing]
+
+example:  replace_door 12 east
+
+See also:  olc, flip_door, delete_door, door_to, dlist
+
+Note:  You will probably want to flip the door from the view of the
+       destination room.

@@ -1,0 +1,13 @@
+Category:  OLC  Topic:  ch_kdesc
+
+
+
+This command allows you to change the description of a keyword in
+your current room, specified by an index.  You will be prompted for
+input after executing this command.
+
+usage:  ch_kdesc [keyword_index]
+
+
+See Also:  rstat, rm_keyword, stat_keyword, add_keyword, add_kname,
+           clear_keyword, keyword

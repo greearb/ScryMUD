@@ -1,0 +1,14 @@
+Category:  Skills  Topic:  disarm
+
+
+
+Disarm is a skill that will sometimes allow you to make
+your opponent drop their weapon.  Trying to disarm someone
+is tricky business, and often leaves you open for clear shots
+on your body, so use with care.
+
+Syntax:  disarm <i_th> [critter_name]
+
+NOTE:  You must be fighting said target.
+
+See Also:  skills

@@ -1,0 +1,12 @@
+Category:  OLC  Topic:  oload
+
+
+
+Loads an object into your inventory.
+
+Syntax:  oload [obj_num]
+
+Example:  oload 33		load object number 3, if it exists
+
+
+See Also:  aolist, olist, oclone, mload

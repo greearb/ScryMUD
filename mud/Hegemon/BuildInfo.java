@@ -16,8 +16,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
-//                                     greearb@agcs.com
+// To contact the Author, Ben Greear:  greearb@candelatech.com, (preferred)
+//                                     bgreear@mayannetworks.com
 //
 
 
@@ -46,8 +46,8 @@ public class BuildInfo {
 "along with this program; if not, write to the Free Software\n" +
 "Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.\n" +
 "\n" +
-" To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)\n" +
-"                                     greearb@agcs.com\n" +
+" To contact the Author, Ben Greear:  greearb@candelatech.com, (preferred)\n" +
+"                                     bgreear@mayannetworks.com\n" +
 "\n" +
 "</color>");
    }//getBuildInfo

@@ -1,0 +1,12 @@
+Category:  OLC  Topic:  mstat
+
+
+
+This function returns a great deal of information about a given PC or mobile.
+
+Syntax:  mstat <i_th> [person]
+
+Example:  mstat 21		Stat mob# 21.
+	  mstat 2.guard		Stat second guard in the room.
+
+See Also:  rstat, ostat, olc, mload, mset, tog_mflag

@@ -1,0 +1,15 @@
+Category:  OLC  Topic:  total_rezone
+
+
+
+Similar to 'rezone' but it ignores probabilities and loads everything.  This
+should always be done to a zone before you start to edit it, however it's
+effects carry over from reboots untill changed explicitly.  In other words,
+one <total_rezone> followed by a <write_zone> should be fine untill you decide
+to fully add it to the World, which will be the responsibility of the IMP or
+head builder.  It works on the zone you are in currently.
+
+
+Syntax:  total_rezone
+
+See Also:  zlock, rezone, write_zone, olc

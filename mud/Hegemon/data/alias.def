@@ -1,0 +1,34 @@
+z10 | zgoto 10
+~
+help_cmds3 | help put; help get; help drop; help drink; help eat; help open; help close; help sit; help stand; help sleep; help wake; help toggle; help brief; help give; help prompt
+~
+help_cmds2 | help hit; help kill; help bash; help bodyslam; help gossip; help yell; help tell; help emote
+~
+help_cmds4 | help amlist; help aolist; help arlist; help ch_rdesc; help delete_door; help dlist; help dstat; help enslave; help flip_door; help gag; help gecho; help ldwho; help make_builder; help mclone; help mlist
+~
+help_cmds6 | help tog_rflag; help total_rezone; help ungag; help write_zone; help zcreate; help zdisable; help zenable; help zlist; help zlock; help zunlock
+~
+help_cmds7 | help dvnum; help mvnum; help ovnum; help door_to; help sockets; help itrans; help aosave; thlep amsave; help zgoto; help mclear; help oclear; help mset; help oset; help rset; help force
+~
+help_cmds8 | help opurge; help rm_give_proc; help rm_discuss_proc; help rm_curse_proc; help rm_bow_proc; help add_proc; help unpost; help slist
+~
+help_cmds10 | help elf; help empty; help eq; help examine; help exits; help fill; help flee; help follow; help get; help give; help go; help group; help help; help hit; help hold; help human; help idea; help inventory; help junk; help list; help look; help move; help nogossip
+~
+help_cmds01 | help east; help west; help south; help north; help nw; help ne; help se; help sw;help up; help down; help northwest; help southwest; help go; help exits
+~
+help_cmds11 | help offer; help open; help order; help post; help practice; help prompt; help put; help quaf; help quit; help read; help recite; help remove; help rest; help save; help say; help score; help scribe; help sell; help shoot
+~
+help_cmds12 | help sit; help sleep; help stand; help tell; help theme; help time; help title; help toggle; help ungroup; help use; help wear; help who; help wield; help wimpy; help wizlist
+~
+help_cmds13 | help track; help curse; help discuss; help suicide; help pay; help lock; help unlock; help regeneration; help bodyslam; help hurl; help backstab; help picklock; help circle
+~
+help_cmds14 | help write_world; help where; help wake; help skin; help disarm; help claw; help circle; help classes; help ch_ddesc; help ch_osdesc; help ch_ondesc; help ch_mndesc; help ch_mdesc; help ch_odesc;
+~
+help_cmds15 | help add_oname; help races;
+~
+help_cmds9 | help abilities; help anitre; help bash; help brief; help bug; help buy; help cast; help channels; help close; help commands; help concoct; help construct; help credits; help darkling; help date; help drink; help drop; help eat
+~
+help_cmds5 | help reload; help mstat; help oclone; help olc; help olist; help oreload; help ostat; help rclear; help rclone; help replace_door; help reset_olc; help rezone; help rstat; ehlp see_all; help shutdown; help slay; help smob; help tog_mflag; help tog_oflag
+~
+cloneclif | rclone 2460
+~

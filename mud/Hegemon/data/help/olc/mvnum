@@ -1,0 +1,11 @@
+Category:  OLC  Topic:  mvnum
+
+
+
+List all mobs with a given name.
+
+Syntax:  mvnum <starting_number> [name]
+
+Example:  mvnum 50 guard		list all guards from vnum 50 and up
+
+See Also:  ovnum, dvnum, mlist, amlist, mload

@@ -1,0 +1,21 @@
+Category:  OLC  Topic:  save_obj
+
+
+
+This command is strange and powerful.  It will allow you to change a
+SOBJ (a modified Object) back into an Object (unmodified).  It isn't always
+perfect, but it's a good way to give an already built object another
+piece of inventory for example.  You must do an aosave to make it permanent.
+
+For example, you want to have a bag load with a sword in it.  Currently
+it doesnt, so you oload the bag, oload the sword, put the sword in the bag,
+and do a save_obj on the bag.  Do an aosave (in the home zone of the bag object
+of course), and it should work.  You can test by oloading the bag and seeing
+what is in it...
+
+Syntax:  save_obj <i_th> [obj_name]
+
+Example:  save_obj 2.bag
+
+
+See Also:  oset, put, ostat, aosave

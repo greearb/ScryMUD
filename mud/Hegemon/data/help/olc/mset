@@ -1,0 +1,30 @@
+Category:  OLC  Topic:  mset
+
+
+
+Used to set values on a mob or pc.  They must be in your current room.
+This can be used in conjunction with 'amsave' to permanently change
+the data base.  Note that some changes are restricted to only the
+highest players.  No immortal can change a higher-level immortal's
+stats, and no immortal below level 9 can change a pc's stats.
+
+If you wish to modify the database directly, without worrying about
+whether or not your target is a MOB or SMOB, then use DB for the
+mob name, and make i_th the mob number.  See NOTE at bottom.
+
+Syntax:  mset		// shows what you can set
+         mset <i_th> [mob] [thing_to_set] [new_value]
+         mset <i_th> DB    [thing_to_set] [new_value]
+
+Example: mset
+	 mset 2.warrior max_hp 365   //set warrior's max_hp to 365
+         mset 195 DB max_hp 365      //set mob number 195's max_hp to 365
+
+
+See Also:  oset, rset, amsave, tog_mflag, SMOB, mstat
+
+NOTE:  If your target is a MOB as apposed to a SMOB 
+        (mstat will tell you)
+        then you will be changing the database, otherwise, only that
+       	particular target will be affected, not the database.
+       	You still must do an amsave to make changes to DB permanent.

@@ -1,0 +1,20 @@
+Category:  Immortal  Topic:  dsys
+
+
+
+Displays some low level information dealing with the actual server
+code.  Used for trouble-shooting code problems mostly.
+
+It now will display the definitions for most of the flags used
+in ScryMUD, especially those relating to Objects, Critters, Rooms
+and Doors.
+
+Entity types are: doors, objects, rooms, and critters.
+
+Syntax:  dsys             # Shows memory usage and debugging info.
+Syntax:  dsys flags [for-entity]     # Shows the flags defined.
+Syntax:  dsys dump_logs   # Force a flush of the logging system, this
+	                  # will produce a ./log/onDemand.log file.
+
+
+See Also:  who, sockets, ldwho, uptime, mset, oset, dset, rset

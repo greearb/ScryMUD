@@ -1,0 +1,13 @@
+Category:  Immortal  Topic:  zenable
+
+
+
+This command adds a builder to an area as an owner.  In other words, now this
+person can edit the zone.
+
+Syntax:  zenable [zone_num] [player_name]
+
+Example:  zenable 5 dagath	Dagath can now edit zone 5.
+
+
+See Also:  zcreate, zdisable, zlist, write_zone, zgoto

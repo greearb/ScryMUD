@@ -1,0 +1,18 @@
+Category:  Immortal  Topic:  teach
+
+
+
+This command teaches a person a skill.  You must be level 5 immort or
+more to use this.  It may be further restricted in the future.  It definately
+will if someone abuses it.  One should never teach a mortal anything, except
+as prizes for quests, and perhaps debugging if we're in beta still.
+
+Syntax:  teach <i_th> [target] [skill_name]
+
+Example:  teach shamu 'bodyslam'
+
+See Also:  practice, abilities
+
+Notes:  It can only be used on PC's.  They can be anywhere in the game, 
+but must be logged on and not link-dead.  If the skill name is two words,
+you must surround it in single quotes as usual.

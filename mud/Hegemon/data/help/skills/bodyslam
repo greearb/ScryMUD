@@ -1,0 +1,13 @@
+Category:  Skills  Topic:  bodyslam
+
+
+
+This skill is pretty spectacular and does a good ammount of damage.  It
+can also stun the victim for up to 4 rounds of battle.
+
+Syntax:  bodyslam <i_th> <victim>
+
+Example:  bodyslam	     // attempt to slam whoever you are fighting
+	  bodyslam 2.guard   // slam the second guard
+
+See Also:  bash, skills

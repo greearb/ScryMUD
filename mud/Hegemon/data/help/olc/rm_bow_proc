@@ -1,0 +1,10 @@
+Category:  OLC  Topic:  rm_bow_proc
+
+
+
+Removes a bow proc from a mob.  You must save the objects in the zone
+before the changes will be permanent:  <aosaave>
+
+Syntax:  rm_bow_proc [mob_num]
+
+See Also:  rm_give_proc, add_proc, aosave

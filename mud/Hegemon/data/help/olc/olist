@@ -1,0 +1,14 @@
+Category:  OLC  Topic:  olist
+
+
+
+These functions give the names of their respective objects as stored in
+memory.  Useful for olc and general data-base exploration.
+
+synopsis:  olist [first item] [second item]
+
+examples:  olist	Will show objects 1 - 21
+           olist 14	Will show objects 14 - 34
+           olist 14 20  Will show objects 14 - 20
+
+See also:  olc, ostat, mlist, rlist, dlist, oload

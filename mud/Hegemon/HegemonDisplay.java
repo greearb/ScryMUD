@@ -1,5 +1,5 @@
-// $Id: HegemonDisplay.java,v 1.4 1999/06/22 05:33:08 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/22 05:33:08 $
+// $Id: HegemonDisplay.java,v 1.5 2001/03/31 07:05:59 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 2001/03/31 07:05:59 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -19,8 +19,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
-//                                     greearb@agcs.com
+// To contact the Author, Ben Greear:  greearb@candelatech.com, (preferred)
+//                                     bgreear@mayannetworks.com
 //
 
 import java.awt.*;
@@ -65,6 +65,24 @@ class HegemonDisplay extends Panel {
       //this.add("South", hbar);
       this.add("East", vbar);
    }//constructor
+
+
+   public Dimension getPreferredSize() {
+      if (hm.getClientDisplay() != null) {
+         int w = hm.getClientDisplay().getWidth() - 20;
+         int h = hm.getClientDisplay().getHeight() - 180;
+         return new Dimension(w, h);
+      }
+      return new Dimension(800, 700);
+   }
+
+   public Dimension getMinimumSize() {
+      return getPreferredSize();
+   }
+
+   public Dimension getMaximumSize() {
+      return getPreferredSize();
+   }
 
 //   public Dimension getPreferedSize() {
 //      return new Dimension(800, 1000);
@@ -182,6 +200,7 @@ class HegemonDisplay extends Panel {
 
       super.paint(g);
    }//paint
+   
 }//HegemonDisplay
 
 

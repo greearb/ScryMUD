@@ -1,0 +1,21 @@
+<color = blue>
+
+Welcome to ScryMUD Help system.  The help is arranged under several
+categories, which you may view by pulling down the 'Indexes' menu.
+
+Just chose an index to view, and pop it up.  From there you will
+be able to view certain topics.  If a topic is not there, and you
+still think the MUD has help on this item, try typing:
+
+<color = red>help <topic> </color>
+
+at your command line.  Whenever you ask the MUD server for help, the
+results should be stored in this help sytem.  If you are not connected
+to a MUD server, then you will just have to make do with what ever
+has already been cached in the help system...
+
+Enjoy,
+
+Ben Greear
+
+</color>

@@ -1,0 +1,16 @@
+Category:  Immortal  Topic:  itrans
+
+
+
+Transport mobs or pc's in your CURRENT room to any valid room.  You can trans
+any pc, who is not linkdead (which can be easily changed if need appears),
+to any valid room.
+
+Syntax:  itrans <i_th> [target] <rm_num>
+
+Example:  itrans dagath    //trans dagath to your CURRENT room
+          itrans shade 666  //trans shade to room 666
+
+
+Note:  You can only trans someone to room#1 if you are IN this room.  This
+is due to parser peculiarities.

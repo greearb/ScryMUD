@@ -1,0 +1,196 @@
+<color blue>
+                      Help for OLC Mobile creation.
+<color=red>
+Names:</color>
+	Names are handles by which a player may interact with the
+mob.  It is best if at least one of the names is somewhat general
+so that players aren't frusterated.  At the same time, you may wish to
+frusterate them at times...  The first name given is what the game uses
+when it needs an mob name, but others are searched when a user tries
+to interact with in in some way.  The names should be single words seperated
+by spaces.
+<color=red>
+Short Description:</color>
+	This should be a sentence fragment with no period after it.  This
+description is used by the game as follows:  Scrubal hits <short_description>
+Do not capatalize it unless it should be capatalized within the body of a
+sentence.
+For Example:  
+	a citadel guard
+<color=red>
+In Room Desc:</color>
+	The in_room description is what shows when the mob is in a room
+and a person does a 'look' in that room (or simply travels to it.)
+Should be a complete sentence, no more than 80 characters long (one line.)
+<color=red>
+Long Description:</color>
+	This is what is shown when a player 'looks' at an mobile.  This
+should be concise yet complete.  I recomend 2-8 lines, but the server will
+accept any number of lines, as long as there is at least one.
+<color=red>
+Mob Flags:</color>
+	These determine the (default) state of the mobile and restrict
+or enable certain actions upon the mobile.  Please read over the list
+well to acquaint yourself with them.  They should be fairly self
+explanatory.  Please make sure the flags agree with each other logically,
+as the MUD server does not check this too well.
+<color=red>
+Miscellaneous Data:</color>
+	NOTE:  Please see the web page for a discussion on the ranges we
+		suggest for these values.
+	Gold:  The amount of gold the mob is carrying.
+	Exp Worth:  This is the number of experience points are distributed
+		to this mobs's killer(s).
+	Bank Gold:  How much does this mob have in the bank.  This is not
+		yet supported well in the game, so zero is a good value.
+<color=red>
+Visibility Bits:</color>
+	Add up these numbers to arrive at the visibility of the
+mobile:  {1 dark, 2 invis, 4 hidden, 8 god_invis1, 16 god_invis2}
+<color=red>
+See Bits:</color>
+	Add up these numbers to arrive at the bits which represent what
+the mobile can detect.  These values directly relate the the 'visibility bits'
+seen here and in other places.  
+{1 dark, 2 invis, 4 hidden, 8 god_invis1, 16 god_invis2}
+<color=red>
+Critter Stats:</color>
+	These go a long way towards making the mobile who he/she/it is.
+Here are the value ranges supported. 
+	NOTE:  Web pages have discussions of appropriate values, or ask online.
+ 	POS:  <color=black>{0 stand, 1 prone, 2 sit, 3 rest, 4 sleep, 5 med,
+		6 stun, 7 dead}</color>
+	STR, INT, CON, CHA, WIS, DEX:  1-18
+        HIT, DAM, AC:  See web pages, or ask around.
+	ATTACKS (per round):  1-3 (12)pause_count {0 is good}, 
+	SEX: <color=black> {0 female, 1 male, 2 neuter}</color>
+	CLASS:<color=black> {1 Warrior, 2 Sage, 3 Wizard, 4 Ranger, 5 Thief,
+		6 Alchemist, 7 Cleric, 8 Bard}</color>
+	RACE: <color=black>{1 human, 2 anitre, 3 avintre, 4 darkling, 5 drow,
+           6 dragon, 7 dwarf, 8 ironclad, 9 ogrue, 10 rocktroll,
+           11 elf, 12 faerie, 13 entity, 14 sombrian, 15 undead,
+           16 animal, 17 monster}</color>
+	HP, MANA, MOV:  default (starting) values for this mobile
+	LEVEL: 1-40
+	HOME TOWN:  The number from which is the mobile.  Does NOT have to be
+		your current zone of course.
+	HP_MAX, MA_MAX, MV_MAX:  Maximum values of Hit, Mana and Movement points.
+	Damage_Rec_divisor:  100 is normal, the raw damage inflicted on a mob
+		is then multiplied by 100/Damage_Rec_Divisor to determine the
+		real damage inflicted.  You can do the math!
+	Dam_Given_Mult:  100 is normal, the raw damage inflicted by a mob is first
+		multiplied by Dam_Given_Mult/100 before it is applied to the target.
+	Heat_Resis, Cold_Resis, Elect_resis, Spell_resis:  These specify a mob's
+		resistance to these things.  Range is -50 to 200, the lower the
+		the value the more resistance the mobile has.  See web pages for
+		more discussion.
+	Religion:<color=black> { 0 none, 1 fire, 2 ice, 3 air, 4 earth, 5 beast,
+		6 blade }</color>  These do not affect much at this time, but set
+		them anyway if applicable, so when I get the code in, your mobiles
+		will behave accordingly.
+	BH_Dice_Cnt:  The 4 in 4d5.  This applies to the mob when not wielding
+		a weapon only.
+	BH_Dice_Side:  The 5 in 4d5.  This applies to the mob when not wielding
+		a weapon only.
+	HP_REGEN, MA_REGEN, MV_REGEN:  These are the percentages of normal that
+		the mob regenerates at.  Range accordingly, but keep less than
+		1000, unless you get my (Grock or other Admin) permission first.
+	GUILD:  Zero for now, code not in.
+<color=red>
+EQ:</color>
+	Enter eq in (<<object number> <<position>) pairs.
+Example:  8 1
+<color=black>
+Positions: 1 head, 2 neck, 3 neck, 4 around body, 5 arms, 6 wrist, 7 wrist,
+8 hands, 9 wielded, 10 held, 11 light, 12 body, 13 belt, 14 legs,
+15 feet, 16 finger, 17 finger, 18 shield.</color>
+<color=red>
+Affected By:</color>
+	Enter affected by as (<<spell number> <<duration>) pairs.
+These spells will affect the mobile by default, for the duration given.
+For instance one might have the mob affected by Sanctuary by default.  Get
+the spell numbers from the web page, or with the 'slist' command.
+The duration is in ticks, -1 means forever.
+<color=red>NOTE:  The spell's affects ARE NOT DONE TO THE MOBILE.  You must
+build those in as you go.  This would affect a player's ability to cast or 
+re-cast certain spells though, as the game dictates.</color>
+<color=red>
+Max In Game:</color>
+	How many can be loaded into the game at once?
+<color=red>
+Skin Number:</color>
+	What is the object number of this critter's skin.  The default of
+zero means the game will create a 'generic' skin for the critter when he/she/it
+dies, otherwise the object number given here will become the skin.  It can be
+retrieved from the corpse by the 'skin' skill.  Neat eh? :)
+<color=red>
+Inventory:</color>
+	This is a list of space-seperated object numbers that will automatically
+be loaded onto the mob, based on their individual load percentages.  The 'olist'
+and 'aolist' command are good for getting these object numbers.
+<color=red>
+Posn Guarding:</color>
+	If mob is to be a sentinel, give direction guarding:<color=black>
+{1 east, 2 west, 3 north, 4 south, 5 southeast, 6 northeast, 7 northwest,
+ 8 southwest, 9 up, 10 down}</color>
+This will cause this mob to block anyone from going in that direction.
+<color=red>
+Behavior:</color>
+	These are used to control the behavior (AI) of the mob.  Just fill these
+out truthfully, and leave it up to the server to dictate how the mob reacts to
+a given situation.  Comments welcome on this btw.<color=black>
+	Skill Activity: (how often should the mob use skills, -10 never, 10 always)
+	benevolence (-10 very aggressive, 10 very peaceful)
+	defensiveness (-10 must hurt others, 10 maximum self preservation)
+	bad_assedness (-10 Barney, 10 Snake Pliskin)
+	social_awareness (-10 who_cares, 10 Ghandi!)</color>
+<color=red>
+Special Procedure Flags:</color>
+	These help determine the behavior of the mobile.  Those of special note
+include same_race_pass and same_class_pass, which refer to Sentinels (see above).
+Same align only, same class only, and is a racist, refer to spec procs, and how
+they will interact with others.  Click on the has_mob_**_proc to get the server
+to prompt you for details on these procs.  NOTE:  You can't enter this data via
+the GUI, per se, but a pop-up box will give you a place to enter the data.  Check
+the main console window for the prompt.  Perhaps one day it'll be in the GUI, but
+just too much boring coding for now...
+<color=red>
+Markup percentage:</color>
+	This is only valid for SHOPKEEPERS, this number divided by 100 will
+multiplied against the 'price' of the object in question to get the selling
+price the shop keeper will ask.
+<color=red>
+Buy percentage:</color>
+	This is only valid for SHOPKEEPERS, this number divided by 100 will
+multiplied against the 'price' of the object in question to get the buying
+price the shop keeper will offer and give.
+<color=red>
+Open and Close time:</color>
+	These are in military time, 0 - 23 are valid values.  The shopkeeper
+won't sell during off hours of course...
+<color=red>
+Shop Data Flags:</color>
+	For SHOPKEEPERS ONLY, this dictates what they deal in.  Choose as many
+as you wish.  However, leave the first three **_proc0 checked.  Those are the one
+and only procs available at this time.
+<color=red>
+Permanent Inventory:</color>
+	These are the objects that the shopkeeper will NEVER SELL OUT OF.
+Only put extremely expensive, or extremely mundane objects here to keep the
+game balanced.  Enter a space-seperated list of object numbers.
+<color=red>
+Teacher Flags:</color>
+	These flags give the classes that this teacher is qualified to teach.
+These are only valid if the TEACHER flag is checked in the panel before.
+<color=red>
+Submit:</color>
+	Sends the data to the MUD server.  If the data is acceptable, then
+the object will be created, otherwise you may be prompted by a pop-up box.
+Check the output from the MUD, on the main console screen, for verication
+or errors or prompts for more/different input.
+<color=red>
+Cancel:</color>
+	Do not send the data.  If it has already been sent once, canceling
+WILL NOT AFFECT THE MUD IN ANY WAY.  Usually one presses cancel after
+submitting, unless they wish to create another, similar, mobile..
+</color>

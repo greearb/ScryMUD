@@ -1,0 +1,18 @@
+Category:  OLC  Topic:  ch_zname
+
+
+
+This command allows level 9 and above immorts to change the name
+of a zone.
+
+NOTE:  You must put names of more than one word in single
+	quotes.
+
+usage:  ch_zname [zone_num] ['new name']
+
+Example: ch_zname 10 'Dreaded Newbie Zone'
+	 ch_zname 10 Newbania
+
+
+
+See Also:  zlist, zenable, zdisable, zcreate

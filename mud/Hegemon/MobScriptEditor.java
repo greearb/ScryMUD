@@ -1,5 +1,5 @@
-// $Id: MobScriptEditor.java,v 1.11 2001/03/29 03:02:24 eroper Exp $
-// $Revision: 1.11 $  $Author: eroper $ $Date: 2001/03/29 03:02:24 $
+// $Id: MobScriptEditor.java,v 1.12 2001/03/31 07:05:59 greear Exp $
+// $Revision: 1.12 $  $Author: greear $ $Date: 2001/03/31 07:05:59 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -19,8 +19,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
-//                                     greearb@agcs.com
+// To contact the Author, Ben Greear:  greearb@candelatech.com, (preferred)
+//                                     bgreear@mayannetworks.com
 //
 
 import java.awt.*;

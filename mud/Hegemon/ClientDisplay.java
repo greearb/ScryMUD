@@ -1,5 +1,5 @@
-// $Id: ClientDisplay.java,v 1.12 2001/03/29 03:02:24 eroper Exp $
-// $Revision: 1.12 $  $Author: eroper $ $Date: 2001/03/29 03:02:24 $
+// $Id: ClientDisplay.java,v 1.13 2001/03/31 07:05:58 greear Exp $
+// $Revision: 1.13 $  $Author: greear $ $Date: 2001/03/31 07:05:58 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -19,8 +19,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
-//                                     greearb@agcs.com
+// To contact the Author, Ben Greear:  greearb@candelatech.com, (preferred)
+//                                     bgreear@mayannetworks.com
 //
 
 import java.awt.event.*;
@@ -64,6 +64,14 @@ class ClientDisplay extends Frame {
    public ClientDisplay(HegemonManager h) {
       super("Hegemon Client");
       hm = h;
+
+      addWindowListener(new WindowAdapter() {
+         public void windowClosed(WindowEvent e) {
+            quit();
+         };
+         public void windowClosing(WindowEvent e) {
+            quit();
+         }});
 
       //our help system :)
       hf = hm.getHelpFrame();
@@ -375,17 +383,14 @@ class ClientDisplay extends Frame {
       setLayout(gridbag);
       int REM = c.gridwidth = GridBagConstraints.REMAINDER;
       c.fill = GridBagConstraints.BOTH;
-      c.weightx = 1.0;
-      c.weighty = 2.0;
 
+      c.weighty = 1.0;
+      c.weightx = 1.0;
       gridbag.setConstraints(output_field, c);
       add(output_field);
 
       //Input Field
-      //c.gridwidth = REM;
-      c.weighty = 1.0;
-      //c.weightx = 1.0;
-      c.fill = GridBagConstraints.BOTH;
+      c.fill = GridBagConstraints.NONE;
       gridbag.setConstraints(input_field, c);
       add(input_field);
 
@@ -393,7 +398,7 @@ class ClientDisplay extends Frame {
       do_actions_disable();
       
       this.pack();
-      setSize(650, 600);
+      setSize(750, 700);
    }//constructor
 
    void do_open_connection() {

@@ -1,5 +1,5 @@
-// $Id: InputArea.java,v 1.4 1999/06/05 23:29:12 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+// $Id: InputArea.java,v 1.5 2001/03/31 07:05:59 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 2001/03/31 07:05:59 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -19,8 +19,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
-//                                     greearb@agcs.com
+// To contact the Author, Ben Greear:  greearb@candelatech.com, (preferred)
+//                                     bgreear@mayannetworks.com
 //
 
 import java.awt.event.*;
@@ -36,6 +36,22 @@ public class InputArea extends Panel {
    HegemonManager hm;
    boolean ctrl_down = false;
 
+
+   public Dimension getMinimumSize() {
+      return getPreferredSize();
+   }
+
+   public Dimension getMaximumSize() {
+      return getPreferredSize();
+   }
+
+   public Dimension getPreferredSize() {
+      if (hm.getClientDisplay() != null) {
+         return new Dimension(hm.getClientDisplay().getWidth(), input_field.getHeight());
+      }
+      return new Dimension(800, 150);
+   }
+
    public InputArea(ClientDisplay disp, HegemonManager h) {
       hm = h;
    
@@ -43,7 +59,7 @@ public class InputArea extends Panel {
       en = new ExitNavigator(disp, hm);
       setLayout(new FlowLayout());
 
-      input_field = new TextArea("", 7, 60, TextArea.SCROLLBARS_VERTICAL_ONLY);
+      input_field = new TextArea("", 6, 60, TextArea.SCROLLBARS_VERTICAL_ONLY);
       input_field.setBackground(new Color(255, 255, 215));
 
       input_field.setEnabled(true);

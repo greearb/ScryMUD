@@ -1,0 +1,11 @@
+Category:  OLC  Topic:  ch_mdesc
+
+
+
+This allows you to change the long description of the mobile
+in question.  It is interactive and you may enter it a line
+at a time if you wish.
+
+Syntax:  ch_mdesc [mob_number]
+
+See Also:  mlist, amlist, mstat

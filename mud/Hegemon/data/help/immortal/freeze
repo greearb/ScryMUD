@@ -1,0 +1,15 @@
+Category:  Immortal  Topic:  freeze
+
+
+
+Similar to gag, but it renders a person helpless to affect the MUD,
+including him/her self.  This is a severe punishment and should be
+treated accordingly.
+
+Syntax:  freeze [target]
+
+Example:  freeze HoseYerMom
+
+See Also:  gag, thaw
+
+Note:  You cannot abbreviate this command
