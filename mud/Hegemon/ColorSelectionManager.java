@@ -1,5 +1,5 @@
-// $Id: ColorSelectionManager.java,v 1.5 1999/06/05 23:29:12 greear Exp $
-// $Revision: 1.5 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+// $Id: ColorSelectionManager.java,v 1.6 2001/03/30 07:01:51 greear Exp $
+// $Revision: 1.6 $  $Author: greear $ $Date: 2001/03/30 07:01:51 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -79,8 +79,24 @@ class ColorSelectionManager extends Frame {
       try {
          readObject();
       }
-      catch (IOException e) {
+      catch (Exception e) {
          Log.instance().wrn("WARNING:  ColorSelectionManager():  " + e);
+
+         // Add some default values...
+         door_list.initObject(0, 80, 50, "Dialog", "10", "PLAIN");
+         door_list.initObject(200, 50, 20, "Dialog", "10", "PLAIN");
+         item_list.initObject(90, 0, 50, "Dialog", "10", "PLAIN");
+         rm_desc.initObject(0, 115, 0, "Monospaced", "12", "PLAIN");
+         rm_short_desc.initObject(20, 70, 0, "Dialog", "12", "BOLD");
+         gossip.initObject(20, 20, 255, "Dialog", "12", "ITALIC");
+         tell.initObject(200, 80, 40, "Dialog", "12", "ITALIC");
+         yell.initObject(200, 0, 100, "Dialog", "12", "ITALIC");
+         auction.initObject(250, 80, 15, "Dialog", "12", "ITALIC");
+         battle.initObject(255, 0, 255, "Dialog", "12", "PLAIN");
+         other.initObject(0, 0, 0, "Monospaced", "12", "PLAIN");
+         say.initObject(200, 100, 30, "Dialog", "12", "ITALIC");
+         back_ground.initObject(240, 230, 210, "Dialog", "10", "PLAIN");
+         input.initObject(80, 0, 80, "Dialog", "10", "PLAIN");
       }
 
       sp = new ScrollPane();
@@ -148,11 +164,10 @@ class ColorSelectionManager extends Frame {
       p.add(cs_buttons);
 
       sp.add(p);
-      sp.setSize(650, 475);
       add(sp);
       sp.setScrollPosition(0, 0);
-
       pack();
+      setSize(650, 475);
    }//constructor
 
    public final Color getDoorListSelection() {
@@ -314,8 +329,8 @@ class ColorSelectionManager extends Frame {
 
    public void readObject() throws IOException {
       String af = hm.getProperties().getProperty("ColorFile");
-      BIStream istream;
-      
+      BIStream istream = null;
+
       if (hm.IS_APPLET) {
          URL url = new URL(af);
          istream = new BIStream(url.openStream());
@@ -323,8 +338,6 @@ class ColorSelectionManager extends Frame {
       else {
          istream = new BIStream(new FileInputStream(af));
       }
-
-      String rslt;
 
       if (istream == null)
          return;

@@ -1,5 +1,5 @@
-// $Id: ActionFrame.java,v 1.3 1999/06/05 23:29:11 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:11 $
+// $Id: ActionFrame.java,v 1.4 2001/03/30 07:01:51 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 2001/03/30 07:01:51 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -41,8 +41,12 @@ class ActionFrame extends Frame {
       try {
          readObject();
       }
-      catch (IOException e) {
+      catch (Exception e) {
          Log.instance().err("ActionFrame():  " + e);
+
+         // Poke in some default values...
+         actions.add("^Enter thy name: | admin");
+         actions.add("^Enter your password: | admin");
       }
 
       actions.addActionListener(new ActionListener() {
@@ -66,7 +70,7 @@ class ActionFrame extends Frame {
    }
    
    public void addAction(Action act) {
-      actions.addItem(act.toString());
+      actions.add(act.toString());
       try {
          writeObject();
       }
@@ -78,7 +82,7 @@ class ActionFrame extends Frame {
    }
 
    public void addAction(String glom) {
-      actions.addItem(glom);
+      actions.add(glom);
       try {
          writeObject();
       }
@@ -215,7 +219,7 @@ class ActionFrame extends Frame {
       try {
          while ((rslt = istream.readLine()) != null) {
             if ((rslt.trim()).equals("~")) {
-               actions.addItem((action.toString()).trim());
+               actions.add((action.toString()).trim());
                action = new StringBuffer(200);
             }
             else {

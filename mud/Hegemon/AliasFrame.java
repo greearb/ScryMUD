@@ -1,5 +1,5 @@
-// $Id: AliasFrame.java,v 1.3 1999/06/05 23:29:11 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:11 $
+// $Id: AliasFrame.java,v 1.4 2001/03/30 07:01:51 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 2001/03/30 07:01:51 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -41,8 +41,13 @@ class AliasFrame extends Frame {
       try {
          readObject();
       }
-      catch (IOException e) {
+      catch (Exception e) {
          Log.instance().err("AliasFrame():  " + e);
+         
+         // Poke in some defaults
+         aliases.add("z10 | zgoto 10");
+         aliases.add("cloneclif | rclone 2460");
+
       }
 
       aliases.addActionListener(new ActionListener() {
@@ -58,7 +63,7 @@ class AliasFrame extends Frame {
    }//constructor
 
    public void addAlias(Alias act) {
-      aliases.addItem(act.toString());
+      aliases.add(act.toString());
       //Log.it("Writing out aliases.");
       try {
          writeObject();
@@ -78,7 +83,7 @@ class AliasFrame extends Frame {
    }
    
    public void addAlias(String glom) {
-      aliases.addItem(glom);
+      aliases.add(glom);
       //Log.it("Writing out aliases.");
       try {
          writeObject();
@@ -210,7 +215,7 @@ class AliasFrame extends Frame {
       try {
          while ((rslt = istream.readLine()) != null) {
             if ((rslt.trim()).equals("~")) {
-               aliases.addItem((alias.toString()).trim());
+               aliases.add((alias.toString()).trim());
                alias = new StringBuffer(200);
             }
             else {

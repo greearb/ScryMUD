@@ -1,5 +1,5 @@
-// $Id: HelpIndex.java,v 1.3 1999/06/05 23:29:12 greear Exp $
-// $Revision: 1.3 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+// $Id: HelpIndex.java,v 1.4 2001/03/30 07:01:51 greear Exp $
+// $Revision: 1.4 $  $Author: greear $ $Date: 2001/03/30 07:01:51 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -55,7 +55,7 @@ class HelpIndex extends Frame {
       try {
          readObject();
       }
-      catch (IOException e) {
+      catch (Exception e) {
          Log.instance().err("HelpIndex():  " + e);
       }
 
@@ -221,6 +221,9 @@ class HelpIndex extends Frame {
       fl = fl.toLowerCase();
       
       try {
+         File dr = new File(base_dir + System.getProperty("file.separator")+ category);
+         dr.mkdirs();
+
          BOStream ostream =
            new BOStream(new FileOutputStream(base_dir +
                                              System.getProperty("file.separator")

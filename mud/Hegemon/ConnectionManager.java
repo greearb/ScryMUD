@@ -1,5 +1,5 @@
-// $Id: ConnectionManager.java,v 1.6 1999/06/23 04:16:05 greear Exp $
-// $Revision: 1.6 $  $Author: greear $ $Date: 1999/06/23 04:16:05 $
+// $Id: ConnectionManager.java,v 1.7 2001/03/30 07:01:51 greear Exp $
+// $Revision: 1.7 $  $Author: greear $ $Date: 2001/03/30 07:01:51 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -53,8 +53,13 @@ class ConnectionManager extends Frame {
       try {
          readObject();
       }
-      catch (IOException e) {
-         Log.instance().err("ConnectionManager:  " + e);
+      catch (Exception e) {
+         Log.instance().wrn("ConnectionManager:  " + e);
+
+         // Set some defaults.
+         hosts.add("ScryMUD DEV | scry.wanfear.com | 4445");
+         hosts.add("Scry@WANfear | scry.wanfear.com | 4444");
+         hosts.add("ScryMUD | localhost | 4000");
       }
       
       setLayout(new BorderLayout());
@@ -64,11 +69,11 @@ class ConnectionManager extends Frame {
    }
 
    public void addHost(HostAddr ha) {
-      hosts.addItem(ha.toString());
+      hosts.add(ha.toString());
    }
 
    public void addHost(String str) {
-      hosts.addItem(str);
+      hosts.add(str);
       try {
          writeObject();
       }
@@ -203,7 +208,7 @@ class ConnectionManager extends Frame {
       try {
          while ((rslt = istream.readLine()) != null) {
             if ((rslt.trim()).equals("~")) {
-               hosts.addItem((action.toString()).trim());
+               hosts.add((action.toString()).trim());
                action = new StringBuffer(200);
             }
             else {

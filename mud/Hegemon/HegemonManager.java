@@ -1,5 +1,5 @@
-// $Id: HegemonManager.java,v 1.10 1999/06/23 04:16:05 greear Exp $
-// $Revision: 1.10 $  $Author: greear $ $Date: 1999/06/23 04:16:05 $
+// $Id: HegemonManager.java,v 1.11 2001/03/30 07:01:51 greear Exp $
+// $Revision: 1.11 $  $Author: greear $ $Date: 2001/03/30 07:01:51 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -60,7 +60,7 @@ class HegemonManager extends Object {
       Log.instance().err(BuildInfo.getBuildInfo());
 
       props = new Properties();
-      /* props are kept in:  $HOME/hegemon/hegemon.properties */
+
       try {
          if (!is_applet) {
             props.load(new FileInputStream(prop_file));
@@ -79,12 +79,34 @@ class HegemonManager extends Object {
          }
       }
       catch (Exception e) {
-         new MessageDialog("Error reading properties file.", e.toString(),
-                           "red", "black");
+         //new MessageDialog("Error reading properties file.", e.toString(),
+         //                  "red", "black");
          Log.instance().trc("HegemonManager, loading hegemon.properties file: " 
                             + e);
          Log.instance().trc("Properties file:  " + prop_file);
+
+         // Set up defaults
+         props.setProperty("AliasFile", "data" + System.getProperty("file.separator") + "alias.def");
+         props.setProperty("ActionFile", "data" + System.getProperty("file.separator") + "actions.def");
+         props.setProperty("HostFile", "data" + System.getProperty("file.separator") + "hosts.def");
+         props.setProperty("ColorFile", "data" + System.getProperty("file.separator") + "colors.def");
+         props.setProperty("HelpFileBaseDir", "data" + System.getProperty("file.separator") + "help");
+         props.setProperty("HelpTopicsFile", "scry_topics_list");
       }
+
+
+      if (!is_applet) {
+         try {
+            // Make some directories
+            File fl = new File(props.getProperty("HelpFileBaseDir"));
+            fl.mkdirs();
+         }
+         catch (Exception e) {
+            Log.instance().trc("Warning: " + e);
+         }
+      }
+
+
 
       IS_APPLET = is_applet;
       

@@ -1,5 +1,5 @@
-// $Id: ContextColorPair.java,v 1.4 1999/06/05 23:29:12 greear Exp $
-// $Revision: 1.4 $  $Author: greear $ $Date: 1999/06/05 23:29:12 $
+// $Id: ContextColorPair.java,v 1.5 2001/03/30 07:01:51 greear Exp $
+// $Revision: 1.5 $  $Author: greear $ $Date: 2001/03/30 07:01:51 $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -190,7 +190,6 @@ class ContextColorPair extends Panel {
    /** context will now change */
    public void readObject(BIStream istream) throws IOException {
       int r,g,b;
-      color = null;
       int version = 0;
 
       r = istream.readInt();
@@ -202,6 +201,26 @@ class ContextColorPair extends Panel {
 
       g = istream.readInt();
       b = istream.readInt();
+
+      istream.readToken(); //context, it's set at construction currently
+
+      String fn = "Dialog";
+      String fs = "12";
+      String ft = "Plain";
+
+      if ((version & 1024) > 0) {
+         // read the font stuff too
+         fn = istream.readToken();
+         fs = istream.readToken();
+         ft = istream.readToken();
+      }
+      initObject(r, g, b, fn, fs, ft);
+      //istream.readLine();
+   }//read
+
+
+   protected void initObject(int r, int g, int b, String fn, String fs, String ft) {
+      color = null;
 
       red.setText(String.valueOf(r));
       green.setText(String.valueOf(g));
@@ -215,18 +234,11 @@ class ContextColorPair extends Panel {
       else
          setBackground(new Color(255, 255, 255));
 
-      istream.readToken(); //context, it's set at construction currently
-
-      if ((version & 1024) > 0) {
-         // read the font stuff too
-         String s = istream.readToken();
-         font_choice.c.select(s);
-         font_sz.setText(istream.readToken());
-         font_style.c.select(istream.readToken());
-         modifyFontCallback();
-      }
-      //istream.readLine();
-   }//read
+      font_choice.c.select(fn);
+      font_sz.setText(fs);
+      font_style.c.select(ft);
+      modifyFontCallback();
+   }//initObject
 
    public void writeObject(BOStream ostream) throws IOException {
       StringBuffer sb = new StringBuffer(100);
