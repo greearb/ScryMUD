@@ -1,5 +1,5 @@
-// $Id: commands.cc,v 1.50 2002/02/05 05:03:32 gingon Exp $
-// $Revision: 1.50 $  $Author: gingon $ $Date: 2002/02/05 05:03:32 $
+// $Id: commands.cc,v 1.51 2002/02/20 12:57:25 gingon Exp $
+// $Revision: 1.51 $  $Author: gingon $ $Date: 2002/02/20 12:57:25 $
 
 //
 //ScryMUD Server Code
@@ -2878,12 +2878,23 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
       else if (door_ptr->dr_data->door_data_flags.get(14) &&
                door_ptr->crit_blocking &&
                (door_ptr->crit_blocking != &pc)) {
-        Sprintf(buf, cstr(CS_MOV_BLOCKED, pc),
-                name_of_door(*door_ptr, pc.SEE_BIT),
-                name_of_crit(*(door_ptr->crit_blocking), pc.SEE_BIT));
-        show(buf, pc);
+               
+         if(!(door_ptr->crit_blocking->isParalyzed() ||
+            door_ptr->crit_blocking->isStunned() ||
+            door_ptr->crit_blocking->isMeditating() || 
+            door_ptr->crit_blocking->isSleeping())) {//can block
+         
+            if(!door_ptr->crit_blocking->isStanding()){
+               stand(*(door_ptr->crit_blocking));//stand when sitting to block critter
+            }
+            Sprintf(buf, cstr(CS_MOV_BLOCKED, pc),
+                    name_of_door(*door_ptr, pc.SEE_BIT),
+                    name_of_crit(*(door_ptr->crit_blocking), pc.SEE_BIT));
+            show(buf, pc);
+            return -1;//no need to do anything further
+         }//end can block
       }//else
-      else if (mob_can_enter(pc, room_list[dest], TRUE, check_no_wander)) {
+      if (mob_can_enter(pc, room_list[dest], TRUE, check_no_wander)) {
          //mudlog << "In move(), about to make a tmp_lst.\n" << flush;
          List<critter*> tmp_lst(rm.getCrits());
          //mudlog << "In move(), made tmp_lst.\n" << flush;
@@ -2899,6 +2910,14 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
                           (ptr2->FLAG1.get(4) && (ptr2->RACE == pc.RACE))) {
                          break;  //its ok for them to pass
                       }//if
+                      if(ptr2->isParalyzed() || ptr2->isStunned() || 
+                         ptr2->isMeditating() || ptr2->isSleeping()) {
+                         break; //can't block when paralyzed 
+                      }
+                      if(!ptr2->isStanding()){
+                      
+                        stand(*ptr2);
+                      }
                       Sprintf(buf, cstr(CS_BLOCKS_WAY, pc),
                               name_of_crit(*ptr2, pc.SEE_BIT));
                       buf.Cap();
