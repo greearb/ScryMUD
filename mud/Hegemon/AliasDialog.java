@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.3 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -32,10 +32,10 @@ import java.awt.event.*;
 class AliasDialog extends Frame {
    LabeledTextArea action;
    LabeledTextField trigger;
-   AliasFrame parent;
+   AliasManager parent;
    AlDButtons buttons;
    
-   public AliasDialog(AliasFrame par, Alias a) {
+   public AliasDialog(AliasManager par, Alias a) {
       super("Alias Dialog");
       parent = par;
 

@@ -1,5 +1,5 @@
-// $Id$
-// $Revision: 1.5 $  $Author$ $Date$
+// $Id: AliasFrame.java 801 2004-12-21 03:42:24Z kaj $
+// $Revision: 801 $  $Author: kaj $ $Date: 2004-12-20 22:42:24 -0500 (Mon, 20 Dec 2004) $
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -32,13 +32,13 @@ import java.io.*;
 /**
  * GUI for Alias functionality. Manages actions, including persistant storage.
  */
-class AliasFrame extends Frame {
+class AliasManager extends Frame {
    HegemonManager hm;
    List aliases;
    Alias[] alias_list = null;
    boolean alias_enabled;
    
-   public AliasFrame(HegemonManager h) {
+   public AliasManager(HegemonManager h) {
       super("Alias Manager");
       aliases = new List(20, false);
       hm = h;
@@ -235,9 +235,9 @@ class AliasFrame extends Frame {
 
 
 class AlFButtons extends Panel {
-   AliasFrame parent;
+   AliasManager parent;
    
-   public AlFButtons(AliasFrame par) {
+   public AlFButtons(AliasManager par) {
       super();
       parent = par;
       

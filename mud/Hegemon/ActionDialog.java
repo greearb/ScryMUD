@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.3 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -25,16 +25,25 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
 
-
-class ActionDialog extends Frame {
+/**
+ * Class to create and edit Actions. Extends JFrame and pops up from ActionManager.
+ */
+class ActionDialog extends JFrame {
    LabeledTextArea action;
    LabeledTextField trigger;
    Checkbox anchored;
-   ActionFrame parent;
+   ActionManager parent;
    ADButtons buttons;
    
-   public ActionDialog(ActionFrame par, Action a) {
+   /**
+    * Creates a new instance of ActionDialog for use in ActionManager.
+    *
+    * @param par ActionManger who holds this class
+    * @param a Action to be edited (or new one to be created)
+    */
+   public ActionDialog(ActionManager par, Action a) {
       super("Action Dialog");
       parent = par;
 
@@ -42,6 +51,8 @@ class ActionDialog extends Frame {
       trigger = new LabeledTextField("Trigger", a.getTrigger(), 80);
       anchored = new Checkbox("Anchored", a.getAnchored());
       
+      
+      /* GridBagLayout formatting and adding: */
       buttons = new ADButtons(this);
       int REM = GridBagConstraints.REMAINDER;
 
@@ -70,8 +81,11 @@ class ActionDialog extends Frame {
       pack();
       setLocation(100, 100);
       show();
-   }
+   }//ActionDialog constructor
 
+   /**
+    * Commit the changes and exit the ActionDialog JFrame.
+    */
    void do_done() {
       if (anchored.getState()) {
          parent.addAction("^" + trigger.getText() + " | " + action.getText());
@@ -83,23 +97,37 @@ class ActionDialog extends Frame {
    }//do_done
 }//ActionDialog
 
-class ADButtons extends Panel {
+/**
+ * Class to hold and handle ActionDialog's JButtons.
+ */
+class ADButtons extends JPanel implements ActionListener {
    ActionDialog parent;
+   JButton done;
    
+   /**
+    * Creates a new instance of ADButtons for holding and handling ActionDialog's JButtons.
+    */
    public ADButtons(ActionDialog par) {
       super();
       parent = par;
 
-      Button done = new Button("Done");
+      done = new JButton("Done");
+      done.addActionListener(this);
       setLayout(new FlowLayout());
-      
-      done.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            parent.do_done();
-         }});
       
       add(done);
    }//constructor
+   
+   /**
+    * Method to handle ActionEvents from done button.
+    *
+    * @param e ActionEvent that should come from done button being pressed
+    */
+   public void actionPerformed(ActionEvent e) {
+       if (e.getSource() == done) {
+           parent.do_done();
+       }
+   }
 }//ADButtons
 
       

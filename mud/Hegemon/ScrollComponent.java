@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.4 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -27,7 +27,7 @@ import java.util.*;
 import java.awt.*;
 
 /** A scrolling component. Probably outdated. */
-class ScrollComponent extends Object {
+class ScrollComponent {
    protected int height;
    protected int vert_spacing;
    protected boolean enabled; /* should we show it or not? */

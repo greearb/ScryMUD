@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.10 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -28,11 +28,14 @@ import java.awt.*;
 import java.awt.image.*;
 import java.text.*;
 import java.awt.event.*;
+import javax.swing.*;
 
+//TODO FIGURE OUT WHAT COVERS MENUS!!!
+//TODO Seems all scroll components are unnecessarily complex.
 /**  Stores a certain amount of data (text).  It also contains the logic
   needed to return vectors containing certain portions of the scroll.
   */
-class HegemonScroll extends Panel {
+class HegemonScroll extends JPanel {
    HegemonManager hm = null;
    ScrollComponentCollection components;
    HegemonDisplayProperties props;
@@ -49,6 +52,7 @@ class HegemonScroll extends Panel {
                               the text.
                            */
 
+   //TODO Use JProgressBars instead for hp/mana/mov?
    ScrollComponentGraph hp;
    ScrollComponentGraph mana;
    ScrollComponentGraph mov;

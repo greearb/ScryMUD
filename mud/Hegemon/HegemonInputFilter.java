@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.15 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -35,7 +35,7 @@ class HegemonInputFilter extends Object {
    OlcStore olc_store;
    int last_phase = -1;
    SocketWriter sink;
-   ActionFrame actions;
+   ActionManager actions;
    ColorSelectionManager color_mgr;
    HegemonManager hm;
    HegemonScroll heg_scroll;
@@ -67,7 +67,7 @@ class HegemonInputFilter extends Object {
    Hashtable tag_hash; //hash table for tags w/no arguments
    
    public HegemonInputFilter(OlcStore os, SocketWriter snk,
-                             ActionFrame acts, HegemonManager h,
+                             ActionManager acts, HegemonManager h,
                              HegemonScroll hs, ColorSelectionManager cm) {
       super();
       hm = h;

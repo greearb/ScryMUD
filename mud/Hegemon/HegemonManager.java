@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.12 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -34,12 +34,12 @@ import java.net.*;
  */
 class HegemonManager extends Object {
    OlcStore olc_mgr;
-   ActionFrame action_mgr;
+   ActionManager action_mgr;
    ClientDisplay client_display;
    ConnectionManager connect_mgr;
    SocketManager socket_mgr;
    Properties props;
-   AliasFrame alias_mgr;
+   AliasManager alias_mgr;
    HegemonScroll scroll = null;
    ColorSelectionManager color_mgr;
    HelpFrame help_mgr;
@@ -122,9 +122,9 @@ class HegemonManager extends Object {
       ms_editor = new MobScriptEditor(this);
       k_editor = new KeywordEditor(this);
       color_mgr = new ColorSelectionManager(this);
-      alias_mgr = new AliasFrame(this);
+      alias_mgr = new AliasManager(this);
       connect_mgr = new ConnectionManager(this);
-      action_mgr = new ActionFrame(this);
+      action_mgr = new ActionManager(this);
       olc_mgr = new OlcStore(this); //null untill we have a writer
       help_mgr = new HelpFrame("ScryMUD Help",
                                props.getProperty("HelpFileBaseDir"),
@@ -178,11 +178,11 @@ class HegemonManager extends Object {
       return help_mgr;
    }
 
-   public final AliasFrame getAliasManager() {
+   public final AliasManager getAliasManager() {
       return alias_mgr;
    }
    
-   public final ActionFrame getActionManager() {
+   public final ActionManager getActionManager() {
       return action_mgr;
    }
 
@@ -305,7 +305,7 @@ class HegemonManager extends Object {
       return olc_mgr;
    }
 
-   public ActionFrame getActions() {
+   public ActionManager getActions() {
       return action_mgr;
    }
    

@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.13 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //Hegemon Client Code:  Java Client for ScryMUD Server Code
@@ -27,574 +27,491 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
 import java.net.*;
+import javax.swing.*;
 
 /**  This is our main GUI, it holds all the rest, including the
-  HegemonDisplay, which draws the stuff coming from the server. */
-class ClientDisplay extends Frame {
-   boolean first_time_help = true;
-   HegemonManager hm; //keep track of all our different objects
-   HelpFrame hf;
-   ColorChoicesFrame ccf;
-   LogFrame log_frame;
-
-   OlEditor oe; //for quick description changes
-   PathCellEditor pe;
-   MobScriptEditor mse;
-   KeywordEditor ke;
-
-   CommandHistory cmd_history;
-
-   MenuBar menubar;
-   Menu file_m, connections_m, olc_m, controls_m, help_m;
-   
-   HegemonDisplay output_field;
-   InputArea input_field;
-
-   /* MENU items:  need a handle to enable/disable them. */
-   MenuItem action_turn_off_mi;
-   MenuItem action_turn_on_mi;
-   MenuItem alias_turn_off_mi;
-   MenuItem alias_turn_on_mi;
-   /* END of menu Items */
-
-   public HegemonScroll getHegemonScroll() {
-      return output_field.getScroll();
-   }
-   
-   public ClientDisplay(HegemonManager h) {
-      super("Hegemon Client");
-      hm = h;
-
-      addWindowListener(new WindowAdapter() {
-         public void windowClosed(WindowEvent e) {
+ * HegemonDisplay, which draws the stuff coming from the server. */
+class ClientDisplay extends JFrame implements ActionListener, WindowListener {
+    boolean first_time_help = true;
+    HegemonManager hegManager; //keep track of all our different objects
+    HelpFrame helpFrame;
+    ColorChoicesFrame colorChoicesFrame;
+    LogFrame logFrame;
+    
+    OlEditor olEditor; //for quick description changes
+    PathCellEditor pathCellEditor;
+    MobScriptEditor mobScriptEditor;
+    KeywordEditor keywordEditor;
+    
+    CommandHistory commandHistory;
+    
+    //TODO Make actionPerfomed check for labels so these don't have to be global?
+    //TODO Spin menus off into their own class like AMButtons, etc.
+    JMenuBar menubar;
+    JMenu fileMenu, connectionsMenu, olcMenu, controlsMenu, helpMenu;
+    JMenuItem quit_action, logging_action, color_view_mi, color_choices_mi,
+            action_edit_mi, alias_edit_mi, cmd_history_mi;
+    
+    HegemonDisplay output_field;
+    InputArea inputArea;
+    
+    JMenuItem help_about_mi, help_view_mi;
+    JMenuItem alias_turn_off_mi, alias_turn_on_mi;
+    JMenuItem open_connect_mi, select_connect_mi, disconnect_mi;
+    JMenuItem asave, aosave, amsave, olc_editor, path_editor;
+    JMenuItem create_door, create_room, create_object, create_mob;
+    JMenuItem scriptEditor, keywordEditorMI;
+    JMenuItem bug_mi, pso_mi;
+    
+    /**
+     * Creates an instance of ClientDisplay
+     *
+     * @param h HegemonManager who owns this ClientDisplay
+     */
+    public ClientDisplay(HegemonManager h) {
+        super("Hegemon Client");
+        hegManager = h;
+        
+        addWindowListener(this);
+        
+        
+        //our help system :)
+        helpFrame = hegManager.getHelpFrame();
+        helpFrame.setLocation(325, 110);
+        
+        colorChoicesFrame = new ColorChoicesFrame("Color & Font Choices");
+        
+        commandHistory = hegManager.getCommandHistory();
+        commandHistory.setLocation(200, 50);
+        
+        olEditor = hegManager.getOlEditor();
+        olEditor.setLocation(345, 50);
+        
+        pathCellEditor = hegManager.getPathCellEditor();
+        pathCellEditor.setLocation(355, 60);
+        
+        mobScriptEditor = hegManager.getMobScriptEditor();
+        mobScriptEditor.setLocation(350, 55);
+        
+        keywordEditor = hegManager.getKeywordEditor();
+        keywordEditor.setLocation(360, 65);
+        
+        logFrame = new LogFrame(this, hegManager);
+        
+        ///*******************  File Menu  *****************************///
+        quit_action = new JMenuItem("Quit");
+        logging_action = new JMenuItem("Logging");
+        color_view_mi = new JMenuItem("Colors & Fonts");
+        color_choices_mi = new JMenuItem("Color Choices");
+        action_edit_mi = new JMenuItem("Edit Actions");
+        alias_edit_mi = new JMenuItem("Edit Aliases");
+        alias_turn_on_mi = new JMenuItem("Enable Aliases");
+        alias_turn_off_mi = new JMenuItem("Disable Aliases");
+        cmd_history_mi = new JMenuItem("Command History");
+        alias_turn_on_mi.setEnabled(false); //they start out ON already
+        color_view_mi.addActionListener(this);
+        color_choices_mi.addActionListener(this);
+        action_edit_mi.addActionListener(this);
+        quit_action.addActionListener(this);
+        logging_action.addActionListener(this);
+        
+        fileMenu = new JMenu("File");
+        fileMenu.add(quit_action);
+        fileMenu.add(logging_action);
+        fileMenu.addSeparator();
+        fileMenu.add(color_view_mi);
+        fileMenu.add(color_choices_mi);
+        fileMenu.addSeparator();
+        fileMenu.add(action_edit_mi);
+        fileMenu.add(alias_edit_mi);
+        fileMenu.add(alias_turn_on_mi);
+        fileMenu.add(alias_turn_off_mi);
+        fileMenu.add(cmd_history_mi);
+        
+        //TODO Make alias on/off controlled in AliasFrame, too
+        alias_edit_mi.addActionListener(this);
+        alias_turn_on_mi.addActionListener(this);
+        alias_turn_off_mi.addActionListener(this);
+        cmd_history_mi.addActionListener(this);
+        
+        ///********************  connection menu ****************///
+        open_connect_mi = new JMenuItem("Open Connection");
+        select_connect_mi = new JMenuItem("Select Server");
+        disconnect_mi = new JMenuItem("Close Connection");
+        connectionsMenu = new JMenu("Connections");
+        
+        open_connect_mi.addActionListener(this);
+        select_connect_mi.addActionListener(this);
+        disconnect_mi.addActionListener(this);
+        
+        connectionsMenu.add(open_connect_mi);
+        connectionsMenu.add(select_connect_mi);
+        connectionsMenu.add(disconnect_mi);
+        
+        
+        ///******************  olcMenu  ********************************///
+        create_door = new JMenuItem("Create Door");
+        create_room = new JMenuItem("Create Room");
+        create_mob = new JMenuItem("Create Mob");
+        create_object = new JMenuItem("Create Object");
+        olc_editor = new JMenuItem("Description Editor");
+        path_editor = new JMenuItem("Vehicle Path Editor");
+        scriptEditor = new JMenuItem("Script Editor (Mob/Room/Obj)");
+        keywordEditorMI = new JMenuItem("Keyword Editor");
+        asave = new JMenuItem("Save Current Zone");
+        aosave = new JMenuItem("Save Current Zone's Objects");
+        amsave = new JMenuItem("Save Current Zone's Mobs");
+        
+        olcMenu = new JMenu("OLC");
+        olcMenu.add(create_door);
+        olcMenu.add(create_room);
+        olcMenu.add(create_object);
+        olcMenu.add(create_mob);
+        olcMenu.add(olc_editor);
+        olcMenu.add(path_editor);
+        olcMenu.add(scriptEditor);
+        olcMenu.add(keywordEditorMI);
+        olcMenu.addSeparator();
+        olcMenu.add(asave);
+        olcMenu.add(aosave);
+        olcMenu.add(amsave);
+        
+        create_door.addActionListener(this);
+        create_room.addActionListener(this);
+        create_mob.addActionListener(this);
+        create_object.addActionListener(this);
+        olc_editor.addActionListener(this);
+        path_editor.addActionListener(this);
+        scriptEditor.addActionListener(this);
+        keywordEditorMI.addActionListener(this);
+        asave.addActionListener(this);
+        aosave.addActionListener(this);
+        amsave.addActionListener(this);
+        
+        ///*************************  helpMenu  ********************///
+        help_view_mi = new JMenuItem("View Help Topics...");
+        help_about_mi = new JMenuItem("About...");
+        
+        help_view_mi.addActionListener(this);
+        help_about_mi.addActionListener(this);
+        
+        helpMenu = new JMenu("Help");
+        helpMenu.add(help_view_mi);
+        helpMenu.add(help_about_mi);
+        
+        ///*************************  Controls Menu  ********************///
+        pso_mi = new JMenuItem("Player-Run Stores");
+        bug_mi = new JMenuItem("Bug Reports");
+        
+        pso_mi.addActionListener(this);
+        bug_mi.addActionListener(this);
+        
+        controlsMenu = new JMenu("Controls");
+        controlsMenu.add(pso_mi);
+        controlsMenu.add(bug_mi);
+        
+        ///*************************  MenuBar *******************///
+        menubar = new JMenuBar();
+        setJMenuBar(menubar);
+        menubar.add(fileMenu);
+        menubar.add(connectionsMenu);
+        menubar.add(olcMenu);
+        menubar.add(controlsMenu);
+        menubar.add(helpMenu);
+        
+        ///*******************  IO fields ********************///
+        output_field = new HegemonDisplay(hegManager);
+        inputArea = new InputArea(this, hegManager);
+        
+        ///*********************  Layout  ****************************///
+        
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        // Scroll panel
+        setLayout(gridbag);
+        int REM = c.gridwidth = GridBagConstraints.REMAINDER;
+        c.fill = GridBagConstraints.BOTH;
+        
+        c.weighty = 1.0;
+        c.weightx = 1.0;
+        gridbag.setConstraints(output_field, c);
+        add(output_field);
+        
+        //Input Field
+        c.fill = GridBagConstraints.NONE;
+        gridbag.setConstraints(inputArea, c);
+        add(inputArea);
+        
+        this.pack();
+        setSize(750, 700);
+    }//constructor
+    
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == quit_action) {
             quit();
-         };
-         public void windowClosing(WindowEvent e) {
-            quit();
-         }});
-
-      //our help system :)
-      hf = hm.getHelpFrame();
-      hf.setLocation(325, 110);
-
-      ccf = new ColorChoicesFrame("Color & Font Choices");
-
-      cmd_history = hm.getCommandHistory();
-      cmd_history.setLocation(200, 50);
-
-      oe = hm.getOlEditor();
-      oe.setLocation(345, 50);
-
-
-      pe = hm.getPathCellEditor();
-      pe.setLocation(355, 60);
-
-
-      mse = hm.getMobScriptEditor();
-      mse.setLocation(350, 55);
-      
-      ke = hm.getKeywordEditor();
-      ke.setLocation(360, 65);
-
-      log_frame = new LogFrame(this, hm);
-
-      ///*******************  File Menu  *****************************///
-      
-      MenuItem quit_action;
-      MenuItem logging_action;
-      MenuItem color_view_mi, color_choices_mi;
-      MenuItem action_edit_mi;
-      MenuItem alias_edit_mi;
-      MenuItem cmd_history_mi;
-
-      file_m = new Menu("File");
-      file_m.add((quit_action = new MenuItem("Quit")));
-      file_m.add((logging_action = new MenuItem("Logging")));
-      
-      file_m.addSeparator();
-
-      quit_action.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            quit();
-         }});
-
-      logging_action.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == logging_action) {
             showLoggingFrame();
-         }});
-      
-      file_m.add((color_view_mi = new MenuItem("Colors & Fonts")));
-
-      color_view_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == color_view_mi) {
             doViewColors();
-         }});
-
-      file_m.add((color_choices_mi = new MenuItem("Color Choices")));
-
-      color_choices_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == color_choices_mi) {
             doViewChoices();
-         }});
-
-      file_m.addSeparator();
-      
-      file_m.add((action_edit_mi = new MenuItem("Edit Actions")));
-      file_m.add((action_turn_on_mi = new MenuItem("Enable Actions")));
-      file_m.add((action_turn_off_mi = new MenuItem("Disable Actions")));
-      
-      action_turn_on_mi.setEnabled(true); //they start out ON already
-      action_turn_off_mi.setEnabled(false);
-      
-      action_edit_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == action_edit_mi) {
             do_actions();
-         }});
-      action_turn_on_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            do_actions_enable();
-         }});
-      action_turn_off_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            do_actions_disable();
-         }});
-      
-      
-      file_m.addSeparator();
-      file_m.add((alias_edit_mi = new MenuItem("Edit Aliases")));
-      file_m.add((alias_turn_on_mi = new MenuItem("Enable Aliases")));
-      file_m.add((alias_turn_off_mi = new MenuItem("Disable Aliases")));
-      
-      alias_turn_on_mi.setEnabled(false); //they start out ON already
-      
-
-      alias_edit_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == alias_edit_mi) {
             do_aliases();
-         }});
-      alias_turn_on_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == alias_turn_on_mi) {
             do_alias_enable();
-         }});
-      alias_turn_off_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == alias_turn_off_mi) {
             do_alias_disable();
-         }});
-      
-      file_m.addSeparator();
-      file_m.add((cmd_history_mi = new MenuItem("Command History")));
-
-      cmd_history_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == cmd_history_mi) {
             do_show_cmd_history();
-         }});
-      
-      
-      ///********************  connection menu ****************///
-      
-      MenuItem open_connect_mi, select_connect_mi, disconnect_mi;
-      connections_m = new Menu("Connections");
-      connections_m.add((open_connect_mi = new MenuItem("Open Connection")));
-      connections_m.add((select_connect_mi = new MenuItem("Select Server")));
-      connections_m.add((disconnect_mi = new MenuItem("Close Connection")));
-      
-      open_connect_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == open_connect_mi) {
             do_open_connection(); //will take selected, or if none selected,
             //the first one
-         }});
-      
-      select_connect_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == select_connect_mi) {
             do_select_connection(); //pops up Connection Manager
-         }});
-
-      disconnect_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == disconnect_mi) {
             do_disconnect();
-         }});
-      
-      ///******************  olc_menu  ********************************///
-      
-      MenuItem create_door;
-      olc_m = new Menu("OLC");
-      olc_m.add((create_door = new MenuItem("Create Door")));
-      
-      create_door.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == create_door) {
             create_door();
-         }});
-      
-      MenuItem create_room;
-      olc_m.add((create_room = new MenuItem("Create Room")));
-      
-      create_room.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == create_room) {
             create_room();
-         }});
-      
-      MenuItem create_object;
-      olc_m.add((create_object = new MenuItem("Create Object")));
-      
-      create_object.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            create_object();
-         }});
-      
-      MenuItem create_mob;
-      olc_m.add((create_mob = new MenuItem("Create Mobile")));
-      
-      create_mob.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == create_mob) {
             create_mob();
-         }});
-
-      MenuItem olc_editor;
-      olc_m.add((olc_editor = new MenuItem("Description Editor")));
-      
-      olc_editor.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == create_object) {
+            create_object();
+        } else if (e.getSource() == olc_editor) {
             doOlcEditor();
-         }});
-
-
-      MenuItem p_editor;
-      olc_m.add((p_editor = new MenuItem("Vehicle Path Editor")));
-      
-      p_editor.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == path_editor) {
             doPathEditor();
-         }});
-
-
-      MenuItem ms_editor;
-      olc_m.add((ms_editor = new MenuItem("Mob/Room Script Editor")));
-      
-      ms_editor.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == scriptEditor) {
             doMSEditor();
-         }});
-
-
-      MenuItem k_editor;
-      olc_m.add((k_editor = new MenuItem("Keyword Editor")));
-      
-      k_editor.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == keywordEditor) {
             doKEditor();
-         }});
-
-
-      olc_m.addSeparator();
-      
-      MenuItem asave;
-      olc_m.add((asave = new MenuItem("Save Current Area")));
-      
-      asave.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            send("asave\n");
-         }});
-
-      MenuItem aosave;
-      olc_m.add((aosave = new MenuItem("Save Cur. Zone's Objects")));
-      
-      aosave.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            send("aosave\n");
-         }});
-
-      MenuItem amsave;
-      olc_m.add((amsave = new MenuItem("Save Cur. Zone's Mobs")));
-      
-      amsave.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            send("amsave\n");
-         }});
-
-      
-      
-      ///*************************  Help Menu  ********************///
-      
-      help_m = new Menu("Help");
-
-      MenuItem help_view_mi = new MenuItem("View Topics");
-      MenuItem help_about_mi;
-
-      help_m.add(help_view_mi);
-
-      help_m.add((help_about_mi = new MenuItem("About")));
-      
-      help_view_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == asave) {
+            send("asave");
+        } else if (e.getSource() == amsave) {
+            send("amsave");
+        } else if (e.getSource() == aosave) {
+            send("aosave");
+        } else if (e.getSource() == help_view_mi) {
             doViewHelp();
-         }});
-
-      help_about_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == help_about_mi) {
             doHegemonHelp();
-         }});
-
-
-
-      ///*************************  Controls Menu  ********************///
-      
-      MenuItem pso_mi;
-      MenuItem bug_mi;
-
-      controls_m = new Menu("Controls");
-
-      controls_m.add((pso_mi = new MenuItem("Player-Run Stores")));
-      controls_m.add((bug_mi = new MenuItem("Bug Reports")));
-
-      pso_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == pso_mi) {
             do_show_pso_editor();
-         }});
-
-      bug_mi.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
+        } else if (e.getSource() == bug_mi) {
             do_show_bug_editor();
-         }});
-      
-      
-      
-
-      ///*************************  MenuBar *******************///
-      
-      menubar = new MenuBar();
-      setMenuBar(menubar);
-      
-      menubar.add(file_m);
-      menubar.add(connections_m);
-      menubar.add(olc_m);
-      menubar.add(controls_m);
-      menubar.add(help_m);
-      
-      ///*******************  IO fields ********************///
-      output_field = new HegemonDisplay(hm);
-      
-      input_field = new InputArea(this, hm);
-
-      ///*********************  Layout  ****************************///
-      
-      GridBagLayout gridbag = new GridBagLayout();
-      GridBagConstraints c = new GridBagConstraints();
-      // Scroll panel
-      setLayout(gridbag);
-      int REM = c.gridwidth = GridBagConstraints.REMAINDER;
-      c.fill = GridBagConstraints.BOTH;
-
-      c.weighty = 1.0;
-      c.weightx = 1.0;
-      gridbag.setConstraints(output_field, c);
-      add(output_field);
-
-      //Input Field
-      c.fill = GridBagConstraints.NONE;
-      gridbag.setConstraints(input_field, c);
-      add(input_field);
-
-      // Actions off by default now...
-      do_actions_disable();
-      
-      this.pack();
-      setSize(750, 700);
-   }//constructor
-
-   void do_open_connection() {
-      hm.openConnection();
-   }//open_connection
-
-   void do_disconnect() {
-      hm.closeConnection();
-   }//open_connection
-
-   void do_select_connection() {
-      hm.showConnection();
-   }
-
-   void showLoggingFrame() {
-      log_frame.show();
-   }
-   
-   void do_actions() {
-      hm.showActions();
-   }
-
-   void do_actions_enable() {
-      hm.getActionManager().setActionsEnabled(true);
-      action_turn_on_mi.setEnabled(false); //grey it out
-      action_turn_off_mi.setEnabled(true); //un-grey it
-   }
-
-   void do_actions_disable() {
-      hm.getActionManager().setActionsEnabled(false);
-      action_turn_off_mi.setEnabled(false); //grey it out
-      action_turn_on_mi.setEnabled(true); //un-grey it
-   }
-
-   void do_aliases() {
-      hm.showAliases();
-   }
-
-   void do_alias_enable() {
-      hm.getAliasManager().setAliasEnabled(true);
-      alias_turn_on_mi.setEnabled(false); //grey it out
-      alias_turn_off_mi.setEnabled(true); //un-grey it
-   }
-
-   void do_alias_disable() {
-      hm.getAliasManager().setAliasEnabled(false);
-      alias_turn_off_mi.setEnabled(false); //grey it out
-      alias_turn_on_mi.setEnabled(true); //un-grey it
-   }
-
-   void quit() {
-      hm.quit();
-   }
-
-   void create_door() {
-      OLCDoor od = new OLCDoor(this, hm);
-      od.show();
-   }
-
-   void create_room() {
-      OLCRoom od = new OLCRoom(this, hm);
-      od.show();
-   }
-
-   void create_mob() {
-      OLCMob od = new OLCMob(this, hm);
-      od.show();
-   }
-
-   void create_object() {
-      OLCObject od = new OLCObject(this, hm);
-      od.show();
-   }
-
-   void enterOLC() {// on the mud server, prompts should start coming...
-      try {
-         hm.getSocketManager().write("olc\n");
-      }
-      catch (Exception e) {
-         Log.instance().err("enterOLC:  " + e);
-      }
-   }
-
-   void submitRoom(OLCRoom targ) {
-      if (targ.isVehicle())
-         hm.getOlcManager().setCase0("6");
-      else
-         hm.getOlcManager().setCase0("3");
-
-      hm.getOlcManager().setRoom(targ);
-      enterOLC();
-   }
-
-   void submitObj(OLCObject targ) {
-      hm.getOlcManager().setCase0("1");
-      hm.getOlcManager().setObj(targ);
-      enterOLC();
-   }
-
-   void submitDoor(OLCDoor targ) {
-      hm.getOlcManager().setCase0("4");
-      hm.getOlcManager().setDoor(targ);
-      enterOLC();
-   }
-
-   void submitMob(OLCMob targ) {
-      hm.getOlcManager().setCase0("2");
-      hm.getOlcManager().setMob(targ);
-      enterOLC();
-   }
-
-   public final HegemonDisplay getOutput() {
-      return output_field;
-   }
-
-   void doViewHelp() {
-      if (!hm.IS_APPLET) {
-         if (first_time_help) {
-            hf.show("opening_page.bml");
-            first_time_help = false;
-         }
-         hf.setVisible(true);
-      }
-      else {
-         try {
-            URL u = new URL("http://scry.wanfear.com/ScryMUD/mort_help.html");
-            hm.getMotherClass().getAppletContext().showDocument(u);
-         }//try
-         catch (Exception e) {
-            e.printStackTrace();
-         }
-      }//else
-   }//doViewHelp
-
-   void doOlcEditor() {
-      oe.setVisible(true);
-   }
-
-   void doPathEditor() {
-      pe.setVisible(true);
-   }
-
-   void doMSEditor() {
-      //Log.instance().dbg("Making MobScript editor visible..");
-      mse.setVisible(true);
-   }
-
-   void doKEditor() {
-      //Log.it("Making Keyword editor visible..");
-      ke.setVisible(true);
-   }
-
-   void doHegemonHelp() {
-      hf.setVisible(true);
-      hf.clear();
-      hf.showString(BuildInfo.getBuildInfo());
-   }
-   
-   void doViewColors() {
-      hm.showColors();
-   }
-
-   void doViewChoices() {
-      ccf.setVisible(true);
-   }
-
-   public void giveFocus() {
-      input_field.getTA().requestFocus();
-   }
-
-   public final InputArea getInputField() {
-      return input_field;
-   }
-
-   public void do_show_cmd_history() {
-      cmd_history.setVisible(true);
-   }
-
-   public void do_show_pso_editor() {
-      hm.getPsoEditor().setVisible(true);
-   }
-
-   public void do_show_bug_editor() {
-      hm.getBugListEditor().setVisible(true);
-   }
-
-   public void send(String str) {
-      try {
-         (hm.getSocketManager()).write(str);
-      }
-      catch (Exception ex) {
-         MessageDialog md =
-           new MessageDialog("INPUT ERROR", ex.toString(), "red",
-                             "black");
-      }
-   }
+        }
+    }
+    
+    /* WindowListener methods: */
+    public void windowClosed(WindowEvent e) {
+        quit();
+    }
+    public void windowClosing(WindowEvent e) {
+        quit();
+    }
+    public void windowActivated(WindowEvent e) {
+        
+    }
+    public void windowDeactivated(WindowEvent e) {
+        
+    }
+    public void windowDeiconified(WindowEvent e) {
+        
+    }
+    public void windowIconified(WindowEvent e) {
+        
+    }
+    public void windowOpened(WindowEvent e) {
+        
+    }
+    
+    
+    public HegemonScroll getHegemonScroll() {
+        return output_field.getScroll();
+    }
+    
+    void do_open_connection() {
+        hegManager.openConnection();
+    }//open_connection
+    
+    void do_disconnect() {
+        hegManager.closeConnection();
+    }//open_connection
+    
+    void do_select_connection() {
+        hegManager.showConnection();
+    }
+    
+    void showLoggingFrame() {
+        logFrame.show();
+    }
+    
+    void do_actions() {
+        hegManager.showActions();
+    }
+    
+    void do_aliases() {
+        hegManager.showAliases();
+    }
+    
+    void do_alias_enable() {
+        hegManager.getAliasManager().setAliasEnabled(true);
+        alias_turn_on_mi.setEnabled(false); //grey it out
+        alias_turn_off_mi.setEnabled(true); //un-grey it
+    }
+    
+    void do_alias_disable() {
+        hegManager.getAliasManager().setAliasEnabled(false);
+        alias_turn_off_mi.setEnabled(false); //grey it out
+        alias_turn_on_mi.setEnabled(true); //un-grey it
+    }
+    
+    void quit() {
+        hegManager.quit();
+    }
+    
+    void create_door() {
+        OLCDoor od = new OLCDoor(this, hegManager);
+        od.show();
+    }
+    
+    void create_room() {
+        OLCRoom od = new OLCRoom(this, hegManager);
+        od.show();
+    }
+    
+    void create_mob() {
+        OLCMob od = new OLCMob(this, hegManager);
+        od.show();
+    }
+    
+    void create_object() {
+        OLCObject od = new OLCObject(this, hegManager);
+        od.show();
+    }
+    
+    void enterOLC() {// on the mud server, prompts should start coming...
+        try {
+            hegManager.getSocketManager().write("olc\n");
+        } catch (Exception e) {
+            Log.instance().err("enterOLC:  " + e);
+        }
+    }
+    
+    void submitRoom(OLCRoom targ) {
+        if (targ.isVehicle())
+            hegManager.getOlcManager().setCase0("6");
+        else
+            hegManager.getOlcManager().setCase0("3");
+        
+        hegManager.getOlcManager().setRoom(targ);
+        enterOLC();
+    }
+    
+    void submitObj(OLCObject targ) {
+        hegManager.getOlcManager().setCase0("1");
+        hegManager.getOlcManager().setObj(targ);
+        enterOLC();
+    }
+    
+    void submitDoor(OLCDoor targ) {
+        hegManager.getOlcManager().setCase0("4");
+        hegManager.getOlcManager().setDoor(targ);
+        enterOLC();
+    }
+    
+    void submitMob(OLCMob targ) {
+        hegManager.getOlcManager().setCase0("2");
+        hegManager.getOlcManager().setMob(targ);
+        enterOLC();
+    }
+    
+    public final HegemonDisplay getOutput() {
+        return output_field;
+    }
+    
+    void doViewHelp() {
+        if (!hegManager.IS_APPLET) {
+            if (first_time_help) {
+                helpFrame.show("opening_page.bml");
+                first_time_help = false;
+            }
+            helpFrame.setVisible(true);
+        } else {
+            try {
+                URL u = new URL("http://scry.wanfear.com/ScryMUD/mort_help.html");
+                hegManager.getMotherClass().getAppletContext().showDocument(u);
+            }//try
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }//else
+    }//doViewHelp
+    
+    void doOlcEditor() {
+        olEditor.setVisible(true);
+    }
+    
+    void doPathEditor() {
+        pathCellEditor.setVisible(true);
+    }
+    
+    void doMSEditor() {
+        //Log.instance().dbg("Making MobScript editor visible..");
+        mobScriptEditor.setVisible(true);
+    }
+    
+    void doKEditor() {
+        //Log.it("Making Keyword editor visible..");
+        keywordEditor.setVisible(true);
+    }
+    
+    void doHegemonHelp() {
+        helpFrame.setVisible(true);
+        helpFrame.clear();
+        helpFrame.showString(BuildInfo.getBuildInfo());
+    }
+    
+    void doViewColors() {
+        hegManager.showColors();
+    }
+    
+    void doViewChoices() {
+        colorChoicesFrame.setVisible(true);
+    }
+    
+    public void giveFocus() {
+        inputArea.getTA().requestFocus();
+    }
+    
+    public final InputArea getInputField() {
+        return inputArea;
+    }
+    
+    public void do_show_cmd_history() {
+        commandHistory.setVisible(true);
+    }
+    
+    public void do_show_pso_editor() {
+        hegManager.getPsoEditor().setVisible(true);
+    }
+    
+    public void do_show_bug_editor() {
+        hegManager.getBugListEditor().setVisible(true);
+    }
+    
+    public void send(String str) {
+        try {
+            (hegManager.getSocketManager()).write(str);
+        } catch (Exception ex) {
+            MessageDialog md =
+                    new MessageDialog("INPUT ERROR", ex.toString(), "red",
+                    "black");
+        }
+    }
 }//ClientDisplay
 
 
