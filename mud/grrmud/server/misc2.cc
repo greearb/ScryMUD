@@ -1541,6 +1541,35 @@ const int get_day_of_month(int day) { //day of the year that is
    }//else
 }//get_day_of_month
 
+SeasonType get_season(int day){
+   if (day <= 31)
+   return winter;
+      else if (day <= 60)
+   return winter;
+	   else if (day <= 91)
+   return spring;
+      else if (day <= 120)
+   return spring;
+      else if (day <= 150)
+   return spring;
+      else if (day <= 181)
+   return summer;
+      else if (day <= 211)
+   return summer;
+      else if (day <= 242)
+   return summer;
+      else if (day <= 273)
+   return fall;
+      else if (day <= 303)
+   return fall;
+      else if (day <= 334)
+   return fall;
+      else if (day <= 365)
+   return winter;
+      else return winter; //leap day
+
+}		
+
 const char* military_to_am(int m_time) {
    if (m_time == 0)
       return "1 am";

@@ -1709,4 +1709,6 @@ extern char* critter_conditions[11];
 #define MAX_LEVEL    45
 extern long levels[MAX_LEVEL];
 
+extern const char* seasons[];
+
 #endif

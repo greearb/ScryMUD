@@ -191,4 +191,8 @@ public:
    void Write(ofstream& da_file);
 };//PathCell
 
+
+enum SeasonType {spring = 0, summer, fall, winter};
+
+
 #endif

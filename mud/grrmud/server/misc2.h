@@ -173,6 +173,8 @@ critter* get_target_mob(int i_th, const String* target, critter& pc, char* diver
 object* get_target_obj(int i_th, const String* target, critter& pc);
 door* get_target_door(int i_th, const String* target, critter& pc);
 room* get_target_room(critter& pc);
+SeasonType get_season(int day);
+String* get_season_string(int day);
 
 //distributed probability matrix code
 //only handles single dimension probability matrices
@@ -188,7 +190,5 @@ public:
    DistProbMatrix(){size = 0;matrix = NULL;}
    ~DistProbMatrix(){delete matrix;}
 };																					 
-
-
 
 #endif 

@@ -33,6 +33,10 @@
 /** All the words and phrases that one deems useless to the
  * cause of humane communication goes here.
  */
+
+
+const char* seasons[] = {"spring","summer","fall","winter"};
+
 const char* CensoredStrings[] = {
    "asshole",
    "cunt",

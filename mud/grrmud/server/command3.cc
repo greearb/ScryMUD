@@ -1746,8 +1746,9 @@ int slay(int i_th, const String* vict, critter& pc) {
 int date(critter& pc) {
    String buf(100);
 
-   Sprintf(buf, "The date is %s %i, %i.\n", get_month(config.day),
-           get_day_of_month(config.day), config.year);
+   Sprintf(buf, "It is currently %s, %s %i, %i.\n", seasons[get_season(config.day)],
+         get_month(config.day),
+         get_day_of_month(config.day), config.year);
    show(buf, pc);
    return 0;
 }//date
