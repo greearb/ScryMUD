@@ -48,7 +48,7 @@ void recursive_init_loads(object& obj, int depth) {
    Cell<object*> cll(obj.inv);
    object* ptr;
    while ((ptr = cll.next())) {
-      recursive_init_loads(*ptr, ++depth);
+      recursive_init_loads(*ptr, depth+1);
    }//while
 }//recursive object loads
 
