@@ -175,6 +175,18 @@ CS_DONT_SEEM_TO_HAVE_THAT
 	eng "You don't seem to have that.\n"
 	~
 
+CS_DONT_SEEM_TO_HAVE
+	eng "You don't seem to have the %S.\n"
+	~
+
+CS_AINT_GOT
+	eng "You neither have nor see the %S.\n"
+	~
+
+CS_CANT_FIND
+	eng "You can't find the %S.\n"
+	~
+
 CS_DONATE_WHAT
 	eng "Donate what??\n"
 	~
@@ -251,6 +263,10 @@ CS_NO_CAN_SEE_ITEM
 	eng "You don't see that item here.\n"
 	~
 
+CS_NO_CAN_SEE_PERSON
+	eng "You do not see that person.\n"
+	~
+
 CS_FIGHT_WHO
 	eng "Fight who??\n"
 	~
@@ -295,8 +311,12 @@ CS_NO_CONTAINER
 	eng "You don't seem to have that container.\n"
 	~
 
-CS_NOT_CONTAINER
+CS_NOT_CONTAINER_PUT
 	eng "How are you gonna put something in THAT?\n"
+	~
+
+CS_NOT_CONTAINER
+	eng "That isn't a container.\n"
 	~
 
 CS_NO_BULLETIN_BOARD
@@ -630,6 +650,10 @@ CS_DEMI_ONLY
 
 CS_GOD_ONLY
 	eng "%S belongs to a god!\n"
+	~
+
+CS_TOO_RELAXED
+	eng "You are too relaxed!\n"
 	~
 
 CS_NO_WARRIOR

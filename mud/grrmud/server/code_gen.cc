@@ -249,43 +249,25 @@ int GenCmdInput::read(ifstream& dafile) {
 
    cmd.Getline(dafile, 200);
    return 0;
-}
+}//read
 
 
 int main(int argc, char** argv) {
-   const char* usage = "code_gen -[CL] [input_file_name] [out.cc] [out.h]\n";
+   const char* usage = "code_gen -[CL] [input_file_name ...] [out.cc] [out.h]\n";
 
-   if (argc != 5) {
+   if (argc < 5) {
       cerr << usage << endl;
-      cerr << "ERROR:  argc should be 5, but was: " << argc << endl;
+      cerr << "ERROR:  argc should be >= 5, but was: " << argc << endl;
       exit(1);
    }
    
-   ifstream input_file(argv[2]);
-   if (!input_file) {
-      cerr << "ERROR:  could not open input_file." << endl;
-      exit(1);
-   }
-
-   ofstream of_cc(argv[3]);
-   if (!of_cc) {
-      cerr << "ERROR:  could not open output .cc file." << endl;
-      exit(1);
-   }
-
-   ofstream of_h(argv[4]);
-   if (!of_h) {
-      cerr << "ERROR:  could not open output .h file." << endl;
-      exit(1);
-   }
-
    if (strcasecmp(argv[1], "-C") == 0) {
       // Then create some commands
-      return code_gen_commands(input_file, of_cc, of_h);
+      return code_gen_commands(argv, argc);
    }
    else if (strcasecmp(argv[1], "-L") == 0) {
       // Create the language array and code
-      return code_gen_language(input_file, of_cc, of_h);
+      return code_gen_language(argv, argc);
    }
    else {
       cerr << usage << endl;
@@ -294,20 +276,41 @@ int main(int argc, char** argv) {
 }//main
 
 
-int code_gen_language(ifstream& input_file, ofstream& of_cc,
-                      ofstream& of_h) {
+int code_gen_language(char** argv, int argc) {
    // First, lets parse the incomming file and make sure it's OK.
    PtrArray<LanguageEntry> language_entries;
    LanguageEntry le;
 
-   // If there is a read or parse error, the program will exit
-   // inside the le.read() call.
-   int cnt = 0;
-   while (le.read(input_file) >= 0) {
-      cnt++;
-      language_entries.appendShallowCopy(new LanguageEntry(le));
+   ofstream of_cc(argv[argc - 2]);
+   if (!of_cc) {
+      cerr << "ERROR:  could not open output .cc file." << endl;
+      exit(1);
    }
-      
+
+   ofstream of_h(argv[argc - 1]);
+   if (!of_h) {
+      cerr << "ERROR:  could not open output .h file." << endl;
+      exit(1);
+   }
+
+   int cnt = 0;
+   for (int i = 2; i<(argc - 2); i++) {
+      ifstream input_file(argv[i]);
+      if (!input_file) {
+         cerr << "ERROR:  could not open input_file: " << argv[i] << endl;
+         exit(1);
+      }
+      else {
+         cout << "Processing spec file: " << argv[i] << endl;
+      }
+      // If there is a read or parse error, the program will exit
+      // inside the le.read() call.
+      while (le.read(input_file) >= 0) {
+         cnt++;
+         language_entries.appendShallowCopy(new LanguageEntry(le));
+      }
+   }//for
+
    // If we got to here, then we were able to parse and read the file.
 
    //First, get the headers out of the way
@@ -397,45 +400,13 @@ const char* CSHandler::getString(CSentryE which_string, LanguageE language) {
 
 
    
-int code_gen_commands(ifstream& input_file, ofstream& of_cc,
-                      ofstream& of_h) {
+int code_gen_commands(char** argv, int argc) {
    String buf(200);
    String tmp(200);
    String cmd_enum(1000);
    String cmd_instantiations(10000);
    String exe_cmds(5000);
    String cmd_array(1000);
-
-   of_h << header;
-   of_h << "
-#ifndef __INCLUDE_AUTOGEN_CMD_H__
-#define __INCLUDE_AUTOGEN_CMD_H__
-
-#include \"ar_skll.h\"
-#include \"cr_skll.h\"
-#include \"social2.h\"
-#include \"ez_skll.h\"
-#include \"dam_skll.h\"
-#include \"misc.h\"
-#include \"misc2.h\"
-#include \"commands.h\"
-#include \"command2.h\"
-#include \"command3.h\"
-#include \"command4.h\"
-#include \"command5.h\"
-#include \"spells.h\"
-#include \"skills.h\"
-#include \"olc.h\"
-#include \"olc2.h\"
-#include \"socials.h\"
-#include \"classes.h\"
-#include \"wep_skll.h\"
-#include \"parse.h\"
-#include \"script.h\"\n\n";
-
-   of_cc << header;
-   of_cc << "#include \"code_gen.h\"\n";
-   of_cc << "#include \"parse.h\"\n";
 
    // add the starting stuff.
    cmd_enum.Append("enum CmdId {\n");
@@ -472,45 +443,69 @@ public:
 
    cmd_array.Append("void initCmdsArray() {\n");
 
-   GenCmdInput cmd_input;
+
+   ofstream of_cc(argv[argc - 2]);
+   if (!of_cc) {
+      cerr << "ERROR:  could not open output .cc file." << endl;
+      exit(1);
+   }
+
+   ofstream of_h(argv[argc - 1]);
+   if (!of_h) {
+      cerr << "ERROR:  could not open output .h file." << endl;
+      exit(1);
+   }
+
+   //TODO:  Never tested w/two spec files...I fear blowup!! --BEN
    int cmd_count = 0;
    int done_exe_already = FALSE;
-   while (input_file) {
-      if (cmd_input.read(input_file) == -1) {
-         // all done
-         break;
+   for (int i = 2; i<(argc - 2); i++) {
+      ifstream input_file(argv[i]);
+      if (!input_file) {
+         cerr << "ERROR:  could not open input_file: " << argv[i] << endl;
+         exit(1);
+      }
+      else {
+         cout << "Processing spec file: " << argv[i] << endl;
       }
 
-      // debugging
-      //cmd_input.print();
-
-      if (cmd_input.help.charAt(0) != '*') { // help only
-         // create the commands, and the enum, and the ExeCmds
-         Sprintf(tmp, "   ci_%S,\n", &(cmd_input.aliases[0]));
-         cmd_enum.Append(tmp);
-      }
-
-      done_exe_already = FALSE;
-      for (int i = 0; i<ALIASES_ARRAY_LEN; i++) {
-         if (cmd_input.aliases[i].Strlen() == 0)
+      GenCmdInput cmd_input;
+      while (input_file) {
+         if (cmd_input.read(input_file) == -1) {
+            // all done
             break;
-
-         if (cmd_input.help.charAt(0) == '*') { // help only
-            Sprintf(tmp, "   ADD_NEW_CMD(new CmdSpecifier(\"%S\", %i, ci_HELP_ONLY, \"%s\"));\n",
-                    &(cmd_input.aliases[i]), 
-                    cmd_input.aliases[i].Strlen(),
-                    ((const char*)(cmd_input.help)) + 1); //move past *
-            cmd_instantiations.Append(tmp);
          }
-         else {
-            Sprintf(tmp, "   ADD_NEW_CMD(new CmdSpecifier(\"%S\", %i, ci_%S, \"%S\"));\n",
-                    &(cmd_input.aliases[i]), cmd_input.aliases[i].Strlen(),
-                    &(cmd_input.aliases[0]), &(cmd_input.help));
-            cmd_instantiations.Append(tmp);
 
-            if (!done_exe_already) {
-               cmd_count++;
-               Sprintf(tmp, "
+         // debugging
+         //cmd_input.print();
+
+         if (cmd_input.help.charAt(0) != '*') { // help only
+            // create the commands, and the enum, and the ExeCmds
+            Sprintf(tmp, "   ci_%S,\n", &(cmd_input.aliases[0]));
+            cmd_enum.Append(tmp);
+         }
+
+         done_exe_already = FALSE;
+         for (int i = 0; i<ALIASES_ARRAY_LEN; i++) {
+            if (cmd_input.aliases[i].Strlen() == 0)
+               break;
+
+            if (cmd_input.help.charAt(0) == '*') { // help only
+               Sprintf(tmp, "   ADD_NEW_CMD(new CmdSpecifier(\"%S\", %i, ci_HELP_ONLY, \"%s\"));\n",
+                       &(cmd_input.aliases[i]), 
+                       cmd_input.aliases[i].Strlen(),
+                       ((const char*)(cmd_input.help)) + 1); //move past *
+               cmd_instantiations.Append(tmp);
+            }
+            else {
+               Sprintf(tmp, "   ADD_NEW_CMD(new CmdSpecifier(\"%S\", %i, ci_%S, \"%S\"));\n",
+                       &(cmd_input.aliases[i]), cmd_input.aliases[i].Strlen(),
+                       &(cmd_input.aliases[0]), &(cmd_input.help));
+               cmd_instantiations.Append(tmp);
+
+               if (!done_exe_already) {
+                  cmd_count++;
+                  Sprintf(tmp, "
 class ExeCmd_%S : public ExeCmd {
 public:
    int execute(CODE_GEN_EXE_HEADER) {
@@ -519,25 +514,55 @@ public:
       } else return 0;
    }//execute
 };//ExeCmd\n",
-                       &(cmd_input.aliases[0]), &(cmd_input.cmd));
+                          &(cmd_input.aliases[0]), &(cmd_input.cmd));
 
-               exe_cmds.Append(tmp);
+                  exe_cmds.Append(tmp);
 
-               // Now, lets add the code that will place this in an array.
-
-               Sprintf(tmp, "   exe_cmd_array[(int)(ci_%S)] = new ExeCmd_%S;\n",
-                       &(cmd_input.aliases[0]), &(cmd_input.aliases[0]));
-               cmd_array.Append(tmp);
-               
-               done_exe_already = TRUE;
-            }
-         }
-      }//for
-
-
-   }//while
+                  // Now, lets add the code that will place this in an array.
+                  
+                  Sprintf(tmp, "   exe_cmd_array[(int)(ci_%S)] = new ExeCmd_%S;\n",
+                          &(cmd_input.aliases[0]), &(cmd_input.aliases[0]));
+                  cmd_array.Append(tmp);
+                  
+                  done_exe_already = TRUE;
+               }//if not done_exe_already
+            }//else
+         }//for
+      }//while
+   }//for all spec files
 
    // Now, have read everything in..lets put the code together.
+
+   of_h << header;
+   of_h << "
+#ifndef __INCLUDE_AUTOGEN_CMD_H__
+#define __INCLUDE_AUTOGEN_CMD_H__
+
+#include \"ar_skll.h\"
+#include \"cr_skll.h\"
+#include \"social2.h\"
+#include \"ez_skll.h\"
+#include \"dam_skll.h\"
+#include \"misc.h\"
+#include \"misc2.h\"
+#include \"commands.h\"
+#include \"command2.h\"
+#include \"command3.h\"
+#include \"command4.h\"
+#include \"command5.h\"
+#include \"spells.h\"
+#include \"skills.h\"
+#include \"olc.h\"
+#include \"olc2.h\"
+#include \"socials.h\"
+#include \"classes.h\"
+#include \"wep_skll.h\"
+#include \"parse.h\"
+#include \"script.h\"\n\n";
+
+   of_cc << header;
+   of_cc << "#include \"code_gen.h\"\n";
+   of_cc << "#include \"parse.h\"\n";
 
    // Terminate the constructs.
    cmd_enum.Append("   ci_HELP_ONLY,\n");

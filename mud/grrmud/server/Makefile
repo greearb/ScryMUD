@@ -29,7 +29,7 @@ script.o SkillSpell.o zone.o rm_parse.o rm_cmds.o obj_parse.o \
 obj_cmds.o BuildInfo.o BugEntry.o MudStats.o
 
 GEN_SPEC = gen_cmds.spec
-LANG_SPEC = translations.spec
+LANG_SPEC = translations.spec translation2.spec
 
 TARG = grrmud                                 #program to be created
 

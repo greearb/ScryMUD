@@ -69,9 +69,7 @@ public:
 };
    
 
-int code_gen_language(ifstream& input_file, ofstream& of_cc,
-                      ofstream& of_h);
-int code_gen_commands(ifstream& input_file, ofstream& of_cc,
-                      ofstream& of_h);
+int code_gen_language(char** argv, int argc);
+int code_gen_commands(char** argv, int argc);
 
 #endif

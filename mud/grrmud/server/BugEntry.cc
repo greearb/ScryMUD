@@ -520,7 +520,7 @@ int BugCollection::writeHtml() {
 
 <CENTER>
 <H2>
-<a href=http://www.primenet.com/~greear/ScryMUD/scry.html>ScryMUD "
+<a href=http://scry.wanfear.com>ScryMUD "
      << coll_name << "</a></H2></CENTER><P>
 
 This is an automagically generated list of <b>" << coll_name << "</b> entries

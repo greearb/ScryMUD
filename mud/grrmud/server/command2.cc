@@ -53,26 +53,25 @@ int score_long(critter& pc) {
    }
 
    if (pc.possessing) {
-      Sprintf(buf, "You are possessing:  %S.\n",
+      Sprintf(buf, cstr(CS_YOU_POSSESSING, pc),
               pc.possessing->getName());
       show(buf, pc);
    }
 
    if (pc.pc && pc.pc->imm_data) {
-      pc.show("Poofin:\n");
+      pc.show(CS_POOFIN);
       pc.show(pc.pc->poofin);
-      pc.show("\nPoofout:\n");
+      pc.show(CS_POOFOUT);
       pc.show(pc.pc->poofout);
       pc.show("\n");
    }
 
-   Sprintf(buf, "Class:  %s.	Race:  %s.\n", 
-           get_class_name(pc.CLASS),
+   Sprintf(buf, cstr(CS_CLASS_RACE, pc), get_class_name(pc.CLASS),
            get_race_name(pc.RACE));
    show(buf, pc);
 
    if (!IsEmpty(pc.affected_by)) {
-      show("You are affected by:\n", pc);
+      pc.show(CS_AFFECTED_BY);
       while ((ss_ptr = cll.next())) {
          Sprintf(buf, "\t%s.\n", 
                  (const char*)(SSCollection::instance().getNameForNum(ss_ptr->stat_spell)));
@@ -80,45 +79,46 @@ int score_long(critter& pc) {
       }//while
    }//if
    else {
-      show("You are currently unaffected by spells.\n", pc);
+      pc.show(CS_NOT_AFFECTED_SPELLS);
    }//else
 
    if (!IsEmpty(pc.pets)) {
-      show("You have these for pets:\n", pc);
+      pc.show(CS_HAVE_PETS);
       out_crit(pc.pets, pc);
    }//if
    show("\n", pc);
 
-   Sprintf(buf, "You have slain %i Players.  You have died %i times.\n",
+   Sprintf(buf, cstr(CS_SLAIN_DIED, pc),
 	   pc.PK_COUNT, pc.DIED_COUNT);
    show(buf, pc);
-   Sprintf(buf, "You have %i quest points.\n", pc.QUEST_POINTS);
+   Sprintf(buf, cstr(CS_QP, pc), pc.QUEST_POINTS);
    show(buf, pc);
 
    if (pc.temp_crit) {
      if (pc.GUARDED_BY) {
-       Sprintf(buf, "You are guarded by %S.\n", 
+       Sprintf(buf, cstr(CS_GUARDED_BY, pc),
 	       name_of_crit(*(pc.GUARDED_BY), pc.SEE_BIT));
        show(buf, pc);
      }//if
      if (pc.GUARDING) {
-       Sprintf(buf, "You are guarding %S.\n", 
+       Sprintf(buf, cstr(CS_GUARDING, pc),
 	       name_of_crit(*(pc.GUARDING), pc.SEE_BIT));
        show(buf, pc);
      }//if
      if (pc.SHIELDED_BY) {
-       Sprintf(buf, "You are shielded by %S.\n", 
+       Sprintf(buf, cstr(CS_SHIELDED_BY, pc),
 	       name_of_crit(*(pc.SHIELDED_BY), pc.SEE_BIT));
        show(buf, pc);
      }//if
      if (pc.SHIELDING) {
-       Sprintf(buf, "You are shielding %S.\n", 
+       Sprintf(buf, cstr(CS_SHIELDING, pc),
 	       name_of_crit(*(pc.SHIELDING), pc.SEE_BIT));
        show(buf, pc);
      }//if
    }//if has temp data
    return 0;
 }//score_long
+
 
 int score(const String* str2, critter& pc) {
    String buf2(100);
@@ -137,96 +137,91 @@ int score(const String* str2, critter& pc) {
    show(buf2, pc);
 
    if (pc.SEX == 0) 
-      buf2 = "Female ";
+      buf2 = cstr(CS_FEMALE, pc);
    else if (pc.SEX == 1) 
-      buf2 += "Male ";
+      buf2 += cstr(CS_MALE, pc);
    else if (pc.SEX == 2) 
-      buf2 += "Neuter ";
+      buf2 += cstr(CS_NEUTER, pc);
 
    buf2 += get_class_name(pc.CLASS);
-   buf2 += " of level (";
+   buf2 += cstr(CS_OF_LEVEL, pc);
    buf2.Append(pc.LEVEL);
    buf2.Append(").\n");
    show(buf2, pc);
 
 
-   Sprintf(buf2, "GOLD %P15[%i]%P27 EXPERIENCE %P40[%i]%P50 AGE %P63[%i]\n",
+   Sprintf(buf2, cstr(CS_SC_GOLD, pc),
            pc.GOLD, pc.EXP, pc.getAge());
    show(buf2, pc);
 
-   Sprintf(buf2, "HP %P15[%i/%i]%P27 MANA %P40[%i/%i]%P50 MOVE %P63[%i/%i]\n",
+   Sprintf(buf2, cstr(CS_SC_HP, pc),
            pc.HP, pc.HP_MAX, pc.MANA, pc.MA_MAX, pc.MOV, pc.MV_MAX);
    show(buf2, pc);
 
-   Sprintf(buf2,
-           "HP_REGEN %P15[%i]%P27 MANA_REGEN %P40[%i]%P50 MOVE_REGEN%P63[%i]\n",
+   Sprintf(buf2, cstr(CS_SC_HPR, pc),
            pc.HP_REGEN, pc.MA_REGEN, pc.MV_REGEN);
    show(buf2, pc);
 
-   Sprintf(buf2,
-           "ALIGNMENT %P15[%i]%P27 PRACTICES %P40[%i]%P50 WEIGHT%P63[%i/%i]\n",
+   Sprintf(buf2, cstr(CS_SC_ALIGN, pc),
            pc.ALIGN, pc.PRACS, pc.CRIT_WT_CARRIED, pc.CRIT_MAX_WT_CARRY);
    show(buf2, pc);
 
-   Sprintf(buf2,
-           "\nResistances:  AC [%i]  HEAT [%i]  COLD [%i]  ELECTRICAL [%i]  SPELL [%i]\n",
+   Sprintf(buf2, cstr(CS_SC_RES, pc),
            pc.AC, pc.HEAT_RESIS, pc.COLD_RESIS, pc.ELEC_RESIS, pc.SPEL_RESIS);
    show(buf2, pc);
 
-   Sprintf(buf2,
-           "Experience to Next Level  [%i]\n", pc.getXpToNextLevel());
+   Sprintf(buf2, cstr(CS_SC_EXP, pc), pc.getXpToNextLevel());
    pc.show(buf2);
 
-   Sprintf(buf2,
-           "Damage to you Modifier:  [%i/100]  Damage to foes: [%i/100].\n",
-           pc.DAM_REC_MOD, pc.DAM_GIV_MOD);
+   Sprintf(buf2, cstr(CS_SC_DAM, pc), pc.DAM_REC_MOD, pc.DAM_GIV_MOD);
    show(buf2, pc);
 
    if (pc.HUNGER == 0) 
-      show("You are hungry.\n", pc);
+      pc.show(CS_YOU_HUNGRY);
    if (pc.THIRST == 0)
-      show("You are thirsty.\n", pc);
+      pc.show(CS_YOU_THIRSTY);
    if (pc.DRUGGED > 0) 
-      show("You are drugged.\n", pc);
+      pc.show(CS_YOU_DRUGGED);
 
 
    if (pc.POS == POS_STAND) 
-      show("You are standing.\n", pc);
+      pc.show(CS_YOU_STANDING);
    else if (pc.POS == POS_SIT) 
-      show("You are sitting.\n", pc);
+      pc.show(CS_YOU_SITTING);
    else if (pc.POS == POS_REST) 
-      show("You are resting.\n", pc);
+      pc.show(CS_YOU_RESTING);
    else if (pc.POS == POS_SLEEP) 
-      show("You are sleeping.\n", pc);
+      pc.show(CS_YOU_SLEEPING);
    else if (pc.POS == POS_MED) 
-      show("You are meditating.\n", pc);
+      pc.show(CS_YOU_MED);
    else if (pc.POS == POS_STUN) 
-      show("You are stunned.\n", pc);
+      pc.show(CS_YOU_STUNNED);
    else if (pc.POS == POS_DEAD) 
-      show("You are dead!\n", pc);
+      pc.show(CS_YOU_DEAD);
    else if (pc.POS == POS_PRONE) 
-      show("You are lying prone.\n", pc);
+      pc.show(CS_YOU_PRONE);
    else
-      show("You position is undefined!\n", pc);
+      pc.show(CS_POS_UNDEF);
 
    if (pc.FOLLOWER_OF) {
-      Sprintf(buf2, "You are following %S.\n", 
-          name_of_crit(*(pc.FOLLOWER_OF), pc.SEE_BIT));
+      Sprintf(buf2, cstr(CS_YOU_FOLLOWING, pc),
+              name_of_crit(*(pc.FOLLOWER_OF), pc.SEE_BIT));
       show(buf2, pc);
    }//if
    else
-      show("You are following yourself.\n", pc);
+      pc.show(CS_FOLLOWING_SELF);
 
    if (pc.MASTER) {
-      Sprintf(buf2, "Your master is %S.\n", 
+      Sprintf(buf2, cstr(CS_MASTER_IS, pc),
           name_of_crit(*(pc.MASTER), pc.SEE_BIT));
       show(buf2, pc);
    }//if
-   else
-      show("You are your own master.\n", pc);
+   else {
+      pc.show(CS_OWN_MASTER);
+   }
 
    if (!IsEmpty(pc.IS_FIGHTING)) {
-      Sprintf(buf2, "You are fighting %S!\n", 
+      Sprintf(buf2, cstr(CS_YOU_FIGHTING, pc),
               name_of_crit(*(Top(pc.IS_FIGHTING)), pc.SEE_BIT));
       show(buf2, pc);
    }//if
@@ -257,12 +252,12 @@ int critter::doUngroup(int i_th, const String* vict) {
             FOLLOWERS.loseData(ptr1); /* Remove them from the followers. */
             if (ptr1 != this) {
                ptr1->FOLLOWER_OF = NULL; //follow self
-               ptr1->show("The leader of the band is gone.\n");
-               ptr1->show("You now follow yourself.\n");
+               ptr1->show(CS_LEADER_GONE);
+               ptr1->show(CS_FOLLOW_SELF);
             }//if
          }//while
          GROUPEES.clear();
-         show("You have disbanded your group.\n");
+         show(CS_HAVE_DISBANDED);
       }//if is a leader
       else if (FOLLOWER_OF) { //possibly in group, not leader
          FOLLOWER_OF->FOLLOWERS.loseData(this);
@@ -271,29 +266,29 @@ int critter::doUngroup(int i_th, const String* vict) {
 
             FOLLOWER_OF->GROUPEES.head(cll);
             while ((ptr1 = cll.next())) {   
-               Sprintf(buf, "%S has left your group.\n",
+               Sprintf(buf, cstr(CS_HAS_LEFT_GROUP, *ptr1),
                        getName(ptr1->SEE_BIT));
                buf.Cap();
                ptr1->show(buf);
             }//if
          }//while
          else {
-            Sprintf(buf, "%S quits following you.\n",
+            Sprintf(buf, cstr(CS_QUITS_FOL_YOU, *(FOLLOWER_OF)),
                     getName(FOLLOWER_OF->SEE_BIT));
             buf.Cap();
             FOLLOWER_OF->show(buf);
          }//if
          FOLLOWER_OF = NULL;
-         show("You now follow yourself.\n");
+         show(CS_FOLLOW_SELF);
       }//if grouped but not a leader
       else { //not in a group
-         show("Ok.\n");
+         show(CS_OK);
       }//else
    }//if no target
    else { //target mentioned
       ptr1 = have_crit_named(GROUPEES, i_th, vict, ~0, *(getCurRoom()));
       if (!ptr1) {
-         show("That person is not in your group.\n");
+         show(CS_NOT_IN_GROUP);
          return -1;
       }//if
 
@@ -302,15 +297,15 @@ int critter::doUngroup(int i_th, const String* vict) {
 
       GROUPEES.head(cll);
       while ((ptr2 = cll.next())) {   
-         Sprintf(buf, "%S has left your group.\n",
+         Sprintf(buf, cstr(CS_HAS_LEFT_GROUP, *ptr2),
                  ptr1->getName(ptr2->SEE_BIT));
          buf.Cap();
          ptr2->show(buf);
       }//while
 
       ptr1->FOLLOWER_OF = NULL;
-      ptr1->show("You now follow yourself.\n");
-      show("ok.");
+      ptr1->show(CS_FOLLOW_SELF);
+      show(CS_OK);
 
       String cmd = "ungroup";
       getCurRoom()->checkForProc(cmd, NULL_STRING, *this, ptr1->MOB_NUM);
@@ -328,11 +323,11 @@ int exit(critter& pc) {
 
 
    if (pc.POS > POS_SIT) {
-      show("You are too relaxed.\n", pc);
+      pc.show(CS_TOO_RELAXED);
       return -1;
    }//if
 
-   show("You can detect these exits:\n\n", pc);
+   pc.show(CS_DETECT_THESE_EXITS);
 
    if (pc.isUsingClient())
       show("<DOOR_LIST>", pc);
@@ -357,7 +352,7 @@ int exit(critter& pc) {
             if (detect(pc.SEE_BIT, room_list[dest].getVisBit())) 
                buf += room_list[dest].short_desc;
             else
-               buf += "You cannot discern...";
+               buf += cstr(CS_CANT_DISCERN, pc);
             if (pc.isImmort()) {
                buf.Append(" [");
                buf.Append(dest);
@@ -388,7 +383,7 @@ int auto_exit(critter& pc) { //more brief than the previous
    /* assumes the person is standing, it just entered a room... */
 
    client_disp = "< EXITS ";
-   reg_disp = "Visible exits:  ";
+   reg_disp = cstr(CS_VIS_EXITS, pc);
    while ((dr_ptr = cll.next())) {
       if (detect(pc.SEE_BIT, dr_ptr->dr_data->vis_bit)) {
          if (!((dr_ptr->isClosed() && dr_ptr->isSecret()) ||
@@ -433,26 +428,28 @@ int lock(int i_th, const String* name, critter& pc) {
       if (dr_ptr) {
          if (dr_ptr->isSecret()) {
             if (!name_is_secret(name, *dr_ptr)) {
-               show("You don't see that exit.\n", pc);
+               pc.show(CS_NO_SEE_EXIT);
                return -1;
             }//if
          }//if	    
          if (dr_ptr->isClosed()) {
             if (!dr_ptr->canOpen()) {
-               Sprintf(buf, "The %S can't be locked.\n",
+               Sprintf(buf, cstr(CS_CANT_BE_LOCKED, pc),
                        name_of_door(*(dr_ptr), pc.SEE_BIT));
                show(buf, pc);
             }//if
             else if (dr_ptr->isLocked()) {
-               show("Its already locked.\n", pc);
+               pc.show(CS_ALREADY_LOCKED);
             }//if
             else { //lock it
                if (have_obj_numbered(pc.inv, 1, dr_ptr->getKeyNum(),
                                      pc.SEE_BIT, ROOM)) {
-                  Sprintf(buf, "You lock the %S.\n", name_of_door(*(dr_ptr),
-                                                                  pc.SEE_BIT));
+                  Sprintf(buf, cstr(CS_YOU_LOCK, pc), name_of_door(*(dr_ptr),
+                                                                   pc.SEE_BIT));
                   show(buf, pc);
                   dr_ptr->lock();
+
+                  //TODO:  Translation problem
                   Sprintf(buf, "locks the %S.\n", name_of_door(*dr_ptr, ~0));
                   emote(buf, pc, ROOM, TRUE);
                   
@@ -463,12 +460,12 @@ int lock(int i_th, const String* name, critter& pc) {
                   return 0;
                }//if have key
                else {
-                  show("You need the key to lock it.\n", pc);
+                  pc.show(CS_NEED_KEY);
                }//else
             }//else
          }//if closed
          else {
-            show("It must be closed first!.\n", pc);
+            pc.show(CS_MUST_CLOSE);
          }//else
       }//
       else {   //check for items to be opened
@@ -491,14 +488,14 @@ int lock(int i_th, const String* name, critter& pc) {
          
          if (ob_ptr) {
             if (!ob_ptr->bag) {
-               show("That isn't a container.\n", pc);
+               pc.show(CS_NOT_CONTAINER);
             }//if
             else if (ob_ptr->bag->key_num == 0) {
-               show("That container can't be locked.\n", pc);
+               pc.show(CS_CANT_BE_LOCKED_CONT);
             }//if
             else if (ob_ptr->isClosed()) { //is closed
                if (ob_ptr->isLocked()) {
-                  show("Its already locked.\n", pc);
+                  pc.show(CS_ALREADY_LOCKED);
                }//if
                else {
                   object* key = NULL;
@@ -517,10 +514,12 @@ int lock(int i_th, const String* name, critter& pc) {
                   }//if
                   
                   if (key) {
-                     Sprintf(buf, "You lock the %S.\n", name_of_obj(*ob_ptr,
-                                                                    pc.SEE_BIT));
+                     Sprintf(buf, cstr(CS_YOU_LOCK, pc), name_of_obj(*ob_ptr,
+                                                                     pc.SEE_BIT));
                      show(buf, pc);
                      ob_ptr->lock();
+
+                     //TODO:  Translation problem.
                      Sprintf(buf, "locks the %S.\n", name_of_obj(*ob_ptr, ~0));
                      emote(buf, pc, ROOM, TRUE);
                      
@@ -535,16 +534,16 @@ int lock(int i_th, const String* name, critter& pc) {
                      return 0;
                   }//if have key
                   else {
-                     show("You need the key to lock it.\n", pc);
+                     pc.show(CS_NEED_KEY);
                   }//else
                }//else
             }//if
             else {
-               show("It must be closed before you can lock it.\n", pc);
+               pc.show(CS_MUST_CLOSE);
             }//else
          }//if have valid object ptr
          else {
-            show("You don't see anything like that you can lock.\n", pc);
+            pc.show(CS_NOTHING_TO_LOCK);
          }//else
       }//else
    }
@@ -562,13 +561,13 @@ int unlock(int i_th, const String* name, critter& pc) {
       if ((dr_ptr = door::findDoor(ROOM.DOORS, i_th, name, pc.SEE_BIT, ROOM))) {
          if (dr_ptr->isSecret()) {
             if (!name_is_secret(name, *dr_ptr)) {
-               show("You don't see that exit.\n", pc);
+               pc.show(CS_NO_SEE_EXIT);
                return -1;
             }//if
          }//if	    
          if (dr_ptr->isClosed()) {
             if (!dr_ptr->canOpen()) {
-               Sprintf(buf, "The %S will open automatically when its ready.\n",
+               Sprintf(buf, cstr(CS_OPEN_AUTOMAGICALLY, pc),
                        name_of_door(*(dr_ptr), pc.SEE_BIT));
                show(buf, pc);
             }//if
@@ -595,7 +594,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                
                if (key) {
                   if (dr_ptr->consumesKey()) {
-                     Sprintf(buf, "As you unlock the %S, %S is consumed!\n",
+                     Sprintf(buf, cstr(CS_UNLOCK_CONSUME, pc),
                              name_of_door(*dr_ptr, pc.SEE_BIT),
                              key->getLongName());
                      if (posn > 0) {
@@ -613,14 +612,17 @@ int unlock(int i_th, const String* name, critter& pc) {
                      key = NULL;
                   }//if
                   else {
-                     Sprintf(buf, "You unlock the %S.\n",
+                     Sprintf(buf, cstr(CS_YOU_UNLOCK, pc),
                              name_of_door(*dr_ptr, pc.SEE_BIT));
                   }
                   show(buf, pc);
                   dr_ptr->unlock();
+
+                  //TODO:  Translation problem.
                   Sprintf(buf, "unlocks the %S.\n", name_of_door(*dr_ptr, ~0));
                   emote(buf, pc, ROOM, TRUE);
-                  
+       
+                  // TODO:  Translation problem.
                   // send message to other side of the door...
                   Sprintf(buf, "You hear a faint click from %S.\n",
                           name_of_door(*dr_ptr, 0));
@@ -634,15 +636,15 @@ int unlock(int i_th, const String* name, critter& pc) {
                   return 0;
                }//if
                else {
-                  show("You don't seem to have the key.\n", pc);
+                  pc.show(CS_NO_KEY);
                }//else
             }//if
             else {
-               show("Its not locked!\n", pc);
+               pc.show(CS_NOT_LOCKED);
             }//else
          }//if closed
          else {
-            show("Its not even closed!\n", pc);
+            pc.show(CS_NOT_EVEN_CLOSED);
          }//else
       }//
       else {   //check for items to be opened
@@ -664,7 +666,7 @@ int unlock(int i_th, const String* name, critter& pc) {
          }//else
          if (ob_ptr) {
             if (!ob_ptr->bag) {
-               show("That isn't a container.\n", pc);
+               pc.show(CS_NOT_CONTAINER);
             }//if
             else if (ob_ptr->isClosed()) { //is closed
                if (ob_ptr->isLocked()) {
@@ -686,7 +688,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                   
                   if (key) {
                      if (ob_ptr->consumesKey()) {
-                        Sprintf(buf, "As you unlock %S, %S is consumed!\n",
+                        Sprintf(buf, cstr(CS_UNLOCK_CONSUME, pc),
                                 ob_ptr->getLongName(pc.SEE_BIT),
                                 key->getLongName());
                         if (posn > 0) {
@@ -704,12 +706,13 @@ int unlock(int i_th, const String* name, critter& pc) {
                         key = NULL;
                      }//if
                      else {
-                        Sprintf(buf, "You unlock the %S.\n",
+                        Sprintf(buf, cstr(CS_YOU_UNLOCK, pc),
                                 ob_ptr->getLongName(pc.SEE_BIT));
                      }
                      show(buf, pc);
                      ob_ptr->unlock();
                      
+                     //TODO:  Translation problem
                      Sprintf(buf, "unlocks the %S.\n", ob_ptr->getLongName());
                      emote(buf, pc, ROOM, TRUE);
                      
@@ -720,19 +723,19 @@ int unlock(int i_th, const String* name, critter& pc) {
                      return 0;
                   }//if
                   else {
-                     show("You don't have the key.\n", pc);
+                     pc.show(CS_NO_KEY);
                   }//else
                }//if locked
                else {
-                  show("It isn't locked.\n", pc);
+                  pc.show(CS_NOT_LOCKED);
                }//else
             }//if
             else {
-               show("Its already open!!.\n", pc);
+               pc.show(CS_ALREADY_OPEN);
             }//else
          }//if have valid object ptr
          else {
-            show("You don't see anything like that you can lock.\n", pc);
+            pc.show(CS_NOTHING_TO_UNLOCK);
          }//else
       }//else
    }
@@ -749,29 +752,30 @@ int open(int i_th, const String* name, critter& pc) {
       if ((dr_ptr = door::findDoor(ROOM.DOORS, i_th, name, pc.SEE_BIT, ROOM))) {
          if (dr_ptr->isSecret()) {
             if (!name_is_secret(name, *dr_ptr)) {
-               show("You don't see that exit.\n", pc);
+               pc.show(CS_NO_SEE_EXIT);
                return -1;
             }//if
          }//if	    
          if (dr_ptr->dr_data->isClosed()) {
             if (!dr_ptr->canOpen()) {
-               Sprintf(buf, "The %S will open automatically when its ready.\n",
+               Sprintf(buf, cstr(CS_OPEN_AUTOMAGICALLY, pc),
                        name_of_door(*(dr_ptr), pc.SEE_BIT));
                show(buf, pc);
             }//if
             else if ((dr_ptr->isLocked()) || 
                      (dr_ptr->isMagLocked())) {
                //is locked, mag_locked
-               Sprintf(buf, "The %S is locked.\n", name_of_door(*(dr_ptr),
-                                                                pc.SEE_BIT));
+               Sprintf(buf, cstr(CS_IS_LOCKED, pc), name_of_door(*(dr_ptr),
+                                                                 pc.SEE_BIT));
                show(buf, pc);
             }//if
             else {
                dr_ptr->open();
-               Sprintf(buf, "You open the %S.\n", name_of_door(*(dr_ptr),
-                                                               pc.SEE_BIT));
+               Sprintf(buf, cstr(CS_YOU_OPEN, pc), name_of_door(*(dr_ptr),
+                                                                pc.SEE_BIT));
                show(buf, pc);
                
+               //TODO:  Translation problem.
                Sprintf(buf, "opens the %S.\n", name_of_door(*dr_ptr, 0));
                emote(buf, pc, ROOM, TRUE);
                
@@ -787,7 +791,7 @@ int open(int i_th, const String* name, critter& pc) {
             }//else
          }//if closed
          else {
-            show("Its already open!!.\n", pc);
+            pc.show(CS_ALREADY_OPEN);
          }//else
       }//
       else {   //check for items to be opened
@@ -810,20 +814,20 @@ int open(int i_th, const String* name, critter& pc) {
          
          if (ob_ptr) {
             if (!ob_ptr->bag) {
-               show("That isn't a container.\n", pc);
+               pc.show(CS_NOT_CONTAINER);
                return -1;
             }//if
             else if (ob_ptr->isClosed()) { //is closed
                if ((ob_ptr->isLocked()) || (ob_ptr->isMagLocked())) {
                   //is locked, mag_locked
-                  Sprintf(buf, "The %S is locked.\n", name_of_obj(*(ob_ptr),
-                                                                  pc.SEE_BIT));
+                  Sprintf(buf, cstr(CS_IS_LOCKED, pc), name_of_obj(*(ob_ptr),
+                                                                   pc.SEE_BIT));
                   show(buf, pc);
                }//if
                else { 
                   ob_ptr->open();
-                  Sprintf(buf, "You open the %S.\n", name_of_obj(*(ob_ptr),
-                                                                 pc.SEE_BIT));
+                  Sprintf(buf, cstr(CS_YOU_OPEN, pc), name_of_obj(*(ob_ptr),
+                                                                  pc.SEE_BIT));
                   show(buf, pc);
                   
                   String cmd = "open";
@@ -833,11 +837,11 @@ int open(int i_th, const String* name, critter& pc) {
                }//else
             }//if
             else {
-               show("Its already open!!.\n", pc);
+               pc.show(CS_ALREADY_OPEN);
             }//else
          }//if have valid object ptr
          else {
-            show("You don't see anything like that you can open.\n", pc);
+            pc.show(CS_NOTHING_TO_OPEN);
          }//else
       }//else, try to open an object, no door by that name
    }
@@ -853,7 +857,7 @@ int close(int i_th, const String* name, critter& pc) {
       if ((dr_ptr = door::findDoor(ROOM.DOORS, i_th, name, pc.SEE_BIT, ROOM))) {
          if (dr_ptr->isSecret()) {
             if (!name_is_secret(name, *dr_ptr)) {
-               show("You don't see that exit.\n", pc);
+               pc.show(CS_NO_SEE_EXIT);
                return -1;
             }//if
          }//if
@@ -861,10 +865,11 @@ int close(int i_th, const String* name, critter& pc) {
             if (dr_ptr->canClose() &&
                 !dr_ptr->isVehicleExit()) { //is closeable
                dr_ptr->close();
-               Sprintf(buf, "You close the %S.\n", name_of_door(*(dr_ptr),
-                                                                pc.SEE_BIT));
+               Sprintf(buf, cstr(CS_YOU_CLOSE, pc), name_of_door(*(dr_ptr),
+                                                                 pc.SEE_BIT));
                show(buf, pc);
                
+               //TODO:  Translation problem
                // send message to other side of the door...
                Sprintf(buf, "%S closes quietly.\n", name_of_door(*dr_ptr, 0));
                show_all(buf, *(dr_ptr->getDestRoom()));
@@ -876,13 +881,13 @@ int close(int i_th, const String* name, critter& pc) {
                return 0;
             }//if
             else { 
-               Sprintf(buf, "The %S cannot be closed.\n", 
+               Sprintf(buf, cstr(CS_CANNOT_CLOSE, pc),
                        name_of_door(*(dr_ptr), pc.SEE_BIT));
                show(buf, pc);
             }//else
          }//if open
          else {
-            show("Its already closed!!\n", pc);
+            pc.show(CS_ALREADY_CLOSED);
          }//else
       }//
       else {
@@ -904,18 +909,18 @@ int close(int i_th, const String* name, critter& pc) {
          }//else
          if (ob_ptr) {
             if (!ob_ptr->bag) {
-               show("That isn't a container.\n", pc);
+               pc.show(CS_NOT_CONTAINER);
             }//if
             else if (!ob_ptr->BAG_FLAGS.get(2)) { //is open
                if (ob_ptr->BAG_FLAGS.get(9)) { //if non-closeable
-                  Sprintf(buf, "The %S can't be closed.\n", name_of_obj(*(ob_ptr),
-                                                                        pc.SEE_BIT));
+                  Sprintf(buf, cstr(CS_CANNOT_CLOSE, pc), name_of_obj(*(ob_ptr),
+                                                                      pc.SEE_BIT));
                   show(buf, pc);
                }//if
                else { 
                   ob_ptr->BAG_FLAGS.turn_on(2);
-                  Sprintf(buf, "You close the %S.\n", name_of_obj(*(ob_ptr),
-                                                                  pc.SEE_BIT));
+                  Sprintf(buf, cstr(CS_YOU_CLOSE, pc), name_of_obj(*(ob_ptr),
+                                                                   pc.SEE_BIT));
                   show(buf, pc);
                   
                   String cmd = "close";
@@ -925,11 +930,11 @@ int close(int i_th, const String* name, critter& pc) {
                }//else
             }//if
             else {
-               show("Its already closed!!\n", pc);
+               pc.show(CS_ALREADY_CLOSED);
             }//else
          }//if have valid object ptr
          else {
-            show("You don't see anything like that you can close.\n", pc);
+            pc.show(CS_NOTHING_TO_CLOSE);
          }//else
       }//else, try to open an object, no door by that name
    }
@@ -944,7 +949,7 @@ int save(critter& pc) {
       return -1;
    }//if
 
-   show("Saving.....\n", pc);
+   pc.show(CS_SAVING);
    pc.save();
    return 0;
 }//save
@@ -958,9 +963,9 @@ int nogossip(critter& pc) {
    }//if
 
    if (pc.CRIT_FLAGS.get(6)) 
-      show("You are no longer subject to gossips.\n", pc);
+      pc.show(CS_NO_GOSSIP);
    else
-      show("You may now hear gossips.\n", pc);
+      pc.show(CS_CAN_GOSSIP);
    pc.CRIT_FLAGS.flip(6); //should toggle gossip channel
    return 0;
 }//nog
@@ -975,15 +980,15 @@ int eat(int i_th, const String* name, critter& pc) {
       obj_ptr = have_obj_named(pc.inv, i_th, name, pc.SEE_BIT, ROOM);
 
       if (!obj_ptr) {
-         Sprintf(buf, "You don't seem to have the %S.\n", name);
+         Sprintf(buf, cstr(CS_DONT_SEEM_TO_HAVE, pc), name);
          show(buf, pc);
       }//if
       else if (!(obj_ptr->OBJ_FLAGS.get(61))) {
-         Sprintf(buf, "You can't eat the %S.\n", name);
+         Sprintf(buf, cstr(CS_CANT_EAT, pc), name);
          show(buf, pc);
       }//if
       else if (pc.pc && pc.HUNGER > HUNGER_MAX) {
-         show("You are too full to eat any more.\n", pc);
+         pc.show(CS_TOO_FULL);
       }//if
       else { //then i spose we'll eat!!
          consume_eq_effects(*obj_ptr, pc, TRUE); //do all effects of food
@@ -1007,7 +1012,7 @@ int drink(int i_th, const String* name, critter& pc) {
    if (ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
 
       if (name->Strlen() == 0) {
-         show("Drink from what??\n", pc);
+         pc.show(CS_DRINK_FROM_WHAT);
          return -1;
       }//if
 
@@ -1018,28 +1023,31 @@ int drink(int i_th, const String* name, critter& pc) {
          in_inv = FALSE;
       }//if
       if (!obj_ptr) {
-         Sprintf(buf, "You neither have nor see the %S.\n", name);
+         Sprintf(buf, cstr(CS_AINT_GOT, pc), name);
          show(buf, pc);
       }//if
       else {  //ok, got some kind of object...lets test it
-         if (IsEmpty(obj_ptr->inv)) 
-            mudlog.log(INF,
-                       "INFO:  container has no inventory...may be a problem.\n");
+         if (IsEmpty(obj_ptr->inv)) {
+            if (mudlog.ofLevel(INF)) {
+               mudlog << "INFO:  container has no inventory, obj# "
+                      << obj_ptr->getIdNum() << endl;
+            }
+         }
          
          if (!(obj_ptr->OBJ_FLAGS.get(59))) { //canteen bit
-            Sprintf(buf, "The %S is not a liquid container.\n", name);
+            Sprintf(buf, cstr(CS_NO_LIQ_CONT, pc), name);
             show(buf, pc);
          }//if
          else if (pc.pc && pc.THIRST > THIRST_MAX) {
-            show("You are too full to drink any more.\n", pc);
+            pc.show(CS_TOO_FULL_TO_DRINK);
          }//if
          else if (obj_ptr->extras[0] == 0) { 
-            Sprintf(buf, "You can't shake another drop out of %S.\n", 
+            Sprintf(buf, cstr(CS_CONT_EMPTY_SPRINTF, pc),
                     &(obj_ptr->short_desc));
             show(buf, pc);
          }//if 
          else if (IsEmpty(obj_ptr->inv)) {
-            Sprintf(buf, "%S has no trace of liquid in it.\n", 
+            Sprintf(buf, cstr(CS_NO_LIQ_IN_CONT, pc),
                     &(obj_ptr->short_desc));
             buf.Cap();
             show(buf, pc);
@@ -1080,12 +1088,12 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
    if (ok_to_do_action(NULL, "mrFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
 
       if (targ->Strlen() == 0) {
-         show("Fill what??\n", pc);
+         pc.show(CS_FILL_WHAT);
          return -1;
       }//if
 
       if (source->Strlen() == 0) {
-         show("Fill it from where?\n", pc);
+         pc.show(CS_FILL_FROM_WHERE);
          return -1;
       }//if
 
@@ -1102,23 +1110,23 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
       }
       
       if (!targ_obj) {
-         Sprintf(buf, "You don't seem to have the %S.\n", targ);
+         Sprintf(buf, cstr(CS_DONT_SEEM_TO_HAVE, pc), targ);
          show(buf, pc);
       }//
       else if (!source_obj) {
-         Sprintf(buf, "You can't find the %S.\n", source);
+         Sprintf(buf, cstr(CS_CANT_FIND, pc), source);
          show(buf, pc);
       }//
       else if (source_obj == targ_obj) {
-         show("You empty it into itself.... *duh*.\n", pc);
+         pc.show(CS_EMPTY_SELF);
       }//if
       else if (!(source_obj->OBJ_FLAGS.get(59)) || !(source_obj->bag)) {
-         Sprintf(buf, "Nice try, but %S is not a liquid container!!\n", 
+         Sprintf(buf, cstr(CS_NOT_LIQ_CONT_FILL, pc),
                  &(source_obj->short_desc));
          show(buf, pc);
       }//if      
       else if (!(targ_obj->OBJ_FLAGS.get(59)) || !(targ_obj->bag)) {
-         Sprintf(buf, "Nice try, but %S is not a liquid container!!\n", 
+         Sprintf(buf, cstr(CS_NOT_LIQ_CONT_FILL, pc),
                  &(targ_obj->short_desc));
          show(buf, pc);
       }//if      
@@ -1126,24 +1134,24 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
 
       else if ((Top(targ_obj->inv) != Top(source_obj->inv)) && 
                (targ_obj->extras[0] != 0)) {
-         Sprintf(buf, "You need to empty your %S first.\n", 
+         Sprintf(buf, cstr(CS_MUST_EMPTY, pc),
                  name_of_obj(*targ_obj, pc.SEE_BIT));
          show(buf, pc);
       }//if
                   /* ok, liquids are the same */
 
       else if (source_obj->extras[0] == 0) {
-         Sprintf(buf, "The %S is empty already!!\n", name_of_obj(*source_obj,
-                                                                 pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_EMPTY_ALREADY, pc), name_of_obj(*source_obj,
+                                                              pc.SEE_BIT));
          show(buf, pc);
       }//if
       else if (targ_obj->extras[0] >= targ_obj->bag->max_weight) {
-         Sprintf(buf, "The %S is already full!!\n", name_of_obj(*targ_obj,
-                                                                pc.SEE_BIT));
+         Sprintf(buf, cstr(CS_FULL_ALREADY, pc), name_of_obj(*targ_obj,
+                                                             pc.SEE_BIT));
          show(buf, pc);
       }//if
       else if (targ_obj->extras[0] == -1) {
-         pc.show("That container will never need filling!\n");
+         pc.show(CS_NEVER_NEED_FILLING);
       }
                    /* All clear to exchange liquids ;) */
 
@@ -1204,8 +1212,7 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
                source_obj->extras[0]--;
             }//while
          }//else
-         Sprintf(buf, "You fill your %S from %S.\n", 
-                 targ_obj->getShortName(),
+         Sprintf(buf, cstr(CS_YOU_FILL, pc), targ_obj->getShortName(),
                  source_obj->getLongName());
          show(buf, pc);
          
@@ -1227,23 +1234,23 @@ int empty(int i_th, const String* canteen, critter& pc) {
                                        ROOM);
 
       if (!obj_ptr) {
-         Sprintf(buf, "You don't seem to have the %S.\n", canteen);
+         Sprintf(buf, cstr(CS_DONT_SEEM_TO_HAVE, pc), canteen);
          show(buf, pc);
       }//if
       else if (!(obj_ptr->OBJ_FLAGS.get(59))) {
-         Sprintf(buf, "The %S is not a liquid container.\n", 
+         Sprintf(buf, cstr(CS_NOT_LIQ_CONT_EMPTY, pc),
                  Top(obj_ptr->names));
          show(buf, pc);
       }//if
                   /* got a valid canteen */
    
       else if (obj_ptr->extras[0] == 0) {
-         Sprintf(buf, "Your %S is already empty.\n", 
+         Sprintf(buf, cstr(CS_CONT_EMPTY_SPRINTF, pc),
                  Top(obj_ptr->names));
          show(buf, pc);
       }//if
       else if (obj_ptr->extras[0] == -1) {
-         Sprintf(buf, "You could NEVER empty this %S!!\n", 
+         Sprintf(buf, cstr(CS_NEVER_EMPTY, pc),
                  Top(obj_ptr->names));
          show(buf, pc);
       }//if
@@ -1266,8 +1273,7 @@ int empty(int i_th, const String* canteen, critter& pc) {
          }//while
 
          obj_ptr->extras[0] = 0; //no charges
-         Sprintf(buf, "You empty your %S onto the ground.\n", 
-                 obj_ptr->getName());
+         Sprintf(buf, cstr(CS_YOU_EMPTY, pc), obj_ptr->getShortName());
          show(buf, pc);
          return 0;
       }//else
@@ -1324,15 +1330,15 @@ int help(int i_th, String* command, critter& pc) {
    page = get_page(cmd);
 
    if (page.Strlen() > 0) {
-      Sprintf(buf, "Help for Command:  %S\n", &parsed_cmd);
+      Sprintf(buf, cstr(CS_HELP_FOR_CMD, pc), &parsed_cmd);
       pc.show(buf);
       pc.show(page);
       return 0;
    }//if
    else {
-      Sprintf(buf, "Help for %i.%S is not available now.\n", i_th, command);
+      Sprintf(buf, cstr(CS_NO_HELP, pc), i_th, command);
       show(buf, pc);
-      show("If you think it should be added, use the 'idea' command.\n", pc);
+      pc.show(CS_NO_HELP_2);
       return -1;
    }//else
 }//help
@@ -1402,20 +1408,20 @@ int buy(int i_th, const String* item, int j_th, const String* keeper,
    }//else
 
    if (!crit_ptr) {
-      show("You do not see that person.\n", pc);
+      pc.show(CS_NO_CAN_SEE_PERSON);
    }//if
    else if (!crit_ptr->isNpc()) { //dealing w/a pc...
-      Sprintf(buf, "%S won't be traded with so easily!\n", 
+      Sprintf(buf, cstr(CS_TRADE_PC, pc),
               name_of_crit(*crit_ptr, pc.SEE_BIT));
       buf.Cap();
       show(buf, pc);
    }//if
    else if (!crit_ptr->mob->proc_data) { //not a shop keeper
-      do_tell(*crit_ptr, "I have nothing I wish to sell.", pc, 
+      do_tell(*crit_ptr, cstr(CS_NOTHING_TO_SELL, pc), pc, 
 	      FALSE, pc.getCurRoomNum());
    }//if
    else if (!(crit_ptr->FLAG1.get(1))) {
-      do_tell(*crit_ptr, "I don't trade for a living.", pc, FALSE,
+      do_tell(*crit_ptr, cstr(CS_NOT_TRADER, pc), pc, FALSE,
               pc.getCurRoomNum());
    }//if
    else {                  /* ok, is a shopkeeper */
@@ -1459,20 +1465,20 @@ int sell(int i_th, const String* item, int j_th, const String* keeper,
 
 
    if (!crit_ptr) {
-      show("You do not see that person.\n", pc);
+      pc.show(CS_NO_CAN_SEE_PERSON);
    }//if
    else if (!crit_ptr->mob) {
-      Sprintf(buf, 
-              "It might take some real persuading to get %S to trade...\n",
+      Sprintf(buf, cstr(CS_TRADE_PC, pc),
               name_of_crit(*crit_ptr, pc.SEE_BIT));
+      buf.Cap();
       show(buf, pc);
    }//if 
    else if (!crit_ptr->mob->proc_data) {
-      do_tell(*crit_ptr, "I don't wan't to buy anything from you!", pc, 
+      do_tell(*crit_ptr, cstr(CS_NO_WANT_BUY, pc), pc, 
               FALSE, pc.getCurRoomNum());
    }//if
    else if (!(crit_ptr->FLAG1.get(1))) {
-      do_tell(*crit_ptr, "I don't trade for a living!", pc, FALSE, pc.getCurRoomNum());
+      do_tell(*crit_ptr, cstr(CS_NOT_TRADER, pc), pc, FALSE, pc.getCurRoomNum());
    }//if
    else {                  /* ok, is a shopkeeper */
       return do_sell_proc(1, *crit_ptr, i_th, item, pc);
@@ -1499,58 +1505,54 @@ int practice(const String* spell, int j_th, const String* master,
          return abilities(pc);
       }//if
       else if (pc.EQ[9] || pc.EQ[10]) {
-         show("You can't practice while holding or wielding something.\n",
-              pc);
+         pc.show(CS_NO_PRAC_WIELDING);
       }//else
       else if (pc.PRACS < 1) {
-         show("You haven't enough practices!\n", pc);
+         pc.show(CS_NO_PRACS);
       }//if
       else if (!crit_ptr) {
-         show("You do not see that person.\n", pc);
+         pc.show(CS_NO_CAN_SEE_PERSON);
       }//if
       else if (!crit_ptr->mob) {
-         show("You cannot learn from another player yet.\n", pc);
+         pc.show(CS_NO_LEARN_PLAYER);
       }//if
       else if (!crit_ptr->mob->proc_data) {
-         do_tell(*crit_ptr, "I have nothing to teach you!", pc, FALSE, 
+         do_tell(*crit_ptr, cstr(CS_NOTHING_TO_TEACH, pc), pc, FALSE, 
                  pc.getCurRoomNum());
       }//if
       else if (!(crit_ptr->FLAG1.get(2))) {
-         do_tell(*crit_ptr, "I don't teach for a living!", pc, FALSE,
+         do_tell(*crit_ptr, cstr(CS_NO_TEACH_FOR_LIVING, pc), pc, FALSE,
                  pc.getCurRoomNum());
       }//if
       else {                  /* ok, is a teacher, figure out spell */
          if (!(crit_ptr->TEACH_DATA_FLAGS.get(pc.CLASS))) {
-            do_tell(*crit_ptr, "I can't teach those of your profession.", pc,
+            do_tell(*crit_ptr, cstr(CS_CANT_TEACH_PROFF, pc), pc,
                     FALSE, pc.getCurRoomNum());
          }//if
          else if (crit_ptr->LEVEL < pc.LEVEL) {
-            do_tell(*crit_ptr, 
-                    "You have surpassed me, you must find another teacher.",
+            do_tell(*crit_ptr, cstr(CS_TEACH_SURPASSED, pc),
                     pc, FALSE, pc.getCurRoomNum());
          }//if
          else {  		/* need to figure NUMBER of skill or spell */
             s_num = SSCollection::instance().getNumForName(*spell); 
             if (s_num == -1) {
-               Sprintf(buf, "-:%S:- has not been researched yet.\n",
-                       spell);
+               Sprintf(buf, cstr(CS_NOT_RESEARCHED, pc), spell);
                pc.show(buf);
             }//if
             else {             /* ok, got a valid skill or spell */
                if (SSCollection::instance().getSS(s_num).getMinLevel() > pc.LEVEL) {
-                  do_tell(*crit_ptr, 
-                          "If I taught you that the forces you could unleash would tear you apart!",
+                  do_tell(*crit_ptr, cstr(CS_SPELL_TOO_POWERFUL, pc),
                           pc, FALSE, pc.getCurRoomNum());
                }//if
                else {
                   int p_learned = get_percent_lrnd(s_num, pc);
                   if (p_learned == -1) {
-                     do_tell(*crit_ptr, "You don't know enough basics yet.", pc, 
+                     do_tell(*crit_ptr, cstr(CS_NO_PREREQ, pc), pc,
                              FALSE, pc.getCurRoomNum());
                   }//if
                   else if (p_learned < 100) {
                      increment_percent_lrnd(s_num, pc);
-                     show("You feel a bit wiser.\n", pc);
+                     pc.show(CS_FEEL_WISER);
                      pc.PRACS--; //decrement the number of practices
                      if ((p_learned < 50) && (get_percent_lrnd(s_num, pc) >= 50)) {
                         update_skill(s_num, pc);
@@ -1558,8 +1560,7 @@ int practice(const String* spell, int j_th, const String* master,
                      return 0;
                   }//if
                   else {
-                     show("You know as much as can be taught of this topic.\n",
-                          pc);
+                     pc.show(CS_KNOW_TOO_MUCH);
                   }//else
                }//else
             }//else, got a valid spell/skill
@@ -1578,33 +1579,31 @@ int toggle_prompt(const String* field, critter& pc) {
       return -1;
 
    if (len1 == 0) {
-      show("A zero (0) means it is OFF, a one (1) means the flag is on.\n
-You may toggle these switches:\n", pc);
+      pc.show(CS_TOG_PROMPT);
 
-      Sprintf(buf, "brief(%i)%P20autosplit(%i)%P45autoloot(%i)\n",
+      Sprintf(buf, cstr(CS_TOG1, pc),
               (int)(pc.PC_FLAGS.get(8)), (int)(pc.PC_FLAGS.get(9)),
               (int)(pc.PC_FLAGS.get(12)));
       show(buf, pc);
-      Sprintf(buf, "tank graph(%i)%P20cloak(%i)%P45autoexits(%i)\n",
+      Sprintf(buf, cstr(CS_TOG2, pc),
               (int)(pc.PC_FLAGS.get(4)), (int)(pc.PC_FLAGS.get(3)),
               (int)(pc.PC_FLAGS.get(6)));
       show(buf, pc);
 
-      Sprintf(buf, "client tags(%i)%P20page breaks(%i)%P45ansi color(%i)\n",
+      Sprintf(buf, cstr(CS_TOG3, pc),
               (int)(pc.PC_FLAGS.get(5)), (int)(pc.PC_FLAGS.get(22)),
               (int)(pc.isUsingColor()));
       show(buf, pc);
 
-      Sprintf(buf, 
-              "carriage-return(%i)%P20cr behind (default is behind)(%i)\n",
+      Sprintf(buf, cstr(CS_TOG4, pc),
               (int)(pc.PC_FLAGS.get(16)), (int)(pc.PC_FLAGS.get(15)));
       show(buf, pc);
       if (pc.isImmort()) {
-         Sprintf(buf, "extra_info(%i)%P20no_hassle(%i)%P45no_vnums(%i)\n",
+         Sprintf(buf, cstr(CS_TOG5, pc),
                  (int)(pc.PC_FLAGS.get(14)), (int)(pc.PC_FLAGS.get(7)),
 		 (int)(pc.PC_FLAGS.get(20)));
 	 show(buf, pc);
-         Sprintf(buf, "detect_inventory(%i)%P20wizchat(%i)\n",
+         Sprintf(buf, cstr(CS_TOG6, pc),
                  (int)(pc.PC_FLAGS.get(19)), (int)(pc.PC_FLAGS.get(24)));
 	 show(buf, pc);
       }//if
@@ -1612,63 +1611,61 @@ You may toggle these switches:\n", pc);
    }//if
 
    if (pc.isImmort()) {
-      if (strncasecmp(*field, "extra_info", len1) == 0) {
+      if (strncasecmp(*field, cstr(CS_TOG_EXTRA, pc), len1) == 0) {
 	 pc.PC_FLAGS.flip(14);
-	 show("Ok.\n", pc);
+	 pc.show(CS_OK);
 	 return 0;
       }//if
-      else if (strncasecmp(*field, "detect_inventory", len1) == 0) {
+      else if (strncasecmp(*field, cstr(CS_TOG_DET, pc), len1) == 0) {
 	 pc.PC_FLAGS.flip(19);
-	 show("Ok.\n", pc);
+	 pc.show(CS_OK);
 	 return 0;
       }//if
-      else if (strncasecmp(*field, "no_hassle", len1) == 0) {
+      else if (strncasecmp(*field, cstr(CS_TOG_NOH, pc), len1) == 0) {
 	 pc.PC_FLAGS.flip(7);
-	 show("Ok.\n", pc);
+	 pc.show(CS_OK);
 	 return 0;
       }//if
-      else if (strncasecmp(*field, "no_vnums", len1) == 0) {
+      else if (strncasecmp(*field, cstr(CS_TOG_NOV, pc), len1) == 0) {
 	 pc.PC_FLAGS.flip(20);
-	 show("Ok.\n", pc);
+	 pc.show(CS_OK);
 	 return 0;
       }//if
-      else if (strncasecmp(*field, "wizchat", len1) == 0) {
+      else if (strncasecmp(*field, cstr(CS_TOG_WC, pc), len1) == 0) {
          pc.PC_FLAGS.flip(24);
-	 show("Ok.\n", pc);
+	 pc.show(CS_OK);
 	 return 0;
       }//if         
    }//if
 
-   if (strncasecmp(*field, "tank graph", len1) == 0) 
+   if (strncasecmp(*field, cstr(CS_TOG_TG, pc), len1) == 0) 
       pc.PC_FLAGS.flip(4);
-   else if (strncasecmp(*field, "client tags", len1) == 0) 
+   else if (strncasecmp(*field, cstr(CS_TOG_CT, pc), len1) == 0) 
       pc.PC_FLAGS.flip(5);
-   else if (strncasecmp(*field, "cloaked", len1) == 0) 
+   else if (strncasecmp(*field, cstr(CS_TOG_CLOAKED, pc), len1) == 0) 
       pc.PC_FLAGS.flip(3);
-   else if (strncasecmp(*field, "brief", len1) == 0) 
+   else if (strncasecmp(*field, cstr(CS_TOG_BR, pc), len1) == 0) 
       pc.PC_FLAGS.flip(8);
-   else if (strncasecmp(*field, "cr behind", len1) == 0) 
+   else if (strncasecmp(*field, cstr(CS_TOG_CRB, pc), len1) == 0) 
       pc.PC_FLAGS.flip(15);
-   else if (strncasecmp(*field, "carriage-return", len1) == 0) 
+   else if (strncasecmp(*field, cstr(CS_TOG_CR, pc), len1) == 0) 
       pc.PC_FLAGS.flip(16);
-   else if (strncasecmp(*field, "autosplit", len1) == 0) 
+   else if (strncasecmp(*field, cstr(CS_TOG_AUTOSPLIT, pc), len1) == 0) 
       pc.PC_FLAGS.flip(9);
-   else if (strncasecmp(*field, "autoloot", len1) == 0) 
+   else if (strncasecmp(*field, cstr(CS_TOG_AUTOLOOT, pc), len1) == 0) 
       pc.PC_FLAGS.flip(12);
-   else if (strncasecmp(*field, "cloak", len1) == 0) 
-      pc.PC_FLAGS.flip(3);
-   else if (strncasecmp(*field, "autoexits", len1) == 0) 
+   else if (strncasecmp(*field, cstr(CS_TOG_AUTOEXITS, pc), len1) == 0) 
       pc.PC_FLAGS.flip(6);
-   else if (strncasecmp(*field, "page breaks", len1) == 0) 
+   else if (strncasecmp(*field, cstr(CS_TOG_PB, pc), len1) == 0) 
       pc.PC_FLAGS.flip(22);
-   else if (strncasecmp(*field, "ansi color", len1) == 0) 
+   else if (strncasecmp(*field, cstr(CS_TOG_ANSI, pc), len1) == 0) 
       pc.PC_FLAGS.flip(26);
    else {
-      show("Can't find the switch for that!\n", pc);
+      pc.show(CS_NO_FIND_TOGGLE);
       return -1;
    }//else
    
-   show("Okay.\n", pc);
+   pc.show(CS_OK);
    return 0;
 }//toggle_prompt()
 
@@ -1696,23 +1693,23 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
  
 
       if (!crit_ptr) {
-         show("You do not see that person.\n", pc);
+         pc.show(CS_NO_CAN_SEE_PERSON);
       }//if
       else if (!crit_ptr->mob) {
-         show("It would take a more delicate approach....\n", pc);
+         pc.show(CS_MORE_DELICATE);
       }//if
       else if (!crit_ptr->mob->proc_data) {
-         do_tell(*crit_ptr, "Eh??", pc, FALSE, pc.getCurRoomNum());
+         do_tell(*crit_ptr, cstr(CS_EH, pc), pc, FALSE, pc.getCurRoomNum());
       }//if
       else if (!(crit_ptr->FLAG1.get(1))) {
-         do_tell(*crit_ptr, "I don't trade for a living.", pc, FALSE, pc.getCurRoomNum());
+         do_tell(*crit_ptr, cstr(CS_NOT_TRADER, pc), pc, FALSE, pc.getCurRoomNum());
       }//if
       else {                  /* ok, is a shopkeeper */
          int cur_time = get_game_time();
          if (crit_ptr->OPEN_TIME < crit_ptr->CLOSE_TIME) {
             if ((cur_time < crit_ptr->OPEN_TIME) || 
                 (cur_time > crit_ptr->CLOSE_TIME)) {
-               Sprintf(buf, "Hours are from %s to %s.\n", 
+               Sprintf(buf, cstr(CS_HOURS_FROM, pc),
                        military_to_am(crit_ptr->OPEN_TIME),
                        military_to_am(crit_ptr->CLOSE_TIME));
                show(buf, pc);
@@ -1722,7 +1719,7 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
          else {
             if ((cur_time > crit_ptr->CLOSE_TIME) &&
                 (cur_time < crit_ptr->OPEN_TIME)) {
-               Sprintf(buf, "Hours are from %s to %s.\n", 
+               Sprintf(buf, cstr(CS_HOURS_FROM, pc),
                        military_to_am(crit_ptr->OPEN_TIME),
                        military_to_am(crit_ptr->CLOSE_TIME));
                show(buf, pc);
@@ -1730,7 +1727,7 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
             }//if
          }//else
 
-         show("These items are for sale:\n", pc);
+         pc.show(CS_ITEMS_FOR_SALE);
          
          Cell<object*> cell(crit_ptr->inv);
          static int item_counts[NUMBER_OF_ITEMS + 1];
@@ -1880,20 +1877,19 @@ int offer(int i_th, const String* item, int j_th, const String* keeper,
 
 
       if (!crit_ptr) {
-         show("You do not see that person.\n", pc);
+         pc.show(CS_NO_CAN_SEE_PERSON);
       }//if
       else if (!crit_ptr->mob) {
-         Sprintf(buf, 
-                 "It might take some real persuading to get %S to trade...\n",
+         Sprintf(buf, cstr(CS_TAKE_PURSUADING, pc),
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
       }//if 
       else if (!crit_ptr->mob->proc_data) {
-         do_tell(*crit_ptr, "I don't want to buy anything from you!", pc, 
+         do_tell(*crit_ptr, cstr(CS_NO_WANT_BUY, pc), pc,
                  FALSE, pc.getCurRoomNum());
       }//if
       else if (!(crit_ptr->FLAG1.get(1))) {
-         do_tell(*crit_ptr, "I don't trade for a living.",
+         do_tell(*crit_ptr, cstr(CS_NOT_TRADER, pc),
                  pc, FALSE, pc.getCurRoomNum());
       }//if
       else {                  /* ok, is a shopkeeper */
@@ -1911,20 +1907,20 @@ int abilities(critter& pc) {
       return -1;
    }//if
 
-   show("You know of these skills and spells:\n", pc);
+   pc.show(CS_KNOW_SKILL_SPELLS);
 
    int key;
    int retval = 0;
    if (pc.SKILLS_KNOWN.Min(key)) {
       pc.SKILLS_KNOWN.Find(key, retval);
-      Sprintf(buf, "\t%s %P50%i percent\n",
+      Sprintf(buf, cstr(CS_SS_PERCENT, pc),
               (const char*)(SSCollection::instance().getNameForNum(key)),
               retval);
       buf.Cap();
       show(buf, pc);
       while (pc.SKILLS_KNOWN.Next(key)) {
          pc.SKILLS_KNOWN.Find(key, retval);
-         Sprintf(buf, "\t%s %P50%i percent\n",
+         Sprintf(buf, cstr(CS_SS_PERCENT, pc),
                  (const char*)(SSCollection::instance().getNameForNum(key)),
                  retval);
          buf.Cap();
@@ -1943,7 +1939,7 @@ int wimpy(int i, critter& pc) {
    if (ok_to_do_action(NULL, "mFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
 
       if (i == 1) {
-         Sprintf(buf, "Wimpy is set at:  %i.\n", pc.WIMPY);
+         Sprintf(buf, cstr(CS_WIMPY_SET, pc), pc.WIMPY);
          show(buf, pc);
       }//if
       else if (i <= 0) {
@@ -1955,7 +1951,7 @@ int wimpy(int i, critter& pc) {
       else {
          pc.WIMPY = i;
       }//else
-      show("Ok.\n", pc);
+      pc.show(CS_OK);
       return 0;
    }
    return -1;
@@ -1980,7 +1976,7 @@ int mstat(int i_th, const String* name, critter& pc) {
       }//else
       
       if (!crit_ptr) {
-         show("You don't see that person here.\n", pc);
+         pc.show(CS_NO_CAN_SEE_PERSON);
          return -1;
       }//if
       else {
@@ -1991,6 +1987,8 @@ int mstat(int i_th, const String* name, critter& pc) {
 }//mstat
 
 
+
+//TODO:  Translate all these little strings!!
 int do_mstat(critter& targ, critter& pc) {
    String buf2(200);
    String buf(100);
@@ -2293,7 +2291,7 @@ int lore(int i_th, const String* name, critter& pc, int show_extra = FALSE) {
       if (!obj_ptr)
          obj_ptr = ROOM.haveObjNamed(i_th, name, pc.SEE_BIT);
       if (!obj_ptr) {
-         show("You neither see nor have that object.\n", pc);
+         pc.show(CS_NEITHER_SEE_NOR_HAVE_OBJ);
          return -1;
       }//if
       else {
@@ -2303,7 +2301,7 @@ int lore(int i_th, const String* name, critter& pc, int show_extra = FALSE) {
    return -1;
 }//lore
 
-
+//TODO:  Translate
 int do_lore(object& obj, critter& pc, int show_extra) {
    String buf(100);
 
@@ -2415,7 +2413,7 @@ int do_lore(object& obj, critter& pc, int show_extra) {
    return 0;
 }//do_lore
 
-
+//TODO:  Translate
 int do_ostat(object& obj, critter& pc) {
    String buf2(100);
    String buf(100);
@@ -2626,11 +2624,11 @@ int do_dstat(door_data& dr, critter& pc) {
 int shutdown(const String* cond, critter& pc) {
    if (ok_to_do_action(NULL, "IF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       if (!pc.getImmLevel() > 8) {
-         show("You haven't the power!\n", pc);
+         pc.show(CS_HAVENT_POWER);
          return -1;
       }//if
 
-      pc.show("Saving all.\n");
+      pc.show(CS_SAVING_ALL);
       save_all();
 
       if (cond->Strlen() == 0) {
@@ -2648,7 +2646,7 @@ int shutdown(const String* cond, critter& pc) {
          grr_reboot = 2;
       }//
       else {
-         pc.show("Shutdown how??\n");
+         pc.show(CS_SHUTDOWN_HOW);
          return -2;
       }
       return 0;
@@ -2660,13 +2658,13 @@ int shutdown(const String* cond, critter& pc) {
 int log_level(int lvl, critter& pc) {
    if (ok_to_do_action(NULL, "IF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       if (pc.getImmLevel() <= 8) {
-         show("You haven't the power!\n", pc);
+         pc.show(CS_HAVENT_POWER);
          return -1;
       }//if
 
       String buf(100);
 
-      Sprintf(buf, "Setting logging level to:  %i.", lvl);
+      Sprintf(buf, cstr(CS_SETTING_LOG, pc), lvl);
       pc.show(buf);
       mudlog << "INFO:  Setting logging level to:  " << lvl << endl;
 
@@ -2679,7 +2677,7 @@ int log_level(int lvl, critter& pc) {
 
 int rezone(critter& pc) { //forces reload of zone in which pc is
    if (ok_to_do_action(NULL, "IRF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
-      show("Reloading zone...\n", pc);
+      pc.show(CS_RELOADING_ZONE);
       update_zone(ROOM.getZoneNum(), FALSE);
       return 0;
    }
@@ -2689,7 +2687,7 @@ int rezone(critter& pc) { //forces reload of zone in which pc is
 
 int total_rezone(critter& pc) {
    if (ok_to_do_action(NULL, "IRF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
-      show("Totally reloading zone...\n", pc);
+      pc.show(CS_TOTAL_RELOAD_ZONE);
       update_zone(ROOM.getZoneNum(), TRUE);
       int z = ROOM.getZoneNum();
       if (z != -1) {
@@ -2702,12 +2700,3 @@ int total_rezone(critter& pc) {
    }
    return -1;
 }//total_rezone();
-
-
-
-
-
-
-
-
-
