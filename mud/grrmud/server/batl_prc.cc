@@ -153,7 +153,7 @@ void do_battle_proc(critter& pc) {
     violence = defense = 0;
   }//else
 
-  critter* primary_targ = Top(pc.IS_FIGHTING);
+  critter* primary_targ = pc.IS_FIGHTING.peekFront();
 
   if (!primary_targ)
     return; //why are we here??
@@ -738,7 +738,7 @@ void a_summons_help_against_b(critter& vict, critter& pc) {
 
    while ((ptr = cll.next())) {
       if (a_will_help_b_against_c(*ptr, vict, pc)) {
-         Put(ptr, tmp_lst);
+         tmp_lst.append(ptr);
       }//if
    }//while
    
@@ -814,7 +814,7 @@ void alert_room_proc(int rm_num, int alert_type, critter& targ,
 critter* find_weakest(List<critter*>& lst) {
    Cell<critter*> cll(lst);
    critter* ptr;
-   critter* weakest = Top(lst);
+   critter* weakest = lst.peekFront();
    
    while ((ptr = cll.next())) {
       if (ptr == weakest)
@@ -828,14 +828,14 @@ critter* find_weakest(List<critter*>& lst) {
   
 
 short is_tank(critter& pc) {
-  if (IsEmpty(pc.IS_FIGHTING))
+  if (pc.IS_FIGHTING.peekFront())
     return FALSE;
 
   Cell<critter*> cll(pc.IS_FIGHTING);
   critter* ptr;
 
   while ((ptr = cll.next())) {
-    if (Top(ptr->IS_FIGHTING) == &pc) {
+    if (ptr->IS_FIGHTING.peekFront() == &pc) {
       return TRUE;
     }//if
   }//while

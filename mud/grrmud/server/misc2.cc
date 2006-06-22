@@ -817,7 +817,7 @@ void leave_room_effects(room& rm, object& obj) {
 
 const String* single_obj_name(object& obj, int see_bit) {
    if (detect(see_bit, obj.OBJ_VIS_BIT))
-      return Top(obj.names);
+      return obj.names.peekFront();
    else
       return &SOMETHING; //global 'someone' String
 }//single_obj_name
@@ -2169,7 +2169,7 @@ String transform(const String &input,
 critter* get_target_mob(int i_th, const String* target, critter& pc, char* diversions){
    critter* vict = NULL;
    if (target->Strlen() == 0)
-      vict = Top(pc.IS_FIGHTING);
+      vict = pc.IS_FIGHTING.peekFront();
    else
       vict = ROOM.haveCritNamed(i_th, target, pc);
 //   if (!vict) doFailureNoTarget();

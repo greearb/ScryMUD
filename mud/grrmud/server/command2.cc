@@ -87,7 +87,7 @@ int do_score_long(critter& of_pc, critter& pc) {
            get_race_name(of_pc.RACE));
    show(buf, pc);
 
-   if (!IsEmpty(of_pc.affected_by)) {
+   if (!of_pc.affected_by.isEmpty()) {
       pc.show(CS_AFFECTED_BY);
       while ((ss_ptr = cll.next())) {
          Sprintf(buf, "\t%s.\n", 
@@ -99,7 +99,7 @@ int do_score_long(critter& of_pc, critter& pc) {
       pc.show(CS_NOT_AFFECTED_SPELLS);
    }//else
 
-   if (!IsEmpty(of_pc.pets)) {
+   if (!of_pc.pets.isEmpty()) {
       pc.show(CS_HAVE_PETS);
       out_crit(of_pc.pets, pc, TRUE); //show them all, detect or not.
    }//if
@@ -253,9 +253,9 @@ int score(const String* str2, critter& pc) {
       pc.show(CS_OWN_MASTER);
    }
 
-   if (!IsEmpty(pc.IS_FIGHTING)) {
+   if (!pc.IS_FIGHTING.isEmpty()) {
       Sprintf(buf2, cstr(CS_YOU_FIGHTING, pc),
-              name_of_crit(*(Top(pc.IS_FIGHTING)), pc.SEE_BIT));
+              name_of_crit(*(pc.IS_FIGHTING.peekFront()), pc.SEE_BIT));
       show(buf2, pc);
    }//if
    return 0;
@@ -1077,7 +1077,7 @@ int drink(int i_th, const String* name, critter& pc) {
          show(buf, pc);
       }//if
       else {  //ok, got some kind of object...lets test it
-         if (IsEmpty(obj_ptr->inv)) {
+         if (obj_ptr->inv.isEmpty()) {
             if (mudlog.ofLevel(INF)) {
                mudlog << "INFO:  container has no inventory, obj# "
                       << obj_ptr->getIdNum() << endl;
@@ -1096,7 +1096,7 @@ int drink(int i_th, const String* name, critter& pc) {
                     obj_ptr->getShortName());
             show(buf, pc);
          }//if 
-         else if (IsEmpty(obj_ptr->inv)) {
+         else if (obj_ptr->inv.isEmpty()) {
             Sprintf(buf, cstr(CS_NO_LIQ_IN_CONT, pc),
                     &(obj_ptr->short_desc));
             buf.Cap();
@@ -1111,13 +1111,13 @@ int drink(int i_th, const String* name, critter& pc) {
                obj2 = obj_to_sobj(*obj_ptr, ROOM.getInv(), TRUE, i_th,
                                   name, pc.SEE_BIT, ROOM);
             }//else
-            object* obj3 = Top(obj2->inv);
+            object* obj3 = obj2->inv.peekFront();
             obj2->CHARGES--;
             consume_eq_effects(*obj3, pc, TRUE);
             return 0;
          }//if
          else {
-            obj2 = Top(obj_ptr->inv);
+            obj2 = obj_ptr->inv.peekFront();
             obj_ptr->CHARGES--;
             consume_eq_effects(*obj2, pc, TRUE);
             return 0;
@@ -1182,7 +1182,7 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
       }//if      
                   /* so both are containers */
 
-      else if ((Top(targ_obj->inv) != Top(source_obj->inv)) && 
+      else if ((targ_obj->inv.peekFront() != source_obj->inv.peekFront()) && 
                (targ_obj->extras[0] != 0)) {
          Sprintf(buf, cstr(CS_MUST_EMPTY, pc),
                  name_of_obj(*targ_obj, pc.SEE_BIT));
@@ -1226,7 +1226,7 @@ int fill(int i_th, const String* targ, int j_th, const String* source,
          clear_obj_list(targ_obj->inv);
          
          //TODO, check for SOBJ:  Answer, allways use OBJ, not SOBJ
-         targ_obj->gainInv(&(obj_list[Top(source_obj->inv)->getIdNum()]));
+         targ_obj->gainInv(&(obj_list[source_obj->inv.peekFront()->getIdNum()]));
          
          /* test for infinite source */
          if (source_obj->extras[0] <= -1) {
@@ -1301,19 +1301,19 @@ int empty(int i_th, const String* canteen, critter& pc) {
 
       if (!(obj_ptr->OBJ_FLAGS.get(59))) {
          Sprintf(buf, cstr(CS_NOT_LIQ_CONT_EMPTY, pc),
-                 Top(obj_ptr->names));
+                 obj_ptr->names.peekFront());
          show(buf, pc);
       }//if
                   /* got a valid canteen */
    
       else if (obj_ptr->extras[0] == 0) {
          Sprintf(buf, cstr(CS_CONT_EMPTY_SPRINTF, pc),
-                 Top(obj_ptr->names));
+                 obj_ptr->names.peekFront());
          show(buf, pc);
       }//if
       else if (obj_ptr->extras[0] == -1) {
          Sprintf(buf, cstr(CS_NEVER_EMPTY, pc),
-                 Top(obj_ptr->names));
+                 obj_ptr->names.peekFront());
          show(buf, pc);
       }//if
                    /* ok, procede w/emptying */
@@ -2487,7 +2487,7 @@ int do_mstat(critter& targ, critter& pc) {
       }//if a mob
 
                  /* pc data */
-      if (!IsEmpty(crit_ptr->IS_FIGHTING)) {
+      if (!crit_ptr->IS_FIGHTING.isEmpty()) {
          Sprintf(buf2, "%S is fighting:\n", name_of_crit(*crit_ptr, ~0));
          show(buf2, pc);
          out_crit(crit_ptr->IS_FIGHTING, pc);

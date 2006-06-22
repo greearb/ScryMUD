@@ -164,7 +164,7 @@ void critter::doLogin() {
 #endif
                   case false:
                      string2 = new String(string);
-                     Put(string2, (names));
+                     names.append(string2);
                      name = string;
                      name.Tolower();
                      name.Prepend("./Pfiles/");
@@ -474,11 +474,13 @@ void critter::doLogin() {
                   
                   critter* old_ptr;
                   old_ptr = have_crit_named(linkdead_list, 1, 
-                                            Top((names)), ~0, *(getCurRoom()),
+                                            names.peekFront(),
+                                            ~0, *(getCurRoom()),
                                             TRUE);
                   if (!old_ptr) {
                      old_ptr = have_crit_named(pc_list, 2,
-                                               Top(names), ~0, *(getCurRoom()),
+                                               names.peekFront(),
+                                               ~0, *(getCurRoom()),
                                                TRUE);
                      was_link_dead = FALSE;
                   }//if

@@ -418,7 +418,7 @@ int wear(int i_th, const String* obj, int j, const String* posn,
       pc.inv.head(cell);
       obj_ptr = cell.next();
     
-      if (IsEmpty(pc.inv)) {
+      if (pc.inv.isEmpty()) {
          pc.show(CS_NOTHING_TO_WEAR);
       }//if
       else {
@@ -2618,7 +2618,7 @@ int rest(critter& pc) {
       return 0;
    }//if
    if (pc.POS < POS_REST) {
-      if (IsEmpty(pc.IS_FIGHTING)) {
+      if (pc.IS_FIGHTING.isEmpty()) {
          pc.show(CS_DO_REST);
          emote(CS_REST_EMOTE, pc, ROOM, FALSE);
          pc.setPosn(POS_REST); //rest
@@ -2652,7 +2652,7 @@ int sit(critter& pc) {
       return 0;
    }//if
    if ((pc.POS < POS_REST) || (pc.POS == POS_PRONE)) {
-      if (IsEmpty(pc.IS_FIGHTING)) {
+      if (pc.IS_FIGHTING.isEmpty()) {
          pc.show(CS_DO_SIT);
          emote(CS_SIT_EMOTE, pc, ROOM, FALSE);
          pc.setPosn(POS_SIT);
@@ -2721,7 +2721,7 @@ int sleep(critter& pc) {
       return 0;
    }//if
    else if ((pc.POS <= POS_MED)) {
-      if (IsEmpty(pc.IS_FIGHTING)) {
+      if (pc.IS_FIGHTING.isEmpty()) {
          pc.show(CS_DO_SLEEP);
          emote(CS_EMOTE_SLEEP, pc, ROOM, FALSE);
          pc.setPosn(POS_SLEEP);
@@ -2754,7 +2754,7 @@ int meditate(critter& pc) {
       return 0;
    }//if
    else if ((pc.POS != POS_SLEEP)) {
-      if (IsEmpty(pc.IS_FIGHTING)) {
+      if (pc.IS_FIGHTING.isEmpty()) {
          if (d(1, 75) < d(1, get_percent_lrnd(MEDITATION_SKILL_NUM, pc))) {
             pc.show(CS_DO_MED);
             emote(CS_MED_EMOTE, pc, ROOM, FALSE);
@@ -2880,7 +2880,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
    else if (pc.POS != POS_STAND) {
       pc.show(CS_MOV_STANDING);
    }//if
-   else if (!IsEmpty(pc.IS_FIGHTING)) { //if fighting
+   else if (!pc.IS_FIGHTING.isEmpty()) { //if fighting
       pc.show(CS_MOV_FIGHTING);
    }//if
    else if ((door_ptr = door::findDoor(rm.DOORS, i_th, &str_dir, ~0, rm))) {
@@ -2926,7 +2926,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
              if (ptr2->mob) {
                if (ptr2->mob->proc_data) {
                  if (ptr2->mob->proc_data->int1 != 0) {
-                   if (strcasecmp(*(Top(door_list[ptr2->INT1].names)), 
+                   if (strcasecmp(*(door_list[ptr2->INT1].names.peekFront()), 
                                   *(direction_of_door(*door_ptr))) == 0) {
                       if ((ptr2->FLAG1.get(3) && (ptr2->CLASS == pc.CLASS)) ||
                           (ptr2->FLAG1.get(4) && (ptr2->RACE == pc.RACE))) {

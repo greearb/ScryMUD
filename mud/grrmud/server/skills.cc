@@ -366,7 +366,7 @@ int kick(int i_th, const String* victim, critter& pc) {
    String buf(100);
 
    if (!victim->Strlen()) {
-      crit_ptr = Top(pc.IS_FIGHTING);
+      crit_ptr = pc.IS_FIGHTING.peekFront();
       if (crit_ptr && !detect(pc.SEE_BIT, crit_ptr->VIS_BIT))
          crit_ptr = NULL;
    }//if
@@ -480,7 +480,7 @@ int bash(int i_th, const String* victim, critter& pc) {
    String buf(100);
 
    if (!victim->Strlen()) {
-      if (!(crit_ptr = Top(pc.IS_FIGHTING))) {
+      if (!(crit_ptr = pc.IS_FIGHTING.peekFront())) {
          show("Bash who?\n", pc);
          return -1;
       }//if
@@ -652,7 +652,7 @@ int block(int i_th, const String* victim, critter& pc) {
    String buf(100);
 
    if (!victim->Strlen()) {
-      crit_ptr = Top(pc.IS_FIGHTING);
+      crit_ptr = pc.IS_FIGHTING.peekFront();
       if (crit_ptr && !detect(pc.SEE_BIT, crit_ptr->VIS_BIT))
          crit_ptr = NULL;
    }//if
@@ -689,7 +689,7 @@ int do_block(critter& vict, critter& pc) {
       return -1;
    }//if
 
-   if (!HaveData(&vict, pc.IS_FIGHTING)) {
+   if (! pc.IS_FIGHTING.haveData(&vict) ) {
       return -1;
    }//if
 
@@ -770,7 +770,7 @@ int claw(int i_th, const String* victim, critter& pc) {
    }//if
 
    if (!victim->Strlen()) {
-      crit_ptr = Top(pc.IS_FIGHTING);
+      crit_ptr = pc.IS_FIGHTING.peekFront();
       if (crit_ptr && !detect(pc.SEE_BIT, crit_ptr->VIS_BIT))
          crit_ptr = NULL;
    }//if
@@ -818,7 +818,7 @@ int do_claw(critter& vict, critter& pc) {
       return -1;
    }//if
 
-   if (!HaveData(&vict, pc.IS_FIGHTING)) {
+   if (! pc.IS_FIGHTING.haveData(&vict) ) {
       join_in_battle(pc, vict);
    }//if
 
@@ -893,8 +893,7 @@ int do_claw(critter& vict, critter& pc) {
                ptr->bonus_duration += 2;//doesn't increase much after
                                         //the first hit 
             } else {
-               Put(new stat_spell_cell(BLINDNESS_SKILL_NUM, pc.LEVEL/10 + 1), 
-                   vict.affected_by);
+               vict.affected_by.append(new stat_spell_cell(BLINDNESS_SKILL_NUM, pc.LEVEL/10 + 1));
                vict.SEE_BIT &= ~(1024); //turn off the flag
             }
            
@@ -980,7 +979,7 @@ int construct(critter& pc, short do_mob) {
       }//if
    }//while
 
-   ptr = Top(toolbox->inv);
+   ptr = toolbox->inv.peekFront();
 
    if (!ptr->obj_proc) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL obj_proc.\n", 
@@ -1159,7 +1158,7 @@ int concoct(critter& pc, short do_mob) {
       return -1;
    }//if
 
-   if (IsEmpty(cauldron->inv)) {
+   if (cauldron->inv.isEmpty()) {
       show("You need ingredients in your cauldron to brew with!\n", 
            pc);
       return -1;
@@ -1188,7 +1187,7 @@ int concoct(critter& pc, short do_mob) {
       }//if
    }//while
 
-   ptr = Top(cauldron->inv);
+   ptr = cauldron->inv.peekFront();
 
    if (!ptr->obj_proc) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL obj_proc.\n", 

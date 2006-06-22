@@ -133,7 +133,7 @@ void SpellSpearOfDarkness::doSpellEffects(){
     }//else did miss AND vict NOT equal to agg
 
     if (!do_fatality && do_join_in_battle &&
-       !HaveData(&victim, agg.IS_FIGHTING)) {
+       !agg.IS_FIGHTING.haveData(&victim)) {
         join_in_battle(agg, victim);
     }//if
 
@@ -232,7 +232,7 @@ void SpellOrbOfPower::doSpellEffects() {
          pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
       }
    }//missed
-   if (!do_fatality && do_join_in_battle && !HaveData(&victim, agg.IS_FIGHTING))
+   if (!do_fatality && do_join_in_battle && !agg.IS_FIGHTING.haveData(&victim))
       join_in_battle(agg, victim);
    
    if (do_fatality) {
@@ -331,7 +331,7 @@ void SpellHolyWord::doSpellEffects() {
 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -442,7 +442,7 @@ void SpellDispelGood::doSpellEffects() {
    }//did_miss
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -546,7 +546,7 @@ void SpellHarm::doSpellEffects() {
    }//did_miss
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -645,7 +645,7 @@ void SpellCauseCritical::doSpellEffects() {
    }//did_miss
   
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -771,7 +771,7 @@ void do_cast_cause_sickness(critter& vict, critter& agg, int is_canned,
    agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -786,7 +786,7 @@ void cast_cause_sickness(int i_th, const String* victim, critter& pc) {
    int spell_num = CAUSE_SICKNESS_SKILL_NUM;
 
    if (victim->Strlen() == 0) {
-      vict = Top(pc.is_fighting);
+      vict = pc.is_fighting.peekFront();
       if (vict && !detect(pc.SEE_BIT, vict->VIS_BIT))
          vict = NULL;
    }
@@ -926,7 +926,7 @@ void do_cast_lightning(critter& vict, critter& agg, int is_canned,
    agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -941,7 +941,7 @@ void cast_lightning(int i_th, const String* victim, critter& pc) {
    int spell_num = LIGHTNING_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.is_fighting);
+      vict = pc.is_fighting.peekFront();
    else 
       vict = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
    if (!vict) {
@@ -1081,7 +1081,7 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
    agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -1096,7 +1096,7 @@ void cast_dark_dart(int i_th, const String* victim, critter& pc) {
    int spell_num = DOD_SKILL_NUM;
 
    if (victim->Strlen() == 0) {
-      vict = Top(pc.is_fighting);
+      vict = pc.is_fighting.peekFront();
       if (vict && !detect(pc.SEE_BIT, vict->VIS_BIT))
          vict = NULL;
    }
@@ -1239,7 +1239,7 @@ void do_cast_shocking_grasp(critter& vict, critter& agg, int is_canned,
    agg.PAUSE += 1; 
 
    if (!do_fatality && do_join_in_battle && 
-       !HaveData(&vict, agg.IS_FIGHTING)) {
+       !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -1254,7 +1254,7 @@ void cast_shocking_grasp(int i_th, const String* victim, critter& pc) {
    int spell_num = SHOCKING_GRASP_SKILL_NUM;
 
    if (victim->Strlen() == 0) {
-      vict = Top(pc.is_fighting);
+      vict = pc.is_fighting.peekFront();
       if (vict && !detect(pc.SEE_BIT, vict->VIS_BIT))
          vict = NULL;
    }
@@ -1392,7 +1392,7 @@ void do_cast_rainbow(critter& vict, critter& agg, int is_canned,
    }//else
    agg.PAUSE += 1; 
 
-   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
+   if (do_join_in_battle && !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -1407,7 +1407,7 @@ void cast_rainbow(int i_th, const String* victim, critter& pc) {
    int spell_num = RAINBOW_SKILL_NUM;
 
    if (victim->Strlen() == 0) {
-      vict = Top(pc.is_fighting);
+      vict = pc.is_fighting.peekFront();
       if (vict && !detect(pc.SEE_BIT, vict->VIS_BIT))
          vict = NULL;
    }
@@ -1546,7 +1546,7 @@ void do_cast_burning_hands(critter& vict, critter& agg, int is_canned,
    }//else
    agg.PAUSE += 1; 
 
-   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
+   if (do_join_in_battle && !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -1561,7 +1561,7 @@ void cast_burning_hands(int i_th, const String* victim, critter& pc) {
    int spell_num = BURNING_HANDS_SKILL_NUM;
 
    if (victim->Strlen() == 0) {
-      vict = Top(pc.is_fighting);
+      vict = pc.is_fighting.peekFront();
       if (vict && !detect(pc.SEE_BIT, vict->VIS_BIT))
          vict = NULL;
    }

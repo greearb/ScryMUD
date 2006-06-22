@@ -1108,14 +1108,14 @@ int discuss(const String* topic, int i_th, const String* targ, critter& pc) {
    else if (pc.POS > POS_REST) {
       show("You are too relaxed.\n", pc);
    }//if
-   else if (!IsEmpty(pc.IS_FIGHTING)) {
+   else if (!pc.IS_FIGHTING.isEmpty()) {
       show("You find it hard to have a decent conversation while fighting!\n",
            pc);
    }//if
    else { //looks like we're good to go
       if (ptr->mob && !ptr->pc) {
          if (ptr->mob->proc_data) {
-            if (!IsEmpty(ptr->mob->proc_data->topics)) { //then do it
+            if (!ptr->mob->proc_data->topics.isEmpty()) { //then do it
                if (ptr->isMob()) {
                   ptr = mob_to_smob(*ptr, pc.getCurRoomNum(), TRUE, i_th, targ, pc.SEE_BIT);
                }//if

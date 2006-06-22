@@ -369,8 +369,7 @@ void do_cast_detect_invisibility(critter& vict, critter& agg, int is_canned,
      if (sp)
        sp->bonus_duration += lvl/2;
      else
-       Put(new stat_spell_cell(spell_num, lvl/2),
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2));
      vict.SEE_BIT |= 2;  //can now see invisible
    }//if
 }//do_cast_detect_invisibility
@@ -464,8 +463,7 @@ void do_cast_infravision(critter& vict, critter& agg, int is_canned,
      if (sp)
        sp->bonus_duration += lvl/2;
      else
-       Put(new stat_spell_cell(spell_num, lvl/2),
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2));
      vict.SEE_BIT |= 1;  //can now see in the dark
    }//if
 }//do_cast_infravision
@@ -559,8 +557,7 @@ void do_cast_detect_hidden(critter& vict, critter& agg, int is_canned,
      if (sp)
        sp->bonus_duration += lvl/2;
      else
-       Put(new stat_spell_cell(spell_num, lvl/2),
-           vict.affected_by);
+        vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2));
      vict.SEE_BIT |= 4;  //can now see hidden
    }//if
 }//do_cast_detect_hidden
@@ -654,8 +651,7 @@ void do_cast_bless(critter& vict, critter& agg, int is_canned,
       if (sp)
          sp->bonus_duration += lvl/3;
       else {
-         Put(new stat_spell_cell(spell_num, 5 + lvl/2),
-             vict.affected_by);
+         vict.affected_by.append(new stat_spell_cell(spell_num, 5 + lvl/2));
          vict.HIT += BLESS_EFFECTS;
       }//else
    }//if
@@ -758,8 +754,7 @@ void do_cast_pfg(critter& vict, critter& agg, int is_canned,
      if (sp)
        sp->bonus_duration += lvl/2;
      else {
-       Put(new stat_spell_cell(spell_num, 10 + lvl/2),
-           vict.affected_by);
+        vict.affected_by.append(new stat_spell_cell(spell_num, 10 + lvl/2));
        vict.CRIT_FLAGS.turn_on(25); //pfg now
      }//else
    }//if
@@ -864,8 +859,7 @@ void do_cast_pfe(critter& vict, critter& agg, int is_canned,
      if (sp)
        sp->bonus_duration += lvl/2;
      else {
-       Put(new stat_spell_cell(spell_num, 10 + lvl/2),
-           vict.affected_by);
+        vict.affected_by.append(new stat_spell_cell(spell_num, 10 + lvl/2));
        vict.CRIT_FLAGS.turn_on(24); //pfe now
      }//else
    }//if
@@ -961,8 +955,7 @@ void do_cast_detect_magic(critter& vict, critter& agg, int is_canned,
          if (sp)
               sp->bonus_duration += lvl/3;
          else
-           Put(new stat_spell_cell(spell_num, lvl/3),
-               vict.affected_by);
+            vict.affected_by.append(new stat_spell_cell(spell_num, lvl/3));
          vict.PC_FLAGS.turn_on(18); //can now det magic
       }//if a pc
    }//if
@@ -1027,7 +1020,7 @@ void do_cast_create_water(object& vict, critter& agg, int is_canned,
    }//if
 
    if (is_canned || (!(lost_con = lost_concentration(agg, spell_num)))) {
-      object* obj_ptr = Top(vict.inv);
+      object* obj_ptr = vict.inv.peekFront();
       if (obj_ptr && obj_ptr->OBJ_NUM != 7) {
          show("You need to empty it first!\n", agg);
          return;
@@ -1162,7 +1155,7 @@ void do_cast_enchant_weapon(object& vict, critter& agg, int is_canned,
       
       // You always get at least one...
       if (!ht_ptr)
-         Put((ht_ptr = new stat_spell_cell(7, 1)), vict.stat_affects);
+         vict.stat_affects.append((ht_ptr = new stat_spell_cell(7,1)));
       else
          ht_ptr->bonus_duration++;
 
@@ -1171,13 +1164,13 @@ void do_cast_enchant_weapon(object& vict, critter& agg, int is_canned,
          ht_ptr = has_stat_affect(7, vict);
          if (d(1, 6) == 2) {
             if (!dm_ptr)
-               Put((dm_ptr = new stat_spell_cell(8, 1)), vict.stat_affects);
+               vict.stat_affects.append((dm_ptr = new stat_spell_cell(8,1)));
             else
                dm_ptr->bonus_duration++;
          }//if
          else if (d(1,6) == 6) {
             if (!ht_ptr)
-               Put((ht_ptr = new stat_spell_cell(7, 1)), vict.stat_affects);
+               vict.stat_affects.append((ht_ptr = new stat_spell_cell(7,1)));
             else
                ht_ptr->bonus_duration++;
          }//else
@@ -1269,13 +1262,13 @@ void do_cast_enchant_armor(object& vict, critter& agg, int is_canned,
 
      /* first do AC decrementation */
      if (!ac_ptr)
-       Put(new stat_spell_cell(9, -(lvl/3)), vict.stat_affects);
+       vict.stat_affects.append(new stat_spell_cell(9, -(lvl/3)));
      else
        ac_ptr->bonus_duration -= (lvl/3);
 
      /* spell resistance decrementation (less is good) */ 
      if (!spll_ptr)
-       Put(new stat_spell_cell(32, -(lvl/3)), vict.stat_affects);
+       vict.stat_affects.append(new stat_spell_cell(32, -(lvl/3)));
      else
        spll_ptr->bonus_duration -= (lvl/3);
 
@@ -1364,7 +1357,7 @@ void do_cast_fire_blade(object& vict, critter& agg, int is_canned,
      if (sp)
        sp->bonus_duration += lvl/3;
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2), vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2));
      }//else
    }//if
 }//do_cast_fire_blade
@@ -1451,7 +1444,7 @@ void do_cast_frost_blade(object& vict, critter& agg, int is_canned,
      if (sp)
        sp->bonus_duration += lvl/3;
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2), vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2));
      }//else
    }//if
 }//do_cast_frost_blade
@@ -1537,7 +1530,7 @@ void do_cast_rune_edge(object& vict, critter& agg, int is_canned,
       if (sp)
         sp->bonus_duration += lvl/3;
       else {
-        Put(new stat_spell_cell(spell_num, lvl/2), vict.affected_by);
+        vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2));
         vict.OBJ_DAM_DICE_SIDES += RUNE_EDGE_EFFECTS;
       }//else
    }//if
@@ -1647,7 +1640,7 @@ void do_cast_invisibility(critter& vict, critter& agg, int is_canned,
       if (sp)
         sp->bonus_duration += lvl/3;
       else
-        Put(new stat_spell_cell(spell_num, lvl/3), vict.affected_by);
+        vict.affected_by.append(new stat_spell_cell(spell_num, lvl/3));
 
       vict.VIS_BIT |= 2;
    }//if
@@ -1705,7 +1698,7 @@ void do_cast_invisibility(object& vict, critter& agg, int is_canned,
       if (sp)
         sp->bonus_duration += lvl/3;
       else
-        Put(new stat_spell_cell(spell_num, lvl/3), vict.affected_by);
+        vict.affected_by.append(new stat_spell_cell(spell_num, lvl/3));
 
       vict.OBJ_VIS_BIT |= 2;
    }//if
@@ -2098,7 +2091,7 @@ void cast_entangle(int i_th, const String* victim, critter& pc) {
    int spell_num = ENTANGLE_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.IS_FIGHTING);
+      vict = pc.IS_FIGHTING.peekFront();
    else 
       vict = ROOM.haveCritNamed(i_th, victim, pc);
 
@@ -2130,7 +2123,7 @@ void cast_web(int i_th, const String* victim, critter& pc) {
    int spell_num = WEB_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.IS_FIGHTING);
+      vict = pc.IS_FIGHTING.peekFront();
    else 
       vict = ROOM.haveCritNamed(i_th, victim, pc);
 
@@ -2240,12 +2233,12 @@ void do_cast_web(critter& vict, critter& agg, int is_canned, int lvl) {
          }//if
       }//while
 
-      Put(new stat_spell_cell(spell_num, lvl/3), vict.affected_by);
+      vict.affected_by.append(new stat_spell_cell(spell_num, lvl/3));
       vict.DEX += WEB_DEX_AUGMENTATION;
       vict.MV_REGEN += WEB_MV_REGEN_AUGMENTATION;
    }//if
 
-   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
+   if (do_join_in_battle && !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 }//do_cast_web
@@ -2332,12 +2325,12 @@ void do_cast_entangle(critter& vict, critter& agg, int is_canned,
          }//if
       }//while
 
-      Put(new stat_spell_cell(spell_num, lvl/3), vict.affected_by);
+      vict.affected_by.append(new stat_spell_cell(spell_num, lvl/3));
       vict.DEX += ENTANGLE_DEX_AUGMENTATION;
       vict.MV_REGEN += ENTANGLE_MV_REGEN_AUGMENTATION;
    }//if
 
-   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
+   if (do_join_in_battle && !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 }//do_cast_entangle
@@ -2348,7 +2341,7 @@ void cast_faerie_fire(int i_th, const String* victim, critter& pc) {
    int spell_num = FAERIE_FIRE_SKILL_NUM;
 
    if (victim->Strlen() == 0) {
-      vict = Top(pc.IS_FIGHTING);
+      vict = pc.IS_FIGHTING.peekFront();
       if (vict && !detect(pc.SEE_BIT, vict->VIS_BIT))
          vict = NULL;
    }
@@ -2457,11 +2450,11 @@ void do_cast_faerie_fire(critter& vict, critter& agg, int is_canned,
          }//if
       }//while
 
-      Put(new stat_spell_cell(spell_num, lvl/3), vict.affected_by);
+      vict.affected_by.append(new stat_spell_cell(spell_num, lvl/3));
       vict.AC += FAERIE_FIRE_AC_AUGMENTATION;
    }//if
 
-   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
+   if (do_join_in_battle && !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 }//do_cast_faerie_fire

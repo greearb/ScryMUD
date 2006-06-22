@@ -175,7 +175,7 @@ void do_cast_flame_strike(critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "is burned by %S's pillar of fire!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
+               if (!ptr->IS_FIGHTING.haveData(&agg)) {
                   join_in_battle(*ptr, agg);
                }//if
             }//else
@@ -263,7 +263,7 @@ void do_cast_meteorstorm(critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "is struck by %S's meteor!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
+               if (!ptr->IS_FIGHTING.haveData(&agg)) {
                   join_in_battle(*ptr, agg);
                }//if
             }//else
@@ -351,7 +351,7 @@ void do_cast_icestorm(critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "is struck by %S's ice shard!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
+               if (!ptr->IS_FIGHTING.haveData(&agg)) {
                   join_in_battle(*ptr, agg);
                }//if
             }//else
@@ -438,7 +438,7 @@ void do_cast_firestorm(critter& agg, int is_canned, int lvl) {
                Sprintf(buf, "is burned by %S's fire storm!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
-               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
+               if (!ptr->IS_FIGHTING.haveData(&agg)) {
                   join_in_battle(*ptr, agg);
                }//if
             }//else
@@ -507,7 +507,7 @@ void do_cast_lightning_storm(critter& agg, int is_canned, int lvl) {
                show("You are fried by the bolt of lightning!\n", *ptr);
                emote("is struck by the lightning bolt.", *ptr,
                      room_list[ptr->getCurRoomNum()], TRUE);
-               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
+               if (!ptr->IS_FIGHTING.haveData(&agg)) {
                   join_in_battle(*ptr, agg);
                }//if
             }//else
@@ -586,7 +586,7 @@ void do_cast_quake(critter& agg, int is_canned, int lvl) {
                show("You are injured by the earthquake!\n", *ptr);
                emote("is injured by the earthquake.", *ptr,
                      room_list[ptr->getCurRoomNum()], TRUE);
-               if (!HaveData(&agg, ptr->IS_FIGHTING)) {
+               if (!ptr->IS_FIGHTING.haveData(&agg)) {
                   join_in_battle(*ptr, agg);
                }//if
             }//else

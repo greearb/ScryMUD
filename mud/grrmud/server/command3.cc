@@ -154,7 +154,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
         {
            found_proc = TRUE;
            if (target->Strlen() == 0) {
-              targ = Top(pc.IS_FIGHTING);
+              targ = pc.IS_FIGHTING.peekFront();
            }//if
            else {
               targ = ROOM.haveCritNamed(j_th, target, pc.SEE_BIT);
@@ -487,7 +487,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
            mudlog.dbg("Requires mob for target.\n");
            found_proc = TRUE;
            if (vict->Strlen() == 0) {
-              targ = Top(pc.IS_FIGHTING);
+              targ = pc.IS_FIGHTING.peekFront();
            }//if
            else {
               targ = ROOM.haveCritNamed(j_th, vict, pc.SEE_BIT);
@@ -965,7 +965,7 @@ int oclone(int i_th, const String* item, critter& pc) {
          return -1;
       }
       obj_list[new_obj] = obj_list[obj_ptr->OBJ_NUM];
-      Sprintf(buf, "CLONE OF:  %S.", Top(obj_ptr->names));
+      Sprintf(buf, "CLONE OF:  %S.", obj_ptr->names.peekFront());
       obj_list[new_obj].in_room_desc = buf;
       obj_list[new_obj].short_desc = buf;
       obj_list[new_obj].OBJ_NUM = new_obj;
@@ -1431,7 +1431,7 @@ int mclone(int i_th, const String* item, critter& pc) {
    }//if
    
    mob_list[new_num] = mob_list[crit_ptr->MOB_NUM]; //make a copy
-   Sprintf(buf, "CLONE OF:  %S.", Top(crit_ptr->names));
+   Sprintf(buf, "CLONE OF:  %S.", crit_ptr->names.peekFront());
    mob_list[new_num].in_room_desc = buf;
    mob_list[new_num].short_desc = buf;
    mob_list[new_num].setIdNum(new_num);
@@ -1576,7 +1576,7 @@ int flee(critter& pc, int& is_dead) {
       show("You can't flee sitting on your butt!\n", pc);
    }//if
    else { //lets try it
-      if ((crit_ptr = Top(pc.IS_FIGHTING))) { //ie in battle
+      if ((crit_ptr = pc.IS_FIGHTING.peekFront())) { //ie in battle
          if (crit_ptr->mob && !crit_ptr->isStunned()) { //if its a mob
             if (crit_ptr->MOB_FLAGS.get(10) && (d(1,100) > 12)) { //if !flee
                Sprintf(buf, "%S prevents you from fleeing.\n",
@@ -1626,7 +1626,8 @@ int flee(critter& pc, int& is_dead) {
                }
                   
                if ((dr_ptr = door::findDoor(ROOM.doors, 1,
-                      Top(door_list[d(1,10)].names), ~0, ROOM))) {
+                      door_list[d(1,10)].names.peekFront(),
+                      ~0, ROOM))) {
                   if (dr_ptr->isOpen()) {
                      break;  //weee hoooo, found a good one!
                   }//if
@@ -1681,7 +1682,8 @@ int flee(critter& pc, int& is_dead) {
                }
 
                if ((dr_ptr = door::findDoor(ROOM.doors, 1,
-                      Top(door_list[d(1,10)].names), ~0, ROOM))) {
+                      door_list[d(1,10)].names.peekFront(),
+                      ~0, ROOM))) {
                   if (!(dr_ptr->dr_data->door_data_flags.get(2))) {
                      break;  //weee hoooo, found a good one!
                   }//if
@@ -1692,7 +1694,8 @@ int flee(critter& pc, int& is_dead) {
             Sprintf(buf, "tries to flee %S!", 
                     direction_of_door(*dr_ptr));
             emote(buf, pc, ROOM, FALSE);
-            move(pc, 1, *(Top(dr_ptr->dr_data->names)), FALSE, ROOM, is_dead);
+            move(pc, 1, *( dr_ptr->dr_data->names.peekFront() ),
+                 FALSE, ROOM, is_dead);
             
             if (is_dead)
                return 0;
@@ -1853,7 +1856,7 @@ int critter::doFollow(critter& vict, int do_msg) {
          // the new owner of a pet can push him around
          doUngroup(1, &NULL_STRING);  //ungroup the pet first...
          doBecomeNonPet();
-         Put(this, vict.PETS);
+         vict.PETS.append(this);
          MASTER=&vict;
       }
       else if (FOLLOWER_OF) {  // if possibly part of a group
@@ -1898,7 +1901,7 @@ int group(int i_th, const String* vict, critter& pc) {
 
    if (vict->Strlen() == 0) { //display group
 
-      if (IsEmpty(pc.GROUPEES)) {
+      if (pc.GROUPEES.isEmpty()) {
          show("You are a party of one!\n", pc);
          return -1;
       }//if
@@ -2036,7 +2039,7 @@ int order(String* str, critter& pc) {
       }//if
 
       if (i == -1) { //if order fol <cmd_string>
-         if (IsEmpty(pc.PETS)) {
+         if (pc.PETS.isEmpty()) {
             show("But, you have no pets!\n", pc);
             return -1;
          }//if
@@ -2068,7 +2071,7 @@ int order(String* str, critter& pc) {
       else {
          ptr = ROOM.haveCritNamed(i, &name, pc.SEE_BIT);
          if (ptr) {
-            if (HaveData(ptr, pc.PETS)) {
+            if (pc.PETS.haveData(ptr)) {
 
                String cmd = "order";
                ROOM.checkForProc(cmd, *str, pc, ptr->MOB_NUM);
@@ -2248,7 +2251,7 @@ int enslave(int i_th, const String* vict, critter& pc) {
      }//if
    }//if
 
-   Put(ptr, pc.PETS);
+   pc.PETS.append(ptr);
    ptr->MASTER = &pc;
    ptr->doFollow(pc);
 

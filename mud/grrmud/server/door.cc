@@ -146,7 +146,7 @@ void door_data::dbRead(int door_num) {
          return;
       }
       while ((row=mysql_fetch_row(result))) {
-         Put(new String(row[0]), names);
+         names.append(new String(row[0]));
       }
       mysql_free_result(result);
    }
@@ -200,7 +200,7 @@ void door_data::fileRead(ifstream& da_file) {
       }//if
       else {
          string = new String(tmp_str);
-         Put(string, names);
+         names.append(string);
       }//else
    }//while            
    da_file.getline(tmp, 80);         
@@ -299,7 +299,7 @@ door& door::operator= (const door& source) {
    Cell<stat_spell_cell*> cll(source.affected_by);
    stat_spell_cell* ptr;
    while ((ptr = cll.next())) {
-      Put(new stat_spell_cell(*ptr), affected_by);
+      affected_by.append(new stat_spell_cell(*ptr));
    }//while
    
    crit_blocking = source.crit_blocking;
@@ -347,7 +347,7 @@ void door::Read(ifstream& da_file) {
 
       is_affected = TRUE;
       da_file >> tmp;
-      Put(new stat_spell_cell(i, tmp), affected_by);
+      affected_by.append(new stat_spell_cell(i, tmp));
       da_file >> i;
    }//while
    

@@ -1060,7 +1060,7 @@ rm);
       else if (pc.POS > POS_SIT)
          show("You are not in a position to do that.\n", pc);
       else if (crit_ptr == &pc) {
-         if (strcasecmp(*(Top(pc.names)), "levander") == 0) {
+         if (strcasecmp(*(pc.names.peekFront()), "levander") == 0) {
             show("You ARE a Ponder!!.\n", pc);
          }//if
          else {

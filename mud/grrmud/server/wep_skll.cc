@@ -42,7 +42,7 @@ int circle(int i_th, const String* victim, critter& pc) {
    String buf(100);
 
    if (victim->Strlen() == 0)
-      crit_ptr = Top(pc.IS_FIGHTING);
+      crit_ptr = pc.IS_FIGHTING.peekFront();
    else
       crit_ptr = ROOM.haveCritNamed(i_th, victim, pc.SEE_BIT);
 
@@ -52,7 +52,7 @@ int circle(int i_th, const String* victim, critter& pc) {
          return -1;
       }
 
-      if (!HaveData(crit_ptr, pc.IS_FIGHTING)) {
+      if (!pc.IS_FIGHTING.haveData(crit_ptr)) {
          show("You must be fighting a person to circle him.\n", pc);
          return -1;
       }//if
@@ -209,7 +209,7 @@ int backstab(int i_th, const String* victim, critter& pc) {
       if (!(crit_ptr = check_for_diversions(*crit_ptr, "GM", pc)))
          return -1;
 
-      if (!IsEmpty(crit_ptr->IS_FIGHTING)) {
+      if (!crit_ptr->IS_FIGHTING.isEmpty()) {
          show("The element of supprise has been lost.\n", pc);
          return do_hit(*crit_ptr, pc);
       }//if
@@ -234,7 +234,7 @@ int do_backstab(critter& vict, critter& pc) {
       return -1;
    }//if
 
-   if (!HaveData(&vict, pc.IS_FIGHTING)) {
+   if (!pc.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(pc, vict);
    }//if
 

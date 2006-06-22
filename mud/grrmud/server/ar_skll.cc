@@ -73,7 +73,7 @@ int do_berserk(critter& pc) {
       while ((ptr = ROOM.findNextSpellCritter())) {
          if (ptr != &pc) {
             if (ptr->mob || 
-                 (ptr->pc && HaveData(ptr, pc.IS_FIGHTING))) {
+                 (ptr->pc && pc.IS_FIGHTING.haveData(ptr))) {
 
                if (ptr->pc && ptr->PC_FLAGS.get(7)) { //if !hassle
                   continue;
@@ -87,7 +87,7 @@ int do_berserk(critter& pc) {
                if (!ptr) { //mirror was hit probably
                   continue;
                }//if
-               if (!HaveData(ptr, pc.IS_FIGHTING)) {
+               if (!pc.IS_FIGHTING.haveData(ptr)) {
                   join_in_battle(pc, *ptr);
                }//if
 

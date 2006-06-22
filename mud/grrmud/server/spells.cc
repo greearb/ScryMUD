@@ -801,7 +801,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
       }//else lost concentration
    }//else !canned
 
-   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
+   if (do_join_in_battle && !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 
@@ -819,7 +819,7 @@ void cast_fireball(int i_th, const String* victim, critter& pc) {
    int spell_num = FIREBALL_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.IS_FIGHTING);
+      vict = pc.IS_FIGHTING.peekFront();
    else 
       vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
@@ -1375,7 +1375,7 @@ void cast_poison(int i_th, const String* victim, critter& pc) {
    int spell_num = POISON_SKILL_NUM;
 
    if (victim->Strlen() == 0) 
-      vict = Top(pc.IS_FIGHTING);
+      vict = pc.IS_FIGHTING.peekFront();
    else 
       vict = ROOM.haveCritNamed(i_th, victim, pc);
    if (!vict) {
@@ -1502,13 +1502,13 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
          }//if
       }//while
 
-      Put(new stat_spell_cell(spell_num, lvl/3), vict.affected_by);
+      vict.affected_by.append(new stat_spell_cell(spell_num, lvl/3));
       vict.HP_REGEN += POISON_HP_REGEN_AUGMENTATION;
       vict.MV_REGEN += POISON_MV_REGEN_AUGMENTATION;
       vict.MA_REGEN += POISON_MA_REGEN_AUGMENTATION;
    }//if
 
-   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING)) {
+   if (do_join_in_battle && !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
    }//if
 }//do_cast_poison
@@ -1578,7 +1578,7 @@ void do_cast_illuminate(room& rm, critter& agg, int is_canned,
 
       affected_rooms.gainData(&rm); //add to global affected list so
                                      //spell can wear off eventually
-      Put(new stat_spell_cell(spell_num, lvl/2), rm.affected_by);
+      rm.affected_by.append(new stat_spell_cell(spell_num, lvl/2));
       rm.setVisBit(rm.getVisBit() & ~1);  //make it light
    }//if
 }//do_cast_illuminate

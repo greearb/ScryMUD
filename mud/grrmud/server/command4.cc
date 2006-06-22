@@ -366,7 +366,7 @@ int unpost(int i_th, const String* post, critter& pc) {
    while ((msg = cll.next())) {
       msg->names.clearAndDestroy();
       Sprintf(buf, "%i", i);
-      Put(new String(buf), msg->names);
+      msg->names.append(new String(buf));
       msg->names.append(new String(cstr(CS_MESSAGE, pc)));
       buf = msg->short_desc.Get_Command(eos, term_by_period);
       Sprintf(buf, "Message_%i", i);
@@ -469,7 +469,7 @@ int do_post(critter& pc) {
 
          String* name = new String(20);
          Sprintf(*name, "%i", i);
-         Put(name, (pc.pc->post_msg->names));
+         pc.pc->post_msg->names.append(name);
          Sprintf(buf, "message_%i", i);
          name = new String(buf);
          pc.pc->post_msg->names.append(name);
@@ -508,7 +508,7 @@ int do_post(critter& pc) {
                     ptr->OBJ_NUM); //move it back to right name
          system(buf);
 
-         Put(pc.pc->post_msg, ptr->inv);
+         ptr->inv.append(pc.pc->post_msg);
          pc.pc->post_msg = NULL;
       }//else
 
@@ -532,7 +532,7 @@ int log_out(critter& pc) {
    if (!pc.pc)
       return -1;
 
-   if (!IsEmpty(pc.IS_FIGHTING)) {
+   if (!pc.IS_FIGHTING.isEmpty()) {
       pc.show("You must stop fighting first.\n", HL_DEF);
       return -1;
    }//if
@@ -1115,7 +1115,7 @@ int brief(critter& pc) {
 int num_of_generic_door(const String* direction) {
    String* tmp_name;
    for (int i = 1; i <= 10; i++) {
-      tmp_name = Top(door_list[i].names);
+      tmp_name = door_list[i].names.peekFront();
       if (strcasecmp(*direction, *tmp_name) == 0)
          return i;
    }//for
@@ -1221,7 +1221,7 @@ int do_door_to(room& cur_room, room& targ_room, int distance, critter&
                   << "Adding to affected_rooms bcause of gate." << endl;
       affected_rooms.gainData(&cur_room);
    }//if
-   Put(new_door, cur_room.doors);
+   cur_room.doors.append(new_door);
    if (!is_gate)
      show("OK, doors added (its reflexive now)\n", pc);
    return 0;
@@ -1237,7 +1237,7 @@ int replace_door(int nd_num, const String* direction, critter& pc) {
    if (!check_l_range(nd_num, 0, NUMBER_OF_DOORS, pc, TRUE))
       return -1;
 
-   if (IsEmpty(door_list[nd_num].names)) {
+   if (door_list[nd_num].names.isEmpty()) {
       show("That door doesn't exist yet.\n", pc);
       return -1;
    }//if
@@ -1342,7 +1342,7 @@ int do_db_write_zone(int znum) {
    for (j = ZoneCollection::instance().elementAt(znum).getBeginRoomNum();
         j <= ZoneCollection::instance().elementAt(znum).getEndRoomNum();
         j++) {
-      if (!IsEmpty(room_list[j].names)) {
+      if (!room_list[j].names.isEmpty()) {
          room_list[j].dbWrite();
       }
    }
@@ -1364,7 +1364,7 @@ int do_file_write_zone(int znum) {
    for (j = ZoneCollection::instance().elementAt(znum).getBeginRoomNum();
         j <= ZoneCollection::instance().elementAt(znum).getEndRoomNum();
         j++) {
-      if (!IsEmpty(room_list[j].names)) {
+      if (!room_list[j].names.isEmpty()) {
          if (room_list[j].isVehicle()) {
             rfile << (j | 0x01000000) << "\t\tVehicle number\n";
          }
@@ -1785,7 +1785,7 @@ int rlist(int start, int end, critter& pc) {
    }//if
 
    for (int i = start; i<= end; i++) {
-      if (!IsEmpty(room_list[i].names)) {
+      if (!room_list[i].names.isEmpty()) {
          Sprintf(buf, "\t%i\t%S\n", i, &(room_list[i].short_desc));
          show(buf, pc);
       }//if
@@ -1820,7 +1820,7 @@ int dlist(int start, int end, critter& pc) {
    }//if
 
    for (int i = start; i<= end; i++) {
-      if (!IsEmpty(door_list[i].names)) {
+      if (!door_list[i].names.isEmpty()) {
          Sprintf(buf, "\t%i\t%S\n", i, &(door_list[i].long_desc));
          show(buf, pc);
       }//if

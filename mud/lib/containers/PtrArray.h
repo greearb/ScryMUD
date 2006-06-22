@@ -1,12 +1,11 @@
 // $Id$
-// $Revision: 1.6 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
-//ScryMUD Server Code
-//Copyright (C) 1998  Ben Greear
+//Copyright (C) 2001  Ben Greear
 //
 //This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
+//modify it under the terms of the GNU Library General Public License
 //as published by the Free Software Foundation; either version 2
 //of the License, or (at your option) any later version.
 //
@@ -15,12 +14,11 @@
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 //
-//You should have received a copy of the GNU General Public License
+//You should have received a copy of the GNU Library General Public License
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
-//                                     greearb@agcs.com
+// To contact the Author, Ben Greear:  greearb@candelatech.com
 //
 
 // PtrArray
@@ -35,6 +33,7 @@
 
 #include <bitfield.h>
 #include <assert.h>
+#include <string2.h>
 
 
 /**  An array of type class T pointers.  Does bounds checking
@@ -259,40 +258,39 @@ public:
 };//ObjArray
 
 
+extern int __fixed_history_cnt;
+
 /** This is a fixed length queue.  Meant to append and search very
  * fast.
  */
 template <class T> class FixedHistory {
 private:
-   int _cnt;
 
 protected:
-   int len;
+   unsigned int len;
    unsigned int head;
    T* array;
-   T null_value;
 
-   int init(int sz, T& null_val);
+   unsigned int init(unsigned int sz);
 
 public:
-   FixedHistory() { init(10, (T)(0)); }
-   FixedHistory(int sz) { init(sz, (T)(0)); }
-   FixedHistory(int sz, T& null_val) { init(sz, null_val); }
+   FixedHistory() { init(10); __fixed_history_cnt++; }
+   FixedHistory(int sz) { init(sz); __fixed_history_cnt++; }
    FixedHistory(const FixedHistory<T>& src);
    FixedHistory<T>& operator=(const FixedHistory<T>& src);
-   virtual ~FixedHistory() { delete[] array; }
+   virtual ~FixedHistory() { delete[] array; __fixed_history_cnt--; }
 
    T& elementAt(int idx) const {
-      assert((idx >= 0) && (idx < len));
+      assert((idx >= 0) && ((unsigned int)(idx) < len));
       return array[idx];
    }
 
    void setElementAt(int idx, T& val) {
-      assert((idx >= 0) && (idx < len));
+      assert((idx >= 0) && ((unsigned int)(idx) < len));
       array[idx] = val;
    }
 
-   void ensureCapacity(int sz);
+   void ensureCapacity(unsigned int sz);
 
    int getNextIdx(int from_idx) const { return (head + 1) % len; }
    int getCurIdx() { return (head % len); }
@@ -311,20 +309,21 @@ public:
    void purge();
 
    /** Get the maximum capacity available w/out grabbing more memory. */
-   int getCapacity() const { return len; }
+   unsigned int getCapacity() const { return len; }
 
    /** Returns TRUE if the array contains the element 'val', as
-    * determined by operator=
+    * determined by operator==
     */
    int contains(T& val) const {
-      return (indexOf(val) > 0);
+      return (indexOf(val) >= 0);
    }
 
    /** Returns < 0 if not found, first idx otherwise.  As determined by
     * operator=
     */
    int indexOf(T& val) const {
-      for (int i = 0; i<len; i++) {
+      int mx = min(len, head);
+      for (int i = 0; i<mx; i++) {
          if (val == array[i]) {
             return i;
          }
@@ -336,13 +335,26 @@ public:
     */
    int objCount(T& val) const {
       int retval = 0;
-      for (int i = 0; i<len; i++) {
+      int mx = min(len, head);
+      for (int i = 0; i<mx; i++) {
          if (val == array[i]) {
             retval++;
          }
       }//for
       return retval;
    }//objCount
+
+
+   String toString() {
+      String retval(200);
+      Sprintf(retval, "len: %i  head: %i  head_idx: %i\n", len, (int)(head), (int)(head % len));
+      char tmp[50];
+      for (unsigned int i = 0; i<len; i++) {
+         sprintf(tmp, "  [%i]  %lu\n", i, (long unsigned int)(array[i]));
+         retval.append(tmp);
+      }//for
+      return retval;
+   }      
    
 };//FixedHistory
 

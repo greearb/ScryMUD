@@ -292,8 +292,8 @@ void join_in_battle(critter& agg, critter& vict) {
       }
    }
 
-   Put(&vict, agg.IS_FIGHTING);
-   Put(&agg, vict.IS_FIGHTING);
+   agg.IS_FIGHTING.append(&vict);
+   vict.IS_FIGHTING.append(&agg);
 
    //Some mobs will remember....
    if (vict.isNpc()) {
@@ -701,7 +701,7 @@ int db_update_critters(int zone_num, short read_all) {
                   if ((obj_count(tmp_mob.inv, *obj_ptr) >
                       obj_count(mob_list[k].inv, *obj_ptr))
                       && (obj_ptr->getCurInGame() < obj_ptr->getMaxInGame())) {
-                     Put (&obj_list[obj_ptr->getIdNum()], mob_list[k].inv);
+                     mob_list[k].inv.append(&obj_list[obj_ptr->getIdNum()]);
                      recursive_init_loads(obj_list[obj_ptr->getIdNum()], 0);
                   }
                }
@@ -781,7 +781,7 @@ int file_update_critters(int zone_num, short read_all) {
                if ((obj_count(tmp_mob.inv, *obj_ptr) >
                    obj_count(mob_list[k].inv, *obj_ptr))
                    && (obj_ptr->getCurInGame() < obj_ptr->getMaxInGame())) {
-                  Put(&(obj_list[obj_ptr->getIdNum()]), mob_list[k].inv);
+                  mob_list[k].inv.append(&(obj_list[obj_ptr->getIdNum()]));
                   recursive_init_loads(obj_list[obj_ptr->getIdNum()], 0);
                }//if
             }//while      
@@ -847,7 +847,7 @@ int db_update_objects(int zone_num, short read_all) {
                if ((obj_count(temp_obj.inv, *obj_ptr) >
                     obj_count(obj_list[k].inv, *obj_ptr)) &&
                    (obj_ptr->getCurInGame() < obj_ptr->getMaxInGame())) {
-                  Put(&(obj_list[obj_ptr->getIdNum()]), obj_list[k].inv);
+                  obj_list[k].inv.append(&(obj_list[obj_ptr->getIdNum()]));
                   recursive_init_loads(obj_list[obj_ptr->getIdNum()], 0);
                }
             }
@@ -914,7 +914,7 @@ int file_update_objects(int zone_num, short read_all) {
             if ((obj_count(temp_obj.inv, *obj_ptr) >
                  obj_count(obj_list[k].inv, *obj_ptr))
                 && (obj_ptr->getCurInGame() < obj_ptr->getMaxInGame())) {
-               Put(&(obj_list[obj_ptr->getIdNum()]), obj_list[k].inv);
+               obj_list[k].inv.append(&(obj_list[obj_ptr->getIdNum()]));
                recursive_init_loads(obj_list[obj_ptr->getIdNum()], 0);
             }//if
          }//while      
@@ -1440,7 +1440,7 @@ void decrease_timed_affecting_smobs() {  //will decrease all
 
    crit_ptr = crit_cell.next();
    while (crit_ptr) {
-      if (!IsEmpty(crit_ptr->affected_by)) {
+      if (!crit_ptr->affected_by.isEmpty()) {
          crit_ptr->affected_by.head(sp_cell);
          sp_ptr = sp_cell.next();
          while (sp_ptr) {
@@ -1780,7 +1780,7 @@ void add_spell_affecting_critter(int spell, int duration, critter& vict) {
 
    spcell->stat_spell = spell;
    spcell->bonus_duration = duration; 
-   Put(spcell, vict.affected_by);
+   vict.affected_by.append(spcell);
 }//gain spell_affected_by    
 
 
@@ -1791,7 +1791,7 @@ void add_spell_affecting_obj(int spell, int duration, object& vict) {
 
    spcell->stat_spell = spell;
    spcell->bonus_duration = duration; 
-   Put(spcell, vict.affected_by);
+   vict.affected_by.append(spcell);
 }//gain spell_affected_by    
 
 
@@ -1925,7 +1925,7 @@ void out_str(const List<String*>& lst, critter& pc) {
    // log("In out_str.\n");
 
    if (pc.pc) {
-      if (IsEmpty(lst)) {
+      if (lst.isEmpty()) {
          pc.show("You see nothing special.\n");
          return;
       }//if
@@ -2220,7 +2220,7 @@ void out_inv(List<object*>& lst, critter& pc,
       pc.show("<ITEM_LIST>");
    }
 
-   if (IsEmpty(lst) && type_of_list == OBJ_INV) {
+   if (lst.isEmpty() && type_of_list == OBJ_INV) {
       pc.show("        [empty]        \n");
       if (pc.isUsingClient()) {
          pc.show("</ITEM_LIST>");
@@ -2333,8 +2333,8 @@ void out_inv(List<object*>& lst, critter& pc,
                }//if
 
                if (pc.canDetectMagic() &&
-                   (!IsEmpty(obj_ptr->affected_by) ||
-                    !IsEmpty(obj_ptr->stat_affects))) {
+                   (!obj_ptr->affected_by.isEmpty() ||
+                    !obj_ptr->stat_affects.isEmpty())) {
                   buf.Append("^B{Blue Glow}^0\n");
                }//if
 	       else {
@@ -2416,8 +2416,8 @@ void out_inv(List<object*>& lst, critter& pc,
                   }//if
 
                   if  (pc.canDetectMagic() &&
-                        (!IsEmpty(obj_ptr->affected_by) ||
-                         !IsEmpty(obj_ptr->stat_affects))) {
+                        (!obj_ptr->affected_by.isEmpty() ||
+                         !obj_ptr->stat_affects.isEmpty())) {
                      buf.Append("^B{Blue Glow}^0\n");
 
 
@@ -2725,7 +2725,7 @@ String* name_of_obj(const object& obj, int see_bit) {
       return &SOMETHING;
    }//if
    else {
-      String* tmp = Top(obj.names);
+      String* tmp = obj.names.peekFront();
       if (tmp)
          return tmp;
       else
@@ -2745,11 +2745,11 @@ String* long_name_of_obj(object& obj, int see_bit) {
 }//long name_of_obj
 
 String* name_of_room(const room& rm, int see_bit) {
-   if ((IsEmpty(rm.names)) || !detect(see_bit, rm.getVisBit())) {
+   if ((rm.names.isEmpty()) || !detect(see_bit, rm.getVisBit())) {
       return &SOMEWHERE;
    }//if
    else {
-      return Top(rm.names);
+      return rm.names.peekFront();
    }//else
 }//name_of_room
 
@@ -2767,7 +2767,7 @@ String* name_of_dr_data(const door_data& dr, int see_bit, int dest) {
       return &SOMETHING;
    }//if
 
-   if (IsEmpty(dr.names))
+   if (dr.names.isEmpty())
       return &UNKNOWN;
 
    if (dest >= 0) {

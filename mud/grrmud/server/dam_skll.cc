@@ -46,7 +46,7 @@ int hurl(int i_th, const String* victim, critter& pc, int was_ordered) {
    }
 
    if (!victim->Strlen()) {
-      crit_ptr = Top(pc.IS_FIGHTING);
+      crit_ptr = pc.IS_FIGHTING.peekFront();
       if (crit_ptr && !detect(pc.SEE_BIT, crit_ptr->VIS_BIT))
          crit_ptr = NULL;
    }//if
@@ -102,7 +102,7 @@ int do_hurl(critter& vict, critter& pc) {
       return -1;
    }//if
 
-   if (!HaveData(&vict, pc.IS_FIGHTING)) {
+   if (!pc.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(pc, vict);
    }//if
 
@@ -128,7 +128,8 @@ int do_hurl(critter& vict, critter& pc) {
       pc.PAUSE += d(1,3);
 
       if ((dptr = door::findDoor(ROOM.DOORS, 1, 
-                                 Top(door_list[d(1,10)].names), ~0, ROOM)) && 
+                                 door_list[d(1,10)].names.peekFront(),
+                                 ~0, ROOM)) && 
                !(dptr->dr_data->door_data_flags.get(2))) {
          Sprintf(buf, "hurls %S out of the room.\n", name_of_crit(vict, ~0));
          emote(buf, pc, ROOM, TRUE, &vict);
@@ -231,7 +232,7 @@ int body_slam(int i_th, const String* victim, critter& pc, int was_ordered) {
    }
 
    if (!victim->Strlen()) {
-      crit_ptr = Top(pc.IS_FIGHTING);
+      crit_ptr = pc.IS_FIGHTING.peekFront();
       if (crit_ptr && !detect(pc.SEE_BIT, crit_ptr->VIS_BIT))
          crit_ptr = NULL;
    }//if
@@ -278,7 +279,7 @@ int do_body_slam(critter& vict, critter& pc) {
       return -1;
    }//if
 
-   if (!HaveData(&vict, pc.IS_FIGHTING)) {
+   if (!pc.IS_FIGHTING.haveData(&vict)) {
       mudlog.log(DBG, "Calling join_in_battle in do_body_slam..\n");
       join_in_battle(pc, vict);
    }//if

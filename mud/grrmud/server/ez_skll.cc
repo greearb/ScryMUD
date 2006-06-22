@@ -70,7 +70,7 @@ int do_rescue(critter& vict, critter& pc) {
     return -1;
   }//if
 
-  if (IsEmpty(vict.IS_FIGHTING)) {
+  if (vict.IS_FIGHTING.isEmpty()) {
      Sprintf(buf, "%s isn't fighting anyone!\n", get_he_she(vict));
      buf.Cap();
      show(buf, pc);

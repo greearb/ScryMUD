@@ -832,7 +832,7 @@ int rm_discuss_proc(int mnum, critter& pc) {
    }//if
 
    if (mob_list[mnum].mob && mob_list[mnum].mob->proc_data &&
-       !IsEmpty(mob_list[mnum].mob->proc_data->topics)) {
+       !mob_list[mnum].mob->proc_data->topics.isEmpty()) {
       mob_list[mnum].mob->proc_data->topics.clearAndDestroy();
       mob_list[mnum].mob->proc_data->flag1.turn_off(6);
       show("Disscuss procs removed.\n", pc);
@@ -2256,7 +2256,7 @@ int add_mname(int which_un, const String* name, critter& pc) {
       return -1;
    }//if
 
-   Put(new String(*name), mob_list[which_un].names);
+   mob_list[which_un].names.append(new String(*name));
 
    show("Added a name to the critter.\n", pc);
    return 0;

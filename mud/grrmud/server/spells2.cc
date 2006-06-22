@@ -368,8 +368,7 @@ void do_cast_bind_wound(critter& vict, critter& agg, int is_canned,
        ptr->bonus_duration += lvl/2;
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl + 5));
        vict.HP_REGEN += BIND_WOUND_EFFECT;
 
        if (&vict == &agg) {
@@ -454,8 +453,7 @@ void do_cast_shadows_blessing(critter& vict, critter& agg, int is_canned,
        ptr->bonus_duration += lvl/2;
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl + 5));
        vict.AC += SHADOWS_BLESSING_EFFECT;
 
        if (&vict == &agg) {
@@ -707,8 +705,7 @@ void do_cast_flesh_to_stone(critter& vict, critter& agg, int is_canned, int lvl)
        show("Ok.\n", agg);
      }//if
      else if (vict.LEVEL > agg.LEVEL) {
-       Put(new stat_spell_cell(STONE_SKIN_SKILL_NUM, lvl + 5), 
-          vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(STONE_SKIN_SKILL_NUM, lvl + 5));
        vict.DAM_REC_MOD += STONE_SKIN_EFFECT_DRM;
        vict.DEX += STONE_SKIN_EFFECT_DEX;
 
@@ -729,8 +726,7 @@ void do_cast_flesh_to_stone(critter& vict, critter& agg, int is_canned, int lvl)
        }//else
      } // else if (vict.LEVEL > agg.LEVEL)
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2));
        vict.CRIT_FLAGS.turn_on(14);
 
        if (&vict == &agg) {
@@ -772,7 +768,7 @@ void do_cast_flesh_to_stone(critter& vict, critter& agg, int is_canned, int lvl)
    }//else lost concentration
    agg.PAUSE += 1; 
 
-   if (do_join_in_battle && !HaveData(&vict, agg.IS_FIGHTING ))
+   if (do_join_in_battle && !agg.IS_FIGHTING.haveData(&vict))
            join_in_battle(agg, vict);
 }
 
@@ -826,8 +822,7 @@ void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl) {
         show("They are already asleep!\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/6 + 1), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl/6 + 1));
        vict.CRIT_FLAGS.turn_on(15); //is perm_sleeped
        vict.setPosn(POS_SLEEP);
 
@@ -944,8 +939,7 @@ void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
          } // already duration > 40 and !canned
       } //if ptr
       else {
-         Put(new stat_spell_cell(spell_num, lvl), 
-               vict.affected_by);
+         vict.affected_by.append(new stat_spell_cell(spell_num, lvl));
          vict.STR += STRENGTH_EFFECT;
 
          if (&vict == &agg) {
@@ -1220,8 +1214,7 @@ void do_cast_curse(critter& vict, critter& agg, int is_canned, int lvl) {
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2 + 5), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2 + 5));
        vict.STR += CURSE_STR_EFFECT;
        vict.MA_REGEN += CURSE_MA_REGEN_EFFECT;
 
@@ -1287,8 +1280,7 @@ void do_cast_curse(object& vict, critter& agg, int is_canned, int lvl) {
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2 + 5), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2 + 5));
        vict.OBJ_FLAGS.turn_on(5); //no_drop
 
        Sprintf(buf, "You lay a curse on %S!\n", 
@@ -1336,8 +1328,7 @@ void do_cast_blindness(critter& vict, critter& agg, int is_canned, int lvl) {
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2));
        vict.SEE_BIT &= ~(1024); //turn off the flag
 
        if (&vict == &agg) {
@@ -1430,7 +1421,7 @@ void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl) {
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2), vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2));
        vict.STR += WEAKEN_EFFECT;
 
        if (vict.pc) {
@@ -1541,8 +1532,7 @@ void do_cast_fly(critter& vict, critter& agg, int is_canned, int lvl) {
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl/2 + 5), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2 + 5));
        vict.CRIT_FLAGS.turn_on(3);
 
        if (&vict == &agg) {
@@ -1635,8 +1625,7 @@ void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
         show("Ok.\n", agg);
      }//if
      else {
-        Put(new stat_spell_cell(spell_num, lvl/4 + 4), 
-            vict.affected_by);
+        vict.affected_by.append(new stat_spell_cell(spell_num, lvl/4 + 4));
         vict.ATTACKS++;
         
         if (&vict == &agg) {
@@ -1887,8 +1876,7 @@ void do_cast_fireproof(critter& vict, critter& agg, int is_canned, int lvl) {
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl + 5));
        vict.HEAT_RESIS += FIRE_PROOF_EFFECT;
 
        if (&vict == &agg) {
@@ -1968,8 +1956,7 @@ void do_cast_magic_shield(critter& vict, critter& agg, int is_canned,
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl));
        vict.AC += MAGIC_SHIELD_AC_EFFECT;
        vict.SPEL_RESIS += MAGIC_SHIELD_SAC_EFFECT;
 
@@ -2056,8 +2043,7 @@ void do_cast_sanctuary(critter& vict, critter& agg, int is_canned, int lvl) {
         agg.show("Sanctuary cannot be used with Stone skin.\n");
      }
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl + 5));
        vict.DAM_REC_MOD += SANCTUARY_EFFECT_DRM;
 
        if (&vict == &agg) {
@@ -2136,8 +2122,7 @@ void do_cast_prismatic_globe(critter& vict, critter& agg, int is_canned,
        show("You strengthen the globe.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl + 5));
        vict.AC += PRISMATIC_GLOBE_EFFECT_AC;
        vict.MOV += PRISMATIC_GLOBE_EFFECT_MOV;
 
@@ -2224,8 +2209,7 @@ void do_cast_stone_skin(critter& vict, critter& agg, int is_canned, int lvl) {
         agg.show("Stone skin cannot be used with Sanctuary.\n");
      }
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl + 5));
        vict.DAM_REC_MOD += STONE_SKIN_EFFECT_DRM;
        vict.DEX += STONE_SKIN_EFFECT_DEX;
 
@@ -2309,8 +2293,7 @@ void do_cast_armor(critter& vict, critter& agg, int is_canned, int lvl) {
             agg); //can't be affected by both at once
      }//if divine_protection already
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl + 5));
 
        vict.AC += ARMOR_EFFECT;
        vict.SPEL_RESIS += ARMOR_EFFECT_M;
@@ -2394,8 +2377,7 @@ void do_cast_absorb_blows(critter& vict, critter& agg, int is_canned,
        show("Ok.\n", agg);
      }//if
      else {
-       Put(new stat_spell_cell(spell_num, lvl), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl));
 
        if (&vict == &agg) {
          show(
@@ -2468,8 +2450,7 @@ void do_cast_divine_protection(critter& vict, critter& agg, int is_canned,
        show("Ok.\n", agg); //can't be affected by both at once
      }//if armored already
      else {
-       Put(new stat_spell_cell(spell_num, lvl + 5), 
-           vict.affected_by);
+       vict.affected_by.append(new stat_spell_cell(spell_num, lvl + 5));
        vict.AC += DIVINE_PROTECTION_EFFECT;
 
        if (&vict == &agg) {
@@ -2537,7 +2518,7 @@ void do_locate_object(object &obj, const String* targ, critter& pc,
       return;
    }//if
 
-   if (!IsEmpty(obj.inv)) {
+   if (!obj.inv.isEmpty()) {
       Cell<object*> cll(obj.inv);
       object* ptr;
       while ((ptr = cll.next())) {
@@ -2577,7 +2558,7 @@ void do_locate_object(critter &crit, const String* targ, critter& pc,
       return;
    }//if
    
-   if (!IsEmpty(crit.inv)) {
+   if (!crit.inv.isEmpty()) {
       Cell<object*> cll(crit.inv);
       object* ptr;
       while ((ptr = cll.next())) {
@@ -2703,7 +2684,7 @@ void do_cast_rust(critter &vict, critter &agg, int is_canned, int lvl)
       if ( ptr ) {
          ptr->bonus_duration += lvl / 2;
       } else {
-         Put(new stat_spell_cell(spell_num, lvl), vict.affected_by);
+         vict.affected_by.append(new stat_spell_cell(spell_num, lvl));
          vict.AC += RUST_EFFECT;
           
          // Cast on self
@@ -2778,7 +2759,7 @@ void do_cast_disfavor(critter &vict, critter &agg, int is_canned, int lvl)
       if ( ptr ) {
          ptr->bonus_duration += lvl / 2;
       } else {
-         Put(new stat_spell_cell(spell_num, lvl), vict.affected_by);
+         vict.affected_by.append(new stat_spell_cell(spell_num, lvl));
          vict.HEAT_RESIS += DISFAVOR_EFFECT;
          vict.COLD_RESIS += DISFAVOR_EFFECT;
          vict.ELEC_RESIS += DISFAVOR_EFFECT;
@@ -2858,7 +2839,7 @@ void do_cast_remove_soul(critter &vict, critter &agg, int is_canned, int lvl)
       if ( ptr ) {
          ptr->bonus_duration += lvl / 2;
       } else {
-         Put(new stat_spell_cell(spell_num, lvl), vict.affected_by);
+         vict.affected_by.append(new stat_spell_cell(spell_num, lvl));
          vict.SPEL_RESIS += REMOVE_SOUL_EFFECT;
           
          // Cast on self
@@ -2939,7 +2920,7 @@ void do_cast_remove_hope(critter &vict, critter &agg, int is_canned, int lvl)
          agg.show("You can do no more.", HL_DEF);
       } else {
          // Hardcoded in this lasts for 4 ticks.
-         Put(new stat_spell_cell(spell_num, 4), vict.affected_by);
+         vict.affected_by.append(new stat_spell_cell(spell_num, 4));
           
          // Cast on self
          if ( &vict == &agg ) {
@@ -3011,7 +2992,7 @@ void do_cast_remove_karma(critter &vict, critter &agg, int is_canned, int lvl)
          agg.show("You can do no more.", HL_DEF);
       } else {
          // Hardcoded in this lasts for 4 ticks.
-         Put(new stat_spell_cell(spell_num, 4), vict.affected_by);
+         vict.affected_by.append(new stat_spell_cell(spell_num, 4));
           
          // Cast on self
          if ( &vict == &agg ) {
@@ -3079,7 +3060,7 @@ void do_cast_sanctum_of_the_victim(critter &vict, critter &agg, int is_canned, i
       if ( ptr ) {
          ptr->bonus_duration += 1;
       } else {
-         Put(new stat_spell_cell(spell_num, lvl), vict.affected_by);
+         vict.affected_by.append(new stat_spell_cell(spell_num, lvl));
          vict.DAM_REC_MOD += SANCTUM_EFFECT;
           
          // Cast on self

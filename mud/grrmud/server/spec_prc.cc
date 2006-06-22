@@ -177,7 +177,7 @@ int do_domob_say_proc(critter& targ, critter& pc, const String& msg) {
     return -1;
 
   if (targ.mob && targ.mob->proc_data && 
-      !IsEmpty(targ.mob->proc_data->topics)) {  //if so, got a live one!
+      !targ.mob->proc_data->topics.isEmpty()) {  //if so, got a live one!
 
     if (!pass_domob_checks(targ, pc))
       return -1;
@@ -386,7 +386,7 @@ int do_shot_proc(critter& targ, critter& pc, short did_hit,
    else if (bad_ass < 3) {
       flee_to_safety(targ, is_targ_dead);
       if (!is_targ_dead)
-         hit(1, Top(pc.names), targ);  //in case they fled to room of agg
+         hit(1, pc.names.peekFront(), targ);  //in case they fled to room of agg
    }//else no ranged attack
    else {
      prone(targ);
@@ -874,7 +874,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
                         return -1;
                      }//if
   
-                     Sprintf(gtobj, "get %S\n", Top(obj_ptr->names));
+                     Sprintf(gtobj, "get %S\n", obj_ptr->names.peekFront());
  
                      ptr->processInput(gtobj, FALSE, TRUE);
                      if (!ptr->isAnimal() && !ptr->isMonster()) {
@@ -1222,7 +1222,7 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
          if (price > pc.GOLD) {
             do_tell(keeper, "I don't run a charity here!!", pc, FALSE, 
                     pc.getCurRoomNum()); 
-            disdain(1, Top(pc.names), keeper, ROOM);
+            disdain(1, pc.names.peekFront(), keeper, ROOM);
             return -1;
          }//if
 

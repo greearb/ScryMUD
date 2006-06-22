@@ -282,7 +282,7 @@ void do_cast_distortion_wall(door& dr, critter& agg, int is_canned,
          sp->bonus_duration += (int)((float)(lvl) / 4.0);
       }//if
       else {
-         Put(new stat_spell_cell(spell_num, lvl/3), dptr->affected_by);
+         dptr->affected_by.append(new stat_spell_cell(spell_num, lvl/3));
          affected_doors.gainData(dptr); //add to global aff'd list
       }
 
@@ -291,7 +291,7 @@ void do_cast_distortion_wall(door& dr, critter& agg, int is_canned,
          sp->bonus_duration += (int)((float)(lvl) / 4.0);
       }//if
       else {
-         Put(new stat_spell_cell(spell_num, lvl/3), dr.affected_by);
+         dr.affected_by.append(new stat_spell_cell(spell_num, lvl/3));
          affected_doors.gainData(&dr); //add to global aff'd list
       }
    }//if
@@ -378,8 +378,7 @@ void do_cast_firewall(room& rm, critter& agg, int is_canned,
             sp->bonus_duration += (int)((float)(lvl) / 4.0);
          }//if
          else {
-            Put(new stat_spell_cell(spell_num, lvl/3),
-                d_ptr->affected_by);
+            d_ptr->affected_by.append(new stat_spell_cell(spell_num, lvl/3));
             affected_doors.gainData(d_ptr); //add to global aff'd list
          }//if
       }//while
@@ -397,8 +396,7 @@ void do_cast_firewall(room& rm, critter& agg, int is_canned,
             sp->bonus_duration += (int)((float)(lvl) / 4.0);
          }//if
          else {
-            Put(new stat_spell_cell(spell_num, lvl/3),
-                d_ptr->affected_by);
+            d_ptr->affected_by.append(new stat_spell_cell(spell_num, lvl/3));
             affected_doors.gainData(d_ptr); //add to global aff'd list
          }//if
       }//while

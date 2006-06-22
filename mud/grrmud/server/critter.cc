@@ -1136,7 +1136,7 @@ mob_data& mob_data::operator= (mob_data& source) {
    MobScript* ptr;
    
    while ((ptr = cll.next())) {
-      Put(new MobScript(*ptr), mob_proc_scripts);
+      mob_proc_scripts.append(new MobScript(*ptr));
    }
    
    return *this;
@@ -1239,7 +1239,7 @@ void mob_data::Read(ifstream& ofile, short read_all, int format_version) {
 
          ptr = new MobScript();
          ptr->read(ofile);
-         Put(ptr, mob_proc_scripts);
+         mob_proc_scripts.append(ptr);
          ofile >> sent_;
          ofile.getline(tmp, 80);
          if (mudlog.ofLevel(DB))
@@ -1833,7 +1833,7 @@ critter& critter::operator=(critter& source) { //automagically makes SMOB
    Cell<String*> scll(source.names);
    String* sptr;
    while ((sptr = scll.next())) {
-      Put((new String(*sptr)), names);
+      names.append(new String(*sptr));
    }//while
 
    short_desc = source.short_desc;
@@ -1884,13 +1884,13 @@ critter& critter::operator=(critter& source) { //automagically makes SMOB
    while ((tmp_stat = cell.next())) {
       tmp_stat2 = new stat_spell_cell;
       *tmp_stat2 = *tmp_stat; //shallow copy should work 
-      Put(tmp_stat2, mini_affected_by);
+      mini_affected_by.append(tmp_stat2);
    }//while
    
    source.inv.head(cll);
    while ((obj_ptr = cll.next())) {
       if (!obj_ptr->IN_LIST) { //no multiple ptrs to SOBJ's
-         Put(obj_ptr, inv);
+         inv.append(obj_ptr);
       }//if
    }//while
 
@@ -2183,7 +2183,7 @@ int critter::travelToRoom(int targ_room_num, int num_steps, int& is_dead) {
 
       int iter = min(path.size(), num_steps);
 
-      for (int i = 0; ((i < iter) && (IsEmpty(IS_FIGHTING))); i++) {
+      for (int i = 0; ((i < iter) && (IS_FIGHTING.isEmpty())); i++) {
          int next_room = path.popFront();
          String* dir = dir_of_room(*(getCurRoom()), next_room);
 
@@ -3041,7 +3041,7 @@ void critter::dbRead(int mob_num, int pc_num, short read_all) {
          return;
       } // if
       while ((row=mysql_fetch_row(result))) {
-         Put(new String(row[0]), names);
+         names.append(new String(row[0]));
       } // while
       mysql_free_result(result);
    } // if
@@ -3121,7 +3121,7 @@ void critter::dbRead(int mob_num, int pc_num, short read_all) {
          ss_ptr = new stat_spell_cell;
          ss_ptr->stat_spell = atoi(row[0]);
          ss_ptr->bonus_duration = atoi(row[1]);
-         Put(ss_ptr, affected_by);
+         affected_by.append(ss_ptr);
       } // while
       mysql_free_result(result);
    } // if
@@ -3158,14 +3158,14 @@ void critter::dbRead(int mob_num, int pc_num, short read_all) {
                object* new_obj = new object;
                new_obj->dbRead(obj_num, sobj_num, read_all);
                new_obj->IN_LIST = &inv;
-               Put(new_obj, inv);
+               inv.append(new_obj);
                affected_objects.append(new_obj);
             } // if
             else {
                if (obj_list[obj_num].OBJ_FLAGS.get(OBJFLAG_IN_USE)) {
                   if (read_all || ((obj_list[obj_num].OBJ_PRCNT_LOAD *
                       config.currentLoadModifier)/100) > d(1, 100)) {
-                     Put(&obj_list[obj_num], inv);
+                     inv.append(&obj_list[obj_num]);
                   } // if
                } // if
                else {
@@ -3403,7 +3403,7 @@ void critter::dbRead(int mob_num, int pc_num, short read_all) {
                   ptr->appendCmd(*tmp_str);
                   delete tmp_str;
                } // while
-               Put(ptr, mob->mob_proc_scripts);
+               mob->mob_proc_scripts.append(ptr);
                ptr->compile();
             } // while
             mysql_free_result(result);
@@ -3556,7 +3556,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
       }//if
       else {
          string = new String(tmp_str);
-         Put(string, names);
+         names.append(string);
       }//else
    }//while            
    ofile.getline(tmp, 80);         
@@ -3650,7 +3650,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
          ofile >> ss_ptr->bonus_value;
       }
 
-      Put(ss_ptr, affected_by);
+      affected_by.append(ss_ptr);
       ofile >> i;
    }//while
    ofile.getline(tmp, 80);
@@ -3689,7 +3689,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
          new_obj->fileRead(ofile, TRUE);
          new_obj->IN_LIST = &(inv); //make sure its a SOBJ
 
-         Put(new_obj, inv);    //add it to inventory
+         inv.append(new_obj); // add it to inventory
          affected_objects.append(new_obj);
 
       }//if
@@ -3698,7 +3698,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
             if (read_all ||
               ((obj_list[i].OBJ_PRCNT_LOAD * config.currentLoadModifier)/100) > 
                       d(1,100)) {
-               Put(&(obj_list[i]), inv);    //add it to inventory
+               inv.append(&(obj_list[i])); //add it to inventory
             }//if
          }//if
          else {
@@ -4233,7 +4233,7 @@ void critter::doSuicide() {
       mudlog << "In doSuicide, pc:  " << *(getName()) << endl;
    }
 
-   buf = *(Top(names));
+   buf = *(names.peekFront());
    buf.Tolower();
    buf.Prepend("rm ./Pfiles/");
    system(buf);

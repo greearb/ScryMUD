@@ -771,7 +771,7 @@ String zone::createMapFile() {
       /* if the current z-layer is depleted, push the vertical rooms that
        * we've been queuing onto our tree
        */
-      if ( (!par) && (!IsEmpty(vertical_rooms)) ) {
+      if ( (!par) && (!vertical_rooms.isEmpty()) ) {
          vertical_rooms.head(vr_cll);
          while ( (tmp = vr_cll.next()) ) {
             par2.Push_Child(tmp);
@@ -950,7 +950,7 @@ int zone::isOwnedBy(critter& pc) {
       String* ptr;
       
       while ((ptr = cll.next())) {
-         if (strcasecmp(*ptr, *(Top(pc.names))) == 0)
+         if (strcasecmp(*ptr, *(pc.names.peekFront())) == 0)
             return TRUE;
       }//wile
    }//if

@@ -159,7 +159,7 @@ void do_battle() {
             for (i = 0; i< atks; i++) {
                if (!crit_ptr->IS_FIGHTING.isEmpty()) { 
                   //if first hit kills, abort
-                  vict_ptr = Top(crit_ptr->IS_FIGHTING);
+                  vict_ptr = crit_ptr->IS_FIGHTING.peekFront();
 
                   if (mudlog.ofLevel(DBG)) {
                      mudlog << "In do_battle, within for loop, i:  "
@@ -211,7 +211,7 @@ void do_battle() {
                                                          *crit_ptr)) *
                                 (float)(crit_ptr->getDEX(TRUE)) / 10.0));
                if (d(1,100) < d(1, val)-(crit_ptr->PAUSE*50) ) {
-                  vict_ptr = Top(crit_ptr->IS_FIGHTING);
+                  vict_ptr = crit_ptr->IS_FIGHTING.peekFront();
 
                   if (vict_ptr->isUsingClient()) {
                      vict_ptr->show(CTAG_BATTLE(vict_ptr->whichClient()));
@@ -1025,7 +1025,7 @@ void disburse_xp(critter& agg, const critter& vict) {
 
    // no exp gain in a coliseum
    if (!agg.getCurRoom()->isColiseum()) {
-      if (IsEmpty(agg.GROUPEES)) { //solitary person
+      if (agg.GROUPEES.isEmpty()) { //solitary person
          gain_xp(agg, xp_to_be_gained, TRUE);
       }//if
       else { //in a group
@@ -1314,7 +1314,7 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
       gold->cur_stats[1] = vict.GOLD; //transfer gold
       vict.GOLD = 0;
       
-      Put(gold, corpse->inv);
+      corpse->inv.append(gold);
    }//if
 
          /* eq  */
@@ -1323,7 +1323,7 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
          remove_eq_effects(*(vict.EQ[i]), vict, TRUE, FALSE, i);
          if (vict.EQ[i]->IN_LIST)
             vict.EQ[i]->IN_LIST = &(corpse->inv);
-         Put(vict.EQ[i], corpse->inv);
+         corpse->inv.append(vict.EQ[i]);
          vict.EQ[i] = NULL;
       }//if
    }//for
@@ -1346,7 +1346,7 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
             while ((o_ptr = ocell.next())) {
                if (o_ptr->IN_LIST) 
                   o_ptr->IN_LIST = &(corpse->inv);
-               Put(o_ptr, corpse->inv);
+               corpse->inv.append(o_ptr);
             }//while
             vict.PERM_INV.clear(); //should NEVER be SOBJ's
          }//if
@@ -1363,7 +1363,7 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
                vict.getCurRoomNum());
       recursive_init_loads(*ptr, 0);
 
-      ptr->names.append(new String(*(Top(vict.names))));
+      ptr->names.append(new String(*(vict.names.peekFront())));
 
       Sprintf(buf, "the severed head of %S",
             vict.getName());
@@ -1400,11 +1400,11 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
 
          recursive_init_loads(*ptr, 0);
 
-         ptr->names.append(new String(*(Top(vict.names))));
-         Sprintf(buf, "the tattered skin of %S", Top(vict.names));
+         ptr->names.append(new String(*(vict.names.peekFront())));
+         Sprintf(buf, "the tattered skin of %S", vict.names.peekFront());
          ptr->short_desc = buf;
          Sprintf(buf, "The tattered skin of %S lies here.", 
-               Top(vict.names));
+               vict.names.peekFront());
          ptr->in_room_desc = buf;
          Sprintf(buf,
                "This large piece of %s skin was recently hacked from the corpse of %S.\n"

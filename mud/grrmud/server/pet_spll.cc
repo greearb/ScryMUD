@@ -222,7 +222,7 @@ void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
          golem->setHP_MAX(golem->HP);
          golem->MA_MAX = golem->MANA;
          /* now it follows and is a pet of the person */
-         Put(golem, pc.PETS);
+         pc.PETS.append(golem);
          golem->MASTER = &pc;
          
          golem->doFollow(pc); // golem starts following caster
@@ -329,7 +329,7 @@ void do_cast_charm(critter& vict, critter& pc, int is_canned, int lvl) {
            pc.MANA -= spell_mana;
 
          /* now it follows and is a pet of the person */
-         Put(&vict, pc.PETS);
+         pc.PETS.append(&vict);
          vict.MASTER = &pc;
 
          if (vict.mob) {
@@ -484,7 +484,7 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
       pet->ALIGN = pc.ALIGN;
       
       /* now it follows and is a pet of the person */
-      Put(pet, pc.PETS);
+      pc.PETS.append(pet);
       pet->MASTER = &pc;
 
       pet->doFollow(pc); // golem starts following caster     
@@ -573,7 +573,7 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
      golem->LEVEL = pc.LEVEL;
 
      /* now it follows and is a pet of the person */
-     Put(golem, pc.PETS);
+     pc.PETS.append(golem);
      golem->MASTER = &pc;
 
      golem->doFollow(pc); // golem starts following caster     
@@ -822,7 +822,7 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       golem->RACE = pc.RACE;
       golem->ALIGN = 0;
       
-      golem->names.prepend(new String(*(Top(pc.names)))); 
+      golem->names.prepend(new String(*(pc.names.peekFront()))); 
       if (pc.pc) {
          Sprintf(buf, "%S %S", name_of_crit(pc, ~0), &(pc.short_desc));
          golem->short_desc = buf;
@@ -919,7 +919,7 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
       if (pc.PETS.size() < (pc.CHA/4 + 1) && 
           (d(1, pc.CHA * 10 + lvl * 4) > (d(1, golem->LEVEL * 4)))) {
          /* now it follows and is a pet of the person */
-         Put(golem, pc.PETS);
+         pc.PETS.append(golem);
          golem->MASTER = &pc;       
          golem->doFollow(pc); // golem starts following caster     
       }//if it worked
@@ -1026,7 +1026,7 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
        if (pc.PETS.size() < (pc.CHA/4 + 1) && 
            (d(1, pc.CHA * 10 + lvl * 4) > (d(1, golem->LEVEL * 2)))) {
          /* now it follows and is a pet of the person */
-         Put(golem, pc.PETS);
+         pc.PETS.append(golem);
          golem->MASTER = &pc;       
          golem->doFollow(pc); // golem starts following caster     
        }//if it worked

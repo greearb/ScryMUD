@@ -2034,7 +2034,7 @@ void ponder(int i_th, const String* vict, critter& pc, room& rm) {
       else if (pc.POS > POS_SIT)
          show(NOT_IN_POSN, pc);
       else if (crit_ptr == &pc) {
-         if (strcasecmp(*(Top(pc.names)), "levander") == 0) {
+         if (strcasecmp(*(pc.names.peekFront()), "levander") == 0) {
             show("You ARE a Ponder!!.\n", pc);
          }//if
          else {

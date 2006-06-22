@@ -1,12 +1,11 @@
 // $Id$
-// $Revision: 1.15 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
-//ScryMUD Server Code
-//Copyright (C) 1998  Ben Greear
+//Copyright (C) 1998-2006  Ben Greear
 //
 //This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
+//modify it under the terms of the GNU Library General Public License
 //as published by the Free Software Foundation; either version 2
 //of the License, or (at your option) any later version.
 //
@@ -15,12 +14,11 @@
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 //
-//You should have received a copy of the GNU General Public License
+//You should have received a copy of the GNU Library General Public License
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
-//                                     greearb@agcs.com
+// To contact the Author, Ben Greear:  greearb@candelatech.com
 //
 
 // list.h -- Declarations for the list library
@@ -37,10 +35,12 @@
 #define BEN_List2_Include
 
 #include <stdlib.h> 
-#include <iostream.h>
-#include <fstream.h>
+#include <iostream>
+#include <fstream>
 #include <LogStream.h>
 #include <string2.h>
+
+using namespace std;
 
 #ifndef TRUE
 
@@ -56,6 +56,10 @@
 // I would strongly recomend not doing this if at all possible though!
 #define NUMBER_OF_CONCURENT_CELLS 10
  
+
+#define DBG_MEM(i)
+// #define DBG_MEM(i) i
+
 
 extern LogStream mudlog;
 extern int core_dump(const char* msg); //misc2.cc
@@ -92,11 +96,17 @@ protected:
    };//Node
 
    virtual void handleLosingCell(Cell<T>& cll) {
-      for (int i = 0; i<NUMBER_OF_CONCURENT_CELLS; i++) {
-         if (cll_list[i] && (cll_list[i]->node == cll.node) &&
-            (cll_list[i] != &cll)) {
-            cll_list[i]->next(); //increment it through the list.
-            // Assume there will always at least be the header node.
+      int mx = NUMBER_OF_CONCURENT_CELLS;
+      DBG_MEM(mudlog << "List::handleLosingCell, this: " << this << " cll: " << &cll << endl);
+
+      for (int i = 0; i<mx; i++) {
+         if (cll_list[i]) {
+            if (cll_list[i]->node == cll.node) {
+               if (cll_list[i] != &cll) {
+                  cll_list[i]->next(); //increment it through the list.
+                  // Assume there will always at least be the header node.
+               }
+            }
          }//if
       }//for
    }//handleLosingCell
@@ -148,13 +158,14 @@ public:
    List(const List<T> &L) : sz(L.sz) { //copy constructor
       //mudlog << "In List<T> copy constructor, (L.this: " << (void*)(&L)
       //       << "): " << L.toString() << "\n" << flush;
+      DBG_MEM(mudlog << "List constructor, this: " << this << endl);
       __list_cnt++;
 
       header = new Node;
       memset(cll_list, 0, NUMBER_OF_CONCURENT_CELLS * sizeof(Cell<T>*));
       
       if (!header) {
-         //log("ERROR:  out of Memory: List2 constructor, exiting!\n");
+         cerr << "ERROR:  out of Memory: List2 constructor, exiting!\n";
          exit (101);
       }//if
       else {
@@ -176,6 +187,7 @@ public:
 
 
    List(const T &Nil) : sz(0) {
+      DBG_MEM(mudlog << "List constructor, this: " << this << endl);
       __list_cnt++;
       header = new Node;
 
@@ -186,7 +198,7 @@ public:
       //}
 
       if (!header) { 
-         //log("ERROR:  out of mem, list constructor, exiting!\n");
+         cerr << "ERROR:  out of mem, list constructor, exiting!\n";
          exit (101);
       }//if
       else {
@@ -213,6 +225,8 @@ public:
       this->clear();
 
       delete header;
+
+      DBG_MEM(mudlog << "List::destructor down, this: " << this << endl);
    } //destructor 
 
    
@@ -245,7 +259,7 @@ public:
       }//while
 
       if (!header) {
-         mudlog.log(ERROR, "ERROR:  HEADER NULL in Clear.\n");
+         mudlog.log(1, "ERROR:  HEADER NULL in Clear.\n");
       }//if
       sz = 0;
    }// clear
@@ -270,7 +284,7 @@ public:
       Cell<T> cell(*this);
       T ldata;
 
-      Assert((int)data);
+      //Assert(data);
 
       ldata = cell.next();
       while (ldata) {
@@ -340,7 +354,7 @@ public:
 
    virtual void prepend(const T& data) {
       Cell<T> cell(*this);
-      Assert((int)data);
+      //Assert(data);
       cell.insertAfter(data);
       sz++;
    }//push
@@ -351,7 +365,7 @@ public:
 
    virtual void append(const T& data) {
       Cell<T> C(*this);
-      Assert((int)data);
+      //Assert(data);
       C.insertBefore(data);
       sz++;
    }//put
@@ -393,7 +407,8 @@ public:
       return ret;
    }//Drag
 
-
+   // TODO:  Optimize such that we start from the back and go foward if we are
+   //        closer to the tail!
    virtual int insertAt(int posn, T& val) {
       Cell<T> cll(*this);
       int i = 0;
@@ -482,26 +497,28 @@ public:
    }//head
 
    virtual int assign(Cell<T>& cll, const T& data) {
-      Assert(cll.isInList(this));
+      assert(cll.isInList(this));
       cll.assign(data);
       return TRUE;
    }//Assign
 
    virtual void insertBefore(Cell<T>& cll, const T& data) {
-      Assert(cll.isInList(this));
+      assert(cll.isInList(this));
       sz++;
       cll.insertBefore(data);
    }//insertBefore
 
    virtual void insertAfter(Cell<T>& cll, const T& data) {
-      Assert(cll.isInList(this));
+      assert(cll.isInList(this));
       sz++;
       cll.insertAfter(data);
-   }//insertBefore
+   }//insertAfter
 
+   // Remove item currently pointed to by cll, and return the
+   // next one in the list.
    virtual T lose(Cell<T>& cll) {
       if (cll.node != header) {
-         Assert(cll.isInList(this));
+         assert(cll.isInList(this));
          handleLosingCell(cll);
          sz--;
          return cll.lose();
@@ -509,54 +526,57 @@ public:
       else {
          mudlog << "ERROR:  Trying to lose header, this: " << this
                 << " Cell<T>: " << (void*)(&cll) << endl;
-         Assert(0); //Dump core, need to debug this.
+         assert(0); //Dump core, need to debug this.
          return (T)(0);
       }//else
-   }//insertBefore
+   }//lose.
 
    virtual int isEmpty() const {
-      Assert((int)header);
+      assert(header);
       return (header->next == header);
    }//IsEmpty
 
    /*  size--  Returns the number of cells contained in a List.  */
    virtual int size() const {
-      class List<T>::Node* node_ptr = header->next;
-      int count = 0;
+      //class List<T>::Node* node_ptr = header->next;
+      //int count = 0;
    
-      while (node_ptr != header) {
-         count++;
-         node_ptr = node_ptr->next;
-      }//while
+      //while (node_ptr != header) {
+      //   count++;
+      //   node_ptr = node_ptr->next;
+      //}//while
 
       // Leave this in for a while till we're sure it's debugged!!
-      if (count != sz) {
-         mudlog << "ERROR: sz: " << sz << " does not match calculated size: "
-                << count << endl;
-      }
-      return count;
+      //if (count != sz) {
+      //   mudlog << "ERROR: sz: " << sz << " does not match calculated size: "
+      //          << count << endl;
+      //}
+      return sz;
    }//sz
 
+/*
    virtual int Assert(const int boolean_val) const {
       if (!boolean_val)
          ::core_dump((const char*)("List2.h"));
       return TRUE;
    }
+*/
 
-#ifdef _BG_TEMPLATE_HACK
-   friend void Put<>(const T& val, List<T> &L);
+#if 0
+   void Put(const T& val, List<T> &L);
+   T Top(const List<T> &L);
+   int IsEmpty(const List<T> &L);
+   int HaveData(const T& val, const List<T>& L);
+
+   friend Put<>;
    friend T Top<>(const List<T> &L);
    friend int IsEmpty<>(const List<T> &L);
    friend int HaveData<>(const T& val, const List<T>& L);
-#else
-   friend void Put(const T& val, List<T> &L);
-   friend T Top(const List<T> &L);
-   friend int IsEmpty(const List<T> &L);
-   friend int HaveData(const T& val, const List<T>& L);
 #endif
 
 };
 
+#if 0
 // A few of these are back wards compatable hacks
 
 template <class T> int HaveData(const T& val, const List<T>& L) {
@@ -575,7 +595,7 @@ template <class T> T Top(const List<T>& L) {
 template <class T> void Put(const T& val, List<T>& L) {
    L.append(val);
 }
-
+#endif
  
 ///************************************************************************///
 ///*************************  Cell  ***************************************///
@@ -604,10 +624,10 @@ protected:
    List<T>* in_lst;
 
    virtual void insertBefore (const T& data) {
-      Assert((int)node);
-      typename List<T>::Node *N = new typename List<T>::Node; 
+      assert(node);
+      typename List<T>::Node *N = new typename List<T>::Node(); 
       if (!N) {
-         mudlog.log(ERROR, "ERROR, out of Memory trying to allocate a cell.\n");
+         cerr << "ERROR, out of Memory trying to allocate a cell.\n";
          exit (101);
       }//if
       N->item = data;
@@ -618,7 +638,7 @@ protected:
    }// insert before
 
    virtual int assign(const T& data) {
-      Assert(node && data);
+      assert(node && data);
       node->item = data;
       return TRUE;
    }//Assign
@@ -626,7 +646,7 @@ protected:
 
    /*  INSTERT_AFTER-- Insert an item into a list after a given cell. */
    virtual void insertAfter(const T& data) {
-      Assert((int)node);
+      assert(node);
       typename List<T>::Node *N = new typename List<T>::Node; 
       N->item = data;
       N->prev = node;
@@ -659,17 +679,22 @@ public:
    
    // Constructors
    //
-   Cell () { node = NULL; __cell_cnt++; in_lst = NULL; }
+   Cell () {
+      node = NULL; __cell_cnt++; in_lst = NULL;
+      DBG_MEM(mudlog << "Cell constructor, this: " << this << endl);
+   }
 
    Cell (const List<T>& L) : node(L.header) {
       __cell_cnt++;
       in_lst = (List<T>*)(&L);
       in_lst->handleAddCell(*this);
+      DBG_MEM(mudlog << "Cell constructor2, this: " << this << endl);
    }//constructor
 
    virtual ~Cell() {
       __cell_cnt--;
       clear(); //this is important, allows the list to clean *this up.
+      DBG_MEM(mudlog << "Cell::destructor, this: " << this << endl);
    }//destructor
 
    virtual void clear() {
@@ -678,7 +703,7 @@ public:
          in_lst = NULL;
       }//if
    }
-
+/*
    int Assert(const int boolean_val) const {
       if (!boolean_val) {
          ::core_dump("Cell<T>");
@@ -687,6 +712,7 @@ public:
       else
          return TRUE;
    }//Assert
+*/
 
    /*  NEXT--  next(cell)  
        This function sets "cell" equal to the next cell in the list and
@@ -736,8 +762,8 @@ public:
 
    void clearAndDestroy() {
       T* val;
-      while (!isEmpty()) {
-         val = popFront();
+      while (!List<T*>::isEmpty()) {
+         val = List<T*>::popFront();
          delete val;
       }//while
    }//clearAndDestroy

@@ -592,7 +592,7 @@ void vehicle::fileRead(ifstream& da_file, short read_all) {
    while ((sentinel != -1) && da_file) {
       ptr = new PathCell();
       ptr->Read(da_file);
-      Put(ptr, path_cells);
+      path_cells.append(ptr);
 
       da_file >> sentinel;
       da_file.getline(tmp, 80);

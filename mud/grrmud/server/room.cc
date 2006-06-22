@@ -316,7 +316,7 @@ room& room::operator=(room& source) {
    Clear(); //clear this thing out!!
    
    while ((string = cll.next())) {
-      Put(new String(*(string)), names);
+      names.append(new String(*(string)));
    }//while
    
    short_desc = source.short_desc;
@@ -506,7 +506,7 @@ void room::dbRead(int room_num, short read_all) {
          return;
       } // if
       while ((row=mysql_fetch_row(result))) {
-         Put(new String(row[0]), names);
+         names.append(new String(row[0]));
       } // while
       mysql_free_result(result);
    } // if
@@ -619,7 +619,7 @@ void room::dbRead(int room_num, short read_all) {
                return;
             } // if
             while ((tmp_row=mysql_fetch_row(result))) {
-               Put(new stat_spell_cell(atoi(row[0]), atoi(row[1])), dr_ptr->affected_by);
+               dr_ptr->affected_by.append(new stat_spell_cell(atoi(row[0]), atoi(row[1])));
             } // while
          } // if
          else {
@@ -766,7 +766,7 @@ void room::dbRead(int room_num, short read_all) {
          ss_ptr = new stat_spell_cell;
          ss_ptr->stat_spell = atoi(row[0]);
          ss_ptr->bonus_duration = atoi(row[1]);
-         Put(ss_ptr, affected_by);
+         affected_by.append(ss_ptr);
       } // while
       mysql_free_result(result);
    } // if
@@ -870,7 +870,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
       }//if
       else {
          string = new String(tmp_str);
-         Put(string, names);
+         names.append(string);
       }//else
    }//while            
    ofile.getline(tmp, 80);         
@@ -928,7 +928,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
       ss_ptr = new stat_spell_cell;
       ss_ptr->stat_spell = i;
       ofile >> ss_ptr->bonus_duration;
-      Put(ss_ptr, affected_by);
+      affected_by.append(ss_ptr);
       
       ofile >> i;
    }//while
@@ -1090,7 +1090,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
 
          ptr = new RoomScript();
          ptr->read(ofile);
-         Put(ptr, room_proc_scripts);
+         room_proc_scripts.append(ptr);
          ofile >> sent_;
          ofile.getline(tmp, 80);
          if (mudlog.ofLevel(DB))

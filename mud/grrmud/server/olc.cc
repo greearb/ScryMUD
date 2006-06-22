@@ -243,12 +243,12 @@ void do_olc(critter& pc) {
             }//if
             else {
                if (string == "~") {
-                  if (!IsEmpty((OLC_OBJ->names)))
+                  if (!OLC_OBJ->names.isEmpty())
                        O_COUNT = 3;
                }//if
                else {
                   tmp_str = new String(string);
-                  Put(tmp_str, (OLC_OBJ->names));
+                  OLC_OBJ->names.append(tmp_str);
                }//else
             }//else
          }//while
@@ -645,7 +645,7 @@ void do_olc(critter& pc) {
                }//else
             }//if
             else {
-              sp_ptr = Top(OLC_OBJ->affected_by);
+              sp_ptr = OLC_OBJ->affected_by.peekFront();
               sp_ptr->bonus_duration = i;
               j = TRUE; //once again looking for first..
             }//if
@@ -724,7 +724,7 @@ void do_olc(critter& pc) {
                }//else
             }//if
             else {
-               sp_ptr = Top(OLC_OBJ->stat_affects);
+               sp_ptr = OLC_OBJ->stat_affects.peekFront();
                sp_ptr->bonus_duration = i;
                j = TRUE; //once again looking for first..
             }//if
@@ -844,12 +844,12 @@ void do_olc(critter& pc) {
             }//if
             else {
                if (string == "~") {
-                  if (!IsEmpty(OLC_MOB->names))
+                  if (!OLC_MOB->names.isEmpty())
                       O_COUNT = 17;
                }//if
                else {
                   tmp_str = new String(string);
-                  Put(tmp_str, OLC_MOB->names);
+                  OLC_MOB->names.append(tmp_str);
                }//else
             }//else
          }//while
@@ -1233,7 +1233,7 @@ void do_olc(critter& pc) {
                 }//else
               }//if
               else {
-                sp_ptr = Top(OLC_MOB->affected_by);
+                sp_ptr = OLC_MOB->affected_by.peekFront();
                 sp_ptr->bonus_duration = i;
                 j = TRUE; //once again looking for first..
               }//if
@@ -1869,12 +1869,12 @@ void do_olc(critter& pc) {
             }//if
             else {
                if (string == "~") {
-                  if (!IsEmpty(OLC_ROOM->names))
+                  if (!OLC_ROOM->names.isEmpty())
                        O_COUNT = 40;
                }//if
                else {
                   tmp_str = new String(string);
-                  Put(tmp_str, OLC_ROOM->names);
+                  OLC_ROOM->names.append(tmp_str);
                }//else
             }//else
          }//while
@@ -2038,7 +2038,7 @@ void do_olc(critter& pc) {
                 }//else
               }//if
               else {
-                sp_ptr = Top(OLC_ROOM->affected_by);
+                sp_ptr = OLC_ROOM->affected_by.peekFront();
                 sp_ptr->bonus_duration = i;
                 j = TRUE; //once again looking for first..
               }//if
@@ -2196,12 +2196,12 @@ void do_olc(critter& pc) {
             }//if
             else {
                if (string == "~") {
-                  if (!IsEmpty(OLC_DOOR->names))
+                  if (!OLC_DOOR->names.isEmpty())
                        O_COUNT = 49;
                }//if
                else {
                   tmp_str = new String(string);
-                  Put(tmp_str, OLC_DOOR->names);
+                  OLC_DOOR->names.append(tmp_str);
                }//else
             }//else
          }//while
@@ -2539,7 +2539,7 @@ void do_olc(critter& pc) {
          }//if
          else {
            OLC_MOB->TOPICS.prepend(new say_proc_cell); //add a new one
-           (Top(OLC_MOB->TOPICS))->topic = string;
+           (OLC_MOB->TOPICS.peekFront())->topic = string;
            O_COUNT = 59; //go get topic message
          }//else
          break;
@@ -2613,8 +2613,8 @@ void do_olc(critter& pc) {
            break;
          }//if
          else {
-           (Top(OLC_MOB->TOPICS))->msg += string;
-           (Top(OLC_MOB->TOPICS))->msg += "\n"; 
+           (OLC_MOB->TOPICS.peekFront())->msg += string;
+           (OLC_MOB->TOPICS.peekFront())->msg += "\n"; 
          }//else
         }//while TRUE
          break;
@@ -2690,7 +2690,7 @@ void do_olc(critter& pc) {
             break;
          }//if
          else {
-           (Top(OLC_MOB->TOPICS))->skill_name = string;
+           (OLC_MOB->TOPICS.peekFront())->skill_name = string;
            O_COUNT = 67; //obj to give to pc
          }//else
          break;
@@ -2766,7 +2766,7 @@ void do_olc(critter& pc) {
             i = atoi(string);
             if (!check_l_range(i, 0, NUMBER_OF_ITEMS, pc, TRUE))
                break;
-            (Top(OLC_MOB->TOPICS))->obj_num = i;
+            (OLC_MOB->TOPICS.peekFront())->obj_num = i;
             O_COUNT = 71; //go get trans to room
          }//if
          else {
@@ -2854,7 +2854,7 @@ void do_olc(critter& pc) {
             i = atoi(string);
             if (!check_l_range(i, 0, NUMBER_OF_ROOMS, pc, TRUE))
                break;
-            (Top(OLC_MOB->TOPICS))->trans_to_room = i;
+            (OLC_MOB->TOPICS.peekFront())->trans_to_room = i;
             O_COUNT = 73; //go see if should do another
          }//if
          else {
@@ -3081,7 +3081,7 @@ void do_olc(critter& pc) {
                 }//else
               }//if
               else {
-                sp_ptr = Top(OLC_OBJ->CASTS_THESE_SPELLS);
+                sp_ptr = OLC_OBJ->CASTS_THESE_SPELLS.peekFront();
                 sp_ptr->stat_spell = i;
                 j = TRUE; //once again looking for first..
               }//if
@@ -3385,7 +3385,7 @@ void finish_olc_mob(critter& pc) {
       system(tdir);
       
       ofile_buf += "/";
-      ofile_buf += *(Top(OLC_MOB->names));
+      ofile_buf += *(OLC_MOB->names.peekFront());
       ofile_buf.Append(OLC_MOB->MOB_NUM);
       ofstream ofile(ofile_buf);
       if (!ofile) {

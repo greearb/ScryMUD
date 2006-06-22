@@ -1,12 +1,11 @@
 // $Id$
-// $Revision: 1.5 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
-//ScryMUD Server Code
-//Copyright (C) 1998  Ben Greear
+//Copyright (C) 2001  Ben Greear
 //
 //This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
+//modify it under the terms of the GNU Library General Public License
 //as published by the Free Software Foundation; either version 2
 //of the License, or (at your option) any later version.
 //
@@ -15,12 +14,11 @@
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 //
-//You should have received a copy of the GNU General Public License
+//You should have received a copy of the GNU Library General Public License
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
-//                                     greearb@agcs.com
+// To contact the Author, Ben Greear:  greearb@candelatech.com
 //
 
 // PtrArrayBase, PtrArray, LazyPtrArray
@@ -364,10 +362,10 @@ T& LazyPtrArray<T>::operator[] (const int i) {
 
 template <class T>
 T* LazyPtrArray<T>::elementAtNoCreate(int i) {
-   if ((i < 0) || (i >= max_len))
+   if ((i < 0) || (i >= PtrArrayBase<T>::max_len))
       return NULL;
    
-   return ptr_list[i];
+   return PtrArrayBase<T>::ptr_list[i];
 }
 
 
@@ -378,21 +376,21 @@ T* LazyPtrArray<T>::elementAt(int i) {
 //   cout << "PtrArrayBase::elementAt, i: " << i << "  max_len:  " 
 //        << max_len << endl;
 
-   if ((i < 0) || (i >= max_len)) {
+   if ((i < 0) || (i >= PtrArrayBase<T>::max_len)) {
 //      cout << "Returning null" << endl;
       return NULL;
    }
    
    //cout << "Checking for null..." << endl;
-   if (ptr_list[i] == NULL) {
+   if (PtrArrayBase<T>::ptr_list[i] == NULL) {
 //      cout << "Creating new one..." << endl;
-      ptr_list[i] = new T(i);
+      PtrArrayBase<T>::ptr_list[i] = new T(i);
    }
    else {
 //      cout << " offset wasn't null..." << endl;
    }
 
-   return ptr_list[i];
+   return PtrArrayBase<T>::ptr_list[i];
 }
 
 
@@ -402,7 +400,7 @@ T* LazyPtrArray<T>::elementAt(int i) {
 
 template <class T>
 T* PtrArray<T>::operator[] (const int i) {
-   return elementAt(i);
+   return PtrArrayBase<T>::elementAt(i);
 }
 
 
@@ -493,7 +491,7 @@ template <class T>
 void ObjArray<T>::purge() {
    delete[] array;
    array = NULL;
-   butfield.off_all();
+   bf.off_all();
    len = 0;
 }//purge
 
@@ -516,21 +514,21 @@ int ObjArray<T>::contains(T& val) const {
 ///*********************  FixedHistory  *********************************///
 ///**********************************************************************///
 
+
 template <class T>
-int FixedHistory<T>::init(int sz, T& null_val) {
+unsigned int FixedHistory<T>::init(unsigned int sz) {
    array = new T[sz];
    head = 0;
-   null_value = null_val;
    len = sz;
    return len;
 }//init
 
 template <class T>
 FixedHistory<T>::FixedHistory(const FixedHistory<T>& src) :
-      len(src.len), head(src.head), null_value(src.null_value) {
-   _cnt++;
+      len(src.len), head(src.head) {
+   __fixed_history_cnt++;
    array = new T[len];
-   for (int i = 0; i<len; i++) {
+   for (unsigned int i = 0; i<len; i++) {
       array[i] = src.array[i];
    }
 }
@@ -539,26 +537,22 @@ template <class T>
 FixedHistory<T>& FixedHistory<T>::operator=(const FixedHistory<T>& src) {
    ensureCapacity(src.len);
    len = src.len;
-   for (int i = 0; i<len; i++) {
+   for (unsigned int i = 0; i<len; i++) {
       array[i] = src.array[i];
    }
-   null_value = src.null_value;
    head = src.head;
 }
 
 template <class T>
-void FixedHistory<T>::ensureCapacity(int cap) {
+void FixedHistory<T>::ensureCapacity(unsigned int cap) {
    if (cap > len) {
       T* tmp = array;
       array = new T[cap];
 
-      int i;
+      unsigned int i;
       for (i = 0; i<len; i++) {
          array[i] = tmp[i];
       }//for
-      for (i; i<cap; i++) {
-         array[i] = null_value;
-      }
 
       delete[] tmp;
       len = cap;
@@ -568,9 +562,6 @@ void FixedHistory<T>::ensureCapacity(int cap) {
    /** Does not clean up memory, just marks all as un-used. */
 template <class T>
 void FixedHistory<T>::clear() {
-   for (int i = 0; i<len; i++) {
-      array[i] = null_value;
-   }
    head = 0;
 }
 
