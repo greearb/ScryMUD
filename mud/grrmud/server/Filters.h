@@ -40,6 +40,7 @@ class CritterSelector {
 public:
    virtual int matches(const critter* pc, const critter* b) { USE_VARS; return TRUE; }
    virtual const char* name() { return "CritterSelector"; }
+   virtual ~CritterSelector() { };
 };
 
 /** Matches None. */
@@ -47,6 +48,7 @@ class SelectNone : public CritterSelector {
 public:
    virtual int matches(const critter* pc, const critter* b) { USE_VARS; return FALSE; }
    virtual const char* name() { return "SelectNone"; }
+   virtual ~SelectNone() { };
 };
 
 /** matches when pc is an NPC */
@@ -56,6 +58,7 @@ public:
       USE_VARS; return pc->isNPC();
    }
    virtual const char* name() { return "SelectNPC"; }
+   virtual ~SelectNPC() { };
 };
 
 /** matches when pc != b */
@@ -65,6 +68,7 @@ public:
       return pc == actor;
    }
    virtual const char* name() { return "SelectAreSame"; }
+   virtual ~SelectAreSame() { };
 };
 
 /** matches when pc is sleeping */
@@ -74,6 +78,7 @@ public:
       USE_VARS; return pc->isSleeping();
    }
    virtual const char* name() { return "SelectIsSleeping"; }
+   virtual ~SelectIsSleeping() { };
 };
 
 
@@ -84,6 +89,7 @@ public:
       USE_VARS; return pc->isMeditating();
    }
    virtual const char* name() { return "SelectIsMeditating"; }
+   virtual ~SelectIsMeditating() { };
 };
 
 /** matches when pc is an NPC and is possessed. */
@@ -93,6 +99,7 @@ public:
       USE_VARS; return (pc->isNPC() && pc->isPossessed());
    }
    virtual const char* name() { return "SelectNPC_Possessed"; }
+   virtual ~SelectNPC_Possessed() { };
 };
 
 /** matches when pc is a PC. */
@@ -102,6 +109,7 @@ public:
       USE_VARS; return pc->isPc();
    }
    virtual const char* name() { return "SelectPC"; }
+   virtual ~SelectPC() { };
 };
 
 /** matches mobs who MAY SEE mob entry message. */
@@ -111,6 +119,7 @@ public:
       return (actor->isPc() || (pc->pc && !pc->PC_FLAGS.get(28)));
    }
    virtual const char* name() { return "SelectActorEntryMsgs"; }
+   virtual ~SelectActorEntryMsgs() { };
 };
 
 /** matches b if pc can see it. */
@@ -120,6 +129,7 @@ public:
       return actor->canDetect(*pc);
    }
    virtual const char* name() { return "SelectVisibleToActor"; }
+   virtual ~SelectVisibleToActor() { };
 };
 
 /** matches b if pc can see it. */
@@ -129,6 +139,7 @@ public:
       return pc->canDetect(*actor);
    }
    virtual const char* name() { return "CanDetectActor"; }
+   virtual ~SelectCanDetectActor() { };
 };
 
 /** returns true if pc cannot detect b's sneaking. */
@@ -136,6 +147,7 @@ class SelectActorSneakWorked : public CritterSelector {
 public:
    virtual int matches(const critter* pc, const critter* actor);
    virtual const char* name() { return "SelectActorSneakWorked"; }
+   virtual ~SelectActorSneakWorked() { };
 };
 
 
@@ -146,6 +158,7 @@ public:
       USE_VARS; return (pc->isPc() && pc->PC_FLAGS.get(14));
    }
    virtual const char* name() { return "SelectGetsInfo"; }
+   virtual ~SelectGetsInfo() { };
 };
 
 
@@ -156,6 +169,7 @@ public:
       USE_VARS; return (pc->isUsingClient());
    }
    virtual const char* name() { return "SelectUsingClient"; }
+   virtual ~SelectUsingClient() { };
 };
 
 /** returns true if pc is NOT using the Hegemon Client */
@@ -165,6 +179,7 @@ public:
       USE_VARS; return (!pc->isUsingClient());
    }
    virtual const char* name() { return "SelectNotUsingClient"; }
+   virtual ~SelectNotUsingClient() { };
 };
 
 

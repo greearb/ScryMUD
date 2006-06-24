@@ -144,6 +144,7 @@ class Spell
 	//virtual int getSpellTarget(int i_th, const String* target, critter& pc);	
  
 	Spell() {}// gets rid of an error message in g++
+        virtual ~Spell() {};
 	
 	virtual void setupSpell(int spelln, int spellp, char* act, char* divers,
                            char* spell_name,

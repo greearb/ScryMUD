@@ -464,6 +464,7 @@ int code_gen_commands(char** argv, int argc) {
          "class ExeCmd {\n"
          "public:\n"
          "   virtual int execute(CODE_GEN_EXE_HEADER) = 0; //pure virtual\n"
+         "   virtual ~ExeCmd() { };\n"
          "};\n");
 
    cmd_array.Append("void initCmdsArray() {\n");

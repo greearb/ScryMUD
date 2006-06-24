@@ -3097,7 +3097,7 @@ int tog_oflag(int flagnum, const String* flag_type,
                   object* o_ptr;
 
                   //reduce cur_in_game counts.
-                  while ( o_ptr = inv_cll.next() ) {
+                  while ( (o_ptr = inv_cll.next()) ) {
                      recursive_init_unload(*o_ptr, 0);
 
                      if (obj_ptr->isModified()) {
@@ -3304,4 +3304,5 @@ int tog_mflag(int flagnum, const String* flag_type,
       pc.show("You must specify flagtype as:  'mob_flag', 'pc_flag', 'crit_flag', 'teach_flag' or 'shop_flag'.\n");
       return -1;
    }
-}// tog_mflag
+   return 0 ;
+}// tog_m

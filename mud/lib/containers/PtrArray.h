@@ -35,6 +35,9 @@
 #include <assert.h>
 #include <string2.h>
 
+extern LogStream mudlog;
+extern int min(int i, int j);
+
 
 /**  An array of type class T pointers.  Does bounds checking
  * and will grow as needed. 
