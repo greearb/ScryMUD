@@ -39,6 +39,14 @@ class helpLibrary(object):
                 newDoc = helpDoc(self.path+"/"+f)
                 self.docs.append(newDoc)
 
+    def by_name(self, name):
+        """
+        Returns a document object by name
+        """
+        for doc in self.docs:
+            if ( doc.name.lower() == name.lower() ): return doc
+        return None
+
     def all(self, sort=False):
         """
         Returns an optionally sorted list of all help documents
@@ -47,7 +55,7 @@ class helpLibrary(object):
             self.docs.sort()
         return self.docs
 
-    def imm(self, sort=False):
+    def imm_list(self, sort=False):
         """
         Returns an optionally sorted list of all IMM help documents
         """
@@ -57,7 +65,7 @@ class helpLibrary(object):
         if ( sort ): ret_val.sort()
         return ret_val
 
-    def player(self, sort=False):
+    def player_list(self, sort=False):
         """
         Returns an optionally sorted list of all player help documents
         """
@@ -118,7 +126,7 @@ class helpDoc(object):
                 elif ( type == 'example:' ):
                     self.example += m.group(2).lstrip()
                 elif ( type == 'see also:' ):
-                    new_refs = m.group(2).strip().split(',')
+                    new_refs = m.group(2).strip().replace(',','').split(' ')
                     for new_ref in new_refs:
                         self.see_also.append(new_ref.strip())
                 else:

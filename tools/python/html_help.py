@@ -83,7 +83,7 @@ class cfg(object):
 
       return
 
-def toHtml(doc):   
+def toHtml(doc,lib):   
 
    def para(m): return "<p>%s</p>"%(m.group(1))
 
@@ -99,10 +99,13 @@ def toHtml(doc):
 
    for p in scrymud.util.paragraphs(doc.body):
       ret_val += "<p>%s</p>" %(p)
-   ret_val += '</div><div id="see_also"'
+   ret_val += '</div><div id="see_also">'
 
    for link in doc.see_also:
-      ret_val += "<a href=\"%s.html\">%s</a> " %(link, link)
+      t = lib.by_name(link)
+      if ( not t ): continue
+      if ( t.imm ): ret_val += "<a href=\"imm/%s.html\">%s</a> " %(link, link)
+      else: ret_val += "<a href=\"%s.html\">%s</a> " %(link, link)
 
    ret_val += '</div>'
 
@@ -121,7 +124,7 @@ def idxHtml(idx):
       ret_val += ("<div class=\"help_index_section\">\n<a name=\"%s\" /><div class=\"help_index_sortkey\">%s</div>\n" %(k,k))
       ret_val += ("<ul class=\"help_index\">\n")
       for entry in idx[k]:
-	 ret_val += ("<li><a href=\"%s.html\">%s</a></li>\n" %(entry,entry))
+         ret_val += ("<li><a href=\"%s.html\">%s</a></li>\n" %(entry,entry))
       ret_val += ("</ul></div>\n")
    return(ret_val)
 
@@ -154,17 +157,17 @@ if ( __name__ == '__main__' ):
    for doc in lib.all(sort=True):
 
       if ( doc.imm ):
-	 f = open("%s/imm/%s.html" %(config.output_dir, doc.name), 'w')
-	 try: imm_idx[doc.name[:1].upper()].append(doc.name)
-	 except KeyError, e: imm_idx[doc.name[:1].upper()] = [doc.name]
-	 
+         f = open("%s/imm/%s.html" %(config.output_dir, doc.name), 'w')
+         try: imm_idx[doc.name[:1].upper()].append(doc.name)
+         except KeyError, e: imm_idx[doc.name[:1].upper()] = [doc.name]
+         
       else:
-	 f = open("%s/%s.html" %(config.output_dir, doc.name), 'w')
-	 try: idx[doc.name[:1].upper()].append(doc.name)
-	 except KeyError, e: idx[doc.name[:1].upper()] = [doc.name]
+         f = open("%s/%s.html" %(config.output_dir, doc.name), 'w')
+         try: idx[doc.name[:1].upper()].append(doc.name)
+         except KeyError, e: idx[doc.name[:1].upper()] = [doc.name]
 
       f.write(hh)
-      f.write(toHtml(doc))
+      f.write(toHtml(doc,lib))
       f.write(hf)
       f.close()
 
