@@ -23,8 +23,8 @@ into a Jira (http://atlassian.com/) installation via. SOAP.
 # User tuneable ##############################################################
 
 # Configure the username/password of the Jira account to use.
-jira_user = ''
-jira_pass = ''
+jira_user = 'mud'
+jira_pass = 'tU0rinPb4m'
 
 # This is discoverable in the Jira custom-field administration by
 # "configuring" the room number custom field and observing the
