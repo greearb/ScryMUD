@@ -18,23 +18,39 @@
 """Various small utility functions"""
 
 def paragraphs(str, seperator=None):
-   """Can be used as an iterator, returning one paragraph at a time from a body
-      of text.
-   """
-   if not callable(seperator):
-      if ( seperator != None ): raise TypeError, "seperator must return bool"
-      def seperator(line): return line == '\n'
-   paragraph = []
-   for line in str.splitlines(True):
-      if seperator(line):
-         if paragraph:
-            yield "".join(paragraph)
-            paragraph = [];
-      else:
-         paragraph.append(line)
-   if paragraph: yield "".join(paragraph)
+    """Can be used as an iterator, returning one paragraph at a time from a body
+       of text.
+    """
+    if not callable(seperator):
+       if ( seperator != None ): raise TypeError, "seperator must return bool"
+       def seperator(line): return line == '\n'
+    paragraph = []
+    for line in str.splitlines(True):
+       if seperator(line):
+          if paragraph:
+             yield "".join(paragraph)
+             paragraph = [];
+       else:
+          paragraph.append(line)
+    if paragraph: yield "".join(paragraph)
+
+def termedRead(f):
+    """
+    A common serialization format found in ScryMUD files is a section of
+    multi-line text that ends with a '~' on a line by itself. This function,
+    given a file object will read until that "terminated" line, returning a
+    string.
+    """
+    buf = ""
+    while ( True ):
+        tmp = f.readline()
+        if ( tmp[0:1] == "~" ):
+            break
+        else:
+            buf += tmp
+    return(buf[:-1]) # we have an extra newline
 
 # This exists because I am too brain dead to come up with a better way
 # to build help indexes. --eroper
 alphabet = [ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-	     "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" ]
+             "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" ]
