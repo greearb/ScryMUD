@@ -643,7 +643,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
    }//if
 
    if (is_canned) {
-      if (did_spell_hit(vict, FIRE, agg, lvl, TRUE)) {
+      if (did_spell_hit(agg, FIRE, vict, lvl, TRUE)) {
          vict.HP -= d(4, 20) + 
                 lvl - (int)((100.0 / (vict.HEAT_RESIS + 100)) * 20);
          agg.PAUSE += 1;   // increment pause_count
@@ -1408,7 +1408,7 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
       lvl = agg.LEVEL;
 
    if (is_canned) {
-      if (did_spell_hit(vict, CRONIC, agg, lvl, TRUE)) {
+      if (did_spell_hit(agg, CRONIC, vict, lvl, TRUE)) {
          do_effects = TRUE;
 
          if (&vict == &agg) {

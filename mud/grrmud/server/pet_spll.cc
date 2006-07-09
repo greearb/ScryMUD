@@ -320,7 +320,7 @@ void do_cast_charm(critter& vict, critter& pc, int is_canned, int lvl) {
    }
 
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, COERCION, pc, lvl, TRUE))) ||
+                      did_spell_hit(pc, COERCION, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(pc, spell_num)) && 
          (did_hit = did_spell_hit(pc, COERCION, vict)))) {
       

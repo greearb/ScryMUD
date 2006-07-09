@@ -1062,6 +1062,9 @@ public:
    int isPlayerShopKeeper();
    int isManagedBy(critter& pc);
    stat_spell_cell* isAffectedBy(int spell_num);
+
+   short canMove() const { return ( POS == POS_STAND && ( getMov() > 0 ) ); }
+
    // return current value of cur_in_game after operation
    int getCurInGame();
    int setCurInGame(int i);

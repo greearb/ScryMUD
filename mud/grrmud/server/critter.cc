@@ -2348,7 +2348,6 @@ int critter::getCHA(bool include_modifiers=false) {
 }
 
 int critter::getBHDC(bool include_modifiers=false) {
-   int p_lrnd;
    int modifier = 0;
 
    return BH_DICE_COUNT+modifier;

@@ -1469,18 +1469,10 @@ short did_spell_hit(const critter& agg, const int spell_type,
   int j = 100;
   switch (spell_type)
      {
-     case NORMAL:
-        j = vict.AC;
-        break;
-     case FIRE: case D_BREATH:
-        j =  vict.HEAT_RESIS;
-        break;
-     case ICE:
-        j = vict.COLD_RESIS;
-        break;
-     case ELECTRICITY:
-        j = vict.ELEC_RESIS;
-        break;
+     case NORMAL: case FIRE: case D_BREATH: case ICE: case ELECTRICITY:
+          // If they can't move.. they're screwed.
+          if ( ! vict.canMove() ) { return(TRUE); }
+          break;
      case SUMMON:
         if (vict.isImmort()) {
            if (agg.isImmort()) {
@@ -1514,22 +1506,21 @@ short did_spell_hit(const critter& agg, const int spell_type,
         }
         j = 100;
      }//switch   
-  
-  j += vict.SPEL_RESIS; //gen resistance to spells
       
   if (is_canned) {
-    j -= (vict.LEVEL - lvl) * 10;
+    j -= (vict.LEVEL - lvl) * 20;
   }//if
   else {
-    j -= (vict.LEVEL - agg.LEVEL) * 10;
+    j -= (vict.LEVEL - agg.LEVEL) * 20;
   }//else
 
   j += 200; 
 
-  if (j < 0)
-    j = 0;
-  else if (j > 400)
-    j = 400;
+  if (j < 0) {
+      j = 0;
+  } else if (j > 400) {
+      j = 400;
+  }
 
   if ((spell_type == COERCION) || (spell_type == CHARM)) {
      if (vict.getLevel() > agg.getLevel()) {
@@ -1537,7 +1528,22 @@ short did_spell_hit(const critter& agg, const int spell_type,
      }
   }
 
-  return (d(1, 75) < d(1, j));
+  /* spells were missing a lot of the time, in fact some cases made it
+   * impossible to hit a mob just a few levels above you with magic at all.
+   * The new miss-rates should be roughly as follows:
+   *  Same level target: 15% miss
+   *  -5 level target:   11% miss
+   *  +5 level target:   22% miss
+   *  at best you'll miss 11% of the time, at worst 90%
+   *
+   *  Math example of a same-level encounter.
+   *  j = 100; j -= no level_bonus; j += 200
+   *  j = 300; 45 is 15% of 300. That's a 15% chance to miss.
+   */
+
+  // Attacker is seriously out-classed, 90% chance to miss.
+  if ( j == 0 ) { j = 50; }
+  return (d(1, 45) < d(1, j));
 }//did_spell_hit
 
 

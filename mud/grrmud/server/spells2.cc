@@ -691,7 +691,7 @@ void do_cast_flesh_to_stone(critter& vict, critter& agg, int is_canned, int lvl)
      lvl = agg.LEVEL;
 
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, CRONIC, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
@@ -809,7 +809,7 @@ void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if ((vict.getLevel() <= agg.getLevel()) && ((is_canned && (did_hit = 
-                      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, CRONIC, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict))))) {
 
@@ -1200,7 +1200,7 @@ void do_cast_curse(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, CRONIC, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
@@ -1314,7 +1314,7 @@ void do_cast_blindness(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, CRONIC, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 
@@ -1407,7 +1407,7 @@ void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl) {
      lvl = agg.LEVEL;
 
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, CRONIC, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, CRONIC, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, CRONIC, vict)))) {
 

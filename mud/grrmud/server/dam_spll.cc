@@ -51,7 +51,7 @@ void SpellSpearOfDarkness::doSpellEffects(){
     critter& victim = *(spellSpearOfDarkness.victim);
     critter& agg = *(spellSpearOfDarkness.agg);
 	
-    if (did_spell_hit(victim, NORMAL, agg, clvl, TRUE)){
+    if (did_spell_hit(agg, NORMAL, victim, clvl, this->canned)){
 
         float dmg = (float)(d(7, (10 + clvl/5 - agg.ALIGN/200)));
         if ((agg.ALIGN < -350) && (victim.ALIGN > 350)) dmg *= 1.5;
@@ -150,7 +150,7 @@ void SpellOrbOfPower::doSpellEffects() {
    critter& victim = *(spellOrbOfPower.victim);
    critter& agg = *(spellOrbOfPower.agg);
 
-   if (did_spell_hit(victim, NORMAL, agg, clvl, TRUE)){
+   if (did_spell_hit(agg, NORMAL, victim, clvl, this->canned)){
       int dmg = d(10, clvl + 10);
       exact_raw_damage(dmg, FIRE, victim, agg);
 
@@ -253,7 +253,7 @@ void SpellHolyWord::doSpellEffects() {
    critter& agg = *(spellHolyWord.agg);
 
    
-   if( did_spell_hit(vict, NORMAL, agg, clvl, TRUE)){
+   if( did_spell_hit(agg, NORMAL, vict, clvl, this->canned)){
 
       int dmg = d(7, clvl + 5);
 
@@ -366,7 +366,7 @@ void SpellDispelGood::doSpellEffects() {
    }
    
 
-   if( did_spell_hit(vict, NORMAL, agg, clvl, TRUE)){
+   if( did_spell_hit(agg, NORMAL, vict, clvl, this->canned)){
       int dmg = d(5, clvl + 5);
 
       exact_raw_damage(dmg, NORMAL, vict, agg);
@@ -669,7 +669,7 @@ void do_cast_cause_sickness(critter& vict, critter& agg, int is_canned,
 
    int lost_con = FALSE;
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, NORMAL, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 
@@ -825,7 +825,7 @@ void do_cast_lightning(critter& vict, critter& agg, int is_canned,
 
    int lost_con = FALSE;
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, NORMAL, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 
@@ -977,7 +977,7 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
 
    int lost_con = FALSE;
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, NORMAL, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 
@@ -1138,7 +1138,7 @@ void do_cast_shocking_grasp(critter& vict, critter& agg, int is_canned,
 
    int lost_con = FALSE;
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, NORMAL, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 
@@ -1295,7 +1295,7 @@ void do_cast_rainbow(critter& vict, critter& agg, int is_canned,
 
    int lost_con = FALSE;
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, NORMAL, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 
@@ -1448,7 +1448,7 @@ void do_cast_burning_hands(critter& vict, critter& agg, int is_canned,
 
    int lost_con = FALSE;
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, NORMAL, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 

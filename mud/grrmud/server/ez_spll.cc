@@ -73,7 +73,7 @@ void do_cast_detect_resistances(critter& vict, critter& agg, int is_canned, int 
    short lost_con = TRUE;
 
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, NORMAL, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 
@@ -180,7 +180,7 @@ void do_cast_detect_alignment(critter& vict, critter& agg, int is_canned,
    short lost_con = TRUE;
 
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, NORMAL, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 
@@ -2163,7 +2163,7 @@ void do_cast_web(critter& vict, critter& agg, int is_canned, int lvl) {
    short lost_con = TRUE;
 
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, AGILITY, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, AGILITY, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, AGILITY, vict)))) {
 
@@ -2259,7 +2259,7 @@ void do_cast_entangle(critter& vict, critter& agg, int is_canned,
    short lost_con = FALSE;
 
    if ((is_canned && (did_hit = 
-                      did_spell_hit(vict, AGILITY, agg, lvl, TRUE))) ||
+                      did_spell_hit(agg, AGILITY, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, AGILITY, vict)))) {
 
@@ -2383,7 +2383,7 @@ void do_cast_faerie_fire(critter& vict, critter& agg, int is_canned,
    short lost_con = TRUE;
    short did_hit = TRUE;
 
-   if ((is_canned && (did_hit = did_spell_hit(vict, NORMAL, agg, lvl, TRUE))) ||
+   if ((is_canned && (did_hit = did_spell_hit(agg, NORMAL, vict, lvl, TRUE))) ||
        (!is_canned && !(lost_con = lost_concentration(agg, spell_num)) && 
          (did_hit = did_spell_hit(agg, NORMAL, vict)))) {
 
