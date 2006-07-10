@@ -2687,7 +2687,7 @@ int com_recho(const String* msg, critter& pc) {
       
       while ((ptr = cll.next())) {
          if (ptr->isImmort() && (ptr->getImmLevel() >= pc.getImmLevel())) {
-            Sprintf(buf2, "[%S]  %S", pc.getName(), msg);
+            Sprintf(buf2, "[%S]  %S\n", pc.getName(), msg);
             show(buf2, *ptr);
          }
          else {

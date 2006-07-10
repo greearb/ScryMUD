@@ -732,9 +732,9 @@ CS_DO_REST
 	~
 
 CS_REST_EMOTE
-        eng "sits down to take a breather.\n"
-        spa "se sienta para tomar un respiro.\n"
-        ser "seda na zemlju da se malo odmori.\n"
+        eng "sits down to take a breather."
+        spa "se sienta para tomar un respiro."
+        ser "seda na zemlju da se malo odmori."
         ~
 
 CS_REST_FIGHTING
@@ -756,9 +756,9 @@ CS_DO_SIT
 	~
 
 CS_SIT_EMOTE
-        eng "sits down.\n"
-        spa "se sienta.\n"
-        ser "seda na zemlju.\n"
+        eng "sits down."
+        spa "se sienta."
+        ser "seda na zemlju."
 	~
 
 CS_SIT_FIGHTING
@@ -845,9 +845,9 @@ CS_DO_STAND
 	~
 
 CS_STAND_EMOTE
-        eng "stands up.\n"
-        spa "se para.\n"
-        ser "ustaje.\n"
+        eng "stands up."
+        spa "se para."
+        ser "ustaje."
 	~
 
 CS_NO_STAND
@@ -878,9 +878,9 @@ CS_DO_SLEEP
         ~
 
 CS_EMOTE_SLEEP
-        eng "goes to sleep.\n"
-        spa "se va a dormir.\n"
-        ser "leze da spava.\n"
+        eng "goes to sleep."
+        spa "se va a dormir."
+        ser "leze da spava."
 	~
 
 CS_CANT_SLEEP
@@ -908,9 +908,9 @@ CS_DO_MED
 	~
 
 CS_MED_EMOTE
-        eng "goes into a trance.\n"
-        spa "se mete en un trance.\n"
-        ser "pada u trans.\n"
+        eng "goes into a trance."
+        spa "se mete en un trance."
+        ser "pada u trans."
 	~
 
 CS_MED_NO_CONCENTRATE

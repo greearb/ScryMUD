@@ -924,6 +924,7 @@ int construct(critter& pc, short do_mob) {
    String buf(100);
    object* toolbox, *ptr, *item1, *item2, *item3, *item4, *item5;
    Cell<object*> cll;
+   short do_lose_contents = FALSE;
    //   log("In construct.\n");
 
    item1 = item2 = item3 = item4 = item5 = NULL;
@@ -1060,69 +1061,79 @@ int construct(critter& pc, short do_mob) {
    int targ_num = ptr->COMPONENT_TARG;
    // NOTE:  Can't use ptr after this, because it might be deleted!!!
 
-   if (item1) {
-      toolbox->loseInv(item1);
-      drop_eq_effects(*item1, pc, FALSE, FALSE);
-      recursive_init_unload(*item1, 0);
-      if (item1->isModified()) {
-         delete item1;
-         item1 = NULL;
-      }//if
-   }//if
-   
-   if (item2) {
-      toolbox->loseInv(item2);
-      drop_eq_effects(*item2, pc, FALSE, FALSE);
-      recursive_init_unload(*item2, 0);
-      if (item2->isModified()) {
-         delete item2;
-         item2 = NULL;
-      }//if
-   }//if
-   
-   if (item3) {
-      toolbox->loseInv(item3);
-      drop_eq_effects(*item3, pc, FALSE, FALSE);
-      recursive_init_unload(*item3, 0);
-      if (item3->isModified()) {
-         delete item3;
-         item3 = NULL;
-      }//if
-   }//if
-   
-   if (item4) {
-      toolbox->loseInv(item4);
-      drop_eq_effects(*item4, pc, FALSE, FALSE);
-      recursive_init_unload(*item4, 0);
-      if (item4->isModified()) {
-         delete item4;
-         item4 = NULL;
-      }//if
-   }//if
-   
-   if (item5) {
-      toolbox->loseInv(item5);
-      drop_eq_effects(*item5, pc, FALSE, FALSE);
-      recursive_init_unload(*item5, 0);
-      if (item5->isModified()) {
-         delete item5;
-         item5 = NULL;
-      }//if
-   }//if
-   
    if (skill_did_hit(pc, CONSTRUCT_SKILL_NUM, pc)) {
-      toolbox->gainInv(&(obj_list[targ_num]));
-      recursive_init_loads(obj_list[targ_num], 0);
-      Sprintf(buf, "You have successfully constructed %S in %S.\n",
-              obj_list[targ_num].getLongName(),
-              toolbox->getLongName());
-      show(buf, pc);
+       toolbox->gainInv(&(obj_list[targ_num]));
+       recursive_init_loads(obj_list[targ_num], 0);
+       Sprintf(buf, "You have successfully constructed %S in %S.\n",
+               obj_list[targ_num].getLongName(),
+               toolbox->getLongName());
+       show(buf, pc);
+       do_lose_contents = TRUE;
    }//if skill_did_hit, ie if pc knew it well enuf not to fail
    else {
-      show("You fiddle with your components, but all you can seem to", pc);
-      show(" do is bugger them up completely.\n", pc);
+       if ( pc.isSage() ) {
+           show("You fiddle around for a bit without success.\n", pc);
+           do_lose_contents = FALSE;
+       } else {
+           show("You fiddle with your components, but all you can seem to", pc);
+           show(" do is bugger them up completely.\n", pc);
+           do_lose_contents = TRUE;
+       }
    }//else
-   pc.PAUSE += 4;
+
+   if ( do_lose_contents ) {
+       if (item1) {
+           toolbox->loseInv(item1);
+           drop_eq_effects(*item1, pc, FALSE, FALSE);
+           recursive_init_unload(*item1, 0);
+           if (item1->isModified()) {
+               delete item1;
+               item1 = NULL;
+           }//if
+       }//if
+
+       if (item2) {
+           toolbox->loseInv(item2);
+           drop_eq_effects(*item2, pc, FALSE, FALSE);
+           recursive_init_unload(*item2, 0);
+           if (item2->isModified()) {
+               delete item2;
+               item2 = NULL;
+           }//if
+       }//if
+
+       if (item3) {
+           toolbox->loseInv(item3);
+           drop_eq_effects(*item3, pc, FALSE, FALSE);
+           recursive_init_unload(*item3, 0);
+           if (item3->isModified()) {
+               delete item3;
+               item3 = NULL;
+           }//if
+       }//if
+
+       if (item4) {
+           toolbox->loseInv(item4);
+           drop_eq_effects(*item4, pc, FALSE, FALSE);
+           recursive_init_unload(*item4, 0);
+           if (item4->isModified()) {
+               delete item4;
+               item4 = NULL;
+           }//if
+       }//if
+
+       if (item5) {
+           toolbox->loseInv(item5);
+           drop_eq_effects(*item5, pc, FALSE, FALSE);
+           recursive_init_unload(*item5, 0);
+           if (item5->isModified()) {
+               delete item5;
+               item5 = NULL;
+           }//if
+       }//if
+   }//do_lose_contents
+   
+   pc.PAUSE += 2;
    return 0;
 }//construct()
 
@@ -1132,6 +1143,7 @@ int concoct(critter& pc, short do_mob) {
    String buf(100);
    object* cauldron, *ptr, *item1, *item2, *item3, *item4, *item5;
    Cell<object*> cll;
+   short do_lose_contents = FALSE;
    //   log("In concoct.\n");
 
    if (!pc.pc && !do_mob) //no ordering pets to do yer dirty-work
@@ -1268,69 +1280,80 @@ int concoct(critter& pc, short do_mob) {
 
                 /*  have all items, and levels are compatable */
 
-   if (item1) {
-      cauldron->loseInv(item1);
-      drop_eq_effects(*item1, pc, FALSE);
-      recursive_init_unload(*item1, 0);
-      if (item1->isModified()) {
-         delete item1;
-         item1 = NULL;
-      }//if
-   }//if
-   
-   if (item2) {
-      cauldron->loseInv(item2);
-      drop_eq_effects(*item2, pc, FALSE);
-      recursive_init_unload(*item2, 0);
-      if (item2->isModified()) {
-         delete item2;
-         item2 = NULL;
-      }//if
-   }//if
-   
-   if (item3) {
-      cauldron->loseInv(item3);
-      drop_eq_effects(*item3, pc, FALSE);
-      recursive_init_unload(*item3, 0);
-      if (item3->isModified()) {
-         delete item3;
-         item3 = NULL;
-      }//if
-   }//if
-   
-   if (item4) {
-      cauldron->loseInv(item4);
-      drop_eq_effects(*item4, pc, FALSE);
-      recursive_init_unload(*item4, 0);
-      if (item4->isModified()) {
-         delete item4;
-         item4 = NULL;
-      }//if
-   }//if
-   
-   if (item5) {
-      cauldron->loseInv(item5);
-      drop_eq_effects(*item5, pc, FALSE);
-      recursive_init_unload(*item5, 0);
-      if (item5->isModified()) {
-         delete item5;
-         item5 = NULL;
-      }//if
-   }//if
-   
    if (skill_did_hit(pc, BREW_SKILL_NUM, pc)) {
       pc.gainInv(&(obj_list[targ_num]));
       recursive_init_loads(obj_list[targ_num], 0);
       Sprintf(buf, "You have successfully brewed %S.\n",
               &(obj_list[targ_num].short_desc));
       show(buf, pc);
+      do_lose_contents = TRUE;
    }//if skill_did_hit, ie if pc knew it well enuf not to fail
    else {
-      show("You try to remember the recipe, but you must have", pc);
-      show(" forgotten something because this stuff stinks and your ", pc);
-      show("ingredients are ruined!!\n", pc);
+       if ( pc.isSage() ) {
+           show("You must have the recipe a little off, perhaps", pc);
+           show(" you should try again.\n", pc);
+           do_lose_contents = FALSE;
+       } else {
+           show("You try to remember the recipe, but you must have", pc);
+           show(" forgotten something because this stuff stinks and your ", pc);
+           show("ingredients are ruined!!\n", pc);
+           do_lose_contents = TRUE;
+       }
    }//else
-   pc.PAUSE += 4;
+
+   if ( do_lose_contents ) {
+       if (item1) {
+           cauldron->loseInv(item1);
+           drop_eq_effects(*item1, pc, FALSE);
+           recursive_init_unload(*item1, 0);
+           if (item1->isModified()) {
+               delete item1;
+               item1 = NULL;
+           }//if
+       }//if
+
+       if (item2) {
+           cauldron->loseInv(item2);
+           drop_eq_effects(*item2, pc, FALSE);
+           recursive_init_unload(*item2, 0);
+           if (item2->isModified()) {
+               delete item2;
+               item2 = NULL;
+           }//if
+       }//if
+
+       if (item3) {
+           cauldron->loseInv(item3);
+           drop_eq_effects(*item3, pc, FALSE);
+           recursive_init_unload(*item3, 0);
+           if (item3->isModified()) {
+               delete item3;
+               item3 = NULL;
+           }//if
+       }//if
+
+       if (item4) {
+           cauldron->loseInv(item4);
+           drop_eq_effects(*item4, pc, FALSE);
+           recursive_init_unload(*item4, 0);
+           if (item4->isModified()) {
+               delete item4;
+               item4 = NULL;
+           }//if
+       }//if
+
+       if (item5) {
+           cauldron->loseInv(item5);
+           drop_eq_effects(*item5, pc, FALSE);
+           recursive_init_unload(*item5, 0);
+           if (item5->isModified()) {
+               delete item5;
+               item5 = NULL;
+           }//if
+       }//if
+   }// do_lose_contents
+   
+   pc.PAUSE += 2;
    return 0;
 }//concoct()
 
@@ -1563,9 +1586,13 @@ short skill_did_hit(critter& agg, int spell_num, critter& vict) {
       }
    }//else
 
-   if ((spell_num == CONSTRUCT_SKILL_NUM) || (spell_num == BREW_SKILL_NUM))
-      return (d(1, 100) < d(1, (percent_lrnd * 2 + 2 * (agg.DEX + agg.INT))));
-
+   if ((spell_num == CONSTRUCT_SKILL_NUM) || (spell_num == BREW_SKILL_NUM)) {
+       if ( agg.isSage() ) {
+           return ( d(1, 75) < d(1, (percent_lrnd*2 + 2*(agg.getDEX(TRUE) + agg.INT))));
+       } else {
+           return (d(1, 100) < d(1, (percent_lrnd * 2 + 2 * (agg.getDEX(TRUE) + agg.INT))));
+       }
+   }
    else if ((spell_num == BODYSLAM_SKILL_NUM) ||
          (spell_num == HURL_SKILL_NUM))
       return (d(1, vict.CRIT_WT_CARRIED) < d(1, percent_lrnd + agg.STR * 10));

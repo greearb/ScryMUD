@@ -1853,7 +1853,7 @@ void trout(int i_th, const String* vict, critter& pc, room& rm) {
          show("You are not in a position to do that.\n", pc);
       else if (crit_ptr == &pc) {
          show("You slap yourself silly with a wet trout!\n", pc);
-         Sprintf(buf, "slaps %s silly with a wet trout! Doh.\n",
+         Sprintf(buf, "slaps %s silly with a wet trout! Doh.",
                  get_himself_herself(pc)); 
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
@@ -2770,7 +2770,7 @@ void blink(int i_th, const String* vict, critter& pc, room& rm) {
       else if (crit_ptr == &pc) {
          show("You blink.\n",
                  pc);
-         Sprintf(buf, "blinks.\n");
+         Sprintf(buf, "blinks.");
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
@@ -2795,7 +2795,7 @@ void blink(int i_th, const String* vict, critter& pc, room& rm) {
    }//if a victim
    else {      //change these next two lines
       show("You blink in disbelief.\n", pc);
-      emote("blinks in disbelief.\n", pc, rm, TRUE);
+      emote("blinks in disbelief.", pc, rm, TRUE);
    }//else
 }//blink
 

@@ -531,7 +531,7 @@ const char* NO_KNOW_SPELL_MSG = "You don't know where to begin!\n";
 const char* LOST_CONCENTRATION_MSG_SELF =
             "You lost your concentration.\n";
 const char* LOST_CONCENTRATION_MSG_OTHER =
-            "can't seem to remember how it goes.\n";
+            "can't seem to remember how it goes.";
 const char* SPELL_ONLY_ON_SELF_MSG = "You can't use this spell on others.\n";
 const char* HUH_MSG = "Huh??\n";
 
