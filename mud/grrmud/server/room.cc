@@ -1756,7 +1756,10 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
          ptr = mob_to_smob(*ptr, getRoomNum());
       }
 
-      ptr->checkForProc(cmd, arg1, actor, targ, *this);
+      // don't want mobs triggering their own scripts.
+      if ( ptr != &actor ) {
+          ptr->checkForProc(cmd, arg1, actor, targ, *this);
+      }
       //   }//if
       //}//if
    }//while
