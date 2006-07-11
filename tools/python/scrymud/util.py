@@ -17,6 +17,8 @@
 # 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 """Various small utility functions"""
 
+import re
+
 def paragraphs(str, seperator=None):
     """Can be used as an iterator, returning one paragraph at a time from a body
        of text.
@@ -49,6 +51,16 @@ def termedRead(f):
         else:
             buf += tmp
     return(buf[:-1]) # we have an extra newline
+
+def nilListParse(str):
+    '''Returns a list from "-1" terminated strings.'''
+    re_strip = re.compile(r'(^[\-\d ]+).*$')
+    m = re_strip.search(str)
+    str = m.group(1).rstrip()
+    if (str[-2:] != "-1"):
+        raise ValueError, "Expected a -1 terminated list."
+    ret_val = str[:-2].rstrip().split()
+    return(ret_val)
 
 # This exists because I am too brain dead to come up with a better way
 # to build help indexes. --eroper
