@@ -97,6 +97,8 @@ int tog_mflag(int flagnum, const String* flag_type,
 int rset(const String* targ, int new_value, critter& pc);
 int mset(int i_th, const String* vict, const String* targ, 
           int new_value, const String* new_string_val, critter& pc);
+int area_mset(critter &pc, const String* targ, const String* new_val_string,
+        const int new_val); 
 int oset(int i_th, const String* vict, const String* targ,
           int new_value, const String* new_val_string, critter& pc);
 int dset(int i_th, const String* vict, const String* targ,

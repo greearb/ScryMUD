@@ -1486,7 +1486,7 @@ int give(int i_th, const String* obj, int j_th, const String* target,
    }//if
 
    if (targ == &pc) {
-      show("Nothing much seems to change!!\n", pc);
+      show("Nothing much seems to change!\n", pc);
       return -1;
    }//if
 
@@ -2029,6 +2029,95 @@ int rset(const String* targ, int new_val, critter& pc) {
    return 0;
 }//rset
 
+
+// IMM-10 command. Allows (limitted) capability to globally mset a zone 
+// this command leaves teachers and player shopkeepers alone.
+int area_mset(critter &pc, const String* targ, const String* new_val_string,
+        const int new_val) {
+    int zone = pc.getCurRoom()->getZoneNum();
+
+    // not bothering to check ok_to_do_action, only IMM-10 can use this
+    // command, and without restriction.
+    if (!ok_to_do_action(NULL, "I", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+        return -1;
+    }//IMMs only
+    if ( pc.getImmLevel() < 10) {
+        return -1;
+    }//And currently only IMM-10
+
+    if ( targ->Strlen() == 0 ) {
+        pc.show("This command _ALWAYS_ modifies the \"DB\" directly, though\n");
+        pc.show("changes will not be made permanent until an amsave is issued.\n\n");
+        pc.show("Not everything can be set through this interface.\n");
+        pc.show("ac          (-200, 200)   heat_resis   (-100,200)\n");
+        pc.show("cold_resis  (-100, 200)   elect_resis (-100, 200)\n");
+        pc.show("spell_resis (-100, 200)   dam_rcv_mod    (1, 200)\n");
+        return 0;
+    }//if no target_setting.
+
+    // make sure the zone is locked
+    if ( !pc.getCurRoom()->isZlocked() ) {
+        pc.show("The zone must be zlocked to use this command.\n");
+        return -1;
+    }
+
+    int len = targ->Strlen();
+    int which_stat;//we use this as a shortcut (index for short_cur_stats)
+
+    if ( strncasecmp(*targ, "ac", len) == 0 ) {
+        if ( !check_l_range(new_val, -200, 200, pc, TRUE ) ) {
+            pc.show("Invalid range.");
+            return(-1);
+        } else { which_stat = 9; }
+    } else if ( strncasecmp(*targ, "heat_resis", len) == 0 ) {
+        if ( !check_l_range(new_val, -100, 200, pc, TRUE ) ) {
+            pc.show("Invalid range.");
+            return(-1);
+        } else { which_stat = 29; }
+    } else if ( strncasecmp(*targ, "cold_resis", len) == 0 ) {
+        if ( !check_l_range(new_val, -100, 200, pc, TRUE ) ) {
+            pc.show("Invalid range.");
+            return(-1);
+        } else { which_stat = 30; }
+    } else if ( strncasecmp(*targ, "elect_resis", len) == 0 ) {
+        if ( !check_l_range(new_val, -100, 200, pc, TRUE ) ) {
+            pc.show("Invalid range.");
+            return(-1);
+        } else { which_stat = 31; }
+    } else if ( strncasecmp(*targ, "spell_resis", len) == 0 ) {
+        if ( !check_l_range(new_val, -100, 200, pc, TRUE ) ) {
+            pc.show("Invalid range.");
+            return(-1);
+        } else { which_stat = 32; }
+    } else if ( strncasecmp(*targ, "dam_rcv_mod", len) == 0 ) {
+        if ( !check_l_range(new_val, 1, 200, pc, TRUE ) ) {
+            pc.show("Invalid range.");
+            return(-1);
+        } else { which_stat = 27; }
+    } else {
+        pc.show("Not a valid stat for modification with this command.\n");
+        return(-1);
+    }
+
+    // walk all in-use, in-this-zone mobs and modify the stat.
+    for (int i = 0; i < NUMBER_OF_MOBS; i++ ) {
+        if ( mob_list[i].getNativeZoneNum() == zone ) {
+            if ( mob_list[i].isInUse() ) {
+                if ( mob_list[i].isTeacher() || mob_list[i].isPlayerShopKeeper() ) {
+                    continue;
+                }//we leave teachers and player owned shops alone.
+                mob_list[i].short_cur_stats[which_stat] = new_val;
+            }//mob exists.
+        }//mob belongs to the right zone.
+    }//mob_list[] loop.
+    pc.show("Completed. Changes will not show up until a reboot, though you can\n");
+    pc.show("see them in the database with a mstat # (vs. name). Any new mobs\n");
+    pc.show("that you load will reflect the changes. Be sure to amsave to make\n");
+    pc.show("the change permanent.\n");
+    pc.show("\nPlease note that player shopkeepers and teachers are unaffected\n");
+    pc.show("by this command.\n\n");
+    return 0 ;
+}//area_mset
 
 /* vict is the name of the mob you wish to mset, targ is thing to set */
 int mset(int i_th, const String* vict, const String* targ, int new_val,

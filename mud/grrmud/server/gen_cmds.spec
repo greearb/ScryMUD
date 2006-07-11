@@ -133,6 +133,8 @@ aosave ~
 return aosave(i, pc);
 arlist ~
 return arlist(i, j, pc);
+area_mset ~
+return area_mset(pc, &(cooked_strs[1]), &(cooked_strs[2]), j);
 
 # Mortal Commands - B
 bah socials ~

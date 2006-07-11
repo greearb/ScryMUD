@@ -1,0 +1,24 @@
+<help olc area_mset>
+area_mset
+Syntax:  area_mset [thing_to_set] [new_value]
+Example: area_mset heat_resis 100
+
+Used to set a limited set of values on all mobs within a zone. This command
+does not affect teachers or player owned shop keepers.
+
+This command can currently set the following stats (with bounds):
+    ac          (-200, 200)   heat_resis   (-100,200)
+    cold_resis  (-100, 200)   elect_resis (-100, 200)
+    spell_resis (-100, 200)   dam_rcv_mod    (1, 200)
+
+This command always affects the "DB", and requires an "amsave" to make the
+changes permanent. You will not immediately see the effects of this command on
+mobs which are already loaded in a zone. a "total_rezone" will not update
+pre-loaded mobs with the new information. "mstat #" will show the changes, as
+will they be reflected on any new mobs that you load. The change will be
+evident everywhere in the zone after a server restart.
+
+<color=red>
+See Also:  mset, oset, rset, amsave, tog_mflag, SMOB, mstat
+</color>
+</help>
