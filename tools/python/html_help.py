@@ -118,10 +118,10 @@ def idxHtml(idx):
    keys.sort()
    ret_val += ("<div class=\"help_index_quicklinks\">")
    for letter in scrymud.util.alphabet:
-      if ( idx.has_key(letter) ): ret_val += ("<a href=\"#%s\">%s</a> " %(letter,letter))
+      if ( idx.has_key(letter) ): ret_val += ("<a href=\"#%s\">%s</a> " %(letter.lower(),letter.lower()))
       else: ret_val += ("%s " %(letter))
    for k in keys:
-      ret_val += ("<div class=\"help_index_section\">\n<a name=\"%s\" /><div class=\"help_index_sortkey\">%s</div>\n" %(k,k))
+      ret_val += ("<div class=\"help_index_section\">\n<a name=\"%s\" /><div class=\"help_index_sortkey\">%s</div>\n" %(k.lower(),k.lower()))
       ret_val += ("<ul class=\"help_index\">\n")
       for entry in idx[k]:
          ret_val += ("<li><a href=\"%s.html\">%s</a></li>\n" %(entry,entry))
