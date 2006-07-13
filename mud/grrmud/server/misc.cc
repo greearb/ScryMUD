@@ -205,13 +205,6 @@ char* get_he_she(const critter& crit) {
 
 int d(const int num_rolls, const int dice_sides) {
    int rtvalue = 0;
-   static int times;
-
-   if(times >= 255){
-      srand(time(NULL));
-      times = 0;
-   }
-   times++;
    for (int i = 0; i<num_rolls; i++) {
       rtvalue += 1 +(int)((rand() * (float)(dice_sides)) / (RAND_MAX + 1.0));
    }//for
