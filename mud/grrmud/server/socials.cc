@@ -503,7 +503,7 @@ void greet(int i_th, const String* vict, critter& pc, room& rm) {
       
       if (!crit_ptr) 
          show("You don't see that person.\n", pc);
-      else if (pc.POS > POS_SIT)
+      else if (pc.POS > POS_REST)
          show("You are not in a position to do that.\n", pc);
       else if (crit_ptr == &pc) {
          show("You wave hello to yourself.  Lonely?\n", pc);
