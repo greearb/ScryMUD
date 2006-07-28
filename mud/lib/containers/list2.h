@@ -40,6 +40,8 @@
 #include <LogStream.h>
 #include <string2.h>
 
+#include <assert.h>
+
 using namespace std;
 
 #ifndef TRUE
