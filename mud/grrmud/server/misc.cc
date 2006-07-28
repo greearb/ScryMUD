@@ -516,7 +516,7 @@ void do_regeneration_pcs() {
             // Break even point: -220 at level 1, -800 at level 30.
             int breakeven = 200 + (20 * crit_ptr->LEVEL);
             // Regeneration can be up to 10x the normal rate.
-            align_mod = 1/pow(10, (breakeven+crit_ptr->ALIGN)/(1000-breakeven));
+            align_mod = 1/pow(10.0f, (breakeven+crit_ptr->ALIGN)/(1000-breakeven));
          }
       
          crit_ptr->MANA += (int)(((((((float)(crit_ptr->INT)) + 5.0) / 16.0) *
