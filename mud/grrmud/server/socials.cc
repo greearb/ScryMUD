@@ -1325,7 +1325,7 @@ void smile(int i_th, const String* vict, critter& pc, room& rm) {
 
       if (!crit_ptr)
          show(DONT_SEE_PERSON, pc);
-      else if (pc.POS > POS_SIT)
+      else if (pc.POS > POS_REST)
          show(NOT_IN_POSN, pc);
       else if (crit_ptr == &pc) {
          show("You smile happily to yourself.\n", pc);
