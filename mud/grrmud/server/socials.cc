@@ -659,8 +659,9 @@ void social_jump(int i_th, const String* vict, critter& pc, room& rm) {
          pc.emote(buf);
       }
       else pc.show(CS_DONT_SEEM_TO_HAVE_THAT);
-   }
-   else {
+   } else if (pc.POS >= POS_SIT) {
+	pc.show("You can't jump from this position.\n");
+   } else {
       pc.show("You jump up and down in frustration.\n");
       pc.emote("jumps up and down in frustration.");
    }
