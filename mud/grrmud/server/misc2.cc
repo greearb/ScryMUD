@@ -1437,9 +1437,10 @@ void out_spell_list(const List<stat_spell_cell*>& lst, critter& pc, int
 
        // If being called from ostat, show spell level. 
        if (show_ostat_dat_flag) {
-           Sprintf(buf, "(%s %i) ",
-                   SSCollection::instance().getNameForNum(ptr->stat_spell),
-                   ptr->bonus_duration);
+           Sprintf(buf, "([snum: %d][lvl: %i] \"%s\") ",
+                   ptr->stat_spell,
+                   ptr->bonus_duration,
+                   SSCollection::instance().getNameForNum(ptr->stat_spell));
        } else {
            Sprintf(buf, "(%s) ",
                    SSCollection::instance().getNameForNum(ptr->stat_spell));
