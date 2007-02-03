@@ -778,7 +778,7 @@ int add_perm_inv(int obj_num, int i_th, const String* name,
    String buf(100);
    critter* ptr;
 
-   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+   if (!ok_to_do_action(NULL, "IFPR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
 
@@ -856,7 +856,7 @@ int rem_perm_inv(int j_th, const String* obj_name, int i_th,
    String buf(100);
    critter* ptr;
 
-   if (!ok_to_do_action(NULL, "IFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+   if (!ok_to_do_action(NULL, "IFPR", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
 
