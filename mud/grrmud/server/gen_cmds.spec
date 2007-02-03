@@ -881,7 +881,7 @@ tango(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 tap socials ~
 tap(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 test ~
-test(pc);
+test(pc); return 0;
 thank socials ~
 thank(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 thpppt socials ~

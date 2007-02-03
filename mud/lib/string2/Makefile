@@ -1,5 +1,5 @@
 # $Id$
-# $Revision: 1.3 $  $Author$ $Date$
+# $Revision$  $Author$ $Date$
 
 include ../../MakeInclude
 
@@ -17,6 +17,7 @@ LIBOBJS      = string2.o
 #  directly in the lib directory
 #-----------------------
 
+.PHONY: all
 all: ${ARCHIVE} ${PROG_HOME}/include/string2.h
 
 ${ARCHIVE}:     $(LIBOBJS)
@@ -24,20 +25,26 @@ ${ARCHIVE}:     $(LIBOBJS)
 	@echo "Making Archive Library $@ ..."
 	rm -f $@
 	$(AR) $(ARFLAGS) $@ $^ 
-	cp string2.h ${PROG_HOME}/include
 	@echo "done"        #public_include.
 
 
-${PROG_HOME}/include/string2.h:
+${PROG_HOME}/include/string2.h: string2.h
 	cp string2.h ${PROG_HOME}/include/string2.h
 
-string2.o:   string2.cc string2.h
-	@echo " "
-	@echo "Making $@..."
-	$(CC) $(CCFLAGS) -c $<
-
+.PHONY: clean
 clean:
 	rm -f ${PROG_HOME}/include/string2.h
 	rm -f *.o
 	rm -f $(ARCHIVE)
 	rm -f *~
+	rm -f *.P
+
+%.o : %.cc
+	@echo "Compiling $<"
+	@$(CCC) $(CCFLAGS) -c -MD -o $@ $<
+	@cp $*.d $*.P; \
+		sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+		    -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+		rm -f $*.d
+
+-include $(OBJS:%.o=%.P)

@@ -1,5 +1,5 @@
 # $Id$
-# $Revision: 1.4 $  $Author$ $Date$
+# $Revision$  $Author$ $Date$
 
 #ARCHIVE      = /home/greear/mud/lib/liblog.a
 
@@ -19,15 +19,17 @@
 
 include ../../MakeInclude
 
-all: test1
-	@echo " "
-	cp LogStream.h ${PROG_HOME}/include
+.PHONY: all
+all: test1 ${PROG_HOME}/include/LogStream.h
+
+${PROG_HOME}/include/LogStream.h: LogStream.h
+	cp $< $@
 
 test1:
 	g++ -g -fhuge-objects -o test1 test1.cc
-
 
 clean:
 	rm -f test1
 	rm -f *~
 	rm -f ${PROG_HOME}/include/LogStream.h
+	rm -f *.P

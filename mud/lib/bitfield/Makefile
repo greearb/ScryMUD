@@ -1,5 +1,5 @@
 # $Id$
-# $Revision: 1.3 $  $Author$ $Date$
+# $Revision$  $Author$ $Date$
 
 include ../../MakeInclude
 
@@ -27,19 +27,26 @@ ${ARCHIVE}:     $(LIBOBJS)
 	@echo "Making Archive Library $@ ..."
 	rm -f $@
 	$(AR) $(ARFLAGS) $@ $^ 
-	cp bitfield.h ${PROG_HOME}/include
 	@echo "done"        #public_include.
 
-${PROG_HOME}/include/bitfield.h:
-	cp bitfield.h ${PROG_HOME}/include/bitfield.h
+${PROG_HOME}/include/bitfield.h: bitfield.h
+	cp $< $@
 
-bitfield.o:   bitfield.cc bitfield.h
-	@echo " "
-	@echo "Making $@..."
-	$(CC) $(CCFLAGS) -c $<
-
+.PHONY: clean
 clean:
-	rm -f *.o
-	rm -f *~
-	rm -f ${ARCHIVE}
-	rm -f ${PROG_HOME}/include/bitfield.h
+	@echo "Cleaning"
+	@rm -f *.o
+	@rm -f *~
+	@rm -f ${ARCHIVE}
+	@rm -f ${PROG_HOME}/include/bitfield.h
+	@rm -f *.P
+
+%.o : %.cc
+	@echo "Compiling $<"
+	@$(CCC) $(CCFLAGS) -c -MD -o $@ $<
+	@cp $*.d $*.P; \
+		sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+		    -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+		rm -f $*.d
+
+-include $(OBJS:%.o=%.P)
