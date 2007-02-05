@@ -3279,3 +3279,53 @@ int verifydoors(int i_th, critter &pc) {
    }//while there are more rooms.
    return(0);
 }//verifydoors()
+
+int mia_mobs(int i_th, critter &pc) {
+    /* mia_mobs prints out a list of all mobs which are defined in the World
+     * DB but are not currently in game. In theory we can extend this later to
+     * use i_th to limit the output to mobs from zone #i_th.
+     */
+    int i;
+    String buf;
+
+    if (! ok_to_do_action(NULL, "I", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+        return -1;
+    }
+
+    pc.show("^RThe following MOBs are missing from the game:^0\n");
+    for( i=0; i<NUMBER_OF_MOBS+1; i++ ) {
+        if ( mob_list[i].isInUse() ) {
+            if ( mob_list[i].mob->getCurInGame() == 0 ) {
+                Sprintf(buf,"^B[%d] %S^0\n", i, mob_list[i].getName());
+                pc.show(buf);
+            }
+        }//isInUse()
+    }//for
+    pc.show("^REnd of list.^0\n");
+    return(0);
+}//mia_mobs()
+
+int mia_objects(int i_th, critter &pc) {
+    /* mia_objects prints out a list of all objects which are defined in the
+     * World DB but are not currently in game. In theory we can extend this
+     * later to use i_th to limit the output to objects from zone #i_th.
+     */
+    int i;
+    String buf;
+
+    if (! ok_to_do_action(NULL, "I", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+        return -1;
+    }
+
+    pc.show("^RThe following OBJs are missing from the game:^0\n");
+    for( i=0; i<NUMBER_OF_ITEMS+1; i++ ) {
+        if ( obj_list[i].isInUse() ) {
+            if ( obj_list[i].getCurInGame() == 0 ) {
+                Sprintf(buf,"^B[%d] %S^0\n", i, obj_list[i].getLongName());
+                pc.show(buf);
+            }
+        }//isInUse()
+    }//for
+    pc.show("^REnd of list.^0\n");
+    return(0);
+}//mia_objects()

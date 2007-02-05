@@ -522,6 +522,10 @@ mclear ~
 return mclear(i, pc);
 mclone ~
 return mclone(i, &(cooked_strs[1]), pc);
+mia_mobs ~
+return mia_mobs(i, pc);
+mia_objects ~
+return mia_objects(i, pc);
 mldsearch ~
 return mldsearch(&(cooked_strs[1]), pc);
 mlist ~

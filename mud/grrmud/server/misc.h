@@ -189,6 +189,8 @@ void do_tick();
 void do_mini_tick(); //every round of battle....
 bool isNightTime();
 int verifydoors(int i_th, critter &pc);
+int mia_mobs(int i_th, critter &pc);
+int mia_objects(int i_th, critter &pc);
 
 String *colorize(const char *input, critter &pc, hilite_type hl_type); 
 
