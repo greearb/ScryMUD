@@ -32,6 +32,7 @@ translation_battle.spec translation_skill.spec translation5.spec
 ${grrmud_TARG}: libs ${generated_TARGS} $(grrmud_OBJS) 
 	@echo Linking $@
 	@$(CCC) $(CCFLAGS) $(LDFLAGS) -o ${grrmud_TARG} $(grrmud_OBJS) $(LDLIBS)
+	@rm -f Subversion-Revision 
 
 # TODO (eroper): I haven't tracked down why this note is here yet
 # This should really depend on libs too, but my libs make is lazy,
