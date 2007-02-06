@@ -2934,7 +2934,7 @@ int do_shoot(critter& targ, critter& pc) {
                 << "Short Projectile name:  " << sproj_name << endl;
       }
 
-      Sprintf(buf, "readies %s %S.\n",
+      Sprintf(buf, "readies %s %S.",
               get_his_her(pc), name_of_obj(*(pc.EQ[9]), ~0));
       emote(buf, pc, ROOM, TRUE);
 
@@ -2959,13 +2959,13 @@ int do_shoot(critter& targ, critter& pc) {
          exact_raw_damage(damage, NORMAL, targ);
 
          if (targ.HP > 0) { //still alive
-            Sprintf(buf, "You hit %S with %S.",
+            Sprintf(buf, "You hit %S with %S.\n",
                     name_of_crit(targ, pc.SEE_BIT), &lproj_name);
             show(buf, pc);
             Sprintf(buf, "%S wounds you with %S!\n",
                     name_of_crit(pc, targ.SEE_BIT), &lproj_name);
             show(buf, targ);
-            Sprintf(buf, "staggers as %S's %S hits %s!\n",
+            Sprintf(buf, "staggers as %S's %S hits %s!",
                     name_of_crit(pc, ~0), &sproj_name,
                     get_him_her(targ));
             emote(buf, targ, room_list[targ.getCurRoomNum()], TRUE);
@@ -3122,7 +3122,7 @@ int do_throw(critter& targ, critter& pc) {
             }
 
             if (targ.HP > 0) { //still alive
-               Sprintf(buf, "You hit %S with your %S.",
+               Sprintf(buf, "You hit %S with your %S.\n",
                        name_of_crit(targ, pc.SEE_BIT), 
                        name_of_obj(*(pc.EQ[posn]), pc.SEE_BIT));
                show(buf, pc);
@@ -3150,7 +3150,7 @@ int do_throw(critter& targ, critter& pc) {
                        name_of_obj(*(pc.EQ[posn]), ~0), 
                        name_of_crit(targ, pc.SEE_BIT));
                show(buf, pc);
-               Sprintf(buf, "\b's %S sinks deep into %S's chest!\n",
+               Sprintf(buf, "\b's %S sinks deep into %S's chest!",
                        name_of_obj(*(pc.EQ[posn]), ~0), 
                        name_of_crit(targ, ~0));
                emote(buf, pc, room_list[targ.getCurRoomNum()], TRUE);
