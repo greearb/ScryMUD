@@ -833,7 +833,7 @@ const char* get_himself_herself(critter& pc) {
 
 const char* get_dude_chic(critter& pc) {
    if (pc.SEX == 0)
-      return "chic";
+      return "chick";
    else if (pc.SEX == 1) 
       return "dude";
    else return "being";
