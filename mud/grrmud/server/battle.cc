@@ -581,7 +581,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       sprintf(dam_str, " [%d]", (int)damage);
    }
 
-   if (damage < 3) {
+   if (damage < (xp_damage * 0.02) ) {
       Sprintf(aggbuf, "You bruise%s %S ",
               agg.isImmort()?dam_str:"", name_of_crit(vict, agg.SEE_BIT));
       Sprintf(victbuf, "%S bruises%s you ", name_of_crit(agg, vict.SEE_BIT),
@@ -589,7 +589,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       Sprintf(otherbuf, "%S bruises %S ", name_of_crit(agg, ~0), 
               name_of_crit(vict, ~0));
    }//if
-   else if (damage < 7) {
+   else if (damage < (xp_damage * 0.05) ) {
       Sprintf(aggbuf, "You barely %S%s %S ", &wmsg, agg.isImmort()?dam_str:"",
               name_of_crit(vict, agg.SEE_BIT));
       Sprintf(victbuf, "%S barely %Ss%s you ",
@@ -597,7 +597,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       Sprintf(otherbuf, "%S barely %Ss %S ", name_of_crit(agg, ~0), 
               &wmsg, name_of_crit(vict, ~0));
    }//if
-   else if (damage < 11) {
+   else if (damage < (xp_damage * 0.10) ) {
       Sprintf(aggbuf, "You %S%s %S ", &wmsg, agg.isImmort()?dam_str:"",
               name_of_crit(vict, agg.SEE_BIT));
       if (strcmp("slash", wmsg) == 0) {
@@ -613,7 +613,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
                  name_of_crit(vict, ~0));
       }
    }//if
-   else if (damage < 15) {
+   else if (damage < (xp_damage * 0.15) ) {
       Sprintf(aggbuf, "You %S%s %S hard ", &wmsg, agg.isImmort()?dam_str:"",
              name_of_crit(vict, agg.SEE_BIT));
       if (strcmp("slash", wmsg) == 0) {
@@ -629,7 +629,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
                  name_of_crit(vict, ~0));
       }
    }//if
-   else if (damage < 20) {
+   else if (damage < (xp_damage * 0.20) ) {
       Sprintf(aggbuf, "You %S%s %S very hard ", &wmsg, agg.isImmort()?dam_str:"",
               name_of_crit(vict, agg.SEE_BIT));
       
@@ -646,7 +646,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
                  &wmsg, name_of_crit(vict, ~0));
       }
    }//if
-   else if (damage < 25) {
+   else if (damage < (xp_damage * 0.50) ) {
       Sprintf(aggbuf, "You OBLITERATE%s %S ", agg.isImmort()?dam_str:"",
               name_of_crit(vict, agg.SEE_BIT));
       Sprintf(victbuf, "%S OBLITERATES%s you ", name_of_crit(agg, vict.SEE_BIT),
@@ -654,7 +654,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       Sprintf(otherbuf, "%S OBLITERATES %S ", name_of_crit(agg, ~0), 
               name_of_crit(vict, ~0));
    }//if
-   else if (damage < 36) {
+   else if (damage < (xp_damage * 0.80) ) {
       Sprintf(aggbuf, "You LIQUIFY%s %S ", agg.isImmort()?dam_str:"",
              name_of_crit(vict, agg.SEE_BIT));
       Sprintf(victbuf, "%S LIQUIFIES%s you ", name_of_crit(agg, vict.SEE_BIT),
@@ -662,7 +662,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       Sprintf(otherbuf, "%S LIQUIFIES %S ", name_of_crit(agg, ~0), 
               name_of_crit(vict, ~0));
    }//if
-   else if (damage >= 36) {
+   else { // >= 80% of the targets hitpoints
       Sprintf(aggbuf, "You ANNIHILATE%s %S ", agg.isImmort()?dam_str:"",
              name_of_crit(vict, agg.SEE_BIT));
       Sprintf(victbuf, "%S ANNIHILATES%s you ", name_of_crit(agg, vict.SEE_BIT),
