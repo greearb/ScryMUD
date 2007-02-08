@@ -76,7 +76,7 @@ int do_just_killed_procs(critter& agg) {
       }//if
    }//if
 
-   if (agg.mob && agg.mob->proc_data) {
+   if (agg.mob && agg.mob->proc_data && (!agg.isCharmed()) ) {
      int bad_ass = agg.mob->getBadAssedness();
      String cmd("get all corpse\n");
      if (bad_ass > 7) {

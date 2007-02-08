@@ -3838,6 +3838,11 @@ void critter::checkForProc(String& cmd, String& arg1, critter& actor,
    }
    String buf(100);
 
+   // Charmed mobs shouldn't even check for their scripts. At least for now
+   if ( isCharmed() ) {
+      return;
+   }
+
    if (mob) {
       if (mudlog.ofLevel(DBG)) {
          mudlog << "Was a mob, mob#:  " << MOB_NUM << endl;
