@@ -2743,40 +2743,42 @@ int sleep(critter& pc) {
 
 
 int meditate(critter& pc) {
-   String buf(100);
+    String buf(100);
+    int p_lrnd = 0;
 
-   if (!ok_to_do_action(NULL, "mFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
-      return -1;
-   }
+    if (!ok_to_do_action(NULL, "mFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+        return -1;
+    }
 
-   if (pc.POS == POS_MED) {
-      pc.show(CS_ALREADY_MED);
-      return 0;
-   }//if
-   else if ((pc.POS != POS_SLEEP)) {
-      if (pc.IS_FIGHTING.isEmpty()) {
-         if (d(1, 75) < d(1, get_percent_lrnd(MEDITATION_SKILL_NUM, pc))) {
-            pc.show(CS_DO_MED);
-            emote(CS_MED_EMOTE, pc, ROOM, FALSE);
-            pc.setPosn(POS_MED);
-            
-            String cmd = "meditate";
-            ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
-            return 0;
-         }//if
-         else {
-            pc.show(CS_MED_NO_CONCENTRATE);
-            pc.PAUSE += 2;
-         }//else
-      }//if
-      else {
-         pc.show(CS_MED_FIGHTING);
-      }//else
-   }//if
-   else {
-      pc.show(CS_MED_WAKE_FIRST);
-   }//else
-   return -1;
+    if (pc.POS == POS_MED) {
+        pc.show(CS_ALREADY_MED);
+        return 0;
+    }//if
+    else if ((pc.POS != POS_SLEEP)) {
+        if (pc.IS_FIGHTING.isEmpty()) {
+            p_lrnd = get_percent_lrnd(MEDITATION_SKILL_NUM, pc);
+            if ( d(1, 100) > ( ( 100 - p_lrnd ) + ( p_lrnd * 0.03 ) ) ) {
+                pc.show(CS_DO_MED);
+                emote(CS_MED_EMOTE, pc, ROOM, FALSE);
+                pc.setPosn(POS_MED);
+
+                String cmd = "meditate";
+                ROOM.checkForProc(cmd, NULL_STRING, pc, -1);
+                return 0;
+            }//if
+            else {
+                pc.show(CS_MED_NO_CONCENTRATE);
+                pc.PAUSE += 2;
+            }//else
+        }//if
+        else {
+            pc.show(CS_MED_FIGHTING);
+        }//else
+    }//if
+    else {
+        pc.show(CS_MED_WAKE_FIRST);
+    }//else
+    return -1;
 }//meditate
 
 
