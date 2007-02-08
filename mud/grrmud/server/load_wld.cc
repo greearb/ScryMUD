@@ -25,8 +25,6 @@
 
 #include "misc.h"
 #include "commands.h"
-#include <iostream.h>
-#include <fstream.h>
 #include <stdio.h>
 #include "classes.h"
 #include "olc2.h"

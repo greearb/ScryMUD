@@ -50,8 +50,8 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <limits.h>
-#include <iostream.h>
-#include <fstream.h>
+#include <iostream>
+#include <fstream>
 #include <strings.h>
 #include <string2.h>
 #include <list2.h>

@@ -1,6 +1,6 @@
 #ifndef __ServerConfig_h__
 #define __ServerConfig_h__
-#include <fstream.h>
+#include <fstream>
 #include <string.h>
 #include <string2.h>
 #include <stdlib.h>

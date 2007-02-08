@@ -39,7 +39,7 @@
 #include "zone.h"
 #include "load_wld.h"
 #include "Filters.h"
-#include <map.h>
+#include <map>
 
 
 int KeywordPair::_cnt = 0;

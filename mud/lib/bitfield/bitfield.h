@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.9 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //ScryMUD Server Code
@@ -27,8 +27,8 @@
 #ifndef BEN__BITFIELD_INCLUDE
 #define BEN__BITFIELD_INCLUDE
 
-#include <iostream.h>
-#include <fstream.h>
+#include <iostream>
+#include <fstream>
 #include <string2.h> //my string class
 
 #define MAX_BIT_ALLOWED 65000

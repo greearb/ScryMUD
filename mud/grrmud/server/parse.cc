@@ -46,7 +46,7 @@
 #include "olc.h"
 #include "olc2.h"
 #include "socials.h"
-#include <fstream.h>
+#include <fstream>
 #include <stdio.h>
 #include "classes.h"
 #include "wep_skll.h"

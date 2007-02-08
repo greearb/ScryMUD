@@ -28,7 +28,7 @@
 #include <string2.h>
 #include <string.h>
 #include "code_gen.h"
-#include <fstream.h>
+#include <fstream>
 #include <PtrArray.h>
 
 LogStream mudlog("/tmp/code_gen.log", 65535);

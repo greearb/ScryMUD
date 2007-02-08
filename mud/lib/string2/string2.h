@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.18 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //Copyright (C) 1998-2001  Ben Greear
@@ -38,15 +38,17 @@
 #define TRUE 	1
 #define FALSE 	0
 
+#include <iostream>
+#include <fstream>
 #include <stdio.h> 
-#include <iostream.h>
-#include <fstream.h>
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <LogStream.h>
 #include <stdarg.h>
+
+using namespace std;
 
 #define LOGFILE (*(String::getLogFile()))
 

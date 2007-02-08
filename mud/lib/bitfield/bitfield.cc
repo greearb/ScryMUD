@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.10 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //ScryMUD Server Code
@@ -29,7 +29,6 @@
     modification */
 
 #include "bitfield.h"
-#include <iostream.h>
 
 
 static const short int_len = 8 * sizeof(unsigned short int);

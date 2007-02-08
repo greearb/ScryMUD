@@ -15,7 +15,7 @@ MAKE=make
 
 # NOTE:  Use these variables if you are using EGCS and glibc 5
 CCFLAGS = -g -D_GNU_SOURCE $(BG_NEW_GCC_TEMPLATES) $(GUIDING_DECLS) $(HUGE_OBJECTS) \
-          -Wall -Wno-deprecated -I$(MUD_HOME)/include
+          -Wall -I$(MUD_HOME)/include
 LDLIBS =  -lm -lstring2 -lbitfield -lcrypt -lpcre#-lnsl # -lsocket
 
 

@@ -27,7 +27,7 @@
 #define __CODE_GEN_H__
 
 #include <string2.h>
-#include <fstream.h>
+#include <fstream>
 #include <list2.h>
 
 #define ALIASES_ARRAY_LEN 50

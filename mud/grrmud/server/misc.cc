@@ -25,8 +25,6 @@
 
 #include "command4.h"
 #include <time.h>
-#include <iostream.h>
-#include <fstream.h>
 #include "commands.h"
 #include "battle.h"
 #include "misc.h"

@@ -38,7 +38,6 @@
 #include "spec_prc.h"
 #include "spells.h"
 #include "skills.h"
-#include <fstream.h>
 #include <PtrArray.h>
 #include "load_wld.h"
 #include <time.h>

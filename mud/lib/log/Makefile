@@ -26,7 +26,8 @@ ${PROG_HOME}/include/LogStream.h: LogStream.h
 	cp $< $@
 
 test1:
-	g++ -g -fhuge-objects -o test1 test1.cc
+	@echo "Compiling $@"
+	@$(CCC) $(CCFLAGS)  -o $@ test1.cc
 
 clean:
 	rm -f test1

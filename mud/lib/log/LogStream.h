@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.11 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //Copyright (C) 2001  Ben Greear
@@ -39,8 +39,8 @@ typedef std::stringstream my_sstream;
 
 #include <iostream>
 #include <fstream>
-#include <stdlib.h>
 #include <string>
+#include <stdlib.h>
 #include <stdio.h>
 
 #ifndef LOG_STREAM_INCLUDE

@@ -37,7 +37,6 @@
 #include "spec_prc.h"
 #include "spells.h"
 #include "skills.h"
-#include <fstream.h>
 #include "batl_prc.h"
 #include <PtrArray.h>
 #include <unistd.h>

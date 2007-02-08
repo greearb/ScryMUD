@@ -1,5 +1,5 @@
 // $Id$
-// $Revision: 1.4 $  $Author$ $Date$
+// $Revision$  $Author$ $Date$
 
 //
 //ScryMUD Server Code
@@ -27,7 +27,7 @@
 
 
 #include <stdlib.h>
-#include <iostream.h>
+#include <iostream>
 
 
 #define True  1

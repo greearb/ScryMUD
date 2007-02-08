@@ -31,7 +31,6 @@
 
 #include "misc.h"
 #include "misc2.h"
-#include <fstream.h>
 #include <stdio.h>
 #include "classes.h"
 #include "rm_parse.h"

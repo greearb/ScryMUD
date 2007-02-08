@@ -30,8 +30,6 @@
 #include "misc2.h"
 #include "spec_prc.h"
 #include <math.h>
-#include <iostream.h>
-#include <fstream.h>
 #include "commands.h"
 #include "command2.h"
 #include "command3.h"
