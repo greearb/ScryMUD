@@ -37,6 +37,7 @@
 #include <stdlib.h> 
 #include <iostream>
 #include <fstream>
+#include <cassert>
 #include <LogStream.h>
 #include <string2.h>
 

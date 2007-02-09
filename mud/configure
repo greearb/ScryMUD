@@ -52,7 +52,7 @@ if ($ver[0] == 2) {
 }
 
 
-if ($ver[0] == 3) {
+if ($ver[0] >= 3) {
   print "Version >= 3, no hacks needed.\n";
   print OFILE "HUGE_OBJECTS = \n";
   print OFILE "GUIDING_DECLS = \n";
