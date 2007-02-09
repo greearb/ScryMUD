@@ -3394,7 +3394,7 @@ int wizinvis(critter& pc) {
    making themselves visible */
 int visible(critter& pc) {
    if (pc.pc && pc.pc->imm_data) {
-      pc.VIS_BIT = 0;
+      pc.VIS_BIT = 1024;
       emote("fades into sight.", pc, ROOM, TRUE);
       show("Your corporal form rejoins the living world.\n", pc);
       return 0;
