@@ -32,7 +32,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
+#include <cctype>
 #include <limits.h>
 #include <arpa/inet.h>
 #include <sys/types.h>

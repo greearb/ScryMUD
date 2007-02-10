@@ -42,7 +42,7 @@
 #include <fstream>
 #include <stdio.h> 
 #include <string.h>
-#include <ctype.h>
+#include <cctype>
 #include <sys/types.h>
 #include <unistd.h>
 #include <LogStream.h>
