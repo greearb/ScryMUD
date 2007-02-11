@@ -2139,14 +2139,14 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all) {
 
 
 
-void out_inv(List<object*>& lst, critter& pc, 
+void out_inv(PtrList<object>& lst, critter& pc, 
              const short type_of_list, int is_board) {
                                //outs the names object*
 
    List<object*>* lst_ptr = NULL;
    int lst_idx;
 
-   List<object*> reordered_lst(NULL);
+   PtrList<object> reordered_lst;
    Cell<object*> cell(lst);
 
    List<object*> inv_weapons(NULL);
@@ -2270,7 +2270,9 @@ void out_inv(List<object*>& lst, critter& pc,
                }
                lst_ptr = inv_lists[++lst_idx];
             }
+            lst.clear();
             lst = reordered_lst;
+            reordered_lst.clear();
       }//switch
 
       lst.head(cell);
