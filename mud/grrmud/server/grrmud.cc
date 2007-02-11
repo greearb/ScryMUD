@@ -1014,7 +1014,7 @@ void game_loop(int s)  {
                String tmp;
                int i;
                int imax;
-               unsigned char telnet_cmd;
+               unsigned char telnet_cmd = '\0';
 
                // Process telnet protocol commands
 

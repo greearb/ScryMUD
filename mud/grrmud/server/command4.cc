@@ -338,9 +338,9 @@ int unpost(int i_th, const String* post, critter& pc) {
    }//if
 
    Cell<object*> mcll(ptr->inv);
-   object* iptr;
+   object *iptr = NULL;
    int i;
-   for (i=0; iptr != NULL; i++, iptr = mcll.next()) {
+   for (i=0, iptr = mcll.next(); iptr != NULL; i++, iptr = mcll.next()) {
       if (iptr == msg)
          break;
    }//for

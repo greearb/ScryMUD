@@ -1361,7 +1361,6 @@ int concoct(critter& pc, short do_mob) {
 int scribe(const String* spell, critter& pc, short do_mob) {
    String buf(100);
    object* pen, *parchment; 
-   int spell_num;
 
    /* default is that mob's can't scribe, ie no 'ordering' them to scribe */
    if (!pc.pc && !do_mob)
@@ -1381,6 +1380,8 @@ int scribe(const String* spell, critter& pc, short do_mob) {
       show("Please specify which spell you wish to scribe.\n", pc);
       return -1;
    }//if
+
+   int spell_num = SSCollection::instance().getNumForName(*spell);
 
    if (!ok_to_do_action(NULL, "mBFPr", spell_num, pc)) {
       return -1;
@@ -1402,7 +1403,6 @@ int scribe(const String* spell, critter& pc, short do_mob) {
 
                 // parchment and pen are valid, check on spell //
 
-   spell_num = SSCollection::instance().getNumForName(*spell);
    if (spell_num == -1) {
       show("That spell is in need of research.\n", pc);
       return -1;

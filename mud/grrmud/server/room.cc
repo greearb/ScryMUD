@@ -2526,7 +2526,8 @@ int room::doClose(int i_th, const String* name) {
 }
 
 int room::doMload(int i_th) {
-   critter* crit_ptr; 
+   //TODO: Figure out what happens if the following conditional isn't true. --eroper
+   critter* crit_ptr = NULL; 
 
    if ((i_th >= 1) && (i_th < NUMBER_OF_MOBS)) {
       crit_ptr = &(mob_list[i_th]);

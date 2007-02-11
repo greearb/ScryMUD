@@ -2854,7 +2854,8 @@ String *colorize(const char *message, critter &pc, hilite_type hl_type)
 {
 
    static String output;
-   char *i, *colstrWhich;
+   char *i = NULL;
+   char *colstrWhich = NULL;
    short dont_reset = FALSE;
 
    const char *validFGColorCodes = "0nrgybmcwNRGYBMCW";
@@ -3187,16 +3188,16 @@ String *colorize(const char *message, critter &pc, hilite_type hl_type)
 
 int verifydoors(int i_th, critter &pc) {
    Cell<door*> dcell;
-   room* rm_ptr;
-   door* dr_ptr;
-   door* dst_dr_ptr;
+   room* rm_ptr = NULL;
+   door* dr_ptr = NULL;
+   door* dst_dr_ptr = NULL;
    int cur_rm_num;
    int chk_rm_num;
    String buf;
    int i;
    int dir_okay = 0;
-   String *dr_dir;
-   String *dst_dir;
+   String *dr_dir = NULL;
+   String *dst_dir = NULL;
 
    if (! ok_to_do_action(NULL, "I", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;

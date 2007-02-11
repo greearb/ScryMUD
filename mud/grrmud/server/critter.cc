@@ -2384,7 +2384,7 @@ int critter::getDAM(bool include_modifiers=false) {
 int critter::getHIT(bool include_modifiers=false, object* weapon = NULL) {
    int p_lrnd;
    int modifier = 0;
-   int weapon_skill;
+   int weapon_skill = 0;
 
    if ( include_modifiers && pc ) {
 
@@ -2418,7 +2418,7 @@ int critter::getHIT(bool include_modifiers=false, object* weapon = NULL) {
 int critter::getWeapDAM(int position, bool include_modifiers=false) {
    int count = 0;
    int sides = 0;
-   int weapon_skill;
+   int weapon_skill = 0;
    int p_lrnd;
    object *weapon = EQ[position];
 

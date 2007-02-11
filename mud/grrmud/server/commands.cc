@@ -1274,7 +1274,7 @@ int put(int i, const String* item, int j, const String* bag,
    object* bag_ptr, *tmp;
    object* vict_ptr;
    short item_in_inv=TRUE, bag_in_inv=TRUE, bag_on_person=FALSE, found_it=FALSE;
-   short x;
+   short x = 0;
 
    mudlog.log(DBG, "In put\n");
 
@@ -1455,7 +1455,7 @@ int get(int i, const String* item, int j, const String* bag, critter& pc,
    object* vict_ptr = NULL;
    object* tmp = NULL;;
    short bag_in_inv = TRUE, bag_on_person = FALSE, found_it = FALSE;
-   short x;
+   short x = 0;
    Cell<object*>  cell;
    short tst = FALSE;
 

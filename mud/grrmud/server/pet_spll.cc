@@ -382,10 +382,12 @@ void do_cast_charm(critter& vict, critter& pc, int is_canned, int lvl) {
 
 
 void cast_mass_charm(critter& pc) {
-   critter* ptr;
    int spell_num = MASS_CHARM_SKILL_NUM;
 
-   if (!ok_to_do_action(ptr, "KMSNV", spell_num, pc)) {
+   //TODO: track down how ok_to_do_action handles getting a NULL vict ptr.
+   // either way, this is better than passing the uninitialized pointer that
+   // it was handing out before
+   if (!ok_to_do_action(NULL, "KMSNV", spell_num, pc)) {
       return;
    }//if
 

@@ -358,6 +358,7 @@ maproom &maprooms::placeroom(maproom &current, maproom &newroom,
                          const direction placement_dir, int distance) {
    int shift_by;
    int x, y, z;
+   x = y = z = 0;
 
    //shift_by is 0 if we don't need to shift and the calls to shift_?? below
    //will return immediately if passed a 0.
