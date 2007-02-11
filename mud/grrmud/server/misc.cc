@@ -2143,26 +2143,26 @@ void out_inv(PtrList<object>& lst, critter& pc,
              const short type_of_list, int is_board) {
                                //outs the names object*
 
-   List<object*>* lst_ptr = NULL;
+   PtrList<object> *lst_ptr = NULL;
    int lst_idx;
 
    PtrList<object> reordered_lst;
    Cell<object*> cell(lst);
 
-   List<object*> inv_weapons(NULL);
-   List<object*> inv_armor(NULL);
-   List<object*> inv_consumables(NULL);
-   List<object*> inv_containers(NULL);
-   List<object*> inv_potions(NULL);
-   List<object*> inv_scrolls(NULL);
-   List<object*> inv_wands(NULL);
-   List<object*> inv_ammunition(NULL);
-   List<object*> inv_skins(NULL);
-   List<object*> inv_misc(NULL);
-   List<object*> inv_lights(NULL);
+   PtrList<object> inv_weapons;
+   PtrList<object> inv_armor;
+   PtrList<object> inv_consumables;
+   PtrList<object> inv_containers;
+   PtrList<object> inv_potions;
+   PtrList<object> inv_scrolls;
+   PtrList<object> inv_wands;
+   PtrList<object> inv_ammunition;
+   PtrList<object> inv_skins;
+   PtrList<object> inv_misc;
+   PtrList<object> inv_lights;
    
    //when doing obj/crit inventory, PCs walk these lists.
-   List<object*>* inv_lists[] = {
+   PtrList<object>* inv_lists[] = {
       &inv_weapons,
       &inv_armor,
       &inv_consumables,
@@ -2177,7 +2177,7 @@ void out_inv(PtrList<object>& lst, critter& pc,
    };
 
    //when doing obj/crit inventory, MOBs walk these lists.
-   List<object*>* mob_inv_lists[] = {
+   PtrList<object>* mob_inv_lists[] = {
       &lst,
       NULL
    };
@@ -2198,7 +2198,7 @@ void out_inv(PtrList<object>& lst, critter& pc,
    object*  obj_ptr;
    String buf(100);
    String qty_str = "";//important to set this? so it's not undef (if mob)
-   static int item_counts[NUMBER_OF_ITEMS + 1];
+   int item_counts[NUMBER_OF_ITEMS + 1];
    int id_num;
 
    // stack if it's a player or possesed mob. Never stack bulletin-board
@@ -2220,7 +2220,6 @@ void out_inv(PtrList<object>& lst, critter& pc,
       mudlog.log(DBG, "Done with out_inv (empty).\n");
       return;
    }//if
-
 
    if ( stack ) {
       //set the counts to zero, then update them all.
@@ -2271,7 +2270,10 @@ void out_inv(PtrList<object>& lst, critter& pc,
                lst_ptr = inv_lists[++lst_idx];
             }
             lst.clear();
-            lst = reordered_lst;
+            reordered_lst.head(cell);
+            while ( (obj_ptr = cell.next()) ) {
+               lst.append(obj_ptr);
+            }
             reordered_lst.clear();
       }//switch
 
@@ -2342,7 +2344,8 @@ void out_inv(PtrList<object>& lst, critter& pc,
             }//if
          }//while
          break;
-      case OBJ_INV: case CRIT_INV:
+      case OBJ_INV:
+      case CRIT_INV:
          
          if ( stack ) {
             lst_ptr = inv_lists[0];
