@@ -1061,109 +1061,76 @@ void disburse_xp(critter& agg, const critter& vict) {
 
 */
 void avian_gain_level(critter& crit) {
-   object* junk = NULL;
-   String buf(2048);
+   String buf;
    
-   if ( crit.RACE == AVIAN ) { // For sanity reasons
-      switch( crit.LEVEL )
-         {
+   if ( crit.isAvian() ) { // For sanity reasons
+      switch( crit.getLevel() )
+      {
          case 5: {
-            Sprintf(buf, "writhes in agony as %s nose transforms into a beak.", get_his_her(crit));
-            pemote(buf, crit, room_list[crit.getCurRoomNum()], TRUE);
-            crit.show("You writhe in agony as your nose hardens to form a beak!\n");
-         }
-         break;
+                    Sprintf(buf, "writhes in agony as %s nose transforms into a beak.", get_his_her(crit));
+                    crit.emote(buf);
+                    crit.show("You writhe in agony as your nose hardens to form a beak!\n");
+                 }
+                 break;
          case 10: {
-            Sprintf(buf, "howls as wings sprout from %s back.", get_his_her(crit));
-            emote(buf, crit, room_list[crit.getCurRoomNum()], TRUE);
-            show("Sharp pains shoot from your back as a pair of wings begin to form.\n", crit );
-            if ( crit.EQ[12] ) {
-               Sprintf(buf, "new wings destroy %S, sending it to the ground",
-                       long_name_of_obj(*(crit.EQ[12]), ~0));
-               pemote(buf, crit, room_list[crit.getCurRoomNum()], TRUE);
-               Sprintf(buf,"Your wings smash %S, crumbling it to the ground",
-                       long_name_of_obj(*(crit.EQ[12]), ~0));
-               crit.show(buf);
-               junk = crit.EQ[12];
-               remove_eq_effects(*(crit.EQ[12]), crit, FALSE, FALSE, 12);
-               crit.gainInv(crit.EQ[12]);
-               recursive_init_unload(obj_list[crit.EQ[12]->OBJ_NUM], 0);
-               if (crit.EQ[12]->IN_LIST) {
-                  delete crit.EQ[12];
-               }//if
-               crit.EQ[12] = NULL;
-            }
-            
-         }
-         break;
+                     Sprintf(buf, "howls as wings sprout from %s back.", get_his_her(crit));
+                     crit.emote(buf);
+                     crit.show("Sharp pains shoot from your back as a pair of wings begin to form.\n");
+                     if ( crit.EQ[12] ) { //on body
+                        Sprintf(buf, "new wings destroy %S, sending it to the ground",
+                              long_name_of_obj(*(crit.EQ[12]), ~0));
+                        crit.pemote(buf);
+                        Sprintf(buf,"Your wings smash %S, crumbling it to the ground",
+                              long_name_of_obj(*(crit.EQ[12]), ~0));
+                        crit.show(buf);
+                        remove_eq_effects(*(crit.EQ[12]), crit, FALSE, FALSE, 12);
+                        crit.gainInv(crit.EQ[12]);
+                        crit.EQ[12] = NULL;
+                     }//if wearing body armor
+                  }
+                  break;
          case 15: {
-            Sprintf(buf, "howls as %s wings grow to full length.", get_his_her(crit));
-            emote(buf, crit, room_list[crit.getCurRoomNum()], TRUE);
-            crit.show("Excruciating pain befalls you as your wings take full form.\n");
-            if( crit.EQ[4] ) {
-               Sprintf(buf, "wings destroy %S, sending it to the ground",
-                       long_name_of_obj(*(crit.EQ[4]), ~0));
-               pemote(buf, crit, room_list[crit.getCurRoomNum()], TRUE);
-               Sprintf(buf, "Your wings smash %S, crumbling it to the ground",
-                       crit.EQ[4]->getLongName(crit));
-               crit.show(buf);
-               junk = crit.EQ[4];
-               remove_eq_effects(*(crit.EQ[4]), crit, FALSE, FALSE, 4);
-               crit.gainInv(crit.EQ[4]);
-               recursive_init_unload(obj_list[crit.EQ[4]->OBJ_NUM], 0);
-               if (crit.EQ[4]->IN_LIST) {
-                  delete crit.EQ[4];
-               }//if
-               crit.EQ[4] = NULL;
-            }
-         }
-         break;
+                     Sprintf(buf, "howls as %s wings grow to full length.", get_his_her(crit));
+                     crit.emote(buf);
+                     crit.show("Excruciating pain befalls you as your wings take full form.\n");
+                     if( crit.EQ[4] ) { //on back
+                        Sprintf(buf, "wings destroy %S, sending it to the ground",
+                              long_name_of_obj(*(crit.EQ[4]), ~0));
+                        crit.pemote(buf);
+                        Sprintf(buf, "Your wings smash %S, crumbling it to the ground",
+                              crit.EQ[4]->getLongName(crit));
+                        crit.show(buf);
+                        remove_eq_effects(*(crit.EQ[4]), crit, FALSE, FALSE, 4);
+                        crit.gainInv(crit.EQ[4]);
+                        crit.EQ[4] = NULL;
+                     }//if wearing armor _around_ body (cloak, etc)
+                  }
+                  break;
          case 20: {
-            Sprintf(buf, "falls over as %s legs transform in to wicked looking claws.",
-                    get_his_her(crit));
-            emote(buf, crit, room_list[crit.getCurRoomNum()], TRUE);
-            crit.show("You fall over as your legs transform into mighty claws.\n");
-            if( crit.EQ[15] ) {
-               Sprintf(buf, "claws destroy %S sending it to the ground",
-                       long_name_of_obj(*(crit.EQ[15]), ~0));
-               pemote(buf, crit, room_list[crit.getCurRoomNum()], TRUE);
-               Sprintf(buf, "Your claws smash %S, crumbling it to the ground",
-                       long_name_of_obj(*(crit.EQ[15]), ~0) );
-               crit.show(buf);
-               junk = crit.EQ[15];
-               remove_eq_effects(*(crit.EQ[15]), crit, FALSE, FALSE, 15);
-               crit.gainInv(crit.EQ[15]);
-               recursive_init_unload(obj_list[crit.EQ[15]->OBJ_NUM], 0);
-               if (crit.EQ[15]->IN_LIST) {
-                  delete crit.EQ[15];
-               }//if
-               crit.EQ[15] = NULL;
-            }
-         }
-         break;
+                     Sprintf(buf, "falls over as %s feet transform into wicked looking claws.",
+                           get_his_her(crit));
+                     crit.emote(buf);
+                     crit.show("You fall over as your feet transform into mighty claws.\n");
+                     if( crit.EQ[15] ) { //feet
+                        Sprintf(buf, "claws destroy %S sending them to the ground",
+                              long_name_of_obj(*(crit.EQ[15]), ~0));
+                        crit.pemote(buf);
+                        Sprintf(buf, "Your claws smash %S, sending them to the ground",
+                              long_name_of_obj(*(crit.EQ[15]), ~0) );
+                        crit.show(buf);
+                        remove_eq_effects(*(crit.EQ[15]), crit, FALSE, FALSE, 15);
+                        crit.gainInv(crit.EQ[15]);
+                        crit.EQ[15] = NULL;
+                     }//if wearing something on their feet
+                  }
+                  break;
          case 25: {
-            Sprintf(buf, "A magnificant tail erupts from %s back.", get_his_her(crit));
-            show_all(buf,room_list[crit.getCurRoomNum()]);
-            crit.show("A magnificant tails forms behind you, the metamorphosis is complete!\n");
-            if( crit.EQ[13] ) {
-               Sprintf(buf, "new tail destroys %S, sending it to the ground",
-                       long_name_of_obj(*(crit.EQ[13]), ~0));
-               pemote(buf, crit, room_list[crit.getCurRoomNum()], TRUE);
-               Sprintf(buf,"Your tail smashes your %S, crumbling it to the ground",
-                       long_name_of_obj(*(crit.EQ[13]), ~0) );
-               crit.show(buf);
-               junk = crit.EQ[13];
-               remove_eq_effects(*(crit.EQ[13]), crit, FALSE, FALSE, 13);
-               crit.gainInv(crit.EQ[13]);
-               recursive_init_unload(obj_list[crit.EQ[13]->OBJ_NUM], 0);
-               if (crit.EQ[13]->IN_LIST) {
-                  delete crit.EQ[13];
-               }//if
-               crit.EQ[13] = NULL;
-            }
-         }
-         break;
-         }
+                     Sprintf(buf, "A magnificant tail erupts from %S's back.", crit.getName());
+                     show_all(buf,room_list[crit.getCurRoomNum()]);
+                     crit.show("A magnificant tails forms behind you, the metamorphosis is complete!\n");
+                  }
+                  break;
+      }
    }
 }//avain_gain_level
 

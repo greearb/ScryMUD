@@ -4608,7 +4608,11 @@ int critter::isImmort() const {
 }
 
 int critter::isFlying() {
-   return (crit_flags.get(3));
+   if ( isAvian() && (getLevel() >= 10) ) {
+      return true;
+   } else { 
+      return (crit_flags.get(3));
+   }
 }
 
 int critter::isParalyzed() {

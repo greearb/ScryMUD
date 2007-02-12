@@ -1051,6 +1051,7 @@ public:
    int isSombrian() { return (RACE == SOMBRIAN); }
    int isUndead() { return RACE == UNDEAD; }
    int isAnimal() { return RACE == ANIMAL; }
+   int isAvian() { return RACE == AVIAN; }
    int isMonster() { return RACE == MONSTER; }
    int isCharmed() { return master != NULL; }
    int isWanderer() { return mob && MOB_FLAGS.get(2); }

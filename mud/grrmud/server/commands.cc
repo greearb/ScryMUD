@@ -788,38 +788,38 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
                   // if crit == AVIAN then lets show what he or she has
                   // for added features
 
-                 if( crit_ptr->RACE == AVIAN )
+                 if( crit_ptr->getRace() == AVIAN )
                  {
                                  String buf2(1024);
 
                              if( crit_ptr->LEVEL >= 5 )
                                  {
                                   Sprintf( buf2, "%S has a sturdy beak for a nose.\n", crit_ptr->getName() );
-                                  show( buf2, pc );
+                                  pc.show( buf2 );
                                  }
 
                                  if( crit_ptr->LEVEL >= 10 && crit_ptr->LEVEL < 15)
                              {
                                   Sprintf( buf2, "A small pair of wings protrude from %S back.\n", crit_ptr->getName() );
-                                  show( buf2, pc );
+                                  pc.show( buf2 );
                              }
 
                                  if( crit_ptr->LEVEL >= 15)
                                  {
                                   Sprintf( buf2, "A large set of wings protrude from %S back.\n", crit_ptr->getName() );
-                                  show( buf2, pc );
+                                  pc.show( buf2 );
                                  }
 
                                  if( crit_ptr->LEVEL >= 20 )
                                  {
                                   Sprintf( buf2, "wicked claws finish off %S legs.\n", crit_ptr->getName() );
-                                  show( buf2, pc );
+                                  pc.show( buf2 );
                                  }
 
                                  if( crit_ptr->LEVEL >= 25)
                                  {
-                                  Sprintf( buf2, "A powerfull tail trails behins %S.\n", crit_ptr->getName() );
-                                  show( buf2, pc );
+                                  Sprintf( buf2, "A powerfull tail trails behind %S.\n", crit_ptr->getName() );
+                                  pc.show( buf2 );
                                  }
                 }
 
