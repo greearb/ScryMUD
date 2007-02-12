@@ -1125,7 +1125,7 @@ void avian_gain_level(critter& crit) {
                   }
                   break;
          case 25: {
-                     Sprintf(buf, "A magnificant tail erupts from %S's back.", crit.getName());
+                     Sprintf(buf, "A magnificant tail erupts from %S's back.\n", crit.getName());
                      show_all(buf,room_list[crit.getCurRoomNum()]);
                      crit.show("A magnificant tails forms behind you, the metamorphosis is complete!\n");
                   }
@@ -1180,8 +1180,9 @@ void gain_level(critter& crit) {
    crit.MV_MAX += d(1, crit.getDEX(TRUE));
    crit.show("You rise a level.\n");
 
-   if ( crit.RACE == AVIAN )
+   if ( crit.isAvian() ) {
       avian_gain_level(crit);
+   }
 }//gain_level
 
 

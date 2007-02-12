@@ -749,7 +749,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
       show("\n", pc);
    }//if
    else {                        /* look <thing> */
-      if ((crit_ptr = rm.haveCritNamed(i_th, obj, pc, count_sofar))) {
+      if ((crit_ptr = rm.haveCritNamed(i_th, obj, pc, count_sofar))) { // look at a critter
 
          show("\n\n", pc);
          show((crit_ptr->long_desc), pc);
@@ -779,51 +779,49 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
                Sprintf(buf, cstr(CS_LOOK_GLOWS_BRIGHTLY, pc),
                        get_he_she(*crit_ptr));
                buf.Cap();
-               show(buf, pc);
+               pc.show(buf);
             }//if
          }//while
 
 
-                  // Okay, lets see if crit is AVIAN.
-                  // if crit == AVIAN then lets show what he or she has
-                  // for added features
+         // Okay, lets see if crit is AVIAN.
+         // if crit == AVIAN then lets show what he or she has
+         // for added features
 
-                 if( crit_ptr->getRace() == AVIAN )
-                 {
-                                 String buf2(1024);
+         if( crit_ptr->isAvian() )
+         {
+            String buf2(1024);
 
-                             if( crit_ptr->LEVEL >= 5 )
-                                 {
-                                  Sprintf( buf2, "%S has a sturdy beak for a nose.\n", crit_ptr->getName() );
-                                  pc.show( buf2 );
-                                 }
+            if( crit_ptr->LEVEL >= 5 )
+            {
+               Sprintf( buf2, "%S has a sturdy beak.\n", crit_ptr->getName() );
+               pc.show( buf2 );
+            }
 
-                                 if( crit_ptr->LEVEL >= 10 && crit_ptr->LEVEL < 15)
-                             {
-                                  Sprintf( buf2, "A small pair of wings protrude from %S back.\n", crit_ptr->getName() );
-                                  pc.show( buf2 );
-                             }
+            if( crit_ptr->LEVEL >= 10 && crit_ptr->LEVEL < 15)
+            {
+               Sprintf( buf2, "A small pair of wings protrude from %S's back.\n", crit_ptr->getName() );
+               pc.show( buf2 );
+            }
 
-                                 if( crit_ptr->LEVEL >= 15)
-                                 {
-                                  Sprintf( buf2, "A large set of wings protrude from %S back.\n", crit_ptr->getName() );
-                                  pc.show( buf2 );
-                                 }
+            if( crit_ptr->LEVEL >= 15)
+            {
+               Sprintf( buf2, "A large set of wings protrude from %S's back.\n", crit_ptr->getName() );
+               pc.show( buf2 );
+            }
 
-                                 if( crit_ptr->LEVEL >= 20 )
-                                 {
-                                  Sprintf( buf2, "wicked claws finish off %S legs.\n", crit_ptr->getName() );
-                                  pc.show( buf2 );
-                                 }
+            if( crit_ptr->LEVEL >= 20 )
+            {
+               Sprintf( buf2, "Wicked claws finish off %S's legs.\n", crit_ptr->getName() );
+               pc.show( buf2 );
+            }
 
-                                 if( crit_ptr->LEVEL >= 25)
-                                 {
-                                  Sprintf( buf2, "A powerfull tail trails behind %S.\n", crit_ptr->getName() );
-                                  pc.show( buf2 );
-                                 }
-                }
-
-
+            if( crit_ptr->LEVEL >= 25)
+            {
+               Sprintf( buf2, "A powerful tail trails behind %S.\n", crit_ptr->getName() );
+               pc.show( buf2 );
+            }
+         }
 
          for (int q = 1; q < MAX_EQ; q++) {
             if (crit_ptr->EQ[q]) {
@@ -839,27 +837,27 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
 
          if (pc.pc && (pc.shouldSeeInventory() ||
                   (pc.isThief() &&  pc.getLevel() >= crit_ptr->getLevel()))) {
-            out_inv(crit_ptr->inv, pc, CRIT_INV);
+            out_inv(crit_ptr->inv, pc, CRIT_INV); // thief peeking
          }//if
 
          String cmd = "look";
          rm.checkForProc(cmd, NULL_STRING, pc, crit_ptr->MOB_NUM);
       }//if
-      else if ((obj_ptr = rm.haveAccessibleObjNamed(i_th - count_sofar, obj, pc,
-                                                    posn, count_sofar))) {
-         show("\n\n", pc);
-         show((obj_ptr->long_desc), pc);
-         show("\n", pc);
+      else if ((obj_ptr = rm.haveAccessibleObjNamed(i_th - count_sofar, obj, pc, //looking at an object in the room
+                                                    posn, count_sofar))) {       //also checks the players inventory
+         pc.show("\n\n");
+         pc.show(obj_ptr->long_desc);
+         pc.show("\n");
          
          String cmd = "look";
          rm.checkForProc(cmd, NULL_STRING, pc, obj_ptr->OBJ_NUM);
       }
-      else if ((kwd_ptr = rm.haveKeyword(i_th - count_sofar, obj, count_sofar))) {
+      else if ((kwd_ptr = rm.haveKeyword(i_th - count_sofar, obj, count_sofar))) { //check for room keywords
          pc.show("\n\n");
          pc.show(kwd_ptr->desc);
          pc.show("\n");
       }
-      else if ((door_ptr = 
+      else if ((door_ptr =  // looking at a door
            door::findDoor(rm.doors, i_th - count_sofar, obj, pc.SEE_BIT,
                           rm, count_sofar))) {
          show("\n\n", pc);
