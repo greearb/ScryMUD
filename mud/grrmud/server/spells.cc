@@ -105,7 +105,7 @@ int Spell::doCastEffects(){
 	   return FALSE;
    }
    agg->MANA -= spell_mana;
-   agg->PAUSE += pause;
+   agg->PAUSE = 1;
    clvl = agg->LEVEL;
    return TRUE;
 
@@ -141,7 +141,7 @@ int Spell::onCast(int i_th, const String* vict, critter& pc, int is_canned = FAL
 	return FALSE;
    }
    pc.MANA -= spell_mana;
-   pc.PAUSE += pause;
+   pc.PAUSE = 1;
 //   lvl = agg.level;
    clvl = pc.LEVEL;
    return doCastEffects();
@@ -182,7 +182,7 @@ void Spell::doFailureLostCon(){
     agg->show(LOST_CONCENTRATION_MSG_SELF);
     agg->emote(msg_lost_con);
     agg->MANA -= spell_mana / 2;
-    agg->PAUSE += pause;
+    agg->PAUSE = 1;
 }
 
 void Spell::doFailureCanned(){
@@ -646,7 +646,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
       if (did_spell_hit(agg, FIRE, vict, lvl, TRUE)) {
          vict.HP -= d(4, 20) + 
                 lvl - (int)((100.0 / (vict.HEAT_RESIS + 100)) * 20);
-         agg.PAUSE += 1;   // increment pause_count
+         agg.PAUSE = 1;   // increment pause_count
          if (&vict == &agg) {
             if (vict.HP < 0) {
                show("You burn the flesh from your bones!\n", agg);
@@ -695,7 +695,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
          }//else
       }//if did_hit
       else { //missed
-         agg.PAUSE += 1;   // increment pause_count
+         agg.PAUSE = 1;   // increment pause_count
          if (&agg == &vict) {
             show("You miss yourself with your sulpherous inferno.\n", agg);
             Sprintf(buf, "misses %s with %s fireball.\n", 
@@ -788,7 +788,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
             }//else no fatality
          }//missed
          agg.MANA -= spell_mana;
-         agg.PAUSE += 1;   // increment pause_count
+         agg.PAUSE = 1;   // increment pause_count
       }//if !lost concentration
       else { //lost concentration
          show(LOST_CONCENTRATION_MSG_SELF, agg);
@@ -797,7 +797,7 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
                room_list[agg.getCurRoomNum()], TRUE);
  
          agg.MANA -= spell_mana / 2;
-         agg.PAUSE += 1; 
+         agg.PAUSE = 1; 
       }//else lost concentration
    }//else !canned
 
@@ -962,7 +962,7 @@ void do_cast_summon(critter& vict, critter& pc, int is_canned, int lvl) {
                       vict.getCurRoomNum(), 1); //vict is always a PC
       
    }//if do_affects
-   pc.PAUSE += 1; 
+   pc.PAUSE = 1; 
 
    // RJY [Trice] attempt to slap on ending tags
    if( vict.isPc() && vict.isInBattle() ) {
@@ -1058,7 +1058,7 @@ void do_cast_passdoor(door& dr, critter& vict, int is_canned, int lvl) {
                room_list[vict.getCurRoomNum()], TRUE);
       }
    }//if do_affects
-   vict.PAUSE += 1;   // increment pause_count
+   vict.PAUSE = 1;   // increment pause_count
 }//do_cast_passdoor
 
 void cast_tammuz(int i_th, const String* victim, critter& pc) {
@@ -1133,7 +1133,7 @@ void do_cast_tammuz(critter& vict, critter& pc, int is_canned, int lvl) {
       }//if
 
    }//if do_affects
-   vict.PAUSE += 1;   // increment pause_count
+   vict.PAUSE = 1;   // increment pause_count
 }//do_cast_tammuz
 
 void cast_recall(int i_th, const String* victim, critter& pc) {
@@ -1213,7 +1213,7 @@ void do_cast_recall(critter& vict, critter& pc, int is_canned, int lvl) {
       }//if
 
    }//if do_affects
-   vict.PAUSE += 1;   // increment pause_count
+   vict.PAUSE = 1;   // increment pause_count
 }//do_cast_recall
  
 
@@ -1356,7 +1356,7 @@ void do_cast_teleport(critter& vict, critter& pc, int is_canned, int lvl) {
       
       vict.doRemoveFromBattle();
    }//if do_affects
-   vict.PAUSE += 1;   // increment pause_count
+   vict.PAUSE = 1;   // increment pause_count
    // RJY [Trice] attempt to slap in ending battle TAGS
    if( vict.isInBattle() ) {
       if (vict.isUsingClient()) {
@@ -1446,7 +1446,7 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
             buf.Cap();
             show(buf, vict);
          }//else
-         agg.PAUSE += 1;   // increment pause_count
+         agg.PAUSE = 1;   // increment pause_count
       }//else, missed with canned magic   
    }//if canned
    else {//not canned 
@@ -1479,7 +1479,7 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
  
          }//missed
          agg.MANA -= spell_mana;
-         agg.PAUSE += 1;   // increment pause_count
+         agg.PAUSE = 1;   // increment pause_count
       }//if ! lost concentration
       else { //lost concentration
          show(LOST_CONCENTRATION_MSG_SELF, agg);
@@ -1487,7 +1487,7 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, *(agg.getCurRoom()), TRUE);
  
          agg.MANA -= spell_mana / 2;
-         agg.PAUSE += 1; 
+         agg.PAUSE = 1; 
       }//else
    }//else !canned
 
@@ -1540,7 +1540,7 @@ void do_cast_illuminate(room& rm, critter& agg, int is_canned,
    if (!is_canned)
       lvl = agg.LEVEL;
 
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 
    if (is_canned) {
       do_effects = TRUE;

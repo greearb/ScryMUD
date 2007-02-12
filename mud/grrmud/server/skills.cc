@@ -197,15 +197,15 @@ int do_trip(critter& vict, critter& pc) {
 
       emote(buf,vict, ROOM, TRUE, &pc);
          
-      pc.PAUSE+=1; 
+      pc.PAUSE = 1; 
       return 0;
    }
 
 
    if (skill_did_hit(pc, TRIP_SKILL_NUM, vict)) {
-      pc.PAUSE += 2; //increment pause_count
+      pc.PAUSE = 1; //increment pause_count
       exact_raw_damage(d(4, 5), NORMAL, vict, pc);
-      vict.PAUSE += d(1,3);
+      vict.PAUSE =  1;
       vict.setPosn(POS_SIT);
 
 
@@ -237,7 +237,7 @@ int do_trip(critter& vict, critter& pc) {
                  name_of_crit(vict, pc.SEE_BIT), get_him_her(vict));
       show(buf, pc);
 
-      pc.PAUSE += 2; //increment pause_count
+      pc.PAUSE = 1; //increment pause_count
    }//else
    if (do_fatality) {
       agg_kills_vict(&pc, vict);
@@ -298,7 +298,7 @@ int do_steal(object* obj, critter& vict, critter& pc,
          return -1;
       }
       /* it worked */
-      pc.PAUSE += 1; //increment pause_count
+      pc.PAUSE = 1; //increment pause_count
       if (obj) {
          vict.loseInv(obj);
          pc.gainInv(obj);
@@ -420,10 +420,10 @@ int do_kick(critter& vict, critter& pc) {
 
    if (skill_did_hit(pc, KICK_SKILL_NUM, vict)) {
 
-      pc.PAUSE += d(1,2); //increment pause_count
+      pc.PAUSE = 1; //increment pause_count
       float d1 = (((float)(pc.STR)) * (float)(pc.getLevel()) + 5.0) / 60.0;
       exact_raw_damage(d((int)d1, 5), NORMAL, vict, pc);
-      vict.PAUSE += d(1,3);
+      vict.PAUSE = 1;
 
       if (vict.HP < 0) {
          Sprintf(buf, "kicks in %S's temple with %s foot!!\n", 
@@ -466,7 +466,7 @@ int do_kick(critter& vict, critter& pc) {
               name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
 
-      pc.PAUSE += 2; //increment pause_count
+      pc.PAUSE = 1; //increment pause_count
    }//else
    if (do_fatality) {
       agg_kills_vict(&pc, vict);
@@ -567,7 +567,7 @@ int do_bash(door& vict, critter& pc) { //bash for doors
       emote(buf, pc, ROOM, TRUE);
    }//else  
    
-   pc.PAUSE += d(2,2); //increment pause_count
+   pc.PAUSE = 1; //increment pause_count
    return 0;
 }//do_bash()//door
 
@@ -593,8 +593,8 @@ int do_bash(critter& vict, critter& pc) {
 
       exact_raw_damage( (d(pc.STR/2, 5) + pc.DEX/2)+(wd*2) + (int)(pc.LEVEL/5),
             NORMAL, vict, pc);
-      pc.PAUSE += 1;
-      vict.PAUSE += d(1,2);
+      pc.PAUSE = 1;
+      vict.PAUSE = 1;
 
       if (vict.HP < 0) {
          Sprintf(buf, "crushes the skull of %S with %s fist!!\n", 
@@ -637,7 +637,7 @@ int do_bash(critter& vict, critter& pc) {
                  name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
 
-      pc.PAUSE += d(2,2); //increment pause_count
+      pc.PAUSE = 1; //increment pause_count
       return -1;
    }//else
    if (do_fatality) {
@@ -694,7 +694,7 @@ int do_block(critter& vict, critter& pc) {
    }//if
 
    if (skill_did_hit(pc, BLOCK_SKILL_NUM, vict)) {
-      pc.PAUSE += d(1,3); //increment pause_count
+      pc.PAUSE = 1; //increment pause_count
       vict.CRIT_FLAGS.turn_on(21); //now is blocked
 
       Sprintf(buf, "You block %S.\n", name_of_crit(vict, pc.SEE_BIT));
@@ -751,7 +751,7 @@ int do_block(door& vict, critter& pc) {
       return 0;
    }//else
    else {
-     pc.PAUSE += d(1, 2); //increment pause_count
+     pc.PAUSE = 1; //increment pause_count
      show(
     "You can't find a suitable spot, maybe if you tried a little harder.\n",
           pc);
@@ -822,7 +822,7 @@ int do_claw(critter& vict, critter& pc) {
       join_in_battle(pc, vict);
    }//if
 
-   pc.PAUSE += d(1,3); //increment pause_count
+   pc.PAUSE = 1; //increment pause_count
 
    if (skill_did_hit(pc, CLAW_SKILL_NUM, vict)) {
 
@@ -1133,7 +1133,7 @@ int construct(critter& pc, short do_mob) {
        }//if
    }//do_lose_contents
    
-   pc.PAUSE += 2;
+   pc.PAUSE = 1;
    return 0;
 }//construct()
 
@@ -1353,7 +1353,7 @@ int concoct(critter& pc, short do_mob) {
        }//if
    }// do_lose_contents
    
-   pc.PAUSE += 2;
+   pc.PAUSE = 1;
    return 0;
 }//concoct()
 
@@ -1449,7 +1449,7 @@ int scribe(const String* spell, critter& pc, short do_mob) {
               &(obj_list[scroll_num].short_desc));
          show(buf, pc);
          pc.MANA -= get_mana_cost(spell_num, pc);
-         pc.PAUSE += 4;
+         pc.PAUSE = 1;
       }//if
       else { //scroll object not created yet
          Sprintf(buf, "ERROR:  need to create scroll for spell:  %i.\n",
@@ -1472,7 +1472,7 @@ int scribe(const String* spell, critter& pc, short do_mob) {
       if (pc.EQ[10]->isModified()) 
          delete pc.EQ[10];
       pc.EQ[10] = NULL; //no more parchment
-      pc.PAUSE += 4;
+      pc.PAUSE = 1;
       pc.MANA -= (get_mana_cost(spell_num, pc) / 2);
    }//else
    return 0;

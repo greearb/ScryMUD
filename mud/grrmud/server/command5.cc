@@ -980,7 +980,7 @@ int beep(int i_th, const String* name, critter& pc) {
 
       Sprintf(buf2, "%S beeps you.\n", name_of_crit(pc, ptr->SEE_BIT));
       ptr->show(buf2);
-      pc.PAUSE += 1; //slow down spammers....
+      pc.PAUSE = 1; //slow down spammers....
 
       show("Done...\n", pc);
       return 0;

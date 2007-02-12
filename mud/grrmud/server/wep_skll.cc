@@ -112,7 +112,7 @@ int do_circle(critter& vict, critter& pc) {
                     name_of_crit(pc, ~0), get_his_her(vict));
             emote(buf, vict, ROOM, TRUE, &pc);
 
-            pc.PAUSE += 3;
+            pc.PAUSE = 1;
             return 0;
          }
          wd = pc.DAM + d(pc.EQ[10]->OBJ_DAM_DICE_COUNT, 
@@ -167,7 +167,7 @@ int do_circle(critter& vict, critter& pc) {
       agg_kills_vict(&pc, vict);
    }//if
 
-   pc.PAUSE += 3;
+   pc.PAUSE = 1;
    return 0;
 }//do_circle
 
@@ -257,7 +257,7 @@ int do_backstab(critter& vict, critter& pc) {
 
       exact_raw_damage(((pc.LEVEL / 4 + 1) * wd), NORMAL, vict, pc);
 
-      vict.PAUSE += d(1,2);
+      vict.PAUSE = 1;
 
       if (vict.HP < 0) { //do fatality
          show("You collapse as a blade enters your back!\n", vict);
@@ -284,7 +284,7 @@ int do_backstab(critter& vict, critter& pc) {
    }//if hit
    else {  //missed
 
-           pc.PAUSE += d(1,3);
+           pc.PAUSE = 1;
 
            Sprintf(buf, 
                            "You whirl just in time to avoid %S's blade in your back.\n", 
@@ -370,8 +370,8 @@ int do_disarm(critter& vict, critter& pc) {
       missed = TRUE;
    }//if
    
-   pc.PAUSE += 2;
-   vict.PAUSE += d(1,3);
+   pc.PAUSE = 1;
+   vict.PAUSE = 1;
    
    if (!missed && skill_did_hit(pc, DISARM_SKILL_NUM, vict)) { 
       Sprintf(buf, "%S disarms you!!\n",

@@ -106,7 +106,7 @@ void do_cast_locate(const String* targ, critter& agg, int is_canned,
       if (!is_canned)
          agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 2; 
+   agg.PAUSE = 1; 
 }//do_cast_locate
  
 
@@ -170,7 +170,7 @@ void do_cast_wizard_eye(object& vict, critter& pc, int is_canned,
      if (!is_canned)
        pc.MANA -= spell_mana / 2;
    }//else lost concentration
-   pc.PAUSE += 1; 
+   pc.PAUSE = 1; 
 }//do_cast_wizard_eye
  
 
@@ -244,7 +244,7 @@ void do_cast_recharge(object& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 2; 
+   agg.PAUSE = 1; 
 }//do_cast_recharge
  
 
@@ -317,7 +317,7 @@ void do_cast_identify(object& vict, critter& agg, int is_canned,
       if (!is_canned)
          agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_identify
  
 
@@ -398,7 +398,7 @@ void do_cast_bind_wound(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_bind_wound
  
 
@@ -483,7 +483,7 @@ void do_cast_shadows_blessing(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_shadows_blessing
  
 
@@ -568,7 +568,7 @@ void do_cast_cure_blind(critter& vict, critter& agg,
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_cure_blind
  
 
@@ -651,7 +651,7 @@ void do_cast_remove_poison(critter& vict, critter& agg,
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_remove_poison
  
 
@@ -766,7 +766,7 @@ void do_cast_flesh_to_stone(critter& vict, critter& agg, int is_canned, int lvl)
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 
    if (do_join_in_battle && !agg.IS_FIGHTING.haveData(&vict))
            join_in_battle(agg, vict);
@@ -866,7 +866,7 @@ void do_cast_sleep(critter& vict, critter& agg, int is_canned, int lvl) {
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_sleep
  
 
@@ -966,7 +966,7 @@ void do_cast_strength(critter& vict, critter& agg, int is_canned, int lvl) {
       if (!is_canned)
          agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_strength
  
 
@@ -1048,7 +1048,7 @@ void do_cast_remove_curse(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_remove_curse (mob)
 
 
@@ -1092,7 +1092,7 @@ void do_cast_remove_curse(object& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_remove_curse (obj)
  
 
@@ -1254,7 +1254,7 @@ void do_cast_curse(critter& vict, critter& agg, int is_canned, int lvl) {
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_curse (mob)
  
 
@@ -1299,7 +1299,7 @@ void do_cast_curse(object& vict, critter& agg, int is_canned, int lvl) {
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_curse (obj)
 
 void do_cast_blindness(critter& vict, critter& agg, int is_canned, int lvl) {
@@ -1367,7 +1367,7 @@ void do_cast_blindness(critter& vict, critter& agg, int is_canned, int lvl) {
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_blindness
  
 
@@ -1482,7 +1482,7 @@ void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl) {
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 }//do_cast_weaken
  
 
@@ -1560,7 +1560,7 @@ void do_cast_fly(critter& vict, critter& agg, int is_canned, int lvl) {
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 }//do_cast_fly
  
 
@@ -1655,7 +1655,7 @@ void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
       if (!is_canned)
          agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 }//do_cast_haste
  
 
@@ -1755,7 +1755,7 @@ void do_cast_dispel_magic(critter& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else lost concentration
    
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 }//do_cast_dispel_magic
  
 
@@ -1817,7 +1817,7 @@ void do_cast_dispel_magic(object& vict, critter& agg, int is_canned, int lvl) {
          agg.MANA -= spell_mana / 2;
    }//else lost concentration
    
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 } // do_cast_dispel_magic
 
 void cast_dispel_magic(int i_th, const String* victim, critter& pc) {
@@ -1904,7 +1904,7 @@ void do_cast_fireproof(critter& vict, critter& agg, int is_canned, int lvl) {
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 }//do_cast_fireproof
  
 
@@ -1985,7 +1985,7 @@ void do_cast_magic_shield(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 }//do_cast_magic_shield
  
 
@@ -2071,7 +2071,7 @@ void do_cast_sanctuary(critter& vict, critter& agg, int is_canned, int lvl) {
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 }//do_cast_sanctuary
  
 
@@ -2151,7 +2151,7 @@ void do_cast_prismatic_globe(critter& vict, critter& agg, int is_canned,
       if (!is_canned)
          agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 }//do_cast_prismatic_globe
  
 
@@ -2238,7 +2238,7 @@ void do_cast_stone_skin(critter& vict, critter& agg, int is_canned, int lvl) {
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 }//do_cast_stone_skin
  
 
@@ -2325,7 +2325,7 @@ void do_cast_armor(critter& vict, critter& agg, int is_canned, int lvl) {
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 }//do_cast_armor
  
 
@@ -2407,7 +2407,7 @@ void do_cast_absorb_blows(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 }//do_cast_absorb_blows
  
 
@@ -2478,7 +2478,7 @@ void do_cast_divine_protection(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 }//do_cast_divine_protection
  
 
@@ -2658,7 +2658,7 @@ void do_cast_sober(critter& vict, critter& agg, int is_canned, int lvl) {
      if (!is_canned)
        agg.MANA -= spell_mana / 2;
    }//else lost concentration
-   agg.PAUSE += 1;   // increment pause_count
+   agg.PAUSE = 1;   // increment pause_count
 }//do_cast_sober
 
 

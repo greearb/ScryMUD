@@ -140,7 +140,7 @@ void do_cast_detect_resistances(critter& vict, critter& agg, int is_canned, int 
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 }
 
 void cast_detect_alignment(int i_th, const String* victim,
@@ -214,7 +214,7 @@ void do_cast_detect_alignment(critter& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
 }//do_cast_detect_alignment
 
@@ -280,7 +280,7 @@ void do_cast_detect_poison(object& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
 }//do_cast_detect_poison
 
@@ -363,7 +363,7 @@ void do_cast_detect_invisibility(critter& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
      if (sp)
@@ -457,7 +457,7 @@ void do_cast_infravision(critter& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
      if (sp)
@@ -551,7 +551,7 @@ void do_cast_detect_hidden(critter& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
      if (sp)
@@ -645,7 +645,7 @@ void do_cast_bless(critter& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
    
    if (do_effects) {
       if (sp)
@@ -748,7 +748,7 @@ void do_cast_pfg(critter& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
      if (sp)
@@ -853,7 +853,7 @@ void do_cast_pfe(critter& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
      if (sp)
@@ -948,7 +948,7 @@ void do_cast_detect_magic(critter& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
       if (vict.pc) {
@@ -1052,7 +1052,7 @@ void do_cast_create_water(object& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
    
    if (do_effects) {
       clear_obj_list(vict.inv);
@@ -1135,7 +1135,7 @@ void do_cast_enchant_weapon(object& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
       /* first do dice incrementation */
@@ -1254,7 +1254,7 @@ void do_cast_enchant_armor(object& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
      stat_spell_cell* ac_ptr = has_stat_affect(9, vict);
@@ -1345,7 +1345,7 @@ void do_cast_fire_blade(object& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
      if ((sp = is_affected_by(FROST_BLADE_SKILL_NUM, vict))) {
@@ -1432,7 +1432,7 @@ void do_cast_frost_blade(object& vict, critter& agg, int is_canned,
        agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
      if ((sp = is_affected_by(FIRE_BLADE_SKILL_NUM, vict))) {
@@ -1524,7 +1524,7 @@ void do_cast_rune_edge(object& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
       if (sp)
@@ -1634,7 +1634,7 @@ void do_cast_invisibility(critter& vict, critter& agg, int is_canned,
        agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
       if (sp)
@@ -1692,7 +1692,7 @@ void do_cast_invisibility(object& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
       if (sp)
@@ -1752,7 +1752,7 @@ void do_cast_mirror_image(critter& pc, int is_canned, int lvl) {
          pc.MANA -= spell_mana / 2;
    }//else
 
-   pc.PAUSE++;
+   pc.PAUSE = 1;
 
 }//do_cast_mirror_image
 
@@ -1827,7 +1827,7 @@ void do_cast_cure_serious(critter& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
 
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
       vict.HP += (short)(((float)(10 + d(1,15)) / spell_objs_ratio(spell_num)));
@@ -1908,7 +1908,7 @@ void do_cast_cure_critical(critter& vict, critter& agg, int is_canned,
          agg.MANA -= spell_mana / 2;
    }//else
 
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
       vict.HP += (20 + d(1, lvl));
@@ -1988,7 +1988,7 @@ void do_cast_heal(critter& vict, critter& agg, int is_canned, int lvl) {
          agg.MANA -= spell_mana / 2;
    }//else
 
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
       vict.HP += (d(4, lvl) + 150);
@@ -2072,7 +2072,7 @@ void do_cast_restore(critter& vict, critter& agg, int is_canned, int lvl) {
          agg.MANA -= spell_mana / 2;
    }//else
 
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
       vict.HP += (d(7, 100) + 2 * lvl);
@@ -2220,7 +2220,7 @@ void do_cast_web(critter& vict, critter& agg, int is_canned, int lvl) {
          agg.MANA -= spell_mana / 2;
    }//else
    
-   agg.PAUSE++;
+   agg.PAUSE = 1;
 
    if (do_effects) {
       stat_spell_cell* sp;
@@ -2300,7 +2300,7 @@ void do_cast_entangle(critter& vict, critter& agg, int is_canned,
        buf.Cap();
        show(buf, vict);
      }//else
-     agg.PAUSE += 1;   // increment pause_count
+     agg.PAUSE = 1;   // increment pause_count
    }//else, missed with canned magic   
    else { //lost concentration
       show(LOST_CONCENTRATION_MSG_SELF, agg);
@@ -2311,7 +2311,7 @@ void do_cast_entangle(critter& vict, critter& agg, int is_canned,
       if (!is_canned)
          agg.MANA -= spell_mana / 2;
 
-      agg.PAUSE += 1; 
+      agg.PAUSE = 1; 
    }//else
 
    if (do_effects) {
@@ -2496,7 +2496,7 @@ void do_cast_calm(critter& agg, int is_canned, int lvl) {
         emote("brings peace to all.\n", agg, room_list[agg.getCurRoomNum()],
               TRUE); 
         agg.MANA -= spell_mana;
-        agg.PAUSE += 1;   // increment pause_count
+        agg.PAUSE = 1;   // increment pause_count
       }//if ! lost concentration
       else { //lost concentration
          show(LOST_CONCENTRATION_MSG_SELF, agg);
@@ -2505,7 +2505,7 @@ void do_cast_calm(critter& agg, int is_canned, int lvl) {
                *(agg.getCurRoom()), FALSE);
  
          agg.MANA -= spell_mana / 2;
-         agg.PAUSE += 1; 
+         agg.PAUSE = 1; 
       }//else
    }//else !canned
 

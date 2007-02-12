@@ -124,8 +124,8 @@ int do_hurl(critter& vict, critter& pc) {
 
       vict.notifyHasBeenHurled();
       vict.doRemoveFromBattle();
-      vict.PAUSE += d(1,4) + 2;
-      pc.PAUSE += d(1,3);
+      vict.PAUSE = 1;
+      pc.PAUSE = 1;
 
       if ((dptr = door::findDoor(ROOM.DOORS, 1, 
                                  door_list[d(1,10)].names.peekFront(),
@@ -286,9 +286,9 @@ int do_body_slam(critter& vict, critter& pc) {
 
    if (skill_did_hit(pc, BODYSLAM_SKILL_NUM, vict)) {
 
-      pc.PAUSE += d(1,3); //increment pause_count
+      pc.PAUSE = 1; //increment pause_count
       exact_raw_damage(d(5, pc.STR) + pc.LEVEL, NORMAL, vict, pc);
-      vict.PAUSE += (d(1,3) + 1);
+      vict.PAUSE = 1;
 
       Sprintf(buf, "lifts %S over %s head!!\n",
               name_of_crit(vict, ~0), get_his_her(pc));
@@ -341,7 +341,7 @@ int do_body_slam(critter& vict, critter& pc) {
               name_of_crit(vict, ~0), get_his_her(pc));
       emote(buf, pc, ROOM, TRUE, &vict);
 
-      pc.PAUSE += d(1,3); //increment pause_count
+      pc.PAUSE = 1; //increment pause_count
    }//else
 
    if (do_fatality) {

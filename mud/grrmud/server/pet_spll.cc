@@ -255,7 +255,7 @@ void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
       if (!is_canned)
          pc.MANA -= spell_mana / 2;
    }//else lost concentration
-   pc.PAUSE += 1;
+   pc.PAUSE = 1;
 }//do_cast_create_golem
 
 
@@ -377,7 +377,7 @@ void do_cast_charm(critter& vict, critter& pc, int is_canned, int lvl) {
               name_of_crit(pc, vict.SEE_BIT), get_his_her(pc));
       show(buf, vict);
    }//else if didn't hit
-   pc.PAUSE += 1; 
+   pc.PAUSE = 1; 
 }//do_cast_charm
 
 
@@ -498,7 +498,7 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
       if (!is_canned)
          pc.MANA -= spell_mana / 2;
    }//else lost concentration
-   pc.PAUSE += 1; 
+   pc.PAUSE = 1; 
 }//do_cast_raise_undead
  
 
@@ -586,7 +586,7 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
      if (!is_canned)
        pc.MANA -= spell_mana / 2;
    }//else lost concentration
-   pc.PAUSE += 1; 
+   pc.PAUSE = 1; 
 }//do_cast_create_golem
  
 
@@ -640,7 +640,7 @@ void do_cast_create_light(critter& pc, int is_canned, int lvl) {
      if (!is_canned)
         pc.MANA -= spell_mana / 2;
    }//else lost concentration
-   pc.PAUSE += 1; 
+   pc.PAUSE = 1; 
 }//do_cast_create_light
 
 
@@ -693,7 +693,7 @@ void do_cast_create_food(critter& pc, int is_canned, int lvl) {
       if (!is_canned)
          pc.MANA -= spell_mana / 2;
    }//else lost concentration
-   pc.PAUSE += 1; 
+   pc.PAUSE = 1; 
 }//do_cast_create_food
 
 
@@ -764,7 +764,7 @@ void do_cast_heros_feast(critter& pc, int is_canned, int lvl) {
      if (!is_canned)
        pc.MANA -= spell_mana / 2;
    }//else lost concentration
-   pc.PAUSE += 1; 
+   pc.PAUSE = 1; 
 }//do_cast_heros_feast
 
 
@@ -848,7 +848,7 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       if (!is_canned)
          pc.MANA -= spell_mana / 2;
    }//else lost concentration
-   pc.PAUSE += 1; 
+   pc.PAUSE = 1; 
 }//do_cast_illusion
  
 
@@ -941,7 +941,7 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
       if (!is_canned)
          pc.MANA -= spell_mana / 2;
    }//else lost concentration
-   pc.PAUSE += 1; 
+   pc.PAUSE = 1; 
 }//do_cast_conjure_minion
  
 
@@ -1051,5 +1051,5 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
      if (!is_canned)
        pc.MANA -= spell_mana / 2;
    }//else lost concentration
-   pc.PAUSE += 1; 
+   pc.PAUSE = 1; 
 }//do_cast_summon_horde

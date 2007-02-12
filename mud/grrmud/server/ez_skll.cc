@@ -372,7 +372,7 @@ int do_picklock(door& dr, critter& pc) {
       show("You strain your eyes and fingers, but accomplish nothing.\n", 
             pc);
       emote("fiddles with the lock in vain.", pc, ROOM, TRUE);
-      pc.PAUSE += 3;
+      pc.PAUSE = 1;
    }//else
    return -1;
 }//do_picklock
@@ -400,7 +400,7 @@ int do_picklock(object& obj, critter& pc) { //for objects
       show("You strain your eyes and fingers, but accomplish nothing.\n", 
             pc);
       emote("fiddles with the lock in vain.", pc, ROOM, TRUE);
-      pc.PAUSE += 3;
+      pc.PAUSE = 1;
    }//else
    return -1;
 }//do_picklock, for objects

@@ -2766,7 +2766,7 @@ int meditate(critter& pc) {
             }//if
             else {
                 pc.show(CS_MED_NO_CONCENTRATE);
-                pc.PAUSE += 2;
+                pc.PAUSE = 1;
             }//else
         }//if
         else {

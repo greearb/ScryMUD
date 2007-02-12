@@ -207,7 +207,7 @@ void SpellOrbOfPower::doSpellEffects() {
                pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
 
                // Kinda stops you in yer tracks, don't it?
-               victim.PAUSE+=d(1,3);
+               victim.PAUSE = 1;
             } // if nasty gaping wound time
          }
       } // agg not victim
@@ -768,7 +768,7 @@ void do_cast_cause_sickness(critter& vict, critter& agg, int is_canned,
    else {
       mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
    }//else
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 
    if (!do_fatality && do_join_in_battle && 
        !agg.IS_FIGHTING.haveData(&vict)) {
@@ -923,7 +923,7 @@ void do_cast_lightning(critter& vict, critter& agg, int is_canned,
    else {
       mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
    }//else
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 
    if (!do_fatality && do_join_in_battle && 
        !agg.IS_FIGHTING.haveData(&vict)) {
@@ -1078,7 +1078,7 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
    else {
       mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
    }//else
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 
    if (!do_fatality && do_join_in_battle && 
        !agg.IS_FIGHTING.haveData(&vict)) {
@@ -1236,7 +1236,7 @@ void do_cast_shocking_grasp(critter& vict, critter& agg, int is_canned,
    else {
       mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
    }//else
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 
    if (!do_fatality && do_join_in_battle && 
        !agg.IS_FIGHTING.haveData(&vict)) {
@@ -1390,7 +1390,7 @@ void do_cast_rainbow(critter& vict, critter& agg, int is_canned,
    else {
       mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
    }//else
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 
    if (do_join_in_battle && !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);
@@ -1544,7 +1544,7 @@ void do_cast_burning_hands(critter& vict, critter& agg, int is_canned,
    else {
       mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
    }//else
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 
    if (do_join_in_battle && !agg.IS_FIGHTING.haveData(&vict)) {
       join_in_battle(agg, vict);

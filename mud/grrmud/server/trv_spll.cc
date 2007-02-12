@@ -71,7 +71,7 @@ void do_cast_group_heal(critter& agg, int is_canned, int lvl) {
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
                room_list[agg.getCurRoomNum()], FALSE); 
          agg.MANA -= spell_mana / 2;
-         agg.PAUSE += 1; 
+         agg.PAUSE = 1; 
       }//else lost concentration
    }//else !canned
 
@@ -94,7 +94,7 @@ void do_cast_group_heal(critter& agg, int is_canned, int lvl) {
                  name_of_crit(agg, ptr->SEE_BIT));
          show(buf, *ptr);
       }//while
-      agg.PAUSE += 1;   // increment pause_count
+      agg.PAUSE = 1;   // increment pause_count
    }//if do_affects
 }//do_cast_group_heal
 
@@ -133,7 +133,7 @@ void do_cast_flame_strike(critter& agg, int is_canned, int lvl) {
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
                room_list[agg.getCurRoomNum()], FALSE); 
          agg.MANA -= spell_mana / 2;
-         agg.PAUSE += 1; 
+         agg.PAUSE = 1; 
       }//else lost concentration
    }//else !canned
 
@@ -181,7 +181,7 @@ void do_cast_flame_strike(critter& agg, int is_canned, int lvl) {
             }//else
          }//if TRUE
       }//while
-      agg.PAUSE += 1;   // increment pause_count
+      agg.PAUSE = 1;   // increment pause_count
    }//if do_affects
 }//do_cast_flame_strike
 
@@ -220,7 +220,7 @@ void do_cast_meteorstorm(critter& agg, int is_canned, int lvl) {
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
                room_list[agg.getCurRoomNum()], FALSE); 
          agg.MANA -= spell_mana / 2;
-         agg.PAUSE += 1; 
+         agg.PAUSE = 1; 
       }//else lost concentration
    }//else !canned
 
@@ -269,7 +269,7 @@ void do_cast_meteorstorm(critter& agg, int is_canned, int lvl) {
             }//else
          }//if TRUE
       }//while
-      agg.PAUSE += 1;   // increment pause_count
+      agg.PAUSE = 1;   // increment pause_count
    }//if do_affects
 }//do_cast_meteorstorm
 
@@ -308,7 +308,7 @@ void do_cast_icestorm(critter& agg, int is_canned, int lvl) {
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
                room_list[agg.getCurRoomNum()], FALSE); 
          agg.MANA -= spell_mana / 2;
-         agg.PAUSE += 1; 
+         agg.PAUSE = 1; 
       }//else lost concentration
    }//else !canned
 
@@ -357,7 +357,7 @@ void do_cast_icestorm(critter& agg, int is_canned, int lvl) {
             }//else
          }//if TRUE
       }//while
-      agg.PAUSE += 1;   // increment pause_count
+      agg.PAUSE = 1;   // increment pause_count
    }//if do_affects
 }//do_cast_icestorm
 
@@ -396,7 +396,7 @@ void do_cast_firestorm(critter& agg, int is_canned, int lvl) {
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
                room_list[agg.getCurRoomNum()], FALSE); 
          agg.MANA -= spell_mana / 2;
-         agg.PAUSE += 1; 
+         agg.PAUSE = 1; 
       }//else lost concentration
    }//else !canned
 
@@ -444,7 +444,7 @@ void do_cast_firestorm(critter& agg, int is_canned, int lvl) {
             }//else
          }//if TRUE
       }//while
-      agg.PAUSE += 1;   // increment pause_count
+      agg.PAUSE = 1;   // increment pause_count
    }//if do_affects
 }//do_cast_firestorm
 
@@ -470,7 +470,7 @@ void do_cast_lightning_storm(critter& agg, int is_canned, int lvl) {
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
                room_list[agg.getCurRoomNum()], FALSE); 
          agg.MANA -= spell_mana / 2;
-         agg.PAUSE += 1; 
+         agg.PAUSE = 1; 
       }//else lost concentration
    }//else !canned
 
@@ -513,7 +513,7 @@ void do_cast_lightning_storm(critter& agg, int is_canned, int lvl) {
             }//else
          }//if TRUE
       }//while
-      agg.PAUSE += 1;   // increment pause_count
+      agg.PAUSE = 1;   // increment pause_count
    }//if do_affects
 }//do_cast_lightning_storm
  
@@ -549,7 +549,7 @@ void do_cast_quake(critter& agg, int is_canned, int lvl) {
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
                room_list[agg.getCurRoomNum()], FALSE);
          agg.MANA -= spell_mana / 2;
-         agg.PAUSE += 1; 
+         agg.PAUSE = 1; 
          return;
       }//else lost concentration
    }//else !canned
@@ -597,7 +597,7 @@ void do_cast_quake(critter& agg, int is_canned, int lvl) {
                   room_list[ptr->getCurRoomNum()], TRUE);
          }//else
       }//while
-      agg.PAUSE += 1;   // increment pause_count
+      agg.PAUSE = 1;   // increment pause_count
    }//if do_affects
 }//do_cast_quake
  
@@ -645,7 +645,7 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
                room_list[agg.getCurRoomNum()], FALSE);
          agg.MANA -= spell_mana / 2;
-         agg.PAUSE += 1; 
+         agg.PAUSE = 1; 
       }//else lost concentration
    }//else !canned
    
@@ -740,7 +740,7 @@ void do_cast_typhoon(critter& agg, int is_canned, int lvl) {
             }//if
          }//while
       }//while
-      agg.PAUSE += 1;   // increment pause_count
+      agg.PAUSE = 1;   // increment pause_count
    }//if do_affects
 }//do_cast_typhoon
  
@@ -784,7 +784,7 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
          emote(LOST_CONCENTRATION_MSG_OTHER, agg, 
                room_list[agg.getCurRoomNum()], FALSE);
          agg.MANA -= spell_mana / 2;
-         agg.PAUSE += 1; 
+         agg.PAUSE = 1; 
       }//else lost concentration
    }//else !canned
    
@@ -875,7 +875,7 @@ void do_cast_tornado(critter& agg, int is_canned, int lvl) {
             }//if
          }//while
       }//while
-      agg.PAUSE += 1;   // increment pause_count
+      agg.PAUSE = 1;   // increment pause_count
    }//if do_affects
 }//do_cast_tornado
  

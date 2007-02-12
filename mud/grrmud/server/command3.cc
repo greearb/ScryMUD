@@ -1586,7 +1586,7 @@ int flee(critter& pc, int& is_dead) {
                Sprintf(buf, "prevents %S from fleeing!!\n",
                        name_of_crit(pc, ~0));
                emote(buf, *crit_ptr, ROOM, TRUE, &pc);
-               pc.PAUSE += 1;
+               pc.PAUSE = 1;
                return -1;
             }//if
          }//if
@@ -1604,7 +1604,7 @@ int flee(critter& pc, int& is_dead) {
             }//while
             if (!have_exit) {
                show("Death may be your only exit!\n", pc);
-               pc.PAUSE += 1;
+               pc.PAUSE = 1;
                return -1;
             }//if
 
@@ -1651,13 +1651,13 @@ int flee(critter& pc, int& is_dead) {
             if (is_dead)
                return 0;
 
-            pc.PAUSE += 1;
+            pc.PAUSE = 1;
             pc.MOV -= 25;
             return 0;
          }//if
          else { //didn't even beat the odds...
             show("You can't elude your foe.\n", pc);
-            pc.PAUSE += 1;
+            pc.PAUSE = 1;
          }//else
       }//if in battle
       else {
@@ -1700,7 +1700,7 @@ int flee(critter& pc, int& is_dead) {
             if (is_dead)
                return 0;
 
-            pc.PAUSE += 1;
+            pc.PAUSE = 1;
             pc.MOV -= 25;
             return 0;
          }//else
@@ -2246,7 +2246,7 @@ int enslave(int i_th, const String* vict, critter& pc) {
    if (ptr->pc && ptr->pc->imm_data) { //if vict is an IMM
      if (ptr->IMM_LEVEL >= pc.IMM_LEVEL) {
         show("You cannot enslave one so powerful, fool!!\n", pc);
-        pc.PAUSE += 10;
+        pc.PAUSE = 1;
         return -1;
      }//if
    }//if

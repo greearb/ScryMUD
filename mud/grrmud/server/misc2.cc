@@ -1347,7 +1347,7 @@ int mob_can_enter(critter& pc, room& rm, short do_msg, int check_no_wander) {
       if (do_msg) {
          show("You lose your footing and almost fall!!\n", pc);
          emote("slips and almost falls!!\n", pc, ROOM, TRUE);
-         pc.PAUSE++; //punish them a bit
+         pc.PAUSE = 1; //punish them a bit
       }//if
    }//if
    else if ((rm.needsFly()) && //need fly

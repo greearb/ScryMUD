@@ -312,7 +312,7 @@ void join_in_battle(critter& agg, critter& vict) {
       }//if we found a PC responsible
    }//if
 
-   agg.PAUSE += 1; //vict should get at least one hit in
+   agg.PAUSE = 1; //vict should get at least one hit in
 }//join_in_battle
 
 

@@ -113,7 +113,7 @@ void do_cast_portal(room& rm, critter& agg, int is_canned,
        agg.MANA -= spell_mana / 2;
    }//else !canned
 
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 
    if (do_effects) {
      do_door_to(room_list[agg.getCurRoomNum()], rm, 0, agg, &NULL_STRING, 
@@ -178,7 +178,7 @@ void do_cast_gate(room& rm, critter& agg, int is_canned, int lvl) {
    if (!is_canned)
       lvl = agg.LEVEL;
 
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 
    if (is_canned || !lost_concentration(agg, spell_num)) {
       if (!is_canned)
@@ -250,7 +250,7 @@ void do_cast_distortion_wall(door& dr, critter& agg, int is_canned,
    if (!is_canned)
       lvl = agg.LEVEL;
 
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 
    if (is_canned) {
       do_effects = TRUE;
@@ -328,7 +328,7 @@ void do_cast_firewall(room& rm, critter& agg, int is_canned,
    if (!is_canned)
       lvl = agg.LEVEL;
 
-   agg.PAUSE += 1; 
+   agg.PAUSE = 1; 
 
    if (is_canned) {
       if (rm.isSmallWater() || rm.isBigWater()) { //if water
@@ -444,7 +444,7 @@ void do_cast_necrophilia(critter &agg, int is_canned, int lvl)
 
    } // else lost concentration
 
-   agg.PAUSE += 1;
+   agg.PAUSE = 1;
 } // do_cast_necrophilia()
 
 void cast_necrophilia(critter &agg)
