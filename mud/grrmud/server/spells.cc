@@ -306,7 +306,9 @@ int get_mana_cost(int spell_num, critter& pc) {
 }
 
 
-void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
+void rem_effects_crit(int spell_num, critter &pc, short do_msg, int bonus_value=0) {
+//TODO: Everything here needs to check for bonus_value and act accordingly.
+//TODO: Moving forward every spell object needs it own wear-off method if applicable
    String buf(100);
 
    if (spell_num == ARMOR_SKILL_NUM) {  
@@ -379,7 +381,12 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg) {
        show("You no longer detect invisible things.\n", pc);
    }//if
    else if (spell_num == WEAKEN_SKILL_NUM) {
-     pc.STR -= WEAKEN_EFFECT;
+     if ( bonus_value != 0 ) {
+        pc.STR -= bonus_value;
+     }
+     else {
+        pc.STR -= WEAKEN_EFFECT;
+     }
      if (do_msg)
        show("You feel stronger!\n", pc);
    }//if

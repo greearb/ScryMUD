@@ -632,7 +632,9 @@ void critter::doLogin() {
             break;
          }//switch        
    }//else
+
    mudlog.log(TRC, "Done w/do_login.\n");
+
 }//do_login
 
 
@@ -968,7 +970,9 @@ int  quit_do_login_old(critter& pc) {
    update_skills(pc); //sync them up, does not necessarly add new ones
    pc.PC_FLAGS.turn_off(33); //make sure they aren't marked as afk
 
-   show("Welcome back!!\n\n", pc);
+   pc.show(get_page("./motd")); //message of the day
+
+   pc.show("Welcome back!!\n\n");
    look(1, &NULL_STRING, pc); //autolook
 
    recursive_init_loads(pc); //update stuff in game, like IN_GAME count

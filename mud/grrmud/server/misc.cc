@@ -1262,8 +1262,8 @@ void decrease_timed_affecting_pcs() {  //will decrease all
          while (sp_ptr) {
                if (sp_ptr->bonus_duration != -1)
                sp_ptr->bonus_duration--;
-            if (sp_ptr->bonus_duration <= 0) {
-               rem_effects_crit(sp_ptr->stat_spell, *crit_ptr, TRUE);
+            if (sp_ptr->bonus_duration == 0) {
+               rem_effects_crit(sp_ptr->stat_spell, *crit_ptr, TRUE, sp_ptr->bonus_value);
                delete sp_ptr;
                sp_ptr = crit_ptr->affected_by.lose(sp_cell);
             }//if

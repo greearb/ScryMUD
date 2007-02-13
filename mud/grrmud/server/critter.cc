@@ -2300,6 +2300,20 @@ int critter::getCurRoomNum() {
    return IN_ROOM;
 }
 
+int critter::getSTR(bool include_modifiers=false) {
+   int p_lrnd;
+   int modifier = 0;
+
+   if ( include_modifiers && pc ) {
+      p_lrnd = get_percent_lrnd(STRENGTH_CONDITIONING_SKILL_NUM, *this);
+      if ( p_lrnd > 0 ) {
+         modifier += p_lrnd/30;
+      }
+   }
+
+   return STR+modifier;
+}
+
 int critter::getDEX(bool include_modifiers=false) {
    int p_lrnd;
    int modifier = 0;

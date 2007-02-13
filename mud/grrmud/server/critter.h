@@ -869,6 +869,7 @@ public:
    int getCharisma() const { return short_cur_stats[4]; }
    int getHP() const { return short_cur_stats[15]; }
    int getHP_MAX() const { return short_cur_stats[23]; }
+   int getSTR(bool include_modifiers);
    int getDEX(bool include_modifiers);
    int getWIS(bool include_modifiers);
    int getCHA(bool include_modifiers);

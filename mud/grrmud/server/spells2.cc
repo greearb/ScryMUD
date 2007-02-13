@@ -1403,8 +1403,9 @@ void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl) {
 
    int lost_con = FALSE;
 
-   if (!is_canned)
+   if (!is_canned) {
      lvl = agg.LEVEL;
+   }
 
    if ((is_canned && (did_hit = 
                       did_spell_hit(agg, CRONIC, vict, lvl, TRUE))) ||
@@ -1413,16 +1414,19 @@ void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl) {
 
      stat_spell_cell* ptr = is_affected_by(spell_num, vict);
      
-     if (!is_canned)
+     if (!is_canned) {
        agg.MANA -= spell_mana;
+     }
 
      if (ptr) {
-       ptr->bonus_duration += lvl / 3;
-       show("Ok.\n", agg);
+       ptr->bonus_duration += d(1,3);
+       agg.show("Ok.\n");
      }//if
      else {
-       vict.affected_by.append(new stat_spell_cell(spell_num, lvl/2));
-       vict.STR += WEAKEN_EFFECT;
+       // -10% of unmodified strength for 1-5 ticks.
+       int weaken_by_value = (int)( - ( 0.10 * vict.getSTR(false) ) );
+       vict.affected_by.append(new stat_spell_cell(spell_num, d(1,5), weaken_by_value ) );
+       vict.STR += weaken_by_value;
 
        if (vict.pc) {
           if (vict.STR > 20) {

@@ -52,6 +52,7 @@ int do_score_long(critter& of_pc, critter& pc) {
    String buf(100);
    Cell<stat_spell_cell*> cll(of_pc.affected_by);
    stat_spell_cell* ss_ptr;
+   bool called_by_imm = false;
 
 //   log("In score_long.\n");
 
@@ -64,6 +65,7 @@ int do_score_long(critter& of_pc, critter& pc) {
          pc.show(CS_IMM_ONLY_ACCESS);
          return -1;
       }//if
+      called_by_imm = true;
    }//if
 
    if(of_pc.isSneaking()) pc.show(CS_YOU_SNEAKING);
@@ -90,9 +92,18 @@ int do_score_long(critter& of_pc, critter& pc) {
    if (!of_pc.affected_by.isEmpty()) {
       pc.show(CS_AFFECTED_BY);
       while ((ss_ptr = cll.next())) {
-         Sprintf(buf, "\t%s.\n", 
-                 (const char*)(SSCollection::instance().getNameForNum(ss_ptr->stat_spell)));
-         show(buf, pc);
+         if ( called_by_imm ) {
+            Sprintf(buf, "\t[val: %d][duration: %d] %s\n",
+                  ss_ptr->bonus_value,
+                  ss_ptr->bonus_duration,
+                  (const char*)(SSCollection::instance().getNameForNum(ss_ptr->stat_spell)));
+            pc.show(buf);
+         }
+         else {
+            Sprintf(buf, "\t%s.\n", 
+                  (const char*)(SSCollection::instance().getNameForNum(ss_ptr->stat_spell)));
+            pc.show(buf);
+         }
       }//while
    }//if
    else {
