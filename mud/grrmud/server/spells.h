@@ -78,7 +78,7 @@ int do_distortion_wall_effects(critter& pc, int& is_dead, int sanity);
 
 ///**************   auxillary spell/skill functions   *************///
 
-void rem_effects_crit(int spell_num, critter& pc, short do_msg, int bonus_value);
+void rem_effects_crit(int spell_num, critter& pc, short do_msg, int bonus_value=0);
 void rem_effects_obj(int spell_num, object& obj);
 void rem_effects_room(int spell_num, room& rm, short do_msg);
 void rem_effects_door(int spell_num, door& dr, room& rm1, room& rm2,

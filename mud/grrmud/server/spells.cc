@@ -306,7 +306,7 @@ int get_mana_cost(int spell_num, critter& pc) {
 }
 
 
-void rem_effects_crit(int spell_num, critter &pc, short do_msg, int bonus_value=0) {
+void rem_effects_crit(int spell_num, critter &pc, short do_msg, int bonus_value) {
 //TODO: Everything here needs to check for bonus_value and act accordingly.
 //TODO: Moving forward every spell object needs it own wear-off method if applicable
    String buf(100);
