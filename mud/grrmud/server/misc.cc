@@ -385,6 +385,7 @@ void do_mini_tick() { // decrement pause count ect
       if (crit_ptr->PAUSE > 0) {
          crit_ptr->PAUSE--;
       }//
+
       // Eliminate 15 minutes of real-life battle stun.
       if (crit_ptr->PAUSE > 4) {
          crit_ptr->PAUSE = 4;
@@ -392,7 +393,9 @@ void do_mini_tick() { // decrement pause count ect
       crit_ptr->MINI_AFFECTED_BY.head(scell);
       sc_ptr = scell.next();
       while (sc_ptr) {
+
          sc_ptr->bonus_duration--;
+
          if (sc_ptr->bonus_duration == 0) {
             rem_effects_crit(sc_ptr->stat_spell, *crit_ptr, TRUE);
             delete sc_ptr;
@@ -1259,7 +1262,7 @@ void decrease_timed_affecting_pcs() {  //will decrease all
          while (sp_ptr) {
                if (sp_ptr->bonus_duration != -1)
                sp_ptr->bonus_duration--;
-            if (sp_ptr->bonus_duration == 0) {
+            if (sp_ptr->bonus_duration <= 0) {
                rem_effects_crit(sp_ptr->stat_spell, *crit_ptr, TRUE);
                delete sp_ptr;
                sp_ptr = crit_ptr->affected_by.lose(sp_cell);
