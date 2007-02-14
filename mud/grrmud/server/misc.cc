@@ -1148,7 +1148,6 @@ int file_update_zone(int zone_num, short read_all) {
              Cell<object*> oc( *(room_list[k].getInv()) );
              while ( ( o = oc.next() ) ) {
                  if ( obj_ptr->getIdNum() == o->getIdNum() ) {
-                     std::cerr << "saving player box" << std::endl;
                      save_player_box(*o);
                  }
              }
