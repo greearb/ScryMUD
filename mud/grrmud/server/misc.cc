@@ -1121,7 +1121,39 @@ int file_update_zone(int zone_num, short read_all) {
 
          //make sure containers have their initial inventory reload if
          //necessary.
-         if ( obj_ptr->isContainer() ) {
+         //
+         // Do _NOT_ regenerate the contents of player owned containers. In
+         // particular, these containers are nasty as their database inventory
+         // changes as items are inserted/removed from them. These containers
+         // wouldn't even regenerate properly as removing an item from them
+         // effectively removes it from their db inventory, so they'll never
+         // regenerate.
+         //
+         // Now for the terribly nasty bit. Due to the current handling for
+         // dissolving objects (corpses) via. the "in_list" pointer, and not
+         // a pointer to an object/room, player owned boxes don't get saved
+         // when the corpses in them decay. However, they did get saved when
+         // the corpses were initially placed in them. In this case, the corpses
+         // were reloading at zone updates, but their "in_list" pointers weren't
+         // getting set as the code below this comment doesn't think to do that.
+         // Apparently this meant that the do_disolve_object() call (when the
+         // freshly reloaded corpses disolved yet again) was doing mean things
+         // (*cough* writing) to somewhat random heap locations. This was very
+         // very bad and took me a very long time to figure out. So, if you,
+         // whoever you are, feel the need to allow player owned containers to
+         // regenerate, you know what you need to take care of in addition to
+         // removing the sanity check directly below this comment.
+         if ( obj_ptr->isContainer() && obj_ptr->isPlayerOwned() ) {
+             object *o;
+             Cell<object*> oc( *(room_list[k].getInv()) );
+             while ( ( o = oc.next() ) ) {
+                 if ( obj_ptr->getIdNum() == o->getIdNum() ) {
+                     std::cerr << "saving player box" << std::endl;
+                     save_player_box(*o);
+                 }
+             }
+         }//<-- save player boxes
+         if ( ( obj_ptr->isContainer() ) && ( ! obj_ptr->isPlayerOwned() ) ) {
             object* ig_room_object;
             object* orig_object_inv;
             Cell<object*> ig_room_inv_cell;
