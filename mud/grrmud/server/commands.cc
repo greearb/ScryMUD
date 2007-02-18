@@ -4118,7 +4118,7 @@ int eq_put_by(object& vict, object& bag, critter& pc, short bag_in_inv) {
       return FALSE;
    }
 
-   if ((bag.OBJ_CUR_WEIGHT + vict.OBJ_CUR_WEIGHT) > bag.OBJ_MAX_WEIGHT) {
+   if ( ( bag.getCurWeight() + vict.getCurWeight() ) > bag.getMaxWeight() ) {
       Sprintf(buf, cstr(CS_CANT_HOLD_WT, pc),
               name_of_obj(bag, pc.SEE_BIT), name_of_obj(vict, pc.SEE_BIT));
       show(buf, pc);
