@@ -181,6 +181,15 @@ void ZoneList::execute() {
    }//while
 }//execute
 
+ZoneCollection::~ZoneCollection() {
+   _cnt--;
+   for ( int i = 0; i < NUMBER_OF_ZONES; i++ ) {
+      zone* z_ptr = zone_list.elementAtNoCreate(i);
+      if ( z_ptr ) {
+         delete z_ptr;
+      }
+   }
+}
 
 
 int ZoneCollection::_cnt = 0;

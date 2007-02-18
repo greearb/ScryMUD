@@ -83,7 +83,7 @@ public:
    /** Copy constructor */
    BugEntry(const BugEntry& src);
    BugEntry& operator=(const BugEntry& src);
-   ~BugEntry() { _cnt--; }
+   ~BugEntry() { _cnt--; reports.clearAndDestroy(); }
 
    int clear();
    int read(ifstream& dafile);
@@ -169,7 +169,7 @@ public:
       _cnt++;
    }
 
-   ~BugCollection() { _cnt--; }
+   ~BugCollection() { _cnt--; bugs.clearAndDestroy(); }
 
    String& getFileName() { return file_name; }
 

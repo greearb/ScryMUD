@@ -617,6 +617,30 @@ int main(int argc, char** argv) {
    }
 
    do_shutdown = TRUE;
+
+
+   // Start cleaning up.
+
+   // room destructors handle any smobs in the rooms.
+   //
+   // critter destructors will wack objects in smob
+   // inventories.
+   //
+   // object destructors will clean up their SOBJ's
+   // (and thus recursively cleanup)
+   //
+   // And lastly... I don't think LazyPtrArray implements
+   // clearAndDestroy() nor does it have a "real" destructor,
+   // at least not one that I found in my quick survey.
+   for(int i=0;i<NUMBER_OF_ROOMS;i++) {
+       room* r_ptr = room_list.elementAtNoCreate(i);
+       if ( r_ptr ) {
+           delete r_ptr;
+       }
+   }
+
+   pc_list.clearAndDestroy();
+
    return (grr_reboot);
 }
 

@@ -183,7 +183,7 @@ protected:
 
 public:
 
-   ~ZoneCollection() { _cnt--; }
+   ~ZoneCollection();
 
    static ZoneCollection& instance();
 
