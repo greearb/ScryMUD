@@ -745,7 +745,6 @@ void game_loop(int s)  {
    fd_set input_set, output_set, exc_set;
    struct timeval last_time, now, timespent, timeout, null_time;
    struct timeval time_since_pulse;
-   struct timezone init;
    static struct timeval opt_time;
    Cell<critter*> pc_cell;
    critter* pc_ptr;
@@ -772,7 +771,9 @@ void game_loop(int s)  {
    opt_time.tv_usec = config.optUsec;  /* Init time values */
    opt_time.tv_sec = 0;
    
-   gettimeofday(&last_time, NULL);  // was &init
+   // see the manpage, gettimeofday() should always be passed NULL for
+   // struct timezone *tz
+   gettimeofday(&last_time, NULL);
 
    avail_descs = config.maxPlayers;
 
@@ -820,7 +821,7 @@ void game_loop(int s)  {
 
       //log("check out the time.\n");
 
-      gettimeofday(&now, &init);
+      gettimeofday(&now, NULL);
       timespent = timediff(&now, &last_time);
       timeout = timediff(&opt_time, &timespent);
       last_time.tv_sec = now.tv_sec + timeout.tv_sec;
