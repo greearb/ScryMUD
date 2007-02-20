@@ -2434,7 +2434,8 @@ int do_mstat(critter& targ, critter& pc) {
                     crit_ptr->mob->getBadAssedness(),
                     crit_ptr->mob->getSocialAwareness());
             show(buf2, pc);
-            if (crit_ptr->mob->proc_data->sh_data) {
+
+            if ( crit_ptr->mob->proc_data->hasShopData() ) {
                show("Its a shopkeeper.\n", pc);
                Sprintf(buf2, "markup  %i, buy_percentage  %i, open_time %i",
                        crit_ptr->MARKUP, crit_ptr->BUY_PERCENTAGE, 
@@ -2445,21 +2446,31 @@ int do_mstat(critter& targ, critter& pc) {
                out_field(crit_ptr->SHOP_DATA_FLAGS, pc, SHOP_DATA_FLAGS_NAMES);
                show("Permanent Inventory:\n", pc);
                out_inv(crit_ptr->PERM_INV, pc, CRIT_INV);
+
+               if ( crit_ptr->isPlayerShopKeeper() ) {
+                  Sprintf(buf2, "Owned by the player: %S\n", crit_ptr->mob->proc_data->sh_data->getManager() );
+                  pc.show(buf2);
+               }
+
             }//if shopkeeper
 
             if (crit_ptr->mob->proc_data->teach_data) {
                show("Its a TEACHER.\n", pc);
                out_field(crit_ptr->TEACH_DATA_FLAGS, pc, TEACH_DATA_FLAGS_NAMES);
             }//if
+
             if (crit_ptr->mob->proc_data->give_proc) {
               show("It HAS a give proc.\n", pc);
             }//if
+
             if (crit_ptr->mob->proc_data->bow_proc) {
               show("It HAS a bow proc.\n", pc);
             }//if
+
             if (crit_ptr->mob->proc_data->curse_proc) {
               show("It HAS a curse proc.\n", pc);
             }//if
+
             Cell<say_proc_cell*> sp_cll(crit_ptr->mob->proc_data->topics);
             say_proc_cell* sp_ptr;
             while ((sp_ptr = sp_cll.next())) {

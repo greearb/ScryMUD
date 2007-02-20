@@ -259,6 +259,7 @@ public:
    void valueSet(int val_idx, int sell_val, int buy_val, critter& manager);
 
    int isPlayerShopKeeper() { return shop_data_flags.get(3); }
+   const String* getManager() const { return &manager; }
 
    int findItemSalePrice(object& obj);
    int findItemBuyPrice(object& obj);
