@@ -1859,3 +1859,30 @@ int ObjectScript::parseScriptCommand(ScriptCmd& cmd, object& owner, int& obj_was
    }
 }//parseScriptCommand
 
+//Checks rm_num (the current room if -1) for the presence of any critters named
+//crit_name. Return value should be treated as a bool.
+int room_has_critter(critter& pc, int rm_num, String* crit_name) {
+
+   room* p_room = NULL;
+
+   if ( rm_num == -1 ) {
+      p_room = pc.getCurRoom();
+   } else {
+      p_room = &room_list[rm_num];
+   }
+
+   int retval = ( p_room->haveCritNamed( 1, crit_name, pc ) != NULL ) ;
+
+   if ( mudlog.ofLevel(SCRIPT) ) {
+   mudlog << "Testing room number "
+          << p_room->getRoomNum() 
+          << " for the presence of critter: "
+          << *crit_name
+          << " --result: "
+          << retval
+          << endl;
+   }
+
+   return retval;
+
+}//room_has_critter()

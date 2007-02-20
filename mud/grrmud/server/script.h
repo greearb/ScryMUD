@@ -77,6 +77,9 @@ int script_jump(int on_test, String* cooked_strs, int* cooked_ints,
 int align_greater_than(int val, critter& pc);
 int align_less_than(int val, critter& pc);
 
+//Checks rm_num (the current room if -1) for the presence of any critters named
+//crit_name. Return value should be treated as a bool.
+int room_has_critter(critter& pc, int rm_num, String* crit_name); 
  
 int does_own(critter& pc, int obj1, int obj2, int obj3, int obj4,
              int obj5, int obj6);

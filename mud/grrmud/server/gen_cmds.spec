@@ -680,6 +680,8 @@ rofl socials ~
 rofl(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 roll ~
 if ((i != 1) || (j != 1)) roll(i, j, pc); else roll(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+room_has_critter ~
+return room_has_critter( pc, i, &(cooked_strs[1]) );
 # IMM Commands - R
 rclear ~
 return rclear(i, pc);
