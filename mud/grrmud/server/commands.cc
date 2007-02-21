@@ -4118,9 +4118,15 @@ int eq_put_by(object& vict, object& bag, critter& pc, short bag_in_inv) {
       return FALSE;
    }
 
-   if ( ( bag.getCurWeight() + vict.getCurWeight() ) > bag.getMaxWeight() ) {
+   //we apply the target containers percentage_weight up front so that the bag
+   // can hold the same things regardless of whether they were put in first or
+   //last.
+   if ( ( bag.getCurWeight() +
+            ( vict.getCurWeight() * ( bag.bag->percentage_weight/100.00 ) )
+        ) > bag.getMaxWeight() ) 
+   {
       Sprintf(buf, cstr(CS_CANT_HOLD_WT, pc),
-              name_of_obj(bag, pc.SEE_BIT), name_of_obj(vict, pc.SEE_BIT));
+            name_of_obj(bag, pc.SEE_BIT), name_of_obj(vict, pc.SEE_BIT));
       show(buf, pc);
       return FALSE;
    }//if
