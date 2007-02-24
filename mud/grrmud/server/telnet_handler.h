@@ -28,12 +28,6 @@
 #include "critter.h"
 #include "protocol_handler.h"
 
-namespace telnet {
-
-#include "telnet.h"
-
-};
-
 class TelnetHandler : public ProtocolHandler {
 
    protected:
@@ -49,19 +43,25 @@ class TelnetHandler : public ProtocolHandler {
       bool my_want_states[256];  //things I've requested or offered.
       bool my_option_states[256];//the current state of things.
 
-   public:
-      TelnetHandler(critter* c_ptr);
-      ~TelnetHandler() { TelnetHandler::_cnt--; };
-
-      void parse(const char* input_buf);
-
-      void toggle_echo() { }
-      const char* end_of_record() const { return( (const char*)eor_str ); }
-
       void rcv_do(int opt);
       void rcv_dont(int opt);
       void rcv_will(int opt);
       void rcv_wont(int opt);
+
+      void process_subopt();
+
+      //inserts IAC action option into my_critter's outbuf.
+      void send(int action, int option);
+
+   public:
+      TelnetHandler(critter* c_ptr);
+      ~TelnetHandler() { _cnt--; };
+
+      void parse(const char* input_buf);
+
+      void set_echo(bool on_off);
+      bool should_echo() const;
+      const char* end_of_record() const { return( (const char*)eor_str ); }
 
 };
 

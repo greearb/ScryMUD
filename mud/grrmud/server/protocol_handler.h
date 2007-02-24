@@ -38,6 +38,10 @@
 #ifndef GRRMUD_PROTOCOL_HANDLER
 #define GRRMUD_PROTOCOL_HANDLER
 
+class ProtocolHandler;
+
+#include "critter.h"
+
 class ProtocolHandler {
    public:
 
@@ -45,13 +49,13 @@ class ProtocolHandler {
 
       // do any necessary parsing, stick the resulting data (if any) in the pc's
       // input buffer.
-      virtual void parse(const char* input_buf);
+      virtual void parse(const char* input_buf) = 0;
 
       // toggle server-side echoing of input
-      virtual void toggle_echo();
+      virtual void set_echo(bool on_off) = 0;
 
       // return a string used to mark end-of-record (player prompt)
-      virtual const char* end_of_record();
+      virtual const char* end_of_record() const = 0;
 };//class ProtocolHandler
 
 class NullHandler : public ProtocolHandler {
@@ -64,11 +68,11 @@ class NullHandler : public ProtocolHandler {
 
       static int getInstanceCount() { return NullHandler::_cnt; }
 
-      NullHandler(critter *c_ptr) : my_critter(c_ptr) { NullHandler::_cnt++; };
+      NullHandler(critter *c_ptr) : my_critter(c_ptr) { my_critter = c_ptr; NullHandler::_cnt++; };
       ~NullHandler() { NullHandler::_cnt--; };
 
-      void parse(const char* input_buf) { my_critter->pc->input += input_buf; }
-      void toggle_echo() { return; }
+      void parse(const char* input_buf);
+      void set_echo(bool on_off) { return; }
       const char* end_of_record() const { return(""); }
 };//class NullHandler
 

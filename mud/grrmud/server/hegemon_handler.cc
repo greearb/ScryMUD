@@ -21,29 +21,6 @@
 // To contact the Author, Edward Roper: edro <-@-> wanfear.net
 //
 
-#ifndef GRRMUD_HEGEMON_HANDLER
-#define GRRMUD_HEGEMON_HANDLER
+#include "hegemon_handler.h"
 
-#include "protocol_handler.h"
-
-class HegemonHandler : public ProtocolHandler {
-
-   protected:
-      static int _cnt;
-
-      critter* my_critter;
-
-   public:
-
-      static int getInstanceCount() { return _cnt; }
-
-      HegemonHandler(critter *c_ptr) : my_critter(c_ptr) { HegemonHandler::_cnt++; };
-      ~HegemonHandler() { _cnt--; };
-
-      void parse(const char* input_buf) { my_critter->pc->input += input_buf; }
-      void set_echo(bool on_off) { }
-      const char* end_of_record() const { return(""); }
-};
-
-
-#endif
+int HegemonHandler::_cnt = 0;
