@@ -93,6 +93,7 @@ bool HegemonHandler::parse(const char* input_buf, size_t len) {
                break;
 
             };
+            current_text_state = ST_NORM;
          break;
       };//switch(current_text_state)
 
