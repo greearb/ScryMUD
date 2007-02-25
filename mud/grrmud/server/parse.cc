@@ -271,6 +271,17 @@ int critter::processInput(String& input, short do_sub, int script_driven,
          //log("Do login finished...\n");
          if (MODE != MODE_NORMAL) {
             show(login_prompts[pc->index]);
+            // turn on server side echoing for password blanking when appropriate
+            switch ( pc->index ) {
+               case 1://password for new player
+               case 2://confirm new player password
+               case 5://password for existing player
+                  pc->p_handler->set_echo(true);
+               break;
+
+               default:
+               break;
+            }
          }//if
          return 0;
       }//if logging in

@@ -47,9 +47,12 @@ class ProtocolHandler {
 
       virtual ~ProtocolHandler() { };
 
+      // for reassociating ourself with a new critter.
+      virtual void newCritter(critter* c_ptr) = 0;
+
       // do any necessary parsing, stick the resulting data (if any) in the pc's
       // input buffer.
-      virtual void parse(const char* input_buf) = 0;
+      virtual bool parse(const char* input_buf, size_t len) = 0;
 
       // toggle server-side echoing of input
       virtual void set_echo(bool on_off) = 0;
@@ -68,10 +71,12 @@ class NullHandler : public ProtocolHandler {
 
       static int getInstanceCount() { return NullHandler::_cnt; }
 
-      NullHandler(critter *c_ptr) : my_critter(c_ptr) { my_critter = c_ptr; NullHandler::_cnt++; };
+      NullHandler(critter* c_ptr) { my_critter = c_ptr; NullHandler::_cnt++; };
       ~NullHandler() { NullHandler::_cnt--; };
 
-      void parse(const char* input_buf);
+      void newCritter(critter* c_ptr) { my_critter = c_ptr; };
+
+      bool parse(const char* input_buf, size_t len);
       void set_echo(bool on_off) { return; }
       const char* end_of_record() const { return(""); }
 };//class NullHandler

@@ -30,6 +30,7 @@
 extern LogStream mudlog;
 
 int TelnetHandler::_cnt = 0;
+const char TelnetHandler::eor_str[2] = { IAC, EOR };
 
 TelnetHandler::TelnetHandler(critter* c_ptr) {
 
@@ -37,15 +38,16 @@ TelnetHandler::TelnetHandler(critter* c_ptr) {
 
    my_critter = c_ptr;
    current_state = ST_TEXT;
+   current_text_state = ST_NORM;
 
    //memset is probably faster, but oh well.
    for(unsigned int i=0;i<sizeof(my_want_states);my_want_states[i++]=false);
    for(unsigned int i=0;i<sizeof(my_option_states);my_option_states[i++]=false);
 
-   //This is sort of a hack. We're assuming that we will only be instantiated
-   //immediately preceeding the login password prompt.
-   set_echo(true);
    send(DO,TELOPT_NAWS);
+
+   my_option_states[TELOPT_EOR] = true;
+   send(WILL,TELOPT_EOR);
 
 }//Constructor: TelnetHandler
 
@@ -62,10 +64,12 @@ void TelnetHandler::send(int action, int option) {
 }//TelnetHandler::send()
 
 //handle DOs
-void TelnetHandler::rcv_do(const int opt) {
+void TelnetHandler::rcv_do(int opt) {
 
    bool need_to_respond = false;
    bool will = false;
+
+   mudlog << "TelnetHandler::rcv_do received: IAC DO " << opt << endl;
 
    //If we are already doing what they're asking for, we just ignore that they
    //asked. this is the behaviour required by the rfc.
@@ -109,8 +113,10 @@ void TelnetHandler::rcv_do(const int opt) {
 }//TelnetHandler::rcv_do()
 
 //handle DONTs
-void TelnetHandler::rcv_dont(const int opt) {
+void TelnetHandler::rcv_dont(int opt) {
    bool need_to_respond = false;
+
+   mudlog << "TelnetHandler::rcv_dont received: IAC DONT " << opt << endl;
 
    //the rfc requires that we never refuse to turn off a feature and that we
    //be willing to drop down to basics.
@@ -129,25 +135,29 @@ void TelnetHandler::rcv_dont(const int opt) {
 }//TelnetHandler::rcv_dont()
 
 //handle WILLs
-void TelnetHandler::rcv_will(const int opt) {
+void TelnetHandler::rcv_will(int opt) {
    // I don't expect to have to deal with these, but for now I'll log them to
    // find out if I'm wrong.
    mudlog << "TelnetHandler::rcv_will received: IAC WILL " << opt << endl;
 }//TelnetHandler::rcv_will()
 
 //handle WONTs
-void TelnetHandler::rcv_wont(const int opt) {
+void TelnetHandler::rcv_wont(int opt) {
    // The only thing that might come back to us here is NAWS as I don't plan
    // on asking the client to do much more than that. so for now, just log the
    // fact that they said they wouldn't do something.
    mudlog << "TelnetHandler::rcv_wont received: IAC WONT " << opt << endl;
 }//TelnetHandler::rcv_wont()
 
-void TelnetHandler::parse(const char* input_buf) {
+bool TelnetHandler::parse(const char* input_buf, size_t len) {
 
-   const char* p = input_buf;
+   size_t i=0;
+   const char* p;
+   bool parsed_full_command = false;
 
-   while ( *p ) {
+   while ( i < len ) {
+
+      p = input_buf+i;
 
       switch ( current_state ) {
 
@@ -159,16 +169,75 @@ void TelnetHandler::parse(const char* input_buf) {
                break;
 
                default:
-                  my_critter->pc->input += *p;
+                  // we don't directly append to the pc's buf as the command
+                  // parser isn't currently smart enough to deal with
+                  // incomplete commands. We also need to handle backspace,
+                  // etc. These things were previously dealt with in
+                  // String::Read()
+                  switch ( current_text_state ) {
+                     case ST_NORM:
+                        switch ( *p ) {
+
+                           case 0x08://backspace
+                              if ( out_buf.size() > 0 ) {
+                                 out_buf.resize(out_buf.size()-1);
+                              }
+                           break;
+
+                           case 0x0D://carriage return
+                              //do nothing, we don't like \r's around here.
+                           break;
+
+                           case 0x0A://newline
+                              out_buf += *p;
+                              my_critter->pc->input += out_buf.c_str();
+                              out_buf.clear();
+                              parsed_full_command = true;
+                           break;
+
+                           case ';':
+                              current_text_state = ST_SEMICOLON;
+                           break;
+
+                           default:
+                              out_buf += *p;
+                           break;
+                        };
+                     break;
+
+                     case ST_SEMICOLON:
+                        switch ( *p ) {
+
+                           case ';':
+                              out_buf += ';';
+                           break;
+
+                           case 0x08://backspace
+                              if ( out_buf.size() > 0 ) {
+                                 out_buf.resize(out_buf.size()-1);
+                              }
+                              current_text_state = ST_NORM;
+                           break;
+
+                           default:
+                              out_buf += '\n';
+                              out_buf += *p;
+                           break;
+
+                        };
+                        current_text_state = ST_NORM;
+                     break;
+
+                  }//switch(current_text_state)
                break;
-            };
-         break;
+            };//ST_TEXT: switch(*p)
+         break;//end ST_TEXT
 
          case ST_IAC:
             switch (*p) {
 
                case IAC://escaped IAC.
-                  my_critter->pc->input += *p;
+                  out_buf += *p;
                break;
 
                case DO:
@@ -192,24 +261,30 @@ void TelnetHandler::parse(const char* input_buf) {
                break;
 
                default:
+                  //invalid transistion
+                  current_state = ST_TEXT;
                break;
             };
          break;
 
          case ST_DO:
             rcv_do(*p);
+            current_state = ST_TEXT;
          break;
 
          case ST_DONT:
             rcv_dont(*p);
+            current_state = ST_TEXT;
          break;
 
          case ST_WILL:
             rcv_will(*p);
+            current_state = ST_TEXT;
          break;
 
          case ST_WONT:
             rcv_wont(*p);
+            current_state = ST_TEXT;
          break;
 
          case ST_SB://processing a sub-option datastream
@@ -223,7 +298,7 @@ void TelnetHandler::parse(const char* input_buf) {
                   sb_buf += *p;
                   // sanity check this to prevent resource exhaustion from a
                   // rogue client
-                  if ( sb_buf.Strlen() > 256 ) {
+                  if ( sb_buf.size() > 256 ) {
                      sb_buf.clear();
                      current_state = ST_TEXT;
                   }
@@ -236,6 +311,7 @@ void TelnetHandler::parse(const char* input_buf) {
 
                case IAC://escaped IAC character.
                   sb_buf += *p;
+                  current_state = ST_SB;
                break;
 
                case SE://end of sub-option data
@@ -255,8 +331,10 @@ void TelnetHandler::parse(const char* input_buf) {
 
       };//switch ( telnet_state )
 
-      p++;
+      i++;
    }//while there's more input
+
+   return(parsed_full_command);
 
 }//TelnetHandler::parse()
 
@@ -294,36 +372,34 @@ void TelnetHandler::process_subopt() {
    //for now we ignore everything but NAWS, and even then just spew some log
    //information about it as we haven't established a place to store it in the
    //pcdata yet.
-   if ( sb_buf.Strlen() == 0 ) {
+   if ( sb_buf.size() == 0 ) {
       return;
    }
-   switch ( sb_buf[0] ) {
+
+   const char* p = sb_buf.data();
+
+   switch ( *p ) {
       case TELOPT_NAWS: {
          short width, height;
-         union 
-         {
-            short s;
-            char a;
-            char b;
-         } i_tmp;
 
          width = height = -1;
-         if ( sb_buf.Strlen() != 5 ) {
+         if ( sb_buf.size() != 5 ) {
             //NAWS should be: NAWS WIDTH[1] WIDTH[0] HEIGHT[1] HEIGHT[0]
             mudlog
                << "TelnetHandler::process_subopt() received malformed NAWS of len "
-               << sb_buf.Strlen()
+               << sb_buf.size()
                << endl;
             break;
          }
 
-         i_tmp.a = sb_buf[1];
-         i_tmp.b = sb_buf[2];
-         width = ntohs(i_tmp.s);
+         width = *(short *)(p+1);
+         height = *(short *)(p+3);
 
-         i_tmp.a = sb_buf[3];
-         i_tmp.b = sb_buf[4];
-         height = ntohs(i_tmp.s);
+         width = ntohs(width);
+         height = ntohs(height);
+
+         my_critter->pc->lines_on_page = height;
+         my_critter->pc->columns_on_page = width;
 
          mudlog << "TelnetHandler::process_subopt() received NAWS "
             << "width: " << width << " height: " << height << endl;
@@ -338,3 +414,17 @@ void TelnetHandler::process_subopt() {
    sb_buf.clear();
 
 }//TelnetHandler::process_subopt()
+
+const char* TelnetHandler::end_of_record() const {
+
+   if ( my_option_states[TELOPT_EOR] ) {
+      return(TelnetHandler::eor_str);
+   } else {
+      return("");
+   }
+
+}//TelnetHandler::end_of_record()
+
+void TelnetHandler::newCritter(critter* c_ptr) {
+   my_critter = c_ptr;
+}//TelnetHandler::newCritter()

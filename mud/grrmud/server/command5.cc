@@ -48,6 +48,8 @@
 #include "clients.h"
 #include "vehicle.h"
 #include "regex.h"
+#include "telnet_handler.h"
+#include "hegemon_handler.h"
 
 int test(critter& pc) {
    String buf;
@@ -2521,6 +2523,9 @@ int dsys(int i, const String& cmd, const String& arg1, critter& pc) {
    pc.show(buf);
    Sprintf(buf, "[%i]%P10 RoomScript  %P30[%i] %P42 BugCollection\n",
            RoomScript::getInstanceCount(), BugCollection::getInstanceCount());
+   pc.show(buf);
+   Sprintf(buf, "[%i]%P10 TelnetHandler %P30[%i] %P42 HegemonHandler\n",
+         TelnetHandler::getInstanceCount(), HegemonHandler::getInstanceCount());
    pc.show(buf);
 
    Sprintf(buf, "\nSize (length) of:\n\tembattled_rooms: %i \t affected_doors: %i\n",

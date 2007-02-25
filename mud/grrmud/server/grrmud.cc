@@ -79,6 +79,7 @@
 #include <new>
 
 #include "telnet.h"
+#include "telnet_handler.h"
 
 #define MAX_HOSTNAME    256
 
@@ -1032,69 +1033,12 @@ void game_loop(int s)  {
              (pc_ptr->MODE != MODE_LOGOFF_NEWBIE_PLEASE) &&
              (pc_ptr->MODE != MODE_QUIT_ME_PLEASE)) {
 
-            /* Yes I need a better place for this, it has to happen before
-             * snooping and has to be able to put crap in the output buffer
-             */
-            {
-               String tmp;
-               int i;
-               int imax;
-               unsigned char telnet_cmd = '\0';
-
-               // Process telnet protocol commands
-
-               /* window size negotinations:
-                * (client) IAC WILL NAWS
-                * (server) IAC DO NAWS
-                * (client) IAC SB NAWS WIDTH[1] WIDTH[0] HEIGHT[1] HEIGHT[0] IAC SE
-                *                      < 16 bit value >   < 16 bit value >    
-                * For now though, I'm going to be lazy ;)
-                * (client) IAC WILL NAWS
-                * (server) IAC DON'T NAWS
-                */
-
-               imax = pc_ptr->getInput()->Strlen();
-               tmp.Clear();
-               for(i=0;i<imax;i++) {
-                  if ( pc_ptr->getInput()->charAt(i) == (char)IAC ) {
-                     if ( i+1 < imax )
-                        telnet_cmd = pc_ptr->getInput()->charAt(++i);
-
-                     switch ( telnet_cmd ) {
-                        case WILL:
-                           if ( i+1 < imax ) {
-                              telnet_cmd = pc_ptr->getInput()->charAt(++i);
-                              switch ( telnet_cmd ) {
-                                 /*
-                                    case TELOPT_NAWS:
-                                    pc_ptr->pc->output.append((char)IAC);
-                                    pc_ptr->pc->output.append((char)DO);
-                                    pc_ptr->pc->output.append((char)telnet_cmd);
-                                    break;
-                                    */
-                                 default:
-                                    pc_ptr->pc->output.append((char)IAC);
-                                    pc_ptr->pc->output.append((char)DONT);
-                                    pc_ptr->pc->output.append((char)telnet_cmd);
-                              }
-                           }
-                           break;
-                     }
-                  } //if telnet cmd
-                  else {
-                     tmp.append(pc_ptr->getInput()->charAt(i));
-                  }
-               } //for
-               pc_ptr->getInput()->Clear();
-               pc_ptr->getInput()->append(tmp);
-            } // telnet parser
-
             len = pc_ptr->getInput()->Strlen();
             if (len && ((pc_ptr->getInput()->charAt(len - 1) == '\n') ||
-                        pc_ptr->getInput()->Contains('\n')) || (len >= MAX_INPUT_LEN)) {
+                     pc_ptr->getInput()->Contains('\n')) || (len >= MAX_INPUT_LEN)) {
                if (mudlog.ofLevel(DBG)) {
                   mudlog << "processing input for: " << *(pc_ptr->getName())
-                         << ",  cmd -:" << *(pc_ptr->getInput()) << ":- " << endl;
+                     << ",  cmd -:" << *(pc_ptr->getInput()) << ":- " << endl;
                }
 
                critter* snooper;
@@ -1102,7 +1046,7 @@ void game_loop(int s)  {
                   mudlog.log(TRC, "Within snoop if\n");
                   String buf2(100);
                   Sprintf(buf2, "SNOOP_IN: %S:  %S\n",
-                          pc_ptr->getName(snooper->SEE_BIT), pc_ptr->getInput());
+                        pc_ptr->getName(snooper->SEE_BIT), pc_ptr->getInput());
                   snooper->show(buf2);
                }//if snoop
 
@@ -1123,10 +1067,10 @@ void game_loop(int s)  {
                   }//if
                   else {
                      pc_ptr->possessing->processInput(*(pc_ptr->getInput()),
-                                                      FALSE, TRUE);
+                           FALSE, TRUE);
                      if (mudlog.ofLevel(DBG)) {
                         mudlog << "input after processInput: " << *(pc_ptr->getInput())
-                               << endl;
+                           << endl;
                      }//if
                      //pc_ptr->setDoPrompt(TRUE);
                   }
@@ -1502,6 +1446,8 @@ int critter::createWithDescriptor(int s) {
    newd->pc = new pc_data;
    newd->CRITTER_TYPE = 0; //change default of MOB to PC
 
+   newd->pc->p_handler = new TelnetHandler(newd);
+
    mudlog.log(TRC, "In createWithDescriptor\n");
 
    if ((desc = new_connection(s)) < 0) {
@@ -1664,26 +1610,47 @@ void nonblock(int s) {
 
 #endif
 
-
-
-int critter::readInput()  {
-   if (!pc)
-      return -1;
-
-   errno = 0;
-   int ret;
-   ret = pc->input.Read(pc->descriptor, MAX_INPUT_LEN);
-
-   if (mudlog.ofLevel(TRC)) {
-      mudlog << "End of get_input, here it is:\n" << pc->input << ":-  ret: " << ret << endl;
+// This is temporarily here for now as we need to be able to handle binary
+// data for telnet option negotiations. String::Read() assumes that we only
+// ever deal in \n terminated printable strings.
+ssize_t netread(int fd, char* input_buf, size_t max_read) {
+   ssize_t read_bytes;
+   read_bytes = recv(fd, input_buf, max_read, 0);
+   if ( read_bytes < 0 ) {
+      if ( errno != EAGAIN ) {
+         return(-1);
+      } else {
+         return(0);
+      }
    }
-   
-   if (ret < 0) {
-      mudlog << "Critter: " << getName() << "  Read Error: " << strerror(errno) << endl;
-   }
+   return(read_bytes);
+}
 
-   return ret;  //valid input added to input buffer, can go parse it now.
-}//get_input
+   int critter::readInput()  {
+
+      if (!pc) {
+         return -1;
+      }
+
+      errno = 0;
+      int ret;
+      //ret = pc->input.Read(pc->descriptor, MAX_INPUT_LEN);
+
+      char input_buf[4096];
+      ssize_t read_bytes = netread(pc->descriptor, input_buf, 4096);
+
+      if (mudlog.ofLevel(TRC)) {
+         mudlog << "End of get_input, here it is:\n" << pc->input << ":-  ret: " << ret << endl;
+      }
+
+      if (read_bytes < 0) {
+         mudlog << "Critter: " << getName() << "  Read Error: " << strerror(errno) << endl;
+      } else if ( read_bytes > 0 ) {
+         pc->p_handler->parse(input_buf, read_bytes);
+      }
+
+      return read_bytes;  //valid input added to input buffer, can go parse it now.
+   }//get_input
 
 
 void close_sockets(int mother) {
@@ -1713,10 +1680,10 @@ int critter::doLogOffActive() {
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In doLoseLink, critter name:  " <<  *(getName())
-             << "  room:  " << getCurRoomNum() << "  addr:  " << this
-             << endl << flush;
+         << "  room:  " << getCurRoomNum() << "  addr:  " << this
+         << endl << flush;
       mudlog << " link condition:  " << pc->link_condition
-             << endl;
+         << endl;
    }
 
    if (pc->link_condition != CON_PLAYING) {
@@ -1741,7 +1708,7 @@ int critter::doLogOffInactive() {
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "doLogOffInactive, critter:  " << *(getName())
-             << "  size of PETS:  " << PETS.size() << endl;
+         << "  size of PETS:  " << PETS.size() << endl;
    }
 
    doUngroup(1, &NULL_STRING); //take em out of their group, if in it.
@@ -1751,7 +1718,7 @@ int critter::doLogOffInactive() {
    while ((pet_ptr = pet_cll.next())) {
       if (mudlog.ofLevel(DBG)) {
          mudlog << "PETS:  Has a pet:  " <<  *(pet_ptr->getName())
-                << "  ptr_address: " << pet_ptr << endl;
+            << "  ptr_address: " << pet_ptr << endl;
       }
    }//while
 
@@ -1762,7 +1729,7 @@ int critter::doLogOffInactive() {
    while ((pet_ptr = pet_cll.next())) {
       if (mudlog.ofLevel(DBG)) {
          mudlog << "Tmp_List:  Has a pet:  " <<  *(pet_ptr->getName())
-                << "  ptr_address: " << pet_ptr << endl;
+            << "  ptr_address: " << pet_ptr << endl;
       }
    }//while
 
@@ -1774,7 +1741,7 @@ int critter::doLogOffInactive() {
    while ((pet_ptr = pet_cll.next())) {
       if (mudlog.ofLevel(DBG)) {
          mudlog << "Found a pet:  " <<  *(pet_ptr->getName())
-                << endl << flush;
+            << endl << flush;
       }
       pet_ptr->show("Your master has left the game.\n");
       pet_ptr->doBecomeNonPet();
@@ -1783,7 +1750,7 @@ int critter::doLogOffInactive() {
 
    if (PETS.size() > 0) {
       mudlog << "ERROR:  PETS.size() > 0 in doLogOffInactive:  "
-             << PETS.size() << endl << flush;
+         << PETS.size() << endl << flush;
       PETS.clear();
    }
 
@@ -1812,21 +1779,21 @@ int critter::doLogOffInactive() {
    }
 
    doShowList(this, Selectors::instance().CC_gets_info_allow,
-              Selectors::instance().CC_none, pc_list,
-              CS_PLAYER_OFF_LD_LIST_INFO,
-              getName());
+         Selectors::instance().CC_none, pc_list,
+         CS_PLAYER_OFF_LD_LIST_INFO,
+         getName());
 
    if (MASTER) {
       doBecomeNonPet();
    }
-   
+
    emote("has left the game.");
 
    leave_room_effects(*(getCurRoom()), *this, FALSE);
    breakEarthMeld();
 
    doLeaveRoom();
-   
+
    recursive_init_unload(*this); //take eq out of circulation
 
    return 1;
@@ -1844,12 +1811,16 @@ int critter::doGoLinkdead() {
       return -1;
    }
 
+   // no need of a protocol handler when they're D/C'ed.
+   delete pc->p_handler;
+   pc->p_handler = NULL;
+
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In doGoLinkDead, critter name:  " <<  *(getName())
-             << "  room:  " << getCurRoomNum() << "  addr:  " << this
-             << endl << flush;
+         << "  room:  " << getCurRoomNum() << "  addr:  " << this
+         << endl << flush;
       mudlog << " link condition:  " << pc->link_condition
-             << endl;
+         << endl;
    }
 
    if (SNOOPED_BY) {
@@ -1864,10 +1835,10 @@ int critter::doGoLinkdead() {
    }
 
    doShowList(this, Selectors::instance().CC_gets_info_allow,
-              Selectors::instance().CC_none, pc_list,
-              CS_PLAYER_LOST_CON_INFO,
-              getName());
-   
+         Selectors::instance().CC_none, pc_list,
+         CS_PLAYER_LOST_CON_INFO,
+         getName());
+
    if (MASTER) {
       Sprintf(buf, "%S has lost link.\n", getName());
       buf.Cap();
@@ -1880,12 +1851,12 @@ int critter::doGoLinkdead() {
       writeOutput();
       if (close(pc->descriptor) < 0) {
          mudlog << "ERROR: close_socket, close:  " << strerror(errno) 
-                << endl;
+            << endl;
       }//if
       else {
          sockets_connected--;
       }
-      
+
       pc->descriptor = -1;
    }//if
 
@@ -1905,12 +1876,15 @@ int critter::doLogOffNewLogin() {
       return -1;
    }
 
+   // remove the protocol handler
+   delete pc->p_handler;
+
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In doLogOffNewLogin, critter name:  " <<  *(getName())
-             << "  room:  " << getCurRoomNum() << "  addr:  " << this
-             << endl << flush;
+         << "  room:  " << getCurRoomNum() << "  addr:  " << this
+         << endl << flush;
       mudlog << " link condition:  " << pc->link_condition
-             << endl;
+         << endl;
    }
 
    if (pc->descriptor != -1) {

@@ -39,6 +39,7 @@
 #include "const.h"
 #include "Filters.h"
 #include "clients.h"
+#include "telnet_handler.h"
 
 
 extern List<critter*> new_pc_list;
@@ -64,6 +65,7 @@ void critter::startLogin() {
    pc->input = NULL_STRING;  //null out input
    show(get_page("./opening")); //opening page
    show(login_prompts[0]); 
+   show(pc->p_handler->end_of_record());
    mudlog.log(TRC, "Done w/start_login.\n");
 }//start_login
 
@@ -189,6 +191,7 @@ void critter::doLogin() {
             //         log("All done w/case 0.\n");
             break;
          case 1:  //password for new player
+
             string = pc->input.Get_Command(eos, term_by_period);
 
             if (string == "__HEGEMON__") {
@@ -231,6 +234,7 @@ void critter::doLogin() {
             if (!isUsingClient())
                show(ANSI_ECHO_ON); //echo ON
             string = pc->input.Get_Command(eos, term_by_period);
+            pc->p_handler->set_echo(false);//stop echoing for the client
             if (pc->password == string) {
                pc->password = crypt((const char*)(pc->password), "bg");
                pc->index = 3; //go choose male/female/neuter
@@ -384,6 +388,8 @@ void critter::doLogin() {
                if (!isUsingClient())
                   show(ANSI_ECHO_ON); //echo ON
 
+
+               ProtocolHandler* tmp_p_handler = pc->p_handler;
                int tmp_int = pc->descriptor;
                int tmp_index = pc->index;
                tmp_host = pc->host;
@@ -413,6 +419,7 @@ void critter::doLogin() {
                      }//if
                      
                      fileRead(rfile, TRUE);
+
                   break;
                }
 
@@ -451,6 +458,7 @@ void critter::doLogin() {
                   setClient(HEGEMON);
                }
                
+               pc->p_handler = tmp_p_handler;
                pc->descriptor = tmp_int;
                pc->host = tmp_host;
                pc->index = tmp_index;
@@ -497,7 +505,12 @@ void critter::doLogin() {
                      old_ptr->pc->descriptor = pc->descriptor;
                      pc->descriptor = tmp_old_desc;
                      
-                     /*  set old player back in action */
+                     //  set old player back in action 
+                     // stick our current protocol handler into the old critter
+                     // and let our protocol handler know that it has been moved.
+                     old_ptr->pc->p_handler = pc->p_handler;
+                     old_ptr->pc->p_handler->newCritter(old_ptr);
+
                      old_ptr->cur_stats[0] &= ~32;      //make em visable again
                      old_ptr->pc->link_condition = CON_PLAYING;
                      old_ptr->pc->index = 0;
@@ -969,6 +982,10 @@ int  quit_do_login_old(critter& pc) {
 
    update_skills(pc); //sync them up, does not necessarly add new ones
    pc.PC_FLAGS.turn_off(33); //make sure they aren't marked as afk
+
+   //make sure they echo for themselves
+
+   pc.pc->p_handler->set_echo(false);
 
    pc.show(get_page("./motd")); //message of the day
 

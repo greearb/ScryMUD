@@ -42,6 +42,8 @@
 #include "battle.h"
 #include <stdarg.h>
 #include "clients.h"
+#include "telnet_handler.h"
+#include "hegemon_handler.h"
 
 const char* PcPositionStrings[] = {"stand", "sit", "rest", "sleep", "meditate",
                                    "stun", "dead", "prone"};
@@ -1338,6 +1340,7 @@ int pc_data::_cnt = 0;
 
 pc_data::pc_data() {
    _cnt++;
+   p_handler = NULL;
    post_msg = NULL;
    snoop_by = NULL;
    snooping = NULL;
@@ -1348,6 +1351,7 @@ pc_data::pc_data() {
 
 pc_data::pc_data(const pc_data& source) {
    _cnt++;
+   p_handler = NULL;
    post_msg = NULL;
    snoop_by = NULL;
    snooping = NULL;
@@ -1358,6 +1362,7 @@ pc_data::pc_data(const pc_data& source) {
 
 pc_data::~pc_data() {
    _cnt--;
+
    Clear();
 }//destructor
  
@@ -1419,6 +1424,7 @@ void pc_data::Clear() {
    last_login_time = 0; //in seconds, since 1970 etc...
    total_time_online = 0; //in seconds
    lines_on_page = 20;
+   columns_on_page = 80;
    if (w_eye_obj) {
       w_eye_obj->obj_proc->w_eye_owner = NULL;
       w_eye_obj = NULL;
@@ -1461,6 +1467,7 @@ pc_data& pc_data::operator=(const pc_data& source) {
    imm_data = new immort_data(*(source.imm_data));
    mode = source.mode;
    lines_on_page = source.lines_on_page;
+   columns_on_page = source.columns_on_page;
    index = source.index;
    hunger = source.hunger;
    thirst = source.thirst;
@@ -3732,6 +3739,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
          pc = new pc_data;
       }//if
       pc->Read(this, ofile);  
+
       pc->file_format_version = format_version;
    }//if
    else { //its a mob
@@ -4292,13 +4300,6 @@ void critter::doPrompt() {
       return;
    }
 
-   char go_ahead_str[] =
-   {
-      (char) IAC,
-      (char) GA,
-      (char) 0
-   };
-
    // for visible exits
    Cell<door*> cll(getCurRoom()->doors);
    door* dr_ptr;
@@ -4448,9 +4449,7 @@ void critter::doPrompt() {
       targ.Append(tmp);
    }
 
-   if (! isUsingClient()) {
-      targ.Append(go_ahead_str);
-   }
+   targ.Append(pc->p_handler->end_of_record());
 
    show(targ);
 
@@ -4591,11 +4590,31 @@ int critter::whichClient() {
 }//whichClient   
 
 bool critter::setClient(int which) {
-   if (NUM_CLIENTS < which)
+
+   if (NUM_CLIENTS < which) {
       return false;
-   if(!pc->pc_data_flags.get(5))
+   }
+
+   if ( pc->client == which ) {
       return false;
+   }
+
    pc->client = which;
+
+   switch ( which ) {
+
+      case HEGEMON:
+         delete pc->p_handler;
+         pc->p_handler = new HegemonHandler(this);
+      break;
+
+      case NO_CLIENT:
+         delete pc->p_handler;
+         pc->p_handler = new TelnetHandler(this);
+      break;
+
+   };
+
    return true;
 }
 

@@ -40,6 +40,7 @@
 #include "const.h"
 #include "lang_strings.h"
 #include "battle.h"
+#include "protocol_handler.h"
 
 ///********************  temp crit data  *****************************///
 
@@ -552,6 +553,7 @@ protected:
    static int _cnt;
 
 public:
+   ProtocolHandler* p_handler;
    String password;
    String input;
    String output;
@@ -581,6 +583,7 @@ public:
    short rent_year; //year of last rent
    short rent_day; //day of last rent
    short lines_on_page; //used to page output
+   short columns_on_page; //will be used to format output better
    int age;
    String host;
    short link_condition; //1 CON_PLAYING, 2 CON_LINKDEAD, 3 CON_LOGGING_IN

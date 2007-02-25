@@ -616,9 +616,9 @@ char* login_prompts[] = {
 
    //"\n\x9B\x4D\x31\x32\x68\nChoose a Password:  ", 
    //"\n\x9B\x4D\x31\x32\x68\nEnter your password again for verification:  ",
-   "\nChoose a Password (Will be Echoed):  ", 
+   "\nChoose a Password (may be echoed):  ", 
       "\nEnter your password again for verification:  ",
-      "(M)ale, (F)emale, or (N)euter:  ",
+      "\n(M)ale, (F)emale, or (N)euter:  ",
       "\n\nSelection of Classes: \n\n"
          "   Your class may affect your stats and will have an influence on\n"
          "   the skills you are able to acquire.\n"

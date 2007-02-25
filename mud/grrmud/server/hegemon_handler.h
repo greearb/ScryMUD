@@ -31,16 +31,22 @@ class HegemonHandler : public ProtocolHandler {
    protected:
       static int _cnt;
 
+      enum text_state { ST_NORM, ST_SEMICOLON };
+
+      text_state current_text_state;
+      std::string out_buf;
       critter* my_critter;
 
    public:
 
       static int getInstanceCount() { return _cnt; }
 
-      HegemonHandler(critter *c_ptr) : my_critter(c_ptr) { HegemonHandler::_cnt++; };
+      HegemonHandler(critter *c_ptr);
       ~HegemonHandler() { _cnt--; };
 
-      void parse(const char* input_buf) { my_critter->pc->input += input_buf; }
+      void newCritter(critter* c_ptr) { my_critter = c_ptr; };
+
+      bool parse(const char* input_buf, size_t len);
       void set_echo(bool on_off) { }
       const char* end_of_record() const { return(""); }
 };
