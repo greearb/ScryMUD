@@ -30,7 +30,11 @@
 extern LogStream mudlog;
 
 int TelnetHandler::_cnt = 0;
-const char TelnetHandler::eor_str[2] = { IAC, EOR };
+
+//the '\0's are temporary until our send buffers start understanding binary
+//data and stop using strlen() and friends
+const char TelnetHandler::eor_str[] = { IAC, EOR, '\0'};
+const char TelnetHandler::ttype_req_str[] = { IAC, SB, TELOPT_TTYPE, TELQUAL_SEND, IAC, SE, '\0'};
 
 TelnetHandler::TelnetHandler(critter* c_ptr) {
 
@@ -41,12 +45,18 @@ TelnetHandler::TelnetHandler(critter* c_ptr) {
    current_text_state = ST_NORM;
 
    //memset is probably faster, but oh well.
-   for(unsigned int i=0;i<sizeof(my_want_states);my_want_states[i++]=false);
+   for(unsigned int i=0;i<sizeof(my_offer_states);my_offer_states[i++]=false);
+   for(unsigned int i=0;i<sizeof(my_request_states);my_request_states[i++]=false);
    for(unsigned int i=0;i<sizeof(my_option_states);my_option_states[i++]=false);
 
+
+   my_request_states[TELOPT_NAWS] = true;
    send(DO,TELOPT_NAWS);
 
-   my_want_states[TELOPT_EOR] = true;
+   my_request_states[TELOPT_TTYPE] = true;
+   send(DO,TELOPT_TTYPE);
+
+   my_offer_states[TELOPT_EOR] = true;
    send(WILL,TELOPT_EOR);
    send(WONT,TELOPT_ECHO);
 
@@ -62,7 +72,18 @@ void TelnetHandler::send(int action, int option) {
 
    my_critter->pc->output += msg;
 
-}//TelnetHandler::send()
+   if ( mudlog.ofLevel(DBG) ) {
+      mudlog << "TelnetHandler::send(int action, int option) sent: "
+         << IAC << action << option << endl;
+   }
+
+}//TelnetHandler::send(int, int)
+
+void TelnetHandler::send(const char* msg) {
+
+   my_critter->pc->output += msg;
+
+}//TelnetHandler::send(const char*)
 
 //handle DOs
 void TelnetHandler::rcv_do(int opt) {
@@ -70,7 +91,9 @@ void TelnetHandler::rcv_do(int opt) {
    bool need_to_respond = false;
    bool will = false;
 
-   mudlog << "TelnetHandler::rcv_do received: IAC DO " << opt << endl;
+   if ( mudlog.ofLevel(DBG) ) {
+      mudlog << "TelnetHandler::rcv_do received: IAC DO " << opt << endl;
+   }
 
    //If we are already doing what they're asking for, we just ignore that they
    //asked. this is the behaviour required by the rfc.
@@ -78,9 +101,9 @@ void TelnetHandler::rcv_do(int opt) {
 
       //If we did not start the conversation with a WILL offer, we need to
       //respond with a WILL.
-      if ( my_want_states[opt] ) {
+      if ( my_offer_states[opt] ) {
          need_to_respond = false;
-         my_want_states[opt] = false;
+         my_offer_states[opt] = false;
       }  else {
          need_to_respond = true;
       }
@@ -88,8 +111,14 @@ void TelnetHandler::rcv_do(int opt) {
       switch ( opt ) {
 
          case TELOPT_ECHO:
+            my_option_states[opt] = will = true;
+         break;
+
          case TELOPT_EOR:
             my_option_states[opt] = will = true;
+            //sometimes, most the time we've managed to spew out the login
+            //prompt before the client gets a chance to ask for EOR markers.
+            my_critter->pc->output += end_of_record();
          break;
 
          default:
@@ -117,18 +146,30 @@ void TelnetHandler::rcv_do(int opt) {
 void TelnetHandler::rcv_dont(int opt) {
    bool need_to_respond = false;
 
-   mudlog << "TelnetHandler::rcv_dont received: IAC DONT " << opt << endl;
+   if ( mudlog.ofLevel(DBG) ) {
+      mudlog << "TelnetHandler::rcv_dont received: IAC DONT " << opt << endl;
+   }
 
    //the rfc requires that we never refuse to turn off a feature and that we
    //be willing to drop down to basics.
 
    if ( my_option_states[opt] ) {
+
       my_option_states[opt] = false;
       need_to_respond = true;
+
+      if ( mudlog.ofLevel(DBG) ) {
+         mudlog << "TelnetHandler::rcv_dont: peer asked us not to " << opt << endl;
+      }
+
    } else {
-      if ( my_want_states[opt] ) {
-         mudlog << "TelnetHandler::rcv_dont : Asked for, but was denied option " << opt << endl;
-         my_want_states[opt] = false;
+      if ( my_offer_states[opt] ) {
+
+         if ( mudlog.ofLevel(DBG) ) {
+            mudlog << "TelnetHandler::rcv_dont : Asked for, but was denied option " << opt << endl;
+         }
+
+         my_offer_states[opt] = false;
       }
       need_to_respond = false;
    }
@@ -141,17 +182,66 @@ void TelnetHandler::rcv_dont(int opt) {
 
 //handle WILLs
 void TelnetHandler::rcv_will(int opt) {
-   // I don't expect to have to deal with these, but for now I'll log them to
-   // find out if I'm wrong.
-   mudlog << "TelnetHandler::rcv_will received: IAC WILL " << opt << endl;
+   bool need_to_respond = false;
+   bool allow_do = false;
+
+   if ( my_request_states[opt] ) {
+      my_request_states[opt] = false;
+   } else {
+      need_to_respond = true;
+   }
+
+   switch ( opt ) {
+
+      case TELOPT_NAWS:
+         allow_do = true;
+      break;
+
+      case TELOPT_TTYPE:
+         allow_do = true;
+         send(ttype_req_str);
+      break;
+
+      case TELOPT_LINEMODE:
+         allow_do = true;
+      break;
+
+      default:
+         allow_do = false;
+      break;
+
+   }
+
+   if ( need_to_respond ) {
+      send(allow_do ? DO : DONT, opt);
+   }
+
+   if ( mudlog.ofLevel(DBG) ) {
+      mudlog << "TelnetHandler::rcv_will received: IAC WILL " << opt << endl;
+   }
+
 }//TelnetHandler::rcv_will()
 
 //handle WONTs
 void TelnetHandler::rcv_wont(int opt) {
-   // The only thing that might come back to us here is NAWS as I don't plan
-   // on asking the client to do much more than that. so for now, just log the
-   // fact that they said they wouldn't do something.
-   mudlog << "TelnetHandler::rcv_wont received: IAC WONT " << opt << endl;
+
+   if ( my_request_states[opt] ) {
+
+      my_request_states[opt] = false;
+
+      if ( mudlog.ofLevel(DBG) ) {
+         mudlog << "TelnetHandler::rcv_wont received IAC WONT for an option we requested: "
+            << opt << endl;
+      }
+
+   } else {
+
+      if ( mudlog.ofLevel(DBG) ) {
+         mudlog << "TelnetHandler::rcv_wont received: IAC WONT " << opt << endl;
+      }
+
+   }
+
 }//TelnetHandler::rcv_wont()
 
 bool TelnetHandler::parse(const char* input_buf, size_t len) {
@@ -357,7 +447,7 @@ void TelnetHandler::set_echo(bool on_off) {
    switch ( on_off ) {
 
       case true:
-         my_want_states[TELOPT_ECHO] = true;
+         my_offer_states[TELOPT_ECHO] = true;
          send(WILL,TELOPT_ECHO);
       break;
 
@@ -373,6 +463,59 @@ void TelnetHandler::set_echo(bool on_off) {
 
 }//TelnetHandler::set_echo()
 
+void TelnetHandler::process_naws() {
+
+   const char* p = sb_buf.data();
+   short width, height;
+   width = height = -1;
+
+   if ( sb_buf.size() != 5 ) {//malformed
+      //NAWS should be: NAWS WIDTH[1] WIDTH[0] HEIGHT[1] HEIGHT[0]
+
+      if ( mudlog.ofLevel(DBG) ) {
+         mudlog
+            << "TelnetHandler::process_subopt() received malformed NAWS of len "
+            << sb_buf.size()
+            << endl;
+      }
+
+   } else {//tentatively good data
+
+      width = *(short *)(p+1);
+      height = *(short *)(p+3);
+
+      width = ntohs(width);
+      height = ntohs(height);
+
+      my_critter->pc->lines_on_page = height;
+      my_critter->pc->columns_on_page = width;
+
+      if ( mudlog.ofLevel(DBG) ) {
+         mudlog << "TelnetHandler::process_naws() received NAWS "
+            << "width: " << width << " height: " << height << endl;
+      }
+   }
+
+}//TelnetHandler::process_naws()
+
+void TelnetHandler::process_ttype() {
+
+   //TERMINAL_TYPE IS string
+   if ( sb_buf.size() > 3 ) {
+      unsigned int i = 1;
+      if ( sb_buf[i] == TELQUAL_IS ) {
+         i += 1;
+         terminal_type = sb_buf.substr(i, sb_buf.size()-i);
+
+         if ( mudlog.ofLevel(DBG) ) {
+            mudlog << "TelnetHandler::process_ttype() received: "
+               << terminal_type << endl;
+         }
+      }
+   }
+
+}//TelnetHandler::process_ttype()
+
 void TelnetHandler::process_subopt() {
    //for now we ignore everything but NAWS, and even then just spew some log
    //information about it as we haven't established a place to store it in the
@@ -384,31 +527,13 @@ void TelnetHandler::process_subopt() {
    const char* p = sb_buf.data();
 
    switch ( *p ) {
-      case TELOPT_NAWS: {
-         short width, height;
 
-         width = height = -1;
-         if ( sb_buf.size() != 5 ) {
-            //NAWS should be: NAWS WIDTH[1] WIDTH[0] HEIGHT[1] HEIGHT[0]
-            mudlog
-               << "TelnetHandler::process_subopt() received malformed NAWS of len "
-               << sb_buf.size()
-               << endl;
-            break;
-         }
+      case TELOPT_NAWS:
+         process_naws();
+      break;
 
-         width = *(short *)(p+1);
-         height = *(short *)(p+3);
-
-         width = ntohs(width);
-         height = ntohs(height);
-
-         my_critter->pc->lines_on_page = height;
-         my_critter->pc->columns_on_page = width;
-
-         mudlog << "TelnetHandler::process_subopt() received NAWS "
-            << "width: " << width << " height: " << height << endl;
-      }//TELOPT_NAWS
+      case TELOPT_TTYPE:
+         process_ttype();
       break;
 
       default:

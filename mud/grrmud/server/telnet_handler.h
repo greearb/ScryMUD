@@ -32,7 +32,8 @@ class TelnetHandler : public ProtocolHandler {
 
    protected:
       static int _cnt;
-      static const char eor_str[2];
+      static const char eor_str[];
+      static const char ttype_req_str[];
 
       enum state { ST_TEXT, ST_IAC, ST_DO, ST_DONT, ST_WILL, ST_WONT, ST_SB, ST_SB_IAC };
       enum text_state { ST_NORM, ST_SEMICOLON };
@@ -40,11 +41,13 @@ class TelnetHandler : public ProtocolHandler {
       state current_state;
       text_state current_text_state;
       std::string sb_buf;
+      std::string terminal_type;
       std::string out_buf;
       critter* my_critter;
 
-      bool my_want_states[256];  //things I've requested or offered.
-      bool my_option_states[256];//the current state of things.
+      bool my_offer_states[256];     //things I've requested or offered.
+      bool my_request_states[256];  //things I've requested.
+      bool my_option_states[256];   //the current state of things.
 
       void rcv_do(int opt);
       void rcv_dont(int opt);
@@ -53,9 +56,13 @@ class TelnetHandler : public ProtocolHandler {
 
       void process_subopt();
       void process_out_buf();
+      void process_naws();
+      void process_ttype();
 
       //inserts IAC action option into my_critter's outbuf.
       void send(int action, int option);
+      //append an arbitrary string to my_critter's outbuf.
+      void send(const char* msg);
 
       bool should_echo() const;
 
