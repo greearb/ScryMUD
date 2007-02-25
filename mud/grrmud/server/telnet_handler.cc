@@ -46,7 +46,7 @@ TelnetHandler::TelnetHandler(critter* c_ptr) {
 
    send(DO,TELOPT_NAWS);
 
-   my_option_states[TELOPT_EOR] = true;
+   my_want_states[TELOPT_EOR] = true;
    send(WILL,TELOPT_EOR);
    send(WONT,TELOPT_ECHO);
 
@@ -126,6 +126,10 @@ void TelnetHandler::rcv_dont(int opt) {
       my_option_states[opt] = false;
       need_to_respond = true;
    } else {
+      if ( my_want_states[opt] ) {
+         mudlog << "TelnetHandler::rcv_dont : Asked for, but was denied option " << opt << endl;
+         my_want_states[opt] = false;
+      }
       need_to_respond = false;
    }
 
