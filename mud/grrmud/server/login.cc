@@ -508,8 +508,14 @@ void critter::doLogin() {
                      //  set old player back in action 
                      // stick our current protocol handler into the old critter
                      // and let our protocol handler know that it has been moved.
+                     if ( old_ptr->pc->p_handler ) {
+                        delete old_ptr->pc->p_handler;
+                     }
                      old_ptr->pc->p_handler = pc->p_handler;
                      old_ptr->pc->p_handler->newCritter(old_ptr);
+                     // set the current protocol_handler to NULL so it doesn't
+                     // get deleted (we're going to use it in old_ptr)
+                     pc->p_handler = NULL;
 
                      old_ptr->cur_stats[0] &= ~32;      //make em visable again
                      old_ptr->pc->link_condition = CON_PLAYING;

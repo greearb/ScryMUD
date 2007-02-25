@@ -1633,11 +1633,11 @@ ssize_t netread(int fd, char* input_buf, size_t max_read) {
       }
 
       errno = 0;
-      int ret;
       //ret = pc->input.Read(pc->descriptor, MAX_INPUT_LEN);
 
       char input_buf[4096];
       ssize_t read_bytes = netread(pc->descriptor, input_buf, 4096);
+      ssize_t ret = read_bytes;
 
       if (mudlog.ofLevel(TRC)) {
          mudlog << "End of get_input, here it is:\n" << pc->input << ":-  ret: " << ret << endl;
@@ -1812,8 +1812,10 @@ int critter::doGoLinkdead() {
    }
 
    // no need of a protocol handler when they're D/C'ed.
-   delete pc->p_handler;
-   pc->p_handler = NULL;
+   if ( pc->p_handler ) {
+      delete pc->p_handler;
+      pc->p_handler = NULL;
+   }
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In doGoLinkDead, critter name:  " <<  *(getName())
@@ -1877,7 +1879,10 @@ int critter::doLogOffNewLogin() {
    }
 
    // remove the protocol handler
-   delete pc->p_handler;
+   if ( pc->p_handler ) {
+      delete pc->p_handler;
+      pc->p_handler = NULL;
+   }
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In doLogOffNewLogin, critter name:  " <<  *(getName())
