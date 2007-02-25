@@ -40,6 +40,7 @@
 #include "Filters.h"
 #include "clients.h"
 #include "telnet_handler.h"
+#include "command3.h"
 
 
 extern List<critter*> new_pc_list;
@@ -100,6 +101,15 @@ void critter::doLogin() {
          {
          case 0:  /* get the name.. */
             string = pc->input.Get_Command(eos, term_by_period);
+
+            //if someone logs in as "who", show them who's on and hang up on
+            //them
+            if (string == "who") {
+               SEE_BIT = 1024;
+               who(*this);
+               setMode(MODE_LOGOFF_NEWBIE_PLEASE);
+               break;
+            }
 
             if (string == "__HEGEMON__") {
                using_client(*this);
@@ -508,14 +518,14 @@ void critter::doLogin() {
                      //  set old player back in action 
                      // stick our current protocol handler into the old critter
                      // and let our protocol handler know that it has been moved.
-                     if ( old_ptr->pc->p_handler ) {
-                        delete old_ptr->pc->p_handler;
-                     }
+                     ProtocolHandler* tmp_p_handler = old_ptr->pc->p_handler;
                      old_ptr->pc->p_handler = pc->p_handler;
                      old_ptr->pc->p_handler->newCritter(old_ptr);
-                     // set the current protocol_handler to NULL so it doesn't
-                     // get deleted (we're going to use it in old_ptr)
-                     pc->p_handler = NULL;
+                     pc->p_handler = tmp_p_handler;
+
+                     //for good measure, make sure they get to see what they
+                     //type.
+                     old_ptr->pc->p_handler->set_echo(false);
 
                      old_ptr->cur_stats[0] &= ~32;      //make em visable again
                      old_ptr->pc->link_condition = CON_PLAYING;
@@ -924,6 +934,8 @@ int  quit_do_login_new(critter& pc) {
          pc);
 
    pc.save(); //make sure they have a Pfile
+
+   pc.pc->p_handler->set_echo(false);
 
    return 0;
 }//quit_do_login_new()

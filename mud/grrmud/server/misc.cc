@@ -1275,23 +1275,33 @@ void decrease_timed_affecting_pcs() {  //will decrease all
    stat_spell_cell* sp_ptr;
    String buf(100);
 
+   //log anyone who isn't isn't >= IMM level 2 off after 30 ticks of
+   //inactivity.
    while ((crit_ptr = crit_cell.next())) {
-      if ((++(crit_ptr->pc->idle_ticks) > 30) && 
-          (!crit_ptr->pc->imm_data || (crit_ptr->IMM_LEVEL < 2))) {
+
+      //This used to be a prefix increment in the conditional, but that means
+      //that it could be short-circuited depending on the compiler.
+      crit_ptr->pc->idle_ticks++;
+
+      if (
+            (crit_ptr->pc->idle_ticks > 30)
+            && ( (!crit_ptr->pc->imm_data) || (crit_ptr->IMM_LEVEL < 2) )
+         ) {
+
          if (mudlog.ofLevel(DBG)) {
-            mudlog << "Logging off player in decrease_timed_affecting_pcs,"
-                   << " name:  " << *(name_of_crit(*crit_ptr, ~0)) 
-                   << "  address:  " << crit_ptr << "  ticks:  "
-                   << crit_ptr->pc->idle_ticks << endl;
+            mudlog << "Logging off player in decrease_timed_affecting_pcs," << " name:  " <<
+               *(name_of_crit(*crit_ptr, ~0)) << "  address:  "
+               << crit_ptr << " ticks:  " << crit_ptr->pc->idle_ticks << endl;
          }
+
          log_out(*crit_ptr);
-      }//if
+      }
 
       if (TRUE /*crit_ptr->pc->mode == MODE_NORMAL*/) {
          crit_ptr->affected_by.head(sp_cell);
          sp_ptr = sp_cell.next();
          while (sp_ptr) {
-               if (sp_ptr->bonus_duration != -1)
+            if (sp_ptr->bonus_duration != -1)
                sp_ptr->bonus_duration--;
             if (sp_ptr->bonus_duration == 0) {
                rem_effects_crit(sp_ptr->stat_spell, *crit_ptr, TRUE, sp_ptr->bonus_value);
@@ -1317,7 +1327,7 @@ void decrease_timed_affecting_pcs() {  //will decrease all
 
          if (crit_ptr->MODE == MODE_NORMAL) {
             if (crit_ptr->HUNGER == 0)
-                     crit_ptr->show("You are famished.\n");
+               crit_ptr->show("You are famished.\n");
             if (crit_ptr->THIRST == 0)
                crit_ptr->show("You are thirsty.\n");
             if (crit_ptr->DRUGGED == 0) {
@@ -1326,26 +1336,26 @@ void decrease_timed_affecting_pcs() {  //will decrease all
             }//if
          }//if
 
-                /* check for lights about to go out */
+         /* check for lights about to go out */
          if (crit_ptr->EQ[11]) {
             if (!crit_ptr->EQ[11]->IN_LIST) {
                crit_ptr->EQ[11] = obj_to_sobj(*(crit_ptr->EQ[11]), 
-                                              &(crit_ptr->inv), crit_ptr->getCurRoomNum());
+                     &(crit_ptr->inv), crit_ptr->getCurRoomNum());
             }//if
             if (crit_ptr->EQ[11]->extras[0] == 1) {
                Sprintf(buf, "%S flickers.\n", 
-                       long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
+                     long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
                crit_ptr->show(buf);
             }//if
          }//if
 
-                /* check for lights gone out */
+         /* check for lights gone out */
          if (crit_ptr->EQ[11]) {
             if (crit_ptr->EQ[11]->extras[0] == 0) {
                crit_ptr->EQ[11]->extras[0] = -2;
                Sprintf(buf, "%S dims and glows its last.\n", 
-                       long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
+                     long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
                crit_ptr->show(buf);
                crit_ptr->crit_flags.turn_off(USING_LIGHT_SOURCE);
@@ -1372,7 +1382,7 @@ void decrease_timed_affecting_lds() {
    String buf(100);
 
    while ((crit_ptr = crit_cell.next())) {
-      if (++(crit_ptr->pc->idle_ticks) > 30) {
+      if (++(crit_ptr->pc->idle_ticks) > 2) {
          mudlog << "Logging off player in decrease_timed_affecting_lds,"
                 << " name:  " << *(name_of_crit(*crit_ptr, ~0)) 
                 << "  address:  " << crit_ptr << endl;

@@ -269,7 +269,7 @@ int critter::processInput(String& input, short do_sub, int script_driven,
       if (MODE == MODE_LOGGING_IN) {
          doLogin();
          //log("Do login finished...\n");
-         if (MODE != MODE_NORMAL) {
+         if ( ( MODE != MODE_NORMAL) && ( MODE != MODE_LOGOFF_NEWBIE_PLEASE) ) {
             show(login_prompts[pc->index]);
             show(pc->p_handler->end_of_record());
             // turn on server side echoing for password blanking when appropriate

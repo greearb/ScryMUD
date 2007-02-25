@@ -864,6 +864,7 @@ void game_loop(int s)  {
             tmp_ptr = pc_ptr;
             pc_ptr = pc_list.lose(pc_cell);
             tmp_ptr->doLogOffNewLogin();
+            delete tmp_ptr->pc->p_handler;
             delete tmp_ptr;
          }//if
          else if (pc_ptr->getMode() == MODE_QUIT_ME_PLEASE)  {
@@ -876,6 +877,7 @@ void game_loop(int s)  {
             else {
                tmp_ptr->doLogOffActive();
             }
+            delete tmp_ptr->pc->p_handler;
             delete tmp_ptr;
          }//else
          else {
@@ -897,6 +899,7 @@ void game_loop(int s)  {
             else {
                tmp_ptr->doLogOffInactive();
             }
+            delete tmp_ptr->pc->p_handler;
             delete tmp_ptr;
          }//else
          else {
@@ -1000,27 +1003,19 @@ void game_loop(int s)  {
             FD_CLR(pc_ptr->getDescriptor(), &input_set);
             FD_CLR(pc_ptr->getDescriptor(), &output_set);
             mudlog << "WARNING:  pc -:" << pc_ptr->getName() << " going linkdead because of exc_set.\n";
-            pc_ptr->setMode(MODE_GO_LINKDEAD_PLEASE);
+            pc_ptr->pc->SocketProblem();
          }//if
       }//while
 
-        //log("Get input.\n");
-                        /* get input */
+      //log("Get input.\n");
+      /* get input */
       pc_list.head(pc_cell);
       while ((pc_ptr = pc_cell.next())) {
          if ((pc_ptr->MODE != MODE_GO_LINKDEAD_PLEASE) &&
-             (pc_ptr->MODE != MODE_LOGOFF_NEWBIE_PLEASE) &&
-             (pc_ptr->MODE != MODE_QUIT_ME_PLEASE)) {
-              if (FD_ISSET(pc_ptr->getDescriptor(), &input_set)) {
-               if (pc_ptr->readInput() < 0) { 
-                  mudlog.log(DBG, "Kicked out by negative get_input.\n");
-                  if (pc_ptr->pc->link_condition == CON_LOGGING_IN) {
-                     pc_ptr->setMode(MODE_LOGOFF_NEWBIE_PLEASE);
-                  }
-                  else {
-                     pc_ptr->setMode(MODE_GO_LINKDEAD_PLEASE);
-                  }
-               }//if
+               (pc_ptr->MODE != MODE_LOGOFF_NEWBIE_PLEASE) &&
+               (pc_ptr->MODE != MODE_QUIT_ME_PLEASE)) {
+            if (FD_ISSET(pc_ptr->getDescriptor(), &input_set)) {
+               pc_ptr->readInput();
             }//if
          }//if
       }//while
@@ -1164,8 +1159,7 @@ void game_loop(int s)  {
              (pc_ptr->MODE != MODE_LOGOFF_NEWBIE_PLEASE) &&
              (pc_ptr->MODE != MODE_QUIT_ME_PLEASE)) {
             if (pc_ptr->writeOutput() < 0) { 
-               mudlog.log(DBG, "Kicked out by negative write_output.\n");
-               pc_ptr->setMode(MODE_GO_LINKDEAD_PLEASE);
+               pc_ptr->pc->SocketProblem();
             }//if
          }//if
       }//while
@@ -1451,6 +1445,7 @@ int critter::createWithDescriptor(int s) {
    mudlog.log(TRC, "In createWithDescriptor\n");
 
    if ((desc = new_connection(s)) < 0) {
+      delete newd->pc->p_handler;
       delete newd;
       return -1;
    }//if
@@ -1462,6 +1457,7 @@ int critter::createWithDescriptor(int s) {
       write(desc, str, strlen(str)); 
       mudlog.log(WRN, "WARNING:  the mud was full.\n");
       close(desc);
+      delete newd->pc->p_handler;
       delete newd;
       return -1;
    }//if
@@ -1509,6 +1505,7 @@ the ban removed, please contact greear@cyberhighway.net to discuss the matter.";
       Sprintf(buf2, "WARNING:  Connection attempt denied from [%S]", 
               &(newd->pc->host));
       mudlog.log(WRN, buf2);
+      delete newd->pc->p_handler;
       delete newd;
       return -1;
    }//if
@@ -1622,35 +1619,40 @@ ssize_t netread(int fd, char* input_buf, size_t max_read) {
       } else {
          return(0);
       }
+   } else if ( read_bytes == 0 ) {// the other end performed an orderly shutdown
+      return(-2);
    }
+      
    return(read_bytes);
 }
 
-   int critter::readInput()  {
+int critter::readInput()  {
 
-      if (!pc) {
-         return -1;
-      }
+   if (!pc) {
+      mudlog << "(in critter::readInput) Critter: " << getName()
+         << " does not have pc_data." << endl;
+      return -1;
+   }
 
-      errno = 0;
-      //ret = pc->input.Read(pc->descriptor, MAX_INPUT_LEN);
+   errno = 0;
 
-      char input_buf[4096];
-      ssize_t read_bytes = netread(pc->descriptor, input_buf, 4096);
-      ssize_t ret = read_bytes;
+   char input_buf[4096];
+   ssize_t read_bytes = netread(pc->descriptor, input_buf, 4096);
 
-      if (mudlog.ofLevel(TRC)) {
-         mudlog << "End of get_input, here it is:\n" << pc->input << ":-  ret: " << ret << endl;
-      }
+   if ( read_bytes < 0 ) {
+      mudlog << "Critter: " << getName() << "  Read Error: " << strerror(errno) << endl;
+      pc->SocketProblem();
+      return(0);
+   }
 
-      if (read_bytes < 0) {
-         mudlog << "Critter: " << getName() << "  Read Error: " << strerror(errno) << endl;
-      } else if ( read_bytes > 0 ) {
-         pc->p_handler->parse(input_buf, read_bytes);
-      }
+   if (mudlog.ofLevel(TRC)) {
+      mudlog << "End of get_input, here it is:\n" << pc->input << ":-  ret: " << read_bytes << endl;
+   }
 
-      return read_bytes;  //valid input added to input buffer, can go parse it now.
-   }//get_input
+   pc->p_handler->parse(input_buf, read_bytes);
+
+   return read_bytes;  //valid input added to input buffer, can go parse it now.
+}//get_input
 
 
 void close_sockets(int mother) {
@@ -1811,12 +1813,6 @@ int critter::doGoLinkdead() {
       return -1;
    }
 
-   // no need of a protocol handler when they're D/C'ed.
-   if ( pc->p_handler ) {
-      delete pc->p_handler;
-      pc->p_handler = NULL;
-   }
-
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In doGoLinkDead, critter name:  " <<  *(getName())
          << "  room:  " << getCurRoomNum() << "  addr:  " << this
@@ -1876,12 +1872,6 @@ int critter::doLogOffNewLogin() {
    if (!isPc()) {
       mudlog.log(ERROR, "ERROR, doLogOffNewLogin on npc.\n");
       return -1;
-   }
-
-   // remove the protocol handler
-   if ( pc->p_handler ) {
-      delete pc->p_handler;
-      pc->p_handler = NULL;
    }
 
    if (mudlog.ofLevel(DBG)) {

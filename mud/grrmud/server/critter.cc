@@ -1346,6 +1346,7 @@ pc_data::pc_data() {
    snooping = NULL;
    imm_data = NULL;
    w_eye_obj = NULL;
+   client = NO_CLIENT;
    Clear();
 }//constructor
 
@@ -1357,6 +1358,7 @@ pc_data::pc_data(const pc_data& source) {
    snooping = NULL;
    imm_data = NULL;
    w_eye_obj = NULL;
+   client = NO_CLIENT;
    *this = source;
 }//constructor
 
@@ -1734,6 +1736,47 @@ void pc_data::Read(critter* parent, ifstream& ofile) {
 
    ofile.getline(tmp, 80); //grabs extra line/comment
 }//Read()       
+
+//This gets called when we have a socket problem and need to transistion to
+//some other state.
+void pc_data::SocketProblem() {
+
+   switch ( link_condition ) {
+
+      case 1://CON_PLAYING
+         link_condition = 2;
+      break;
+
+      case 2://CON_LINKDEAD
+         mudlog << "Already linkdead but getting more socket errors." << endl;
+      break;
+
+      case 3://CON_LOGGING_IN
+         link_condition = 2;
+      break;
+   };
+
+   switch ( mode ) {
+
+      case MODE_LOGGING_IN:// safe to go bye bye from here
+         mode = MODE_LOGOFF_NEWBIE_PLEASE;
+      break;
+
+      case MODE_QUIT_ME_PLEASE:
+      case MODE_LOGOFF_NEWBIE_PLEASE:
+         mudlog << "Got socket errors while awaiting logoff." << endl;
+      break;
+
+      case MODE_GO_LINKDEAD_PLEASE:
+         mudlog << "Already in MODE_GO_LINKDEAD_PLEASE and received socket errors." << endl;
+      break;
+
+      default:
+         mode = MODE_GO_LINKDEAD_PLEASE;
+
+   }
+
+}//pc_data::SocketProblem()
 
 
 //*************************************************************//

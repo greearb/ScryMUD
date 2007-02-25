@@ -48,6 +48,7 @@ TelnetHandler::TelnetHandler(critter* c_ptr) {
 
    my_option_states[TELOPT_EOR] = true;
    send(WILL,TELOPT_EOR);
+   send(WONT,TELOPT_ECHO);
 
 }//Constructor: TelnetHandler
 

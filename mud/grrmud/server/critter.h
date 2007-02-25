@@ -501,7 +501,7 @@ public:
    void incrementTicksOld() { ticks_old++; }
    int getTicksTillFreedom() const { return ticks_till_freedom; }
    void setTicksTillFreedom(int i) { ticks_till_freedom = i; }
-   void decrementTicksTillFreedom() { ticks_till_freedom--; }
+   void decrementTicksTillFreedom() { if ( ticks_till_freedom > 0 ) { ticks_till_freedom--; } }
    void setDisolvable(int val) { mob_data_flags.set(9, val); }
    int isDisolvable() const { return mob_data_flags.get(9); }
 
@@ -644,6 +644,7 @@ public:
    void Clear();
    void Write(ofstream& ofile);
    void Read(critter* parent, ifstream& ofile);
+   void SocketProblem();
    static int getInstanceCount() { return _cnt; }
 
    int client;

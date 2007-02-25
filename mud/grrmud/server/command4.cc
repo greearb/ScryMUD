@@ -545,7 +545,14 @@ int log_out(critter& pc) {
    }
 
    pc.save();
-   pc.setMode(MODE_QUIT_ME_PLEASE);
+
+   //If they're link-dead we logout a bit differently. I'm not sure if this is
+   //just for "accounting" reasons, or if maybe there is some other reason.
+   if ( pc.getMode() == MODE_GO_LINKDEAD_PLEASE ) {
+      pc.setMode(MODE_LOG_OFF_LINKDEAD_PLEASE);
+   } else {//normal quit or idle timeout
+      pc.setMode(MODE_QUIT_ME_PLEASE);
+   }
 
    show("Cya later.\n", pc);
    emote("has left the game.\n", pc, ROOM, TRUE);
