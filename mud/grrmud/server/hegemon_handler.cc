@@ -33,6 +33,10 @@ HegemonHandler::HegemonHandler(critter* c_ptr) {
 
 }//HegemonHandler::HegemonHandler()
 
+HegemonHandler::~HegemonHandler() {
+   _cnt--;
+}//HegemonHandler::~HegemonHandler()
+
 bool HegemonHandler::parse(const char* input_buf, size_t len) {
    size_t i = 0;
    const char* p;

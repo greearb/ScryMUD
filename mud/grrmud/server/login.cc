@@ -463,12 +463,16 @@ void critter::doLogin() {
 
                setNoClient(); //turn off by default
 
+
+               //This has to be restored before calling using_client() so we
+               //don't allow protocol handlers to go runaway.
+               pc->p_handler = tmp_p_handler;
+
                if (using_hegemon) {
                   using_client(*this);
                   setClient(HEGEMON);
                }
                
-               pc->p_handler = tmp_p_handler;
                pc->descriptor = tmp_int;
                pc->host = tmp_host;
                pc->index = tmp_index;

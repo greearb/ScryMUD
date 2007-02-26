@@ -62,6 +62,10 @@ TelnetHandler::TelnetHandler(critter* c_ptr) {
 
 }//Constructor: TelnetHandler
 
+TelnetHandler::~TelnetHandler() {
+   _cnt--;
+}//TelnetHandler::~TelnetHandler()
+
 void TelnetHandler::send(int action, int option) {
 
    char msg[4];
@@ -202,10 +206,10 @@ void TelnetHandler::rcv_will(int opt) {
          send(ttype_req_str);
       break;
 
+      //we don't support real linemode yet (RFC-1184) It's mentioned
+      //explicitly here because this isn't the same thing as the original
+      //kludge-linemode.
       case TELOPT_LINEMODE:
-         allow_do = true;
-      break;
-
       default:
          allow_do = false;
       break;

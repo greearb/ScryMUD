@@ -42,7 +42,7 @@ class HegemonHandler : public ProtocolHandler {
       static int getInstanceCount() { return _cnt; }
 
       HegemonHandler(critter *c_ptr);
-      ~HegemonHandler() { _cnt--; };
+      ~HegemonHandler();
 
       void newCritter(critter* c_ptr) { my_critter = c_ptr; };
 

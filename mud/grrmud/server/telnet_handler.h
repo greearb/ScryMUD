@@ -70,7 +70,7 @@ class TelnetHandler : public ProtocolHandler {
       static int getInstanceCount() { return _cnt; }
 
       TelnetHandler(critter* c_ptr);
-      ~TelnetHandler() { _cnt--; };
+      ~TelnetHandler();
 
       void newCritter(critter* c_ptr);
       bool parse(const char* input_buf, size_t len);
