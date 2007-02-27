@@ -404,8 +404,6 @@ void critter::doLogin() {
 
                string = pc->input.Get_Command(eos, term_by_period);
 
-               pc->p_handler->set_echo(false);//stop echoing for the client
-
                if (string == "__HEGEMON__") {
                   using_client(*this);
                   setClient(HEGEMON);
@@ -416,7 +414,6 @@ void critter::doLogin() {
 
                if (!isUsingClient())
                   show(ANSI_ECHO_ON); //echo ON
-
 
                ProtocolHandler* tmp_p_handler = pc->p_handler;
                int tmp_int = pc->descriptor;
@@ -482,9 +479,9 @@ void critter::doLogin() {
 
                setNoClient(); //turn off by default
 
-
                //This has to be restored before calling using_client() so we
                //don't allow protocol handlers to go runaway.
+
                pc->p_handler = tmp_p_handler;
 
                if (using_hegemon) {
@@ -497,7 +494,7 @@ void critter::doLogin() {
                pc->index = tmp_index;
                pc->mode = MODE_LOGGING_IN;
                pc->link_condition = CON_LOGGING_IN;
-               
+
                int was_link_dead = TRUE;
 
                mudlog << "pc->password:  -:" << pc->password << ":-"
@@ -565,7 +562,10 @@ void critter::doLogin() {
                         using_client(*old_ptr);
                         old_ptr->setClient(whichClient());
                      }
-                     
+
+                     old_ptr->pc->p_handler->set_echo(false);//stop echoing for the client
+
+
                      // I don't think this is needed. --Ben
                      //if (!old_ptr->isUsingClient()) {
                      //   old_ptr->show(CTAG_ENGAGE_CLIENT(HEGEMON)); // can we use crit.whichClient() here?
@@ -601,6 +601,9 @@ void critter::doLogin() {
                   }//if was link dead
                   else {
                      /* regular logging in */
+
+                     pc->p_handler->set_echo(false);//stop echoing for the client
+
                      quit_do_login_old(*this); //join the game
 
                      // alert imms of possible multiplaying
