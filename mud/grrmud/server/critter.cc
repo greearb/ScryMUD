@@ -1382,8 +1382,9 @@ void pc_data::Clear() {
    host.Clear();
    mode = MODE_NORMAL;
    descriptor = age = index = hunger = thirst = drugged = violence_timer = 0;
-   birth_year = birth_day = rent_day = rent_year = pk_count = 
-      died_count = quest_points = idle_ticks = remort_count = 0;
+   birth_year = birth_day = rent_day = rent_year = pk_count
+      = died_count = quest_points = idle_ticks = last_keepalive
+      = remort_count = 0;
    link_condition = CON_LOGGING_IN;
 
    if (imm_data) {
@@ -1479,6 +1480,7 @@ pc_data& pc_data::operator=(const pc_data& source) {
    remort_count = source.remort_count;
    quest_points = source.quest_points;
    idle_ticks = source.idle_ticks;
+   last_keepalive = source.last_keepalive;
    prompt = source.prompt;
    w_eye_obj = source.w_eye_obj;
    last_login_time = source.last_login_time;

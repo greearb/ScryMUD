@@ -33,6 +33,7 @@ class TelnetHandler : public ProtocolHandler {
    protected:
       static int _cnt;
       static const char eor_str[];
+      static const char keepalive_str[];
       static const char ttype_req_str[];
 
       enum state { ST_TEXT, ST_IAC, ST_DO, ST_DONT, ST_WILL, ST_WONT, ST_SB, ST_SB_IAC };
@@ -76,6 +77,7 @@ class TelnetHandler : public ProtocolHandler {
       bool parse(const char* input_buf, size_t len);
       void set_echo(bool on_off);
       const char* end_of_record() const;
+      const char* keepalive() const;
 
 };
 

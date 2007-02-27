@@ -34,6 +34,7 @@ int TelnetHandler::_cnt = 0;
 //the '\0's are temporary until our send buffers start understanding binary
 //data and stop using strlen() and friends
 const char TelnetHandler::eor_str[] = { IAC, EOR, '\0'};
+const char TelnetHandler::keepalive_str[] = { IAC, NOP, '\0'};
 const char TelnetHandler::ttype_req_str[] = { IAC, SB, TELOPT_TTYPE, TELQUAL_SEND, IAC, SE, '\0'};
 
 TelnetHandler::TelnetHandler(critter* c_ptr) {
@@ -558,6 +559,10 @@ const char* TelnetHandler::end_of_record() const {
    }
 
 }//TelnetHandler::end_of_record()
+
+const char* TelnetHandler::keepalive() const {
+   return(TelnetHandler::keepalive_str);
+}//TelnetHandler::keepalive()
 
 void TelnetHandler::newCritter(critter* c_ptr) {
    my_critter = c_ptr;

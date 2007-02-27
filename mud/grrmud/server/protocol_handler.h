@@ -59,6 +59,8 @@ class ProtocolHandler {
 
       // return a string used to mark end-of-record (player prompt)
       virtual const char* end_of_record() const = 0;
+      // return a string used for a keepalive.
+      virtual const char* keepalive() const = 0;
 };//class ProtocolHandler
 
 class NullHandler : public ProtocolHandler {
@@ -79,6 +81,7 @@ class NullHandler : public ProtocolHandler {
       bool parse(const char* input_buf, size_t len);
       void set_echo(bool on_off) { return; }
       const char* end_of_record() const { return(""); }
+      const char* keepalive() const { return(""); }
 };//class NullHandler
 
 #endif

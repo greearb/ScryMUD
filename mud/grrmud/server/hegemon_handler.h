@@ -49,6 +49,7 @@ class HegemonHandler : public ProtocolHandler {
       bool parse(const char* input_buf, size_t len);
       void set_echo(bool on_off) { }
       const char* end_of_record() const { return(""); }
+      const char* keepalive() const { return(""); }
 };
 
 

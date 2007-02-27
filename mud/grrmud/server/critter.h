@@ -573,7 +573,7 @@ public:
       // 23 in_page_break_mode, 24 wizchat, 25 has_colors, 26 use_color
       // 27 has_language_choice, 28 !show_mob_entry, 29 no_beep,
       // 30 is_remort, 31 has_sacrificed, 32 is_roleplaying,
-      // 33 is_afk, 34 gold_only
+      // 33 is_afk, 34 gold_only, 35 keepalives
 
    // Is our PC wanted in any zones?
    int wanted_in[NUMBER_OF_ZONES +1];
@@ -604,6 +604,7 @@ public:
    short remort_count;
    short quest_points;
    short idle_ticks;
+   short last_keepalive;
 
    int last_login_time; //in seconds, since 1970 etc...
    int total_time_online; //in seconds
@@ -640,6 +641,7 @@ public:
    pc_data& operator= (const pc_data& source);
 
    int canBeBeeped() const { return (!(pc_data_flags.get(29))); }
+   bool doKeepAlives() const { return ( pc_data_flags.get(35) ); }
 
    void Clear();
    void Write(ofstream& ofile);

@@ -794,9 +794,9 @@ CS_TOG4_1
 	~
 
 CS_TOG4_2
-	eng "afk(%i)%P20gold_only(%i)\n"
-	ser "afk(%i)%P20gold_only(%i)\n"
-	ger "afk(%i)%P20gold_only(%i)\n"
+	eng "afk(%i)%P20gold_only(%i)%P45keepalives(%i)\n"
+	ser "afk(%i)%P20gold_only(%i)%P45keepalives(%i)\n"
+	ger "afk(%i)%P20gold_only(%i)%P45keepalives(%i)\n"
 	~
 
 CS_TOG5
@@ -935,6 +935,12 @@ CS_TOG_GOLD_ONLY
 	eng "gold_only"
 	ser "gold_only"
 	ger "gold_only"
+~
+
+CS_TOG_KEEPALIVES
+	eng "keepalives"
+	ser "keepalives"
+	ger "keepalives"
 ~
 
 CS_NO_FIND_TOGGLE

@@ -1716,7 +1716,7 @@ int toggle_prompt(const String* field, critter& pc) {
       show(buf, pc);
 
       Sprintf(buf, cstr(CS_TOG4_2, pc), (int)(pc.PC_FLAGS.get(33)),
-            (int)(pc.PC_FLAGS.get(34)));
+            (int)(pc.PC_FLAGS.get(34)), (int)(pc.PC_FLAGS.get(35)));
       show(buf, pc);
 
       if (pc.isImmort()) {
@@ -1812,6 +1812,11 @@ int toggle_prompt(const String* field, critter& pc) {
        pc.show(CS_OK);
        return 0;
    }//if         
+   else if (strncasecmp(*field, cstr(CS_TOG_KEEPALIVES, pc), len1) == 0) {
+      pc.PC_FLAGS.flip(35);
+      pc.show(CS_OK);
+      return 0;
+   }
    else {
       pc.show(CS_NO_FIND_TOGGLE);
       return -1;

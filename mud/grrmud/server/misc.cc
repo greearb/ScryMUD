@@ -1275,9 +1275,22 @@ void decrease_timed_affecting_pcs() {  //will decrease all
    stat_spell_cell* sp_ptr;
    String buf(100);
 
-   //log anyone who isn't isn't >= IMM level 2 off after 30 ticks of
-   //inactivity.
+   // 1. log anyone who isn't isn't >= IMM level 2 off after 30 ticks of
+   //    inactivity.
+   // 2. if a player has keepalives enabled, send them out once every 4
+   //    ticks (~5 minutes). [currently only telnet implements keepalives]
    while ((crit_ptr = crit_cell.next())) {
+
+      if ( crit_ptr->pc->doKeepAlives() ) {
+
+         crit_ptr->pc->last_keepalive++;
+
+         if ( ++(crit_ptr->pc->last_keepalive) >= 4 ) {
+            crit_ptr->pc->output += crit_ptr->pc->p_handler->keepalive();
+            crit_ptr->pc->last_keepalive = 0;
+         }
+
+      }//if doKeepAlives()
 
       //This used to be a prefix increment in the conditional, but that means
       //that it could be short-circuited depending on the compiler.
