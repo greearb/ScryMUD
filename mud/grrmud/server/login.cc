@@ -97,6 +97,16 @@ void critter::doLogin() {
       setMode(MODE_LOGOFF_NEWBIE_PLEASE);
    }//if
    else {
+      // Login states
+      // 0: name
+      // 1: new-player password
+      // 2: new-player password re-entry
+      // 3: new-player gender
+      // 4: new-player class
+      // 5: existing-player password
+      // 6: new-player race
+      // 7: new-player language
+      // default: this is an error condition
       switch (pc->index)
          {
          case 0:  /* get the name.. */
@@ -241,10 +251,15 @@ void critter::doLogin() {
             break;
             
          case 2:  //recheck password for new player
-            if (!isUsingClient())
+
+            if (!isUsingClient()) {
                show(ANSI_ECHO_ON); //echo ON
+            }
+
             string = pc->input.Get_Command(eos, term_by_period);
+
             pc->p_handler->set_echo(false);//stop echoing for the client
+
             if (pc->password == string) {
                pc->password = crypt((const char*)(pc->password), "bg");
                pc->index = 3; //go choose male/female/neuter
@@ -384,9 +399,13 @@ void critter::doLogin() {
 
          case 5: //password for non-new players.
             mudlog.log(DBG, "in case 5\n");
+
             if (TRUE) { //needs to be inside a block to shut g++ up!!
+
                string = pc->input.Get_Command(eos, term_by_period);
-               
+
+               pc->p_handler->set_echo(false);//stop echoing for the client
+
                if (string == "__HEGEMON__") {
                   using_client(*this);
                   setClient(HEGEMON);
@@ -526,10 +545,6 @@ void critter::doLogin() {
                      old_ptr->pc->p_handler = pc->p_handler;
                      old_ptr->pc->p_handler->newCritter(old_ptr);
                      pc->p_handler = tmp_p_handler;
-
-                     //for good measure, make sure they get to see what they
-                     //type.
-                     old_ptr->pc->p_handler->set_echo(false);
 
                      old_ptr->cur_stats[0] &= ~32;      //make em visable again
                      old_ptr->pc->link_condition = CON_PLAYING;
@@ -939,8 +954,6 @@ int  quit_do_login_new(critter& pc) {
 
    pc.save(); //make sure they have a Pfile
 
-   pc.pc->p_handler->set_echo(false);
-
    return 0;
 }//quit_do_login_new()
  
@@ -1004,10 +1017,6 @@ int  quit_do_login_old(critter& pc) {
 
    update_skills(pc); //sync them up, does not necessarly add new ones
    pc.PC_FLAGS.turn_off(33); //make sure they aren't marked as afk
-
-   //make sure they echo for themselves
-
-   pc.pc->p_handler->set_echo(false);
 
    pc.show(get_page("./motd")); //message of the day
 
