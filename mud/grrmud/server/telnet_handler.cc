@@ -50,7 +50,6 @@ TelnetHandler::TelnetHandler(critter* c_ptr) {
    for(unsigned int i=0;i<sizeof(my_request_states);my_request_states[i++]=false);
    for(unsigned int i=0;i<sizeof(my_option_states);my_option_states[i++]=false);
 
-
    my_request_states[TELOPT_NAWS] = true;
    send(DO,TELOPT_NAWS);
 
@@ -59,7 +58,6 @@ TelnetHandler::TelnetHandler(critter* c_ptr) {
 
    my_offer_states[TELOPT_EOR] = true;
    send(WILL,TELOPT_EOR);
-   send(WONT,TELOPT_ECHO);
 
 }//Constructor: TelnetHandler
 
@@ -125,6 +123,12 @@ void TelnetHandler::rcv_do(int opt) {
             //prompt before the client gets a chance to ask for EOR markers.
             my_critter->pc->output += end_of_record();
          break;
+
+         /* We're not allowing this yet.
+         case TELOPT_SGA:
+            my_option_states[opt] = will = true;
+         break;
+         */
 
          default:
             need_to_respond = true;
@@ -278,21 +282,24 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
                      case ST_NORM:
                         switch ( *p ) {
 
+                           case 0x00://null
+                              //these should only ever be received in text
+                              //mode after a carriage-return. Because our
+                              //text parsing later on relies on \0 terminated
+                              //strings, we make sure this isn't ever allowed
+                              //beyond this point. I'm pretty sure that the
+                              //RFC doesn't require this, but ScryMUD does ;)
+                           break;
+
                            case 0x08://backspace
                               if ( out_buf.size() > 0 ) {
+                                 cout << "Doing backspace!" << endl;
                                  out_buf.resize(out_buf.size()-1);
                               }
                            break;
 
-                           case 0x0D://carriage return
-                              //do nothing, we don't like \r's around here.
-                           break;
-
-                           case 0x0A://newline
-                              out_buf += *p;
-                              my_critter->pc->input += out_buf.c_str();
-                              out_buf.clear();
-                              parsed_full_command = true;
+                           case 0x0D://carriage-return aka \r
+                              current_text_state = ST_CR;
                            break;
 
                            case ';':
@@ -313,6 +320,7 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
                            break;
 
                            case 0x08://backspace
+                           case 0x7F://delete
                               if ( out_buf.size() > 0 ) {
                                  out_buf.resize(out_buf.size()-1);
                               }
@@ -327,6 +335,27 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
                         };
                         current_text_state = ST_NORM;
                      break;
+
+                     case ST_CR:
+                     //rfc-854 says we can end a line with cr-lf or cr-null.
+                     //Technically they mean different things, but we'll
+                     //pretend for a moment that they don't.
+                     switch ( *p ) {
+
+                        case 0x00://null
+                        case 0x0A://linefeed aka \n
+                           out_buf += '\n';
+                           my_critter->pc->input += out_buf.c_str();
+                           out_buf.clear();
+                           parsed_full_command = true;
+                           current_text_state = ST_NORM;
+                        break;
+
+                        default://if we're here, I have no idea why
+                           current_text_state = ST_NORM;
+                        break;
+
+                     }
 
                   }//switch(current_text_state)
                break;
@@ -358,6 +387,22 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
 
                case SB://start option sub-negotiation
                   current_state = ST_SB;
+               break;
+
+               case NOP://null operation
+                  current_state = ST_TEXT;
+               break;
+
+               case EC://erase character
+                  if ( out_buf.size() > 0 ) {
+                     out_buf.resize(out_buf.size()-1);
+                  }
+                  current_state = ST_TEXT;
+               break;
+
+               case EL://erase line
+                  out_buf.clear();
+                  current_state = ST_TEXT;
                break;
 
                default:
@@ -406,7 +451,7 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
             };
          break;
 
-         case ST_SB_IAC:
+         case ST_SB_IAC://got an IAC in a sub-option
             switch (*p) {
 
                case IAC://escaped IAC character.

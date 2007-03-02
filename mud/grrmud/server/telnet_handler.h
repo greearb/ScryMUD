@@ -37,7 +37,7 @@ class TelnetHandler : public ProtocolHandler {
       static const char ttype_req_str[];
 
       enum state { ST_TEXT, ST_IAC, ST_DO, ST_DONT, ST_WILL, ST_WONT, ST_SB, ST_SB_IAC };
-      enum text_state { ST_NORM, ST_SEMICOLON };
+      enum text_state { ST_NORM, ST_SEMICOLON, ST_CR };
 
       state current_state;
       text_state current_text_state;
