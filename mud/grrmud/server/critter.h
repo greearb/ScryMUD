@@ -880,6 +880,8 @@ public:
    int getDEX(bool include_modifiers);
    int getWIS(bool include_modifiers);
    int getCHA(bool include_modifiers);
+   int getCON(bool include_modifiers);
+   int getINT(bool include_modifiers);
    int getBHDC(bool include_modifiers);
    int getBHDS(bool include_modifiers);
    int getHIT(bool include_modifiers) { return getHIT(include_modifiers, NULL); }

@@ -44,6 +44,10 @@
 #include "SkillSpell.h"
 #include "clients.h"
 
+#include <sstream>
+#include <iomanip>
+#include <locale>
+
 int score_long(critter& pc) {
    return do_score_long(pc, pc);
 }
@@ -149,12 +153,14 @@ int do_score_long(critter& of_pc, critter& pc) {
    return 0;
 }//do_score_long
 
-
 int score(const String* str2, critter& pc) {
-   String buf2(100);
+   std::stringstream buf;
+   std::string sep_line = "^N------------------------------------------------------------------------------";
 
-   if (!pc.isPc()) 
+
+   if ( ! pc.isPc() ) {
       return -1;
+   }
 
    if (str2->Strlen() != 0) { //score long perhaps
       score(&NULL_STRING, pc); //do regular score
@@ -162,116 +168,193 @@ int score(const String* str2, critter& pc) {
       return 0;
    }//if
 
-   Sprintf(buf2, "\n%S%S\n", pc.getName(),
-           &(pc.short_desc));
-   show(buf2, pc);
+   buf.imbue( locale("") );
 
-   if (pc.SEX == 0) 
-      buf2 = cstr(CS_FEMALE, pc);
-   else if (pc.SEX == 1) 
-      buf2 = cstr(CS_MALE, pc);
-   else if (pc.SEX == 2) 
-      buf2 = cstr(CS_NEUTER, pc);
+   buf << sep_line << endl;
 
-   buf2 += get_class_name(pc.CLASS);
-   buf2 += cstr(CS_OF_LEVEL, pc);
-   buf2.Append(pc.LEVEL);
-   buf2.Append(").\n");
-   show(buf2, pc);
+   buf << "^M" << (const char*)(*(pc.getName()))
+       << pc.short_desc << endl;
+   buf << "^m" << "You are a "
+       << "^M" <<  pc.getAge() << "^m" << " year old "; 
+   switch ( pc.SEX ) {
+      case 0:
+         buf << cstr(CS_FEMALE, pc);
+         break;
+      case 1:
+         buf << cstr(CS_MALE, pc);
+         break;
+      case 2:
+         buf << cstr(CS_NEUTER, pc);
+         break;
+   }
+   buf << get_race_name( pc.getRace() )
+       << " " << get_class_name( pc.getClass() )
+       << " of level " << "^M" << pc.getLevel()
+       << "^m" << "." << endl;
 
+   buf << endl
+       << "^c" << "You are carrying "
+       << "^C" << pc.getCurWeight() << "^c" << "lbs of your "
+       << "^C" << pc.getMaxWeight() << "^c" << "lb carry capacity." << endl
+       << "^c" << "You are carrying "
+       << "^C" << pc.GOLD << "^c" << " gold, which weighs "
+       << "^C" << ( pc.GOLD / config.goldPerLb ) << "^c" << "lbs." << endl;
+   
+   buf << sep_line << endl;
 
-   Sprintf(buf2, cstr(CS_SC_GOLD, pc),
-           pc.GOLD, pc.EXP, pc.getAge());
-   show(buf2, pc);
+   buf << "^c" << left << setw(21) << "Distance from level:"
+       << "^C" << right << setw(15) << pc.getXpToNextLevel() << endl
+       << "^c" << left << setw(21) << "Total experience:"
+       << "^C" << right << setw(15) << pc.EXP << endl
+       << "^c" << left << setw(21) << "Practices to spend:"
+       << "^C" << right << setw(15) << pc.PRACS << endl;
 
-   Sprintf(buf2, cstr(CS_SC_HP, pc),
-           pc.HP, pc.HP_MAX, pc.MANA, pc.MA_MAX, pc.MOV, pc.MV_MAX);
-   show(buf2, pc);
+   buf << sep_line << endl;
 
-   Sprintf(buf2, cstr(CS_SC_HPR, pc),
-           pc.HP_REGEN, pc.MA_REGEN, pc.MV_REGEN);
-   show(buf2, pc);
+   buf << "^c" << left << setw(14) << "Constitution:"
+       << "^C" << right << setw(3) << pc.getCON(true)
+       << "  "
+       << "^c" << left << setw(11) << "Dexterity:"
+       << "^C" << right << setw(3) << pc.getDEX(true)
+       << "  "
+       << "^c" << left << setw(10) << "Strength:"
+       << "^C" << right << setw(3) << pc.getSTR(true)
+       << endl
+       << "^c" << left << setw(14) << "Intelligence:"
+       << "^C" << right << setw(3) << pc.getINT(true)
+       << "  "
+       << "^c" << left << setw(11) << "Charisma:"
+       << "^C" << right << setw(3) << pc.getCHA(true)
+       << "  "
+       << "^c" << left << setw(10) << "Wisdom:"
+       << "^C" << right << setw(3) << pc.getWIS(true)
+       << endl;
 
-   Sprintf(buf2, cstr(CS_SC_ALIGN, pc),
-           pc.ALIGN, pc.PRACS, pc.CRIT_WT_CARRIED, pc.CRIT_MAX_WT_CARRY);
-   show(buf2, pc);
+   buf << sep_line << endl;
 
-   Sprintf(buf2, cstr(CS_SC_RES, pc),
-           pc.AC, pc.HEAT_RESIS, pc.COLD_RESIS, pc.ELEC_RESIS, pc.SPEL_RESIS);
-   show(buf2, pc);
+   buf << "^c" << left << setw(10) << "Health:"
+       << "^C" << right << setw(6) << pc.getHP()
+       << "^c" << " of " 
+       << "^C" << right << setw(6) << pc.getHP_MAX()
+       << "^c" << " (" << right << setw(3) << pc.HP_REGEN 
+       << "% regeneration)"
+       << endl
+       << "^c" << left << setw(10) << "Mana:"
+       << "^C" << right << setw(6) << pc.getMana()
+       << "^c" << " of " 
+       << "^C" << right << setw(6) << pc.getManaMax()
+       << "^c" << " (" << right << setw(3) << pc.MA_REGEN 
+       << "% regeneration)"
+       << endl
+       << "^c" << left << setw(10) << "Movement:"
+       << "^C" << right << setw(6) << pc.getMov()
+       << "^c" << " of " 
+       << "^C" << right << setw(6) << pc.getMovMax()
+       << "^c" << " (" << right << setw(3) << pc.MV_REGEN 
+       << "% regeneration)"
+       << endl;
 
-   Sprintf(buf2, cstr(CS_SC_EXP, pc), pc.getXpToNextLevel(),
-           (pc.GOLD / config.goldPerLb), pc.getWimpy());
-   pc.show(buf2);
+   buf << sep_line << endl;
 
-   Sprintf(buf2, cstr(CS_SC_DAM, pc), pc.DAM_REC_MOD, pc.DAM_GIV_MOD);
-   show(buf2, pc);
+   buf << "^c" << left << setw(33) << "Your armor class:"
+       << "^C" << right << setw(4) << pc.AC << endl
+       << "^c" << left << setw(34) << "Physical damage received:"
+       << "^C" << right << setw(3) << pc.getDamRecMod() << "%" << endl
+       << "^c" << left << setw(34) << "Damage received from heat:"
+       << "^C" << right << setw(3) << pc.HEAT_RESIS << "%" << endl
+       << "^c" << left << setw(34) << "Damage received from cold:"
+       << "^C" << right << setw(3) << pc.COLD_RESIS << "%" << endl
+       << "^c" << left << setw(34) << "Damage received from magic:"
+       << "^C" << right << setw(3) << pc.SPEL_RESIS << "%" << endl
+       << "^c" << left << setw(34) << "Damage received from electricity:"
+       << "^C" << right << setw(3) << pc.ELEC_RESIS << "%" << endl;
 
-   if (pc.HUNGER == 0) 
-      pc.show(CS_YOU_HUNGRY);
-   if (pc.THIRST == 0)
-      pc.show(CS_YOU_THIRSTY);
-   if (pc.DRUGGED > 0) 
-      pc.show(CS_YOU_DRUGGED);
+   buf << sep_line << endl;
 
+   buf << "^c" << "You deal " << "^C" << pc.DAM_GIV_MOD << "% "
+       << "^c" << "damage" << endl;
+
+   buf << "^c" << "Your wimpy is set to: "
+       << "^C" << pc.getWimpy()
+       << "^c" << "hp" << endl;
+
+   if (pc.HUNGER == 0) {
+      buf << cstr(CS_YOU_HUNGRY, pc);
+   }
+
+   if (pc.THIRST == 0) {
+      buf << cstr(CS_YOU_THIRSTY, pc);
+   }
+
+   if (pc.DRUGGED > 0) {
+      buf << cstr(CS_YOU_DRUGGED, pc);
+   }
 
    switch (pc.POS) {
+
       case POS_STAND:
-         pc.show(CS_YOU_STANDING);
-         break;
+         buf << cstr(CS_YOU_STANDING, pc);
+      break;
+
       case POS_SIT:
-         pc.show(CS_YOU_SITTING);
-         break;
+         buf << cstr(CS_YOU_SITTING, pc);
+      break;
+
       case POS_REST:
-         pc.show(CS_YOU_RESTING);
-         break;
+         buf << cstr(CS_YOU_RESTING, pc);
+      break;
+
       case POS_SLEEP:
-         pc.show(CS_YOU_SLEEPING);
-         break;
+         buf << cstr(CS_YOU_SLEEPING, pc);
+      break;
+
       case POS_MED:
-         pc.show(CS_YOU_MED);
-         break;
+         buf << cstr(CS_YOU_MED, pc);
+      break;
+
       case POS_STUN:
-         pc.show(CS_YOU_STUNNED);
-         break;
+         buf << cstr(CS_YOU_STUNNED, pc);
+      break;
+
       case POS_DEAD:
-         pc.show(CS_YOU_DEAD);
-         break;
+         buf << cstr(CS_YOU_DEAD, pc);
+      break;
+
       case POS_PRONE:
-         pc.show(CS_YOU_PRONE);
-         break;
+         buf << cstr(CS_YOU_PRONE, pc);
+      break;
+
       default:
-         pc.show(CS_POS_UNDEF);
-   }
+         buf << cstr(CS_POS_UNDEF, pc);
+   };
+
    if (pc.POS > POS_SIT && get_percent_lrnd(CAMPING_SKILL_NUM, pc) > 0) {
-      pc.show(CS_YOU_CAMPING);
+      buf << cstr(CS_YOU_CAMPING, pc);
    }
 
    if (pc.FOLLOWER_OF) {
-      Sprintf(buf2, cstr(CS_YOU_FOLLOWING, pc),
-              name_of_crit(*(pc.FOLLOWER_OF), pc.SEE_BIT));
-      show(buf2, pc);
+      buf << "You are following "
+          << (const char*)(name_of_crit(*(pc.FOLLOWER_OF), pc.getSeeBit()))
+          << "." << endl;
+
    }//if
-   else
-      pc.show(CS_FOLLOWING_SELF);
 
    if (pc.MASTER) {
-      Sprintf(buf2, cstr(CS_MASTER_IS, pc),
-          name_of_crit(*(pc.MASTER), pc.SEE_BIT));
-      show(buf2, pc);
+      buf << "Your master is "
+          << (const char*)(name_of_crit(*(pc.MASTER), pc.getSeeBit()))
+          << "." << endl;
    }//if
-   else {
-      pc.show(CS_OWN_MASTER);
-   }
 
    if (!pc.IS_FIGHTING.isEmpty()) {
-      Sprintf(buf2, cstr(CS_YOU_FIGHTING, pc),
-              name_of_crit(*(pc.IS_FIGHTING.peekFront()), pc.SEE_BIT));
-      show(buf2, pc);
+      buf << "You are fighting "
+          << (const char*)(name_of_crit(*(pc.IS_FIGHTING.peekFront()), pc.getSeeBit()))
+          << "." << endl;
    }//if
-   return 0;
-}//score
 
+   pc.show(buf.str().c_str());
+
+   return 0;
+}//score()
 
 int critter::doUngroup(int i_th, const String* vict) {
    Cell<critter*> cll;

@@ -2413,6 +2413,14 @@ int critter::getCHA(bool include_modifiers=false) {
    return CHA+modifier;
 }
 
+int critter::getCON(bool include_modifiers=false) {
+   return CON;
+}//critter::getCON()
+
+int critter::getINT(bool include_modifiers=false) {
+   return INT;
+}//critter::getCON()
+
 int critter::getBHDC(bool include_modifiers=false) {
    int modifier = 0;
 
