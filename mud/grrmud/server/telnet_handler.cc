@@ -293,6 +293,7 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
                            break;
 
                            case 0x08://backspace
+                           case 0x7F://delete
                               if ( out_buf.size() > 0 ) {
                                  cout << "Doing backspace!" << endl;
                                  out_buf.resize(out_buf.size()-1);
@@ -301,6 +302,18 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
 
                            case 0x0D://carriage-return aka \r
                               current_text_state = ST_CR;
+                           break;
+
+                           case 0x0A:
+                              //linefeed aka \n
+                              //normally we wouldn't handle this here, but
+                              //Hegemon sends lone \n's and not handling this
+                              //case prevents hegemon users from logging in.
+                              out_buf += '\n';
+                              my_critter->pc->input += out_buf.c_str();
+                              out_buf.clear();
+                              parsed_full_command = true;
+                              current_text_state = ST_NORM;
                            break;
 
                            case ';':
