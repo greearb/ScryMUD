@@ -30,7 +30,7 @@ Note on visibility conditions:
 (inv)   Invisible
 
 
-If you imput NORMAL as your prompt string you are set to the
+If you input NORMAL as your prompt string you are set to the
 default, which is something similar to:  <<%hH %mM %vV >
 
 Example:  prompt '<<%H/%hH %M/%mM %V/%vV >'
