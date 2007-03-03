@@ -428,60 +428,85 @@ int exit(critter& pc) {
    return 0;
 }//exits()
 
+int auto_exit(critter &pc) {
 
-int auto_exit(critter& pc) { //more brief than the previous
-   Cell<door*> cll(ROOM.DOORS);
-   door* dr_ptr;
-   String buf(81);
-   String reg_disp(100);
-   String client_disp(100);
+   Cell<door*> cll(pc.getCurRoom()->doors);
+   door* door_p;
+
    int dest;
+   bool is_hidden;
+   bool can_see;
 
-   /* this function is called by 'look' btw. */
-   /* assumes the person is standing, it just entered a room... */
+   std::stringstream buf;
+   String telnet_disp(100);
+   String client_disp(100);
 
    client_disp = "< EXITS ";
-   reg_disp = cstr(CS_VIS_EXITS, pc);
-   while ((dr_ptr = cll.next())) {
-      if (detect(pc.SEE_BIT, dr_ptr->dr_data->vis_bit)) {
-         if (!((dr_ptr->isClosed() && dr_ptr->isSecret()) ||
-               dr_ptr->isSecretWhenOpen())) {
-            dest = abs(dr_ptr->destination);
-            if (pc.isImmort()) { //if immortal, show extra info
-               Sprintf(buf, "%s[%i]", abbrev_dir_of_door(*dr_ptr),
-                       dest);
-               if ( dr_ptr->isClosed() ) {
-                  buf.Append("(closed)");
-               }
-               buf.Append(" ");
-            }//if immort
-            else {
-               Sprintf(buf, "%s", abbrev_dir_of_door(*dr_ptr));
-               if ( dr_ptr->isClosed() ) {
-                  buf.Append("(closed)");
-               }
-               buf.Append(" ");
-            }//else
-            reg_disp.Append(buf);
+   telnet_disp = cstr(CS_VIS_EXITS, pc);
 
-            if (pc.USING_CLIENT) {
-               client_disp.Append(abbrev_dir_of_door(*dr_ptr));
-               client_disp.Append(" ");
-            }//if
-         }//if its open, don't show closed exits
-      }//if detect
-   }//while
+   while ( ( door_p = cll.next() ) ) {
+
+      is_hidden = false;
+      can_see = false;
+
+      dest = abs(door_p->destination);
+
+      if ( detect(pc.getSeeBit(), door_p->getVisBit()) ) {
+
+         can_see = true;
+
+         if ( ( door_p->isClosed() && door_p->isSecret() ) || door_p->isSecretWhenOpen() )  {
+
+            is_hidden = true;
+
+            if ( ! ( pc.isAffectedBy(DETECT_HIDDEN_SKILL_NUM) || pc.isImmort() ) ) {
+               can_see = false;
+            }
+         }//if hidden
+
+      } else {//see_bit isn't good enough
+         can_see = false;
+      }
+
+      if ( can_see ) {
+
+         buf.str("");
+         buf.clear();
+
+         buf << (door_p->isClosed() ? "(" : "")
+            << (is_hidden ? "*" : "")
+            << abbrev_dir_of_door(*door_p)
+            << (door_p->isClosed() ? ")" : "");
+
+         if ( pc.isImmort() && pc.shouldShowVnums() ) {
+            buf << "[" << dest << "]";
+         }
+
+         buf << " ";
+
+         telnet_disp.Append(buf.str().c_str());
+
+         if ( pc.isUsingClient() ) {
+            client_disp.Append(abbrev_dir_of_door(*door_p));
+            client_disp.Append(" ");
+         }
+
+      }//if can_see
+
+   }//while we have doors
+
    client_disp.Append(">");
-   reg_disp.Append("\n");
-   
-   pc.show(reg_disp);
-   
+   telnet_disp.Append("\n");
+
+   pc.show(telnet_disp);
+
    if (pc.USING_CLIENT) {
       pc.show(client_disp);
    }
-   return 0;
-}//auto_exits()
 
+   return 0;
+
+}//auto_exit()
 
 int lock(int i_th, const String* name, critter& pc) {
    door* dr_ptr = NULL;
