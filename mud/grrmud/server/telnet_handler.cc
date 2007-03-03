@@ -119,6 +119,7 @@ void TelnetHandler::rcv_do(int opt) {
 
          case TELOPT_EOR:
             my_option_states[opt] = will = true;
+
             //sometimes, most the time we've managed to spew out the login
             //prompt before the client gets a chance to ask for EOR markers.
             my_critter->pc->output += end_of_record();
@@ -489,10 +490,16 @@ bool TelnetHandler::should_echo() const {
 
 void TelnetHandler::set_echo(bool on_off) {
 
-   //do nothing if we're already at the requested state.
-   if ( on_off == my_option_states[TELOPT_ECHO] ) {
-      return;
-   }
+   //I initially tried to be too tricky here, short-circuiting out if we were
+   //already set to the requested state, and unsetting things prior to
+   //receiving a DONT from the remote end.
+   //
+   //This proved to be not such a great idea. Clients like tinyfugue and
+   //tintin++ send login\r\n pass\r\n immediately after establishing a
+   //connection. This meant things were crossing on the wire in an odd way, we
+   //were turning echo off before ever receiving the DO to the request to turn
+   //it on. When we received the DO ECHO from the client we were being tricked
+   //into assuming they were independantly asking us to enable it again.
 
    switch ( on_off ) {
 
@@ -502,10 +509,6 @@ void TelnetHandler::set_echo(bool on_off) {
       break;
 
       case false:
-         //not sure if we're supposed to wait for a DONT, but since a WONT is
-         //a "refusal" to do, or continue doing, I don't assume we technically
-         //need to wait.
-         my_option_states[TELOPT_ECHO] = false;
          send(WONT,TELOPT_ECHO);
       break;
 
