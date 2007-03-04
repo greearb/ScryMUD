@@ -887,6 +887,7 @@ public:
    int getHIT(bool include_modifiers) { return getHIT(include_modifiers, NULL); }
    int getHIT(bool include_modifiers, object *weapon);
    int getDAM(bool include_modifiers);
+   int getWeapRange(short min_max, int position, bool include_modifiers);
    int getWeapDAM(int position, bool include_modifiers);
    int getMana() const { return short_cur_stats[16]; }
    int getManaMax() const { return short_cur_stats[24]; }

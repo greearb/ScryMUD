@@ -155,7 +155,7 @@ int do_score_long(critter& of_pc, critter& pc) {
 
 int score(const String* str2, critter& pc) {
    std::stringstream buf;
-   std::string sep_line = "^N------------------------------------------------------------------------------";
+   const char* sep_line = "^N------------------------------------------------------------------------------";
 
 
    if ( ! pc.isPc() ) {
@@ -168,14 +168,14 @@ int score(const String* str2, critter& pc) {
       return 0;
    }//if
 
-   buf.imbue( locale("") );
+   buf.imbue( std::locale("") );
 
    buf << sep_line << endl;
 
-   buf << "^M" << (const char*)(*(pc.getName()))
+   buf << "^C" << (const char*)(*(pc.getName()))
        << pc.short_desc << endl;
-   buf << "^m" << "You are a "
-       << "^M" <<  pc.getAge() << "^m" << " year old "; 
+   buf << "^c" << "You are a "
+       << "^C" <<  pc.getAge() << "^c" << " year old "; 
    switch ( pc.SEX ) {
       case 0:
          buf << cstr(CS_FEMALE, pc);
@@ -189,8 +189,8 @@ int score(const String* str2, critter& pc) {
    }
    buf << get_race_name( pc.getRace() )
        << " " << get_class_name( pc.getClass() )
-       << " of level " << "^M" << pc.getLevel()
-       << "^m" << "." << endl;
+       << " of level " << "^C" << pc.getLevel()
+       << "^c" << "." << endl;
 
    buf << endl
        << "^c" << "You are carrying "
@@ -199,15 +199,16 @@ int score(const String* str2, critter& pc) {
        << "^c" << "You are carrying "
        << "^C" << pc.GOLD << "^c" << " gold, which weighs "
        << "^C" << ( pc.GOLD / config.goldPerLb ) << "^c" << "lbs." << endl;
-   
-   buf << sep_line << endl;
 
-   buf << "^c" << left << setw(21) << "Distance from level:"
-       << "^C" << right << setw(15) << pc.getXpToNextLevel() << endl
-       << "^c" << left << setw(21) << "Total experience:"
-       << "^C" << right << setw(15) << pc.EXP << endl
-       << "^c" << left << setw(21) << "Practices to spend:"
-       << "^C" << right << setw(15) << pc.PRACS << endl;
+   buf << "^c" << left << setw(17) << "Needed to level:"
+       << "^C" << right << setw(12) << pc.getXpToNextLevel()
+       << endl
+       << "^c" << left << setw(17) << "Total experience:"
+       << "^C" << right << setw(12) << pc.EXP << endl
+       << "^c" << "You have "
+       << "^C" <<  pc.PRACS
+       << "^c" << " practices to spend."
+       << endl;
 
    buf << sep_line << endl;
 
@@ -238,7 +239,10 @@ int score(const String* str2, critter& pc) {
        << "^C" << right << setw(6) << pc.getHP_MAX()
        << "^c" << " (" << right << setw(3) << pc.HP_REGEN 
        << "% regeneration)"
+       << "^c" << " Wimpy: " << "^C" << pc.getWimpy()
+       << "^c" << "hp"
        << endl
+
        << "^c" << left << setw(10) << "Mana:"
        << "^C" << right << setw(6) << pc.getMana()
        << "^c" << " of " 
@@ -246,6 +250,7 @@ int score(const String* str2, critter& pc) {
        << "^c" << " (" << right << setw(3) << pc.MA_REGEN 
        << "% regeneration)"
        << endl
+
        << "^c" << left << setw(10) << "Movement:"
        << "^C" << right << setw(6) << pc.getMov()
        << "^c" << " of " 
@@ -256,27 +261,43 @@ int score(const String* str2, critter& pc) {
 
    buf << sep_line << endl;
 
-   buf << "^c" << left << setw(33) << "Your armor class:"
-       << "^C" << right << setw(4) << pc.AC << endl
-       << "^c" << left << setw(34) << "Physical damage received:"
-       << "^C" << right << setw(3) << pc.getDamRecMod() << "%" << endl
-       << "^c" << left << setw(34) << "Damage received from heat:"
-       << "^C" << right << setw(3) << pc.HEAT_RESIS << "%" << endl
-       << "^c" << left << setw(34) << "Damage received from cold:"
-       << "^C" << right << setw(3) << pc.COLD_RESIS << "%" << endl
-       << "^c" << left << setw(34) << "Damage received from magic:"
-       << "^C" << right << setw(3) << pc.SPEL_RESIS << "%" << endl
-       << "^c" << left << setw(34) << "Damage received from electricity:"
-       << "^C" << right << setw(3) << pc.ELEC_RESIS << "%" << endl;
+   buf << "^c" << "Your armor class is "
+       << "^C" << pc.AC
+       << "^c" << "."<< endl
+
+       << "^c" << "You receive " 
+       << "^C" << pc.getDamRecMod() << "%"
+       << "^c" << " damage. "
+       << "^c" << "You deal " 
+       << "^C" << pc.DAM_GIV_MOD << "%"
+       << "^c" << " damage."
+       << endl
+
+       << "^c" << "Damage received from "
+       << "heat: "
+       << "^C" << ( (pc.HEAT_RESIS + 100) / 2.0 ) << "%"
+       << "  "
+       << "^c" << "cold: "
+       << "^C" << ( (pc.COLD_RESIS + 100) / 2.0 ) << "%"
+       << "  "
+       << "^c" << "magic: "
+       << "^C" << ( (pc.SPEL_RESIS + 100) / 2.0 ) << "%"
+       << "  "
+       << "^c" << "electricity: "
+       << "^C" << ( (pc.ELEC_RESIS + 100) / 2.0 ) << "%"
+       << endl;
+
+   buf << "^c" << "Main-hand damage: "
+       << "^C" << pc.getWeapRange(0,9,true) << "^c" << "-"
+       << "^C" << pc.getWeapRange(1,9,true) << " ";
+
+   buf << "^c" << "Off-hand damage: "
+       << "^C" << pc.getWeapRange(0,10,true) << "^c" << "-"
+       << "^C" << pc.getWeapRange(1,10,true) << " ";
+
+   buf << endl;
 
    buf << sep_line << endl;
-
-   buf << "^c" << "You deal " << "^C" << pc.DAM_GIV_MOD << "% "
-       << "^c" << "damage" << endl;
-
-   buf << "^c" << "Your wimpy is set to: "
-       << "^C" << pc.getWimpy()
-       << "^c" << "hp" << endl;
 
    if (pc.HUNGER == 0) {
       buf << cstr(CS_YOU_HUNGRY, pc);

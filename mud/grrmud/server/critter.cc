@@ -2489,6 +2489,54 @@ int critter::getHIT(bool include_modifiers=false, object* weapon = NULL) {
       return HIT+modifier;
 }//critter::getHIT
 
+//min_max is 0 or 1. If 0, the minimum damage done by that hand is returned,
+//otherwise the maximum possible damage. This will handle both weapons and
+//bare handed. Originally writter for use in the "score" output.
+int critter::getWeapRange(short min_max, int position, bool include_modifiers=false) {
+
+   int ret_val, count, sides, weapon_skill, p_lrnd;
+   object *weapon = EQ[position];
+
+   ret_val = count = sides = weapon_skill = p_lrnd = 0;
+
+   if ( weapon && weapon->isWeapon() )  {
+
+      count = weapon->getDiceCnt();
+      sides = weapon->getDiceSides();
+
+      if ( weapon->isSlash() ) {
+         weapon_skill = SWORD_SKILL_NUM;
+      } else if ( weapon->isPierce() ) {
+         weapon_skill = DAGGER_SKILL_NUM;
+      } else if ( weapon->isSmash() ) {
+         weapon_skill = MACE_SKILL_NUM;
+      } else if ( weapon->isWhip() ) {
+         weapon_skill = WHIP_SKILL_NUM;
+      } else if ( weapon->isBow() ) {
+         weapon_skill = BOW_SKILL_NUM;
+      }
+
+      p_lrnd = get_percent_lrnd(weapon_skill, *this);
+      if ( p_lrnd > 0 ) {
+         count += p_lrnd/50;
+         sides += p_lrnd/33;
+      }
+
+   } else {//we're bare handed
+      count = getBHDC(true);
+      sides = getBHDS(true);
+   }
+
+   if ( min_max == 0 ) {// minimum
+      ret_val += count;
+   } else {//maximum
+      ret_val += count * sides;
+   }
+
+   ret_val += getDAM(TRUE);
+   return ret_val;
+}//critter::getWeapRange
+
 int critter::getWeapDAM(int position, bool include_modifiers=false) {
    int count = 0;
    int sides = 0;
