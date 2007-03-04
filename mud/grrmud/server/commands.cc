@@ -3000,8 +3000,6 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 
 
          //         mudlog.log(DBG, "passed tests in move\n
-         if (!pc.isNoHassle())
-            pc.PAUSE += door_ptr->distance;
 
          //Sprintf(buf, "leaves %s.\n", direction);
          String dname = *(door_ptr->getDirection());
