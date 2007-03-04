@@ -260,7 +260,7 @@ void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
 
 
 void cast_create_greater_golem(critter& pc) {
-   int spell_num = CREATE_GOLEM_SKILL_NUM;
+   int spell_num = CREATE_GREATER_GOLEM_SKILL_NUM;
 
    if (!ok_to_do_action(NULL, "KMSNBb", spell_num, pc)) {
       return;
