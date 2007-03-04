@@ -192,7 +192,8 @@ int score(const String* str2, critter& pc) {
        << " of level " << "^C" << pc.getLevel()
        << "^c" << "." << endl;
 
-   buf << endl
+   buf << "^c" << "Your alignment is "
+       << "^C" << pc.getAlignment() << "^c" << "." << endl
        << "^c" << "You are carrying "
        << "^C" << pc.getCurWeight() << "^c" << "lbs of your "
        << "^C" << pc.getMaxWeight() << "^c" << "lb carry capacity." << endl
