@@ -355,20 +355,20 @@ int score(const String* str2, critter& pc) {
 
    if (pc.FOLLOWER_OF) {
       buf << "You are following "
-          << (const char*)(name_of_crit(*(pc.FOLLOWER_OF), pc.getSeeBit()))
+          << (const char*)(*(name_of_crit(*(pc.FOLLOWER_OF), pc.getSeeBit())))
           << "." << endl;
 
    }//if
 
    if (pc.MASTER) {
       buf << "Your master is "
-          << (const char*)(name_of_crit(*(pc.MASTER), pc.getSeeBit()))
+          << (const char*)(*(name_of_crit(*(pc.MASTER), pc.getSeeBit())))
           << "." << endl;
    }//if
 
    if (!pc.IS_FIGHTING.isEmpty()) {
       buf << "You are fighting "
-          << (const char*)(name_of_crit(*(pc.IS_FIGHTING.peekFront()), pc.getSeeBit()))
+          << (const char*)(*(name_of_crit(*(pc.IS_FIGHTING.peekFront()), pc.getSeeBit())))
           << "." << endl;
    }//if
 
