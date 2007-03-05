@@ -888,7 +888,7 @@ public:
    int getHIT(bool include_modifiers, object *weapon);
    int getDAM(bool include_modifiers);
    int getWeapRange(short min_max, int position, bool include_modifiers);
-   int getWeapDAM(int position, bool include_modifiers);
+   float getWeapDAM(int position, bool include_modifiers);
    int getMana() const { return short_cur_stats[16]; }
    int getManaMax() const { return short_cur_stats[24]; }
    int getMov() const { return short_cur_stats[17]; }
@@ -1020,6 +1020,7 @@ public:
    int isBlocked() { return CRIT_FLAGS.get(21); }
    int isTailing() { return CRIT_FLAGS.get(23); }
    int isDualWielding() { return crit_flags.get(16); }
+   bool isUsingShield() { return(eq[18] ? true : false); }
    int canClimb();
    int isParalyzed();
    int isNotComplete() const ;
@@ -1160,6 +1161,7 @@ public:
    critter* makeSmob(int suppress_sub_fail_msg = 0);
    int takeDamage(int adamage, int type, critter &agg);
    int takeDamage(int damage, int type);
+   float combatBonusVal(bool is_aggressor);
 };//class critter
  
 

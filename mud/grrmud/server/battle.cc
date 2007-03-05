@@ -119,9 +119,9 @@ void do_battle() {
 
          if (mudlog.ofLevel(DBG)) {
             mudlog << "In large while, crit_ptr:  " << crit_ptr << flush
-                   << " name: "
-                   << crit_ptr->getName() << " size of IS_FIGHTING:  "
-                   << crit_ptr->IS_FIGHTING.size() << endl << endl;
+               << " name: "
+               << crit_ptr->getName() << " size of IS_FIGHTING:  "
+               << crit_ptr->IS_FIGHTING.size() << endl << endl;
          }//if
 
 
@@ -130,16 +130,16 @@ void do_battle() {
 
          if (!crit_ptr->IS_FIGHTING.isEmpty()) {
             is_embattled = TRUE;
-            
+
             if (crit_ptr->isUsingClient()) {
                crit_ptr->show(CTAG_BATTLE(crit_ptr->whichClient() ));
             }
-            
+
             /* KHAAVREN DELETE MARKER
-            else if (crit_ptr->isUsingColor()) {
+               else if (crit_ptr->isUsingColor()) {
                crit_ptr->show(*(crit_ptr->getBattleColor()));
-            }
-            */
+               }
+               */
 
             int atks = crit_ptr->ATTACKS;
             if (crit_ptr->ATTACKS > 4)
@@ -147,10 +147,10 @@ void do_battle() {
             if (crit_ptr->ATTACKS < 1)
                atks = 1;
 
-             /* check for second attack */
+            /* check for second attack */
             if ((crit_ptr->isPc())
-                && (d(1,100) < d(1, (get_percent_lrnd(SECOND_ATTACK_SKILL_NUM, *(crit_ptr)) + 
-                                     crit_ptr->LEVEL) * (int)((float)(crit_ptr->getDEX(TRUE)) / 9.0))-(crit_ptr->PAUSE*60)) ) {
+                  && (d(1,100) < d(1, (get_percent_lrnd(SECOND_ATTACK_SKILL_NUM, *(crit_ptr)) + 
+                           crit_ptr->LEVEL) * (int)((float)(crit_ptr->getDEX(TRUE)) / 9.0))-(crit_ptr->PAUSE*60)) ) {
                atks++;
             }
 
@@ -161,29 +161,29 @@ void do_battle() {
 
                   if (mudlog.ofLevel(DBG)) {
                      mudlog << "In do_battle, within for loop, i:  "
-                            << i << " aggressor:  " 
-                            << *(name_of_crit(*crit_ptr, ~0)) << " addr:  "
-                            << crit_ptr << flush << " victim addr:  "
-                            << vict_ptr << " vict_name:  "
-                            << *(name_of_crit(*vict_ptr, ~0)) << endl;
+                        << i << " aggressor:  " 
+                        << *(name_of_crit(*crit_ptr, ~0)) << " addr:  "
+                        << crit_ptr << flush << " victim addr:  "
+                        << vict_ptr << " vict_name:  "
+                        << *(name_of_crit(*vict_ptr, ~0)) << endl;
                   }
 
                   int show_vict_tags = TRUE;
                   if ((vict_ptr = check_for_diversions(*vict_ptr, "GM", 
-                                                       *crit_ptr))) {
+                              *crit_ptr))) {
 
                      if (vict_ptr->isUsingClient()) {
                         vict_ptr->show(CTAG_BATTLE(vict_ptr->whichClient()));
                      }
                      /* KHAAVREN DELETE MARKER
-                     else if (vict_ptr->isUsingColor()) {
+                        else if (vict_ptr->isUsingColor()) {
                         show(*(vict_ptr->getBattleColor()), *vict_ptr);
-                     }
-                     */
+                        }
+                        */
 
                      //do reg attack
                      do_battle_round(*crit_ptr, *vict_ptr, 9, show_vict_tags);
-                     
+
                      if (crit_ptr->isNpc()) {
                         do_battle_proc(*crit_ptr);
                      }//if
@@ -196,56 +196,42 @@ void do_battle() {
                         vict_ptr->show(CTAG_END_BATTLE(vict_ptr->whichClient()));
                      }
                      /* KHAAVREN DELETE MARKER
-                     else if (vict_ptr->isUsingColor()) {
+                        else if (vict_ptr->isUsingColor()) {
                         vict_ptr->show(*(vict_ptr->getDefaultColor()));
-                     }
-                     */
+                        }
+                        */
                   }//if
                }//if
             }//for                /* now check for dual wield */
 
             if (crit_ptr->isFighting() && crit_ptr->isDualWielding()) {
-               int val = (int)(((float)(get_percent_lrnd(DUAL_WIELD_SKILL_NUM, 
-                                                         *crit_ptr)) *
-                                (float)(crit_ptr->getDEX(TRUE)) / 10.0));
-               if (d(1,100) < d(1, val)-(crit_ptr->PAUSE*50) ) {
-                  vict_ptr = crit_ptr->IS_FIGHTING.peekFront();
 
+               vict_ptr = crit_ptr->IS_FIGHTING.peekFront();
+
+               if (vict_ptr->isUsingClient()) {
+                  vict_ptr->show(CTAG_BATTLE(vict_ptr->whichClient()));
+               }
+
+               int show_vict_tags = TRUE; //Show tags if needed.
+               do_battle_round(*crit_ptr, *vict_ptr, 10, show_vict_tags);
+
+               // Tags will only be shown in do_battle_round if
+               // the victim died.
+               if (show_vict_tags) {
                   if (vict_ptr->isUsingClient()) {
-                     vict_ptr->show(CTAG_BATTLE(vict_ptr->whichClient()));
+                     vict_ptr->show(CTAG_END_BATTLE(vict_ptr->whichClient()));
                   }
-                  /* KHAAVREN DELETE MARKER
-                  else if (vict_ptr->isUsingColor()) {
-                     vict_ptr->show(*(vict_ptr->getBattleColor()));
-                  }
-                  */
-
-                  int show_vict_tags = TRUE; //Show tags if needed.
-                  do_battle_round(*crit_ptr, *vict_ptr, 10, show_vict_tags);
-
-                  // Tags will only be shown in do_battle_round if
-                  // the victim died.
-                  if (show_vict_tags) {
-                     if (vict_ptr->isUsingClient()) {
-                        vict_ptr->show(CTAG_END_BATTLE(vict_ptr->whichClient()));
-                     }
-                     /* KHAAVREN DELETE MARKER
-                     else if (vict_ptr->isUsingColor()) {
-                        vict_ptr->show(*(vict_ptr->getDefaultColor()));
-                     }
-                     */
-                  }//if
-              }//if
+               }//if
             }//if
 
             if (crit_ptr->isUsingClient()) {
                crit_ptr->show(CTAG_END_BATTLE(crit_ptr->whichClient()));
             }
             /* KHAAVREN DELETE MARKER
-            else if (crit_ptr->isUsingColor()) {
+               else if (crit_ptr->isUsingColor()) {
                crit_ptr->show(*(crit_ptr->getDefaultColor()));
-            }
-            */
+               }
+               */
          }//if
       }//while
 
@@ -297,7 +283,6 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
                      int& show_vict_tags) {
    float damage, weapon_dam, pos_mult, xp_damage;
    short  is_wielding = FALSE;
-   short tp, td;
    String buf(81);
    String aggbuf(25);
    String victbuf(25);
@@ -306,7 +291,6 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    String victendbuf(50);
    String otherbuf(50);
    char dam_str[50];
-   int i;
 
    if (mudlog.ofLevel(DBG)) {
       mudlog << "In do_battle_round, agg addr:  " << &agg << "  name:  "
@@ -369,136 +353,138 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
          return;
    }//if
 
-   //how hard am I to hit?
-   int j = (
-         (vict.getDEX(TRUE) * 3)
-         - (vict.AC / 10)
-         + vict.LEVEL
-         + (agg.POS * 5)
-         );
+   int j = (int)(vict.combatBonusVal(false) - ((vict.AC - 100)/10.0));
+   int i = (int)(agg.combatBonusVal(true) + agg.HIT);
 
-   //how good am I at hitting you?
-   i = (
-         (agg.getDEX(TRUE) * 3) 
-         + (agg.getHIT(true, agg.eq[posn_of_weapon]) * 2)
-         + agg.LEVEL + (vict.POS * 5)
-       );
+   //if it was impossible to either hit or avoid getting hit, let us know.
+   if ( abs(j-i) > 50 ) {
+      cerr << "(vict)" << (const char*)(*vict.getName()) << ":" << j
+         << " (agg)" << (const char*)(*agg.getName()) << ":" << i << endl;
+   }
 
-   if ((!vict.isStunned() && (d(1, j) > d(1, i))) ||
-       (agg.POS == POS_STUN)) {  //missed, stunned
-      if (agg.POS == POS_STUN) {
-         agg.show("You lie immobilized by the thought of imminent death.\n"
-              );
-      }//if
-      else {
-         //         log("In the else, missed.\n");
-         Sprintf(buf, "%S misses you.\n", name_of_crit(agg, vict.SEE_BIT));
-         buf.Cap();
-         vict.show(buf, HL_BATTLE);
+   if ( (( ! vict.isStunned() ) && ( d(1,50+j) > d(1,50+i) ))
+         || ( agg.POS == POS_STUN ) ) {
 
-         Sprintf(buf, "You miss %S.\n", name_of_crit(vict, agg.SEE_BIT));
-         agg.show(buf, HL_BATTLE);
-
-         Sprintf(buf, "misses %S.", name_of_crit(vict, ~0));
-         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
-      }//else
-
-      return;
-   }//if
-
-   td = tp = FALSE;
-   float chance = 0.0;
-
-   /* This used to check for battle stun, but in personal experience dodging
-      is a natural reaction... even when you've got the wind knocked out of
-      you or your world is spinning you can still manage to (instinctively)
-      move the hell out of the way.
-
-      Also if you're asleep, meditating, or dying... fat chance dodging buddy
-    */
-   if ( (!vict.isParalyzed()) && ( vict.isStanding() || vict.isSitting() ) ) {
-      // bigger means less likely to hit, should range from around 1-600
-      if ( vict.isStunned() ) {
-         chance = (float)(d(1, 300)) * (float)agg.getDEX(TRUE) / 18.0;
-      } else {
-         chance = (float)(d(1, 600)) * (float)agg.getDEX(TRUE) / 18.0;
+      if ( agg.POS == POS_STUN ) {
+         agg.show("You lie immobilized by the thought of imminent death.\n",
+               HL_BATTLE);
+         return;
       }
-      if ((chance < 100.0) && vict.isStanding()) {
-         td = (d(1, get_percent_lrnd(DODGE_SKILL_NUM, vict, TRUE) +
-                  vict.getDEX(TRUE) * 2) > d(4,25));
-      }//if
+      else {
+         int lower_bound = 1;
+         int miss_score = 50;
+         int dodge_score = 0 
+            + get_percent_lrnd(DODGE_SKILL_NUM, vict)
+            + get_percent_lrnd(QUICKFOOT_SKILL_NUM, vict)
+            + get_percent_lrnd(MARTIAL_ARTS_SKILL_NUM, vict);
+         int block_score = 0;
+         int parry_score = 0;
 
-      // Don't parry & dodge at the same time...
-      // 9 is wielded, 18 is shield... shields can parry a blow.
-      if ((!td && (vict.EQ[9] || vict.EQ[18])) &&
-            (vict.isStanding() || vict.isSitting())) {
-         // bigger means less likely to hit, should range from around 1-600
-         chance = (float)(d(1, 800)) * ((float)(agg.getDEX(TRUE))) / 18.0;
-         if (chance < 100.0) {
-            tp = (d(1, get_percent_lrnd(PARRY_SKILL_NUM, vict, TRUE) +
-                     vict.getDEX(TRUE) * 2) > d(4,25));
+         if ( vict.isUsingShield() ) {
+            block_score += get_percent_lrnd(BLOCK_SKILL_NUM, vict);
+         } 
+
+         if ( vict.eq[9] ||
+               (vict.eq[10] && vict.isDualWielding() && (!vict.isUsingShield() )) ) {
+            parry_score += get_percent_lrnd(PARRY_SKILL_NUM, vict);
          }
-      }//if
-   }//if
 
-   if (td) {
-      Sprintf(buf, "dodges %S's blow.", name_of_crit(agg, ~0));
-      emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &agg);
-     
-      Sprintf(buf, "%S dodges your blow.\n", name_of_crit(vict, agg.SEE_BIT));
-      buf.Cap();
-      agg.show(buf, HL_BATTLE);
-     
-      Sprintf(buf, "You dodge %S's blow.\n", name_of_crit(agg, vict.SEE_BIT));
-      vict.show(buf, HL_BATTLE);
-      
-      return;
-   }//if td
+         int total_score = miss_score + dodge_score + block_score + parry_score;
+         int random_num = d(1,total_score);
 
-   if (tp) {
-      Sprintf(buf, "parries %S's blow.", name_of_crit(agg, ~0));
-      emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &agg);
-      
-      Sprintf(buf, "%S parries your blow.\n", 
-              name_of_crit(vict, agg.SEE_BIT));
-      buf.Cap();
-      agg.show(buf, HL_BATTLE);
-      
-      Sprintf(buf, "You parry %S's blow.\n", 
-              name_of_crit(agg, vict.SEE_BIT));
-      vict.show(buf, HL_BATTLE);
-      
-      return;
-   }//if tp
+         if ( (random_num >= lower_bound) && (random_num < (lower_bound + miss_score)) ) {
+            Sprintf(buf, "%S misses you.\n", name_of_crit(agg, vict.SEE_BIT));
+            buf.Cap();
+            vict.show(buf, HL_BATTLE);
+
+            Sprintf(buf, "You miss %S.\n", name_of_crit(vict, agg.SEE_BIT));
+            agg.show(buf, HL_BATTLE);
+
+            Sprintf(buf, "misses %S.", name_of_crit(vict, ~0));
+            emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
+
+            return;
+         }
+
+         lower_bound += miss_score;
+
+         if ( (random_num >= lower_bound) && (random_num < (lower_bound + dodge_score)) ) {
+            Sprintf(buf, "dodges %S's blow.", name_of_crit(agg, ~0));
+            emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &agg);
+
+            Sprintf(buf, "%S dodges your blow.\n", name_of_crit(vict, agg.SEE_BIT));
+            buf.Cap();
+            agg.show(buf, HL_BATTLE);
+
+            Sprintf(buf, "You dodge %S's blow.\n", name_of_crit(agg, vict.SEE_BIT));
+            vict.show(buf, HL_BATTLE);
+
+            return;
+         }
+
+         lower_bound += dodge_score;
+
+         if ( (random_num >= lower_bound) && (random_num < (lower_bound + parry_score)) ) {
+
+            Sprintf(buf, "parries %S's blow.", name_of_crit(agg, ~0));
+            emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &agg);
+
+            Sprintf(buf, "%S parries your blow.\n", 
+                  name_of_crit(vict, agg.SEE_BIT));
+            buf.Cap();
+            agg.show(buf, HL_BATTLE);
+
+            Sprintf(buf, "You parry %S's blow.\n", 
+                  name_of_crit(agg, vict.SEE_BIT));
+            vict.show(buf, HL_BATTLE);
+
+            return;
+         }
+
+         lower_bound += parry_score;
+
+         if ( (random_num >= lower_bound) && (random_num < (lower_bound + block_score)) ) {
+
+            Sprintf(buf, "blocks %S's blow.", name_of_crit(agg, ~0));
+            emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &agg);
+
+            Sprintf(buf, "%S blocks your blow.\n", 
+                  name_of_crit(vict, agg.SEE_BIT));
+            buf.Cap();
+            agg.show(buf, HL_BATTLE);
+
+            Sprintf(buf, "You block %S's blow.\n", 
+                  name_of_crit(agg, vict.SEE_BIT));
+            vict.show(buf, HL_BATTLE);
+
+            return;
+         }
+      }//agg isn't stunned.
+   }//missed,blocked,parried,dodged,whatever...
 
    /* else, did hit */
 
 //   log("Did hit..going into messages.\n");
 
-   if (is_wielding) { //wielded
-      weapon_dam = agg.getWeapDAM(posn_of_weapon, true);
-   }//if
-   else {
-      weapon_dam = d(agg.getBHDC(TRUE), agg.getBHDS(TRUE));
-      //batlog << "no weapon, weapon_dam:  " << weapon_dam << endl;
-   }//else
-     
+   //handles bhd too
+   weapon_dam = agg.getWeapDAM(posn_of_weapon, true);
+
    //  log("About to enter switch.\n");
    switch (vict.POS) {
      case POS_STAND:
        pos_mult = 1.0;
        break;
      case POS_PRONE: case POS_REST: case POS_SIT:
-       pos_mult = 1.5;
+       pos_mult = 1.25;
        break;
      case POS_SLEEP:
-       pos_mult = 2.0;
+       pos_mult = 1.5;
        break;
      case POS_MED: 
-       pos_mult = 3.0;
+       pos_mult = 1.75;
        break;
      case POS_STUN:
-       pos_mult = 4.0;
+       pos_mult = 2.0;
        break;
 
      default:
@@ -511,8 +497,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    }//switch
 
         /* no modifiers have been added yet, exact_raw... does that */
-   damage = ((float)agg.STR/3.0 + (float)agg.getDAM(TRUE) + weapon_dam) *
-      pos_mult;
+   damage = weapon_dam * pos_mult;
 
    if (is_wielding) {
       if (((agg.EQ[posn_of_weapon])->obj_flags).get(41))
@@ -931,7 +916,7 @@ int exact_raw_damage(int damage, int damage_type, critter& vict, critter& agg) {
    }//if
 
    if (is_affected_by(EARTHMELD_SKILL_NUM, vict)) {
-      if ((pl = get_percent_lrnd(EARTHMELD_SKILL_NUM, agg)) > d(1,115)) {
+      if ((pl = get_percent_lrnd(EARTHMELD_SKILL_NUM, vict)) > d(1,115)) {
          dam *= (100.0 - ((float)(pl))/7.0) / 100.0;
       }//if
    }//if

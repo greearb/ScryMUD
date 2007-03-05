@@ -2533,11 +2533,20 @@ int critter::getWeapRange(short min_max, int position, bool include_modifiers=fa
       ret_val += count * sides;
    }
 
+   ret_val += getDAM(true);
+
+   ret_val += (int)( (getSTR(true) - 10) / 2.0 );
+
+   if ( position == 10 ) {//penalty for off-hand
+      p_lrnd = get_percent_lrnd(DUAL_WIELD_SKILL_NUM, *this);
+      ret_val = (int)( ret_val * ( 0.50 + p_lrnd/500.0 ) );
+   }
+
    ret_val += getDAM(TRUE);
    return ret_val;
 }//critter::getWeapRange
 
-int critter::getWeapDAM(int position, bool include_modifiers=false) {
+float critter::getWeapDAM(int position, bool include_modifiers=false) {
    int count = 0;
    int sides = 0;
    int weapon_skill = 0;
@@ -2558,17 +2567,32 @@ int critter::getWeapDAM(int position, bool include_modifiers=false) {
          weapon_skill = BOW_SKILL_NUM;
       }
 
-   } else { //not weapon, technically we shouldn't have this happen.
-      return 0;
+      p_lrnd = get_percent_lrnd(weapon_skill, *this);
+      if ( p_lrnd > 0 ) {
+         count = p_lrnd/50;
+         sides = p_lrnd/33;
+      }
+
+      count += weapon->getDiceCnt();
+      sides += weapon->getDiceSides();
+
+   } else {//we're bare handed
+      count = getBHDC(true);
+      sides = getBHDS(true);
    }
 
-   p_lrnd = get_percent_lrnd(weapon_skill, *this);
-   if ( p_lrnd > 0 ) {
-      count = p_lrnd/50;
-      sides = p_lrnd/33;
+   float ret_val = d(count,sides);
+
+   ret_val += getDAM(true);
+
+   ret_val += (getSTR(true) - 10) / 2.0 ;
+
+   if ( position == 10 ) {//penalty for off-hand
+      p_lrnd = get_percent_lrnd(DUAL_WIELD_SKILL_NUM, *this);
+      ret_val = ret_val * ( 0.50 + p_lrnd/500.0 );
    }
 
-   return d(weapon->getDiceCnt()+count, weapon->getDiceSides()+sides);
+   return ret_val;
 }//critter::getWeapDAM
 
 void critter::checkForBattle(room& rm) {
@@ -5779,7 +5803,7 @@ int critter::takeDamage(int damage, int type, critter& agg) {
    }
 
   HP -= (int)(dam);
-  return (int)dam;
+  return abs((int)dam);
 }//exact_raw_damage
 
 
@@ -5829,3 +5853,109 @@ int critter::takeDamage(int damage, int type) {
    HP -= (int)(dam);
    return (int)dam;
 }
+
+float critter::combatBonusVal(bool is_aggressor)  {
+
+   int p_lrnd;
+   float ret_val = 0;
+
+   ret_val += getLevel()/1.35;
+
+   if ( getPosn() > 2 ) {
+      //sleeping or worse, no bonus for you
+      return 0;
+   }
+
+   if ( getPosn() > 1 ) {//if they're resting or worse
+      //return with just a level bonus
+      return ret_val;
+   }
+
+   ret_val += (getDEX(true)-10)/2.0;
+
+   if ( getPosn() > 0 ) {//less than standing, you get dex+level
+      return ret_val;
+   }
+
+   //currently defenders have a few additional helping skills
+   if ( !is_aggressor ) {
+
+      //TODO: heavy armor _should_ negatively impact this
+      ret_val += get_percent_lrnd(DODGE_SKILL_NUM, *this)/15.0;
+
+      if ( isUsingShield() ) {//can only block when using a shield
+         ret_val += get_percent_lrnd(BLOCK_SKILL_NUM, *this)/15.0;
+      }
+
+      //add in their ability to parry, but only if they have a weapon
+      p_lrnd = get_percent_lrnd(PARRY_SKILL_NUM, *this);
+      if ( eq[9] ) {
+         ret_val += p_lrnd/15.0;
+      }
+
+      //TODO: really you shouldn't be able to dual-wield _AND_ use a shield at
+      //all.
+      //
+      //if you're using a shield, you can't parry with your off-hand. there's
+      //also a sizeable penalty for the off-hand.
+      if ( eq[10] && isDualWielding() && ( ! isUsingShield() ) ) {
+         ret_val += p_lrnd/30.0;
+      }
+   }//defender-specific skills
+
+
+   //things that apply to anyone follow
+   //TODO: Again, heavy armor should negatively impact both of these
+   ret_val += get_percent_lrnd(QUICKFOOT_SKILL_NUM, *this)/15.0;
+   ret_val += get_percent_lrnd(MARTIAL_ARTS_SKILL_NUM, *this)/15.0;
+
+   //the following only give credit if they've got a weapon
+   if ( eq[9] || ( eq[10] && isDualWielding() && (! isUsingShield()) ) ) {
+
+      p_lrnd = get_percent_lrnd(WEAPON_MASTERY_SKILL_NUM, *this);
+
+      for ( int i = 9; i <= 10; i++ ) {
+
+         if ( ! eq[i] ) {//skip if there isn't a weapon in this slot.
+            continue;
+         }
+
+         //only check the off-hand if they're dual wielding and not using a
+         //shield.
+         if ( i == 10 && ( (! isDualWielding()) || (isUsingShield()) ) ) {
+            continue;
+         }
+
+         float bonus;
+         bonus = 0;
+
+         //apply weapon specific bonuses
+         if ( eq[i]->isSlash() ) {
+            bonus += get_percent_lrnd(SWORD_SKILL_NUM, *this)/15.0;
+            bonus += get_percent_lrnd(FENCING_SKILL_NUM, *this)/15.0;
+         }
+         else if ( eq[i]->isPierce() ) {
+            bonus += get_percent_lrnd(DAGGER_SKILL_NUM, *this)/15.0;
+         }
+         else if ( eq[i]->isSmash() ) {
+            bonus += get_percent_lrnd(MACE_SKILL_NUM, *this)/15.0;
+         }
+         else if ( eq[i]->isWhip() ) {
+            bonus += get_percent_lrnd(WHIP_SKILL_NUM, *this)/15.0;
+         }
+         else if ( eq[i]->isBow() ) {
+            bonus += get_percent_lrnd(BOW_SKILL_NUM, *this)/15.0;
+         }
+
+         if ( i == 10 ) {//penalize off-hand bonuses
+            bonus *= 0.50;
+         }
+
+         ret_val += bonus;
+
+      }//check both main-hand and off-hand
+
+   }//if they have at least one weapon
+
+   return ret_val;
+}//critter::combatBonusVal()

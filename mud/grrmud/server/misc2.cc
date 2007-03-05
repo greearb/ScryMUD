@@ -1681,7 +1681,7 @@ int get_percent_lrnd(int skill_num, const critter& pc, short automatic) {
                return (70 + pc.LEVEL);
          }//if
       }//if automatic (ie should search)
-      return (70 + pc.LEVEL);
+      return (int)(2.5*pc.LEVEL)
    }//if not a pc
    
    int retval;
