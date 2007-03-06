@@ -356,19 +356,12 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    int j = (int)(vict.combatBonusVal(false) - ((vict.AC - 100)/10.0));
    int i = (int)(agg.combatBonusVal(true) + agg.HIT);
 
-   //if it was impossible to either hit or avoid getting hit, let us know.
-   if ( abs(j-i) > 50 ) {
-      cerr << "(vict)" << (const char*)(*vict.getName()) << ":" << j
-         << " (agg)" << (const char*)(*agg.getName()) << ":" << i << endl;
-   }
-
    if ( (( ! vict.isStunned() ) && ( d(1,50+j) > d(1,50+i) ))
          || ( agg.POS == POS_STUN ) ) {
 
       if ( agg.POS == POS_STUN ) {
          agg.show("You lie immobilized by the thought of imminent death.\n",
                HL_BATTLE);
-         return;
       }
       else {
          int lower_bound = 1;
@@ -460,6 +453,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
             return;
          }
       }//agg isn't stunned.
+      return;
    }//missed,blocked,parried,dodged,whatever...
 
    /* else, did hit */
@@ -727,7 +721,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
       //emote("is dead!!", vict, room_list[vict.getCurRoomNum()], TRUE);
       agg_kills_vict(&agg, vict, show_vict_tags, TRUE);
    }//if
-   else if (vict.HP <= vict.WIMPY) {
+   else if ( vict.HP <= vict.getWimpy() ) {
       int is_dead = FALSE;
       flee(vict, is_dead);
    }//if wimpy
