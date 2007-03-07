@@ -79,6 +79,8 @@ ServerConfig::ServerConfig() {
    mySQLdatabase="gmud";
    mySQLhost="localhost";
    mySQLport=0;
+
+   resave_pfiles = false;
 }//ServerConfig
 
 void ServerConfig::read(char* filename) {

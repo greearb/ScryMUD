@@ -80,6 +80,7 @@
 
 #include "telnet.h"
 #include "telnet_handler.h"
+#include "pfile_maint.h"
 
 #define MAX_HOSTNAME    256
 
@@ -728,10 +729,17 @@ void run_the_game(int port) {
    init_masks();   //set all the masks for miscelaneous bitfields
 
 
-   mudlog.log(DBG, "Entering game loop.\n");
-
-
    config_spells(); // configure spells
+
+   //command-line argument: --resave-pfiles
+   if ( config.resave_pfiles ) {
+      if ( resave_all_pfiles() != 0 ) {
+          cerr << "Errors encountered while resaving pfiles." << endl;
+      }
+      do_shutdown = true;
+   }
+
+   mudlog.log(DBG, "Entering game loop.\n");
    game_loop(s);
 
    close_sockets(s);

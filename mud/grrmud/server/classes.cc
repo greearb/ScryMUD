@@ -60,6 +60,7 @@ void CmdLineInfo::init(int argc, char** argv) {
          {"version", 0, 0, 0},
          {"summon", 0, 0, 0},
          {"teeport", 0, 0, 0},
+         {"resave-pfiles", 0,0,0},
          {0, 0, 0, 0}
       };
 
@@ -87,6 +88,10 @@ void CmdLineInfo::init(int argc, char** argv) {
          case 'p':
             config.port = atoi(optarg);
             cout << "Using " << config.port << " for the well known server port.\n";
+            break;
+
+         case 'r'://resave pfiles
+            config.resave_pfiles = true;
             break;
 
          case 'l': {
@@ -124,7 +129,8 @@ void CmdLineInfo::init(int argc, char** argv) {
                          "-p --port                    Specify server port\n"
                          "-v --version                 Print out build/version information.\n"
                          "-h --help                    Print this message.\n"
-                         "-u --usage                   Print this message.\n\n";
+                         "-u --usage                   Print this message.\n"
+                         "--resave-pfiles              Load & Resave all pfiles, then exit.\n\n";
             do_shutdown = TRUE;
             exit(0);
             break;

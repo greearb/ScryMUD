@@ -107,5 +107,8 @@ class ServerConfig {
       String mySQLdatabase;
       String mySQLhost;
       int mySQLport;
+
+      // Misc
+      bool resave_pfiles;
 };
 #endif
