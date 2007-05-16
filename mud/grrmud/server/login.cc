@@ -365,7 +365,7 @@ void critter::doLogin() {
                j = RANGER;
             }
             else if (strncasecmp(string, "thief", slen) == 0) {
-               j = CLERIC;
+               j = THIEF;
             }
             else if (strncasecmp(string, "bard", slen) == 0) {
                j = BARD;
