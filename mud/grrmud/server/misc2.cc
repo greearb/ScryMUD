@@ -712,7 +712,7 @@ critter* check_for_diversions(critter& pc, char* tests, critter& agg) {
 }//check_for_diversions
 
 
-stat_spell_cell* is_affected_by(int spell_num, critter& pc) {
+stat_spell_cell* is_affected_by(int spell_num, const critter& pc) {
   Cell<stat_spell_cell*> cll(pc.affected_by);
   stat_spell_cell* ptr;
 
@@ -725,7 +725,7 @@ stat_spell_cell* is_affected_by(int spell_num, critter& pc) {
 }//is_affected_by
 
 
-stat_spell_cell* is_affected_by(int spell_num, object& obj) {
+stat_spell_cell* is_affected_by(int spell_num, const object& obj) {
   Cell<stat_spell_cell*> cll(obj.affected_by);
   stat_spell_cell* ptr;
 

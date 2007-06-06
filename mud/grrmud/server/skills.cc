@@ -419,7 +419,7 @@ int do_kick(critter& vict, critter& pc) {
    if (skill_did_hit(pc, KICK_SKILL_NUM, vict)) {
 
       pc.PAUSE = 1; //increment pause_count
-      float d1 = (((float)(pc.STR)) * (float)(pc.getLevel()) + 5.0) / 60.0;
+      float d1 = (((float)(pc.getSTR(true))) * (float)(pc.getLevel()) + 5.0) / 60.0;
       exact_raw_damage(d((int)d1, 5), NORMAL, vict, pc);
       vict.PAUSE = 1;
 
@@ -588,7 +588,7 @@ int do_bash(critter& vict, critter& pc) {
 
       wd = pc.DAM + d(pc.BH_DICE_COUNT, pc.BH_DICE_SIDES);
 
-      exact_raw_damage( (d(pc.STR/2, 5) + pc.DEX/2)+(wd*2) + (int)(pc.LEVEL/5),
+      exact_raw_damage( (d(pc.getSTR(true)/2, 5) + pc.getDEX(true)/2)+(wd*2) + (int)(pc.getLevel()/5),
             NORMAL, vict, pc);
       pc.PAUSE = 1;
       vict.PAUSE = 1;
@@ -826,7 +826,7 @@ int do_claw(critter& vict, critter& pc) {
          did_blind = TRUE;
       }
 
-      exact_raw_damage((d(pc.STR/2, 5) + pc.LEVEL), NORMAL, vict);
+      exact_raw_damage((d(pc.getSTR(true)/2, 5) + pc.getLevel()), NORMAL, vict);
 
       if (vict.HP < 0) {
          Sprintf(buf, "rips %S's throat out with %s %s!!\n", 
@@ -1496,18 +1496,18 @@ short did_spell_hit(const critter& agg, const int spell_type,
         }
         break;
      case CRONIC:
-        j = ((18 - vict.CON) * 5 + 25);
+        j = ((18 - vict.getCON(true)) * 5 + 25);
         break;
      case AGILITY:
-        j = ((18 - vict.DEX) * 5 + 25);
+        j = ((18 - vict.getDEX(true)) * 5 + 25);
         break;
      case COERCION:
      case CHARM:
-        j = ((18 - vict.INT) * 5 + 25);
-        if (agg.ALIGN < -850)
+        j = ((18 - vict.getINT(true)) * 5 + 25);
+        if (agg.getAlignment() < -850)
            j += (int)((float)j * .25);
-        else if (agg.ALIGN > 250)
-           j += (int)((float)j * ((float)agg.ALIGN / 4000.0));
+        else if (agg.getAlignment() > 250)
+           j += (int)((float)j * ((float)agg.getAlignment() / 4000.0));
         break;
      default:
         if (mudlog.ofLevel(ERROR)) {
@@ -1575,14 +1575,14 @@ short skill_did_hit(critter& agg, int spell_num, critter& vict) {
 
    if ((spell_num == CONSTRUCT_SKILL_NUM) || (spell_num == BREW_SKILL_NUM)) {
        if ( agg.isSage() ) {
-           return ( d(1, 75) < d(1, (percent_lrnd*2 + 2*(agg.getDEX(TRUE) + agg.INT))));
+           return ( d(1, 75) < d(1, (percent_lrnd*2 + 2*(agg.getDEX(TRUE) + agg.getINT(true)))));
        } else {
-           return (d(1, 100) < d(1, (percent_lrnd * 2 + 2 * (agg.getDEX(TRUE) + agg.INT))));
+           return (d(1, 100) < d(1, (percent_lrnd * 2 + 2 * (agg.getDEX(TRUE) + agg.getINT(true)))));
        }
    }
    else if ((spell_num == BODYSLAM_SKILL_NUM) ||
          (spell_num == HURL_SKILL_NUM))
-      return (d(1, vict.CRIT_WT_CARRIED) < d(1, percent_lrnd + agg.STR * 10));
+      return (d(1, vict.CRIT_WT_CARRIED) < d(1, percent_lrnd + agg.getSTR(true) * 10));
 
    else if ((spell_num == BACKSTAB_SKILL_NUM) ||
          (spell_num == CIRCLE_SKILL_NUM)) {
@@ -1593,8 +1593,8 @@ short skill_did_hit(critter& agg, int spell_num, critter& vict) {
       if(agg.isHiding()) backstab_bonus += get_percent_lrnd(HIDE_SKILL_NUM, agg)/6; //harder to hit something if you can't move around
       if(agg.isInvis()) backstab_bonus += 15;
 
-      int rnd1 = d(1, (agg.HIT * 3 + agg.DEX * 5 + agg.LEVEL * 2));
-      int rnd2  = d(1, (2 * vict.DEX + vict.LEVEL + max(-vict.AC / 2,  25)));
+      int rnd1 = d(1, (agg.HIT * 3 + agg.getDEX(true) * 5 + agg.getLevel() * 2));
+      int rnd2  = d(1, (2 * vict.getDEX(true) + vict.getLevel() + max(-vict.AC / 2,  25)));
       return ( (((float)(rnd1) * (float)(percent_lrnd) / 100.0) + backstab_bonus) >
             ((float)(rnd2)));
    }

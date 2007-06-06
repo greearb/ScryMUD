@@ -1990,7 +1990,7 @@ int critter::showTime() {
 
 /** NOTE:  This may normalize the real value.
  */
-int critter::getDamRecMod() {
+int critter::getDamRecMod() const {
    int min_val = 25;
    if (is_affected_by(FLESH_TO_STONE_SKILL_NUM, *this)) {
       min_val = 1;
@@ -2345,14 +2345,14 @@ int critter::getCurWeight() {// of inv...eq not taken into account here
 } // cur_weight
 
 int critter::getMaxWeight() {
-   return (short_cur_stats[1] * 10 + getNakedWeight());  // 10 times their str
+   return (getSTR(true) * 10 + getNakedWeight());  // 10 times their str
 }//max_weight
 
 int critter::getCurRoomNum() {
    return IN_ROOM;
 }
 
-int critter::getSTR(bool include_modifiers=false) {
+int critter::getSTR(bool include_modifiers=false) const {
    int p_lrnd;
    int modifier = 0;
 
@@ -2366,7 +2366,7 @@ int critter::getSTR(bool include_modifiers=false) {
    return STR+modifier;
 }
 
-int critter::getDEX(bool include_modifiers=false) {
+int critter::getDEX(bool include_modifiers=false) const {
    int p_lrnd;
    int modifier = 0;
 
@@ -2380,7 +2380,7 @@ int critter::getDEX(bool include_modifiers=false) {
    return DEX+modifier;
 }
 
-int critter::getWIS(bool include_modifiers=false) {
+int critter::getWIS(bool include_modifiers=false) const {
    int p_lrnd;
    int modifier = 0;
 
@@ -2394,7 +2394,7 @@ int critter::getWIS(bool include_modifiers=false) {
    return WIS+modifier;
 }
 
-int critter::getCHA(bool include_modifiers=false) {
+int critter::getCHA(bool include_modifiers=false) const {
    int p_lrnd;
    int modifier = 0;
 
@@ -2403,31 +2403,36 @@ int critter::getCHA(bool include_modifiers=false) {
       if ( p_lrnd > 0 ) {
          modifier += p_lrnd/30;
       }
-
-      p_lrnd = get_percent_lrnd(LOGIC_SKILL_NUM, *this);
-      if ( p_lrnd > 0 ) {
-         modifier -= p_lrnd/30;
-      }
    }
 
    return CHA+modifier;
 }
 
-int critter::getCON(bool include_modifiers=false) {
+int critter::getCON(bool include_modifiers=false) const {
    return CON;
 }//critter::getCON()
 
-int critter::getINT(bool include_modifiers=false) {
-   return INT;
-}//critter::getCON()
+int critter::getINT(bool include_modifiers=false) const {
+   int p_lrnd;
+   int modifier = 0;
 
-int critter::getBHDC(bool include_modifiers=false) {
+   if ( include_modifiers && pc ) {
+       p_lrnd = get_percent_lrnd(LOGIC_SKILL_NUM, *this);
+       if ( p_lrnd > 0 ) {
+           modifier += p_lrnd/30;
+       }
+   }
+
+   return INT+modifier;
+}//critter::getINT()
+
+int critter::getBHDC(bool include_modifiers=false) const {
    int modifier = 0;
 
    return BH_DICE_COUNT+modifier;
 }
 
-int critter::getBHDS(bool include_modifiers=false) {
+int critter::getBHDS(bool include_modifiers=false) const {
    int p_lrnd;
    int modifier = 0;
 
@@ -2441,7 +2446,7 @@ int critter::getBHDS(bool include_modifiers=false) {
    return BH_DICE_SIDES+modifier;
 }
 
-int critter::getDAM(bool include_modifiers=false) {
+int critter::getDAM(bool include_modifiers=false) const {
    int p_lrnd;
    int modifier = 0;
 
@@ -2455,7 +2460,7 @@ int critter::getDAM(bool include_modifiers=false) {
    return DAM+modifier;
 }
 
-int critter::getHIT(bool include_modifiers=false, object* weapon = NULL) {
+int critter::getHIT(bool include_modifiers=false, object* weapon = NULL) const {
    int p_lrnd;
    int modifier = 0;
    int weapon_skill = 0;
@@ -2492,7 +2497,7 @@ int critter::getHIT(bool include_modifiers=false, object* weapon = NULL) {
 //min_max is 0 or 1. If 0, the minimum damage done by that hand is returned,
 //otherwise the maximum possible damage. This will handle both weapons and
 //bare handed. Originally writter for use in the "score" output.
-int critter::getWeapRange(short min_max, int position, bool include_modifiers=false) {
+int critter::getWeapRange(short min_max, int position, bool include_modifiers=false) const {
 
    int ret_val, count, sides, weapon_skill, p_lrnd;
    object *weapon = EQ[position];
@@ -2546,7 +2551,7 @@ int critter::getWeapRange(short min_max, int position, bool include_modifiers=fa
    return ret_val;
 }//critter::getWeapRange
 
-float critter::getWeapDAM(int position, bool include_modifiers=false) {
+float critter::getWeapDAM(int position, bool include_modifiers=false) const {
    int count = 0;
    int sides = 0;
    int weapon_skill = 0;

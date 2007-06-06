@@ -754,7 +754,7 @@ public:
 
    /** NOTE:  This may normalize the real value.
     */
-   int getDamRecMod();
+   int getDamRecMod() const;
 
    /** For scripts, the script_targ is always *this.  The script_owner
     * will be null (for non-script specific stuff) and should be specified
@@ -876,19 +876,19 @@ public:
    int getCharisma() const { return short_cur_stats[4]; }
    int getHP() const { return short_cur_stats[15]; }
    int getHP_MAX() const { return short_cur_stats[23]; }
-   int getSTR(bool include_modifiers);
-   int getDEX(bool include_modifiers);
-   int getWIS(bool include_modifiers);
-   int getCHA(bool include_modifiers);
-   int getCON(bool include_modifiers);
-   int getINT(bool include_modifiers);
-   int getBHDC(bool include_modifiers);
-   int getBHDS(bool include_modifiers);
-   int getHIT(bool include_modifiers) { return getHIT(include_modifiers, NULL); }
-   int getHIT(bool include_modifiers, object *weapon);
-   int getDAM(bool include_modifiers);
-   int getWeapRange(short min_max, int position, bool include_modifiers);
-   float getWeapDAM(int position, bool include_modifiers);
+   int getSTR(bool include_modifiers) const;
+   int getDEX(bool include_modifiers) const;
+   int getWIS(bool include_modifiers) const;
+   int getCHA(bool include_modifiers) const;
+   int getCON(bool include_modifiers) const;
+   int getINT(bool include_modifiers) const;
+   int getBHDC(bool include_modifiers) const;
+   int getBHDS(bool include_modifiers) const;
+   int getHIT(bool include_modifiers) const { return getHIT(include_modifiers, NULL); }
+   int getHIT(bool include_modifiers, object *weapon) const;
+   int getDAM(bool include_modifiers) const;
+   int getWeapRange(short min_max, int position, bool include_modifiers) const;
+   float getWeapDAM(int position, bool include_modifiers) const;
    int getMana() const { return short_cur_stats[16]; }
    int getManaMax() const { return short_cur_stats[24]; }
    int getMov() const { return short_cur_stats[17]; }
@@ -1065,9 +1065,9 @@ public:
    int isAnimal() { return RACE == ANIMAL; }
    int isAvian() { return RACE == AVIAN; }
    int isMonster() { return RACE == MONSTER; }
-   int isCharmed() { return master != NULL; }
-   int isWanderer() { return mob && MOB_FLAGS.get(2); }
-   int isBanker() { return mob && MOB_FLAGS.get(6); }
+   int isCharmed() const { return master != NULL; }
+   int isWanderer() const { return mob && MOB_FLAGS.get(2); }
+   int isBanker() const { return mob && MOB_FLAGS.get(6); }
    int isOpen(int cur_military_time, int do_msg, critter& pc) const;
 
    int isTeacher();

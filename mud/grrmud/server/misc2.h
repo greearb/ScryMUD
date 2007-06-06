@@ -58,8 +58,8 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
                     critter& pc, room* aux_rm = NULL, critter* aux_crit = NULL,
                     int do_msg = TRUE);
 
-stat_spell_cell* is_affected_by(int spell_num, critter& pc);
-stat_spell_cell* is_affected_by(int spell_num, object& obj);
+stat_spell_cell* is_affected_by(int spell_num, const critter& pc);
+stat_spell_cell* is_affected_by(int spell_num, const object& obj);
 
 stat_spell_cell* has_stat_affect(int affect_num, object& obj);
 

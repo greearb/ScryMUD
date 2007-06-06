@@ -1673,7 +1673,7 @@ short lost_concentration(critter& agg, int spell_num) {
    }// else
 
    i = (int)(((float)percent_lrned / 50.0) * 
-     (float)(agg.WIS + agg.INT + agg.LEVEL + 130));
+     (float)(agg.getWIS(true) + agg.getINT(true) + agg.getLevel() + 130));
 
    return (d(1, 100) >= d(1, i));
 }//lost_concentration

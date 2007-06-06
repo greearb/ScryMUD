@@ -150,7 +150,7 @@ void do_battle() {
             /* check for second attack */
             if ((crit_ptr->isPc())
                   && (d(1,100) < d(1, (get_percent_lrnd(SECOND_ATTACK_SKILL_NUM, *(crit_ptr)) + 
-                           crit_ptr->LEVEL) * (int)((float)(crit_ptr->getDEX(TRUE)) / 9.0))-(crit_ptr->PAUSE*60)) ) {
+                           crit_ptr->LEVEL) * (int)((float)(crit_ptr->getDEX(true)) / 9.0))-(crit_ptr->PAUSE*60)) ) {
                atks++;
             }
 
@@ -1124,8 +1124,8 @@ void gain_level(critter& crit) {
       return;
    }//if
 
-   int hp_gain = d(1, crit.CON/2);
-   int mana_gain = d(1, crit.WIS/2);
+   int hp_gain = d(1, crit.getCON(true)/2);
+   int mana_gain = d(1, crit.getWIS(true)/2);
 
    int _class = crit.getClass();
    switch (_class)
@@ -1133,17 +1133,17 @@ void gain_level(critter& crit) {
       case WARRIOR:
       case RANGER:
       case THIEF:
-         hp_gain += d(2, crit.CON/2);
+         hp_gain += d(2, crit.getCON(true)/2);
          break;
       case BARD:
-         hp_gain += d(3, crit.CON/2);
+         hp_gain += d(3, crit.getCON(true)/2);
          break;
       case SAGE:
       case WIZARD:
       case CLERIC:
       case ALCHEMIST:
       case NECROMANCER:
-         mana_gain += d(2, crit.WIS/2);
+         mana_gain += d(2, crit.getWIS(true)/2);
          break;
       default:
          if (mudlog.ofLevel(DBG)) {
@@ -1153,10 +1153,10 @@ void gain_level(critter& crit) {
       }//switch
 
    crit.LEVEL++;
-   crit.PRACS += d(2, (int)((float)(crit.INT)/6.0)) + 1;
+   crit.PRACS += d(2, (int)((float)(crit.getINT(true))/6.0)) + 1;
    crit.MA_MAX += mana_gain;
    crit.setHP_MAX(crit.getHP_MAX() + hp_gain);
-   crit.MV_MAX += d(1, crit.getDEX(TRUE));
+   crit.MV_MAX += d(1, crit.getDEX(true));
    crit.show("You rise a level.\n");
 
    if ( crit.isAvian() ) {
