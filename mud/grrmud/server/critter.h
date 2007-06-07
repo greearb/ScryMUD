@@ -1091,7 +1091,7 @@ public:
    int getClass() const { return CLASS; }
    int getRace() const { return RACE; }
    void setLevel(int i) { LEVEL = i; }
-   void setRace(int i) { RACE = i; }
+   void setRace(int i);
    void setClass(int i) { CLASS = i; }
 
    /**  Translates an asci string (like HP, MANA, MOV, ALIGN, etc)

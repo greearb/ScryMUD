@@ -5480,6 +5480,16 @@ int critter::depositCoins(int count, critter& banker) { //do messages
    return -1;
 }
 
+void critter::setRace(int i) {
+   RACE = i;
+   switch ( i ) {
+      case DARKLING:
+         //we need to turn on darkling infravision.
+         SEE_BIT |= 1;
+      break;
+   };
+}//critter::setRace()
+
 /**  Translates an asci string (like HP, MANA, MOV, ALIGN, etc)
  * and returns the integer value.  Returns 0 if it can't
  * resolve the field.
