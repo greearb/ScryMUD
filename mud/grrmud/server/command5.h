@@ -157,6 +157,10 @@ int handle_olc(critter& pc, int do_sub);
 void client_command(const String* vict, critter& pc);
 
 int set_veh_croom(int vhcl, int rm, critter& pc);
+
+int weatherreport(critter& pc);
+int changeweather(critter& pc);
+int setweather(const String* climate_str, const String* weather_str, critter& pc);
 #endif
 
 

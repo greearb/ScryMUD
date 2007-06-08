@@ -344,7 +344,7 @@ void do_tick() {
       config.year++;
       config.day = 1;
    }//if
-
+   weather.update();
    config.writeDynamic("dynamic.cfg");
 }//do_tick
 
@@ -466,7 +466,7 @@ void do_mini_tick() { // decrement pause count ect
 //that never regen. I'll be watching the effects of this change closely and
 //will most likely adjust the algorithms based on what I discover.
 void do_regeneration_pcs() {
-   float adj = 1.0, posn_mod, align_mod = 1.0;
+   float adj = 1.0, posn_mod, align_mod = 1.0, env_mod = 1.0;
    Cell<critter*> crit_cell;
    pc_list.head(crit_cell);
    critter* crit_ptr;
@@ -475,6 +475,10 @@ void do_regeneration_pcs() {
 
    while ((crit_ptr = crit_cell.next())) {
 
+	  if(crit_ptr->getCurRoom()->getWeather()!= wNONE){
+            env_mod = weather_regen_mods[crit_ptr->getCurRoom()->getWeather()] *
+            temperature_regen_mods[crit_ptr->getCurRoom()->getTemperature()];
+      }
       //no regen if we're fighting
       if ( crit_ptr->isFighting() ) {
          continue;
@@ -506,7 +510,7 @@ void do_regeneration_pcs() {
       crit_ptr->HP += (int)((((((float)(crit_ptr->CON) + 5.0) / 15.0) * 
                             (((float)(crit_ptr->HP_MAX)) / 9.0) * 
                             posn_mod * (((float)(crit_ptr->HP_REGEN)) / 100.0)
-                            * adj + 10.0)/6.0)+1.0);
+                            * adj + 10.0)/6.0)*env_mod+1.0);
       }
 
       // if we are affected by remove karma we get no mana
@@ -525,7 +529,7 @@ void do_regeneration_pcs() {
                               (((float)(crit_ptr->MA_MAX)) / 7.0) *
                               (((float)(crit_ptr->MA_REGEN)) / 100.0) *
                               align_mod *
-                              adj + 4.0)/6.0)+1.0);
+                              adj + 4.0)/6.0)*env_mod+1.0);
       }
 
       /* Lose 5 mov points if you're idleing in deep water without a boat or
@@ -539,7 +543,7 @@ void do_regeneration_pcs() {
          tmp_mov = (int)(((((((float)(crit_ptr->DEX)) + 5.0) / 16.0) *
                      posn_mod * adj *
                      (((float)(crit_ptr->MV_MAX)) / 3.0) * 
-                     (((float)(crit_ptr->MV_REGEN)) / 100.0) + 3.0)/6.0)+1.0);
+                     (((float)(crit_ptr->MV_REGEN)) / 100.0) + 3.0)/6.0)*env_mod+1.0);
 
          crit_ptr->MOV += tmp_mov;
       }
@@ -1843,7 +1847,7 @@ void add_spell_affecting_obj(int spell, int duration, object& vict) {
 }//gain spell_affected_by    
 
 
-void show(const char* message, critter& pc, hilite_type hl_type) {
+void show(const char* message, const critter& pc, hilite_type hl_type) {
    //log(message);
 
    String *output;
@@ -1868,7 +1872,11 @@ void show(const char* message, critter& pc, hilite_type hl_type) {
          snooper->show(buf2);
       }//if snoop
 
-      pc.setDoPrompt(TRUE);
+      //In theory we'd probably better to make critter::setDoPrompt() appear
+      //const and declare the prompt flag to be Mutable.
+      critter& t_pc = const_cast<critter&>(pc);
+      t_pc.setDoPrompt(true);
+
       if (!message)
          return;
 
@@ -2907,7 +2915,7 @@ bool isNightTime() {
       return false;
 }
 
-String *colorize(const char *message, critter &pc, hilite_type hl_type)
+String *colorize(const char *message, const critter &pc, hilite_type hl_type)
 {
 
    static String output;

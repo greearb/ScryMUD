@@ -98,7 +98,7 @@ void close_files();
 
 int detect(int see_bit, int vis_bit); //does bit comparison
 
-void show(const char* message, critter& pc, hilite_type hl_type = HL_DEF);
+void show(const char* message, const critter& pc, hilite_type hl_type = HL_DEF);
 void show_all_but_2(critter& A, critter& B, const char* message, 
                     room& rm, hilite_type hl_type = HL_DEF); 
 void show_all(const char* msg, const room& rm);
@@ -192,7 +192,7 @@ int verifydoors(int i_th, critter &pc);
 int mia_mobs(int i_th, critter &pc);
 int mia_objects(int i_th, critter &pc);
 
-String *colorize(const char *input, critter &pc, hilite_type hl_type); 
+String *colorize(const char *input, const critter &pc, hilite_type hl_type); 
 
 
 #endif 

@@ -369,6 +369,9 @@ public:
    void checkForProc(String& cmd, String& arg1, critter& actor,
                      int targ, room& cur_room, int sanity = 0);
 
+   int getVisBit();
+   void setVisBit(int vis_bit);
+
 }; // class object
 
 

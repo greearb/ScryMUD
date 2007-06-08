@@ -227,6 +227,8 @@ curtsey(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 # IMM Commands - C
 chance ~
 return (chance( i, j, k));
+changeweather ~
+changeweather(pc);
 ch_ddesc ~
 return ch_ddesc(i, pc);
 ch_kdesc ~
@@ -850,6 +852,8 @@ set_veh_croom ~
 return set_veh_croom(i, j, pc);
 set_veh_stop ~ 
 return  set_veh_stop(i, j, &(cooked_strs[1]), pc);
+setweather ~
+setweather(&(cooked_strs[1]), &(cooked_strs[2]), pc);
 set_zflag ~
 return set_zflag(i, &(cooked_strs[1]), pc);
 show_zones ~
@@ -1017,6 +1021,8 @@ wink(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 withdraw ~
 return withdraw(i, cooked_strs[1], j, cooked_strs[2], pc);
 # IMM Commands - W
+weatherreport ~
+weatherreport(pc);
 wc *channels ~
 NOP
 wizchat *channels ~

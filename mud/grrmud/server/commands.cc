@@ -735,6 +735,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
          else
             show("\n", pc);
       }//else
+	  pc.showWeather(rm);
       if (pc.shouldDoAutoExits()) { //if autoexit set
          auto_exit(pc);
       }//if

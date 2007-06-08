@@ -1908,3 +1908,11 @@ int object::calcSacPoints() {
    }//while
    return retval;
 }
+
+int object::getVisBit(){
+   return cur_stats[0];
+}
+
+void object::setVisBit(int vis_bit){
+   cur_stats[0] = vis_bit;
+}

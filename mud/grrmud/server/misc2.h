@@ -34,7 +34,7 @@
 #include "critter.h"
 #include "door.h"
 #include "room.h"
-
+#include <vector>
 
 int core_dump(const char* msg);
 short a_will_help_b_against_c(critter& a, critter& b, critter& pc);
@@ -179,16 +179,24 @@ String* get_season_string(int day);
 //distributed probability matrix code
 //only handles single dimension probability matrices
 //multidimension would be nice though...
+template <typename T>
 class DistProbMatrix {
 private:
-   int* matrix; //stores pointer to probability matrix
-   unsigned int size; // can only support MAX_INT entries
+	vector<T> matrix; //stores pointer to probability matrix
+   unsigned int size; 
 public:
-   void add(int size, unsigned int weight);
-   int get();
+	void add(T value, unsigned int weight){
+		size += weight;
+		matrix.reserve(size);
+		for(unsigned int i = 0; i < weight; i++){
+			matrix.push_back(value);
+		}
+	}
+	T get(){return matrix[(rand()%(size-1))];}
 	
-   DistProbMatrix(){size = 0;matrix = NULL;}
-   ~DistProbMatrix(){delete matrix;}
-};																					 
+   DistProbMatrix(){size = 0;}
+};		
+
+void combine_weights(int* target, const float* in, unsigned int length);
 
 #endif 

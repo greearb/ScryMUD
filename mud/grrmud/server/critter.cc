@@ -44,6 +44,7 @@
 #include "clients.h"
 #include "telnet_handler.h"
 #include "hegemon_handler.h"
+#include "weather.h"
 
 const char* PcPositionStrings[] = {"stand", "sit", "rest", "sleep", "meditate",
                                    "stun", "dead", "prone"};
@@ -4329,11 +4330,11 @@ void critter::setMov(int i) {
    MOV = i;
 }
 
-void critter::show(const char* msg, hilite_type hl_type) {
+void critter::show(const char* msg, hilite_type hl_type) const {
    ::show(msg, *this, hl_type);
 }
 
-void critter::show(CSentryE which_string, hilite_type hl_type) {
+void critter::show(CSentryE which_string, hilite_type hl_type) const {
    show(CSHandler::getString(which_string, getLanguageChoice()), hl_type);
 }
 
@@ -5067,84 +5068,84 @@ String* critter::getHostName() const {
    return &UNKNOWN;
 }
 
-String* critter::getSayColor() {
+String* critter::getSayColor() const {
    if (pc) {
       return &(pc->say_str);
    }
    return &NULL_STRING;
 }
 
-String* critter::getYellColor() {
+String* critter::getYellColor() const {
    if (pc) {
       return &(pc->yell_str);
    }
    return &NULL_STRING;
 }
 
-String* critter::getTellColor() {
+String* critter::getTellColor() const {
    if (pc) {
       return &(pc->tell_str);
    }
    return &NULL_STRING;
 }
 
-String* critter::getGossipColor() {
+String* critter::getGossipColor() const {
    if (pc) {
       return &(pc->gos_str);
    }
    return &NULL_STRING;
 }
 
-String* critter::getDescColor() {
+String* critter::getDescColor() const {
    if (pc) {
       return &(pc->desc_str);
    }
    return &NULL_STRING;
 }
 
-String* critter::getObjListColor() {
+String* critter::getObjListColor() const {
    if (pc) {
       return &(pc->obj_list_str);
    }
    return &NULL_STRING;
 }
 
-String* critter::getMobListColor() {
+String* critter::getMobListColor() const {
    if (pc) {
       return &(pc->mob_list_str);
    }
    return &NULL_STRING;
 }
 
-String* critter::getDefaultColor() { //for foreground
+String* critter::getDefaultColor() const { //for foreground
    if (pc) {
       return &(pc->dflt_str);
    }
    return &NULL_STRING;
 }
 
-String* critter::getBackGroundColor() {
+String* critter::getBackGroundColor() const {
    if (pc) {
       return &(pc->bk_str);
    }
    return &NULL_STRING;
 }
 
-String* critter::getBattleColor() {
+String* critter::getBattleColor() const {
    if (pc) {
       return &(pc->battle_str);
    }
    return &NULL_STRING;
 }
 
-String* critter::getRoomColor() {
+String* critter::getRoomColor() const {
    if (pc) {
       return &(pc->room_str);
    }
    return &NULL_STRING;
 }
 
-int critter::isUsingColor() {
+int critter::isUsingColor() const {
    return pc && pc->pc_data_flags.get(26);
 }
 
@@ -5974,3 +5975,59 @@ float critter::combatBonusVal(bool is_aggressor)  {
 
    return ret_val;
 }//critter::combatBonusVal()
+
+void critter::showWeather(room &rm) const {
+   String buf(200);
+   WeatherType rmweather;
+   WindType rmwind;
+   TemperatureType rmtemp;
+   if((pc || isPossessed()) && rm.hasWeather()){
+      rmweather = rm.getWeather();
+      rmwind = rm.getWind();
+      rmtemp = rm.getTemperature();
+     // if(rmwind = wndNONE) return;
+      switch(rmweather){
+         case wNONE:
+            return;
+         case thunderstorm:
+         case sandstorm:
+         case hailstorm:
+         case blizzard:
+            Sprintf(buf,"It is %s and there is a %s with %s.\n",
+                  temperature_strings[rmtemp],
+                  weather_strings[rmweather],wind_strings[rmwind]);
+            break;
+         default:
+            Sprintf(buf,"It is %s and %s with %s.\n",
+                  temperature_strings[rmtemp],
+                  weather_strings[rmweather],wind_strings[rmwind]);
+      }
+      show(buf);
+   }
+}
+
+bool critter::canSee(critter& mob){
+  if(detect(getSeeBit(),mob.getVisBit())){
+     return true;
+  }
+  return false;
+}
+bool critter::canSee(int vis_bit){
+   if(detect(getSeeBit(), vis_bit)){
+      return true;
+   }
+   return false;
+}
+bool critter::canSee(object& obj){
+   if(detect(getSeeBit(), obj.getVisBit())){
+      return true;
+   }
+   return false;
+}
+
+bool critter::canSee(door& dr){
+   if(detect(getSeeBit(), dr.getVisBit())){
+      return true;
+   }
+   return false;
+}

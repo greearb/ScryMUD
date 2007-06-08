@@ -22,7 +22,7 @@ ez_skll.o social2.o cr_skll.o ar_skll.o pet_spll.o vehicle.o const.o \
 script.o SkillSpell.o zone.o rm_parse.o rm_cmds.o obj_parse.o \
 obj_cmds.o BuildInfo.o BugEntry.o MudStats.o clients.o ServerConfig.o \
 mapper.o regex.o protocol_handler.o telnet_handler.o hegemon_handler.o \
-pfile_maint.o
+pfile_maint.o weather.o
 
 grrmud_TARG = grrmud
 

@@ -45,7 +45,7 @@
 #include <signal.h>
 #include <LogStream.h>
 #include "SkillSpell.h"
-
+#include <string.h>
 
 // Attempt to load the player-run shop owner of that number.
 // Returns a newly allocated SMOB, or NULL if a problem is
@@ -2213,33 +2213,48 @@ room* get_target_room(critter& pc){
 }
 
 
+/*template <typename T> void DistProbMatrix<T>::add(T value, unsigned int weight){
+	size += weight;
+	matrix.reserve(size);
+	for(unsigned int i = 0; i < weight; i++){
+		matrix.push_back(value);
+	}
 
-void DistProbMatrix::add(int value, unsigned int weight){
-	int* tmp = NULL;
-	unsigned int tmp_size = 0;
-	unsigned int i = 0;
-
-	tmp_size = weight + size;
-	tmp = new int[tmp_size];
-
-	if(size != 0){
-		while(i < size){
-			tmp[i] = matrix[i];
-			++i;
+//	cout << "Beging DistProbMatrix::add matrix = " << matrix << " size:" << size << " weight:" << weight << " value:" << value << endl;
+	if(matrix == NULL){ // we're a fresh instance
+		matrix = new int[weight];
+		cout << "new matrix = " << matrix;
+		memset(matrix, value, weight);
+		cout << "matrix data:" << endl;
+//		for(unsigned int idx = 0; idx < size; idx++){
+//			cout << "idx:" << idx << "matrix value: "<< *(matrix + (idx*sizeof(int)));
+//		}
+		size = weight;
+		return;
+	} else{ //adding to existing
+		unsigned int tmp_size = size+weight; //size for new matrix
+		int* tmp_matrix = new int[size+weight]; // new matrix
+		cout << "old matrix: " << matrix << " new matrix:" << tmp_matrix << " old size:" << size << " new size:" << tmp_size << endl;
+		memcpy(tmp_matrix, &value, weight); // copy the old one over
+		memset((tmp_matrix+size-1), value, weight); //set the new values
+		for(unsigned int idx = 0; idx < tmp_size; idx++){
+			if(*(tmp_matrix + (idx*sizeof(int))) > 13){
+			   cout << "idx: " << idx << "matrix value: "<< *(tmp_matrix + (idx*sizeof(int))) << endl;
+			}
 		}
-		delete matrix;
+		delete[] matrix; // kill the old one
+		matrix = tmp_matrix;
+		size = tmp_size;
 	}
+}	*/
 
-	while(i < tmp_size){
-		tmp[i] = value;
-		++i;
-	}
- 
-	matrix = tmp;
-	size = tmp_size;
-}	
-
-int DistProbMatrix::get(){
-	return matrix[(rand() % size)-1];
-}
 		  
+void combine_weights(int* target, const float* in, unsigned int length){
+
+   unsigned int i =0;
+   
+   while(i < length){
+         target[i] *= in[i];
+         ++i;
+   }
+}

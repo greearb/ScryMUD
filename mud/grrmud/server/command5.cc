@@ -50,6 +50,7 @@
 #include "regex.h"
 #include "telnet_handler.h"
 #include "hegemon_handler.h"
+#include "weather.h"
 
 int test(critter& pc) {
    String buf;
@@ -3484,3 +3485,69 @@ int set_veh_croom(int vhcl, int rm, critter &pc)
 }
    
 
+int changeweather(critter& pc){
+
+   if(pc.pc && pc.pc->imm_data){
+      weather.update();
+	  return 1;
+   }
+   else pc.show("Eh?");
+   return -1;
+}
+
+int setweather(const String* climate_str, const String* weather_str, critter& pc){
+
+	if(pc.pc && pc.pc->imm_data){
+		int c =0,w = 0;
+		if(climate_str->Strlen() && weather_str->Strlen()){  
+			while(c<MAX_CLIMATES){
+				if(!strcasecmp(*climate_str,climate_strings[c])){
+					break;
+				}
+				++c;
+			}
+			if(c >=MAX_CLIMATES){
+				pc.show("error: unknown climate type.\n");
+				return -1;
+			}
+			while(w<MAX_WEATHER){
+				if(!strcasecmp(*weather_str,weather_strings[w])){
+					break;
+				}
+				++w;
+			}
+			if(w >= MAX_WEATHER){
+				pc.show("error: unknown weather type.\n");
+				return -1;
+			}
+			weather.changeWeather((ClimateType)c,(WeatherType)w);
+		}
+		else pc.show("You must specify a climate type and weather type\n");
+		return -11;
+	}
+	else {pc.show("Eh?"); 
+	return -1;}
+	return 1;
+}
+
+int weatherreport(critter& pc){
+
+   if(pc.pc && pc.pc->imm_data){
+
+      String buf(100);
+   
+      int i=0;
+      while(i< MAX_CLIMATES){
+         Sprintf(buf, "Climate: %s Weather: %s Wind: %s,Temperature: %s\n", 
+               climate_strings[i], weather_strings[weather.climates[i].weather],
+               wind_strings[weather.climates[i].wind],
+               temperature_strings[weather.climates[i].temperature]);
+         
+         ++i;
+         pc.show(buf);
+      }
+	  return 1;
+   }
+   else pc.show("Eh?");
+   return -1;
+}

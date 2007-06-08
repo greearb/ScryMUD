@@ -28,7 +28,9 @@
 #include "critter.h"
 #include "room.h"
 #include "object.h"
+#include "weather.h"
 
+Weather weather;// weather manager
 
 /** All the words and phrases that one deems useless to the
  * cause of humane communication goes here.
@@ -339,7 +341,7 @@ const char* r_names[] = {
    "!imm",//1
    "!god",//2
    "is_perm_dark",//3
-   "weather",//4
+   "sunlight",//4
    "!ranged_comm",//5
    "!mag_exit",//6
    "is_haven", //7
@@ -372,7 +374,17 @@ const char* r_names[] = {
    "!foreign_mob_wander",//34
    "has_proc_script",//35
    "coliseum",//36
-   "is_vehicle"//37
+   "is_vehicle",//37
+   "is_climate_temperate",//38
+   "is_climate_savanah",//39
+   "is_climate_mountain",//40
+   "is_climate_snowymountain",//41
+   "is_climate_sandydesert",//42
+   "is_climate_dirtdesert",//43
+   "is_climate_swamp",//44
+   "is_climate_tropical",//45
+   "is_climate_arctic",//46
+   "has_weather" //47
 };
 const BitfieldNames ROOM_FLAGS_NAMES(sizeof(r_names)/sizeof(const char*),
                                      r_names, "Room Flags:");

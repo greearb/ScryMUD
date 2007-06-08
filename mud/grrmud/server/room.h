@@ -174,7 +174,7 @@ public:
    int isNoMagEntry() const { return room_flags.get(24); }
    int isNoMagExit() const { return room_flags.get(6); }
    int isPermDark() const { return room_flags.get(3); }
-   int hasWeather() const { return room_flags.get(4); }
+   int hasSunlight() const { return room_flags.get(4); }
    int isNoMob() const { return room_flags.get(10); }
    int isNoPotion() const { return room_flags.get(11); }
    int isNoMagic() const { return room_flags.get(9); }
@@ -205,7 +205,7 @@ public:
    void flipFlag(int flg) { room_flags.flip(flg); }
    void setTotalLoaded(int on_off) { room_flags.set(22, on_off); }
    void setFlag(int flg, int posn) { room_flags.set(flg, posn); }
-   int getFlag(int flg) { return room_flags.get(flg); }
+   int getFlag(int flg) const { return room_flags.get(flg); }
 
    const PtrList<critter>& getCrits() { return critters; }
 
@@ -344,6 +344,12 @@ public:
    int makeReadyForAreaSpell();
    critter* findNextProcMob();
    critter* findNextSpellCritter();
+
+   WeatherType getWeather() const;
+   WindType getWind() const;
+   TemperatureType getTemperature() const;
+   ClimateType getClimate() const;
+   int hasWeather() const { return room_flags.get(47); }
 }; // class room
 
 #endif

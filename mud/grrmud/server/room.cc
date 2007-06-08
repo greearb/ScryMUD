@@ -40,7 +40,7 @@
 #include "load_wld.h"
 #include "Filters.h"
 #include <map>
-
+#include "weather.h"
 
 int KeywordPair::_cnt = 0;
 
@@ -454,7 +454,7 @@ void room::dbRead(int room_num, short read_all) {
       room_flags.set(ROOMFLAG_NO_IMM, atoi(row[ROOMTBL_NO_IMM]));
       room_flags.set(ROOMFLAG_NO_GOD, atoi(row[ROOMTBL_NO_GOD]));
       room_flags.set(ROOMFLAG_IS_PERM_DARK, atoi(row[ROOMTBL_IS_PERM_DARK]));
-      room_flags.set(ROOMFLAG_WEATHER, atoi(row[ROOMTBL_WEATHER]));
+      room_flags.set(ROOMFLAG_SUNLIGHT, atoi(row[ROOMTBL_WEATHER]));
       room_flags.set(ROOMFLAG_NO_SHOUT, atoi(row[ROOMTBL_NO_SHOUT]));
       room_flags.set(ROOMFLAG_NO_MAGICAL_EXIT, atoi(row[ROOMTBL_NO_MAGICAL_EXIT]));
       room_flags.set(ROOMFLAG_IS_HAVEN, atoi(row[ROOMTBL_IS_HAVEN]));
@@ -1330,7 +1330,7 @@ void room::dbWrite() {
    values+=room_flags.get(ROOMFLAG_NO_IMM)+", ";
    values+=room_flags.get(ROOMFLAG_NO_GOD)+", ";
    values+=room_flags.get(ROOMFLAG_IS_PERM_DARK)+", ";
-   values+=room_flags.get(ROOMFLAG_WEATHER)+", ";
+   values+=room_flags.get(ROOMFLAG_SUNLIGHT)+", ";
    values+=room_flags.get(ROOMFLAG_NO_SHOUT)+", ";
    values+=room_flags.get(ROOMFLAG_NO_MAGICAL_EXIT)+", ";
    values+=room_flags.get(ROOMFLAG_IS_HAVEN)+", ";
@@ -2851,4 +2851,66 @@ int room::getVisBit(bool lightAdjust) const {
       }//else
    }
    return vb;
+}
+
+
+WeatherType room::getWeather() const {
+
+   if(!hasWeather()) return wNONE;
+   
+   if(getFlag(38)){       //temperate
+      return weather.climates[0].weather;
+   }else if(getFlag(39)){ //savanah
+      return weather.climates[1].weather;
+   }else if(getFlag(40)){ //mountain
+      return weather.climates[2].weather;
+   }else if(getFlag(41)){ //snowymountain
+      return weather.climates[3].weather;
+   }else if(getFlag(42)){ //sandydesrt
+      return weather.climates[4].weather;
+   }else if(getFlag(43)){ //dirtdesert
+      return weather.climates[5].weather;
+   }else if(getFlag(44)){ //swamp
+      return weather.climates[6].weather;
+   }else if(getFlag(45)){ //tropical
+      return weather.climates[7].weather;
+   }else if(getFlag(46)){ //arctic
+      return weather.climates[8].weather;
+   } else return wNONE;
+
+}
+
+WindType room::getWind() const {
+   //NOTE FOR ED: the following line is what we were looking for!!!!
+   //return weather.climates[getWeather()].wind;
+   return weather.climates[getClimate()].wind;
+}
+
+TemperatureType room::getTemperature() const {
+   return weather.climates[getClimate()].temperature;
+}
+
+ClimateType room::getClimate() const{
+
+   if(!hasWeather()) return cNONE;
+   
+   if(getFlag(38)){       //temperate
+      return temperate;
+   }else if(getFlag(39)){ //savanah
+      return savanah;
+   }else if(getFlag(40)){ //mountain
+      return mountain;
+   }else if(getFlag(41)){ //snowymountain
+      return snowymountain;
+   }else if(getFlag(42)){ //sandydesrt
+      return sandydesert;
+   }else if(getFlag(43)){ //dirtdesert
+      return dirtdesert;
+   }else if(getFlag(44)){ //swamp
+      return swamp;
+   }else if(getFlag(45)){ //tropical
+      return tropical;
+   }else if(getFlag(46)){ //arctic
+      return arctic;
+   } else return cNONE;
 }

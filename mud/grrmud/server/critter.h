@@ -41,6 +41,7 @@
 #include "lang_strings.h"
 #include "battle.h"
 #include "protocol_handler.h"
+#include "weather.h"
 
 ///********************  temp crit data  *****************************///
 
@@ -964,7 +965,7 @@ public:
    int isUsingClient() const ;
    bool setClient(int which);
    int whichClient();
-   int isUsingColor();
+   int isUsingColor() const;
    int isBrief();
    int shouldSeeInventory();
    int shouldShowVnums();
@@ -1000,17 +1001,17 @@ public:
    int getBenevolence() const;
    int isSentinel() const;
 
-   String* getSayColor();
-   String* getYellColor();
-   String* getTellColor();
-   String* getGossipColor();
-   String* getDescColor();
-   String* getObjListColor();
-   String* getMobListColor();
-   String* getDefaultColor(); //for foreground
-   String* getBackGroundColor();
-   String* getBattleColor();
-   String* getRoomColor();
+   String* getSayColor() const;
+   String* getYellColor() const;
+   String* getTellColor() const;
+   String* getGossipColor() const;
+   String* getDescColor() const;
+   String* getObjListColor() const;
+   String* getMobListColor() const;
+   String* getDefaultColor() const; //for foreground
+   String* getBackGroundColor() const;
+   String* getBattleColor() const;
+   String* getRoomColor() const;
 
    int isNamed(const String& str) const ;
    int isGagged();
@@ -1110,8 +1111,8 @@ public:
    void releasePageBreak() { if (pc) PC_FLAGS.turn_off(23); }
    int isInPageBreak() const { return (pc && PC_FLAGS.get(23)); }
 
-   void show(const char* msg, hilite_type hl_type = HL_DEF);
-   void show(CSentryE, hilite_type hl_type = HL_DEF); //Pick language of choice, if available.
+   void show(const char* msg, hilite_type hl_type = HL_DEF) const;
+   void show(CSentryE, hilite_type hl_type = HL_DEF) const; //Pick language of choice, if available.
 
    object* loseInv(object* obj); //returns the object removed. (or NULL)
    void loseObjectFromGame(object* obj);
@@ -1162,6 +1163,14 @@ public:
    int takeDamage(int adamage, int type, critter &agg);
    int takeDamage(int damage, int type);
    float combatBonusVal(bool is_aggressor);
+
+   void showWeather(room &rm) const;
+
+   bool canSee(critter& mob);
+   bool canSee(int vis_bit);
+   bool canSee(object& obj);
+   bool canSee(door& dr);
+
 };//class critter
  
 
