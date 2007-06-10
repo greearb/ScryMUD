@@ -2367,7 +2367,7 @@ int critter::getSTR(bool include_modifiers=false) const {
    return STR+modifier;
 }
 
-int critter::getDEX(bool include_modifiers=true) const {
+int critter::getDEX(bool include_modifiers=false) const {
    int p_lrnd;
    int modifier = 0;
 
