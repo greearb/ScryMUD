@@ -52,13 +52,15 @@ int main(int argc, char** argv) {
    String tmp(30);
 
    for (int i = 1; i<argc; i++) {
-      if (buf.Strlen() < 60) {
-         Sprintf(tmp, "%s%P16 ", normalize(argv[i]));
+      if (buf.Strlen() < 72) {
+         Sprintf(tmp, "%s%P18 ", normalize(argv[i]));
          buf += tmp;
       }
       else {
          cout << buf << endl;
          buf = "";
+         Sprintf(tmp, "%s%P18 ", normalize(argv[i]));
+			buf += tmp;
       }//else
    }//for
    cout << buf << endl;
