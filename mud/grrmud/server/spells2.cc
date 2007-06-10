@@ -1613,7 +1613,7 @@ void do_cast_haste(critter& vict, critter& agg, int is_canned, int lvl) {
            if (agg.pc) {
               if (agg.ATTACKS >= 3) {
                  agg.ATTACKS--;
-                 agg.show("You fall too your knees in pain..feeling momentarily lost in your limbs!\n");
+                 agg.show("You fall to your knees in pain... feeling momentarily lost in your limbs!\n");
                  agg.ATTACKS--;
               }
               else {

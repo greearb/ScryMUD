@@ -1170,7 +1170,8 @@ public:
    bool canSee(int vis_bit);
    bool canSee(object& obj);
    bool canSee(door& dr);
-
+   bool isUnaware() const;
+   bool hasLight() const;	
 };//class critter
  
 

@@ -193,6 +193,7 @@ public:
 		}
 	}
 	T get(){return matrix[(rand()%(size-1))];}
+	unsigned int Size(){ return size;}
 	
    DistProbMatrix(){size = 0;}
 };		

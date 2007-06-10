@@ -2367,7 +2367,7 @@ int critter::getSTR(bool include_modifiers=false) const {
    return STR+modifier;
 }
 
-int critter::getDEX(bool include_modifiers=false) const {
+int critter::getDEX(bool include_modifiers=true) const {
    int p_lrnd;
    int modifier = 0;
 
@@ -5031,7 +5031,7 @@ void critter::checkLight(object* obj, int posn) {
          continue;
       }
       else {
-         if (EQ[i] && EQ[i]->isLit()) {
+         if (EQ[i] && (EQ[i]->isLit())) {
             crit_flags.turn_on(1);
             return;
          }//if
@@ -5998,7 +5998,7 @@ void critter::showWeather(room &rm) const {
                   weather_strings[rmweather],wind_strings[rmwind]);
             break;
          default:
-            Sprintf(buf,"It is %s and %s with %s.\n",
+            Sprintf(buf,"It is %s and %s with %s.\n\n",
                   temperature_strings[rmtemp],
                   weather_strings[rmweather],wind_strings[rmwind]);
       }
@@ -6007,6 +6007,10 @@ void critter::showWeather(room &rm) const {
 }
 
 bool critter::canSee(critter& mob){
+	/*//see if the weather messes with our vision
+	if( w && ((room_list[IN_ROOM].getWeather() == sandstorm) || room_list[IN_ROOM].getWeather() == blizzard)){ 
+		if(rand()%100 >70) return false;
+	}*/
   if(detect(getSeeBit(),mob.getVisBit())){
      return true;
   }
@@ -6031,3 +6035,20 @@ bool critter::canSee(door& dr){
    }
    return false;
 }
+
+bool critter::hasLight() const{
+	return crit_flags.get(1);
+}
+
+bool critter::isUnaware() const{
+	switch(POS){
+		case POS_STUN:
+		case POS_SLEEP:
+		case POS_MED:
+			return true;
+		default:
+			return false;
+	}
+}
+
+
