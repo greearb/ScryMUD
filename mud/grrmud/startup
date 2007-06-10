@@ -1,154 +1,189 @@
 #!/bin/bash
 
+# ScryMUD Server Code - production-port startup script.
+# Copyright © 2007  Edward Roper, Ben Greear
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+# 
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+# 
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+# Place - Suite 330, Boston, MA  02111-1307, USA.
+# 
+# To contact the Author, Edward Roper: edro+scrymud [at] wanfear.net
+
+# SYNOPSIS:
+#  This script is suited for running a ScryMUD “production instance”.
+#  Typically one runs two instances, a builder (development) port, and a
+#  production port.  If run through this wrapper, the in-game “shutdown
+#  NEW_DB” command takes care of fetching the world-update from the
+#  development port and deploying it on the production-port. Additionally this
+#  script will place a copy of any core-dumps, and their matching binaries
+#  into a directory of your choice. We use this for making the core and binary
+#  available via. http, where it can be easily fetched by any of our
+#  developers. The e-mail address pointed at by the MAILTO variable will
+#  receive e-mail whenever the server shuts down. This can be the result of an
+#  appropriately levelled IMM issuing the “shutdown COMPLETE” command in-game.
+#  This script also rotates various logs and does some other stuff.
+
+
+#SCRYMUD_HOME="/home/scrymud/muds/mud/grrmud"
+SCRYMUD_HOME="/home/scrymud/devel/ScryMUD/mud/grrmud"
+SCRYMUD_WEB_CORE_HOME="/home/scrymud/public_html/private"
+MAILTO=
+
+# The following variable should not be set on dev-port instances, if this
+# script is used on a dev-port. Leaving it unset will prevent this script from
+# attempting to handle “shutdown NEW_DB” requests on the devport.
+#SCRYMUD_DEV_HOME=
+SCRYMUD_DEV_HOME="/home/scrymud/muds/mud_dev/grrmud"
+
+########################################################################
+# Make sure we can overwrite existing files
+set +o noclobber
+# Make sure we can drop cores
+ulimit -c unlimited
+# Not sure if the following needs to remain, but it was in Ben's original
+# script.
+ulimit -d 45000
 ########################################################################
 
-if [ ! -d ./log ]; then
-    mkdir ./log
+if [ ! -d "${SCRYMUD_HOME}/log" ]; then
+    mkdir "${SCRYMUD_HOME}/log"
 fi
 
 #  Make sure this directory exists...
-if [ ! -d ./PlayerShops ]; then
-    mkdir ./PlayerShops
+if [ ! -d "${SCRYMUD_HOME}/PlayerShops" ]; then
+    mkdir "${SCRYMUD_HOME}/PlayerShops"
 fi
 
 while ( : ) do
 
-    #  Don't let us use more than 30 MEG, if we do, it's probably a
-    #  memory leak.  If the database ever gets huge, this will need to
-    #  be raised.
-    ulimit -d 30000
-
-    echo "Starting ScryMUD at: `date`"
+    echo "Starting ScryMUD at: $(date)"
 
     # Just in case.
-    chmod u+x ./gmud
+    chmod u+x "${SCRYMUD_HOME}/gmud"
     
-    if [ -x ./gmud ]; then
-       ./gmud >& gmud.log
+    if [ -x "${SCRYMUD_HOME}/gmud" ]; then
+       "${SCRYMUD_HOME}/gmud" >& "${SCRYMUD_HOME}/gmud.log"
     else
-	exit 2
+        exit 2
     fi
     
     RETVAL=$?
 
-    echo "ScryMUD stopped at: `date`"
+    echo "ScryMUD stopped at: $(date)"
     sleep 1  # Make infinite loop not so bad.
 
-    date >> ./gmud.log
-    echo "************END OF CRASH FILE**************" >> ./gmud.log
-    cat ./gmud.log >> ./GMUD.LOG
+    date >> "${SCRYMUD_HOME}/gmud.log"
+    echo "************END OF CRASH FILE**************" >> "${SCRYMUD_HOME}/gmud.log"
+    cat "${SCRYMUD_HOME}/gmud.log" >> "${SCRYMUD_HOME}/GMUD.LOG"
 
-    if [ -f core ]; then
-	mv -f core ~/public_html/private/core
-	rm -f ~/public_html/private/core.gz
-	gzip ~/public_html/private/core
-	chmod a+r ~/public_html/private/core.gz
+    if [ -f "${SCRYMUD_HOME}/core" ]; then
+        mv -f "${SCRYMUD_HOME}/core" "${SCRYMUD_WEB_CORE_HOME}/core"
+        rm -f "${SCRYMUD_WEB_CORE_HOME}/core.gz"
+        gzip "${SCRYMUD_WEB_CORE_HOME}/core"
+        chmod 0644 "${SCRYMUD_WEB_CORE_HOME}/core.gz"
 
-	cp -f gmud ~/public_html/private/gmud
-	rm -f ~/public_html/private/gmud.gz
-	gzip ~/public_html/private/gmud
-	chmod a+r ~/public_html/private/gmud.gz
+        cp -f "${SCRYMUD_HOME}/gmud" "${SCRYMUD_WEB_CORE_HOME}/gmud"
+        rm -f "${SCRYMUD_WEB_CORE_HOME}/gmud.gz"
+        gzip "${SCRYMUD_WEB_CORE_HOME}/gmud"
+        chmod 0644 "${SCRYMUD_WEB_CORE_HOME}/gmud.gz"
 
-	echo "<html><body>Core created at:" > ~/public_html/private/index.html
-	date >> ~/public_html/private/index.html
-	echo "<P><a href=core.gz>core file</a><P><a href=gmud.gz>gmud</a></body></html>" >> ~/public_html/private/index.html
+        echo "<html><body>Core created at:" > "${SCRYMUD_WEB_CORE_HOME}/index.html"
+        date >> "${SCRYMUD_WEB_CORE_HOME}/index.html"
+        echo "<P><a href=core.gz>core file</a><P><a href=gmud.gz>gmud</a></body></html>" >> "${SCRYMUD_WEB_CORE_HOME}/index.html"
     fi
 
-    tail -n 500 ./GMUD.LOG > /tmp/gmud.log
-    mv /tmp/gmud.log ./GMUD.log
+    #TODO: Should use safe tmpname generation here --eroper
+    tail -500 "${SCRYMUD_HOME}/GMUD.LOG" > /tmp/gmud.log
+    mv /tmp/gmud.log "${SCRYMUD_HOME}/GMUD.log"
 
     # Keep a history of the log files that might have been created.
-    if [ -f ./log/logfile.txt2 ]; then
-	mv -f ./log/logfile.txt2 ./log/logfile.txt3
+    if [ -f "${SCRYMUD_HOME}/log/logfile.txt2" ]; then
+        mv -f "${SCRYMUD_HOME}/log/logfile.txt2" "${SCRYMUD_HOME}/log/logfile.txt3"
     fi
 
-    if [ -f ./log/logfile.txt1 ]; then
-	mv -f ./log/logfile.txt1 ./log/logfile.txt2
+    if [ -f "${SCRYMUD_HOME}/log/logfile.txt1" ]; then
+        mv -f "${SCRYMUD_HOME}/log/logfile.txt1" "${SCRYMUD_HOME}/log/logfile.txt2"
     fi
 
-    if [ -f ./log/logfile.txt ]; then
-	mv -f ./log/logfile.txt ./log/logfile.txt1
+    if [ -f "${SCRYMUD_HOME}/log/logfile.txt" ]; then
+        mv -f "${SCRYMUD_HOME}/log/logfile.txt" "${SCRYMUD_HOME}/log/logfile.txt1"
     fi
 
     # And 3 object pointer logs.
-    if [ -f ./log/obj_ptr.log2 ]; then
-	mv -f ./log/obj_ptr.log2 ./log/obj_ptr.log3
+    if [ -f "${SCRYMUD_HOME}/log/obj_ptr.log2" ]; then
+        mv -f "${SCRYMUD_HOME}/log/obj_ptr.log2" "${SCRYMUD_HOME}/log/obj_ptr.log3"
     fi
 
-    if [ -f ./log/obj_ptr.log1 ]; then
-	mv -f ./log/obj_ptr.log1 ./log/obj_ptr.log2
+    if [ -f "${SCRYMUD_HOME}/log/obj_ptr.log1" ]; then
+        mv -f "${SCRYMUD_HOME}/log/obj_ptr.log1" "${SCRYMUD_HOME}/log/obj_ptr.log2"
     fi
 
-    if [ -f ./log/obj_ptr.log ]; then
-	mv -f ./log/obj_ptr.log ./log/obj_ptr.log1
+    if [ -f "${SCRYMUD_HOME}/log/obj_ptr.log" ]; then
+        mv -f "${SCRYMUD_HOME}/log/obj_ptr.log" "${SCRYMUD_HOME}/log/obj_ptr.log1"
     fi
 
     # Core's take up too much space, just going to grap the useful info
     # with gdb.
-    if [ -f ./gdb.out4 ]; then
-	mv -f ./gdb.out4 ./gdb.out5
-    fi
-
-    if [ -f ./gdb.out3 ]; then
-	mv -f ./gdb.out3 ./gdb.out4
-    fi
-
-    if [ -f ./gdb.out2 ]; then
-	mv -f ./gdb.out2 ./gdb.out3
-    fi
-
-    if [ -f ./gdb.out1 ]; then
-	mv -f ./gdb.out1 ./gdb.out2
-    fi
+    for I in {4..1}; do
+        if [ -f "${SCRYMUD_HOME}/gdb.out${I}" ]; then
+            mv -f "${SCRYMUD_HOME}/gdb.out${I}" "${SCRYMUD_HOME}/gdb.out$((${I}+1))"
+        fi
+    done
 
     # Depending on the shell..one of these may exist.
+    # TODO: Again, we should use safe temporaries here. --eroper
+    for CORE_NAME in "${SCRYMUD_HOME}"/{core,gmud.core}; do
+        if [ -f "${CORE_NAME}" ]; then
+            echo bt > /tmp/gdb_input
+            echo quit >> /tmp/gdb_input
+            gdb "${SCRYMUD_HOME}/gmud" "${CORE_NAME}" < /tmp/gdb_input > "${SCRYMUD_HOME}/gdb.out1"
+        fi
+    done
 
-    if [ -f ./core ]; then
-	echo bt > /tmp/gdb_input
-	echo quit >> /tmp/gdb_input
-	gdb gmud ./core < /tmp/gdb_input > gdb.out1
-    fi
-
-    if [ -f ./gmud.core ]; then
-	echo bt > /tmp/gdb_input
-	echo quit >> /tmp/gdb_input
-	gdb gmud ./gmud.core < /tmp/gdb_input > gdb.out1
-    fi
-
-    echo "Checking RETVAL:  ${RETVAL}"
-    if [ $RETVAL = 2 ]; then
-	echo "Checking for new world"
-	if [ -f ./World/wrld.new.tar.gz ]; then
-	    echo "Copying over new world database."
-	    cd ./World
-	    #zcat wrld.new.tar.gz | tar -xvf -
-	    # Some platforms have screwed up zcat's it seems. --BEN
-	    rm -f ./wrld.new.tar
-	    gunzip ./wrld.new.tar.gz
-	    tar -xf ./wrld.new.tar
-	    cd ..
-	fi
-
-	echo "Checking for new binary."
-	if [ -f ./gmud.new ]; then
-	    echo "Copying over new server (gmud) binary."
-	    mv ./gmud.new ./gmud
-	fi
-    fi
-
-#    echo "Checking for fastboot."
-
-#    if [ ! -r .fastboot ]; then
-#	sleep 60
-#    else
-#	rm .fastboot
-#	sleep 5
-#    fi
+    # We never want a dev-world to automatically update itself.
+    if [ -n ${SCRYMUD_DEV_HOME} ]; then
+        echo "Checking RETVAL:  ${RETVAL}"
+        if [ $RETVAL = 2 ]; then
+            echo "Updating world"
+            cd "${SCRYMUD_DEV_HOME}/World/"
+            make new_db
+            mv "${SCRYMUD_DEV_HOME}/wrld.new.tar.gz" "${SCRYMUD_HOME}/World/"
+            cd "${SCRYMUD_HOME}"
+    
+            echo "Checking for new world"
+            if [ -f "${SCRYMUD_HOME}/World/wrld.new.tar.gz" ]; then
+                echo "Copying over new world database."
+                cd "${SCRYMUD_HOME}/World"
+                rm -f ./wrld.new.tar
+                gunzip ./wrld.new.tar.gz
+                tar -xf ./wrld.new.tar
+                cd ..
+            fi
+    
+            echo "Checking for new binary."
+            if [ -f "${SCRYMUD_HOME}/gmud.new" ]; then
+                echo "Copying over new server (gmud) binary."
+                mv "${SCRYMUD_HOME}/gmud.new" "${SCRYMUD_HOME}/gmud"
+            fi
+        fi #RETVAL = 2
+    fi #[ -n ${SCRYMUD_DEV_HOME} ]
 
     # Might want to change this to send email to another address.
-    if [ ! -r ./.reboot ]; then	#reboot is explicit only
-	mail ${USER}@localhost < shutdown_msg
-	exit
+    if [ ! -r "${SCRYMUD_HOME}/.reboot" ]; then  #reboot is explicit only
+        if [ -n ${MAILTO} ]; then
+            mail "${MAILTO}" < "${SCRYMUD_HOME}/shutdown_msg"
+        fi
+        exit
     fi
 
 done
