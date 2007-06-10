@@ -1,0 +1,6 @@
+
+- ${SCRYMUD_HOME}/motd -
+
+This is a sample MOTD file. This file can be modified at any time, it does not
+require a server restart.
+
