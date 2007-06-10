@@ -104,8 +104,8 @@ def toHtml(doc,lib):
    for link in doc.see_also:
       t = lib.by_name(link)
       if ( not t ): continue
-      if ( t.imm ): ret_val += "<a href=\"imm/%s.html\">%s</a> " %(link, link)
-      else: ret_val += "<a href=\"%s.html\">%s</a> " %(link, link)
+      if ( t.imm ): ret_val += "<a href=\"/help/imm/%s.html\">%s</a> " %(link, link)
+      else: ret_val += "<a href=\"/help/%s.html\">%s</a> " %(link, link)
 
    ret_val += '</div>'
 
