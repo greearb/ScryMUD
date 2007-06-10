@@ -1,0 +1,19 @@
+<help olc verifydoors>
+
+Given a zone number, this command will display potential problems with room
+edges within the zone.
+
+Syntax:   verifydoors [zone_num]
+Example:  verifydoors 1
+
+Problems listed include:
+ * non-reflexive room connections
+ * non-reflexive connection directions
+ * non-symmetric door distances
+
+Please remember that sometimes these incongruities are intentional.
+
+<color=red>
+See Also:  zlist, rlist, dlist
+</color>
+</help>
