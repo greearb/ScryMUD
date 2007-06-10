@@ -15,7 +15,7 @@ MAKE=make
 
 # NOTE:  Use these variables if you are using EGCS and glibc 5
 CCFLAGS = -g -D_GNU_SOURCE $(BG_NEW_GCC_TEMPLATES) $(GUIDING_DECLS) $(HUGE_OBJECTS) \
-          -Wall -I$(MUD_HOME)/include
+          -pipe -Wall -O2 -I$(MUD_HOME)/include
 LDLIBS =  -lm -lstring2 -lbitfield -lcrypt -lpcre#-lnsl # -lsocket
 
 
@@ -69,7 +69,7 @@ LDLIBS =  -lm -lstring2 -lbitfield -lcrypt -lpcre#-lnsl # -lsocket
 CUR_DATE=`date '+%y.%m.%d'`
 
 #  For distribution purposes  (This is the stable branch now.)
-SCRY_VERSION=2.1.10
+SCRY_VERSION=2.1.12
 HEGEMON_VERSION=2.1.8
 
 LDFLAGS =  -L$(MUD_HOME)/lib #linker flaggs
