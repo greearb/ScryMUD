@@ -18,15 +18,14 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greearb@candelatech.com
+//To contact the maintainer, Edward Roper: edro+scrymud [at] wanfear.net
 //
 
 // list.h -- Declarations for the list library
 
 //  This templated list works only on pointers right now, it could, however
 //  be changed to include ALL items easily.  There may be a few bugs left,
-//  so be careful.  If you have any questions, write me at:  
-//  greear@cyberhighway.net
+//  so be careful.
 //  Happy coding, Ben Greear
 
 

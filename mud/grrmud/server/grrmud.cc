@@ -19,8 +19,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// To contact the Author, Ben Greear:  greear@cyberhighway.net, (preferred)
-//                                     greearb@agcs.com
+//To contact the maintainer, Edward Roper: edro+scrymud [at] wanfear.net
 //
 
 ///**********************  grrmud.cc  ***************************///
@@ -542,7 +541,7 @@ int main(int argc, char** argv) {
       "Be sure to check the log files in the ./log directory if you have\n"
       "any strange occurances.\n"
       "\n"
-      "--Ben Greear (greear@cyberhighway.net, greearb@agcs.com)\n\n";
+      "--Edward Roper (edro+scrymud [at] wanfear.net\n\n";
 
    srand(time(0));
 
@@ -1506,7 +1505,7 @@ Someone from your site did something that is very strictly against the rules,\n\
 and tried to persist in that action.  In this case, the whole site has been\n\
 banned instead of just one user.\n\n\
 If you feel that you or your site has been wrongly sitebanned and would like\n\
-the ban removed, please contact greear@cyberhighway.net to discuss the matter.";
+the ban removed, please see the ScryMUD web forums to discuss the matter.";
 
       write(desc, str, strlen(str)); 
       close(desc);
