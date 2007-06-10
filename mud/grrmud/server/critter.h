@@ -1165,10 +1165,10 @@ public:
 
    void showWeather(room &rm) const;
 
-   bool canSee(critter& mob);
-   bool canSee(int vis_bit);
-   bool canSee(object& obj);
-   bool canSee(door& dr);
+   bool canSee(critter& mob) const;
+   bool canSee(int vis_bit) const;
+   bool canSee(object& obj) const;
+   bool canSee(door& dr) const;
    bool isUnaware() const;
    bool hasLight() const;	
 };//class critter

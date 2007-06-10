@@ -6005,7 +6005,7 @@ void critter::showWeather(room &rm) const {
    }
 }
 
-bool critter::canSee(critter& mob){
+bool critter::canSee(critter& mob) const {
 	//see if the weather messes with our vision
 	if(((room_list[IN_ROOM].getWeather() == sandstorm) || room_list[IN_ROOM].getWeather() == blizzard)){ 
 		if(rand()%100 <=25) return false;
@@ -6015,7 +6015,8 @@ bool critter::canSee(critter& mob){
   }
   return false;
 }
-bool critter::canSee(int vis_bit){
+
+bool critter::canSee(int vis_bit) const {
 /*	if(((room_list[IN_ROOM].getWeather() == sandstorm) || room_list[IN_ROOM].getWeather() == blizzard)){ 
 		if(rand()%100 >25) return false;
 	}*/
@@ -6025,7 +6026,8 @@ bool critter::canSee(int vis_bit){
    }
    return false;
 }
-bool critter::canSee(object& obj){
+
+bool critter::canSee(object& obj) const {
 	if(((room_list[IN_ROOM].getWeather() == sandstorm) || room_list[IN_ROOM].getWeather() == blizzard)){ 
 		if(rand()%100 <=25) return false;
 	}
@@ -6035,7 +6037,7 @@ bool critter::canSee(object& obj){
    return false;
 }
 
-bool critter::canSee(door& dr){
+bool critter::canSee(door& dr) const {
 	if(((room_list[IN_ROOM].getWeather() == sandstorm) || room_list[IN_ROOM].getWeather() == blizzard)){ 
 		if(rand()%100 <=25) return false;
 	}
@@ -6045,11 +6047,11 @@ bool critter::canSee(door& dr){
    return false;
 }
 
-bool critter::hasLight() const{
+bool critter::hasLight() const {
 	return crit_flags.get(1);
 }
 
-bool critter::isUnaware() const{
+bool critter::isUnaware() const {
 	switch(POS){
 		case POS_STUN:
 		case POS_SLEEP:
