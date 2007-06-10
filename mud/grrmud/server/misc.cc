@@ -465,7 +465,7 @@ void do_mini_tick() { // decrement pause count ect
 //that never regen. I'll be watching the effects of this change closely and
 //will most likely adjust the algorithms based on what I discover.
 void do_regeneration_pcs() {
-   float adj = 1.0, posn_mod, align_mod = 1.0, env_mod = 1.0;
+   float adj = 1.0, posn_mod, align_mod = 1.0, weather_mod = 1.0, temperature_mod = 1.0, env_mod = 1.0;
    Cell<critter*> crit_cell;
    pc_list.head(crit_cell);
    critter* crit_ptr;
@@ -475,8 +475,8 @@ void do_regeneration_pcs() {
    while ((crit_ptr = crit_cell.next())) {
 
 	  if(crit_ptr->getCurRoom()->getWeather()!= wNONE){
-            env_mod = weather_regen_mods[crit_ptr->getCurRoom()->getWeather()] *
-            temperature_regen_mods[crit_ptr->getCurRoom()->getTemperature()];
+            weather_mod = weather_regen_mods[crit_ptr->getCurRoom()->getWeather()];
+			temperature_mod = temperature_regen_mods[crit_ptr->getCurRoom()->getTemperature()];
       }
       //no regen if we're fighting
       if ( crit_ptr->isFighting() ) {
@@ -496,8 +496,9 @@ void do_regeneration_pcs() {
       else {
          if ((crit_ptr->POS > POS_SIT) &&
              room_list[crit_ptr->getCurRoomNum()].canCamp()) {
-            adj *= ((float)(200 + get_percent_lrnd(CAMPING_SKILL_NUM,
-                                                   *crit_ptr))) / 200.0;
+				 float camp = get_percent_lrnd(CAMPING_SKILL_NUM, *crit_ptr) / 200;
+				 env_mod *= (temperature_mod+((camp*(1.0 - temperature_mod))/2));
+				 env_mod *= (weather_mod+(camp*(1.0 - weather_mod)));
          }//if camping is an issue
 
          posn_mod = (2.0 + (float)(crit_ptr->POS)) / 4.0;
@@ -1330,8 +1331,16 @@ void decrease_timed_affecting_pcs() {  //will decrease all
 
          if (crit_ptr->HUNGER > 0)
             crit_ptr->HUNGER--;  //food
-         if (crit_ptr->THIRST > 0)
-            crit_ptr->THIRST--;  //drink
+		 if (crit_ptr->THIRST > 0){
+			 room* rm = crit_ptr->getCurRoom();
+			 if(rm->hasWeather() && (weather.climates[rm->getClimate()].temperature == veryhot || 
+				 weather.climates[rm->getClimate()].temperature == burninghot)){
+					 //use more water in high temp
+					 crit_ptr->THIRST--;
+				 }
+				 crit_ptr->THIRST--;  //drink
+				 if(crit_ptr->THIRST < 0) crit_ptr->THIRST = 0;
+		 }
          if (crit_ptr->DRUGGED > 0)
             crit_ptr->DRUGGED--;  //drugged
          if (crit_ptr->isViolent()) { // violence timer
@@ -2051,7 +2060,7 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all) {
          mudlog << "out_crit: got critter:  " << *(crit_ptr->getName())
                 << endl;
       }
-      if (detect(see_bits, crit_ptr->VIS_BIT) &&
+	  if (pc.canSee(*crit_ptr) &&  //detect(see_bits, crit_ptr->VIS_BIT) &&
           (crit_ptr != &pc)) { //can see it, not looker
          if ((crit_ptr->isHiding()) && //if is hiding
              (d(1, pc.LEVEL + 30) < 
@@ -2349,7 +2358,7 @@ void out_inv(PtrList<object>& lst, critter& pc,
       case ROOM_INV:
          while ((obj_ptr = cell.next())) {
 
-            if (detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
+			 if (pc.canSee(*obj_ptr)){  //  detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
 
                id_num = obj_ptr->getIdNum();
 

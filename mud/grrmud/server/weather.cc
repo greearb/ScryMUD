@@ -35,15 +35,15 @@
 //TODO make wNONE, cNONE, tNONE valid array indexes
 
 //climate weather base				   C   Cl  O   D   Lr  Hr  T   h   H   Ls  S   B   SS
-const int temperate_weights[]     = { 200,100,100,100,100,100, 80, 80, 70, 50, 40, 30,  0};
-const int savanah_weights[]       = { 200,100, 80, 80, 80, 80, 80, 70, 70, 35, 30, 15,  0};
-const int mountain_weights[]      = { 200,100,100,100,100,100,100, 80, 80, 75, 65, 45,  0};
-const int snowymountain_weights[] = { 200,130,130, 60, 60, 50, 40, 20, 10,130,100, 70,  0};
-const int sandydesert_weights[]   = { 1000, 400, 200,  30,  20,  10,  10,  0,  0,  0,  0,  0,100};//big values to avoid fp convert dropping the small ones completely
-const int dirtdesert_weights[]    = { 1000, 400, 300,  30,  20,  10,  10,  0,  0,  0,  0,  0,  0};
-const int swamp_weights[]         = { 150,150,150,110,110,110,110, 90, 90, 40, 20, 10,  0};
-const int tropical_weights[]      = { 200,100,100,100,100,100,100, 70, 60,  0,  0,  0,  0};
-const int arctic_weights[]        = { 200,100,100, 10,  5,  5,  1,  0,  0,140,130,100,000};
+const int temperate_weights[]     = { 175,100,100,100,100,100, 80, 80, 70, 50, 40, 30,  0};
+const int savanah_weights[]       = { 175,100, 80, 80, 80, 80, 80, 70, 70, 35, 30, 15,  0};
+const int mountain_weights[]      = { 175,100,100,100,100,100,100, 80, 80, 75, 65, 45,  0};
+const int snowymountain_weights[] = { 140,130,130, 60, 60, 50, 40, 20, 10,130,100, 70,  0};
+const int sandydesert_weights[]   = { 500, 400, 200,  30,  20,  10,  10,  0,  0,  0,  0,  0,250};//big values to avoid fp convert dropping the small ones completely
+const int dirtdesert_weights[]    = { 500, 400, 300,  30,  20,  10,  10,  0,  0,  0,  0,  0,  0};
+const int swamp_weights[]         = { 140,150,150,110,110,110,110, 90, 90, 40, 20, 10,  0};
+const int tropical_weights[]      = { 175,100,100,100,100,100,100, 70, 60,  0,  0,  0,  0};
+const int arctic_weights[]        = { 175,100,100, 10,  5,  5,  1,  0,  0,140,130,100,000};
 /* original weights for referance
 const int temperate_weights[] = { 520,130,130,65,55,48,32,20,10,65,48,32,0};
 const int savanah_weights[] = { 520,100,90,32,28,24,16,10,5,5,0,0,0};
@@ -59,28 +59,27 @@ const int arctic_weights[] = { 540,130,110,3,2,1,1,0,0,80,60,40,0};*/
 const float clear_weights[]        = { 3.00,0.80,0.60,0.30,0.20,0.20,0.10,0.20,0.10,0.20,0.10,0.10,1.00};
 const float cloudy_weights[]       = { 0.80,3.00,0.80,0.60,0.50,0.50,0.40,0.50,0.40,0.50,0.50,0.25,1.00};
 const float overcast_weights[]     = { 0.75,2.00,3.00,2.00,0.75,0.50,0.40,0.50,0.50,2.00,0.50,0.25,1.00};
-const float drizzle_weights[]      = { 1.00,1.50,2.50,4.00,2.50,1.50,1.15,1.15,1.15,1.00,1.00,1.00,0.00};
-const float rain_weights[]         = { 0.80,1.25,1.50,2.00,3.00,2.00,1.30,1.25,1.20,0.50,0.50,0.50,0.00};
-const float heavyrain_weights[]    = { 0.60,1.00,1.50,1.50,2.00,4.00,1.60,1.00,1.00,0.30,0.30,0.30,0.00};
-const float thunderstorm_weights[] = { 0.40,0.80,1.250,1.25,1.50,2.00,4.00,1.50,1.35,0.20,0.20,0.20,0.00};
-const float hail_weights[]         = { 0.50,0.60,0.70,1.50,1.00,1.00,1.50,3.00,1.40,0.20,0.20,0.20,0.00};
-const float hailstorm_weights[]    = { 0.30,0.40,1.50,1.75,2.25,2.25,1.50,1.50,3.35,0.35,0.35,0.35,0.00};
+const float drizzle_weights[]      = { 1.00,1.50,2.50,4.00,2.50,1.50,1.15,1.15,1.15,1.00,1.00,1.00,1.00};
+const float rain_weights[]         = { 0.80,1.25,1.50,2.00,3.00,2.00,1.30,1.25,1.20,0.50,0.50,0.50,1.00};
+const float heavyrain_weights[]    = { 0.60,1.00,1.50,1.50,2.00,4.00,1.60,1.00,1.00,0.30,0.30,0.30,1.00};
+const float thunderstorm_weights[] = { 0.40,0.80,1.25,1.25,1.50,2.00,4.00,1.50,1.35,0.20,0.20,0.20,1.00};
+const float hail_weights[]         = { 0.50,0.60,0.70,1.50,1.00,1.00,1.50,3.00,1.40,0.20,0.20,0.20,1.00};
+const float hailstorm_weights[]    = { 0.30,0.40,1.50,1.75,2.25,2.25,1.50,1.50,3.35,0.35,0.35,0.35,1.00};
 const float lightsnow_weights[]    = { 0.60,1.40,2.00,0.50,0.50,0.50,0.40,0.00,0.00,3.00,2.00,1.25,0.00};
 const float heavysnow_weights[]    = { 0.30,1.40,1.60,0.40,0.40,0.40,0.40,0.00,0.00,2.00,3.00,1.50,0.00};
 const float blizzard_weights[]     = { 0.20,1.30,1.50,0.25,0.25,0.25,0.25,0.00,0.00,1.75,2.25,2.50,0.00};
-const float sandstorm_weights[]    = { 0.50,1.00,1.00,1.00,1.00,1.00,1.00,0.00,0.00,0.00,0.00,0.00,10.00};
+const float sandstorm_weights[]    = { 0.50,0.50,0.50,1.00,1.00,1.00,1.00,0.00,0.00,0.00,0.00,0.00,7.5};
 const float* weather_weights[]= { clear_weights, cloudy_weights,
    overcast_weights,drizzle_weights,rain_weights,heavyrain_weights,
    thunderstorm_weights,hail_weights,hailstorm_weights,lightsnow_weights,
    heavysnow_weights,blizzard_weights,sandstorm_weights};
 
 //weather season weights
-const float spring_weights[]       = { 1.00,1.20,1.20,1.20,1.20,1.20,1.20,1.10,1.10,0.75,0.75,0.10,1.00};
-const float summer_weights[]       = { 1.10,1.10,1.10,1.20,1.10,1.10,1.30,1.10,1.10,0.50,0.50,0.50,1.00};
-const float fall_weights[]         = { 1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,0.60,0.60,0.60,1.00};
-const float winter_weights[]       = { 1.30,1.00,1.00,0.65,0.65,0.65,0.65,0.30,0.30,2.00,2.00,2.00,1.00};
-const float* season_weights[]      = { spring_weights,summer_weights, fall_weights,
-      winter_weights};
+const float spring_weights[]       = { 1.00,1.15,1.15,1.20,1.15,1.15,1.15,1.10,1.10,0.75,0.75,0.10,1.00};
+const float summer_weights[]       = { 1.10,1.10,1.10,1.10,1.10,1.10,1.30,1.10,1.10,0.50,0.50,0.50,1.00};
+const float fall_weights[]         = { 1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,0.70,0.70,0.70,1.00};
+const float winter_weights[]       = { 1.00,1.00,1.00,0.50,0.50,0.50,0.50,0.30,0.30,2.00,2.00,2.00,1.00};
+const float* season_weights[]      = { spring_weights, summer_weights, fall_weights, winter_weights};
 
 //climate temperature weights              F   V   C   Ch  P   W   H   Vh  B
 const int temperate_temp_weights[]     = { 10, 30, 40,100,100,100, 40, 30,  0};
@@ -136,9 +135,9 @@ const float* temp_temp_weights[] = { freezing_temp_weights, vcold_temp_weights, 
 // weights for nighttime
 const float night_temp_weights[] = { 1.5,1.5,1.5,1.5,1.0,1.0,1.0,1.0,1.0 };
 
-//wind range
-const int wind_min[] = {0,0,0,0,5,16,0,16,0,5,12,16,30};
-const int wind_max[] = {30,30,30,30,30,35,65,30,65,30,35,65,70};
+//wind range            
+const int wind_min[] = {0,0,0,0,5,5,10,15,15,5,5,45,50};
+const int wind_max[] = {35,35,35,35,35,35,65,35,60,35,35,65,70};
 
 //name strings
 const char* climate_strings[] = {"temperate","savanah","mountain",
@@ -232,9 +231,9 @@ const char** weather_change_strings[] = { clear_change_strings, cloudy_change_st
 	heavysnow_change_strings, blizzard_change_strings, sandstorm_change_strings };
 
 
-//regen and mv usage mods
-const float weather_regen_mods[] = {1,1,1,1,0.95,0.9,0.8,0.9,0.8,0.95,0.9,0.8};
-const float temperature_regen_mods[] = {0.6,0.75,0.9,0.95,1,0.95,0.9,0.7,0.6};
+//regen and mv usage mods                C    Cl    O   D    Lr   Hr   T     h   H    ls   S    B
+const float weather_regen_mods[]     = {1.00,1.00,1.00,1.00,0.95,0.90,0.85,0.85,0.80,0.90,0.80,0.75,0.75};
+const float temperature_regen_mods[] = {0.75,0.85,0.90,1.00,1.00,1.00,0.90,0.85,0.75};
 const float weather_mv_mods[] = {1,1,1,1,1.1,1.25,1.5,1.25,1.5,1.1,1.25,1.25};
 const float temperature_mv_mods[] = {1.4,1.25,1.25,1.1,1.05,1,1.05,1.1,1.3,1.4};
 
@@ -365,42 +364,6 @@ WeatherType int_to_weather_enum(int i){
    return w;
 }
 
-TemperatureType int_to_temp_enum(unsigned int i){
-	TemperatureType t;
-	switch(i){
-		case 0:
-			t = freezing;
-			break;
-		case 1:
-			t = verycold;
-			break;
-		case 2:
-			t = cold;
-			break;
-		case 3:
-			t = chilly;
-			break;
-		case 4:
-			t = pleasant;
-			break;
-		case 5:
-			t = warm;
-			break;
-		case 6:
-			t = hot;
-			break;
-		case 7:
-			t = veryhot;
-			break;
-		case 8:
-			t = burninghot;
-			break;
-		default:
-			t = tNONE;
-	}
-	return t;
-}
-
 Weather::Weather(){
    for(int i=0;i<MAX_CLIMATES;i++) {
       climates[i].weather = clear;
@@ -496,7 +459,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
    DistProbMatrix<WeatherType> weather_prob;
    DistProbMatrix<TemperatureType> temp_prob;
    int tweights[MAX_TEMP];
-   TemperatureType old_temp = climates[i].temperature;
+   //TemperatureType old_temp = climates[i].temperature;
    WeatherType old_weather = climates[i].weather;
    //grab base weights for weather and temp
    memcpy(weights,climates[i].weather_base,MAX_WEATHER*sizeof(int)); 
@@ -516,9 +479,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
 	  climates[i].weather = weather_prob.get();
    }else climates[i].weather = tw;
    //we have our new weather, so we can combine base, weather, season and temp weights
-   //do{ 
 
-gen_temperature:
    if(i == dirtdesert || i == sandydesert){
 	   if(config.hour < 6 || config.hour <=18){
 		   if(config.hour == 18) climates[i].temperature = chilly;
@@ -546,6 +507,8 @@ gen_temperature:
    case blizzard:
 	   if(climates[i].temperature > cold) climates[i].temperature = cold;
 	   break;
+   default:
+	   break;
    }
 
    combine_weights(tweights,weather_temp_weights[climates[i].weather],MAX_TEMP);
@@ -558,21 +521,8 @@ gen_temperature:
 	   if(tweights[idx] != 0) temp_prob.add(int_to_temperature_enum(idx),tweights[idx]);
 	   ++idx;
    }
-  // } while(temp_prob.Size() == 0 && ((old_temp = int_to_temp_enum(old_temp + 1)) != burninghot  ));
-   
-	   //FIX ME there has to be a better way to make sure temperatures are valid, this can fall into an infite loop
-  /* if( temp_prob.Size() == 0) {
-	   if(climates[i].weather >lightsnow){
-		   old_temp = int_to_temp_enum(old_temp - 1);
-		   goto gen_temperature;
-	   }
-	   else {
-		   old_temp = int_to_temp_enum(old_temp + 1);
-		   goto gen_temperature;
-	   }
-   }*/
-   climates[i].temperature = temp_prob.get();
 
+   climates[i].temperature = temp_prob.get();
     //get our wind values
    climates[i].windamount = 1+wind_min[i] + 
       (rand()%(wind_max[i]-wind_min[i]));
@@ -592,39 +542,7 @@ gen_temperature:
 	   }
    }
 
-   // let's blow out some lights
- /*  if(climates[i].wind > lightwind){
-	   Cell<critter*> cll(pc_list);
-	   critter* pc;
-	   room* rm;
-	   unsigned int p;
-	   while((pc = cll.next())){
-		   rm = pc->getCurRoom();
-		   if(rm->getClimate() == i){
-			   switch(climates[i].wind){
-				   case lightwind:
-						p = 5;
-						break;
-				   case windy:
-					   p = 8;
-					   break;
-				   case verywindy:
-					    p = 10;
-						break;
-				   case gale:
-					   p 14;
-					   break;
-						p = 0;
-			   }
-			   if(rand()%100 >= p){
-					//gave up trying to add a is_lit flag, jsut going to remove it from eq and drop it into inv
-
-			   }
-		   }
-	   }*/
-		
-
-
+   blow_out_lights(i, false);
 	   //if it's hailing, let's smack some people
    if(climates[i].weather == hail || climates[i].weather == hailstorm){
       Cell<critter*> cll(pc_list);

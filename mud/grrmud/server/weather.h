@@ -22,7 +22,6 @@
 
 #ifndef __WEATHER_INCLUDE
 #define __WEATHER_INCLUDE
-
 //we don't actually use most of these defines
 //climate types
 #define CTEMPERATE      0

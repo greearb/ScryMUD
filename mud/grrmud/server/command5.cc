@@ -3495,7 +3495,6 @@ int changeweather(critter& pc){
 }
 
 int setweather(const String* climate_str, const String* weather_str, critter& pc){
-
 	if(pc.pc && pc.pc->imm_data){
 		int c =0,w = 0;
 		if(climate_str->Strlen() && weather_str->Strlen()){  
@@ -3517,6 +3516,10 @@ int setweather(const String* climate_str, const String* weather_str, critter& pc
 			}
 			if(w >= MAX_WEATHER){
 				pc.show("error: unknown weather type.\n");
+				return -1;
+			}
+			if(int_to_weather_enum(w) == blizzard || int_to_weather_enum(w) == heavysnow || int_to_weather_enum(w) == lightsnow){
+				pc.show("For safety reasons, you cannot force snow.");
 				return -1;
 			}
 			weather.changeWeather((ClimateType)c,(WeatherType)w);

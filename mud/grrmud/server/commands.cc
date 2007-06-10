@@ -47,6 +47,7 @@
 #include "load_wld.h"
 #include "Filters.h"
 #include "clients.h"
+#include "weather.h"
 
 int inventory(critter& pc) {
    String buf(100);
@@ -2871,9 +2872,15 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
       }
       str_dir = *(rm.getRandomExitDir(pc));
    }//IF
+  if(pc.isFlying() && rm.hasWeather() && (weather.climates[rm.getWeather()].wind == gale) &&
+    (rand()%100 <= 5)){ // be nice and set it to a low val
+	   str_dir = *(rm.getRandomExitDir(pc));
+	   pc.show("The fierce winds have blown you away from your intended destination!\n");
+   }
+
 
    if (pc.MOV < 1) {
-      pc.show(CS_MOVE_NO_MOV);
+	   pc.show(CS_MOVE_NO_MOV);
    }//if
    else if (pc.POS != POS_STAND) {
       pc.show(CS_MOV_STANDING);
@@ -3043,7 +3050,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
                from_dir = "below";
             }
          }//if
-
+		 blow_out_lights(&pc, true);
          pc.doGoToRoom(dest, from_dir, door_ptr, is_dead, rm.getIdNum(), 1);
 
          if (is_dead) {

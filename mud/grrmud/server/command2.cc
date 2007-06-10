@@ -555,7 +555,7 @@ int auto_exit(critter &pc) {
 
       dest = abs(door_p->destination);
 
-      if ( detect(pc.getSeeBit(), door_p->getVisBit()) ) {
+	  if ( pc.canSee(*door_p)){  //detect(pc.getSeeBit(), door_p->getVisBit()) ) {
 
          can_see = true;
 

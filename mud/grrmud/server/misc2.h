@@ -199,4 +199,7 @@ public:
 
 void combine_weights(int* target, const float* in, unsigned int length);
 
+void blow_out_lights(ClimateType i, bool small);
+void blow_out_lights(critter* pc, bool small);
+
 #endif 

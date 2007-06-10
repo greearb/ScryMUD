@@ -2257,3 +2257,49 @@ void combine_weights(int* target, const float* in, unsigned int length){
          ++i;
    }
 }
+
+void blow_out_lights(critter* pc, bool small){
+	room* rm = pc->getCurRoom();
+	int cval = 100;
+	if(small) cval = 500;
+	int p;
+
+	switch(weather.climates[rm->getClimate()].wind){
+		   case lightwind:
+			   p = 3;
+			   break;
+		   case windy:
+			   p = 4;
+			   break;
+		   case verywindy:
+			   p = 5;
+			   break;
+		   case gale:
+			   p = 10;
+			   break;
+		   default:	
+			   p = 0;
+	}
+	if(rand()%cval <= p){
+		if(pc->EQ[11] && pc->EQ[11]->isLightSource() && pc->eq[11]->obj_flags.get(6)){
+			pc->gainInv(pc->EQ[11]);
+			remove_eq_effects(*(pc->EQ[11]), *pc, FALSE, FALSE, 11);
+			pc->EQ[11] = NULL; 
+			pc->show("Your light has been blown out by the wind!\n");
+		}
+	}
+}
+
+void blow_out_lights(ClimateType i, bool small){
+   if(weather.climates[i].wind > lightwind){
+	   Cell<critter*> cll(pc_list);
+	   critter* pc;
+	   room* rm;
+	   while((pc = cll.next())){
+		   rm = pc->getCurRoom();
+		   if(rm->getClimate() == i){
+			   blow_out_lights(pc, small);
+		   }
+	   }
+   }
+}

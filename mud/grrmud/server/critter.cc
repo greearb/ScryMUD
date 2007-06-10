@@ -6006,22 +6006,29 @@ void critter::showWeather(room &rm) const {
 }
 
 bool critter::canSee(critter& mob){
-	/*//see if the weather messes with our vision
-	if( w && ((room_list[IN_ROOM].getWeather() == sandstorm) || room_list[IN_ROOM].getWeather() == blizzard)){ 
-		if(rand()%100 >70) return false;
-	}*/
+	//see if the weather messes with our vision
+	if(((room_list[IN_ROOM].getWeather() == sandstorm) || room_list[IN_ROOM].getWeather() == blizzard)){ 
+		if(rand()%100 <=25) return false;
+	}
   if(detect(getSeeBit(),mob.getVisBit())){
      return true;
   }
   return false;
 }
 bool critter::canSee(int vis_bit){
+/*	if(((room_list[IN_ROOM].getWeather() == sandstorm) || room_list[IN_ROOM].getWeather() == blizzard)){ 
+		if(rand()%100 >25) return false;
+	}*/
+	//don't do weather for vis_bit
    if(detect(getSeeBit(), vis_bit)){
       return true;
    }
    return false;
 }
 bool critter::canSee(object& obj){
+	if(((room_list[IN_ROOM].getWeather() == sandstorm) || room_list[IN_ROOM].getWeather() == blizzard)){ 
+		if(rand()%100 <=25) return false;
+	}
    if(detect(getSeeBit(), obj.getVisBit())){
       return true;
    }
@@ -6029,6 +6036,9 @@ bool critter::canSee(object& obj){
 }
 
 bool critter::canSee(door& dr){
+	if(((room_list[IN_ROOM].getWeather() == sandstorm) || room_list[IN_ROOM].getWeather() == blizzard)){ 
+		if(rand()%100 <=25) return false;
+	}
    if(detect(getSeeBit(), dr.getVisBit())){
       return true;
    }
