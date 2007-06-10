@@ -2254,7 +2254,7 @@ void combine_weights(int* target, const float* in, unsigned int length){
    unsigned int i =0;
    
    while(i < length){
-         target[i] *= in[i];
+         target[i] = int(target[i] * in[i]);
          ++i;
    }
 }

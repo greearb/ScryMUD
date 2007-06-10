@@ -399,7 +399,7 @@ void scry_new_handler() {
 void sig_term_handler(int signo) { 
    //reestablish signal handler
    if ((signo != SIGSEGV) && (signo != SIGBUS) && (signo != SIGIOT)) {
-     /cerr << "Got signal: " << signo << " NOT setting to default handler." << endl;
+      cerr << "Got signal: " << signo << " NOT setting to default handler." << endl;
       signal(signo, (&sig_term_handler));
    }
    else {

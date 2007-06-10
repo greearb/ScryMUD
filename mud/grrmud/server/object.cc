@@ -493,7 +493,7 @@ int object::getCurWeight() const {
       while ((tmp_obj = cll.next())) {
          tmp_wt += tmp_obj->getCurWeight();
       }//while
-      return (tmp_wt * (this->bag->percentage_weight/100.00)) + extras[5];  // weight of inv, plus container's wt
+      return int((tmp_wt * (this->bag->percentage_weight/100.00)) + extras[5]);  // weight of inv, plus container's wt
    }//else
 }//cur_weight
 
