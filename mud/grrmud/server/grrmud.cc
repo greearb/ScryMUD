@@ -541,7 +541,7 @@ int main(int argc, char** argv) {
       "Be sure to check the log files in the ./log directory if you have\n"
       "any strange occurances.\n"
       "\n"
-      "--Edward Roper (edro+scrymud [at] wanfear.net\n\n";
+      "--Edward Roper (edro+scrymud [at] wanfear.net)\n\n";
 
    srand(time(0));
 
