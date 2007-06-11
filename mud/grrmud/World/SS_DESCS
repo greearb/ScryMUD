@@ -683,13 +683,11 @@ move.
 
 SYNTAX: cast 'fear' <victim>
 ~
-
 tammuz
 The exclusive, and often dangerous meeting place of adventurers who have
 surpassed the thirtieth tier in their training.  It is rumored to be located
 somewhere in the Creleon mountian range.
 ~
-
 teleport
 This spell allows one to randomly relocate within the local area.
 ~
@@ -809,7 +807,6 @@ Syntax: Vision
 most evidenced in their sight. In addition to being able to see great
 distances, the Avian can also see things magically or naturally hidden that
 would normally be quite undetectable by observers.
- 
 ~
 dive
 Syntax: DIVE enemy
@@ -818,7 +815,6 @@ Syntax: DIVE enemy
 from great heights at an incredible velocity. The impact can cause an
 unprepared opponent considerable damage, but it can also cause the diver
 some harm if s/he miscalculates the routine.                                   
-             
 ~
 glare
 Syntax: Glare <name>
