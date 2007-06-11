@@ -1194,9 +1194,12 @@ int
    REMOVE_KARMA_SKILL_NUM,
    SANCTUM_OF_THE_VICTIM_SKILL_NUM,
    FEAR_SKILL_NUM,
-   NECROPHILIA_SKILL_NUM;
-   
-
+   NECROPHILIA_SKILL_NUM,
+   RITUALS_SKILL_NUM,
+   BLOOD_RITUAL_SKILL_NUM,
+   SPIRIT_RITUAL_SKILL_NUM,
+   STAMINA_RITUAL_SKILL_NUM,
+   RITUAL_OF_POWER_SKILL_NUM;
 
 // Ripped off from some PennMUSH code someone posted to the
 // mud-dev list.
@@ -1660,9 +1663,6 @@ extern const char* HUH_MSG;
 #define IN_ROOM          cur_stats[2]
 #define WIMPY            short_cur_stats[21]
 #define PRACS            short_cur_stats[22]
-#define HP_MAX           getHP_MAX()
-#define MA_MAX           short_cur_stats[24]
-#define MV_MAX                  short_cur_stats[25]
 #define CRITTER_TYPE            short_cur_stats[26] /* was SMOB */
 #define DAM_REC_MOD             short_cur_stats[27]
 #define DAM_GIV_MOD             short_cur_stats[28]

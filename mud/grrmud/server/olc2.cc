@@ -436,9 +436,11 @@ int normalize_mob(critter& crit) {
    crit.RACE = bound(1, 14, crit.RACE);
    crit.LEVEL = bound(1, 40, crit.LEVEL);
    crit.setNativeZoneNum(bound(0, NUMBER_OF_ZONES, crit.getNativeZoneNum()));
-   crit.setHP_MAX(bound(1, 32000, crit.HP_MAX));
+   /* shouldn't be necessary with set*Max()
+   crit.setHP_MAX(bound(1, 32000, crit.HP_MAX()));
    crit.MV_MAX = bound(1, 32000, crit.MV_MAX);
    crit.MA_MAX = bound(1, 32000, crit.MA_MAX);
+   */
    crit.DAM_REC_MOD = bound(1, 1000, crit.DAM_REC_MOD);
    crit.DAM_GIV_MOD = bound(1, 1000, crit.DAM_GIV_MOD);
 

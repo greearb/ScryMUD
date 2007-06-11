@@ -46,6 +46,7 @@
 #include <PtrArray.h>
 #include "SkillSpell.h"
 #include "clients.h"
+#include "necromancer.h"
 
 
 //deal with the Spell class stuff first
@@ -295,7 +296,7 @@ int get_mana_cost(int spell_num) {
    return SSCollection::instance().getSS(spell_num).getManaCost();
 }
 
-int get_mana_cost(int spell_num, critter& pc) {
+int get_mana_cost(int spell_num, const critter& pc) {
    float pl, mana_cost=SSCollection::instance().getSS(spell_num).getManaCost();
 
    if (pc.isPc() && ((pl = (float)get_percent_lrnd(MANA_SKILL_NUM, pc)) > -1))

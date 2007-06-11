@@ -44,11 +44,6 @@
 #define PRISMATIC_GLOBE_EFFECT_MOV -50
 #define MAGIC_SHIELD_AC_EFFECT     -10
 #define MAGIC_SHIELD_SAC_EFFECT    -50 /* spell resistance */
-#define RUST_EFFECT               25 /* a/c */
-#define DISFAVOR_EFFECT           20 /* all resistances */
-#define REMOVE_SOUL_EFFECT        100 /* spell resistance */
-#define SANCTUM_EFFECT            30 /* dam receive mod */
-
 
 void cast_blindness(int i_th, const String* dr, critter& agg);
 void do_cast_blindness(critter& targ, critter& pc, int is_canned, int lvl);
@@ -100,9 +95,6 @@ void cast_bind_wound(int i_th, const String* vict, critter& agg);
 void do_cast_bind_wound(critter& vict, critter& agg, int is_canned, 
                               int lvl);
 
-void cast_weaken(int i_th, const String* vict, critter& agg);
-void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl);
-
 void cast_remove_curse(int i_th, const String* vict, critter& agg);
 void do_cast_remove_curse(critter& vict, critter& agg, int is_canned, int lvl);
 void do_cast_remove_curse(critter& vict, object& agg, int is_canned, int lvl);
@@ -141,28 +133,6 @@ void do_cast_stone_skin(critter& vict, critter& agg, int is_canned, int lvl);
 
 void cast_sober(int i_th, const String* vict, critter& agg);
 void do_cast_sober(critter& vict, critter& agg, int is_canned, int lvl);
-
-// new for Necromancer class
-void cast_rust(int i_th, const String* vict, critter& agg);
-void do_cast_rust(critter& vict, critter& agg, int is_canned, int lvl);
-
-void cast_disfavor(int i_th, const String* vict, critter& agg);
-void do_cast_disfavor(critter& vict, critter& agg, int is_canned, int lvl);
-
-void cast_remove_soul(int i_th, const String* vict, critter& agg);
-void do_cast_remove_soul(critter& vict, critter& agg, int is_canned, int lvl);
-
-void cast_remove_hope(int i_th, const String* vict, critter& agg);
-void do_cast_remove_hope(critter& vict, critter& agg, int is_canned, int lvl);
-
-void cast_remove_karma(int i_th, const String* vict, critter& agg);
-void do_cast_remove_karma(critter& vict, critter& agg, int is_canned, int lvl);
-
-void cast_sanctum_of_the_victim(int i_th, const String* vict, critter& agg);
-void do_cast_sanctum_of_the_victim(critter& vict, critter& agg, int is_canned, int lvl);
-
-void cast_fear(int i_th, const String* vict, critter& agg);
-void do_cast_fear(critter& vict, critter& agg, int is_canned, int lvl);
 
 ///**************   auxillary functions   *************///
 

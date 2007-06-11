@@ -1916,8 +1916,8 @@ int group(int i_th, const String* vict, critter& pc) {
       while ((ptr = cll.next())) {
          Sprintf(buf, "%S%P30 %s(%i)%P45 %i/%i %P54 %i/%i %P66 %i/%i\n",
                  name_of_crit(*ptr, pc.SEE_BIT), class_of_crit(*ptr), 
-                 ptr->LEVEL, ptr->HP, ptr->HP_MAX,
-                 ptr->MANA, ptr->MA_MAX, ptr->MOV, ptr->MV_MAX);
+                 ptr->getLevel(), ptr->getHP(), ptr->getHP_MAX(),
+                 ptr->getMana(), ptr->getManaMax(), ptr->getMov(), ptr->getMovMax());
          buf.Cap();
          show(buf, pc);
       }//while

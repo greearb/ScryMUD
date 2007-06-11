@@ -218,8 +218,8 @@ void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
 
           default: mudlog.log(DBG, "DEBUG: Default Golem in: do_cast_greater_golem:pet_spll.cc, setting golem stats");
          }//switch 
-         golem->setHP_MAX(golem->HP);
-         golem->MA_MAX = golem->MANA;
+         golem->setHP_MAX(golem->getHP());
+         golem->setManaMax(golem->getMana());
          /* now it follows and is a pet of the person */
          pc.PETS.append(golem);
          golem->MASTER = &pc;
@@ -417,100 +417,6 @@ void do_cast_mass_charm(room& rm, critter& pc, int is_canned,
      }//if
    }//while
 }//do_cast_mass_charm
-
-
-void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
-   String buf(100);
-   int spell_num = RAISE_UNDEAD_SKILL_NUM;
-   int spell_mana = get_mana_cost(spell_num, pc);
-
-   if (!is_canned)
-      lvl = pc.LEVEL;
-
-   int lost_con = FALSE;
-
-   object* corpse = NULL;
-   critter* pet = NULL;
-
-   if (!(corpse = have_obj_numbered(*(ROOM.getInv()), 1, config.corpseObject,
-                                    pc.SEE_BIT, ROOM))) {
-      show("You need a corpse in order to animate it!\n", pc);
-      return;
-   }//if
-
-   if (is_canned || !(lost_con = lost_concentration(pc, spell_num))) {
-      
-      if (!mob_list[config.walkingCorpseMob].isInUse()) {
-         mudlog.log(ERROR, "ERROR:  need to create a RAISED_CORPSE_MOB.\n");
-         return;
-      }//if
-      
-      pet = mob_to_smob(mob_list[config.walkingCorpseMob], pc.getCurRoomNum(), TRUE);
-      pet->mob->setDisolvable(TRUE);
-      pet->mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
-      pet->setHomeTown(ROOM.getZoneNum()); //belong to current zone
-      ROOM.gainCritter(pet);
-      
-      recursive_init_loads(*pet);
-      
-      pet->inv = corpse->inv; //transfer inventory
-      corpse->inv.clear();
-
-      ROOM.loseInv(corpse);
-      corpse->decrementCurInGame(); //no recursive unload, stuff transferred
-
-      if (corpse->IN_LIST) { //this should be true in most cases btw
-         delete corpse;
-      }//if
-      corpse = NULL; //completely shed of it
-
-      if (!is_canned)
-         pc.MANA -= spell_mana;
-      
-      if (pc.PETS.size() >= (pc.CHA/4 +1)) {
-         show("Your monster stands, but shows no interest in following you!\n",
-              pc);
-         return;
-      }//if
-      
-      show("You breathe a twisted form of life back into the corpse!\n", pc);
-      emote("conjures life back into a gruesome corpse!", pc, 
-            ROOM, TRUE);
-      
-      /* not figure out it's strength, and HP */
-      pet->HP = d(4, lvl * 4);
-      pet->setHP_MAX(pet->HP);
-      pet->STR = d(2,2) + (lvl / 2);
-      pet->LEVEL = pc.LEVEL;
-      pet->ALIGN = pc.ALIGN;
-      
-      /* now it follows and is a pet of the person */
-      pc.PETS.append(pet);
-      pet->MASTER = &pc;
-
-      pet->doFollow(pc); // golem starts following caster     
-   }//if canned or didn't lose concentration
-   else { //not canned AND lost concentration
-      show(LOST_CONCENTRATION_MSG_SELF, pc);
-      emote("mutters something about necrophilia and blushes!\n", pc, ROOM,
-            TRUE);
-      if (!is_canned)
-         pc.MANA -= spell_mana / 2;
-   }//else lost concentration
-   pc.PAUSE = 1; 
-}//do_cast_raise_undead
- 
-
-void cast_raise_undead(critter& pc) {
-   int spell_num = RAISE_UNDEAD_SKILL_NUM;
-
-   if (!ok_to_do_action(NULL, "KMSNBb", spell_num, pc)) {
-      return;
-   }//if
-
-   do_cast_raise_undead(pc, FALSE, 0);
-}//cast_raise_undead
-
 
 void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
    String buf(100);

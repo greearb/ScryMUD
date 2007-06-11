@@ -734,9 +734,9 @@ int  quit_do_login_new(critter& pc) {
    pc.LEVEL = 1; //level
    pc.setCurRoomNum(config.newbieRoom); //starting room
    pc.PRACS = (pc.WIS / 3); //wis dependent, practices
-   pc.setHP_MAX(pc.HP); //hp_max
-   pc.MA_MAX = pc.MANA; // mana_max
-   pc.MV_MAX = pc.MOV; // mov_max
+   pc.setHP_MAX(pc.getHP()); //hp_max
+   pc.setManaMax(pc.getMana()); // mana_max
+   pc.setMovMax(pc.getMov());
    pc.CRITTER_TYPE = 0; // 0 is pc, 1 is smob, 2 is mob
    pc.DAM_GIV_MOD = 100; // > 100 = hit harder
    pc.DAM_REC_MOD = 100; // < 100 = get hit less hard

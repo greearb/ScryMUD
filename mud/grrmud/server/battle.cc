@@ -1153,9 +1153,9 @@ void gain_level(critter& crit) {
 
    crit.LEVEL++;
    crit.PRACS += d(2, (int)((float)(crit.getINT(true))/6.0)) + 1;
-   crit.MA_MAX += mana_gain;
-   crit.setHP_MAX(crit.getHP_MAX() + hp_gain);
-   crit.MV_MAX += d(1, crit.getDEX(true));
+   crit.adjManaMax(mana_gain);
+   crit.adjHP_MAX(hp_gain);
+   crit.adjMovMax(d(1,crit.getDEX(true)));
    crit.show("You rise a level.\n");
 
    if ( crit.isAvian() ) {

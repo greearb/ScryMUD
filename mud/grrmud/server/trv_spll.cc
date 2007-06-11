@@ -86,8 +86,8 @@ void do_cast_group_heal(critter& agg, int is_canned, int lvl) {
          }//if
          
          ptr->HP += (d(8, (40 + lvl/2)));
-         if (ptr->HP > ptr->HP_MAX)
-            ptr->HP = ptr->HP_MAX;
+         if (ptr->getHP() > ptr->getHP_MAX())
+            ptr->setHP(ptr->getHP_MAX());
          
          Sprintf(buf, "%S heals you and your companions.\n",
                  name_of_crit(agg, ptr->SEE_BIT));

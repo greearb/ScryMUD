@@ -2734,13 +2734,13 @@ int mset(int i_th, const String* vict, const String* targ, int new_val,
    }//if
    else if (strncasecmp(*targ, "mana_max", max(len1, 5)) == 0) {
      if (check_l_range(new_val, 0, 32000, pc, TRUE)) {
-       ptr->MA_MAX = new_val;
+       ptr->setManaMax(new_val);
        flag = TRUE;
      }//if
    }//if
    else if (strncasecmp(*targ, "mov_max", max(len1, 5)) == 0) {
      if (check_l_range(new_val, 0, 32000, pc, TRUE)) {
-       ptr->MV_MAX = new_val;
+       ptr->setMovMax(new_val);
        flag = TRUE;
      }//if
    }//if

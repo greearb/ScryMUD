@@ -50,6 +50,7 @@
 #include "social2.h"
 #include "ar_skll.h"
 #include <PtrArray.h>
+#include "necromancer.h"
 
 
 void do_entered_room_procs(critter& pc, door* dr, const char* from_dir,
@@ -265,7 +266,7 @@ void do_battle_proc(critter& pc) {
               do_cast_sanctuary(pc, pc, FALSE, 0);
             }//if
             else {
-              if ((pc.HP + 300) < pc.HP_MAX) {
+              if ((pc.getHP() + 300) < pc.getHP_MAX()) {
                 do_cast_restore(pc, pc, FALSE, 0);
               }//if
             }//else
@@ -290,7 +291,7 @@ void do_battle_proc(critter& pc) {
             critter* weakest = find_weakest(pc.IS_FIGHTING);
             do_cast_blindness(*weakest, pc, FALSE, 0);
           }//if
-          else if ((chance > 6) && ((pc.HP + 300) < pc.HP_MAX)) {
+          else if ((chance > 6) && ((pc.getHP() + 300) < pc.getHP_MAX())) {
             if (cls == CLERIC) {
               do_cast_restore(pc, pc, FALSE, 0);
             }//if
@@ -298,12 +299,12 @@ void do_battle_proc(critter& pc) {
               do_cast_teleport(pc, pc, FALSE, 0);
             }//else
           }//if
-          else if ((chance > 4) && ((pc.HP + 100) < pc.HP_MAX)) {
+          else if ((chance > 4) && ((pc.getHP() + 100) < pc.getHP_MAX())) {
             spellHarm.onCast(*primary_targ, pc, FALSE, 0);
           }//if
         }//if not so violent
         else if (violence >= 0) {
-          if ((chance > 7) && ((pc.HP + 300) < pc.HP_MAX)) {
+          if ((chance > 7) && ((pc.getHP() + 300) < pc.getHP_MAX())) {
             do_cast_restore(pc, pc, FALSE, 0);
           }//if
           else if (chance > 4) {
@@ -453,7 +454,7 @@ void do_battle_proc(critter& pc) {
               do_cast_armor(pc, pc, FALSE, 0);
             }//if
             else {
-              if ((pc.HP + 100) < pc.HP_MAX) {
+              if ((pc.getHP() + 100) < pc.getHP_MAX()) {
                 do_cast_heal(pc, pc, FALSE, 0);
               }//if
             }//else
@@ -477,7 +478,7 @@ void do_battle_proc(critter& pc) {
             critter* weakest = find_weakest(pc.IS_FIGHTING);
             do_cast_blindness(*weakest, pc, FALSE, 0);
           }//if
-          else if ((chance > 6) && ((pc.HP + 100) < pc.HP_MAX)) {
+          else if ((chance > 6) && ((pc.getHP() + 100) < pc.getHP_MAX())) {
             if (cls == CLERIC) {
               do_cast_heal(pc, pc, FALSE, 0);
             }//if
@@ -490,7 +491,7 @@ void do_battle_proc(critter& pc) {
           }//if
         }//if not so violent
         else if (violence >= 0) {
-          if ((chance > 7) && ((pc.HP + 100) < pc.HP_MAX)) {
+          if ((chance > 7) && ((pc.getHP() + 100) < pc.getHP_MAX())) {
             do_cast_heal(pc, pc, FALSE, 0);
           }//if
           else if (chance > 4) {
@@ -603,7 +604,7 @@ void do_battle_proc(critter& pc) {
           }//if
         }//if not so violent
         else if (violence >= 0) {
-          if ((chance > 9) && ((pc.HP + 10) < pc.HP_MAX)) {
+          if ((chance > 9) && ((pc.getHP() + 10) < pc.getHP_MAX())) {
             do_cast_cure_serious(pc, pc, FALSE, 0);
           }//if
         }//if not so violent

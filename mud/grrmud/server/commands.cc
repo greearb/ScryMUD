@@ -48,6 +48,7 @@
 #include "Filters.h"
 #include "clients.h"
 #include "weather.h"
+#include "necromancer.h"
 
 int inventory(critter& pc) {
    String buf(100);
@@ -755,7 +756,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
          show("\n\n", pc);
          show((crit_ptr->long_desc), pc);
 
-         int cond = (int) (((float)crit_ptr->HP / (float)crit_ptr->HP_MAX) * 
+         int cond = (int) (((float)crit_ptr->getHP() / (float)crit_ptr->getHP_MAX()) * 
                           9.0);
          cond = cond < 0?0:cond; // Take care of critters with negative hp.
          if (!check_l_range(cond, 0, 9, pc, FALSE)) {

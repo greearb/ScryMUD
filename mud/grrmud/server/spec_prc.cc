@@ -53,6 +53,7 @@
 #include <PtrArray.h>
 #include "load_wld.h"
 #include "SkillSpell.h"
+#include "necromancer.h"
 
 
 

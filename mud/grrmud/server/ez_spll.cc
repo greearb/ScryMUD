@@ -1830,8 +1830,8 @@ void do_cast_cure_serious(critter& vict, critter& agg, int is_canned,
 
    if (do_effects) {
       vict.HP += (short)(((float)(10 + d(1,15)) / spell_objs_ratio(spell_num)));
-      if (vict.HP > vict.HP_MAX)
-         vict.HP = vict.HP_MAX;
+      if (vict.getHP() > vict.getHP_MAX())
+         vict.setHP(vict.getHP_MAX());
    }//if
 }//do_cast_cure_serious
 
@@ -1911,8 +1911,8 @@ void do_cast_cure_critical(critter& vict, critter& agg, int is_canned,
 
    if (do_effects) {
       vict.HP += (20 + d(1, lvl));
-      if (vict.HP > vict.HP_MAX)
-         vict.HP = vict.HP_MAX;
+      if (vict.getHP() > vict.getHP_MAX())
+         vict.setHP(vict.getHP_MAX());
    }//if
 }//do_cast_cure_critical
 
@@ -1991,8 +1991,8 @@ void do_cast_heal(critter& vict, critter& agg, int is_canned, int lvl) {
 
    if (do_effects) {
       vict.HP += (d(4, lvl) + 150);
-      if (vict.HP > vict.HP_MAX)
-         vict.HP = vict.HP_MAX;
+      if (vict.getHP() > vict.getHP_MAX())
+         vict.setHP(vict.getHP_MAX());
    }//if
 }//do_cast_heal
 
@@ -2074,12 +2074,12 @@ void do_cast_restore(critter& vict, critter& agg, int is_canned, int lvl) {
    agg.PAUSE = 1;
 
    if (do_effects) {
-      vict.HP += (d(7, 100) + 2 * lvl);
-      if (vict.HP > vict.HP_MAX)
-         vict.HP = vict.HP_MAX;
-      vict.MOV += (d(7,100) + 2 * lvl);
-      if (vict.MOV > vict.MV_MAX)
-         vict.MOV = vict.MV_MAX;
+      vict.adjHP(d(7, 100) + 2 * lvl);
+      if (vict.getHP() > vict.getHP_MAX())
+         vict.setHP(vict.getHP_MAX());
+      vict.adjMov(d(7,100) + 2 * lvl);
+      if (vict.getMov() > vict.getMovMax())
+         vict.setMov(vict.getMovMax());
    }//if
 }//do_cast_restore
 

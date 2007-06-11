@@ -2263,17 +2263,17 @@ int wimpy(int i, critter& pc) {
    if (ok_to_do_action(NULL, "mFP", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
 
       if (i == 1) {
-         Sprintf(buf, cstr(CS_WIMPY_SET, pc), pc.WIMPY);
+         Sprintf(buf, cstr(CS_WIMPY_SET, pc), pc.getWimpy());
          show(buf, pc);
       }//if
       else if (i <= 0) {
-         pc.WIMPY = 0;
+         pc.setWimpy(0);
       }//if
-      else if (i > pc.HP_MAX / 2) {
-         pc.WIMPY = pc.HP_MAX / 2;
+      else if (i > pc.getHP_MAX() / 2) {
+         pc.setWimpy(pc.getHP_MAX() / 2);
       }//if
       else {
-         pc.WIMPY = i;
+         pc.setWimpy(i);
       }//else
       pc.show(CS_OK);
       return 0;
@@ -2451,12 +2451,12 @@ int do_mstat(critter& targ, critter& pc) {
                      /* done through 18 */
       Sprintf(buf2,
               "lvl: %i  Home_Town: %i  wimpy: %i  Prac: %i Hmx: %i  Mmx: %i\n",
-              crit_ptr->LEVEL, crit_ptr->getHomeTown(), crit_ptr->WIMPY,
-              crit_ptr->PRACS, crit_ptr->HP_MAX, crit_ptr->MA_MAX);
+              crit_ptr->getLevel(), crit_ptr->getHomeTown(), crit_ptr->getWimpy(),
+              crit_ptr->PRACS, crit_ptr->getHP_MAX(), crit_ptr->getManaMax());
       show(buf2, pc);
 
       Sprintf(buf2, "Vmx: %i  CRITTER_TYPE: %i  dam_rec_mod: %i  DAM_GIV_MOD: %i\n",
-              crit_ptr->MV_MAX, crit_ptr->CRITTER_TYPE,
+              crit_ptr->getMovMax(), crit_ptr->CRITTER_TYPE,
               crit_ptr->DAM_REC_MOD, crit_ptr->DAM_GIV_MOD);
       show(buf2, pc);
 

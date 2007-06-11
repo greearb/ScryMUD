@@ -60,9 +60,6 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl);
 void cast_create_light(critter& agg);
 void do_cast_create_light(critter& pc, int is_canned, int lvl);
 
-void cast_raise_undead(critter& agg);
-void do_cast_raise_undead(critter& pc, int is_canned, int lvl);
-
 void cast_conjure_minion(critter& agg);
 void do_cast_conjure_minion(critter& pc, int is_canned, int lvl);
 

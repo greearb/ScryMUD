@@ -97,7 +97,7 @@ void update_skills(critter& pc);
 short lost_concentration(critter& agg, int spell_num);
 
 int get_mana_cost(int spell_num);
-int get_mana_cost(int spell_num, critter& pc);
+int get_mana_cost(int spell_num, const critter& pc);
 //int get_mana_cost(const char* name);
 
 int get_number_of_scroll(int spell_num); //returns -1 if !exist

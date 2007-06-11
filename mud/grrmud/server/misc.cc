@@ -508,7 +508,7 @@ void do_regeneration_pcs() {
       // if we are affected by remove hope we get no hp
       if ( ! (is_affected_by(REMOVE_HOPE_SKILL_NUM, *crit_ptr)) ) {
       crit_ptr->HP += (int)((((((float)(crit_ptr->CON) + 5.0) / 15.0) * 
-                            (((float)(crit_ptr->HP_MAX)) / 9.0) * 
+                            (((float)(crit_ptr->getHP_MAX())) / 9.0) * 
                             posn_mod * (((float)(crit_ptr->HP_REGEN)) / 100.0)
                             * adj + 10.0)/6.0)*env_mod+1.0);
       }
@@ -526,7 +526,7 @@ void do_regeneration_pcs() {
       
          crit_ptr->MANA += (int)(((((((float)(crit_ptr->INT)) + 5.0) / 16.0) *
                               posn_mod *
-                              (((float)(crit_ptr->MA_MAX)) / 7.0) *
+                              (((float)(crit_ptr->getManaMax())) / 7.0) *
                               (((float)(crit_ptr->MA_REGEN)) / 100.0) *
                               align_mod *
                               adj + 4.0)/6.0)*env_mod+1.0);
@@ -542,7 +542,7 @@ void do_regeneration_pcs() {
          int tmp_mov;
          tmp_mov = (int)(((((((float)(crit_ptr->DEX)) + 5.0) / 16.0) *
                      posn_mod * adj *
-                     (((float)(crit_ptr->MV_MAX)) / 3.0) * 
+                     (((float)(crit_ptr->getMovMax())) / 3.0) * 
                      (((float)(crit_ptr->MV_REGEN)) / 100.0) + 3.0)/6.0)*env_mod+1.0);
 
          crit_ptr->MOV += tmp_mov;
@@ -556,26 +556,26 @@ void do_regeneration_pcs() {
       //   }
       //}
 
-      if ( (crit_ptr->HP > crit_ptr->HP_MAX) ) {
-         crit_ptr->HP = crit_ptr->HP_MAX;
+      if ( (crit_ptr->getHP() > crit_ptr->getHP_MAX()) ) {
+          crit_ptr->setHP(crit_ptr->getHP_MAX());
       }
-      if (crit_ptr->MANA > crit_ptr->MA_MAX)
-         crit_ptr->MANA = crit_ptr->MA_MAX;
-      if (crit_ptr->MOV > crit_ptr->MV_MAX)
-         crit_ptr->MOV = crit_ptr->MV_MAX;
-      if (crit_ptr->HP < 0)
-         crit_ptr->HP = 0;
-      if (crit_ptr->MANA < 0)
-         crit_ptr->MANA = 0;
-      if (crit_ptr->MOV < 0)
-         crit_ptr->MOV = 0;
+      if (crit_ptr->getMana() > crit_ptr->getManaMax())
+          crit_ptr->setMana(crit_ptr->getManaMax());
+      if (crit_ptr->getMov() > crit_ptr->getMovMax())
+          crit_ptr->setMov(crit_ptr->getMovMax());
+      if (crit_ptr->getHP() < 0)
+          crit_ptr->setHP(0);
+      if (crit_ptr->getMana() < 0)
+          crit_ptr->setMana(0);
+      if (crit_ptr->getMov() < 0)
+          crit_ptr->setMov(0);
 
-      if ((crit_ptr->HP > 1) && (crit_ptr->isStunned())) {
+      if ((crit_ptr->getHP() > 1) && (crit_ptr->isStunned())) {
          wake(*crit_ptr);
          stand(*crit_ptr);
       }
 
-      if ((((float)(crit_ptr->HP)) / (float)(crit_ptr->HP_MAX)) > 0.80) {
+      if ((((float)(crit_ptr->getHP())) / (float)(crit_ptr->getHP_MAX())) > 0.80) {
          stat_spell_cell* ssptr = 
             is_affected_by(BIND_WOUND_SKILL_NUM, *crit_ptr);
          if (ssptr) {
@@ -608,7 +608,7 @@ void do_regeneration_smobs() {
       if ( ! (is_affected_by(REMOVE_HOPE_SKILL_NUM, *crit_ptr)) ) {
       crit_ptr->HP +=
          (int)(((((crit_ptr->CON + 5.0) / 15.0) * 
-               (crit_ptr->HP_MAX / 9.0) * 
+               (crit_ptr->getHP_MAX() / 9.0) * 
                posn_mod * (crit_ptr->HP_REGEN / 100.0) * adj + 10.0)/6.0)+1.0);
       }
       
@@ -616,24 +616,24 @@ void do_regeneration_smobs() {
       if ( ! (is_affected_by(REMOVE_KARMA_SKILL_NUM, *crit_ptr)) ) {
       crit_ptr->MANA +=
          (int)(((((crit_ptr->INT + 5.0) / 16.0)  * posn_mod *
-               (crit_ptr->MA_MAX / 7.0) * (crit_ptr->MA_REGEN / 100.0) * adj +
+               (crit_ptr->getManaMax() / 7.0) * (crit_ptr->MA_REGEN / 100.0) * adj +
                4.0)/6.0)+1.0);
       }
 
       crit_ptr->MOV += 
          (int)(((((crit_ptr->DEX + 5.0) / 16.0) * posn_mod * 
                adj *
-               (crit_ptr->MV_MAX / 2.0) * (crit_ptr->MV_REGEN / 100.0) +
+               (crit_ptr->getMovMax() / 2.0) * (crit_ptr->MV_REGEN / 100.0) +
                5.0)/6.0)+1.0);
       
-      if (crit_ptr->HP > crit_ptr->HP_MAX)
-         crit_ptr->HP = crit_ptr->HP_MAX;
-      if (crit_ptr->MANA > crit_ptr->MA_MAX)
-         crit_ptr->MANA = crit_ptr->MA_MAX;
-      if (crit_ptr->MOV > crit_ptr->MV_MAX)
-         crit_ptr->MOV = crit_ptr->MV_MAX;
-      
-      if (((float)crit_ptr->HP / (float)crit_ptr->HP_MAX) > 0.80) {
+      if (crit_ptr->getHP() > crit_ptr->getHP_MAX())
+          crit_ptr->setHP(crit_ptr->getHP_MAX());
+      if (crit_ptr->getMana() > crit_ptr->getManaMax())
+          crit_ptr->setMana(crit_ptr->getManaMax());
+      if (crit_ptr->getMov() > crit_ptr->getMovMax())
+          crit_ptr->setMov(crit_ptr->getMovMax());
+
+      if (((float)crit_ptr->getHP() / (float)crit_ptr->getHP_MAX()) > 0.80) {
          stat_spell_cell* ssptr = 
             is_affected_by(BIND_WOUND_SKILL_NUM, *crit_ptr);
          if (ssptr) {

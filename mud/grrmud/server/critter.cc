@@ -2612,7 +2612,7 @@ void critter::checkForBattle(room& rm) {
       }
       if (rm.haveCritter(ptr)) {
          if (ptr->doesRemember(*this) && ptr->canDetect(*this)) {
-            if (ptr->HP >= (ptr->WIMPY*2 < ptr->HP_MAX*.75?ptr->WIMPY*2:ptr->HP_MAX*.75)) {
+            if (ptr->HP >= (ptr->WIMPY*2 < ptr->getHP_MAX()*.75?ptr->WIMPY*2:ptr->getHP_MAX()*.75)) {
                say("There you are!!", *ptr, *(ptr->getCurRoom()));
                try_hit(*this, *ptr);
             }
@@ -2629,7 +2629,7 @@ void critter::checkForBattle(room& rm) {
       }
       if (rm.haveCritter(ptr)) { //make sure we're still there
          if (doesRemember(*ptr) && canDetect(*ptr)) {
-            if (HP >= (WIMPY*2 < HP_MAX*.75?WIMPY*2:HP_MAX*.75)) {
+            if (HP >= (WIMPY*2 < getHP_MAX()*.75?WIMPY*2:getHP_MAX()*.75)) {
                say("I've found you now!!", *this, *(getCurRoom()));
                try_hit(*ptr, *this);
             }
@@ -4309,24 +4309,39 @@ void critter::gainInv(object* obj) {
    }
 }
 
-void critter::setHP(int i) {
+int critter::setHP(int i) {
    if (i < 0)
       i = 0;
    if (i > 32000)
       i = 32000;
    HP = i;
+   return(HP);
 }
 
-void critter::setMana(int i) {
+int critter::adjHP(int i) {
+    return(setHP(getHP() + i));
+}
+
+int critter::setMana(int i) {
    if (i > 32000)
       i = 32000;
    MANA = i;
+   return i;
 }
 
-void critter::setMov(int i) {
+int critter::adjMana(int i) {
+    return(setMana(getMana() + i));
+}
+
+int critter::setMov(int i) {
    if (i > 32000)
       i = 32000;
    MOV = i;
+   return(i);
+}
+
+int critter::adjMov(int i) {
+    return(setMov(getMov() +i));
 }
 
 void critter::show(const char* msg, hilite_type hl_type) const {
@@ -4344,29 +4359,44 @@ LanguageE critter::getLanguageChoice() const {
    return English;
 }
 
-void critter::setHP_MAX(int i) {
+int critter::setHP_MAX(int i) {
    if (i < 0)
       i = 0;
    if (i > 32000)
       i = 32000;
    short_cur_stats[23] = i; //MAX_HP of course...
+   return(i);
 }
 
-void critter::setManaMax(int i) {
+int critter::adjHP_MAX(int i) {
+    return(setHP_MAX(getHP_MAX() + i));
+}//critter::adjHP_MAX()
+
+int critter::setManaMax(int i) {
    if (i < 0)
       i = 0;
    if (i > 32000)
       i = 32000;
    short_cur_stats[24] = i;
+   return(i);
 }
 
-void critter::setMovMax(int i) {
+int critter::adjManaMax(int i) {
+    return(setManaMax(getManaMax() + i));
+}//critter::adjManaMax()
+
+int critter::setMovMax(int i) {
    if (i < 0)
       i = 0;
    if (i > 32000)
       i = 32000;
    short_cur_stats[25] = i;
+   return(i);
 }
+
+int critter::adjMovMax(int i) {
+    return(setMovMax(getMovMax() + i));
+}//critter::adjMovMax()
 
 // set in_room to zero
 void critter::doLeaveRoom() {
@@ -4456,25 +4486,25 @@ void critter::doPrompt() {
                      targ.Append("\n");
                      break;
                   case 'h':    /* cur hp */  
-                     targ.Append(HP);
+                     targ.Append(getHP());
                      break;
                   case 'H':     /* max hp */
-                     targ.Append(HP_MAX);
+                     targ.Append(getHP_MAX());
                      break;
                   case 'v':    /* cur mov */  
-                     targ.Append(MOV);
+                     targ.Append(getMov());
                      break;
                   case 'V':     /* max mov */
-                     targ.Append(MV_MAX);
+                     targ.Append(getMovMax());
                      break;
                   case 'm':    /* cur mana */  
-                     targ.Append(MANA);
+                     targ.Append(getMana());
                      break;
                   case 'M':     /* max mana */
-                     targ.Append(MA_MAX);
+                     targ.Append(getManaMax());
                      break;
                   case 'a':     /* align */
-                     targ.Append(ALIGN);
+                     targ.Append(getAlignment());
                      break;
                   case 'p':     /* pracs */
                      targ.Append(PRACS);
@@ -5226,7 +5256,7 @@ void critter::doHuntProc(int num_steps, int& is_dead) {
    }//if
 
    // Let critters rest a bit before they hunt
-   if (HP <= ((WIMPY * 2 < HP_MAX * .75) ? (WIMPY*2) : (HP_MAX*.75))) {
+   if (HP <= ((WIMPY * 2 < getHP_MAX() * .75) ? (WIMPY*2) : (getHP_MAX()*.75))) {
       return;
    }
 
@@ -6062,4 +6092,14 @@ bool critter::isUnaware() const {
 	}
 }
 
+bool critter::lost_concentration(int spell_num) const {
+    int percent_lrned = 0, i;
+
+    SKILLS_KNOWN.Find(spell_num, percent_lrned);
+
+    i = (int)(((float)percent_lrned / 50.0) * 
+            (float)(getWIS(true) + getINT(true) + getLevel() + 130));
+
+    return (d(1, 100) >= d(1, i));
+}//critter::lost_concentration()
 

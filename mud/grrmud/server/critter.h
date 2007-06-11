@@ -934,12 +934,18 @@ public:
    void setNakedWeight(int i) { short_cur_stats[41] = i; }
    void setIdNum(int i);
    void setDoPrompt(int i) { PC_FLAGS.set(10, i); }
-   void setHP(int i);
-   void setMana(int i);
-   void setMov(int i);
-   void setHP_MAX(int i);
-   void setManaMax(int i);
-   void setMovMax(int i);
+   int setHP(int i);
+   int adjHP(int i);
+   int setMana(int i);
+   int adjMana(int i);
+   int setMov(int i);
+   int adjMov(int i);
+   int setHP_MAX(int i);
+   int adjHP_MAX(int i);
+   int setManaMax(int i);
+   int adjManaMax(int i);
+   int setMovMax(int i);
+   int adjMovMax(int i);
    void setMode(PcMode val);
    void setImmLevel(int i);
    void setCurRoomNum(int i); //assign in_roomtoo
@@ -1171,6 +1177,7 @@ public:
    bool canSee(door& dr) const;
    bool isUnaware() const;
    bool hasLight() const;	
+   bool lost_concentration(int spell_num) const;
 };//class critter
  
 
