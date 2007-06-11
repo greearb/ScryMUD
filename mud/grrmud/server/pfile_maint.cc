@@ -28,6 +28,7 @@
 
 #include "critter.h"
 #include "command2.h"
+#include "misc2.h"
 
 //loads all pfiles and saves them again. Useful for upgrading pfile versions
 //and making sure sanitization gets applied to everyone.
@@ -93,6 +94,18 @@ int resave_all_pfiles() {
                wear_eq_effects(*(c->EQ[i]), *c, i, FALSE);
             }
          }
+      }
+
+      // at some point tammuz became skill-number 0 in SKILLS_SPELLS. This was
+      // bad because not everything could handle that, so we're going to
+      // unlearn skill #0 (if we know it) and gain tammuz, if we're a remort.
+
+      int test_ss;
+      if (static_cast< Tree<int,int> >(c->SKILLS_KNOWN).Find(0, test_ss)) {
+         c->SKILLS_KNOWN.Delete(0);
+      }
+      if ( c->isRemort() ) {
+         c->SKILLS_KNOWN.Insert(TAMMUZ_SKILL_NUM, 1);
       }
 
       save(*c);

@@ -848,7 +848,7 @@ void cast_spirit_ritual(critter& agg) {
     agg.show("The world grows dim as black specks dance in your vision.\n");
 
     String buf(100);
-    agg.pemote("eyes come to life as black specks begin an intricate within them.");
+    agg.pemote("eyes come to life as black specks begin an intricate dance within them.");
 
 }//cast_spirit_ritual()
 
