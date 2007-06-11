@@ -68,7 +68,7 @@ int resave_all_pfiles() {
 
       //prior to version 1, stats were saved with eq modifiers in place.
       if ( c->pc->file_format_version == 0 ) {
-         cout << "Upgrading " << (const char *)(*(c->getName())) << " from version 0." << endl;
+         cout << "    Upgrading " << (const char *)(*(c->getName())) << " from version 0." << endl;
 
          // if it's the old version remove everything so we can force
          // correct nasties that ran away with us.
@@ -102,10 +102,14 @@ int resave_all_pfiles() {
 
       int test_ss;
       if (static_cast< Tree<int,int> >(c->SKILLS_KNOWN).Find(0, test_ss)) {
+         cout << "    Forgetting skill #0 for " << (const char *)(*(c->getName())) << endl;
          c->SKILLS_KNOWN.Delete(0);
       }
       if ( c->isRemort() ) {
-         c->SKILLS_KNOWN.Insert(TAMMUZ_SKILL_NUM, 1);
+         if ( get_percent_lrnd(TAMMUZ_SKILL_NUM, *c) <= 0 ) {
+            cout << "    Teaching remort " << (const char *)(*(c->getName())) << " tammuz." << endl;
+            c->SKILLS_KNOWN.Insert(TAMMUZ_SKILL_NUM, 1);
+         }
       }
 
       save(*c);
