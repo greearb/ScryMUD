@@ -108,7 +108,7 @@ template <class K, class V> Tree<K, V> &Tree<K,V>::operator =
 // The value associated with the key is returned through the second argument.
 //
 template <class K, class V> short Tree<K,V>::Find
-   (register const K &Key, V &Value)
+   (register const K &Key, V &Value) const
 {
    register TreeNode<K,V> *N = Root;
    while (N)

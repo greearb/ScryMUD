@@ -1163,6 +1163,7 @@ int remort(int i_th, const String* v, const String* new_race,
          vict->SKILLS_KNOWN.Insert(CURSING_SKILL_NUM, 25);
          vict->SKILLS_KNOWN.Insert(CONJURING_SKILL_NUM, 10);
          vict->SKILLS_KNOWN.Insert(NECROPHILIA_SKILL_NUM, 25);
+         vict->SKILLS_KNOWN.Insert(RITUALS_SKILL_NUM, 25);
          break;
       default: {
          mudlog.log(ERROR, "ERROR:  In default of class modifiers in remort.\n");

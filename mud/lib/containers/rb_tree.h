@@ -111,7 +111,7 @@ public:
 
    // Access
    //
-   short Find (const K &, V &);
+   short Find (const K &, V &) const;
       //
       // Find returns 1 if the key is in the tree, and 0 otherwise.
       // If the key is found, the associated value is returned through the

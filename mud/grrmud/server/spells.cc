@@ -311,6 +311,12 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg, int bonus_value)
 //TODO: Moving forward every spell object needs it own wear-off method if applicable
    String buf(100);
 
+   // This is so that the new bonus values get used in all cases.
+   if ( bonus_value == 0 ) {
+       stat_spell_cell* ss_ptr = is_affected_by(spell_num, pc);
+       bonus_value = ss_ptr->bonus_value;
+   }
+
    if (spell_num == ARMOR_SKILL_NUM) {  
      pc.AC -= ARMOR_EFFECT;
      pc.SPEL_RESIS -= ARMOR_EFFECT_M;
@@ -508,6 +514,28 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg, int bonus_value)
       pc.show("You no longer feel fragile.\n");
       pc.DAM_REC_MOD -= SANCTUM_EFFECT;
    }//if
+   else if (spell_num == BLOOD_RITUAL_SKILL_NUM) {
+       pc.show("Your blood no longer boils with magic.\n");
+       pc.adjHP_MAX(-bonus_value);
+       if ( pc.getHP() > pc.getHP_MAX() ) {
+           pc.setHP(pc.getHP_MAX());
+       }
+   }//if
+   else if ( spell_num == SPIRIT_RITUAL_SKILL_NUM) {
+       pc.show("As you blink your vision clears.\n");
+       pc.adjHP_MAX(bonus_value);
+       pc.adjManaMax(-bonus_value);
+       if ( pc.getMana() > pc.getManaMax() ) {
+           pc.setMana(pc.getManaMax());
+       }
+   }
+   else if ( spell_num == STAMINA_RITUAL_SKILL_NUM) {
+       pc.show("Your heartbeat slows.\n");
+       pc.adjMovMax(-bonus_value);
+       if ( pc.getMov() > pc.getMovMax() ) {
+           pc.setMov(pc.getMovMax());
+       }
+   }
    else {
       Sprintf(buf, "ERROR:  rem_effects_crit DEFAULT: spll# [%i] %s.\n",
               spell_num,

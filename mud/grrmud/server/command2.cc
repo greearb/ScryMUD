@@ -237,7 +237,7 @@ int score(const String* str2, critter& pc) {
        << "^C" << right << setw(6) << pc.getHP()
        << "^c" << " of " 
        << "^C" << right << setw(6) << pc.getHP_MAX()
-       << "^c" << " (" << right << setw(3) << pc.HP_REGEN 
+       << "^c" << " (" << right << setw(3) << pc.getHealthRegen(true)
        << "% regeneration)"
        << "^c" << " Wimpy: " << "^C" << pc.getWimpy()
        << "^c" << "hp"
@@ -247,7 +247,7 @@ int score(const String* str2, critter& pc) {
        << "^C" << right << setw(6) << pc.getMana()
        << "^c" << " of " 
        << "^C" << right << setw(6) << pc.getManaMax()
-       << "^c" << " (" << right << setw(3) << pc.MA_REGEN 
+       << "^c" << " (" << right << setw(3) << pc.getManaRegen(true)
        << "% regeneration)"
        << endl
 
@@ -255,7 +255,7 @@ int score(const String* str2, critter& pc) {
        << "^C" << right << setw(6) << pc.getMov()
        << "^c" << " of " 
        << "^C" << right << setw(6) << pc.getMovMax()
-       << "^c" << " (" << right << setw(3) << pc.MV_REGEN 
+       << "^c" << " (" << right << setw(3) << pc.getMovRegen(true) 
        << "% regeneration)"
        << endl;
 

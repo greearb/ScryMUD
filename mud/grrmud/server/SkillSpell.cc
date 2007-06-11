@@ -1069,7 +1069,14 @@ void SSCollection::read() {
             FEAR_SKILL_NUM = i;
          else if (strcasecmp("necrophilia", getSS(i).getName()) == 0)
             NECROPHILIA_SKILL_NUM = i;
-         
+         else if (strcasecmp("rituals", getSS(i).getName()) == 0)
+             RITUALS_SKILL_NUM = i;
+         else if (strcasecmp("blood ritual", getSS(i).getName()) == 0)
+             BLOOD_RITUAL_SKILL_NUM = i;
+         else if (strcasecmp("spirit ritual", getSS(i).getName()) == 0)
+             SPIRIT_RITUAL_SKILL_NUM = i;
+         else if (strcasecmp("stamina ritual", getSS(i).getName()) == 0)
+             STAMINA_RITUAL_SKILL_NUM = i;
          else {
             mudlog << "ERROR:  could not match the spell with a constant, spell_num:" 
                    << i << "  name -:" << getSS(i).getName() << ":- " << endl;

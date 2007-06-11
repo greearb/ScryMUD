@@ -863,3 +863,26 @@ any walls or closed doors that may bar vision into the next room.
 SYNTAX :
 type : birdseye direction in which you wish to scan
 ~
+rituals
+Through rituals, the skilled necromancer is able to transcend the limitations
+of the flesh... for a price.
+~
+blood ritual
+Through this ritual the necromancer may forsake his mana for health.
+
+SYNTAX : cast 'blood ritual'
+~
+spirit ritual
+Through this ritual the necromancer may forsake his health for more magical
+power.
+
+SYNTAX : cast 'spirit ritual'
+~
+stamina ritual
+Particularly useful when great distances must be crossed with haste, the
+necromancer will find that he can run great distances after performing this
+dark art. It may however take a while to recover from the abuse the flesh must
+suffer.
+
+SYNTAX : cast 'stamina ritual'
+~

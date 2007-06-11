@@ -751,27 +751,145 @@ void cast_raise_undead(critter& pc) {
    do_cast_raise_undead(pc, FALSE, 0);
 }//cast_raise_undead
 
-//TODO: cast_blood_ritual is incomplete.
 void cast_blood_ritual(critter& agg) {
+// Spell: Blood Ritual
+//
+// This spell converts 100% of the casters mana to hitpoints. If necessary,
+// MAX_HP is temporarily increased for the duration of the spell.
+//
+// Misc: this spell severely lowers mana regeneration.
+//
     int spell_num = BLOOD_RITUAL_SKILL_NUM;
     int mana_cost = get_mana_cost(spell_num, agg);
 
-    if (!ok_to_do_action(NULL, "KMSNBb", spell_num, agg)) {
+    if (!ok_to_do_action(NULL, "KMSN", spell_num, agg)) {
+        return;
+    }
+
+    // Can't use again until the original debuff wears off.
+    stat_spell_cell *ss_ptr = is_affected_by(spell_num, agg);
+    if ( ss_ptr ) {
+        agg.show("You can't do that yet.\n");
         return;
     }
 
     bool lost_con = agg.lost_concentration(spell_num);
-
     if ( lost_con ) {
       agg.show(LOST_CONCENTRATION_MSG_SELF);
       agg.adjMana(-mana_cost/2);
       return;
     }
 
+    agg.adjMana(-mana_cost);
+
     int adj_value = agg.getMana();
     agg.adjHP(adj_value);
     agg.setMana(0);
 
-    //agg.affected_by.append(new stat_spell_cell(spell_num, 3, 
+    int max_hp = agg.getHP_MAX();
+    int cur_hp = agg.getHP();
+
+    if ( max_hp < cur_hp ) {
+        adj_value = cur_hp - max_hp;
+    } else {
+        adj_value = 0;
+    }
+
+    agg.adjHP_MAX(adj_value);
+    agg.affected_by.append(new stat_spell_cell(spell_num, 2, adj_value));
+
+    agg.show("You emanate a deep red light as your magical energy flows into your blood.\n");
+
+    String buf(100);
+    Sprintf(buf,"emanates a deep red light as %s magical energy flows into %s blood.",
+           get_his_her(agg), get_his_her(agg));
+    agg.emote(buf);
+
 }//cast_blood_ritual()
 
+void cast_spirit_ritual(critter& agg) {
+// Spell: Spirit Ritual
+//
+// This spell converts 50% of the casters maximum hitpoints to maximum mana.
+//
+    int spell_num = SPIRIT_RITUAL_SKILL_NUM;
+    int mana_cost = get_mana_cost(spell_num, agg);
+
+    if (!ok_to_do_action(NULL, "KMSN", spell_num, agg)) {
+        return;
+    }
+
+    // Can't use again until the original debuff wears off.
+    stat_spell_cell *ss_ptr = is_affected_by(spell_num, agg);
+    if ( ss_ptr ) {
+        agg.show("You can't do that yet.\n");
+        return;
+    }
+
+    bool lost_con = agg.lost_concentration(spell_num);
+    if ( lost_con ) {
+      agg.show(LOST_CONCENTRATION_MSG_SELF);
+      agg.adjMana(-mana_cost/2);
+      return;
+    }
+
+    agg.adjMana(-mana_cost);
+
+    int adj_value = int(agg.getHP_MAX()/2.0);
+    agg.adjHP_MAX(-adj_value);
+    agg.adjManaMax(adj_value);
+
+    if ( agg.getHP() > agg.getHP_MAX() ) {
+        agg.setHP(agg.getHP_MAX());
+    }
+
+    agg.affected_by.append(new stat_spell_cell(spell_num,int(agg.getLevel()/1.5), adj_value));
+
+    agg.show("The world grows dim as black specks dance in your vision.\n");
+
+    String buf(100);
+    agg.pemote("eyes come to life as black specks begin an intricate within them.");
+
+}//cast_spirit_ritual()
+
+void cast_stamina_ritual(critter& agg) {
+// Spell: Stamina Ritual
+//
+// This spell increases the casters mov max by 1.5x, at the expense of mov
+// regen.
+//
+    int spell_num = STAMINA_RITUAL_SKILL_NUM;
+    int mana_cost = get_mana_cost(spell_num, agg);
+
+    if (!ok_to_do_action(NULL, "KMSN", spell_num, agg)) {
+        return;
+    }
+
+    // Can't use again until the original debuff wears off.
+    stat_spell_cell *ss_ptr = is_affected_by(spell_num, agg);
+    if ( ss_ptr ) {
+        agg.show("You can't do that yet.\n");
+        return;
+    }
+
+    bool lost_con = agg.lost_concentration(spell_num);
+    if ( lost_con ) {
+      agg.show(LOST_CONCENTRATION_MSG_SELF);
+      agg.adjMana(-mana_cost/2);
+      return;
+    }
+
+    agg.adjMana(-mana_cost);
+
+    int adj_value = int(agg.getMovMax()/2.0);
+    agg.adjMovMax(adj_value);
+    agg.adjMov(adj_value);
+
+    agg.affected_by.append(new stat_spell_cell(spell_num,int(agg.getLevel()/1.5), adj_value));
+
+    agg.show("Your heart begins to race.\n");
+
+    String buf(100);
+    agg.emote("looks eerily tense.");
+
+}//cast_stamina_ritual()

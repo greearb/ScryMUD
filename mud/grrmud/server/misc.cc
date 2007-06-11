@@ -509,7 +509,7 @@ void do_regeneration_pcs() {
       if ( ! (is_affected_by(REMOVE_HOPE_SKILL_NUM, *crit_ptr)) ) {
       crit_ptr->HP += (int)((((((float)(crit_ptr->CON) + 5.0) / 15.0) * 
                             (((float)(crit_ptr->getHP_MAX())) / 9.0) * 
-                            posn_mod * (((float)(crit_ptr->HP_REGEN)) / 100.0)
+                            posn_mod * (((float)(crit_ptr->getHealthRegen(true))) / 100.0)
                             * adj + 10.0)/6.0)*env_mod+1.0);
       }
 
@@ -527,7 +527,7 @@ void do_regeneration_pcs() {
          crit_ptr->MANA += (int)(((((((float)(crit_ptr->INT)) + 5.0) / 16.0) *
                               posn_mod *
                               (((float)(crit_ptr->getManaMax())) / 7.0) *
-                              (((float)(crit_ptr->MA_REGEN)) / 100.0) *
+                              (((float)(crit_ptr->getManaRegen(true))) / 100.0) *
                               align_mod *
                               adj + 4.0)/6.0)*env_mod+1.0);
       }
@@ -543,7 +543,7 @@ void do_regeneration_pcs() {
          tmp_mov = (int)(((((((float)(crit_ptr->DEX)) + 5.0) / 16.0) *
                      posn_mod * adj *
                      (((float)(crit_ptr->getMovMax())) / 3.0) * 
-                     (((float)(crit_ptr->MV_REGEN)) / 100.0) + 3.0)/6.0)*env_mod+1.0);
+                     (((float)(crit_ptr->getMovRegen(true))) / 100.0) + 3.0)/6.0)*env_mod+1.0);
 
          crit_ptr->MOV += tmp_mov;
       }
@@ -609,21 +609,21 @@ void do_regeneration_smobs() {
       crit_ptr->HP +=
          (int)(((((crit_ptr->CON + 5.0) / 15.0) * 
                (crit_ptr->getHP_MAX() / 9.0) * 
-               posn_mod * (crit_ptr->HP_REGEN / 100.0) * adj + 10.0)/6.0)+1.0);
+               posn_mod * (crit_ptr->getHealthRegen(true) / 100.0) * adj + 10.0)/6.0)+1.0);
       }
       
       // if we are affected by remove hope we get no mana
       if ( ! (is_affected_by(REMOVE_KARMA_SKILL_NUM, *crit_ptr)) ) {
       crit_ptr->MANA +=
          (int)(((((crit_ptr->INT + 5.0) / 16.0)  * posn_mod *
-               (crit_ptr->getManaMax() / 7.0) * (crit_ptr->MA_REGEN / 100.0) * adj +
+               (crit_ptr->getManaMax() / 7.0) * (crit_ptr->getManaRegen(true) / 100.0) * adj +
                4.0)/6.0)+1.0);
       }
 
       crit_ptr->MOV += 
          (int)(((((crit_ptr->DEX + 5.0) / 16.0) * posn_mod * 
                adj *
-               (crit_ptr->getMovMax() / 2.0) * (crit_ptr->MV_REGEN / 100.0) +
+               (crit_ptr->getMovMax() / 2.0) * (crit_ptr->getMovRegen(true) / 100.0) +
                5.0)/6.0)+1.0);
       
       if (crit_ptr->getHP() > crit_ptr->getHP_MAX())

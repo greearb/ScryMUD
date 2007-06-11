@@ -57,9 +57,9 @@ void cast_raise_undead(critter& agg);
 void do_cast_raise_undead(critter& pc, int is_canned, int lvl);
 
 void cast_blood_ritual(critter& agg);
-/*TODO: these need to be implemented
 void cast_spirit_ritual(critter& agg);
 void cast_stamina_ritual(critter& agg);
+/*TODO: these need to be implemented
 void cast_ritual_of_power(critter& agg);
 */
 

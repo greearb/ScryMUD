@@ -6103,3 +6103,28 @@ bool critter::lost_concentration(int spell_num) const {
     return (d(1, 100) >= d(1, i));
 }//critter::lost_concentration()
 
+short critter::getHealthRegen(bool include_modifiers=false) const {
+    return short_cur_stats[37];
+}//critter::getHealthRegen()
+
+short critter::getManaRegen(bool include_modifiers=false) const {
+    short ret_val = short_cur_stats[38];
+    if ( include_modifiers ) {
+        if ( is_affected_by(BLOOD_RITUAL_SKILL_NUM, *this) ) {
+            ret_val = short(ret_val*0.20);
+        }
+    }
+    return ret_val;
+}//critter::getManaRegen()
+
+short critter::getMovRegen(bool include_modifiers=false) const {
+    short ret_val = short_cur_stats[39];
+    if ( include_modifiers ) {
+        if ( is_affected_by(STAMINA_RITUAL_SKILL_NUM, *this) ) {
+            ret_val = short(ret_val*0.60);
+        }
+    }
+    return ret_val;
+}//critter::getMovRegen()
+
+

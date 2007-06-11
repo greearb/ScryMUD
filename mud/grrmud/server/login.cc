@@ -857,6 +857,7 @@ int  quit_do_login_new(critter& pc) {
          pc.SKILLS_KNOWN.Insert(CURSING_SKILL_NUM, 25);
          pc.SKILLS_KNOWN.Insert(CONJURING_SKILL_NUM, 10);
          pc.SKILLS_KNOWN.Insert(NECROPHILIA_SKILL_NUM, 25);
+         pc.SKILLS_KNOWN.Insert(RITUALS_SKILL_NUM, 25);
          pc.STR-=2;
          pc.DEX-=2;
          pc.INT+=4;

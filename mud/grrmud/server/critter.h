@@ -1178,6 +1178,10 @@ public:
    bool isUnaware() const;
    bool hasLight() const;	
    bool lost_concentration(int spell_num) const;
+
+   short getManaRegen(bool include_modifiers) const;
+   short getHealthRegen(bool include_modifiers) const;
+   short getMovRegen(bool include_modifiers) const;
 };//class critter
  
 

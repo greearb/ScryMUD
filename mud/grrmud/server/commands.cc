@@ -1259,6 +1259,12 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
       cast_fear(j_th, victim, pc);
    else if (strncasecmp(*spell, "necrophilia", len) == 0)
       cast_necrophilia(pc);
+   else if (strncasecmp(*spell, "blood ritual", len) == 0)
+       cast_blood_ritual(pc);
+   else if (strncasecmp(*spell, "spirit ritual", len) == 0)
+       cast_spirit_ritual(pc);
+   else if (strncasecmp(*spell, "stamina ritual", len) == 0)
+       cast_stamina_ritual(pc);
    else {
       pc.show(CS_SPELL_RESEARCH);
       return -1;
