@@ -1265,6 +1265,8 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
        cast_spirit_ritual(pc);
    else if (strncasecmp(*spell, "stamina ritual", len) == 0)
        cast_stamina_ritual(pc);
+   else if (strncasecmp(*spell, "ritual of power", len) == 0)
+       cast_ritual_of_power(pc);
    else {
       pc.show(CS_SPELL_RESEARCH);
       return -1;

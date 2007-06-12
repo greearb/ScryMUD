@@ -893,3 +893,41 @@ void cast_stamina_ritual(critter& agg) {
     agg.emote("looks eerily tense.");
 
 }//cast_stamina_ritual()
+
+void cast_ritual_of_power(critter& agg) {
+// Spell: Ritual of Power
+//
+// This spell increases the casters damage given and received modifiers by 50%
+// and 25% respectively. The modification is handled by
+// critter::getDamGivMod() and critter::getDamRecMod()
+//
+    int spell_num = RITUAL_OF_POWER_SKILL_NUM;
+    int mana_cost = get_mana_cost(spell_num, agg);
+
+    if (!ok_to_do_action(NULL, "KMSN", spell_num, agg)) {
+        return;
+    }
+
+    // Can't use again until the original debuff wears off.
+    stat_spell_cell *ss_ptr = is_affected_by(spell_num, agg);
+    if ( ss_ptr ) {
+        agg.show("You can't do that yet.\n");
+        return;
+    }
+
+    bool lost_con = agg.lost_concentration(spell_num);
+    if ( lost_con ) {
+      agg.show(LOST_CONCENTRATION_MSG_SELF);
+      agg.adjMana(-mana_cost/2);
+      return;
+    }
+
+    agg.adjMana(-mana_cost);
+
+    agg.affected_by.append(new stat_spell_cell(spell_num,int(agg.getLevel()/1.5), 0));
+
+    agg.show("Your mind screams out in agony as you draw in torrential quantities of magic.\n");
+
+    String buf = "The air feels heavier for a moment, but the feeling passes.\n";
+    agg.getCurRoom()->com_recho(&buf);
+}//ritual_of_power()

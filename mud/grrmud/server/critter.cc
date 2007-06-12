@@ -1985,24 +1985,47 @@ int critter::showTime() {
    return 0;
 }//time
 
+int critter::getDamRecMod(bool include_modifiers=true) const {
 
-
-
-/** NOTE:  This may normalize the real value.
- */
-int critter::getDamRecMod() const {
    int min_val = 25;
+   int ret_val = DAM_REC_MOD;
+
    if (is_affected_by(FLESH_TO_STONE_SKILL_NUM, *this)) {
       min_val = 1;
-   }
-
-   if (isImmort() || (isNPC() && !isCharmed())) {
+   } else if (isImmort() || (isNPC() && !isCharmed())) {
       min_val = 1;
    }
 
-   return (max(min_val, DAM_REC_MOD));
-}
+   if ( is_affected_by(RITUAL_OF_POWER_SKILL_NUM, *this) ) {
+      ret_val = int(ret_val * 1.25);
+   }
 
+   if ( include_modifiers ) {
+      return (max(min_val, ret_val));
+   } else {
+      return(DAM_REC_MOD);
+   }
+}//critter::getDamRecMod()
+
+int critter::getDamGivMod(bool include_modifiers=true) const {
+
+   int max_val = 200;
+   int ret_val = DAM_GIV_MOD;
+
+   if (isImmort() || (isNPC() && !isCharmed())) {
+      max_val = 1000;//probably doesn't need to be quite this high.
+   }
+
+   if ( is_affected_by(RITUAL_OF_POWER_SKILL_NUM, *this) ) {
+      ret_val = int(ret_val * 1.50);
+   }
+
+   if ( include_modifiers ) {
+      return (min(max_val, ret_val));
+   } else {
+      return(DAM_GIV_MOD);
+   }
+}//critter::getDamGivMod()
 
 int critter::isInGroupWith(critter* v) {
    return GROUPEES.haveData(v);
@@ -5778,8 +5801,8 @@ int critter::takeDamage(int damage, int type, critter& agg) {
    
    damage_magic_shields(dam, *this);
 
-   dam = (dam * (((float)getDamRecMod())/100.0) * 
-          ((float)(agg.DAM_GIV_MOD)/100.0));
+   dam = (dam * (((float)getDamRecMod(true))/100.0) * 
+          ((float)(agg.getDamGivMod(true)))/100.0);
 
    int pl;
    if (agg.pc && 
@@ -5894,7 +5917,7 @@ int critter::takeDamage(int damage, int type) {
    
    damage_magic_shields(dam, *this);
 
-   dam *= (((float)getDamRecMod())/100.0);
+   dam *= (((float)getDamRecMod(true))/100.0);
    HP -= (int)(dam);
    return (int)dam;
 }

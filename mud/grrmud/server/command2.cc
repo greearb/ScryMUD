@@ -266,10 +266,10 @@ int score(const String* str2, critter& pc) {
        << "^c" << "."<< endl
 
        << "^c" << "You receive " 
-       << "^C" << pc.getDamRecMod() << "%"
+       << "^C" << pc.getDamRecMod(true) << "%"
        << "^c" << " damage. "
        << "^c" << "You deal " 
-       << "^C" << pc.DAM_GIV_MOD << "%"
+       << "^C" << pc.getDamGivMod(true) << "%"
        << "^c" << " damage."
        << endl
 
@@ -2455,9 +2455,10 @@ int do_mstat(critter& targ, critter& pc) {
               crit_ptr->PRACS, crit_ptr->getHP_MAX(), crit_ptr->getManaMax());
       show(buf2, pc);
 
-      Sprintf(buf2, "Vmx: %i  CRITTER_TYPE: %i  dam_rec_mod: %i  DAM_GIV_MOD: %i\n",
+      Sprintf(buf2, "Vmx: %i  CRITTER_TYPE: %i  dam_rec_mod: %i(%i)  DAM_GIV_MOD: %i(%i)\n",
               crit_ptr->getMovMax(), crit_ptr->CRITTER_TYPE,
-              crit_ptr->DAM_REC_MOD, crit_ptr->DAM_GIV_MOD);
+              crit_ptr->getDamRecMod(true), crit_ptr->getDamRecMod(false),
+              crit_ptr->getDamGivMod(true), crit_ptr->getDamGivMod(false));
       show(buf2, pc);
 
       Sprintf(buf2,

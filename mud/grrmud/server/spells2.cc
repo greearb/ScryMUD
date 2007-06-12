@@ -1918,7 +1918,7 @@ void do_cast_sanctuary(critter& vict, critter& agg, int is_canned, int lvl) {
        ptr->bonus_duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
-     else if (vict.DAM_REC_MOD <= 70) {
+     else if (vict.getDamRecMod(true) <= 70) {
        show("You can protect them no better!\n", agg);
      }//if
      else if (sptr) {
@@ -2084,7 +2084,7 @@ void do_cast_stone_skin(critter& vict, critter& agg, int is_canned, int lvl) {
        ptr->bonus_duration += lvl/2 +5;
        show("Ok.\n", agg);
      }//if
-     else if (vict.DAM_REC_MOD <= 40) {
+     else if (vict.getDamRecMod(true) <= 40) {
         show("You can protect them no better!\n", agg);
      }//if
      else if (sptr) {

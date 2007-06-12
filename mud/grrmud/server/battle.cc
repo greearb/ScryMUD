@@ -875,8 +875,8 @@ int exact_raw_damage(int damage, int damage_type, critter& vict, critter& agg) {
    
    damage_magic_shields(dam, vict);
 
-   dam = (dam * (((float)vict.getDamRecMod())/100.0) * 
-          ((float)(agg.DAM_GIV_MOD)/100.0));
+   dam = (dam * (((float)vict.getDamRecMod(true))/100.0) * 
+          ((float)(agg.getDamGivMod(true))/100.0));
    int pl;
    if (agg.pc && 
        (pl = get_percent_lrnd(ENHANCED_DAMAGE_SKILL_NUM, agg)) > 0) {
@@ -973,7 +973,7 @@ int exact_raw_damage(int damage, int damage_type, critter& vict) {
 
   damage_magic_shields(dam, vict);
 
-  dam *= (((float)vict.getDamRecMod())/100.0);
+  dam *= (((float)vict.getDamRecMod(true))/100.0);
    
   // Give PC's a slight edge, maybe modify after the game has mature
   // players.

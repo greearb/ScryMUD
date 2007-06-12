@@ -1077,6 +1077,8 @@ void SSCollection::read() {
              SPIRIT_RITUAL_SKILL_NUM = i;
          else if (strcasecmp("stamina ritual", getSS(i).getName()) == 0)
              STAMINA_RITUAL_SKILL_NUM = i;
+         else if (strcasecmp("ritual of power", getSS(i).getName()) == 0)
+             RITUAL_OF_POWER_SKILL_NUM = i;
          else {
             mudlog << "ERROR:  could not match the spell with a constant, spell_num:" 
                    << i << "  name -:" << getSS(i).getName() << ":- " << endl;

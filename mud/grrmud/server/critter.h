@@ -754,7 +754,8 @@ public:
 
    /** NOTE:  This may normalize the real value.
     */
-   int getDamRecMod() const;
+   int getDamRecMod(bool include_modifiers) const;
+   int getDamGivMod(bool include_modifiers) const;
 
    /** For scripts, the script_targ is always *this.  The script_owner
     * will be null (for non-script specific stuff) and should be specified

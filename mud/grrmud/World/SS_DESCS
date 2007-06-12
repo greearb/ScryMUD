@@ -882,3 +882,9 @@ suffer.
 
 SYNTAX : cast 'stamina ritual'
 ~
+ritual of power
+Recklessly drawing more energy than is safe enables the accomplished
+necromancer to deal devastation upon his foes.
+
+SYNTAX : cast 'ritual of power'
+~

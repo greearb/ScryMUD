@@ -521,7 +521,7 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg, int bonus_value)
            pc.setHP(pc.getHP_MAX());
        }
    }//if
-   else if ( spell_num == SPIRIT_RITUAL_SKILL_NUM) {
+   else if ( spell_num == SPIRIT_RITUAL_SKILL_NUM ) {
        pc.show("As you blink your vision clears.\n");
        pc.adjHP_MAX(bonus_value);
        pc.adjManaMax(-bonus_value);
@@ -529,12 +529,17 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg, int bonus_value)
            pc.setMana(pc.getManaMax());
        }
    }
-   else if ( spell_num == STAMINA_RITUAL_SKILL_NUM) {
+   else if ( spell_num == STAMINA_RITUAL_SKILL_NUM ) {
        pc.show("Your heartbeat slows.\n");
        pc.adjMovMax(-bonus_value);
        if ( pc.getMov() > pc.getMovMax() ) {
            pc.setMov(pc.getMovMax());
        }
+   }
+   else if ( spell_num == RITUAL_OF_POWER_SKILL_NUM ) {
+      pc.show("Exhausted and unable to hold on, you release the surplus energy.\n");
+      pc.adjMov(-int(pc.getMov()/2.0));
+      pc.emote("stumbles.");
    }
    else {
       Sprintf(buf, "ERROR:  rem_effects_crit DEFAULT: spll# [%i] %s.\n",
