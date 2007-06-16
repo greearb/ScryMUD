@@ -3047,3 +3047,198 @@ void tap(int i_th, const String* vict, critter& pc, room& rm) {
       pc.emote(buf);
    }//else
 }//tap
+
+void zombie(int i_th, const String* vict, critter& pc, room& rm) {
+   String buf(100);
+   Cell<critter*> cll(rm.getCrits());
+   critter* ptr;
+
+   if (pc.POS == POS_SLEEP) {
+      pc.show("You dream of being chased by zombies, run!\n");
+      return;
+   }
+   else if (pc.POS > POS_SIT){
+	   pc.show(NOT_IN_POSN);
+	   return;
+   }
+
+   if (vict->Strlen()) {
+      critter* crit_ptr = 
+           rm.haveCritNamed(i_th, vict, pc);
+
+	  if (!crit_ptr) {
+         pc.show("You mumble something about brains.\n");
+	     pc.emote("mumbles something about brains.\n");
+	  }
+      else if (crit_ptr == &pc) {
+         pc.show("You mumble something about a lack of brains.\n");
+         Sprintf(buf, "mumbles something about a lack of brains.\n");
+		 emote(buf, pc, rm, TRUE);
+      }//if targ and agg is same
+      else {
+         Sprintf(buf, "You stumble up to %S and start chewing on their brains! Mmmm, tastes like people...\n",
+                 name_of_crit(*crit_ptr, pc.SEE_BIT));
+         pc.show(buf);
+         Sprintf(buf, "%S stumbles up to you and starts chewing on your brains!\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         buf.Cap();
+         crit_ptr->show(buf);
+
+         while ((ptr = cll.next())) {
+            if ((ptr != &pc) && (ptr != crit_ptr)) {
+			   Sprintf(buf, "%S stumbles up to %S and starts chewing on their brains!\n", name_of_crit(pc, ptr->SEE_BIT), name_of_crit(*crit_ptr, ptr->SEE_BIT)); 
+               buf.Cap();
+               ptr->show(buf);
+            }//if
+         }//while
+      }//else
+   }//if a victim
+   else {
+      pc.show("You stumble about, mumbling something about brains.\n");
+      pc.emote("stumbles about, mumbling something about brains.\n");
+   }//else
+}//zombie
+
+void curl(int i_th, const String* vict, critter& pc, room& rm) {
+   String buf(100);
+   Cell<critter*> cll(rm.getCrits());
+   critter* ptr;
+
+   if (pc.POS == POS_SLEEP) {
+      pc.show("You curl up into a ball in your sleep.\n");
+      return;
+   }
+   else if (pc.POS > POS_SIT){
+	   pc.show(NOT_IN_POSN);
+	   return;
+   }
+
+   if (vict->Strlen()) {
+      critter* crit_ptr = 
+           rm.haveCritNamed(i_th, vict, pc);
+
+	  if (!crit_ptr) {
+         pc.show("You look lonely as you curl up in the corner.\n");
+	     pc.emote("looks lonely and curls up in the corner.\n");
+	  }
+      else if (crit_ptr == &pc) {
+         pc.show("You try to curl up around yourself.\n");
+         Sprintf(buf, "Tries to curl up around %s.\n", get_himself_herself(pc));
+		 emote(buf, pc, rm, TRUE);
+      }//if targ and agg is same
+      else {
+         Sprintf(buf, "You curl up next to %s.\n",
+                 name_of_crit(*crit_ptr, pc.SEE_BIT));
+         pc.show(buf);
+         Sprintf(buf, "%S curls up next to you.\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         buf.Cap();
+         crit_ptr->show(buf);
+
+         while ((ptr = cll.next())) {
+            if ((ptr != &pc) && (ptr != crit_ptr)) {
+			   Sprintf(buf, "%S curls up with %S.\n", name_of_crit(pc, ptr->SEE_BIT), name_of_crit(*crit_ptr, ptr->SEE_BIT)); 
+               buf.Cap();
+               ptr->show(buf);
+            }//if
+         }//while
+      }//else
+   }//if a victim
+   else {
+      pc.show("Curls up in the corner.\n");
+      pc.emote("curls up in the corner.\n");
+   }//else
+}//zombie
+
+void snuggle(int i_th, const String* vict, critter& pc, room& rm) {
+   String buf(100);
+   Cell<critter*> cll(rm.getCrits());
+   critter* ptr;
+
+   if (pc.POS == POS_SLEEP) {
+      pc.show("You snuggle with your teddybear.\n");
+      return;
+   }
+
+   if (vict->Strlen()) {
+      critter* crit_ptr = 
+           rm.haveCritNamed(i_th, vict, pc);
+
+      if (!crit_ptr) pc.show("You don't see them here.\n");
+      else if (crit_ptr == &pc) {
+         pc.show("You snuggle up with yourself.\n");
+         Sprintf(buf, "snuggles up with %s.\n", get_himself_herself(pc));
+		 emote(buf, pc, rm, TRUE);
+      }//if targ and agg is same
+      else {
+         Sprintf(buf, "You snuggle up with %S.\n",
+                 name_of_crit(*crit_ptr, pc.SEE_BIT));
+         pc.show(buf);
+         Sprintf(buf, "%S snuggles with you.\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         buf.Cap();
+         crit_ptr->show(buf);
+
+         while ((ptr = cll.next())) {
+            if ((ptr != &pc) && (ptr != crit_ptr)) {
+			   Sprintf(buf, "%S snuggles with %S.\n", name_of_crit(pc, ptr->SEE_BIT), name_of_crit(*crit_ptr, ptr->SEE_BIT)); 
+               buf.Cap();
+               ptr->show(buf);
+            }//if
+         }//while
+      }//else
+   }//if a victim
+   else {
+      pc.show("You snuggle up under your blanket.\n");
+     Sprintf(buf, "snuggles up under %s blanket.\n", get_his_her(pc));
+	 pc.emote(buf);
+   }//else
+}//zombie
+
+void gasp(int i_th, const String* vict, critter& pc, room& rm) {
+   String buf(100);
+   Cell<critter*> cll(rm.getCrits());
+   critter* ptr;
+
+   if (pc.POS == POS_SLEEP) {
+      pc.show("You dream of drowning!\n");
+      return;
+   }
+   else if (pc.POS > POS_SIT){
+	   pc.show(NOT_IN_POSN);
+	   return;
+   }
+
+   if (vict->Strlen()) {
+      critter* crit_ptr = 
+           rm.haveCritNamed(i_th, vict, pc);
+
+      if (!crit_ptr) pc.show("You don't see them here.\n");
+      else if (crit_ptr == &pc) {
+         pc.show("You gasp in atonishment at your own actions.\n");
+         Sprintf(buf, "gasps in astonishment at %s own actions.\n", get_his_her(pc));
+		 emote(buf, pc, rm, TRUE);
+      }//if targ and agg is same
+      else {
+         Sprintf(buf, "You gasp in astonishment at %S.\n",
+                 name_of_crit(*crit_ptr, pc.SEE_BIT));
+         pc.show(buf);
+         Sprintf(buf, "%S in astonishment at you.\n",
+                 name_of_crit(pc, crit_ptr->SEE_BIT));
+         buf.Cap();
+         crit_ptr->show(buf);
+
+         while ((ptr = cll.next())) {
+            if ((ptr != &pc) && (ptr != crit_ptr)) {
+			   Sprintf(buf, "%S gasps in astonishment at %S.\n", name_of_crit(pc, ptr->SEE_BIT), name_of_crit(*crit_ptr, ptr->SEE_BIT)); 
+               buf.Cap();
+               ptr->show(buf);
+            }//if
+         }//while
+      }//else
+   }//if a victim
+   else {
+      pc.show("You gasp in astonishment.\n");
+      pc.emote("gasps in astonishment.\n");
+   }//else
+}//zombie

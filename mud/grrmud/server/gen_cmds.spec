@@ -220,6 +220,8 @@ cough socials ~
 cough(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 cower socials ~
 cower(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+curl socials ~
+curl(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 curse ~
 curse(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 curtsey socials ~
@@ -356,6 +358,8 @@ freeze ~
 return freeze(i, &(cooked_strs[1]), pc);
 
 # Mortal Commands - G
+gasp socials ~
+gasp(i, &(cooked_strs[1]), pc,  (*(pc.getCurRoom()))); return 0;
 gemote *emote ~
 NOP
 get take get ~
@@ -811,6 +815,8 @@ sneak ~
 return sneak(pc);
 snicker socials ~
 snicker(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
+snuggle socials ~
+snuggle(i, &(cooked_strs[1]), pc,  (*(pc.getCurRoom()))); return 0;
 sob socials ~
 sob(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 splash socials ~
@@ -1047,6 +1053,9 @@ yuck(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 # IMM Commands - Y
 
 # Mortal Commands - Z
+zombie socials ~
+zombie(i, &(cooked_strs[1]), pc,  (*(pc.getCurRoom()))); return 0;
+
 # IMM Commands - Z
 zcreate ~
 return zcreate(i, &(cooked_strs[1]), j, pc); 
