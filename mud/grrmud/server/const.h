@@ -1199,7 +1199,9 @@ int
    BLOOD_RITUAL_SKILL_NUM,
    SPIRIT_RITUAL_SKILL_NUM,
    STAMINA_RITUAL_SKILL_NUM,
-   RITUAL_OF_POWER_SKILL_NUM;
+   RITUAL_OF_POWER_SKILL_NUM,
+   //New skills via Dys
+   DIVINE_RETRIBUTION_SKILL_NUM;
 
 // Ripped off from some PennMUSH code someone posted to the
 // mud-dev list.

@@ -34,7 +34,7 @@
 
 ///***********************  skill spell  *****************************///
 
-#define NUMBER_OF_SKILL_SPELLS          414
+#define NUMBER_OF_SKILL_SPELLS          415
 
 class object;
 class critter;

@@ -888,3 +888,10 @@ necromancer to deal devastation upon his foes.
 
 SYNTAX : cast 'ritual of power'
 ~
+divine retribution
+A clerical spell that is defensive as well as offensive. It surrounds
+the target with a crackling aura, which reflects most close-range
+physical attacks back towards the opponent. 
+
+SYNTAX : cast 'divine retribution' <target>
+~

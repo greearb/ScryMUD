@@ -896,6 +896,21 @@ int exact_raw_damage(int damage, int damage_type, critter& vict, critter& agg) {
         dam = 0;
    }//if
    
+//DYS
+   if (is_affected_by(DIVINE_RETRIBUTION_SKILL_NUM, vict)) {
+       // example numbers:
+       // at +/- 1000 alignment, and 100% learned, the victim returns 100% 
+       // at +/- 500 alignment, and 100% learned, the victim returns 50%
+       // at +/- 1000 alignment, and 50% learned, the victim returns 50%
+       // at +/- 500 alignment, and 50% learned, the victim returns 25%
+       float modifier = get_percent_lrnd(DIVINE_RETRIBUTION_SKILL_NUM, vict);
+       modifier /= 1000;
+       modifier *= abs(vict.getAlignment());
+       modifier /= 100;
+
+       agg.takeDamage( (int)(dam *= modifier), ELECTRICITY, vict);
+   }
+
    if (is_affected_by(ABSORB_BLOWS_SKILL_NUM, vict)) {
       vict.MANA -= (short)dam;
       if (vict.MANA < 0) {

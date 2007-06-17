@@ -49,6 +49,7 @@
 #include "clients.h"
 #include "weather.h"
 #include "necromancer.h"
+#include "cleric.h"
 
 int inventory(critter& pc) {
    String buf(100);
@@ -1267,6 +1268,8 @@ int cast(const String* spell, int j_th, const String* victim, critter &pc,
        cast_stamina_ritual(pc);
    else if (strncasecmp(*spell, "ritual of power", len) == 0)
        cast_ritual_of_power(pc);
+   else if (strncasecmp(*spell, "divine retribution", len) == 0)
+       cast_divine_retribution(j_th, victim, pc);
    else {
       pc.show(CS_SPELL_RESEARCH);
       return -1;

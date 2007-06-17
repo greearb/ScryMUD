@@ -541,6 +541,10 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg, int bonus_value)
       pc.adjMov(-int(pc.getMov()/2.0));
       pc.emote("stumbles.");
    }
+   else if (spell_num == DIVINE_RETRIBUTION_SKILL_NUM) {
+      pc.show("Your crackling aura fizzles out.\n");
+      pc.pemote("crackling aura fizzles out.\n");
+   }//if   
    else {
       Sprintf(buf, "ERROR:  rem_effects_crit DEFAULT: spll# [%i] %s.\n",
               spell_num,
