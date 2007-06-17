@@ -3127,7 +3127,7 @@ void curl(int i_th, const String* vict, critter& pc, room& rm) {
 		 emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You curl up next to %s.\n",
+         Sprintf(buf, "You curl up next to %S.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          pc.show(buf);
          Sprintf(buf, "%S curls up next to you.\n",
