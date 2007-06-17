@@ -778,12 +778,11 @@ void agg_kills_vict(critter* agg, critter& vict, int& show_vict_tags,
          val *= 1.0/pow(10, fabs(agg->ALIGN/1000.0));
       }
 
+      if ((agg->ALIGN < -1000) || (agg->ALIGN > 1000))
+         val = 0;
+
       agg->ALIGN -= (int)(val);
 
-      if (agg->ALIGN < -1000)
-         agg->ALIGN = -1000;
-      else if (agg->ALIGN > 1000)
-         agg->ALIGN = 1000;
    }
 
    if (vict.pc && agg && agg->pc) {

@@ -2561,8 +2561,6 @@ int critter::getWeapRange(short min_max, int position, bool include_modifiers=fa
       ret_val += count * sides;
    }
 
-   ret_val += getDAM(true);
-
    ret_val += (int)( (getSTR(true) - 10) / 2.0 );
 
    if ( position == 10 ) {//penalty for off-hand
@@ -2611,8 +2609,6 @@ float critter::getWeapDAM(int position, bool include_modifiers=false) const {
 
    float ret_val = d(count,sides);
 
-   ret_val += getDAM(true);
-
    ret_val += (getSTR(true) - 10) / 2.0 ;
 
    if ( position == 10 ) {//penalty for off-hand
@@ -2620,6 +2616,7 @@ float critter::getWeapDAM(int position, bool include_modifiers=false) const {
       ret_val = ret_val * ( 0.50 + p_lrnd/500.0 );
    }
 
+   ret_val += getDAM(true);
    return ret_val;
 }//critter::getWeapDAM
 

@@ -2880,134 +2880,166 @@ int shoot(int i_th, const String* dir, int j_th, const String* mob,
 
 
 int do_shoot(critter& targ, critter& pc) {
-   String buf(100);
-   Cell<object*> cll;
-   object* ammo = NULL;
-   int targ_is_dead = FALSE;
+    String buf(100);
+    Cell<object*> cll;
+    object* ammo = NULL;
+    int targ_is_dead = FALSE;
 
-   if ((targ.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  SMOB sent to do_shoot.\n");
-      return -1;
-   }//if
+    if ((targ.isMob()) || (pc.isMob())) {
+        mudlog.log(ERROR, "ERROR:  SMOB sent to do_shoot.\n");
+        return -1;
+    }//if
 
-   if (can_start_battle(targ, pc, TRUE)) {
-      if (!pc.EQ[9] || !((pc.EQ[9]->OBJ_FLAGS.get(46)) ||
-                         pc.EQ[9]->OBJ_FLAGS.get(47))) {
-           show("You must be wielding a projectile weapon in order to shoot.\n",
-              pc);
-         return -1;
-      }//if
-      if (pc.EQ[9]->OBJ_FLAGS.get(45)) { //needs ammo to work
-         if (pc.EQ[9]->OBJ_FLAGS.get(46)) { //needs darts
-            pc.inv.head(cll);
-            while ((ammo = cll.next())) {
-                     if (ammo->OBJ_FLAGS.get(48)) { //its a dart
-                  pc.inv.lose(cll);
-                  break;
-               }//if
-            }//while
-         }//if dart thrower
-         else { //bow
-            pc.inv.head(cll);
-            while ((ammo = cll.next())) {
-                     if (ammo->OBJ_FLAGS.get(49)) { //its an arrow
-                  pc.inv.lose(cll);
-                  break;
-               }//if
-            }//while
-         }//else
-
-         if (!ammo) {
-            show("You are out of ammo.\n", pc);
+    if (can_start_battle(targ, pc, TRUE)) {
+        if (!pc.EQ[9] || !((pc.EQ[9]->OBJ_FLAGS.get(46)) ||
+                    pc.EQ[9]->OBJ_FLAGS.get(47))) {
+            show("You must be wielding a projectile weapon in order to shoot.\n",
+                    pc);
             return -1;
-          }//if
-      }//if needs ammo
+        }//if
+        if (pc.EQ[9]->OBJ_FLAGS.get(45)) { //needs ammo to work
+            if (pc.EQ[9]->OBJ_FLAGS.get(46)) { //needs darts
+                pc.inv.head(cll);
+                while ((ammo = cll.next())) {
+                    if (ammo->OBJ_FLAGS.get(48)) { //its a dart
+                        pc.inv.lose(cll);
+                        break;
+                    }//if
+                }//while
+            }//if dart thrower
+            else { //bow
+                pc.inv.head(cll);
+                while ((ammo = cll.next())) {
+                    if (ammo->OBJ_FLAGS.get(49)) { //its an arrow
+                        pc.inv.lose(cll);
+                        break;
+                    }//if
+                }//while
+            }//else
 
-                /* we have ammo if we need it... */
+            if (!ammo) {
+                show("You are out of ammo.\n", pc);
+                return -1;
+            }//if
+        }//if needs ammo
 
-      String lproj_name("a projectile");
-      String sproj_name("projectile");
+        /* we have ammo if we need it... */
 
-      if (ammo) {
-         lproj_name = *(ammo->getLongName());
-         sproj_name = *(ammo->getName());
-      }//if
+        String lproj_name("a projectile");
+        String sproj_name("projectile");
 
-      if (mudlog.ofLevel(DBG)) {
-         mudlog << "Long Projectile name:  " << lproj_name << endl
+        if (ammo) {
+            lproj_name = *(ammo->getLongName());
+            sproj_name = *(ammo->getName());
+        }//if
+
+        if (mudlog.ofLevel(DBG)) {
+            mudlog << "Long Projectile name:  " << lproj_name << endl
                 << "Short Projectile name:  " << sproj_name << endl;
-      }
+        }
 
-      Sprintf(buf, "readies %s %S.",
-              get_his_her(pc), name_of_obj(*(pc.EQ[9]), ~0));
-      emote(buf, pc, ROOM, TRUE);
+        Sprintf(buf, "readies %s %S.",
+                get_his_her(pc), name_of_obj(*(pc.EQ[9]), ~0));
+        emote(buf, pc, ROOM, TRUE);
 
-      if (!did_shot_hit(targ, pc)) {
-         show("Your shot goes wide of your mark.\n", pc);
-         emote("shoots and misses.", pc, ROOM, TRUE);
-         Sprintf(buf, "%S comes whistling by your head!\n", &lproj_name);
-         buf.Cap();
-         show_all(buf, room_list[targ.getCurRoomNum()]);
+        // Dys: Changed the damage code to reflect pc.getDamRange.
+        // added a call to pc.getDAM, pc.getSTR (instead of just pc.STR), and pc.getWeapDAM
 
-         String cmd = "shoot";
-         ROOM.checkForProc(cmd, NULL_STRING, pc, targ.MOB_NUM);
-
-         do_shot_proc(targ, pc, FALSE, targ_is_dead);
-      }//if
-      else {
-         int damage = d(pc.EQ[9]->extras[7], pc.EQ[9]->extras[6]);
-         if (ammo) {
-               damage += d(ammo->extras[7], ammo->extras[6]);
-         }//if
-         damage += d(1, pc.STR);
-         exact_raw_damage(damage, NORMAL, targ);
-
-         if (targ.HP > 0) { //still alive
-            Sprintf(buf, "You hit %S with %S.\n",
-                    name_of_crit(targ, pc.SEE_BIT), &lproj_name);
-            show(buf, pc);
-            Sprintf(buf, "%S wounds you with %S!\n",
-                    name_of_crit(pc, targ.SEE_BIT), &lproj_name);
-            show(buf, targ);
-            Sprintf(buf, "staggers as %S's %S hits %s!",
-                    name_of_crit(pc, ~0), &sproj_name,
-                    get_him_her(targ));
-            emote(buf, targ, room_list[targ.getCurRoomNum()], TRUE);
+        if (!did_shot_hit(targ, pc)) {
+            show("Your shot goes wide of your mark.\n", pc);
+            emote("shoots and misses.", pc, ROOM, TRUE);
+            Sprintf(buf, "%S comes whistling by your head!\n", &lproj_name);
+            buf.Cap();
+            show_all(buf, room_list[targ.getCurRoomNum()]);
 
             String cmd = "shoot";
             ROOM.checkForProc(cmd, NULL_STRING, pc, targ.MOB_NUM);
 
-            do_shot_proc(targ, pc, TRUE, targ_is_dead);
-         }//if hit but not fatal
-         else { //fatality
-            Sprintf(buf, "Your %S sinks deep into %S's chest!\n",
-                    &sproj_name, name_of_crit(targ, pc.SEE_BIT));
-            show(buf, pc);
-            Sprintf(buf, "%S's %S sinks deep into %S's chest!\n",
-                    name_of_crit(pc, ~0), &sproj_name,
-                    name_of_crit(targ, ~0));
-            room_list[targ.getCurRoomNum()].showAllCept(buf, &targ);
-            Sprintf(buf, "%S has slain you with %s %S!\n",
-                    name_of_crit(pc, targ.SEE_BIT), get_his_her(pc),
-                    &sproj_name);
-            show(buf, targ);
-            emote("twitches once and moves no more!", targ, 
-                  room_list[targ.getCurRoomNum()], TRUE);
-            alert_room_proc(targ.getCurRoomNum(), PROJECTILE_DEATH, targ, pc);
-            agg_kills_vict(&pc, targ);
-         }//else fatality
-      }// else hit
-   }// if can start battle
+            do_shot_proc(targ, pc, FALSE, targ_is_dead);
+        }//if
+        else {
+            int damage = (int)pc.getWeapDAM(9, true);
 
-   if (ammo) {
-      if (ammo->IN_LIST) {
-         delete ammo;
-      }//if
-   }//if
+            if (ammo) {
+                damage += d(ammo->extras[7], ammo->extras[6]);
+            }//if
 
-   pc.setPause(pc.getPause() + 1);
+            damage += d(1, pc.getSTR(true));
+            exact_raw_damage(damage, NORMAL, targ);
 
-   return 0;
+            //Dys: add ammo to user's inventory (aka, got arrow stuck in 'em.)
+            //allows for
+            //a) retrieving arrows that -hit- from the corpse, or
+            //b) the, "i'm so bad-ass I can pull arrows out of myself and fire them back at you." effect.
+            //c) Also, cuts down on archery costs, which are rediculous.
+
+            targ.gainInv(ammo);
+            recursive_init_loads(*(ammo),0); 
+            if (targ.HP > 0) { //still alive
+                Sprintf(buf, "You hit %S with %S.\n",
+                        name_of_crit(targ, pc.SEE_BIT), &lproj_name);
+                show(buf, pc);
+                //Dys: putting Camouflage to good use. check vs skill %. if succeeds, masks who hit them.
+                if(d(1,100) < get_percent_lrnd(CAMOUFLAGE_SKILL_NUM, pc)) {
+                    Sprintf(buf, "Someone wounds you with %S!\n", &lproj_name);
+                    show(buf, targ);
+                    Sprintf(buf, "staggers as a %S hits %s!",
+                            &sproj_name, get_him_her(targ));
+                }//end hiding.
+                else {
+                    Sprintf(buf, "%S wounds you with %S!\n",
+                            name_of_crit(pc, targ.SEE_BIT), &lproj_name);
+                    show(buf, targ);
+                    Sprintf(buf, "staggers as %S's %S hits %s!",
+                            name_of_crit(pc, ~0), &sproj_name,
+                            get_him_her(targ));
+                }
+                emote(buf, targ, room_list[targ.getCurRoomNum()], TRUE);
+
+                String cmd = "shoot";
+                ROOM.checkForProc(cmd, NULL_STRING, pc, targ.MOB_NUM);
+
+                do_shot_proc(targ, pc, TRUE, targ_is_dead);
+            }//if hit but not fatal
+            else { //fatality
+                Sprintf(buf, "Your %S sinks deep into %S's chest!\n",
+                        &sproj_name, name_of_crit(targ, pc.SEE_BIT));
+                show(buf, pc);
+                if(d(1,100) < get_percent_lrnd(CAMOUFLAGE_SKILL_NUM, pc)) {
+                    Sprintf(buf, "Someone's %S sinks deep into %S's chest!\n",
+                            &sproj_name, name_of_crit(targ, ~0));
+                    room_list[targ.getCurRoomNum()].showAllCept(buf, &targ);
+                    Sprintf(buf, "Somone has slain you with a %S!\n",
+                            &sproj_name);
+                    show(buf, targ);
+                }
+                else {
+                    Sprintf(buf, "%S's %S sinks deep into %S's chest!\n",
+                            name_of_crit(pc, ~0), &sproj_name,
+                            name_of_crit(targ, ~0));
+                    room_list[targ.getCurRoomNum()].showAllCept(buf, &targ);
+                    Sprintf(buf, "%S has slain you with %s %S!\n",
+                            name_of_crit(pc, targ.SEE_BIT), get_his_her(pc),
+                            &sproj_name);
+                    show(buf, targ);
+                }
+                emote("twitches once and moves no more!", targ, 
+                        room_list[targ.getCurRoomNum()], TRUE);
+                alert_room_proc(targ.getCurRoomNum(), PROJECTILE_DEATH, targ, pc);
+                agg_kills_vict(&pc, targ);
+            }//else fatality
+        }// else hit
+    }// if can start battle
+
+    if (ammo) {
+        if (ammo->IN_LIST) {
+            delete ammo;
+        }//if
+    }//if
+
+    pc.setPause(pc.getPause() + 1);
+
+    return 0;
 }//do_shoot
 
 
