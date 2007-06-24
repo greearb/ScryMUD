@@ -908,7 +908,7 @@ int exact_raw_damage(int damage, int damage_type, critter& vict, critter& agg) {
        modifier *= abs(vict.getAlignment());
        modifier /= 100;
 
-       agg.takeDamage( (int)(dam *= modifier), ELECTRICITY, vict);
+       agg.takeDamage( (int)( (dam * 0.40) * modifier), ELECTRICITY, vict);
    }
 
    if (is_affected_by(ABSORB_BLOWS_SKILL_NUM, vict)) {
