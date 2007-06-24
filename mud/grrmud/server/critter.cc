@@ -6147,4 +6147,12 @@ short critter::getMovRegen(bool include_modifiers=false) const {
     return ret_val;
 }//critter::getMovRegen()
 
-
+int critter::getAlignment() const {
+   int ret_val = short_cur_stats[18];
+   if ( ret_val < -1000 ) {
+      ret_val = -1000;
+   } else if ( ret_val > 1000 ) {
+      ret_val = 1000;
+   }
+   return ret_val;
+}

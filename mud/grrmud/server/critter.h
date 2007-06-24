@@ -894,7 +894,7 @@ public:
    int getManaMax() const { return short_cur_stats[24]; }
    int getMov() const { return short_cur_stats[17]; }
    int getMovMax() const { return short_cur_stats[25]; }
-   int getAlignment() const { return short_cur_stats[18]; }
+   int getAlignment() const;
    LanguageE getLanguageChoice() const ;
    int getWimpy() const { return short_cur_stats[21]; }
 
