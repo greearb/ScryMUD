@@ -627,7 +627,7 @@ char* login_prompts[] = {
 
    //"\n\x9B\x4D\x31\x32\x68\nChoose a Password:  ", 
    //"\n\x9B\x4D\x31\x32\x68\nEnter your password again for verification:  ",
-   "\nChoose a Password (may be echoed):  ", 
+   "\nChoose a Password:  ", 
       "\nEnter your password again for verification:  ",
       "\n(M)ale, (F)emale, or (N)euter:  ",
       "\n\nSelection of Classes: \n\n"
@@ -648,7 +648,7 @@ char* login_prompts[] = {
       /* for non-new players */
 
       //"\n\x9B\x31\x32\x68\nEnter your password:  ",
-      "\nEnter your password (Will be echoed):  ",
+      "\nEnter your password:  ",
 
          "\nChoose your Race, or you can choose help on the races.\n"
             "\n"
