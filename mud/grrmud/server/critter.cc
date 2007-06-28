@@ -6147,12 +6147,32 @@ short critter::getMovRegen(bool include_modifiers=false) const {
     return ret_val;
 }//critter::getMovRegen()
 
-int critter::getAlignment() const {
-   int ret_val = short_cur_stats[18];
+short critter::getAlignment() const {
+   short ret_val = short_cur_stats[18];
    if ( ret_val < -1000 ) {
       ret_val = -1000;
    } else if ( ret_val > 1000 ) {
       ret_val = 1000;
    }
    return ret_val;
-}
+}//critter::getAlignment
+
+short critter::adjAlignment(short adjAmount) {
+
+   // When passed an adjustment value, it will adjust the players alignment by
+   // the adjAmount. This will cap the critters alignment at +/- 1000 and
+   // returns the amount the critters alignment was really modified by.
+
+   short ret_val   = adjAmount;
+   int   tmp_val   = getAlignment() + adjAmount;
+
+   if (tmp_val > 1000) {
+      ret_val = adjAmount - (tmp_val -1000);
+   } else if (tmp_val < -1000) {
+      ret_val = adjAmount - (tmp_val +1000);
+   }
+
+   short_cur_stats[18] += ret_val;
+
+   return ret_val;
+}//critter::adjAlignment()
