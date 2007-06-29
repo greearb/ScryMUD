@@ -80,6 +80,7 @@
 #include "telnet.h"
 #include "telnet_handler.h"
 #include "pfile_maint.h"
+#include "daemonize.h"
 
 #define MAX_HOSTNAME    256
 
@@ -557,22 +558,7 @@ int main(int argc, char** argv) {
 
    // Daemonize if we're supposed to.
    if ( config.daemonize ) {
-      pid_t     pid;
-      if ( ( pid = fork() ) == -1 ) {
-         cout << "Couldn't Fork. Quitting." << endl;
-         exit(-1);
-      } 
-      if ( pid > 0 ) {
-         // Kill the parent
-         do_shutdown = TRUE;
-         return(0);
-      }
-      // The child
-      setsid();
-      close(STDIN_FILENO);
-      close(STDOUT_FILENO);
-      close(STDERR_FILENO);
-   } else {
+      daemonize("gmud");
    } // config.daemonize
 
    // Write out our PID to grrmud.pid
