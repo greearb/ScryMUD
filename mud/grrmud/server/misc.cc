@@ -579,8 +579,8 @@ void do_regeneration_pcs() {
          stat_spell_cell* ssptr = 
             is_affected_by(BIND_WOUND_SKILL_NUM, *crit_ptr);
          if (ssptr) {
-            crit_ptr->affected_by.loseData(ssptr);
             rem_effects_crit(BIND_WOUND_SKILL_NUM, *crit_ptr, TRUE);
+            crit_ptr->affected_by.loseData(ssptr);
         }
       }//if
    }//while
@@ -637,8 +637,8 @@ void do_regeneration_smobs() {
          stat_spell_cell* ssptr = 
             is_affected_by(BIND_WOUND_SKILL_NUM, *crit_ptr);
          if (ssptr) {
-            crit_ptr->affected_by.loseData(ssptr);
             rem_effects_crit(BIND_WOUND_SKILL_NUM, *crit_ptr, TRUE);
+            crit_ptr->affected_by.loseData(ssptr);
          }
       }//if
    }//while
