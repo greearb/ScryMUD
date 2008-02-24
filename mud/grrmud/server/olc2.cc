@@ -2434,7 +2434,7 @@ int rem_mname(int which_un, const String* name, critter& pc) {
    }
 
    if (name->Strlen() < 1) {
-      show("See help for add_mname.\n", pc);
+      show("See help for rem_mname.\n", pc);
       return -1;
    }//if
 

@@ -713,7 +713,7 @@ rem_give_proc rm_give_proc rm_give_proc ~
 return rm_give_proc(i, pc);
 rem_keyword rm_keyword rm_keyword ~
 return rm_keyword(i, pc);
-rem_name rm_name rem_name ~
+rem_name rem_mname rm_name rem_mname ~
 return rem_mname(i, &(cooked_strs[1]), pc);
 rem_obj_script rm_obj_script rm_obj_script ~
 return rem_obj_script(i, cooked_strs[1], j, pc);
