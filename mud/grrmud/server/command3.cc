@@ -2406,7 +2406,6 @@ int silent_junk(int i_th, const String* str1, const String* str2,
    }
 }//silent_junk
 
-
 int do_junk(int do_msg, int i_th, const String* str1,
              const String* str2, critter& pc) {
    String buf(100);
@@ -2419,9 +2418,29 @@ int do_junk(int do_msg, int i_th, const String* str1,
       return -1;
    }
 
+   //command was "junk all"
    if ((*str1 == "all") && (str2->Strlen() == 0)) {
-      show("If you want to junk EVERYTHING, go to a dump.\n", pc);
-      return -1;
+      int junked_items = 0;
+      //Allowing junk all for street sweeping, and general clean up
+      //show("If you want to junk EVERYTHING, go to a dump.\n", pc);
+      obj_ptr = cll.next();
+      while (obj_ptr) {
+         if(!do_actual_junk(FALSE, obj_ptr, pc)) {
+            junked_items++;
+         }
+         obj_ptr = pc.inv.lose(cll);
+      }
+      if (junked_items > 0) {
+         //TODO add count of junked items to output (include inside bags)
+         Sprintf(buf, cstr(CS_JUNK_ALL, pc));
+         show(buf, pc);
+         Sprintf(buf, cstr(CS_JUNK_REWARD, pc));
+         show(buf, pc);
+      } else { //nothing was junked
+         Sprintf(buf, cstr(CS_NOTHING_IN_INV_TO_JUNK, pc));
+         show(buf, pc);
+      }
+      return 0;
    }//if
                   /* check for junk all.roadkill */
    if ((*str1 == "all") && (str2->Strlen() != 0)) {
@@ -2439,41 +2458,16 @@ int do_junk(int do_msg, int i_th, const String* str1,
          if (detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
             if (obj_is_named(*obj_ptr, targ)) {
                did_msg = TRUE;
-               if (obj_ptr->OBJ_FLAGS.get(5) && !(pc.pc && 
-                        pc.pc->imm_data && (pc.IMM_LEVEL > 1))) {
+               if (!(pc.pc && pc.pc->imm_data && (pc.IMM_LEVEL > 1))) {
                   if (do_msg) {
-                     Sprintf(buf, "You can't junk %S.\n", 
-                             long_name_of_obj(*obj_ptr,
-                                              pc.SEE_BIT));
+                     Sprintf(buf, cstr(CS_CANT_JUNK, pc), 
+                        long_name_of_obj(*obj_ptr, pc.SEE_BIT));
                      show(buf, pc);
                   }//if
-                  obj_ptr = cll.next();
+                  obj_ptr = pc.inv.lose(cll);
                }//if
                else { //can junk
-                  drop_eq_effects(*obj_ptr, pc, FALSE, TRUE);
-
-                  if (do_msg) {
-                     Sprintf(buf, "You junk %S.\n", 
-                             &(obj_ptr->short_desc));
-                     show(buf, pc);
-                  }//if
-
-                  pc.GOLD += obj_ptr->PRICE / 50;
-
-                  recursive_init_unload(*obj_ptr, 0);
-
-                  if (obj_list[obj_ptr->OBJ_NUM].getCurInGame() < 0) {
-                     if (mudlog.ofLevel(DBG)) {
-                        mudlog << "ERROR:  junk: obj_cur_in_game:  "
-                               << obj_list[obj_ptr->OBJ_NUM].getCurInGame()
-                               << "  object_number:  " << obj_ptr->OBJ_NUM
-                               << endl;
-                     }
-                     obj_list[obj_ptr->OBJ_NUM].setCurInGame(0);
-                  }//if
-                  if (obj_ptr->isModified()) {
-                     delete obj_ptr;
-                  }//if is a SOBJ
+                  do_actual_junk(do_msg, obj_ptr, pc);
                   obj_ptr = pc.inv.lose(cll);
                }//else
             }// if obj is named...
@@ -2486,65 +2480,86 @@ int do_junk(int do_msg, int i_th, const String* str1,
          }//else
       }//while
       if (!did_msg) {
-         show("You don't have anything like that.\n", pc);
+         Sprintf(buf, cstr(CS_NOTHING_TO_JUNK, pc));
+         show(buf, pc);
       }//if
       else {
-         show("The gods reward you.\n", pc);
+         Sprintf(buf, cstr(CS_JUNK_REWARD, pc));
+         show(buf, pc);
       }//else
-   }//if
-   else {
+   }//if called as all
+   else { //junking a single named item
       obj_ptr = have_obj_named(pc.inv, i_th, str1, pc.SEE_BIT, ROOM);
       if (!obj_ptr) {
-         show("You don't have that.\n", pc);
+         Sprintf(buf, cstr(CS_DONT_SEEM_TO_HAVE_THAT, pc));
+         show(buf, pc);
       }//if
       else {
-         if (obj_ptr->OBJ_FLAGS.get(5) && !(pc.pc && 
-                        pc.pc->imm_data && pc.IMM_LEVEL > 1)) {
+         if (!(pc.pc && pc.pc->imm_data && pc.IMM_LEVEL > 1)) {
             if (do_msg) {
-               Sprintf(buf, "You can't junk %S.\n", name_of_obj(*obj_ptr,
+               Sprintf(buf, cstr(CS_CANT_JUNK, pc), name_of_obj(*obj_ptr,
                                                                 pc.SEE_BIT));
                show(buf, pc);
             }//if
          }//if
          else {
-            drop_eq_effects(*obj_ptr, pc, FALSE, TRUE);
+            //junk the item
+            do_actual_junk(do_msg, obj_ptr, pc);
             pc.loseInv(obj_ptr);
+            
             if (do_msg) {
-               Sprintf(buf, "You junk %S.\n", 
-                       &(obj_ptr->short_desc));
+               Sprintf(buf, cstr(CS_JUNK_REWARD, pc));
                show(buf, pc);
-               show("The gods reward you for your sacrifice.\n", pc);
             }//if
-            pc.GOLD += ((obj_ptr->PRICE / 50) + 1);
-
-            /* This special case is handled because bulletin board postings
-             * have post numbers which are treated like obj nums and therefore
-             * we'd accidently reduce cur_in_game counts for whatever objects
-             * the posting numbers coincided with
-             */
-            if (!obj_ptr->isBulletinBoard()) {
-               recursive_init_unload(*obj_ptr, 0);
-            }
-            else {
-               obj_ptr->decrementCurInGame();
-            }
-
-            if (obj_list[obj_ptr->OBJ_NUM].getCurInGame() < 0) {
-               if (mudlog.ofLevel(DBG)) {
-                  mudlog << "ERROR:  jnk(), obj_cur_in_game:  "
-                         << obj_list[obj_ptr->OBJ_NUM].getCurInGame()
-                         << " object_num:  " << obj_ptr->OBJ_NUM << endl;
-               }
-               obj_list[obj_ptr->OBJ_NUM].setCurInGame(0);
-            }//if
-            if (obj_ptr->isModified()) {
-               delete obj_ptr;
-            }//if is a SOBJ
          }//else
       }//else
    }//else, not junk all.sumpin
    return 0;
 }//do_junk
+
+//Takes an object pointer and does the work of junking. Does not check if it's 
+//ok to junk the item. Does not delete the item from the pc's inventory, 
+//because if the pc is junking multiple items, the list of items to be
+//junked needs to be modified, not just a call to pc.loseInv().
+int do_actual_junk(int do_msg, object* obj_ptr, critter& pc) {
+   String buf(100);
+
+   drop_eq_effects(*obj_ptr, pc, FALSE, TRUE);
+
+   if (do_msg) {
+      Sprintf(buf, "You junk %S.\n", &(obj_ptr->short_desc));
+      show(buf, pc);
+   }//if
+   pc.GOLD += ((obj_ptr->PRICE / 50) + 1);
+
+   /* This special case is handled because bulletin board postings
+    * have post numbers which are treated like obj nums and therefore
+    * we'd accidently reduce cur_in_game counts for whatever objects
+    * the posting numbers coincided with
+    */
+   if (!obj_ptr->isBulletinBoard()) {
+      recursive_init_unload(*obj_ptr, 0);
+   } else {
+      obj_ptr->decrementCurInGame();
+   }
+
+   if (obj_list[obj_ptr->OBJ_NUM].getCurInGame() < 0) {
+      if (mudlog.ofLevel(DBG)) {
+         mudlog << "ERROR:  junk: obj_cur_in_game:  "
+         << obj_list[obj_ptr->OBJ_NUM].getCurInGame()
+         << "  object_number:  " << obj_ptr->OBJ_NUM
+         << endl;
+      }
+      obj_list[obj_ptr->OBJ_NUM].setCurInGame(0);
+   }//if
+
+   if (obj_ptr->isModified()) {
+      delete obj_ptr;
+   }//if is a SOBJ
+
+   return 0;
+}
+
 
 
 int tell(int i_th, const String* targ, const char* msg, critter& pc) {

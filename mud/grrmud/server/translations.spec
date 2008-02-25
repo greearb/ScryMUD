@@ -359,6 +359,25 @@ CS_DROP_WHAT
 	ger "WAS ablegen?\n"
 	~
 
+CS_JUNK_ALL
+	eng "You junk everything you're holding. Time to start fresh!\n"		~
+
+CS_CANT_JUNK
+	eng "You can't junk %S.\n"
+	~
+
+CS_NOTHING_IN_INV_TO_JUNK
+	eng "You aren't holding anything you can junk.\n"
+	~
+
+CS_NOTHING_TO_JUNK
+	eng "You don't have anything like that.\n"
+	~
+
+CS_JUNK_REWARD
+	eng "The gods reward you.\n"
+	~
+
 CS_OK
         eng "Ok.\n"
         spa "Hecho.\n"

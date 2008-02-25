@@ -65,6 +65,7 @@ int silent_junk(int i_th, const String* str1, const String* str2,
                  critter& pc);
 int do_junk(int do_msg, int i_th, const String* str1,
              const String* str2, critter& pc);
+int do_actual_junk(int do_msg, object* obj_ptr, critter& pc);
 
 int enslave(int i_th, const String* name, critter& pc);
 int order(String* str, critter& pc);
