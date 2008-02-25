@@ -642,7 +642,7 @@ CS_DROP_I_COINS
 	~
 
 CS_DROPS_I_COINS
-        eng "%S drops %i coins.\n"
+        eng "drops %i coins.\n"
         ~
 
 CS_PUT_I_COINS
