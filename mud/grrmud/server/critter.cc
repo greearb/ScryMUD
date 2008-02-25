@@ -5640,8 +5640,13 @@ int critter::isOpen(int cmt, int do_msg, critter& pc) const {
    return FALSE;
 }//isOpen
 
+// Drops cnt gold coins in the room
 /** Can fail if cnt is bad, does all messages. */
 int critter::doDropCoins(int cnt) {
+   List<critter*> tmp_lst(getCurRoom()->getCrits());
+   Cell<critter*> cell(tmp_lst);
+   critter* crit_ptr;
+
    if (GOLD < cnt) {
       show(CS_TOO_LITTLE_GOLD);
       return -1;
@@ -5651,9 +5656,20 @@ int critter::doDropCoins(int cnt) {
       return -1;
    }
    else {
+      //go ahead with the drop
       String buf(100);
       Sprintf(buf, cstr(CS_DROP_I_COINS, *this), cnt);
       show(buf);
+
+      //show message to everyone in the room
+      while((crit_ptr = cell.next())) {
+         if (crit_ptr != this) {
+            Sprintf(buf, cstr(CS_DROPS_I_COINS, *crit_ptr), 
+               name_of_crit(*this, crit_ptr->SEE_BIT), cnt);
+            buf.Cap();
+            crit_ptr->show(buf);
+         }
+      }
 
       object* gold;
       gold = obj_to_sobj(obj_list[config.goldCoinsObject], getCurRoom()->getInv(),

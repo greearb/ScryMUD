@@ -622,6 +622,10 @@ CS_DROP_I_COINS
         ser "Ispustio si %i dukata.\n"
 	~
 
+CS_DROPS_I_COINS
+        eng "%S drops %i coins.\n"
+        ~
+
 CS_PUT_I_COINS
         eng "You put %i coins in %S.\n"
 	~
