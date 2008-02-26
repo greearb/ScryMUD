@@ -1,35 +1,34 @@
 <help general help>
-		Welcome to ScryMUD...confused yet?
+		Welcome to ScryMUD!
 
-User Interface(UI):  The UI of ScryMUD is terse and concise.  You
-may abbreviate almost any command, if this abbreviated command
-matches more than one target, the first will be chosen.  If there
-are two objects of the same name, say sword, and you want the
-second, you can type 2.sword or 2 sword to refer to it.
-     In the help pages, you will see: 'i_th' often.  This is like
-the 2 seen above.  The game is NOT case sensitive when it comes
-to names.  All pronouns and modifiers are to be left out.  If you
-single quote a string, it is taken as one word/identifier by the
-parser.  Otherwise, no quotes are needed.
+The user interface of Scry is terse and concise. Almost any command can be 
+abbreviated by leaving the last few letters off. Be careful making them too 
+short, as if it is ambiguous, the first command will be chosen.
 
-Sample commands:
-	help commands
-	examine bag
-	get all bag
-	wear all
-	gossip Honey, I'm home!!
-	help topics
-	help move
-	tell grock I feel like a Stranger in a Strange Land!
+When there are more than two of something you wish to specify, say swords in 
+the room, you can specify the second sword by typing:
+        get 2.sword
+or      get 2 sword
+In the help files, the "2" above is the i_th sword.
 
-To see a list of all mortal commands, try: help topics,
-For immortals, try: help wizhelp
+Feel free to ask any IMM players logged in, identified by the 'who' command, 
+if you have any questions about anything in the game.
 
-<color=red>See Also:  commands, socials</color>
+Some useful commands to get started:
+        wear all
+        gossip Hello, everyone!!
+        examine bag
+        get all bag
 
-To get help on a topic enter:  help <<term_you_want_help_with> <<'mortal'>
+Examples of using the help system:
+        help commands
+        help 'strength conditioning'
+                (Help for multiple word topics should be surrounded by 
+                single quotes. This goes for casting multiple word spells, too.)
 
-NOTE:  For a friendlier environment check out Hegemon, our Java Client!
+<color=red>See also:  commands, socials, topics</color>
 
-http://scry.WANfear.com
-</help>
+Immortal player help: help wizhelp
+
+ScryMUD's website has additional information, including all the help files:
+        http://scrymud.net

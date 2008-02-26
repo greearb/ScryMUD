@@ -12,7 +12,7 @@ example:  door_to 35 north	Creates an exit, to the north,
                                    leading to room# 35.
 Directions are:  north, south, west, east, up, down, northwest,
                  southwest, southeast, northeast.
-	You man NOT abbreviate directions in this case.
+	You may NOT abbreviate directions in this case.
 
 <color=red>
 See also:  olc, flip_door, replace_door, delete_door, dstat
