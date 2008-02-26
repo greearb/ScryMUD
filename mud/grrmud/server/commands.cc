@@ -773,6 +773,20 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
             show(buf, pc);
          }//else
 
+         //show the critter's race
+         const char* race_name = get_race_name(crit_ptr->getRace());
+         //check for initial vowel
+         switch (*race_name) {
+            case 'a': case 'e': case 'i': case 'o': case 'u':
+               Sprintf(buf, "%s is an %s.\n", get_he_she(*crit_ptr), race_name);
+               break;
+            default:
+               Sprintf(buf, "%s is a %s.\n", get_he_she(*crit_ptr), race_name);
+               break;
+         }
+         buf.Cap();
+         pc.show(buf);
+
          int sanct_num = SANCTUARY_SKILL_NUM;
 
          Cell<stat_spell_cell*> cll(crit_ptr->affected_by);
