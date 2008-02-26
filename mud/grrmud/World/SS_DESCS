@@ -166,6 +166,15 @@ This strange spell allows the user to fashion a being out of one
 of the four elements:  earth, water, fire and air.  These beings
 are quite stupid, but in other ways may be as powerful as their 
 creator.
+
+SYNTAX: cast 'create golem'
+~
+create greater golem
+Like create golem, this spell allows the user to create an elemental
+being out of earth, water fire or air. These greater golems are that
+much more powerful, but that much more dangerous for everyone involved.
+
+SYNTAX: cast 'create greater golem'
 ~
 create light
 This is a favorite parlor trick for budding magicians, and can be
