@@ -865,6 +865,19 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
          pc.show("\n\n");
          pc.show(obj_ptr->long_desc);
          pc.show("\n");
+         //show bag holding capacity if it's a bag
+         if (obj_ptr->bag != NULL) {
+            Sprintf(buf, cstr(CS_BAG_CUR_MAX_WEIGHT, pc),
+               obj_ptr->getCurWeight(), obj_ptr->getMaxWeight());
+            pc.show(buf);
+            Sprintf(buf, cstr(CS_BAG_EMPTY_WEIGHT, pc),
+               obj_ptr->getShortName(), obj_ptr->getEmptyWeight());
+            pc.show(buf);
+         } else { //show weight when you look at an object
+            int weight = obj_ptr->getCurWeight();
+            Sprintf(buf, cstr(CS_OBJECT_WEIGHT, pc), weight);
+            pc.show(buf);
+         }
          
          String cmd = "look";
          rm.checkForProc(cmd, NULL_STRING, pc, obj_ptr->OBJ_NUM);

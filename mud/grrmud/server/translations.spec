@@ -1538,6 +1538,18 @@ CS_CANT_HOLD_WT
         ser "%S nemoze da sadrzi %S.\n"
 	~
 
+CS_BAG_CUR_MAX_WEIGHT
+	eng  "It is holding %i out of %i pounds.\n"
+	~
+
+CS_BAG_EMPTY_WEIGHT
+	eng "The %S itself weighs %i pounds.\n"
+	~
+
+CS_OBJECT_WEIGHT
+	eng "It weighs %i pounds.\n"
+	~
+
 CS_YOU_PUT
         eng "You put %S in %S.\n"
         spa "Pones %S en %S.\n"
