@@ -1546,6 +1546,10 @@ CS_BAG_EMPTY_WEIGHT
 	eng "The %S itself weighs %i pounds.\n"
 	~
 
+CS_BAG_PERCENT
+	eng "It reduces its contents' weight to %i%%.\n"
+	~
+
 CS_OBJECT_WEIGHT
 	eng "It weighs %i pounds.\n"
 	~

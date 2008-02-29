@@ -2834,6 +2834,22 @@ int do_lore(object& obj, critter& pc, int show_extra) {
       Sprintf(buf, "\nThis object is of level: %i\n", obj.getLevel());
       pc.show(buf);
 
+      //show bag holding capacity if it's a bag
+      if (obj.bag != NULL) {
+         Sprintf(buf, cstr(CS_BAG_CUR_MAX_WEIGHT, pc),
+         obj.getCurWeight(), obj.getMaxWeight());
+         pc.show(buf);
+         Sprintf(buf, cstr(CS_BAG_EMPTY_WEIGHT, pc),
+         obj.getShortName(), obj.getEmptyWeight());
+         pc.show(buf);
+         Sprintf(buf, cstr(CS_BAG_PERCENT, pc), obj.bag->percentage_weight);
+         pc.show(buf);
+      } else { //show weight when you look at an object
+         int weight = obj.getCurWeight();
+         Sprintf(buf, cstr(CS_OBJECT_WEIGHT, pc), weight);
+         pc.show(buf);
+      }
+
       if (!obj.affected_by.isEmpty()) {
          show("It is affected by:\n", pc);
          out_spell_list(obj.affected_by, pc, FALSE);      
