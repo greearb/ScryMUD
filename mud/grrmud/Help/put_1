@@ -1,7 +1,7 @@
 <help general put>
 
 This command attemps to place something in a container.  You cannot
-holding or otherwise wearing the container when attempting to do
+be holding or otherwise wearing the container when attempting to do
 this.
 
 Syntax:  put <<i_th> [object] <<j_th> [container]
