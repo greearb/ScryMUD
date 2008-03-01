@@ -59,7 +59,7 @@ int always_pay(int amount, int i_th, const String* targ, critter& pc,
       if (mudlog.ofLevel(SCRIPT)) {
          mudlog << "In always_pay, invalid target ptr: critter: "
                 << *(pc.getName()) << " amount: " << amount << " target name: " 
-                << targ << " target pointer: " << (int)targptr << "\n";
+                << targ << " target pointer: " << targptr << "\n";
       }//if
       return -1;
     }
@@ -1305,28 +1305,28 @@ void GenScript::generateScript(String& cmd, String& arg1, critter& act,
       
 
       if (strncmp("**%M", targ_str, 4) == 0) { //actor
-         sprintf(tmp_buf, "**M@%8X_%i ", (unsigned int)(&act), rm.getIdNum());
+         sprintf(tmp_buf, "**M@%p_%i ", &act, rm.getIdNum());
          targ_str = tmp_buf;
       }//if
       else if (strncmp("**%m", targ_str, 4) == 0) { //target
-         sprintf(tmp_buf, "**M@%8X_%i ", (unsigned int)(targ_crit),
+         sprintf(tmp_buf, "**M@%p_%i ", targ_crit,
                  rm.getIdNum());
          targ_str = tmp_buf;
       }//if
       else if (strncmp("**%S", targ_str, 4) == 0) { //script owner, default
          if (object_owner) {
             // For Object Scripts
-            sprintf(tmp_buf, "**O@%8X_%i ", (unsigned int)(object_owner),
+            sprintf(tmp_buf, "**O@%p_%i ", object_owner,
                     rm.getIdNum());
          }
          else {
-            sprintf(tmp_buf, "**M@%8X_%i ", (unsigned int)(script_owner),
+            sprintf(tmp_buf, "**M@%p_%i ", script_owner,
                     rm.getIdNum());
          }
          targ_str = tmp_buf;
       }//if
       else if (strncmp("**%o", targ_str, 4) == 0) { //target
-         sprintf(tmp_buf, "**O@%8X_%i ", (unsigned int)(targ_obj),
+         sprintf(tmp_buf, "**O@%p_%i ", targ_obj,
                  rm.getIdNum());
          targ_str = tmp_buf;
       }//if

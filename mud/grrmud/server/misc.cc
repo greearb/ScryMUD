@@ -1743,8 +1743,8 @@ void do_disolve_object(object& obj) {
       }
    }
    else {
-      Sprintf(buf, "Failed to remove object ptr: %i from it's list.",
-              (int)(&obj));
+      Sprintf(buf, "Failed to remove object ptr: %p from it's list.",
+              &obj);
       mudlog << "Failed to remove object ptr: " << &obj << " from it's list:"
              << obj.in_list << endl;
       core_dump(buf);
