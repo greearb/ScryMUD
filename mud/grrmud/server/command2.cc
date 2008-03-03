@@ -2814,10 +2814,14 @@ int do_lore(object& obj, critter& pc, int show_extra) {
       if (obj.OBJ_FLAGS.get(39))
          show("Shield ", pc);
       
-      if (obj.OBJ_FLAGS.get(40)) {
+      //this is ridiculous, but check for damage flags, not just !weapon
+      if (obj.OBJ_FLAGS.get(40) || !obj.OBJ_FLAGS.get(41)
+            && !obj.OBJ_FLAGS.get(42) && !obj.OBJ_FLAGS.get(43)
+            && !obj.OBJ_FLAGS.get(44) && !obj.OBJ_FLAGS.get(45) 
+            && !obj.OBJ_FLAGS.get(46) && !obj.OBJ_FLAGS.get(47) 
+            && !obj.OBJ_FLAGS.get(48) && !obj.OBJ_FLAGS.get(49)) {
          show("\nIt is not a weapon.\n", pc);
-      }
-      else {
+      } else {
          if (show_extra) {
             Sprintf(buf, "\nWeapon Damage: %id%i.\n",
                     obj.getDiceCnt(), obj.getDiceSides());
