@@ -1421,7 +1421,7 @@ void dance(int i_th, const String* vict, critter& pc, room& rm) {
    critter* ptr;
 
    if (pc.POS == POS_SLEEP) {
-      Sprintf(buf,"You dance around with %s of your dreams!\n",
+      Sprintf(buf,"You dance around with the %s of your dreams!\n",
               pc.SEX==SEX_MALE?"woman":
               (pc.SEX==SEX_FEMALE?"man":"being of undisclosed gender"));
       pc.show(buf);
