@@ -2676,7 +2676,7 @@ int who(critter& pc) {
          buf << "| ";
       }//not cloaked
 
-      const String *tmp_str = ptr->getName(pc.SEE_BIT); //I couldn't get this casted correctly while embedded below
+      const String *tmp_str = ptr->getName(); //I couldn't get this casted correctly while embedded below
       buf << (const char*)(*tmp_str) << (const char*)ptr->short_desc << std::endl;
 
    }//while

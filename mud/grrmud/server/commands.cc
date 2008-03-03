@@ -2205,7 +2205,7 @@ int gossip(const char* message, critter& pc) {
                }
 
                Sprintf(buf, cstr(CS_GOSSIP, *crit_ptr),
-                       &tag, name_of_crit(pc, crit_ptr->SEE_BIT), &msg, &untag);
+                       &tag, pc.getName(), &msg, &untag);
                buf.setCharAt(tag.Strlen() + 1, toupper(buf[tag.Strlen() + 1]));
                crit_ptr->show(buf, HL_GOSSIP); 
             }//if
