@@ -1,28 +1,30 @@
 <help general socials>
+Socials are commands that help you express yourself. Try them on yourself,
+people and objects.
 
-These commands help you express yourself.  Be warned though, some
-characters, computer and human, may take action from them.  You
-might want to think before you impudently curse the High Priest
-of the Temple of Light! 
-
-agree, bite, beckon, bow, cheer, chomp, curse, disco, disdain, grin,
-itch, jump, nibble, nod, nog, pat, pout, puke, shock, smirk, sob,
-splash, stare, wave, weep, wiggle afk, blush, kiss, twiddle, peck,
-trout, tremble, goo, twirl, tickle, nestle, swoon, battlecry, smooch,
-loser, sweatdrop, shudder, cower, climb, wiggletoes, blink, eyebrow
-
-By Shamu:  bonk clap giggle groan grumble hehe hmm hum insane lag
-        listen muahaha pft pinch rofl roll scold shake shrug silly slap
-        strut whistle wibble yawn mutter cough point snap whine bah punt
-        yuck announce greet doze megawibble
+Utilitarian:
+afk, agree, announce, beckon, blink, bow, cheer, chuckle, clap, cough, 
+curtsey, giggle, greet, grin, hehe, hmm, hug, lag, laugh, listen, nod, pat, 
+ponder, rofl, scratch, shake, shrug, smile, stare, wave, thank, twiddle, 
 
 
-By Acrwyn:  ack bounce burp cackle chuckle curtsey dance flex growl
-        grunt hug laugh lick panic ponder scratch scream smile snicker
-        thank
+Drama:
+bah, cackle, cower, disdain, groan, grumble, muahaha, pout, scream, smirk, 
+sob, weep, tremble, sweatdrop, shudder, whine, yawn
 
-By Rydia/Others:  whip, tango, tap
+Silly:
+bonk, bounce, burp, doze, grunt, hum, insane, itch, jump, megawibble, nog, 
+panic, punt, puke, shock, silly, splash, strut, wiggle, trout, twirl, tickle, 
+climb, wibble, wiggletoes
+
+Romance:
+dance, disco, flex, nibble, blush, lick, kiss, peck, nestle, swoon, smooch, 
+tango, whip, whistle
+
+Fightin' Words:
+ack, bite, chomp, curse, eyebrow, goo, growl, battlecry, loser, mutter, pft, 
+pinch, point, roll, scold, slap, snap, snicker, tap, yuck
 
 <color=red>
-See Also:  emote, say, osay, channels
+See Also:  emote, say, osay, channels, toggle, credits
 </color></help>
