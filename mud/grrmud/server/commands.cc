@@ -3314,6 +3314,9 @@ int obj_wear_by(object& obj, critter& pc, int in_posn, short do_msg) {
 
    if (!obj.OBJ_FLAGS.get(21 + posn) || posn == 0) {
       if (do_msg) {
+         if (posn == 10 && obj.OBJ_FLAGS.get(32)) {
+            pc.show(CS_TRY_LIGHT_OBJ);
+         }
          pc.show(CS_CANT_WEAR_THERE);
       }//if
       mudlog.log(DBG, "obj_wear_by failed, wrong posn.\n");

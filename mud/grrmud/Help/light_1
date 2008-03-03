@@ -1,0 +1,13 @@
+<help general light>
+
+Attempt to light a light source. Objects that are light sources,
+such as torches and lanterns, need to be lit to give off light.
+
+Syntax:  light <<i_th> [item]
+
+Example:  light lantern 
+	  light 2.torch
+
+<color = red>
+See Also:  remove, wield, hold, wear
+</color></help>

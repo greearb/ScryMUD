@@ -1208,6 +1208,10 @@ CS_CANT_WEAR_THERE
         ser "Nemozes da nosis to tu.\n"
 	~
 
+CS_TRY_LIGHT_OBJ
+	eng "See 'help light' to light an object.\n"
+	~
+
 CS_TOO_EVIL
         eng "You're too evil for your %S!\n"
         spa "Eres demasiado malvado para %S!\n"

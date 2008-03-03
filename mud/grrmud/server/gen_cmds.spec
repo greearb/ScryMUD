@@ -476,7 +476,7 @@ laugh lol socials ~
 laugh(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 lick socials ~
 lick(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
-light wear ~
+light ~
 return light(i, &(cooked_strs[1]), pc);
 list ~
 return list_merchandise(i, &(cooked_strs[1]), pc);
