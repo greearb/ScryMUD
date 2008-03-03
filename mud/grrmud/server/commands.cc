@@ -3686,7 +3686,7 @@ int gain_eq_effects(object& obj, object* bag, critter& pc,
          show(buf, pc);
    
          while ((crit_ptr = cell.next())) {
-            if (crit_ptr != &pc) {
+            if (crit_ptr != &pc && crit_ptr->POS < POS_SLEEP) {
                Sprintf(buf, cstr(CS_DO_GET_O, *crit_ptr),
                        name_of_crit(pc, crit_ptr->SEE_BIT), 
                        long_name_of_obj(obj, crit_ptr->SEE_BIT));
