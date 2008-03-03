@@ -640,6 +640,10 @@ void social_jump(int i_th, const String* vict, critter& pc, room& rm) {
    object* obj_ptr;
 
    if(vict->Strlen()) {
+      if (pc.POS >= POS_SIT) {
+	pc.show("You can't jump from this position.\n");
+	return;
+      }
       if( (obj_ptr=have_obj_named(pc.inv, i_th, vict, pc.SEE_BIT, rm)) ) {
 
          Sprintf(buf, "You throw %S to the ground and start jumping up and down on it.\n",
@@ -1691,7 +1695,7 @@ void ack(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You ACK at spit at %S.\n",
+         Sprintf(buf, "You ACK and spit at %S.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
          Sprintf(buf, "%S ACKS and spits at you!  ACK!  PTHHH!\n",
@@ -1732,7 +1736,7 @@ void bounce(int i_th, const String* vict, critter& pc, room& rm) {
 
       if (!crit_ptr)
          show(DONT_SEE_PERSON, pc);
-      else if (pc.POS > POS_SIT)
+      else if (pc.POS >= POS_SIT)
          show(NOT_IN_POSN, pc);
       else if (crit_ptr == &pc) {
          show("You bounce around yourself and get dizzy.\n", pc);
@@ -1811,7 +1815,7 @@ void burp(int i_th, const String* vict, critter& pc, room& rm) {
    }//if a victim
    else {      
       show("You burp happily.  BUUUUURP!\n", pc);
-      emote("burps loud and happily.", pc, rm, TRUE);
+      emote("burps loudly and happily.", pc, rm, TRUE);
    }//else
 }//burp
 

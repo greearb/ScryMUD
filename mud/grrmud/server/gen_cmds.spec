@@ -1002,6 +1002,8 @@ weep socials ~
 weep(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 where ~
 return where(i, &(cooked_strs[1]), pc);
+whee socials ~
+whee(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 whistle socials ~
 whistle(i, &(cooked_strs[1]), pc, (*(pc.getCurRoom()))); return 0;
 whimper socials ~

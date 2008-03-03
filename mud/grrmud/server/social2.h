@@ -100,4 +100,5 @@ void zombie(int i_th, const String* vict, critter& pc, room& rm);
 void curl(int i_th, const String* vict, critter& pc, room& rm);
 void snuggle(int i_th, const String* vict, critter& pc, room& rm);
 void gasp(int i_th, const String* vict, critter& pc, room& rm);
+void whee(int i_th, const String* vict, critter& pc, room& rm);
 #endif
