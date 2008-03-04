@@ -403,7 +403,7 @@ int write_board(object& obj) {
 
 
 int post(const String* title, critter& pc) {
-   if (!ok_to_do_action(NULL, "mFPSG", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
+   if (!ok_to_do_action(NULL, "mFPG", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
       return -1;
    }
 
@@ -435,6 +435,7 @@ int post(const String* title, critter& pc) {
 
 int do_post(critter& pc) {
    String buf = pc.pc->input.Get_Rest();
+   String buf2(100);
 
    if (buf.Strlen() == 0) {
       show("Input a line of your message or a ~ to end it.\n", pc);
@@ -514,6 +515,9 @@ int do_post(critter& pc) {
       return 0;
    }//if
 
+   //add real-world time to bulletin board post
+   Sprintf(buf2, "Posted at %S:\n", &getCurTime());
+   (pc.pc->post_msg->long_desc) += buf2;
    (pc.pc->post_msg->long_desc) += buf;
    (pc.pc->post_msg->long_desc) += "\n";
    return 0;
