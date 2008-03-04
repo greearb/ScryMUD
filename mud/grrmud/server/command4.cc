@@ -1761,11 +1761,18 @@ int mlist(int start, int end, critter& pc) {
 
    for (int i = start; i<= end; i++) {
       if (mob_list[i].CRIT_FLAGS.get(18)) {
-         Sprintf(buf, "\t%i\t%S\n", i, &(mob_list[i].short_desc));
+         //print mnum, S if it has script, level and short desc
+         if (mob_list[i].mob->mob_data_flags.get(17)) {
+            Sprintf(buf, "[%i] S  lvl %i  %S\n", i,
+            mob_list[i].short_cur_stats[19], &(mob_list[i].short_desc));
+         } else {
+            Sprintf(buf, "[%i]    lvl %i  %S\n", i,
+            mob_list[i].short_cur_stats[19], &(mob_list[i].short_desc));
+         }
          show(buf, pc);
       }//if
       else {
-         Sprintf(buf, "\t%i\tTHIS MOB UNDEFINED.\n", i);
+         Sprintf(buf, "[%i]        THIS MOB IS UNDEFINED.\n", i);
          show(buf, pc);
       }//else
    }//for

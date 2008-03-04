@@ -1228,7 +1228,14 @@ int mvnum(int i_th, const String* name, critter& pc) {
 
    for (i = i_th; i<NUMBER_OF_MOBS; i++) {
       if (mob_is_named(mob_list[i], *name)) {
-         Sprintf(buf, "[%i] %S\n", i, &(mob_list[i].short_desc));
+         //print mnum, S if it has script, level and short desc
+         if (mob_list[i].mob->mob_data_flags.get(17)) {
+            Sprintf(buf, "[%i] S  lvl %i  %S\n", i, 
+               mob_list[i].short_cur_stats[19], &(mob_list[i].short_desc));
+         } else {
+            Sprintf(buf, "[%i]    lvl %i  %S\n", i, 
+               mob_list[i].short_cur_stats[19], &(mob_list[i].short_desc));
+         }
          show(buf, pc);
       }//if
    }//for
@@ -1638,7 +1645,14 @@ int amlist(int zone, int how_many, critter& pc) {
    for (int i = 0; (i<NUMBER_OF_MOBS && count < how_many); i++) {
       if (mob_list[i].getNativeZoneNum() == zone) {
          if (mob_list[i].isInUse()) {
-            Sprintf(buf, "[%i]\t%S\n", i, &(mob_list[i].short_desc));
+            //print mnum, S if it has script, level and short desc
+            if (mob_list[i].mob->mob_data_flags.get(17)) {
+               Sprintf(buf, "[%i] S  lvl %i  %S\n", i, 
+                  mob_list[i].short_cur_stats[19], &(mob_list[i].short_desc));
+            } else {
+               Sprintf(buf, "[%i]    lvl %i  %S\n", i, 
+                  mob_list[i].short_cur_stats[19], &(mob_list[i].short_desc));
+            }
             count++;
             show(buf, pc);
          }//if
