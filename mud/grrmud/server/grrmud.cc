@@ -52,6 +52,7 @@
 #include <iostream>
 #include <fstream>
 #include <strings.h>
+#include <mt19937ar.h>
 #include <string2.h>
 #include <list2.h>
 #include <PtrArray.h>
@@ -550,7 +551,9 @@ int main(int argc, char** argv) {
       "\n"
       "--Edward Roper (edro+scrymud [at] wanfear.net)\n\n";
 
-   srand(time(0));
+   //srand(time(0));
+   // Initialize the Mersenne Twister
+   init_rand();
 
    config.read("grrmud.cfg");
    config.readDynamic("dynamic.cfg");

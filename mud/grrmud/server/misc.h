@@ -190,6 +190,7 @@ bool isNightTime();
 int verifydoors(int i_th, critter &pc);
 int mia_mobs(int i_th, critter &pc);
 int mia_objects(int i_th, critter &pc);
+void init_rand();
 
 String *colorize(const char *input, const critter &pc, hilite_type hl_type); 
 

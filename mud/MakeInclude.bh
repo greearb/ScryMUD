@@ -14,9 +14,9 @@ MAKE=make
 # TODO:  Choose these flags in the ./configure script.
 
 # NOTE:  Use these variables if you are using EGCS and glibc 5
-CCFLAGS = -g -D_GNU_SOURCE $(BG_NEW_GCC_TEMPLATES) $(GUIDING_DECLS) $(HUGE_OBJECTS) \
-          -pipe -Wall -O2 -I$(MUD_HOME)/include
-LDLIBS =  -lm -lstring2 -lbitfield -lcrypt -lpcre#-lnsl # -lsocket
+CCFLAGS = -O2 -g -D_GNU_SOURCE $(BG_NEW_GCC_TEMPLATES) $(GUIDING_DECLS) $(HUGE_OBJECTS) \
+          -pipe -Wall -I$(MUD_HOME)/include
+LDLIBS =  -lm -lstring2 -lbitfield -lcrypt -lpcre -lmt19937ar #-lnsl # -lsocket
 
 
 # NOTE:  For Cygwin users:

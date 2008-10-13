@@ -23,6 +23,7 @@
 //
 
 #include "command4.h"
+#include <sys/time.h>
 #include <time.h>
 #include "commands.h"
 #include "battle.h"
@@ -39,9 +40,9 @@
 #include "load_wld.h"
 #include "command3.h"
 #include "skills.h"
-#include <time.h>
 #include "Filters.h"
 #include <math.h>
+#include <mt19937ar.h>
 
 
 /** calculate the ratio between objects casting spell a spell and the
@@ -199,11 +200,38 @@ char* get_he_she(const critter& crit) {
    }//else
 }//get_he_she
 
+/* Initialize the random number generator */
+void init_rand() {
+    struct timeval tv;
+    if ( gettimeofday(&tv, NULL) != 0 ) {
+        cerr << "gettimeofday() failed in init_rand()." << endl;
+        cerr << "Seeding with 1. This is evil." << endl;
+        init_genrand(1);
+    } else {
+        cerr << "Seeding with " << tv.tv_usec << endl;
+        init_genrand(tv.tv_usec);
+        srand(tv.tv_usec); //currently rand() is still used in a few places.
+    }
+}//init_rand()
 
 int d(const int num_rolls, const int dice_sides) {
    int rtvalue = 0;
+   double tmp;
    for (int i = 0; i<num_rolls; i++) {
-      rtvalue += 1 +(int)((rand() * (float)(dice_sides)) / (RAND_MAX + 1.0));
+      // some places pass critter::get_percent_lrnd() here
+      if ( dice_sides == 0 ) {
+          return(0);
+      }
+      //rtvalue += 1 +(int)((rand() * (float)(dice_sides)) / (RAND_MAX + 1.0));
+      tmp = genrand_real1();
+      if ( tmp == 0 || tmp == 1 ) {
+        cerr << "generated " << tmp << endl;
+      }
+      rtvalue += 1+floor(dice_sides*tmp);
+      if ( 1+floor(dice_sides*tmp) > dice_sides ) {
+          cerr << 1+floor(dice_sides*tmp) << " > " << dice_sides << endl;
+      }
+      //cerr << "rolled " << floor(dice_sides*tmp) << endl;
    }//for
    return rtvalue;
 }//d()
@@ -474,9 +502,9 @@ void do_regeneration_pcs() {
 
    while ((crit_ptr = crit_cell.next())) {
 
-	  if(crit_ptr->getCurRoom()->getWeather()!= wNONE){
+          if(crit_ptr->getCurRoom()->getWeather()!= wNONE){
             weather_mod = weather_regen_mods[crit_ptr->getCurRoom()->getWeather()];
-			temperature_mod = temperature_regen_mods[crit_ptr->getCurRoom()->getTemperature()];
+                        temperature_mod = temperature_regen_mods[crit_ptr->getCurRoom()->getTemperature()];
       }
       //no regen if we're fighting
       if ( crit_ptr->isFighting() ) {
@@ -496,9 +524,9 @@ void do_regeneration_pcs() {
       else {
          if ((crit_ptr->POS > POS_SIT) &&
              room_list[crit_ptr->getCurRoomNum()].canCamp()) {
-				 float camp = get_percent_lrnd(CAMPING_SKILL_NUM, *crit_ptr) / 200;
-				 env_mod *= (temperature_mod+((camp*(1.0 - temperature_mod))/2));
-				 env_mod *= (weather_mod+(camp*(1.0 - weather_mod)));
+                                 float camp = get_percent_lrnd(CAMPING_SKILL_NUM, *crit_ptr) / 200;
+                                 env_mod *= (temperature_mod+((camp*(1.0 - temperature_mod))/2));
+                                 env_mod *= (weather_mod+(camp*(1.0 - weather_mod)));
          }//if camping is an issue
 
          posn_mod = (2.0 + (float)(crit_ptr->POS)) / 4.0;
@@ -1331,16 +1359,16 @@ void decrease_timed_affecting_pcs() {  //will decrease all
 
          if (crit_ptr->HUNGER > 0)
             crit_ptr->HUNGER--;  //food
-		 if (crit_ptr->THIRST > 0){
-			 room* rm = crit_ptr->getCurRoom();
-			 if(rm->hasWeather() && (weather.climates[rm->getClimate()].temperature == veryhot || 
-				 weather.climates[rm->getClimate()].temperature == burninghot)){
-					 //use more water in high temp
-					 crit_ptr->THIRST--;
-				 }
-				 crit_ptr->THIRST--;  //drink
-				 if(crit_ptr->THIRST < 0) crit_ptr->THIRST = 0;
-		 }
+                 if (crit_ptr->THIRST > 0){
+                         room* rm = crit_ptr->getCurRoom();
+                         if(rm->hasWeather() && (weather.climates[rm->getClimate()].temperature == veryhot || 
+                                 weather.climates[rm->getClimate()].temperature == burninghot)){
+                                         //use more water in high temp
+                                         crit_ptr->THIRST--;
+                                 }
+                                 crit_ptr->THIRST--;  //drink
+                                 if(crit_ptr->THIRST < 0) crit_ptr->THIRST = 0;
+                 }
          if (crit_ptr->DRUGGED > 0)
             crit_ptr->DRUGGED--;  //drugged
          if (crit_ptr->isViolent()) { // violence timer
@@ -2060,7 +2088,7 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all) {
          mudlog << "out_crit: got critter:  " << *(crit_ptr->getName())
                 << endl;
       }
-	  if (pc.canSee(*crit_ptr) &&  //detect(see_bits, crit_ptr->VIS_BIT) &&
+          if (pc.canSee(*crit_ptr) &&  //detect(see_bits, crit_ptr->VIS_BIT) &&
           (crit_ptr != &pc)) { //can see it, not looker
          if ((crit_ptr->isHiding()) && //if is hiding
              (d(1, pc.LEVEL + 30) < 
@@ -2358,7 +2386,7 @@ void out_inv(PtrList<object>& lst, critter& pc,
       case ROOM_INV:
          while ((obj_ptr = cell.next())) {
 
-			 if (pc.canSee(*obj_ptr)){  //  detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
+                         if (pc.canSee(*obj_ptr)){  //  detect(pc.SEE_BIT, obj_ptr->OBJ_VIS_BIT)) {
 
                id_num = obj_ptr->getIdNum();
 
@@ -2405,9 +2433,9 @@ void out_inv(PtrList<object>& lst, critter& pc,
                     !obj_ptr->stat_affects.isEmpty())) {
                   buf.Append("^B{Blue Glow}^0\n");
                }//if
-	       else {
-	          buf.Append("\n");
-	       }
+               else {
+                  buf.Append("\n");
+               }
 
                if (obj_ptr->OBJ_VIS_BIT & 2) {
                   buf.Prepend("*");
