@@ -208,7 +208,6 @@ void init_rand() {
         cerr << "Seeding with 1. This is evil." << endl;
         init_genrand(1);
     } else {
-        cerr << "Seeding with " << tv.tv_usec << endl;
         init_genrand(tv.tv_usec);
         srand(tv.tv_usec); //currently rand() is still used in a few places.
     }
@@ -222,16 +221,8 @@ int d(const int num_rolls, const int dice_sides) {
       if ( dice_sides == 0 ) {
           return(0);
       }
-      //rtvalue += 1 +(int)((rand() * (float)(dice_sides)) / (RAND_MAX + 1.0));
       tmp = genrand_real1();
-      if ( tmp == 0 || tmp == 1 ) {
-        cerr << "generated " << tmp << endl;
-      }
-      rtvalue += 1+floor(dice_sides*tmp);
-      if ( 1+floor(dice_sides*tmp) > dice_sides ) {
-          cerr << 1+floor(dice_sides*tmp) << " > " << dice_sides << endl;
-      }
-      //cerr << "rolled " << floor(dice_sides*tmp) << endl;
+      rtvalue += 1 + floor( dice_sides * genrand_real1() );
    }//for
    return rtvalue;
 }//d()
