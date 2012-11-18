@@ -183,7 +183,7 @@ protected:
    virtual int findOffset(List<KVPair<String, int>*>& lst, const String& str);
 
 public:
-   static char* triggers[];
+   static const char* triggers[];
 
    GenScript();
    GenScript(String& trig, int targ, int act, String& discriminator,

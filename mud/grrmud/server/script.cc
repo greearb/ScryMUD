@@ -269,7 +269,7 @@ int do_mob_comparison(int i_th, const String& rhs_critter,
    int pc_val;
 
    if (!crit_ptr) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  Couldn't find crit_ptr, i_th: " << i_th
                 << " rhs -:" << rhs_critter << ":-\n";
       }
@@ -661,7 +661,7 @@ GenScript::~GenScript() {
 }
 
 // Static Class Data
-char* GenScript::triggers[] = {
+const char* GenScript::triggers[] = {
    "break", "close", "discuss", "donate",
    "drop", "eat", "enter", "examine", "exit", "fill", "flip", "follow",
    "get", "give", "grab", "group",
@@ -1645,7 +1645,7 @@ void GenScript::read(ifstream& da_file) {
    mudlog.log(DB, "in GenScript::Read()");
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in GenScript read." << endl;
       }
       return;
@@ -1685,7 +1685,7 @@ void GenScript::read(ifstream& da_file) {
    // It will be one large chuck of text, which will be parsed
    // and put into the queue.
    String sbuf(1024);
-   sbuf.Termed_Read(da_file);
+   sbuf.termedRead(da_file);
 
    if (mudlog.ofLevel(DB)) {
       mudlog << "Script read:  Termed Read:  -:" << sbuf << ":-\n" << endl;

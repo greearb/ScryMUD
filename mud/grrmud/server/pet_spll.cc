@@ -74,7 +74,7 @@ void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
           !mob_list[config.iceGolemMob].isInUse() || 
           !mob_list[config.lightningGolemMob].isInUse() || 
           !mob_list[config.hellfireGolemMob].isInUse()) {
-         mudlog.log(ERROR, "ERROR: Greater Golem doesn't exist.\n");
+         mudlog.log(LS_ERROR, "ERROR: Greater Golem doesn't exist.\n");
          return;
       }//if
       
@@ -451,7 +451,7 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
          !mob_list[config.waterGolemMob].isInUse() ||
          !mob_list[config.airGolemMob].isInUse() ||
          !mob_list[config.fireGolemMob].isInUse()) {
-        mudlog.log(ERROR, "ERROR: Greater Golem doesn't exist.\n");
+        mudlog.log(LS_ERROR, "ERROR: Greater Golem doesn't exist.\n");
         return;
      }//if
      
@@ -522,7 +522,7 @@ void do_cast_create_light(critter& pc, int is_canned, int lvl) {
          pc.MANA -= spell_mana;
       
       if (!obj_list[config.createLightObject].OBJ_FLAGS.get(10)) {
-         mudlog.log(ERROR, "ERROR:  need to create an CREATE_LIGHT object.\n");
+         mudlog.log(LS_ERROR, "ERROR:  need to create an CREATE_LIGHT object.\n");
          return;
       }//if
       
@@ -576,7 +576,7 @@ void do_cast_create_food(critter& pc, int is_canned, int lvl) {
          pc.MANA -= spell_mana;
       
       if (!obj_list[config.createFoodObject1].OBJ_FLAGS.get(10)) {
-         mudlog.log(ERROR, "ERROR:  need to create an CREATE_FOOD object.\n");
+         mudlog.log(LS_ERROR, "ERROR:  need to create an CREATE_FOOD object.\n");
          return;
       }//if
       
@@ -634,7 +634,7 @@ void do_cast_heros_feast(critter& pc, int is_canned, int lvl) {
          (!obj_list[config.createFoodObject3].isInUse()) || 
          (!obj_list[config.createFoodObject3].isInUse())) {
         pc.show("ERROR:  Tell your sysadmin, food objects not created.\n");
-        mudlog.log(ERROR, "ERROR:  need to create an CREATE_FOOD[x] objects.\n");
+        mudlog.log(LS_ERROR, "ERROR:  need to create an CREATE_FOOD[x] objects.\n");
         return;
      }//if
 
@@ -914,7 +914,7 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
        }//switch
 
        if ((which_un == 0) || (!mob_list[which_un].isInUse())) {
-          if (mudlog.ofLevel(ERROR)) {
+          if (mudlog.ofLevel(LS_ERROR)) {
              mudlog << "ERROR:  (conjure horde) need to create MINION# " 
                     << which_un << endl;
           }

@@ -244,7 +244,7 @@ void ZoneCollection::readSelf() {
    
    while ((k != -1) && zfile) { //then read it in.
       if (!check_l_range(k, 0, NUMBER_OF_ZONES, mob_list[0], FALSE)) {
-         mudlog.log(ERROR, "ERROR:  zone number is out of range, fatal\n");
+         mudlog.log(LS_ERROR, "ERROR:  zone number is out of range, fatal\n");
          do_shutdown = TRUE;
          exit(100);
       }//if
@@ -983,7 +983,7 @@ int zone::Read(ifstream& dafile, int znum) {
    }
 
    if (!dafile) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in obj read." << endl;
       }
       return FALSE;
@@ -1009,7 +1009,7 @@ int zone::Read(ifstream& dafile, int znum) {
    while (test) {
 
       if (!dafile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in zone read." << endl;
          }
          return FALSE;

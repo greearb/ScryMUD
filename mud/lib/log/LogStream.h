@@ -1,8 +1,5 @@
-// $Id$
-// $Revision$  $Author$ $Date$
-
 //
-//Copyright (C) 2001  Ben Greear
+//Copyright (C) 2001-2005  Ben Greear
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Library General Public License
@@ -18,30 +15,28 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-//To contact the maintainer, Edward Roper: edro+scrymud [at] wanfear.net
-//
 
 //  This class has the ability to buffer logs in RAM for efficiency,
 //  roll logs after a certain amount of usage, and it's verbosity
 //  level can be adjusted on the fly.
 
-/*
-#ifdef HAVE_NEW_IOSTREAMS
-#include <sstream>
-typedef std::stringstream my_sstream;
-#else
-#include <strstream>
-typedef strstream my_sstream;
-#endif
-*/
 #include <sstream>
 typedef std::stringstream my_sstream;
 
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
+#include <assert.h>
+#include <errno.h>
+#include <unistd.h>
+
+#ifdef __WIN32__
+#include <io.h>
+#endif
+
+using namespace std;
 
 #ifndef LOG_STREAM_INCLUDE
 #define LOG_STREAM_INCLUDE
@@ -51,13 +46,12 @@ typedef std::stringstream my_sstream;
 
 enum LogLevelEnum {
    DIS = 1,   //disasters
-   ERROR = 2,   //errors
+   LS_ERROR = 2,   //errors
    WRN = 4,   //warnings
    INF = 8,   //info
    TRC = 16,  //function trace
    DBG = 32,  //debug
-   SEC = 64,  // log security violations
-   LSEC = 64,  // log security violations
+   LS_SEC = 64,  // log security violations
    DB = 128,  // READ or WRITE from the world files
    XMT = 256, // Output from MUD to characters
    INP = 512, // Input from players
@@ -77,7 +71,7 @@ typedef LogStream& (*__ls_manip)(LogStream&);
 
 LogStream& endl(LogStream& lstr);
 
-class LogStream : public std::ofstream {
+class LogStream : public ofstream {
 protected:
    char* filename;
    int log_level;
@@ -103,13 +97,17 @@ public:
       setFileName(fname);
    }//constructor
 
-   ~LogStream() { 
+   virtual ~LogStream() { 
       flush();
       if (filename)
          free(filename);
    }//destructor
 
    const char* getFileName() const { return filename; }
+
+   void setFileLen(int ln) {
+      max_logfile_sz = ln;
+   }
 
    void setFileName(const char* fname) {
       if (fname && filename && (strcmp(fname, filename) == 0)) {
@@ -130,7 +128,7 @@ public:
             open(filename);
          }
          else {
-            open(filename, std::ios::app);
+            open(filename, ios::app);
          }
          //cout << "Opening log-str -:" << filename << ":-\n";
 
@@ -143,10 +141,25 @@ public:
       if (file_action & OVERWRITE) {
          close();
          clear();
-         char buf[strlen(filename) * 2 + 100];
-         sprintf(buf, "mv -f %s %s.old", filename, filename);
-         system(buf);
+         errno = 0;
+         int ln = strlen(filename) + 100;
+         char buf[ln];
+         snprintf(buf, ln, "%s.old", filename);
+         // Unlink the any existing old file.
+         unlink(buf);
+
+         if (rename(filename, buf) < 0) {
+            cerr << "ERROR: LogFile::rollFile failed rename: "
+                 << filename << " to: " << buf << "  Error: " << strerror(errno)
+                 << endl;
+         }
          open(filename);
+
+         if (bad()) {
+            cerr << "ERROR: LogFile::rollFile couldn't open filename -:" << filename
+                 << ":-  Error: " << strerror(errno) << endl;
+            //assert(!bad());
+         }
       }
       return 0;
    }
@@ -169,88 +182,102 @@ public:
    }
 
    LogStream& operator<< (const char* msg) {
-      *((std::ofstream*)this) << msg;
-      sofar += strlen(msg);
+      if (msg) {
+         *((ofstream*)this) << msg;
+         sofar += strlen(msg);
+      }
+      else {
+         *((ofstream*)this) << "NULL";
+         sofar += 4; // for 'null'
+      }
       if (sofar > max_logfile_sz) {
          rollFile();
       }//if
       return *this;
    }//operator overload      
 
-   LogStream& operator<< (const void* ptr) { 
-      *((std::ofstream*)this) << ptr;
-      sofar += 4; //guess how long it might be...
+   LogStream& operator<< (const void* ptr) {
+      char vp[30];
+      sofar += snprintf(vp, 29, "%p", ptr);
+      vp[29] = 0;
+      *((ofstream*)this) << vp;
       return *this;
    }
 
    LogStream& operator<< (short int i) { 
-      *((std::ofstream*)this) << i;
+      *((ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (unsigned char i) { 
-      *((std::ofstream*)this) << i;
+      *((ofstream*)this) << i;
       sofar += 1; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (char i) { 
-      *((std::ofstream*)this) << i;
+      *((ofstream*)this) << i;
       sofar += 1; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (unsigned short int i) { 
-      *((std::ofstream*)this) << i;
+      *((ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
       
    LogStream& operator<< (int i) { 
-      *((std::ofstream*)this) << i;
+      *((ofstream*)this) << i;
+      sofar += 4; //guess how long it might be...
+      return *this;
+   }
+
+   LogStream& operator<< (bool i) { 
+      *((ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (unsigned int i) { 
-      *((std::ofstream*)this) << i;
+      *((ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (unsigned long int i) { 
-      *((std::ofstream*)this) << i;
+      *((ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (long int i) { 
-      *((std::ofstream*)this) << i;
+      *((ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (unsigned long long int i) { 
-      *((std::ofstream*)this) << i;
+      *((ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (long long int i) { 
-      *((std::ofstream*)this) << i;
+      *((ofstream*)this) << i;
       sofar += 4; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (double d) { 
-      *((std::ofstream*)this) << d;
+      *((ofstream*)this) << d;
       sofar += 8; //guess how long it might be...
       return *this;
    }
 
    LogStream& operator<< (float d) { 
-      *((std::ofstream*)this) << d;
+      *((ofstream*)this) << d;
       sofar += 8; //guess how long it might be...
       return *this;
    }

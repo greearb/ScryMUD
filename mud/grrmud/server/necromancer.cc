@@ -682,7 +682,7 @@ void do_cast_raise_undead(critter& pc, int is_canned, int lvl) {
    if (is_canned || !(lost_con = lost_concentration(pc, spell_num))) {
       
       if (!mob_list[config.walkingCorpseMob].isInUse()) {
-         mudlog.log(ERROR, "ERROR:  need to create a RAISED_CORPSE_MOB.\n");
+         mudlog.log(LS_ERROR, "ERROR:  need to create a RAISED_CORPSE_MOB.\n");
          return;
       }//if
       

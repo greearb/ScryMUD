@@ -63,10 +63,10 @@ int track(int i_th, const String* victim, critter& pc) {
 
 
    if (!victim) {
-      mudlog.log(ERROR, "ERROR:  NULL(s) sent to track().\n");
+      mudlog.log(LS_ERROR, "ERROR:  NULL(s) sent to track().\n");
    }//if
    else if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  mob trying to track..\n");
+      mudlog.log(LS_ERROR, "ERROR:  mob trying to track..\n");
    }//if
    else if (pc.POS != POS_STAND) {
       pc.show("You must be standing in order to track.\n");
@@ -176,7 +176,7 @@ int do_trip(critter& vict, critter& pc) {
 
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_trip.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_trip.\n");
       return -1;
    }//if
 
@@ -407,7 +407,7 @@ int do_kick(critter& vict, critter& pc) {
 
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_kick.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_kick.\n");
       return -1;
    }//if
 
@@ -520,7 +520,7 @@ int do_bash(door& vict, critter& pc) { //bash for doors
    String buf(100);
 
    if (pc.isMob()) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  MOB sent to do_bash, name:  " 
                 << *(name_of_crit(pc, ~0)) << "  address:  " << &pc << endl;
       }
@@ -575,7 +575,7 @@ int do_bash(critter& vict, critter& pc) {
    int wd;
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_bash.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_bash.\n");
       return -1;
    }//if
 
@@ -681,7 +681,7 @@ int do_block(critter& vict, critter& pc) {
    String buf(100);
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_block.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_block.\n");
       return -1;
    }//if
 
@@ -717,7 +717,7 @@ int do_block(door& vict, critter& pc) {
    String buf(100);
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_block.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_block.\n");
       return -1;
    }//if
 
@@ -808,7 +808,7 @@ int do_claw(critter& vict, critter& pc) {
    mudlog.log(TRC, "In do_claw.\n");
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_claw.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_claw.\n");
       return -1;
    }//if
 
@@ -976,13 +976,13 @@ int construct(critter& pc, short do_mob) {
    if (!ptr->obj_proc) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL obj_proc.\n", 
               &(ptr->short_desc));
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, buf);
       return -1;
    }//if
    if (!ptr->obj_proc->construct_data) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL construct_data.\n", 
               &(ptr->short_desc));
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, buf);
       return -1;
    }//if
 
@@ -1193,13 +1193,13 @@ int concoct(critter& pc, short do_mob) {
    if (!ptr->obj_proc) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL obj_proc.\n", 
              &( ptr->short_desc));
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, buf);
       return -1;
    }//if
    if (!ptr->obj_proc->construct_data) {
       Sprintf(buf, "ERROR:  %S is COMPONENT w/NULL construct_data.\n", 
               &(ptr->short_desc));
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, buf);
       return -1;
    }//if
 
@@ -1443,7 +1443,7 @@ int scribe(const String* spell, critter& pc, short do_mob) {
       else { //scroll object not created yet
          Sprintf(buf, "ERROR:  need to create scroll for spell:  %i.\n",
                  spell_num);
-         mudlog.log(ERROR, buf);
+         mudlog.log(LS_ERROR, buf);
          pc.show("As you finish the last phrase the parchement grows hot and"
                  " bursts into flame.\nThis spell just doesn't take to paper"
                  " very well!\n");
@@ -1509,7 +1509,7 @@ short did_spell_hit(const critter& agg, const int spell_type,
            j += (int)((float)j * ((float)agg.getAlignment() / 4000.0));
         break;
      default:
-        if (mudlog.ofLevel(ERROR)) {
+        if (mudlog.ofLevel(LS_ERROR)) {
            mudlog << "ERROR:  default in did_spell_hit, spelltype:  "
                   << spell_type << endl;
         }

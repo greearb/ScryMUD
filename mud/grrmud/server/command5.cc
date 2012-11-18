@@ -1461,7 +1461,7 @@ int do_aosave(int zone) {
    Sprintf(buf, "./World/objects_%i", zone);
    ofstream ofile(buf);
    if (!ofile) {
-      mudlog.log(ERROR, "ERROR:  ofile is NULL, aosave.\n");
+      mudlog.log(LS_ERROR, "ERROR:  ofile is NULL, aosave.\n");
       return -1;
    }//if
 
@@ -1539,7 +1539,7 @@ int do_amsave(int zone) {
    Sprintf(buf, "./World/critters_%i", zone);
    ofstream ofile(buf);
    if (!ofile) {
-      mudlog.log(ERROR, "ERROR:  ofile is NULL, amsave.\n");
+      mudlog.log(LS_ERROR, "ERROR:  ofile is NULL, amsave.\n");
       return -1;
    }//if
    
@@ -1599,7 +1599,7 @@ int do_adsave(int zone) {
    Sprintf(buf, "./World/doors_%i", zone);
    ofstream ofile(buf);
    if (!ofile) {
-      mudlog.log(ERROR, "ERROR:  ofile is NULL, adsave.\n");
+      mudlog.log(LS_ERROR, "ERROR:  ofile is NULL, adsave.\n");
       return -1;
    }//if
 
@@ -2900,7 +2900,7 @@ int do_shoot(critter& targ, critter& pc) {
     int targ_is_dead = FALSE;
 
     if ((targ.isMob()) || (pc.isMob())) {
-        mudlog.log(ERROR, "ERROR:  SMOB sent to do_shoot.\n");
+        mudlog.log(LS_ERROR, "ERROR:  SMOB sent to do_shoot.\n");
         return -1;
     }//if
 
@@ -3114,7 +3114,7 @@ int do_throw(critter& targ, critter& pc) {
    int posn;
 
    if ((targ.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_throw.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_throw.\n");
       return -1;
    }//if
 

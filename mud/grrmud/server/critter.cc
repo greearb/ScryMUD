@@ -249,7 +249,7 @@ void shop_data::Read(ifstream& da_file, short read_all) {
    Clear();
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in shop_data read." << endl;
       }
       return;
@@ -283,7 +283,7 @@ void shop_data::Read(ifstream& da_file, short read_all) {
             Sprintf(buf, 
                     "ERROR:  trying to load non_exist. obj: %i in perm_inv.\n",
                     i);
-            mudlog.log(ERROR, buf);
+            mudlog.log(LS_ERROR, buf);
          }//else
       }//else
       da_file >> i;
@@ -553,7 +553,7 @@ void say_proc_cell::Read(ifstream& da_file) {
    char buf[82];
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in say_proc_cell read." << endl;
       }
       return;
@@ -563,7 +563,7 @@ void say_proc_cell::Read(ifstream& da_file) {
    da_file.getline(buf, 80);         
    topic = buf;
    
-   msg.Termed_Read(da_file);
+   msg.termedRead(da_file);
    
    da_file.getline(buf, 80);
    skill_name = buf;
@@ -638,7 +638,7 @@ void action_proc_data::Read(ifstream& da_file) {
    char buf[82];
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in action_proc_data read." << endl;
       }
       return;
@@ -650,7 +650,7 @@ void action_proc_data::Read(ifstream& da_file) {
    da_file.getline(buf, 80);         
 
    //mudlog.log(DBG, "got test_num.\n");
-   correct_msg.Termed_Read(da_file);
+   correct_msg.termedRead(da_file);
 
    //mudlog.log(DBG, "got correct_msg:");
    //mudlog.log(DBG, correct_msg);
@@ -665,7 +665,7 @@ void action_proc_data::Read(ifstream& da_file) {
    da_file.getline(buf, 80);         
 
    //mudlog.log(DBG, "Getting wrong_gift_msg:");
-   wrong_gift_msg.Termed_Read(da_file);
+   wrong_gift_msg.termedRead(da_file);
    da_file.getline(buf, 80);      
    //mudlog.log(DBG, wrong_gift_msg);   
 }//read()
@@ -819,7 +819,7 @@ void spec_data::Read(ifstream& da_file, short read_all) {
    Clear();
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in spec_data read." << endl;
       }
       return;
@@ -872,9 +872,9 @@ void spec_data::Read(ifstream& da_file, short read_all) {
 
    if (flag1.get(5) || flag1.get(6) || flag1.get(7) || flag1.get(8)) {
       // then assume messages are there, ignore otherwise
-      wrong_align_msg.Termed_Read(da_file);
-      wrong_class_msg.Termed_Read(da_file);
-      wrong_race_msg.Termed_Read(da_file);
+      wrong_align_msg.termedRead(da_file);
+      wrong_class_msg.termedRead(da_file);
+      wrong_race_msg.termedRead(da_file);
    }//if
 
    if (flag1.get(13)) { //if HAS_MOB_AI
@@ -896,7 +896,7 @@ void spec_data::Write(ofstream& da_file){
   
    if (flag1.get(1)) {  // shopkeeper
       if (!sh_data) {
-         mudlog.log(ERROR, "ERROR:  trying to write sh_data, but it's NULL\n");
+         mudlog.log(LS_ERROR, "ERROR:  trying to write sh_data, but it's NULL\n");
          return;
       }//if
       sh_data->Write(da_file);
@@ -904,7 +904,7 @@ void spec_data::Write(ofstream& da_file){
 
    if (flag1.get(2)) {  // teacher
       if (!teach_data) {
-         mudlog.log(ERROR, 
+         mudlog.log(LS_ERROR, 
                     "ERROR:  trying to write teach_data, but it's NULL\n");
          return; 
       }//if
@@ -1105,7 +1105,7 @@ void mob_data::addProcScript(const String& txt, MobScript* script_data) {
    mudlog.log(DBG, "done with setScript.");
 
    if (!script_data) {
-      mudlog.log(ERROR, "script_data is NULL, mob_data::addProcScript.");
+      mudlog.log(LS_ERROR, "script_data is NULL, mob_data::addProcScript.");
       return;
    }
 
@@ -1154,7 +1154,7 @@ void mob_data::Write(ofstream& ofile) {
    
    if (mob_data_flags.get(0)) { //does it have spec_data?
       if (!(proc_data)) {
-         mudlog.log(ERROR, "ERROR:  told to write proc_data, but is NULL!\n");
+         mudlog.log(LS_ERROR, "ERROR:  told to write proc_data, but is NULL!\n");
          return;
       }//if
       proc_data->Write(ofile);
@@ -1191,7 +1191,7 @@ void mob_data::Read(ifstream& ofile, short read_all, int format_version) {
    Clear();
    
    if (!ofile) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in mob_data read." << endl;
       }
       return;
@@ -1233,7 +1233,7 @@ void mob_data::Read(ifstream& ofile, short read_all, int format_version) {
          if (mudlog.ofLevel(DB))
             mudlog << "\nReading script# " << sent_ << endl;
          if (!ofile) {
-            if (mudlog.ofLevel(ERROR)) {
+            if (mudlog.ofLevel(LS_ERROR)) {
                mudlog << "ERROR:  mob_data reading script da_file FALSE." << endl;
             }
             return;
@@ -1544,7 +1544,7 @@ void pc_data::Write(ofstream& ofile) {
          imm_data->Write(ofile);
       }//if
       else {
-         mudlog.log(ERROR, "ERROR:  flagged imm, but no imm_data file!\n");
+         mudlog.log(LS_ERROR, "ERROR:  flagged imm, but no imm_data file!\n");
       }//else
    }//if
 
@@ -1593,7 +1593,7 @@ void pc_data::Read(critter* parent, ifstream& ofile) {
    Clear();
 
    if (!ofile) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in pc_data read." << endl;
       }
       return;
@@ -1641,7 +1641,7 @@ void pc_data::Read(critter* parent, ifstream& ofile) {
       int tmp_int;
       while (i != -1) {
          if (!ofile) {
-            if (mudlog.ofLevel(ERROR)) {
+            if (mudlog.ofLevel(LS_ERROR)) {
                mudlog << "ERROR:  da_file FALSE in pc_data read." << endl;
             }
             return;
@@ -2165,7 +2165,7 @@ void critter::Clear() {
    while (!followers.isEmpty()) {
       ptr = followers.popFront();
 
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  followers not empty in Clear, for mob: "
                 << *(getName()) << " follower: " << *(ptr->getName()) << endl;
       }//if
@@ -2791,14 +2791,14 @@ void critter::Write(ofstream& ofile) {
 
    if (short_cur_stats[26] == 0) { // If its a pc
       if (!pc) {
-         mudlog.log(ERROR, "ERROR: trying to write out pc_data when pc is NULL.\n");
+         mudlog.log(LS_ERROR, "ERROR: trying to write out pc_data when pc is NULL.\n");
          return;
       }//if
       pc->Write(ofile);  //write it out
    }//if
    else { //its a mob/smob
       if (!mob) {
-         mudlog.log(ERROR, "ERROR: trying to write out mob_data when mob is NULL.\n");
+         mudlog.log(LS_ERROR, "ERROR: trying to write out mob_data when mob is NULL.\n");
          return;
       }//if
       mob->Write(ofile); //write it out
@@ -3339,7 +3339,7 @@ void critter::dbRead(int mob_num, int pc_num, short read_all) {
                   } // if
                } // if
                else {
-                  if (mudlog.ofLevel(ERROR)) {
+                  if (mudlog.ofLevel(LS_ERROR)) {
                      mudlog << "ERROR: trying to load non-existant object: "
                             << obj_num << " in critter named: " << *(getName())
                             << endl;
@@ -3622,7 +3622,7 @@ void critter::dbRead(int mob_num, int pc_num, short read_all) {
                      } // if
                   } // if
                   else {
-                     if (mudlog.ofLevel(ERROR)) {
+                     if (mudlog.ofLevel(LS_ERROR)) {
                         mudlog << "ERROR: Trying to load non-existant object: "
                                << obj_num << " on shopkeeper " << mob_num;
                      } // if
@@ -3691,7 +3691,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
    Clear();
 
    if (!ofile) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in crit read." << endl;
       }
       return;
@@ -3714,7 +3714,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
    test = TRUE;
    while (test) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in crit read." << endl;
          }
          return;
@@ -3731,9 +3731,9 @@ void critter::fileRead(ifstream& ofile, short read_all) {
    }//while            
    ofile.getline(tmp, 80);         
 
-   short_desc.Termed_Read(ofile);
-   in_room_desc.Termed_Read(ofile);
-   long_desc.Termed_Read(ofile);
+   short_desc.termedRead(ofile);
+   in_room_desc.termedRead(ofile);
+   long_desc.termedRead(ofile);
 
    crit_flags.Read(ofile);
    crit_flags.turn_on(18); //always in use
@@ -3759,7 +3759,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in crit read." << endl;
          }
          return;
@@ -3767,7 +3767,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
 
       ofile >> z;
       if (!check_l_range(z, 1, MAX_EQ, mob_list[0], FALSE)) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  wear_posn out of range, crit.Read():  " << z
                    << " short desc:  " << short_desc << endl;
          }
@@ -3796,7 +3796,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
             Sprintf(tmp_str, 
                     "ERROR:  trying to load non-existant obj: %i, "
               "in critter's: %S  eq.\n", i, &short_desc);
-            mudlog.log(ERROR, tmp_str);
+            mudlog.log(LS_ERROR, tmp_str);
          }//else
       }//else
       ofile >> i;
@@ -3807,7 +3807,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in crit read." << endl;
          }
          return;
@@ -3831,7 +3831,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
       int tmp_int;
       while (i != -1) {
          if (!ofile) {
-            if (mudlog.ofLevel(ERROR)) {
+            if (mudlog.ofLevel(LS_ERROR)) {
                mudlog << "ERROR:  da_file FALSE in pc_data read." << endl;
             }
             return;
@@ -3847,7 +3847,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in crit read." << endl;
          }
          return;
@@ -3872,7 +3872,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
             }//if
          }//if
          else {
-            if (mudlog.ofLevel(ERROR)) {
+            if (mudlog.ofLevel(LS_ERROR)) {
                mudlog << "ERROR: trying to load non-existant object: " << i
                       << " in critter named: " << *(getName()) << endl;
             }
@@ -4101,7 +4101,7 @@ void critter::checkForProc(String& cmd, String& arg1, critter& actor,
             object* tmp = ptr;
             ptr = obj_to_sobj(*ptr, &inv, getCurRoomNum());
             if (!inv.substituteData(tmp, ptr, 1)) {
-               mudlog.log(ERROR, "ERROR: critter::checkForProc: substituteData  failed after obj_to_sobj.\n");
+               mudlog.log(LS_ERROR, "ERROR: critter::checkForProc: substituteData  failed after obj_to_sobj.\n");
             }//if
          }
          ptr->checkForProc(cmd, arg1, actor, targ, rm);
@@ -4142,12 +4142,12 @@ int critter::insertNewScript(MobScript* script) {
 
 void critter::trackToKill(critter& vict, int& is_dead) {
    if ((isMob()) || (vict.isMob())) {
-      mudlog.log(ERROR, "ERROR:  MOB's in trackToKill.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB's in trackToKill.\n");
       return;
    }//f
 
    if (!mob) {
-      mudlog.log(ERROR, "ERROR:  pc trying to track_to_kill.\n");
+      mudlog.log(LS_ERROR, "ERROR:  pc trying to track_to_kill.\n");
       return;
    }//if
 
@@ -5271,7 +5271,7 @@ void critter::doHuntProc(int num_steps, int& is_dead) {
 
    if (!mob || !mob->proc_data || 
        !mob->proc_data->temp_proc) { 
-      mudlog.log(ERROR, "ERROR:  bad pc sent to do_hunt_proc.\n");
+      mudlog.log(LS_ERROR, "ERROR:  bad pc sent to do_hunt_proc.\n");
       return;
    }//if
 
@@ -5318,7 +5318,7 @@ void critter::doHuntProc(int num_steps, int& is_dead) {
    }//if can't find target
    else { //go get em!
       if (targ->isMob()) { 
-         mudlog.log(ERROR, "ERROR:  targ is MOB in do_hunt_proc.\n");
+         mudlog.log(LS_ERROR, "ERROR:  targ is MOB in do_hunt_proc.\n");
          return;
       }//if
 

@@ -765,7 +765,7 @@ void do_cast_cause_sickness(critter& vict, critter& agg, int is_canned,
       do_join_in_battle = FALSE;
    }//else lost concentration
    else {
-      mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
+      mudlog.log(LS_ERROR, "ERROR:  in default of a spell.\n");
    }//else
    agg.PAUSE = 1; 
 
@@ -920,7 +920,7 @@ void do_cast_lightning(critter& vict, critter& agg, int is_canned,
       do_join_in_battle = FALSE;
    }//else lost concentration
    else {
-      mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
+      mudlog.log(LS_ERROR, "ERROR:  in default of a spell.\n");
    }//else
    agg.PAUSE = 1; 
 
@@ -1075,7 +1075,7 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
       do_join_in_battle = FALSE;
    }//else lost concentration
    else {
-      mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
+      mudlog.log(LS_ERROR, "ERROR:  in default of a spell.\n");
    }//else
    agg.PAUSE = 1; 
 
@@ -1233,7 +1233,7 @@ void do_cast_shocking_grasp(critter& vict, critter& agg, int is_canned,
       do_join_in_battle = FALSE;
    }//else lost concentration
    else {
-      mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
+      mudlog.log(LS_ERROR, "ERROR:  in default of a spell.\n");
    }//else
    agg.PAUSE = 1; 
 
@@ -1387,7 +1387,7 @@ void do_cast_rainbow(critter& vict, critter& agg, int is_canned,
         agg.MANA -= spell_mana / 2;
    }//else lost concentration
    else {
-      mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
+      mudlog.log(LS_ERROR, "ERROR:  in default of a spell.\n");
    }//else
    agg.PAUSE = 1; 
 
@@ -1541,7 +1541,7 @@ void do_cast_burning_hands(critter& vict, critter& agg, int is_canned,
         agg.MANA -= spell_mana / 2;
    }//else lost concentration
    else {
-      mudlog.log(ERROR, "ERROR:  in default of a spell.\n");
+      mudlog.log(LS_ERROR, "ERROR:  in default of a spell.\n");
    }//else
    agg.PAUSE = 1; 
 

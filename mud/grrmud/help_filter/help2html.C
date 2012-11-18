@@ -20,7 +20,7 @@
 //                                     greearb@agcs.com
 //
 
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <string2.h>
 
@@ -42,7 +42,7 @@ int core_dump(const char* str) {
 
 int do_shutdown;
 
-char* USAGE = "Usage:  help2html <targ_file> <files to add...>";
+const char* USAGE = "Usage:  help2html <targ_file> <files to add...>";
 
 
 char* get_name(const char* fname) {
@@ -99,7 +99,7 @@ String filter_line(char* line) {
    String retval(100);
    int new_posn;
    const char* str;
-   char* ending_txt = NULL;
+   const char* ending_txt = NULL;
    
    if (strncasecmp("syntax", line, 6) == 0) {
       retval += "<font color=\"#ff0000\">";

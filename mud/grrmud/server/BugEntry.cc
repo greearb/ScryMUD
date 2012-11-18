@@ -31,7 +31,7 @@ int BugEntry::_cnt = 0;
 int BugCollection::_cnt = 0;
 
 
-char* BugEntry::state_str[] = {
+const char* BugEntry::state_str[] = {
    "open",
    "assigned",
    "retest",
@@ -42,7 +42,7 @@ char* BugEntry::state_str[] = {
    "high_state",
   };
 
-char* BugEntry::html_color[] = {
+const char* BugEntry::html_color[] = {
    "<font color=\"#000000\"> ", //open (black)
    "<font color=\"#0000cc\"> ", //assigned (blue)
    "<font color=\"#cc0000\"> ", //retest (red)
@@ -52,7 +52,7 @@ char* BugEntry::html_color[] = {
    "<font color=\"#000000\"> " //high_state (black)
   };
 
-char* BugCollection::ct_strs[] = {
+const char* BugCollection::ct_strs[] = {
    "BUGS",
    "IDEAS"
 };
@@ -76,12 +76,12 @@ int CommentEntry::read(ifstream& dafile) {
    if (sent == -1)
      return -1;
 
-   date.Termed_Read(dafile);
+   date.termedRead(dafile);
 
    dafile >> reporter;
    dafile.getline(buf, 99);
    
-   report.Termed_Read(dafile);
+   report.termedRead(dafile);
 
    html_safe_report = report.sterilizeForHtml();
    heg_safe_report = report;
@@ -306,7 +306,7 @@ int BugEntry::read(ifstream& dafile) {
    dafile >> assigned_to;
    dafile.getline(buf, 99);
 
-   title.Termed_Read(dafile);
+   title.termedRead(dafile);
 
    html_safe_title = title.sterilizeForHtml();
    heg_safe_title = title;

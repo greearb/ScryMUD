@@ -157,7 +157,7 @@ void KeywordPair::read(ifstream& dafile) {
       }
    }//while
 
-   desc.Termed_Read(dafile);
+   desc.termedRead(dafile);
 }//read   
 
 KeywordPair* room::haveKeyword(int i_th, const String* name) {
@@ -555,7 +555,7 @@ void room::dbRead(int room_num, short read_all) {
                   } // if
                } // if
                else {
-                  if (mudlog.ofLevel(ERROR)) {
+                  if (mudlog.ofLevel(LS_ERROR)) {
                      mudlog << "In room::dbRead(int, short):\n";
                      mudlog << "ERROR: Trying to load non-existant object"
                             << obj_num << " in room " << room_num << ".\n";
@@ -683,7 +683,7 @@ void room::dbRead(int room_num, short read_all) {
             } // else
          } // if
          else {
-            if (mudlog.ofLevel(ERROR)) {
+            if (mudlog.ofLevel(LS_ERROR)) {
                mudlog << "In room::dbRead(int, short):\n";
                mudlog << "Error: Trying to load non-existant mob" << mob_num
                       << " in room " << room_num << ".\n";
@@ -849,7 +849,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
    Clear();  //stop up any memory leaks etc.
 
    if (!ofile) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
       }
       return;
@@ -857,7 +857,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
 
    while (test) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in room read." << endl;
          }
          return;
@@ -874,10 +874,10 @@ void room::fileRead(ifstream& ofile, short read_all) {
    }//while            
    ofile.getline(tmp, 80);         
 
-   short_desc.Termed_Read(ofile);
+   short_desc.termedRead(ofile);
    //mudlog.log(DBG, short_desc);
 
-   long_desc.Termed_Read(ofile);
+   long_desc.termedRead(ofile);
 
    room_flags.Read(ofile);
    room_flags.turn_on(23); //turn on in_use flag for CERTAIN
@@ -918,7 +918,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in room read." << endl;
          }
          return;
@@ -946,7 +946,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in room read, inv."
               << endl;
          }
@@ -981,7 +981,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
             Sprintf(tmp_str, 
              "ERROR:  trying to load non_existant inv: %i in room:  %i.\n",
              i, cur_stats[2]);
-            mudlog.log(ERROR, tmp_str);
+            mudlog.log(LS_ERROR, tmp_str);
          }//else
       }//if
       ofile >> i;
@@ -995,7 +995,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
    ofile >> i; //check for terminal value
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
          }
          return;
@@ -1007,7 +1007,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
       doors.head(cll);
       String* dr_name = name_of_door(*dr_ptr, ~0);
       if (!dr_name) {
-         mudlog.log(ERROR, "ERROR:  dr_name is NULL.");
+         mudlog.log(LS_ERROR, "ERROR:  dr_name is NULL.");
       }//if
 
       String* walk_name;
@@ -1034,7 +1034,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in sub_room read." << endl;
          }
          return;
@@ -1057,7 +1057,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
          Sprintf(tmp_str, 
                  "ERROR:  trying to load non_existant mob: %i, in room: %i\n",
                  i, cur_stats[2]);
-         mudlog.log(ERROR, tmp_str);
+         mudlog.log(LS_ERROR, tmp_str);
       }//else
       ofile >> i;
    }//while 
@@ -1081,7 +1081,7 @@ void room::fileRead(ifstream& ofile, short read_all) {
          if (mudlog.ofLevel(DB))
             mudlog << "\nReading script# " << sent_ << endl;
          if (!ofile) {
-            if (mudlog.ofLevel(ERROR)) {
+            if (mudlog.ofLevel(LS_ERROR)) {
                mudlog << "ERROR:  mob_data reading script da_file FALSE." << endl;
             }
             return;
@@ -1783,7 +1783,7 @@ void room::checkForProc(String& cmd, String& arg1, critter& actor,
             object* tmp = optr;
             optr = obj_to_sobj(*optr, &inv, getIdNum());
             if (!inv.substituteData(tmp, optr, 1)) {
-               mudlog.log(ERROR, "ERROR: checkForProc: substituteData  failed after obj_to_sobj.\n");
+               mudlog.log(LS_ERROR, "ERROR: checkForProc: substituteData  failed after obj_to_sobj.\n");
             }//if
          }
          optr->checkForProc(cmd, arg1, actor, targ, *this);
@@ -2117,7 +2117,7 @@ critter* room::haveCritNamedInZone(zone& zn, const int i_th,
    //log("In have_crit_named, for whole zone");
 
    if (!name) {
-      mudlog.log(ERROR, "ERROR:  NULL name sent to have_crit_named.\n");
+      mudlog.log(LS_ERROR, "ERROR:  NULL name sent to have_crit_named.\n");
       return NULL;
    }//if
 
@@ -2686,7 +2686,7 @@ void room::addProcScript(const String& txt, RoomScript* script_data) {
    mudlog.log(DBG, "done with setScript.");
 
    if (!script_data) {
-      mudlog.log(ERROR, "script_data is NULL, room::addProcScript.");
+      mudlog.log(LS_ERROR, "script_data is NULL, room::addProcScript.");
       return;
    }
 

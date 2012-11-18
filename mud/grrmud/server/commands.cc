@@ -761,7 +761,7 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
                           9.0);
          cond = cond < 0?0:cond; // Take care of critters with negative hp.
          if (!check_l_range(cond, 0, 9, pc, FALSE)) {
-            if (mudlog.ofLevel(ERROR)) {
+            if (mudlog.ofLevel(LS_ERROR)) {
                mudlog << "ERROR:  cond out of range in look, here is mob: "
                       << *(crit_ptr->getName()) << " posn: " << cond << endl;
             }
@@ -2889,7 +2889,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
    //   mudlog.log(DBG, direction);
 
    if (!direction) {
-      mudlog.log(ERROR, "ERROR: direction NULL in move.\n");
+      mudlog.log(LS_ERROR, "ERROR: direction NULL in move.\n");
       return -1;
    }//if
 
@@ -3249,7 +3249,7 @@ int out_eq(critter& targ, critter& looker) {
                wmsg = cstr(CS_WO_SHIELD, looker);
                break;
             default:
-               if (mudlog.ofLevel(ERROR)) {
+               if (mudlog.ofLevel(LS_ERROR)) {
                   mudlog << "ERROR:  Default called in out_eq, i:  "
                          << i << "  MaxEQ:  " << MAX_EQ << endl;
                }
@@ -3644,7 +3644,7 @@ int gain_eq_effects(object& obj, object* bag, critter& pc,
    deleted_obj = FALSE;
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB in gain_eq_effects.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB in gain_eq_effects.\n");
       return -1;
    }//if
 
@@ -3740,7 +3740,7 @@ int gain_eq_effects(object& obj, object* bag, critter& pc,
    else if (bag) {
       Sprintf(buf, "ERROR:  bag_in_inv is something wierd: %i.\n", 
               bag_in_inv);
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, buf);
    }//if
    
    if (mudlog.ofLevel(DBG)) {
@@ -3833,12 +3833,12 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
    //mudlog.log(DBG, "In consume_eq_effects.\n");
 
    if (!((obj.OBJ_FLAGS.get(60)) || (obj.OBJ_FLAGS.get(61)))) {
-      mudlog.log(ERROR, "ERROR: consuming something that ain't edible.\n");
+      mudlog.log(LS_ERROR, "ERROR: consuming something that ain't edible.\n");
       return -1;
    }//if 
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  pc is MOB in consume_eq_effects.\n");
+      mudlog.log(LS_ERROR, "ERROR:  pc is MOB in consume_eq_effects.\n");
       return -1;
    }//if
 
@@ -3947,7 +3947,7 @@ int remove_eq_effects(object& obj, critter& pc, short from_corpse,
    //mudlog.log(DBG, "In remove_eq_effects...");
    
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB in remove_eq_effects.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB in remove_eq_effects.\n");
       return -1;
    }//if
 
@@ -4023,7 +4023,7 @@ int drop_eq_effects(object& obj, critter& pc, short do_msg, short is_junk) {
    critter* crit_ptr;
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB in drop_eq_effects.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB in drop_eq_effects.\n");
       return -1;
    }//if
 
@@ -4086,7 +4086,7 @@ int donate_eq_effects(object& obj, critter& pc, short do_msg) {
    critter* crit_ptr;
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB in donate_eq_effects.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB in donate_eq_effects.\n");
       return -1;
    }//if
 
@@ -4151,7 +4151,7 @@ int eq_put_by(object& vict, object& bag, critter& pc, short bag_in_inv) {
    critter* crit_ptr;
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB in eq_put_by.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB in eq_put_by.\n");
       return FALSE;
    }//if
 

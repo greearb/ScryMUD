@@ -549,7 +549,7 @@ void rem_effects_crit(int spell_num, critter &pc, short do_msg, int bonus_value)
       Sprintf(buf, "ERROR:  rem_effects_crit DEFAULT: spll# [%i] %s.\n",
               spell_num,
               (const char*)(SSCollection::instance().getNameForNum(spell_num)));
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, buf);
    }//switch
 }// rem_effects_crit()
 
@@ -576,7 +576,7 @@ void rem_effects_obj(int spell_num, object &obj) {
   else {
     Sprintf(buf, "ERROR:  rem_effects_obj, not supported, spll# [%i] %s.\n",
             spell_num, (const char*)(SSCollection::instance().getNameForNum(spell_num)));
-    mudlog.log(ERROR, buf);
+    mudlog.log(LS_ERROR, buf);
   }//else
 }// rem_effects_obj()
 
@@ -600,7 +600,7 @@ void rem_effects_door(int spell_num, door& dr, room& rm1,
   else {
      Sprintf(buf, "ERROR:  rem_effects_door, spll# [%i] %s.\n", spell_num, 
              (const char*)(SSCollection::instance().getNameForNum(spell_num)));
-     mudlog.log(ERROR, buf);
+     mudlog.log(LS_ERROR, buf);
   }//else
 }// rem_effects_door()
  
@@ -615,7 +615,7 @@ void rem_effects_room(int spell_num, room &rm, short do_msg) {
      Sprintf(buf, 
              "ERROR:  spell_num(%i) out of range in rem_effects_room.\n",
              spell_num);
-     mudlog.log(ERROR, buf);
+     mudlog.log(LS_ERROR, buf);
    }//else
 }// rem_effects_room()
 
@@ -625,7 +625,7 @@ void do_firewall_effects(critter& pc, int& is_dead) {
    is_dead = FALSE;
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_firewall_effects.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_firewall_effects.\n");
       return;
    }//if
 
@@ -650,7 +650,7 @@ int do_distortion_wall_effects(critter& pc, int& is_dead, int sanity) {
    int retval;
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_distortion_wall_effects.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_distortion_wall_effects.\n");
       is_dead = FALSE;
       return -1;
    }//if
@@ -1673,7 +1673,7 @@ void update_skill(int last_learned, critter& pc) {
    }
 
    if (!check_l_range(last_learned, 0, NUMBER_OF_SKILL_SPELLS, pc, FALSE)) {
-      mudlog.log(ERROR,
+      mudlog.log(LS_ERROR,
             "ERROR:  last_learned out of range, gain_spells_skills!!\n");
       return;
    }//if

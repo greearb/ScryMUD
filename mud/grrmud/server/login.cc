@@ -87,12 +87,12 @@ void critter::doLogin() {
    mudlog.log(TRC, "In do_login.\n");
 
    if (!pc) {
-      mudlog.log(ERROR, "ERROR:  PC is NULL in do_login.\n");
+      mudlog.log(LS_ERROR, "ERROR:  PC is NULL in do_login.\n");
       return;
    }//if
 
    if ((pc->index > 7) || (pc->index < 0)) {
-      mudlog.log(ERROR, "ERROR:  bad index sent to do_login.\n");
+      mudlog.log(LS_ERROR, "ERROR:  bad index sent to do_login.\n");
       setMode(MODE_LOGOFF_NEWBIE_PLEASE);
    }//if
    else {
@@ -434,7 +434,7 @@ void critter::doLogin() {
                      
                      ifstream rfile(name);
                      if (!rfile) {
-                        if (mudlog.ofLevel(ERROR)) {
+                        if (mudlog.ofLevel(LS_ERROR)) {
                            mudlog << "ERROR: rfile not opened, case 5 of login."
                                   << "\nHere is the bad filename -:"
                                   << name << ":-" << endl;
@@ -642,7 +642,7 @@ void critter::doLogin() {
                }//if
                else {
                   show("Password Incorrect...  Cya!\n");
-                  if (mudlog.ofLevel(LSEC)) {
+                  if (mudlog.ofLevel(LS_SEC)) {
                      mudlog << "WARNING:  old player:  Logging off character:  " 
                             << (*getName()) << " from host:  " << pc->host
                             << " for incorrect password:  -: " << string
@@ -676,7 +676,7 @@ void critter::doLogin() {
             break;
    
          default:
-            mudlog.log(ERROR, "ERROR:  default called in do_login.\n");
+            mudlog.log(LS_ERROR, "ERROR:  default called in do_login.\n");
             show("ERROR found, tell imp:  'default called in do_login'.\n");
             setMode(MODE_LOGOFF_NEWBIE_PLEASE);
             break;
@@ -810,7 +810,7 @@ int  quit_do_login_new(critter& pc) {
       case SOMBRIAN:
          break;
       default:
-         mudlog.log(ERROR, "ERROR:  default called in race switch, login.cc\n");
+         mudlog.log(LS_ERROR, "ERROR:  default called in race switch, login.cc\n");
          break;
    }//switch                    
 
@@ -864,7 +864,7 @@ int  quit_do_login_new(critter& pc) {
          pc.WIS+=3;
          pc.CON-=3;
       default:
-         mudlog.log(ERROR, 
+         mudlog.log(LS_ERROR, 
                     "ERROR:  In default of class modifiers in login.cc.\n");
          break;
    }//switch for class

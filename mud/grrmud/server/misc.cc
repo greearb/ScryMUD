@@ -91,7 +91,7 @@ int bound(int low, int high, int val) {
 
 void critter::save() {
    if (!pc) {
-      mudlog.log(ERROR, "ERROR:  non PC sent to critter::save()\n");
+      mudlog.log(LS_ERROR, "ERROR:  non PC sent to critter::save()\n");
       return;
    }
 
@@ -106,7 +106,7 @@ void critter::save() {
    buf.Prepend("./Pfiles/");
    ofstream ofile(buf);
    if (!ofile) {
-      mudlog.log(ERROR, "ERROR:  file not opened in save_pc.\n");
+      mudlog.log(LS_ERROR, "ERROR:  file not opened in save_pc.\n");
       return;
    }//if
 
@@ -254,16 +254,16 @@ void join_in_battle(critter& agg, critter& vict) {
    }
 
    if (agg.isMob()) {
-      mudlog.log(ERROR, "ERROR: join_in_battle called with agg as mob\n");
+      mudlog.log(LS_ERROR, "ERROR: join_in_battle called with agg as mob\n");
       return;
    }//if
    if (vict.isMob()) {
-      mudlog.log(ERROR, "ERROR: join_in_battle called with vict as mob\n");
+      mudlog.log(LS_ERROR, "ERROR: join_in_battle called with vict as mob\n");
       return;
    }//if
    
    if (&vict == &agg) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  vict == agg in join_in_battle, name:  "
                 << *(name_of_crit(agg, ~0)) << "  address:  " << &agg
                 << endl;
@@ -763,7 +763,7 @@ int file_update_critters(int zone_num, short read_all) {
    if (!mobfile) { 
       buf.Prepend("cp ./World/DEFAULT_CRITTERS ");
       system(buf);
-      mudlog.log(ERROR, "WARNING:  created CRITTER_FILE in update_critters");
+      mudlog.log(LS_ERROR, "WARNING:  created CRITTER_FILE in update_critters");
       tmp_mob.CRITTER_TYPE = 1; //make it a SMOB, so destructor fires correctly
       return 0;
    }//if
@@ -776,7 +776,7 @@ int file_update_critters(int zone_num, short read_all) {
       mudlog.log(DBG, buf);
 
       if (!mobfile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR: error reading critters for zone: " << zone_num
                    << " trying to read mob# " << k << endl;
          }//if
@@ -899,7 +899,7 @@ int file_update_objects(int zone_num, short read_all) {
    if (!objfile) { 
       buf.Prepend("cp ./World/DEFAULT_OBJECTS ");
       system(buf);
-      mudlog.log(ERROR, "WARNING:  created new OBJECT_FILE in update_objects");
+      mudlog.log(LS_ERROR, "WARNING:  created new OBJECT_FILE in update_objects");
       temp_obj.IN_LIST = room_list[0].getInv(); //hack to let destructor fire
                                                 //happily, turn it into a SOBJ
       return 0;
@@ -916,7 +916,7 @@ int file_update_objects(int zone_num, short read_all) {
       temp_obj.fileRead(objfile, read_all);
 
       if (!objfile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR: error reading objects for zone: " << zone_num
                    << " trying to read obj# " << k << endl;
          }//if
@@ -1097,8 +1097,8 @@ int file_update_zone(int zone_num, short read_all) {
    if (!rfile) { 
       buf.Prepend("cp ./World/DEFAULT_ZONE ");
       system(buf);
-      mudlog.log(ERROR, "WARNING: zone file created in update_zone.");
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, "WARNING: zone file created in update_zone.");
+      mudlog.log(LS_ERROR, buf);
       return 0;
    }//if
 
@@ -1108,7 +1108,7 @@ int file_update_zone(int zone_num, short read_all) {
       room* room_ptr;
 
       if (!rfile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR: error reading rooms for zone: " << zone_num
                    << " trying to read room# " << k << endl;
          }//if
@@ -2523,7 +2523,7 @@ void out_inv(PtrList<object>& lst, critter& pc,
          }// while lst_ptr
          break;
       default:
-         mudlog.log(ERROR, "ERROR:  default called in out_inv.\n");
+         mudlog.log(LS_ERROR, "ERROR:  default called in out_inv.\n");
          break;
       }//switch type_of_list
 
@@ -2559,7 +2559,7 @@ critter* have_crit_named(List<critter*>& lst, const int i_th,
    }
 
    if (!name) {
-      mudlog.log(ERROR, "ERROR:  NULL name sent to have_crit_named.\n");
+      mudlog.log(LS_ERROR, "ERROR:  NULL name sent to have_crit_named.\n");
       return NULL;
    }//if
 
@@ -2612,12 +2612,12 @@ int crit_sub_a_4_b(critter* a, PtrList<critter>& lst,
    //log("In crit_sub_a_4_b.\n");
 
    if (!name || !a) {
-      mudlog.log(ERROR, "ERROR:  NULL(s) sent to crit_sub_a_4_b.\n");
+      mudlog.log(LS_ERROR, "ERROR:  NULL(s) sent to crit_sub_a_4_b.\n");
       return FALSE;
    }//if
 
    if (name->Strlen() == 0) {
-      mudlog.log(ERROR, "ERROR:  name of zero length sent to crit_sub_a_4_b.\n"); 
+      mudlog.log(LS_ERROR, "ERROR:  name of zero length sent to crit_sub_a_4_b.\n"); 
       return FALSE;
    }//if
 
@@ -2654,12 +2654,12 @@ int obj_sub_a_4_b(object* a, PtrList<object>& lst, const int i_th,
    //log("In obj_sub_a_4_b.\n");
 
    if (!name || !a) {
-      mudlog.log(ERROR, "ERROR:  NULL(s) sent to obj_sub_a_4_b.\n");
+      mudlog.log(LS_ERROR, "ERROR:  NULL(s) sent to obj_sub_a_4_b.\n");
       return FALSE;
    }//if
 
    if (name->Strlen() == 0) {
-      mudlog.log(ERROR, "ERROR:  name of zero length sent to obj_sub_a_4_b.\n"); 
+      mudlog.log(LS_ERROR, "ERROR:  name of zero length sent to obj_sub_a_4_b.\n"); 
       return FALSE;
    }//if
 
@@ -2703,7 +2703,7 @@ object* have_obj_named(const List<object*>& lst, const int i_th,
    String *string;
 
    if (!name) {
-      mudlog.log(ERROR, "ERROR:  Null sent to have_obj_named.k\n");
+      mudlog.log(LS_ERROR, "ERROR:  Null sent to have_obj_named.k\n");
       return NULL;
    }//if
 

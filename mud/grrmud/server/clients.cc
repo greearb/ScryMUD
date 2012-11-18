@@ -174,7 +174,7 @@ const char* getClientTag(int client_num, int client_tag_num) {
    }
 
    if ((client_tag_num < 0) || (client_tag_num >= NUM_TAGS)) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  Client tag: " << client_tag_num << " is out of range!!\n";
       }
       return ""; //This could still crash us, if the tag should have had a %? in it!!

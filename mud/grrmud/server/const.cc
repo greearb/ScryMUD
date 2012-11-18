@@ -595,7 +595,7 @@ const unsigned long Max_Long = (1 << (sizeof(long int) * 8 - 1));
 const unsigned short Max_Short = (1 << (sizeof(short int) * 8 - 1));
 
 
-char* critter_conditions[11] = {
+const char* critter_conditions[11] = {
    "is in horrible condition.",  // 0 - 10%
    "looks pretty much whipped.",  // 11 - 20%
    "is bleeding badly from numerous wounds.",  // 21 - 30%
@@ -621,7 +621,7 @@ long levels[45] = {
    };//basic exp level cutoffs  
 
 
-char* login_prompts[] = {
+const char* login_prompts[] = {
    "\nEnter thy name:  ",
    /* for new players */
 
@@ -686,7 +686,7 @@ char* login_prompts[] = {
 
                          /* data for OLC */
 
-char* olc_prompts[] = {
+const char* olc_prompts[] = {
    /* 0 */
    "\n\nWhich do you wish to create: \n\n"
       "(1)object, (2)critter, (3)room, (4)door, (5)quit, (6)vehicle\n",

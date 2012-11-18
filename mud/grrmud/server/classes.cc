@@ -40,7 +40,7 @@
 
 void CmdLineInfo::init(int argc, char** argv) {
    //first, init values to defaults
-   int lvl = (ERROR | DIS | WRN | LSEC);
+   int lvl = (LS_ERROR | DIS | WRN | LS_SEC);
 
    // This code ripped off from the man page for getopt. --BEN
 
@@ -210,7 +210,7 @@ void PathCell::Clear() {
 void PathCell::Read(ifstream& da_file) {
    char tmp[81];
 
-   desc.Termed_Read(da_file); //description
+   desc.termedRead(da_file); //description
 
 //   mudlog << "PathCell:  got desc:  -:" << desc << ":-" << endl;
 

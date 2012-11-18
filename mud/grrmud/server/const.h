@@ -955,8 +955,8 @@ extern bitfield Obj_Wear_Procs_Mask;
 extern bitfield Obj_Remove_Procs_Mask;
 
 
-extern char* olc_prompts[];
-extern char* login_prompts[];
+extern const char* olc_prompts[];
+extern const char* login_prompts[];
 
 extern int do_shutdown;
 extern int Cur_Max_Obj_Num;
@@ -1718,7 +1718,7 @@ extern String SOUTHEAST;
 extern String UP;
 extern String DOWN;
 
-extern char* critter_conditions[11];
+extern const char* critter_conditions[11];
 
 #define MAX_LEVEL    45
 extern long levels[MAX_LEVEL];

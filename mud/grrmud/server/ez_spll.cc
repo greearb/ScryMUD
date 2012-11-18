@@ -1014,7 +1014,7 @@ void do_cast_create_water(object& vict, critter& agg, int is_canned,
    short lost_con = TRUE;
 
    if (!vict.bag) {
-     mudlog.log(ERROR, "ERROR:  non-bag sent to do_cast_create_water.");
+     mudlog.log(LS_ERROR, "ERROR:  non-bag sent to do_cast_create_water.");
      return;
    }//if
 

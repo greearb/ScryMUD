@@ -221,12 +221,12 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
    mudlog.log(DBG, "Found tmp_ptr.\n");
 
    if (!tmp_ptr) {  //the train door, the exterior one
-      mudlog.log(ERROR, "ERROR:  tmp_ptr is NULL in vehicle::move()\n");
+      mudlog.log(LS_ERROR, "ERROR:  tmp_ptr is NULL in vehicle::move()\n");
       return FALSE;
    }//if
 
    if (!tmp_ptr->dr_data) {
-      mudlog.log(ERROR, "ERROR:  dr_data is null.\n");
+      mudlog.log(LS_ERROR, "ERROR:  dr_data is null.\n");
       return FALSE;
    }//if
 
@@ -252,7 +252,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
             showAllCept(buf);
          }
          else {
-            mudlog.log(ERROR, "ERROR:  dr_ptr is NULL...\n");
+            mudlog.log(LS_ERROR, "ERROR:  dr_ptr is NULL...\n");
          }
          
          Sprintf(buf, "The %S closes.\n", name_of_door(*tmp_ptr, ~0));
@@ -288,7 +288,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
    in_room = dest;  //guaranteed to be positive
 
 
-   mudlog.log(ERROR, "Vehicle door updated.\n");
+   mudlog.log(LS_ERROR, "Vehicle door updated.\n");
 
              /* add door to destination room */
    room_list[in_room].DOORS.prepend(tmp_ptr);
@@ -296,7 +296,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
    advancePathIterator(); /* advance the internal state, let this object
                              know that it's actually been moved. */
 
-   mudlog.log(ERROR, "In new room..doing messages.\n");
+   mudlog.log(LS_ERROR, "In new room..doing messages.\n");
 
    /* now in new room, do some messages if needed */
    if (!isStealthy()) { //if not stealty
@@ -343,7 +343,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
             showAllCept(buf);
          }
          else {
-            mudlog.log(ERROR, "ERROR:  dr_ptr is NULL, end of move.\n");
+            mudlog.log(LS_ERROR, "ERROR:  dr_ptr is NULL, end of move.\n");
          }
 
          if (tmp_ptr) {
@@ -351,7 +351,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
             room_list[in_room].showAllCept(buf);
          }
          else {
-            mudlog.log(ERROR, "ERROR:  tmp_ptr is NULL, end of move.\n");
+            mudlog.log(LS_ERROR, "ERROR:  tmp_ptr is NULL, end of move.\n");
          }
 
       }//if
@@ -576,8 +576,8 @@ void vehicle::fileRead(ifstream& da_file, short read_all) {
    }
 
    if ( format_version > 0 ) {
-      veh_stopped.Termed_Read(da_file);
-      veh_moving.Termed_Read(da_file);
+      veh_stopped.termedRead(da_file);
+      veh_moving.termedRead(da_file);
    }
 
    vehicle_flags.Read(da_file);

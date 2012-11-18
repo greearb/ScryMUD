@@ -1,6 +1,3 @@
-// $Id$
-// $Revision$  $Author$ $Date$
-
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -103,8 +100,8 @@ int oset(int i_th, const String* vict, const String* targ,
 int dset(int i_th, const String* vict, const String* targ,
           int new_value, critter& pc);
 
-int give(int i_th, const String* obj, int i_th, const String* targ,
-               critter& pc);  //does checks, mob_to_smob
+int give(int i_th, const String* obj, int j_th, const String* targ,
+         critter& pc);  //does checks, mob_to_smob
 int do_give(critter& targ, critter& pc, object& obj);  //does actual work
 
 int prompt(const String* pr, critter& pc);

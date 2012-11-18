@@ -87,7 +87,7 @@ void quit_olc(critter& pc) {
 void do_olc(critter& pc) {
    String string(100);
    String buf(100);
-   char* quitter = "quit_olc"; //will save a teensy bit of memory i think :)
+   const char* quitter = "quit_olc"; //will save a teensy bit of memory i think :)
    int i, j, z;
    String* tmp_str;
    stat_spell_cell *sp_ptr;
@@ -471,7 +471,7 @@ void do_olc(critter& pc) {
 
          i = ROOM.getZoneNum();
          if (!check_l_range(i, 0, NUMBER_OF_ZONES, pc, FALSE)) {
-           mudlog.log(ERROR, "ERROR:  zone out of range, case 8, olc.\n");
+           mudlog.log(LS_ERROR, "ERROR:  zone out of range, case 8, olc.\n");
            i = 10; //set to practice zone
          }//if
 
@@ -3142,7 +3142,7 @@ void do_olc(critter& pc) {
 
 
       default:
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  default called in big switch of OLC, switch number:  "
                    << O_COUNT << endl;
          }
@@ -3182,8 +3182,8 @@ void finish_olc_obj(critter& pc) {
    ofstream ofile(ofile_buf);
    if (!ofile) {
       show("ERROR, ofile not opened correctly...tell your imp.\n", pc);
-      mudlog.log(ERROR, "ERROR:  ofile not opened, olc crit writeout.\n");
-      mudlog.log(ERROR, ofile_buf);
+      mudlog.log(LS_ERROR, "ERROR:  ofile not opened, olc crit writeout.\n");
+      mudlog.log(LS_ERROR, ofile_buf);
       OLC_OBJ = NULL;
       return;
    }//if
@@ -3250,8 +3250,8 @@ void finish_olc_door(critter& pc) {
    ofile_buf.Append(OLC_DOOR->door_num);
    ofstream ofile(ofile_buf);
    if (!ofile) {
-      mudlog.log(ERROR, "ERROR:  olc_buf, door--not opened correctly:");
-      mudlog.log(ERROR, ofile_buf);
+      mudlog.log(LS_ERROR, "ERROR:  olc_buf, door--not opened correctly:");
+      mudlog.log(LS_ERROR, ofile_buf);
       show("ERROR: olc_buf, door--not opened correctly...\n", pc);
       OLC_DOOR = NULL;
       return;
@@ -3324,8 +3324,8 @@ void finish_olc_room(critter& pc) {
       case false:
          ofstream ofile(ofile_buf);
          if (!ofile) {
-            mudlog.log(ERROR, "ERROR:  olc_buf not opened correctly:");
-            mudlog.log(ERROR, ofile_buf);
+            mudlog.log(LS_ERROR, "ERROR:  olc_buf not opened correctly:");
+            mudlog.log(LS_ERROR, ofile_buf);
             show("ERROR: olc_buf not opened correctly...\n", pc);
             OLC_ROOM = NULL;
             return;
@@ -3388,8 +3388,8 @@ void finish_olc_mob(critter& pc) {
       ofile_buf.Append(OLC_MOB->MOB_NUM);
       ofstream ofile(ofile_buf);
       if (!ofile) {
-         mudlog.log(ERROR, "ERROR:  olc_buf not opened correctly:");
-         mudlog.log(ERROR, ofile_buf);
+         mudlog.log(LS_ERROR, "ERROR:  olc_buf not opened correctly:");
+         mudlog.log(LS_ERROR, ofile_buf);
          show("ERROR: olc_buf not opened correctly...\n", pc);
          OLC_MOB = NULL;
          return;

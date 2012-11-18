@@ -83,7 +83,7 @@ int do_circle(critter& vict, critter& pc) {
    int wd;
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  smob sent in to do_circle.\n");
+      mudlog.log(LS_ERROR, "ERROR:  smob sent in to do_circle.\n");
       return -1;
    }//if
 
@@ -119,7 +119,7 @@ int do_circle(critter& vict, critter& pc) {
          weap_name = long_name_of_obj(*(pc.EQ[10]), ~0);
       }
       else {
-         mudlog.log(ERROR, "ERROR:  do_circle: pc.EQ[9] or pc.EQ[10] isn't a dagger\n");
+         mudlog.log(LS_ERROR, "ERROR:  do_circle: pc.EQ[9] or pc.EQ[10] isn't a dagger\n");
          return -1;
       }
       exact_raw_damage(((pc.LEVEL / 5 + 1) * wd / 2), NORMAL, vict, pc);
@@ -229,7 +229,7 @@ int do_backstab(critter& vict, critter& pc) {
    int wd;
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_backstab.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_backstab.\n");
       return -1;
    }//if
 
@@ -250,7 +250,7 @@ int do_backstab(critter& vict, critter& pc) {
          weap_name = long_name_of_obj(*(pc.EQ[10]), ~0);
       }
       else {
-         mudlog.log(ERROR, "ERROR:  do_backstab: pc.EQ[9] or pc.EQ[10] isn't a dagger\n");
+         mudlog.log(LS_ERROR, "ERROR:  do_backstab: pc.EQ[9] or pc.EQ[10] isn't a dagger\n");
          return -1;
       }
 
@@ -345,7 +345,7 @@ int do_disarm(critter& vict, critter& pc) {
    int posn = 9; //wielded
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_disarm.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_disarm.\n");
       return -1;
    }//if
 

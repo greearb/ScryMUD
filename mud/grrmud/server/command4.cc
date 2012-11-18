@@ -384,7 +384,7 @@ int write_board(object& obj) {
    Sprintf(buf, "./Boards/board_%i", obj.OBJ_NUM);
    ofstream ifile(buf);
    if (!ifile) {
-      mudlog.log(ERROR, "ERROR:  couldn't open board file.\n");
+      mudlog.log(LS_ERROR, "ERROR:  couldn't open board file.\n");
       return -1;
    }//if
 
@@ -1366,7 +1366,7 @@ int do_file_write_zone(int znum) {
    Sprintf(buf, "./World/zone_%i", znum);
    ofstream rfile(buf);
    if (!rfile) {
-      mudlog.log(ERROR, "ERROR:  rfile not opened in 'write_zone'.\n");
+      mudlog.log(LS_ERROR, "ERROR:  rfile not opened in 'write_zone'.\n");
       return -1;
    }//if
    

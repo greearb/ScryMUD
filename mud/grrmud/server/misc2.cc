@@ -92,7 +92,7 @@ critter* file_load_player_shop_owner(int mob_num) {
          return sk;
       }//if
       else {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  Could not open Player Shop Keeper -:"
                    << buf << ":- for reading." << endl;
          }//if
@@ -100,7 +100,7 @@ critter* file_load_player_shop_owner(int mob_num) {
       }//else
    }//if
    else {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  load_player_shop_owner, mob_num: "
                 << mob_num << " is not in use." << endl;
       }//if
@@ -131,7 +131,7 @@ int save_player_shop_owner(critter& pc) {
          return TRUE;
       }//if
       else {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  Could not open Player Shop Keeper -:"
                    << buf << ":- for writing." << endl;
          }//if
@@ -139,7 +139,7 @@ int save_player_shop_owner(critter& pc) {
       }//else
    }//if
    else {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  save_player_shop_owner, mob_num: "
                 << pc.getIdNum() << " is not in use." << endl;
       }//if
@@ -179,7 +179,7 @@ object* file_load_player_box(int box_num) {
          return box;
       }
       else {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  Could not open Player Box -:"
                    << buf << ":- for reading." << endl;
          }
@@ -187,7 +187,7 @@ object* file_load_player_box(int box_num) {
       }
    }
    else {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  load_player_box, box_num: "
                 << box_num << " is not in use." << endl;
       }
@@ -208,7 +208,7 @@ int save_player_box(object& box) {
          return TRUE;
       }
       else {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  Could not open Player Owned Box -:"
                    << box.getIdNum() << ":- for writing." << endl;
          }
@@ -216,7 +216,7 @@ int save_player_box(object& box) {
       }
    }
    else {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  save_player_box, obj_num: "
                 << box.getIdNum() << " is not in use." << endl;
       }
@@ -497,7 +497,7 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
 
   if (pc.isMob()) {
      Sprintf(buf, "ERROR:  mob casting spell# %i.\n", spell_num);
-     mudlog.log(ERROR, buf);
+     mudlog.log(LS_ERROR, buf);
      return FALSE;
   }//if
 
@@ -1504,7 +1504,7 @@ const char* get_month(int day) {
    else if (day <= 365)
       return "December";
    else {
-      mudlog.log(ERROR, "ERROR:  day is > 365, in get_month.\n");
+      mudlog.log(LS_ERROR, "ERROR:  day is > 365, in get_month.\n");
       return "Leap Month";
    }//else
 }//get_month
@@ -1536,7 +1536,7 @@ const int get_day_of_month(int day) { //day of the year that is
    else if (day <= 365)
       return day - 334;
    else {
-      mudlog.log(ERROR, "ERROR:  day is > 365, get_day_of_month.\n");
+      mudlog.log(LS_ERROR, "ERROR:  day is > 365, get_day_of_month.\n");
       return 32;
    }//else
 }//get_day_of_month
@@ -1620,7 +1620,7 @@ const char* military_to_am(int m_time) {
    else if (m_time == 23)
       return "12 am";
    else {
-      mudlog.log(ERROR, "ERROR:  m_time out of range, military_to_am.\n");
+      mudlog.log(LS_ERROR, "ERROR:  m_time out of range, military_to_am.\n");
       return "0 am";
    }//else
 }//military_to_am
@@ -1712,7 +1712,7 @@ void increment_percent_lrnd(int skill_num, critter& pc) {
       pc.SKILLS_KNOWN.Insert(skill_num, p_lrnt); //update value
       return;
    }//if
-   mudlog.log(ERROR,
+   mudlog.log(LS_ERROR,
               "ERROR:  tried to increment_%_lrnd on a skill unknown by pc.\n");
 }//inc_skill
 
@@ -1891,7 +1891,7 @@ int critter::doBecomeNonPet() {
    String buf(100);
 
    if (isMob()) {
-      mudlog.log(ERROR, "ERROR:  mob sent to unpet.\n");
+      mudlog.log(LS_ERROR, "ERROR:  mob sent to unpet.\n");
       return -1;
    }//if
 
@@ -1929,7 +1929,9 @@ int find_and_delete_obj(object* obj_to_find, int room_num) {
    }
 
    // Sanity checks, make sure this is a valid room
-   if ((0 > room_num > NUMBER_OF_ROOMS) || !room_list[room_num].isInUse()) {
+   if (room_num < 0)
+      return FALSE;
+   if ((room_num > NUMBER_OF_ROOMS) || !room_list[room_num].isInUse()) {
       mudlog.log(DBG, "DEBUG:  Room is invalid.\n");
       return FALSE;
    }

@@ -1,8 +1,5 @@
-// $Id$
-// $Revision$  $Author$ $Date$
-
 //
-//Copyright (C) 1998-2001  Ben Greear
+//Copyright (C) 1998-2009  Ben Greear
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Library General Public License
@@ -18,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-//To contact the maintainer, Edward Roper: edro+scrymud [at] wanfear.net
+// To contact the Author, Ben Greear:  greearb@candelatech.com
 //
 //
 
@@ -28,6 +25,8 @@
 // Everyone is free to use this code, just leave my name intact.
 // This has not been tested very much, so use at your own risk!! :)
 
+// Any questions, write me at:  greear@pollux.cs.uga.edu
+
  
 #ifndef String2Include
 #define String2Include
@@ -36,15 +35,16 @@
 #define TRUE 	1
 #define FALSE 	0
 
+#include <stdio.h> 
 #include <iostream>
 #include <fstream>
-#include <stdio.h> 
 #include <string.h>
-#include <cctype>
+#include <ctype.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <LogStream.h>
 #include <stdarg.h>
+#include <stdint.h>
 
 using namespace std;
 
@@ -54,26 +54,33 @@ using namespace std;
 // WARNING:  Don't add any methods to the Counter classes, it's
 //  packed as a tight structure in memory and placed on the wire.
 
+#if defined(__WIN32__) or defined(__sun__)
+typedef uint32_t __uint32_t;
+typedef int32_t __int32_t;
+typedef uint64_t __uint64_t;
+typedef int64_t __int64_t;
+#endif
+
 /* TODO:  Someday put this in a better place... */
 struct Counter64u {
-   unsigned long hi;
-   unsigned long lo;
+   __uint32_t hi;
+   __uint32_t lo;
 };
 
-struct Counter64u toCounter64u(unsigned long long cnt);
-unsigned long long toUint64(const Counter64u& cnt);
+struct Counter64u toCounter64u(__uint64_t cnt);
+__uint64_t toUint64(const Counter64u& cnt);
 
 
 // WARNING:  NOTE:  TODO:  Not sure Counter64s works as planned...needs
 // testing before being used.
 /* TODO:  Someday put this in a better place... */
 struct Counter64s {
-   long hi;
-   long lo;
+   __int32_t hi;
+   __int32_t lo;
 };
 
-struct Counter64s toCounter64s(long long cnt);
-long long toInt64(const Counter64s& cnt);
+struct Counter64s toCounter64s(__int64_t cnt);
+__int64_t toInt64(const Counter64s& cnt);
 
 int makeHBO(struct Counter64u& pld);
 int makeNBO(struct Counter64u& pld);
@@ -134,6 +141,12 @@ public:
    String operator+ (const char* S) const;
    String operator+ (const String& S) const;
    String operator+ (const char S) const;
+   String operator+ (const int i) const;
+   String operator+ (const long i) const;
+   String operator+ (const long long i) const;
+   String operator+ (const unsigned int i) const;
+   String operator+ (const unsigned long i) const;
+   String operator+ (const unsigned long long i) const;
 
    int operator== (const char* S) const;
    int operator!= (const char* S) const;
@@ -168,11 +181,14 @@ public:
    /** Releases all the memory it can. */
    void purge();
 
-   void prepend(const int source);
-   void Prepend(const int source) { prepend(source); }
+   void prepend(char source);
+   //void prepend(char source) { prepend((const char)(source)); }
 
-   void prepend(const long source);
-   void Prepend(const long source) { prepend(source); }
+   void prepend(int source);
+   void Prepend(int source) { prepend(source); }
+
+   void prepend(long source);
+   void Prepend(long source) { prepend(source); }
 
    void prepend(const char* source);
    void Prepend(const char* source) { prepend(source); }
@@ -180,36 +196,38 @@ public:
    void prepend(const String& source);
    void Prepend(const String& source) { prepend(source); }
 
-   void append(const unsigned long source);
-   void append(const double source, int remainder = 2);
-   void append(const float source, int remainder = 2);
+   void append(unsigned long source);
+   void append(double source, int remainder = 2);
+   void append(float source, int remainder = 2);
 
-   void append(const int source);
-   void Append(const int source) { append(source); }
-   void append(const unsigned int source);
+   void append(int source);
+   void Append(int source) { append(source); }
+   void append(unsigned int source);
 
    /** Makes 9 look like: 1001 */
-   void appendAsBinary(const unsigned long num);
+   void appendAsBinary(unsigned long num);
 
-   void append(const long source);
-   void Append(const long source) { append(source); }
+   void append(long source);
+   void Append(long source) { append(source); }
 
-   void append(const unsigned long long source);
-   void append(const long long source);
+   void append(unsigned long long source);
+   void append(long long source);
 
+   void append(const char* source, int len);
    void append(const char* source);
    void Append(const char* source) { append(source); }
 
    void append(const String& source);
    void Append(const String& source) { append(source); }
 
-   void append(const unsigned char source);
-   void append(const char source);
-   void Append(const char source) { append(source); }
+   void append(unsigned char source);
+   void append(char source);
+   void Append(char source) { append(source); }
 
-   void appendHex(const unsigned long l);
-   void Getline(istream& stream, int max_len) { getLine(stream, max_len); }
-   void getLine(istream& stream, int max_len);
+   void appendHex(unsigned long l);
+   void append(void* v);
+   void Getline(istream& stream, int max_length) { getLine(stream, max_length); }
+   void getLine(istream& stream, int max_length);
 
    void cap();
    void Cap() { cap(); }
@@ -218,7 +236,13 @@ public:
    void toLower(); //makes total string lowercase
 
    void toUpper(); //makes total string lowercase
-   unsigned int  Strlen() const;
+   int  Strlen() const;
+   int size() const { return Strlen(); }
+   const char* c_str() const {
+      if (string)
+         return string;
+      return "";
+   }
    void Report() const; //logs vital stats, for debugging.
    void ensureCapacity(int max_length);
    unsigned int hash(); // return a value that should be pretty unique.
@@ -226,7 +250,11 @@ public:
    int  Write(const int desc, const int max_to_write);
    //writes to a descriptor, deletes what it writes
 
-   int  Read(const int desc, const int max_to_read); //reads from a desc
+   /**  If ignore_semi_colons is false, then semi-colons will be turned into newlines.  If
+    * do_recv is false, we will use the 'read' system call instead.  Use this for file
+    * descriptors on Unix.
+    */
+   int  Read(const int desc, const int max_to_read, bool ignore_semi_colons, bool do_recv = true); //reads from a desc
 
    /** Reads untill it finds the delim, and then reads untill
     * it finds another.  Escape the delim with a \ (backslash).
@@ -236,8 +264,6 @@ public:
    int readToken(char delim, istream& dafile, int include_delim);
 
    void termedRead(istream& da_file);
-   void Termed_Read(istream& da_file) { return termedRead(da_file); }
-
    int contains(const char ch) const;
    int Contains(const char ch) const { return contains(ch); }
 
@@ -250,7 +276,10 @@ public:
    void strip(); //take spaces off of front and back
    void Strip() { strip(); }
 
-   void dropFromEnd(int num_chards); //drop a few off the end of the string
+   // Remove all instances of 'c' from this string.
+   void cleanChar(char c);
+
+   void dropFromEnd(int num_chars); //drop a few off the end of the string
    String sterilizeForHtml() const;
 
    /* Both of these next two delete what they grab from the string.
@@ -275,6 +304,12 @@ public:
       short eos, tbp;
       return getCommand(eos, tbp, 0, ignore_period);
    }
+
+   /** Returns newly allocated String, or NULL if no newlines were found.
+    * Removes anything returned, so can call this to iterate through each
+    * line of a String (though not that efficiently.)
+    */
+   String* getLine();
 
    /** grabs phrase, deliminated by a newline or null char
     * If destruct is TRUE, then the returned String will be removed

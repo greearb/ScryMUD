@@ -1,8 +1,5 @@
-// $Id$
-// $Revision$  $Author$ $Date$
-
 //
-//Copyright (C) 1998-2001  Ben Greear
+//Copyright (C) 1998-2009  Ben Greear
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Library General Public License
@@ -18,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-//To contact the maintainer, Edward Roper: edro+scrymud [at] wanfear.net
+// To contact the Author, Ben Greear:  greearb@candelatech.com
 //
 
 ///**********************  string2.cc  ***************************///
@@ -29,12 +26,17 @@
 #include <stdarg.h>
 #include <errno.h>
 #include <signal.h>
-#include <string.h>
+#include <string>
+#include <iomanip>
+
+#ifdef __WIN32__
+#include <winsock.h>
+#else
 #include <netinet/in.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#endif
 
-
-
-extern int core_dump(const char* msg); //misc2.cc
 
                       /* class functions */
 
@@ -45,15 +47,15 @@ int String::total_bytes = 0;
 
 
 /* TODO:  Someday put this in a better place... */
-struct Counter64u toCounter64u(unsigned long long cnt) {
+struct Counter64u toCounter64u(__uint64_t cnt) {
    struct Counter64u retval;
    retval.lo = (cnt & 0xFFFFFFFF);
    retval.hi = (cnt >> 32) & 0xFFFFFFFF;
    return retval;
 }
 
-unsigned long long toUint64(const Counter64u& cnt) {
-   unsigned long long retval = cnt.hi;
+__uint64_t toUint64(const Counter64u& cnt) {
+   __uint64_t retval = cnt.hi;
    retval = ((retval << 32) & (0xFFFFFFFF00000000LL));
    retval |= (cnt.lo & 0xFFFFFFFF);
    return retval;
@@ -61,15 +63,15 @@ unsigned long long toUint64(const Counter64u& cnt) {
 
 
 /* TODO:  Someday put this in a better place... */
-struct Counter64s toCounter64s(long long cnt) {
+struct Counter64s toCounter64s(__int64_t cnt) {
    struct Counter64s retval;
    retval.lo = (cnt & 0xFFFFFFFF);
    retval.hi = (cnt >> 32) & 0xFFFFFFFF;
    return retval;
 }
 
-long long toInt64(const Counter64s& cnt) {
-   long long retval = cnt.hi;
+__int64_t toInt64(const Counter64s& cnt) {
+   __int64_t retval = cnt.hi;
    retval = ((retval << 32) & (0xFFFFFFFF00000000LL));
    retval |= (cnt.lo & 0xFFFFFFFF);
    return retval;
@@ -119,8 +121,14 @@ unsigned int String::hash() {
 
 int String::Assert(int boolean_val, const char* msg) const {
    if (!boolean_val) {
-      core_dump(msg);
+      LOGFILE << "String::Assert, msg: " << msg << endl;
+      cout << "String::Assert, msg: " << msg << endl;
    }
+   assert(boolean_val);
+
+   //if (!boolean_val) {
+   //   core_dump(msg);
+   //}
    return TRUE;
 }
 
@@ -188,6 +196,24 @@ void String::strip() {
    *this = buf;
 }//Strip
 
+// Remove all instances of 'c' from this string.
+void String::cleanChar(char c) {
+   // Can't strip null terminator.
+   if (!c) {
+      return;
+   }
+   int j = 0;
+   for (int i = 0; i<size(); i++) {
+      if (this->string[i] != c) {
+         this->string[j] = this->string[i];
+         j++;
+      }
+   }
+   this->string[j] = 0;
+   cur_len = j;
+} 
+
+
 //drop a few off the end of the string
 void String::dropFromEnd(int num_chars) {
    if (cur_len > num_chars) {
@@ -222,14 +248,25 @@ void String::ensureCapacity(int max_length) {
    //LOGFILE << "In ensureCapacity...  max_length:  "
    //        << max_length << "  max_len:  " << max_len
    //        << endl << flush;
-   if (max_len < max_length) {
-      //cout << "Growing string: " << this << " max_length: " << max_length << endl;
-      char* tmp = string;
-      string = new char[max_length + max_len + 1];
-      total_bytes += max_length; //keep our static statistics
-      max_len += max_length; //cur_len remains the same here
-      strcpy(string, tmp);
-      delete[] tmp;
+   if (!string) {
+      if (max_length > 0) {
+         string = new char[max_length + 1];
+         string[0] = 0;
+         cur_len = 0;
+         max_len = max_length;
+      }
+   }
+   else {
+      if (max_len < max_length) {
+         //cout << "Growing string: " << this << " max_length: " << max_length << endl;
+         int ln = max_length + max_len + 1;
+         total_bytes += max_length; //keep our static statistics
+         max_len += max_length;
+         char* tmp = string;
+         string = new char[ln];
+         strcpy(string, tmp);
+         delete[] tmp;
+      }
    }//if
    //LOGFILE << "In ensure Capacity...  done" << endl
    //        << flush;
@@ -345,12 +382,9 @@ void String::InsertAfter(char a, int posn) {
 String::String() { //default constructor
    //log("In default const.\n");
    string_cnt++;
-   string = new char[2];
-   string[0] = '\0';
+   string = NULL;
    cur_len = 0;
-   max_len = 1;
-
-   total_bytes += 2;
+   max_len = -1;
 } // constructor
 
 
@@ -365,9 +399,8 @@ String::String(const char* S) {
       strcpy(string, S);
    }//if
    else {
-      string = new char[2];
-      string[0] = '\0';
-      cur_len = 0; max_len = 1;
+      string = NULL;
+      cur_len = 0; max_len = -1;
    }//else
    total_bytes += (max_len + 1);
 } // constructor
@@ -376,10 +409,17 @@ String::String(const char* S) {
 String::String(const String& S) {
    //log("In String const, here is source:");
    string_cnt++;
-   string = new char[S.cur_len + 1];
-   strcpy(string, S.string);
-   cur_len = S.cur_len;
-   max_len = S.cur_len;
+   if (S.cur_len > 0) {
+      string = new char[S.cur_len + 1];
+      strcpy(string, S.string);
+      cur_len = S.cur_len;
+      max_len = S.cur_len;
+   }
+   else {
+      string = NULL;
+      cur_len = 0;
+      max_len = -1;
+   }
 
    total_bytes += (max_len + 1);
 } // constructor
@@ -401,10 +441,9 @@ String::String(const int my_len) {
       string[0] = '\0';
    }//if
    else {
-      string = new char[2];
+      string = NULL;
       cur_len = 0;
-      max_len = 1;
-      string[0] = '\0';
+      max_len = -1;
    }//else
 
    total_bytes += (max_len + 1);
@@ -414,8 +453,10 @@ String::String(const int my_len) {
 String::~String() {
    string_cnt--;
    total_bytes -= (max_len + 1);
-   delete[] string;
-   string = NULL;
+   if (string) {
+      delete[] string;
+      string = NULL;
+   }
 } //destructor
 
 void String::Report() const {
@@ -433,7 +474,7 @@ String String::lookCommand(short is_first) const {
 
    //LOGFILE << "In look_command -:" << *this << ":-" << endl;
    
-   if (max_len == 0) { //trivial case...
+   if (max_len <= 0) { //trivial case...
       return temp;
    }//if
 
@@ -495,6 +536,41 @@ String String::lookCommand(short is_first) const {
 }//look_command
 
 
+String* String::getLine() {
+   String* rv = new String(100);
+   int q;
+   bool found_newline = false;
+   for (q = 0; q<size(); q++) {
+      char c = string[q];
+      if (c == '\n') {
+         found_newline = true;
+         q++; // get past newline
+         break;
+      }
+      if (c != '\r') {
+         rv->append(c);
+      }
+   }
+
+   if (found_newline) {
+      if (q == size()) {
+         cur_len = 0;
+         string[0] = 0;
+      }
+      else {
+         memmove(&string[0], &string[q], cur_len - q);
+         cur_len -= q;
+         string[cur_len] = 0; // just in case
+      }
+      return rv;
+   }
+   else {
+      delete rv;
+      return NULL;
+   }
+}
+   
+
 String String::getCommand(short& eos, short& term_by_period,
                           short is_first, short ignore_period) {
    String temp(100);
@@ -504,6 +580,11 @@ String String::getCommand(short& eos, short& term_by_period,
    String buf(300);
 
    //LOGFILE << "In Get_command -:" << *this << ":-" << endl;
+
+   if (!string) {
+      // Empty string
+      return temp;
+   }
 
    a = string[i];
    while ((isspace(a)) || (!ignore_period && (a == '.'))) {
@@ -657,13 +738,20 @@ String String::getRest(short destruct) {
     used correctly.  */
 
 void String::Refigure_strlen() {
-   cur_len = strlen(string);
-   if (cur_len > max_len) {
-      LOGFILE.log(ERROR, "ERROR:  cur_len is > max_len, end of string was\n");
-      //log("over-written.  Good luck, you'll need it!\n");
-      cur_len = max_len;
-      string[cur_len] = '\0';  //try to salvage the situation..
-   }//if
+   if (string) {
+      cur_len = strlen(string);
+
+      if (cur_len > max_len) {
+         LOGFILE.log(LS_ERROR, "ERROR:  cur_len is > max_len, end of string was\n");
+         //log("over-written.  Good luck, you'll need it!\n");
+         cur_len = max_len;
+         string[cur_len] = '\0';  //try to salvage the situation..
+      }//if
+   }
+   else {
+      cur_len = 0;
+      max_len = -1;
+   }
 }//Refigure_strlen
 
 int String::contains(const char ch) const {
@@ -849,8 +937,8 @@ void String::toUpper() {
 }//Tolower
 
 
-unsigned int String::Strlen() const {
-   return (unsigned int)(cur_len);
+int String::Strlen() const {
+   return cur_len;
 }//Strlen
 
 
@@ -868,15 +956,24 @@ int String::Write(const int desc, const int max_to_write) {
    do {
       //Sprintf(buf, "In Write, desc:  %i\n", desc);
       //log(buf);
-      this_round = write(desc, (string + sofar), 
-                         max_to_write - sofar);
+      this_round = send(desc, (string + sofar), 
+                         max_to_write - sofar, 0);
       if (this_round < 0) { //some error happened
-         if (errno == EAGAIN) {
+#ifdef __WIN32__
+         if (WSAGetLastError() == WSAEWOULDBLOCK) {
+#else
+         if ((errno == EAGAIN) || (errno == EINTR)) {
+#endif
             break; //done
          }
          else {
             perror("String.Write() err");
-            LOGFILE << "ERROR:  String.Write() err: " << errno << ": " << strerror(errno) << endl;
+            LOGFILE << "ERROR:  String.Write() err: " << errno << ": "
+                    << strerror(errno) << " desc: " << desc
+                    << " rv: " << this_round << endl;
+#ifdef __WIN32__
+            LOGFILE << "  WSAError: " << WSAGetLastError() << endl;
+#endif
             string[0] = '\0';
             cur_len = 0;
             return -1;
@@ -908,7 +1005,7 @@ int String::Write(const int desc, const int max_to_write) {
 }//Write (to a descriptor)
 
 
-int String::Read(const int desc, const int max_to_read) {
+int String::Read(const int desc, const int max_to_read, bool ignore_semi_colons, bool do_recv) {
    int begin = 0;
    int sofar = 0;
    int this_round = 0;
@@ -925,15 +1022,44 @@ int String::Read(const int desc, const int max_to_read) {
    //log(*this);
 
    do {
-      this_round = read(desc, (string + sofar + begin), 
-                        max_to_read - (begin + sofar) - 1);
+      int to_rd = (max_to_read - (begin + sofar) - 1);
+#ifdef __WIN32__
+      unsigned long avail_rd = 0xFFFFFFFF;
+      ioctlsocket(desc, FIONREAD, &avail_rd);
+      if (avail_rd == 0) {
+         LOGFILE << "About to read desc: " << desc << " avail_rd: " << avail_rd
+                 << " to_rd: " << to_rd << endl;
+      }
+      if ((avail_rd > 0) && (to_rd > (int)(avail_rd))) {
+         to_rd = avail_rd;
+      }
+      // NOTE:  Need to let it read zero to detect end-of-stream.
+      //if (to_rd == 0) {
+      //   break;
+      //}
+#endif
+      if (do_recv) {
+         this_round = recv(desc, (string + sofar + begin), to_rd, 0);
+      }
+      else {
+         this_round = read(desc, (string + sofar + begin), to_rd);
+      }
+      //LOGFILE << "Completed read read, rv: " << this_round << endl;
       
       if (this_round > 0) {
          sofar += this_round;
+         if (this_round == to_rd) {
+            // We have all we need
+            break;
+         }
       }//if
       else {
          if (this_round < 0) { //some error happened
-            if (errno != EAGAIN) { //== EWOULDBLOCK
+#ifdef __WIN32__
+            if (WSAGetLastError() != WSAEWOULDBLOCK) {
+#else
+            if ((errno != EAGAIN) && (errno != EINTR)) { //== EWOULDBLOCK
+#endif
                //perror("String.Read() err, not EAGAIn");
                string[sofar] = '\0';
                cur_len = sofar;
@@ -948,7 +1074,12 @@ int String::Read(const int desc, const int max_to_read) {
             //log("ERROR:  EOF encountered on socket read.\n");
             string[sofar] = '\0';
             cur_len = sofar;
-            return -1;
+            if (sofar == 0) {
+               return -1;
+            }
+            else {
+               break;
+            }
          }//else
       }//else
    } while (TRUE); //*(string + begin + sofar -1) != '\n'); //newline
@@ -970,21 +1101,33 @@ int String::Read(const int desc, const int max_to_read) {
 
    j = begin;
    char a;
+   bool in_quotes = false;
    for (i = begin; (a = string[i]); i++) {
       if (a == 8) {  //deal with backspace
          if (j > begin)
             j--;
       }//if
+      else if (a == '\'') {
+         in_quotes = !in_quotes;
+         string[j] = a;
+         j++;
+      }
       else if (a == ';') {
-         if (string[i+1] == ';') { //should escape it
-            string[j] = ';';
+         if (ignore_semi_colons || in_quotes) {
+            string[j] = a;
             j++;
-            i++; //move past second semicolon
-         }//if
+         }
          else {
-            string[j] = '\n';
-            j++;
-         }//else
+            if (string[i+1] == ';') { //should escape it
+               string[j] = ';';
+               j++;
+               i++; //move past second semicolon
+            }//if
+            else {
+               string[j] = '\n';
+               j++;
+            }//else
+         }
       }//if should deal with semicolon
       else if (a != 13) { //delete DOS's CR
          string[j] = a;
@@ -1006,18 +1149,22 @@ int String::Read(const int desc, const int max_to_read) {
 
 
 void String::purge() {
-   total_bytes -= (max_len + 1);
-   delete[] string;
-   string = new char[2];
-   cur_len = 0;
-   max_len = 1;
-   total_bytes += (max_len + 1);
-   string[0] = '\0';
+   if (string) {
+      total_bytes -= (max_len + 1);
+      delete[] string;
+      string = NULL;
+      cur_len = 0;
+      max_len = -1;
+      total_bytes += (max_len + 1);
+   }
 }//Clear      
 
 
 void String::clear() {
-   *this = "\0";
+   if (string) {
+      string[0] = 0;
+      cur_len = 0;
+   }
 }//Clear
 
 
@@ -1030,15 +1177,17 @@ void String::cap() {
    }//for
 }//Cap      
 
-void String::getLine(istream& stream, int max_len) {
-   char buf[max_len + 1];
-   stream.getline(buf, max_len);
+// TODO:  Optimize this to read right into our internal buffer.
+void String::getLine(istream& stream, int max_length) {
+   char buf[max_length + 1];
+   buf[0] = 0;
+   stream.getline(buf, max_length);
    *this = buf;
 }//Getline      
 
 
 /** Makes 9 look like: 1001 */
-void String::appendAsBinary(const unsigned long num) {
+void String::appendAsBinary(unsigned long num) {
    int i;
    for (i = 31; i>=0; i--) {
       if (num & (1<<i)) {
@@ -1056,6 +1205,16 @@ void String::appendAsBinary(const unsigned long num) {
    }
 }
 
+void String::append(const char* source, int len) {
+   if (!source)
+      return;
+
+   ensureCapacity(cur_len + len + 1);
+
+   strncat(string + cur_len, source, len);
+   cur_len += len;
+}//append      
+
 
 void String::append(const char* source) {
    if (!source)
@@ -1072,85 +1231,93 @@ void String::append(const char* source) {
 }//append      
 
 
-void String::append(const int i) {
+void String::append(int i) {
    char source[25];
    sprintf(source, "%i", i);
    this->append(source);
 }//append
 
-void String::append(const unsigned int i) {
+void String::append(unsigned int i) {
    char source[25];
    sprintf(source, "%u", i);
    this->append(source);
 }//append
 
-void String::append(const long i) {
+void String::append(long i) {
    char source[25];
    sprintf(source, "%li", i);
    this->append(source);
 }//append      
 
 
-void String::append(const unsigned long i) {
+void String::append(unsigned long i) {
    char source[25];
    sprintf(source, "%lu", i);
    this->append(source);
 }//append      
 
 
-void String::append(const unsigned long long i) {
+void String::append(unsigned long long i) {
    char source[45];
    sprintf(source, "%llu", i);
    this->append(source);
 }//append      
 
 
-void String::append(const long long i) {
+void String::append(long long i) {
    char source[45];
    sprintf(source, "%lli", i);
    this->append(source);
 }//append      
 
+void String::append(void* v) {
+   char source[50];
+   sprintf(source, "%p", v);
+   this->append(source);
+}//append
 
-void String::appendHex(const unsigned long i) {
+
+void String::appendHex(unsigned long i) {
    char source[25];
    sprintf(source, "%x", (unsigned int)(i));
    this->append(source);
 }//append      
 
 
-void String::append(const char c) {
+void String::append(char c) {
    char buf[2];
    sprintf(buf, "%c", c);
    this->append(buf);
 }//append      
 
-void String::append(const unsigned char c) {
+void String::append(unsigned char c) {
    char buf[2];
    sprintf(buf, "%c", c);
    this->append(buf);
 }//append      
 
 
-void String::append(const float f, int rem) {
+void String::append(float f, int rem) {
    append((double)(f), rem);
 }//append      
 
 
-void String::append(const double d, int rem) {
+void String::append(double d, int rem) {
    char buf[40];
    char args[20];
    sprintf(args, "%%.%if", rem);
    sprintf(buf, args, d);
    this->append(buf);
-}//append      
+}//append
 
 
 void String::append(const String& S) {
    if (&S != this) {
-      ensureCapacity(cur_len + S.cur_len);
-      strcat(string, S.string);
-      cur_len += S.cur_len;
+      if (S.cur_len > 0) {
+         ensureCapacity(cur_len + S.cur_len);
+         strcat(string, S.string);
+         cur_len += S.cur_len;
+      }
    }
    else {
       String tmp(S);
@@ -1159,14 +1326,20 @@ void String::append(const String& S) {
 }//append      
 
 
-void String::prepend(const int i) {
+void String::prepend(int i) {
    char source[25];
    sprintf(source, "%i", i);
    this->prepend(source);
 }//prepend      
 
+void String::prepend(char i) {
+   char source[25];
+   sprintf(source, "%c", i);
+   this->prepend(source);
+}//prepend      
 
-void String::prepend(const long i) {
+
+void String::prepend(long i) {
    char source[25];
    sprintf(source, "%d", (int)(i));
    this->prepend(source);
@@ -1189,7 +1362,10 @@ void String::prepend(const String& source) {
 ///*********************  OPERATORS  ******************************///
 
 String::operator const char*() const {
-   return string;
+   if (string) {
+      return string;
+   }
+   return "";
 }//to char* operator overload
 
 
@@ -1294,19 +1470,24 @@ String& String::operator= (const char c) {
 
 
 String& String::operator= (const String &S) {
-   ensureCapacity(S.cur_len);
-   strcpy(string, S.string);
-   cur_len = S.cur_len;
+   if (S.string && S.cur_len) {
+      ensureCapacity(S.cur_len);
+      strcpy(string, S.string);
+      cur_len = S.cur_len;
+   }
+   else {
+      Clear();
+   }
    return *this;
 }//assignment operator
 
 
 String& String::operator= (const char* S) {
-   if (S == NULL) {
+   int k;
+   if ((S == NULL) || ((k = strlen(S)) == 0)) {
       Clear();
       return *this;
    }//if
-   int k = strlen(S);
    ensureCapacity(k);
    strcpy(string, S);
    cur_len = k;
@@ -1314,12 +1495,12 @@ String& String::operator= (const char* S) {
 }//assignment operator
 
 char String::charAt(int i) const {
-   Assert(((i >= 0) && (i <= max_len)), "ERROR:  Index out of range.\n");
+   Assert(((i >= 0) && (i <= max_len)), "ERROR:  Index out of range, charAt.\n");
    return string[i];
 }
 
 void String::setCharAt(int idx, const char val) {
-   Assert(((idx >= 0) && (idx < cur_len)), "ERROR: Index out of range.\n");   
+   Assert(((idx >= 0) && (idx < cur_len)), "ERROR: Index out of range, setCharAt\n");   
    Assert(val, "ERROR:  setCharAt:  trying to set a NULL value.\n");
    string[idx] = val;
 }
@@ -1332,10 +1513,8 @@ char String::operator[] (const unsigned int i) const {
 }//[] operator
 
 char String::operator[] (const int i) const {
-   Assert((i >= 0) && ((int)(i) < max_len), "ERROR:  index to high, String::operator[]\n");
-
+   Assert((i < max_len) && (i >= 0), "ERROR:  index to high, String::operator[]\n");
    return string[i];
-
 }//[] operator
 
 //Friend
@@ -1363,39 +1542,75 @@ String String::operator+ (const String& S) const {
    return tmp;
 }//assignment operator
 
+String String::operator+ (const int i) const {
+   String tmp(*this);
+   tmp.append(i);
+   return tmp;
+}//append operator
+
+String String::operator+ (const long i) const {
+   String tmp(*this);
+   tmp.append(i);
+   return tmp;
+}//append operator
+
+String String::operator+ (const long long i) const {
+   String tmp(*this);
+   tmp.append(i);
+   return tmp;
+}//append operator
+
+String String::operator+ (const unsigned int i) const {
+   String tmp(*this);
+   tmp.append(i);
+   return tmp;
+}//append operator
+
+String String::operator+ (const unsigned long i) const {
+   String tmp(*this);
+   tmp.append(i);
+   return tmp;
+}//append operator
+
+String String::operator+ (const unsigned long long i) const {
+   String tmp(*this);
+   tmp.append(i);
+   return tmp;
+}//append operator
+
 
 /* equality operators, case insensitive */
 int String::operator!= (const char* S) const {
-   return strcasecmp(string, S);
+   return strcasecmp(c_str(), S);
 }//assignment operator
 
 
 int String::operator== (const char* S) const {
-   return (!(strcasecmp(string, S)));
+   return (!(strcasecmp(c_str(), S)));
 }//assignment operator
 
 int String::operator< (const char* S) const {
-   return (strcasecmp(string, S) < 0);
+   return (strcasecmp(c_str(), S) < 0);
 }//assignment operator
 
 int String::operator> (const char* S) const {
-   return (strcasecmp(string, S) > 0);
+   return (strcasecmp(c_str(), S) > 0);
 }//assignment operator
 
 int String::operator> (const String& S) const {
-   return (strcasecmp(string, S.string) > 0);
+   return (strcasecmp(c_str(), S.c_str()) > 0);
 }//assignment operator
 
 int String::operator< (const String& S) const {
-   return (strcasecmp(string, S.string) < 0);
+   return (strcasecmp(c_str(), S.c_str()) < 0);
 }//assignment operator
 
 int String::operator<= (const char* S) const {
-   return (strcasecmp(string, S) <= 0);
+   return (strcasecmp(c_str(), S) <= 0);
 }//assignment operator
 
 int String::operator>= (const char* S) const {
-   return (strcasecmp(string, S) >= 0);
+   return (strcasecmp(c_str(), S) >= 0);
 }//assignment operator
 
 
@@ -1423,6 +1638,8 @@ void vSprintf(String& targ, const char* string, va_list ap) {
    char ch_buf[50];
    Counter64u* c64u;
    unsigned long long* i64u;
+   long long* i64;
+   double f;
 
    //Counter64s* c64s;
    int tmpi;
@@ -1439,15 +1656,22 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                case 'U':
                   c64u = (Counter64u*)(va_arg(ap, void*));
                   if (c64u) {
-                     sprintf(ch_buf, "%llu", toUint64(*c64u));
+                     sprintf(ch_buf, "%llu", (unsigned long long)(toUint64(*c64u)));
                      targ.append(ch_buf);
                   }
+                  break;
+               case 'c':    /* char */  
+                  targ.append((char)(va_arg(ap, int)));
+                  break;
+               case 'f':    /* float, 4 points of precision */
+                  f = va_arg(ap, double);
+                  targ.append(f, 4);
                   break;
                case 'i':    /* int */  
                   targ.append(va_arg(ap, int));
                   break;
                case 'u':    /* unsigned int32 */  
-                  targ.append(va_arg(ap, unsigned long));
+                  targ.append(va_arg(ap, unsigned int));
                   break;
                case 'I':    /* ignore */
                   junk = va_arg(ap, void*);
@@ -1456,6 +1680,10 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                case 'L': /* uint64 */
                   i64u = (unsigned long long*)(va_arg(ap, void*));
                   targ.append(*i64u);
+                  break;
+               case 'D': /* int64 */
+                  i64 = (long long*)(va_arg(ap, void*));
+                  targ.append(*i64);
                   break;
                case 'd':     /* long, turn it into an int */
                   targ.append(va_arg(ap, int));
@@ -1466,7 +1694,7 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                   }//if
                   break;
                case 'p':    /* pointer */
-                  targ.appendHex(va_arg(ap, long));
+                  targ.append(va_arg(ap, void*));
                   break;
                case 'S':      /* String */
                   if ((tmp_str = va_arg(ap, String *))) {
@@ -1481,11 +1709,11 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                         num += (int)(string[i+1]) - 48;
                      }//if
                      else {
-                        LOGFILE.log(ERROR, "ERROR:  Sprintf, case 'P', first not an int\n");
+                        LOGFILE.log(LS_ERROR, "ERROR:  Sprintf, case 'P', first not an int\n");
                      }
                   }//if two digits
                   else {
-                     LOGFILE.log(ERROR, "ERROR:  Sprintf, case 'P', second not an int\n");
+                     LOGFILE.log(LS_ERROR, "ERROR:  Sprintf, case 'P', second not an int\n");
                   }
                   i += 2; //now pointing to next valid letter
                   
@@ -1498,12 +1726,13 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                   break;
                case 'x':
                   tmpi = va_arg(ap, int);
-                  sprintf(ch_buf, "0x%lX", (unsigned long)(tmpi));
+                  sprintf(ch_buf, "%X", (unsigned int)(tmpi));
                   targ.append(ch_buf);
                   break;
                default:
                   sprintf(ch_buf, "ERROR: default (%c) called in Sprintf.\n",
                           string[i]);
+                  cout << ch_buf << endl;
                   targ.Assert(FALSE, ch_buf);
             }//switch
             i++;
@@ -1520,10 +1749,11 @@ void vSprintf(String& targ, const char* string, va_list ap) {
    }//for
 }//vSprintf
 
-/* WARNING:  this will fail if input is > 299 chars. */
+/* WARNING:  this will truncate if input is > 299 chars. */
 istream& operator>> (istream& stream, String& str) {
    char buf[300];
-   stream >> buf;
+   memset(buf, 0, sizeof(buf));
+   stream >> setw(sizeof(buf) - 1) >> buf;
    str = buf;
    return stream;
 }//write_out operator

@@ -32,7 +32,8 @@
 #include "critter.h"
 
 // Use all variables to make the compiler warnings go away.
-#define USE_VARS if (!(1 || &pc || b)) return FALSE
+//#define USE_VARS  if (!(1 || &pc || b)) return FALSE
+#define USE_VARS  (void)(pc); (void)(b);
 
 /** Matches all. */
 class CritterSelector {

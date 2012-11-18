@@ -53,7 +53,7 @@ int do_berserk(critter& pc) {
    String buf(100);
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_berserk.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_berserk.\n");
       return -1;
    }//if
 

@@ -131,8 +131,8 @@ int do_domob_give_proc(critter& targ, critter& pc, object& obj) {
          if (targ.GIVE_TEACH.Strlen()) { //if should teach something
             int spell_num = SSCollection::instance().getNumForName(targ.GIVE_TEACH);
             if (spell_num == -1) { // if it didn't exist
-               mudlog.log(ERROR, "ERROR:  spell unknown in do_domob_give.\n");
-               mudlog.log(ERROR, targ.GIVE_TEACH);
+               mudlog.log(LS_ERROR, "ERROR:  spell unknown in do_domob_give.\n");
+               mudlog.log(LS_ERROR, targ.GIVE_TEACH);
             }//if
             else {
                int retval;
@@ -193,7 +193,7 @@ int do_domob_say_proc(critter& targ, critter& pc, const String& msg) {
       if (ptr->skill_name.Strlen()) { //if should teach something
          int spell_num = SSCollection::instance().getNumForName(ptr->skill_name);
          if (spell_num == -1) { // if it didn't exist
-            if (mudlog.ofLevel(ERROR)) {
+            if (mudlog.ofLevel(LS_ERROR)) {
                mudlog << "ERROR:  spell unknown in do_domob_say, name -:"
                       << ptr->skill_name << ":-" << endl;
             }
@@ -244,8 +244,8 @@ int do_domob_bow_proc(critter& targ, critter& pc) {
     if (targ.BOW_TEACH.Strlen()) { //if should teach something
       int spell_num = SSCollection::instance().getNumForName(targ.BOW_TEACH);
       if (spell_num == -1) { // if it didn't exist
-        mudlog.log(ERROR, "ERROR:  spell unknown in do_domob_bow.\n");
-        mudlog.log(ERROR, targ.BOW_TEACH);
+        mudlog.log(LS_ERROR, "ERROR:  spell unknown in do_domob_bow.\n");
+        mudlog.log(LS_ERROR, targ.BOW_TEACH);
       }//if
       else {
         int retval;
@@ -288,8 +288,8 @@ int do_domob_curse_proc(critter& targ, critter& pc) {
     if (targ.CURSE_TEACH.Strlen()) { //if should teach something
       int spell_num = SSCollection::instance().getNumForName(targ.CURSE_TEACH);
       if (spell_num == -1) { // if it didn't exist
-        mudlog.log(ERROR, "ERROR:  spell unknown in do_domob_curse.\n");
-        mudlog.log(ERROR, targ.CURSE_TEACH);
+        mudlog.log(LS_ERROR, "ERROR:  spell unknown in do_domob_curse.\n");
+        mudlog.log(LS_ERROR, targ.CURSE_TEACH);
       }//if
       else {
         int retval;
@@ -343,7 +343,7 @@ int do_shot_proc(critter& targ, critter& pc, short did_hit,
    if (!targ.mob)
       return -1;
    if (targ.isMob()) {
-     mudlog.log(ERROR, "ERROR:  targ is a MOB in do_shot_proc.\n");
+     mudlog.log(LS_ERROR, "ERROR:  targ is a MOB in do_shot_proc.\n");
      return -1;
    }//if
 
@@ -428,7 +428,7 @@ int do_wand_scroll_proc(door* dr_ptr, int proc_num, critter& pc,
          Sprintf(buf, 
                  "ERROR:  default called in do_wand_scroll_proc(DR):  %i.\n", 
                  proc_num);
-         mudlog.log(ERROR, buf);
+         mudlog.log(LS_ERROR, buf);
          show( "You call upon unknown forces, and nothing happens!\n",
               pc);
          return -1;
@@ -527,7 +527,7 @@ int do_wand_scroll_proc(int proc_num, critter& pc,
          Sprintf(buf, 
                  "ERROR:  dflt called in do_wand_scroll_proc(NONE):  %i.\n", 
                  proc_num);
-         mudlog.log(ERROR, buf);
+         mudlog.log(LS_ERROR, buf);
          show( "You call upon unknown forces, and nothing happens!\n",
               pc);
          return -1;
@@ -596,7 +596,7 @@ int do_wand_scroll_proc(object* otarg, int proc_num, critter& pc,
          Sprintf(buf, 
                  "ERROR:  default called in do_wand_scroll_proc(OBJ):  %i.\n", 
                  proc_num);
-         mudlog.log(ERROR, buf);
+         mudlog.log(LS_ERROR, buf);
          show( "You call upon unknown forces, and nothing happens!\n",
               pc);
          return -1;
@@ -793,7 +793,7 @@ int do_wand_scroll_proc(critter* targ, int proc_num, critter& pc,
          Sprintf(buf, 
                  "ERROR:  dflt called in do_wand_scroll_proc(CRIT):  %i.\n", 
                  proc_num);
-         mudlog.log(ERROR, buf);
+         mudlog.log(LS_ERROR, buf);
          show( "You call upon unknown forces, and nothing happens!\n",
               pc);
          return 0;
@@ -866,7 +866,7 @@ int do_pulsed_spec_procs(int first_room, int last_room) {
                      obj_ptr = room_list[i].getInv()->elementAt(attempted);
  
                      if (!obj_ptr) {
-                        if (mudlog.ofLevel(ERROR)) {
+                        if (mudlog.ofLevel(LS_ERROR)) {
                            mudlog << "ERROR:  obj_ptr NULL in scavenge proc, rm:"
                                   << i << " inv_size: " << sz << " attempted: "
                                   << attempted << endl;
@@ -1051,7 +1051,7 @@ int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
       else {
          Sprintf(tmp_str, "ERROR:  uncoded obj_wear_proc called: %i.\n",
                  proc_num);
-         mudlog.log(ERROR, tmp_str);
+         mudlog.log(LS_ERROR, tmp_str);
       }//else
    }//if
    else if (type_of_proc == OBJ_REMOVE_PROC) {
@@ -1066,7 +1066,7 @@ int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
       else {
          Sprintf(tmp_str, "ERROR:  uncoded obj_rem_proc called: %i.\n",
                  proc_num);
-         mudlog.log(ERROR, tmp_str);
+         mudlog.log(LS_ERROR, tmp_str);
       }//else
    }//if OBJ_REMOVE_PROC      
    else if (type_of_proc == OBJ_CONSUME_PROC) {
@@ -1079,7 +1079,7 @@ int do_this_obj_proc(int type_of_proc, int proc_num, critter& pc,
       else {
          Sprintf(tmp_str, "ERROR:  uncoded obj_consume_proc called: %i.\n",
                  proc_num);
-         mudlog.log(ERROR, tmp_str);
+         mudlog.log(LS_ERROR, tmp_str);
       }//else
    }//if
    return 0;
@@ -1096,29 +1096,29 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
    //log("In do_buy_proc.\n");
 
    if (keeper.isMob()) {
-      mudlog.log(ERROR, "ERROR:  keeper is MOB in do_buy_proc.\n");
+      mudlog.log(LS_ERROR, "ERROR:  keeper is MOB in do_buy_proc.\n");
       return -1;
    }//if
 
    if (keeper.mob) {
       if (keeper.mob->proc_data) {
          if (!(keeper.mob->proc_data->sh_data)) {
-            mudlog.log(ERROR, "ERROR:  keeper has no sh_data in do_buy_proc.\n");
+            mudlog.log(LS_ERROR, "ERROR:  keeper has no sh_data in do_buy_proc.\n");
             return -1;
          }//if
       }//if
       else {
-         mudlog.log(ERROR, "ERROR:  keeper has no proc_data in do_buy_proc.\n");
+         mudlog.log(LS_ERROR, "ERROR:  keeper has no proc_data in do_buy_proc.\n");
          return -1;
       }//else
    }//if (keeper.mob)
    else {
-      mudlog.log(ERROR, "ERROR:  keeper's mob is NULL in do_buy_proc.\n");
+      mudlog.log(LS_ERROR, "ERROR:  keeper's mob is NULL in do_buy_proc.\n");
       return -1;
    }//else
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB trying to buy.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB trying to buy.\n");
       return -1;
    }//if
 
@@ -1257,7 +1257,7 @@ int do_buy_proc(int prc_num, critter& keeper, int i_th,
       }//else
    }//if buy proc_0
    else {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  bad proc num sent to do_buy_proc: "
                 << prc_num << endl;
       }//if
@@ -1274,7 +1274,7 @@ int do_vend_buy(object& vendor, int i_th, const String* item, critter& pc) {
    mudlog.log(TRC, "In do_vend_buy.\n");
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB trying to buy.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB trying to buy.\n");
       return -1;
    }//if
 
@@ -1361,30 +1361,30 @@ int do_offer_proc(int prc_num, critter& keeper, int i_th,
    //log("In do_buy_proc.\n");
 
    if (keeper.isMob()) {
-      mudlog.log(ERROR, "ERROR:  keeper is MOB in do_offer_proc.\n");
+      mudlog.log(LS_ERROR, "ERROR:  keeper is MOB in do_offer_proc.\n");
       return -1;
    }//if
 
    if (keeper.mob) {
       if (keeper.mob->proc_data) {
          if (!(keeper.mob->proc_data->sh_data)) {
-            mudlog.log(ERROR, "ERROR:  keeper has no sh_data in do_offer_proc.\n");
+            mudlog.log(LS_ERROR, "ERROR:  keeper has no sh_data in do_offer_proc.\n");
             return -1;
          }//if
       }//if
       else {
-         mudlog.log(ERROR, "ERROR:  keeper has no proc_data in do_offer_proc.\n");
+         mudlog.log(LS_ERROR, "ERROR:  keeper has no proc_data in do_offer_proc.\n");
          return -1;
       }//else
    }//if
    else {
-      mudlog.log(ERROR, "ERROR:  keeper's mob is NULL in do_offer_proc.\n");
+      mudlog.log(LS_ERROR, "ERROR:  keeper's mob is NULL in do_offer_proc.\n");
       return -1;
    }//else
             
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB trying to offer.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB trying to offer.\n");
       return -1;
    }//if
 
@@ -1434,7 +1434,7 @@ int do_offer_proc(int prc_num, critter& keeper, int i_th,
    else {
       Sprintf(buf, "ERROR:  bad proc num sent to do_offer_proc: %i.\n", 
               prc_num);
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, buf);
    }//else        
    return -1;
 }//do_offer_proc
@@ -1452,27 +1452,27 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
    if (keeper.mob) {
       if (keeper.mob->proc_data) {
          if (!(keeper.mob->proc_data->sh_data)) {
-            mudlog.log(ERROR, "ERROR:  keeper has no sh_data in do_sell_proc.\n");
+            mudlog.log(LS_ERROR, "ERROR:  keeper has no sh_data in do_sell_proc.\n");
             return -1;
          }//if
       }//if
       else {
-         mudlog.log(ERROR, "ERROR:  keeper has no proc_data in do_sell_proc.\n");
+         mudlog.log(LS_ERROR, "ERROR:  keeper has no proc_data in do_sell_proc.\n");
          return -1;
       }//else
    }//if
    else {
-      mudlog.log(ERROR, "ERROR:  keeper's mob is NULL in do_sell_proc.\n");
+      mudlog.log(LS_ERROR, "ERROR:  keeper's mob is NULL in do_sell_proc.\n");
       return -1;
    }//else
             
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB trying to sell.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB trying to sell.\n");
       return -1;
    }//if
 
    if (keeper.isMob()) {
-      mudlog.log(ERROR, "ERROR:  keeper is MOB in do_sell_proc.\n");
+      mudlog.log(LS_ERROR, "ERROR:  keeper is MOB in do_sell_proc.\n");
       return -1;
    }//if
 
@@ -1550,7 +1550,7 @@ int do_sell_proc(int prc_num, critter& keeper, int i_th,
    else {
       Sprintf(buf, "ERROR:  bad proc num sent to do_sell_proc: %i.\n", 
               prc_num);
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, buf);
    }//else        
    return -1;
 }//do_sell_proc

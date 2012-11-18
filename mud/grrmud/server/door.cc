@@ -168,7 +168,7 @@ void door_data::fileRead(ifstream& da_file) {
    Clear();
    
    if (!da_file) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in door_data read." << endl;
       }
       return;
@@ -187,7 +187,7 @@ void door_data::fileRead(ifstream& da_file) {
    test = TRUE;
    while (test) {
       if (!da_file) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in door_data read." << endl;
          }
          return;
@@ -204,7 +204,7 @@ void door_data::fileRead(ifstream& da_file) {
    }//while            
    da_file.getline(tmp, 80);         
    
-   long_desc.Termed_Read(da_file);
+   long_desc.termedRead(da_file);
 }//Read
 
 
@@ -282,7 +282,7 @@ door& door::operator= (const door& source) {
    Clear();
    
    if (!source.dr_data) {
-      mudlog.log(ERROR, "ERROR:  assigning with empty door as source.\n");
+      mudlog.log(LS_ERROR, "ERROR:  assigning with empty door as source.\n");
       return *this;
    }//if
    
@@ -315,7 +315,7 @@ void door::Read(ifstream& da_file) {
    Clear();
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in door read." << endl;
       }
       return;
@@ -323,7 +323,7 @@ void door::Read(ifstream& da_file) {
 
    da_file >> data_index;
    if (!check_l_range(data_index, 0, NUMBER_OF_DOORS, mob_list[0], FALSE)) {
-      mudlog.log(ERROR, "ERROR:  door_index is out of range.\n");
+      mudlog.log(LS_ERROR, "ERROR:  door_index is out of range.\n");
       data_index = 1; //at least it won't crash this way
    }//if
    /* ok, got good data_index */
@@ -338,7 +338,7 @@ void door::Read(ifstream& da_file) {
    int is_affected = FALSE;
    while (i != -1) { //affected by
       if (!da_file) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in door read." << endl;
          }
          return;

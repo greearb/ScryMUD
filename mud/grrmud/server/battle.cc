@@ -50,7 +50,7 @@ short can_start_battle(critter& targ, critter& pc, short do_msg) {
    String buf(100);
 
    if ((targ.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  can_start battle sent SMOB's.\n");
+      mudlog.log(LS_ERROR, "ERROR:  can_start battle sent SMOB's.\n");
       return FALSE;
    }//if
 
@@ -481,7 +481,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
        break;
 
      default:
-        if (mudlog.ofLevel(ERROR)) {
+        if (mudlog.ofLevel(LS_ERROR)) {
            mudlog << "ERROR:  Default called on switch in battle.cc\n"
                   << "ERROR:  Here is bad vict.pos:  " << vict.POS << endl;
         }
@@ -513,7 +513,7 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
         wmsg = "jab";
       else {
          wmsg = "injure";
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  got to default finding wmsg, battle.cc, obj#:  "
                    << agg.EQ[posn_of_weapon]->OBJ_NUM << endl
                    << "ERROR:  Name of offending critter:  "
@@ -1187,7 +1187,7 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
    }
 
    if (vict.isMob()) {
-      mudlog.log(ERROR, "ERROR:  mob sent to dead_crit_to_corpse.\n");
+      mudlog.log(LS_ERROR, "ERROR:  mob sent to dead_crit_to_corpse.\n");
       return;
    }//if
 
@@ -1468,13 +1468,13 @@ critter* mob_to_smob(critter& mob, const int room_num, int do_sub,
    }
 
    if (!mob.isMob()) {
-      mudlog.log(ERROR, "ERROR:  mob_to_smob called on nonMOB.\n");
+      mudlog.log(LS_ERROR, "ERROR:  mob_to_smob called on nonMOB.\n");
       do_shutdown = TRUE;
       exit(100);
    }//if
 
    if (mob.pc) {
-      mudlog.log(ERROR, "ERROR:  mob has pc_data in mob_to_smob.\n");
+      mudlog.log(LS_ERROR, "ERROR:  mob has pc_data in mob_to_smob.\n");
       do_shutdown = TRUE;
       exit(113);
    }//if
@@ -1486,7 +1486,7 @@ critter* mob_to_smob(critter& mob, const int room_num, int do_sub,
    obj_ptr_log << "CRI_CR " << mob.getIdNum() << " " << crit_ptr << "\n";
 
    if (!name || ((room_num < 0) || (room_num > NUMBER_OF_ROOMS))) {
-      mudlog.log(ERROR,
+      mudlog.log(LS_ERROR,
                  "ERROR:  name NULL  or room_num out of range in mob_to_smob.\n");
       do_shutdown = TRUE;
       exit(100);
@@ -1522,7 +1522,7 @@ critter* mob_to_smob(critter& mob, const int room_num, int do_sub,
 critter* mob_to_smob(critter& mob, const int room_num,
                      int suppress_msg) {
    if ((room_num > NUMBER_OF_ROOMS) || (room_num < 0)) {
-      mudlog.log(ERROR, "ERROR:  room_num out of range in mob_to_smob.\n");
+      mudlog.log(LS_ERROR, "ERROR:  room_num out of range in mob_to_smob.\n");
       do_shutdown = TRUE;
       exit(100);
    }//if
@@ -1543,12 +1543,12 @@ critter* mob_to_smob(critter& mob, room& rm, int suppress_sub_fail_msg) {
        about it. */
 
    if (!mob.isMob()) {
-      mudlog.log(ERROR, "ERROR:  mob_to_smob called on nonMOB.\n");
+      mudlog.log(LS_ERROR, "ERROR:  mob_to_smob called on nonMOB.\n");
       core_dump("mob_to_smob1");
    }//if
 
    if (mob.pc) {
-      mudlog.log(ERROR, "ERROR:  mob has pc_data in mob_to_smob.\n");
+      mudlog.log(LS_ERROR, "ERROR:  mob has pc_data in mob_to_smob.\n");
       core_dump("mob_to_smob2");
    }//if
 
@@ -1615,7 +1615,7 @@ object* obj_to_sobj(object& obj, PtrList<object>* in_list,
 
    if (do_sub) {
       if (!obj_sub_a_4_b(obj_ptr, *in_list, i_th, name, see_bit, rm)) {
-         mudlog.log(ERROR, "ERROR:  obj_sub_a_4_b failed in obj_to_sobj.\n");
+         mudlog.log(LS_ERROR, "ERROR:  obj_sub_a_4_b failed in obj_to_sobj.\n");
       }//if
    }//if
    else {

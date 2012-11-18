@@ -154,7 +154,7 @@ void SkillSpell::Read(ifstream& da_file) {
    Clear();
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in SkillSpell read." << endl;
       }
       return;
@@ -275,7 +275,7 @@ object* SkillSpell::getScroll() {
    if (mana_cost && !ss_num) {
       Sprintf(buf, "ERROR:  need to create a scroll for %S.\n",
               &name);
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, buf);
       retval = NULL;
    }//if
    else {
@@ -287,13 +287,13 @@ object* SkillSpell::getScroll() {
          Sprintf(buf, 
                "ERROR:  Tried to return non-existant scroll:  %i in get_number_of_scroll.\n",
                retval);
-         mudlog.log(ERROR, buf);
+         mudlog.log(LS_ERROR, buf);
          return NULL;
       }//if
       if (!retval->isScroll()) {
          Sprintf(buf, "ERROR:  Tried to return scroll that was NOT a \n"
                "scroll:  %i in get_number_of_scroll.\n", retval->getIdNum());
-         mudlog.log(ERROR, buf);
+         mudlog.log(LS_ERROR, buf);
          return NULL;
       }//if
    }//if
@@ -368,7 +368,7 @@ const char* SSCollection::getNameForNum(int skill_num) {
    
    if (!check_l_range(skill_num, 0, NUMBER_OF_SKILL_SPELLS, mob_list[0],
                       FALSE)) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  skill_num out of range: " << skill_num
                 << " get_skill_name!!\n";
       }//if
@@ -604,7 +604,7 @@ SkillSpell& SSCollection::getSS(int i) {
    }
 
    if (i != -1) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  Returning DUMMY in SSCollection::getSS, for spll: "
                 << i << endl;
       }//if
@@ -621,7 +621,7 @@ void SSCollection::read() {
 
    ifstream zfile("./World/SKILLS_SPELLS");
    if (!zfile) {
-      mudlog.log(ERROR, "ERROR:  SKILLS_SPELLS not opened correctly, fatal.\n");
+      mudlog.log(LS_ERROR, "ERROR:  SKILLS_SPELLS not opened correctly, fatal.\n");
       return;
    }//if
 
@@ -630,7 +630,7 @@ void SSCollection::read() {
    
    while ((k != -1) && zfile) { //then read it in.
       if (!check_l_range(k, 0, NUMBER_OF_SKILL_SPELLS, mob_list[0], FALSE)) {
-         mudlog.log(ERROR, "ERROR:  zone number is out of range, fatal\n");
+         mudlog.log(LS_ERROR, "ERROR:  zone number is out of range, fatal\n");
          return;
       }//if
       instance().getSS(k).Read(zfile);
@@ -1107,7 +1107,7 @@ void SSCollection::read() {
       else {
          mudlog << "Reading ss -:" << tstr << ":-" << endl;
          
-         str_buf.Termed_Read(desc_file);
+         str_buf.termedRead(desc_file);
          
          mudlog << "Got Description -:" << str_buf << ":-" << endl;
          

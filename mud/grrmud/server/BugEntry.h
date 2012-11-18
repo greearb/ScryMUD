@@ -1,9 +1,3 @@
-// $Id$
-// $Revision$  $Author$ $Date$
-
-// $Id$
-// $Revision$  $Author$ $Date$
-
 //
 //ScryMUD Server Code
 //Copyright (C) 1998  Ben Greear
@@ -114,8 +108,8 @@ public:
 
    static state getState(const String& fer_state);
    static int getInstanceCount() { return _cnt; }
-   static char* state_str[];
-   static char* html_color[];
+   static const char* state_str[];
+   static const char* html_color[];
 
 protected:
    int bug_num;
@@ -154,7 +148,7 @@ protected:
    CollectionType type;
    PtrList<BugEntry> bugs;
 
-   static char* ct_strs[];
+   static const char* ct_strs[];
 
    // Causes it to write it's self to disk for storage and in html.
    int notifyModified();

@@ -319,7 +319,7 @@ void file_write_all_zones() {
          Sprintf(buf, "./World/zone_%i", i);
          ofstream rfile(buf);
          if (!rfile) {
-            mudlog.log(ERROR, 
+            mudlog.log(LS_ERROR, 
                        "ERROR:  rfile not opened in 'write_all_zones'.\n");
             return;
          }//if
@@ -377,7 +377,7 @@ void db_load_zone(int zone_num, int read_all) {
       while ((row=mysql_fetch_row(result))) {
          k = atoi(row[0]);
          if ((k & ~(0x01000000)) > NUMBER_OF_ROOMS) {
-            if (mudlog.ofLevel(ERROR)) {
+            if (mudlog.ofLevel(LS_ERROR)) {
                mudlog << "In db_load_zone(int, int):\n";
                mudlog << "Room# " << k << "is too high for the room_list.\n"
                       << "Consider increasing the value of NUMBER_OF_ROOMS "
@@ -434,7 +434,7 @@ void file_load_zone(int zone_num, int read_all) {
       // compatibility!
       if ((k & ~(0x01000000)) > NUMBER_OF_ROOMS) {
          sprintf(buf, "Room# %i is too high for the room_list.\n", k);
-         mudlog.log(ERROR, buf);
+         mudlog.log(LS_ERROR, buf);
          exit(100);
       }//if
       if ((k & ~(0x01000000)) > Cur_Max_Room_Num)
@@ -564,7 +564,7 @@ void db_load_objects(int for_zone, int read_all) {
             }
             k=atol(row[0]);
             if (k > NUMBER_OF_ITEMS) {
-               if (mudlog.ofLevel(ERROR)) {
+               if (mudlog.ofLevel(LS_ERROR)) {
                   mudlog << "In db_load_objects(int, int): \n";
                mudlog << "Item# " << k << " is too high for the obj_list.\n";
                mudlog << "Consider increasing NUMBER_OF_ITEMS in const.h\n";
@@ -653,7 +653,7 @@ void db_load_critters(int for_zone, int read_all) {
       while ((row=mysql_fetch_row(result))) {
          k=atoi(row[0]);
          if (k > NUMBER_OF_MOBS) {
-            if (mudlog.ofLevel(ERROR)) {
+            if (mudlog.ofLevel(LS_ERROR)) {
                mudlog << "In db_load_critters(int, int):\n";
                mudlog << "Critter# " << k << " is too high for the mob list.\n"
                       << "Consider increasing NUMBER_OF_MOBS in const.h.\n";
@@ -749,7 +749,7 @@ void db_load_doors(int for_zone) {
          while ((row=mysql_fetch_row(result))) {
             k=atol(row[0]);
             if (k > NUMBER_OF_DOORS) {
-               if (mudlog.ofLevel(ERROR)) {
+               if (mudlog.ofLevel(LS_ERROR)) {
                   mudlog << "In db_load_doors(int): \n";
                mudlog << "Door# " << k << " is too high for the obj_list.\n";
                mudlog << "Consider increasing NUMBER_OF_DOORS in const.h\n";

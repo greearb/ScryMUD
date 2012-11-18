@@ -111,10 +111,10 @@ MYSQL* database;
 
 ServerConfig config;
 
-LogStream            mudlog("./log/logfile.txt", ERROR | DIS | WRN | LSEC | DB | DBG);
+LogStream            mudlog("./log/logfile.txt", LS_ERROR | DIS | WRN | LS_SEC | DB | DBG);
 //LogStream            mudlog("./log/logfile.txt", ERROR | DIS | WRN | LSEC | DB | DBG, LogStream::APPEND);
 //LogStream            obj_ptr_log("./log/obj_ptr.log", ALL, LogStream::APPEND);
-LogStream            obj_ptr_log("./log/obj_ptr.log", ERROR | DIS); // turn this off, for now.
+LogStream            obj_ptr_log("./log/obj_ptr.log", LS_ERROR | DIS); // turn this off, for now.
 
 PtrList<String>        banned_hosts;
 class critter        mob_list[NUMBER_OF_MOBS + 1];
@@ -1032,7 +1032,8 @@ void game_loop(int s)  {
 
             len = pc_ptr->getInput()->Strlen();
             if (len && ((pc_ptr->getInput()->charAt(len - 1) == '\n') ||
-                     pc_ptr->getInput()->Contains('\n')) || (len >= MAX_INPUT_LEN)) {
+                        pc_ptr->getInput()->Contains('\n') ||
+                        (len >= MAX_INPUT_LEN))) {
                if (mudlog.ofLevel(DBG)) {
                   mudlog << "processing input for: " << *(pc_ptr->getName())
                      << ",  cmd -:" << *(pc_ptr->getInput()) << ":- " << endl;
@@ -1678,7 +1679,7 @@ int critter::doLogOffActive() {
    String buf(100);
 
    if (!isPc()) {
-      mudlog.log(ERROR, "ERROR, doLoseLink on npc.\n");
+      mudlog.log(LS_ERROR, "ERROR, doLoseLink on npc.\n");
       return -1;
    }
 
@@ -1691,7 +1692,7 @@ int critter::doLogOffActive() {
    }
 
    if (pc->link_condition != CON_PLAYING) {
-      mudlog.log(ERROR, "ERROR, doLoseLink, link condition !CON_PLAYING\n");
+      mudlog.log(LS_ERROR, "ERROR, doLoseLink, link condition !CON_PLAYING\n");
       return -1;
    }
 
@@ -1811,7 +1812,7 @@ int critter::doGoLinkdead() {
    String buf(100);
 
    if (!isPc()) {
-      mudlog.log(ERROR, "ERROR, doGoLinkDead on npc.\n");
+      mudlog.log(LS_ERROR, "ERROR, doGoLinkDead on npc.\n");
       return -1;
    }
 
@@ -1872,7 +1873,7 @@ int critter::doLogOffNewLogin() {
    String buf(100);
 
    if (!isPc()) {
-      mudlog.log(ERROR, "ERROR, doLogOffNewLogin on npc.\n");
+      mudlog.log(LS_ERROR, "ERROR, doLogOffNewLogin on npc.\n");
       return -1;
    }
 

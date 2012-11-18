@@ -167,7 +167,7 @@ int critter::processInput(String& input, short do_sub, int script_driven,
    }
 
    if (isMob()) { //not gonna parse for MOB's, but will for SMOBs btw
-      mudlog.log(ERROR, "ERROR:  MOB tried to process_input, parse.cc.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB tried to process_input, parse.cc.\n");
       return -1;
    }//if
 

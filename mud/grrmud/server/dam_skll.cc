@@ -97,7 +97,7 @@ int do_hurl(critter& vict, critter& pc) {
    short do_fatality = FALSE;
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_hurl.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_hurl.\n");
       return -1;
    }//if
 
@@ -274,7 +274,7 @@ int do_body_slam(critter& vict, critter& pc) {
    short do_fatality = FALSE;
 
    if ((vict.isMob()) || (pc.isMob())) {
-      mudlog.log(ERROR, "ERROR:  MOB sent to do_bash.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB sent to do_bash.\n");
       return -1;
    }//if
 

@@ -383,7 +383,7 @@ int critter::doUngroup(int i_th, const String* vict) {
    String buf(81);
 
    if (isMob()) {
-      mudlog.log(ERROR, "ERROR: MOB trying to ungroup.\n");
+      mudlog.log(LS_ERROR, "ERROR: MOB trying to ungroup.\n");
       return -1;
    }//if
 
@@ -1135,7 +1135,7 @@ int close(int i_th, const String* name, critter& pc) {
 int save(critter& pc) {
 
    if (!pc.isPc()) {
-      mudlog.log(ERROR, "ERROR:  npc tried to save, was blocked...\n");
+      mudlog.log(LS_ERROR, "ERROR:  npc tried to save, was blocked...\n");
       return -1;
    }//if
 
@@ -1148,7 +1148,7 @@ int save(critter& pc) {
 int nogossip(critter& pc) {
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR: MOB trying to go nogossip.\n");
+      mudlog.log(LS_ERROR, "ERROR: MOB trying to go nogossip.\n");
       return -1;
    }//if
 
@@ -1962,7 +1962,7 @@ int list_merchandise(int i_th, const String* keeper, critter& pc) {
    critter* crit_ptr = NULL;
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR: MOB trying to list_merchandise.\n");
+      mudlog.log(LS_ERROR, "ERROR: MOB trying to list_merchandise.\n");
       return -1;
    }//if
 
@@ -2815,11 +2815,12 @@ int do_lore(object& obj, critter& pc, int show_extra) {
          show("Shield ", pc);
       
       //this is ridiculous, but check for damage flags, not just !weapon
-      if (obj.OBJ_FLAGS.get(40) || !obj.OBJ_FLAGS.get(41)
-            && !obj.OBJ_FLAGS.get(42) && !obj.OBJ_FLAGS.get(43)
-            && !obj.OBJ_FLAGS.get(44) && !obj.OBJ_FLAGS.get(45) 
-            && !obj.OBJ_FLAGS.get(46) && !obj.OBJ_FLAGS.get(47) 
-            && !obj.OBJ_FLAGS.get(48) && !obj.OBJ_FLAGS.get(49)) {
+      if (obj.OBJ_FLAGS.get(40) ||
+          (!obj.OBJ_FLAGS.get(41)
+           && !obj.OBJ_FLAGS.get(42) && !obj.OBJ_FLAGS.get(43)
+           && !obj.OBJ_FLAGS.get(44) && !obj.OBJ_FLAGS.get(45) 
+           && !obj.OBJ_FLAGS.get(46) && !obj.OBJ_FLAGS.get(47) 
+           && !obj.OBJ_FLAGS.get(48) && !obj.OBJ_FLAGS.get(49))) {
          show("\nIt is not a weapon.\n", pc);
       } else {
          if (show_extra) {
@@ -3145,7 +3146,7 @@ int log_level(int lvl, critter& pc) {
          if (mudlog.ofLevel(DIS)) {
             pc.show(CS_DISASTER);
          }
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             pc.show(CS_ERROR);
          }
          if (mudlog.ofLevel(WRN)) {
@@ -3160,7 +3161,7 @@ int log_level(int lvl, critter& pc) {
          if (mudlog.ofLevel(DBG)) {
             pc.show(CS_DEBUG);
          }
-         if (mudlog.ofLevel(LSEC)) {
+         if (mudlog.ofLevel(LS_SEC)) {
             pc.show(CS_SECURITY);
          }
          if (mudlog.ofLevel(DB)) {

@@ -58,7 +58,7 @@ void obj_construct_data::Read(ifstream& da_file) {
    char buf[100];
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in obj_construct_data read." << endl;
       }
       return;
@@ -180,7 +180,7 @@ void obj_spec_data::Read(ifstream& da_file) {
    Clear();
 
    if (!da_file) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in obj_spec_data read." << endl;
       }
       return;
@@ -231,7 +231,7 @@ void obj_spec_data::Write(ofstream& da_file) const {
    obj_spec_data_flags.Write(da_file);
    if (obj_spec_data_flags.get(1)) { //if have construct data
       if (!construct_data) {
-         mudlog.log(ERROR, "ERROR:  trying to write NULL construct data.\n");
+         mudlog.log(LS_ERROR, "ERROR:  trying to write NULL construct data.\n");
          return;
       }//if
       construct_data->Write(da_file);
@@ -341,7 +341,7 @@ object::~object() {
    obj_ptr_log << "OBJ_DES " << getIdNum() << " " << this << "\n";
 
    if ((!in_list) && (!do_shutdown)) {
-      mudlog.log(ERROR, "ERROR:  trying to delete OBJ before shutdown.\n");
+      mudlog.log(LS_ERROR, "ERROR:  trying to delete OBJ before shutdown.\n");
       //do_shutdown = TRUE;
       //exit(2);
    }//if
@@ -368,7 +368,7 @@ object& object::operator= (object& source) {
    int i;
    
    if (!in_list && obj_flags.get(10)) {
-      mudlog.log(ERROR, "ERROR:  OBJ being assigned to... should be a SOBJ!\n");
+      mudlog.log(LS_ERROR, "ERROR:  OBJ being assigned to... should be a SOBJ!\n");
       //do_shutdown = TRUE;
       //exit(2);
    }//if
@@ -594,7 +594,7 @@ void object::Write(ofstream& ofile) {
    
    if (obj_flags.get(63)) { //if has spec_data
       if (!obj_proc) {
-         mudlog.log(ERROR, "ERROR:  trying to write a NULL obj_proc.\n");
+         mudlog.log(LS_ERROR, "ERROR:  trying to write a NULL obj_proc.\n");
          return;
       }//if
       obj_proc->Write(ofile);
@@ -1094,7 +1094,7 @@ void object::fileRead(ifstream& ofile, short read_all) {
    mudlog.log(DB, "In obj::Read.\n");
 
    if (!ofile) {
-      if (mudlog.ofLevel(ERROR)) {
+      if (mudlog.ofLevel(LS_ERROR)) {
          mudlog << "ERROR:  da_file FALSE in obj read." << endl;
       }
       return;
@@ -1117,7 +1117,7 @@ void object::fileRead(ifstream& ofile, short read_all) {
    test = TRUE;
    while (test) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in obj read." << endl;
          }
          return;
@@ -1136,9 +1136,9 @@ void object::fileRead(ifstream& ofile, short read_all) {
 
    mudlog.log(DB, "About to do termed read..");
    
-   short_desc.Termed_Read(ofile);
-   in_room_desc.Termed_Read(ofile);
-   long_desc.Termed_Read(ofile);
+   short_desc.termedRead(ofile);
+   in_room_desc.termedRead(ofile);
+   long_desc.termedRead(ofile);
    
    mudlog.log(DB, "Done with termed read..");
 
@@ -1168,7 +1168,7 @@ void object::fileRead(ifstream& ofile, short read_all) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in obj read." << endl;
          }
          return;
@@ -1188,7 +1188,7 @@ void object::fileRead(ifstream& ofile, short read_all) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in obj read." << endl;
          }
          return;
@@ -1234,7 +1234,7 @@ void object::fileRead(ifstream& ofile, short read_all) {
    ofile >> i;
    while (i != -1) {
       if (!ofile) {
-         if (mudlog.ofLevel(ERROR)) {
+         if (mudlog.ofLevel(LS_ERROR)) {
             mudlog << "ERROR:  da_file FALSE in obj read." << endl;
          }
          return;
@@ -1273,7 +1273,7 @@ void object::fileRead(ifstream& ofile, short read_all) {
          if (mudlog.ofLevel(DB))
             mudlog << "\nReading script# " << sent_ << endl;
          if (!ofile) {
-            if (mudlog.ofLevel(ERROR)) {
+            if (mudlog.ofLevel(LS_ERROR)) {
                mudlog << "ERROR:  object reading script da_file FALSE." << endl;
             }
             return;
@@ -1590,7 +1590,7 @@ int object::doJunk() {
       return find_and_delete_obj(this, getCurRoomNum());
    }
    else {
-      mudlog.log(ERROR, "ERROR:  in doJunk, was NOT Modified.\n");
+      mudlog.log(LS_ERROR, "ERROR:  in doJunk, was NOT Modified.\n");
       return FALSE;
    }
 }
@@ -1598,7 +1598,9 @@ int object::doJunk() {
 int object::doMload(int i_th) {
    critter* crit_ptr;
 
-   if (0 < i_th < NUMBER_OF_MOBS) {
+   if (i_th < 0)
+      return -1;
+   if (i_th < NUMBER_OF_MOBS) {
       crit_ptr = &(mob_list[i_th]);
       // Make sure this mob is in use
       if (!crit_ptr->CRIT_FLAGS.get(18)) return -1;
@@ -1687,7 +1689,7 @@ void object::addProcScript(const String& txt, ObjectScript* script_data) {
    mudlog.log(DBG, "done with setScript.");
 
    if (!script_data) {
-      mudlog.log(ERROR, "script_data is NULL, object::addProcScript.");
+      mudlog.log(LS_ERROR, "script_data is NULL, object::addProcScript.");
       return;
    }
 
@@ -1790,12 +1792,12 @@ void object::checkForProc(String& cmd, String& arg1, critter& actor,
    }
 
    if (!isModified()) {
-      mudlog.log(ERROR, "ERROR:  object::checkForProc, got an OBJ (not modified).");
+      mudlog.log(LS_ERROR, "ERROR:  object::checkForProc, got an OBJ (not modified).");
       return;
    }
 
    if (sanity > 100) {
-      mudlog.log(ERROR, "ERROR: object::checkForProc busted recursion sanity check.");
+      mudlog.log(LS_ERROR, "ERROR: object::checkForProc busted recursion sanity check.");
       return;
    }
 
@@ -1849,7 +1851,7 @@ void object::checkForProc(String& cmd, String& arg1, critter& actor,
             object* tmp = optr;
             optr = obj_to_sobj(*optr, &inv, getCurRoomNum());
             if (!inv.substituteData(tmp, optr, 1)) {
-               mudlog.log(ERROR, "ERROR: critter::checkForProc: substituteData  failed after obj_to_sobj.\n");
+               mudlog.log(LS_ERROR, "ERROR: critter::checkForProc: substituteData  failed after obj_to_sobj.\n");
             }//if
          }
          optr->checkForProc(cmd, arg1, actor, targ, rm, sanity + 1);

@@ -283,7 +283,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
    if (!found_proc) {
       show("Nothing seems to happen.\n", pc);
       Sprintf(buf, "ERROR:  wand# %i has no spells defined.\n", wand->OBJ_NUM);
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, buf);
       return -1;
    }//if
    if (do_dec) {
@@ -390,7 +390,7 @@ int quaff(int i_th, const String* item, critter& pc) { //for wands
       show("You feel slightly refreshed!\n", pc);
       Sprintf(buf, "ERROR:  item# %i casts no spells (quaff)\n", 
               potion->OBJ_NUM);
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, buf);
    }//if
 
    if (posn) {
@@ -625,7 +625,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
       show("Nothing seems to happen.\n", pc);
       Sprintf(buf, "ERROR:  object# %i has no spells in recite.\n",
               scroll->OBJ_NUM);
-      mudlog.log(ERROR, buf);
+      mudlog.log(LS_ERROR, buf);
    }//if
 
    if (junk_scroll) {
@@ -1166,7 +1166,7 @@ int remort(int i_th, const String* v, const String* new_race,
          vict->SKILLS_KNOWN.Insert(RITUALS_SKILL_NUM, 25);
          break;
       default: {
-         mudlog.log(ERROR, "ERROR:  In default of class modifiers in remort.\n");
+         mudlog.log(LS_ERROR, "ERROR:  In default of class modifiers in remort.\n");
          break;
          }
       }//switch
@@ -1479,7 +1479,7 @@ int mload(int i_th, const String* item, critter& pc) {
       return -1;
    }//if
 
-   if (pc.isPc() && ((pc.getImmLevel() <= 4) && !pc.doesOwnCritter(*crit_ptr)) ||
+   if ((pc.isPc() && ((pc.getImmLevel() <= 4) && !pc.doesOwnCritter(*crit_ptr))) ||
        (pc.isPc() && (pc.getImmLevel() < 8) && !pc.doesOwnRoom(ROOM))) {
       pc.show("You don't own that critter, or this room, must be level 5\n");
       pc.show("or level 8 if you don't even own the room.\n");
@@ -1834,7 +1834,7 @@ int critter::doFollow(critter& vict, int do_msg) {
    String buf(100);
    
    if (vict.isMob() || isMob()) {
-      mudlog.log(ERROR, "ERROR:  MOB's in do_follow.\n");
+      mudlog.log(LS_ERROR, "ERROR:  MOB's in do_follow.\n");
       return -1;
    }//if
    
@@ -1898,7 +1898,7 @@ int group(int i_th, const String* vict, critter& pc) {
    String buf(100);
 
    if (pc.isMob()) {
-      mudlog.log(ERROR, "ERROR:  mob sent to group, needs to be a smob or pc.\n");
+      mudlog.log(LS_ERROR, "ERROR:  mob sent to group, needs to be a smob or pc.\n");
       return -1;
    }//if
 
