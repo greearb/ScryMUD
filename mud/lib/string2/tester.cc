@@ -22,7 +22,6 @@
 ///**************************  tester.cc  **************************///
 
 #include "string2.h"
-#include "IOBuffer.h"
 #include <signal.h>
 
 
@@ -161,13 +160,14 @@ int main() {
    cout << tst << endl;
    cout << eos << endl;
    tst = " Road.";
-   Sprintf(eos, "Here is one: %i, 'for the': %s%S\n", 1, "for the", &tst);
+   Sprintf(eos, "Here is one: %i, 'for the': %s%pS\n", 1, "for the", &tst);
    cout << eos;
 
    cout << "*****************************************************************\n";
    cout << "********************** end of string test ***********************\n";
    cout << "*****************************************************************\n\n\n\n";
 
+#if 0
    // Now, do the IO buffer test...
    IOBuffer iob(50); //should round up to 200 in the code
    int LEN = 325;
@@ -440,5 +440,6 @@ int main() {
       }
    }
 
+#endif
    return rv;
 }//main

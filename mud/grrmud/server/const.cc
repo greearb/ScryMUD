@@ -590,11 +590,6 @@ const String ANSI_BCYAN_S("BG_CYAN");
 const String ANSI_BWHITE_S("BG_WHITE");
 
 
-const unsigned int Max_Int = (1 << (sizeof(int) * 8 - 1));
-const unsigned long Max_Long = (1 << (sizeof(long int) * 8 - 1));
-const unsigned short Max_Short = (1 << (sizeof(short int) * 8 - 1));
-
-
 const char* critter_conditions[11] = {
    "is in horrible condition.",  // 0 - 10%
    "looks pretty much whipped.",  // 11 - 20%

@@ -33,9 +33,9 @@ int TelnetHandler::_cnt = 0;
 
 //the '\0's are temporary until our send buffers start understanding binary
 //data and stop using strlen() and friends
-const char TelnetHandler::eor_str[] = { IAC, EOR, '\0'};
-const char TelnetHandler::keepalive_str[] = { IAC, NOP, '\0'};
-const char TelnetHandler::ttype_req_str[] = { IAC, SB, TELOPT_TTYPE, TELQUAL_SEND, IAC, SE, '\0'};
+const unsigned char TelnetHandler::eor_str[] = { IAC, EOR, '\0'};
+const unsigned char TelnetHandler::keepalive_str[] = { IAC, NOP, '\0'};
+const unsigned char TelnetHandler::ttype_req_str[] = { IAC, SB, TELOPT_TTYPE, TELQUAL_SEND, IAC, SE, '\0'};
 
 TelnetHandler::TelnetHandler(critter* c_ptr) {
 
@@ -209,7 +209,7 @@ void TelnetHandler::rcv_will(int opt) {
 
       case TELOPT_TTYPE:
          allow_do = true;
-         send(ttype_req_str);
+         send((const char*)(ttype_req_str));
       break;
 
       //we don't support real linemode yet (RFC-1184) It's mentioned
@@ -264,10 +264,14 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
 
       p = input_buf+i;
 
+      int pval = *p;
+      pval &= 0xFF;
+
       switch ( current_state ) {
 
          case ST_TEXT:
-            switch (*p) {
+
+            switch (pval) {
 
                case IAC:
                   current_state = ST_IAC;
@@ -281,7 +285,7 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
                   // String::Read()
                   switch ( current_text_state ) {
                      case ST_NORM:
-                        switch ( *p ) {
+                        switch ( pval ) {
 
                            case 0x00://null
                               //these should only ever be received in text
@@ -327,7 +331,7 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
                      break;
 
                      case ST_SEMICOLON:
-                        switch ( *p ) {
+                        switch ( pval ) {
 
                            case ';':
                               out_buf += ';';
@@ -354,7 +358,7 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
                      //rfc-854 says we can end a line with cr-lf or cr-null.
                      //Technically they mean different things, but we'll
                      //pretend for a moment that they don't.
-                     switch ( *p ) {
+                     switch ( pval ) {
 
                         case 0x00://null
                         case 0x0A://linefeed aka \n
@@ -377,7 +381,7 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
          break;//end ST_TEXT
 
          case ST_IAC:
-            switch (*p) {
+            switch (pval) {
 
                case IAC://escaped IAC.
                   out_buf += *p;
@@ -427,27 +431,27 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
          break;
 
          case ST_DO:
-            rcv_do(*p);
+            rcv_do(pval);
             current_state = ST_TEXT;
          break;
 
          case ST_DONT:
-            rcv_dont(*p);
+            rcv_dont(pval);
             current_state = ST_TEXT;
          break;
 
          case ST_WILL:
-            rcv_will(*p);
+            rcv_will(pval);
             current_state = ST_TEXT;
          break;
 
          case ST_WONT:
-            rcv_wont(*p);
+            rcv_wont(pval);
             current_state = ST_TEXT;
          break;
 
          case ST_SB://processing a sub-option datastream
-            switch (*p) {
+            switch (pval) {
 
                case IAC:
                   current_state = ST_SB_IAC;
@@ -466,7 +470,7 @@ bool TelnetHandler::parse(const char* input_buf, size_t len) {
          break;
 
          case ST_SB_IAC://got an IAC in a sub-option
-            switch (*p) {
+            switch (pval) {
 
                case IAC://escaped IAC character.
                   sb_buf += *p;
@@ -592,7 +596,10 @@ void TelnetHandler::process_subopt() {
 
    const char* p = sb_buf.data();
 
-   switch ( *p ) {
+   int pval = *p;
+   pval &= 0xFF;
+
+   switch ( pval ) {
 
       case TELOPT_NAWS:
          process_naws();
@@ -614,7 +621,7 @@ void TelnetHandler::process_subopt() {
 const char* TelnetHandler::end_of_record() const {
 
    if ( my_option_states[TELOPT_EOR] ) {
-      return(TelnetHandler::eor_str);
+      return((const char*)(TelnetHandler::eor_str));
    } else {
       return("");
    }
@@ -622,7 +629,7 @@ const char* TelnetHandler::end_of_record() const {
 }//TelnetHandler::end_of_record()
 
 const char* TelnetHandler::keepalive() const {
-   return(TelnetHandler::keepalive_str);
+   return ((const char*)(TelnetHandler::keepalive_str));
 }//TelnetHandler::keepalive()
 
 void TelnetHandler::newCritter(critter* c_ptr) {

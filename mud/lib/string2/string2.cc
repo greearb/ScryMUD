@@ -42,8 +42,8 @@
 
 
 LogStream* String::logfile = NULL;
-int String::string_cnt = 0;
-int String::total_bytes = 0;
+long String::string_cnt = 0;
+long String::total_bytes = 0;
 
 
 /* TODO:  Someday put this in a better place... */
@@ -105,6 +105,13 @@ int makeHBO(struct Counter64s& pld) {
 }
 
 
+bool String::endsWith(char c) const {
+   if (size() > 0) {
+      if (charAt(size() - 1) == c)
+         return true;
+   }
+   return false;
+}
 
 // return a value that should be pretty unique.
 // This is basically lame, do some research if you want a real
@@ -225,6 +232,17 @@ void String::dropFromEnd(int num_chars) {
    }
 }
 
+//drop a few off the front of the string, not very efficient
+void String::dropFromFront(int num_chars) {
+   if (cur_len > num_chars) {
+      String tmp(string[num_chars]);
+      *this = tmp;
+   }
+   else {
+      *this = "";
+   }
+}
+
 /** Starts inserting in the string[i+1] position. */
 void String::insertAfter(int i, const char* str) {
    if (!str || (i < 0))
@@ -254,6 +272,7 @@ void String::ensureCapacity(int max_length) {
          string[0] = 0;
          cur_len = 0;
          max_len = max_length;
+         total_bytes += max_length + 1;
       }
    }
    else {
@@ -516,6 +535,9 @@ String String::lookCommand(short is_first) const {
                break; //all done
             }//else
          }//if
+         else {
+            temp.append(a);
+         }
       }//if
       else {
          if (isspace(a) || (a == '.')) {
@@ -570,6 +592,51 @@ String* String::getLine() {
    }
 }
    
+String String::getCsvToken() {
+   String temp(100);
+
+   if (!string || !string[0]) {
+      // Empty string
+      return temp;
+   }
+
+   int i = 0;
+   char a = string[i];
+   char delim = ',';
+   if (a == '"') {
+      delim = '"';
+      i++;
+      a = string[i];
+   }
+
+   while (a && (a != delim) && (a != '\n')) {
+      temp.append(a);
+      i++;
+      a = string[i];
+   }//if
+
+   if (a) {
+      if (a == delim && a == '"') {
+         // There may be a trailing comma, eat that too
+         i += 2;
+      }
+      else {
+         i++;
+      }
+   }
+
+   // Shift string left
+   int k = 0;
+   while (i < cur_len) {
+      string[k] = string[i];
+      i++; 
+      k++;
+   }//while
+   string[k] = '\0';
+   cur_len = k;
+
+   return temp;
+}//getCsvToken
 
 String String::getCommand(short& eos, short& term_by_period,
                           short is_first, short ignore_period) {
@@ -588,9 +655,19 @@ String String::getCommand(short& eos, short& term_by_period,
 
    a = string[i];
    while ((isspace(a)) || (!ignore_period && (a == '.'))) {
+      //LOGFILE << "chomp prefix space, a -:" << a << ":-  i:" << i << " is-first: " << is_first << endl;
+      if (a == '\n' || a == '\r') {
+         eos = 1;
+      }
       i++;
       a = string[i];
    }//while
+
+   if (eos) {
+      // Found newline while chomping leading white-space.  Remove this
+      // and return empty string.
+      goto shift_left;
+   }
 
    if (a) {			//wasn't all spaces
 
@@ -601,42 +678,57 @@ String String::getCommand(short& eos, short& term_by_period,
          i++; //move to the next one
       }
       else {
-         if ((a == '\'') && (string[i+1] != '\''))  { // in quotes
+         if (a == '\'') {
+            int dup_cnt = 1;
+            // We started with a single quote.  See if we have an odd number
+            for (int q = i + 1; string[q] && (string[q] != '\n'); q++) {
+               if (string[q] == '\'') {
+                  dup_cnt++;
+               }
+               else {
+                  break;
+               }
+            }
+            if (dup_cnt & 0x1) {
+               // We are a single quoted token since the odd series will not fully
+               // be escaped (2 quotes together will parse down to 1 per the escape rules)
 
-            //LOGFILE << "In quotes." << endl;
-            
-            i++;
-            a = string[i];
-            while (a && (a != '\n')) {
-               if (a == '\'') {
-                  if (string[i+1] == '\'') { //then escape it.
-                     temp += a;
-                     i += 2;
+               i++;
+               a = string[i];
+               while (a && (a != '\n')) {
+                  if (a == '\'') {
+                     if (string[i+1] == '\'') { //then escape it.
+                        temp += a;
+                        i += 2;
+                     }//if
+                     else {
+                        break; /* end of single quoted token found */
+                     }
                   }//if
                   else {
-                     break;
-                  }
+                     temp += a;
+                     i++;
+                  }//else
+                  a = string[i];
+               }//while
+               if (a == '\'') { //closing quote
+                  i++; //move past it
                }//if
-               else {
-                  temp += a;
-                  i++;
-               }//else
-               a = string[i];
-            }//while
-            if (a == '\'') { //closing quote
-               i++; //move past it
-            }//if
+            }
+            else {
+               goto not_wrapped;
+            }
          }//if
          else {
-            if ((a == '\'') && (string[i+1] == '\'')) {
-               temp.append(a);
-               i += 2;
-               a = string[i];
-            }//if
-            
+           not_wrapped:
             while (!(isspace(a) || (!ignore_period && (a == '.')) || !a)) {
-               temp += a;
-               i++;
+               temp.append(a);
+               if ((a == '\'') && (string[i+1] == '\'')) {
+                  i += 2;
+               }//if
+               else {
+                  i++;
+               }
                a = string[i];
             }//while
             if (a == '.')
@@ -667,12 +759,21 @@ String String::getCommand(short& eos, short& term_by_period,
    log(buf);
 */
 
-   if (string[i] == '\n') {
-      //log("String[i] was a newline.\n");
-      eos = TRUE;
-      i++;				//to get past newline char
+   //LOGFILE << "end of getting token, i: " << i << ", character: " << (int)(string[i])
+   //        << " temp: " << temp << endl;
+
+   // Consume trailing space
+   a = string[i];
+   while (isspace(a)) {
+      if (a == '\n' || a == '\r') {
+         //log("String[i] was a newline.\n");
+         eos = TRUE;
+      }
+      i++;
+      a = string[i];
    }//if
 
+  shift_left:
    k = 0;
    while (i < cur_len) {
       string[k] = string[i];
@@ -692,8 +793,8 @@ String String::getCommand(short& eos, short& term_by_period,
    log(buf);
 */
    
-   //log("Here is string returned by get_command:");
-   //log(temp);
+   //LOGFILE << "Here is string returned by get_command:" << temp << endl;
+
    return temp;
 }//get_command
 	 
@@ -942,7 +1043,7 @@ int String::Strlen() const {
 }//Strlen
 
 
-int String::Write(const int desc, const int max_to_write) {
+int String::do_transmit(const int desc, const int max_to_write, bool is_send, bool use_rwfile) {
    int sofar = 0, this_round;
    String buf;
 
@@ -956,8 +1057,28 @@ int String::Write(const int desc, const int max_to_write) {
    do {
       //Sprintf(buf, "In Write, desc:  %i\n", desc);
       //log(buf);
-      this_round = send(desc, (string + sofar), 
-                         max_to_write - sofar, 0);
+#ifdef __WIN32__
+      if (use_rwfile) {
+         DWORD wrote = 0;
+         bool wrv = WriteFile((HANDLE)(desc), (char*)(string + sofar), max_to_write, &wrote, NULL);
+         if (wrv) {
+            this_round = wrote;
+         }
+         else {
+            this_round = -1;
+         }
+      }
+      else
+#endif
+      {
+         if (is_send) {
+            this_round = ::send(desc, (string + sofar), max_to_write - sofar, 0);
+         }
+         else {
+            this_round = ::write(desc, (string + sofar), max_to_write - sofar);
+         }
+      }
+
       if (this_round < 0) { //some error happened
 #ifdef __WIN32__
          if (WSAGetLastError() == WSAEWOULDBLOCK) {
@@ -967,10 +1088,11 @@ int String::Write(const int desc, const int max_to_write) {
             break; //done
          }
          else {
-            perror("String.Write() err");
-            LOGFILE << "ERROR:  String.Write() err: " << errno << ": "
+            //perror("String.Write() err");
+            LOGFILE << "ERROR:  String.do_transmit() err: " << errno << ": "
                     << strerror(errno) << " desc: " << desc
-                    << " rv: " << this_round << endl;
+                    << " rv: " << this_round << " use-rwfile: " << use_rwfile
+                    << " is-send: " << is_send << endl;
 #ifdef __WIN32__
             LOGFILE << "  WSAError: " << WSAGetLastError() << endl;
 #endif
@@ -1005,7 +1127,7 @@ int String::Write(const int desc, const int max_to_write) {
 }//Write (to a descriptor)
 
 
-int String::Read(const int desc, const int max_to_read, bool ignore_semi_colons, bool do_recv) {
+int String::Read(bool& eagain, const int desc, const int max_to_read, bool ignore_semi_colons, bool do_recv, bool use_rwfile) {
    int begin = 0;
    int sofar = 0;
    int this_round = 0;
@@ -1015,6 +1137,7 @@ int String::Read(const int desc, const int max_to_read, bool ignore_semi_colons,
    //       begin, sofar, this);
    //log(tmp);
 
+   eagain = false;
    ensureCapacity(max_to_read);
    begin = Strlen();
 
@@ -1025,25 +1148,53 @@ int String::Read(const int desc, const int max_to_read, bool ignore_semi_colons,
       int to_rd = (max_to_read - (begin + sofar) - 1);
 #ifdef __WIN32__
       unsigned long avail_rd = 0xFFFFFFFF;
-      ioctlsocket(desc, FIONREAD, &avail_rd);
-      if (avail_rd == 0) {
-         LOGFILE << "About to read desc: " << desc << " avail_rd: " << avail_rd
-                 << " to_rd: " << to_rd << endl;
-      }
-      if ((avail_rd > 0) && (to_rd > (int)(avail_rd))) {
-         to_rd = avail_rd;
-      }
-      // NOTE:  Need to let it read zero to detect end-of-stream.
-      //if (to_rd == 0) {
-      //   break;
-      //}
-#endif
-      if (do_recv) {
-         this_round = recv(desc, (string + sofar + begin), to_rd, 0);
+      if (!use_rwfile) {
+         ioctlsocket(desc, FIONREAD, &avail_rd);
+         if (avail_rd == 0) {
+            LOGFILE << "About to read desc: " << desc << " avail_rd: " << avail_rd
+                    << " to_rd: " << to_rd << endl;
+         }
+         if ((avail_rd > 0) && (to_rd > (int)(avail_rd))) {
+            to_rd = avail_rd;
+         }
+         // NOTE:  Need to let it read zero to detect end-of-stream.
+         //if (to_rd == 0) {
+         //   break;
+         //}
       }
       else {
-         this_round = read(desc, (string + sofar + begin), to_rd);
+         DWORD amt_read = 0;
+         bool wrv = ReadFile((HANDLE)(desc), (char*)(string + sofar + begin), to_rd, &amt_read, NULL);
+         //if (logfile) {
+         //   LOGFILE << " wrv: " << wrv << " desc: " << desc << " to_rd: " << to_rd
+         //           << " amt-read: " << amt_read << " last-err: " << WSAGetLastError() << endl;
+         //}
+         if (wrv) {
+            this_round = amt_read;
+            if (amt_read == 0) {
+               eagain = true;
+            }
+         }
+         else {
+            if (logfile && logfile->ofLevel(INF)) {
+               LOGFILE << "IOBuffer: WARNING: ReadFile Failed: " << WSAGetLastError()
+                       << " desc: " << desc << " sofar: " << sofar << endl;
+            }
+            this_round = -1;
+         }
       }
+
+      if (!use_rwfile)
+#endif
+      {
+         if (do_recv) {
+            this_round = recv(desc, (string + sofar + begin), to_rd, 0);
+         }
+         else {
+            this_round = read(desc, (string + sofar + begin), to_rd);
+         }
+      }
+
       //LOGFILE << "Completed read read, rv: " << this_round << endl;
       
       if (this_round > 0) {
@@ -1056,10 +1207,11 @@ int String::Read(const int desc, const int max_to_read, bool ignore_semi_colons,
       else {
          if (this_round < 0) { //some error happened
 #ifdef __WIN32__
-            if (WSAGetLastError() != WSAEWOULDBLOCK) {
+            if (WSAGetLastError() != WSAEWOULDBLOCK)
 #else
-            if ((errno != EAGAIN) && (errno != EINTR)) { //== EWOULDBLOCK
+            if ((errno != EAGAIN) && (errno != EINTR))
 #endif
+            { //== EWOULDBLOCK
                //perror("String.Read() err, not EAGAIn");
                string[sofar] = '\0';
                cur_len = sofar;
@@ -1067,14 +1219,22 @@ int String::Read(const int desc, const int max_to_read, bool ignore_semi_colons,
                //log(*this);
                return -1;
             }//if
-            else  //this means it read all in buffer
+            else { //this means it read all in buffer
+               eagain = true;
                break;
+            }
          }//if
          else {
             //log("ERROR:  EOF encountered on socket read.\n");
             string[sofar] = '\0';
             cur_len = sofar;
             if (sofar == 0) {
+#ifdef __WIN32__
+               if (eagain && use_rwfile) {
+                  // Couldn't read anything..but no errors either
+                  return sofar;
+               }
+#endif
                return -1;
             }
             else {
@@ -1155,7 +1315,6 @@ void String::purge() {
       string = NULL;
       cur_len = 0;
       max_len = -1;
-      total_bytes += (max_len + 1);
    }
 }//Clear      
 
@@ -1432,6 +1591,12 @@ String& String::operator= (const int i) {
    return *this;
 }
 
+String& String::operator= (const float i) {
+   Clear();
+   this->append(i);
+   return *this;
+}
+
 String& String::operator= (const unsigned int i) {
    Clear();
    this->append((unsigned long)(i));
@@ -1634,7 +1799,7 @@ void vSprintf(String& targ, const char* string, va_list ap) {
    int s_len;
    char* tmp_chr_str;
    String* tmp_str;
-   void* junk;
+   void* vp;
    char ch_buf[50];
    Counter64u* c64u;
    unsigned long long* i64u;
@@ -1667,14 +1832,27 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                   f = va_arg(ap, double);
                   targ.append(f, 4);
                   break;
+               case 'F':    /* float, 9 points of precision */
+                  f = va_arg(ap, double);
+                  targ.append(f, 9);
+                  break;
                case 'i':    /* int */  
                   targ.append(va_arg(ap, int));
+                  break;
+               case 'l':    /* long:  %li */
+                  if (string[i+1] == 'i')
+                     targ.append(va_arg(ap, long));
+                  else if (string[i+1] == 'u')
+                     targ.append(va_arg(ap, unsigned long));
+                  else {
+                     LOGFILE << "Invalid %l option: " << string << endl;
+                  }
                   break;
                case 'u':    /* unsigned int32 */  
                   targ.append(va_arg(ap, unsigned int));
                   break;
                case 'I':    /* ignore */
-                  junk = va_arg(ap, void*);
+                  vp = va_arg(ap, void*);
                   // Do nothing with it!!
                   break;
                case 'L': /* uint64 */
@@ -1685,7 +1863,7 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                   i64 = (long long*)(va_arg(ap, void*));
                   targ.append(*i64);
                   break;
-               case 'd':     /* long, turn it into an int */
+               case 'd':     /* int */
                   targ.append(va_arg(ap, int));
                   break;
                case 's':      /* char * */
@@ -1693,8 +1871,36 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                      targ.append(tmp_chr_str);
                   }//if
                   break;
-               case 'p':    /* pointer */
-                  targ.append(va_arg(ap, void*));
+               case 'p':   /* pointer, special:  $pS for ptr to string */
+                  vp = va_arg(ap, void*);
+                  if (string[i+1]) {
+                     if (string[i+1] == 'S') {
+                        targ.append(*((String*)(vp)));
+                        i++;
+                        break;
+                     }
+                     else if (string[i+1] == 'U') {
+                        c64u = ((Counter64u*)(vp));
+                        if (c64u) {
+                           sprintf(ch_buf, "%llu", (unsigned long long)(toUint64(*c64u)));
+                           targ.append(ch_buf);
+                        }
+                        i++;
+                        break;
+                     }
+                     else if (string[i+1] == 'D') {
+                        i64 = ((long long*)(vp));
+                        targ.append(*i64);
+                        i++;
+                        break;
+                     }
+                     else if (string[i+1] == 'L') {
+                        targ.append(*((unsigned long long*)(vp)));
+                        i++;
+                        break;
+                     }
+                  }
+                  targ.append(vp);
                   break;
                case 'S':      /* String */
                   if ((tmp_str = va_arg(ap, String *))) {

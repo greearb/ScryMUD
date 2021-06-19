@@ -32,9 +32,9 @@ class TelnetHandler : public ProtocolHandler {
 
    protected:
       static int _cnt;
-      static const char eor_str[];
-      static const char keepalive_str[];
-      static const char ttype_req_str[];
+      static const unsigned char eor_str[];
+      static const unsigned char keepalive_str[];
+      static const unsigned char ttype_req_str[];
 
       enum state { ST_TEXT, ST_IAC, ST_DO, ST_DONT, ST_WILL, ST_WONT, ST_SB, ST_SB_IAC };
       enum text_state { ST_NORM, ST_SEMICOLON, ST_CR };

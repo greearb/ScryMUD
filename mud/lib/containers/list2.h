@@ -1,6 +1,3 @@
-// $Id$
-// $Revision$  $Author$ $Date$
-
 //
 //Copyright (C) 1998-2006  Ben Greear
 //
@@ -18,14 +15,15 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-//To contact the maintainer, Edward Roper: edro+scrymud [at] wanfear.net
+// To contact the Author, Ben Greear:  greearb@candelatech.com
 //
 
 // list.h -- Declarations for the list library
 
 //  This templated list works only on pointers right now, it could, however
 //  be changed to include ALL items easily.  There may be a few bugs left,
-//  so be careful.
+//  so be careful.  If you have any questions, write me at:  
+//  greear@cyberhighway.net
 //  Happy coding, Ben Greear
 
 
@@ -36,11 +34,8 @@
 #include <stdlib.h> 
 #include <iostream>
 #include <fstream>
-#include <cassert>
 #include <LogStream.h>
 #include <string2.h>
-
-#include <assert.h>
 
 using namespace std;
 
@@ -124,6 +119,7 @@ protected:
       mudlog << "List<> ERROR:  could not remove cell: " << (void*)(&cll)
              << " " << toString() << endl;
 
+      assert(0);
       //::core_dump("handleRemoveCell");
       return FALSE;
    }//handleRemoveCell      
@@ -139,6 +135,7 @@ protected:
       
       mudlog << "List<> ERROR:  could not add cell: " << (void*)(&cll)
              << " " << toString() << endl;
+      assert(0);
 
       //::core_dump("handleAddCell");
       return FALSE;
@@ -261,7 +258,7 @@ public:
       }//while
 
       if (!header) {
-         mudlog.log(1, "ERROR:  HEADER NULL in Clear.\n");
+         mudlog.log(LS_ERROR, "ERROR:  HEADER NULL in Clear.\n");
       }//if
       sz = 0;
    }// clear
@@ -578,26 +575,6 @@ public:
 
 };
 
-#if 0
-// A few of these are back wards compatable hacks
-
-template <class T> int HaveData(const T& val, const List<T>& L) {
-   return L.haveData(val);
-}
-
-template <class T> int IsEmpty(const List<T>& L) {
-   return L.isEmpty();
-}
-
-template <class T> T Top(const List<T>& L) {
-   return L.peekFront();
-}
-
-//on the end of the list
-template <class T> void Put(const T& val, List<T>& L) {
-   L.append(val);
-}
-#endif
  
 ///************************************************************************///
 ///*************************  Cell  ***************************************///
@@ -758,7 +735,7 @@ public:
       Cell<T*> cll(lst);
       T* ptr;
       while ((ptr = cll.next())) {
-         append(new T(*ptr));
+         this->append(new T(*ptr));
       }//while
    }//becomeDeepCopyOf
 
@@ -796,11 +773,11 @@ public:
       T* ptr;
       while ((ptr = cll.next())) {
          if (*val < *ptr) {
-            insertBefore(cll, val);
+            this->insertBefore(cll, val);
             return;
          }//if
       }//while
-      insertBefore(cll, val);
+      this->insertBefore(cll, val);
    }//insertSorted
 
 };//SortedPtrList

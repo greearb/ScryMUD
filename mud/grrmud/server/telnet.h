@@ -35,28 +35,28 @@
 /*
  * Definitions for the TELNET protocol.
  */
-#define	IAC	255		/* interpret as command: */
-#define	DONT	254		/* you are not to use option */
-#define	DO	253		/* please, you use option */
-#define	WONT	252		/* I won't use option */
-#define	WILL	251		/* I will use option */
-#define	SB	250		/* interpret as subnegotiation */
-#define	GA	249		/* you may reverse the line */
-#define	EL	248		/* erase the current line */
-#define	EC	247		/* erase the current character */
-#define	AYT	246		/* are you there */
-#define	AO	245		/* abort output--but let prog finish */
-#define	IP	244		/* interrupt process--permanently */
-#define	BREAK	243		/* break */
-#define	DM	242		/* data mark--for connect. cleaning */
-#define	NOP	241		/* nop */
-#define	SE	240		/* end sub negotiation */
-#define EOR     239             /* end of record (transparent mode) */
-#define	ABORT	238		/* Abort process */
-#define	SUSP	237		/* Suspend process */
-#define	xEOF	236		/* End of file: EOF is already used... */
+const unsigned char IAC	= 255;		/* interpret as command: */
+const unsigned char DONT = 254;		/* you are not to use option */
+const unsigned char DO = 253;		/* please, you use option */
+const unsigned char WONT = 252;		/* I won't use option */
+const unsigned char WILL = 251;		/* I will use option */
+const unsigned char SB = 250;		/* interpret as subnegotiation */
+const unsigned char GA = 249;		/* you may reverse the line */
+const unsigned char EL = 248;		/* erase the current line */
+const unsigned char EC = 247;		/* erase the current character */
+const unsigned char AYT = 246;		/* are you there */
+const unsigned char AO = 245;		/* abort output--but let prog finish */
+const unsigned char IP = 244;		/* interrupt process--permanently */
+const unsigned char BREAK = 243;		/* break */
+const unsigned char DM = 242;		/* data mark--for connect. cleaning */
+const unsigned char NOP = 241;		/* nop */
+const unsigned char SE = 240;		/* end sub negotiation */
+const unsigned char EOR = 239;             /* end of record (transparent mode) */
+const unsigned char ABORT = 238;		/* Abort process */
+const unsigned char SUSP = 237;		/* Suspend process */
+const unsigned char xEOF = 236;		/* End of file: EOF is already used... */
 
-#define SYNCH	242		/* for telfunc calls */
+const unsigned char SYNCH = 242;		/* for telfunc calls */
 
 #ifdef TELCMDS
 char *telcmds[] = {

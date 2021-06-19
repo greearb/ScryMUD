@@ -97,8 +97,8 @@ protected:
    int Assert(int boolean_val, const char* msg) const;
 
 public:
-   static int string_cnt;
-   static int total_bytes;
+   static long string_cnt;
+   static long total_bytes;
 
    static LogStream* logfile;
 
@@ -133,6 +133,7 @@ public:
    String& operator= (const long long l);
    String& operator= (const unsigned long long l);
    String& operator= (const char c);
+   String& operator= (const float l);
 
    // NOTE:  can't assign with this operator, see setCharAt()
    char operator[] (const unsigned int i) const;
@@ -163,7 +164,7 @@ public:
 
    //friend ostream& operator<< (ostream& stream, const String& str);
    friend istream& operator>> (istream& stream, String& str);
-   friend void Sprintf(String& targ, const char* string, ...);
+   friend void Sprintf(String& targ, const char* string, ...) __attribute__((format(printf, 2, 3)));
    friend void vSprintf(String& targ, const char* string, va_list var_args);
    friend int Strncompare(const String& a, const String& b);
 
@@ -238,6 +239,7 @@ public:
    void toUpper(); //makes total string lowercase
    int  Strlen() const;
    int size() const { return Strlen(); }
+   int getCurLen() const { return Strlen(); }
    const char* c_str() const {
       if (string)
          return string;
@@ -247,14 +249,42 @@ public:
    void ensureCapacity(int max_length);
    unsigned int hash(); // return a value that should be pretty unique.
 
-   int  Write(const int desc, const int max_to_write);
+   bool endsWith(char c) const;
+
+   //sends to a descriptor, deletes what it writes
+   int send(const int desc, const int max_to_write) {
+      return do_transmit(desc, max_to_write, true, false);
+   }
    //writes to a descriptor, deletes what it writes
+   int write(const int desc, const int max_to_write, bool use_rwfile) {
+      return do_transmit(desc, max_to_write, false, use_rwfile);
+   }
+
+   //writes to a descriptor, deletes what it writes
+   int Write(const int desc, const int max_to_write) {
+      return do_transmit(desc, max_to_write, false, false);
+   }
+
+   // If is_send is false, will use 'write' instead.
+   int do_transmit(const int desc, const int max_to_write, bool is_send, bool use_rwfile);
+
+   /** This gets a copy of the bytes out of the buffer.  Repeated calls
+    * to this method will return the same thing.  Use dropFromTail() to
+    * remove the bytes from the buffer, ie to iterate through.
+    */
+   int peekBytes(unsigned char* buf, int len_to_get) const;
 
    /**  If ignore_semi_colons is false, then semi-colons will be turned into newlines.  If
     * do_recv is false, we will use the 'read' system call instead.  Use this for file
     * descriptors on Unix.
     */
-   int  Read(const int desc, const int max_to_read, bool ignore_semi_colons, bool do_recv = true); //reads from a desc
+   int Read(const int desc, const int max_to_read, bool ignore_semi_colons, bool do_recv = true) {
+      bool eagain;
+      return Read(eagain, desc, max_to_read, ignore_semi_colons, do_recv, false);
+   }
+
+   //reads from a desc
+   int Read(bool& eagain, const int desc, const int max_to_read, bool ignore_semi_colons, bool do_recv = true, bool use_rwfile = false);
 
    /** Reads untill it finds the delim, and then reads untill
     * it finds another.  Escape the delim with a \ (backslash).
@@ -280,6 +310,7 @@ public:
    void cleanChar(char c);
 
    void dropFromEnd(int num_chars); //drop a few off the end of the string
+   void dropFromFront(int num_chars); //drop a few off the front, not very efficient
    String sterilizeForHtml() const;
 
    /* Both of these next two delete what they grab from the string.
@@ -304,6 +335,8 @@ public:
       short eos, tbp;
       return getCommand(eos, tbp, 0, ignore_period);
    }
+
+   String getCsvToken();
 
    /** Returns newly allocated String, or NULL if no newlines were found.
     * Removes anything returned, so can call this to iterate through each
