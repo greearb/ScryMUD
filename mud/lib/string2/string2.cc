@@ -991,8 +991,6 @@ void String::termedRead(istream& da_file) { //reads lines untill it finds
 
    *this = "";  
 
-   Assert(da_file && 1, "WARNING:  String::Termed_Read, da_file is null\n"); 
-
    da_file.getline(buf, 180);
 
    if (LOGFILE.ofLevel(DB)) {
@@ -1379,8 +1377,10 @@ void String::append(const char* source) {
    if (!source)
       return;
    int k = strlen(source);
-
-   ensureCapacity(cur_len + k);
+   int capacity = cur_len + k;
+   if (capacity == 0)
+      capacity = 1;
+   ensureCapacity(capacity);
 
    /*  string + cur_len suggested by Nevyn.  Good idea, should
     *   make it faster. --Ben

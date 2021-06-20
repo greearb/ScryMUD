@@ -31,7 +31,6 @@
 
 
 static const short int_len = 8 * sizeof(unsigned short int);
-ofstream bitlog("./log/bitlog");
 extern int core_dump(const char* msg); //misc2.cc
 
 //static
@@ -42,8 +41,6 @@ int BitfieldNames::_cnt = 0;
 BitfieldNames::BitfieldNames(int length, const char** names,
                              const char* col_name)
       : len(length), bit_names(names), header(col_name) {
-   bitlog << "BitfieldNames Constructor, length: " << length
-          << " collection name -:" << col_name << ":-" << endl;
    _cnt++;
 }
 

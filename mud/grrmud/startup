@@ -45,6 +45,11 @@ MAILTO=
 #SCRYMUD_DEV_HOME=
 SCRYMUD_DEV_HOME="/home/scrymud/muds/mud_dev/grrmud"
 
+# Allow overriding the above.
+. local.config
+
+echo "SCRYMUD_HOME: $SCRYMUD_HOME"
+
 ########################################################################
 # Make sure we can overwrite existing files
 set +o noclobber
@@ -68,11 +73,13 @@ while ( : ) do
 
     echo "Starting ScryMUD at: $(date)"
 
+    cp ${SCRYMUD_HOME}/server/grrmud  ${SCRYMUD_HOME}
+
     # Just in case.
-    chmod u+x "${SCRYMUD_HOME}/gmud"
+    chmod u+x "${SCRYMUD_HOME}/grrmud"
     
-    if [ -x "${SCRYMUD_HOME}/gmud" ]; then
-       "${SCRYMUD_HOME}/gmud" >& "${SCRYMUD_HOME}/gmud.log"
+    if [ -x "${SCRYMUD_HOME}/grrmud" ]; then
+       "${SCRYMUD_HOME}/grrmud" >& "${SCRYMUD_HOME}/grrmud.log"
     else
         exit 2
     fi
@@ -82,9 +89,9 @@ while ( : ) do
     echo "ScryMUD stopped at: $(date)"
     sleep 1  # Make infinite loop not so bad.
 
-    date >> "${SCRYMUD_HOME}/gmud.log"
-    echo "************END OF CRASH FILE**************" >> "${SCRYMUD_HOME}/gmud.log"
-    cat "${SCRYMUD_HOME}/gmud.log" >> "${SCRYMUD_HOME}/GMUD.LOG"
+    date >> "${SCRYMUD_HOME}/grrmud.log"
+    echo "************END OF CRASH FILE**************" >> "${SCRYMUD_HOME}/grrmud.log"
+    cat "${SCRYMUD_HOME}/grrmud.log" >> "${SCRYMUD_HOME}/GRRMUD.LOG"
 
     if [ -f "${SCRYMUD_HOME}/core" ]; then
         mv -f "${SCRYMUD_HOME}/core" "${SCRYMUD_WEB_CORE_HOME}/core"
@@ -92,19 +99,19 @@ while ( : ) do
         gzip "${SCRYMUD_WEB_CORE_HOME}/core"
         chmod 0644 "${SCRYMUD_WEB_CORE_HOME}/core.gz"
 
-        cp -f "${SCRYMUD_HOME}/gmud" "${SCRYMUD_WEB_CORE_HOME}/gmud"
-        rm -f "${SCRYMUD_WEB_CORE_HOME}/gmud.gz"
-        gzip "${SCRYMUD_WEB_CORE_HOME}/gmud"
-        chmod 0644 "${SCRYMUD_WEB_CORE_HOME}/gmud.gz"
+        cp -f "${SCRYMUD_HOME}/grrmud" "${SCRYMUD_WEB_CORE_HOME}/grrmud"
+        rm -f "${SCRYMUD_WEB_CORE_HOME}/grrmud.gz"
+        gzip "${SCRYMUD_WEB_CORE_HOME}/grrmud"
+        chmod 0644 "${SCRYMUD_WEB_CORE_HOME}/grrmud.gz"
 
         echo "<html><body>Core created at:" > "${SCRYMUD_WEB_CORE_HOME}/index.html"
         date >> "${SCRYMUD_WEB_CORE_HOME}/index.html"
-        echo "<P><a href=core.gz>core file</a><P><a href=gmud.gz>gmud</a></body></html>" >> "${SCRYMUD_WEB_CORE_HOME}/index.html"
+        echo "<P><a href=core.gz>core file</a><P><a href=grrmud.gz>grrmud</a></body></html>" >> "${SCRYMUD_WEB_CORE_HOME}/index.html"
     fi
 
     #TODO: Should use safe tmpname generation here --eroper
-    tail -500 "${SCRYMUD_HOME}/GMUD.LOG" > /tmp/gmud.log
-    mv /tmp/gmud.log "${SCRYMUD_HOME}/GMUD.log"
+    tail -500 "${SCRYMUD_HOME}/GRRMUD.LOG" > /tmp/grrmud.log
+    mv /tmp/grrmud.log "${SCRYMUD_HOME}/GRRMUD.log"
 
     # Keep a history of the log files that might have been created.
     if [ -f "${SCRYMUD_HOME}/log/logfile.txt2" ]; then
@@ -142,11 +149,11 @@ while ( : ) do
 
     # Depending on the shell..one of these may exist.
     # TODO: Again, we should use safe temporaries here. --eroper
-    for CORE_NAME in "${SCRYMUD_HOME}"/{core,gmud.core}; do
+    for CORE_NAME in "${SCRYMUD_HOME}"/{core,grrmud.core}; do
         if [ -f "${CORE_NAME}" ]; then
             echo bt > /tmp/gdb_input
             echo quit >> /tmp/gdb_input
-            gdb "${SCRYMUD_HOME}/gmud" "${CORE_NAME}" < /tmp/gdb_input > "${SCRYMUD_HOME}/gdb.out1"
+            gdb "${SCRYMUD_HOME}/grrmud" "${CORE_NAME}" < /tmp/gdb_input > "${SCRYMUD_HOME}/gdb.out1"
         fi
     done
 
@@ -171,9 +178,9 @@ while ( : ) do
             fi
     
             echo "Checking for new binary."
-            if [ -f "${SCRYMUD_HOME}/gmud.new" ]; then
-                echo "Copying over new server (gmud) binary."
-                mv "${SCRYMUD_HOME}/gmud.new" "${SCRYMUD_HOME}/gmud"
+            if [ -f "${SCRYMUD_HOME}/grrmud.new" ]; then
+                echo "Copying over new server (grrmud) binary."
+                mv "${SCRYMUD_HOME}/grrmud.new" "${SCRYMUD_HOME}/grrmud"
             fi
         fi #RETVAL = 2
     fi #[ -n ${SCRYMUD_DEV_HOME} ]
