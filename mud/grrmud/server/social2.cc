@@ -54,17 +54,17 @@ void tango(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You hand %S a rose, and embrace the dance of love with %S.\n",
+         Sprintf(buf, "You hand %pS a rose, and embrace the dance of love with %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT), name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S hands you a rose... you instintively bite down on it as you embrace the dance of love.\n",
+         Sprintf(buf, "%pS hands you a rose... you instintively bite down on it as you embrace the dance of love.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S grins at %S.\n",
+               Sprintf(buf, "%pS grins at %pS.\n",
                        name_of_crit(pc, ptr->SEE_BIT),
                        name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -102,17 +102,17 @@ void smirk(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }
       else {
-         Sprintf(buf, "You smirk at %S.\n", 
+         Sprintf(buf, "You smirk at %pS.\n", 
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S smirks at you.\n", 
+         Sprintf(buf, "%pS smirks at you.\n", 
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S smirks at %S.\n", 
+               Sprintf(buf, "%pS smirks at %pS.\n", 
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -150,10 +150,10 @@ void beckon(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }
       else {
-         Sprintf(buf, "You beckon %S to follow you.\n", 
+         Sprintf(buf, "You beckon %pS to follow you.\n", 
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S beckons you to follow %s.\n", 
+         Sprintf(buf, "%pS beckons you to follow %s.\n", 
                  name_of_crit(pc, crit_ptr->SEE_BIT),
                  get_him_her(pc));
          buf.Cap();
@@ -161,7 +161,7 @@ void beckon(int i_th, const String* vict, critter& pc, room& rm) {
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S beckons %S.\n", 
+               Sprintf(buf, "%pS beckons %pS.\n", 
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -198,17 +198,17 @@ void sob(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }
       else {
-         Sprintf(buf, "You sob on %S's shoulder.\n", 
+         Sprintf(buf, "You sob on %pS's shoulder.\n", 
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S sobs on your shoulder.\n", 
+         Sprintf(buf, "%pS sobs on your shoulder.\n", 
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S sobs on %S's shoulder.\n", 
+               Sprintf(buf, "%pS sobs on %pS's shoulder.\n", 
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -255,17 +255,17 @@ void splash(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }
       else {
-         Sprintf(buf, "You splash %S in the face!\n", 
+         Sprintf(buf, "You splash %pS in the face!\n", 
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S splashes you in the face!\n", 
+         Sprintf(buf, "%pS splashes you in the face!\n", 
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S splashes %S in the face!\n", 
+               Sprintf(buf, "%pS splashes %pS in the face!\n", 
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -306,17 +306,17 @@ void pat(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }
       else {
-         Sprintf(buf, "You pat %S on the back.\n", 
+         Sprintf(buf, "You pat %pS on the back.\n", 
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S pats you on the back.\n", 
+         Sprintf(buf, "%pS pats you on the back.\n", 
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S pats %S on the back.\n", 
+               Sprintf(buf, "%pS pats %pS on the back.\n", 
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -359,17 +359,17 @@ void itch(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }
       else {
-         Sprintf(buf, "You make %S feel itchy all over.\n", 
+         Sprintf(buf, "You make %pS feel itchy all over.\n", 
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S makes you feel itchy all over!\n", 
+         Sprintf(buf, "%pS makes you feel itchy all over!\n", 
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S tries to make %S itchy.\n", 
+               Sprintf(buf, "%pS tries to make %pS itchy.\n", 
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -409,10 +409,10 @@ void wiggle(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }
       else {
-         Sprintf(buf, "You wiggle your bottom at %S.\n", 
+         Sprintf(buf, "You wiggle your bottom at %pS.\n", 
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S wiggles %s bottom at you.\n",
+         Sprintf(buf, "%pS wiggles %s bottom at you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT),
                  get_his_her(pc));
          buf.Cap();
@@ -420,7 +420,7 @@ void wiggle(int i_th, const String* vict, critter& pc, room& rm) {
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S wiggles %s bottom at %S!\n", 
+               Sprintf(buf, "%pS wiggles %s bottom at %pS!\n", 
                  name_of_crit(pc, ptr->SEE_BIT), 
                  get_his_her(pc),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
@@ -463,17 +463,17 @@ void agree(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }
       else {
-         Sprintf(buf, "You agree with %S.\n", 
+         Sprintf(buf, "You agree with %pS.\n", 
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S agrees with you.\n", 
+         Sprintf(buf, "%pS agrees with you.\n", 
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S agrees with %S.\n", 
+               Sprintf(buf, "%pS agrees with %pS.\n", 
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -509,17 +509,17 @@ void blush(int i_th, const String* vict, critter& pc, room& rm) {
       emote(buf, pc, rm, TRUE);
       }
       else {
-         Sprintf(buf, "You blush at the sight of %S.\n", 
+         Sprintf(buf, "You blush at the sight of %pS.\n", 
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S blushes at the sight of you.\n", 
+         Sprintf(buf, "%pS blushes at the sight of you.\n", 
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S blushes at the sight of %S.\n", 
+               Sprintf(buf, "%pS blushes at the sight of %pS.\n", 
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -564,17 +564,17 @@ void kiss(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You kiss %S.\n", //change
+         Sprintf(buf, "You kiss %pS.\n", //change
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S kisses you long and passionatly.\n", //change
+         Sprintf(buf, "%pS kisses you long and passionatly.\n", //change
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S kisses %S passionately.\n", //change
+               Sprintf(buf, "%pS kisses %pS passionately.\n", //change
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -634,17 +634,17 @@ void giggle(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You giggle at %S.\n",
+         Sprintf(buf, "You giggle at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S giggles crazily at you!\n",
+         Sprintf(buf, "%pS giggles crazily at you!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S giggles crazily at %S.\n",
+               Sprintf(buf, "%pS giggles crazily at %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -685,17 +685,17 @@ void shrug(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You shrug in response to %S's remark.\n",
+         Sprintf(buf, "You shrug in response to %pS's remark.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S shrugs helplessly at you.\n",
+         Sprintf(buf, "%pS shrugs helplessly at you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S shrugs at %S.\n",
+               Sprintf(buf, "%pS shrugs at %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -732,10 +732,10 @@ void wibble(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You turn your face inside out and WIBBLE at %S!\n",
+         Sprintf(buf, "You turn your face inside out and WIBBLE at %pS!\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S turns %s face inside out and WIBBLES at you!\n",
+         Sprintf(buf, "%pS turns %s face inside out and WIBBLES at you!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT), get_his_her(pc));
          buf.Cap();
          show(buf, *crit_ptr);
@@ -743,7 +743,7 @@ void wibble(int i_th, const String* vict, critter& pc, room& rm) {
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
                Sprintf(buf, 
-                 "%S turns %s face inside out and WIBBLES at %S.\n",
+                 "%pS turns %s face inside out and WIBBLES at %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  get_his_her(pc),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
@@ -781,17 +781,17 @@ void yawn(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You yawn at %S.\n",
+         Sprintf(buf, "You yawn at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S yawns sleepily at you. Are you THAT boring?!\n",
+         Sprintf(buf, "%pS yawns sleepily at you. Are you THAT boring?!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S yawns sleepily at %S.\n",
+               Sprintf(buf, "%pS yawns sleepily at %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -833,17 +833,17 @@ void bonk(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You bonk %S!\n",
+         Sprintf(buf, "You bonk %pS!\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S bonks you!\n",
+         Sprintf(buf, "%pS bonks you!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S bonks %S.\n",
+               Sprintf(buf, "%pS bonks %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -884,17 +884,17 @@ void pft(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You look at %S and exclaim, 'pftpftpftpft!'.\n",
+         Sprintf(buf, "You look at %pS and exclaim, 'pftpftpftpft!'.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S looks at you and exclaims, 'pftpftpftpft!'\n",
+         Sprintf(buf, "%pS looks at you and exclaims, 'pftpftpftpft!'\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S exclaims, 'pftpftpftpft!' to %S!\n",
+               Sprintf(buf, "%pS exclaims, 'pftpftpftpft!' to %pS!\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -936,17 +936,17 @@ void clap(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You clap at %S's performance.\n",
+         Sprintf(buf, "You clap at %pS's performance.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S claps at your performance.\n",
+         Sprintf(buf, "%pS claps at your performance.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S claps at %S's performance.\n",
+               Sprintf(buf, "%pS claps at %pS's performance.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -990,17 +990,17 @@ void shake(int i_th, const String* vict, critter& pc, room& rm) {
       }//if targ and agg is same
       else {
          targ = crit_ptr;
-         Sprintf(buf, "You shake your head in denial at %S.\n",
+         Sprintf(buf, "You shake your head in denial at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S shakes %s head in denial at your claims!\n",
+         Sprintf(buf, "%pS shakes %s head in denial at your claims!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT), get_his_her(pc));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S shakes %s head in denial at %S.\n",
+               Sprintf(buf, "%pS shakes %s head in denial at %pS.\n",
                        name_of_crit(pc, ptr->SEE_BIT), get_his_her(pc),
                        name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1048,17 +1048,17 @@ void groan(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You groan at %S.\n",
+         Sprintf(buf, "You groan at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S groans at you. What could you have done?\n",
+         Sprintf(buf, "%pS groans at you. What could you have done?\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S groans at %S.\n",
+               Sprintf(buf, "%pS groans at %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1096,17 +1096,17 @@ void hmm(int i_th, const String* vict, critter& pc, room& rm) {
          emote("thinks, 'Hmmm....'\n", pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You look at %S and think, 'Hmmm....'\n",
+         Sprintf(buf, "You look at %pS and think, 'Hmmm....'\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S looks at you and thinks, 'Hmmm....'\n",
+         Sprintf(buf, "%pS looks at you and thinks, 'Hmmm....'\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S glances at %S and goes, 'Hmmmm...'\n", 
+               Sprintf(buf, "%pS glances at %pS and goes, 'Hmmmm...'\n", 
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1146,17 +1146,17 @@ void hum(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You hum a tune just for %S.\n",
+         Sprintf(buf, "You hum a tune just for %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S hums a tune for you.\n",
+         Sprintf(buf, "%pS hums a tune for you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S hums a tune for %S.\n",
+               Sprintf(buf, "%pS hums a tune for %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1193,17 +1193,17 @@ void grumble(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You grumble at %S.\n",
+         Sprintf(buf, "You grumble at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S grumbles at you. What could you have done?\n",
+         Sprintf(buf, "%pS grumbles at you. What could you have done?\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S grumbles at %S.\n",
+               Sprintf(buf, "%pS grumbles at %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1243,17 +1243,17 @@ void listen(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You listen to %S.\n",
+         Sprintf(buf, "You listen to %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S listens to you.\n",
+         Sprintf(buf, "%pS listens to you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S listens attentively to %S.\n",
+               Sprintf(buf, "%pS listens attentively to %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1293,17 +1293,17 @@ void pinch(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You pinch %S on the arm..\n",
+         Sprintf(buf, "You pinch %pS on the arm..\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S pinches you on the arm. Ouch!\n",
+         Sprintf(buf, "%pS pinches you on the arm. Ouch!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S pinches %S on the arm. Uh-oh!\n",
+               Sprintf(buf, "%pS pinches %pS on the arm. Uh-oh!\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1345,17 +1345,17 @@ void roll(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You roll your eyes at %S.\n",
+         Sprintf(buf, "You roll your eyes at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S rolls %s eyes at you.\n",
+         Sprintf(buf, "%pS rolls %s eyes at you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT), get_his_her(pc));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S rolls %s eyes at %S.\n",
+               Sprintf(buf, "%pS rolls %s eyes at %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT), get_his_her(pc),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1400,17 +1400,17 @@ void strut(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You strut proudly, eyeing %S.\n",
+         Sprintf(buf, "You strut proudly, eyeing %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S struts proudly before you.  Nice, eh?\n",
+         Sprintf(buf, "%pS struts proudly before you.  Nice, eh?\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S struts proudly before %S.\n",
+               Sprintf(buf, "%pS struts proudly before %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1450,17 +1450,17 @@ void whistle(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You whistle a special song for %S.\n",
+         Sprintf(buf, "You whistle a special song for %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S whistles a special song for you.\n",
+         Sprintf(buf, "%pS whistles a special song for you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S whistles a song for %S.\n",
+               Sprintf(buf, "%pS whistles a song for %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1497,17 +1497,17 @@ void slap(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You slap %S across the face!\n",
+         Sprintf(buf, "You slap %pS across the face!\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S slaps you across the face. Grrr! That did it!\n",
+         Sprintf(buf, "%pS slaps you across the face. Grrr! That did it!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S slaps %S across the face.\n",
+               Sprintf(buf, "%pS slaps %pS across the face.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1555,17 +1555,17 @@ void muahaha(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You laugh mercilessly at %S.\n",
+         Sprintf(buf, "You laugh mercilessly at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S looks at you and yells, 'MUAHAHAHAHAHA!'\n",
+         Sprintf(buf, "%pS looks at you and yells, 'MUAHAHAHAHAHA!'\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S laughs mercilessly at %S.\n",
+               Sprintf(buf, "%pS laughs mercilessly at %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1605,10 +1605,10 @@ void hehe(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You giggle like the Pillsbury Doughboy at %S.\n",
+         Sprintf(buf, "You giggle like the Pillsbury Doughboy at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S giggles strangely at you!\n",
+         Sprintf(buf, "%pS giggles strangely at you!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
@@ -1616,7 +1616,7 @@ void hehe(int i_th, const String* vict, critter& pc, room& rm) {
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
                Sprintf(buf, 
-                 "%S giggles like the Pillsbury Doughboy at %S!\n",
+                 "%pS giggles like the Pillsbury Doughboy at %pS!\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1655,17 +1655,17 @@ void silly(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You say to %S, 'You're so silly!'\n",
+         Sprintf(buf, "You say to %pS, 'You're so silly!'\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S says to you, 'You're so silly!'\n",
+         Sprintf(buf, "%pS says to you, 'You're so silly!'\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S says, 'You're so silly!' to %S.\n",
+               Sprintf(buf, "%pS says, 'You're so silly!' to %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1703,17 +1703,17 @@ void scold(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You scold %S!\n",
+         Sprintf(buf, "You scold %pS!\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S scolds you! What did you do?\n",
+         Sprintf(buf, "%pS scolds you! What did you do?\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S scolds %S.\n",
+               Sprintf(buf, "%pS scolds %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1748,10 +1748,10 @@ void twiddle(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }
       else {
-         Sprintf(buf, "You twiddle your thumbs because of %S.\n", 
+         Sprintf(buf, "You twiddle your thumbs because of %pS.\n", 
          name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S twiddles %s thumbs because of you!!\n", 
+         Sprintf(buf, "%pS twiddles %s thumbs because of you!!\n", 
                  name_of_crit(pc, crit_ptr->SEE_BIT),
                  get_his_her(pc));
          buf.Cap();
@@ -1759,7 +1759,7 @@ void twiddle(int i_th, const String* vict, critter& pc, room& rm) {
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S twiddles %s thumbs because of %S.\n", 
+               Sprintf(buf, "%pS twiddles %s thumbs because of %pS.\n", 
                  name_of_crit(pc, ptr->SEE_BIT), 
                  get_his_her(pc),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
@@ -1805,17 +1805,17 @@ void peck(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You kiss %S lightly on the cheek.\n",
+         Sprintf(buf, "You kiss %pS lightly on the cheek.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S kisses you lightly on the cheek.\n",
+         Sprintf(buf, "%pS kisses you lightly on the cheek.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S kisses %S lightly on the cheek.\n",
+               Sprintf(buf, "%pS kisses %pS lightly on the cheek.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1857,17 +1857,17 @@ void trout(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You slap %S silly with a wet trout!\n",
+         Sprintf(buf, "You slap %pS silly with a wet trout!\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S slaps you silly with a wet trout!\n",
+         Sprintf(buf, "%pS slaps you silly with a wet trout!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S slaps %S silly with a wet trout!\n",
+               Sprintf(buf, "%pS slaps %pS silly with a wet trout!\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1909,17 +1909,17 @@ void tremble(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You tremble at the sight of %S.\n",
+         Sprintf(buf, "You tremble at the sight of %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S trembles at the sight of you.\n",
+         Sprintf(buf, "%pS trembles at the sight of you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S trembles at the sight of %S.\n",
+               Sprintf(buf, "%pS trembles at the sight of %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -1961,17 +1961,17 @@ void goo(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You dip %S in a vat of yellow goo.\n",
+         Sprintf(buf, "You dip %pS in a vat of yellow goo.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S dunks you in a vat of yellow goo.\n",
+         Sprintf(buf, "%pS dunks you in a vat of yellow goo.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S dunks %S in a vat of yellow goo.\n",
+               Sprintf(buf, "%pS dunks %pS in a vat of yellow goo.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2013,17 +2013,17 @@ void smooch(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You pucker up and kiss %S. Muah!\n",
+         Sprintf(buf, "You pucker up and kiss %pS. Muah!\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S gives you a big smooch. Muah!\n",
+         Sprintf(buf, "%pS gives you a big smooch. Muah!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S gives %S a big smooch. Muah!\n",
+               Sprintf(buf, "%pS gives %pS a big smooch. Muah!\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2065,17 +2065,17 @@ void swoon(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You collapse in %S's arms.\n",
+         Sprintf(buf, "You collapse in %pS's arms.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S collapses in your arms.\n",
+         Sprintf(buf, "%pS collapses in your arms.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S collapses in %S's arms.\n",
+               Sprintf(buf, "%pS collapses in %pS's arms.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2119,10 +2119,10 @@ void twirl(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You pick %S up over your head and twirl.\n",
+         Sprintf(buf, "You pick %pS up over your head and twirl.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S picks you up above %s head and twirls.\n",
+         Sprintf(buf, "%pS picks you up above %s head and twirls.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT),
                  get_his_her(pc));
          buf.Cap();
@@ -2130,7 +2130,7 @@ void twirl(int i_th, const String* vict, critter& pc, room& rm) {
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S picks %S up above %s head and twirls around.\n",
+               Sprintf(buf, "%pS picks %pS up above %s head and twirls around.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT),
                  get_his_her(pc));
@@ -2174,17 +2174,17 @@ void tickle(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You tickle %S.\n",
+         Sprintf(buf, "You tickle %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S starts to tickle you.\n",
+         Sprintf(buf, "%pS starts to tickle you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S starts to tickle %S.\n",
+               Sprintf(buf, "%pS starts to tickle %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2226,17 +2226,17 @@ void battlecry(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You try to inspire %S with a fierce battlecry!\n",
+         Sprintf(buf, "You try to inspire %pS with a fierce battlecry!\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S tries to inspire you with a fierce battlecry!\n",
+         Sprintf(buf, "%pS tries to inspire you with a fierce battlecry!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S tries to inspire %S with a fierce battlecry!\n",
+               Sprintf(buf, "%pS tries to inspire %pS with a fierce battlecry!\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2281,10 +2281,10 @@ void loser(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You motion that %S is a loser with your finger and your thumb in the shape of an L on your forehead.\n",
+         Sprintf(buf, "You motion that %pS is a loser with your finger and your thumb in the shape of an L on your forehead.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S shows you how big of a loser %s thinks you are by placing %s finger and %s thumb in the shape of an L on %s forehead.\n",
+         Sprintf(buf, "%pS shows you how big of a loser %s thinks you are by placing %s finger and %s thumb in the shape of an L on %s forehead.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT),
                  get_he_she(pc),
                  get_his_her(pc),
@@ -2295,7 +2295,7 @@ void loser(int i_th, const String* vict, critter& pc, room& rm) {
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S shows everyone what a loser %S is by placing %s finger and %s thumb in the shape of an L on %s forehead.\n",
+               Sprintf(buf, "%pS shows everyone what a loser %pS is by placing %s finger and %s thumb in the shape of an L on %s forehead.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT),
                  get_his_her(pc),
@@ -2345,17 +2345,17 @@ void nestle(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You climb into %S's lap and nestle happily.\n",
+         Sprintf(buf, "You climb into %pS's lap and nestle happily.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S climbs into your lap and nestles there happily.\n",
+         Sprintf(buf, "%pS climbs into your lap and nestles there happily.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S climbs into %S's lap and nestles there happily.\n",
+               Sprintf(buf, "%pS climbs into %pS's lap and nestles there happily.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2399,10 +2399,10 @@ void sweatdrop(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You look over at %S, and an enormous sweatdrop appears on your forehead.\n",
+         Sprintf(buf, "You look over at %pS, and an enormous sweatdrop appears on your forehead.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S looks over at you, and an enormous sweatdrop appears on %s forehead.\n",
+         Sprintf(buf, "%pS looks over at you, and an enormous sweatdrop appears on %s forehead.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT),
                  get_his_her(pc));
          buf.Cap();
@@ -2410,7 +2410,7 @@ void sweatdrop(int i_th, const String* vict, critter& pc, room& rm) {
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S looks over at %S, and an enormous sweatdrop appears on %s forehead.\n",
+               Sprintf(buf, "%pS looks over at %pS, and an enormous sweatdrop appears on %s forehead.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT),
                  get_his_her(pc));
@@ -2456,17 +2456,17 @@ void shudder(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You look at %S and shudder.\n",
+         Sprintf(buf, "You look at %pS and shudder.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S looks at you and shudders.\n",
+         Sprintf(buf, "%pS looks at you and shudders.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S shudders at %S.\n",
+               Sprintf(buf, "%pS shudders at %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2509,17 +2509,17 @@ void cower(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You cower away from %S.\n",
+         Sprintf(buf, "You cower away from %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S cowers away from you.\n",
+         Sprintf(buf, "%pS cowers away from you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S cowers away from %S.\n",
+               Sprintf(buf, "%pS cowers away from %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2562,17 +2562,17 @@ void climb(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You climb up %S's leg and cling to it.\n",
+         Sprintf(buf, "You climb up %pS's leg and cling to it.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S climbs up your leg and clings to it.\n",
+         Sprintf(buf, "%pS climbs up your leg and clings to it.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S climbs up %S's leg and clings to it.\n",
+               Sprintf(buf, "%pS climbs up %pS's leg and clings to it.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2614,17 +2614,17 @@ void shock(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You rub your feet on the carpet and zap %S!\n",
+         Sprintf(buf, "You rub your feet on the carpet and zap %pS!\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S rubs %s feet on the carpet and zaps you!\n",
+         Sprintf(buf, "%pS rubs %s feet on the carpet and zaps you!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT), get_his_her(pc));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S rubs %s feet on the carpet and zaps %S!.\n",
+               Sprintf(buf, "%pS rubs %s feet on the carpet and zaps %pS!.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  get_his_her(pc),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
@@ -2668,10 +2668,10 @@ void wiggletoes(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You gleefully wiggle your toes at %S. How cute!\n",
+         Sprintf(buf, "You gleefully wiggle your toes at %pS. How cute!\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S gleefully wiggles %s toes at you. How cute!\n",
+         Sprintf(buf, "%pS gleefully wiggles %s toes at you. How cute!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT),
                  get_his_her(pc));
          buf.Cap();
@@ -2679,7 +2679,7 @@ void wiggletoes(int i_th, const String* vict, critter& pc, room& rm) {
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S gleefully wiggles %s toes at %S. How cute!\n",
+               Sprintf(buf, "%pS gleefully wiggles %s toes at %pS. How cute!\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  get_his_her(pc),
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
@@ -2722,17 +2722,17 @@ void stare(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You stare blankly at %S.\n",
+         Sprintf(buf, "You stare blankly at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S stares blankly at you.\n",
+         Sprintf(buf, "%pS stares blankly at you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S stares blankly at %S.\n",
+               Sprintf(buf, "%pS stares blankly at %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2773,17 +2773,17 @@ void blink(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You blink at %S in disbelief.\n",
+         Sprintf(buf, "You blink at %pS in disbelief.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S blinks at you in disbelief.\n",
+         Sprintf(buf, "%pS blinks at you in disbelief.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S blinks at %S in disbelief.\n",
+               Sprintf(buf, "%pS blinks at %pS in disbelief.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2822,17 +2822,17 @@ void eyebrow(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You raise an eyebrow at %S.\n",
+         Sprintf(buf, "You raise an eyebrow at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S raises an eyebrow at you.\n",
+         Sprintf(buf, "%pS raises an eyebrow at you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S raises an eyebrow at %S.\n",
+               Sprintf(buf, "%pS raises an eyebrow at %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2871,17 +2871,17 @@ void whimper(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You whimper at %S.\n",
+         Sprintf(buf, "You whimper at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S whimpers at you.\n",
+         Sprintf(buf, "%pS whimpers at you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S whimpers at %S.\n",
+               Sprintf(buf, "%pS whimpers at %pS.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2920,17 +2920,17 @@ void duck(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You duck to avoid %S's imminent attack.\n",
+         Sprintf(buf, "You duck to avoid %pS's imminent attack.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S ducks to avoid you.\n",
+         Sprintf(buf, "%pS ducks to avoid you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S ducks to avoid %S's imminent attack.\n",
+               Sprintf(buf, "%pS ducks to avoid %pS's imminent attack.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -2969,17 +2969,17 @@ void pet(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You pet %S fondly.\n",
+         Sprintf(buf, "You pet %pS fondly.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S pets you affectionately.\n",
+         Sprintf(buf, "%pS pets you affectionately.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
          
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S pets %S affectionately.\n",
+               Sprintf(buf, "%pS pets %pS affectionately.\n",
                  name_of_crit(pc, ptr->SEE_BIT), 
                  name_of_crit(*crit_ptr, ptr->SEE_BIT));
                buf.Cap();
@@ -3020,17 +3020,17 @@ void tap(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You walk up to %S and tap them on the shoulder.\n",
+         Sprintf(buf, "You walk up to %pS and tap them on the shoulder.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          show(buf, pc);
-         Sprintf(buf, "%S walks up behind you and taps you on the shoulder.\n",
+         Sprintf(buf, "%pS walks up behind you and taps you on the shoulder.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          show(buf, *crit_ptr);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S walks up behind %S and taps %s on the"
+               Sprintf(buf, "%pS walks up behind %pS and taps %s on the"
                      " shoulder.\n", name_of_crit(pc, ptr->SEE_BIT), 
                      name_of_crit(*crit_ptr, ptr->SEE_BIT),
                      get_him_her(*crit_ptr));
@@ -3076,17 +3076,17 @@ void zombie(int i_th, const String* vict, critter& pc, room& rm) {
 		 emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You stumble up to %S and start chewing on their brains! Mmmm, tastes like people...\n",
+         Sprintf(buf, "You stumble up to %pS and start chewing on their brains! Mmmm, tastes like people...\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          pc.show(buf);
-         Sprintf(buf, "%S stumbles up to you and starts chewing on your brains!\n",
+         Sprintf(buf, "%pS stumbles up to you and starts chewing on your brains!\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          crit_ptr->show(buf);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-			   Sprintf(buf, "%S stumbles up to %S and starts chewing on their brains!\n", name_of_crit(pc, ptr->SEE_BIT), name_of_crit(*crit_ptr, ptr->SEE_BIT)); 
+			   Sprintf(buf, "%pS stumbles up to %pS and starts chewing on their brains!\n", name_of_crit(pc, ptr->SEE_BIT), name_of_crit(*crit_ptr, ptr->SEE_BIT)); 
                buf.Cap();
                ptr->show(buf);
             }//if
@@ -3123,17 +3123,17 @@ void curl(int i_th, const String* vict, critter& pc, room& rm) {
 		 emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You curl up next to %S.\n",
+         Sprintf(buf, "You curl up next to %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          pc.show(buf);
-         Sprintf(buf, "%S curls up next to you.\n",
+         Sprintf(buf, "%pS curls up next to you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          crit_ptr->show(buf);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-			   Sprintf(buf, "%S curls up with %S.\n", name_of_crit(pc, ptr->SEE_BIT), name_of_crit(*crit_ptr, ptr->SEE_BIT)); 
+			   Sprintf(buf, "%pS curls up with %pS.\n", name_of_crit(pc, ptr->SEE_BIT), name_of_crit(*crit_ptr, ptr->SEE_BIT)); 
                buf.Cap();
                ptr->show(buf);
             }//if
@@ -3167,17 +3167,17 @@ void snuggle(int i_th, const String* vict, critter& pc, room& rm) {
 		 emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You snuggle up with %S.\n",
+         Sprintf(buf, "You snuggle up with %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          pc.show(buf);
-         Sprintf(buf, "%S snuggles with you.\n",
+         Sprintf(buf, "%pS snuggles with you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          crit_ptr->show(buf);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-			   Sprintf(buf, "%S snuggles with %S.\n", name_of_crit(pc, ptr->SEE_BIT), name_of_crit(*crit_ptr, ptr->SEE_BIT)); 
+			   Sprintf(buf, "%pS snuggles with %pS.\n", name_of_crit(pc, ptr->SEE_BIT), name_of_crit(*crit_ptr, ptr->SEE_BIT)); 
                buf.Cap();
                ptr->show(buf);
             }//if
@@ -3213,17 +3213,17 @@ void gasp(int i_th, const String* vict, critter& pc, room& rm) {
 		   emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else {
-         Sprintf(buf, "You gasp in astonishment at %S.\n",
+         Sprintf(buf, "You gasp in astonishment at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          pc.show(buf);
-         Sprintf(buf, "%S gasps in astonishment at you.\n",
+         Sprintf(buf, "%pS gasps in astonishment at you.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          crit_ptr->show(buf);
 
          while ((ptr = cll.next())) {
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-			      Sprintf(buf, "%S gasps in astonishment at %S.\n", 
+			      Sprintf(buf, "%pS gasps in astonishment at %pS.\n", 
                   name_of_crit(pc, ptr->SEE_BIT), 
                   name_of_crit(*crit_ptr, ptr->SEE_BIT)); 
                buf.Cap();
@@ -3260,17 +3260,17 @@ void whee(int i_th, const String* vict, critter& pc, room& rm) {
          emote(buf, pc, rm, TRUE);
       }//if targ and agg is same
       else { //at someone else
-         Sprintf(buf, "You shout out \"WheEeEEeeE\" at %S.\n",
+         Sprintf(buf, "You shout out \"WheEeEEeeE\" at %pS.\n",
                  name_of_crit(*crit_ptr, pc.SEE_BIT));
          pc.show(buf);
-         Sprintf(buf, "%S shouts \"WheEeEEeeE\" in your direction.\n",
+         Sprintf(buf, "%pS shouts \"WheEeEEeeE\" in your direction.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT));
          buf.Cap();
          crit_ptr->show(buf);
 
          while ((ptr = cll.next())) { //show everyone else
             if ((ptr != &pc) && (ptr != crit_ptr)) {
-               Sprintf(buf, "%S shouts \"WheEeEEeeE\" at %S.\n", 
+               Sprintf(buf, "%pS shouts \"WheEeEEeeE\" at %pS.\n", 
                   name_of_crit(pc, ptr->SEE_BIT), 
                   name_of_crit(*crit_ptr, ptr->SEE_BIT)); 
                buf.Cap();

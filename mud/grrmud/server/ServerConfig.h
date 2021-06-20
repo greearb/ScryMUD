@@ -10,11 +10,11 @@
 class ServerConfig {
    public:
       ServerConfig();
-      void read(char* filename);
-      void readDynamic(char* filename);
+      void read(const char* filename);
+      void readDynamic(const char* filename);
 
-      void write(char* filename);
-      void writeDynamic(char* filename);
+      void write(const char* filename);
+      void writeDynamic(const char* filename);
 
       // chroot+daemonize
       int daemonize;

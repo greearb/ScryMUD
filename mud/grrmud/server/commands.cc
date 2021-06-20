@@ -59,7 +59,7 @@ int inventory(critter& pc) {
              << endl;
    }//if
 
-   Sprintf(buf, "  GOLD:  %i  Gold Weight: %i\n",
+   Sprintf(buf, "  GOLD:  %li  Gold Weight: %li\n",
            pc.GOLD, pc.GOLD / config.goldPerLb);
    pc.show(buf);
 
@@ -450,10 +450,8 @@ int wear(int i_th, const String* obj, int j, const String* posn,
    }//if
    else { //posn was noted
       mudlog.log(DBG, "Wear, posn noted.\n");
-      int is_light = FALSE;
       if (strcasecmp(*posn, "light") == 0) {
          obj_ptr = have_obj_named(pc.inv, i_th, obj, ~0, ROOM);
-         is_light = TRUE;
       }
       else {
          obj_ptr = have_obj_named(pc.inv, i_th, obj, pc.SEE_BIT, ROOM);
@@ -811,31 +809,31 @@ int do_look(int i_th, const String* obj, critter& pc, room& rm,
 
             if( crit_ptr->LEVEL >= 5 )
             {
-               Sprintf( buf2, "%S has a sturdy beak.\n", crit_ptr->getName() );
+               Sprintf( buf2, "%pS has a sturdy beak.\n", crit_ptr->getName() );
                pc.show( buf2 );
             }
 
             if( crit_ptr->LEVEL >= 10 && crit_ptr->LEVEL < 15)
             {
-               Sprintf( buf2, "A small pair of wings protrude from %S's back.\n", crit_ptr->getName() );
+               Sprintf( buf2, "A small pair of wings protrude from %pS's back.\n", crit_ptr->getName() );
                pc.show( buf2 );
             }
 
             if( crit_ptr->LEVEL >= 15)
             {
-               Sprintf( buf2, "A large set of wings protrude from %S's back.\n", crit_ptr->getName() );
+               Sprintf( buf2, "A large set of wings protrude from %pS's back.\n", crit_ptr->getName() );
                pc.show( buf2 );
             }
 
             if( crit_ptr->LEVEL >= 20 )
             {
-               Sprintf( buf2, "Wicked claws finish off %S's legs.\n", crit_ptr->getName() );
+               Sprintf( buf2, "Wicked claws finish off %pS's legs.\n", crit_ptr->getName() );
                pc.show( buf2 );
             }
 
             if( crit_ptr->LEVEL >= 25)
             {
-               Sprintf( buf2, "A powerful tail trails behind %S.\n", crit_ptr->getName() );
+               Sprintf( buf2, "A powerful tail trails behind %pS.\n", crit_ptr->getName() );
                pc.show( buf2 );
             }
          }
@@ -2989,7 +2987,7 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
                       buf.Cap();
                       show(buf, pc);
                       //TODO:  Translation problem.
-                      Sprintf(buf, "blocks %S's way.\n", name_of_crit(pc, ~0));
+                      Sprintf(buf, "blocks %pS's way.\n", name_of_crit(pc, ~0));
                       emote(buf, *ptr2, rm, TRUE, &pc);
                       return -1;
                    }//if
@@ -3098,13 +3096,13 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
 
          if (from_dir.Strlen()) {
             if (is_custom) {
-               //Sprintf(buf, "has arrived from %S.", &from_dir);
+               //Sprintf(buf, "has arrived from %pS.", &from_dir);
                room_list[dest].doEmote(pc, Selectors::instance().CC_mob_entry_allow,
                                        Selectors::instance().CC_mob_entry_deny,
                                        CS_ARRIVED_FROM_SPRINTF, &from_dir);
             }//if
             else {
-               //Sprintf(buf, "has arrived from the %S.", &from_dir);
+               //Sprintf(buf, "has arrived from the %pS.", &from_dir);
                room_list[dest].doEmote(pc, Selectors::instance().CC_mob_entry_allow, 
                                        Selectors::instance().CC_mob_entry_deny,
                                        CS_ARRIVED_FROM_CUST_SP, &from_dir);
@@ -3854,10 +3852,10 @@ int consume_eq_effects(object& obj, critter& pc, short do_msg) {
 
    //TODO:  Translation problem.
    if (obj.OBJ_FLAGS.get(60)) { //liquid
-      Sprintf(buf, "drinks %S.\n", &(obj.short_desc));
+      Sprintf(buf, "drinks %pS.\n", &(obj.short_desc));
    }//if
    else {
-      Sprintf(buf, "eats %S.\n", &(obj.short_desc));
+      Sprintf(buf, "eats %pS.\n", &(obj.short_desc));
    }//else
    emote(buf, pc, ROOM, FALSE);
 

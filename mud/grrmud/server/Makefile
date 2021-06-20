@@ -34,7 +34,6 @@ translation_battle.spec translation_skill.spec translation5.spec
 ${grrmud_TARG}: libs ${generated_TARGS} $(grrmud_OBJS) 
 	@echo Linking $@
 	@$(CCC) $(CCFLAGS) $(LDFLAGS) -o ${grrmud_TARG} $(grrmud_OBJS) $(LDLIBS)
-	@rm -f Subversion-Revision 
 
 # TODO (eroper): I haven't tracked down why this note is here yet
 # This should really depend on libs too, but my libs make is lazy,
@@ -52,11 +51,7 @@ ${audit_TARG}: libs ${audit_OBJS}
 # this should go in an install target
 #@cp ${audit_TARG} ${TOOL_BIN_DIR}/
 
-Subversion-Revision: 
-	@echo Generating $@
-	@svn info |grep Revision |awk '{print $$2}' >Subversion-Revision
-
-BuildInfo.cc: $(SRCS) Makefile BuildInfo.prefix Subversion-Revision
+BuildInfo.cc: $(SRCS) Makefile BuildInfo.prefix
 	@echo "Generating $@"
 	@cat BuildInfo.prefix > BuildInfo.cc
 	@echo "const char* BuildInfo::getBuildMachine() { return \"`uname -mrspn`\"; }" >> BuildInfo.cc
@@ -67,7 +62,6 @@ BuildInfo.cc: $(SRCS) Makefile BuildInfo.prefix Subversion-Revision
 	@echo "" >> BuildInfo.cc
 	@echo "const char* BuildInfo::getVersion() { return \"${SCRY_VERSION}\"; }" >> BuildInfo.cc
 	@echo "" >> BuildInfo.cc
-	@echo "const char* BuildInfo::getRevision() { return \"`cat Subversion-Revision`\"; }" >> BuildInfo.cc
 
 parse_gen.cc: ${code_gen_TARG} ${GEN_SPEC}
 parse_gen.h: ${code_gen_TARG} ${GEN_SPEC}
@@ -99,7 +93,6 @@ clean:
 	@echo "Cleaning"
 	@rm -f *.o ${generated_TARGS} BuildInfo.cc parse_gen.cc parse_gen.h
 	@rm -f lang_strings.h lang_strings.cc
-	@rm -f Subversion-Revision
 	@rm -f *.P
 	@echo "Cleaning ../../lib"
 	@${MAKE} -C ../../lib clean

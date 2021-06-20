@@ -56,7 +56,7 @@ short can_start_battle(critter& targ, critter& pc, short do_msg) {
 
    if (room_list[targ.getCurRoomNum()].isHaven()) {
       if (do_msg) {
-         Sprintf(buf, "%S is in a peaceful room.\n", 
+         Sprintf(buf, "%pS is in a peaceful room.\n", 
                  name_of_crit(targ, pc.SEE_BIT));
          buf.Cap();
          pc.show(buf);
@@ -66,7 +66,7 @@ short can_start_battle(critter& targ, critter& pc, short do_msg) {
    else if (room_list[targ.getCurRoomNum()].isNoPK() && 
            (pc.pc && targ.pc)) {
       if (do_msg) {
-         Sprintf(buf, "%S is in a safe room.\n", 
+         Sprintf(buf, "%pS is in a safe room.\n", 
                  name_of_crit(targ, pc.SEE_BIT));
          buf.Cap();
          pc.show(buf);
@@ -263,7 +263,7 @@ void gain_xp(critter& crit, const long exp, const short show_output) {
    crit.EXP += exp;
    if (show_output) {
       String buf(100);
-      Sprintf(buf, "You gain %i experience points.\n", exp);
+      Sprintf(buf, "You gain %li experience points.\n", exp);
       crit.show(buf);
    }//if
    if (crit.EXP >= levels[crit.LEVEL]) {
@@ -385,14 +385,14 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
          int random_num = d(1,total_score);
 
          if ( (random_num >= lower_bound) && (random_num < (lower_bound + miss_score)) ) {
-            Sprintf(buf, "%S misses you.\n", name_of_crit(agg, vict.SEE_BIT));
+            Sprintf(buf, "%pS misses you.\n", name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             vict.show(buf, HL_BATTLE);
 
-            Sprintf(buf, "You miss %S.\n", name_of_crit(vict, agg.SEE_BIT));
+            Sprintf(buf, "You miss %pS.\n", name_of_crit(vict, agg.SEE_BIT));
             agg.show(buf, HL_BATTLE);
 
-            Sprintf(buf, "misses %S.", name_of_crit(vict, ~0));
+            Sprintf(buf, "misses %pS.", name_of_crit(vict, ~0));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
 
             return;
@@ -401,14 +401,14 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
          lower_bound += miss_score;
 
          if ( (random_num >= lower_bound) && (random_num < (lower_bound + dodge_score)) ) {
-            Sprintf(buf, "dodges %S's blow.", name_of_crit(agg, ~0));
+            Sprintf(buf, "dodges %pS's blow.", name_of_crit(agg, ~0));
             emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &agg);
 
-            Sprintf(buf, "%S dodges your blow.\n", name_of_crit(vict, agg.SEE_BIT));
+            Sprintf(buf, "%pS dodges your blow.\n", name_of_crit(vict, agg.SEE_BIT));
             buf.Cap();
             agg.show(buf, HL_BATTLE);
 
-            Sprintf(buf, "You dodge %S's blow.\n", name_of_crit(agg, vict.SEE_BIT));
+            Sprintf(buf, "You dodge %pS's blow.\n", name_of_crit(agg, vict.SEE_BIT));
             vict.show(buf, HL_BATTLE);
 
             return;
@@ -418,15 +418,15 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
 
          if ( (random_num >= lower_bound) && (random_num < (lower_bound + parry_score)) ) {
 
-            Sprintf(buf, "parries %S's blow.", name_of_crit(agg, ~0));
+            Sprintf(buf, "parries %pS's blow.", name_of_crit(agg, ~0));
             emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &agg);
 
-            Sprintf(buf, "%S parries your blow.\n", 
+            Sprintf(buf, "%pS parries your blow.\n", 
                   name_of_crit(vict, agg.SEE_BIT));
             buf.Cap();
             agg.show(buf, HL_BATTLE);
 
-            Sprintf(buf, "You parry %S's blow.\n", 
+            Sprintf(buf, "You parry %pS's blow.\n", 
                   name_of_crit(agg, vict.SEE_BIT));
             vict.show(buf, HL_BATTLE);
 
@@ -437,15 +437,15 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
 
          if ( (random_num >= lower_bound) && (random_num < (lower_bound + block_score)) ) {
 
-            Sprintf(buf, "blocks %S's blow.", name_of_crit(agg, ~0));
+            Sprintf(buf, "blocks %pS's blow.", name_of_crit(agg, ~0));
             emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &agg);
 
-            Sprintf(buf, "%S blocks your blow.\n", 
+            Sprintf(buf, "%pS blocks your blow.\n", 
                   name_of_crit(vict, agg.SEE_BIT));
             buf.Cap();
             agg.show(buf, HL_BATTLE);
 
-            Sprintf(buf, "You block %S's blow.\n", 
+            Sprintf(buf, "You block %pS's blow.\n", 
                   name_of_crit(agg, vict.SEE_BIT));
             vict.show(buf, HL_BATTLE);
 
@@ -558,99 +558,99 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    }
 
    if (damage < (xp_damage * 0.02) ) {
-      Sprintf(aggbuf, "You bruise%s %S ",
+      Sprintf(aggbuf, "You bruise%s %pS ",
               agg.isImmort()?dam_str:"", name_of_crit(vict, agg.SEE_BIT));
-      Sprintf(victbuf, "%S bruises%s you ", name_of_crit(agg, vict.SEE_BIT),
+      Sprintf(victbuf, "%pS bruises%s you ", name_of_crit(agg, vict.SEE_BIT),
               vict.isImmort()?dam_str:"");
-      Sprintf(otherbuf, "%S bruises %S ", name_of_crit(agg, ~0), 
+      Sprintf(otherbuf, "%pS bruises %pS ", name_of_crit(agg, ~0), 
               name_of_crit(vict, ~0));
    }//if
    else if (damage < (xp_damage * 0.05) ) {
-      Sprintf(aggbuf, "You barely %S%s %S ", &wmsg, agg.isImmort()?dam_str:"",
+      Sprintf(aggbuf, "You barely %pS%s %pS ", &wmsg, agg.isImmort()?dam_str:"",
               name_of_crit(vict, agg.SEE_BIT));
-      Sprintf(victbuf, "%S barely %Ss%s you ",
+      Sprintf(victbuf, "%pS barely %pSs%s you ",
               name_of_crit(agg, vict.SEE_BIT), &wmsg, vict.isImmort()?dam_str:"");
-      Sprintf(otherbuf, "%S barely %Ss %S ", name_of_crit(agg, ~0), 
+      Sprintf(otherbuf, "%pS barely %pSs %pS ", name_of_crit(agg, ~0), 
               &wmsg, name_of_crit(vict, ~0));
    }//if
    else if (damage < (xp_damage * 0.10) ) {
-      Sprintf(aggbuf, "You %S%s %S ", &wmsg, agg.isImmort()?dam_str:"",
+      Sprintf(aggbuf, "You %pS%s %pS ", &wmsg, agg.isImmort()?dam_str:"",
               name_of_crit(vict, agg.SEE_BIT));
       if (strcmp("slash", wmsg) == 0) {
-         Sprintf(victbuf, "%S slashes%s you ", name_of_crit(agg, vict.SEE_BIT),
+         Sprintf(victbuf, "%pS slashes%s you ", name_of_crit(agg, vict.SEE_BIT),
                  vict.isImmort()?dam_str:"");
-         Sprintf(otherbuf, "%S slashes %S ", name_of_crit(agg, ~0),
+         Sprintf(otherbuf, "%pS slashes %pS ", name_of_crit(agg, ~0),
                  name_of_crit(vict, ~0));
       }
       else {
-         Sprintf(victbuf, "%S %Ss%s you ", name_of_crit(agg, vict.SEE_BIT), 
+         Sprintf(victbuf, "%pS %pSs%s you ", name_of_crit(agg, vict.SEE_BIT), 
                  &wmsg, vict.isImmort()?dam_str:"");
-         Sprintf(otherbuf, "%S %Ss %S ", name_of_crit(agg, ~0), &wmsg,
+         Sprintf(otherbuf, "%pS %pSs %pS ", name_of_crit(agg, ~0), &wmsg,
                  name_of_crit(vict, ~0));
       }
    }//if
    else if (damage < (xp_damage * 0.15) ) {
-      Sprintf(aggbuf, "You %S%s %S hard ", &wmsg, agg.isImmort()?dam_str:"",
+      Sprintf(aggbuf, "You %pS%s %pS hard ", &wmsg, agg.isImmort()?dam_str:"",
              name_of_crit(vict, agg.SEE_BIT));
       if (strcmp("slash", wmsg) == 0) {
-         Sprintf(victbuf, "%S slashes you hard%s ", name_of_crit(agg, vict.SEE_BIT),
+         Sprintf(victbuf, "%pS slashes you hard%s ", name_of_crit(agg, vict.SEE_BIT),
                  vict.isImmort()?dam_str:"");
-         Sprintf(otherbuf, "%S slashes %S hard ", name_of_crit(agg, ~0), 
+         Sprintf(otherbuf, "%pS slashes %pS hard ", name_of_crit(agg, ~0), 
                  name_of_crit(vict, ~0));
       }
       else {
-         Sprintf(victbuf, "%S %Ss you hard%s ", name_of_crit(agg, vict.SEE_BIT), &wmsg,
+         Sprintf(victbuf, "%pS %pSs you hard%s ", name_of_crit(agg, vict.SEE_BIT), &wmsg,
                  vict.isImmort()?dam_str:"");
-         Sprintf(otherbuf, "%S %Ss %S hard ", name_of_crit(agg, ~0), &wmsg, 
+         Sprintf(otherbuf, "%pS %pSs %pS hard ", name_of_crit(agg, ~0), &wmsg, 
                  name_of_crit(vict, ~0));
       }
    }//if
    else if (damage < (xp_damage * 0.20) ) {
-      Sprintf(aggbuf, "You %S%s %S very hard ", &wmsg, agg.isImmort()?dam_str:"",
+      Sprintf(aggbuf, "You %pS%s %pS very hard ", &wmsg, agg.isImmort()?dam_str:"",
               name_of_crit(vict, agg.SEE_BIT));
       
       if (strcmp("slash", wmsg) == 0) {
-         Sprintf(victbuf, "%S slashes you very hard%s ", name_of_crit(agg, vict.SEE_BIT),
+         Sprintf(victbuf, "%pS slashes you very hard%s ", name_of_crit(agg, vict.SEE_BIT),
                  vict.isImmort()?dam_str:"");
-         Sprintf(otherbuf, "%S slashes %S very hard ", name_of_crit(agg, ~0), 
+         Sprintf(otherbuf, "%pS slashes %pS very hard ", name_of_crit(agg, ~0), 
                  name_of_crit(vict, ~0));
       }
       else {
-         Sprintf(victbuf, "%S %Ss%s you very hard ", name_of_crit(agg, vict.SEE_BIT),
+         Sprintf(victbuf, "%pS %pSs%s you very hard ", name_of_crit(agg, vict.SEE_BIT),
                  &wmsg, vict.isImmort()?dam_str:"");
-         Sprintf(otherbuf, "%S %Ss %S very hard ", name_of_crit(agg, ~0), 
+         Sprintf(otherbuf, "%pS %pSs %pS very hard ", name_of_crit(agg, ~0), 
                  &wmsg, name_of_crit(vict, ~0));
       }
    }//if
    else if (damage < (xp_damage * 0.50) ) {
-      Sprintf(aggbuf, "You OBLITERATE%s %S ", agg.isImmort()?dam_str:"",
+      Sprintf(aggbuf, "You OBLITERATE%s %pS ", agg.isImmort()?dam_str:"",
               name_of_crit(vict, agg.SEE_BIT));
-      Sprintf(victbuf, "%S OBLITERATES%s you ", name_of_crit(agg, vict.SEE_BIT),
+      Sprintf(victbuf, "%pS OBLITERATES%s you ", name_of_crit(agg, vict.SEE_BIT),
               vict.isImmort()?dam_str:"");
-      Sprintf(otherbuf, "%S OBLITERATES %S ", name_of_crit(agg, ~0), 
+      Sprintf(otherbuf, "%pS OBLITERATES %pS ", name_of_crit(agg, ~0), 
               name_of_crit(vict, ~0));
    }//if
    else if (damage < (xp_damage * 0.80) ) {
-      Sprintf(aggbuf, "You LIQUIFY%s %S ", agg.isImmort()?dam_str:"",
+      Sprintf(aggbuf, "You LIQUIFY%s %pS ", agg.isImmort()?dam_str:"",
              name_of_crit(vict, agg.SEE_BIT));
-      Sprintf(victbuf, "%S LIQUIFIES%s you ", name_of_crit(agg, vict.SEE_BIT),
+      Sprintf(victbuf, "%pS LIQUIFIES%s you ", name_of_crit(agg, vict.SEE_BIT),
              vict.isImmort()?dam_str:"");
-      Sprintf(otherbuf, "%S LIQUIFIES %S ", name_of_crit(agg, ~0), 
+      Sprintf(otherbuf, "%pS LIQUIFIES %pS ", name_of_crit(agg, ~0), 
               name_of_crit(vict, ~0));
    }//if
    else { // >= 80% of the targets hitpoints
-      Sprintf(aggbuf, "You ANNIHILATE%s %S ", agg.isImmort()?dam_str:"",
+      Sprintf(aggbuf, "You ANNIHILATE%s %pS ", agg.isImmort()?dam_str:"",
              name_of_crit(vict, agg.SEE_BIT));
-      Sprintf(victbuf, "%S ANNIHILATES%s you ", name_of_crit(agg, vict.SEE_BIT),
+      Sprintf(victbuf, "%pS ANNIHILATES%s you ", name_of_crit(agg, vict.SEE_BIT),
              vict.isImmort()?dam_str:"");
-      Sprintf(otherbuf, "%S ANNIHILATES %S ", name_of_crit(agg, ~0), 
+      Sprintf(otherbuf, "%pS ANNIHILATES %pS ", name_of_crit(agg, ~0), 
               name_of_crit(vict, ~0));
    }//if
 
    if (agg.eq[posn_of_weapon]) {
-      Sprintf(aggendbuf, "with your %S.\n", 
+      Sprintf(aggendbuf, "with your %pS.\n", 
               name_of_obj(*(agg.EQ[posn_of_weapon]), agg.SEE_BIT));
-      Sprintf(victendbuf, "with %s %S.\n", get_his_her(agg), 
+      Sprintf(victendbuf, "with %s %pS.\n", get_his_her(agg), 
               name_of_obj(*(agg.EQ[posn_of_weapon]), ~0));
    }
    else {
@@ -690,13 +690,13 @@ void do_battle_round(critter& agg, critter& vict, int posn_of_weapon,
    // In theory, any damage higher than 40 will have a chance of breaking
    // the spell, with damage much higher having a better chance
    if ((d(5, (int)damage) > 200) && vict.isParalyzed()) {
-      Sprintf(buf, "The force of %S's blow breaks the stone you are encased in!\n",
+      Sprintf(buf, "The force of %pS's blow breaks the stone you are encased in!\n",
          name_of_crit(agg, vict.SEE_BIT));
       vict.show(buf);
-      Sprintf(buf, "The force of your blow breaks the stone %S is encased in!\n",
+      Sprintf(buf, "The force of your blow breaks the stone %pS is encased in!\n",
          name_of_crit(vict, agg.SEE_BIT));
       agg.show(buf);
-      Sprintf(buf, "blow breaks the stone %S is encased in!\n",
+      Sprintf(buf, "blow breaks the stone %pS is encased in!\n",
          name_of_crit(vict, agg.SEE_BIT));
       agg.pemote(buf);
       rem_effects_crit(FLESH_TO_STONE_SKILL_NUM, vict, FALSE);
@@ -1066,10 +1066,10 @@ void avian_gain_level(critter& crit) {
                      crit.emote(buf);
                      crit.show("Sharp pains shoot from your back as a pair of wings begin to form.\n");
                      if ( crit.EQ[12] ) { //on body
-                        Sprintf(buf, "new wings destroy %S, sending it to the ground",
+                        Sprintf(buf, "new wings destroy %pS, sending it to the ground",
                               long_name_of_obj(*(crit.EQ[12]), ~0));
                         crit.pemote(buf);
-                        Sprintf(buf,"Your wings smash %S, crumbling it to the ground",
+                        Sprintf(buf,"Your wings smash %pS, crumbling it to the ground",
                               long_name_of_obj(*(crit.EQ[12]), ~0));
                         crit.show(buf);
                         remove_eq_effects(*(crit.EQ[12]), crit, FALSE, FALSE, 12);
@@ -1083,10 +1083,10 @@ void avian_gain_level(critter& crit) {
                      crit.emote(buf);
                      crit.show("Excruciating pain befalls you as your wings take full form.\n");
                      if( crit.EQ[4] ) { //on back
-                        Sprintf(buf, "wings destroy %S, sending it to the ground",
+                        Sprintf(buf, "wings destroy %pS, sending it to the ground",
                               long_name_of_obj(*(crit.EQ[4]), ~0));
                         crit.pemote(buf);
-                        Sprintf(buf, "Your wings smash %S, crumbling it to the ground",
+                        Sprintf(buf, "Your wings smash %pS, crumbling it to the ground",
                               crit.EQ[4]->getLongName(crit));
                         crit.show(buf);
                         remove_eq_effects(*(crit.EQ[4]), crit, FALSE, FALSE, 4);
@@ -1101,10 +1101,10 @@ void avian_gain_level(critter& crit) {
                      crit.emote(buf);
                      crit.show("You fall over as your feet transform into mighty claws.\n");
                      if( crit.EQ[15] ) { //feet
-                        Sprintf(buf, "claws destroy %S sending them to the ground",
+                        Sprintf(buf, "claws destroy %pS sending them to the ground",
                               long_name_of_obj(*(crit.EQ[15]), ~0));
                         crit.pemote(buf);
-                        Sprintf(buf, "Your claws smash %S, sending them to the ground",
+                        Sprintf(buf, "Your claws smash %pS, sending them to the ground",
                               long_name_of_obj(*(crit.EQ[15]), ~0) );
                         crit.show(buf);
                         remove_eq_effects(*(crit.EQ[15]), crit, FALSE, FALSE, 15);
@@ -1114,7 +1114,7 @@ void avian_gain_level(critter& crit) {
                   }
                   break;
          case 25: {
-                     Sprintf(buf, "A magnificant tail erupts from %S's back.\n", crit.getName());
+                     Sprintf(buf, "A magnificant tail erupts from %pS's back.\n", crit.getName());
                      show_all(buf,room_list[crit.getCurRoomNum()]);
                      crit.show("A magnificant tails forms behind you, the metamorphosis is complete!\n");
                   }
@@ -1251,7 +1251,7 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
    }
 
    corpse->bag->time_till_disolve = 10; // in ticks
-   Sprintf(buf, "The corpse of %S lies here.",
+   Sprintf(buf, "The corpse of %pS lies here.",
                 name_of_crit(vict, ~0));
    corpse->in_room_desc = buf;
    room_list[vict.getCurRoomNum()].gainInv(corpse);
@@ -1320,15 +1320,15 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
 
       ptr->names.append(new String(*(vict.names.peekFront())));
 
-      Sprintf(buf, "the severed head of %S",
+      Sprintf(buf, "the severed head of %pS",
             vict.getName());
       ptr->short_desc = buf;
 
-      Sprintf(buf, "The severed head of %S lies here rotting.",
+      Sprintf(buf, "The severed head of %pS lies here rotting.",
             vict.getName());
       ptr->in_room_desc = buf;
 
-      Sprintf(buf, "This is the severed and rotting head of %S.",
+      Sprintf(buf, "This is the severed and rotting head of %pS.",
             vict.getName());
       ptr->long_desc = buf;
 
@@ -1356,15 +1356,15 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
          recursive_init_loads(*ptr, 0);
 
          ptr->names.append(new String(*(vict.names.peekFront())));
-         Sprintf(buf, "the tattered skin of %S", vict.names.peekFront());
+         Sprintf(buf, "the tattered skin of %pS", vict.names.peekFront());
          ptr->short_desc = buf;
-         Sprintf(buf, "The tattered skin of %S lies here.", 
+         Sprintf(buf, "The tattered skin of %pS lies here.", 
                vict.names.peekFront());
          ptr->in_room_desc = buf;
          Sprintf(buf,
-               "This large piece of %s skin was recently hacked from the corpse of %S.\n"
+               "This large piece of %s skin was recently hacked from the corpse of %pS.\n"
                "You wonder why anyone would want the skin of a %s, but perhaps it is just\n"
-               "a trophy--a symbol of %S's defeat.\n",
+               "a trophy--a symbol of %pS's defeat.\n",
                get_race_name(vict.RACE),
                name_of_crit(vict, ~0), get_race_name(vict.RACE),
                name_of_crit(vict, ~0));
@@ -1418,7 +1418,7 @@ void dead_crit_to_corpse(critter& vict, int& show_vict_tags) {
          leave_room_effects(room_list[nrm], vict, TRUE); //takes care of blocking
 
          room_list[config.loginRoom].gainCritter(&vict);
-         Sprintf(buf, "%S appears in the room looking quite dead!\n", 
+         Sprintf(buf, "%pS appears in the room looking quite dead!\n", 
                  name_of_crit(vict, ~0));
          buf.Cap();
          room_list[config.loginRoom].showAllCept(buf, &vict);

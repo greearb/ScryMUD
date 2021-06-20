@@ -61,7 +61,7 @@ int CmdSpecifier::_cnt = 0;
 String CmdSpecifier::toString() const {
    String retval(100);
    Sprintf(retval,
-           "CmdSpecifier:  word: -:%S:-  help_key: -:%S:-  len: %i CmdId: %i",
+           "CmdSpecifier:  word: -:%pS:-  help_key: -:%pS:-  len: %i CmdId: %i",
            &word, &hlp_key, len, (int)(id));
    return retval;
 }

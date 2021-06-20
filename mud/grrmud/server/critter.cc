@@ -427,13 +427,13 @@ void shop_data::valueList(int i_th, const String* targ, critter& keeper,
    PlayerShopData* ptr;
 
    if (keeper.isManagedBy(manager)) {
-      Sprintf(client, "<VALUE_LIST %i %S %i> ", i_th, targ, keeper.GOLD);
-      Sprintf(normal, "Value listing for %i.%S, register:  %i\n", i_th,
+      Sprintf(client, "<VALUE_LIST %i %pS %li> ", i_th, targ, keeper.GOLD);
+      Sprintf(normal, "Value listing for %i.%pS, register:  %li\n", i_th,
               targ, keeper.GOLD);
    }
    else {
-      Sprintf(client, "<VALUE_LIST %i %S ?> ", i_th, targ);
-      Sprintf(normal, "Value listing for %i.%S:\n", i_th, targ);
+      Sprintf(client, "<VALUE_LIST %i %pS ?> ", i_th, targ);
+      Sprintf(normal, "Value listing for %i.%pS:\n", i_th, targ);
    }
 
 
@@ -444,13 +444,13 @@ void shop_data::valueList(int i_th, const String* targ, critter& keeper,
                  ptr->getBuyPrice());
          client.Append(buf);
 
-         Sprintf(buf, "<VALUE_INAME %i %S> ", idx,
+         Sprintf(buf, "<VALUE_INAME %i %pS> ", idx,
                  obj_list[ptr->getObjNum()].getLongName());
          client.Append(buf);
 
       }//if
       
-      Sprintf(buf, "    [%i]  Sell: %i %P20 Buy: %i %P30 Item: %S(%i)\n", idx,
+      Sprintf(buf, "    [%i]  Sell: %i %P20 Buy: %i %P30 Item: %pS(%i)\n", idx,
               ptr->getSellPrice(),
               ptr->getBuyPrice(),
               obj_list[ptr->getObjNum()].getLongName(),
@@ -2074,7 +2074,7 @@ void critter::split(int amt, int do_msg) {
             ptr->GOLD += amt / d;
 
             if (do_msg) {
-               Sprintf(buf, "%S splits %i coins, your share is: %i\n", getName(*ptr), amt, amt/d);
+               Sprintf(buf, "%pS splits %i coins, your share is: %i\n", getName(*ptr), amt, amt/d);
                ptr->show(buf);
             }
          }
@@ -3795,7 +3795,7 @@ void critter::fileRead(ifstream& ofile, short read_all) {
          else {
             Sprintf(tmp_str, 
                     "ERROR:  trying to load non-existant obj: %i, "
-              "in critter's: %S  eq.\n", i, &short_desc);
+              "in critter's: %pS  eq.\n", i, &short_desc);
             mudlog.log(LS_ERROR, tmp_str);
          }//else
       }//else
@@ -4530,7 +4530,7 @@ void critter::doPrompt() {
                      targ.Append(PRACS);
                      break;
                   case 'x':     /* xp */
-                     Sprintf(conv_buf, "%i", EXP);
+                     Sprintf(conv_buf, "%li", EXP);
                      targ.Append(conv_buf);
                      break;
                   case 'X':     /* xp to level */
@@ -4538,11 +4538,11 @@ void critter::doPrompt() {
                      targ.Append(conv_buf);
                      break;
                   case 'g':     /* gold */
-                     Sprintf(conv_buf, "%i", GOLD);
+                     Sprintf(conv_buf, "%li", GOLD);
                      targ.Append(conv_buf);
                      break;
                   case 'G':     /* bank gold */
-                     Sprintf(conv_buf, "%i", BANK_GOLD);
+                     Sprintf(conv_buf, "%li", BANK_GOLD);
                      targ.Append(conv_buf);
                      break;
                   case '1':     /* medical conditions */
@@ -4616,10 +4616,10 @@ void critter::doPrompt() {
    // Instead of spamming out all the pending commands, be nice about it
    {
       String tmp;
-      unsigned int i;
+      int i;
 
       tmp.Clear();
-      for(i=0;i<pc->input.Strlen();i++) {
+      for (i=0; i < pc->input.Strlen(); i++) {
          if ( pc->input.charAt(i) == '\n' ) {
             tmp.append(";");
          } else {
@@ -5492,13 +5492,13 @@ int critter::withdrawCoins(int count, critter& banker) { //do messages
    if (long_data[2] >= count) {
       long_data[2] -= count;
       long_data[0] += count;
-      Sprintf(buf, "%S gives you %i coins.\n", banker.getName(), count);
+      Sprintf(buf, "%pS gives you %i coins.\n", banker.getName(), count);
       show(buf);
-      Sprintf(buf, "Your balance is now %i coins.", long_data[2]);
+      Sprintf(buf, "Your balance is now %li coins.", long_data[2]);
       do_tell(banker, buf, *this, FALSE, getCurRoomNum());
       return 0;
    }
-   Sprintf(buf, "Your balance is only %i coins.", long_data[2]);
+   Sprintf(buf, "Your balance is only %li coins.", long_data[2]);
 
    do_tell(banker, buf, *this, FALSE, getCurRoomNum());
    return -1;
@@ -5506,7 +5506,7 @@ int critter::withdrawCoins(int count, critter& banker) { //do messages
 
 int critter::balanceCoins(critter& banker) {
    String buf(100);
-   Sprintf(buf, "Your balance is %i coins.", long_data[2]);
+   Sprintf(buf, "Your balance is %li coins.", long_data[2]);
    do_tell(banker, buf, *this, FALSE, getCurRoomNum());
    return 0;
 }
@@ -5517,14 +5517,14 @@ int critter::depositCoins(int count, critter& banker) { //do messages
    if (long_data[0] >= count) {
       long_data[0] -= count;
       long_data[2] += count;
-      Sprintf(buf, "%S puts %i coins into your account.\n", banker.getName(),
+      Sprintf(buf, "%pS puts %i coins into your account.\n", banker.getName(),
               count);
       show(buf);
-      Sprintf(buf, "Your balance is now %i coins.", long_data[2]);
+      Sprintf(buf, "Your balance is now %li coins.", long_data[2]);
       do_tell(banker, buf, *this, FALSE, getCurRoomNum());
       return 0;
    }
-   Sprintf(buf, "You have only %i coins.", long_data[0]);
+   Sprintf(buf, "You have only %li coins.", long_data[0]);
 
    do_tell(banker, buf, *this, FALSE, getCurRoomNum());
    return -1;

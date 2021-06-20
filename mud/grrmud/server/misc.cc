@@ -159,7 +159,7 @@ short check_l_range(long i, long l, long h, critter& pc, short disp,
 }//check_l_range()
 
 
-char* get_his_her(const critter& crit) {
+const char* get_his_her(const critter& crit) {
 
    if (crit.SEX == 0) { 
       return "her";
@@ -172,7 +172,7 @@ char* get_his_her(const critter& crit) {
    }//else
 }//get_his_her
 
-char* get_hisself_herself(const critter& crit) { //this is
+const char* get_hisself_herself(const critter& crit) { //this is
 //grammatically incorrect, the code is same as get_himself_herself.
 
    if (crit.SEX == 0) { 
@@ -187,7 +187,7 @@ char* get_hisself_herself(const critter& crit) { //this is
 }//get_hisself_herself
 
 
-char* get_he_she(const critter& crit) {
+const char* get_he_she(const critter& crit) {
 
    if (crit.SEX == 0) { 
       return "she";
@@ -222,7 +222,7 @@ int d(const int num_rolls, const int dice_sides) {
           return(0);
       }
       tmp = genrand_real1();
-      rtvalue += 1 + floor( dice_sides * genrand_real1() );
+      rtvalue += 1 + floor( dice_sides * tmp );
    }//for
    return rtvalue;
 }//d()
@@ -1387,8 +1387,8 @@ void decrease_timed_affecting_pcs() {  //will decrease all
                      &(crit_ptr->inv), crit_ptr->getCurRoomNum());
             }//if
             if (crit_ptr->EQ[11]->extras[0] == 1) {
-               Sprintf(buf, "%S flickers.\n", 
-                     long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
+               Sprintf(buf, "%pS flickers.\n", 
+                       long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
                crit_ptr->show(buf);
             }//if
@@ -1398,7 +1398,7 @@ void decrease_timed_affecting_pcs() {  //will decrease all
          if (crit_ptr->EQ[11]) {
             if (crit_ptr->EQ[11]->extras[0] == 0) {
                crit_ptr->EQ[11]->extras[0] = -2;
-               Sprintf(buf, "%S dims and glows its last.\n", 
+               Sprintf(buf, "%pS dims and glows its last.\n", 
                      long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
                crit_ptr->show(buf);
@@ -1473,7 +1473,7 @@ void decrease_timed_affecting_lds() {
                                               &(crit_ptr->inv), crit_ptr->getCurRoomNum());
             }//if
             if (crit_ptr->EQ[11]->extras[0] == 1) {
-               Sprintf(buf, "%S flickers.\n", 
+               Sprintf(buf, "%pS flickers.\n", 
                     long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
                crit_ptr->show(buf);
@@ -1484,7 +1484,7 @@ void decrease_timed_affecting_lds() {
          if (crit_ptr->EQ[11]) {
             if (crit_ptr->EQ[11]->extras[0] == 0) {
                crit_ptr->EQ[11]->extras[0] = -2;
-               Sprintf(buf, "%S dims and glows its last.\n", 
+               Sprintf(buf, "%pS dims and glows its last.\n", 
                     long_name_of_obj(*(crit_ptr->EQ[11]), crit_ptr->SEE_BIT));
                buf.Cap();
                crit_ptr->show(buf);
@@ -1523,15 +1523,17 @@ void decrease_timed_affecting_smobs() {  //will decrease all
          crit_ptr->affected_by.head(sp_cell);
          sp_ptr = sp_cell.next();
          while (sp_ptr) {
-            if (sp_ptr->bonus_duration != -1)
+            if (sp_ptr->bonus_duration != -1) {
                sp_ptr->bonus_duration--;
-               if (sp_ptr->bonus_duration == 0) {
+            }
+            if (sp_ptr->bonus_duration == 0) {
                rem_effects_crit(sp_ptr->stat_spell, *crit_ptr, TRUE);
                delete sp_ptr;
                sp_ptr = crit_ptr->affected_by.lose(sp_cell);
             }//if
-            else 
+            else {
                sp_ptr = sp_cell.next();
+            }
          }//while
       }//else
 
@@ -1691,7 +1693,7 @@ void decrease_timed_affecting_doors() {
          if (--(dr_ptr->ticks_till_disolve) <= 0) {
             mudlog.log(DBG, "Gonna delete a door.\n");
             room_list[dr_ptr->in_room].DOORS.loseData(dr_ptr);
-            Sprintf(buf, "%S closes up and vanishes.\n", 
+            Sprintf(buf, "%pS closes up and vanishes.\n", 
                     name_of_door(*dr_ptr, ~0));
             buf.Cap();
             room_list[dr_ptr->in_room].showAllCept(buf);
@@ -2037,12 +2039,12 @@ void out_vehicles(const List<door*>& lst, critter& pc) {
          veh_ptr = static_cast<vehicle*>(room_ptr);
          if ( veh_ptr->isAtDestination() ) {
             if ( veh_ptr->veh_stopped.Strlen() ) {
-               Sprintf(buf,"       %S\n", &(veh_ptr->veh_stopped));
+               Sprintf(buf,"       %pS\n", &(veh_ptr->veh_stopped));
                pc.show(buf, HL_OBJ_LIST);
             }//has description
          } else {
             if ( veh_ptr->veh_moving.Strlen() ) {
-               Sprintf(buf,"       %S\n", &(veh_ptr->veh_moving));
+               Sprintf(buf,"       %pS\n", &(veh_ptr->veh_moving));
                pc.show(buf, HL_OBJ_LIST);
             }//has description
          }//not at destination
@@ -2095,12 +2097,12 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all) {
             }
 
             if (crit_ptr->isParalyzed()) {
-               Sprintf(buf, "     %S%S %s\n",
+               Sprintf(buf, "     %pS%pS %s\n",
                        name_of_crit(*crit_ptr, see_bits),
                        &(crit_ptr->short_desc), cstr(CS_PARALYZED, pc));
             }
             else {
-               Sprintf(buf, "     %S%S %s\n", 
+               Sprintf(buf, "     %pS%pS %s\n", 
                        name_of_crit(*crit_ptr, see_bits), 
                        &(crit_ptr->short_desc), crit_ptr->getPosnStr(pc));
             }
@@ -2131,23 +2133,23 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all) {
 
             if (pc.shouldShowVnums()) {
                if (crit_ptr->isParalyzed()) {
-                  Sprintf(buf, "     [%i]%P11 %S %s\n", crit_ptr->MOB_NUM,
+                  Sprintf(buf, "     [%i]%P11 %pS %s\n", crit_ptr->MOB_NUM,
                           name_of_crit(*crit_ptr, see_bits), cstr(CS_PARALYZED, pc));
                }
                else {
-                  Sprintf(buf, "     [%i]%P11 %S %s\n", crit_ptr->MOB_NUM,
+                  Sprintf(buf, "     [%i]%P11 %pS %s\n", crit_ptr->MOB_NUM,
                           name_of_crit(*crit_ptr, see_bits), 
                           crit_ptr->getPosnStr(pc));
                }
             }
             else {
                if (crit_ptr->isParalyzed()) {
-                  Sprintf(buf, "     %S %s\n",
+                  Sprintf(buf, "     %pS %s\n",
                           name_of_crit(*crit_ptr, see_bits),
                           cstr(CS_PARALYZED, pc));
                }
                else {
-                  Sprintf(buf, "     %S %s\n",
+                  Sprintf(buf, "     %pS %s\n",
                           name_of_crit(*crit_ptr, see_bits), 
                           crit_ptr->getPosnStr(pc));
                }
@@ -2178,21 +2180,21 @@ void out_crit(const List<critter*>& lst, critter& pc, int see_all) {
 
             if (pc.shouldShowVnums()) {
                if (crit_ptr->isParalyzed()) {
-                  Sprintf(buf, "     [%i]%P11 %S %s\n", crit_ptr->MOB_NUM,
+                  Sprintf(buf, "     [%i]%P11 %pS %s\n", crit_ptr->MOB_NUM,
                           name_of_crit(*crit_ptr, see_bits), cstr(CS_PARALYZED, pc));
                }
                else {
-                  Sprintf(buf, "     [%i]%P11 %S\n", crit_ptr->MOB_NUM,
+                  Sprintf(buf, "     [%i]%P11 %pS\n", crit_ptr->MOB_NUM,
                           &(crit_ptr->in_room_desc));
                }
             }//if vnums
             else {
                if (crit_ptr->isParalyzed()) {
-                  Sprintf(buf, "       %S %s\n",
+                  Sprintf(buf, "       %pS %s\n",
                           name_of_crit(*crit_ptr, see_bits), cstr(CS_PARALYZED, pc));
                }
                else {
-                  Sprintf(buf, "       %S\n", &(crit_ptr->in_room_desc));
+                  Sprintf(buf, "       %pS\n", &(crit_ptr->in_room_desc));
                }
             }
 
@@ -2274,7 +2276,7 @@ void out_inv(PtrList<object>& lst, critter& pc,
       NULL
    };
 
-   char *inv_names[] = {
+   const char *inv_names[] = {
       "[ Weapons ]",
       "[ Armor ]",
       "[ Consumables ]",
@@ -2404,11 +2406,11 @@ void out_inv(PtrList<object>& lst, critter& pc,
                if (pc.shouldShowVnums()) {
                   char tmp[50];
                   sprintf(tmp, "%p: ", obj_ptr);
-                  Sprintf(buf, "   %s [%i] %P11 %S%S", tmp, id_num,
+                  Sprintf(buf, "   %s [%i] %P11 %pS%pS", tmp, id_num,
                           &qty_str, &(obj_ptr->in_room_desc));
                }
                else {
-                  Sprintf(buf, "\t%S%S", &qty_str, &(obj_ptr->in_room_desc));
+                  Sprintf(buf, "\t%pS%pS", &qty_str, &(obj_ptr->in_room_desc));
                }
                buf.Cap();
 
@@ -2486,11 +2488,11 @@ void out_inv(PtrList<object>& lst, critter& pc,
                   if (pc.shouldShowVnums()) {
                      char tmp[50];
                      sprintf(tmp, "%p: ", obj_ptr);
-                     Sprintf(buf, "   %s [%i] %P11 %S%S", tmp, id_num,
+                     Sprintf(buf, "   %s [%i] %P11 %pS%pS", tmp, id_num,
                            &qty_str, long_name_of_obj(*obj_ptr, ~0));
                   }
                   else {
-                     Sprintf(buf, "\t%S%S", &qty_str,
+                     Sprintf(buf, "\t%pS%pS", &qty_str,
                            long_name_of_obj(*obj_ptr, ~0));
                   }
 
@@ -3317,7 +3319,7 @@ int verifydoors(int i_th, critter &pc) {
                         cur_rm_num)) ) {
                Sprintf(buf, "^c[^B%d^c:^B%d^c] ^N-^w-> ^c[^B%d^c:^B%d^c] "
                      "^r!--> ^c[^B%d^c:^B%d^c]^0\n"
-                     "^cLHS: ^C%S ^cRHS: ^C%S\n\n^0",
+                     "^cLHS: ^C%pS ^cRHS: ^C%pS\n\n^0",
                      rm_ptr->getZoneNum(), cur_rm_num,
                      dr_ptr->getDestRoom()->getZoneNum(), chk_rm_num,
                      rm_ptr->getZoneNum(), cur_rm_num,
@@ -3330,11 +3332,11 @@ int verifydoors(int i_th, critter &pc) {
 
                //warn us if the distances aren't the same in both directions
                if ( dr_ptr->distance != dst_dr_ptr->distance ) {
-                  Sprintf(buf, "^c[^B%d^c:^B%d^c:^B%S^c] ^m(^M%d^m)"
+                  Sprintf(buf, "^c[^B%d^c:^B%d^c:^B%pS^c] ^m(^M%d^m)"
                         "^w--> <--"
-                        "^m(^M%d^m) ^c[^B%d^c:^B%d^c:^B%S^c]"
+                        "^m(^M%d^m) ^c[^B%d^c:^B%d^c:^B%pS^c]"
                         " ^GDistance mismatch.\n"
-                        "^cLHS: ^C%S ^cRHS: ^C%S\n\n^0",
+                        "^cLHS: ^C%pS ^cRHS: ^C%pS\n\n^0",
                         rm_ptr->getZoneNum(), cur_rm_num, dr_dir,
                         dr_ptr->distance, dst_dr_ptr->distance,
                         dr_ptr->getDestRoom()->getZoneNum(),
@@ -3356,10 +3358,10 @@ int verifydoors(int i_th, critter &pc) {
                }
 
                if ( ! dir_okay ) {
-                  Sprintf(buf, "^c[^B%d^c:^B%d^c:^B%S^c] ^w<--> "
-                        "^c[^B%d^c:^B%d^c:^B%S^c] "
+                  Sprintf(buf, "^c[^B%d^c:^B%d^c:^B%pS^c] ^w<--> "
+                        "^c[^B%d^c:^B%d^c:^B%pS^c] "
                         "^GDirection mismatch.\n"
-                        "^cLHS: ^C%S ^cRHS: ^C%S\n\n^0",
+                        "^cLHS: ^C%pS ^cRHS: ^C%pS\n\n^0",
                         rm_ptr->getZoneNum(), cur_rm_num,
                         dr_dir,
                         dr_ptr->getDestRoom()->getZoneNum(), chk_rm_num,
@@ -3392,7 +3394,7 @@ int mia_mobs(int i_th, critter &pc) {
     for( i=0; i<NUMBER_OF_MOBS+1; i++ ) {
         if ( mob_list[i].isInUse() ) {
             if ( mob_list[i].mob->getCurInGame() == 0 ) {
-                Sprintf(buf,"^B[%d] %S^0\n", i, mob_list[i].getName());
+                Sprintf(buf,"^B[%d] %pS^0\n", i, mob_list[i].getName());
                 pc.show(buf);
             }
         }//isInUse()
@@ -3417,7 +3419,7 @@ int mia_objects(int i_th, critter &pc) {
     for( i=0; i<NUMBER_OF_ITEMS+1; i++ ) {
         if ( obj_list[i].isInUse() ) {
             if ( obj_list[i].getCurInGame() == 0 ) {
-                Sprintf(buf,"^B[%d] %S^0\n", i, obj_list[i].getLongName());
+                Sprintf(buf,"^B[%d] %pS^0\n", i, obj_list[i].getLongName());
                 pc.show(buf);
             }
         }//isInUse()

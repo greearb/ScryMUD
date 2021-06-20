@@ -41,7 +41,7 @@ void lose_fly(critter& pc, short do_msg = FALSE);
 void unpetrify(critter& pc, short do_msg = FALSE);
 void show_stat_affects(object& obj, critter& pc);
 
-critter* check_for_diversions(critter& pc, char* tests, critter& agg);
+critter* check_for_diversions(critter& pc, const char* tests, critter& agg);
 
 /** Tests this performs:  B(!pc in_battle)  C(owns aux_crit) F(frozen)
  *                        G(!gagged) I(is immort) K(know spell), M(has mana), 
@@ -168,7 +168,7 @@ String transform(const String &input,
       const PtrList<String> &fragpats, const PtrList<String> &fragreps);
 
 
-critter* get_target_mob(int i_th, const String* target, critter& pc, char* diversions); //self explainatory
+critter* get_target_mob(int i_th, const String* target, critter& pc, const char* diversions); //self explainatory
 object* get_target_obj(int i_th, const String* target, critter& pc);
 door* get_target_door(int i_th, const String* target, critter& pc);
 room* get_target_room(critter& pc);

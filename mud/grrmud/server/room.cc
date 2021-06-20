@@ -2158,10 +2158,10 @@ void room::doPoofOut(critter& pc) {
    while ((ptr = cll.next())) {
       if ((&pc != ptr) && ptr->canDetect(pc) && !ptr->isSleeping()) {
          if (ptr->isImmort() && (ptr->IMM_LEVEL >= pc.IMM_LEVEL)) {
-            Sprintf(buf, "[OUT: %S] %S\n", pc.getName(), &(pc.getPoofout()));
+            Sprintf(buf, "[OUT: %pS] %pS\n", pc.getName(), &(pc.getPoofout()));
          }
          else {
-            Sprintf(buf, "%S\n", &(pc.getPoofout()));
+            Sprintf(buf, "%pS\n", &(pc.getPoofout()));
          }
          ptr->show(buf);
       }
@@ -2220,7 +2220,7 @@ int room::doScan(critter& pc) {
                   }
 
                   if (d(1, a) > d(1, b)) {                     
-                     Sprintf(buf, "     %S%P25 %S.\n", dptr->getDirection(),
+                     Sprintf(buf, "     %pS%P25 %pS.\n", dptr->getDirection(),
                              ptr->getName());
                      pc.show(buf);
                   }//if
@@ -2239,10 +2239,10 @@ void room::doPoofIn(critter& pc) {
    while ((ptr = cll.next())) {
       if ((&pc != ptr) && !ptr->isSleeping() && ptr->canDetect(pc)) {
          if (ptr->isImmort() && (ptr->IMM_LEVEL >= pc.IMM_LEVEL)) {
-            Sprintf(buf, "[IN: %S] %S\n", pc.getName(), &(pc.getPoofin()));
+            Sprintf(buf, "[IN: %pS] %pS\n", pc.getName(), &(pc.getPoofin()));
          }
          else {
-            Sprintf(buf, "%S\n", &(pc.getPoofin()));
+            Sprintf(buf, "%pS\n", &(pc.getPoofin()));
          }
          
          ptr->show(buf);
@@ -2708,7 +2708,7 @@ void room::listScripts(critter& pc) {
    while ((ptr = cll.next())) {
       found_one = TRUE;
       tmp = ptr->toStringBrief(FALSE, 0, ENTITY_ROOM, idx);
-      Sprintf(buf, "[%i] %S\n", idx, &(tmp));
+      Sprintf(buf, "[%i] %pS\n", idx, &(tmp));
       pc.show(buf);
       idx++;
    }
@@ -2813,7 +2813,7 @@ int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
             if (mudlog.ofLevel(DBG)) {
                mudlog << endl << "buf -:" << buf << ":-" << endl << endl;
             }
-            Sprintf(buf2, "%S %S", pc.getName(ptr->SEE_BIT), &buf);
+            Sprintf(buf2, "%pS %pS", pc.getName(ptr->SEE_BIT), &buf);
             buf2.Cap();
             ptr->show(buf2);
          }//if

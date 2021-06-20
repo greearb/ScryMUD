@@ -107,7 +107,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
    }//if
 
    if (wand->CHARGES <= 0) {
-      Sprintf(buf, "Your %S seems quite devoid of energies.\n",
+      Sprintf(buf, "Your %pS seems quite devoid of energies.\n",
               single_obj_name(*wand, pc.SEE_BIT));
       show(buf, pc);
       return -1;
@@ -124,7 +124,7 @@ int use(int i_th, String* wand_name, int j_th, String* target,
 
                 /* wand is ready, check for target */
 
-   Sprintf(buf, "You clench %S and try to remember how to trigger it.\n",
+   Sprintf(buf, "You clench %pS and try to remember how to trigger it.\n",
            long_name_of_obj(*wand, pc.SEE_BIT));
    show(buf, pc);
 
@@ -333,7 +333,7 @@ int quaff(int i_th, const String* item, critter& pc) { //for wands
       return -1;
    }//if
 
-   Sprintf(buf, "You quaff %S.\n",
+   Sprintf(buf, "You quaff %pS.\n",
            long_name_of_obj(*potion, pc.SEE_BIT));
    show(buf, pc);
 
@@ -459,7 +459,7 @@ int recite(int i_th, const String* item, int j_th, const String* vict,
       return -1;
    }
 
-   Sprintf(buf, "You unroll %S and begin to read...\n",
+   Sprintf(buf, "You unroll %pS and begin to read...\n",
            long_name_of_obj(*scroll, pc.SEE_BIT));
    show(buf, pc);
 
@@ -665,7 +665,7 @@ int idea(const String& str, critter& pc) {
       return -1;
    }//if
 
-   Sprintf(buf, "%S %S, room %i:  %S\n\n", &(getCurTime()), name_of_crit(pc, ~0),
+   Sprintf(buf, "%pS %pS, room %i:  %pS\n\n", &(getCurTime()), name_of_crit(pc, ~0),
            pc.getCurRoomNum(), &str);
    idea_log << buf << flush;
 
@@ -689,7 +689,7 @@ int bug(String& str, critter& pc) {
 
    parse_for_max_80(str);
 
-   Sprintf(buf, "%S %S, room %i:  %S\n\n", &(getCurTime()), name_of_crit(pc, ~0),
+   Sprintf(buf, "%pS %pS, room %i:  %pS\n\n", &(getCurTime()), name_of_crit(pc, ~0),
            pc.getCurRoomNum(), &str);
    bug_log << buf << flush;
 
@@ -967,7 +967,7 @@ int oclone(int i_th, const String* item, critter& pc) {
          return -1;
       }
       obj_list[new_obj] = obj_list[obj_ptr->OBJ_NUM];
-      Sprintf(buf, "CLONE OF:  %S.", obj_ptr->names.peekFront());
+      Sprintf(buf, "CLONE OF:  %pS.", obj_ptr->names.peekFront());
       obj_list[new_obj].in_room_desc = buf;
       obj_list[new_obj].short_desc = buf;
       obj_list[new_obj].OBJ_NUM = new_obj;
@@ -1087,9 +1087,9 @@ int remort(int i_th, const String* v, const String* new_race,
                pc.show("INFO: That person is already of that race, continuing.\n");
             }
             vict->setRace(race);
-            Sprintf(buf, "Your race has been changed to: %S.\n", new_race);
+            Sprintf(buf, "Your race has been changed to: %pS.\n", new_race);
             vict->show(buf);
-            Sprintf(buf, "%S's race has been changed to: %S.\n",
+            Sprintf(buf, "%pS's race has been changed to: %pS.\n",
                     vict->getName(pc), new_race);
             pc.show(buf);
             break;
@@ -1434,7 +1434,7 @@ int mclone(int i_th, const String* item, critter& pc) {
    }//if
    
    mob_list[new_num] = mob_list[crit_ptr->MOB_NUM]; //make a copy
-   Sprintf(buf, "CLONE OF:  %S.", crit_ptr->names.peekFront());
+   Sprintf(buf, "CLONE OF:  %pS.", crit_ptr->names.peekFront());
    mob_list[new_num].in_room_desc = buf;
    mob_list[new_num].short_desc = buf;
    mob_list[new_num].setIdNum(new_num);
@@ -1582,11 +1582,11 @@ int flee(critter& pc, int& is_dead) {
       if ((crit_ptr = pc.IS_FIGHTING.peekFront())) { //ie in battle
          if (crit_ptr->mob && !crit_ptr->isStunned()) { //if its a mob
             if (crit_ptr->MOB_FLAGS.get(10) && (d(1,100) > 12)) { //if !flee
-               Sprintf(buf, "%S prevents you from fleeing.\n",
+               Sprintf(buf, "%pS prevents you from fleeing.\n",
                        name_of_crit(*crit_ptr, pc.SEE_BIT));
                buf.Cap();
                show(buf, pc);
-               Sprintf(buf, "prevents %S from fleeing!!\n",
+               Sprintf(buf, "prevents %pS from fleeing!!\n",
                        name_of_crit(pc, ~0));
                emote(buf, *crit_ptr, ROOM, TRUE, &pc);
                pc.PAUSE = 1;
@@ -1638,7 +1638,7 @@ int flee(critter& pc, int& is_dead) {
             }//while
             
             show("You try to flee the scene!\n", pc);
-            Sprintf(buf, "tries to flee %S!", 
+            Sprintf(buf, "tries to flee %pS!", 
                     direction_of_door(*dr_ptr));
             emote(buf, pc, ROOM, FALSE);
 
@@ -1694,7 +1694,7 @@ int flee(critter& pc, int& is_dead) {
             }//while
 
             show("You try to flee the scene!\n", pc);
-            Sprintf(buf, "tries to flee %S!", 
+            Sprintf(buf, "tries to flee %pS!", 
                     direction_of_door(*dr_ptr));
             emote(buf, pc, ROOM, FALSE);
             move(pc, 1, *( dr_ptr->dr_data->names.peekFront() ),
@@ -1739,11 +1739,11 @@ int slay(int i_th, const String* vict, critter& pc) {
      return -1;
    }//if
 
-   Sprintf(buf, "You slay %S.\n", name_of_crit(*ptr, pc.SEE_BIT));
+   Sprintf(buf, "You slay %pS.\n", name_of_crit(*ptr, pc.SEE_BIT));
    show(buf, pc);
-   Sprintf(buf, "%S slays you!!\n", name_of_crit(pc, ptr->SEE_BIT));
+   Sprintf(buf, "%pS slays you!!\n", name_of_crit(pc, ptr->SEE_BIT));
    show(buf, *ptr);
-   Sprintf(buf, "%S slays %S!\n", name_of_crit(pc, ~0), 
+   Sprintf(buf, "%pS slays %pS!\n", name_of_crit(pc, ~0), 
            name_of_crit(*ptr, ~0));
    show_all_but_2(pc, *ptr, buf, ROOM);
    
@@ -1876,12 +1876,12 @@ int critter::doFollow(critter& vict, int do_msg) {
       vict.FOLLOWERS.gainData(this);
       
       if (do_msg) {
-         Sprintf(buf, "%S now follows you.\n", getName(vict.SEE_BIT));
+         Sprintf(buf, "%pS now follows you.\n", getName(vict.SEE_BIT));
          buf.Cap();
          vict.show(buf);
       }//if do_msg
       
-      Sprintf(buf, "You now follow %S.\n", vict.getName(SEE_BIT));
+      Sprintf(buf, "You now follow %pS.\n", vict.getName(SEE_BIT));
       show(buf);
       
       String cmd = "follow";
@@ -1915,7 +1915,7 @@ int group(int i_th, const String* vict, critter& pc) {
       pc.GROUPEES.head(cll);
 
       while ((ptr = cll.next())) {
-         Sprintf(buf, "%S%P30 %s(%i)%P45 %i/%i %P54 %i/%i %P66 %i/%i\n",
+         Sprintf(buf, "%pS%P30 %s(%i)%P45 %i/%i %P54 %i/%i %P66 %i/%i\n",
                  name_of_crit(*ptr, pc.SEE_BIT), class_of_crit(*ptr), 
                  ptr->getLevel(), ptr->getHP(), ptr->getHP_MAX(),
                  ptr->getMana(), ptr->getManaMax(), ptr->getMov(), ptr->getMovMax());
@@ -1942,21 +1942,21 @@ int group(int i_th, const String* vict, critter& pc) {
       pc.FOLLOWERS.head(cll);
       while ((ptr = cll.next())) {
          if (ptr->isTailing() || pc.isNoHassle()) {
-            Sprintf(buf, "Attempt to group you by %S failed because you are tailing or !hassle.\n",
+            Sprintf(buf, "Attempt to group you by %pS failed because you are tailing or !hassle.\n",
                     pc.getName(*ptr));
             ptr->show(buf);
             continue; //fail silently
          }//if !hassle or tailing, can't be grouped
 
          if (! ptr->GROUPEES.isEmpty()) {
-            Sprintf(buf, "You can't enroll %S because they are already in a group.\n", ptr->getName(pc));
+            Sprintf(buf, "You can't enroll %pS because they are already in a group.\n", ptr->getName(pc));
             pc.show(buf);
          }
          else {
             if (! pc.GROUPEES.haveData(ptr)) {
                pc.GROUPEES.gainData(ptr);
                show("You are now part of the group.\n", *ptr);
-               Sprintf(buf, "%S is now part of the group.\n", ptr->getName(pc));
+               Sprintf(buf, "%pS is now part of the group.\n", ptr->getName(pc));
                buf.Cap();
                show(buf, pc);
                
@@ -1984,7 +1984,7 @@ int group(int i_th, const String* vict, critter& pc) {
       }//
       
       if (pc.GROUPEES.haveData(ptr)) {
-         Sprintf(buf, "%S is already in your group.\n", ptr->getName());
+         Sprintf(buf, "%pS is already in your group.\n", ptr->getName());
          buf.Cap();
          pc.show(buf);
          return 0;
@@ -1994,7 +1994,7 @@ int group(int i_th, const String* vict, critter& pc) {
 
       pc.GROUPEES.gainData(ptr);
       show("You are now part of the group.\n", *ptr);
-      Sprintf(buf, "%S joins your group.\n", ptr->getName());
+      Sprintf(buf, "%pS joins your group.\n", ptr->getName());
       buf.Cap();
       pc.show(buf);
 
@@ -2083,7 +2083,7 @@ int order(String* str, critter& pc) {
                show("Ok.\n", pc);
             }//if
             else {
-             Sprintf(buf, "%S looks at you and smirks at your suggestion.\n",
+             Sprintf(buf, "%pS looks at you and smirks at your suggestion.\n",
                      name_of_crit(*ptr, pc.SEE_BIT));
              buf.Cap();
              show(buf, pc);
@@ -2161,7 +2161,7 @@ int force(String* str, critter& pc) {
           return -1;
         }//if
 
-        Sprintf(buf, "%S has forced you to: %S\n", 
+        Sprintf(buf, "%pS has forced you to: %pS\n", 
                 name_of_crit(pc, ptr->SEE_BIT), str);
         show(buf, *ptr);
         ptr->processInput(*str, TRUE, TRUE);
@@ -2210,7 +2210,7 @@ int force_all(String* str, critter& pc) {
    while ((ptr = cll.next())) {
       if (ptr->MODE == MODE_NORMAL) {
          if (!(ptr->pc->imm_data && (ptr->IMM_LEVEL >= pc.IMM_LEVEL))) {
-            Sprintf(buf, "%S has forced you to: %S\n", 
+            Sprintf(buf, "%pS has forced you to: %pS\n", 
                     name_of_crit(pc, ptr->SEE_BIT), str);
             show(buf, *ptr);
             String tmpstr = *str;
@@ -2306,7 +2306,7 @@ int do_tell(critter& pc, const char* message, critter& targ,
    }
    */
 
-   Sprintf(buf, "%S%S tells you, '%S'\n%S",
+   Sprintf(buf, "%pS%pS tells you, '%pS'\n%pS",
            &tag, name_of_crit(pc, targ.SEE_BIT), &msg, &untag);
    buf.setCharAt(tag.Strlen(), toupper(buf[tag.Strlen()]));
    targ.show(buf, HL_TELL);
@@ -2332,7 +2332,7 @@ int do_tell(critter& pc, const char* message, critter& targ,
          untag = "";
       }
 
-      Sprintf(buf, "%SYou tell %S, '%S'\n%S",
+      Sprintf(buf, "%pSYou tell %pS, '%pS'\n%pS",
               &tag, name_of_crit(targ, pc.SEE_BIT), &msg, &untag);
       pc.show(buf, HL_TELL);
    }//if
@@ -2527,7 +2527,7 @@ int do_actual_junk(int do_msg, object* obj_ptr, critter& pc) {
    drop_eq_effects(*obj_ptr, pc, FALSE, TRUE);
 
    if (do_msg) {
-      Sprintf(buf, "You junk %S.\n", &(obj_ptr->short_desc));
+      Sprintf(buf, "You junk %pS.\n", &(obj_ptr->short_desc));
       show(buf, pc);
    }//if
    pc.GOLD += ((obj_ptr->PRICE / 50) + 1);
@@ -2705,7 +2705,7 @@ int sockets(critter& pc) {
    show("Verbose list of players:\n", pc);
 
    while ((ptr = cll.next())) {
-      Sprintf(buf, "%S(%i)%P15 %S%P35 %S\n", name_of_crit(*ptr, pc.SEE_BIT),
+      Sprintf(buf, "%pS(%i)%P15 %pS%P35 %pS\n", name_of_crit(*ptr, pc.SEE_BIT),
               ptr->LEVEL, &(ptr->pc->host), &(ptr->short_desc));
       pc.show(buf);
    }//while
@@ -2725,7 +2725,7 @@ int ldwho(critter& pc) {
    show("These people are link dead.\n", pc);
 
    while ((ptr = cll.next())) {
-      Sprintf(buf, "%S%P20%s(%i)%P35%S Last IP: %S\n", name_of_crit(*ptr, ~0),
+      Sprintf(buf, "%pS%P20%s(%i)%P35%pS Last IP: %pS\n", name_of_crit(*ptr, ~0),
               get_class_name(ptr->CLASS), ptr->LEVEL, 
               &(ptr->short_desc), ptr->getHostName());
       show(buf, pc);

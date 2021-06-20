@@ -83,7 +83,7 @@ ServerConfig::ServerConfig() {
    resave_pfiles = false;
 }//ServerConfig
 
-void ServerConfig::read(char* filename) {
+void ServerConfig::read(const char* filename) {
    String key(20);
    String val(10);
    ifstream file(filename);
@@ -311,7 +311,7 @@ void ServerConfig::read(char* filename) {
    }
 }
 
-void ServerConfig::readDynamic(char* filename) {
+void ServerConfig::readDynamic(const char* filename) {
    String key(20);
    String val(10);
    ifstream file(filename);
@@ -344,7 +344,7 @@ void ServerConfig::readDynamic(char* filename) {
    }
 }
 
-void ServerConfig::write(char* filename) {
+void ServerConfig::write(const char* filename) {
    ofstream file(filename);
 
    if (!file) {
@@ -460,7 +460,7 @@ void ServerConfig::write(char* filename) {
    }
 }
 
-void ServerConfig::writeDynamic(char* filename) {
+void ServerConfig::writeDynamic(const char* filename) {
    ofstream file(filename);
 
    if (!file) {

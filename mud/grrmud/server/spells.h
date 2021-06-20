@@ -113,20 +113,21 @@ class Spell
 {
 	private:
 //	virtual int count; //this isn't used for anything atm
-	public:
+public:
    critter* agg; // caster
    int clvl; //casting lvl
    int duration; //short ticks or long ticks is defined by what list is in
-	int spell_num; //slist number
-	int spell_mana; // mana cost
-	int pause; // pause from casting
-	char* name; //duh
-   char* msg_lost_con;// lost concentration message
+   int spell_num; //slist number
+   int spell_mana; // mana cost
+   int pause; // pause from casting
+   const char* name; //duh
+   const char* msg_lost_con;// lost concentration message
    
-	char* msg_no_target; //no target message
-	char* actions;// string passed to ok_to_do_action
-	char* diversions;// string passed to check_for_diversions
-	int canned;
+   const char* msg_no_target; //no target message
+   const char* actions;// string passed to ok_to_do_action
+   const char* diversions;// string passed to check_for_diversions
+
+   int canned;
 
 //	virtual void onCast(int i_th, const String* vict, critter& pc, int is_canned = FALSE, 
 //                  int lvl = 0); // checks to see if the spell can be cast, if the target is correct, and if the casting fails
@@ -142,13 +143,13 @@ class Spell
 	
 	//virtual int getSpellTarget(int i_th, const String* target, critter& pc);	
  
-	Spell() {}// gets rid of an error message in g++
+   Spell();
         virtual ~Spell() {};
 	
-	virtual void setupSpell(int spelln, int spellp, char* act, char* divers,
-                           char* spell_name,
-			                  char* no_target,
-			                  char lost_con[] = "obviously forgot part of the spell.\n");
+	virtual void setupSpell(int spelln, int spellp, const char* act, const char* divers,
+                                const char* spell_name,
+                                const char* no_target,
+                                const char lost_con[] = "obviously forgot part of the spell.\n");
 
 	
 	//okToCast(int i_th, const String* dr, critter& pccritter* vict, const char* flags, critter& pc, 

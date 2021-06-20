@@ -535,8 +535,7 @@ int main(int argc, char** argv) {
 
    BOOT_TIME = time(NULL);
 
-   cout << "ScryMUD version: " << BuildInfo::getVersion() 
-      << " (" << BuildInfo::getRevision() << ")" << endl;
+   cout << "ScryMUD version: " << BuildInfo::getVersion() << endl;
    cout << "Built on:        " << BuildInfo::getBuildDate() << endl;
    cout << "On machine:      " << BuildInfo::getBuildMachine() << endl;
    cout << "By:              " << BuildInfo::getBuilder() << endl << endl;
@@ -1043,7 +1042,7 @@ void game_loop(int s)  {
                if ((snooper = pc_ptr->SNOOPED_BY)) {
                   mudlog.log(TRC, "Within snoop if\n");
                   String buf2(100);
-                  Sprintf(buf2, "SNOOP_IN: %S:  %S\n",
+                  Sprintf(buf2, "SNOOP_IN: %pS:  %pS\n",
                         pc_ptr->getName(snooper->SEE_BIT), pc_ptr->getInput());
                   snooper->show(buf2);
                }//if snoop
@@ -1456,7 +1455,7 @@ int critter::createWithDescriptor(int s) {
    newd->setDescriptor(desc);
    
    if (sockets_connected > avail_descs) {
-      char* str = "Sorry, ScryMUD is full, try again later!\n\r";
+      const char* str = "Sorry, ScryMUD is full, try again later!\n\r";
       write(desc, str, strlen(str)); 
       mudlog.log(WRN, "WARNING:  the mud was full.\n");
       close(desc);
@@ -1492,7 +1491,7 @@ int critter::createWithDescriptor(int s) {
       mudlog << "Got host:  " << newd->pc->host << endl;
 
    if (is_banned(newd->pc->host)) {
-      char* str =
+      const char* str =
 "Your site has been banned.  There are three possible causes for this:\n\n\
 You did something that is very strictly against the rules.\n\n\
 Someone from your site did something that is very strictly against the rules,\n\
@@ -1505,7 +1504,7 @@ the ban removed, please see the ScryMUD web forums to discuss the matter.";
 
       write(desc, str, strlen(str)); 
       close(desc);
-      Sprintf(buf2, "WARNING:  Connection attempt denied from [%S]", 
+      Sprintf(buf2, "WARNING:  Connection attempt denied from [%pS]", 
               &(newd->pc->host));
       mudlog.log(WRN, buf2);
       delete newd->pc->p_handler;
@@ -1825,7 +1824,7 @@ int critter::doGoLinkdead() {
    }
 
    if (SNOOPED_BY) {
-      Sprintf(buf, "%S (SNOOPEE) has lost link.\n", getName());
+      Sprintf(buf, "%pS (SNOOPEE) has lost link.\n", getName());
       buf.Cap();
       SNOOPED_BY->show(buf);
    }//if
@@ -1841,7 +1840,7 @@ int critter::doGoLinkdead() {
          getName());
 
    if (MASTER) {
-      Sprintf(buf, "%S has lost link.\n", getName());
+      Sprintf(buf, "%pS has lost link.\n", getName());
       buf.Cap();
       MASTER->show(buf);
    }//if

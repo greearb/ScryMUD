@@ -164,7 +164,7 @@ public:
       return 0;
    }
 
-   int cpFileTo(char* new_fname) {
+   int cpFileTo(const char* new_fname) {
       flush();
       char buf[strlen(filename) + strlen(new_fname) + 100];
       sprintf(buf, "cp %s %s", filename, new_fname);

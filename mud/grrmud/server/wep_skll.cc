@@ -99,15 +99,15 @@ int do_circle(critter& vict, critter& pc) {
          if (!(d(1,100) < 
                d(1, (int)(((float)(get_percent_lrnd(DUAL_WIELD_SKILL_NUM,pc)) * 
                     (float)(pc.DEX) / 10.0))))) {
-            Sprintf(buf, "You whirl just in time to avoid %S's blade in your back.\n", 
+            Sprintf(buf, "You whirl just in time to avoid %pS's blade in your back.\n", 
                  name_of_crit(pc, vict.SEE_BIT));
             show(buf, vict);
 
-            Sprintf(buf, "You nick your forearm trying to circle %S.\n",
+            Sprintf(buf, "You nick your forearm trying to circle %pS.\n",
                  name_of_crit(vict, pc.SEE_BIT));
             show(buf, pc);
 
-            Sprintf(buf, "avoids %S's attempt to circle around %s.",
+            Sprintf(buf, "avoids %pS's attempt to circle around %s.",
                     name_of_crit(pc, ~0), get_his_her(vict));
             emote(buf, vict, ROOM, TRUE, &pc);
 
@@ -127,37 +127,37 @@ int do_circle(critter& vict, critter& pc) {
       if (vict.HP < 0) { //do fatality
          show("You collapse as a blade enters your back!\n", vict);
          Sprintf(buf, 
-        "places %S in %S's back, producing a lot of blood and a corpse!\n",
+        "places %pS in %pS's back, producing a lot of blood and a corpse!\n",
                  weap_name, name_of_crit(vict, ~0));
          emote(buf, pc, ROOM, TRUE, &vict);
-         Sprintf(buf, "%S's body goes limp in your arms.\n", 
+         Sprintf(buf, "%pS's body goes limp in your arms.\n", 
                  name_of_crit(vict, pc.SEE_BIT));
          show(buf, pc);
          do_fatality = TRUE;
       }//if fatality
       else { //no fatality
-         Sprintf(buf, "%S circles you and places a blade in your back!\n", 
+         Sprintf(buf, "%pS circles you and places a blade in your back!\n", 
                  name_of_crit(pc, vict.SEE_BIT));
          show(buf, vict);
-         Sprintf(buf, "circles and places %S in %S's back.",
+         Sprintf(buf, "circles and places %pS in %pS's back.",
                  weap_name, name_of_crit(vict, ~0));
          emote(buf, pc, ROOM, TRUE, &vict);
-         Sprintf(buf, "You circle and place %S in %S's back.\n", 
+         Sprintf(buf, "You circle and place %pS in %pS's back.\n", 
                  weap_name, name_of_crit(vict, pc.SEE_BIT));
          show(buf, pc);
       }//else
    }//if hit
    else {  //missed
       Sprintf(buf, 
-        "You whirl just in time to avoid %S's blade in your back.\n", 
+        "You whirl just in time to avoid %pS's blade in your back.\n", 
                  name_of_crit(pc, vict.SEE_BIT));
       show(buf, vict);
 
-      Sprintf(buf, "You nick your forearm trying to circle %S.\n",
+      Sprintf(buf, "You nick your forearm trying to circle %pS.\n",
                  name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
 
-      Sprintf(buf, "avoids %S's attempt to circle around %s.",
+      Sprintf(buf, "avoids %pS's attempt to circle around %s.",
               name_of_crit(pc, ~0), get_him_her(vict));
       emote(buf, vict, ROOM, TRUE, &pc);
    }//else
@@ -261,22 +261,22 @@ int do_backstab(critter& vict, critter& pc) {
       if (vict.HP < 0) { //do fatality
          show("You collapse as a blade enters your back!\n", vict);
          Sprintf(buf, 
-        "places %S in %S's back, producing a lot of blood and a corpse!\n",
+        "places %pS in %pS's back, producing a lot of blood and a corpse!\n",
                  weap_name, name_of_crit(vict, ~0));
          emote(buf, pc, ROOM, TRUE, &vict);
-         Sprintf(buf, "%S's body goes limp in your arms.\n", 
+         Sprintf(buf, "%pS's body goes limp in your arms.\n", 
                  name_of_crit(vict, pc.SEE_BIT));
          show(buf, pc);
          do_fatality = TRUE;
       }//if fatality
       else { //no fatality
-         Sprintf(buf, "%S places a blade in your back!\n", 
+         Sprintf(buf, "%pS places a blade in your back!\n", 
                  name_of_crit(pc, vict.SEE_BIT));
          show(buf, vict);
-         Sprintf(buf, "places %S in %S's back.",
+         Sprintf(buf, "places %pS in %pS's back.",
                  weap_name, name_of_crit(vict, ~0));
          emote(buf, pc, ROOM, TRUE, &vict);
-         Sprintf(buf, "You place %S in %S's back.\n", 
+         Sprintf(buf, "You place %pS in %pS's back.\n", 
                  weap_name, name_of_crit(vict, pc.SEE_BIT));
          show(buf, pc);
       }//else
@@ -286,15 +286,15 @@ int do_backstab(critter& vict, critter& pc) {
            pc.PAUSE = 1;
 
            Sprintf(buf, 
-                           "You whirl just in time to avoid %S's blade in your back.\n", 
+                           "You whirl just in time to avoid %pS's blade in your back.\n", 
                            name_of_crit(pc, vict.SEE_BIT));
            show(buf, vict);
 
-           Sprintf(buf, "You nearly cut your finger off trying to backstab %S.\n",
+           Sprintf(buf, "You nearly cut your finger off trying to backstab %pS.\n",
                            name_of_crit(vict, pc.SEE_BIT));
            show(buf, pc);
 
-           Sprintf(buf, "avoids %S's attempt to backstab %s.",
+           Sprintf(buf, "avoids %pS's attempt to backstab %s.",
                            name_of_crit(pc, ~0), get_him_her(vict));
            emote(buf, vict, ROOM, TRUE, &pc);
    }//else
@@ -373,14 +373,14 @@ int do_disarm(critter& vict, critter& pc) {
    vict.PAUSE = 1;
    
    if (!missed && skill_did_hit(pc, DISARM_SKILL_NUM, vict)) { 
-      Sprintf(buf, "%S disarms you!!\n",
+      Sprintf(buf, "%pS disarms you!!\n",
               name_of_crit(pc, vict.SEE_BIT));
       buf.Cap();
       show(buf, vict);
-      Sprintf(buf, "deftly disarms %S!!",
+      Sprintf(buf, "deftly disarms %pS!!",
               name_of_crit(vict, ~0));
       emote(buf, pc, ROOM, TRUE, &vict);
-      Sprintf(buf, "You deftly disarm %S.\n",
+      Sprintf(buf, "You deftly disarm %pS.\n",
               name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
       
@@ -390,15 +390,15 @@ int do_disarm(critter& vict, critter& pc) {
    }//if
    else {  //missed
       Sprintf(buf, 
-              "You keep a tight hold on your weapon as %S tries to disarm you.\n", 
+              "You keep a tight hold on your weapon as %pS tries to disarm you.\n", 
               name_of_crit(pc, vict.SEE_BIT));
       show(buf, vict);
       
-      Sprintf(buf, "You fail to disarm %S.\n",
+      Sprintf(buf, "You fail to disarm %pS.\n",
               name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
       
-      Sprintf(buf, "fails to disarm %S!",
+      Sprintf(buf, "fails to disarm %pS!",
               name_of_crit(vict, ~0));
       emote(buf, pc, ROOM, TRUE, &vict);
    }//else

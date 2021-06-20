@@ -220,8 +220,8 @@ int color(String& var, String& val_rough, critter& pc) {
       ln = max(var.Strlen(), 3);
 
       if (var.Strlen() == 0) {
-         Sprintf(buf, "%Ssay %Syell %Sgossip %Stell %Sdesc %Sobjects\n"
-                      "%Scritters %Sbattle %Sroom name %Sdefault\n",
+         Sprintf(buf, "%pSsay %pSyell %pSgossip %pStell %pSdesc %pSobjects\n"
+                      "%pScritters %pSbattle %pSroom name %pSdefault\n",
                       &(pc.pc->say_str), &(pc.pc->yell_str), &(pc.pc->gos_str),
                       &(pc.pc->tell_str), &(pc.pc->desc_str),
                       &(pc.pc->obj_list_str), &(pc.pc->mob_list_str),
@@ -397,7 +397,7 @@ int do_list_scripts(critter& targ, critter& pc) {
    while ((ptr = cll.next())) {
       found_one = TRUE;
       tmp = ptr->toStringBrief(FALSE, 0, ENTITY_CRITTER, idx);
-      Sprintf(buf, "[%i] %S\n", idx, &(tmp));
+      Sprintf(buf, "[%i] %pS\n", idx, &(tmp));
       pc.show(buf);
       idx++;
    }
@@ -497,7 +497,7 @@ int stat_script(int mob_num, int script_idx, critter& pc) {
       return 0;
    }//if
 
-   Sprintf(buf, "Mob: %S does not have a script of index: %i",
+   Sprintf(buf, "Mob: %pS does not have a script of index: %i",
            mob_list[mob_num].getName(), script_idx);
    show(buf, pc);
    return -1;
@@ -809,7 +809,7 @@ int add_perm_inv(int obj_num, int i_th, const String* name,
           ptr->mob->proc_data->sh_data) {
          /* is a shopkeeper */
          ptr->PERM_INV.append(&(obj_list[obj_num]));
-         Sprintf(buf, "%S added to %S's permanent (shop) inventory.\n",
+         Sprintf(buf, "%pS added to %pS's permanent (shop) inventory.\n",
                  long_name_of_obj(obj_list[obj_num], ~0),
                  name_of_crit(*ptr, ~0));
          show(buf, pc);
@@ -817,7 +817,7 @@ int add_perm_inv(int obj_num, int i_th, const String* name,
       }//if
       else {
          ptr->gainInv(&(obj_list[obj_num]));
-         Sprintf(buf, "%S added to %S's regular inventory.\n",
+         Sprintf(buf, "%pS added to %pS's regular inventory.\n",
                  long_name_of_obj(obj_list[obj_num], ~0),
                  name_of_crit(*ptr, ~0));
          show(buf, pc);
@@ -833,7 +833,7 @@ int add_perm_inv(int obj_num, int i_th, const String* name,
       if (optr) {
          if (optr->bag) {
             optr->gainInv(&(obj_list[obj_num])); 
-            Sprintf(buf, "%S added to %S's inventory.\n",
+            Sprintf(buf, "%pS added to %pS's inventory.\n",
                     long_name_of_obj(obj_list[obj_num], ~0),
                     long_name_of_obj(*optr, ~0));
             show(buf, pc);
@@ -884,7 +884,7 @@ int rem_perm_inv(int j_th, const String* obj_name, int i_th,
                                        pc.SEE_BIT, ROOM))) {
             ptr->PERM_INV.loseData(inv_obj);
             Sprintf(buf,
-                    "%S [%d] deleted from %S's permanent (shop) inventory.\n",
+                    "%pS [%d] deleted from %pS's permanent (shop) inventory.\n",
                     long_name_of_obj(*inv_obj, ~0), inv_obj->getIdNum(),
                     name_of_crit(*ptr, ~0));
             show(buf, pc);
@@ -901,7 +901,7 @@ int rem_perm_inv(int j_th, const String* obj_name, int i_th,
          if ((inv_obj = have_obj_named(ptr->inv, j_th, obj_name, 
                                        pc.SEE_BIT, ROOM))) {
             ptr->loseInv(inv_obj);
-            Sprintf(buf, "%S deleted from %S's inventory.\n",
+            Sprintf(buf, "%pS deleted from %pS's inventory.\n",
                     long_name_of_obj(*inv_obj, ~0),
                     name_of_crit(*ptr, ~0));
             show(buf, pc);
@@ -925,7 +925,7 @@ int rem_perm_inv(int j_th, const String* obj_name, int i_th,
          if ((inv_obj = have_obj_named(optr->inv, j_th, obj_name, 
                                        pc.SEE_BIT, ROOM))) {
             optr->gainInv(inv_obj);
-            Sprintf(buf, "%S deleted from %S's inventory.\n",
+            Sprintf(buf, "%pS deleted from %pS's inventory.\n",
                     long_name_of_obj(*inv_obj, ~0),
                     name_of_obj(*optr, ~0));
             show(buf, pc);
@@ -980,7 +980,7 @@ int beep(int i_th, const String* name, critter& pc) {
          show(buf, *ptr);
       }
 
-      Sprintf(buf2, "%S beeps you.\n", name_of_crit(pc, ptr->SEE_BIT));
+      Sprintf(buf2, "%pS beeps you.\n", name_of_crit(pc, ptr->SEE_BIT));
       ptr->show(buf2);
       pc.PAUSE = 1; //slow down spammers....
 
@@ -1021,7 +1021,7 @@ int do_transport(critter& targ, critter& pc, room& dest) {
    show("The world tilts and angles bend!\n", targ);
    emote("shrinks impossibly and disappears.", targ, 
          room_list[targ.getCurRoomNum()], TRUE); 
-   Sprintf(buf, "You transport %S.\n", name_of_crit(targ, pc.SEE_BIT));
+   Sprintf(buf, "You transport %pS.\n", name_of_crit(targ, pc.SEE_BIT));
    show(buf, pc);
    
    int is_dead;
@@ -1125,7 +1125,7 @@ int discuss(const String* topic, int i_th, const String* targ, critter& pc) {
          }//if
       }//if
       if (ptr->pc) {
-         Sprintf(buf, "%S wishes to discuss %S with you.\n", 
+         Sprintf(buf, "%pS wishes to discuss %pS with you.\n", 
                  name_of_crit(pc, ptr->SEE_BIT), topic);
          show(buf, *ptr);
       }//if
@@ -1198,11 +1198,11 @@ int pay(int amount, int i_th, const String* targ,  critter& pc) {
    ptr->GOLD += amount;
    pc.GOLD -= amount;
    
-   Sprintf(buf, "You are pleasantly suprised as %S pays you %i.\n",
+   Sprintf(buf, "You are pleasantly suprised as %pS pays you %i.\n",
            name_of_crit(pc, ptr->SEE_BIT), amount);
    show(buf, *ptr);
    
-   Sprintf(buf, "You give %S %i coins.\n", name_of_crit(*ptr, pc.SEE_BIT),
+   Sprintf(buf, "You give %pS %i coins.\n", name_of_crit(*ptr, pc.SEE_BIT),
            amount);
    show(buf, pc);
 
@@ -1230,10 +1230,10 @@ int mvnum(int i_th, const String* name, critter& pc) {
       if (mob_is_named(mob_list[i], *name)) {
          //print mnum, S if it has script, level and short desc
          if (mob_list[i].mob->mob_data_flags.get(17)) {
-            Sprintf(buf, "[%i] S  lvl %i  %S\n", i, 
+            Sprintf(buf, "[%i] S  lvl %i  %pS\n", i, 
                mob_list[i].short_cur_stats[19], &(mob_list[i].short_desc));
          } else {
-            Sprintf(buf, "[%i]    lvl %i  %S\n", i, 
+            Sprintf(buf, "[%i]    lvl %i  %pS\n", i, 
                mob_list[i].short_cur_stats[19], &(mob_list[i].short_desc));
          }
          show(buf, pc);
@@ -1257,7 +1257,7 @@ int ovnum(int i_th, const String* name, critter& pc) {
 
    for (i = i_th; i<NUMBER_OF_ITEMS; i++) {
       if (obj_is_named(obj_list[i], *name)) {
-         Sprintf(buf, "[%i] %S\n", i, &(obj_list[i].short_desc));
+         Sprintf(buf, "[%i] %pS\n", i, &(obj_list[i].short_desc));
          show(buf, pc);
       }//if
    }//for
@@ -1279,7 +1279,7 @@ int dvnum(int i_th, const String* name, critter& pc) {
 
    for (i = i_th; i<NUMBER_OF_DOORS; i++) {
       if (door_is_named(door_list[i], *name)) {
-         Sprintf(buf, "[%i] %S\n", i, &(door_list[i].long_desc));
+         Sprintf(buf, "[%i] %pS\n", i, &(door_list[i].long_desc));
          show(buf, pc);
       }//if
    }//for
@@ -1319,7 +1319,7 @@ int arlist(int zone, int how_many, critter& pc) {
          && (count < how_many));
         i++) {
       if (room_list[i].isInUse()) {
-         Sprintf(buf, "[%i]\t%S\n", i, &(room_list[i].short_desc));
+         Sprintf(buf, "[%i]\t%pS\n", i, &(room_list[i].short_desc));
          count++;
          show(buf, pc);
       }//if
@@ -1411,7 +1411,7 @@ int aolist(int zone, int how_many, critter& pc) {
    for (int i = 0; (i < NUMBER_OF_ITEMS && count < how_many); i++) {
       if (obj_list[i].OBJ_FLAGS.get(10)) {
          if (obj_list[i].OBJ_IN_ZONE == zone) {
-            Sprintf(buf, "[%i]\t%S\n", i, &(obj_list[i].short_desc));
+            Sprintf(buf, "[%i]\t%pS\n", i, &(obj_list[i].short_desc));
             count++;
             show(buf, pc);
          }//if
@@ -1647,10 +1647,10 @@ int amlist(int zone, int how_many, critter& pc) {
          if (mob_list[i].isInUse()) {
             //print mnum, S if it has script, level and short desc
             if (mob_list[i].mob->mob_data_flags.get(17)) {
-               Sprintf(buf, "[%i] S  lvl %i  %S\n", i, 
+               Sprintf(buf, "[%i] S  lvl %i  %pS\n", i, 
                   mob_list[i].short_cur_stats[19], &(mob_list[i].short_desc));
             } else {
-               Sprintf(buf, "[%i]    lvl %i  %S\n", i, 
+               Sprintf(buf, "[%i]    lvl %i  %pS\n", i, 
                   mob_list[i].short_cur_stats[19], &(mob_list[i].short_desc));
             }
             count++;
@@ -1735,7 +1735,7 @@ int withdraw(int i_th, const String& coins, int j_th,
    }
 
    if (!crit->isBanker()) {
-      Sprintf(buf, "%S is not a banker.\n", crit->getName());
+      Sprintf(buf, "%pS is not a banker.\n", crit->getName());
       buf.Cap();
       pc.show(buf);
       return -1;
@@ -1764,7 +1764,7 @@ int balance(int i_th, const String* banker, critter& pc) {
    }
 
    if (!crit->isBanker()) {
-      Sprintf(buf, "%S is not a banker.\n", crit->getName());
+      Sprintf(buf, "%pS is not a banker.\n", crit->getName());
       buf.Cap();
       pc.show(buf);
       return -1;
@@ -1804,7 +1804,7 @@ int deposit(int i_th, const String* coins, int j_th,
    }
 
    if (!crit->isBanker()) {
-      Sprintf(buf, "%S is not a banker.\n", crit->getName());
+      Sprintf(buf, "%pS is not a banker.\n", crit->getName());
       buf.Cap();
       pc.show(buf);
       return -1;
@@ -1838,12 +1838,12 @@ int gag(int i_th, const String* targ, critter& pc) {
       return -1;
    }//if
 
-   Sprintf(buf, "%S has gagged you!!\n", name_of_crit(pc, ~0));
+   Sprintf(buf, "%pS has gagged you!!\n", name_of_crit(pc, ~0));
    show(buf, *crit);
    emote("goes a-gagging!!", pc, ROOM, TRUE);
    emote("will speak no more!", *crit, room_list[crit->getCurRoomNum()], TRUE);
    crit->PC_FLAGS.turn_on(1);
-   Sprintf(buf, "Successfully gagged %S.\n", crit->getName());
+   Sprintf(buf, "Successfully gagged %pS.\n", crit->getName());
    pc.show(buf);
    return 0;
 }//gag
@@ -1873,7 +1873,7 @@ int freeze(int i_th, const String* targ, critter& pc) {
       return -1;
    }//if
 
-   Sprintf(buf, "%S has frozen you!!\n", name_of_crit(pc, ~0));
+   Sprintf(buf, "%pS has frozen you!!\n", name_of_crit(pc, ~0));
    show(buf, *crit);
    emote("gets out the freezer!!", pc, ROOM, TRUE);
    emote("will do no more!", *crit, room_list[crit->getCurRoomNum()], TRUE);
@@ -1906,12 +1906,12 @@ int ungag(int i_th, const String* targ, critter& pc) {
       return -1;
    }//if
 
-   Sprintf(buf, "%S has ungagged you!!\n", name_of_crit(pc, ~0));
+   Sprintf(buf, "%pS has ungagged you!!\n", name_of_crit(pc, ~0));
    show(buf, *crit);
    emote("removes a gag!!", pc, ROOM, TRUE);
    emote("can speak once more!", *crit, room_list[crit->getCurRoomNum()], TRUE);
    crit->PC_FLAGS.turn_off(1);
-   Sprintf(buf, "Successfully un-gagged %S.\n", crit->getName());
+   Sprintf(buf, "Successfully un-gagged %pS.\n", crit->getName());
    pc.show(buf);
    return 0;
 }//ungag
@@ -1941,7 +1941,7 @@ int thaw(int i_th, const String* targ, critter& pc) {
       return -1;
    }//if
 
-   Sprintf(buf, "%S has thawed you out!!\n", name_of_crit(pc, ~0));
+   Sprintf(buf, "%pS has thawed you out!!\n", name_of_crit(pc, ~0));
    show(buf, *crit);
    emote("thaws 'em out!!", pc, ROOM, TRUE);
    emote("is warm once more!", *crit, room_list[crit->getCurRoomNum()], TRUE);
@@ -2091,7 +2091,7 @@ int adjust_register(int i_th, const String* targ, int new_balance,
       if (crit->isManagedBy(pc)) {         
          if (new_balance == 1) {
             // just checking balance
-            Sprintf(buf, "The shopkeeper holds %i coins.\n",
+            Sprintf(buf, "The shopkeeper holds %li coins.\n",
                     crit->GOLD);
             pc.show(buf);
             return 0;
@@ -2101,7 +2101,7 @@ int adjust_register(int i_th, const String* targ, int new_balance,
                //gonna give some to the manager (pc)
                pc.GOLD += (crit->GOLD - new_balance);
                
-               Sprintf(buf, "You take %i coins from the shopkeeper.",
+               Sprintf(buf, "You take %li coins from the shopkeeper.",
                        (crit->GOLD - new_balance));
                // and take some from the shopkeeper
                crit->GOLD = new_balance;
@@ -2117,7 +2117,7 @@ int adjust_register(int i_th, const String* targ, int new_balance,
                }
                else {
                   pc.GOLD -= (new_balance - crit->GOLD);
-                  Sprintf(buf, "Transferred %i coins to the shopkeeper.",
+                  Sprintf(buf, "Transferred %li coins to the shopkeeper.",
                           (new_balance - crit->GOLD));
                   crit->GOLD = new_balance;
                   pc.show(buf);
@@ -2343,7 +2343,7 @@ int consider(int i_th, const String* targ, critter& pc) {
    pc.show(buf);
 
    if (crit->isResting() || crit->isStanding() || crit->isSitting()) {
-      Sprintf(buf, "%S sizes you up, almost as if %s were considering battle!\n",
+      Sprintf(buf, "%pS sizes you up, almost as if %s were considering battle!\n",
               pc.getName(crit->SEE_BIT), get_he_she(pc));
       crit->show(buf);
    }
@@ -2470,11 +2470,11 @@ int dsys(int i, const String& cmd, const String& arg1, critter& pc) {
       return 0;
    }
 
-   Sprintf(buf, "ScryMUD version: %s (%s)\n"
+   Sprintf(buf, "ScryMUD version: %s\n"
          "Built on:        %s\n"
          "On Machine:      %s\n"
          "By:              %s\n\n",
-         BuildInfo::getVersion(), BuildInfo::getRevision(),
+         BuildInfo::getVersion(),
          BuildInfo::getBuildDate(), BuildInfo::getBuildMachine(),
          BuildInfo::getBuilder());
    pc.show(buf);
@@ -2490,7 +2490,7 @@ int dsys(int i, const String& cmd, const String& arg1, critter& pc) {
    Sprintf(buf, "[%i]%P10 room %P30[%i] %P42 critter\n",
            room::getInstanceCount(), critter::getInstanceCount());
    pc.show(buf);
-   Sprintf(buf, "[%i]%P10 String %P30[%i] %P42 String bytes total \n",
+   Sprintf(buf, "[%li]%P10 String %P30[%li] %P42 String bytes total \n",
            String::string_cnt, String::total_bytes);
    pc.show(buf);
    Sprintf(buf, "[%i]%P10 List<> %P30[%i] %P42 List<> Node \n",
@@ -2601,7 +2601,7 @@ int com_emote(const String* msg, critter& pc) {
    }//if
 
    emote(*msg, pc, ROOM, TRUE);  //do it then 
-   Sprintf(buf, "%S %S\n", name_of_crit(pc, ~0), msg);
+   Sprintf(buf, "%pS %pS\n", name_of_crit(pc, ~0), msg);
    buf.Cap();
    show(buf, pc);
    return -1;
@@ -2624,7 +2624,7 @@ int com_pemote(const String* msg, critter& pc) {
    }//if
 
    pemote(*msg, pc, ROOM, TRUE);  //do it then 
-   Sprintf(buf, "%S's %S\n", name_of_crit(pc, ~0), msg);
+   Sprintf(buf, "%pS's %pS\n", name_of_crit(pc, ~0), msg);
    buf.Cap();
    show(buf, pc);
    return 0;
@@ -2671,7 +2671,7 @@ int com_gecho(const String* msg, critter& pc) {
 
    while ((ptr = cll.next())) {
       if (ptr->isImmort() && (ptr->getImmLevel() >= pc.getImmLevel())) {
-         Sprintf(buf2, "[%S]  %S\n", pc.getName(), msg);
+         Sprintf(buf2, "[%pS]  %pS\n", pc.getName(), msg);
          show(buf2, *ptr);
       }
       else {
@@ -2705,7 +2705,7 @@ int com_recho(const String* msg, critter& pc) {
       
       while ((ptr = cll.next())) {
          if (ptr->isImmort() && (ptr->getImmLevel() >= pc.getImmLevel())) {
-            Sprintf(buf2, "[%S]  %S\n", pc.getName(), msg);
+            Sprintf(buf2, "[%pS]  %pS\n", pc.getName(), msg);
             show(buf2, *ptr);
          }
          else {
@@ -2744,15 +2744,15 @@ int com_pecho(int i_th, const String* targ, const String* msg, critter& pc) {
 
       if (ptr) {
          if (ptr->isImmort() && (ptr->getImmLevel() >= pc.getImmLevel())) {
-            Sprintf(buf2, "[%S]  %S", pc.getName(), msg);
+            Sprintf(buf2, "[%pS]  %pS", pc.getName(), msg);
             show(buf2, *ptr);
-            Sprintf(buf, "You echo -:%S:- to player: %S\n", &buf2, ptr->getName());
+            Sprintf(buf, "You echo -:%pS:- to player: %pS\n", &buf2, ptr->getName());
             pc.show(buf);
          }
          else {
             show(*msg, *ptr);
             show("\n", *ptr);
-            Sprintf(buf, "You echo -:%S:- to player: %S\n", msg, ptr->getName());
+            Sprintf(buf, "You echo -:%pS:- to player: %pS\n", msg, ptr->getName());
             pc.show(buf);
          }
          return 0;
@@ -2793,7 +2793,7 @@ int com_zecho(const String* msg, critter& pc) {
    while ((ptr = cll.next())) {
       if (ptr->getCurZoneNum() == pc.getCurZoneNum()) {
          if (ptr->isImmort() && (ptr->getImmLevel() >= pc.getImmLevel())) {
-            Sprintf(buf2, "[%S]  %S", pc.getName(), msg);
+            Sprintf(buf2, "[%pS]  %pS", pc.getName(), msg);
             show(buf2, *ptr);
          }
          else {
@@ -2952,7 +2952,7 @@ int do_shoot(critter& targ, critter& pc) {
                 << "Short Projectile name:  " << sproj_name << endl;
         }
 
-        Sprintf(buf, "readies %s %S.",
+        Sprintf(buf, "readies %s %pS.",
                 get_his_her(pc), name_of_obj(*(pc.EQ[9]), ~0));
         emote(buf, pc, ROOM, TRUE);
 
@@ -2962,7 +2962,7 @@ int do_shoot(critter& targ, critter& pc) {
         if (!did_shot_hit(targ, pc)) {
             show("Your shot goes wide of your mark.\n", pc);
             emote("shoots and misses.", pc, ROOM, TRUE);
-            Sprintf(buf, "%S comes whistling by your head!\n", &lproj_name);
+            Sprintf(buf, "%pS comes whistling by your head!\n", &lproj_name);
             buf.Cap();
             show_all(buf, room_list[targ.getCurRoomNum()]);
 
@@ -2990,21 +2990,21 @@ int do_shoot(critter& targ, critter& pc) {
             targ.gainInv(ammo);
             recursive_init_loads(*(ammo),0); 
             if (targ.HP > 0) { //still alive
-                Sprintf(buf, "You hit %S with %S.\n",
+                Sprintf(buf, "You hit %pS with %pS.\n",
                         name_of_crit(targ, pc.SEE_BIT), &lproj_name);
                 show(buf, pc);
                 //Dys: putting Camouflage to good use. check vs skill %. if succeeds, masks who hit them.
                 if(d(1,100) < get_percent_lrnd(CAMOUFLAGE_SKILL_NUM, pc)) {
-                    Sprintf(buf, "Someone wounds you with %S!\n", &lproj_name);
+                    Sprintf(buf, "Someone wounds you with %pS!\n", &lproj_name);
                     show(buf, targ);
-                    Sprintf(buf, "staggers as a %S hits %s!",
+                    Sprintf(buf, "staggers as a %pS hits %s!",
                             &sproj_name, get_him_her(targ));
                 }//end hiding.
                 else {
-                    Sprintf(buf, "%S wounds you with %S!\n",
+                    Sprintf(buf, "%pS wounds you with %pS!\n",
                             name_of_crit(pc, targ.SEE_BIT), &lproj_name);
                     show(buf, targ);
-                    Sprintf(buf, "staggers as %S's %S hits %s!",
+                    Sprintf(buf, "staggers as %pS's %pS hits %s!",
                             name_of_crit(pc, ~0), &sproj_name,
                             get_him_her(targ));
                 }
@@ -3016,23 +3016,23 @@ int do_shoot(critter& targ, critter& pc) {
                 do_shot_proc(targ, pc, TRUE, targ_is_dead);
             }//if hit but not fatal
             else { //fatality
-                Sprintf(buf, "Your %S sinks deep into %S's chest!\n",
+                Sprintf(buf, "Your %pS sinks deep into %pS's chest!\n",
                         &sproj_name, name_of_crit(targ, pc.SEE_BIT));
                 show(buf, pc);
                 if(d(1,100) < get_percent_lrnd(CAMOUFLAGE_SKILL_NUM, pc)) {
-                    Sprintf(buf, "Someone's %S sinks deep into %S's chest!\n",
+                    Sprintf(buf, "Someone's %pS sinks deep into %pS's chest!\n",
                             &sproj_name, name_of_crit(targ, ~0));
                     room_list[targ.getCurRoomNum()].showAllCept(buf, &targ);
-                    Sprintf(buf, "Somone has slain you with a %S!\n",
+                    Sprintf(buf, "Somone has slain you with a %pS!\n",
                             &sproj_name);
                     show(buf, targ);
                 }
                 else {
-                    Sprintf(buf, "%S's %S sinks deep into %S's chest!\n",
+                    Sprintf(buf, "%pS's %pS sinks deep into %pS's chest!\n",
                             name_of_crit(pc, ~0), &sproj_name,
                             name_of_crit(targ, ~0));
                     room_list[targ.getCurRoomNum()].showAllCept(buf, &targ);
-                    Sprintf(buf, "%S has slain you with %s %S!\n",
+                    Sprintf(buf, "%pS has slain you with %s %pS!\n",
                             name_of_crit(pc, targ.SEE_BIT), get_his_her(pc),
                             &sproj_name);
                     show(buf, targ);
@@ -3133,17 +3133,17 @@ int do_throw(critter& targ, critter& pc) {
 
    if (pc.EQ[posn]->OBJ_FLAGS.get(57)) { //if its a weapon
       if (can_start_battle(targ, pc, TRUE)) {
-         Sprintf(buf, "readies %s %S for throwing...",
+         Sprintf(buf, "readies %s %pS for throwing...",
                  get_his_her(pc), name_of_obj(*(pc.EQ[posn]), ~0));
          emote(buf, pc, ROOM, TRUE);
          
          if (!did_shot_hit(targ, pc, TRUE)) {
-            Sprintf(buf, "Your %S just misses %S!\n", 
+            Sprintf(buf, "Your %pS just misses %pS!\n", 
                     pc.EQ[posn]->getName(pc.SEE_BIT), 
                     name_of_crit(targ, pc.SEE_BIT));
             show(buf, pc);
             emote("throws but misses.", pc, ROOM, TRUE);
-            Sprintf(buf, "%S comes whistling by your head!\n", 
+            Sprintf(buf, "%pS comes whistling by your head!\n", 
                     long_name_of_obj(*(pc.EQ[posn]), ~0));
             buf.Cap();
             show_all(buf, room_list[targ.getCurRoomNum()]);
@@ -3172,16 +3172,16 @@ int do_throw(critter& targ, critter& pc) {
             }
 
             if (targ.HP > 0) { //still alive
-               Sprintf(buf, "You hit %S with your %S.\n",
+               Sprintf(buf, "You hit %pS with your %pS.\n",
                        name_of_crit(targ, pc.SEE_BIT), 
                        name_of_obj(*(pc.EQ[posn]), pc.SEE_BIT));
                show(buf, pc);
-               Sprintf(buf, "%S wounds you with %s %S!\n",
+               Sprintf(buf, "%pS wounds you with %s %pS!\n",
                        name_of_crit(pc, targ.SEE_BIT),
                        get_his_her(pc), 
                        name_of_obj(*(pc.EQ[posn]), targ.SEE_BIT));
                show(buf, targ);
-               Sprintf(buf, "staggers as %S's %S hits %s!",
+               Sprintf(buf, "staggers as %pS's %pS hits %s!",
                        name_of_crit(pc, ~0), 
                        name_of_obj(*(pc.EQ[posn]), targ.SEE_BIT),
                        get_him_her(targ));
@@ -3196,15 +3196,15 @@ int do_throw(critter& targ, critter& pc) {
                }
             }//if hit but not fatal
             else { //fatality
-               Sprintf(buf, "Your %S sinks deep into %S's chest!\n",
+               Sprintf(buf, "Your %pS sinks deep into %pS's chest!\n",
                        name_of_obj(*(pc.EQ[posn]), ~0), 
                        name_of_crit(targ, pc.SEE_BIT));
                show(buf, pc);
-               Sprintf(buf, "\b's %S sinks deep into %S's chest!",
+               Sprintf(buf, "\b's %pS sinks deep into %pS's chest!",
                        name_of_obj(*(pc.EQ[posn]), ~0), 
                        name_of_crit(targ, ~0));
                emote(buf, pc, room_list[targ.getCurRoomNum()], TRUE);
-               Sprintf(buf, "%S has slain you with %s %S!\n",
+               Sprintf(buf, "%pS has slain you with %s %pS!\n",
                        name_of_crit(pc, targ.SEE_BIT), get_his_her(pc),
                        name_of_obj(*(pc.EQ[posn]), ~0));
                buf.Cap();
@@ -3221,15 +3221,15 @@ int do_throw(critter& targ, critter& pc) {
       }// if can start battle
    }//if a weapon
    else {
-      Sprintf(buf, "You throw %S at %S...it falls to the ground.\n",
+      Sprintf(buf, "You throw %pS at %pS...it falls to the ground.\n",
               long_name_of_obj(*(pc.EQ[posn]), pc.SEE_BIT),
               name_of_crit(targ, pc.SEE_BIT));
       show(buf, pc);
-      Sprintf(buf, "%S drops at %S's feet.\n",
+      Sprintf(buf, "%pS drops at %pS's feet.\n",
               name_of_obj(*(pc.EQ[posn]), ~0), 
               name_of_crit(targ, ~0));
       pemote(buf, pc, room_list[targ.getCurRoomNum()], TRUE, &targ);
-      Sprintf(buf, "%S throws %s %S at your feet.\n",
+      Sprintf(buf, "%pS throws %s %pS at your feet.\n",
               name_of_crit(pc, targ.SEE_BIT), get_his_her(pc),
               name_of_obj(*(pc.EQ[posn]), targ.SEE_BIT));
       buf.Cap();
@@ -3318,7 +3318,7 @@ int zenable(int znum, const String* char_name, critter& pc) {
 
    ZoneCollection::instance().elementAt(znum).addOwner(*char_name);
 
-   Sprintf(buf, "You add '%S' to the owners of zone# %i.\n",
+   Sprintf(buf, "You add '%pS' to the owners of zone# %i.\n",
            char_name, znum);
    show(buf, pc);
 
@@ -3349,7 +3349,7 @@ int ch_zname(int znum, const String* new_name, critter& pc) {
 
    ZoneCollection::instance().elementAt(znum).setName(*new_name);
 
-   Sprintf(buf, "You change zone %i's name to -:%S:-\n",
+   Sprintf(buf, "You change zone %i's name to -:%pS:-\n",
            znum, new_name);
    show(buf, pc);
 
@@ -3379,7 +3379,7 @@ int zdisable(int znum, const String* char_name, critter& pc) {
       return -1;
 
    if (ZoneCollection::instance().elementAt(znum).removeOwner(*char_name)) {
-      Sprintf(buf, "You delete '%S' from the owners of zone# %i.\n",
+      Sprintf(buf, "You delete '%pS' from the owners of zone# %i.\n",
               char_name, znum);
       show(buf, pc);
       ZoneCollection::instance().writeSelf();

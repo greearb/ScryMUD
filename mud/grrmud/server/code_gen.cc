@@ -35,7 +35,7 @@ int __node_cnt;
 int __list_cnt;
 int __cell_cnt;
 
-char* header =
+const char* header =
 "//\n"
 "//ScryMUD Server Code\n"
 "//Copyright (C) 1998  Ben Greear\n"
@@ -120,7 +120,7 @@ int LanguageEntry::read(ifstream& dafile) {
       // Yes, someone shoot me, at least the output will be purdies!
       {
          tmp_val_fixed.Clear();
-         unsigned int i;
+         int i;
          for(i=0;i<tmp_val.Strlen();i++) {
             if ( tmp_val.charAt(i) == '\n' ) {
                tmp_val_fixed.append("\\n\"\n         \"");
@@ -451,12 +451,10 @@ int code_gen_commands(char** argv, int argc) {
    // Hopefully, a smart compiler will get rid of this test.  It's
    // here to keep the compiler from complaining about un-used variables.
    // --BLG
-
    exe_cmds.Append("\n"
-         "#define CODE_GEN_VAR_TEST_IF "
-         "1 || &str1 || &str2 || &str3 || &str4 || &str5 || i || j || k || l "
-         "|| m || n || is_dead || &pc ||c_script_owner || r_script_owner "
-         "|| cooked_strs || cooked_ints || do_sub || sanity || was_ordered\n\n");
+"#define CODE_GEN_UNUSED_VAR_WORKAROUND \\\n"
+"(void)str1; (void)str2; (void)(str3); (void)(str4); (void)(str5);\n\n");
+
 
    exe_cmds.Append("\n"
          "class ExeCmd {\n"
@@ -505,7 +503,7 @@ int code_gen_commands(char** argv, int argc) {
 
          if (cmd_input.help.charAt(0) != '*') { // help only
             // create the commands, and the enum, and the ExeCmds
-            Sprintf(tmp, "   ci_%S,\n", &(cmd_input.aliases[0]));
+            Sprintf(tmp, "   ci_%pS,\n", &(cmd_input.aliases[0]));
             cmd_enum.Append(tmp);
          }
 
@@ -515,14 +513,14 @@ int code_gen_commands(char** argv, int argc) {
                break;
 
             if (cmd_input.help.charAt(0) == '*') { // help only
-               Sprintf(tmp, "   ADD_NEW_CMD(new CmdSpecifier(\"%S\", %i, ci_HELP_ONLY, \"%s\"));\n",
+               Sprintf(tmp, "   ADD_NEW_CMD(new CmdSpecifier(\"%pS\", %i, ci_HELP_ONLY, \"%s\"));\n",
                        &(cmd_input.aliases[i]), 
                        cmd_input.aliases[i].Strlen(),
                        ((const char*)(cmd_input.help)) + 1); //move past *
                cmd_instantiations.Append(tmp);
             }
             else {
-               Sprintf(tmp, "   ADD_NEW_CMD(new CmdSpecifier(\"%S\", %i, ci_%S, \"%S\"));\n",
+               Sprintf(tmp, "   ADD_NEW_CMD(new CmdSpecifier(\"%pS\", %i, ci_%pS, \"%pS\"));\n",
                        &(cmd_input.aliases[i]), cmd_input.aliases[i].Strlen(),
                        &(cmd_input.aliases[0]), &(cmd_input.help));
                cmd_instantiations.Append(tmp);
@@ -531,21 +529,20 @@ int code_gen_commands(char** argv, int argc) {
                   cmd_count++;
 
                   Sprintf(tmp, "\n"
-                        "class ExeCmd_%S : public ExeCmd {\n"
-                        "public:\n"
-                        "   int execute(CODE_GEN_EXE_HEADER) {\n"
-                        "      if (CODE_GEN_VAR_TEST_IF) {\n"
-                        "         %S\n"
-                        "      } else return 0;\n"
-                        "   }//execute\n"
-                        "};//ExeCmd\n",
+                          "class ExeCmd_%pS : public ExeCmd {\n"
+                          "public:\n"
+                          "   int execute(CODE_GEN_EXE_HEADER) {\n"
+                          "      CODE_GEN_UNUSED_VAR_WORKAROUND;\n"
+                          "      %pS\n"
+                          "   }//execute\n"
+                          "};//ExeCmd\n",
                         &(cmd_input.aliases[0]), &(cmd_input.cmd));
 
                   exe_cmds.Append(tmp);
 
                   // Now, lets add the code that will place this in an array.
                   
-                  Sprintf(tmp, "   exe_cmd_array[(int)(ci_%S)] = new ExeCmd_%S;\n",
+                  Sprintf(tmp, "   exe_cmd_array[(int)(ci_%pS)] = new ExeCmd_%pS;\n",
                           &(cmd_input.aliases[0]), &(cmd_input.aliases[0]));
                   cmd_array.Append(tmp);
                   

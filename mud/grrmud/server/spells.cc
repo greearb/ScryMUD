@@ -87,6 +87,21 @@ void Spell::onCast(int i_th, const String* vict, critter& pc, int is_canned = FA
    }
 }*/
 
+Spell::Spell() {
+   agg = NULL;
+   name = NULL;
+   msg_lost_con = NULL;
+   msg_no_target = NULL;
+   actions = NULL;
+   diversions = NULL;
+   clvl = 0;
+   duration = 0;
+   spell_num = 0;
+   spell_mana = 0;
+   pause = 0;
+   canned = 0;
+}
+
 	
 int Spell::doCastEffects(){
 
@@ -193,8 +208,8 @@ void Spell::doFailureNoTarget() {
    show(msg_no_target, *agg);
 }
 
-void Spell::setupSpell(int spelln, int spellp, char* act, char* spell_name, char* divers,  
-                       char* no_target, char lost_con[]){
+void Spell::setupSpell(int spelln, int spellp, const char* act, const char* spell_name, const char* divers,
+                       const char* no_target, const char lost_con[]){
 
    spell_num = spelln;
    //spell_mana = spellm;
@@ -568,7 +583,7 @@ void rem_effects_obj(int spell_num, object &obj) {
     obj.OBJ_VIS_BIT &= ~2;
   }
   else if (spell_num == WIZARD_EYE_SKILL_NUM) {
-     Sprintf(buf, "%S is no longer sending you visions.\n", obj.getName());
+     Sprintf(buf, "%pS is no longer sending you visions.\n", obj.getName());
      obj.obj_proc->w_eye_owner->show(buf);
      obj.obj_proc->w_eye_owner->pc->w_eye_obj = NULL; //pc not looking at it anymore.
      obj.obj_proc->w_eye_owner = NULL; //object not owned.
@@ -711,27 +726,27 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
          }//if
          else {
             if (vict.HP < 0) {
-               Sprintf(buf, "You burn the flesh from %S's living bones!!\n",
+               Sprintf(buf, "You burn the flesh from %pS's living bones!!\n",
                        name_of_crit(vict, agg.SEE_BIT));
                show(buf, agg);
                Sprintf(buf, 
-                   "%S burns the flesh from your once living bones!\n",
+                   "%pS burns the flesh from your once living bones!\n",
                    name_of_crit(agg, vict.SEE_BIT));
                show(buf, vict);
-               Sprintf(buf, "burns the flesh from %S's living bones!\n",
+               Sprintf(buf, "burns the flesh from %pS's living bones!\n",
                        name_of_crit(vict, ~0));
                emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
                do_fatality = TRUE;
             }//if
             else {
-               Sprintf(buf, "You give %S a taste of life after death!\n", 
+               Sprintf(buf, "You give %pS a taste of life after death!\n", 
                        name_of_crit(vict, agg.SEE_BIT));
                show(buf, agg);
-               Sprintf(buf, "%S gives you a brief taste of hell!\n", 
+               Sprintf(buf, "%pS gives you a brief taste of hell!\n", 
                        name_of_crit(agg, vict.SEE_BIT));
                buf.Cap();
                show(buf, vict);
-               Sprintf(buf, "blasts %S with %s crimson inferno.\n", 
+               Sprintf(buf, "blasts %pS with %s crimson inferno.\n", 
                       name_of_crit(vict, ~0), 
                       get_his_her(agg));
                emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -749,16 +764,16 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
             do_join_in_battle = FALSE;
          }//if
          else {
-            Sprintf(buf, "You miss %S with your fireball.\n", 
+            Sprintf(buf, "You miss %pS with your fireball.\n", 
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
 
-            Sprintf(buf, "%S narrowly misses you with a fireball!\n", 
+            Sprintf(buf, "%pS narrowly misses you with a fireball!\n", 
                        name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);
  
-            Sprintf(buf, "misses %S with %s fireball!\n", 
+            Sprintf(buf, "misses %pS with %s fireball!\n", 
                        name_of_crit(vict, ~0), 
                        get_his_her(agg));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
@@ -774,27 +789,27 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
          if (did_spell_hit(agg, FIRE, vict)) {
             exact_raw_damage(d(8, agg.LEVEL), FIRE, vict, agg);
             if (vict.HP < 0) {
-               Sprintf(buf, "You burn the flesh from %S's living bones!!\n",
+               Sprintf(buf, "You burn the flesh from %pS's living bones!!\n",
                        name_of_crit(vict, agg.SEE_BIT));
                show(buf, agg);
                Sprintf(buf, 
-                   "%S burns the flesh from your once living bones!\n",
+                   "%pS burns the flesh from your once living bones!\n",
                    name_of_crit(agg, vict.SEE_BIT));
                show(buf, vict);
-               Sprintf(buf, "burns the flesh from %S's living bones!\n",
+               Sprintf(buf, "burns the flesh from %pS's living bones!\n",
                        name_of_crit(vict, ~0));
                emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
                do_fatality = TRUE;
             }//if
             else {
-               Sprintf(buf, "You give %S a taste of life after death!\n", 
+               Sprintf(buf, "You give %pS a taste of life after death!\n", 
                        name_of_crit(vict, agg.SEE_BIT));
                show(buf, agg);
-               Sprintf(buf, "%S gives you a brief taste of hell!\n", 
+               Sprintf(buf, "%pS gives you a brief taste of hell!\n", 
                        name_of_crit(agg, vict.SEE_BIT));
                buf.Cap();
                show(buf, vict);
-               Sprintf(buf, "blasts %S with %s crimson inferno.\n", 
+               Sprintf(buf, "blasts %pS with %s crimson inferno.\n", 
                       name_of_crit(vict, ~0), 
                       get_his_her(agg));
                emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
@@ -803,29 +818,29 @@ void do_cast_fireball(critter& vict, critter& agg, int is_canned, int lvl) {
          else { //missed
             exact_raw_damage(d(3, agg.LEVEL) + agg.LEVEL, FIRE, vict, agg);
             if (vict.HP < 0) {
-               Sprintf(buf, "You burn the flesh from %S's living bones!!\n",
+               Sprintf(buf, "You burn the flesh from %pS's living bones!!\n",
                        name_of_crit(vict, agg.SEE_BIT));
                show(buf, agg);
                Sprintf(buf, 
-                   "%S burns the flesh from your once living bones!\n",
+                   "%pS burns the flesh from your once living bones!\n",
                    name_of_crit(agg, vict.SEE_BIT));
                show(buf, vict);
-               Sprintf(buf, "burns the flesh from %S's living bones!\n",
+               Sprintf(buf, "burns the flesh from %pS's living bones!\n",
                        name_of_crit(vict, ~0));
                emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
                do_fatality = TRUE;
             }//if
             else {
-               Sprintf(buf, "You singe %S with your fireball.\n", 
+               Sprintf(buf, "You singe %pS with your fireball.\n", 
                        name_of_crit(vict, agg.SEE_BIT));
                show(buf, agg);
   
-               Sprintf(buf, "%S singes you with a fireball!\n", 
+               Sprintf(buf, "%pS singes you with a fireball!\n", 
                        name_of_crit(agg, vict.SEE_BIT));
                buf.Cap();
                show(buf, vict);
  
-               Sprintf(buf, "singes %S with %s fireball!\n", 
+               Sprintf(buf, "singes %pS with %s fireball!\n", 
                        name_of_crit(vict, ~0), 
                        get_his_her(agg));
                emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -881,7 +896,7 @@ void cast_fireball(int i_th, const String* victim, critter& pc) {
    
    if (!(vict = check_for_diversions(*vict, "SGM", pc)))
      return;                                                       
-                 /* all checks have been passed, lets do it */
+   /* all checks have been passed, lets do it */
 
    do_cast_fireball(*vict, pc, FALSE, 0);
 }//cast_fireball
@@ -964,15 +979,15 @@ void do_cast_summon(critter& vict, critter& pc, int is_canned, int lvl) {
          pc.MANA -= spell_mana / 2;
    }//else lost concentration
    else {
-      Sprintf(buf, "You failed to summon %S.\n", 
+      Sprintf(buf, "You failed to summon %pS.\n", 
               name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
       
-      Sprintf(buf, "%S tried but failed to summon you!\n", 
+      Sprintf(buf, "%pS tried but failed to summon you!\n", 
               name_of_crit(pc, vict.SEE_BIT));
       show(buf, vict);
       
-      Sprintf(buf, "fails to summon %S.", name_of_crit(vict, ~0));
+      Sprintf(buf, "fails to summon %pS.", name_of_crit(vict, ~0));
       emote(buf, pc, ROOM, TRUE, &vict);
       if (!is_canned)
          pc.MANA -= spell_mana;
@@ -989,7 +1004,7 @@ void do_cast_summon(critter& vict, critter& pc, int is_canned, int lvl) {
          return;
       }
 
-      Sprintf(buf, "%S opens a portal above your head and yanks you through!\n",
+      Sprintf(buf, "%pS opens a portal above your head and yanks you through!\n",
               name_of_crit(pc, vict.SEE_BIT));
       buf.Cap();
       show(buf, vict);
@@ -998,7 +1013,7 @@ void do_cast_summon(critter& vict, critter& pc, int is_canned, int lvl) {
               get_his_her(vict));
       emote(buf, vict, room_list[vict.getCurRoomNum()], TRUE); 
       
-      Sprintf(buf, "has been summoned by %S.", name_of_crit(pc, ~0));
+      Sprintf(buf, "has been summoned by %pS.", name_of_crit(pc, ~0));
       emote(buf, vict, ROOM, TRUE);
 
       int is_dead;
@@ -1462,14 +1477,14 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
             do_join_in_battle = FALSE;
          }//if
          else {
-            Sprintf(buf, "You poison %S!\n", 
+            Sprintf(buf, "You poison %pS!\n", 
                        name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
-            Sprintf(buf, "%S has poisoned you!\n", 
+            Sprintf(buf, "%pS has poisoned you!\n", 
                        name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);
-            Sprintf(buf, "%S poisons %S.\n", 
+            Sprintf(buf, "%pS poisons %pS.\n", 
                       name_of_crit(agg, ~0), name_of_crit(vict, ~0));
             buf.Cap();
             show_all_but_2(agg, vict, buf, room_list[agg.getCurRoomNum()]);
@@ -1481,11 +1496,11 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
             do_join_in_battle = FALSE;
          }//if
          else {
-            Sprintf(buf, "You fail to poison %S.\n", 
+            Sprintf(buf, "You fail to poison %pS.\n", 
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
 
-            Sprintf(buf, "%S fails to poison you!\n", 
+            Sprintf(buf, "%pS fails to poison you!\n", 
                        name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);
@@ -1503,20 +1518,20 @@ void do_cast_poison(critter& vict, critter& agg, int is_canned, int lvl) {
          if (did_spell_hit(agg, CRONIC, vict)) {
             do_effects = TRUE;
 
-            Sprintf(buf, "You poison %S!\n", 
+            Sprintf(buf, "You poison %pS!\n", 
                        name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
-            Sprintf(buf, "%S poisons you!\n", 
+            Sprintf(buf, "%pS poisons you!\n", 
                        name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);
          }//if did_hit
          else { //missed
-            Sprintf(buf, "You fail to poison %S.\n", 
+            Sprintf(buf, "You fail to poison %pS.\n", 
                        name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
 
-            Sprintf(buf, "%S tries and fails to poison you!\n", 
+            Sprintf(buf, "%pS tries and fails to poison you!\n", 
                        name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);

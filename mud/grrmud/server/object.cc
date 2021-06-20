@@ -1712,7 +1712,7 @@ void object::listScripts(critter& pc) {
    while ((ptr = cll.next())) {
       found_one = TRUE;
       tmp = ptr->toStringBrief(FALSE, 0, ENTITY_OBJECT, idx);
-      Sprintf(buf, "[%i] %S\n", idx, &(tmp));
+      Sprintf(buf, "[%i] %pS\n", idx, &(tmp));
       pc.show(buf);
       idx++;
    }

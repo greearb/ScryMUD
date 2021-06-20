@@ -99,8 +99,7 @@ void CmdLineInfo::init(int argc, char** argv) {
             break;
          }            
          case 'v': {
-           cout << "ScryMUD version: " << BuildInfo::getVersion() << " (" <<
-                BuildInfo::getRevision() << ") built on: "
+           cout << "ScryMUD version: " << BuildInfo::getVersion() << " built on: "
                 << BuildInfo::getBuildDate() << "\nby: " << BuildInfo::getBuilder()
                 << " on machine: " << BuildInfo::getBuildMachine() << endl;
            do_shutdown = TRUE;
@@ -257,7 +256,7 @@ void PathCell::stat(int veh_num, int path_cell_num, critter& pc) {
          pc.show(desc);
          pc.show("</STAT> ");
 
-         Sprintf(buf, "<PATH_DIR %i %S> ", i_th_dir, &dir_to_next);
+         Sprintf(buf, "<PATH_DIR %i %pS> ", i_th_dir, &dir_to_next);
          pc.show(buf);
          
 
@@ -269,7 +268,7 @@ void PathCell::stat(int veh_num, int path_cell_num, critter& pc) {
               path_cell_num, veh_num);
       pc.show(buf);
       pc.show(desc);
-      Sprintf(buf, "Direction:  i_th: %i  dir: %S\n", i_th_dir,
+      Sprintf(buf, "Direction:  i_th: %i  dir: %pS\n", i_th_dir,
               &dir_to_next);
       pc.show(buf);
       

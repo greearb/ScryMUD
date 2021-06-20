@@ -91,7 +91,7 @@ int poofin(String* pin, critter& pc) {
       return -1;
    }//if
 
-   for (unsigned int i = 0; i<pin->Strlen(); i++) {
+   for (int i = 0; i<pin->Strlen(); i++) {
       if (pin->charAt(i) == '\n') {
          pin->setCharAt(i, ' ');
       }//if
@@ -113,7 +113,7 @@ int poofout(String* pin, critter& pc) {
       return -1;
    }//if
    
-   for (unsigned int i = 0; i<pin->Strlen(); i++) {
+   for (int i = 0; i<pin->Strlen(); i++) {
       if (pin->charAt(i) == '\n') {
          pin->setCharAt(i, ' ');
       }//if
@@ -345,7 +345,7 @@ int unpost(int i_th, const String* post, critter& pc) {
    }//for
    tempname = String(*(pc.getName()));
    tempname.Strip();
-   Sprintf(buf, "message_%i from %S:", i-1, &tempname);
+   Sprintf(buf, "message_%i from %pS:", i-1, &tempname);
    if (pc.getImmLevel() < 8 && strncmp(msg->short_desc, buf, buf.Strlen())!=0) {
       pc.show("It wouldn't be right to take someone else's message down.\n");
       return -1;
@@ -475,11 +475,11 @@ int do_post(critter& pc) {
 
          String tmp_desc((pc.pc->post_msg->short_desc));
             Sprintf((pc.pc->post_msg->short_desc),
-                 "message_%i from %S:  ", i, name_of_crit(pc, ~0));
+                 "message_%i from %pS:  ", i, name_of_crit(pc, ~0));
          pc.pc->post_msg->short_desc.Append(tmp_desc);
 
             Sprintf((pc.pc->post_msg->in_room_desc),
-                 "A message from %S lies here.", name_of_crit(pc, ~0));
+                 "A message from %pS lies here.", name_of_crit(pc, ~0));
 
 
          Sprintf(buf, "./Boards/board_%i", ptr->OBJ_NUM);
@@ -516,7 +516,7 @@ int do_post(critter& pc) {
    }//if
 
    //add real-world time to bulletin board post
-   Sprintf(buf2, "Posted at %S:\n", &getCurTime());
+   Sprintf(buf2, "Posted at %pS:\n", &getCurTime());
    (pc.pc->post_msg->long_desc) += buf2;
    (pc.pc->post_msg->long_desc) += buf;
    (pc.pc->post_msg->long_desc) += "\n";
@@ -604,7 +604,7 @@ int snoop(int i_th, const String* vict, critter& pc) {
       pc.SNOOPING = ptr;
       ptr->SNOOPED_BY = &pc;
       String buf(100);
-      Sprintf(buf, "You are now snooping %S.\n", ptr->getName());
+      Sprintf(buf, "You are now snooping %pS.\n", ptr->getName());
       pc.show(buf);
 
       if (mudlog.ofLevel(WRN)) {
@@ -666,7 +666,7 @@ int possess(int i_th, const String* vict, critter& pc) {
       pc.possessing = ptr;
       ptr->possessed_by = &pc;
       String buf(100);
-      Sprintf(buf, "You are now possessing %S.\n", ptr->getName());
+      Sprintf(buf, "You are now possessing %pS.\n", ptr->getName());
       pc.show(buf);
    }
    return 0;
@@ -780,7 +780,7 @@ int where(int i_th, const String* name, critter& pc) {
                if (((pc.LEVEL + rmtModPC + 3 > ptr->LEVEL + rmtModPtr)) &&
                   detect(pc.SEE_BIT, ptr->VIS_BIT |
                      room_list[ptr->getCurRoomNum()].getVisBit())) {
-                  Sprintf(buf, "%S%P20%S\n", name_of_crit(*ptr, pc.SEE_BIT),
+                  Sprintf(buf, "%pS%P20%pS\n", name_of_crit(*ptr, pc.SEE_BIT),
                           &(room_list[ptr->getCurRoomNum()].short_desc));
                   show(buf, pc);
                }//if
@@ -795,13 +795,13 @@ int where(int i_th, const String* name, critter& pc) {
                Cell<critter*> ccll(room_list[i].getCrits());
                while ((ptr = ccll.next())) {
                   if (!ptr->isPc()) {
-                     Sprintf(buf, "[Room %i] %P11[%i]%P20%S.\n",
+                     Sprintf(buf, "[Room %i] %P11[%i]%P20%pS.\n",
                              i, ptr->getIdNum(), ptr->getName());
                      pc.show(buf);
                   }
                   else {
                      if (!ptr->isImmort() ||  (ptr->isImmort() && (ptr->getImmLevel() <= pc.getImmLevel()))) {
-                        Sprintf(buf, "[Room %i] %P11[PC] ***%S***.\n", i, ptr->getName());
+                        Sprintf(buf, "[Room %i] %P11[PC] ***%pS***.\n", i, ptr->getName());
                         pc.show(buf);
                      }
                   }
@@ -817,7 +817,7 @@ int where(int i_th, const String* name, critter& pc) {
             critter* ptr;
             while ((ptr = ccll.next())) {
                if (!ptr->isImmort() ||  (ptr->isImmort() && (ptr->getImmLevel() <= pc.getImmLevel()))) {
-                  Sprintf(buf, "[Room %i] %P11[PC]%P20%S.\n",
+                  Sprintf(buf, "[Room %i] %P11[PC]%P20%pS.\n",
                           ptr->getCurRoomNum(), ptr->getName());
                   pc.show(buf);
                }
@@ -832,7 +832,7 @@ int where(int i_th, const String* name, critter& pc) {
                   Cell<object*> ocll(*(room_list[i].getInv()));
                   object* optr;
                   while ((optr = ocll.next())) {
-                     Sprintf(buf, "[Room %i] %P11[%i]%P20%S.\n",
+                     Sprintf(buf, "[Room %i] %P11[%i]%P20%pS.\n",
                              i, optr->getIdNum(), optr->getLongName());
                      pc.show(buf);
                   }//while
@@ -846,7 +846,7 @@ int where(int i_th, const String* name, critter& pc) {
       if (ptr) {
          if (pc.isImmort()) {
             if (!ptr->isImmort() || (ptr->getImmLevel() <= pc.getImmLevel())) {
-               Sprintf(buf, "%S%P20[%i]%S\n", ptr->getName(pc),
+               Sprintf(buf, "%pS%P20[%i]%pS\n", ptr->getName(pc),
                        ptr->getCurRoomNum(), &(room_list[ptr->getCurRoomNum()].short_desc));
                show(buf, pc);
             }
@@ -856,7 +856,7 @@ int where(int i_th, const String* name, critter& pc) {
                    room_list[ptr->getCurRoomNum()].getZoneNum()) &&
                   detect(pc.SEE_BIT, ptr->VIS_BIT | 
                          room_list[ptr->getCurRoomNum()].getVisBit())) {
-            Sprintf(buf, "%S%P20%S\n", ptr->getName(pc.SEE_BIT),
+            Sprintf(buf, "%pS%P20%pS\n", ptr->getName(pc.SEE_BIT),
                     &(room_list[ptr->getCurRoomNum()].short_desc));
             show(buf, pc);
          }//if
@@ -1164,7 +1164,7 @@ int door_to(int room_num, int dist, const String* direction, critter& pc) {
 
    if (mudlog.ofLevel(DBG)) {
       String buf(100);
-      Sprintf(buf, "DEBUG:  door_to:  Room_num: %i dist: %i dir -:%S:-\n",
+      Sprintf(buf, "DEBUG:  door_to:  Room_num: %i dist: %i dir -:%pS:-\n",
               room_num, dist, direction);
       pc.show(buf);
    }
@@ -1533,7 +1533,7 @@ int do_give(critter& targ, critter& pc, object& obj) {
    critter* crit_ptr;
    while ((crit_ptr = cll.next())) {
       if ((crit_ptr != &targ) && (crit_ptr != &pc)) {
-         Sprintf(buf, "%S gives %S to %S.\n",
+         Sprintf(buf, "%pS gives %pS to %pS.\n",
                  name_of_crit(pc, crit_ptr->SEE_BIT),
                  long_name_of_obj(obj, crit_ptr->SEE_BIT),
                  name_of_crit(targ, crit_ptr->SEE_BIT));
@@ -1542,11 +1542,11 @@ int do_give(critter& targ, critter& pc, object& obj) {
       }//if
    }//while
 
-   Sprintf(buf, "You give %S to %S.\n", &(obj.short_desc),
+   Sprintf(buf, "You give %pS to %pS.\n", &(obj.short_desc),
         name_of_crit(targ, pc.SEE_BIT));
    show(buf, pc);
 
-   Sprintf(buf, "%S gives you %S.\n", name_of_crit(pc, targ.SEE_BIT),
+   Sprintf(buf, "%pS gives you %pS.\n", name_of_crit(pc, targ.SEE_BIT),
            long_name_of_obj(obj, targ.SEE_BIT));
    buf.Cap();
    show(buf, targ);
@@ -1601,7 +1601,7 @@ int olist(int start, int end, critter& pc) {
 
    for (int i = start; i<= end; i++) {
       if (obj_list[i].OBJ_FLAGS.get(10)) {
-         Sprintf(buf, "\t%i\t%S\n", i, &(obj_list[i].short_desc));
+         Sprintf(buf, "\t%i\t%pS\n", i, &(obj_list[i].short_desc));
          show(buf, pc);
       }//if
       else {
@@ -1628,7 +1628,7 @@ int osdsearch(String *match_str, critter& pc) {
    for (int i=0;i<NUMBER_OF_ITEMS;i++) {
       if ( obj_list[i].isInUse() ) {
          if ( my_regex == obj_list[i].short_desc ) {
-            Sprintf(buf, "\t%i\t%S\n", i, &(obj_list[i].short_desc));
+            Sprintf(buf, "\t%i\t%pS\n", i, &(obj_list[i].short_desc));
             pc.show(buf);
          }//if matches
       }//if in use
@@ -1653,7 +1653,7 @@ int oldsearch(String *match_str, critter& pc) {
    for (int i=0;i<NUMBER_OF_ITEMS;i++) {
       if ( obj_list[i].isInUse() ) {
          if ( my_regex == obj_list[i].long_desc ) {
-            Sprintf(buf, "\t%i\t%S\n", i, &(obj_list[i].short_desc));
+            Sprintf(buf, "\t%i\t%pS\n", i, &(obj_list[i].short_desc));
             pc.show(buf);
          }//if matches
       }//if in use
@@ -1706,7 +1706,7 @@ int msdsearch(String *match_str, critter& pc) {
    for (int i=0;i<=NUMBER_OF_MOBS;i++) {
       if (mob_list[i].isInUse()) {
          if ( my_regex == mob_list[i].short_desc ) {
-         Sprintf(buf, "\t%i\t%S\n", i, &(mob_list[i].short_desc));
+         Sprintf(buf, "\t%i\t%pS\n", i, &(mob_list[i].short_desc));
          show(buf, pc);
          }//if matches
       }//if in use
@@ -1730,7 +1730,7 @@ int mldsearch(String *match_str, critter& pc) {
    for (int i=0;i<=NUMBER_OF_MOBS;i++) {
       if (mob_list[i].isInUse()) {
          if ( my_regex == mob_list[i].long_desc ) {
-         Sprintf(buf, "\t%i\t%S\n", i, &(mob_list[i].short_desc));
+         Sprintf(buf, "\t%i\t%pS\n", i, &(mob_list[i].short_desc));
          show(buf, pc);
          }//if matches
       }//if in use
@@ -1763,10 +1763,10 @@ int mlist(int start, int end, critter& pc) {
       if (mob_list[i].CRIT_FLAGS.get(18)) {
          //print mnum, S if it has script, level and short desc
          if (mob_list[i].mob->mob_data_flags.get(17)) {
-            Sprintf(buf, "[%i] S  lvl %i  %S\n", i,
+            Sprintf(buf, "[%i] S  lvl %i  %pS\n", i,
             mob_list[i].short_cur_stats[19], &(mob_list[i].short_desc));
          } else {
-            Sprintf(buf, "[%i]    lvl %i  %S\n", i,
+            Sprintf(buf, "[%i]    lvl %i  %pS\n", i,
             mob_list[i].short_cur_stats[19], &(mob_list[i].short_desc));
          }
          show(buf, pc);
@@ -1802,7 +1802,7 @@ int rlist(int start, int end, critter& pc) {
 
    for (int i = start; i<= end; i++) {
       if (!room_list[i].names.isEmpty()) {
-         Sprintf(buf, "\t%i\t%S\n", i, &(room_list[i].short_desc));
+         Sprintf(buf, "\t%i\t%pS\n", i, &(room_list[i].short_desc));
          show(buf, pc);
       }//if
       else {
@@ -1837,7 +1837,7 @@ int dlist(int start, int end, critter& pc) {
 
    for (int i = start; i<= end; i++) {
       if (!door_list[i].names.isEmpty()) {
-         Sprintf(buf, "\t%i\t%S\n", i, &(door_list[i].long_desc));
+         Sprintf(buf, "\t%i\t%pS\n", i, &(door_list[i].long_desc));
          show(buf, pc);
       }//if
       else {
@@ -1875,7 +1875,7 @@ int adlist(int znum, critter& pc) {
 
    for (int i = 0; i<NUMBER_OF_DOORS; i++) {
       if (door_list[i].isInUse() && door_list[i].isInZone(zone_num)) {
-         Sprintf(buf, "       %i%P14%S\n", i, &(door_list[i].long_desc));
+         Sprintf(buf, "       %i%P14%pS\n", i, &(door_list[i].long_desc));
          show(buf, pc);
       }//if
    }//for
@@ -3171,12 +3171,12 @@ int tog_oflag(int flagnum, const String* flag_type,
        (strncasecmp(*flag_type, "bag_flag", 1) == 0) ||
       (strncasecmp(*flag_type, "spec_flag", 1) == 0)) {
       if (obj_ptr->IN_LIST) {
-         Sprintf(buf, "Toggling obj_flag#:  %i on SOBJ:  %S.\n", flagnum, 
+         Sprintf(buf, "Toggling obj_flag#:  %i on SOBJ:  %pS.\n", flagnum, 
                  &(obj_ptr->short_desc));
          show(buf, pc);
       }//if SOBJ
       else {
-         Sprintf(buf, "Toggling obj_flag#:  %i on OBJ:  %S.\n", flagnum, 
+         Sprintf(buf, "Toggling obj_flag#:  %i on OBJ:  %pS.\n", flagnum, 
                  &(obj_ptr->short_desc));
          show(buf, pc);
       }//else
@@ -3321,17 +3321,17 @@ int tog_mflag(int flagnum, const String* flag_type,
        (strncasecmp(*flag_type, "teach_flag", 1) == 0) ||
        (strncasecmp(*flag_type, "shop_flag", 1) == 0)) {
       if (mob_ptr->isMob()) {
-         Sprintf(buf, "Toggling flag#:  %i on MOB:  %S.\n", flagnum,
+         Sprintf(buf, "Toggling flag#:  %i on MOB:  %pS.\n", flagnum,
                  &(mob_ptr->short_desc));
          show(buf, pc);
       }//if SOBJ
       else if (mob_ptr->isSmob()) {
-         Sprintf(buf, "Toggling flag#:  %i on SMOB:  %S.\n", flagnum,
+         Sprintf(buf, "Toggling flag#:  %i on SMOB:  %pS.\n", flagnum,
                  &(mob_ptr->short_desc));
          show(buf, pc);
       }//else
       else if (mob_ptr->isPc()) {
-         Sprintf(buf, "Toggling flag#:  %i on PC:  %S.\n", flagnum,
+         Sprintf(buf, "Toggling flag#:  %i on PC:  %pS.\n", flagnum,
                  mob_ptr->getName());
          show(buf, pc);
       }

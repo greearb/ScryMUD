@@ -503,11 +503,11 @@ int exit(critter& pc) {
             else
                dest = dr_ptr->destination;
             if (pc.isImmort()) {
-               Sprintf(buf, "%P07%S[%i]:%P27", direction_of_door(*dr_ptr),
+               Sprintf(buf, "%P07%pS[%i]:%P27", direction_of_door(*dr_ptr),
                        dr_ptr->dr_data->door_num);
             }
             else {
-               Sprintf(buf, "%P07%S:%P27", direction_of_door(*dr_ptr));
+               Sprintf(buf, "%P07%pS:%P27", direction_of_door(*dr_ptr));
             }
 
             buf.Cap();
@@ -645,7 +645,7 @@ int lock(int i_th, const String* name, critter& pc) {
                   dr_ptr->lock();
 
                   //TODO:  Translation problem
-                  Sprintf(buf, "locks the %S.\n", name_of_door(*dr_ptr, ~0));
+                  Sprintf(buf, "locks the %pS.\n", name_of_door(*dr_ptr, ~0));
                   emote(buf, pc, ROOM, TRUE);
                   
                   String cmd = "lock";
@@ -694,14 +694,12 @@ int lock(int i_th, const String* name, critter& pc) {
                }//if
                else {
                   object* key = NULL;
-                  int posn = -1;
                   key = have_obj_numbered(pc.inv, 1, ob_ptr->getKeyNum(),
                                           pc.SEE_BIT, ROOM);
                   if (!key) {
                      for (int i = 1; i<MAX_EQ; i++) {
                         if (pc.EQ[i] && 
                             (pc.EQ[i]->OBJ_NUM == ob_ptr->getKeyNum())) {
-                           posn = i;
                            key = pc.EQ[i];
                            break;
                         }//if
@@ -715,7 +713,7 @@ int lock(int i_th, const String* name, critter& pc) {
                      ob_ptr->lock();
 
                      //TODO:  Translation problem.
-                     Sprintf(buf, "locks %S.\n", ob_ptr->getLongName());
+                     Sprintf(buf, "locks %pS.\n", ob_ptr->getLongName());
                      emote(buf, pc, ROOM, TRUE);
                      
                      String cmd = "lock";
@@ -809,12 +807,12 @@ int unlock(int i_th, const String* name, critter& pc) {
                   dr_ptr->unlock();
 
                   //TODO:  Translation problem.
-                  Sprintf(buf, "unlocks the %S.\n", name_of_door(*dr_ptr, ~0));
+                  Sprintf(buf, "unlocks the %pS.\n", name_of_door(*dr_ptr, ~0));
                   emote(buf, pc, ROOM, TRUE);
        
                   // TODO:  Translation problem.
                   // send message to other side of the door...
-                  Sprintf(buf, "You hear a faint click from %S.\n",
+                  Sprintf(buf, "You hear a faint click from %pS.\n",
                           name_of_door(*dr_ptr, 0));
                   show_all(buf, *(dr_ptr->getDestRoom()));
                   
@@ -903,7 +901,7 @@ int unlock(int i_th, const String* name, critter& pc) {
                      ob_ptr->unlock();
                      
                      //TODO:  Translation problem
-                     Sprintf(buf, "unlocks %S.\n", ob_ptr->getLongName());
+                     Sprintf(buf, "unlocks %pS.\n", ob_ptr->getLongName());
                      emote(buf, pc, ROOM, TRUE);
                      
                      String cmd = "unlock";
@@ -966,11 +964,11 @@ int open(int i_th, const String* name, critter& pc) {
                show(buf, pc);
                
                //TODO:  Translation problem.
-               Sprintf(buf, "opens the %S.\n", name_of_door(*dr_ptr, ~0));
+               Sprintf(buf, "opens the %pS.\n", name_of_door(*dr_ptr, ~0));
                emote(buf, pc, ROOM, TRUE);
                
                // send message to other side of the door...
-               Sprintf(buf, "The %S opens quietly.\n", name_of_door(*dr_ptr, ~0));
+               Sprintf(buf, "The %pS opens quietly.\n", name_of_door(*dr_ptr, ~0));
                show_all(buf, *(dr_ptr->getDestRoom()));
                
                String cmd = "open";
@@ -1061,7 +1059,7 @@ int close(int i_th, const String* name, critter& pc) {
                
                //TODO:  Translation problem
                // send message to other side of the door...
-               Sprintf(buf, "The %S closes quietly.\n", name_of_door(*dr_ptr, 0));
+               Sprintf(buf, "The %pS closes quietly.\n", name_of_door(*dr_ptr, 0));
                show_all(buf, *(dr_ptr->getDestRoom()));
                
                String cmd = "close";
@@ -1506,7 +1504,7 @@ int help(int i_th, String* command, String* mort, critter& pc) {
 
    if (pc.pc->imm_data && (strcasecmp(*mort, "mortal") != 0)) {
       if (parsed_cmd.Strlen()) 
-         Sprintf(cmd, "./Help/IMM_%S_%i", &parsed_cmd, i_th);
+         Sprintf(cmd, "./Help/IMM_%pS_%i", &parsed_cmd, i_th);
       else
          Sprintf(cmd, "./Help/IMM_help_%i", i_th);
 
@@ -1526,7 +1524,7 @@ int help(int i_th, String* command, String* mort, critter& pc) {
    }//if, first check IMM helps for immortal types
 
    if (parsed_cmd.Strlen()) 
-      Sprintf(cmd, "./Help/%S_%i", &parsed_cmd, i_th);
+      Sprintf(cmd, "./Help/%pS_%i", &parsed_cmd, i_th);
    else                 
       Sprintf(cmd, "./Help/help_%i", i_th);
 
@@ -2123,13 +2121,13 @@ int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
 
             if (pc.shouldShowVnums()) {
                if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-                  Sprintf(buf, " [onum: %i][lvl: %i]%P06 %S%P50%i %S", id_num,
+                  Sprintf(buf, " [onum: %i][lvl: %i]%P06 %pS%P50%i %pS", id_num,
                         obj_ptr->getLevel(),
                         &(obj_ptr->short_desc), price,
                         &restrict_buf);
                }
                else {
-                  Sprintf(buf, " [onum: %i][lvl: %i]%P06 [qty: %i]%P12 %S%P50%i %S", id_num,
+                  Sprintf(buf, " [onum: %i][lvl: %i]%P06 [qty: %i]%P12 %pS%P50%i %pS", id_num,
                         obj_ptr->getLevel(),
                         item_counts[id_num], &(obj_ptr->short_desc), price,
                         &restrict_buf);
@@ -2148,14 +2146,14 @@ int do_list_merchandise(List<object*>& inv, List<object*>& perm_inv,
                }
 
                if (obj_ptr->in_list || (item_counts[id_num] == 1)) {
-                  Sprintf(buf, "  [%i][lvl: %i]%P12 %S%P50%i %S", hack,
+                  Sprintf(buf, "  [%i][lvl: %i]%P12 %pS%P50%i %pS", hack,
                         obj_ptr->getLevel(),
                         &(obj_ptr->short_desc),
                         price,
                         &restrict_buf);
                }
                else {
-                  Sprintf(buf, "  [%i][lvl: %i] [qty: %i]%P12 %S%P50%i %S", hack,
+                  Sprintf(buf, "  [%i][lvl: %i] [qty: %i]%P12 %pS%P50%i %pS", hack,
                         obj_ptr->getLevel(),
                         item_counts[id_num],
                         &(obj_ptr->short_desc), price,
@@ -2402,11 +2400,11 @@ int do_mstat(critter& targ, critter& pc) {
       }//while
 
       if (!pc.isUsingClient() || crit_ptr->pc) {
-         Sprintf(buf, "\nNames (Keywords): %S\n\n", &buf2);
+         Sprintf(buf, "\nNames (Keywords): %pS\n\n", &buf2);
          pc.show(buf);
       }//if
       else { //then show tags...
-         Sprintf(buf, "<NAMES %S>\n", &buf2);
+         Sprintf(buf, "<NAMES %pS>\n", &buf2);
          pc.show(buf); //output the client deals with
          pc.show(buf2); //output that they can read
          pc.show("\n\n");
@@ -2422,7 +2420,7 @@ int do_mstat(critter& targ, critter& pc) {
       show(buf2, pc);
 
       Sprintf(buf2,
-              "VIS_BIT:  %i, see_bit:  %i, GOLD:  %i / %i, exp: %i XP_WORTH: %i\n",
+              "VIS_BIT:  %i, see_bit:  %i, GOLD:  %li / %li, exp: %li XP_WORTH: %li\n",
               crit_ptr->VIS_BIT, crit_ptr->SEE_BIT, crit_ptr->GOLD,
               crit_ptr->BANK_GOLD, crit_ptr->EXP, crit_ptr->EXP /
               config.experienceDivisor);
@@ -2488,7 +2486,7 @@ int do_mstat(critter& targ, critter& pc) {
       if (crit_ptr->pc) {
          out_field(crit_ptr->pc->pc_data_flags, pc, PC_DATA_FLAGS_NAMES);
 
-         Sprintf(buf2, "\n\tDescriptor:  %i,  Host:  %S.\n", 
+         Sprintf(buf2, "\n\tDescriptor:  %i,  Host:  %pS.\n", 
              crit_ptr->pc->descriptor, &crit_ptr->pc->host);
          show(buf2, pc);
          Sprintf(buf2, "\tLink cond:  %i,  Mode:  %i,  Index:  %i.\n",
@@ -2536,7 +2534,7 @@ int do_mstat(critter& targ, critter& pc) {
          show(buf2, pc);
 
          if (crit_ptr->isTracking()) {
-            Sprintf(buf2, "\tTracking target:  %S",
+            Sprintf(buf2, "\tTracking target:  %pS",
                     crit_ptr->getTrackingTarget());
             show(buf2, pc);
          }
@@ -2583,7 +2581,7 @@ int do_mstat(critter& targ, critter& pc) {
                out_inv(crit_ptr->PERM_INV, pc, CRIT_INV);
 
                if ( crit_ptr->isPlayerShopKeeper() ) {
-                  Sprintf(buf2, "Owned by the player: %S\n", crit_ptr->mob->proc_data->sh_data->getManager() );
+                  Sprintf(buf2, "Owned by the player: %pS\n", crit_ptr->mob->proc_data->sh_data->getManager() );
                   pc.show(buf2);
                }
 
@@ -2609,7 +2607,7 @@ int do_mstat(critter& targ, critter& pc) {
             Cell<say_proc_cell*> sp_cll(crit_ptr->mob->proc_data->topics);
             say_proc_cell* sp_ptr;
             while ((sp_ptr = sp_cll.next())) {
-              Sprintf(buf2, "It has this discuss proc:  %S.\n",
+              Sprintf(buf2, "It has this discuss proc:  %pS.\n",
                       &(sp_ptr->topic));
               show(buf2, pc);
             }//while
@@ -2645,14 +2643,14 @@ int do_mstat(critter& targ, critter& pc) {
 
                  /* pc data */
       if (!crit_ptr->IS_FIGHTING.isEmpty()) {
-         Sprintf(buf2, "%S is fighting:\n", name_of_crit(*crit_ptr, ~0));
+         Sprintf(buf2, "%pS is fighting:\n", name_of_crit(*crit_ptr, ~0));
          show(buf2, pc);
          out_crit(crit_ptr->IS_FIGHTING, pc);
          show("\n\n", pc);
       }//if
 
       if (crit_ptr->master) {
-         Sprintf(buf2, "Has a MASTER:  %S.\n", 
+         Sprintf(buf2, "Has a MASTER:  %pS.\n", 
             name_of_crit(*(crit_ptr->master), ~0));
          show(buf2, pc);
       }//if
@@ -2918,11 +2916,11 @@ int do_ostat(object& obj, critter& pc) {
       }//while
 
       if (!pc.isUsingClient()) {
-         Sprintf(buf, "\nNames (Keywords): %S", &buf2);
+         Sprintf(buf, "\nNames (Keywords): %pS", &buf2);
          pc.show(buf);
       }//if
       else { //then show tags...
-         Sprintf(buf, "<NAMES %S>\n", &buf2);
+         Sprintf(buf, "<NAMES %pS>\n", &buf2);
          pc.show(buf); //output the client deals with
          pc.show(buf2); //output that they can read
       }//else
@@ -2957,7 +2955,7 @@ int do_ostat(object& obj, critter& pc) {
          object* ob_ptr;
          while ((ob_ptr = ob_cll.next())) {
             // Display "??" for unreasonable object numbers
-            Sprintf(buf2, "\t\t[%d] %S\n",
+            Sprintf(buf2, "\t\t[%d] %pS\n",
                     ob_ptr->getIdNum(),
                     &(ob_ptr->short_desc));
             show(buf2, pc);
@@ -3099,7 +3097,7 @@ int do_dstat(door_data& dr, critter& pc) {
 
 int shutdown(const String* cond, critter& pc) {
    if (ok_to_do_action(NULL, "IF", 0, pc, pc.getCurRoom(), NULL, TRUE)) {
-      if (!pc.getImmLevel() > 8) {
+      if (!(pc.getImmLevel() > 8)) {
          pc.show(CS_HAVENT_POWER);
          return -1;
       }//if

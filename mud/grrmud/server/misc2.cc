@@ -76,7 +76,7 @@ critter* file_load_player_shop_owner(int mob_num) {
 
    if (mob_list[mob_num].isInUse()) {
       // Find the file name of our shopkeeper.
-      Sprintf(buf, "./PlayerShops/%S_%i", mob_list[mob_num].getShortName(),
+      Sprintf(buf, "./PlayerShops/%pS_%i", mob_list[mob_num].getShortName(),
               mob_num);
 
       ifstream dafile(buf);
@@ -121,7 +121,7 @@ int save_player_shop_owner(critter& pc) {
 
    if (mob_list[pc.getIdNum()].isInUse()) {
       // Find the file name of our shopkeeper.
-      Sprintf(buf, "./PlayerShops/%S_%i", mob_list[pc.getIdNum()].getShortName(),
+      Sprintf(buf, "./PlayerShops/%pS_%i", mob_list[pc.getIdNum()].getShortName(),
               pc.getIdNum());
 
       ofstream dafile(buf);
@@ -659,7 +659,7 @@ int ok_to_do_action(critter* vict, const char* flags, int spell_num,
 }//ok_to_do_action
 
 
-critter* check_for_diversions(critter& pc, char* tests, critter& agg) {
+critter* check_for_diversions(critter& pc, const char* tests, critter& agg) {
   char chr;
   int i;
   String buf(100);
@@ -694,11 +694,11 @@ critter* check_for_diversions(critter& pc, char* tests, critter& agg) {
       if (pc.mirrors > 0) {
         if (d(1, pc.mirrors) > 1) {
           pc.mirrors--;
-          Sprintf(buf, "%S shatters a mirror image of you.\n",
+          Sprintf(buf, "%pS shatters a mirror image of you.\n",
                   name_of_crit(agg, pc.SEE_BIT));
           buf.Cap();
           show(buf, pc);
-          Sprintf(buf, "breaks a mirror image of %S.",
+          Sprintf(buf, "breaks a mirror image of %pS.",
                   name_of_crit(pc, ~0));
           emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &pc);
           return NULL;
@@ -1865,7 +1865,7 @@ void out_field(const bitfield& field, critter& pc, const BitfieldNames& names) {
    String tmp(50);
    int sofar = 0;
 
-   Sprintf(buf, "%S (SET)\n\t", &(names.getHeader()));
+   Sprintf(buf, "%pS (SET)\n\t", &(names.getHeader()));
    pc.show(buf);
    buf = "";
 
@@ -2091,11 +2091,11 @@ char icharswap(char oldch, char newch) {
 }
 
 String transform(const String &input,
-      const PtrList<String> &wordpats, const PtrList<String> &wordreps,
-      const PtrList<String> &fragpats, const PtrList<String> &fragreps) {
+                 const PtrList<String> &wordpats, const PtrList<String> &wordreps,
+                 const PtrList<String> &fragpats, const PtrList<String> &fragreps) {
    String output;
    char lastalpha = 'a';
-   for (unsigned int i = 0; i < input.Strlen(); i++) {
+   for (int i = 0; i < input.Strlen(); i++) {
       // On a symbol, or in the middle of a word
       if (!isalnum(input[i]) || (i > 0 && isalnum(input[i-1]))) {
          Cell<String*> patcll(fragpats);
@@ -2107,8 +2107,9 @@ String transform(const String &input,
             if (input.Strlen() >= pat->Strlen() + i &&
                   strncasecmp(((const char*)input)+i, *pat, pat->Strlen()) == 0) {
                // output.Append(*rep);
-               for (unsigned int j=0; j < rep->Strlen(); j++) {
-                  if (j < pat->Strlen() && isalnum(input[i+j])) lastalpha = input[i+j];
+               for (int j=0; j < rep->Strlen(); j++) {
+                  if (j < pat->Strlen() && isalnum(input[i+j]))
+                     lastalpha = input[i+j];
                   output.Append(icharswap(lastalpha, (*rep)[j]));
                }
                i+=pat->Strlen() - 1;
@@ -2116,7 +2117,8 @@ String transform(const String &input,
             }
          }
          // Didn't find a match (or ran out of replacements before we ran out of patterns)
-         if (!pat || !rep) output.Append(input[i]);
+         if (!pat || !rep)
+            output.Append(input[i]);
       }
       // Must be at the beginning of the string or a word, then
       else { // if (i == 0 || !isalnum(input[i-1]))
@@ -2127,12 +2129,13 @@ String transform(const String &input,
 
          while ((pat = patcll.next()) && (rep = repcll.next())) {
             if (input.Strlen() >= pat->Strlen() + i &&
-                  (input.Strlen() == pat->Strlen() + i ||
-                     !isalnum(input[pat->Strlen() + i ])) &&
-                  strncasecmp(((const char*)input)+i, *pat, pat->Strlen()) == 0) {
+                (input.Strlen() == pat->Strlen() + i ||
+                 !isalnum(input[pat->Strlen() + i ])) &&
+                strncasecmp(((const char*)input)+i, *pat, pat->Strlen()) == 0) {
                // output.Append(*rep);
-               for (unsigned int j=0; j < rep->Strlen(); j++) {
-                  if (j < pat->Strlen() && isalnum(input[i+j])) lastalpha = input[i+j];
+               for (int j=0; j < rep->Strlen(); j++) {
+                  if (j < pat->Strlen() && isalnum(input[i+j]))
+                     lastalpha = input[i+j];
                   output.Append(icharswap(lastalpha, (*rep)[j]));
                }
                i+=pat->Strlen() - 1;
@@ -2149,8 +2152,9 @@ String transform(const String &input,
                if (input.Strlen() >= pat->Strlen() + i &&
                      strncasecmp(((const char*)input)+i, *pat, pat->Strlen()) == 0) {
                   // output.Append(*rep);
-                  for (unsigned int j=0; j < rep->Strlen(); j++) {
-                     if (j < pat->Strlen() && isalnum(input[i+j])) lastalpha = input[i+j];
+                  for (int j=0; j < rep->Strlen(); j++) {
+                     if (j < pat->Strlen() && isalnum(input[i+j]))
+                        lastalpha = input[i+j];
                      output.Append(icharswap(lastalpha, (*rep)[j]));
                   }
                   i+=pat->Strlen() - 1;
@@ -2168,7 +2172,7 @@ String transform(const String &input,
 
 
 
-critter* get_target_mob(int i_th, const String* target, critter& pc, char* diversions){
+critter* get_target_mob(int i_th, const String* target, critter& pc, const char* diversions){
    critter* vict = NULL;
    if (target->Strlen() == 0)
       vict = pc.IS_FIGHTING.peekFront();

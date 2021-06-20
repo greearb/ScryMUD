@@ -1107,7 +1107,7 @@ int set_path_dir(int veh_id, int path_cell_num, int i_th,
    pcell->setDir(i_th, *dir);
 
    String buf(100);
-   Sprintf(buf, "Setting path num to:  %i  direction to -:%S:-\n",
+   Sprintf(buf, "Setting path num to:  %i  direction to -:%pS:-\n",
            i_th, dir);
    pc.show(buf);
    return 0;
@@ -1384,7 +1384,7 @@ int add_mob_script(critter& pc, int mob_num, String& trigger_cmd,
    }
 
    String buf(200);
-   Sprintf(buf, "Creating a script for mob:  %i, trigger -:%S:-, actor:  %i, \ndescriminator -:%S:-, target:  %i, takes_precedence:  %i\n",
+   Sprintf(buf, "Creating a script for mob:  %i, trigger -:%pS:-, actor:  %i, \ndescriminator -:%pS:-, target:  %i, takes_precedence:  %i\n",
            mob_num, &trigger_cmd, actor_num, &descriminator, target_num,
            takes_precedence);
    show(buf, pc);
@@ -1438,7 +1438,7 @@ int add_room_script(critter& pc, int rm_num, String& trigger_cmd,
    }
 
    String buf(200);
-   Sprintf(buf, "Creating a script for room:  %i, trigger -:%S:-, actor:  %i, \ndescriminator -:%S:-, target:  %i, takes_precedence:  %i\n",
+   Sprintf(buf, "Creating a script for room:  %i, trigger -:%pS:-, actor:  %i, \ndescriminator -:%pS:-, target:  %i, takes_precedence:  %i\n",
            rm_num, &trigger_cmd, actor_num, &descriminator, target_num,
            takes_precedence);
    show(buf, pc);
@@ -1497,7 +1497,7 @@ int add_obj_script(critter& pc, int obj_num, String& trigger_cmd,
    }
 
    String buf(200);
-   Sprintf(buf, "Creating a script for object:  %i, trigger -:%S:-, actor:  %i, \ndescriminator -:%S:-, target:  %i, takes_precedence:  %i\n",
+   Sprintf(buf, "Creating a script for object:  %i, trigger -:%pS:-, actor:  %i, \ndescriminator -:%pS:-, target:  %i, takes_precedence:  %i\n",
            obj_num, &trigger_cmd, actor_num, &descriminator, target_num,
            takes_precedence);
    show(buf, pc);
@@ -2292,7 +2292,7 @@ int add_crit_alias(int i_th, const String* targ, String* alias,
    alias->Append("_");
    ptr->names.pushBack(new String(*alias));
 
-   Sprintf(buf, "Added alias: %S to your pet.\n", alias);
+   Sprintf(buf, "Added alias: %pS to your pet.\n", alias);
    pc.show(buf);
 
    return 0;

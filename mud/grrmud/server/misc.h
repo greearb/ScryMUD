@@ -150,9 +150,9 @@ String* name_of_dr_data(const door_data& dr, int see_bit, int dest);
 String* name_of_obj(const object& obj, int see_bit);
 String* long_name_of_obj(object& obj, int see_bit);
 String* name_of_room(const room& rm, int see_bit);
-char* get_his_her(const critter& crit);
-char* get_hisself_herself(const critter& crit);
-char* get_he_she(const critter& crit);
+const char* get_his_her(const critter& crit);
+const char* get_hisself_herself(const critter& crit);
+const char* get_he_she(const critter& crit);
 
 int obj_is_named(const object& obj, const String& name);
 int mob_is_named(const critter& pc, const String& name);

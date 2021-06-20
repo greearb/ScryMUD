@@ -37,7 +37,7 @@
  */
 #define NUM_LANGUAGES 8
 
-char* languages[NUM_LANGUAGES] = {
+const char* languages[NUM_LANGUAGES] = {
    "English",
    "Spanish",
    "Portugues",

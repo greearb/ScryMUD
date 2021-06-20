@@ -109,10 +109,7 @@ void do_entered_room_procs(critter& pc, door* dr, const char* from_dir,
 void do_entered_room_procs(object& obj, door* dr, const char* from_dir,
                            room& rm, int sanity) {
    if (sanity < 20) {
-      // This just uses the variables to cut down on compiler warnings.
-      if (&obj || dr || from_dir) {
-         rm.checkLight();
-      }
+      rm.checkLight();
    }
 }//do_entered_room_procs (objects)
 
