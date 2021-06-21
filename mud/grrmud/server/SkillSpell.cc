@@ -64,7 +64,7 @@ SkillSpell& SkillSpell::operator=(const SkillSpell& source) {
 String SkillSpell::getHtml() {
    String buf(100);
    String retval(500);
-   Sprintf(retval, "<center><A name=\"%S\">\n<h3>Skill name: %S</h3>\n",
+   Sprintf(retval, "<center><A name=\"%pS\">\n<h3>Skill name: %pS</h3>\n",
            &name, &name);
 
    Sprintf(buf, "num: %i &nbsp; mininum level: %i &nbsp; difficulty: %i/100 &nbsp;",
@@ -105,7 +105,7 @@ String SkillSpell::toString() {
    String buf(100);
    String retval(500);
 
-   Sprintf(retval, "[%i]%P06 %S%P19 min lvl: %i  difficulty: %i/100  mana: %i  scroll# %i\n",
+   Sprintf(retval, "[%i]%P06 %pS%P19 min lvl: %i  difficulty: %i/100  mana: %i  scroll# %i\n",
            ss_num, &name, min_level, difficulty, mana_cost, scroll_num);
 
    int tmp = 0;
@@ -273,7 +273,7 @@ object* SkillSpell::getScroll() {
    object* retval = NULL;
 
    if (mana_cost && !ss_num) {
-      Sprintf(buf, "ERROR:  need to create a scroll for %S.\n",
+      Sprintf(buf, "ERROR:  need to create a scroll for %pS.\n",
               &name);
       mudlog.log(LS_ERROR, buf);
       retval = NULL;
@@ -285,8 +285,8 @@ object* SkillSpell::getScroll() {
    if (retval) {
       if (!retval->isInUse()) {
          Sprintf(buf, 
-               "ERROR:  Tried to return non-existant scroll:  %i in get_number_of_scroll.\n",
-               retval);
+                 "ERROR:  Tried to return non-existant scroll:  %i in get_number_of_scroll.\n",
+                 scroll_num);
          mudlog.log(LS_ERROR, buf);
          return NULL;
       }//if
@@ -332,7 +332,13 @@ void SkillSpell::addNewCaster(int obj_num) {
 ///***********************************************************************///
 
 int Strncompare(const String& a, const String& b) {
-   return strcasecmp(a.string, b.string);
+   const char* astr = a.string;
+   if (!astr)
+      astr = "";
+   const char* bstr = b.string;
+   if (!bstr)
+      bstr = "";
+   return strcasecmp(astr, bstr);
 }
 
 SSCollection::SSCollection() {
@@ -343,7 +349,7 @@ int SSCollection::doHelpFor(const String& key, critter& pc) {
    int idx = getNumForName(key);
    if (idx >= 0) {
       String buf(100);
-      Sprintf(buf, "Help for Skill/Spell:  %S\n\n", &key);
+      Sprintf(buf, "Help for Skill/Spell:  %pS\n\n", &key);
       pc.show(buf);
       pc.show(getSSDesc(idx));
       Sprintf(buf, "\n\nMana: %i  Difficulty: %i/100\n",
@@ -414,7 +420,7 @@ String SSCollection::generatePsDotScript() {
          Cell<int> cll(ss_list[i].enables);
          int val = 0;
 
-         Sprintf(buf, "\t\"%S\" [label=\"%S", &(ss_list[i].getName()),
+         Sprintf(buf, "\t\"%pS\" [label=\"%pS", &(ss_list[i].getName()),
                &(ss_list[i].getName()));
          retval.Append(buf);
          restrictions = FALSE;
@@ -437,14 +443,14 @@ String SSCollection::generatePsDotScript() {
          retval.Append(buf);
 
          while ((val = cll.next())) {
-            Sprintf(buf, "\t\"%S\" -> \"%S\";\n", &(ss_list[i].getName()),
+            Sprintf(buf, "\t\"%pS\" -> \"%pS\";\n", &(ss_list[i].getName()),
                     &(getSS(val).getName()));
             retval.Append(buf);
          }//while
          ss_list[i].prereqs.head(cll);
          while ((val = cll.next())) {
             Sprintf(buf,
-                  "\t\"%S\" -> \"%S\" [color=red,dir=back,shape=plaintext];\n",
+                  "\t\"%pS\" -> \"%pS\" [color=red,dir=back,shape=plaintext];\n",
                     &(getSS(val).getName()), &(ss_list[i].getName()));
             retval.Append(buf);
          }//while
@@ -472,7 +478,7 @@ String SSCollection::generateGifDotScript() {
          Cell<int> cll(ss_list[i].enables);
          int val = 0;
 
-         Sprintf(buf, "\t\"%S\" [label=\"%S", &(ss_list[i].getName()),
+         Sprintf(buf, "\t\"%pS\" [label=\"%pS", &(ss_list[i].getName()),
                &(ss_list[i].getName()));
          retval.Append(buf);
          restrictions = FALSE;
@@ -495,14 +501,14 @@ String SSCollection::generateGifDotScript() {
          retval.Append(buf);
 
          while ((val = cll.next())) {
-            Sprintf(buf, "\t\"%S\" -> \"%S\";\n", &(ss_list[i].getName()),
+            Sprintf(buf, "\t\"%pS\" -> \"%pS\";\n", &(ss_list[i].getName()),
                     &(getSS(val).getName()));
             retval.Append(buf);
          }//while
          ss_list[i].prereqs.head(cll);
          while ((val = cll.next())) {
             Sprintf(buf,
-                  "\t\"%S\" -> \"%S\" [color=red, dir=back,shape=plaintext];\n",
+                  "\t\"%pS\" -> \"%pS\" [color=red, dir=back,shape=plaintext];\n",
                     &(getSS(val).getName()), &(ss_list[i].getName()));
             retval.Append(buf);
          }//while
