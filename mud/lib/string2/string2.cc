@@ -1811,6 +1811,8 @@ void vSprintf(String& targ, const char* string, va_list ap) {
 
    targ = ""; //initialize targ
 
+   //cerr << "\nvSprintf string: " << string << endl;
+
    for (i = 0; string[i]; ) {
       if (string[i] == '%') {
          i++;
@@ -1873,6 +1875,7 @@ void vSprintf(String& targ, const char* string, va_list ap) {
                   break;
                case 'p':   /* pointer, special:  $pS for ptr to string */
                   vp = va_arg(ap, void*);
+                  //cerr << "vp: " << vp << " i+1: " << string[i+1] << endl;
                   if (string[i+1]) {
                      if (string[i+1] == 'S') {
                         targ.append(*((String*)(vp)));

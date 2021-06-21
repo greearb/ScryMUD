@@ -3087,7 +3087,8 @@ int move(critter& pc, int i_th, const char* direction, short do_followers,
                from_dir = "below";
             }
          }//if
-		 blow_out_lights(&pc, true);
+
+         blow_out_lights(&pc, true);
          pc.doGoToRoom(dest, from_dir, door_ptr, is_dead, rm.getIdNum(), 1);
 
          if (is_dead) {

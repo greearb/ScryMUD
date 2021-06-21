@@ -2803,13 +2803,16 @@ int room::vDoEmote(critter& pc, CSelectorColl& includes, CSelectorColl& denies,
             mudlog << "room::doEmote, not denied." << endl;
          }
          if (includes.matches(ptr, &pc)) {
+            va_list aq;
+            va_copy(aq, argp);
             if (mudlog.ofLevel(DBG)) {
                mudlog << "room::doEmote, includes matched." << endl;
                mudlog << "cstr of " << (int)(cs_entry) << "-:"
                       << cstr(cs_entry, *ptr) << ":-" <<  endl;
             }
 
-            vSprintf(buf, cstr(cs_entry, *ptr), argp);
+            vSprintf(buf, cstr(cs_entry, *ptr), aq);
+            va_end(aq);
             if (mudlog.ofLevel(DBG)) {
                mudlog << endl << "buf -:" << buf << ":-" << endl << endl;
             }
