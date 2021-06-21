@@ -66,7 +66,7 @@ int hurl(int i_th, const String* victim, critter& pc, int was_ordered) {
       }//if
 
       if (!crit_ptr->canBeHurled()) {
-         Sprintf(buf, "%S is wary to that particular trick now!\n",
+         Sprintf(buf, "%pS is wary to that particular trick now!\n",
                  crit_ptr->getLongName());
          buf.Cap();
          pc.show(buf);
@@ -107,14 +107,14 @@ int do_hurl(critter& vict, critter& pc) {
 
    if (skill_did_hit(pc, HURL_SKILL_NUM, vict)) { 
 
-      Sprintf(buf, "lifts %S over %s head!!\n",
+      Sprintf(buf, "lifts %pS over %s head!!\n",
               name_of_crit(vict, ~0), get_his_her(pc));
       emote(buf, pc, ROOM, TRUE, &vict);
-      Sprintf(buf, "%S lifts you over %s head!!\n",
+      Sprintf(buf, "%pS lifts you over %s head!!\n",
               name_of_crit(pc, vict.SEE_BIT), get_his_her(pc));
       show(buf, vict);
 
-      Sprintf(buf, "You lift %S over your head.\n",
+      Sprintf(buf, "You lift %pS over your head.\n",
               name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
 
@@ -130,11 +130,11 @@ int do_hurl(critter& vict, critter& pc) {
                                  door_list[d(1,10)].names.peekFront(),
                                  ~0, ROOM)) && 
                !(dptr->dr_data->door_data_flags.get(2))) {
-         Sprintf(buf, "hurls %S out of the room.\n", name_of_crit(vict, ~0));
+         Sprintf(buf, "hurls %pS out of the room.\n", name_of_crit(vict, ~0));
          emote(buf, pc, ROOM, TRUE, &vict);
          Sprintf(buf, "You hurl %s out of the room.\n", get_him_her(vict));
          show(buf, pc);
-         Sprintf(buf, "%S hurls you out of the room.\n", 
+         Sprintf(buf, "%pS hurls you out of the room.\n", 
                  name_of_crit(pc, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
@@ -146,15 +146,12 @@ int do_hurl(critter& vict, critter& pc) {
             door::findDoorByDest(room_list[abs(dptr->destination)].doors,
                                  pc.getCurRoomNum());
          String from_dir(30);
-         int is_custom = FALSE;
          if (opposite_door) {
             from_dir = *(opposite_door->getDirection());
             if (strcasecmp(from_dir, "up") == 0) {
-               is_custom = TRUE;
                from_dir = "above";
             }
             else if (strcasecmp(from_dir, "down") == 0) {
-               is_custom = TRUE;
                from_dir = "below";
             }
          }//if
@@ -176,11 +173,11 @@ int do_hurl(critter& vict, critter& pc) {
          }
       }//if hurled into another room
       else { //hurled against the wall
-         Sprintf(buf, "hurls %S into the wall.\n", name_of_crit(vict, ~0));
+         Sprintf(buf, "hurls %pS into the wall.\n", name_of_crit(vict, ~0));
          emote(buf, pc, ROOM, TRUE, &vict);
          Sprintf(buf, "You hurl %s into the wall.\n", get_him_her(vict));
          show(buf, pc);
-         Sprintf(buf, "%S hurls you into the wall.\n", 
+         Sprintf(buf, "%pS hurls you into the wall.\n", 
                  name_of_crit(pc, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
@@ -200,16 +197,16 @@ int do_hurl(critter& vict, critter& pc) {
       //}//else
    }//if hit
    else {  //missed
-      Sprintf(buf, "%S tries but fails to lift you over %s head!\n", 
+      Sprintf(buf, "%pS tries but fails to lift you over %s head!\n", 
                  name_of_crit(pc, vict.SEE_BIT), get_his_her(pc));
       buf.Cap();
       show(buf, vict);
 
-      Sprintf(buf, "You fail to lift %S over your head!\n",
+      Sprintf(buf, "You fail to lift %pS over your head!\n",
                  name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
 
-      Sprintf(buf, "fails to lift %S over %s head.\n",
+      Sprintf(buf, "fails to lift %pS over %s head.\n",
               name_of_crit(vict, ~0), get_his_her(pc));
       emote(buf, pc, ROOM, TRUE, &vict);
    }//else
@@ -289,54 +286,54 @@ int do_body_slam(critter& vict, critter& pc) {
       exact_raw_damage(d(5, pc.STR) + pc.LEVEL, NORMAL, vict, pc);
       vict.PAUSE = 1;
 
-      Sprintf(buf, "lifts %S over %s head!!\n",
+      Sprintf(buf, "lifts %pS over %s head!!\n",
               name_of_crit(vict, ~0), get_his_her(pc));
       emote(buf, pc, ROOM, TRUE, &vict);
-      Sprintf(buf, "%S lifts you over %s head!!\n",
+      Sprintf(buf, "%pS lifts you over %s head!!\n",
               name_of_crit(pc, vict.SEE_BIT), get_his_her(pc));
       show(buf, vict);
-      Sprintf(buf, "You lift %S over your head with a mighty heave!\n",
+      Sprintf(buf, "You lift %pS over your head with a mighty heave!\n",
               name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
 
       if (vict.HP < 0) {
-         Sprintf(buf, "crushes %S's body into the ground!!\n", 
-                 name_of_crit(vict, ~0), get_his_her(pc));
+         Sprintf(buf, "crushes %pS's body into the ground!!\n", 
+                 name_of_crit(vict, ~0));
          emote(buf, pc, ROOM, TRUE, &vict);
          show("You meet the ground and your world goes black!\n", vict);
 
          Sprintf(buf, 
-                 "You crush %S into the ground, %s moves no more!\n",
+                 "You crush %pS into the ground, %s moves no more!\n",
                  name_of_crit(vict, pc.SEE_BIT), get_he_she(vict));
          show(buf, pc);
          do_fatality = TRUE;
       }//if fatality
       else {
-         Sprintf(buf, "%S slams you into the ground!\n",
+         Sprintf(buf, "%pS slams you into the ground!\n",
                  name_of_crit(pc, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
 
-         Sprintf(buf, "You slam %S into the ground!\n",
+         Sprintf(buf, "You slam %pS into the ground!\n",
                  name_of_crit(vict, vict.SEE_BIT));
          show(buf, pc);
 
-         Sprintf(buf, "slams %S to the ground!\n",
+         Sprintf(buf, "slams %pS to the ground!\n",
                  name_of_crit(vict, ~0));
          emote(buf, pc, ROOM, TRUE, &vict);
       }//else
    }//if
    else {  //missed
-      Sprintf(buf, "%S tries but fails to lift you over %s head!\n", 
+      Sprintf(buf, "%pS tries but fails to lift you over %s head!\n", 
                  name_of_crit(pc, vict.SEE_BIT), get_his_her(pc));
       buf.Cap();
       show(buf, vict);
 
-      Sprintf(buf, "You fail to lift %S over your head!\n",
+      Sprintf(buf, "You fail to lift %pS over your head!\n",
                  name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
 
-      Sprintf(buf, "fails to lift %S over %s head.\n",
+      Sprintf(buf, "fails to lift %pS over %s head.\n",
               name_of_crit(vict, ~0), get_his_her(pc));
       emote(buf, pc, ROOM, TRUE, &vict);
 

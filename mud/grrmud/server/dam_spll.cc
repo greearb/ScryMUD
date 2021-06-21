@@ -78,16 +78,16 @@ void SpellSpearOfDarkness::doSpellEffects(){
         else { //agg is NOT the victim
              if (victim.HP < 0) {
                 Sprintf(buf,
-                     "Your spear of dark energy protrudes from %S's unbeating heart!\n",
+                     "Your spear of dark energy protrudes from %pS's unbeating heart!\n",
                      name_of_crit(victim, agg.SEE_BIT));
                 show(buf, agg);
                 Sprintf(buf,
-                        "%S pierces your heart with %s spear of dark energy!\n",
+                        "%pS pierces your heart with %s spear of dark energy!\n",
                         name_of_crit(agg, victim.SEE_BIT),
                         get_his_her(agg));
                 buf.Cap();
                 show(buf, victim);
-                Sprintf(buf, "impales %S's heart with %s spear of dark energy!\n",
+                Sprintf(buf, "impales %pS's heart with %s spear of dark energy!\n",
                         name_of_crit(victim, ~0),
                         get_his_her(victim));
                 emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
@@ -96,14 +96,14 @@ void SpellSpearOfDarkness::doSpellEffects(){
         
 	     else { //no fatality
 		
-                 Sprintf(buf, "You conjure a spear of pure darkness and impale %S with it!.\n",
+                 Sprintf(buf, "You conjure a spear of pure darkness and impale %pS with it!.\n",
                          name_of_crit(victim, agg.SEE_BIT));
                  show(buf, agg);
-                 Sprintf(buf, "%S's spear of dark energy slams into your chest!!\n",
+                 Sprintf(buf, "%pS's spear of dark energy slams into your chest!!\n",
                      name_of_crit(agg, victim.SEE_BIT));
                  buf.Cap();
                  show(buf, victim);
-                 Sprintf(buf, "impales %S with %s spear of dark energy!\n", name_of_crit(victim, ~0),
+                 Sprintf(buf, "impales %pS with %s spear of dark energy!\n", name_of_crit(victim, ~0),
                          get_his_her(agg));
                  emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
             }
@@ -117,15 +117,15 @@ void SpellSpearOfDarkness::doSpellEffects(){
         do_join_in_battle = FALSE;
     }//if
     else { //missed, and agg does NOT equal vict
-        Sprintf(buf, "You miss %S with your spear of dark energy.\n",
+        Sprintf(buf, "You miss %pS with your spear of dark energy.\n",
                name_of_crit(victim, agg.SEE_BIT));
         show(buf, agg);String buf(100);
         Sprintf(buf,
-                "You narrowly elude %S's spear of dark energy!\n",
+                "You narrowly elude %pS's spear of dark energy!\n",
                 name_of_crit(agg, victim.SEE_BIT));
         buf.Cap();
         show(buf, victim);
-        Sprintf(buf, "misses %S with %s spear of dark energy!\n",
+        Sprintf(buf, "misses %pS with %s spear of dark energy!\n",
                name_of_crit(victim, ~0),
                get_his_her(agg));
         emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
@@ -169,39 +169,39 @@ void SpellOrbOfPower::doSpellEffects() {
       } // if agg == vict
       else { // agg not the victim
          if (victim.HP < 0) { // Fatality
-            Sprintf(buf, "Your orb tears the flesh from %S's body!\n",
+            Sprintf(buf, "Your orb tears the flesh from %pS's body!\n",
                     name_of_crit(victim, agg.SEE_BIT));
             show(buf, agg);
-            Sprintf(buf, "%S's orb tears the flesh from your body!\n",
+            Sprintf(buf, "%pS's orb tears the flesh from your body!\n",
                     name_of_crit(agg, victim.SEE_BIT));
             show(buf, victim);
-            Sprintf(buf, "orb rips the flesh from %S's body!",
+            Sprintf(buf, "orb rips the flesh from %pS's body!",
                     name_of_crit(victim, ~0));
             pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
             do_fatality = TRUE;
          } //if fatality
          else { // survived
             if (dmg <= 5*(clvl+10)) { // kinda wimpy, average or worse damage...
-               Sprintf(buf, "Your orb slams into %S!\n",
+               Sprintf(buf, "Your orb slams into %pS!\n",
                        name_of_crit(victim, agg.SEE_BIT));
                show(buf, agg);
-               Sprintf(buf, "%S's orb slams into you!!\n",
+               Sprintf(buf, "%pS's orb slams into you!!\n",
                        name_of_crit(agg, victim.SEE_BIT));
                show(buf, victim);
-               Sprintf(buf, "orb slams into %S!",
+               Sprintf(buf, "orb slams into %pS!",
                        name_of_crit(victim, ~0));
                pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
  
             } // if kinda wimpy
 
             else {  // oh yeah, that's the stuff...
-               Sprintf(buf, "Your orb crushes itself into %S's body!\n",
+               Sprintf(buf, "Your orb crushes itself into %pS's body!\n",
                        name_of_crit(victim, agg.SEE_BIT));
                show(buf, agg);
-               Sprintf(buf, "%S's orb crushes itself into your body!\n",
+               Sprintf(buf, "%pS's orb crushes itself into your body!\n",
                        name_of_crit(agg, victim.SEE_BIT));
                show(buf, victim);
-               Sprintf(buf, "orb crushes itself into %S's body!",
+               Sprintf(buf, "orb crushes itself into %pS's body!",
                        name_of_crit(victim, ~0));
                pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
 
@@ -220,13 +220,13 @@ void SpellOrbOfPower::doSpellEffects() {
          do_join_in_battle = FALSE;
       } // missed self
       else { // missed somebody else...
-         Sprintf(buf, "%S dodges your orb just before %s is struck!\n",
+         Sprintf(buf, "%pS dodges your orb just before %s is struck!\n",
                  name_of_crit(victim, agg.SEE_BIT), get_he_she(victim));
          show(buf, agg);
-         Sprintf(buf, "You duck out of the path of %S's orb just in time!\n",
+         Sprintf(buf, "You duck out of the path of %pS's orb just in time!\n",
                  name_of_crit(agg, victim.SEE_BIT));
          show(buf, victim);
-         Sprintf(buf, "orb blasts past %S, missing by mere inches!",
+         Sprintf(buf, "orb blasts past %pS, missing by mere inches!",
                  name_of_crit(victim, ~0));
          pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &victim);
       }
@@ -277,31 +277,31 @@ void SpellHolyWord::doSpellEffects() {
       else { //agg is NOT the victim
          if (vict.HP < 0) {
             Sprintf(buf, 
-                  "Your god destroys %S at your behest!\n",
+                  "Your god destroys %pS at your behest!\n",
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, 
-                    "%S's god destroys you at %s behest!!\n",
+                    "%pS's god destroys you at %s behest!!\n",
                     name_of_crit(agg, vict.SEE_BIT),
                     get_his_her(agg));
             show(buf, vict);
-            Sprintf(buf, "god destroys %S at %s behest!",
+            Sprintf(buf, "god destroys %pS at %s behest!",
                     name_of_crit(vict, ~0),
                     get_his_her(agg));
             pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
             do_fatality = TRUE;
          }//if fatality
          else { //no fatality
-            Sprintf(buf, "Your god greatly injures %S at your behest!.\n",
+            Sprintf(buf, "Your god greatly injures %pS at your behest!.\n",
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, 
-                    "%S calls the wrath of %s god down upon you!!\n",
+                    "%pS calls the wrath of %s god down upon you!!\n",
                     name_of_crit(agg, vict.SEE_BIT),
                     get_his_her(agg));
             buf.Cap();
             show(buf, vict);
-            Sprintf(buf, "god wreaks vengeance upon %S at %s behest!", 
+            Sprintf(buf, "god wreaks vengeance upon %pS at %s behest!", 
                     name_of_crit(vict, ~0),
                     get_his_her(agg));
             pemote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -318,11 +318,11 @@ void SpellHolyWord::doSpellEffects() {
      }//if
      else { //missed, and agg does NOT equal vict
        show("Your god does not listen!\n", agg);
-       Sprintf(buf, "%S prays for your demise in vain!!\n",
+       Sprintf(buf, "%pS prays for your demise in vain!!\n",
                name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "prays for %S's demise in vain!", 
+       Sprintf(buf, "prays for %pS's demise in vain!", 
                name_of_crit(vict, ~0));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
      }//else did miss AND vict NOT equal to agg
@@ -389,27 +389,27 @@ void SpellDispelGood::doSpellEffects() {
       }//if agg == vict
       else { //agg is NOT the victim
          if (vict.HP < 0) {
-            Sprintf(buf, "You make %S's soul flee in immortal pain!\n",
+            Sprintf(buf, "You make %pS's soul flee in immortal pain!\n",
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, 
-                    "%S makes your soul flee in immortal anguish!!\n",
+                    "%pS makes your soul flee in immortal anguish!!\n",
                     name_of_crit(agg, vict.SEE_BIT));
             show(buf, vict);
-            Sprintf(buf, "makes %S's soul flee in immortal anguish!",
+            Sprintf(buf, "makes %pS's soul flee in immortal anguish!",
                     name_of_crit(vict, ~0));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
             do_fatality = TRUE;
          }//if fatality
          else { //no fatality
-            Sprintf(buf, "You make %S's soul scream in pain!.\n",
+            Sprintf(buf, "You make %pS's soul scream in pain!.\n",
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
-            Sprintf(buf, "%S makes your soul scream in anguish!!\n",
+            Sprintf(buf, "%pS makes your soul scream in anguish!!\n",
                     name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);
-            Sprintf(buf, "makes %S's soul scream in pain!", 
+            Sprintf(buf, "makes %pS's soul scream in pain!", 
                     name_of_crit(vict, ~0));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
          }//else, no fatality
@@ -426,15 +426,15 @@ void SpellDispelGood::doSpellEffects() {
        if (vict.ALIGN < -350 && 1 == d(1,25))
           Sprintf(buf, "So you see, Evil will always triumph over Good, because Good is dumb.\n");
        else
-          Sprintf(buf, "You can't get ahold of %S's immortal soul!\n",
+          Sprintf(buf, "You can't get ahold of %pS's immortal soul!\n",
                   name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "%S can't get ahold of your soul, thank god!!\n",
+               "%pS can't get ahold of your soul, thank god!!\n",
                name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "tries and fails to make %S's soul scream in pain!", 
+       Sprintf(buf, "tries and fails to make %pS's soul scream in pain!", 
                name_of_crit(vict, ~0));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
      }//else did miss AND vict NOT equal to agg
@@ -489,32 +489,32 @@ void SpellHarm::doSpellEffects() {
       else { //agg is NOT the victim
          if (vict.HP < 0) {
             Sprintf(buf, 
-                  "You pulverise %S's innards with the force of your will!\n",
+                  "You pulverise %pS's innards with the force of your will!\n",
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, 
-                    "%S crushes your heart with the force of %s will!!\n",
+                    "%pS crushes your heart with the force of %s will!!\n",
                     name_of_crit(agg, vict.SEE_BIT),
                     get_his_her(agg));
             show(buf, vict);
-            Sprintf(buf, "crushes %S's heart with the force of %s will!",
+            Sprintf(buf, "crushes %pS's heart with the force of %s will!",
                     name_of_crit(vict, ~0),
                     get_his_her(agg));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
             do_fatality = TRUE;
          }//if fatality
          else { //no fatality
-            Sprintf(buf, "You bruise %S's organs with your will!.\n",
+            Sprintf(buf, "You bruise %pS's organs with your will!.\n",
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, 
-                    "%S bruises your organs with the force of %s will!!\n",
+                    "%pS bruises your organs with the force of %s will!!\n",
                     name_of_crit(agg, vict.SEE_BIT),
                     get_his_her(agg));
             buf.Cap();
             show(buf, vict);
             Sprintf(buf, 
-                    "bruises %S's internal organs with the force of %s will!", 
+                    "bruises %pS's internal organs with the force of %s will!", 
                     name_of_crit(vict, ~0),
                     get_his_her(agg));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -530,15 +530,15 @@ void SpellHarm::doSpellEffects() {
        do_join_in_battle = FALSE;
      }//if
      else { //missed, and agg does NOT equal vict
-       Sprintf(buf, "You fail to harm %S!\n",
+       Sprintf(buf, "You fail to harm %pS!\n",
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "%S tries but fails to harm you!!\n",
+               "%pS tries but fails to harm you!!\n",
                name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "tries and fails to make %S's soul scream in pain!", 
+       Sprintf(buf, "tries and fails to make %pS's soul scream in pain!", 
                name_of_crit(vict, ~0));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
      }//else did miss AND vict NOT equal to agg
@@ -591,30 +591,30 @@ void SpellCauseCritical::doSpellEffects() {
       else { //agg is NOT the victim
          if (vict.HP < 0) {
             Sprintf(buf, 
-                    "You give %S a heart attack!\n",
+                    "You give %pS a heart attack!\n",
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, 
-                    "%S gives you a heart attack!!\n",
+                    "%pS gives you a heart attack!!\n",
                     name_of_crit(agg, vict.SEE_BIT));
             show(buf, vict);
-            Sprintf(buf, "gives %S a heart attack!",
+            Sprintf(buf, "gives %pS a heart attack!",
                     name_of_crit(vict, ~0));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
             do_fatality = TRUE;
          }//if fatality
          else { //no fatality
-            Sprintf(buf, "You give %S a mighty pain in %s arse!.\n",
+            Sprintf(buf, "You give %pS a mighty pain in %s arse!.\n",
                     name_of_crit(vict, agg.SEE_BIT),
                     get_his_her(vict));
             show(buf, agg);
             Sprintf(buf, 
-                    "%S gives you an awful pain in your side!!\n",
+                    "%pS gives you an awful pain in your side!!\n",
                     name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);
             Sprintf(buf, 
-                    "causes an awful pain in %S's side!", 
+                    "causes an awful pain in %pS's side!", 
                     name_of_crit(vict, ~0));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
          }//else, no fatality
@@ -629,15 +629,15 @@ void SpellCauseCritical::doSpellEffects() {
        do_join_in_battle = FALSE;
      }//if
      else { //missed, and agg does NOT equal vict
-       Sprintf(buf, "You fail to hurt %S!\n",
+       Sprintf(buf, "You fail to hurt %pS!\n",
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "%S fails to hurt you!!\n",
+               "%pS fails to hurt you!!\n",
                name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "fails to hurt %S!", 
+       Sprintf(buf, "fails to hurt %pS!", 
                name_of_crit(vict, ~0));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
      }//else did miss AND vict NOT equal to agg
@@ -701,33 +701,32 @@ void do_cast_cause_sickness(critter& vict, critter& agg, int is_canned,
       else { //agg is NOT the victim
          if (vict.HP < 0) {
             Sprintf(buf, 
-                    "You make %S literally puke %s guts out!!\n",
+                    "You make %pS literally puke %s guts out!!\n",
                     name_of_crit(vict, agg.SEE_BIT),
                     get_his_her(vict));
             show(buf, agg);
             Sprintf(buf, 
-                    "%S makes you retch so hard you burst your organs!!\n",
+                    "%pS makes you retch so hard you burst your organs!!\n",
                     name_of_crit(agg, vict.SEE_BIT));
             show(buf, vict);
-            Sprintf(buf, "makes %S retch %s guts out!",
+            Sprintf(buf, "makes %pS retch %s guts out!",
                     name_of_crit(vict, ~0),
                     get_his_her(vict));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
             do_fatality = TRUE;
          }//if fatality
          else { //no fatality
-            Sprintf(buf, "You make %S sick!.\n",
+            Sprintf(buf, "You make %pS sick!.\n",
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, 
-                    "%S makes you sick!!\n",
+                    "%pS makes you sick!!\n",
                     name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);
             Sprintf(buf, 
-                    "makes %S sick!", 
-                    name_of_crit(vict, ~0),
-                    get_his_her(agg));
+                    "makes %pS sick!", 
+                    name_of_crit(vict, ~0));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
          }//else, no fatality
       }//agg is NOT victim
@@ -743,15 +742,15 @@ void do_cast_cause_sickness(critter& vict, critter& agg, int is_canned,
        do_join_in_battle = FALSE;
      }//if
      else { //missed, and agg does NOT equal vict
-       Sprintf(buf, "You fail to make %S sick!\n",
+       Sprintf(buf, "You fail to make %pS sick!\n",
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "%S makes you feel a little queasy!!\n",
+               "%pS makes you feel a little queasy!!\n",
                name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "makes %S feel a little queasy!", 
+       Sprintf(buf, "makes %pS feel a little queasy!", 
                name_of_crit(vict, ~0));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
      }//else did miss AND vict NOT equal to agg
@@ -853,15 +852,15 @@ void do_cast_lightning(critter& vict, critter& agg, int is_canned,
       }//if agg == vict
       else { //agg is NOT the victim
          if (vict.HP < 0) {
-            Sprintf(buf, "You blast %S asunder with your lightning bolt!\n",
+            Sprintf(buf, "You blast %pS asunder with your lightning bolt!\n",
                  name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, 
-                    "%S blasts you asunder with %s lightning bolt!\n",
+                    "%pS blasts you asunder with %s lightning bolt!\n",
                     name_of_crit(agg, vict.SEE_BIT),
                     get_his_her(agg));
             show(buf, vict);
-            Sprintf(buf, "blasts %S asunder with %s bolt of lightning!",
+            Sprintf(buf, "blasts %pS asunder with %s bolt of lightning!",
                     name_of_crit(vict, ~0),
                     get_his_her(vict));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -869,14 +868,14 @@ void do_cast_lightning(critter& vict, critter& agg, int is_canned,
          }//if fatality
          else { //no fatality
             Sprintf(buf, 
-                 "You call a bolt of lightning down on %S's head!.\n",
+                 "You call a bolt of lightning down on %pS's head!.\n",
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
-            Sprintf(buf, "%S's bolt of lightning momentarily stuns you!!\n",
+            Sprintf(buf, "%pS's bolt of lightning momentarily stuns you!!\n",
                     name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);
-            Sprintf(buf, "fries %S with %s bolt of lightning!", 
+            Sprintf(buf, "fries %pS with %s bolt of lightning!", 
                     name_of_crit(vict, ~0), 
                     get_his_her(agg));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -887,8 +886,7 @@ void do_cast_lightning(critter& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
      if (&agg == &vict) {
-       Sprintf(buf, "You miss youself with your lightning bolt!\n", 
-               name_of_crit(vict, agg.SEE_BIT));
+       Sprintf(buf, "You miss youself with your lightning bolt!\n");
        show(buf, agg);
        Sprintf(buf, "misses %s with %s bolt of lighting!!", 
                get_himself_herself(vict),
@@ -897,15 +895,15 @@ void do_cast_lightning(critter& vict, critter& agg, int is_canned,
        do_join_in_battle = FALSE;
      }//if
      else { //missed, and agg does NOT equal vict
-       Sprintf(buf, "You miss %S with your bolt of lightning.\n",
+       Sprintf(buf, "You miss %pS with your bolt of lightning.\n",
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "You narrowly elude %S's bolt of lightning!\n",
+               "You narrowly elude %pS's bolt of lightning!\n",
                name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "misses %S with %s bolt of lightning!", 
+       Sprintf(buf, "misses %pS with %s bolt of lightning!", 
                name_of_crit(vict, ~0), 
                get_his_her(agg));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -1009,16 +1007,16 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
       else { //agg is NOT the victim
          if (vict.HP < 0) {
             Sprintf(buf, 
-         "Your dark dart of energy protrudes from %S's unbreathing throat!\n",
+         "Your dark dart of energy protrudes from %pS's unbreathing throat!\n",
                  name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, 
-                    "%S pierces your throat with %s dark energy dart!\n",
+                    "%pS pierces your throat with %s dark energy dart!\n",
                     name_of_crit(agg, vict.SEE_BIT),
                     get_his_her(agg));
             buf.Cap();
             show(buf, vict);
-            Sprintf(buf, "pierces %S's throat with %s dark energy dart!\n",
+            Sprintf(buf, "pierces %pS's throat with %s dark energy dart!\n",
                     name_of_crit(vict, ~0),
                     get_his_her(vict));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -1026,14 +1024,14 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
          }//if fatality
          else { //no fatality
             Sprintf(buf, 
-                    "You conjure a bolt of pure darkness and hit %S with it!.\n",
+                    "You conjure a bolt of pure darkness and hit %pS with it!.\n",
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
-            Sprintf(buf, "%S's dart of dark energy slams into your chest!!\n",
+            Sprintf(buf, "%pS's dart of dark energy slams into your chest!!\n",
                     name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);
-            Sprintf(buf, "hits %S with %s dart of dark energy!\n", 
+            Sprintf(buf, "hits %pS with %s dart of dark energy!\n", 
                     name_of_crit(vict, ~0), 
                     get_his_her(agg));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -1052,15 +1050,15 @@ void do_cast_dark_dart(critter& vict, critter& agg, int is_canned,
        do_join_in_battle = FALSE;
      }//if
      else { //missed, and agg does NOT equal vict
-       Sprintf(buf, "You miss %S with your dark energy dart.\n",
+       Sprintf(buf, "You miss %pS with your dark energy dart.\n",
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "You narrowly elude %S's dark dart of energy!\n",
+               "You narrowly elude %pS's dark dart of energy!\n",
                name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "misses %S with %s dark energy dart!\n", 
+       Sprintf(buf, "misses %pS with %s dark energy dart!\n", 
                name_of_crit(vict, ~0), 
                get_his_her(agg));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -1166,14 +1164,14 @@ void do_cast_shocking_grasp(critter& vict, critter& agg, int is_canned,
       else { //agg is NOT the victim
          if (vict.HP < 0) {
             Sprintf(buf, 
-                 "The acrid smell of ozone rises from %S's charred body!\n",
+                 "The acrid smell of ozone rises from %pS's charred body!\n",
                  name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, 
-                   "%S shocks you to death!\n",
+                   "%pS shocks you to death!\n",
                    name_of_crit(agg, vict.SEE_BIT));
             show(buf, vict);
-            Sprintf(buf, "burns %S to death with %s crackling hands!\n",
+            Sprintf(buf, "burns %pS to death with %s crackling hands!\n",
                     name_of_crit(vict, ~0),
                     get_his_her(vict));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -1181,14 +1179,14 @@ void do_cast_shocking_grasp(critter& vict, critter& agg, int is_canned,
          }//if fatality
          else { //no fatality
             Sprintf(buf, 
-                 "Your fingers crackle with electricity as you shock %S!.\n",
+                 "Your fingers crackle with electricity as you shock %pS!.\n",
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
-            Sprintf(buf, "%S's crackling fingers burn into your side!!\n",
+            Sprintf(buf, "%pS's crackling fingers burn into your side!!\n",
                     name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);
-            Sprintf(buf, "shocks %S with %s crackling fingers!\n", 
+            Sprintf(buf, "shocks %pS with %s crackling fingers!\n", 
                     name_of_crit(vict, ~0), 
                     get_his_her(agg));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -1199,8 +1197,7 @@ void do_cast_shocking_grasp(critter& vict, critter& agg, int is_canned,
       if (!is_canned)
         agg.MANA -= spell_mana;
       if (&agg == &vict) {
-        Sprintf(buf, "You can't even grab yourself!!\n", 
-                name_of_crit(vict, agg.SEE_BIT));
+        Sprintf(buf, "You can't even grab yourself!!\n");
         show(buf, agg);
         Sprintf(buf, "tries to grab %s but misses!!\n", 
                 get_himself_herself(vict));
@@ -1208,17 +1205,17 @@ void do_cast_shocking_grasp(critter& vict, critter& agg, int is_canned,
         do_join_in_battle = FALSE;
       }//if
       else { //missed, and agg does NOT equal vict
-         Sprintf(buf, "%S eludes your fearful grasp.\n",
+         Sprintf(buf, "%pS eludes your fearful grasp.\n",
                  name_of_crit(vict, agg.SEE_BIT));
          show(buf, agg);
 
          Sprintf(buf, 
-                 "You narrowly evade %S's shocking grasp!\n",
+                 "You narrowly evade %pS's shocking grasp!\n",
                  name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
  
-         Sprintf(buf, "misses %S with %s shocking grasp!\n", 
+         Sprintf(buf, "misses %pS with %s shocking grasp!\n", 
                     name_of_crit(vict, ~0), 
                     get_his_her(agg));
          emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -1323,28 +1320,28 @@ void do_cast_rainbow(critter& vict, critter& agg, int is_canned,
       else { //agg is NOT the victim
          if (vict.HP < 0) {
             Sprintf(buf, 
-                 "Your fingers drip color as your blast rips %S in two!\n",
+                 "Your fingers drip color as your blast rips %pS in two!\n",
                  name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
             Sprintf(buf, 
-                   "%S rips you in half with a colorful blast!\n",
+                   "%pS rips you in half with a colorful blast!\n",
                    name_of_crit(agg, vict.SEE_BIT));
             show(buf, vict);
-            Sprintf(buf, "rips %S in half with a colorful blast!\n",
+            Sprintf(buf, "rips %pS in half with a colorful blast!\n",
                     name_of_crit(vict, ~0));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
             do_fatality = TRUE;
          }//if fatality
          else { //no fatality
             Sprintf(buf, 
-          "Your fingers drip color as you blast %S with your rainbow!\n", 
+          "Your fingers drip color as you blast %pS with your rainbow!\n", 
                        name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
-            Sprintf(buf, "%S's rainbow burns into your chest!!\n",
+            Sprintf(buf, "%pS's rainbow burns into your chest!!\n",
                     name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);
-            Sprintf(buf, "blasts %S with %s vivid rainbow!\n", 
+            Sprintf(buf, "blasts %pS with %s vivid rainbow!\n", 
                     name_of_crit(vict, ~0), 
                     get_his_her(agg));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -1363,17 +1360,17 @@ void do_cast_rainbow(critter& vict, critter& agg, int is_canned,
          do_join_in_battle = FALSE;
       }//if
       else { //missed, and agg does NOT equal vict
-         Sprintf(buf, "You miss %S with your rainbow.\n", 
+         Sprintf(buf, "You miss %pS with your rainbow.\n", 
                  name_of_crit(vict, agg.SEE_BIT));
          show(buf, agg);
 
          Sprintf(buf, 
-                 "%S narrowly misses you with a rainbow blast!\n", 
+                 "%pS narrowly misses you with a rainbow blast!\n", 
                  name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
  
-         Sprintf(buf, "misses %S with %s rainbow blast!\n", 
+         Sprintf(buf, "misses %pS with %s rainbow blast!\n", 
                     name_of_crit(vict, ~0), 
                     get_his_her(agg));
          emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -1476,29 +1473,28 @@ void do_cast_burning_hands(critter& vict, critter& agg, int is_canned,
       else { //agg is NOT the victim
          if (vict.HP < 0) {
             Sprintf(buf, 
-                 "You find yourself holding a charred corpse!\n",
-                 name_of_crit(vict, agg.SEE_BIT));
+                 "You find yourself holding a charred corpse!\n");
             show(buf, agg);
             Sprintf(buf, 
-                   "%S burns you to death with glowing hands!\n",
+                   "%pS burns you to death with glowing hands!\n",
                    name_of_crit(agg, vict.SEE_BIT));
             show(buf, vict);
-            Sprintf(buf, "burns %S to death with glowing hands!\n",
+            Sprintf(buf, "burns %pS to death with glowing hands!\n",
                     name_of_crit(vict, ~0));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
             do_fatality = TRUE;
          }//if fatality
          else { //no fatality
             Sprintf(buf, 
-                    "%S howls in agony as you grab %s with your hands aflame!\n", 
+                    "%pS howls in agony as you grab %s with your hands aflame!\n", 
                     name_of_crit(vict, agg.SEE_BIT), get_him_her(vict));
             show(buf, agg);
             Sprintf(buf, 
-                    "%S's hands leave third degree burns on your body!!\n",
+                    "%pS's hands leave third degree burns on your body!!\n",
                     name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             show(buf, vict);
-            Sprintf(buf, "burns %S with %s burning hands!\n", 
+            Sprintf(buf, "burns %pS with %s burning hands!\n", 
                     name_of_crit(vict, ~0), 
                     get_his_her(agg));
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
@@ -1517,17 +1513,17 @@ void do_cast_burning_hands(critter& vict, critter& agg, int is_canned,
          do_join_in_battle = FALSE;
       }//if
       else { //missed, and agg does NOT equal vict
-         Sprintf(buf, "%S evades your grasp.\n", 
+         Sprintf(buf, "%pS evades your grasp.\n", 
                  name_of_crit(vict, agg.SEE_BIT));
          show(buf, agg);
 
          Sprintf(buf, 
-                 "You evade %S's burning hands!\n",
+                 "You evade %pS's burning hands!\n",
                  name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
  
-         Sprintf(buf, "misses %S with %s burning hands!\n", 
+         Sprintf(buf, "misses %pS with %s burning hands!\n", 
                     name_of_crit(vict, ~0), 
                     get_his_her(agg));
          emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);

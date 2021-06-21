@@ -57,15 +57,13 @@ void do_cast_rust(critter &vict, critter &agg, int is_canned, int lvl)
          if ( &vict == &agg ) {
             vict.show("You have rusted your own armor.", HL_DEF);
          } else {
-            Sprintf(buf, "You rust %S's armor!\n",
+            Sprintf(buf, "You rust %pS's armor!\n",
                   name_of_crit(vict, agg.SEE_BIT));
             agg.show(buf, HL_DEF);
-            Sprintf(buf, "Your armor rusts before your very eyes!\n",
-                  name_of_crit(agg, vict.SEE_BIT));
+            Sprintf(buf, "Your armor rusts before your very eyes!\n");
             buf.Cap();
             vict.show(buf, HL_DEF);
-            Sprintf(buf, "armor rusts before your very eyes.\n",
-                  name_of_crit(vict, ~0));
+            Sprintf(buf, "armor rusts before your very eyes.\n");
             pemote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &vict);
          }
       }
@@ -137,15 +135,13 @@ void do_cast_disfavor(critter &vict, critter &agg, int is_canned, int lvl)
                   "You call the spirits of the underworld to plague yourself.",
                   HL_DEF);
          } else {
-            Sprintf(buf, "You call the spirits of the underworld to plague %S.\n",
+            Sprintf(buf, "You call the spirits of the underworld to plague %pS.\n",
                   name_of_crit(vict, agg.SEE_BIT));
             agg.show(buf, HL_DEF);
-            Sprintf(buf, "You feel plagued by the spirits of the underworld.\n",
-                  name_of_crit(agg, vict.SEE_BIT));
+            Sprintf(buf, "You feel plagued by the spirits of the underworld.\n");
             buf.Cap();
             vict.show(buf, HL_DEF);
-            Sprintf(buf, "seems bothered.\n",
-                  name_of_crit(vict, ~0));
+            Sprintf(buf, "seems bothered.\n");
             emote(buf, vict, room_list[agg.getCurRoomNum()], TRUE, &vict);
          }
       }
@@ -215,12 +211,11 @@ void do_cast_remove_soul(critter &vict, critter &agg, int is_canned, int lvl)
                   HL_DEF);
          } else {
             Sprintf(buf,
-                  "You cause %S to scream in agony as their soul wretches.\n",
+                  "You cause %pS to scream in agony as their soul wretches.\n",
                   name_of_crit(vict, agg.SEE_BIT));
             agg.show(buf, HL_DEF);
             Sprintf(buf,
-                  "You scream in agony as your soul wretches.\n",
-                  name_of_crit(agg, vict.SEE_BIT));
+                    "You scream in agony as your soul wretches.\n");
             buf.Cap();
             vict.show(buf, HL_DEF);
             Sprintf(buf, "screams in agony as %s soul wretches.\n",
@@ -433,11 +428,10 @@ void do_cast_sanctum_of_the_victim(critter &vict, critter &agg, int is_canned, i
          if ( &vict == &agg ) {
             vict.show("You have made yourself frail.", HL_DEF);
          } else {
-            Sprintf(buf, "You make %S frail!\n",
+            Sprintf(buf, "You make %pS frail!\n",
                   name_of_crit(vict, agg.SEE_BIT));
             agg.show(buf, HL_DEF);
-            Sprintf(buf, "You feel frail!\n",
-                  name_of_crit(agg, vict.SEE_BIT));
+            Sprintf(buf, "You feel frail!\n");
             buf.Cap();
             vict.show(buf, HL_DEF);
          }
@@ -499,11 +493,10 @@ void do_cast_fear(critter &vict, critter &agg, int is_canned, int lvl)
       if ( &vict == &agg ) {
          vict.show("You idiot, now you can't move.", HL_DEF);
       } else {
-         Sprintf(buf, "You put fear into the heart of %S\n",
+         Sprintf(buf, "You put fear into the heart of %pS\n",
                name_of_crit(vict, agg.SEE_BIT));
          agg.show(buf, HL_DEF);
-         Sprintf(buf, "Your face turns a pale white. You are afraid.\n",
-               name_of_crit(agg, vict.SEE_BIT));
+         Sprintf(buf, "Your face turns a pale white. You are afraid.\n");
          buf.Cap();
          vict.show(buf, HL_DEF);
          Sprintf(buf, "face turns a pale white.\n");
@@ -602,28 +595,28 @@ void do_cast_weaken(critter& vict, critter& agg, int is_canned, int lvl) {
          show("You feel weaker!\n", agg);
        }//if
        else {
-         Sprintf(buf, "You drain some of %S's strength!\n", 
+         Sprintf(buf, "You drain some of %pS's strength!\n", 
                  name_of_crit(vict, agg.SEE_BIT));
          show(buf, agg);
-         Sprintf(buf, "%S drains your strength!\n", 
+         Sprintf(buf, "%pS drains your strength!\n", 
                  name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
-         Sprintf(buf, "drains %S's strength!",
+         Sprintf(buf, "drains %pS's strength!",
                  name_of_crit(vict, ~0));
          emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
        }//else
      }//else
    }//if worked
    else if (!did_hit) {
-     Sprintf(buf, "You fail to drain some of %S's strength!\n", 
+     Sprintf(buf, "You fail to drain some of %pS's strength!\n", 
              name_of_crit(vict, agg.SEE_BIT));
      show(buf, agg);
-     Sprintf(buf, "%S fails to drain your strength!\n", 
+     Sprintf(buf, "%pS fails to drain your strength!\n", 
              name_of_crit(agg, vict.SEE_BIT));
      buf.Cap();
      show(buf, vict);
-     Sprintf(buf, "fails to drain %S's strength!",
+     Sprintf(buf, "fails to drain %pS's strength!",
              name_of_crit(vict, ~0));
      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE, &vict);
    }//did_hit

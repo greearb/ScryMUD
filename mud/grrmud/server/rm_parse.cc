@@ -44,7 +44,7 @@ int room::processInput(String& input) {
    String cooked_strs[COOKED_MAX];
    int cooked_ints[COOKED_MAX];
    String buf(100);
-   int i, j, len1, k, l, m, n;
+   int i, j, len1, k;
    short eos, term_by_period;
 
    for (i = 0; i<COOKED_MAX; i++) {
@@ -255,9 +255,6 @@ int room::processInput(String& input) {
    i = cooked_ints[1];
    j = cooked_ints[2];
    k = cooked_ints[3];
-   l = cooked_ints[4];
-   m = cooked_ints[5];
-   n = cooked_ints[6];
 
    switch (toupper(cooked_strs[0][0]))
       {

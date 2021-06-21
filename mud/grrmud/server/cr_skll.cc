@@ -88,9 +88,9 @@ int do_skin(object& obj, critter& pc) {
       obj.obj_proc->obj_spec_data_flags.turn_off(2);
       obj.obj_proc->skin_ptr = NULL;
 
-      Sprintf(buf, "skins %S.", long_name_of_obj(obj, ~0));
+      Sprintf(buf, "skins %pS.", long_name_of_obj(obj, ~0));
       emote(buf, pc, ROOM, TRUE);
-      Sprintf(buf, "You skin %S.\n", long_name_of_obj(obj, ~0));      
+      Sprintf(buf, "You skin %pS.\n", long_name_of_obj(obj, ~0));      
       show(buf, pc);
    }//if
    else {
@@ -108,10 +108,10 @@ int do_skin(object& obj, critter& pc) {
       }//if
       obj.obj_proc->skin_ptr = NULL;
 
-      Sprintf(buf, "tries to skin %S but only makes a bloody mess!",
+      Sprintf(buf, "tries to skin %pS but only makes a bloody mess!",
                 long_name_of_obj(obj, ~0));
       emote(buf, pc, ROOM, TRUE);
-      Sprintf(buf, "You try to skin %S but only make a bloody mess!\n",
+      Sprintf(buf, "You try to skin %pS but only make a bloody mess!\n",
                 long_name_of_obj(obj, ~0));      
       show(buf, pc);
    }//else
@@ -172,9 +172,9 @@ int do_butcher(object& obj, critter& pc) {
 
          recursive_init_loads(obj_list[config.meatObject], 0);
 
-         Sprintf(buf, "butchers %S.", long_name_of_obj(obj, ~0));
+         Sprintf(buf, "butchers %pS.", long_name_of_obj(obj, ~0));
          emote(buf, pc, ROOM, TRUE);
-         Sprintf(buf, "You butcher %S.\n", long_name_of_obj(obj, ~0));      
+         Sprintf(buf, "You butcher %pS.\n", long_name_of_obj(obj, ~0));      
          show(buf, pc);
          return 0;
       }//if
@@ -184,11 +184,11 @@ int do_butcher(object& obj, critter& pc) {
       }//if
    }//if skill worked
    else {
-     Sprintf(buf, "You try to butcher %S, but ruin it all!!\n",
+     Sprintf(buf, "You try to butcher %pS, but ruin it all!!\n",
              long_name_of_obj(obj, pc.SEE_BIT));
      show(buf, pc);
 
-     Sprintf(buf, "tries to butcher %S, but ruins it all!!",
+     Sprintf(buf, "tries to butcher %pS, but ruins it all!!",
              long_name_of_obj(obj, pc.SEE_BIT));
      emote(buf, pc, ROOM, TRUE);
 
@@ -247,9 +247,9 @@ int do_behead(object& obj, critter& pc) {
       obj.obj_proc->obj_spec_data_flags.turn_off(11);
       obj.obj_proc->head_ptr = NULL;
 
-      Sprintf(buf, "beheads %S.", long_name_of_obj(obj, ~0));
+      Sprintf(buf, "beheads %pS.", long_name_of_obj(obj, ~0));
       emote(buf, pc, ROOM, TRUE);
-      Sprintf(buf, "You behead %S.\n", long_name_of_obj(obj, ~0));      
+      Sprintf(buf, "You behead %pS.\n", long_name_of_obj(obj, ~0));      
       show(buf, pc);
    }//if
    else {

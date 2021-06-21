@@ -59,7 +59,7 @@ int room::do_tell(const char* msg, critter& targ) {
       untag = *(targ.getDefaultColor());
    }
 
-   Sprintf(buf, "%S%s\n%S",
+   Sprintf(buf, "%pS%s\n%pS",
            &tag, msg, &untag);
    show(buf, targ);
 
@@ -75,7 +75,7 @@ int room::com_recho(const String* msg) {
    
    while ((ptr = cll.next())) {
       if (ptr->isImmort()) {
-         Sprintf(buf2, "[RECHO]  %S", msg);
+         Sprintf(buf2, "[RECHO]  %pS", msg);
          show(buf2, *ptr);
       }
       else {
@@ -97,7 +97,7 @@ int room::com_zecho(const String* msg) {
    while ((ptr = cll.next())) {
       if (ptr->getCurZoneNum() == znum) {
          if (ptr->isImmort()) {
-            Sprintf(buf2, "[ZECHO]  %S", msg);
+            Sprintf(buf2, "[ZECHO]  %pS", msg);
             show(buf2, *ptr);
          }
          else {
@@ -137,7 +137,7 @@ int room::wizchat(const char* message) {
             untag = "";
          }
 
-         Sprintf(buf, "%S\n[ROOM %i] wizchats, '%S'\n%S", 
+         Sprintf(buf, "%pS\n[ROOM %i] wizchats, '%pS'\n%pS", 
                        &tag, getIdNum(), &msg, &untag);
          crit_ptr->show(buf); 
       }//if

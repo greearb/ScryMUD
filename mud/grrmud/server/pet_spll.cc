@@ -95,9 +95,9 @@ void do_cast_create_greater_golem(critter& pc, int is_canned, int lvl) {
          ROOM.gainCritter(golem);
          recursive_init_loads(*golem);
          
-         Sprintf(buf, "You create a golem of animated %s.\n", &golemnames[whichgolem]);
+         Sprintf(buf, "You create a golem of animated %s.\n", golemnames[whichgolem]);
          show(buf, pc);
-         Sprintf(buf, "creates a golem of animated %s!", &golemnames[whichgolem]);
+         Sprintf(buf, "creates a golem of animated %s!", golemnames[whichgolem]);
          emote(buf, pc, ROOM, TRUE);
          
          /* now figure out it's strength, and HP and other stuff*/
@@ -312,7 +312,7 @@ void do_cast_charm(critter& vict, critter& pc, int is_canned, int lvl) {
 
    // Make sure that vict is not already charmed.
    if (vict.master) {
-      Sprintf(buf, "%S already has a master.\n", vict.getName(pc.SEE_BIT));
+      Sprintf(buf, "%pS already has a master.\n", vict.getName(pc.SEE_BIT));
       buf.Cap();
       pc.show(buf);
       return;
@@ -335,15 +335,15 @@ void do_cast_charm(critter& vict, critter& pc, int is_canned, int lvl) {
             vict.mob->setTicksTillFreedom(pc.getCharisma() + d(1, pc.getLevel()));
          }
 
-         Sprintf(buf, "You charm %S into following you!\n",
+         Sprintf(buf, "You charm %pS into following you!\n",
                  name_of_crit(vict, pc.SEE_BIT));
          show(buf, pc);
          Sprintf(buf, 
-                 "After talking with %S for a bit, you decide you will follow %s anywhere!\n",
+                 "After talking with %pS for a bit, you decide you will follow %s anywhere!\n",
                  name_of_crit(pc, vict.SEE_BIT), get_him_her(pc));
          show(buf, vict);
          
-         Sprintf(buf, "is overcome by %S's charm!", name_of_crit(pc, ~0));
+         Sprintf(buf, "is overcome by %pS's charm!", name_of_crit(pc, ~0));
          emote(buf, vict, room_list[vict.getCurRoomNum()], TRUE, &pc);
          
          vict.doFollow(pc); 
@@ -365,14 +365,14 @@ void do_cast_charm(critter& vict, critter& pc, int is_canned, int lvl) {
       if (!is_canned)
         pc.MANA -= spell_mana;
       
-      Sprintf(buf, "You fail to bring %S under your spell!\n", 
+      Sprintf(buf, "You fail to bring %pS under your spell!\n", 
               name_of_crit(vict, pc.SEE_BIT));
       show(buf, pc);
-      Sprintf(buf, "fails to bring %S under %s spell.",
+      Sprintf(buf, "fails to bring %pS under %s spell.",
               name_of_crit(vict, ~0), get_his_her(pc));
       emote(buf, pc, ROOM, TRUE, &vict);
       Sprintf(buf, 
-              "%S tries to charm you, but you see through %s silken words.\n",
+              "%pS tries to charm you, but you see through %s silken words.\n",
               name_of_crit(pc, vict.SEE_BIT), get_his_her(pc));
       show(buf, vict);
    }//else if didn't hit
@@ -468,9 +468,9 @@ void do_cast_create_golem(critter& pc, int is_canned, int lvl) {
      ROOM.gainCritter(golem);
      recursive_init_loads(*golem);
 
-     Sprintf(buf, "You create a golem of animated %s.\n", &golemnames[whichgolem]);
+     Sprintf(buf, "You create a golem of animated %s.\n", golemnames[whichgolem]);
      show(buf, pc);
-     Sprintf(buf, "creates a golem of animated %s!", &golemnames[whichgolem]);
+     Sprintf(buf, "creates a golem of animated %s!", golemnames[whichgolem]);
      emote(buf, pc, ROOM, TRUE);
 
      /* now figure out it's strength, and HP */
@@ -526,10 +526,10 @@ void do_cast_create_light(critter& pc, int is_canned, int lvl) {
          return;
       }//if
       
-      Sprintf(buf, "You produce %S out of thin air!\n",
+      Sprintf(buf, "You produce %pS out of thin air!\n",
               long_name_of_obj(obj_list[config.createLightObject], ~0));
       show(buf, pc);
-      Sprintf(buf, "cups %s hands and produces %S!",
+      Sprintf(buf, "cups %s hands and produces %pS!",
               get_his_her(pc),
               long_name_of_obj(obj_list[config.createLightObject], ~0));
       emote(buf, pc, ROOM, TRUE);
@@ -580,10 +580,10 @@ void do_cast_create_food(critter& pc, int is_canned, int lvl) {
          return;
       }//if
       
-      Sprintf(buf, "You grab %S out of mid air!\n",
+      Sprintf(buf, "You grab %pS out of mid air!\n",
               long_name_of_obj(obj_list[config.createFoodObject1], ~0));
       show(buf, pc);
-      Sprintf(buf, "reaches somewhere and pulls out %S!", 
+      Sprintf(buf, "reaches somewhere and pulls out %pS!", 
               long_name_of_obj(obj_list[config.createFoodObject1], ~0));
       emote(buf, pc, ROOM, TRUE);
       
@@ -731,10 +731,10 @@ void do_cast_illusion(critter& pc, int is_canned, int lvl) {
       
       golem->names.prepend(new String(*(pc.names.peekFront()))); 
       if (pc.pc) {
-         Sprintf(buf, "%S %S", name_of_crit(pc, ~0), &(pc.short_desc));
+         Sprintf(buf, "%pS %pS", name_of_crit(pc, ~0), &(pc.short_desc));
          golem->short_desc = buf;
 
-         Sprintf(buf, "%S %S %s\n", 
+         Sprintf(buf, "%pS %pS %s\n", 
                  pc.getShortName(), &(pc.short_desc), 
                  pc.getPosnStr(pc));
          golem->in_room_desc = buf;      
@@ -831,10 +831,10 @@ void do_cast_conjure_minion(critter& pc, int is_canned, int lvl) {
          golem->doFollow(pc); // golem starts following caster     
       }//if it worked
       else {
-         Sprintf(buf, "whirls around and attacks %S with a great fury!\n",
+         Sprintf(buf, "whirls around and attacks %pS with a great fury!\n",
                  name_of_crit(pc, ~0));
          emote(buf, *golem, ROOM, TRUE, &pc);
-         Sprintf(buf, "Uh-oh, %S has broken free of your spell!!\n",
+         Sprintf(buf, "Uh-oh, %pS has broken free of your spell!!\n",
                  name_of_crit(*golem, pc.SEE_BIT));
          show(buf, pc);
          join_in_battle(*golem, pc);
@@ -938,10 +938,10 @@ void do_cast_conjure_horde(critter& pc, int is_canned, int lvl) {
          golem->doFollow(pc); // golem starts following caster     
        }//if it worked
        else {
-         Sprintf(buf, "whirls around and attacks %S with a great fury!\n",
+         Sprintf(buf, "whirls around and attacks %pS with a great fury!\n",
                  name_of_crit(pc, ~0));
          emote(buf, *golem, ROOM, TRUE, &pc);
-         Sprintf(buf, "Uh-oh, %S has broken free of your spell!!\n",
+         Sprintf(buf, "Uh-oh, %pS has broken free of your spell!!\n",
                  name_of_crit(*golem, pc.SEE_BIT));
          show(buf, pc);
          join_in_battle(*golem, pc);

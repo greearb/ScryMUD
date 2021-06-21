@@ -83,41 +83,41 @@ void do_cast_detect_resistances(critter& vict, critter& agg, int is_canned, int 
          if (d(1,4) > 1) {
             if (vict.short_cur_stats[res_num+28] > 100) {
                Sprintf(buf,
-                  "A well placed blast of %s would probably take %S out!\n",
+                  "A well placed blast of %s would probably take %pS out!\n",
                        resistances[res_num], name_of_crit(vict, agg.SEE_BIT));
             }
             else if (vict.short_cur_stats[res_num+28] > 60) {
-               Sprintf(buf, "You could inflict serious %s damage upon %S!\n",
+               Sprintf(buf, "You could inflict serious %s damage upon %pS!\n",
                        resistances[res_num], name_of_crit(vict, agg.SEE_BIT));
             }
             else if (vict.short_cur_stats[res_num+28] > 20) {
-               Sprintf(buf, "%S seem slightly vulnerable to %s.\n",
+               Sprintf(buf, "%pS seem slightly vulnerable to %s.\n",
                        name_of_crit(vict, agg.SEE_BIT), resistances[res_num]);
             }
             else if (vict.short_cur_stats[res_num+28] > 0) {
-               Sprintf(buf, "%S is just barely vulnerable to %s.\n",
+               Sprintf(buf, "%pS is just barely vulnerable to %s.\n",
                        name_of_crit(vict, agg.SEE_BIT), resistances[res_num]);
             }
             else if (vict.short_cur_stats[res_num+28] > -20) {
-               Sprintf(buf, "%S is just barely resistant to %s.\n",
+               Sprintf(buf, "%pS is just barely resistant to %s.\n",
                        name_of_crit(vict, agg.SEE_BIT), resistances[res_num]);
             }
             else if (vict.short_cur_stats[res_num+28] > -60) {
-               Sprintf(buf, "%S seem slightly resistant to %s.\n",
+               Sprintf(buf, "%pS seem slightly resistant to %s.\n",
                        name_of_crit(vict, agg.SEE_BIT), resistances[res_num]);
             }
             else if (vict.short_cur_stats[res_num+28] > -100) {
                Sprintf(buf,
-                  "You doubt you could even scratch %S with an attack of %s.\n",
+                  "You doubt you could even scratch %pS with an attack of %s.\n",
                        name_of_crit(vict, agg.SEE_BIT), resistances[res_num]);
             }
             else {
-               Sprintf(buf,"%S seems impervious to %s.\n",
+               Sprintf(buf,"%pS seems impervious to %s.\n",
                   name_of_crit(vict, agg.SEE_BIT), resistances[res_num]);
             }
          }
          else {
-            Sprintf(buf, "You are uncertain of %S's resistance to %s.\n",
+            Sprintf(buf, "You are uncertain of %pS's resistance to %s.\n",
                name_of_crit(vict, agg.SEE_BIT), resistances[res_num]);
          }
          agg.show(buf);
@@ -125,7 +125,7 @@ void do_cast_detect_resistances(critter& vict, critter& agg, int is_canned, int 
       
    }//if !lost_con
    else if (!did_hit) {
-     Sprintf(buf, "You are uncertain of %S's vulnerabilities.\n",
+     Sprintf(buf, "You are uncertain of %pS's vulnerabilities.\n",
              name_of_crit(vict, agg.SEE_BIT));
      show(buf, agg);
    }//if missed
@@ -199,7 +199,7 @@ void do_cast_detect_alignment(critter& vict, critter& agg, int is_canned,
      show(buf, agg);
    }//if !lost_con
    else if (!did_hit) {
-     Sprintf(buf, "You fail to ascertain %S's personality.\n",
+     Sprintf(buf, "You fail to ascertain %pS's personality.\n",
              name_of_crit(vict, agg.SEE_BIT));
      show(buf, agg);
    }//if missed
@@ -258,12 +258,12 @@ void do_cast_detect_poison(object& vict, critter& agg, int is_canned,
 
      if (vict.obj_proc &&
          vict.obj_proc->obj_spec_data_flags.get(3)) {
-       Sprintf(buf, "You get a STRONG reaction from %S!\n",
+       Sprintf(buf, "You get a STRONG reaction from %pS!\n",
                long_name_of_obj(vict, agg.SEE_BIT));
        show(buf, agg);
      }//if
      else {
-       Sprintf(buf, "%S seems to be safe from poison.\n",
+       Sprintf(buf, "%pS seems to be safe from poison.\n",
                long_name_of_obj(vict, agg.SEE_BIT));
        buf.Cap();
        show(buf, agg);
@@ -338,15 +338,15 @@ void do_cast_detect_invisibility(critter& vict, critter& agg, int is_canned,
                room_list[agg.getCurRoomNum()], TRUE); 
        }//if
        else {
-         Sprintf(buf, "You allow %S to see invisible things.\n", 
+         Sprintf(buf, "You allow %pS to see invisible things.\n", 
                  name_of_crit(vict, agg.SEE_BIT));
          show(buf, agg);
          Sprintf(buf, 
-               "%S allows you to see invisible things.\n", 
+               "%pS allows you to see invisible things.\n", 
                  name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
-         Sprintf(buf, "allows %S to see invisible things.", 
+         Sprintf(buf, "allows %pS to see invisible things.", 
                  name_of_crit(vict, ~0));
          emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE, &vict);
        }//else
@@ -433,14 +433,14 @@ void do_cast_infravision(critter& vict, critter& agg, int is_canned,
                room_list[agg.getCurRoomNum()], TRUE); 
        }//if
        else {
-         Sprintf(buf, "You allow %S to see in the dark.\n", 
+         Sprintf(buf, "You allow %pS to see in the dark.\n", 
                  name_of_crit(vict, agg.SEE_BIT));
          show(buf, agg);
-         Sprintf(buf, "%S allows you to see in the dark.\n", 
+         Sprintf(buf, "%pS allows you to see in the dark.\n", 
                  name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
-         Sprintf(buf, "allows %S to see in the dark.", 
+         Sprintf(buf, "allows %pS to see in the dark.", 
                  name_of_crit(vict, ~0));
          emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE, &vict);
        }//else
@@ -526,15 +526,15 @@ void do_cast_detect_hidden(critter& vict, critter& agg, int is_canned,
                room_list[agg.getCurRoomNum()], TRUE); 
        }//if
        else {
-         Sprintf(buf, "You allow %S to detect hidden things.\n", 
+         Sprintf(buf, "You allow %pS to detect hidden things.\n", 
                  name_of_crit(vict, agg.SEE_BIT));
          show(buf, agg);
          Sprintf(buf, 
-               "%S allows you to see things not seen by others.\n", 
+               "%pS allows you to see things not seen by others.\n", 
                  name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
-         Sprintf(buf, "allows %S to see things not easily seen.", 
+         Sprintf(buf, "allows %pS to see things not easily seen.", 
                  name_of_crit(vict, ~0));
          emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE, &vict);
        }//else
@@ -620,14 +620,14 @@ void do_cast_bless(critter& vict, critter& agg, int is_canned,
                   room_list[agg.getCurRoomNum()], TRUE); 
          }//if
          else {
-            Sprintf(buf, "You give your god's blessing to %S.\n", 
+            Sprintf(buf, "You give your god's blessing to %pS.\n", 
                     name_of_crit(vict, agg.SEE_BIT));
             show(buf, agg);
-            Sprintf(buf, "%S gives you %s god's blessing.\n",
+            Sprintf(buf, "%pS gives you %s god's blessing.\n",
                     agg.getName(vict.SEE_BIT), get_his_her(agg));
             buf.Cap();
             show(buf, vict);
-            Sprintf(buf, "gives %s god's blessing to %S.\n",
+            Sprintf(buf, "gives %s god's blessing to %pS.\n",
                     get_his_her(agg),
                     name_of_crit(vict, ~0));
             emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE, &vict);
@@ -687,7 +687,7 @@ void do_cast_pfg(critter& vict, critter& agg, int is_canned,
        show("You are too good to be protected by an evil god!\n", agg);
      }//if
      else {
-       Sprintf(buf, "%S is too good to be protected by an evil god!\n",
+       Sprintf(buf, "%pS is too good to be protected by an evil god!\n",
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
      }//else
@@ -699,7 +699,7 @@ void do_cast_pfg(critter& vict, critter& agg, int is_canned,
        show("You are already protected by a benelovent deity!\n", agg);
      }//if
      else {
-       Sprintf(buf, "%S is already protected by a benelovent deity.\n",
+       Sprintf(buf, "%pS is already protected by a benelovent deity.\n",
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
      }//else
@@ -723,15 +723,15 @@ void do_cast_pfg(critter& vict, critter& agg, int is_canned,
                room_list[agg.getCurRoomNum()], TRUE); 
        }//if
        else {
-         Sprintf(buf, "You protect %S from good.\n", 
+         Sprintf(buf, "You protect %pS from good.\n", 
                  name_of_crit(vict, agg.SEE_BIT));
          show(buf, agg);
          Sprintf(buf, 
-               "%S protects you from good.\n", 
+               "%pS protects you from good.\n", 
                  name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
-         Sprintf(buf, "protects %S from good.", 
+         Sprintf(buf, "protects %pS from good.", 
                  name_of_crit(vict, ~0));
          emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE, &vict);
        }//else
@@ -792,7 +792,7 @@ void do_cast_pfe(critter& vict, critter& agg, int is_canned,
        show("You are too evil to be protected by a benign god!\n", agg);
      }//if
      else {
-       Sprintf(buf, "%S is too evil to be protected by a benign god!\n",
+       Sprintf(buf, "%pS is too evil to be protected by a benign god!\n",
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
      }//else
@@ -804,7 +804,7 @@ void do_cast_pfe(critter& vict, critter& agg, int is_canned,
        show("You are already protected by a malevolent deity!\n", agg);
      }//if
      else {
-       Sprintf(buf, "%S is already protected by a malevolent deity.\n",
+       Sprintf(buf, "%pS is already protected by a malevolent deity.\n",
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
      }//else
@@ -828,15 +828,15 @@ void do_cast_pfe(critter& vict, critter& agg, int is_canned,
                room_list[agg.getCurRoomNum()], TRUE); 
        }//if
        else {
-         Sprintf(buf, "You protect %S from evil.\n", 
+         Sprintf(buf, "You protect %pS from evil.\n", 
                  name_of_crit(vict, agg.SEE_BIT));
          show(buf, agg);
          Sprintf(buf, 
-               "%S protects you from evil.\n", 
+               "%pS protects you from evil.\n", 
                  name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
-         Sprintf(buf, "protects %S from evil.", 
+         Sprintf(buf, "protects %pS from evil.", 
                  name_of_crit(vict, ~0));
          emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE, &vict);
        }//else
@@ -923,15 +923,15 @@ void do_cast_detect_magic(critter& vict, critter& agg, int is_canned,
                room_list[agg.getCurRoomNum()], TRUE); 
        }//if
        else {
-         Sprintf(buf, "You allow %S to detect magical energies.\n", 
+         Sprintf(buf, "You allow %pS to detect magical energies.\n", 
                  name_of_crit(vict, agg.SEE_BIT));
          show(buf, agg);
          Sprintf(buf, 
-               "%S allows you to see the subtle flows of magical powers.\n", 
+               "%pS allows you to see the subtle flows of magical powers.\n", 
                  name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
-         Sprintf(buf, "does something strange to %S's eyes.\n", 
+         Sprintf(buf, "does something strange to %pS's eyes.\n", 
                  name_of_crit(vict, ~0));
          emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE, &vict);
        }//else
@@ -1034,10 +1034,10 @@ void do_cast_create_water(object& vict, critter& agg, int is_canned,
       if (!is_canned)
          agg.MANA -= spell_mana;
       
-      Sprintf(buf, "You fill %S to the top!\n", 
+      Sprintf(buf, "You fill %pS to the top!\n", 
               long_name_of_obj(vict, agg.SEE_BIT));
       show(buf, agg);
-      Sprintf(buf, "fills %S to the top!",
+      Sprintf(buf, "fills %pS to the top!",
               long_name_of_obj(vict, ~0));
       emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
    }//if did_hit
@@ -1117,10 +1117,10 @@ void do_cast_enchant_weapon(object& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     Sprintf(buf, "You cause %S to glow with a faint blue light.\n", 
+     Sprintf(buf, "You cause %pS to glow with a faint blue light.\n", 
              long_name_of_obj(vict, agg.SEE_BIT));
      show(buf, agg);
-     Sprintf(buf, "causes %S to glow with a faint blue light.",
+     Sprintf(buf, "causes %pS to glow with a faint blue light.",
              long_name_of_obj(vict, ~0));
      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
    }//if did_hit
@@ -1236,10 +1236,10 @@ void do_cast_enchant_armor(object& vict, critter& agg, int is_canned,
      if (!is_canned)
        agg.MANA -= spell_mana;
 
-     Sprintf(buf, "You cause %S to glow with a faint white light.\n", 
+     Sprintf(buf, "You cause %pS to glow with a faint white light.\n", 
              long_name_of_obj(vict, agg.SEE_BIT));
      show(buf, agg);
-     Sprintf(buf, "causes %S to glow with a faint white light.",
+     Sprintf(buf, "causes %pS to glow with a faint white light.",
              long_name_of_obj(vict, ~0));
      emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
    }//if did_hit
@@ -1326,10 +1326,10 @@ void do_cast_fire_blade(object& vict, critter& agg, int is_canned,
        show("Ok\n", agg);
      }//if
      else {
-       Sprintf(buf, "You make %S glow with a magical heat!\n", 
+       Sprintf(buf, "You make %pS glow with a magical heat!\n", 
                long_name_of_obj(vict, agg.SEE_BIT));
        show(buf, agg);
-       Sprintf(buf, "makes %S glow with a magical heat!\n", 
+       Sprintf(buf, "makes %pS glow with a magical heat!\n", 
                long_name_of_obj(vict, ~0));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
      }//else, not already affected
@@ -1413,10 +1413,10 @@ void do_cast_frost_blade(object& vict, critter& agg, int is_canned,
        show("Ok\n", agg);
      }//if
      else {
-       Sprintf(buf, "You make %S very cold!\n", 
+       Sprintf(buf, "You make %pS very cold!\n", 
                long_name_of_obj(vict, agg.SEE_BIT));
        show(buf, agg);
-       Sprintf(buf, "makes %S very cold!\n", 
+       Sprintf(buf, "makes %pS very cold!\n", 
                long_name_of_obj(vict, ~0));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
      }//else, not already affected
@@ -1505,10 +1505,10 @@ void do_cast_rune_edge(object& vict, critter& agg, int is_canned,
        show("Ok\n", agg);
      }//if
      else {
-       Sprintf(buf, "You magically sharpen %S to a keen edge!\n", 
+       Sprintf(buf, "You magically sharpen %pS to a keen edge!\n", 
                long_name_of_obj(vict, agg.SEE_BIT));
        show(buf, agg);
-       Sprintf(buf, "magically sharpens %S to a keen edge!\n", 
+       Sprintf(buf, "magically sharpens %pS to a keen edge!\n", 
                long_name_of_obj(vict, ~0));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
      }//else, not already affected
@@ -1609,15 +1609,15 @@ void do_cast_invisibility(critter& vict, critter& agg, int is_canned,
                room_list[agg.getCurRoomNum()], TRUE); 
        }//if
        else {
-         Sprintf(buf, "You cause %S to fade from sight.\n", 
+         Sprintf(buf, "You cause %pS to fade from sight.\n", 
                  name_of_crit(vict, agg.SEE_BIT));
          show(buf, agg);
          Sprintf(buf, 
-                 "%S causes you to fade from sight.\n", 
+                 "%pS causes you to fade from sight.\n", 
                  name_of_crit(agg, vict.SEE_BIT));
          buf.Cap();
          show(buf, vict);
-         Sprintf(buf, "causes %S to disappear from sight.\n", 
+         Sprintf(buf, "causes %pS to disappear from sight.\n", 
                  name_of_crit(vict, ~0));
          emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE, &vict);
        }//else
@@ -1676,7 +1676,7 @@ void do_cast_invisibility(object& vict, critter& agg, int is_canned,
        show("Ok\n", agg);
      }//if
      else {
-       Sprintf(buf, "You cause %S to fade from sight.\n", 
+       Sprintf(buf, "You cause %pS to fade from sight.\n", 
                long_name_of_obj(vict, agg.SEE_BIT));
        show(buf, agg);
      }//else, not already affected
@@ -1719,7 +1719,6 @@ void cast_mirror_image(critter& pc) {
 
 void do_cast_mirror_image(critter& pc, int is_canned, int lvl) {
    String buf(100);
-   short do_effects = FALSE;
    int spell_num = MIRROR_IMAGE_SKILL_NUM;
    int spell_mana = get_mana_cost(spell_num, pc);
  
@@ -1728,7 +1727,6 @@ void do_cast_mirror_image(critter& pc, int is_canned, int lvl) {
       lvl = pc.LEVEL;
 
    if (is_canned || !lost_concentration(pc, spell_num)) { 
-     do_effects = TRUE;
 
      if (!is_canned)
        pc.MANA -= spell_mana;
@@ -1804,14 +1802,14 @@ void do_cast_cure_serious(critter& vict, critter& agg, int is_canned,
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE); 
      }//if
      else {
-       Sprintf(buf, "You cure %S.\n", 
+       Sprintf(buf, "You cure %pS.\n", 
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "%S cures you.\n", name_of_crit(agg, vict.SEE_BIT));
+               "%pS cures you.\n", name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "cures %S.\n", 
+       Sprintf(buf, "cures %pS.\n", 
                name_of_crit(vict, ~0));
        emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE);
      }//else
@@ -1885,14 +1883,14 @@ void do_cast_cure_critical(critter& vict, critter& agg, int is_canned,
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE); 
      }//if
      else {
-       Sprintf(buf, "You cure %S.\n", 
+       Sprintf(buf, "You cure %pS.\n", 
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "%S cures you.\n", name_of_crit(agg, vict.SEE_BIT));
+               "%pS cures you.\n", name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "cures %S.\n", 
+       Sprintf(buf, "cures %pS.\n", 
                name_of_crit(vict, ~0));
        emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE);
      }//else
@@ -1965,14 +1963,14 @@ void do_cast_heal(critter& vict, critter& agg, int is_canned, int lvl) {
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE); 
      }//if
      else {
-       Sprintf(buf, "You heal %S.\n", 
+       Sprintf(buf, "You heal %pS.\n", 
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "%S heals you.\n", name_of_crit(agg, vict.SEE_BIT));
+               "%pS heals you.\n", name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "heals %S.\n", 
+       Sprintf(buf, "heals %pS.\n", 
                name_of_crit(vict, ~0));
        emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE);
      }//else
@@ -2049,14 +2047,14 @@ void do_cast_restore(critter& vict, critter& agg, int is_canned, int lvl) {
             emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE); 
      }//if
      else {
-       Sprintf(buf, "You restore %S.\n", 
+       Sprintf(buf, "You restore %pS.\n", 
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "%S restores you.\n", name_of_crit(agg, vict.SEE_BIT));
+               "%pS restores you.\n", name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "restores %S.\n", 
+       Sprintf(buf, "restores %pS.\n", 
                name_of_crit(vict, ~0));
        emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE);
      }//else
@@ -2177,15 +2175,15 @@ void do_cast_web(critter& vict, critter& agg, int is_canned, int lvl) {
        do_join_in_battle = FALSE;
      }//if
      else {
-       Sprintf(buf, "You cover %S in a sticky web!\n", 
+       Sprintf(buf, "You cover %pS in a sticky web!\n", 
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "%S has covered you with a fine web of something!!\n", 
+               "%pS has covered you with a fine web of something!!\n", 
                name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "covers %S with a fine, sticky web.\n", 
+       Sprintf(buf, "covers %pS with a fine, sticky web.\n", 
                name_of_crit(vict, ~0));
        emote(buf, agg, room_list[vict.getCurRoomNum()], TRUE);
      }//else
@@ -2199,11 +2197,11 @@ void do_cast_web(critter& vict, critter& agg, int is_canned, int lvl) {
        do_join_in_battle = FALSE;
      }//if
      else {
-       Sprintf(buf, "Your web misses %S.\n", 
+       Sprintf(buf, "Your web misses %pS.\n", 
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
 
-       Sprintf(buf, "%S fails to catch you in %s web!\n", 
+       Sprintf(buf, "%pS fails to catch you in %s web!\n", 
                        name_of_crit(agg, vict.SEE_BIT), get_his_her(agg));
        buf.Cap();
        show(buf, vict);
@@ -2271,15 +2269,15 @@ void do_cast_entangle(critter& vict, critter& agg, int is_canned,
        do_join_in_battle = FALSE;
      }//if
      else {
-       Sprintf(buf, "You tangle %S in a thick sticky web!\n", 
+       Sprintf(buf, "You tangle %pS in a thick sticky web!\n", 
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "%S has covered you with a strong web of something!!\n", 
+               "%pS has covered you with a strong web of something!!\n", 
                name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "covers %S with a strong, sticky web.\n", 
+       Sprintf(buf, "covers %pS with a strong, sticky web.\n", 
                name_of_crit(vict, ~0));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
      }//else
@@ -2290,11 +2288,11 @@ void do_cast_entangle(critter& vict, critter& agg, int is_canned,
        do_join_in_battle = FALSE;
      }//if
      else {
-       Sprintf(buf, "Your web misses %S.\n", 
+       Sprintf(buf, "Your web misses %pS.\n", 
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        
-       Sprintf(buf, "%S fails to catch you in %s web!\n", 
+       Sprintf(buf, "%pS fails to catch you in %s web!\n", 
                name_of_crit(agg, vict.SEE_BIT), get_his_her(agg));
        buf.Cap();
        show(buf, vict);
@@ -2403,15 +2401,15 @@ void do_cast_faerie_fire(critter& vict, critter& agg, int is_canned,
        do_join_in_battle = FALSE;
      }//if
      else {
-       Sprintf(buf, "You make %S glow with an eerie purplish light!\n", 
+       Sprintf(buf, "You make %pS glow with an eerie purplish light!\n", 
                name_of_crit(vict, agg.SEE_BIT));
        show(buf, agg);
        Sprintf(buf, 
-               "%S makes you glow with a purplish light!!\n", 
+               "%pS makes you glow with a purplish light!!\n", 
                name_of_crit(agg, vict.SEE_BIT));
        buf.Cap();
        show(buf, vict);
-       Sprintf(buf, "makes %S glow with an eerie purplish light.", 
+       Sprintf(buf, "makes %pS glow with an eerie purplish light.", 
                name_of_crit(vict, ~0));
        emote(buf, agg, room_list[agg.getCurRoomNum()], TRUE);
      }//else
@@ -2421,7 +2419,7 @@ void do_cast_faerie_fire(critter& vict, critter& agg, int is_canned,
      show("Your spell goes awry and the ground glows for an instant.",
           agg);
      
-     Sprintf(buf, "%S fails to catch you on faerie fire!\n", 
+     Sprintf(buf, "%pS fails to catch you on faerie fire!\n", 
              name_of_crit(agg, vict.SEE_BIT));
      buf.Cap();
      show(buf, vict);

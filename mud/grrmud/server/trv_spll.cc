@@ -89,7 +89,7 @@ void do_cast_group_heal(critter& agg, int is_canned, int lvl) {
          if (ptr->getHP() > ptr->getHP_MAX())
             ptr->setHP(ptr->getHP_MAX());
          
-         Sprintf(buf, "%S heals you and your companions.\n",
+         Sprintf(buf, "%pS heals you and your companions.\n",
                  name_of_crit(agg, ptr->SEE_BIT));
          show(buf, *ptr);
       }//while
@@ -159,19 +159,19 @@ void do_cast_flame_strike(critter& agg, int is_canned, int lvl) {
          if (TRUE) { 
             exact_raw_damage(d(4, lvl), FIRE, *ptr, agg);
             if (ptr->HP < 0) {
-               Sprintf(buf, "You are consumed by %S's pillar of flames.\n",
+               Sprintf(buf, "You are consumed by %pS's pillar of flames.\n",
                        name_of_crit(agg, ptr->SEE_BIT));
                show(buf, *ptr);
-               Sprintf(buf, "is consumed by %S's pillar of flames!", 
+               Sprintf(buf, "is consumed by %pS's pillar of flames!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
                agg_kills_vict(&agg, *ptr);
             }//if
             else {
-               Sprintf(buf, "You are burned by %S's pillar of flames.\n",
+               Sprintf(buf, "You are burned by %pS's pillar of flames.\n",
                        name_of_crit(agg, ptr->SEE_BIT));
                show(buf, *ptr);
-               Sprintf(buf, "is burned by %S's pillar of fire!", 
+               Sprintf(buf, "is burned by %pS's pillar of fire!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
                if (!ptr->IS_FIGHTING.haveData(&agg)) {
@@ -247,19 +247,19 @@ void do_cast_meteorstorm(critter& agg, int is_canned, int lvl) {
          if (TRUE) { 
             exact_raw_damage(d(5, lvl), NORMAL, *ptr, agg);
             if (ptr->HP < 0) {
-               Sprintf(buf, "You are crushed beyond repair by %S's meteor.\n",
+               Sprintf(buf, "You are crushed beyond repair by %pS's meteor.\n",
                        name_of_crit(agg, ptr->SEE_BIT));
                show(buf, *ptr);
-               Sprintf(buf, "is crushed by %S's meteor!", 
+               Sprintf(buf, "is crushed by %pS's meteor!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
                agg_kills_vict(&agg, *ptr);
             }//if
             else {
-               Sprintf(buf, "You are struck by %S's meteor.\n",
+               Sprintf(buf, "You are struck by %pS's meteor.\n",
                        name_of_crit(agg, ptr->SEE_BIT));
                show(buf, *ptr);
-               Sprintf(buf, "is struck by %S's meteor!", 
+               Sprintf(buf, "is struck by %pS's meteor!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
                if (!ptr->IS_FIGHTING.haveData(&agg)) {
@@ -335,19 +335,19 @@ void do_cast_icestorm(critter& agg, int is_canned, int lvl) {
             exact_raw_damage(d(4, lvl), NORMAL, *ptr, agg);
             if (ptr->HP < 0) {
                Sprintf(buf,
-                       "You are crushed beyond repair by %S's ice shard.\n",
+                       "You are crushed beyond repair by %pS's ice shard.\n",
                        name_of_crit(agg, ptr->SEE_BIT));
                show(buf, *ptr);
-               Sprintf(buf, "is crushed by %S's ice shard!", 
+               Sprintf(buf, "is crushed by %pS's ice shard!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
                agg_kills_vict(&agg, *ptr);
             }//if
             else {
-               Sprintf(buf, "You are struck by %S's ice shard.\n",
+               Sprintf(buf, "You are struck by %pS's ice shard.\n",
                        name_of_crit(agg, ptr->SEE_BIT));
                show(buf, *ptr);
-               Sprintf(buf, "is struck by %S's ice shard!", 
+               Sprintf(buf, "is struck by %pS's ice shard!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
                if (!ptr->IS_FIGHTING.haveData(&agg)) {
@@ -422,19 +422,19 @@ void do_cast_firestorm(critter& agg, int is_canned, int lvl) {
          if (TRUE) { 
             exact_raw_damage(d(4, lvl), FIRE, *ptr, agg);
             if (ptr->HP < 0) {
-               Sprintf(buf, "You are burned to a crisp by %S's fire storm.\n",
+               Sprintf(buf, "You are burned to a crisp by %pS's fire storm.\n",
                        name_of_crit(agg, ptr->SEE_BIT));
                show(buf, *ptr);
-               Sprintf(buf, "is burned to a crisp by %S's fire storm!", 
+               Sprintf(buf, "is burned to a crisp by %pS's fire storm!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
                agg_kills_vict(&agg, *ptr);
             }//if
             else {
-               Sprintf(buf, "You are burned by %S's fire storm.\n",
+               Sprintf(buf, "You are burned by %pS's fire storm.\n",
                        name_of_crit(agg, ptr->SEE_BIT));
                show(buf, *ptr);
-               Sprintf(buf, "is burned by %S's fire storm!", 
+               Sprintf(buf, "is burned by %pS's fire storm!", 
                        name_of_crit(agg, ~0));
                emote(buf, *ptr, room_list[agg.getCurRoomNum()], TRUE);
                if (!ptr->IS_FIGHTING.haveData(&agg)) {

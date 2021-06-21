@@ -59,7 +59,7 @@ int object::do_tell(const char* msg, critter& targ) {
       untag = *(targ.getDefaultColor());
    }
 
-   Sprintf(buf, "%S%s\n%S",
+   Sprintf(buf, "%pS%s\n%pS",
            &tag, msg, &untag);
    show(buf, targ);
 
@@ -104,7 +104,7 @@ int object::wizchat(const char* message, room& rm) {
             untag = "";
          }
 
-         Sprintf(buf, "%S\n[OBJ in RM %i] wizchats, '%S'\n%S", 
+         Sprintf(buf, "%pS\n[OBJ in RM %i] wizchats, '%pS'\n%pS", 
                        &tag, rm.getIdNum(), &msg, &untag);
          crit_ptr->show(buf); 
       }//if

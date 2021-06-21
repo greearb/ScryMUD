@@ -547,7 +547,7 @@ String zone::createNeatoMapFile() {
 
    for (int i = begin_room_num; i <= end_room_num; i++) {
       if (room_list.elementAtNoCreate(i)) {
-         Sprintf(cur_room_name, "[%i] %S", i, &(room_list[i].short_desc));
+         Sprintf(cur_room_name, "[%i] %pS", i, &(room_list[i].short_desc));
          //spaceToNewlines(cur_room_name);
 
          room_list[i].doors.head(cll);
@@ -555,17 +555,17 @@ String zone::createNeatoMapFile() {
          while ((ptr = cll.next())) {
 
             if (ptr->getDestRoom()) {
-               Sprintf(dest_room_name, "[%i] %S",
+               Sprintf(dest_room_name, "[%i] %pS",
                        ptr->getDestRoom()->getIdNum(),
                        &(ptr->getDestRoom()->short_desc));
                //spaceToNewlines(dest_room_name);
                
                if (ptr->getDestRoom()->getZoneNum() != zone_num) {
-                  Sprintf(buf, "\t\"%S\" -- \"%S\" [color=blue];\n",
+                  Sprintf(buf, "\t\"%pS\" -- \"%pS\" [color=blue];\n",
                           &cur_room_name, &dest_room_name);
                }
                else {
-                  Sprintf(buf, "\t\"%S\" -- \"%S\";\n", &cur_room_name,
+                  Sprintf(buf, "\t\"%pS\" -- \"%pS\";\n", &cur_room_name,
                           &dest_room_name);
                }
                
@@ -877,7 +877,7 @@ String zone::createMapFile() {
 }//createMapFile
 
 void zone::spaceToNewlines(String& str) {
-   for (unsigned int i = 0; i<str.Strlen(); i++) {
+   for (int i = 0; i<str.Strlen(); i++) {
       if (isspace(str[i])) {
          str.setCharAt(i, '\n');
       }//if
@@ -923,7 +923,7 @@ void zone::stat(critter& pc) {
    Cell<String*> cll;
    String* ptr;
 
-   Sprintf(buf, "^B[^b%i^B]  ^Y%S^0  %P35 Begin#  %i, End#  %i, Ticks in Regen:  %i\n",
+   Sprintf(buf, "^B[^b%i^B]  ^Y%pS^0  %P35 Begin#  %i, End#  %i, Ticks in Regen:  %i\n",
            zone_num, &(zone_name), begin_room_num, end_room_num,
            ticks_in_regen_cycle);
    show(buf, pc);

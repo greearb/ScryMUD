@@ -576,7 +576,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
 								while((crit_ptr = rcll.next())){
 									if(crit_ptr != pc){
 										if(crit_ptr->canSee(*pc) && !crit_ptr->isUnaware()){
-											Sprintf(buf, "%S is woken up by being hit with a piece of hail!\n",
+											Sprintf(buf, "%pS is woken up by being hit with a piece of hail!\n",
 												pc->getName(crit_ptr->SEE_BIT));
 											crit_ptr->show(buf);
 										}
@@ -588,7 +588,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
 								while((crit_ptr = rcll.next())){
 									if(crit_ptr != pc){
 										if(crit_ptr->canSee(*pc) && !crit_ptr->isUnaware()){
-											Sprintf(buf, "%S's meditation is broken by a small piece of hail!!\n",
+											Sprintf(buf, "%pS's meditation is broken by a small piece of hail!!\n",
 												pc->getName(crit_ptr->SEE_BIT));
 											crit_ptr->show(buf);
 										}
@@ -598,7 +598,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
 								pc->show("A small piece of hail hits you!\n");
 								while((crit_ptr = rcll.next())){
 									if(crit_ptr != pc){
-										Sprintf(buf, "A small piece of hails hits %S!\n",
+										Sprintf(buf, "A small piece of hails hits %pS!\n",
 											pc->getName(crit_ptr->SEE_BIT));
 										crit_ptr->show(buf);
 									}
@@ -613,7 +613,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
 								while((crit_ptr = rcll.next())){
 									if(crit_ptr != pc){
 										if(crit_ptr->canSee(*pc) && !crit_ptr->isUnaware()){
-											Sprintf(buf, "%S is woken up by being hit with a large piece of hail!\n",
+											Sprintf(buf, "%pS is woken up by being hit with a large piece of hail!\n",
 												pc->getName(crit_ptr->SEE_BIT));
 											crit_ptr->show(buf);
 										}
@@ -625,7 +625,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
 								while((crit_ptr = rcll.next())){
 									if(crit_ptr != pc){
 										if(crit_ptr->canSee(*pc) && !crit_ptr->isUnaware()){
-											Sprintf(buf, "%S's meditation is disrupted by a large peice of hail !\n",
+											Sprintf(buf, "%pS's meditation is disrupted by a large peice of hail !\n",
 												pc->getName(crit_ptr->SEE_BIT));
 											crit_ptr->show(buf);
 										}
@@ -636,7 +636,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
 								while((crit_ptr = rcll.next())){
 									if(crit_ptr != pc){
 										if(crit_ptr->canSee(*pc) && !crit_ptr->isUnaware()){
-											Sprintf(buf, "A large piece of hails hits %S!\n",
+											Sprintf(buf, "A large piece of hails hits %pS!\n",
 												pc->getName(crit_ptr->SEE_BIT));
 											crit_ptr->show(buf);
 										}
@@ -652,7 +652,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
 								  if(crit_ptr != pc){
 									  if(crit_ptr->canSee(*pc) && !crit_ptr->isUnaware()){
 										  Sprintf(buf,
-											  "%S is nearly hit hit by a piece of hail!\n",
+											  "%pS is nearly hit hit by a piece of hail!\n",
 											  pc->getName());
 										  crit_ptr->show(buf);
 									  }
@@ -664,7 +664,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
 								  if(crit_ptr != pc){
 									  if(crit_ptr->canSee(*pc) && !crit_ptr->isUnaware()){
 										  Sprintf(buf,
-											  "%S barely avoids being hit by a piece of hail!\n",
+											  "%pS barely avoids being hit by a piece of hail!\n",
 											  pc->getName());
 										  crit_ptr->show(buf);
 									  }
@@ -704,7 +704,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
 							   if(crit_ptr != pc){
 								   if(crit_ptr->canSee(*pc) && !crit_ptr->isUnaware()){
 									   Sprintf(buf,
-										   "%S is struck by lightning!!\n",
+										   "%pS is struck by lightning!!\n",
 										   pc->getName());
 									   crit_ptr->show(buf);
 								   }else {
@@ -721,7 +721,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
 							   if(crit_ptr != pc){
 								   if(crit_ptr->canSee(*pc) && !crit_ptr->isUnaware()){
 									   Sprintf(buf,
-										   "%S is struck by lightning!!\n",
+										   "%pS is struck by lightning!!\n",
 										   pc->getName());
 									   crit_ptr->show(buf);
 								   } else {
@@ -737,7 +737,7 @@ void Weather::changeWeather(ClimateType i, WeatherType tw){
 							   if(crit_ptr != pc){
 								   if(crit_ptr->canSee(*pc) && !crit_ptr->isUnaware()){
 									   Sprintf(buf,
-										   "%S is struck by lightning!!\n",
+										   "%pS is struck by lightning!!\n",
 										   pc->getName());
 									   crit_ptr->show(buf);
 								   } else {

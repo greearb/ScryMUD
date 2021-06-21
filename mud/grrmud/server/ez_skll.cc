@@ -105,19 +105,19 @@ int do_rescue(critter& vict, critter& pc) {
 
      vict.doRemoveFromBattle(); //no more fighting for that poor loser!
      
-     Sprintf(buf, "valiantly rescues %S.\n", name_of_crit(vict, ~0));
+     Sprintf(buf, "valiantly rescues %pS.\n", name_of_crit(vict, ~0));
      emote(buf, pc, ROOM, TRUE, &vict);
-     Sprintf(buf, "You rescue %S.\n", name_of_crit(vict, pc.SEE_BIT));
+     Sprintf(buf, "You rescue %pS.\n", name_of_crit(vict, pc.SEE_BIT));
      show(buf, pc);
-     Sprintf(buf, "You are rescued by %S.\n", name_of_crit(pc, vict.SEE_BIT));
+     Sprintf(buf, "You are rescued by %pS.\n", name_of_crit(pc, vict.SEE_BIT));
      show(buf, vict);
   }//if
   else {
-     Sprintf(buf, "fails to rescue %S.", name_of_crit(vict, ~0));
+     Sprintf(buf, "fails to rescue %pS.", name_of_crit(vict, ~0));
      emote(buf, pc, ROOM, TRUE, &vict);
-     Sprintf(buf, "You fail to rescue %S.\n", name_of_crit(vict, pc.SEE_BIT));
+     Sprintf(buf, "You fail to rescue %pS.\n", name_of_crit(vict, pc.SEE_BIT));
      show(buf, pc);
-     Sprintf(buf, "%S tries but fails to rescue you.\n", 
+     Sprintf(buf, "%pS tries but fails to rescue you.\n", 
              name_of_crit(pc, vict.SEE_BIT));
      buf.Cap();
      show(buf, vict);
@@ -205,12 +205,12 @@ int do_shield(critter& vict, critter& pc) {
    pc.SHIELDING = &vict;
    vict.SHIELDED_BY = &pc;
    
-   Sprintf(buf, "You start shielding %S.\n", name_of_crit(vict, pc.SEE_BIT));
+   Sprintf(buf, "You start shielding %pS.\n", name_of_crit(vict, pc.SEE_BIT));
    show(buf, pc);
-   Sprintf(buf, "starts shielding %S.", name_of_crit(vict, ~0));
+   Sprintf(buf, "starts shielding %pS.", name_of_crit(vict, ~0));
    emote(buf, pc, ROOM, TRUE, &vict);
    Sprintf(buf, 
-           "%S starts shielding you.  You feel protected by %s arts!!\n", 
+           "%pS starts shielding you.  You feel protected by %s arts!!\n", 
            name_of_crit(pc, vict.SEE_BIT), get_his_her(pc));
    buf.Cap();
    show(buf, vict);
@@ -277,9 +277,9 @@ int do_guard(critter& vict, critter& pc) {
    pc.GUARDING = &vict;
    vict.GUARDED_BY = &pc;
    
-   Sprintf(buf, "You start guarding %S.\n", name_of_crit(vict, pc.SEE_BIT));
+   Sprintf(buf, "You start guarding %pS.\n", name_of_crit(vict, pc.SEE_BIT));
    show(buf, pc);
-   Sprintf(buf, "%S starts guarding you.  You feel much safer!!\n", 
+   Sprintf(buf, "%pS starts guarding you.  You feel much safer!!\n", 
            name_of_crit(pc, vict.SEE_BIT));
    vict.show(buf);
    return 0;
@@ -300,10 +300,10 @@ int unguard(critter& pc) {
       return -1;
    }
 
-   Sprintf(buf, "You stop guarding %S.\n", name_of_crit(*(pc.GUARDING), pc.SEE_BIT));
+   Sprintf(buf, "You stop guarding %pS.\n", name_of_crit(*(pc.GUARDING), pc.SEE_BIT));
    pc.show(buf);
 
-   Sprintf(buf, "%S stops guarding you.\n", name_of_crit(pc,
+   Sprintf(buf, "%pS stops guarding you.\n", name_of_crit(pc,
             pc.GUARDING->SEE_BIT));
    pc.GUARDING->show(buf);
 

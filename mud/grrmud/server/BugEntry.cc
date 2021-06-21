@@ -118,7 +118,7 @@ int CommentEntry::writeHtml(ofstream& dafile, const char* fnt) {
 
 String CommentEntry::toStringHeg() {
    String buf(200);
-   Sprintf(buf, "<BUG_COMMENT_ENTRY \"%S\" %S>%S</BUG_COMMENT_ENTRY>",
+   Sprintf(buf, "<BUG_COMMENT_ENTRY \"%pS\" %pS>%pS</BUG_COMMENT_ENTRY>",
            &date, &reporter, &heg_safe_report);
    return buf;
 }
@@ -126,7 +126,7 @@ String CommentEntry::toStringHeg() {
 
 String CommentEntry::toString() {
    String buf(200);
-   Sprintf(buf, "   %S: %S\n\t%S\n", &date, &reporter, &report);
+   Sprintf(buf, "   %pS: %pS\n\t%pS\n", &date, &reporter, &report);
    return buf;
 }//toString
 
@@ -358,7 +358,7 @@ int BugEntry::writeHtml(ofstream& dafile) {
 
    dafile << html_color[cur_state];
 
-   Sprintf(buf, "[%i] %P08[%s]%P17 <u>%S</u>  %P35By %S %P60Room: %i<br>\n<font size += 1>%S</font>",
+   Sprintf(buf, "[%i] %P08[%s]%P17 <u>%pS</u>  %P35By %pS %P60Room: %i<br>\n<font size += 1>%pS</font>",
            bug_num, state_str[cur_state], &create_date, &reporter,
            room_num, &html_safe_title);
    
@@ -394,13 +394,13 @@ String BugEntry::toString() {
 
    if (reports.isEmpty()) {
       Sprintf(retval,
-              "[%i] %P08[%s] %S\n\t  Submitted by %S on %S: in room _%i_.  Assigned to: %S\n",
+              "[%i] %P08[%s] %pS\n\t  Submitted by %pS on %pS: in room _%i_.  Assigned to: %pS\n",
               bug_num, state_str[cur_state], &title, &reporter, &create_date,
               room_num, &assigned_to);
    }
    else {
       Sprintf(retval,
-              "* [%i] %P08[%s] %S\n\t  Submitted by %S on %S: in room _%i_.  Assigned to: %S\n",
+              "* [%i] %P08[%s] %pS\n\t  Submitted by %pS on %pS: in room _%i_.  Assigned to: %pS\n",
               bug_num, state_str[cur_state], &title, &reporter, &create_date,
               room_num, &assigned_to);
    }
@@ -420,12 +420,12 @@ String BugEntry::toStringBrief() {
    String retval(1000);
 
    if (reports.isEmpty()) {
-      Sprintf(retval, "[%i] %P08[%s] %S\n\t  Submitted by %S on %S: in room %i.  Assigned to: %S\n",
+      Sprintf(retval, "[%i] %P08[%s] %pS\n\t  Submitted by %pS on %pS: in room %i.  Assigned to: %pS\n",
               bug_num, state_str[cur_state], &heg_safe_title, &reporter,
               &create_date, room_num, &assigned_to);
    }
    else {
-      Sprintf(retval, "** [%i] %P08[%s] %S\n\t  Submitted by %S on %S: in room %i.  Assigned to: %S\n",
+      Sprintf(retval, "** [%i] %P08[%s] %pS\n\t  Submitted by %pS on %pS: in room %i.  Assigned to: %pS\n",
               bug_num, state_str[cur_state], &heg_safe_title, &reporter,
               &create_date, room_num, &assigned_to);
    }
@@ -439,8 +439,8 @@ String BugEntry::toStringHeg(const char* col_type) {
    String retval(1000);
    String buf(100);
 
-   Sprintf(retval, "<BUG_TITLE>%S</BUG_TITLE>", &heg_safe_title);
-   Sprintf(buf, "<BUG_ENTRY %i %s \"%S\" %S %i %S %s>",
+   Sprintf(retval, "<BUG_TITLE>%pS</BUG_TITLE>", &heg_safe_title);
+   Sprintf(buf, "<BUG_ENTRY %i %s \"%pS\" %pS %i %pS %s>",
            bug_num, state_str[cur_state], &create_date, &reporter, room_num,
            &assigned_to, col_type);
 
@@ -632,7 +632,7 @@ int BugCollection::writeHtml() {
       dafile.clear();
 
       String cmd(50);
-      Sprintf(cmd, "./mv_logs.bash %S", &tmp_name);
+      Sprintf(cmd, "./mv_logs.bash %pS", &tmp_name);
       system(cmd);
 
       return 0;

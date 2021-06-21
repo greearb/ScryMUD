@@ -61,7 +61,7 @@ int vehicle::canEnter(const room* dest_room, int do_msg) const {
 
    if (!(hasUnlimitedFuel() || (cur_fuel > 0))) {
       if (do_msg) {
-         Sprintf(buf, "%S is out of fuel.\n", &(short_desc));
+         Sprintf(buf, "%pS is out of fuel.\n", &(short_desc));
          showAllCept(buf);
       }//if
    }//if
@@ -118,9 +118,9 @@ void vehicle::stat(critter& pc) {
 
    pc.show("\n\t\t\tIS A VEHICLE\n");
 
-   Sprintf(buf, "In Room Stopped:\n%S\n", &veh_stopped);
+   Sprintf(buf, "In Room Stopped:\n%pS\n", &veh_stopped);
    pc.show(buf);
-   Sprintf(buf, "In Room Moving:\n%S\n", &veh_moving);
+   Sprintf(buf, "In Room Moving:\n%pS\n", &veh_moving);
    pc.show(buf);
 
    pc.show("Vehicle flags:\n");
@@ -170,7 +170,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
 
    if (!exit_dr_ptr) {
       mudlog.log(WRN, "WARNING:  destination dr_ptr is NULL in move_room.\n");
-      Sprintf(buf, "Your vehicle cannot go %S.\n", &exit_direction);
+      Sprintf(buf, "Your vehicle cannot go %pS.\n", &exit_direction);
       showAllCept(buf);
       return FALSE;
    }//if
@@ -248,20 +248,20 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
           tmp_ptr->dr_data->isOpen() &&
           tmp_ptr->dr_data->isCloseable()) {
          if (dr_ptr) {
-            Sprintf(buf, "The %S closes.\n", name_of_door(*dr_ptr, ~0));
+            Sprintf(buf, "The %pS closes.\n", name_of_door(*dr_ptr, ~0));
             showAllCept(buf);
          }
          else {
             mudlog.log(LS_ERROR, "ERROR:  dr_ptr is NULL...\n");
          }
          
-         Sprintf(buf, "The %S closes.\n", name_of_door(*tmp_ptr, ~0));
+         Sprintf(buf, "The %pS closes.\n", name_of_door(*tmp_ptr, ~0));
          room_list[in_room].showAllCept(buf);
 
          tmp_ptr->dr_data->close(); //make it closed
       }//if
 
-      Sprintf(buf, "%S leaves towards the %S.\n", &(short_desc),
+      Sprintf(buf, "%pS leaves towards the %pS.\n", &(short_desc),
               &exit_direction);
       room_list[in_room].showAllCept(buf);
    }//if not stealth
@@ -300,7 +300,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
 
    /* now in new room, do some messages if needed */
    if (!isStealthy()) { //if not stealty
-      Sprintf(buf, "%S has arrived.\n", &(short_desc));
+      Sprintf(buf, "%pS has arrived.\n", &(short_desc));
       room_list[in_room].showAllCept(buf);
    }//if not stealth
 
@@ -339,7 +339,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
       if (!isStealthy() && tmp_ptr->dr_data->isClosed() &&
             tmp_ptr->dr_data->isOpenable() ) {
          if (dr_ptr) {
-            Sprintf(buf, "The %S opens.\n", name_of_door(*dr_ptr, ~0));
+            Sprintf(buf, "The %pS opens.\n", name_of_door(*dr_ptr, ~0));
             showAllCept(buf);
          }
          else {
@@ -347,7 +347,7 @@ int vehicle::move(int see_bit, int i_th, const String& exit_direction) {
          }
 
          if (tmp_ptr) {
-            Sprintf(buf, "The %S opens.\n", name_of_door(*tmp_ptr, ~0));
+            Sprintf(buf, "The %pS opens.\n", name_of_door(*tmp_ptr, ~0));
             room_list[in_room].showAllCept(buf);
          }
          else {

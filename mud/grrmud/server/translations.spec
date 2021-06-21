@@ -43,19 +43,19 @@ CS_YOU_GAGGED
         ~
 
 CS_SAY_SPRINTF
-        eng "%S\\n%S says, '%S'\\n%S"
-        spa "%S\\n%S dice, '%S'\\n%S"
-        ser "%S\\n%S kaze, '%S'\\n%S"
-        ger "%S\\n%S sagt: '%S'\\n%S"
-        fre "%S\\n%S dit, '%S'\\n%S"
+        eng "%pS\\n%pS says, '%pS'\\n%pS"
+        spa "%pS\\n%pS dice, '%pS'\\n%pS"
+        ser "%pS\\n%pS kaze, '%pS'\\n%pS"
+        ger "%pS\\n%pS sagt: '%pS'\\n%pS"
+        fre "%pS\\n%pS dit, '%pS'\\n%pS"
         ~ 
 
 CS_OSAY_SPRINTF
-        eng "%S\\n[OOC] %S says, '%S'\\n%S"
-        spa "%S\\n[OOC] %S dice, '%S'\\n%S"
-        ser "%S\\n[OOC] %S kaze, '%S'\\n%S"
-        ger "%S\\n[OOC] %S sagt: '%S'\\n%S"
-        fre "%S\\n%S dit, '%S'\\n%S"
+        eng "%pS\\n[OOC] %pS says, '%pS'\\n%pS"
+        spa "%pS\\n[OOC] %pS dice, '%pS'\\n%pS"
+        ser "%pS\\n[OOC] %pS kaze, '%pS'\\n%pS"
+        ger "%pS\\n[OOC] %pS sagt: '%pS'\\n%pS"
+        fre "%pS\\n%pS dit, '%pS'\\n%pS"
         ~ 
 
 # Shown when you try to communicate in your sleep.
@@ -67,66 +67,66 @@ CS_MUTTER_SLEEP
         ~
 
 CS_NEW_PLAYER_INFO_NC
-        eng "\007\007\007 INFO: [NEW PLAYER]  %S connecting from: %S\n"
-        spa "\007\007\007 INFO: [NEW PLAYER]  %S conectandose desde: %S\n"
-        ser "\007\007\007 INFO: [NEW PLAYER]  %S konektovan sa: %S\n"
-        ger "\007\007\007 INFO: [NEUER SPIELER] %S nimmt Verbindung auf von: %S\n"
+        eng "\007\007\007 INFO: [NEW PLAYER]  %pS connecting from: %pS\n"
+        spa "\007\007\007 INFO: [NEW PLAYER]  %pS conectandose desde: %pS\n"
+        ser "\007\007\007 INFO: [NEW PLAYER]  %pS konektovan sa: %pS\n"
+        ger "\007\007\007 INFO: [NEUER SPIELER] %pS nimmt Verbindung auf von: %pS\n"
 	~
 
 CS_NEW_PLAYER_INFO_C
-        eng "<BEEP> INFO: [NEW PLAYER]  %S connecting from: %S\n"
-        spa "<BEEP> INFO: [NEW PLAYER]  %S conectandose desde: %S\n"
-        ser "<BEEP> INFO: [NEW PLAYER]  %S konektovan sa: %S\n"
-        ger "<BEEP> INFO: [NEUER SPIELER] %S nimmt Verbindung auf von: %S\n"
+        eng "<BEEP> INFO: [NEW PLAYER]  %pS connecting from: %pS\n"
+        spa "<BEEP> INFO: [NEW PLAYER]  %pS conectandose desde: %pS\n"
+        ser "<BEEP> INFO: [NEW PLAYER]  %pS konektovan sa: %pS\n"
+        ger "<BEEP> INFO: [NEUER SPIELER] %pS nimmt Verbindung auf von: %pS\n"
         ~
 
 CS_PLAYER_REGAINED_INFO
-        eng "  INFO:  %S has regained connection from: %S\n"
-        spa "  INFO:  %S ha recuperado la conexion desde: %S\n"
-        ser "  INFO:  %S ponovo se konektovao sa: %S\n"
-	ger "  INFO:  %S nimmt erneut Verbindung auf von: %S\n"
+        eng "  INFO:  %pS has regained connection from: %pS\n"
+        spa "  INFO:  %pS ha recuperado la conexion desde: %pS\n"
+        ser "  INFO:  %pS ponovo se konektovao sa: %pS\n"
+	ger "  INFO:  %pS nimmt erneut Verbindung auf von: %pS\n"
         ~
 
 CS_PLAYER_HAS_CONNECTED_INFO
-        eng "   INFO:  %S has connected from: %S\n"
-        spa "   INFO:  %S se ha conectado desde: %S\n"
-        ser "   INFO:  %S se konektovao sa: %S\n"
-	ger "   INFO:  %S hat Verbindung aufgenommen von: %S\n"
+        eng "   INFO:  %pS has connected from: %pS\n"
+        spa "   INFO:  %pS se ha conectado desde: %pS\n"
+        ser "   INFO:  %pS se konektovao sa: %pS\n"
+	ger "   INFO:  %pS hat Verbindung aufgenommen von: %pS\n"
         ~
 
 CS_PLAYER_OFF_LD_LIST_INFO
-        eng " INFO:  %S has been taken off the link-dead list.\n"
-        spa " INFO:  %S ha sido borrado de la lista de conexiones muertas.\n"
-        ser " INFO:  %S je skinut sa liste mrvih linkova.\n"
-	ger " INFO:  %S wurde von der Liste unterbrochener Verbindungen entfernt.\n"
+        eng " INFO:  %pS has been taken off the link-dead list.\n"
+        spa " INFO:  %pS ha sido borrado de la lista de conexiones muertas.\n"
+        ser " INFO:  %pS je skinut sa liste mrvih linkova.\n"
+	ger " INFO:  %pS wurde von der Liste unterbrochener Verbindungen entfernt.\n"
         ~
 
 CS_PLAYER_LOST_CON_INFO
-        eng " INFO:  %S has lost connection.\n"
-        spa " INFO:  %S ha perdido la conexion.\n"
-        ser " INFO:  %S je izgubio konekciju.\n"
-	ger " INFO:  %S hat die Verbindung verloren.\n"
+        eng " INFO:  %pS has lost connection.\n"
+        spa " INFO:  %pS ha perdido la conexion.\n"
+        ser " INFO:  %pS je izgubio konekciju.\n"
+	ger " INFO:  %pS hat die Verbindung verloren.\n"
 	  ~
 
 CS_PKILLED_INFO
-        eng "  INFO:  %S has P-KILLED %S in room %i!!\n"
-        spa "  INFO:  %S ha ASESINADO-AL-JUGADOR %S en la habitacion %i!!\n"
-        ser "  INFO:  %S je ubio %S u sobi %i!!\n"
-	ger "  INFO:  %S hat %S in Raum %i ermordet!\n"
+        eng "  INFO:  %pS has P-KILLED %pS in room %i!!\n"
+        spa "  INFO:  %pS ha ASESINADO-AL-JUGADOR %pS en la habitacion %i!!\n"
+        ser "  INFO:  %pS je ubio %pS u sobi %i!!\n"
+	ger "  INFO:  %pS hat %pS in Raum %i ermordet!\n"
 	  ~
 
 CS_KILLED_INFO
-        eng "  INFO:  %S was killed by %S in room: %i\n"
-        spa "  INFO:  %S fue muerto por %S en la habitacion: %i\n"
-        ser "  INFO:  %S je ubijen. %S ga je ubio u sobi: %i\n"
-	ger "  INFO:  %S wurde von %S in Raum %i ermordet.\n"
+        eng "  INFO:  %pS was killed by %pS in room: %i\n"
+        spa "  INFO:  %pS fue muerto por %pS en la habitacion: %i\n"
+        ser "  INFO:  %pS je ubijen. %pS ga je ubio u sobi: %i\n"
+	ger "  INFO:  %pS wurde von %pS in Raum %i ermordet.\n"
 	~
 
 CS_PERM_DEATH_INFO
-        eng "%S has permanently died for lack of constitution!\n"
-        spa "%S ha muerto permanentemente por falta de constitucion!\n"
-        ser "%S je mrtav zbog slabe fizicke gradje!\n"
-	ger "%S ist aufgrund von mangelnder Konstitution endgültig verschieden!\n"
+        eng "%pS has permanently died for lack of constitution!\n"
+        spa "%pS ha muerto permanentemente por falta de constitucion!\n"
+        ser "%pS je mrtav zbog slabe fizicke gradje!\n"
+	ger "%pS ist aufgrund von mangelnder Konstitution endgültig verschieden!\n"
         ~
 
 CS_YELL_SLEEP
@@ -137,24 +137,24 @@ CS_YELL_SLEEP
  	~
 
 CS_SAY_OBJ_SPRINTF
-        eng "\n####%S says, '%S'\n"
-        spa "\n####%S dice, '%S'\n"
-        ser "\n####%S kaze, '%S'\n"
-        ger "\n####%S sagt: '%S'\n"
+        eng "\n####%pS says, '%pS'\n"
+        spa "\n####%pS dice, '%pS'\n"
+        ser "\n####%pS kaze, '%pS'\n"
+        ger "\n####%pS sagt: '%pS'\n"
 	~
 
 CS_YELL
-        eng "%S\n%S yells: '%S'\n%S"
-        spa "%S\n%S grita: '%S'\n%S"
-        ser "%S\n%S vice: '%S'\n%S" 
-        ger "%S\n%S ruft: '%S'\n%S" 
+        eng "%pS\n%pS yells: '%pS'\n%pS"
+        spa "%pS\n%pS grita: '%pS'\n%pS"
+        ser "%pS\n%pS vice: '%pS'\n%pS" 
+        ger "%pS\n%pS ruft: '%pS'\n%pS" 
 	~
 
 CS_YOU_YELL
-        eng "%SYou yell, '%S'\n%S"
-        spa "%SGritas, '%S'\n%S"
-        ser "%STi vices, '%S'\n%S"
-	ger "%SSie rufen: '%S'\n%S"
+        eng "%pSYou yell, '%pS'\n%pS"
+        spa "%pSGritas, '%pS'\n%pS"
+        ser "%pSTi vices, '%pS'\n%pS"
+	ger "%pSSie rufen: '%pS'\n%pS"
         ~
 
 CS_GOSSIP_WHAT
@@ -178,31 +178,31 @@ CS_GOSSIP_NOT_ON_CHANNEL
 	~
 
 CS_GOSSIP
-        eng "%S\n%S gossips, '%S'\n%S"
-        spa "%S\n%S chismea, '%S'\n%S"
-        ser "%S\n%S brblja, '%S'\n%S"
-        ger "%S\n%S babbelt: '%S'\n%S"
+        eng "%pS\n%pS gossips, '%pS'\n%pS"
+        spa "%pS\n%pS chismea, '%pS'\n%pS"
+        ser "%pS\n%pS brblja, '%pS'\n%pS"
+        ger "%pS\n%pS babbelt: '%pS'\n%pS"
 	~
 
 CS_YOU_GOSSIP
-        eng "%SYou gossip, '%S'\n%S"
-        spa "%SChismeas, '%S'\n%S"
-        ser "%STi brbljas, '%S'\n%S"
-        ger "%SSie babbeln: '%S'\n%S"
+        eng "%pSYou gossip, '%pS'\n%pS"
+        spa "%pSChismeas, '%pS'\n%pS"
+        ser "%pSTi brbljas, '%pS'\n%pS"
+        ger "%pSSie babbeln: '%pS'\n%pS"
 	~
 
 CS_GS
-        eng "%S\n%S tells the group, '%S'\n%S"
-        spa "%S\n%S le dice al grupo, '%S'\n%S"
-        ser "%S\n%S govori grupi, '%S'\n%S"
-        ger "%S\n%S teilt der Gruppe mit: '%S'\n%S"
+        eng "%pS\n%pS tells the group, '%pS'\n%pS"
+        spa "%pS\n%pS le dice al grupo, '%pS'\n%pS"
+        ser "%pS\n%pS govori grupi, '%pS'\n%pS"
+        ger "%pS\n%pS teilt der Gruppe mit: '%pS'\n%pS"
 	~
 
 CS_YOU_GS
-        eng "%SYou tell the group, '%S'\n%S"
-        spa "%SLe dices al grupo, '%S'\n%S"
-        ser "%SLe Ti govoris grupi, '%S'\n%S"
-        ger "%SSie teilen der Gruppe mit: '%S'\n%S"
+        eng "%pSYou tell the group, '%pS'\n%pS"
+        spa "%pSLe dices al grupo, '%pS'\n%pS"
+        ser "%pSLe Ti govoris grupi, '%pS'\n%pS"
+        ger "%pSSie teilen der Gruppe mit: '%pS'\n%pS"
 	 ~
 
 CS_NO_WIZCHAT_CHANNEL
@@ -213,17 +213,17 @@ CS_NO_WIZCHAT_CHANNEL
 	~
 
 CS_WC
-        eng "%S\n%S wizchats, '%S'\n%S"
-        spa "%S\n%S wizchats, '%S'\n%S"
-        ser "%S\n%S wizchats, '%S'\n%S"
-        ger "%S\n%S wizchattet, '%S'\n%S"
+        eng "%pS\n%pS wizchats, '%pS'\n%pS"
+        spa "%pS\n%pS wizchats, '%pS'\n%pS"
+        ser "%pS\n%pS wizchats, '%pS'\n%pS"
+        ger "%pS\n%pS wizchattet, '%pS'\n%pS"
 	~
 
 CS_YOU_WC
-        eng "%SYou wizchat, '%S'\n%S"
-        spa "%STu wizchat, '%S'\n%S"
-        ser "%STi wizchat-ujes, '%S'\n%S"
-        ger "%SSie wizchatten: '%S'\n%S"
+        eng "%pSYou wizchat, '%pS'\n%pS"
+        spa "%pSTu wizchat, '%pS'\n%pS"
+        ser "%pSTi wizchat-ujes, '%pS'\n%pS"
+        ger "%pSSie wizchatten: '%pS'\n%pS"
 	~
 
 CS_GS_NOONE_AROUND
@@ -241,17 +241,17 @@ CS_NO_AUCTION_CHANNEL
 	~
 
 CS_AUCTION
-        eng "%S\n%S auctions, '%S'\n%S"
-        spa "%S\n%S auctions, '%S'\n%S"
-        ser "%S\n%S aukcija, '%S'\n%S"
-        ger "%S\n%S auctions: '%S'\n%S"
+        eng "%pS\n%pS auctions, '%pS'\n%pS"
+        spa "%pS\n%pS auctions, '%pS'\n%pS"
+        ser "%pS\n%pS aukcija, '%pS'\n%pS"
+        ger "%pS\n%pS auctions: '%pS'\n%pS"
 	~
 
 CS_YOU_AUCTION
-        eng "%SYou auction, '%S'\n%S"
-        spa "%STu auction, '%S'\n%S"
-        ser "%STi stavljas na aukciju, '%S'\n%S"
-        ger "%SYou auction: '%S'\n%S"
+        eng "%pSYou auction, '%pS'\n%pS"
+        spa "%pSTu auction, '%pS'\n%pS"
+        ser "%pSTi stavljas na aukciju, '%pS'\n%pS"
+        ger "%pSYou auction: '%pS'\n%pS"
 	~
 
 CS_NO_SHOUT_CHANNEL
@@ -262,87 +262,87 @@ CS_NO_SHOUT_CHANNEL
 	~
 
 CS_SHOUT
-        eng "%S\n%S shouts, '%S'\n%S"
-        spa "%S\n%S grita en el canal, '%S'\n%S"
-        ser "%S\n%S vice, '%S'\n%S"
-	ger "%S\n%S schreit: '%S'\n%S"
+        eng "%pS\n%pS shouts, '%pS'\n%pS"
+        spa "%pS\n%pS grita en el canal, '%pS'\n%pS"
+        ser "%pS\n%pS vice, '%pS'\n%pS"
+	ger "%pS\n%pS schreit: '%pS'\n%pS"
 	~
 
 CS_YOU_SHOUT
-        eng "%SYou shout, '%S'\n%S"
-        spa "%SGritas en el canal, '%S'\n%S"
-        ser "%STi vices, '%S'\n%S"
-        ger "%SSie schreien: '%S'\n%S"
+        eng "%pSYou shout, '%pS'\n%pS"
+        spa "%pSGritas en el canal, '%pS'\n%pS"
+        ser "%pSTi vices, '%pS'\n%pS"
+        ger "%pSSie schreien: '%pS'\n%pS"
 	~
 
 CS_PEMOTE_OBJ_SPRINTF
-        eng "#####%S's %S\n"
-        spa "#####%S's %S\n"
-        ser "#####%S %S\n"
-        ger "#####%Ss %S\n"
+        eng "#####%pS's %pS\n"
+        spa "#####%pS's %pS\n"
+        ser "#####%pS %pS\n"
+        ger "#####%pSs %pS\n"
 	~
 
 CS_EMOTE_OBJ_SPRINTF
-        eng "#####%S %S\n"
-        spa "#####%S %S\n"
-        ser "#####%S %S\n"
-        ger "#####%S %S\n"
+        eng "#####%pS %pS\n"
+        spa "#####%pS %pS\n"
+        ser "#####%pS %pS\n"
+        ger "#####%pS %pS\n"
 	~
 
 CS_PEMOTE_OBJ_SOMEONE
-        eng "#####Someone's %S\n"
-        spa "#####Someone's %S\n"
-        ser "#####Necije %S\n"
-        ger "#####Jemandes %S\n"
+        eng "#####Someone's %pS\n"
+        spa "#####Someone's %pS\n"
+        ser "#####Necije %pS\n"
+        ger "#####Jemandes %pS\n"
 	~
 
 CS_EMOTE_OBJ_SOMEONE
-        eng "#####Someone %S\n"
-        spa "#####Someone %S\n"
-        ser "#####Necije %S\n"
-        ger "#####Jemand %S\n"
+        eng "#####Someone %pS\n"
+        spa "#####Someone %pS\n"
+        ser "#####Necije %pS\n"
+        ger "#####Jemand %pS\n"
 	~
 
 CS_PEMOTE_SOMEONE
-        eng "Someone's %S\n"
-        spa "Someone's %S\n"
-        ser "Necije %S\n"
-        ger "Jemandes %S\n"
+        eng "Someone's %pS\n"
+        spa "Someone's %pS\n"
+        ser "Necije %pS\n"
+        ger "Jemandes %pS\n"
 	~
 
 CS_EMOTE_SOMEONE
-        eng "Someone %S\n"
-        spa "Alguien %S\n"
-        ser "necije %S\n"
-        ger "Jemand %S\n"
+        eng "Someone %pS\n"
+        spa "Alguien %pS\n"
+        ser "necije %pS\n"
+        ger "Jemand %pS\n"
 	~
 
 CS_PEMOTE
-        eng "%S's %S\n"
-        spa "%S's %S\n"
-        ser "%S's %S\n"
-        ger "%Ss %S\n"
+        eng "%pS's %pS\n"
+        spa "%pS's %pS\n"
+        ser "%pS's %pS\n"
+        ger "%pSs %pS\n"
 	~
 
 CS_EMOTE
-        eng "%S %S\n"
-        spa "%S %S\n"
-        ser "%S %S\n"
-        ger "%S %S\n"
+        eng "%pS %pS\n"
+        spa "%pS %pS\n"
+        ser "%pS %pS\n"
+        ger "%pS %pS\n"
 	~
 
 CS_SAY_SPRINTF_YOU
-        eng "%SYou say, '%S'\\n%S"
-        spa "%SSe habla, '%S'\\n%S"
-	ser "%STi kazes, '%S'\\n%S"
-	ser "%SSie sagen: '%S'\\n%S"
+        eng "%pSYou say, '%pS'\\n%pS"
+        spa "%pSSe habla, '%pS'\\n%pS"
+	ser "%pSTi kazes, '%pS'\\n%pS"
+	ser "%pSSie sagen: '%pS'\\n%pS"
         ~
 
 CS_OSAY_SPRINTF_YOU
-        eng "%S[OOC] You say, '%S'\\n%S"
-        spa "%S[OOC] Se habla, '%S'\\n%S"
-	ser "%S[OOC] Ti kazes, '%S'\\n%S"
-	ser "%S[OOC] Sie sagen: '%S'\\n%S"
+        eng "%pS[OOC] You say, '%pS'\\n%pS"
+        spa "%pS[OOC] Se habla, '%pS'\\n%pS"
+	ser "%pS[OOC] Ti kazes, '%pS'\\n%pS"
+	ser "%pS[OOC] Sie sagen: '%pS'\\n%pS"
         ~
 
 CS_YOUR_INV
@@ -363,7 +363,7 @@ CS_JUNK_ALL
 	eng "You junk everything you're holding. Time to start fresh!\n"		~
 
 CS_CANT_JUNK
-	eng "You can't junk %S.\n"
+	eng "You can't junk %pS.\n"
 	~
 
 CS_NOTHING_IN_INV_TO_JUNK
@@ -400,23 +400,23 @@ CS_DONT_SEEM_TO_HAVE_THAT
 	~
 
 CS_DONT_SEEM_TO_HAVE
-        eng "You don't seem to have the %S.\n"
-        spa "No pareces tener %S.\n"
-        ser "Nemas %S.\n"
-        fre "Tu n'as pas le %S.\n"
+        eng "You don't seem to have the %pS.\n"
+        spa "No pareces tener %pS.\n"
+        ser "Nemas %pS.\n"
+        fre "Tu n'as pas le %pS.\n"
 	  ~
 
 CS_AINT_GOT
-        eng "You neither have nor see the %S.\n"
-        spa "No tienes ni ves %S.\n"
-        ser "Izgleda da nemas ili nevidis %S.\n"
+        eng "You neither have nor see the %pS.\n"
+        spa "No tienes ni ves %pS.\n"
+        ser "Izgleda da nemas ili nevidis %pS.\n"
         ~
 
 CS_CANT_FIND
-        eng "You can't find the %S.\n"
-        spa "No puedes encontrar %S.\n"
-        ser "Nemozes da nadjes %S.\n"
-        fre "Tu ne trouves pas le %S.\n"
+        eng "You can't find the %pS.\n"
+        spa "No puedes encontrar %pS.\n"
+        ser "Nemozes da nadjes %pS.\n"
+        fre "Tu ne trouves pas le %pS.\n"
 	  ~
 	
 
@@ -433,10 +433,10 @@ CS_YOU_ARE_WEARING
 	~
 
 CS_YOU_CANT_FIND_THE
-        eng "You can't find the %S.\n"
-        spa "No puedes encontrar %S.\n"
-        ser "Nemozes da nadjes %S.\n"
-        fre "Tu ne trouves pas le %S.\n"
+        eng "You can't find the %pS.\n"
+        spa "No puedes encontrar %pS.\n"
+        ser "Nemozes da nadjes %pS.\n"
+        fre "Tu ne trouves pas le %pS.\n"
 	~
 
 CS_ITS_CLOSED
@@ -447,9 +447,9 @@ CS_ITS_CLOSED
 	~
 
 CS_CONTAINS
-        eng "%S contains:\n\n"
-        spa "%S contiene:\n\n"
-        ser "%S sadrzi:\n\n"
+        eng "%pS contains:\n\n"
+        spa "%pS contiene:\n\n"
+        ser "%pS sadrzi:\n\n"
 	~
 
 CS_WEAR_WHAT
@@ -582,9 +582,9 @@ CS_ASSIST_YOURSELF
 	~
 
 CS_ASSIST_START
-        eng "You assist %S in fighting against %S!\n"
-        spa "Asistes a %S en pelear contra %S!\n"
-        ser "Asistiras %S u borbi protiv %S!\n"
+        eng "You assist %pS in fighting against %pS!\n"
+        spa "Asistes a %pS en pelear contra %pS!\n"
+        ser "Asistiras %pS u borbi protiv %pS!\n"
 	~
 
 CS_ASSIST_CANT
@@ -646,7 +646,7 @@ CS_DROPS_I_COINS
         ~
 
 CS_PUT_I_COINS
-        eng "You put %i coins in %S.\n"
+        eng "You put %i coins in %pS.\n"
 	~
 
 CS_AMT_MUST_BE_GREATER
@@ -689,9 +689,9 @@ CS_TRY_EMPTY
 	~
 
 CS_TARG_EMPTY
-        eng "The %S appears to be empty.\n"
-        spa "%S parece estar vacio.\n"
-        ser "%S je prazno.\n"
+        eng "The %pS appears to be empty.\n"
+        spa "%pS parece estar vacio.\n"
+        ser "%pS je prazno.\n"
 	~
 
 CS_NO_SELF_CONTAINMENT
@@ -707,9 +707,9 @@ CS_NO_SELF_REMOVAL
 	~
 
 CS_PUT_NO_SEE
-        eng "You neither see nor have the %S.\n"
-        spa "No ves ni tienes %S.\n"
-        ser "Ili nevidis ili nemas %S.\n"
+        eng "You neither see nor have the %pS.\n"
+        spa "No ves ni tienes %pS.\n"
+        ser "Ili nevidis ili nemas %pS.\n"
 	~
 
 CS_NO_SEE_THAT
@@ -731,9 +731,9 @@ CS_NO_DETECT_ANYTHING
 	~
 
 CS_NO_CONTAIN_OBJ
-        eng "The %S doesn't seem to contain the %S.\n"
-        spa "%S no parece contener %S.\n"
-        ser "%S  ne sadrzi %S.\n"
+        eng "The %pS doesn't seem to contain the %pS.\n"
+        spa "%pS no parece contener %pS.\n"
+        ser "%pS  ne sadrzi %pS.\n"
 	~
 
 CS_DEAF_YELL
@@ -1010,34 +1010,34 @@ CS_MOV_NO_EXIT
 	~
 
 CS_MOV_CLOSED
-        eng "The %S is closed.\n"
-        spa "%S es cerrada.\n"
-        ser "%S su zatvorena.\n"
-	fre "%S est couvert.\n"
+        eng "The %pS is closed.\n"
+        spa "%pS es cerrada.\n"
+        ser "%pS su zatvorena.\n"
+	fre "%pS est couvert.\n"
         ~
 
 CS_MOV_BLOCKED
-        eng "The %S is blocked by %S.\n"
-        spa "%S esta bloqueado por %S.\n"
-        ser "%S je blokiran. %S blokira put.\n"
+        eng "The %pS is blocked by %pS.\n"
+        spa "%pS esta bloqueado por %pS.\n"
+        ser "%pS je blokiran. %pS blokira put.\n"
 	~
 
 CS_BLOCKS_WAY
-        eng "%S blocks your way.\n"
-        spa "%S bloquea tu camino.\n"
-        ser "%S ti blokira put.\n"
+        eng "%pS blocks your way.\n"
+        spa "%pS bloquea tu camino.\n"
+        ser "%pS ti blokira put.\n"
 	~
 
 CS_CONSUMES_KEY
-        eng "You give up %S as you pass through.\n"
-        spa "Das %S mientras pasas a su lado.\n"
-        ser "Dajes  %S u prolazu.\n"
+        eng "You give up %pS as you pass through.\n"
+        spa "Das %pS mientras pasas a su lado.\n"
+        ser "Dajes  %pS u prolazu.\n"
 	~
 
 CS_MOV_NEED_KEY
-        eng "You must have %S in order to pass.\n"
-        spa "Debes tener %S para poder pasar.\n"
-        ser "Moras da imas %S da bi prosao.\n"
+        eng "You must have %pS in order to pass.\n"
+        spa "Debes tener %pS para poder pasar.\n"
+        ser "Moras da imas %pS da bi prosao.\n"
 	~
 
 CS_HAS_ARRIVED
@@ -1048,10 +1048,10 @@ CS_HAS_ARRIVED
 	~
 
 CS_YOU_FOLLOW
-        eng "You attempt to follow %S %s.\n"
-        spa "Intentas seguir a %S %s.\n"
-        ser "Pokusavas da pratis %S %s.\n"
-        fre "Tu essaies suivre %S %s.\n"
+        eng "You attempt to follow %pS %s.\n"
+        spa "Intentas seguir a %pS %s.\n"
+        ser "Pokusavas da pratis %pS %s.\n"
+        fre "Tu essaies suivre %pS %s.\n"
 	~
 
 CS_NO_FIND_EXIT
@@ -1061,15 +1061,15 @@ CS_NO_FIND_EXIT
 	~
 
 CS_NO_WEAR
-        eng "You can't wear %S.\n"
-        spa "No puedes vestir %S.\n"
-        ser "Nemozes da obuces %S.\n"
+        eng "You can't wear %pS.\n"
+        spa "No puedes vestir %pS.\n"
+        ser "Nemozes da obuces %pS.\n"
 	~
 
 CS_ALREADY_WEARING
-        eng "   %S:%P25You are already using something there.\n"
-        spa "   %S:%P25Ya estas usando algo ahi.\n"
-        ser "   %S:%P25Vec imas obuceno nesto tamo.\n"
+        eng "   %pS:%P25You are already using something there.\n"
+        spa "   %pS:%P25Ya estas usando algo ahi.\n"
+        ser "   %pS:%P25Vec imas obuceno nesto tamo.\n"
 	~
 
 CS_WOH
@@ -1177,29 +1177,29 @@ CS_WO_UNDEFINED
 	~
 
 CS_WO_RSLT_VNUM
-        eng "%S%P30 [%i]%P37 %S.\n"
-        spa "%S%P30 [%i]%P37 %S.\n"
-        ser "%S%P30 [%i]%P37 %S.\n"
-        fre "%S%P30 [%i]%P37 %S.\n"
+        eng "%pS%P30 [%i]%P37 %pS.\n"
+        spa "%pS%P30 [%i]%P37 %pS.\n"
+        ser "%pS%P30 [%i]%P37 %pS.\n"
+        fre "%pS%P30 [%i]%P37 %pS.\n"
 	~
 
 CS_WO_RSLT
-        eng "%S%P30 %S.\n"
-        spa "%S%P30 %S.\n"
-        ser "%S%P30 %S.\n"
-        fre "%S%P30 %S.\n"
+        eng "%pS%P30 %pS.\n"
+        spa "%pS%P30 %pS.\n"
+        ser "%pS%P30 %pS.\n"
+        fre "%pS%P30 %pS.\n"
 	~
 
 CS_NOT_EXPERIENCED
-        eng "You are not experienced enough to use %S.\n"
-        spa "No tienes suficiente experiencia para usar %S.\n"
-        ser "Nisi dovoljno iskusan da bi koristio %S.\n"
+        eng "You are not experienced enough to use %pS.\n"
+        spa "No tienes suficiente experiencia para usar %pS.\n"
+        ser "Nisi dovoljno iskusan da bi koristio %pS.\n"
 	~
 
 CS_TOO_HEAVY
-        eng "%S is just too heavy for you!\n"
-        spa "%S es demadiado pesado para vos!\n"
-        ser "%S je suvise tesko za tebe!\n"
+        eng "%pS is just too heavy for you!\n"
+        spa "%pS es demadiado pesado para vos!\n"
+        ser "%pS je suvise tesko za tebe!\n"
 	~
         
 CS_CANT_WEAR_THERE
@@ -1213,39 +1213,39 @@ CS_TRY_LIGHT_OBJ
 	~
 
 CS_TOO_EVIL
-        eng "You're too evil for your %S!\n"
-        spa "Eres demasiado malvado para %S!\n"
-        ser "Ti si previse zao za  %S!\n"
+        eng "You're too evil for your %pS!\n"
+        spa "Eres demasiado malvado para %pS!\n"
+        ser "Ti si previse zao za  %pS!\n"
 	~
 
 CS_TOO_NEUTRAL
-        eng "You're too neutral for your %S!\n"
-        spa "Eres demasiado neutral para %S!\n"
-        ser "Ti si previse neutralan za  %S!\n"
+        eng "You're too neutral for your %pS!\n"
+        spa "Eres demasiado neutral para %pS!\n"
+        ser "Ti si previse neutralan za  %pS!\n"
 	~
 
 CS_TOO_GOOD
-        eng "You're too pleasant for your %S!\n"
-        spa "Eres demasiado pacifico para %S!\n"
-        ser "Ti si previse fin za  %S!\n"
+        eng "You're too pleasant for your %pS!\n"
+        spa "Eres demasiado pacifico para %pS!\n"
+        ser "Ti si previse fin za  %pS!\n"
 	~
 
 CS_IMM_ONLY
-        eng "%S belongs to an immortal!\n"
-        spa "%S pertenece a un inmortal!\n"
-        ser "%S pripada besmrtnicima!\n"
+        eng "%pS belongs to an immortal!\n"
+        spa "%pS pertenece a un inmortal!\n"
+        ser "%pS pripada besmrtnicima!\n"
 	~
 
 CS_DEMI_ONLY
-        eng "%S belongs to a demi-god!\n"
-        spa "%S pertenece a un semi-dios!\n"
-        ser "%S pripada polu-bogovima!\n"
+        eng "%pS belongs to a demi-god!\n"
+        spa "%pS pertenece a un semi-dios!\n"
+        ser "%pS pripada polu-bogovima!\n"
 	~
 
 CS_GOD_ONLY
-        eng "%S belongs to a god!\n"
-        spa "%S pertenece a un dios!\n"
-        ser "%S pripada bogu!\n"
+        eng "%pS belongs to a god!\n"
+        spa "%pS pertenece a un dios!\n"
+        ser "%pS pripada bogu!\n"
 	~
 
 CS_TOO_RELAXED
@@ -1255,70 +1255,70 @@ CS_TOO_RELAXED
 	~
 
 CS_NO_WARRIOR
-        eng "Silly warrior, %S is not for you!\n"
-        spa "Guerrero tonto, %S no es para ti!\n"
-        ser "Glupi ratnice, %S nije za tebe!\n"
+        eng "Silly warrior, %pS is not for you!\n"
+        spa "Guerrero tonto, %pS no es para ti!\n"
+        ser "Glupi ratnice, %pS nije za tebe!\n"
 	~
 
 CS_NO_SAGE
-        eng "Silly sage, %S is not for you!\n"
-        spa "Silly sage, %S is not for you!\n"
-        ser "Glupi Mudrace, %S nije za tebe!\n"
+        eng "Silly sage, %pS is not for you!\n"
+        spa "Silly sage, %pS is not for you!\n"
+        ser "Glupi Mudrace, %pS nije za tebe!\n"
 	~
 
 CS_NO_WIZARD
-        eng "Silly wizard, %S is not for you!\n"
-        spa "Mago tonto, %S no es para ti!\n"
-        ser "Glupi carobnjaku %S nije za tebe!\n"
+        eng "Silly wizard, %pS is not for you!\n"
+        spa "Mago tonto, %pS no es para ti!\n"
+        ser "Glupi carobnjaku %pS nije za tebe!\n"
 	~
 
 CS_NO_RANGER
-        eng "Silly ranger, %S is not for you!\n"
-        spa "Guardabosque tonto, %S no es para ti!\n"
-        ser "Glupi rendzeru, %S nije za tebe!\n"
+        eng "Silly ranger, %pS is not for you!\n"
+        spa "Guardabosque tonto, %pS no es para ti!\n"
+        ser "Glupi rendzeru, %pS nije za tebe!\n"
 	~
 
 CS_NO_THIEF
-        eng "Silly thief, %S is not for you!\n"
-        spa "Ladron tonto, %S no es para ti!\n"
-        ser "Glupi lopove, %S nije za tebe!\n"
+        eng "Silly thief, %pS is not for you!\n"
+        spa "Ladron tonto, %pS no es para ti!\n"
+        ser "Glupi lopove, %pS nije za tebe!\n"
 	~
 
 CS_NO_ALCHEMISTS
-        eng "Alchemists can't use %S!\n"
-        spa "Los alquimistas no pueden usar %S!\n"
-        ser "Alhemicar nemoze da koristi %S!\n"
+        eng "Alchemists can't use %pS!\n"
+        spa "Los alquimistas no pueden usar %pS!\n"
+        ser "Alhemicar nemoze da koristi %pS!\n"
 	~
 
 CS_NO_CLERIC
-        eng "Silly cleric, %S is not for you!\n"
-        spa "Clerigo tonto, %S no es para ti!\n"
-        ser "Glupi svestenice, %S nije za tebe!\n"
+        eng "Silly cleric, %pS is not for you!\n"
+        spa "Clerigo tonto, %pS no es para ti!\n"
+        ser "Glupi svestenice, %pS nije za tebe!\n"
 	~
 
 CS_NO_BARD
-        eng "Silly bard, %S is not for you!\n"
-        spa "Bardo tonto, %S no es para ti!\n"
-        ser "Glupi guslaru, %S nije za tebe!\n"
+        eng "Silly bard, %pS is not for you!\n"
+        spa "Bardo tonto, %pS no es para ti!\n"
+        ser "Glupi guslaru, %pS nije za tebe!\n"
 	~
 
 CS_NO_MOB
-        eng "%S is !MOB equipment!\n"
-        spa "%S is !MOB equipment!\n"
-        ser "%S je !MOB oprema!\n"
+        eng "%pS is !MOB equipment!\n"
+        spa "%pS is !MOB equipment!\n"
+        ser "%pS je !MOB oprema!\n"
 	~
 
 CS_NO_PC
-        eng "%S is for mobs only!\n"
-        spa "%S es solamente para mobs!\n"
-        ser "%S je za mobove samo!\n"
-        fre "%S est seulement pour les mobs!\n"
+        eng "%pS is for mobs only!\n"
+        spa "%pS es solamente para mobs!\n"
+        ser "%pS je za mobove samo!\n"
+        fre "%pS est seulement pour les mobs!\n"
 	~
 
 CS_TOO_MUCH_WT
-        eng "%S:\tYou can't carry that much weight.\n"
-        spa "%S:\tNo puedes cargar tanto peso.\n"
-        ser "%S:\tNemozes da poneses toliko tesko.\n"
+        eng "%pS:\tYou can't carry that much weight.\n"
+        spa "%pS:\tNo puedes cargar tanto peso.\n"
+        ser "%pS:\tNemozes da poneses toliko tesko.\n"
 	~
 
 CS_NO_GET_BULLETIN
@@ -1327,59 +1327,59 @@ CS_NO_GET_BULLETIN
 	~
 
 CS_SGT_TOO_MUCH_WT
-        eng "%S:\t%S can't carry that much weight.\n"
-        spa "%S:\t%S no puede cargar tanto peso.\n"
-        ser "%S:\t%S nemozes da nosis toliko tesko.\n"
+        eng "%pS:\t%pS can't carry that much weight.\n"
+        spa "%pS:\t%pS no puede cargar tanto peso.\n"
+        ser "%pS:\t%pS nemozes da nosis toliko tesko.\n"
 	~
 
 CS_SGT_TOO_MUCH_WT_TARG
-        eng "%S can't give you %S because you are carrying too much weight already!"
-        spa "%S no puede darte %S porque ya estas cargando demasiado peso!"
-        ser "%S nemoze da ti da %S posto vec nosis maksimalnu tezinu!"
+        eng "%pS can't give you %pS because you are carrying too much weight already!"
+        spa "%pS no puede darte %pS porque ya estas cargando demasiado peso!"
+        ser "%pS nemoze da ti da %pS posto vec nosis maksimalnu tezinu!"
 	~
 
 CS_SGT_NO_MORTAL
-        eng "%S is not for mortals!\n"
-        spa "%S no es para mortales!\n"
-        ser "%S nije za smrtnike!\n"
-        fre "%S n'est pas pour les mortales!\n"
+        eng "%pS is not for mortals!\n"
+        spa "%pS no es para mortales!\n"
+        ser "%pS nije za smrtnike!\n"
+        fre "%pS n'est pas pour les mortales!\n"
 	~
 
 CS_SGT_NO_DEMI
-        eng "%S is not for demi-gods!\n"
-        spa "%S no es para semi-dioses!\n"
-        ser "%S nije za polu bogove!\n"
+        eng "%pS is not for demi-gods!\n"
+        spa "%pS no es para semi-dioses!\n"
+        ser "%pS nije za polu bogove!\n"
 	~
 
 CS_SGT_NO_GOD
-        eng "%S is not for gods!\n"
-        spa "%S no es para dioses!\n"
-        ser "%S nije za bogove!\n"
-        fre "%S n'est pas pour les dieus!\n"
+        eng "%pS is not for gods!\n"
+        spa "%pS no es para dioses!\n"
+        ser "%pS nije za bogove!\n"
+        fre "%pS n'est pas pour les dieus!\n"
 	~
 
 CS_SGT_PC_ONLY
-        eng "%S is for players only!\n"
-        spa "%S es para jugadores solamente!\n"
-        ser "%S je samo za igrace!\n"
+        eng "%pS is for players only!\n"
+        spa "%pS es para jugadores solamente!\n"
+        ser "%pS je samo za igrace!\n"
 	~
 
 CS_SGT_MOB_ONLY
-        eng "%S is not for players!\n"
-        spa "%S no es para jugadores!\n"
-        ser "%S nije za igrace!\n"
+        eng "%pS is not for players!\n"
+        spa "%pS no es para jugadores!\n"
+        ser "%pS nije za igrace!\n"
 	~
 
 CS_NO_REMOVE
-        eng "The %S seems to have grown very attached to you!!\n"
-        spa "The %S seems to have grown very attached to you!!\n"
-        ser " %S je postao previse privrzen tebi!!\n"
+        eng "The %pS seems to have grown very attached to you!!\n"
+        spa "The %pS seems to have grown very attached to you!!\n"
+        ser " %pS je postao previse privrzen tebi!!\n"
 	~
 
 CS_NO_DROP
-        eng "Yeech, you can't let go of %S!!\n"
-        spa "Yeech, you can't let go of %S!!\n"
-        ser  "Yeeech, nemozes da ispustis %S!!\n"
+        eng "Yeech, you can't let go of %pS!!\n"
+        spa "Yeech, you can't let go of %pS!!\n"
+        ser  "Yeeech, nemozes da ispustis %pS!!\n"
 	~
 
 CS_THERE_WERE_COINS
@@ -1389,39 +1389,39 @@ CS_THERE_WERE_COINS
 	~
 
 CS_DO_GET
-        eng "You get %S.\n"
-        spa "Agarras %S.\n"
-        ser "Dobio si %S.\n"
+        eng "You get %pS.\n"
+        spa "Agarras %pS.\n"
+        ser "Dobio si %pS.\n"
 	~
 
 CS_DO_GET_O
-        eng "%S gets %S.\n"
-        spa "%S agarra %S.\n"
-        ser "%S uzima %S.\n"
+        eng "%pS gets %pS.\n"
+        spa "%pS agarra %pS.\n"
+        ser "%pS uzima %pS.\n"
 	~
 
 CS_DO_GET_FROM
-        eng "You get %S from %S.\n"
-        spa "Agarras %S de %S.\n"
-        ser "Dobijas %S od %S.\n"
+        eng "You get %pS from %pS.\n"
+        spa "Agarras %pS de %pS.\n"
+        ser "Dobijas %pS od %pS.\n"
 	~
 
 CS_DO_GET_FROM_O
-        eng "%S gets %S from %S.\n"
-        spa "%S agarra %S de %S.\n"
-        ser "%S Dobija %S od %S.\n"
+        eng "%pS gets %pS from %pS.\n"
+        spa "%pS agarra %pS de %pS.\n"
+        ser "%pS Dobija %pS od %pS.\n"
 	~
 
 CS_DO_GET_YOUR
-        eng "You get %S from your %S.\n"
-        spa "Agarras %S de tu %S.\n"
-        ser "Dobijas %S od svog %S.\n"
+        eng "You get %pS from your %pS.\n"
+        spa "Agarras %pS de tu %pS.\n"
+        ser "Dobijas %pS od svog %pS.\n"
 	~
 
 CS_DO_GET_YOUR_O
-        eng "%S gets %S from %S.\n"
-        spa "%S agarra %S de %S.\n"
-        ser "%S dobija %S od %S.\n"
+        eng "%pS gets %pS from %pS.\n"
+        spa "%pS agarra %pS de %pS.\n"
+        ser "%pS dobija %pS od %pS.\n"
 	~
 
 CS_LESS_THIRSTY
@@ -1495,33 +1495,33 @@ CS_EAT_LOSE_MOV
 	~
 
 CS_YOU_DROP
-        eng "You drop %S.\n"
-        spa "Dejas %S.\n"
-        ser "Ispustas %S.\n"
+        eng "You drop %pS.\n"
+        spa "Dejas %pS.\n"
+        ser "Ispustas %pS.\n"
 	~
 
 CS_DROPS
-        eng "%S drops %S.\n"
-        spa "%S deja %S.n"
-        ser "%S ispusta %S.n"
+        eng "%pS drops %pS.\n"
+        spa "%pS deja %pS.n"
+        ser "%pS ispusta %pS.n"
 	~
 
 CS_YOU_DONATE
-        eng "You donate %S.\n"
-        spa "Donas %S.\n"
-        ser "Poklanjas %S.\n"
+        eng "You donate %pS.\n"
+        spa "Donas %pS.\n"
+        ser "Poklanjas %pS.\n"
 	~
 
 CS_DONATES
-        eng "%S donates %S.\n"
-        spa "%S dona %S.\n"
-        ser "%S poklanja %S.\n"
+        eng "%pS donates %pS.\n"
+        spa "%pS dona %pS.\n"
+        ser "%pS poklanja %pS.\n"
 	~
 
 CS_OBJ_APPEARS
-        eng "%S appears in the room with a popping sound.\n"
-        spa "%S aparece en la habitacion de un sonido a !POP!.\n"
-        ser "%S se pojavljuje na sred sobe uz pucketanje!.\n"
+        eng "%pS appears in the room with a popping sound.\n"
+        spa "%pS aparece en la habitacion de un sonido a !POP!.\n"
+        ser "%pS se pojavljuje na sred sobe uz pucketanje!.\n"
 	~
 
 CS_TRY_FILL
@@ -1537,9 +1537,9 @@ CS_TRY_POST
 	~
 
 CS_CANT_HOLD_WT
-        eng "The %S can't hold the %S.\n"
-        spa "%S no puede sostener %S.\n"
-        ser "%S nemoze da sadrzi %S.\n"
+        eng "The %pS can't hold the %pS.\n"
+        spa "%pS no puede sostener %pS.\n"
+        ser "%pS nemoze da sadrzi %pS.\n"
 	~
 
 CS_BAG_CUR_MAX_WEIGHT
@@ -1547,7 +1547,7 @@ CS_BAG_CUR_MAX_WEIGHT
 	~
 
 CS_BAG_EMPTY_WEIGHT
-	eng "The %S itself weighs %i pounds.\n"
+	eng "The %pS itself weighs %i pounds.\n"
 	~
 
 CS_BAG_PERCENT
@@ -1559,49 +1559,49 @@ CS_OBJECT_WEIGHT
 	~
 
 CS_YOU_PUT
-        eng "You put %S in %S.\n"
-        spa "Pones %S en %S.\n"
-        ser "Stavljas %S u %S.\n"  
-        fre "Tu mettes %S dans %S.\n"
+        eng "You put %pS in %pS.\n"
+        spa "Pones %pS en %pS.\n"
+        ser "Stavljas %pS u %pS.\n"  
+        fre "Tu mettes %pS dans %pS.\n"
 	~
 
 CS_PUTS
-        eng "%S puts %S in %S.\n"
-        spa "%S pone %S en %S.\n"
-        ser "%S stavlja %S u %S.\n"
-        fre "%S mette %S dans %S.\n"
+        eng "%pS puts %pS in %pS.\n"
+        spa "%pS pone %pS en %pS.\n"
+        ser "%pS stavlja %pS u %pS.\n"
+        fre "%pS mette %pS dans %pS.\n"
 	~
 
 CS_PUTS_IN_OWN
-        eng "%S puts %S in %s %S.\n"
-        spa "%S pone %S en %s %S.\n"
-        ser "%S stavlja %S u %s %S.\n"
-        fre "%S mette %S dans %s %S.\n"
+        eng "%pS puts %pS in %s %pS.\n"
+        spa "%pS pone %pS en %s %pS.\n"
+        ser "%pS stavlja %pS u %s %pS.\n"
+        fre "%pS mette %pS dans %s %pS.\n"
 	~
 
 CS_LEAVES_SPRINTF
-        eng "leaves %S.\n"
-        spa "se marcha al %S.\n"
-        ser "Ide na %S.\n"
-        fre "departe %S.\n"
+        eng "leaves %pS.\n"
+        spa "se marcha al %pS.\n"
+        ser "Ide na %pS.\n"
+        fre "departe %pS.\n"
 	~
 
 CS_LEAVES_NOT_NORMAL_SPRINTF
-        eng "leaves through the %S.\n"
-        spa "se marcha al %S.\n"
-        ser "Odlazi kroz %S.\n"
+        eng "leaves through the %pS.\n"
+        spa "se marcha al %pS.\n"
+        ser "Odlazi kroz %pS.\n"
 	~
 
 CS_ARRIVED_FROM_SPRINTF
-        eng "has arrived from %S.\n"
-        spa "ha llegado desde %S.\n"
-        ser "je stigao sa %S.\n"
-        fre "est arrive du %S.\n"
+        eng "has arrived from %pS.\n"
+        spa "ha llegado desde %pS.\n"
+        ser "je stigao sa %pS.\n"
+        fre "est arrive du %pS.\n"
 	~
 
 CS_ARRIVED_FROM_CUST_SP
-        eng "has arrived from the %S.\n"
-        spa "ha llegado desde el %S.\n"
-        ser "je stigao sa %S.\n"
-        fre "est arrive du %S.\n"
+        eng "has arrived from the %pS.\n"
+        spa "ha llegado desde el %pS.\n"
+        ser "je stigao sa %pS.\n"
+        fre "est arrive du %pS.\n"
 	~

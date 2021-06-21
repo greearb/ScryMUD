@@ -70,7 +70,7 @@ int always_pay(int amount, int i_th, const String* targ, critter& pc,
    }else {
       if(pc.isNpc() || (pc.pc && pc.pc->imm_data)) {
          targptr->GOLD += amount;
-         Sprintf(buf, "You are pleasantly suprised as %S pays you %i.\n",
+         Sprintf(buf, "You are pleasantly suprised as %pS pays you %i.\n",
                  name_of_crit(pc, targptr->SEE_BIT), amount);
          show(buf, *targptr);
 
@@ -708,25 +708,25 @@ String GenScript::toStringBrief(int client_format, int mob_num,
       String tmp(100);
 
       if (entity == ENTITY_CRITTER) {
-         Sprintf(buf, "<MOB_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
+         Sprintf(buf, "<MOB_SCRIPT %pS %i %i %i %i %i>", &trigger_cmd,
                  mob_num, actor, target, precedence, idx);
       }
       else if (entity == ENTITY_ROOM) {
-         Sprintf(buf, "<ROOM_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
+         Sprintf(buf, "<ROOM_SCRIPT %pS %i %i %i %i %i>", &trigger_cmd,
                  mob_num, actor, target, precedence, idx);
       }
       else if (entity == ENTITY_OBJECT) {
-         Sprintf(buf, "<OBJ_SCRIPT %S %i %i %i %i %i>", &trigger_cmd,
+         Sprintf(buf, "<OBJ_SCRIPT %pS %i %i %i %i %i>", &trigger_cmd,
                  mob_num, actor, target, precedence, idx);
       }
 
-      Sprintf(tmp, "<DISCRIM %S>", &tmp_d);
+      Sprintf(tmp, "<DISCRIM %pS>", &tmp_d);
       buf.Append(tmp);
 
       return buf;
    }
    else {
-      Sprintf(buf, "Trigger:  %S  Actor Mob:  %i  Target #:  %i  Precedence: %i\n\tDiscriminator:  %S.\n", 
+      Sprintf(buf, "Trigger:  %pS  Actor Mob:  %i  Target #:  %i  Precedence: %i\n\tDiscriminator:  %pS.\n", 
               &trigger_cmd, actor, target, precedence, &trig_discriminator);
    }
    return buf;
@@ -765,7 +765,7 @@ String GenScript::getCompiledScript() {
       if (compiled_cmds.constElementAt(i)) {
          targ = compiled_cmds.constElementAt(i)->getTarget();
          cmd = compiled_cmds.constElementAt(i)->getCommand();
-         Sprintf(tmp, "[%i] %S %S\n", i, &targ, &cmd);
+         Sprintf(tmp, "[%i] %pS %pS\n", i, &targ, &cmd);
          buf.Append(tmp);
       }//if
    }//while
@@ -790,7 +790,7 @@ String GenScript::getRunningScript() {
       if (running_cmds.constElementAt(i)) {
          targ = running_cmds.constElementAt(i)->getTarget();
          cmd = running_cmds.constElementAt(i)->getCommand();
-         Sprintf(tmp, "[%i] %S %S\n", i, &targ, &cmd);
+         Sprintf(tmp, "[%i] %pS %pS\n", i, &targ, &cmd);
          buf.Append(tmp);
       }//if
    }//while
@@ -1072,7 +1072,7 @@ int GenScript::matches(const String& cmd, String& arg1, critter& act,
                //       << tmp_arg1 << ":-" << endl;
                if (!strstr(tmp_arg1, trig_discriminator)) {
                   //now try turning all punctuation to spaces...
-                  for (unsigned int i = 0; i<tmp_arg1.Strlen(); i++) {
+                  for (int i = 0; i<tmp_arg1.Strlen(); i++) {
                      if (ispunct(tmp_arg1.charAt(i))) {
                         tmp_arg1.setCharAt(i, ' ');
                      }//if
@@ -1313,7 +1313,7 @@ void GenScript::generateScript(String& cmd, String& arg1, critter& act,
                  rm.getIdNum());
          targ_str = tmp_buf;
       }//if
-      else if (strncmp("**%S", targ_str, 4) == 0) { //script owner, default
+      else if (strncmp("**%pS", targ_str, 4) == 0) { //script owner, default
          if (object_owner) {
             // For Object Scripts
             sprintf(tmp_buf, "**O@%p_%i ", object_owner,
@@ -1524,10 +1524,10 @@ void GenScript::optimizeLabels(const PtrArray<ScriptCmd>& incomming,
 
          if (strncasecmp(first_cmd, "script_goto_false",
                         strlen("script_goto_false")) == 0) {
-            Sprintf(buf, "script_jump_false %i %S", offset, &cmd_str);
+            Sprintf(buf, "script_jump_false %i %pS", offset, &cmd_str);
          }
          else {
-            Sprintf(buf, "script_jump_true %i %S", offset, &cmd_str);
+            Sprintf(buf, "script_jump_true %i %pS", offset, &cmd_str);
          }
 
          rslts.appendShallowCopy(new ScriptCmd(incomming.constElementAt(i)->getTarget(), buf));
@@ -1578,7 +1578,7 @@ void GenScript::parseBlockFP(int& start_idx,
 
          // Now get next two labels.
          String lbl_false = getNextLabel();
-         Sprintf(new_cmd, "script_goto_false %S %S", &lbl_false, &cmd_str);
+         Sprintf(new_cmd, "script_goto_false %pS %pS", &lbl_false, &cmd_str);
 
          rslts.appendShallowCopy(new ScriptCmd(incomming.constElementAt(i)->getTarget(), new_cmd));
 
@@ -1602,11 +1602,11 @@ void GenScript::parseBlockFP(int& start_idx,
          // We want to jump over the 'else' part if we ran the first
          // part, so make a jump to the end of the entire "if".
          String lbl_eo_if = getNextLabel();
-         Sprintf(new_cmd, "script_goto_true %S TRUE", &lbl_eo_if);
+         Sprintf(new_cmd, "script_goto_true %pS TRUE", &lbl_eo_if);
          rslts.appendShallowCopy(new ScriptCmd(NULL_STRING, new_cmd));
 
          // Now append the false label from above.
-         Sprintf(tmp2, "label: %S", &lbl_false);
+         Sprintf(tmp2, "label: %pS", &lbl_false);
          rslts.appendShallowCopy(new ScriptCmd(NULL_STRING, tmp2));
 
          parseBlockFP(i, incomming, internal_block);
@@ -1616,7 +1616,7 @@ void GenScript::parseBlockFP(int& start_idx,
          rslts.appendShallowCopy(internal_block);
          internal_block.clear(); //just null out ptrs, don't delete data
 
-         Sprintf(tmp2, "label: %S", &lbl_eo_if);
+         Sprintf(tmp2, "label: %pS", &lbl_eo_if);
          rslts.appendShallowCopy(new ScriptCmd(NULL_STRING, tmp2));
 
          // Now, increment i (automatically, and continue!

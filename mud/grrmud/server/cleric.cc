@@ -81,16 +81,16 @@ void do_cast_divine_retribution(critter &vict, critter &agg, int is_canned, int 
             vict.emote(buf);
          } else {
 
-            Sprintf(buf, "You surround %S with a crackling aura.\n",
+            Sprintf(buf, "You surround %pS with a crackling aura.\n",
                   name_of_crit(vict, agg.SEE_BIT));
             agg.show(buf, HL_DEF);
 
-            Sprintf(buf, "%S surrounds you with a crackling aura.\n",
+            Sprintf(buf, "%pS surrounds you with a crackling aura.\n",
                   name_of_crit(agg, vict.SEE_BIT));
             buf.Cap();
             vict.show(buf, HL_DEF);
 
-            Sprintf(buf, "surrounds %S with a crackling aura.",
+            Sprintf(buf, "surrounds %pS with a crackling aura.",
                   name_of_crit(vict, ~0));
             emote(buf, agg, *(agg.getCurRoom()), TRUE, &vict);
          }
